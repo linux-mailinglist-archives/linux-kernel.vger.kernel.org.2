@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A2B410705
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8FF410703
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238901AbhIROZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 10:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237771AbhIROZS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 10:25:18 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 604E2C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:23:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=crGu5Ix8RGnS81l9weqFdrV+bdJ/ykn6g7
-        LznH09ImM=; b=KlLIDMji0jKgdLYqe1kKdPBEJKEmQ/+DjJVdNxdruF4XPZ/wNb
-        q/rE3CGOYWsPdOk7vtiutxvl7M7QGWs72Be36DqDLpV7gloHvOzpD+Jjt1+5kQM8
-        7IQ1B67PdqZ76vI1Rgp7+BRr4PIFB2RURFbCMkwNyCuTvpzFXf+cfqNZE=
-Received: from xhacker (unknown [101.86.20.138])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnb7tw9kVhXP4YAA--.2092S2;
-        Sat, 18 Sep 2021 22:23:45 +0800 (CST)
-Date:   Sat, 18 Sep 2021 22:17:13 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Chen Huang <chenhuang5@huawei.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Darius Rad <darius@bluespec.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/2] riscv: improve unaligned memory accesses
-Message-ID: <20210918221713.289f63bb@xhacker>
-In-Reply-To: <9200c4c2-44b9-480e-6970-5188640fb00a@huawei.com>
-References: <20210916130855.4054926-1-chenhuang5@huawei.com>
-        <20210917221429.4d3a15ca@xhacker>
-        <9200c4c2-44b9-480e-6970-5188640fb00a@huawei.com>
+        id S238768AbhIROX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:23:26 -0400
+Received: from mout.gmx.net ([212.227.17.22]:59955 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237771AbhIROXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 10:23:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631974912;
+        bh=UmWycZcizNYid4Z+392DMeF7EKIyi4qx+X3CFcO1uDE=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=OHL5tT3y1TiXx0wkB4k4slkZMZI8KDCqbWKc5Q/EfYtvF6NluuoyY9yoJP4YD9gPc
+         kOiKCdeyfrg9M6eb9R1PUYhsu/qy6vcNmHvC2Wa4VzgxCcC+a7IG1JciPyJ+vYHapK
+         AR+DjUc4Kjgwl5XEUFwoiAawV1qbTBW0/nG7t5pM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MdebB-1n0O0n1DxB-00ZjGv; Sat, 18 Sep 2021 16:21:52 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: PPC: Replace zero-length array with flexible array member
+Date:   Sat, 18 Sep 2021 16:21:38 +0200
+Message-Id: <20210918142138.17709-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID: LkAmygBnb7tw9kVhXP4YAA--.2092S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF1kJF4kCryUXF1rur13twb_yoW5GFW5pa
-        1UCFnI9FZ8tr1xGFZ2qwn5uF1Yv3yfWFy7Jr43t34UuF1qvFy7Zr42gFWDGasxJrn7C34j
-        gr4SvFnrua45Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
-        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8rcTPUUUUU==
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+X-Provags-ID: V03:K1:nUjxkWAcJOBgMwjffXAt1QuuDOCIXUU/JKmzX9iUDs9pGqz2aHN
+ 98GDDCSWE9bq+l3Sk5BPYQ5vXYhDBd6i6m9oBE/LNW0YxvO/oLjzioqf/Ji0uzBVOm9chr0
+ LL9bRwvN7Fce6JyKqT87QUtYysU10VZEQcZZKM2WuxjcBrS1kJvveJZIa+QYFSTgKVzdzcF
+ 5QICgt5PO1IAWzYmd7a8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RM7jumJIPRc=:iV3Dwa2P7AD02q/3KO68IT
+ BDzSVfG1ioBkwhrb+6qgNASCHxUj9Q/aArb1XlOug0eTZo7EX0tS/9NcbcL0gFVq7ZiK7juec
+ aw+TghlsV9LQa5Ab4H5yeHGk0H6nj6B8NbQ2TstFwNlbxh2MqxJjrfMPNXTad7dxB8cZJPdN1
+ igLcjxvmZjs/JmZxWWMzf2z2WY87Q9L4+b5ssB9aMIqj8TcNWZfHTpL1O9y5XmxwGfqPMMtdV
+ lTxgVnjIhym06uO7OUfYZWIJVHEU7sFRH0yYPBLA6XJzmLPbq+LXlw0eQ9P1Ho6ogRHG2DS3c
+ 0JZKvyMZ7Gi9aqlxb8hQj5WyfDWAMTjYXCR8j3YFRAJ1WRJ0UyRKctaAwZSYEnmjYVGJDhQ19
+ dPPt152wY9NjQBc3Hn7UgUhXHcSb70hIxNxQHRB+foCmSGwCQwsiGfJ9aZi+PSspzri3kEJW8
+ i1thsYq8MTvOW3OLDv1iqHVDMni5wJIwKZqqWDhIWovfesZZ5k4DIF9QWkvW7z6P+ovABo5Wd
+ j5HiWNZxxqdBZA1mBxyxe5hglT1H15Z+9v2JuWw7Yd/ATfvksdQjMZ/7HpsJ2TrNxF2twTMay
+ s4yaFIj6/SBsngxuQ52uPAbxM9hCp3Il0g+9wBzE0HX3QAw+fNosh/2fM9N9D07T79yQMevCv
+ QRWygqOq+PS7QU3vcJE+9PD2DpIMC8jr5n6pVK80AxxV2yK1lbLmV4MLFhwYn63Wo7REVNSTX
+ g0NCghfK9b8jA0runYKHxOf4whbKHtsPf4lFYYNSDjdIfnkJuAsPu55RB4gB6evPW7rgxE6os
+ uka2MC208rgCXyYKnQeWPakWWEC1WXveod36ovFxvraYU4GEK1dRFAKK5wPIruIwJQBptcCVj
+ 0Zf7vmXOTwGKA9T5AxPsMfaP5V1XR95fvMV73zHAwfuW+8LSgIfCepvfXh+GMYPoOQ683DsxF
+ 4PmOqPwM8OS038ga1mnPs/aQhfat5tzpxxDHsjplerHiZ9I51+aXdsjmGza1VVjut2rFfV2Fu
+ KxL08FdYrJDx/nxab6C/N+Ux0B18NAs1Z60J9YoO7dRbx1vMlqSwskF4hBxXACceg/mH/t7yq
+ o/7JJ0W4gKEMJg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Sep 2021 09:14:05 +0800
-Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use "flexible array members" [1] for these cases. The
+older style of one-element or zero-length arrays should no longer be
+used[2].
 
-> On 2021/9/17 22:14, Jisheng Zhang wrote:
-> > On Thu, 16 Sep 2021 13:08:53 +0000
-> > Chen Huang <chenhuang5@huawei.com> wrote:
-> > =20
-> >> The patchset improves RISCV unaligned memory accesses, selects
-> >> HAVE_EFFICIENT_UNALIGNED_ACCESS if CPU_HAS_NO_UNALIGNED not
-> >> enabled and supports DCACHE_WORD_ACCESS to improve the efficiency
-> >> of unaligned memory accesses.
-> >>
-> >> If CPU don't support unaligned memory accesses for now, please
-> >> select CONFIG_CPU_HAS_NO_UNALIGNED. For I don't know which CPU
-> >> don't support unaligned memory accesses, I don't choose the
-> >> CONFIG for them. =20
-> > This will break unified kernel Image for riscv. Obviously, we will have
-> > two images for efficient unaligned access platforms and non-efficient
-> > unaligned access platforms. IMHO, we may need alternative mechanism or
-> > something else to dynamically enable related code path. =20
->=20
-> it won't break unified kernel Image for riscv, if one SoC choose
->=20
-> CPU_HAS_NO_UNALIGNED, the single Image won't support unaligned memory
+Also, make use of the struct_size() helper in kzalloc().
 
-the "unified" means the kernel Image has to support all RV64GC or RV32GC So=
-Cs.
-To make the Image works for both efficient unaligned access and inefficient
-unaligned access, I think we'd better make "inefficient unaligned access"
-default behavior, the use alternative etc. tech to patch related code path
-for efficient unaligned access.
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-le=
+ngth-and-one-element-arrays
 
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ arch/powerpc/include/asm/kvm_host.h | 2 +-
+ arch/powerpc/kvm/book3s_64_vio.c    | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
->=20
-> accesses, indeed, it depends on the CONFIG, and now, arm/powerpc/m68k has
+diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/as=
+m/kvm_host.h
+index 080a7feb7731..3aed653373a5 100644
+=2D-- a/arch/powerpc/include/asm/kvm_host.h
++++ b/arch/powerpc/include/asm/kvm_host.h
+@@ -190,7 +190,7 @@ struct kvmppc_spapr_tce_table {
+ 	u64 size;		/* window size in pages */
+ 	struct list_head iommu_tables;
+ 	struct mutex alloc_lock;
+-	struct page *pages[0];
++	struct page *pages[];
+ };
 
-linux Distributions doesn't have enough background of which config options
-must be enabled.
+ /* XICS components, defined in book3s_xics.c */
+diff --git a/arch/powerpc/kvm/book3s_64_vio.c b/arch/powerpc/kvm/book3s_64=
+_vio.c
+index 6365087f3160..d42b4b6d4a79 100644
+=2D-- a/arch/powerpc/kvm/book3s_64_vio.c
++++ b/arch/powerpc/kvm/book3s_64_vio.c
+@@ -295,8 +295,7 @@ long kvm_vm_ioctl_create_spapr_tce(struct kvm *kvm,
+ 		return ret;
 
->=20
-> similar configuration.
+ 	ret =3D -ENOMEM;
+-	stt =3D kzalloc(sizeof(*stt) + npages * sizeof(struct page *),
+-		      GFP_KERNEL);
++	stt =3D kzalloc(struct_size(stt, pages, npages), GFP_KERNEL);
+ 	if (!stt)
+ 		goto fail_acct;
 
-I have little knowledge of powerpc or m68k, but there are serveral different
-defconfig files for arm, for example multi_v7_defconfig and multi_v5_defcon=
-fig.
-The previous v7 version enables HAVE_EFFICIENT_UNALIGNED_ACCESS while
-the later v5 doesn't. Will you persuade riscv maintainers to accept one more
-defconfig file?
-
-Thanks
-
->=20
-> Yes,=C2=A0 it could be an optimization via alternative mechanism or somet=
-hing=20
-> else to
->=20
-> dynamically enable related code path later.
->=20
-> >
-> > Regards
-> > =20
-> >> Changes since v1:
-> >>   - As Darius Rad and Jisheng Zhang mentioned, some CPUs don't support
-> >>     unaligned memory accesses, add an option for CPUs to choose it or =
-not.
-> >>
-> >> Chen Huang (2):
-> >>    riscv: support HAVE_EFFICIENT_UNALIGNED_ACCESS
-> >>    riscv: Support DCACHE_WORD_ACCESS
-> >>
-> >>   arch/riscv/Kconfig                      |  5 ++++
-> >>   arch/riscv/include/asm/word-at-a-time.h | 37 +++++++++++++++++++++++=
-++
-> >>   2 files changed, 42 insertions(+)
-> >> =20
-> >
-> > .
-> > =20
-
+=2D-
+2.25.1
 
