@@ -2,173 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3747A4103C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 06:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D104103C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 06:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbhIRE4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 00:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        id S230515AbhIRE5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 00:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhIRE43 (ORCPT
+        with ESMTP id S231407AbhIRE5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 00:56:29 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4E9C061574;
-        Fri, 17 Sep 2021 21:55:06 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id u8so11404488vsp.1;
-        Fri, 17 Sep 2021 21:55:06 -0700 (PDT)
+        Sat, 18 Sep 2021 00:57:12 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B3AC061574;
+        Fri, 17 Sep 2021 21:55:48 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id v5so37230169edc.2;
+        Fri, 17 Sep 2021 21:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FFq/Z2GV9Lte0l9PEYIOTE7ktsuCGI9xVGKYiyEv7l8=;
-        b=UC2B66ry2LUE00zPMcM3CXIEdwW/tHE1hVu8rJoRKlYTruoN83kYI63GI8AY9wczVF
-         kZu+ACY+nxBjHZWXVAJ85FWxfQoBdFX7pRdgXotnUbCyz9ddwyBsAFaHaRIQ8yEP0eGl
-         Iw3R1QY2bpA+rocRZm7DHKHXzfKCmWNOqjBtp8v+/n8MDipyt5Rns8JjBo0PH3GQm9Hn
-         aBvIz5Ik3aq1e5qEuSfPcjqXl2WF+hY7pb9djr/+wxPhBfkbBDQnHFVlOSlzgZbcFyNV
-         iJhr/BlxosQlkV2n037lOO2mzBing+p1CWWBZ3Mi1/13pJOYnUCYElj7NXb19FzyhzuF
-         YuMg==
+        bh=ugNAmrfcnEDQKSRKVwaF/l+fOTrdNqkk/PXYk6xWiRg=;
+        b=XrCJSfTfzio6OySF2BG05KJTBlfYMJt+/HoWhZGZ26+aCG+G5Ufn+4gGVri7R89eJr
+         RzZBGhYPUMMipFg7IaBg5uOqz1UE+XZYH/7/PCMais2EJF/NGQ4fchoBy8MubH84B5dL
+         icdLavBRh5sf7BNYTqJPFz4dWZpmrjugRD3CUo793l0lSP8gWCxUxXj5ZMZ9Z9sJ55oR
+         SH2W4pgewQrn44G8nwu7k28hLH2j1+NJIc71KuD7nDOUs6sdpLq8m/He9YXHTWIm6tuE
+         +mbpuZIcljHSIkYoW7hpIdiHSsXgbeWcxBG8OhUNc0HaNX/RnITob9GUlaD+JLBjCrpt
+         qTZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FFq/Z2GV9Lte0l9PEYIOTE7ktsuCGI9xVGKYiyEv7l8=;
-        b=H6VXNndOXtUr0Gxpz+OEX4IqI2WtB6SFnCRgt1W7oiHT357qpobjhdBsZx3Upnycny
-         t24a6hIJ84g4GE9IJT+cuTdIez5Mu+FoicBmDxT56cUsKxOm7mHZeRPvnj1jXQ8IhoMI
-         yxCRWD3DUsgAtUyKj0iZPowGbOImo//j4m1IYiXTy/vZ5vNy5+4ft8tbDUw9HCqAZh8i
-         UF3L2XcHdn64W90PZ9b2JUlo2waM4RiQc8Tssmo0eiEQTRP9F+HpOfXzEc0FkHp9gf1X
-         8J79nuwHSJbyuuvkEgFMcicdbpFIhogfYgEx9vIoYRP7B7s2wuw1QZLJxyA/94+aD7Q1
-         XVTw==
-X-Gm-Message-State: AOAM530G/c1NqBCHjUsiCm3yolpZX6XbzhqvrQCHaUxbkfN3+EIHPFXw
-        KJEcGgLHT4FG+BMBc5awBvCb2W+GpULA1F6R0VM=
-X-Google-Smtp-Source: ABdhPJyjzk8nTR/0NNGwA+jemoYxppUNyNdjEAV59jalNmpZ2wJbdG2sqA4lE0rkjT6gL7f2q5ToMVu4g26p1B+9K20=
-X-Received: by 2002:a05:6102:e55:: with SMTP id p21mr135274vst.18.1631940904578;
- Fri, 17 Sep 2021 21:55:04 -0700 (PDT)
+        bh=ugNAmrfcnEDQKSRKVwaF/l+fOTrdNqkk/PXYk6xWiRg=;
+        b=XVRgqn/nIfyw0Z9ALNghpDUmxh3tZvmBb0ll53QBSAB9jwFVYcWz2B+XKicy4sovZx
+         qtZJv9pLtqD5+g924UBxhvF4fFZ0WNiVZFFVKwb4HBftJcVajdz9hJTNPwlU0dymJBYa
+         auxTbW8I7mxTw8zMh0fMdYPkd8Zf7Z8A1z03UEVArinxsm4DQKCJBeN6+eImNpPzoy0K
+         4RQqColkq3yuDQOhXbWmi97PUC0mjdhzy6G0XDb5dOwAmdzNU7NkxMa1MOLfTjYmlYWM
+         S2n6lBRGfgdA0OB82qaz13NHf5A2gjRxwq/ezrDPptG/iV+5zftoasjFj3oJxZ/efHa4
+         pzDQ==
+X-Gm-Message-State: AOAM531eogVKaLWirFlfmInISD0Dxo4lPY4yDIk3AXpmhyMPXmqB9zx/
+        kguQIwy0tgU8Ry1724YpGbUCYJaoq6DzwAqreq4=
+X-Google-Smtp-Source: ABdhPJyluD/oiIDcmDEv0opbjIIC6hZzNYGqhAUaldypW6bYEwlI/rJccmkztulILIfdedaX4ECzzjgqaja6UePFL5I=
+X-Received: by 2002:aa7:d7d5:: with SMTP id e21mr17147376eds.27.1631940947451;
+ Fri, 17 Sep 2021 21:55:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
- <20210917035736.3934017-10-chenhuacai@loongson.cn> <CAK8P3a0BkYBoBh37YyZ1HU4f1thL6ckJR0MZhbkhpKanVK1WcQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a0BkYBoBh37YyZ1HU4f1thL6ckJR0MZhbkhpKanVK1WcQ@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Sat, 18 Sep 2021 12:54:52 +0800
-Message-ID: <CAAhV-H60MKs_gCf4ug3ACkXcDg4cGoYEQ=HchJz8+muFkrsJQA@mail.gmail.com>
-Subject: Re: [PATCH V3 09/22] LoongArch: Add boot and setup routines
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
+References: <20210917034815.80264-1-songmuchun@bytedance.com> <20210917034815.80264-3-songmuchun@bytedance.com>
+In-Reply-To: <20210917034815.80264-3-songmuchun@bytedance.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Sat, 18 Sep 2021 16:55:36 +1200
+Message-ID: <CAGsJ_4ymutSL-pbWA_TykJ2vE8ZKc+JGn+w_WWy2j7Mn-q+ebA@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 2/4] mm: hugetlb: replace hugetlb_free_vmemmap_enabled
+ with a static_key
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, Andrew Morton <akpm@linux-foundation.org>,
+        osalvador@suse.de, mhocko@suse.com,
+        Barry Song <song.bao.hua@hisilicon.com>, david@redhat.com,
+        chenhuang5@huawei.com, bodeddub@amazon.com,
         Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
+        Matthew Wilcox <willy@infradead.org>,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        smuchun@gmail.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Arnd,
+On Sat, Sep 18, 2021 at 12:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> The page_head_if_fake() is used throughout memory management and the
+> conditional check requires checking a global variable, although the
+> overhead of this check may be small, it increases when the memory
+> cache comes under pressure. Also, the global variable will not be
+> modified after system boot, so it is very appropriate to use static
+> key machanism.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/hugetlb.h    |  6 +++++-
+>  include/linux/page-flags.h |  6 ++++--
+>  mm/hugetlb_vmemmap.c       | 10 +++++-----
+>  3 files changed, 14 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index f7ca1a3870ea..ee3ddf3d12cf 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -1057,7 +1057,11 @@ static inline void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr
+>  #endif /* CONFIG_HUGETLB_PAGE */
+>
+>  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> -extern bool hugetlb_free_vmemmap_enabled;
+> +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> +                        hugetlb_free_vmemmap_enabled_key);
+> +#define hugetlb_free_vmemmap_enabled                                    \
+> +       static_key_enabled(&hugetlb_free_vmemmap_enabled_key)
+> +
+>  #else
+>  #define hugetlb_free_vmemmap_enabled   false
+>  #endif
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 7b1a918ebd43..d68d2cf30d76 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -185,7 +185,8 @@ enum pageflags {
+>  #ifndef __GENERATING_BOUNDS_H
+>
+>  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> -extern bool hugetlb_free_vmemmap_enabled;
+> +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> +                        hugetlb_free_vmemmap_enabled_key);
+>
+>  /*
+>   * If the feature of freeing some vmemmap pages associated with each HugeTLB
+> @@ -204,7 +205,8 @@ extern bool hugetlb_free_vmemmap_enabled;
+>   */
+>  static __always_inline const struct page *page_head_if_fake(const struct page *page)
+>  {
+> -       if (!hugetlb_free_vmemmap_enabled)
+> +       if (!static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> +                                &hugetlb_free_vmemmap_enabled_key))
 
-On Fri, Sep 17, 2021 at 4:11 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
-> > This patch adds basic boot, setup and reset routines for LoongArch.
-> > LoongArch uses UEFI-based firmware and uses ACPI as the boot protocol.
->
-> This needs to be reviewed by the maintainers for the EFI and ACPI subsystems,
-> I added them to Cc here. If you add lines like
->
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: linux-efi@vger.kernel.org
->
-> in the patch description before your Signed-off-by, then git-send-email will
-> Cc them automatically without you having to spam them with the entire series.
-OK, I will add them.
+A question bothering me is that we still have hugetlb_free_vmemmap_enabled
+defined as static_key_enabled(&hugetlb_free_vmemmap_enabled_key).
+but here you are using static_branch_maybe() with the CONFIG and refer the key
+directly.
+Do we only need one of them? Or something is wrong?
 
+>                 return page;
 >
-> In particular, I know that Ard previously complained that you did not use the
-> EFI boot protocol correctly, and I want to make sure that he's happy with the
-> final version.
-The Correct way means efistub?  We have investigated for some time and
-found that it is very difficult. E.g., our BIOS team said that they
-cannot get GOP drivers for graphics cards.
+>         /*
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index 527bcaa44a48..5b80129c684c 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -188,9 +188,9 @@
+>  #define RESERVE_VMEMMAP_NR             1U
+>  #define RESERVE_VMEMMAP_SIZE           (RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+>
+> -bool hugetlb_free_vmemmap_enabled __read_mostly =
+> -       IS_ENABLED(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON);
+> -EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled);
+> +DEFINE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+> +                       hugetlb_free_vmemmap_enabled_key);
+> +EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled_key);
+>
+>  static int __init early_hugetlb_free_vmemmap_param(char *buf)
+>  {
+> @@ -204,9 +204,9 @@ static int __init early_hugetlb_free_vmemmap_param(char *buf)
+>                 return -EINVAL;
+>
+>         if (!strcmp(buf, "on"))
+> -               hugetlb_free_vmemmap_enabled = true;
+> +               static_branch_enable(&hugetlb_free_vmemmap_enabled_key);
+>         else if (!strcmp(buf, "off"))
+> -               hugetlb_free_vmemmap_enabled = false;
+> +               static_branch_disable(&hugetlb_free_vmemmap_enabled_key);
+>         else
+>                 return -EINVAL;
+>
+> --
+> 2.11.0
+>
 
->
-> > +static ssize_t boardinfo_show(struct kobject *kobj,
-> > +                             struct kobj_attribute *attr, char *buf)
-> > +{
-> > +       return sprintf(buf,
-> > +               "BIOS Information\n"
-> > +               "Vendor\t\t\t: %s\n"
-> > +               "Version\t\t\t: %s\n"
-> > +               "ROM Size\t\t: %d KB\n"
-> > +               "Release Date\t\t: %s\n\n"
-> > +               "Board Information\n"
-> > +               "Manufacturer\t\t: %s\n"
-> > +               "Board Name\t\t: %s\n"
-> > +               "Family\t\t\t: LOONGSON64\n\n",
-> > +               b_info.bios_vendor, b_info.bios_version,
-> > +               b_info.bios_size, b_info.bios_release_date,
-> > +               b_info.board_vendor, b_info.board_name);
-> > +}
-> > +
-> > +static struct kobj_attribute boardinfo_attr = __ATTR(boardinfo, 0444,
-> > +                                                    boardinfo_show, NULL);
-> > +
-> > +static int __init boardinfo_init(void)
-> > +{
-> > +       if (!efi_kobj)
-> > +               return -EINVAL;
-> > +
-> > +       return sysfs_create_file(efi_kobj, &boardinfo_attr.attr);
-> > +}
-> > +late_initcall(boardinfo_init);
->
-> I see you have documented this interface for your mips machines,
-> but nothing else uses it.
->
-> I think some of this information should be part of the soc_device,
-> either in addition to, or in place of this sysfs file.
-This file list something describe the motherboard, which is different
-from SOC. These information are used by some user programs.
-
->
-> Isn't there an existing method to do this on x86/arm/ia64 machines?
->
-> > +static int constant_set_state_periodic(struct clock_event_device *evt)
-> > +{
-> > +       unsigned long period;
-> > +       unsigned long timer_config;
-> > +
-> > +       raw_spin_lock(&state_lock);
-> > +
-> > +       period = const_clock_freq / HZ;
-> > +       timer_config = period & CSR_TCFG_VAL;
-> > +       timer_config |= (CSR_TCFG_PERIOD | CSR_TCFG_EN);
-> > +       csr_writeq(timer_config, LOONGARCH_CSR_TCFG);
-> > +
-> > +       raw_spin_unlock(&state_lock);
->
-> I see this pattern in a couple of places, using a spinlock or raw_spinlock
-> to guard MMIO access, but on many architectures a register write is
-> not serialized by the following spin_unlock, unless you insert another
-> read from the same address in there. E.g. on PCIe, writes are always
-> posted and it would not work.
->
-> Can you confirm that it works correctly on CSR registers in loongarch?
-CSR on LoongArch doesn't need any barrier or flush operations,
-spinlock here is used to protect the whole "read, modify and write".
-
-Huacai
->
->          Arnd
+Thanks
+barry
