@@ -2,177 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E17410618
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 13:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEF541061A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 13:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239245AbhIRLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 07:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhIRLtk (ORCPT
+        id S234774AbhIRLvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 07:51:46 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:47042 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbhIRLvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 07:49:40 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51778C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 04:48:17 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so11879531pjc.3
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 04:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NfLIXi5NuL2PF6rTqaUWLiDGZ2bM9/OPvGTCBxQf/Zg=;
-        b=47B5COgWWP/NtFNfOGAnx46845XseXNan5j5kLiIQ2mDLnhAe1Ri0x9AWEOU9Zc3TQ
-         +o3BUUuBj36Z+f732jeBhBhult7nydYxZU7pOKcg1P0WMG0BIm4o6E+g7ML2BKAUe1tG
-         oFWmll5zRPWzlTh+nvo1sNM7gtfA2z0c/ZxUl0JYmLw0VJ1TJ5fEFr7evhFF0GpQR45I
-         nKcWz6oJ/krCrJas16QTQD/LdpuKLyCHri3ZSnDYsaWjmAcuRmTOY/YuFbyFw28CShIi
-         TD7Gjghf2V68n6uYxVFu3mdhWOApcZnw0LclnRPoH1Q3b30eIxuzppoqmQRFWYoX1COJ
-         wU+Q==
+        Sat, 18 Sep 2021 07:51:45 -0400
+Received: by mail-io1-f70.google.com with SMTP id m4-20020a0566022e8400b005d5880ff784so4555339iow.13
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 04:50:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NfLIXi5NuL2PF6rTqaUWLiDGZ2bM9/OPvGTCBxQf/Zg=;
-        b=2L9il57wv+XkbKDAo9cPW5gutNjk5ABspovRyByIgmtnCh7oP8bjxFLAkNm4TFensD
-         yXpNviSrUOIcohB9uz8bVg+HVCG+uUFSgZGu8L3MMgK5kFIPm67Cedc8iGZeGAm2Z5m9
-         X8G9DIaT8q78DcyWqy2k+KajZVFW5Uf4fFKdAmvQgfbI2ZjRLS+hV3NO3lw73+YrfaS6
-         uhS5jnkP3uTLpTJhBmBUBIG4375dwI5HtSzPJBHB5/JnbsvTa+AdQ4KA7U6ZKEXTtmk+
-         HpXaLwuWzVAxBioyPIOrK4/Ig9p4gkCIkHJ0mOBZcrrYeN4V+PpAv5cMp8bcVXvm/sI6
-         sbEg==
-X-Gm-Message-State: AOAM5312cQSPRdP9auXWqtmJYRZVZYudiAZmfZDTJDP13wt531NTobZ2
-        o3TRkKppPtCEbm7QkwYYEP4IsoQsTjfzSbVkZ3n0ug==
-X-Google-Smtp-Source: ABdhPJzetvZXdXg9Gt1c0+iA4OzPlw1wcIa1EoiEU4dl7DT5RDXRl8uezwWIrMiicKgsrOCUFr4UYI/AgpzQwPIdWyI=
-X-Received: by 2002:a17:90b:1807:: with SMTP id lw7mr14281165pjb.217.1631965696767;
- Sat, 18 Sep 2021 04:48:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=utQtz5kLI9mtlnXSS1nlTSAnSAjyT70bJPJgD0jduRw=;
+        b=bMYg+NIvomXorMm4S82xDjpMZSGcFhwjrJr4OLNSoLHANL451p0M+DPYitE39HC2Pq
+         KwsqL2nItesRU6G+u2N1CZKuPUSTyQl3Ni0UxPxfGC5w7dI4OzGA+sAb8ljEk7Y+E41i
+         7ryqPNhXD/FBfJFAmoUdzuhGrlnSAakL2QdvwB08yHA9iA+qnHQbbl6s+uoIStXJclE8
+         znVcm00eZ3cK6Y/5/zn+ANUZP0J/nK7F4EBAmYq61RyAb1dQ1Cxi+DM33Hp9KF/zKdHy
+         gBUjkRbae7XXoeYLXxY7CqXNsZUaR15bYbRxD3DhQP23As6BjWpkZCUbFN6oPiJEHxaY
+         nIvg==
+X-Gm-Message-State: AOAM533WpEMr3QKhMk/Cx/fq4WJcIECPTXvV4L7tqOE406w28y47o0c1
+        LUZhEkb+lYSBP5c3s2b64m5mkzPveyt3k7xmgOm0pix3vEdN
+X-Google-Smtp-Source: ABdhPJwbX2uOhxn5tDv94RyABYbNGvBG73YRbOiV75lWhWriYhJlJziaW/XH2aXqIGSaKS6IzWR+klEcg+FcdGCac0ugxibKQ8m5
 MIME-Version: 1.0
-References: <20210917034815.80264-1-songmuchun@bytedance.com>
- <20210917034815.80264-3-songmuchun@bytedance.com> <CAGsJ_4ymutSL-pbWA_TykJ2vE8ZKc+JGn+w_WWy2j7Mn-q+ebA@mail.gmail.com>
- <CAMZfGtWWvDcz+JZtj0k_YZsD4j42cgaoWOCd1o8jArizqBYKgQ@mail.gmail.com> <CAGsJ_4zZfemMA9=85sgASacPqaT4OnV7RaYUwtQef=BzEfqW9w@mail.gmail.com>
-In-Reply-To: <CAGsJ_4zZfemMA9=85sgASacPqaT4OnV7RaYUwtQef=BzEfqW9w@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 18 Sep 2021 19:47:38 +0800
-Message-ID: <CAMZfGtV32Wya=rNw29S1suM8qGzHvYhaqvGeFEvsegy5Oxas0A@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 2/4] mm: hugetlb: replace hugetlb_free_vmemmap_enabled
- with a static_key
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
+X-Received: by 2002:a5e:da08:: with SMTP id x8mr12132404ioj.58.1631965821637;
+ Sat, 18 Sep 2021 04:50:21 -0700 (PDT)
+Date:   Sat, 18 Sep 2021 04:50:21 -0700
+In-Reply-To: <000000000000bf031105cc00ced8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000015991c05cc43a736@google.com>
+Subject: Re: [syzbot] WARNING in mptcp_sendmsg_frag
+From:   syzbot <syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.linux.dev, netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 7:15 PM Barry Song <21cnbao@gmail.com> wrote:
->
-> On Sat, Sep 18, 2021 at 10:31 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > On Sat, Sep 18, 2021 at 12:55 PM Barry Song <21cnbao@gmail.com> wrote:
-> > >
-> > > On Sat, Sep 18, 2021 at 12:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > > The page_head_if_fake() is used throughout memory management and the
-> > > > conditional check requires checking a global variable, although the
-> > > > overhead of this check may be small, it increases when the memory
-> > > > cache comes under pressure. Also, the global variable will not be
-> > > > modified after system boot, so it is very appropriate to use static
-> > > > key machanism.
-> > > >
-> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > ---
-> > > >  include/linux/hugetlb.h    |  6 +++++-
-> > > >  include/linux/page-flags.h |  6 ++++--
-> > > >  mm/hugetlb_vmemmap.c       | 10 +++++-----
-> > > >  3 files changed, 14 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > > > index f7ca1a3870ea..ee3ddf3d12cf 100644
-> > > > --- a/include/linux/hugetlb.h
-> > > > +++ b/include/linux/hugetlb.h
-> > > > @@ -1057,7 +1057,11 @@ static inline void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr
-> > > >  #endif /* CONFIG_HUGETLB_PAGE */
-> > > >
-> > > >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > > > -extern bool hugetlb_free_vmemmap_enabled;
-> > > > +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> > > > +                        hugetlb_free_vmemmap_enabled_key);
-> > > > +#define hugetlb_free_vmemmap_enabled                                    \
-> > > > +       static_key_enabled(&hugetlb_free_vmemmap_enabled_key)
-> > > > +
-> > > >  #else
-> > > >  #define hugetlb_free_vmemmap_enabled   false
-> > > >  #endif
-> > > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> > > > index 7b1a918ebd43..d68d2cf30d76 100644
-> > > > --- a/include/linux/page-flags.h
-> > > > +++ b/include/linux/page-flags.h
-> > > > @@ -185,7 +185,8 @@ enum pageflags {
-> > > >  #ifndef __GENERATING_BOUNDS_H
-> > > >
-> > > >  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > > > -extern bool hugetlb_free_vmemmap_enabled;
-> > > > +DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> > > > +                        hugetlb_free_vmemmap_enabled_key);
-> > > >
-> > > >  /*
-> > > >   * If the feature of freeing some vmemmap pages associated with each HugeTLB
-> > > > @@ -204,7 +205,8 @@ extern bool hugetlb_free_vmemmap_enabled;
-> > > >   */
-> > > >  static __always_inline const struct page *page_head_if_fake(const struct page *page)
-> > > >  {
-> > > > -       if (!hugetlb_free_vmemmap_enabled)
-> > > > +       if (!static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
-> > > > +                                &hugetlb_free_vmemmap_enabled_key))
-> > >
-> > > A question bothering me is that we still have hugetlb_free_vmemmap_enabled
-> > > defined as static_key_enabled(&hugetlb_free_vmemmap_enabled_key).
-> > > but here you are using static_branch_maybe() with the CONFIG and refer the key
-> > > directly.
-> > > Do we only need one of them? Or something is wrong?
-> > >
-> >
-> > Yeah, we only need one. But my consideration is that we
-> > use static_branch_maybe() for performance sensitive places.
-> > So I do not change hugetlb_free_vmemmap_enabled
-> > to static_branch_maybe(), this can reduce some codes
-> > that need to be updated when the static key is enabled.
-> > Actually, the user of hugetlb_free_vmemmap_enabled
-> > is not performance sensitive.
->
-> not quite sure if an unified inline API will be better, e.g.
->
-> #ifdef CONFIG_SCHED_SMT
-> extern struct static_key_false sched_smt_present;
->
-> static __always_inline bool sched_smt_active(void)
-> {
->         return static_branch_likely(&sched_smt_present);
-> }
-> #else
-> static inline bool sched_smt_active(void) { return false; }
-> #endif
+syzbot has found a reproducer for the following issue on:
 
-Alright, I can change hugetlb_free_vmemmap_enabled to
-an inline function.
+HEAD commit:    02319bf15acf net: dsa: bcm_sf2: Fix array overrun in bcm_s..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=170f9e27300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
+dashboard link: https://syzkaller.appspot.com/bug?extid=263a248eec3e875baa7b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1507cd8d300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=174c8017300000
 
->
-> but in your case, CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> is always true in your page_head_if_fake(). Why do we check it
-> again?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+263a248eec3e875baa7b@syzkaller.appspotmail.com
 
-That is CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON
-not CONFIG_HUGETLB_PAGE_FREE_VMEMMAP.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 7032 at net/mptcp/protocol.c:1366 mptcp_sendmsg_frag+0x1362/0x1bc0 net/mptcp/protocol.c:1366
+Modules linked in:
+CPU: 1 PID: 7032 Comm: syz-executor845 Not tainted 5.15.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mptcp_sendmsg_frag+0x1362/0x1bc0 net/mptcp/protocol.c:1366
+Code: ff 4c 8b 74 24 50 48 8b 5c 24 58 e9 0f fb ff ff e8 83 40 8b f8 4c 89 e7 45 31 ed e8 88 57 2e fe e9 81 f4 ff ff e8 6e 40 8b f8 <0f> 0b 41 bd ea ff ff ff e9 6f f4 ff ff 4c 89 e7 e8 b9 89 d2 f8 e9
+RSP: 0018:ffffc90003acf830 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888072918000 RSI: ffffffff88eacb72 RDI: 0000000000000003
+RBP: ffff88807a182580 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff88eac1a7 R11: 0000000000000000 R12: ffff88801a08a000
+R13: 0000000000000000 R14: ffff888018cb9b80 R15: ffff88801b4f2340
+FS:  000055555723b300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000380 CR3: 000000007bebe000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __mptcp_push_pending+0x1fb/0x6b0 net/mptcp/protocol.c:1547
+ mptcp_sendmsg+0xc29/0x1bc0 net/mptcp/protocol.c:1748
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:643
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ sock_write_iter+0x2a0/0x3e0 net/socket.c:1057
+ call_write_iter include/linux/fs.h:2163 [inline]
+ new_sync_write+0x40b/0x640 fs/read_write.c:507
+ vfs_write+0x7cf/0xae0 fs/read_write.c:594
+ ksys_write+0x1ee/0x250 fs/read_write.c:647
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f40ee3c4fb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd96b7a0f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f40ee3c4fb9
+RDX: 00000000000e7b78 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000f0b5ff R09: 0000000000f0b5ff
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000012096
+R13: 00007ffd96b7a120 R14: 00007ffd96b7a110 R15: 00007ffd96b7a104
 
-Thanks
