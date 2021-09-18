@@ -2,59 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65230410270
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 02:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF70F410272
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 02:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237935AbhIRA55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 20:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36672 "EHLO
+        id S238493AbhIRA6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 20:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhIRA54 (ORCPT
+        with ESMTP id S239732AbhIRA6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 20:57:56 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E770AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 17:56:33 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id c4so7275143pls.6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 17:56:33 -0700 (PDT)
+        Fri, 17 Sep 2021 20:58:02 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0A7C061574;
+        Fri, 17 Sep 2021 17:56:39 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c1so7803594pfp.10;
+        Fri, 17 Sep 2021 17:56:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CphJpdcUwA/affbsOVFO5DnAc8eQGOBGWmZtfgDlxBY=;
-        b=o97yKxa6HxYVb/bigR/PurwzV09IllKV4J47KGfFjba8lv4Yoy4ZU80wntcTnwqRRI
-         kHszwAQA1iPWzuf6KdRuslQARo5cIehyEV0Xm9vxQ5DaLVaHKb+Gl9ORyzQQk8WBSxGs
-         DoJbUGiXCN3a8eifusfzxyVFuIBUjPXzXaC7jbCyy35amhKhMqvD/0KjuzI5AHak3u4u
-         rADghp0BTE+nnwfNpCyVal6PrMQdHFXw2ATcLwRxCQpF/LIJJkww15WaChUHE6VS2dfy
-         Rqkqlvid/7VCCTvTAsAnCTwRQquDgWwXkFdBGV2xjqh6FRu5beVnV5D/NsfnflUa3B2i
-         7f4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=a6PYG+m/xoIoPiMToxE/tL9ihqq7/KCP6ZvYVM4ScbM=;
+        b=Id5nrQDA9hbBo1pTm7dyu3rzF/UaBwZN4f08xl7BEFnELljpNcXOjr1gaGFvgbjf8M
+         tBpuzWgfQSWCexBTPWT7QDrKcUAknEARhdyzat3Vb8lCdukJtUFsO4SzigrSSAE1vdaD
+         /3F850MjiYPSE2kj0hKrpeZCCemsa6064j9zZc9PCb0Qhc2g+3DprBa2driccPairPya
+         gkK5/o1uhZcwINhcfUieXWPipuS+bn2WJwJSstpSMhxU4Ti4Nzr9D1nsv9jY7vnqbT7K
+         QHsYeFro+vwdRN1Eyc1LMWnk/kpOA1VK3UAsPUNFiCTBft7dJm7oAS+FSJoJKxubNWGx
+         9G3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CphJpdcUwA/affbsOVFO5DnAc8eQGOBGWmZtfgDlxBY=;
-        b=to9S3RS/BXwcdPS4uM7AHDACCER1/KAtyJrKIMODwujNzN5ogGt4O0xf7RsyGaYhYU
-         LLex+t7obZH90TmLeU90BQJ5RNF8AP8zbT/jgPTXk6rHlfWOCNiYLSB/6lQsy5b7l3Hr
-         dD7yK6hN8f9gI7k/GUedzrAvYKeuVo/FGGJE+/VBDRx7VFW00XC0dvhC51ZN8oT1FqNC
-         uysLSysGXmK8tN99BfqL/Zs5C/o5qk+6AgHK0dpr7F5rHTbPsO+ZAPP9jfnQQpnFeYIN
-         yuKHyzZJLCAlWCuwOyrrIc6M+8K3+F+jOLSt+mkHMJA5YqMIQHPHgF96Q+VtUgQJe1iW
-         hXYA==
-X-Gm-Message-State: AOAM530KjY94wIXnrkRWhRHhz0W9S8QCHng+CtM13NZnyrOabtm/Yrx7
-        tId0P1XGnkuQA3Vqc5eE4jj/UeTYppk=
-X-Google-Smtp-Source: ABdhPJzKnTjgZ4amW5Y71Y8n1C0aUHBO0DZsGGMMwXmlXC5u3kw/XUyvFatdQJsf384YyvM7qG0IrQ==
-X-Received: by 2002:a17:90a:7301:: with SMTP id m1mr15429975pjk.164.1631926592147;
-        Fri, 17 Sep 2021 17:56:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=a6PYG+m/xoIoPiMToxE/tL9ihqq7/KCP6ZvYVM4ScbM=;
+        b=HUTeE4QXf4eGdyAm+7J4gH6fHUORhNTDvCB/Om6LANOfIFWeC9B5XzXaxLuS5/Bc6s
+         QYjqbSzOBtZJW6N9dZIxTgNvI4dmhGKQfped84vdgZsbAkDZN5NKNTzMgigJgM13Sl/4
+         6/evGH4wuNfWTBnqExdKgUx4ehkyiFeyq/cpk+1y0atRx1uCeIWogO37MIvUKY3IImWu
+         DnKQFMUORPI1Me4YwIMvp9IQfnLVOE4t1DN5Kyu9VK8EDDOva+CW8lNxHxHD29/1IWvW
+         2/MqdDboreaTnCFYvrC1dZ7Od1oY9fZ16WDSPSUFBp3d24Kyvg5nxEUZG+0nUmfHpL7E
+         y1Tg==
+X-Gm-Message-State: AOAM532C3Q7ytbY2dWfKSwEkQcBr3AYENluKWPbeQP7YEUBuoDPisL/h
+        /YTH/3CGble/A68fcy5zcASMO25jamw=
+X-Google-Smtp-Source: ABdhPJyi8fJXwyTUVRT7Hto96wu/kHTmSfokskyY0wwfMbqexfa1cRYzmSyppYoELdMkKJqHyRBsUQ==
+X-Received: by 2002:a63:185b:: with SMTP id 27mr12394199pgy.0.1631926599350;
+        Fri, 17 Sep 2021 17:56:39 -0700 (PDT)
 Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id p4sm7319482pgc.15.2021.09.17.17.56.30
+        by smtp.gmail.com with ESMTPSA id e11sm6809246pfv.201.2021.09.17.17.56.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Sep 2021 17:56:31 -0700 (PDT)
+        Fri, 17 Sep 2021 17:56:39 -0700 (PDT)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>
-Subject: [PATCH V2 00/10] KVM: X86: MMU: misc fixes and cleanups
-Date:   Sat, 18 Sep 2021 08:56:26 +0800
-Message-Id: <20210918005636.3675-1-jiangshanlai@gmail.com>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Xiao Guangrong <xiaoguangrong@cn.fujitsu.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org
+Subject: [PATCH V2 01/10] KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
+Date:   Sat, 18 Sep 2021 08:56:27 +0800
+Message-Id: <20210918005636.3675-2-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20210918005636.3675-1-jiangshanlai@gmail.com>
+References: <20210918005636.3675-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -63,40 +76,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The first two patches fix two old possible bugs.
-And the others are just cleanups.
+When kvm->tlbs_dirty > 0, some rmaps might have been deleted
+without flushing tlb remotely after kvm_sync_page().  If @gfn
+was writable before and it's rmaps was deleted in kvm_sync_page(),
+and if the tlb entry is still in a remote running VCPU,  the @gfn
+is not safely protected.
 
-Changed from [V1]:
-	The two fixes are changed as Sean suggested.
-	And it triggers a different cleanup as patch3-6.
-	Patch 7(V1's patch 3) is also updated as Sean suggested.
-	Patch 8-10 which are not related to the fixes are unchanged.
-	V1's patch 7 is dropped.
-	
-[V1]: https://lore.kernel.org/lkml/20210824075524.3354-1-jiangshanlai@gmail.com/
+To fix the problem, kvm_sync_page() does the remote flush when
+needed to avoid the problem.
 
-Lai Jiangshan (10):
-  KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
-  KVM: X86: Synchronize the shadow pagetable before link it
-  KVM: Remove tlbs_dirty
-  KVM: X86: Don't flush current tlb on shadow page modification
-  KVM: X86: Remove kvm_mmu_flush_or_zap()
-  KVM: X86: Change kvm_sync_page() to return true when remote flush is
-    needed
-  KVM: X86: Zap the invalid list after remote tlb flushing
-  KVM: X86: Remove FNAME(update_pte)
-  KVM: X86: Don't unsync pagetables when speculative
-  KVM: X86: Don't check unsync if the original spte is writible
+Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+Changed from V1:
+	force remote flush timely instead of increasing tlbs_dirty.
 
- arch/x86/kvm/mmu/mmu.c          | 61 ++++++++++++---------------
- arch/x86/kvm/mmu/mmu_internal.h |  3 +-
- arch/x86/kvm/mmu/paging_tmpl.h  | 74 +++++++++++++++------------------
- arch/x86/kvm/mmu/spte.c         |  6 +--
- arch/x86/kvm/mmu/tdp_mmu.c      |  1 -
- include/linux/kvm_host.h        |  1 -
- virt/kvm/kvm_main.c             |  9 +---
- 7 files changed, 66 insertions(+), 89 deletions(-)
+ arch/x86/kvm/mmu/paging_tmpl.h | 23 ++---------------------
+ 1 file changed, 2 insertions(+), 21 deletions(-)
 
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 72f358613786..5962d4f8a72e 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -1038,14 +1038,6 @@ static gpa_t FNAME(gva_to_gpa_nested)(struct kvm_vcpu *vcpu, gpa_t vaddr,
+  * Using the cached information from sp->gfns is safe because:
+  * - The spte has a reference to the struct page, so the pfn for a given gfn
+  *   can't change unless all sptes pointing to it are nuked first.
+- *
+- * Note:
+- *   We should flush all tlbs if spte is dropped even though guest is
+- *   responsible for it. Since if we don't, kvm_mmu_notifier_invalidate_page
+- *   and kvm_mmu_notifier_invalidate_range_start detect the mapping page isn't
+- *   used by guest then tlbs are not flushed, so guest is allowed to access the
+- *   freed pages.
+- *   And we increase kvm->tlbs_dirty to delay tlbs flush in this case.
+  */
+ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ {
+@@ -1098,13 +1090,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ 			return 0;
+ 
+ 		if (FNAME(prefetch_invalid_gpte)(vcpu, sp, &sp->spt[i], gpte)) {
+-			/*
+-			 * Update spte before increasing tlbs_dirty to make
+-			 * sure no tlb flush is lost after spte is zapped; see
+-			 * the comments in kvm_flush_remote_tlbs().
+-			 */
+-			smp_wmb();
+-			vcpu->kvm->tlbs_dirty++;
++			set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
+ 			continue;
+ 		}
+ 
+@@ -1119,12 +1105,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+ 
+ 		if (gfn != sp->gfns[i]) {
+ 			drop_spte(vcpu->kvm, &sp->spt[i]);
+-			/*
+-			 * The same as above where we are doing
+-			 * prefetch_invalid_gpte().
+-			 */
+-			smp_wmb();
+-			vcpu->kvm->tlbs_dirty++;
++			set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
+ 			continue;
+ 		}
+ 
 -- 
 2.19.1.6.gb485710b
 
