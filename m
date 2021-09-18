@@ -2,319 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06EC4108DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 00:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31584108E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 01:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240530AbhIRW4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 18:56:41 -0400
-Received: from mout.gmx.net ([212.227.17.21]:37799 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232125AbhIRW4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 18:56:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632005625;
-        bh=Pwh/KmGzeiwrqQm3C9sI0E5AfSnePPH3AAuooUuBTY4=;
-        h=X-UI-Sender-Class:Date:From:To:CC:Subject:In-Reply-To:References;
-        b=AfrHCn31S00A+m3IQ6CvlxYlpRX53Lkbs/Ru5BY+abRvw9V27s/cMSqh8HlJehfUN
-         JaNmhUhyb83dCO1Hnvs6OzcqXhrmMoW/TE0jmkTExd53CesKdb9Rv4BIOY/gHD+kcV
-         GvwM/PUhuEEwFp8yIzyfDrAEzDQaSohI5b2gFwzc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [127.0.0.1] ([89.15.236.83]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mgeo8-1n6ZCm3Vc4-00h86f; Sun, 19
- Sep 2021 00:53:45 +0200
-Date:   Sun, 19 Sep 2021 00:53:35 +0200
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Alec Brown <alec.r.brown@oracle.com>,
-        "coreboot@coreboot.org" <coreboot@coreboot.org>,
-        "grub-devel@gnu.org" <grub-devel@gnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "systemd-devel@lists.freedesktop.org" 
-        <systemd-devel@lists.freedesktop.org>,
-        "trenchboot-devel@googlegroups.com" 
-        <trenchboot-devel@googlegroups.com>,
-        "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-CC:     Aleksandr Burmashev <alexander.burmashev@oracle.com>,
-        "allen.cryptic@gmail.com" <allen.cryptic@gmail.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "btrotter@gmail.com" <btrotter@gmail.com>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        "dpsmith@apertussolutions.com" <dpsmith@apertussolutions.com>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        "frowand.list@gmail.com" <frowand.list@gmail.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "hun@n-dimensional.de" <hun@n-dimensional.de>,
-        "james.dutton@gmail.com" <james.dutton@gmail.com>,
-        "javierm@redhat.com" <javierm@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        "jwerner@chromium.org" <jwerner@chromium.org>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        "krystian.hebel@3mdeb.com" <krystian.hebel@3mdeb.com>,
-        "leif@nuviainc.com" <leif@nuviainc.com>,
-        "lukasz.hawrylko@intel.com" <lukasz.hawrylko@intel.com>,
-        "luto@amacapital.net" <luto@amacapital.net>,
-        "michal.zygowski@3mdeb.com" <michal.zygowski@3mdeb.com>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "mtottenh@akamai.com" <mtottenh@akamai.com>,
-        "nico.h@gmx.de" <nico.h@gmx.de>,
-        "phcoder@gmail.com" <phcoder@gmail.com>,
-        "piotr.krol@3mdeb.com" <piotr.krol@3mdeb.com>,
-        "pjones@redhat.com" <pjones@redhat.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        Ross Philipson <ross.philipson@oracle.com>,
-        "sjg@chromium.org" <sjg@chromium.org>,
-        "trini@konsulko.com" <trini@konsulko.com>,
-        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
-        "ulrich.windl@rz.uni-regensburg.de" 
-        <ulrich.windl@rz.uni-regensburg.de>,
-        "wvervoorn@eltan.com" <wvervoorn@eltan.com>,
-        "rharwood@redhat.com" <rharwood@redhat.com>
-Subject: =?US-ASCII?Q?Re=3A_=5BSPECIFICATION_RFC_v3=5D_The_firmw?= =?US-ASCII?Q?are_and_bootloader_log_specification?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
-References: <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
-Message-ID: <A7F710D3-5148-4E92-9E3D-5D850AD0245F@gmx.de>
+        id S237530AbhIRXRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 19:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhIRXRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 19:17:38 -0400
+X-Greylist: delayed 965 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 18 Sep 2021 16:16:14 PDT
+Received: from xilka.com (bbb.xilka.com [IPv6:2001:470:1f11:5a5:16da:e9ff:fe11:e54b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D98C061574;
+        Sat, 18 Sep 2021 16:16:14 -0700 (PDT)
+Received: from comer.internal ([IPv6:2001:470:1f11:5a5:2b1b:9a83:6c1c:2916])
+        (authenticated bits=0)
+        by xilka.com (8.16.1/8.16.1) with ESMTPSA id 18IMxvbo091468
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Sat, 18 Sep 2021 16:59:58 -0600
+From:   Kelly Anderson <kelly@xilka.com>
+To:     ike.pan@canonical.com, hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kelly@xilka.com
+Subject: [PATCH] add platform support for Ideapad 5 Pro 16ACH6-82L5
+Date:   Sat, 18 Sep 2021 16:59:51 -0600
+Message-ID: <5753131.lOV4Wx5bFT@comer.internal>
+Organization: Xilka
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:p+pgeoo6oBsAP4kAPcHthdyoXpZ4AZYVoI5rLrwKC/Udvo8IvyC
- 9B0KDNX92DA77n0Iq/jNAwdnMSZ4ZBx9tN8lOSZfSACpGaqq5KS7YKa0+1xIPBL02PF4Xui
- yl/ffVYfKSD5IF5H/4RJMjiFO8h3Z0d73xYMJiRgqEWPf/GH4VkK9yuHTfh7ibu6tQ2g7ET
- OCUlrIKDVm9LiXYsCD48Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1uRDmIY6xbk=:xsJ4Qt3Clc/AmnfVmjW15V
- mnfp54ZfezrJamNK/0LSMX2ZRC0GVYPIUt0YTHrdS4GRGbTzOhXHfSrB3srhlBcDHi3IKjpQM
- ZYPAFeDLGtBZsH2J1o1jC+C916gcziGLaDmYW0Q7Hk3YtEhcorqg2JqfmA7NsCZJF9yyev0ks
- PaSvUW2LsEiL/nxF27y8kWIWsqqMZ3Vpnp3ZhaBU/hLrcj4dn+EKkcImtVmz7AgOj3zEjg0ia
- eYU86/Ud6AUbUFIB8l74tZ3v6MHFXRmALSAUONJPe3sGykkaY95WwDTt/b7OlRJlQVIcavw2O
- WtjdjHojv4Xfwdfe/Hmv27YwHxs5N7eYlKk/J84J/XV0QK5zZQ9BQqWhV1TP3DeZLNWTn5bnL
- XtDHpRNwYuKZB9Jdoj5o6eVT8gxPDPW2PoBzW5DGreXhHiYzvacXI1BDZy36r4xj8hu8aYPkI
- rLXraOitFx7/8Yh+BUHA/+xBbrbhO+9Pw5WjavxWAN2ojK8UcB2NE4qwAX6CK+0OoaRnqtUjG
- XYWlX3T0mbFi7nPmpPolWbItPTGbpRIeOPwxs0exR16IfxBpmYvXm0kAoYfcl+niZVQybx3Ki
- Z/Z53jxyIcTDQAxH/lHEYL32U6PNFA6gIg7x/Mhfsb3RNgOsCX/4SFsoB7p5hM8kqdLNu2JHn
- inYsrnfpNFprGhfYFsP54/gJayFFV7CYeSCaDi09oo07JWt0jYlcBHq4ZAPPuflAOI0HeXQLo
- r1jpX/YtxWHzW4CyqPSpXMn1PNrLJ+Cl5PU1OjlJ2KD5lzwdqWfEt+Q2+r+xzfpTKz/hBiY7T
- OT0c3DfNf/DWBEv/zOH0RheBwlIselptrIybSc03c3jThRGibdINSSAaH/vHpGfnxwPYp4K/6
- UcvOx8GGN9kzQOjHg3Xn33SQOtCRsm/QXTNZ7PsOZarnUlvsh6rVJt6JzTQmdPUyBQKWJU4NS
- +dplF3ZPX88ILFf/pIcWPxtDXTauS2TDHUwtYYd72EENou8XI+/7lmGl8AU9qF1uDhBZ7t5qQ
- t2KOCJ0Jc5RZtWhDHljvtWR6wtzvOaD8EvowmWgikvTIrkA7h2POZtZZuKt1b81/ZkDoodZMR
- YDx8rKGb1NOqA0=
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.9 required=2.5 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=4.0.0-rsvnunknown
+X-Spam-Checker-Version: SpamAssassin 4.0.0-rsvnunknown (svnunknown) on
+        bbb.internal
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adding support specifically for Ideapad 5 Pro 16ACH6-82L5 by adding a
+whitelist function that can validate notebooks for which dytc_version
+is less than 5, and seem to work fine at dytc_version 4. This code has
+been tested to work properly on the specified system.
+
+Signed-off-by: Kelly Anderson <kelly@xilka.com>
+
+ drivers/platform/x86/ideapad-laptop.c | 37 ++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index e7a1299e3776..92b8f7dc79f5 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -868,7 +868,28 @@ static void dytc_profile_refresh(struct ideapad_private *priv)
+ 	}
+ }
+ 
+-static int ideapad_dytc_profile_init(struct ideapad_private *priv)
++static int ideapad_dytc_v4_whitelist(struct platform_device *pdev)
++{
++	const char *vendor = dmi_get_system_info(DMI_SYS_VENDOR);
++	const char *product = dmi_get_system_info(DMI_PRODUCT_NAME);
++
++	if ( product ) {
++		if ( vendor ) {
++			dev_info(&pdev->dev, "DYTC Vendor: %s\n", vendor);
++		}
++
++		dev_info(&pdev->dev, "DYTC Product: %s\n", product);
++
++		if ( ! strncmp(product, "82L5", 4) ) /* IdeaPad 5 Pro 16ACH6 */ {
++			return 1;
++		}
++	}
++
++	return 0;
++}
++
++static int ideapad_dytc_profile_init(struct platform_device *pdev,
++				struct ideapad_private *priv)
+ {
+ 	int err, dytc_version;
+ 	unsigned long output;
+@@ -883,11 +904,21 @@ static int ideapad_dytc_profile_init(struct ideapad_private *priv)
+ 
+ 	/* Check DYTC is enabled and supports mode setting */
+ 	if (!test_bit(DYTC_QUERY_ENABLE_BIT, &output))
++	{
++		dev_info(&pdev->dev, "DYTC_QUERY_ENABLE_BIT returned false\n");
+ 		return -ENODEV;
++	}
+ 
+ 	dytc_version = (output >> DYTC_QUERY_REV_BIT) & 0xF;
++
+ 	if (dytc_version < 5)
+-		return -ENODEV;
++	{
++		if ( dytc_version < 4 || ! ideapad_dytc_v4_whitelist(pdev) )
++		{
++			dev_info(&pdev->dev, "DYTC_VERSION is less than 4 or is not whitelisted: %d\n", dytc_version);
++			return -ENODEV;
++		}
++	}
+ 
+ 	priv->dytc = kzalloc(sizeof(*priv->dytc), GFP_KERNEL);
+ 	if (!priv->dytc)
+@@ -1595,7 +1626,7 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+ 	ideapad_sync_rfk_state(priv);
+ 	ideapad_sync_touchpad_state(priv);
+ 
+-	err = ideapad_dytc_profile_init(priv);
++	err = ideapad_dytc_profile_init(pdev, priv);
+ 	if (err) {
+ 		if (err != -ENODEV)
+ 			dev_warn(&pdev->dev, "Could not set up DYTC interface: %d\n", err);
+-- 
+2.33.0
 
 
-Am 18=2E September 2021 18:04:13 MESZ schrieb Alec Brown <alec=2Er=2Ebrown=
-@oracle=2Ecom>:
->Hi everyone,
->
->I've been working on improving the specification for the firmware and boo=
-tloader
->log that Daniel Kiper has proposed and take into account most of the sugg=
-estions
->that were made in these threads [1], [2]=2E
->
->The goal is to allow various boot components to pass logs to the running =
-OS and
->then to the user space for processing and analysis=2E These logs should b=
-e generic
->enough so that it can work in multiple environments and be human readable=
-=2E
 
-Hello Alec,
 
-in your mail it remains unclear which information you want to put into the=
- log and why it is needed=2E I would prefer the motivation and content to b=
-e clarified before defining any interface structures=2E
-
-We already the EFI_TCG2_PROTOCOL and RFC 5424 (The syslog protocol)=2E Why=
- do we need to start from scratch?
-
-Best regards
-
-Heinrich=20
-
->
->It has yet to be decided where to put the final version of this specifica=
-tion=2E
->It should be merged into an existing specification, e=2Eg=2E UEFI, ACPI, =
-Multiboot2,
->or be standalone, such as a part of OASIS Standards=2E
->
->Below is how the layout of these logs would store their data=2E
->
->bf_log_header:
->               +-------------------+
->u32            | version           |
->u32            | size              |
->u8[64]         | producer          |
->u8[64]         | log_format        |
->u64            | flags             |
->u64            | next_bflh_addr    |
->u64            | log_addr          |
->u32            | log_size          |
->               +-------------------+
->
->bf_log_buffer:
->               +-------------------+
->u32            | version           |
->u32            | size              |
->u8[64]         | producer          |
->u32            | next_msg_off      |
->bf_log_msg[l]  | msgs              |
->               +-------------------+
->
->bf_log_msg:
->               +-------------------+
->u32            | size              |
->u64            | ts_nsec           |
->u32            | level             |
->u32            | facility          |
->u32            | msg_off           |
->u8[n]          | type              |
->u8[m]          | msg               |
->               +-------------------+
->
->Where l is the number of msgs, n is the size of type, and m is the size o=
-f the
->msg=2E
->
->The bf_log_header structure forms a linked list=2E Each bf_log_header ele=
-ment in
->the linked list points to the individual log buffer and the next bf_log_h=
-eader
->element in the linked list=2E The first element in the linked list points=
- to the
->last boot component in the boot chain=2E The last element points to the s=
-tarting
->boot component in the boot chain=2E The log buffers which contain the log
->messages are produced by the various boot components, typically from the
->firmware to the bootloader=2E The log message is stored in a log format t=
-hat is
->compatible with the boot component that produced it=2E
->
->The fields in bf_log_header structure:
->  - version: the firmware and bootloader log header version number, 1 for=
- now,
->  - size: the size of the bf_log_header to allow for backward compatibili=
-ty if=20
->    other fields are added,
->  - producer: the producer/firmware/bootloader/=2E=2E=2E entity, NUL term=
-inated
->    string, e=2Eg=2E GRUB, Coreboot; the length allows for ASCII UUID sto=
-rage,
->  - log_format: the format used to record the log messages, NUL terminate=
-d
->    string, e=2Eg=2E bf_log_msg, cbmem_cons, etc=2E; various producers ma=
-y generate
->    logs in various formats if needed,
->  - flags: bit field used to store information about the log state, if bi=
-t 0 has
->    been set it means the log was truncated,
->  - next_bflh_addr: the physical address of the next bf_log_header struct=
-ure,
->    none if zero,
->  - log_addr: the physical address of where the log buffer is stored,
->  - log_size: the total size of the log buffer=2E
->
->The bf_log_buffer is used to store log messages from the firmware and
->bootloader=2E This format for storing messages is called the bf log forma=
-t=2E The
->bf_log_buffer contains the header information of the bf log format with t=
-he log
->messages being stored in an array of bf_log_msg messages=2E
->
->The fields in bf_log_buffer structure:
->  - version: the firmware and bootloader log version number, 1 for now,
->  - size: the total allocated space for the bf_log_buffer including the l=
-og
->    messages stored in msgs,
->  - producer: the producer/firmware/bootloader/=2E=2E=2E entity, NUL term=
-inated
->    string, e=2Eg=2E GRUB, Coreboot; the length allows for ASCII UUID sto=
-rage; same
->    as the field in bf_log_header,
->  - next_msg_off: the byte offset from the beginning of the allocated spa=
-ce for
->    bf_log_buffer to the next byte after the last bf_log_msg in msgs,
->  - msgs: the array of log messages stored in the bf_log_msg structures=
-=2E
->
->The fields in bf_log_msg structure:
->  - size: the total size of the bf_log_msg entry,
->  - ts_nsec: the timestamp in nanoseconds starting from 0 (zero); the pro=
-ducer
->    using this log format defines the meaning of 0,
->  - level: similar to the syslog meaning; used to differentiate normal lo=
-g
->    messages from debug log messages, but the exact interpretation depend=
-s on
->    the producer,
->  - facility: similar to the syslog meaning; used to differentiate the so=
-urces
->    of the log messages, but the exact interpretation depends on the prod=
-ucer,
->  - msg_off: the byte offset which the msg field starts in bf_log_msg,
->  - type: the log message type; similar to facility but NUL terminated st=
-ring
->    instead of integer, but the exact interpretation depends on the produ=
-cer,
->  - msg: the log message, NUL terminated string=2E
->
->In bf_log_msg, the producers are free to use or ignore any of the level,
->facility, and type fields=2E If level or facility are ignored, they shoul=
-d be set
->to 0=2E If type is ignored, it should be set to an empty NUL terminated s=
-tring=2E
->
->Since it doesn't seem possible to have each boot component using the same=
- log
->format, we added a log_format and log_phys_addr fields to give flexibilit=
-y in
->how logs are stored=2E An example of a different log format that can be u=
-sed is
->the cbmem_console log format used by coreboot:
->
->cbmem_console:
->               +-------------------+
->u32            | size              |
->u32            | cursor            |
->u8[m]          | body              |
->               +-------------------+
->
->There is still the outstanding issue of how the logs will be sent to the =
-OS=2E If
->UEFI is used, we can use config tables=2E If ACPI or Device Tree is used,=
- we can
->use bf_log_header=2Enext_bflh_addr to present the logs=2E If none of thes=
-e platforms
->are used, it becomes a lot trickier to solve this issue=2E
->
->Any suggestions are much appreciated and will be taken into consideration=
-=2E
->
->I will be presenting this work at the LPC System Boot and Security
->Micro-conference on the 22nd of September at 7:50 AM PDT (14:50 UTC)=2E C=
-ome and
->join if you want to discuss the design=2E The schedule for the System Boo=
-t and
->Security Micro-conference can be found here [3]=2E
->
->Thanks!
->Alec Brown
->
->[1] https://lists=2Egnu=2Eorg/archive/html/grub-devel/2020-11/msg00100=2E=
-html
->[2] https://lists=2Egnu=2Eorg/archive/html/grub-devel/2020-12/msg00021=2E=
-html
->[3] https://linuxplumbersconf=2Eorg/event/11/sessions/116/#20210922
