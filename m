@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979DC410284
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 02:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7400410289
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 03:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhIRA7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 20:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242022AbhIRA7D (ORCPT
+        id S232361AbhIRBGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 21:06:08 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:42375 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229456AbhIRBGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 20:59:03 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A23BC061574;
-        Fri, 17 Sep 2021 17:57:40 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id v2so7269031plp.8;
-        Fri, 17 Sep 2021 17:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oxK1ob4roXyy3ZVWd2lGw+F2XcCDp2ZaJLGKfR9pxws=;
-        b=IANeNGrCqrt3WDWCCioYG9kAL1ElSTErWjDK1D4eEYXgi7boZG5smt7RVTerSgMfPZ
-         tFEWi27f34JhHoVBYY7pE3wAPCxoCLRbck6EUHY1/oqm28XFGINIUCVJGSwDVyCsmv6S
-         RRWWxZ/kgvFtT3t8yhB0UzJdpse3xlKhbpkQPL45MgIhmA4X1Yl4Z94aqSpBfXugBbAm
-         uRyP/BCy1W2ytzGbpTPl4u7c72uTJFKP82rhTRHqS+NYHu8Z05gzzaD99FQfUQunkeTH
-         cI5dxFBCkMQoRbGLrlrhQAOf3cYkqpzf6tLdsyjmWzJ3i6MuiWE6LJweREo/3XdQ9W4Y
-         g38w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oxK1ob4roXyy3ZVWd2lGw+F2XcCDp2ZaJLGKfR9pxws=;
-        b=iW1yGX25o+u5gcd/CzGJa19JAx2q8IGMuC3yibg8dDL8vZ3R2kGiMolkcXMZuTxgt9
-         ajQwXq0gwN2PkoQ2olwmcEGZ9EmXgBwLszosCcK+8hPt4i0A1labUukKNfEyEmKQPxKn
-         GqW9nhhG4Tpt8q+dMzIKeZ+JTmNAZDQB9fk+Sy7GcZETteaTXSHl6aMa7EnL3qzN+/Fm
-         1TGULjhSO9P9/NAREbGAl6YEZCcIBUttwVv/nUdK2GNdDa4u2sy7z5KSsf1YAccR2HsA
-         z9k6MIcE2rJ9ZzSR4g9PNwhWrC6icVK9cwyVklqULzCSCsEBuQmI+5QGGd0FAldtX3zx
-         h6gQ==
-X-Gm-Message-State: AOAM532RgDC4XqN7g5tMfs0uy6lkcQ67ExVuxiOoGJqwjERmKoUU32Vc
-        ld8SA1hZzm3YvXqUqP3Tm6jT4dMx1Dw=
-X-Google-Smtp-Source: ABdhPJzPMTRNDrgN1TgCxUqYfsVXYkhJck1T+xcbJFAbA+Vlj/zIScih/9aFt5V65C6o/czg/plaKg==
-X-Received: by 2002:a17:90a:1a43:: with SMTP id 3mr2350434pjl.242.1631926659991;
-        Fri, 17 Sep 2021 17:57:39 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id 203sm6665814pfx.119.2021.09.17.17.57.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Sep 2021 17:57:39 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH V2 10/10] KVM: X86: Don't check unsync if the original spte is writible
-Date:   Sat, 18 Sep 2021 08:56:36 +0800
-Message-Id: <20210918005636.3675-11-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210918005636.3675-1-jiangshanlai@gmail.com>
-References: <20210918005636.3675-1-jiangshanlai@gmail.com>
+        Fri, 17 Sep 2021 21:06:07 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id A65A61050EE2;
+        Sat, 18 Sep 2021 11:04:41 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mROmW-00Diuy-B5; Sat, 18 Sep 2021 11:04:40 +1000
+Date:   Sat, 18 Sep 2021 11:04:40 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <20210918010440.GK1756565@dread.disaster.area>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUIT2/xXwvZ4IErc@cmpxchg.org>
+ <20210916025854.GE34899@magnolia>
+ <YUN2vokEM8wgASk8@cmpxchg.org>
+ <20210917052440.GJ1756565@dread.disaster.area>
+ <YUTC6O0w3j7i8iDm@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUTC6O0w3j7i8iDm@cmpxchg.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=0nqi6NygBYswCuMazx8A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Fri, Sep 17, 2021 at 12:31:36PM -0400, Johannes Weiner wrote:
+> My question for fs folks is simply this: as long as you can pass a
+> folio to kmap and mmap and it knows what to do with it, is there any
+> filesystem relevant requirement that the folio map to 1 or more
+> literal "struct page", and that folio_page(), folio_nr_pages() etc be
+> part of the public API?
 
-If the original spte is writable, the target gfn should not be the
-gfn of synchronized shadowpage and can continue to be writable.
+In the short term, yes, we need those things in the public API.
+In the long term, not so much.
 
-When !can_unsync, speculative must be false.  So when the check of
-"!can_unsync" is removed, we need to move the label of "out" up.
+We need something in the public API that tells us the offset and
+size of the folio. Lots of page cache code currently does stuff like
+calculate the size or iteration counts based on the difference of
+page->index values (i.e. number of pages) and iterate page by page.
+A direct conversion of such algorithms increments by
+folio_nr_pages() instead of 1. So stuff like this is definitely
+necessary as public APIs in the initial conversion.
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/kvm/mmu/spte.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Let's face it, folio_nr_pages() is a huge improvement on directly
+exposing THP/compound page interfaces to filesystems and leaving
+them to work it out for themselves. So even in the short term, these
+API members represent a major step forward in mm API cleanliness.
 
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index b68a580f3510..a33c581aabd6 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -150,7 +150,7 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
- 		 * is responsibility of kvm_mmu_get_page / kvm_mmu_sync_roots.
- 		 * Same reasoning can be applied to dirty page accounting.
- 		 */
--		if (!can_unsync && is_writable_pte(old_spte))
-+		if (is_writable_pte(old_spte))
- 			goto out;
- 
- 		/*
-@@ -171,10 +171,10 @@ int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
- 	if (pte_access & ACC_WRITE_MASK)
- 		spte |= spte_shadow_dirty_mask(spte);
- 
-+out:
- 	if (speculative)
- 		spte = mark_spte_for_access_track(spte);
- 
--out:
- 	WARN_ONCE(is_rsvd_spte(&vcpu->arch.mmu->shadow_zero_check, spte, level),
- 		  "spte = 0x%llx, level = %d, rsvd bits = 0x%llx", spte, level,
- 		  get_rsvd_bits(&vcpu->arch.mmu->shadow_zero_check, spte, level));
+As for long term, everything in the page cache API needs to
+transition to byte offsets and byte counts instead of units of
+PAGE_SIZE and page->index. That's a more complex transition, but
+AFAIA that's part of the future work Willy is intended to do with
+folios and the folio API. Once we get away from accounting and
+tracking everything as units of struct page, all the public facing
+APIs that use those units can go away.
+
+It's fairly slow to do this, because we have so much code that is
+doing stuff like converting file offsets between byte counts and
+page counts and vice versa. And it's not necessary to do an initial
+conversion to folios, either. But once everything in the page cache
+indexing API moves to byte ranges, the need to count pages, use page
+counts are ranges, iterate by page index, etc all goes away and
+hence those APIs can also go away.
+
+As for converting between folios and pages, we'll need those sorts
+of APIs for the foreseeable future because low level storage layers
+and hardware use pages for their scatter gather arrays and at some
+point we've got to expose those pages from behind the folio API.
+Even if we replace struct page with some other hardware page
+descriptor, we're still going to need such translation APIs are some
+point in the stack....
+
+> Or can we keep this translation layer private
+> to MM code? And will page_folio() be required for anything beyond the
+> transitional period away from pages?
+
+No idea, but as per above I think it's a largely irrelevant concern
+for the forseeable future because pages will be here for a long time
+yet.
+
+> Can we move things not used outside of MM into mm/internal.h, mark the
+> transitional bits of the public API as such, and move on?
+
+Sure, but that's up to you to do as a patch set on top of Willy's
+folio trees if you think it improves the status quo.  Write the
+patches and present them for review just like everyone else does,
+and they can be discussed on their merits in that context rather
+than being presented as a reason for blocking current progress on
+folios.
+
+Cheers,
+
+Dave.
 -- 
-2.19.1.6.gb485710b
-
+Dave Chinner
+david@fromorbit.com
