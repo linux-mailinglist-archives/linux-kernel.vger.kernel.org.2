@@ -2,161 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9D4410651
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0E7410655
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhIRMP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:15:26 -0400
-Received: from mail-eopbgr1320057.outbound.protection.outlook.com ([40.107.132.57]:24703
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229579AbhIRMPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:15:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWlfTwiQ9CNklXkBVJtOpNQqEmJCqo77pdF5NUZXruqXRtlECdILQK7kSxZ/+OB4pcFRZiz6tVb86Kk+geo1GVhKJtmwZP2CacOySsx3eFtpS7ORsurrQib5PJb0ZquIlGtTmC59H5ksXt3rpJ6Obexvb07QqpbgzM0ANPMbu3THJdk8HFDm5YfxCW1ENJLNuZTEQn+rHPuzN0lBDe+k5ABgnbOIZvI499Vp35URiHBaBKrpiIS25nx9nDCRcAShr7ZFwYiUKxSbUVWfkVZAU9paIgr4Bhez+F/vOwE7TSDLEznzMSnM7rQg6zFDf5rhRfY4zzp8nsoStSnDwB0cRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=9gQzsxEu4J/o+6++pHUB6uF1nOISUw+evs4cBcNcmQM=;
- b=Xl2s68g/Gc2H6tJXyF0fQZvRNzE8q3AWPSGAx+1N67HutwV5jclk+41QM+qAGLx2kb1ionwuAZmv7MNA0Ex+F6A1yPbTQg35CZ7biQaxlNDQouAjWbscA8eL5efLp41g7pmhbJXShEKEEXCEctrtsqO3dmH+e9zOHO3l/KE3G7o2Dp8SEp8PqLdr6jsDh0sJkT2tdShWZrAb0s915u+KAcdz551pefSo/9urg1PfIONs4/VXkYa+npupB9UgZzacfedmjsXDl6MdWFrtasL1VvUJxzc8/1F226rxRdyedOrjf14BUDer49kiTwwnPkJFY3oJRxp+b2EJ0fSutJrZiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9gQzsxEu4J/o+6++pHUB6uF1nOISUw+evs4cBcNcmQM=;
- b=IXwv7b4Sa9QqFqKOuoHzkM2h7SwYFQckXPxUEdT6nrWmfT3a8MwBmWwPbedaIdQCGyv4ubeSemhiUKDWx1pOoIE6YOKAAzAMiZkTlTkxhekVPSRmd2+VyotFuu1+10HoPBdAbuR4E6ChtW6dW3GQqAfSNIG64DYLLtldehx790o=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB2558.apcprd02.prod.outlook.com (2603:1096:3:22::23) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4523.18; Sat, 18 Sep 2021 12:13:56 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::5919:768f:2950:9504]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::5919:768f:2950:9504%4]) with mapi id 15.20.4523.018; Sat, 18 Sep 2021
- 12:13:55 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, yh@oppo.com,
-        zhangshiming@oppo.com, guanyuwei@oppo.com, jnhuang95@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ovl: fix null pointer when filesystem doesn't support direct IO
-Date:   Sat, 18 Sep 2021 20:13:46 +0800
-Message-Id: <20210918121346.12084-1-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: HK2PR04CA0050.apcprd04.prod.outlook.com
- (2603:1096:202:14::18) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+        id S231588AbhIRMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 08:17:42 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:48939 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230358AbhIRMRk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 08:17:40 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id E77372B0120D;
+        Sat, 18 Sep 2021 08:16:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sat, 18 Sep 2021 08:16:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=r4OHZ5J/qMsCG0z1FGhpVZq7FqS
+        4WXlZG5DPh3w3xVI=; b=V+BdbPl6MN0ocacq8loL5m7GdfPkUS3vZ7kTczsu6C+
+        k6NX59lGvWyIgdNkwtFRaSQTMtGi2bbFVw3AZ9+n/YZkheSEkUL7VBx/Qs7iujiQ
+        Uu09Jh1530IwENX/CSPpS9Y8sXBSU9VV0WP4HlNs3UbQJ2EwlMEeVFjRbgmaDAKV
+        k9lBWQepAs9zB5LWcoSM5fBe3FUKIjpJq6Ce2TcgOHP+k8jnq6s4ANPpigQSlZq3
+        KApKgzm0c6BafNtimkfNCuaYgbBH8mSGsCJU9SE+2VmGeOzXthgt89YwAPCaYAWH
+        Wjpcnt1RgPdua5MeGMhGKdXVgGFpUJc+4B+DxTRMV0g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=r4OHZ5
+        J/qMsCG0z1FGhpVZq7FqS4WXlZG5DPh3w3xVI=; b=Gq8TdLfuLTuBEJe1zctunc
+        sRXbpQGUE6XV6Pghp2SLz6t6VVO3kcv0RvlaImmw6hLU1QstcoLxDaigbqCTlnyh
+        faMgj0VvZqAU4dRnRYVS3GyX+cptU2EJjx+Hvrl422A+V9nggku8EPiLE/oHtAJ8
+        1Lk63UDZrKpbHXFoM7DKbTMrp/HCkzt4eXG/GWfhtH6ezflAD8u4PgFdbDRfmEza
+        WrynEFaP3NZSxnn/h5Js41YjPBkROgbGqnre8DjnTMZvf/UzXM11XgXwErEyNyxk
+        cHQg4KjM/tRfCTVhJEBznRxDm76agFrvt3bY6bgoQX2pE/B56sOeCdS5/wll1vfg
+        ==
+X-ME-Sender: <xms:jdhFYeip_D8ZsCvYLIj5cbCBA5KzmIv821zhdw-pVXkEtR7oAj91vw>
+    <xme:jdhFYfDjEFmzixP9lRJI145brwRmdOZ44gzIJSy768bDtZb2GK8y6XkX4u-KU1huZ
+    r_dES6U3m3GOg>
+X-ME-Received: <xmr:jdhFYWEFm1GV1EY5swRs9ADpTED-9srL1aHCi1YHLXc7zgYMKK9K3rfQuc5-QQZ1z7BSilAmgJOGX6BMeaD1ez7wmdF0nDOx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:jdhFYXTcJV7IsPo6k6DGrg_Al8DA7ajCsnnpAfqzZweT34wzRqkHqg>
+    <xmx:jdhFYbzZYikeS42Gf5NeYyK8bnN-6a6Dzi_dY0DRAyRBaP3Gq7DJ4g>
+    <xmx:jdhFYV457LCvGra0Q2RJp4qU8mpGTmHHw8sauBPByzPRVG8hPuoFMQ>
+    <xmx:jthFYU-wCgjbVPQIXlTNOLSLUOiQVQgArAzwZ_pSU0sCghL6IecCO6w1Sp0>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 18 Sep 2021 08:16:12 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 14:16:10 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     Robert Foss <robert.foss@linaro.org>, a.hajda@samsung.com,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, airlied@linux.ie,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Anibal Limon <anibal.limon@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/bridge: lt9611: Fix handling of 4k panels
+Message-ID: <YUXYitidmr7d9z3v@kroah.com>
+References: <20201217140933.1133969-1-robert.foss@linaro.org>
+ <CAMn1gO4y6yC0fcLYdGfYR4KqPq9Ff0n4DhEczWQh9J6ceobs5A@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from PC80253450.adc.com (58.252.5.73) by HK2PR04CA0050.apcprd04.prod.outlook.com (2603:1096:202:14::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Sat, 18 Sep 2021 12:13:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d2adc654-6f73-4144-ea0a-08d97a9dc901
-X-MS-TrafficTypeDiagnostic: SG2PR02MB2558:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB2558E4C27555DC5941F1E4A2C3DE9@SG2PR02MB2558.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2RtJr5tKzG8LaPqu5qzAgxW1VIVvGeI2t7Gd123WomCV7mdXC+AboVQRsZMHijXlB7tCLl/AJG/aZJAyxvQmCn5DH9dO8QXKVdbwcFjOSsbc5HrnQhJ9IisPNT8rt9KzxRbcX++awKHhetQ1BA/JeQJdU9EI9PG+psSS/Nn6Awc/cndI6enraEdD7ih/AGNb61xHSsppAUwXVW9yuaS0Y39s7hpasyFe+8Vc/c6i/y0w8NXRPg34VUiZayAjRzemEQIUg0rU3Gl0u9u2DmWj4SI0ThWo9gcjAtjpWODS8FmxtYTFxKkLhxBhUUtN9+kGCySjZs8li+zzFihEKsGxuJxcmd1HFt4muQSVoLR/DWkx71RB+MSA45YWE9m+avaJp3UEptkYjpOETgeUQ9PHnrh/L0xNox4WFV8d9HgT8VKAY2kqGfq7PGbOROOkhzrKmKN6IAkKj7rzYEVvk2h+uKoQww33ThV4JJ5aZKvpIQ4caEOYj06rBGr+HvxK6dNiBEaiOnHdZV/i/e5ZGuGLf3oMC4amZg8yWmuZbU97NuZGsiO5wIVeZDsR4vaKkyHEWZHI9PLWnbXtLxvCwmCydxKif1zoBAuXzwMe4a+kPPiyUsa09qD9yfn8K845Nw/j/wjrk5Qbqap139ISoTSzAO5jgG85nv557bZnVt7SzRM4FrS72vUZjTvbu+GsfyT4jj3Hsp1R6K/CTbML6bU5PnU4kMiH0WOnkPVuU0OVGPA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(6486002)(6512007)(316002)(36756003)(2616005)(8936002)(8676002)(956004)(86362001)(83380400001)(186003)(26005)(6666004)(508600001)(6506007)(38350700002)(38100700002)(52116002)(1076003)(66946007)(66556008)(5660300002)(66476007)(2906002)(11606007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tO5qu+ZUo0sfh90uxAKQxZJ1tn84Qm40nSrADFubdrYsL9nVvuVhCHi/Wg0r?=
- =?us-ascii?Q?VG9MYoyfmUc//KqQks3U4JeiaJRbE9PtbbPkjmBF4OWxF0fOf7oW65A0ATQh?=
- =?us-ascii?Q?TTiRNPekShxlKoLlAFZ7QL/Tt5Pkv27pRBOVlaj4VRAcBaZQyzMUXL3IDsyO?=
- =?us-ascii?Q?n259DTum1NF6OeGuuKcbqh4+uCXsPtwUDG7Pl3JZQz7BXDOuFu8XUw79LK1G?=
- =?us-ascii?Q?A+R2kBZxauG4Tf1zrkU9gvWi9RmaEOWrvTOLcOHcKajB4jKeZER8G2UmQYbn?=
- =?us-ascii?Q?wuIuXHcytuWq4YNb0yHJk3sttEu3/vwzSTxH56auK6czRBnMVl09NVGf9bqV?=
- =?us-ascii?Q?C6Q4ZPkVw9yJY5jibKWfPGmWkpHGZuPHz27Rn3RibqEh2Fax5cPLUF8LGATs?=
- =?us-ascii?Q?mYMaDk2CXs64Tv04PQVwwPAN+nEvSrWuYx80KH9fXvaHXyN0GGSDquwfpVTi?=
- =?us-ascii?Q?Lvk/cVzmbi8XG9ZBlINlfPI40eHo0pHhZRmalJMswUuT3gSZoTzDzi1d9KhP?=
- =?us-ascii?Q?On8j1p9H4OGZ8rHc4hBthALCTNGD1Wcf9sFPc5y5KIIn19mr0ea9Iwzjb8JG?=
- =?us-ascii?Q?01GZLrsv/SoOkkRx20rRkI0w8f2xhgrS6dgJP323YQ8iUBKN+6o/4nztcyDe?=
- =?us-ascii?Q?YWsHZ3c28o8TwtR6JIYSIStiXDRBD1vDI+ZnAmJrte0llE+MdGa4NhTxHTez?=
- =?us-ascii?Q?MPRK60wLogPB3nz78QG7L9WXRq8JvOVG1SzrIRfq1kMt9fPKiUpPn/P+wKvj?=
- =?us-ascii?Q?7mb1+r2yVbCPDvU8QKXu5bvvzTGY+29bhP2EW6Q/Ve4WTSTCeU4oECvxdjCW?=
- =?us-ascii?Q?8jBc/MkXUEUaFv6pL8PVW3UyoYxvvUFIWSqWdz8zl+tVEm0WhFlgdW4vueD/?=
- =?us-ascii?Q?B3CY0rm6i2tM9m0wXNYsEFrEjob0UWslCj6zOZgjDNbP3mTTzChq6Art5QA7?=
- =?us-ascii?Q?cAsCqlYsSc/RSJ8ME08ybGY9goXLvX0PAkGYXbDNc4e2ttzs5MAFfziK7gPQ?=
- =?us-ascii?Q?65dOmtNWPc0R0zln/4wNdlWXilfU1EPTO06fIUmDYt/q/gNA4JPHJfpPNVf9?=
- =?us-ascii?Q?PKbnO8HKxxrqRurrg4LwBt5DRVevC0pARglD3DpM1oI8HBs7RW/uerO9xDKQ?=
- =?us-ascii?Q?tqgH67i/pipcBAOgSOGK3+xQBpLv9XTez+HaBTkl2pBOc8xXEg7bvWGOjj2R?=
- =?us-ascii?Q?mMSCyYaPZph1O7jLeAJZYMUgTC2xqTnI+wrFSrfNfzhXLBVoIhXJjNBIE9Dl?=
- =?us-ascii?Q?fq6SIWERZfE14NBSY++zG2Qcso9sXfUixM0KpOXfowowYt2+DAMp7ZgZQ5km?=
- =?us-ascii?Q?fSXL8KKPETOiR5TcIckGbbQG?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2adc654-6f73-4144-ea0a-08d97a9dc901
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2021 12:13:55.3903
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 14mGS0BO90najrx2XVdURIig9AL9k64T2vrY+ATfocleiGGAtplQVz0Vqe5y8ZN0NUAuBpx0Jb3Hf0aLl5nb6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB2558
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMn1gO4y6yC0fcLYdGfYR4KqPq9Ff0n4DhEczWQh9J6ceobs5A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Jianan <huangjianan@oppo.com>
+On Fri, Sep 17, 2021 at 12:47:05PM -0700, Peter Collingbourne wrote:
+> On Thu, Dec 17, 2020 at 6:09 AM Robert Foss <robert.foss@linaro.org> wrote:
+> >
+> > 4k requires two dsi pipes, so don't report MODE_OK when only a
+> > single pipe is configured. But rather report MODE_PANEL to
+> > signal that requirements of the panel are not being met.
+> >
+> > Reported-by: Peter Collingbourne <pcc@google.com>
+> > Suggested-by: Peter Collingbourne <pcc@google.com>
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > Tested-by: John Stultz <john.stultz@linaro.org>
+> > Tested-by: Anibal Limon <anibal.limon@linaro.org>
+> > Acked-By: Vinod Koul <vkoul@kernel.org>
+> > Tested-by: Peter Collingbourne <pcc@google.com>
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> This landed in commit d1a97648ae028a44536927c87837c45ada7141c9. Since
+> this is a bug fix I'd like to request it to be applied to the 5.10
+> stable kernel.
 
-At present, overlayfs provides overlayfs inode to users. Overlayfs
-inode provides ovl_aops with noop_direct_IO to avoid open failure
-with O_DIRECT. But some compressed filesystems, such as erofs and
-squashfs, don't support direct_IO.
+Now queued up, thanks.
 
-Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
-will read file through this way. This will cause overlayfs to access
-a non-existent direct_IO function and cause panic due to null pointer:
-
-Kernel panic - not syncing: CFI failure (target: 0x0)
-CPU: 6 PID: 247 Comm: loop0
-Call Trace:
- panic+0x188/0x45c
- __cfi_slowpath+0x0/0x254
- __cfi_slowpath+0x200/0x254
- generic_file_read_iter+0x14c/0x150
- vfs_iocb_iter_read+0xac/0x164
- ovl_read_iter+0x13c/0x2fc
- lo_rw_aio+0x2bc/0x458
- loop_queue_work+0x4a4/0xbc0
- kthread_worker_fn+0xf8/0x1d0
- loop_kthread_worker_fn+0x24/0x38
- kthread+0x29c/0x310
- ret_from_fork+0x10/0x30
-
-The filesystem may only support direct_IO for some file types. For
-example, erofs supports direct_IO for uncompressed files. So fall
-back to buffered io only when the file doesn't support direct_IO to
-fix this problem.
-
-Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from overlayfs over xfs")
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
----
- fs/overlayfs/file.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index d081faa55e83..998c60770b81 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -296,6 +296,10 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	if (ret)
- 		return ret;
- 
-+	if ((iocb->ki_flags & IOCB_DIRECT) && (!real.file->f_mapping->a_ops ||
-+		!real.file->f_mapping->a_ops->direct_IO))
-+		iocb->ki_flags &= ~IOCB_DIRECT;
-+
- 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
- 	if (is_sync_kiocb(iocb)) {
- 		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
--- 
-2.25.1
-
+greg k-h
