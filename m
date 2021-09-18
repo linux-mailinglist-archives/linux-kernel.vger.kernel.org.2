@@ -2,289 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE133410439
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 07:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBBC41043B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 07:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234738AbhIRFqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 01:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhIRFqN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 01:46:13 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E1EC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 22:44:50 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id r5-20020ac85e85000000b0029bd6ee5179so102925895qtx.18
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 22:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=7wgjYLqwrwDJezacSFSY2R7gyI7KefnfM0t1HlhD5qw=;
-        b=GDMjUCjMb72d6TB9pRVP5wCOGNRD7JIYgoi6SBMvPFtavoQczjjgpW1rCb+rK92p5v
-         wIEeGq91DisQtzNm1wjTc8ddWLuizNvZVgmH5f2Bx33YKTiYyKVPO7VqxhqBhfyDEer4
-         1fQ6oi9HAm1ST+tsbDjKQtMxoUBbLlBuqM57p4SPDIpf0Ltng2kB8oQUiFaL6ZUAajiU
-         xD1SV4GxMEwgwf0GWmpMMrjBO+snXAFRdEy0zfFeiNnKJ3jB1OqIGVpCWB/yt9lw9890
-         bLWy/BnwCCIkUohmdP+rTpcfO0QNcu/PyHRcMDZewBu0aVH1cDNxVOQtmrmc1BLq/SLS
-         tKJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=7wgjYLqwrwDJezacSFSY2R7gyI7KefnfM0t1HlhD5qw=;
-        b=WT1mDRyxX6CwDKTZu1wZPv9PyLN+uwA8iwgMm70Y2qokiAs7Uow78mWmsbcDD46bw7
-         b58pv37rAYurDULHTYJxbtwzGGgLx4WPDDD1kvfKKCg+o0yOT+MXC+Z6pu2NINyyoW5R
-         XfOahPgoCEzw1YbkC3f/icPVznm1UdLjJC9F1unRvrDAQ8KDPkcTPgLI5q2Pzdy/73Mp
-         lu9FVER1QGWMdegHnFeXGtQtKHdpwHtI2qh5pNlFc1ecwqU6umph0ke8yoY1hy5duDHQ
-         bRnSo0bzl8kZD+vP+cBQ/LsRPy8D0QWCbZcasE18C0EkZZhhj46b1OJAGtGeZViG5ikj
-         runw==
-X-Gm-Message-State: AOAM530uBsRviTH0S+vd2muSnpXo7qqT4OW2UZVaGqvYkr62OL0oOCK6
-        71Z6uyvPntCmFOoMu/iKQSc7LDhuec2q
-X-Google-Smtp-Source: ABdhPJycMpMy5PFT2fsPOuCKaBNVvSXoJr7scKzClLDLoBPMbPV60+o40pgySaQlk38/JciiVlowDqIEpDty
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6399:5df3:21d3:3cca])
- (user=irogers job=sendgmr) by 2002:a05:6214:1372:: with SMTP id
- c18mr12792756qvw.28.1631943889741; Fri, 17 Sep 2021 22:44:49 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 22:44:40 -0700
-Message-Id: <20210918054440.2350466-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v3] libperf evsel: Make use of FD robust.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236050AbhIRFsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 01:48:09 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:32908 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229627AbhIRFsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 01:48:09 -0400
+Received: from BC-Mail-Ex29.internal.baidu.com (unknown [172.31.51.23])
+        by Forcepoint Email with ESMTPS id 93716261FD2CCB86037C;
+        Sat, 18 Sep 2021 13:46:36 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex29.internal.baidu.com (172.31.51.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Sat, 18 Sep 2021 13:46:36 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Sat, 18 Sep 2021 13:46:35 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] pinctrl: intel: Kconfig: Add configuration menu to Intel pin control
+Date:   Sat, 18 Sep 2021 13:46:29 +0800
+Message-ID: <20210918054630.18544-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex30.internal.baidu.com (172.31.51.24) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FD uses xyarray__entry that may return NULL if an index is out of
-bounds. If NULL is returned then a segv happens as FD unconditionally
-dereferences the pointer. This was happening in a case of with perf
-iostat as shown below. The fix is to make FD an "int*" rather than an
-int and handle the NULL case as either invalid input or a closed fd.
+Adding a configuration menu to hold many Intel pin control drivers
+helps to make the display more concise.
 
-$ sudo gdb --args perf stat --iostat  list
-...
-Breakpoint 1, perf_evsel__alloc_fd (evsel=0x5555560951a0, ncpus=1, nthreads=1) at evsel.c:50
-50      {
-(gdb) bt
- #0  perf_evsel__alloc_fd (evsel=0x5555560951a0, ncpus=1, nthreads=1) at evsel.c:50
- #1  0x000055555585c188 in evsel__open_cpu (evsel=0x5555560951a0, cpus=0x555556093410,
-    threads=0x555556086fb0, start_cpu=0, end_cpu=1) at util/evsel.c:1792
- #2  0x000055555585cfb2 in evsel__open (evsel=0x5555560951a0, cpus=0x0, threads=0x555556086fb0)
-    at util/evsel.c:2045
- #3  0x000055555585d0db in evsel__open_per_thread (evsel=0x5555560951a0, threads=0x555556086fb0)
-    at util/evsel.c:2065
- #4  0x00005555558ece64 in create_perf_stat_counter (evsel=0x5555560951a0,
-    config=0x555555c34700 <stat_config>, target=0x555555c2f1c0 <target>, cpu=0) at util/stat.c:590
- #5  0x000055555578e927 in __run_perf_stat (argc=1, argv=0x7fffffffe4a0, run_idx=0)
-    at builtin-stat.c:833
- #6  0x000055555578f3c6 in run_perf_stat (argc=1, argv=0x7fffffffe4a0, run_idx=0)
-    at builtin-stat.c:1048
- #7  0x0000555555792ee5 in cmd_stat (argc=1, argv=0x7fffffffe4a0) at builtin-stat.c:2534
- #8  0x0000555555835ed3 in run_builtin (p=0x555555c3f540 <commands+288>, argc=3,
-    argv=0x7fffffffe4a0) at perf.c:313
- #9  0x0000555555836154 in handle_internal_command (argc=3, argv=0x7fffffffe4a0) at perf.c:365
- #10 0x000055555583629f in run_argv (argcp=0x7fffffffe2ec, argv=0x7fffffffe2e0) at perf.c:409
- #11 0x0000555555836692 in main (argc=3, argv=0x7fffffffe4a0) at perf.c:539
-...
-(gdb) c
-Continuing.
-Error:
-The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_iio_0/event=0x83,umask=0x04,ch_mask=0xF,fc_mask=0x07/).
-/bin/dmesg | grep -i perf may provide additional information.
-
-Program received signal SIGSEGV, Segmentation fault.
-0x00005555559b03ea in perf_evsel__close_fd_cpu (evsel=0x5555560951a0, cpu=1) at evsel.c:166
-166                     if (FD(evsel, cpu, thread) >= 0)
-
-v3. fixes a bug in perf_evsel__run_ioctl where the sense of a branch was
-    backward.
-v2. is a rebase.
-
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- tools/lib/perf/evsel.c | 64 +++++++++++++++++++++++++++---------------
- 1 file changed, 41 insertions(+), 23 deletions(-)
+v1->v2: Revert to "select PINCTRL_INTE" for PINCTRL_TIGERLAKE config.
+v2->v3: Update commit message.
 
-diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-index d8886720e83d..8441e3e1aaac 100644
---- a/tools/lib/perf/evsel.c
-+++ b/tools/lib/perf/evsel.c
-@@ -43,7 +43,7 @@ void perf_evsel__delete(struct perf_evsel *evsel)
- 	free(evsel);
- }
+ drivers/pinctrl/intel/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pinctrl/intel/Kconfig b/drivers/pinctrl/intel/Kconfig
+index fb1495bd77c4..64f8b37fd705 100644
+--- a/drivers/pinctrl/intel/Kconfig
++++ b/drivers/pinctrl/intel/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Intel pin control drivers
+-
+-if (X86 || COMPILE_TEST)
++menu "Intel pinctrl drivers"
++	depends on X86 || COMPILE_TEST
  
--#define FD(e, x, y) (*(int *) xyarray__entry(e->fd, x, y))
-+#define FD(e, x, y) ((int *) xyarray__entry(e->fd, x, y))
- #define MMAP(e, x, y) (e->mmap ? ((struct perf_mmap *) xyarray__entry(e->mmap, x, y)) : NULL)
+ config PINCTRL_BAYTRAIL
+ 	bool "Intel Baytrail GPIO pin control"
+@@ -168,4 +168,5 @@ config PINCTRL_TIGERLAKE
+ 	  This pinctrl driver provides an interface that allows configuring
+ 	  of Intel Tiger Lake PCH pins and using them as GPIOs.
  
- int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
-@@ -54,7 +54,10 @@ int perf_evsel__alloc_fd(struct perf_evsel *evsel, int ncpus, int nthreads)
- 		int cpu, thread;
- 		for (cpu = 0; cpu < ncpus; cpu++) {
- 			for (thread = 0; thread < nthreads; thread++) {
--				FD(evsel, cpu, thread) = -1;
-+				int *fd = FD(evsel, cpu, thread);
+-endif
++endmenu
 +
-+				if (fd)
-+					*fd = -1;
- 			}
- 		}
- 	}
-@@ -80,7 +83,7 @@ sys_perf_event_open(struct perf_event_attr *attr,
- static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread, int *group_fd)
- {
- 	struct perf_evsel *leader = evsel->leader;
--	int fd;
-+	int *fd;
- 
- 	if (evsel == leader) {
- 		*group_fd = -1;
-@@ -95,10 +98,10 @@ static int get_group_fd(struct perf_evsel *evsel, int cpu, int thread, int *grou
- 		return -ENOTCONN;
- 
- 	fd = FD(leader, cpu, thread);
--	if (fd == -1)
-+	if (fd == NULL || *fd == -1)
- 		return -EBADF;
- 
--	*group_fd = fd;
-+	*group_fd = *fd;
- 
- 	return 0;
- }
-@@ -138,7 +141,11 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
- 
- 	for (cpu = 0; cpu < cpus->nr; cpu++) {
- 		for (thread = 0; thread < threads->nr; thread++) {
--			int fd, group_fd;
-+			int fd, group_fd, *evsel_fd;
-+
-+			evsel_fd = FD(evsel, cpu, thread);
-+			if (evsel_fd == NULL)
-+				return -EINVAL;
- 
- 			err = get_group_fd(evsel, cpu, thread, &group_fd);
- 			if (err < 0)
-@@ -151,7 +158,7 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
- 			if (fd < 0)
- 				return -errno;
- 
--			FD(evsel, cpu, thread) = fd;
-+			*evsel_fd = fd;
- 		}
- 	}
- 
-@@ -163,9 +170,12 @@ static void perf_evsel__close_fd_cpu(struct perf_evsel *evsel, int cpu)
- 	int thread;
- 
- 	for (thread = 0; thread < xyarray__max_y(evsel->fd); ++thread) {
--		if (FD(evsel, cpu, thread) >= 0)
--			close(FD(evsel, cpu, thread));
--		FD(evsel, cpu, thread) = -1;
-+		int *fd = FD(evsel, cpu, thread);
-+
-+		if (fd && *fd >= 0) {
-+			close(*fd);
-+			*fd = -1;
-+		}
- 	}
- }
- 
-@@ -209,13 +219,12 @@ void perf_evsel__munmap(struct perf_evsel *evsel)
- 
- 	for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
- 		for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
--			int fd = FD(evsel, cpu, thread);
--			struct perf_mmap *map = MMAP(evsel, cpu, thread);
-+			int *fd = FD(evsel, cpu, thread);
- 
--			if (fd < 0)
-+			if (fd == NULL || *fd < 0)
- 				continue;
- 
--			perf_mmap__munmap(map);
-+			perf_mmap__munmap(MMAP(evsel, cpu, thread));
- 		}
- 	}
- 
-@@ -239,15 +248,16 @@ int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
- 
- 	for (cpu = 0; cpu < xyarray__max_x(evsel->fd); cpu++) {
- 		for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
--			int fd = FD(evsel, cpu, thread);
--			struct perf_mmap *map = MMAP(evsel, cpu, thread);
-+			int *fd = FD(evsel, cpu, thread);
-+			struct perf_mmap *map;
- 
--			if (fd < 0)
-+			if (fd == NULL || *fd < 0)
- 				continue;
- 
-+			map = MMAP(evsel, cpu, thread);
- 			perf_mmap__init(map, NULL, false, NULL);
- 
--			ret = perf_mmap__mmap(map, &mp, fd, cpu);
-+			ret = perf_mmap__mmap(map, &mp, *fd, cpu);
- 			if (ret) {
- 				perf_evsel__munmap(evsel);
- 				return ret;
-@@ -260,7 +270,9 @@ int perf_evsel__mmap(struct perf_evsel *evsel, int pages)
- 
- void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread)
- {
--	if (FD(evsel, cpu, thread) < 0 || MMAP(evsel, cpu, thread) == NULL)
-+	int *fd = FD(evsel, cpu, thread);
-+
-+	if (fd == NULL || *fd < 0 || MMAP(evsel, cpu, thread) == NULL)
- 		return NULL;
- 
- 	return MMAP(evsel, cpu, thread)->base;
-@@ -295,17 +307,18 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
- 		     struct perf_counts_values *count)
- {
- 	size_t size = perf_evsel__read_size(evsel);
-+	int *fd = FD(evsel, cpu, thread);
- 
- 	memset(count, 0, sizeof(*count));
- 
--	if (FD(evsel, cpu, thread) < 0)
-+	if (fd == NULL || *fd < 0)
- 		return -EINVAL;
- 
- 	if (MMAP(evsel, cpu, thread) &&
- 	    !perf_mmap__read_self(MMAP(evsel, cpu, thread), count))
- 		return 0;
- 
--	if (readn(FD(evsel, cpu, thread), count->values, size) <= 0)
-+	if (readn(*fd, count->values, size) <= 0)
- 		return -errno;
- 
- 	return 0;
-@@ -318,8 +331,13 @@ static int perf_evsel__run_ioctl(struct perf_evsel *evsel,
- 	int thread;
- 
- 	for (thread = 0; thread < xyarray__max_y(evsel->fd); thread++) {
--		int fd = FD(evsel, cpu, thread),
--		    err = ioctl(fd, ioc, arg);
-+		int err;
-+		int *fd = FD(evsel, cpu, thread);
-+
-+		if (fd == NULL || *fd < 0)
-+			return -1;
-+
-+		err = ioctl(*fd, ioc, arg);
- 
- 		if (err)
- 			return err;
 -- 
-2.33.0.464.g1972c5931b-goog
+2.25.1
 
