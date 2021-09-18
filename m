@@ -2,38 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D186C4105AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48E04105B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244059AbhIRJxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:53:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54602 "EHLO mail.kernel.org"
+        id S244201AbhIRJyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232402AbhIRJxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243404AbhIRJxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Sep 2021 05:53:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 787BF60FBF;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8122261251;
         Sat, 18 Sep 2021 09:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1631958742;
-        bh=/gBq9WaVAB2ddDxlG8S7n9tm8RzG3UvJT7jEMSKGqFs=;
+        bh=zpiuDR4l+GOrZ4eXVrE6LOrHPy5gskTsr7YXVwOZqm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VV3BdIXVPdpktqlRfnnE5lFhtSm8TDtOkNJ6bYmkWu7SnpsUuMY6G2dQUS2SpC8dw
-         pFYv13WMoxNLPz16NOT8BPQMv8ZSDSypP+4I7dw9AcxfN8Est2167ZF5eoDyTwhjK2
-         iiRKwfFe8RBLo2UMlNGVV4zmYsLqt/rKZedyKCeeGxo0/rqk9BlMzSt+0UZQEMUc5F
-         U6VymCy/QsFTAwxy3GBe6tmK5H1J+G6hVjwrBzzhXg5WzxcWSKo2QC9s/d4wdQLy/e
-         FY8ifYv5h9Ghf3OYPzXC5M6DxeC7StNC7IJW4SNzl3iHLoIRVi1G7Qa+Oe1+9uUNse
-         Vq9bNm5tYEJ8Q==
+        b=cIhQ+hXT7NofbGVL0oE4hRn1Dx+WeNqJOQXbZoUB91c8u4l6ZiMo4DdKNqK8nT/ne
+         KsZgiFNUkpaDyQi3PmfpXC4juAwWnpv8M5eb/PF/noyoyurSSFZLOsmLNe5uAWwczP
+         Hq8kGILK7GKskErdKqIGqfVktu35boctAJbmCZRCEkXpVEbo+fxPmAwRtR2CiQhEbB
+         O5l05WsMh863LhYpf3GtuLJ+/y+2e006/PlwUdxBEN3nSkZb0iL+KEX54K24tNBZj3
+         FYziIywhvkzsCCo6OEw6qvwK/iMvgmbqlK3aiJrmp7vsgXemG0MsGKXjtXWqPf6dkW
+         1ISTsgMUGg1ow==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1mRX1A-003b0q-HO; Sat, 18 Sep 2021 11:52:20 +0200
+        id 1mRX1A-003b0t-J2; Sat, 18 Sep 2021 11:52:20 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/7] scripts: get_abi.pl: Better handle multiple What parameters
-Date:   Sat, 18 Sep 2021 11:52:11 +0200
-Message-Id: <e83e7ffaf3429f8dfca00d1d01653ecfa36f6119.1631957565.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v3 2/7] scripts: get_abi.pl: Check for missing symbols at the ABI specs
+Date:   Sat, 18 Sep 2021 11:52:12 +0200
+Message-Id: <958e4f3a319148af6d847c0df95e35426f9c4c5f.1631957565.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1631957565.git.mchehab+huawei@kernel.org>
 References: <cover.1631957565.git.mchehab+huawei@kernel.org>
@@ -44,51 +57,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using a comma here is problematic, as some What: expressions
-may already contain a comma. So, use \xac character instead.
+Check for the symbols that exists under /sys but aren't
+defined at Documentation/ABI.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/get_abi.pl | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ scripts/get_abi.pl | 90 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 88 insertions(+), 2 deletions(-)
 
 diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index d7aa82094296..cfc107df59f4 100755
+index cfc107df59f4..78364c4c4967 100755
 --- a/scripts/get_abi.pl
 +++ b/scripts/get_abi.pl
-@@ -129,12 +129,12 @@ sub parse_abi {
- 				push @{$symbols{$content}->{file}}, " $file:" . ($ln - 1);
+@@ -13,7 +13,9 @@ my $help = 0;
+ my $man = 0;
+ my $debug = 0;
+ my $enable_lineno = 0;
++my $show_warnings = 1;
+ my $prefix="Documentation/ABI";
++my $sysfs_prefix="/sys";
  
- 				if ($tag =~ m/what/) {
--					$what .= ", " . $content;
-+					$what .= "\xac" . $content;
- 				} else {
- 					if ($what) {
- 						parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
+ #
+ # If true, assumes that the description is formatted with ReST
+@@ -36,7 +38,7 @@ pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
  
--						foreach my $w(split /, /, $what) {
-+						foreach my $w(split /\xac/, $what) {
- 							$symbols{$w}->{xref} = $what;
- 						};
- 					}
-@@ -239,7 +239,7 @@ sub parse_abi {
- 	if ($what) {
- 		parse_error($file, $ln, "What '$what' doesn't have a description", "") if (!$data{$what}->{description});
+ my ($cmd, $arg) = @ARGV;
  
--		foreach my $w(split /, /,$what) {
-+		foreach my $w(split /\xac/,$what) {
- 			$symbols{$w}->{xref} = $what;
- 		};
+-pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate");
++pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate" && $cmd ne "undefined");
+ pod2usage(2) if ($cmd eq "search" && !$arg);
+ 
+ require Data::Dumper if ($debug);
+@@ -50,6 +52,8 @@ my %symbols;
+ sub parse_error($$$$) {
+ 	my ($file, $ln, $msg, $data) = @_;
+ 
++	return if (!$show_warnings);
++
+ 	$data =~ s/\s+$/\n/;
+ 
+ 	print STDERR "Warning: file $file#$ln:\n\t$msg";
+@@ -521,11 +525,88 @@ sub search_symbols {
  	}
-@@ -328,7 +328,7 @@ sub output_rest {
+ }
  
- 			printf ".. _%s:\n\n", $data{$what}->{label};
++# Exclude /sys/kernel/debug and /sys/kernel/tracing from the search path
++sub skip_debugfs {
++	if (($File::Find::dir =~ m,^/sys/kernel,)) {
++		return grep {!/(debug|tracing)/ } @_;
++	}
++
++	if (($File::Find::dir =~ m,^/sys/fs,)) {
++		return grep {!/(pstore|bpf|fuse)/ } @_;
++	}
++
++	return @_
++}
++
++my %leaf;
++
++my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\xff]) }x;
++sub parse_existing_sysfs {
++	my $file = $File::Find::name;
++
++	my $mode = (stat($file))[2];
++	return if ($mode & S_IFDIR);
++
++	my $leave = $file;
++	$leave =~ s,.*/,,;
++
++	if (defined($leaf{$leave})) {
++		# FIXME: need to check if the path makes sense
++		my $what = $leaf{$leave};
++
++		$what =~ s/,/ /g;
++
++		$what =~ s/\<[^\>]+\>/.*/g;
++		$what =~ s/\{[^\}]+\}/.*/g;
++		$what =~ s/\[[^\]]+\]/.*/g;
++		$what =~ s,/\.\.\./,/.*/,g;
++		$what =~ s,/\*/,/.*/,g;
++
++		$what =~ s/\s+/ /g;
++
++		# Escape all other symbols
++		$what =~ s/$escape_symbols/\\$1/g;
++
++		foreach my $i (split / /,$what) {
++			if ($file =~ m#^$i$#) {
++#				print "$file: $i: OK!\n";
++				return;
++			}
++		}
++
++		print "$file: $leave is defined at $what\n";
++
++		return;
++	}
++
++	print "$file not found.\n";
++}
++
++sub undefined_symbols {
++	foreach my $w (sort keys %data) {
++		foreach my $what (split /\xac /,$w) {
++			my $leave = $what;
++			$leave =~ s,.*/,,;
++
++			if (defined($leaf{$leave})) {
++				$leaf{$leave} .= " " . $what;
++			} else {
++				$leaf{$leave} = $what;
++			}
++		}
++	}
++
++	find({wanted =>\&parse_existing_sysfs, preprocess =>\&skip_debugfs, no_chdir => 1}, $sysfs_prefix);
++}
++
+ # Ensure that the prefix will always end with a slash
+ # While this is not needed for find, it makes the patch nicer
+ # with --enable-lineno
+ $prefix =~ s,/?$,/,;
  
--			my @names = split /, /,$w;
-+			my @names = split /\xac/,$w;
- 			my $len = 0;
++if ($cmd eq "undefined" || $cmd eq "search") {
++	$show_warnings = 0;
++}
+ #
+ # Parses all ABI files located at $prefix dir
+ #
+@@ -536,7 +617,9 @@ print STDERR Data::Dumper->Dump([\%data], [qw(*data)]) if ($debug);
+ #
+ # Handles the command
+ #
+-if ($cmd eq "search") {
++if ($cmd eq "undefined") {
++	undefined_symbols;
++} elsif ($cmd eq "search") {
+ 	search_symbols;
+ } else {
+ 	if ($cmd eq "rest") {
+@@ -575,6 +658,9 @@ B<rest>                  - output the ABI in ReST markup language
  
- 			foreach my $name (@names) {
+ B<validate>              - validate the ABI contents
+ 
++B<undefined>             - existing symbols at the system that aren't
++                           defined at Documentation/ABI
++
+ =back
+ 
+ =head1 OPTIONS
 -- 
 2.31.1
 
