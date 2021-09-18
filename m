@@ -2,230 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974F241048C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 08:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2434C41048E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240155AbhIRHAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbhIRHAh (ORCPT
+        id S240176AbhIRHCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:02:55 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9747 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234498AbhIRHCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:00:37 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44B0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 23:59:14 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id dw14so8445081pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 23:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pwr8YX18G5sM3rMEHlqvF4zfqHnt+BYzRfgaDWyefDg=;
-        b=AbC7bh3JoGElFxwKdP2z0kCPv794uJB9sZbgRoLdfuaDXThL+fqeO9FipFvwUfkG8q
-         UalCkEMNeGXGdUu3C6eZz7aX86RDQT4xqtzKDwijc0j0YfHRxgD15g/vUtYTu1Z8DoV5
-         6cN5xd/1qTFvUBLEawDto6SvImGzA0onuvz/npqFrCqYrDoB/a0woijeBzJ3f1YcuY65
-         srZNfbvrq2N4fqlacwD2dq1sBTL53zynXtb6b2WGGhcDQUhKIof0jfXXpUYk1f1RyiYv
-         fPcbPEXWVolXfCyoIe05RmSg4iFjYhj+5+m5ldPKkm6GluJEV1AXOk79XNg9lPQSBXZz
-         kR2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pwr8YX18G5sM3rMEHlqvF4zfqHnt+BYzRfgaDWyefDg=;
-        b=CxFhP8poUEkMsAaeZAiLnwqdHr21s0l4ClMN+/iB+tI3TDawWNLjEp1vcowWcoJR2w
-         nCBG8KNM+5xZvMd8M8p/56mxj7gudKyOaGarK5aDW+XPzS3d5mIH2cJUzOFCVjyf8N6I
-         M5MeE85inLTQlDjU8562QvjdllkDdYjJcuePDFUmPsmL95Up7a6sJsV+Y0Sy30rzjlFY
-         1oIghMOyF+zG5OdZB+BjmRK9BZOV0csFWSxfzevDJP1yMJTq0Z57lnOOMEPSR/k5c1Pe
-         xQ5DpFLy8P0fk9jmu94WFixKQAaRaDQsr/ZvPJcMYFicCenIQbpzfzjT3lL7qGU2/EMH
-         w9sg==
-X-Gm-Message-State: AOAM530opZuFq2k85Ayhp8NF78ZsX2fY86MMTe+/86GWZkqjvZtlnTLG
-        5L5BNJN0Hp6obf9YL+q36Os=
-X-Google-Smtp-Source: ABdhPJxB8i6k8CtDM69ch7D4s/pTKprEfbMbUcd5t5Y+h+crptjf0FQ138N8kfegwGbU3gKNM0WNwA==
-X-Received: by 2002:a17:90a:f18f:: with SMTP id bv15mr16577996pjb.93.1631948354352;
-        Fri, 17 Sep 2021 23:59:14 -0700 (PDT)
-Received: from localhost.localdomain ([2402:e280:2130:198:9b25:1cfb:9ff3:2a8f])
-        by smtp.gmail.com with ESMTPSA id lj7sm7261763pjb.18.2021.09.17.23.59.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 23:59:14 -0700 (PDT)
-From:   Benjamin Philip <benjamin.philip495@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Benjamin Philip <benjamin.philip495@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rts5208: remove unnecessary parentheses in ms.c
-Date:   Sat, 18 Sep 2021 12:27:44 +0530
-Message-Id: <20210918065744.26304-1-benjamin.philip495@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sat, 18 Sep 2021 03:02:54 -0400
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HBMCX1pXDzVfkF;
+        Sat, 18 Sep 2021 15:00:24 +0800 (CST)
+Received: from [10.40.166.221] (10.40.166.221) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Sat, 18 Sep 2021 15:01:28 +0800
+Message-ID: <61458EC8.2000702@hisilicon.com>
+Date:   Sat, 18 Sep 2021 15:01:28 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arm64: dts: hisilicon: Add support for Hikey 970
+ USB3 PHY
+References: <cover.1630583382.git.mchehab+huawei@kernel.org> <569dc85d8058e2884d76ab36c6c46d36e7ad8555.1630583382.git.mchehab+huawei@kernel.org>
+In-Reply-To: <569dc85d8058e2884d76ab36c6c46d36e7ad8555.1630583382.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.166.221]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit removes unnecessary parentheses, that have been flagged
-by checkpatch.pl in ms.c
+Hi Mauro,
 
-Signed-off-by: Benjamin Philip <benjamin.philip495@gmail.com>
----
- drivers/staging/rts5208/ms.c | 42 ++++++++++++++++++------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+On 2021/9/2 19:55, Mauro Carvalho Chehab wrote:
+> Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 83 +++++++++++++++++++
+>  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     | 56 +++++++++++++
+>  2 files changed, 139 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> index 7c32f5fd5cc5..60594db07041 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> @@ -430,3 +430,86 @@ &uart6 {
+>  	label = "LS-UART1";
+>  	status = "okay";
+>  };
+> +
+> +&usb_phy {
+> +	phy-supply = <&ldo17>;
+> +};
+> +
+> +&i2c1 {
+> +	status = "okay";
+> +
+> +	rt1711h: rt1711h@4e {
+> +		compatible = "richtek,rt1711h";
+> +		reg = <0x4e>;
+> +		status = "okay";
+> +		interrupt-parent = <&gpio27>;
+> +		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&usb_cfg_func>;
+> +
+> +		usb_con: connector {
+> +			compatible = "usb-c-connector";
+> +			label = "USB-C";
+> +			data-role = "dual";
+> +			power-role = "dual";
+> +			try-power-role = "sink";
+> +			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
+> +			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
+> +				PDO_VAR(5000, 5000, 1000)>;
+> +			op-sink-microwatt = <10000000>;
+> +
+> +			ports {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +				port@1 {
+> +					reg = <1>;
+> +					usb_con_ss: endpoint {
+> +						remote-endpoint = <&dwc3_ss>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +		port {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			rt1711h_ep: endpoint@0 {
+> +				reg = <0>;
+> +				remote-endpoint = <&hikey_usb_ep1>;
 
-diff --git a/drivers/staging/rts5208/ms.c b/drivers/staging/rts5208/ms.c
-index c6ad34a7fa33..2a6fab5c117a 100644
---- a/drivers/staging/rts5208/ms.c
-+++ b/drivers/staging/rts5208/ms.c
-@@ -165,7 +165,7 @@ static int ms_write_bytes(struct rtsx_chip *chip,
- 	struct ms_info *ms_card = &chip->ms_card;
- 	int retval, i;
- 
--	if (!data || (data_len < cnt))
-+	if (!data || data_len < cnt)
- 		return STATUS_ERROR;
- 
- 	rtsx_init_cmd(chip);
-@@ -290,7 +290,7 @@ static int ms_read_bytes(struct rtsx_chip *chip,
- 	for (i = 0; i < data_len; i++)
- 		data[i] = ptr[i];
- 
--	if ((tpc == PRO_READ_SHORT_DATA) && (data_len == 8)) {
-+	if (tpc == PRO_READ_SHORT_DATA && data_len == 8) {
- 		dev_dbg(rtsx_dev(chip), "Read format progress:\n");
- 		print_hex_dump_bytes(KBUILD_MODNAME ": ", DUMP_PREFIX_NONE, ptr,
- 				     cnt);
-@@ -964,13 +964,13 @@ static int ms_read_attribute_info(struct rtsx_chip *chip)
- 		i++;
- 	} while (i < 1024);
- 
--	if ((buf[0] != 0xa5) && (buf[1] != 0xc3)) {
-+	if (buf[0] != 0xa5 && buf[1] != 0xc3) {
- 		/* Signature code is wrong */
- 		kfree(buf);
- 		return STATUS_FAIL;
- 	}
- 
--	if ((buf[4] < 1) || (buf[4] > 12)) {
-+	if (buf[4] < 1 || buf[4] > 12) {
- 		kfree(buf);
- 		return STATUS_FAIL;
- 	}
-@@ -979,8 +979,8 @@ static int ms_read_attribute_info(struct rtsx_chip *chip)
- 		int cur_addr_off = 16 + i * 12;
- 
- #ifdef SUPPORT_MSXC
--		if ((buf[cur_addr_off + 8] == 0x10) ||
--		    (buf[cur_addr_off + 8] == 0x13)) {
-+		if (buf[cur_addr_off + 8] == 0x10 ||
-+		    buf[cur_addr_off + 8] == 0x13) {
- #else
- 		if (buf[cur_addr_off + 8] == 0x10) {
- #endif
-@@ -1109,8 +1109,8 @@ static int ms_read_attribute_info(struct rtsx_chip *chip)
- #endif
- 
- 	if (device_type != 0x00) {
--		if ((device_type == 0x01) || (device_type == 0x02) ||
--		    (device_type == 0x03)) {
-+		if (device_type == 0x01 || device_type == 0x02 ||
-+		    device_type == 0x03) {
- 			chip->card_wp |= MS_CARD;
- 		} else {
- 			return STATUS_FAIL;
-@@ -1336,7 +1336,7 @@ static int ms_write_extra_data(struct rtsx_chip *chip, u16 block_addr,
- 	int retval, i;
- 	u8 val, data[16];
- 
--	if (!buf || (buf_len < MS_EXTRA_SIZE))
-+	if (!buf || buf_len < MS_EXTRA_SIZE)
- 		return STATUS_FAIL;
- 
- 	retval = ms_set_rw_reg_addr(chip, OVERWRITE_FLAG, MS_EXTRA_SIZE,
-@@ -1574,7 +1574,7 @@ static int ms_erase_block(struct rtsx_chip *chip, u16 phy_blk)
- 
- static void ms_set_page_status(u16 log_blk, u8 type, u8 *extra, int extra_len)
- {
--	if (!extra || (extra_len < MS_EXTRA_SIZE))
-+	if (!extra || extra_len < MS_EXTRA_SIZE)
- 		return;
- 
- 	memset(extra, 0xFF, MS_EXTRA_SIZE);
-@@ -2008,7 +2008,7 @@ static int reset_ms(struct rtsx_chip *chip)
- 		goto RE_SEARCH;
- 	}
- 
--	if ((ptr[14] == 1) || (ptr[14] == 3))
-+	if (ptr[14] == 1 || ptr[14] == 3)
- 		chip->card_wp |= MS_CARD;
- 
- 	/* BLOCK_SIZE_0, BLOCK_SIZE_1 */
-@@ -2378,8 +2378,8 @@ static int ms_build_l2p_tbl(struct rtsx_chip *chip, int seg_no)
- 			continue;
- 		}
- 
--		if ((log_blk < ms_start_idx[seg_no]) ||
--		    (log_blk >= ms_start_idx[seg_no + 1])) {
-+		if (log_blk < ms_start_idx[seg_no] ||
-+		    log_blk >= ms_start_idx[seg_no + 1]) {
- 			if (!(chip->card_wp & MS_CARD)) {
- 				retval = ms_erase_block(chip, phy_blk);
- 				if (retval != STATUS_SUCCESS)
-@@ -2662,7 +2662,7 @@ static int mspro_rw_multi_sector(struct scsi_cmnd *srb,
- 		return retval;
- 
- 	if (ms_card->seq_mode) {
--		if ((ms_card->pre_dir != srb->sc_data_direction) ||
-+		if (ms_card->pre_dir != srb->sc_data_direction ||
- 		    ((ms_card->pre_sec_addr + ms_card->pre_sec_cnt) !=
- 		     start_sector) ||
- 		    (mode_2k && (ms_card->seq_mode & MODE_512_SEQ)) ||
-@@ -3294,8 +3294,8 @@ static int ms_write_multiple_pages(struct rtsx_chip *chip, u16 old_blk,
- 					return STATUS_FAIL;
- 			}
- 
--			if ((page_addr == (end_page - 1)) ||
--			    (page_addr == ms_card->page_off)) {
-+			if (page_addr == (end_page - 1) ||
-+			    page_addr == ms_card->page_off) {
- 				if (!(val & INT_REG_CED)) {
- 					ms_set_err_code(chip,
- 							MS_FLASH_WRITE_ERROR);
-@@ -3434,8 +3434,8 @@ static int ms_rw_multi_sector(struct scsi_cmnd *srb, struct rtsx_chip *chip,
- 	if (srb->sc_data_direction == DMA_TO_DEVICE) {
- #ifdef MS_DELAY_WRITE
- 		if (delay_write->delay_write_flag &&
--		    (delay_write->logblock == log_blk) &&
--		    (start_page > delay_write->pageoff)) {
-+		    delay_write->logblock == log_blk &&
-+		    start_page > delay_write->pageoff) {
- 			delay_write->delay_write_flag = 0;
- 			retval = ms_copy_page(chip,
- 					      delay_write->old_phyblock,
-@@ -3467,7 +3467,7 @@ static int ms_rw_multi_sector(struct scsi_cmnd *srb, struct rtsx_chip *chip,
- 					(chip, seg_no,
- 					 log_blk - ms_start_idx[seg_no]);
- 			new_blk  = ms_get_unused_block(chip, seg_no);
--			if ((old_blk == 0xFFFF) || (new_blk == 0xFFFF)) {
-+			if (old_blk == 0xFFFF || new_blk == 0xFFFF) {
- 				set_sense_type(chip, lun,
- 					       SENSE_TYPE_MEDIA_WRITE_ERR);
- 				return STATUS_FAIL;
-@@ -4179,7 +4179,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- 
- 		retval = rtsx_transfer_data(chip, MS_CARD, buf + 4 + i * 512,
- 					    512, 0, DMA_TO_DEVICE, 3000);
--		if ((retval < 0) || check_ms_err(chip)) {
-+		if (retval < 0 || check_ms_err(chip)) {
- 			rtsx_clear_ms_error(chip);
- 			if (ms_card->mg_auth == 0) {
- 				if ((buf[5] & 0xC0) != 0)
-@@ -4200,7 +4200,7 @@ int mg_set_ICV(struct scsi_cmnd *srb, struct rtsx_chip *chip)
- #else
- 	retval = ms_transfer_data(chip, MS_TM_AUTO_WRITE, PRO_WRITE_LONG_DATA,
- 				  2, WAIT_INT, 0, 0, buf + 4, 1024);
--	if ((retval != STATUS_SUCCESS) || check_ms_err(chip)) {
-+	if (retval != STATUS_SUCCESS || check_ms_err(chip)) {
- 		rtsx_clear_ms_error(chip);
- 		if (ms_card->mg_auth == 0) {
- 			if ((buf[5] & 0xC0) != 0)
--- 
-2.31.1
+The 'hikey_usb_ep1' is not defined yet.
 
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c2 {
+> +	/* USB HUB is on this bus at address 0x44 */
+> +	status = "okay";
+> +};
+> +
+> +&dwc3 { /* USB */
+> +	dr_mode = "otg";
+> +	maximum-speed = "super-speed";
+> +	phy_type = "utmi";
+> +	snps,dis-del-phy-power-chg-quirk;
+> +	snps,dis_u2_susphy_quirk;
+> +	snps,dis_u3_susphy_quirk;
+> +	snps,tx_de_emphasis_quirk;
+> +	snps,tx_de_emphasis = <1>;
+> +	snps,dis-split-quirk;
+> +	snps,gctl-reset-quirk;
+> +	usb-role-switch;
+> +	role-switch-default-mode = "host";
+> +	port {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		dwc3_role_switch: endpoint@0 {
+> +			reg = <0>;
+> +			remote-endpoint = <&hikey_usb_ep0>;
+
+Ditto. The 'hikey_usb_ep0' is not defined yet.
+
+> +		};
+> +
+> +		dwc3_ss: endpoint@1 {
+> +			reg = <1>;
+> +			remote-endpoint = <&usb_con_ss>;
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> index 636c8817df7e..782e1487666d 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> @@ -8,6 +8,7 @@
+>  
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/clock/hi3670-clock.h>
+> +#include <dt-bindings/usb/pd.h>
+>  
+>  / {
+>  	compatible = "hisilicon,hi3670";
+> @@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
+>  			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
+>  			status = "disabled";
+>  		};
+> +
+> +		usb3_otg_bc: usb3_otg_bc@ff200000 {
+> +			compatible = "syscon", "simple-mfd";
+> +			reg = <0x0 0xff200000 0x0 0x1000>;
+> +
+> +			usb_phy: usbphy {
+> +				compatible = "hisilicon,hi3670-usb-phy";
+> +				#phy-cells = <0>;
+> +				hisilicon,pericrg-syscon = <&crg_ctrl>;
+> +				hisilicon,pctrl-syscon = <&pctrl>;
+> +				hisilicon,sctrl-syscon = <&sctrl>;
+> +				hisilicon,eye-diagram-param = <0xFDFEE4>;
+> +				hisilicon,tx-vboost-lvl = <0x5>;
+> +			};
+> +		};
+> +
+> +		usb31_misc_rst: usb31_misc_rst_controller {
+> +			compatible = "hisilicon,hi3660-reset";
+> +			#reset-cells = <2>;
+> +			hisi,rst-syscon = <&usb3_otg_bc>;
+> +		};
+> +
+> +		usb3: hisi_dwc3 {
+> +			compatible = "hisilicon,hi3670-dwc3";
+
+Is it OK to add the 'hi3670-dwc3' into the devicetree binding document?
+Thanks!
+
+Best Regards,
+Wei
+
+> +			#address-cells = <2>;
+> +			#size-cells = <2>;
+> +			ranges;
+> +
+> +			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
+> +				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
+> +				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
+> +				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
+> +			clock-names = "clk_gate_abb_usb",
+> +				      "hclk_gate_usb3otg",
+> +				      "clk_gate_usb3otg_ref",
+> +				      "aclk_gate_usb3dvfs";
+> +
+> +			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
+> +			assigned-clock-rates = <238000000>;
+> +			resets = <&crg_rst 0x90 6>,
+> +				 <&crg_rst 0x90 7>,
+> +				 <&usb31_misc_rst 0xA0 8>,
+> +				 <&usb31_misc_rst 0xA0 9>;
+> +
+> +			dwc3: usb@ff100000 {
+> +				compatible = "snps,dwc3";
+> +				reg = <0x0 0xff100000 0x0 0x100000>;
+> +
+> +				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
+> +					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +				phys = <&usb_phy>;
+> +				phy-names = "usb3-phy";
+> +			};
+> +		};
+>  	};
+>  };
+> 
