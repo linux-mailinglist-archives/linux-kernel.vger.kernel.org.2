@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA92410586
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2233410588
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238402AbhIRJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhIRJjQ (ORCPT
+        id S238496AbhIRJkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:40:40 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:51569 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238420AbhIRJkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:39:16 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD28DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:37:52 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 6so17569985oiy.8
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 02:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6h+x0dHkm1w/PqTQjkLPsLAB59NflCQjx0DuNDZvQsk=;
-        b=f4ghaAsItLEUb1AS/a4OLXIqi8AseXSi0u7a0PR9no7+T2bQXPXaG4dkaJt9T8L9of
-         cje6x0Fphulw+9yoKH+lgejR8PjQ9s1NNcgPaHRchV6obmcQV+RciD/rJljYraMlTc2r
-         ZkG+869HX529E5drOaA0XT/QmtSuiE1Um86GIwhx3bsuhjHoXWkd4oqrLyVYihJ/lTLg
-         p2KfU5cfgaXw3iPCK2TWnT3/DGHB1VFj6KTQHCKjwWszEHNJIUWjwvgJsmBSVEhirNst
-         GBcrUZY9tOZwF6nBOwhuLLrRCM3BSxPEnZ2ENHYDHIRGJKLb9y+Z8Xc0W66jha8gqhKz
-         fu7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6h+x0dHkm1w/PqTQjkLPsLAB59NflCQjx0DuNDZvQsk=;
-        b=JL88QrsdKGgVCT3Sol9PQolD8Bd/sIXExBU8SVzbItW+R02ZrIlFkqealG70V5XqLR
-         bHWwG+0Hj7OdszdyKshLSew21ql0rfM51awnncjrbtL8w1OWsI3sCgMxIjMQlnBKX81/
-         3KCFGz1j+qWE1pFnQAbG62wwA9bimUuwoID9z0AOMw5B5La2nATvBDnEBTiacYOP1iei
-         kHoT3oX2Hb8tbq2CFkjjXegu9iVq5G48MftMa+tL5fH471J6hkqzNHUzjQjADY0QB0G1
-         yPaaL7gUfXr+9xk7y8VcLGrcvdC337+sX4N7Nr6r5pbMBlsNsbDDSm9iC05lAmq4Md0J
-         6fbA==
-X-Gm-Message-State: AOAM531MlYrSpowXWn+U3ST/v7vsN18ch5W+yIYHIsHXLMX4zBIMMgX1
-        MRFNUXg0CrIVE/CITkcVkzHHxY0NyS6JFwmiTSI8ng==
-X-Google-Smtp-Source: ABdhPJxZBzBjnw1AL5dmoPJT18lyhiaEBxcnl/rOOKvNjxDsI2+wbaVg8uAfAIYlpqVdIXwanO3rA2LT0EV0xZGMz5A=
-X-Received: by 2002:a05:6808:21a5:: with SMTP id be37mr6918034oib.172.1631957871829;
- Sat, 18 Sep 2021 02:37:51 -0700 (PDT)
+        Sat, 18 Sep 2021 05:40:39 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MTfgb-1mJbFn2wdZ-00U1XR; Sat, 18 Sep 2021 11:39:14 +0200
+Received: by mail-wr1-f50.google.com with SMTP id t18so19270184wrb.0;
+        Sat, 18 Sep 2021 02:39:14 -0700 (PDT)
+X-Gm-Message-State: AOAM533NydKSw7cjeik02C7zp5qSe4KhEsNrszk6ZtdShAxefc2IyS3e
+        dDJ3gAk2JpiivgjuFwgKKL8ecWIqOB2sJ+FsIyw=
+X-Google-Smtp-Source: ABdhPJxYge8PPe/SGv/bK8exLLx5Gjb0c2/3o2pUnyS5weWY0uy9cXxNavng5G5bkYB8AoL+9okvaAFCvaSB4NJ4IK8=
+X-Received: by 2002:adf:c10b:: with SMTP id r11mr17188561wre.336.1631957954380;
+ Sat, 18 Sep 2021 02:39:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210421105132.3965998-1-elver@google.com> <20210421105132.3965998-3-elver@google.com>
- <6c0d5f40-5067-3a59-65fa-6977b6f70219@huawei.com> <abd74d5a-1236-4f0e-c123-a41e56e22391@huawei.com>
- <CANpmjNNXiuQbjMBP=5+uZRNAiduV7v067pPmAgsYzSPpR8Y2yg@mail.gmail.com> <da6629d3-2530-46b0-651b-904159a7a189@huawei.com>
-In-Reply-To: <da6629d3-2530-46b0-651b-904159a7a189@huawei.com>
-From:   Marco Elver <elver@google.com>
-Date:   Sat, 18 Sep 2021 11:37:39 +0200
-Message-ID: <CANpmjNPj5aMPu_7D=cwrDyAwz9i-rVcXYgGapYdB+vdHcR3RZg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] kfence: maximize allocation wait timeout duration
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        akpm@linux-foundation.org, glider@google.com, dvyukov@google.com,
-        jannh@google.com, mark.rutland@arm.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, hdanton@sina.com
+References: <b5296677f92f7bace957e66479b3d57a5a824ca1.1631942796.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <b5296677f92f7bace957e66479b3d57a5a824ca1.1631942796.git.christophe.jaillet@wanadoo.fr>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 18 Sep 2021 11:38:59 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2G8Lze=0CkdL8o7OH5M-oyKPmee9x3YcdFAa4KJvDtxA@mail.gmail.com>
+Message-ID: <CAK8P3a2G8Lze=0CkdL8o7OH5M-oyKPmee9x3YcdFAa4KJvDtxA@mail.gmail.com>
+Subject: Re: [PATCH v2] tifm: Remove usage of the deprecated
+ "pci-dma-compat.h" API
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Alex Dubov <oakad@yahoo.com>, Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Iga7UAyM3Rg5IdVoU9FCxalWrmmUgvZPTOgWk5KLJOMoZb3BvzO
+ MP9V+V8rWYX7p+yHVjZCStvqcpwBa2n4lZIKwsYzSppraY5znEaGJL2UyrbyQDjqjlqIegc
+ poQpVY/RqVcMOmaGFAeKGn4ib/aSaN7JmFyvPhYcug0NwSKYqpy6/EAAH+IefZwOjb8kQXO
+ 7jzMVIrH/DJFErIH8LcZg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7D1WEudNtng=:F63KcyBQ+q3pV6hlFDcANg
+ ER9HTZuATsxbUoUNNPx9RFX2EQkbeVhD4269n6Lsk/dg8WqV2jm9s7kYi9t0HuSUju9YU8BlO
+ kiZMSVrG6dvP9TkX6WQwxxp2OIczmKkjhrtauS45Wg72OJHZS0ON4+XwglTYXfCKFl73cn9CM
+ sF7EfwGeZ29vb37fWQQK844vLDZmEkIklMPpYCxuo/0QZSQyMY3wf62mot9vR7jPiuKtrH2Pi
+ gyOi8A/n74oieIezH4C5xqH3hU4PwmyGA3vzKIjSdXxD8eqVDY1VkzOi9yK1p1v18p6Q+RPUP
+ vVKJSb1IrWJBEgCE+Ffwh8Lo3Sa98N1ZJUx1fb/vX6DBvoKB5XoE3pCejgdM1NgrjGAkkF1VD
+ xIVDuCQ0bG6gIpcGmDMd3SoZ1LhV0hJNLt0WBNsLRT4g7PeF6qUvBnZQrIo62jcE1yOCVvWYT
+ peiJ+HopBxRqZYRWeczd30oWnBvFOhGRdQ4pvBfOqE7hcW3DC8/D2Ka1UJkP63klZ4YR1aN4g
+ w3W768lk7CTjo3sVA555uwPCkvhYppLiisbBuOIIh+Ev8IOZjPWIHra64vw5sQkvSk8N3GdwL
+ 49ot6MEh2Jb0SovgKmV3B6kNxdY1w2ydpZ6OVjp07eWl45fHlB/O02FhNbCtmiybWJfBbXGD8
+ E8Fa63GzCPuVtmxxXBem4K4MKQV5QaeA5OKKZWs51c6NglWgfgGlc71UplBs1Bsc6dVEkQKZ6
+ wDW+oGcQ/rVW8Mdia5GfdfTBlWIfE/u0p3QhgA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Sept 2021 at 10:07, Liu Shixin <liushixin2@huawei.com> wrote:
+On Sat, Sep 18, 2021 at 7:32 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> On 2021/9/16 16:49, Marco Elver wrote:
-> > On Thu, 16 Sept 2021 at 03:20, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> >> Hi Marco,
-> >>
-> >> We found kfence_test will fails  on ARM64 with this patch with/without
-> >> CONFIG_DETECT_HUNG_TASK,
-> >>
-> >> Any thought ?
-> > Please share log and instructions to reproduce if possible. Also, if
-> > possible, please share bisection log that led you to this patch.
-> >
-> > I currently do not see how this patch would cause that, it only
-> > increases the timeout duration.
-> >
-> > I know that under QEMU TCG mode, there are occasionally timeouts in
-> > the test simply due to QEMU being extremely slow or other weirdness.
-> >
-> >
-> Hi Marco,
+> In [1], Christoph Hellwig has proposed to remove the wrappers in
+> include/linux/pci-dma-compat.h.
 >
-> There are some of the results of the current test:
-> 1. Using qemu-kvm on arm64 machine, all testcase can pass.
-> 2. Using qemu-system-aarch64 on x86_64 machine, randomly some testcases fail.
-> 3. Using qemu-system-aarch64 on x86_64, but removing the judgment of kfence_allocation_key in kfence_alloc(), all testcase can pass.
+> Some reasons why this API should be removed have been given by Julia
+> Lawall in [2].
 >
-> I add some printing to the kernel and get very strange results.
-> I add a new variable kfence_allocation_key_gate to track the
-> state of kfence_allocation_key. As shown in the following code, theoretically,
-> if kfence_allocation_key_gate is zero, then kfence_allocation_key must be
-> enabled, so the value of variable error in kfence_alloc() should always be
-> zero. In fact, all the passed testcases fit this point. But as shown in the
-> following failed log, although kfence_allocation_key has been enabled, it's
-> still check failed here.
+> Finally, Arnd Bergmann reminded that the documentation was updated 11 years
+> ago to only describe the modern linux/dma-mapping.h interfaces and mark the
+> old bus-specific ones as no longer recommended, see commit 216bf58f4092
+> ("Documentation: convert PCI-DMA-mapping.txt to use the generic DMA API").
 >
-> So I think static_key might be problematic in my qemu environment.
-> The change of timeout is not a problem but caused us to observe this problem.
-> I tried changing the wait_event to a loop. I set timeout to HZ and re-enable/disabled
-> in each loop, then the failed testcase disappears.
+> A coccinelle script has been used to perform the needed transformation
+> Only relevant parts are given below.
+>
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_sg(e1, e2, e3, e4)
+> +    dma_map_sg(&e1->dev, e2, e3, e4)
+>
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_sg(e1, e2, e3, e4)
+> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+>
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+>
+> [1]: https://lore.kernel.org/kernel-janitors/20200421081257.GA131897@infradead.org/
+> [2]: https://lore.kernel.org/kernel-janitors/alpine.DEB.2.22.394.2007120902170.2424@hadrien/
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> v2: Change Subject to be more explicit
+>     Keep only relevant part of the coccinelle script
+>     Try to improve the commit message to give some reason of why this change is done
 
-Nice analysis, thanks! What I gather is that static_keys/jump_labels
-are somehow broken in QEMU.
-
-This does remind me that I found a bug in QEMU that might be relevant:
-https://bugs.launchpad.net/qemu/+bug/1920934
-Looks like it was never fixed. :-/
-
-The failures I encountered caused the kernel to crash, but never saw
-the kfence test to fail due to that (never managed to get that far).
-Though the bug I saw was on x86 TCG mode, and I never tried arm64. If
-you can, try to build a QEMU with ASan and see if you also get the
-same use-after-free bug.
-
-Unless we observe the problem on a real machine, I think for now we
-can conclude with fairly high confidence that QEMU TCG still has
-issues and cannot be fully trusted here (see bug above).
-
-Thanks,
--- Marco
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
