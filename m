@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0E7410655
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCCF41065A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhIRMRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:17:42 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:48939 "EHLO
+        id S233144AbhIRMUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 08:20:08 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:40077 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230358AbhIRMRk (ORCPT
+        by vger.kernel.org with ESMTP id S230333AbhIRMUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:17:40 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id E77372B0120D;
-        Sat, 18 Sep 2021 08:16:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 18 Sep 2021 08:16:17 -0400
+        Sat, 18 Sep 2021 08:20:07 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id C6E112B01213;
+        Sat, 18 Sep 2021 08:18:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sat, 18 Sep 2021 08:18:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=r4OHZ5J/qMsCG0z1FGhpVZq7FqS
-        4WXlZG5DPh3w3xVI=; b=V+BdbPl6MN0ocacq8loL5m7GdfPkUS3vZ7kTczsu6C+
-        k6NX59lGvWyIgdNkwtFRaSQTMtGi2bbFVw3AZ9+n/YZkheSEkUL7VBx/Qs7iujiQ
-        Uu09Jh1530IwENX/CSPpS9Y8sXBSU9VV0WP4HlNs3UbQJ2EwlMEeVFjRbgmaDAKV
-        k9lBWQepAs9zB5LWcoSM5fBe3FUKIjpJq6Ce2TcgOHP+k8jnq6s4ANPpigQSlZq3
-        KApKgzm0c6BafNtimkfNCuaYgbBH8mSGsCJU9SE+2VmGeOzXthgt89YwAPCaYAWH
-        Wjpcnt1RgPdua5MeGMhGKdXVgGFpUJc+4B+DxTRMV0g==
+        :content-type:in-reply-to; s=fm1; bh=iRLBf3WrhDpNS0i+Si62yDtyDBy
+        h99mHvR4p/74M3xg=; b=VpuqDuutQFpm/RHjyVK0AXW6/twFocaOcHyeuP+E7UB
+        VHU6+YgIf3tzg+MBpPdckISizlCli8y4/nr/9oPP8tejVIzRVotXWp75wFPsq1p9
+        v289ci2W0PHC68H+EgK0wtMPdwRo8YpmSYYkTTSDlEKjq4AgWhz12PYwAUBfYGyo
+        T+10VVARDEYCmgl4J/P56wKoKzcs1gHXSkz9d0unelvwFvkwv/2h9JIzlSlbt1C3
+        /QCx7bWq1whTBF7wSfGGUAlxfB5MRCg23D4+uqXjVgXo7+l/IV1U9t9Zy+0gSfEY
+        OPIp/BWu5+vpTzEOFHkoLXpOW/+CfQJj5fwdF3oMqng==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=r4OHZ5
-        J/qMsCG0z1FGhpVZq7FqS4WXlZG5DPh3w3xVI=; b=Gq8TdLfuLTuBEJe1zctunc
-        sRXbpQGUE6XV6Pghp2SLz6t6VVO3kcv0RvlaImmw6hLU1QstcoLxDaigbqCTlnyh
-        faMgj0VvZqAU4dRnRYVS3GyX+cptU2EJjx+Hvrl422A+V9nggku8EPiLE/oHtAJ8
-        1Lk63UDZrKpbHXFoM7DKbTMrp/HCkzt4eXG/GWfhtH6ezflAD8u4PgFdbDRfmEza
-        WrynEFaP3NZSxnn/h5Js41YjPBkROgbGqnre8DjnTMZvf/UzXM11XgXwErEyNyxk
-        cHQg4KjM/tRfCTVhJEBznRxDm76agFrvt3bY6bgoQX2pE/B56sOeCdS5/wll1vfg
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=iRLBf3
+        WrhDpNS0i+Si62yDtyDByh99mHvR4p/74M3xg=; b=AYVkLLXwaSJZlmVp7PUv3Y
+        BI2bpX+2Ej2TqPIOoAwJtvlx6mcHAthXzw0/4qqdSKK1qZpBEUhMu1jFLYsxz4f1
+        haIqgBvdFWQRVieREtq3sQg0qHRp1axw5OJrTFTbueGtasE/SU4hh0gln998klX/
+        7XzrXVifvSrOYanobndvpezxSUgjpWMdyIX1ekIH3oSlUkodXfzjephdUaSl2m5e
+        bjWhFG29zRVFZxDWUZ6v9od1IZwT3yDkR8v6wsEDPDYloQUj1uBDTsgfaYAmrDUp
+        +E8BtTG1WTPKEL+c8OuGfhQaPHaGhgpywQBrYn7PdeKJLJkGe9IDELtTerLn3uoQ
         ==
-X-ME-Sender: <xms:jdhFYeip_D8ZsCvYLIj5cbCBA5KzmIv821zhdw-pVXkEtR7oAj91vw>
-    <xme:jdhFYfDjEFmzixP9lRJI145brwRmdOZ44gzIJSy768bDtZb2GK8y6XkX4u-KU1huZ
-    r_dES6U3m3GOg>
-X-ME-Received: <xmr:jdhFYWEFm1GV1EY5swRs9ADpTED-9srL1aHCi1YHLXc7zgYMKK9K3rfQuc5-QQZ1z7BSilAmgJOGX6BMeaD1ez7wmdF0nDOx>
+X-ME-Sender: <xms:ItlFYbU_tER0FYmqDuctQuNzOTYIiypkHZkUZC3F2Zck9XoFFrMV6A>
+    <xme:ItlFYTnazSqpeHopBzWdxf_fsEeo2S2sfZa6wXUi4B5wq22ccJlUmzZZrzq6bKa1f
+    QrkMB32X4wGtw>
+X-ME-Received: <xmr:ItlFYXZ4ob0dT8VWbtyWGiGDTpJXj3N78Z88Tj3sUWxEt_nBVtpUVJLevs6viz0EguAis5i6o2C2yBvlDO_6TNqmox5k3U5p>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -49,58 +49,53 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeejucetufdoteggod
     fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
     vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
     drtghomh
-X-ME-Proxy: <xmx:jdhFYXTcJV7IsPo6k6DGrg_Al8DA7ajCsnnpAfqzZweT34wzRqkHqg>
-    <xmx:jdhFYbzZYikeS42Gf5NeYyK8bnN-6a6Dzi_dY0DRAyRBaP3Gq7DJ4g>
-    <xmx:jdhFYV457LCvGra0Q2RJp4qU8mpGTmHHw8sauBPByzPRVG8hPuoFMQ>
-    <xmx:jthFYU-wCgjbVPQIXlTNOLSLUOiQVQgArAzwZ_pSU0sCghL6IecCO6w1Sp0>
+X-ME-Proxy: <xmx:ItlFYWW6pXXgO1fZxT5MqhQNKHsuidpFW3mkmPdOn7EpB9CEX2VhnQ>
+    <xmx:ItlFYVnfZqRVgeuQPdzfTF70aYEo0oVxxxtVgO1fna-uzJFv_Jn7Mw>
+    <xmx:ItlFYTeraQGdj-woZq3mPXFFiZtxhv1GPATnJPaBcDwbTD1h5qSlJw>
+    <xmx:ItlFYef5l7Bw3ibCxsZK3PA57o0cCqMrF3_2GzkYfh9IS9i65M4qo5hzafk>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 18 Sep 2021 08:16:12 -0400 (EDT)
-Date:   Sat, 18 Sep 2021 14:16:10 +0200
+ 18 Sep 2021 08:18:41 -0400 (EDT)
+Date:   Sat, 18 Sep 2021 14:18:40 +0200
 From:   Greg KH <greg@kroah.com>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     Robert Foss <robert.foss@linaro.org>, a.hajda@samsung.com,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, airlied@linux.ie,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Anibal Limon <anibal.limon@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/bridge: lt9611: Fix handling of 4k panels
-Message-ID: <YUXYitidmr7d9z3v@kroah.com>
-References: <20201217140933.1133969-1-robert.foss@linaro.org>
- <CAMn1gO4y6yC0fcLYdGfYR4KqPq9Ff0n4DhEczWQh9J6ceobs5A@mail.gmail.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org,
+        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH stable-5.4.y stable-5.10.y] btrfs: fix upper limit for
+ max_inline for page size 64K
+Message-ID: <YUXZIHWG97Pae1HG@kroah.com>
+References: <305e717a1ce9bda18b1867c6fb079f91d6e54c98.1631776544.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMn1gO4y6yC0fcLYdGfYR4KqPq9Ff0n4DhEczWQh9J6ceobs5A@mail.gmail.com>
+In-Reply-To: <305e717a1ce9bda18b1867c6fb079f91d6e54c98.1631776544.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 12:47:05PM -0700, Peter Collingbourne wrote:
-> On Thu, Dec 17, 2020 at 6:09 AM Robert Foss <robert.foss@linaro.org> wrote:
-> >
-> > 4k requires two dsi pipes, so don't report MODE_OK when only a
-> > single pipe is configured. But rather report MODE_PANEL to
-> > signal that requirements of the panel are not being met.
-> >
-> > Reported-by: Peter Collingbourne <pcc@google.com>
-> > Suggested-by: Peter Collingbourne <pcc@google.com>
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > Tested-by: John Stultz <john.stultz@linaro.org>
-> > Tested-by: Anibal Limon <anibal.limon@linaro.org>
-> > Acked-By: Vinod Koul <vkoul@kernel.org>
-> > Tested-by: Peter Collingbourne <pcc@google.com>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Thu, Sep 16, 2021 at 03:34:01PM +0800, Anand Jain wrote:
+> Commit 6f93e834fa7c5faa0372e46828b4b2a966ac61d7 upstream.
 > 
-> This landed in commit d1a97648ae028a44536927c87837c45ada7141c9. Since
-> this is a bug fix I'd like to request it to be applied to the 5.10
-> stable kernel.
+> The mount option max_inline ranges from 0 to the sectorsize (which is
+> now equal to page size). But we parse the mount options too early and
+> before the actual sectorsize is read from the superblock. So the upper
+> limit of max_inline is unaware of the actual sectorsize and is limited
+> by the temporary sectorsize 4096, even on a system where the default
+> sectorsize is 64K.
+> 
+> Fix this by reading the superblock sectorsize before the mount option
+> parse.
+> 
+> Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
+> CC: stable@vger.kernel.org # 5.4+
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/disk-io.c | 45 +++++++++++++++++++++++----------------------
+>  1 file changed, 23 insertions(+), 22 deletions(-)
 
 Now queued up, thanks.
 
