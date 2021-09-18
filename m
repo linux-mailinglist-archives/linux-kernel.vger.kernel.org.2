@@ -2,159 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860A24102BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 03:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED6D4102BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 03:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbhIRBi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 21:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhIRBiY (ORCPT
+        id S236698AbhIRBof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 21:44:35 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9745 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhIRBob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 21:38:24 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD9CC061574;
-        Fri, 17 Sep 2021 18:37:02 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id bb10so7329749plb.2;
-        Fri, 17 Sep 2021 18:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=oGhHOU+/gcGTeyUbIMMfpc4ORIcrYhZC2Z5o775DyuE=;
-        b=OwCz/B0hrLbwnT35U5f2Y65iLVGCQzAKUyhhDqfDU/IUaW//VC08GmDptSSBDr6UhN
-         F7Tnq4s+GVkIWNXek1dr/vkITUsjK10BXsZdrntUgB7jMNY2EJ6edwdEgw5X2n97/Ui4
-         CfStkW+n+PAsogl2pCBBvDNSb49WQOt9CEX9RC1zy9FV5RYx1Hrrj6OaPeBtxopVtTgR
-         y99CKiAI09d6TAhxTruhOgnZc6uuRtYqWii44NEzpWuiuvSEZq2Cz3cg54MHA2rSVAt/
-         WGD3FXUCpb/k8q45+EgN+V6X0+WDayZDnH3wVuxNLGImS8K0uP2P+0kUuciMlTMdk5eM
-         VySA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=oGhHOU+/gcGTeyUbIMMfpc4ORIcrYhZC2Z5o775DyuE=;
-        b=Qs/H21aBgjkkRnS9oSfcjqaSi4S6j0bo6tqrMifbPK5SXW5HjInXvyEEfL0xpar0Ob
-         KprwtEq71PArG8l1IFuxQZ7zlWiDbGNpz+KgFe4COQqF2hOl4JTRjcCbr0Wr1E8fYtUM
-         Y5cJXy1OuujkHsa3JsIGG+XJvaae9NOTC3u124NleZztJHTJcdZ/PMqJ7ZQFPapILwLh
-         QkOkcx04H2N+vOLBDiLN/dJ4ZqPr+EuibE9YQBC+yXzJ3JCI5AKAkrK1YEbrjJfapR3S
-         KymrnrqiM/gWjosZB11zHu3vu26mGS27v5J/rFKzcCAqXPR2f3YEN/Seq+Rz/eJDh0XE
-         t+Zw==
-X-Gm-Message-State: AOAM530SZf7RO3aULlJ5ImvIf3NGJRTh87GN/Zzkgfb6klkv2slTH4Oe
-        JmvbLttRz7uI6ih/UgsxVH7PZ8JO0agoieYARDkKJJ8yQXPf
-X-Google-Smtp-Source: ABdhPJySZPvaRXVsuzf4kRKJi6Qd5j0+Q/bjK8JBJqDx5e2rNaN3pjt/+kQX99KmFwqt4Iw1jfa6W0oXFR9VMU4a0Ho=
-X-Received: by 2002:a17:90a:b794:: with SMTP id m20mr16101536pjr.178.1631929021138;
- Fri, 17 Sep 2021 18:37:01 -0700 (PDT)
+        Fri, 17 Sep 2021 21:44:31 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HBD8B2qTRzW4M7;
+        Sat, 18 Sep 2021 09:42:02 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 18 Sep 2021 09:43:06 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Sat, 18 Sep
+ 2021 09:43:06 +0800
+Subject: Re: [PATCH net-next v2 3/3] skbuff: keep track of pp page when
+ __skb_frag_ref() is called
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <brouer@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <hawk@kernel.org>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <cong.wang@bytedance.com>,
+        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
+        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
+        <dsahern@gmail.com>
+References: <0337e2f6-5428-2c75-71a5-6db31c60650a@redhat.com>
+ <fef7d148-95d6-4893-8924-1071ed43ff1b@huawei.com>
+ <YUMD2v7ffs1xAjaW@apalos.home>
+ <ac16cc82-8d98-6a2c-b0a6-7c186808c72c@huawei.com>
+ <YUMelDd16Aw8w5ZH@apalos.home>
+ <e2e127be-c9e4-5236-ba3c-28fdb53aa29b@huawei.com>
+ <YUMxKhzm+9MDR0jW@apalos.home>
+ <36676c07-c2ca-bbd2-972c-95b4027c424f@huawei.com>
+ <YUQ3ySFxc/DWzsMy@apalos.home>
+ <4a682251-3b40-b16a-8999-69acb36634f3@huawei.com>
+ <YUStryKMMhhqbQdz@Iliass-MBP>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <5d8232b1-4b85-f755-a92a-d305bff9eab3@huawei.com>
+Date:   Sat, 18 Sep 2021 09:43:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Sat, 18 Sep 2021 09:36:50 +0800
-Message-ID: <CACkBjsbiT96KTK2Cjf0PxyOFRs8w0GPUWdR=97oVxSJMvDxNJQ@mail.gmail.com>
-Subject: general protection fault in rcu_segcblist_enqueue
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
-        seanjc@google.com, tglx@linutronix.de, vkuznets@redhat.com,
-        wanpengli@tencent.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUStryKMMhhqbQdz@Iliass-MBP>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021/9/17 23:01, Ilias Apalodimas wrote:
+>>>>>>> In that case you'd need to call virt_to_head_page() early though, get it
+> [...]
+>>>>>>> and then compare the signature.   I guess that's avoidable by using 
+>>>>>>> frag->bv_page for the fragments?
+>>>>>>
+>>>>>> If a page of a skb frag is from page pool, It seems frag->bv_page is
+>>>>>> always point to head_page of a compound page, so the calling of
+>>>>>> virt_to_head_page() does not seems necessary.
+>>>>>>
+>>>>>
+>>>>> I was mostly referring to the skb head here and how would you trigger the
+>>>>> recycling path. 
+>>>>>
+>>>>> I think we are talking about different things here.  
+>>>>> One idea is to use the last bit of frag->bv_page to identify fragments
+>>>>> allocated from page_pool, which is done today with the signature.
+>>>>>
+>>>>> The signature however exists in the head page so my question was, can we rid
+>>>>> of that without having a performance penalty?
+>>>>
+>>>> As both skb frag and head page is eventually operated on the head page
+>>>> of a compound page(if it is a compound page) for normal case too, maybe
+>>>> we can refactor the code to get the head page of a compound page before
+>>>> the signature checking without doing a second virt_to_head_page() or
+>>>> compound_head() call?
+>>>
+>>> Yea that's doable, but my concern is different here.  If we do that the
+>>> standard network stack, even for drivers that don't use page_pool,  will
+>>> have to do a virt_to_head_page() -> check signature, to decide if it has to
+>>> try recycling the packet.  That's the performance part I am worried about,
+>>> since it happens for every packet. 
+>>
+>> Yes, there is theoretically performance penalty for virt_to_head_page() or
+>> compound_head(), will do more test if we decide to go with the signature
+>> checking.
+> 
+> Can we check this somehow?  I can send a patch for this,  but my 
+> testing is limited to 1Gbit for the recycling.  I can find
+> 25/100Gbit interfaces for the 'normal' path.
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+I have done the signature checking for frag page of a skb, I am not
+able to see noticable change between patched(patched with this patch) and
+unpatched, for small packet drop test case(perfermance data is about 34Mpps).
 
-HEAD commit: ff1ffd71d5f0 Merge tag 'hyperv-fixes-signed-20210915
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1I3q-rH7yJXxmr16cI418avyA_tHdoOVE/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1zXpDhs-IdE7tX17B7MhaYP0VGUfP6m9B/view?usp=sharing
+As the hns3 driver does not use the build_skb() API, so I am not able to test
+the signature checking penalty for head page of a skb, any chance to do the
+testing for head page of a skb on your side?
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>> IOW in skb_free_head() an we replace:
+>>>>>
+>>>>> if (skb_pp_recycle(skb, head)) 
+>>>>> with
+>>>>> if (page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+>>>>> and get rid of the 'bool recycle' argument in __skb_frag_unref()?
+>>>>
+>>>> For the frag page of a skb, it seems ok to get rid of the 'bool recycle'
+>>>> argument in __skb_frag_unref(), as __skb_frag_unref() and __skb_frag_ref()
+>>>> is symmetrically called to put/get a page.
+>>>>
+>>>> For the head page of a skb, we might need to make sure the head page
+>>>> passed to __build_skb_around() meet below condition:
+>>>> do pp_frag_count incrementing instead of _refcount incrementing when
+>>>> the head page is not newly allocated and it is from page pool.
+>>>> It seems hard to audit that?
+>>>
+>>> Yea that seems a bit weird at least to me and I am not sure, it's the only
+>>> place we'll have to go and do that.
+>>
+>> Yes, That is why I avoid changing the behavior of a head page for a skb.
+>> In other word, maybe we should not track if head page for a skb is pp page
+>> or not when the page'_refcount is incremented during network stack journey,
+>> just treat it as normal page?
+>>  
+> 
+> I am not sure I understand this.
 
-general protection fault, probably for non-canonical address
-0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 3 PID: 18519 Comm: syz-executor Not tainted 5.15.0-rc1+ #6
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:rcu_segcblist_enqueue+0xf5/0x1d0 kernel/rcu/rcu_segcblist.c:348
-Code: 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02 00 75 7c
-48 b8 00 00 00 00 00 fc ff df 4c 8b 63 20 4c 89 e2 48 c1 ea 03 <80> 3c
-02 00 75 4f 48 89 ea 49 89 34 24 48 b8 00 00 00 00 00 fc ff
-RSP: 0018:ffffc90001bafbd0 EFLAGS: 00010056
-RAX: dffffc0000000000 RBX: ffff888135d00080 RCX: ffffffff815c1ca0
-RDX: 0000000000000000 RSI: ffffc90001bafcd0 RDI: ffff888135d00080
-RBP: ffff888135d000a0 R08: 0000000000000001 R09: fffff52000375f6e
-R10: 0000000000000003 R11: fffff52000375f6d R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888135d00080 R15: ffff888135d00040
-FS:  00007f2d96e17700(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2d96df5db8 CR3: 000000010aedf000 CR4: 0000000000350ee0
-Call Trace:
- srcu_gp_start_if_needed+0x145/0xbf0 kernel/rcu/srcutree.c:823
- __synchronize_srcu+0x1f4/0x270 kernel/rcu/srcutree.c:929
- kvm_mmu_uninit_vm+0x18/0x30 arch/x86/kvm/mmu/mmu.c:5711
- kvm_arch_destroy_vm+0x42b/0x5b0 arch/x86/kvm/x86.c:11331
- kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1094 [inline]
- kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:4583 [inline]
- kvm_dev_ioctl+0x1508/0x1aa0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4638
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:874 [inline]
- __se_sys_ioctl fs/ioctl.c:860 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2d96e16c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 000000000000ae01 RDI: 0000000000000003
-RBP: 00000000004ebd80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0a0
-R13: 00007ffd87419e4f R14: 00007ffd87419ff0 R15: 00007f2d96e16dc0
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 786f845bf6575473 ]---
-RIP: 0010:rcu_segcblist_enqueue+0xf5/0x1d0 kernel/rcu/rcu_segcblist.c:348
-Code: 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02 00 75 7c
-48 b8 00 00 00 00 00 fc ff df 4c 8b 63 20 4c 89 e2 48 c1 ea 03 <80> 3c
-02 00 75 4f 48 89 ea 49 89 34 24 48 b8 00 00 00 00 00 fc ff
-RSP: 0018:ffffc90001bafbd0 EFLAGS: 00010056
-RAX: dffffc0000000000 RBX: ffff888135d00080 RCX: ffffffff815c1ca0
-RDX: 0000000000000000 RSI: ffffc90001bafcd0 RDI: ffff888135d00080
-RBP: ffff888135d000a0 R08: 0000000000000001 R09: fffff52000375f6e
-R10: 0000000000000003 R11: fffff52000375f6d R12: 0000000000000000
-R13: 0000000000000000 R14: ffff888135d00080 R15: ffff888135d00040
-FS:  00007f2d96e17700(0000) GS:ffff888135d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2d96df5db8 CR3: 000000010aedf000 CR4: 0000000000350ee0
-----------------
-Code disassembly (best guess):
-   0: 00 00                add    %al,(%rax)
-   2: 00 00                add    %al,(%rax)
-   4: 00 fc                add    %bh,%ah
-   6: ff                    (bad)
-   7: df 48 89              fisttps -0x77(%rax)
-   a: ea                    (bad)
-   b: 48 c1 ea 03          shr    $0x3,%rdx
-   f: 80 3c 02 00          cmpb   $0x0,(%rdx,%rax,1)
-  13: 75 7c                jne    0x91
-  15: 48 b8 00 00 00 00 00 movabs $0xdffffc0000000000,%rax
-  1c: fc ff df
-  1f: 4c 8b 63 20          mov    0x20(%rbx),%r12
-  23: 4c 89 e2              mov    %r12,%rdx
-  26: 48 c1 ea 03          shr    $0x3,%rdx
-* 2a: 80 3c 02 00          cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e: 75 4f                jne    0x7f
-  30: 48 89 ea              mov    %rbp,%rdx
-  33: 49 89 34 24          mov    %rsi,(%r12)
-  37: 48                    rex.W
-  38: b8 00 00 00 00        mov    $0x0,%eax
-  3d: 00 fc                add    %bh,%ah
-  3f: ff                    .byte 0xff
+I was saying only treat the head page of a skb as pp page when it is newly
+allocated from page pool, if that page is reference-counted to build another
+head page for another skb later, just treat it as normal page.
+
+> 
+>>>
+>>>>
+>>>>
+>>>>>
+>>>>>> bit 0 of frag->bv_page is different way of indicatior for a pp page,
+>>>>>> it is better we do not confuse with the page signature way. Using
+>>>>>> a bit 0 may give us a free word in 'struct page' if we manage to
+>>>>>> use skb->pp_recycle to indicate a head page of the skb uniquely, meaning
+>>>>>> page->pp_magic can be used for future feature.
+>>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>>> for pp_recycle right now?  __skb_frag_unref() in skb_shift() or
+>>>>>>>>> skb_try_coalesce() (the latter can probably be removed tbh).
+>>>>>>>>
+>>>>>>>> If we decide to go with accurate indicator of a pp page, we just need
+>>>>>>>> to make sure network stack use __skb_frag_unref() and __skb_frag_ref()
+>>>>>>>> to put and get a page frag, the indicator checking need only done in
+>>>>>>>> __skb_frag_unref() and __skb_frag_ref(), so the skb_shift() and
+>>>>>>>> skb_try_coalesce() should be fine too.
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Another way is to use the bit 0 of frag->bv_page ptr to indicate if a frag
+>>>>>>>>>> page is from page pool.
+>>>>>>>>>
+>>>>>>>>> Instead of the 'struct page' signature?  And the pp_recycle bit will
+>>>>>>>>> continue to exist?  
+>>>>>>>>
+>>>>>>>> pp_recycle bit might only exist or is only used for the head page for the skb.
+>>>>>>>> The bit 0 of frag->bv_page ptr can be used to indicate a frag page uniquely.
+>>>>>>>> Doing a memcpying of shinfo or "*fragto = *fragfrom" automatically pass the
+>>>>>>>> indicator to the new shinfo before doing a __skb_frag_ref(), and __skb_frag_ref()
+>>>>>>>> will increment the _refcount or pp_frag_count according to the bit 0 of
+>>>>>>>> frag->bv_page.
+>>>>>>>>
+>>>>>>>> By the way, I also prototype the above idea, and it seems to work well too.
+>>>>>>>>
+>>>>>>>
+>>>>>>> As long as no one else touches this, it's just another way of identifying a
+>>>>>>> page_pool allocated page.  But are we gaining by that?  Not using
+>>>>>>> virt_to_head_page() as stated above? But in that case you still need to
+>>>>>>> keep pp_recycle around. 
+>>>>>>
+>>>>>> No, we do not need the pp_recycle, as long as the we make sure __skb_frag_ref()
+>>>>>> is called after memcpying the shinfo or doing "*fragto = *fragfrom".
+>>>>>
+>>>>> But we'll have to keep it for the skb head in this case.
+>>>>
+>>>> As above, I am not really look into skb head case:)
+>>>
+>>> Let me take a step back here, because I think we drifted a bit. 
+>>> The page signature was introduced in order to be able to identify skb
+>>> fragments. The problem was that you couldn't rely on the pp_recycle bit of
+>>> the skb head,  since fragments could come from anywhere.  So you use the
+>>> skb bit as a hint for skb frags, and you eventually decide using the page
+>>> signature.
+>>>
+>>> So we got 3 options (Anything I've missed ?)
+>>> - try to remove pp_recycle bit, since the page signature is enough for the
+>>>   skb head and fragments.  That in my opinion is the cleanest option,  as
+>>>   long as we can prove there's no performance hit on the standard network
+>>>   path.
+>>>
+>>> - Replace the page signature with frag->bv_page bit0.  In that case we
+>>>   still have to keep the pp_recycle bit,  but we do have an 'easier'
+>>>   indication that a skb frag comes from page_pool.  That's still pretty
+>>>   safe, since you now have unique identifiers for the skb and page
+>>>   fragments and you can be sure of their origin (page pool or not).
+>>>   What I am missing here, is what do we get out of this?  I think the
+>>>   advantage is not having to call virt_to_head_page() for frags ?
+>>
+>> Not using the signature will free a word space in struct page for future
+>> feature?
+> 
+> Yea that's another thing we gain,  but I am not sure how useful how this is
+> going to turn out.  
+> 
+>>
+>>>
+>>> - Keep all of them(?) and use frag->bv_page bit0 similarly to pp_recycle
+>>>   bit?  I don't see much value on this one,  I am just keeping it here for
+>>>   completeness.
+>>
+>>
+>> For safty and performance reason:
+>> 1. maybe we should move the pp_recycle bit from "struct sk_buff" to
+>>    "struct skb_shared_info", and use it to only indicate if the head page of
+>>    a skb is from page pool.
+> 
+> What's the safety or performance we gain out of this?  The only performance
+
+safety is that we still have two ways to indicate a pp page.
+the pp_recycle bit in  "struct skb_shared_info" or frag->bv_page bit0 tell
+if we want to treat a page as pp page, the page signature checking is used
+to tell if we if set those bits correctly?
+
+> I can think of is the dirty cache line of the recycle bit we set to 0.
+> If we do move it to skb_shared)info we'll have to make sure it's on the
+> same cacheline as the ones we already change.
+
+Yes, when we move the pp_recycle bit to skb_shared_info, that bit is only
+set once, and we seems to not need to worry about skb doing cloning or
+expanding as the it is part of head page(shinfo is part of head page).
+
+>>
+>> 2. The frag->bv_page bit0 is used to indicate if the frag page of a skb is
+>>    from page pool, and modify __skb_frag_unref() and __skb_frag_ref() to keep
+>>    track of it.
+>>
+>> 3. For safty or debugging reason, keep the page signature for now, and put a
+>>    page signature WARN_ON checking in page pool to catch any misbehaviour?
+>>
+>> If there is not bug showing up later, maybe we can free the page signature space
+>> for other usage?
+> 
+> Yea that's essentially identical to (2) but we move the pp_recycle on the
+> skb_shared_info.  I'd really prefer getting rid of the pp_recycle entirely,
+
+When also removing the pp_recycle for head page of a skb, it seems a little
+risky as we are not sure when a not-newly-allocated pp page is called with
+__build_skb_around() to build to head page?
+
+
+> since it's the cleanest thing we can do in my head.  If we ever need an
+> extra 4/8 bytes in the future,  we can always go back and implement this.
+> 
+> Alexander/Jesper any additional thoughts?
+> 
+> Regards
+> /Ilias
+>>
+>>>
+>>> Thanks
+>>> /Ilias
+>>
+> .
+> 
