@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6794105A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110CA4105A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242524AbhIRJu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:50:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24814 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238697AbhIRJuz (ORCPT
+        id S241208AbhIRJxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:53:34 -0400
+Received: from smtp-1.orcon.net.nz ([60.234.4.34]:47989 "EHLO
+        smtp-1.orcon.net.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232402AbhIRJxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:50:55 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18I8T3CU004212;
-        Sat, 18 Sep 2021 05:49:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=9dLHDMdViNARy19k1iJaKcR/1w7DgQdslbYG7qyGkG8=;
- b=M6JUja24XsezOIhZx6gVdYVd8Lt0G2khpndZxcekJGJE1GSNEe1gPd5yuMhbaL/6wtZt
- x0INluab4LBSWiw/Fx7E/g8kgeaLMx+ALglACqFAEuXw7yoVGYqAdh861KHg0AgY0x9F
- /onL+lJSm75M1UzfUHJlA8i2tHIxtQYw7K37/NMmWKjjNkKsq09NuJxxACn0uyRXqbwp
- mit2lHchx+7uTVYKOFq/zeVfkg26dngtEMcJkKw2IhNgwp5WbzNXVVo558bnSaLN4CUJ
- 2P0N4HyGYcTz13sY7g3bz3OGoD36JupUUw7r3Uc6tAE1UF6ABuIdu9YtDxxxhO4qqTCz EQ== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b5cmy8udc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 Sep 2021 05:49:30 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18I9lFwf013545;
-        Sat, 18 Sep 2021 09:49:28 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 3b57chsucr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 Sep 2021 09:49:28 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18I9nOPD42074516
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 18 Sep 2021 09:49:25 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD55711C054;
-        Sat, 18 Sep 2021 09:49:24 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83C3111C04C;
-        Sat, 18 Sep 2021 09:49:24 +0000 (GMT)
-Received: from localhost (unknown [9.171.78.247])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 18 Sep 2021 09:49:24 +0000 (GMT)
-Date:   Sat, 18 Sep 2021 11:49:23 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
+        Sat, 18 Sep 2021 05:53:32 -0400
+Received: from [121.99.228.40] (port=57284 helo=tower)
+        by smtp-1.orcon.net.nz with esmtpa (Exim 4.90_1)
+        (envelope-from <mcree@orcon.net.nz>)
+        id 1mRX0V-0006SB-Bq; Sat, 18 Sep 2021 21:51:40 +1200
+Date:   Sat, 18 Sep 2021 21:51:34 +1200
+From:   Michael Cree <mcree@orcon.net.nz>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.15-rc2
-Message-ID: <your-ad-here.call-01631958563-ext-0235@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: A-14OaLgjAoTpgimZbVwD0nUoYSjhk68
-X-Proofpoint-ORIG-GUID: A-14OaLgjAoTpgimZbVwD0nUoYSjhk68
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+Message-ID: <20210918095134.GA5001@tower>
+Mail-Followup-To: Michael Cree <mcree@orcon.net.nz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+References: <20210915035227.630204-1-linux@roeck-us.net>
+ <CAHk-=wjXr+NnNPTorhaW81eAbdF90foVo-5pQqRmXZi-ZGaX6Q@mail.gmail.com>
+ <47fcc9cc-7d2e-bc79-122b-8eccfe00d8f3@roeck-us.net>
+ <CAHk-=wgdEHPm6vGcJ_Zr-Q_p=Muv1Oby5H2+6QyPGxiZ7_Wv+w@mail.gmail.com>
+ <20210915223342.GA1556394@roeck-us.net>
+ <CAHk-=wgQ4jsPadbo4kr4=UKn0nR+UvWUZF9Q-xv0QUXb33SVRA@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-18_03,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- adultscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 mlxlogscore=976 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109180064
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgQ4jsPadbo4kr4=UKn0nR+UvWUZF9Q-xv0QUXb33SVRA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-GeoIP: NZ
+X-Spam_score: -2.9
+X-Spam_score_int: -28
+X-Spam_bar: --
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Thu, Sep 16, 2021 at 11:35:36AM -0700, Linus Torvalds wrote:
+> On Wed, Sep 15, 2021 at 3:33 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > drivers/net/ethernet/3com/3c515.c: In function 'corkscrew_start_xmit':
+> > drivers/net/ethernet/3com/3c515.c:1053:22: error:
+> >         cast from pointer to integer of different size
+> >
+> > That is a typecast from a pointer to an int, which is then sent to an
+> > i/o port. That driver should probably be disabled for 64-bit builds.
+> 
+> Naah. I think the Jensen actually had an ISA slot. Came with a
+> whopping 8MB too, so the ISA DMA should work just fine.
+> 
+> Or maybe it was EISA only? I really don't remember.
+> 
+> It's possible that alpha should get rid of the ISA config option, and
+> use ISA_BUS instead. That would be the proper config if there aren't
+> actually any ISA _slots_, and it would disable the 3c515 driver.
+> 
+> But it turns out that the compile error is easy to fix. Just make it
+> use isa_virt_to_bus(), which that driver does elsewhere anyway.
+> 
+> I have no way - or interest - to test that on real hardware, but I did
+> check that if I relax the config I can at least build it cleanly on
+> x86-64 with that change.
+> 
+> It can't make matters worse, and it's the RightThing(tm).
+> 
+> Since Micheal replied about that other alpha issue, maybe he knows
+> about the ISA slot situation too?
 
-please pull s390 changes for 5.15-rc2.
+Ah, yeah, not really.  I am not familiar with the Jensen hardware,
+and have never played around with the EISA slot on the Alphas I do
+have.
 
-Thank you,
-Vasily
-
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.15-3
-
-for you to fetch changes up to f5711f9df9242446feccf2bdb6fdc06a72ca1010:
-
-  s390: remove WARN_DYNAMIC_STACK (2021-09-15 14:29:21 +0200)
-
-----------------------------------------------------------------
-s390 updates for 5.15-rc2
-
-- Fix potential out-of-range access during secure boot facility detection.
-
-- Fully validate the VMA before calling follow_pte() in pci code.
-
-- Remove arch specific WARN_DYNAMIC_STACK config option.
-
-- Fix zcrypto kernel doc comments.
-
-- Update defconfigs.
-
-----------------------------------------------------------------
-Alexander Egorenkov (1):
-      s390/sclp: fix Secure-IPL facility detection
-
-David Hildenbrand (1):
-      s390/pci_mmio: fully validate the VMA before calling follow_pte()
-
-Heiko Carstens (3):
-      s390: update defconfigs
-      s390/ap: fix kernel doc comments
-      s390: remove WARN_DYNAMIC_STACK
-
- arch/s390/Kconfig                 | 10 ----------
- arch/s390/Makefile                |  7 -------
- arch/s390/configs/debug_defconfig |  8 +++++---
- arch/s390/configs/defconfig       |  5 ++++-
- arch/s390/pci/pci_mmio.c          |  4 ++--
- drivers/s390/char/sclp_early.c    |  3 ++-
- drivers/s390/crypto/ap_bus.c      |  3 ++-
- drivers/s390/crypto/ap_queue.c    |  4 ++--
- 8 files changed, 17 insertions(+), 27 deletions(-)
+Cheers
+Michael.
