@@ -2,161 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB70410533
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786DA410509
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237919AbhIRIkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 04:40:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236345AbhIRIke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 04:40:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B506124B;
-        Sat, 18 Sep 2021 08:39:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631954351;
-        bh=I3OXBH6Jsft3MeFXXif2KAYrH0PL5mHvHWDLsrpF3p0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a9hjTcoDC0ygV/THN5MB4kBvc1nnulxFRN2ENZlTd88T2ditC8k61LEK7nro1pcKy
-         58YoRM/lwtdqh8GyJ8qXWBf/3Vx0F85rmORFagsAOyvTiRfGxdRnqMcvWAcFYC1YKF
-         375MnAbUtdYufFWtwtFjnlbzHb6ShWIbS2AWBWorMK1G9X3G85uL7vshrzItTf70VH
-         KTqdnkocRfkn3jy+f8FEJabg3VvC7uH3Jng6O9C4dPMmbmv18gCNn/jpIMEJRH7Dyi
-         MKcdnMDQZoWAMPe1dUw+5D79OrlymmveofL+SMizg3O59N3058HbTxrnBCSp1x6q3B
-         G5psP8Km2jW+A==
-Received: by mail-oo1-f42.google.com with SMTP id k20-20020a4ad114000000b0029133123994so4012936oor.4;
-        Sat, 18 Sep 2021 01:39:11 -0700 (PDT)
-X-Gm-Message-State: AOAM530yNhgT/PGtBX4j6jqqBmEn98rlAaaf5lLpTWVl48iOjaUgdEmA
-        TsTgsbNsWrjA9SzrobPZX/rlPSOJW0lmqTJYlJ4=
-X-Google-Smtp-Source: ABdhPJwhjcwUIBun9pdQA2AKk6/UkuNunTe3+nY6kMyQMkX2egUVkh/hJR0L43iF+/kZGTei1N8EB2+UDKBIhXdrDvg=
-X-Received: by 2002:a05:6820:1049:: with SMTP id x9mr4953726oot.40.1631954350758;
- Sat, 18 Sep 2021 01:39:10 -0700 (PDT)
+        id S243821AbhIRIL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 04:11:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9894 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243653AbhIRILy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 04:11:54 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HBNgF07rGz8yQD;
+        Sat, 18 Sep 2021 16:06:01 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 18 Sep 2021 16:10:30 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 18 Sep
+ 2021 16:10:29 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     <kasan-dev@googlegroups.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH] arm64: remove page granularity limitation from KFENCE
+Date:   Sat, 18 Sep 2021 16:38:49 +0800
+Message-ID: <20210918083849.2696287-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca> <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local> <20210916131014.GK3544071@ziepe.ca> <YUSKSHBC9uI49wZZ@phenom.ffwll.local>
-In-Reply-To: <YUSKSHBC9uI49wZZ@phenom.ffwll.local>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Sat, 18 Sep 2021 11:38:42 +0300
-X-Gmail-Original-Message-ID: <CAFCwf12o-+wtbk8J8k8hP4_k0a8Lco4m9f4s1vBobkQwNtn39w@mail.gmail.com>
-Message-ID: <CAFCwf12o-+wtbk8J8k8hP4_k0a8Lco4m9f4s1vBobkQwNtn39w@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 3:30 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Thu, Sep 16, 2021 at 10:10:14AM -0300, Jason Gunthorpe wrote:
-> > On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
-> > > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > >
-> > > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > > > Hi,
-> > > > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > > > compiler and runtime library.
-> > > > > > >
-> > > > > > > I would appreciate a review on this.
-> > > > > >
-> > > > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > > > >
-> > > > > > I think there's a few options:
-> > > > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > > > >   hold-up was again that makes this a no-go?
-> > > > >
-> > > > > RDMA HW can't do revoke.
-> > >
-> > > Like why? I'm assuming when the final open handle or whatever for that MR
-> > > is closed, you do clean up everything? Or does that MR still stick around
-> > > forever too?
-> >
-> > It is a combination of uAPI and HW specification.
-> >
-> > revoke here means you take a MR object and tell it to stop doing DMA
-> > without causing the MR object to be destructed.
-> >
-> > All the drivers can of course destruct the MR, but doing such a
-> > destruction without explicit synchronization with user space opens
-> > things up to a serious use-after potential that could be a security
-> > issue.
-> >
-> > When the open handle closes the userspace is synchronized with the
-> > kernel and we can destruct the HW objects safely.
-> >
-> > So, the special HW feature required is 'stop doing DMA but keep the
-> > object in an error state' which isn't really implemented, and doesn't
-> > extend very well to other object types beyond simple MRs.
->
-> Yeah revoke without destroying the MR doesn't work, and it sounds like
-> revoke by destroying the MR just moves the can of worms around to another
-> place.
->
-> > > 1. User A opens gaudi device, sets up dma-buf export
-> > >
-> > > 2. User A registers that with RDMA, or anything else that doesn't support
-> > > revoke.
-> > >
-> > > 3. User A closes gaudi device
-> > >
-> > > 4. User B opens gaudi device, assumes that it has full control over the
-> > > device and uploads some secrets, which happen to end up in the dma-buf
-> > > region user A set up
-> >
-> > I would expect this is blocked so long as the DMABUF exists - eg the
-> > DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
-> > that #3 can't actually happen.
-> >
-> > > It's not mlocked memory, it's mlocked memory and I can exfiltrate
-> > > it.
-> >
-> > That's just bug, don't make buggy drivers :)
->
-> Well yeah, but given that habanalabs hand rolled this I can't just check
-> for the usual things we have to enforce this in drm. And generally you can
-> just open chardevs arbitrarily, and multiple users fighting over each
-> another. The troubles only start when you have private state or memory
-> allocations of some kind attached to the struct file (instead of the
-> underlying device), or something else that requires device exclusivity.
-> There's no standard way to do that.
->
-> Plus in many cases you really want revoke on top (can't get that here
-> unfortunately it seems), and the attempts to get towards a generic
-> revoke() just never went anywhere. So again it's all hand-rolled
-> per-subsystem. *insert lament about us not having done this through a
-> proper subsystem*
->
-> Anyway it sounds like the code takes care of that.
-> -Daniel
+Currently if KFENCE is enabled in arm64, the entire linear map will be
+mapped at page granularity which seems overkilled. Actually only the
+kfence pool requires to be mapped at page granularity. We can remove the
+restriction from KFENCE and force the linear mapping of the kfence pool
+at page granularity later in arch_kfence_init_pool().
 
-Daniel, Jason,
-Thanks for reviewing this code.
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ arch/arm64/include/asm/kfence.h | 69 ++++++++++++++++++++++++++++++++-
+ arch/arm64/mm/mmu.c             |  4 +-
+ 2 files changed, 70 insertions(+), 3 deletions(-)
 
-Can I get an R-B / A-B from you for this patch-set ?
+diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
+index aa855c6a0ae6..bee101eced0b 100644
+--- a/arch/arm64/include/asm/kfence.h
++++ b/arch/arm64/include/asm/kfence.h
+@@ -8,9 +8,76 @@
+ #ifndef __ASM_KFENCE_H
+ #define __ASM_KFENCE_H
+ 
++#include <linux/kfence.h>
+ #include <asm/set_memory.h>
++#include <asm/pgalloc.h>
+ 
+-static inline bool arch_kfence_init_pool(void) { return true; }
++static inline int split_pud_page(pud_t *pud, unsigned long addr)
++{
++	int i;
++	pmd_t *pmd = pmd_alloc_one(&init_mm, addr);
++	unsigned long pfn = PFN_DOWN(__pa(addr));
++
++	if (!pmd)
++		return -ENOMEM;
++
++	for (i = 0; i < PTRS_PER_PMD; i++)
++		set_pmd(pmd + i, pmd_mkhuge(pfn_pmd(pfn + i * PTRS_PER_PTE, PAGE_KERNEL)));
++
++	smp_wmb(); /* See comment in __pte_alloc */
++	pud_populate(&init_mm, pud, pmd);
++	flush_tlb_kernel_range(addr, addr + PUD_SIZE);
++	return 0;
++}
++
++static inline int split_pmd_page(pmd_t *pmd, unsigned long addr)
++{
++	int i;
++	pte_t *pte = pte_alloc_one_kernel(&init_mm);
++	unsigned long pfn = PFN_DOWN(__pa(addr));
++
++	if (!pte)
++		return -ENOMEM;
++
++	for (i = 0; i < PTRS_PER_PTE; i++)
++		set_pte(pte + i, pfn_pte(pfn + i, PAGE_KERNEL));
++
++	smp_wmb(); /* See comment in __pte_alloc */
++	pmd_populate_kernel(&init_mm, pmd, pte);
++
++	flush_tlb_kernel_range(addr, addr + PMD_SIZE);
++	return 0;
++}
++
++static inline bool arch_kfence_init_pool(void)
++{
++	unsigned long addr;
++	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
++	pmd_t *pmd;
++
++	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
++	     addr += PAGE_SIZE) {
++		pgd = pgd_offset(&init_mm, addr);
++		if (pgd_leaf(*pgd))
++			return false;
++		p4d = p4d_offset(pgd, addr);
++		if (p4d_leaf(*p4d))
++			return false;
++		pud = pud_offset(p4d, addr);
++		if (pud_leaf(*pud)) {
++			if (split_pud_page(pud, addr & PUD_MASK))
++				return false;
++		}
++		pmd = pmd_offset(pud, addr);
++		if (pmd_leaf(*pmd)) {
++			if (split_pmd_page(pmd, addr & PMD_MASK))
++				return false;
++		}
++	}
++	return true;
++}
+ 
+ static inline bool kfence_protect_page(unsigned long addr, bool protect)
+ {
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index cfd9deb347c3..b2c79ccfb1c5 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -516,7 +516,7 @@ static void __init map_mem(pgd_t *pgdp)
+ 	 */
+ 	BUILD_BUG_ON(pgd_index(direct_map_end - 1) == pgd_index(direct_map_end));
+ 
+-	if (can_set_direct_map() || crash_mem_map || IS_ENABLED(CONFIG_KFENCE))
++	if (can_set_direct_map() || crash_mem_map)
+ 		flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ 
+ 	/*
+@@ -1485,7 +1485,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+ 	 * KFENCE requires linear map to be mapped at page granularity, so that
+ 	 * it is possible to protect/unprotect single pages in the KFENCE pool.
+ 	 */
+-	if (can_set_direct_map() || IS_ENABLED(CONFIG_KFENCE))
++	if (can_set_direct_map())
+ 		flags |= NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+ 
+ 	__create_pgd_mapping(swapper_pg_dir, start, __phys_to_virt(start),
+-- 
+2.18.0.huawei.25
 
-Thanks,
-Oded
