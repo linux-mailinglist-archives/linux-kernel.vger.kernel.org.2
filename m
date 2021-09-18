@@ -2,1277 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137A44104A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E6D4104A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242578AbhIRHQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S242782AbhIRHRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhIRHQH (ORCPT
+        with ESMTP id S230509AbhIRHRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:16:07 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D076C061574;
-        Sat, 18 Sep 2021 00:14:44 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id y141so102807vsy.5;
-        Sat, 18 Sep 2021 00:14:44 -0700 (PDT)
+        Sat, 18 Sep 2021 03:17:33 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B739DC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:16:10 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id s11so11873225pgr.11
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:16:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/KxtU4HLEqcdWX4EUnBY0BdVcaxu/q8+rNHFSqqEaXg=;
-        b=ZuXB2KES5S76AOly4wY/7WYdnCxGYvftPQ0JVq+4V1y2y3GAyY4kaOoz90REaC9ll/
-         nmmQPArIsMmdl0Y8gsYlmxxGoGmKXlXDxTK9RQuk7yduINtuVH2uvZnen81C9RX90Sx+
-         m5X18aSfhyH2ByjdlzHfFmPJdL6/1rg3hyPfWQMNQ6VwjKDQKtWYKbngqGHryb7wp9YN
-         p+z5iDpFlgiCoAxT2W3k95lBsshNWZZ7vWh3oKIFmgnDpPV8HfzDJ4eXsMcibjtzfrGu
-         7asDUSn5zPl3rYrVp87yjbWnA9CvkK3GEX1no4WJEQf0Je2hShQJ/kPwyZHLmR/4ek6l
-         FMcg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F4eSocmINO9DM/nsnuozs7zFs5+R33uFfLe2OLUBhoI=;
+        b=iiGWy30v0yGnAMDIN+Xw4shv6+BI7AW2yAHxsVxRudefH2vNl3p3ljyHDlXatjh7Kd
+         bGaNOEusZK2e6V4fWzzmK0lcUggJlPQzdbkVh8UDV8cLkZE6NNYT1mk8r5EiNa/mA312
+         7JNVzbVsAIVpfU+me43YAoy8NOCVcagU9ZHdAKJR2xWkiZ6PV5tYQb6J1WKwsmWwjgN+
+         jLCO0aImTuPxlLXUwE3wT8U/aD4UaqSYCF+Brq/6SAaMtvH0e8B0OM9txpvbTwzB6VVB
+         8GAjxDh/c3f8/Niwnzkq7bplo9tDLh0RvwQacDrDBGa4bd9YuYEOeJrIvoQBiNYzX/uJ
+         kkPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/KxtU4HLEqcdWX4EUnBY0BdVcaxu/q8+rNHFSqqEaXg=;
-        b=yBe7GJLusTbdtRexBNxBPZzIPxqUSSVAFV38m3vwSXpa3VKwf7FOBLfyNlhL/G/PAl
-         nQRS9g5XSWm0J+uhUXXwEe49/4cY/dcwr36fYaKgBK3ooASWFtqgF937fLlnDu2jdfJh
-         PPCMatnNgOutDrmwSqSPuIb492wYG50aRBXfloIg4bbPUTZb+cOG+zOa9trDHG6hTesU
-         nPHnnNle6AobqmXySyb9Tm8QITWSDvA/g2qWdzgO+mzr+xuqw0Bj1HnUpluMt8hYbIuR
-         0rlM1IpYeXWIiobi/sizEUg+jSToJQNNHQnTA+0Q8I2o1ON79KgYOLYCzURjljANFjWz
-         Uolw==
-X-Gm-Message-State: AOAM533PeNfHgN9MU+I/Q/zmbZ/elFPVZ8HdfKuiA75PPNDqk/l3n5o+
-        QydAgws09Fj6vrJ/o3pPGh+lY/9TDl7qI2j+rnE=
-X-Google-Smtp-Source: ABdhPJycnDInZhKxauUYkgEnAYKxs9JGO591rs9/lK7wBq9m0CCtYaezJStqz0O9bmZc/K9QHUwLD7mHHSn5YikOkjM=
-X-Received: by 2002:a67:ee12:: with SMTP id f18mr11880706vsp.20.1631949283342;
- Sat, 18 Sep 2021 00:14:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
- <20210917035736.3934017-16-chenhuacai@loongson.cn> <CAK8P3a0p1rmVaQiNeOCfk6B5_EZ-8EmwfSmT-6A3zwOga2hX3A@mail.gmail.com>
-In-Reply-To: <CAK8P3a0p1rmVaQiNeOCfk6B5_EZ-8EmwfSmT-6A3zwOga2hX3A@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Sat, 18 Sep 2021 15:14:31 +0800
-Message-ID: <CAAhV-H6Mq6nRXBmAyHbi22zcubfLAF36W9u8QLOtSrN7609d=A@mail.gmail.com>
-Subject: Re: [PATCH V3 15/22] LoongArch: Add elf and module support
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F4eSocmINO9DM/nsnuozs7zFs5+R33uFfLe2OLUBhoI=;
+        b=Yv4pG3INxuSrIqRLgh76r21L5BiUgaZ8dvKoiJ85T5YsGv0nThKG4GZtQYeIbkxbJ8
+         aXREi66d2BKPrAinNX9jOlUnhsAPsbR8UxoEm4PNZzy4cj2erJGYaeUn6t0GLdQTI9Vo
+         g8xo0L9xb8X1BF70A9aCcrJSNqcVkz/16xOfoGeNL7FakMeoK6SFbCJjxdeNfIYu4R/V
+         SGKDxAKyk08lNIMHCFqCwciE/DE7bd9Cz8YGq2RoSvxkGwPTeuyDPs/oJohulIwNvgRM
+         jmrdkypWO7B08FpLnMUsFMzFbof732xNaMw3A6kp5iIRkBkIzY3iWKlZ/N6/D5lyJP49
+         R0kg==
+X-Gm-Message-State: AOAM531KAHngr9paR1W0qvoBaX01p1cIM2mPggHQgs8NCzxfeE10Ser9
+        GJilRDT1DwI1Zg3dl7ieSP+dFTEjiRY=
+X-Google-Smtp-Source: ABdhPJxLFUrck4i3qspHVH2ydoDCp9EJBR9czP2rN46FQgIVoEn9Ech8WY3FHlVrHhbThEhnGcxaUQ==
+X-Received: by 2002:a62:15ca:0:b0:43f:76a3:2988 with SMTP id 193-20020a6215ca000000b0043f76a32988mr14934060pfv.65.1631949370198;
+        Sat, 18 Sep 2021 00:16:10 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id v3sm8080751pfc.193.2021.09.18.00.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 00:16:09 -0700 (PDT)
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     42.hyeyoo@gmail.com
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] mm: slub: merge get_freelist into ___slab_alloc
+Date:   Sat, 18 Sep 2021 07:15:51 +0000
+Message-Id: <20210918071552.53171-1-42.hyeyoo@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Arnd,
+get_freelist was introduced commit 213eeb9fd9d6 ("slub: Extract
+get_freelist from __slab_alloc") and its comment says this function
+transfers freelist to the per cpu freelist or deactivate page.
 
-On Fri, Sep 17, 2021 at 4:29 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Fri, Sep 17, 2021 at 5:57 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
-> >
-> > This patch adds elf definition and module relocate codes.
-> >
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >  arch/loongarch/include/asm/cpufeature.h  |  24 +
-> >  arch/loongarch/include/asm/elf.h         | 308 +++++++++++
-> >  arch/loongarch/include/asm/exec.h        |  10 +
-> >  arch/loongarch/include/asm/module.h      |  15 +
-> >  arch/loongarch/include/asm/vermagic.h    |  19 +
-> >  arch/loongarch/include/uapi/asm/auxvec.h |  17 +
-> >  arch/loongarch/include/uapi/asm/hwcap.h  |  20 +
-> >  arch/loongarch/kernel/elf.c              |  41 ++
-> >  arch/loongarch/kernel/module.c           | 652 +++++++++++++++++++++++
-> >  9 files changed, 1106 insertions(+)
-> >  create mode 100644 arch/loongarch/include/asm/cpufeature.h
-> >  create mode 100644 arch/loongarch/include/asm/elf.h
-> >  create mode 100644 arch/loongarch/include/asm/exec.h
-> >  create mode 100644 arch/loongarch/include/asm/module.h
-> >  create mode 100644 arch/loongarch/include/asm/vermagic.h
-> >  create mode 100644 arch/loongarch/include/uapi/asm/auxvec.h
-> >  create mode 100644 arch/loongarch/include/uapi/asm/hwcap.h
-> >  create mode 100644 arch/loongarch/kernel/elf.c
-> >  create mode 100644 arch/loongarch/kernel/module.c
->
-> Please add Jessica Yu and  Luis Chamberlain as reviewers to Cc in the
-> future. I have no further comments on this patch, fullquote below for them
-> as reference.
-OK, thanks, I will CC them.
+But what it actually does is just deactivating page and returning
+its freelist. And the code working with variable 'new' is confusing
+because it does nothing.
 
-Huacai
->
->         Arnd
->
-> > diff --git a/arch/loongarch/include/asm/cpufeature.h b/arch/loongarch/include/asm/cpufeature.h
-> > new file mode 100644
-> > index 000000000000..7e4c6a769830
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/cpufeature.h
-> > @@ -0,0 +1,24 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * CPU feature definitions for module loading, used by
-> > + * module_cpu_feature_match(), see uapi/asm/hwcap.h for LoongArch CPU features.
-> > + *
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +
-> > +#ifndef __ASM_CPUFEATURE_H
-> > +#define __ASM_CPUFEATURE_H
-> > +
-> > +#include <uapi/asm/hwcap.h>
-> > +#include <asm/elf.h>
-> > +
-> > +#define MAX_CPU_FEATURES (8 * sizeof(elf_hwcap))
-> > +
-> > +#define cpu_feature(x)         ilog2(HWCAP_ ## x)
-> > +
-> > +static inline bool cpu_have_feature(unsigned int num)
-> > +{
-> > +       return elf_hwcap & (1UL << num);
-> > +}
-> > +
-> > +#endif /* __ASM_CPUFEATURE_H */
-> > diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
-> > new file mode 100644
-> > index 000000000000..9f8c2ab1a206
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/elf.h
-> > @@ -0,0 +1,308 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_ELF_H
-> > +#define _ASM_ELF_H
-> > +
-> > +#include <linux/auxvec.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/mm_types.h>
-> > +
-> > +#include <uapi/linux/elf.h>
-> > +
-> > +#include <asm/current.h>
-> > +
-> > +/* ELF header e_flags defines. */
-> > +
-> > +/* The ABI of a file. */
-> > +#define EF_LARCH_ABI_LP32              0x00000001      /* LP32 ABI.  */
-> > +#define EF_LARCH_ABI_LPX32             0x00000002      /* LPX32 ABI  */
-> > +#define EF_LARCH_ABI_LP64              0x00000003      /* LP64 ABI  */
-> > +#define EF_LARCH_ABI                   0x00000003
-> > +
-> > +/* LoongArch relocation types used by the dynamic linker */
-> > +#define R_LARCH_NONE                           0
-> > +#define R_LARCH_32                             1
-> > +#define R_LARCH_64                             2
-> > +#define R_LARCH_RELATIVE                       3
-> > +#define R_LARCH_COPY                           4
-> > +#define R_LARCH_JUMP_SLOT                      5
-> > +#define R_LARCH_TLS_DTPMOD32                   6
-> > +#define R_LARCH_TLS_DTPMOD64                   7
-> > +#define R_LARCH_TLS_DTPREL32                   8
-> > +#define R_LARCH_TLS_DTPREL64                   9
-> > +#define R_LARCH_TLS_TPREL32                    10
-> > +#define R_LARCH_TLS_TPREL64                    11
-> > +#define R_LARCH_IRELATIVE                      12
-> > +#define R_LARCH_MARK_LA                                20
-> > +#define R_LARCH_MARK_PCREL                     21
-> > +#define R_LARCH_SOP_PUSH_PCREL                 22
-> > +#define R_LARCH_SOP_PUSH_ABSOLUTE              23
-> > +#define R_LARCH_SOP_PUSH_DUP                   24
-> > +#define R_LARCH_SOP_PUSH_GPREL                 25
-> > +#define R_LARCH_SOP_PUSH_TLS_TPREL             26
-> > +#define R_LARCH_SOP_PUSH_TLS_GOT               27
-> > +#define R_LARCH_SOP_PUSH_TLS_GD                        28
-> > +#define R_LARCH_SOP_PUSH_PLT_PCREL             29
-> > +#define R_LARCH_SOP_ASSERT                     30
-> > +#define R_LARCH_SOP_NOT                                31
-> > +#define R_LARCH_SOP_SUB                                32
-> > +#define R_LARCH_SOP_SL                         33
-> > +#define R_LARCH_SOP_SR                         34
-> > +#define R_LARCH_SOP_ADD                                35
-> > +#define R_LARCH_SOP_AND                                36
-> > +#define R_LARCH_SOP_IF_ELSE                    37
-> > +#define R_LARCH_SOP_POP_32_S_10_5              38
-> > +#define R_LARCH_SOP_POP_32_U_10_12             39
-> > +#define R_LARCH_SOP_POP_32_S_10_12             40
-> > +#define R_LARCH_SOP_POP_32_S_10_16             41
-> > +#define R_LARCH_SOP_POP_32_S_10_16_S2          42
-> > +#define R_LARCH_SOP_POP_32_S_5_20              43
-> > +#define R_LARCH_SOP_POP_32_S_0_5_10_16_S2      44
-> > +#define R_LARCH_SOP_POP_32_S_0_10_10_16_S2     45
-> > +#define R_LARCH_SOP_POP_32_U                   46
-> > +#define R_LARCH_ADD8                           47
-> > +#define R_LARCH_ADD16                          48
-> > +#define R_LARCH_ADD24                          49
-> > +#define R_LARCH_ADD32                          50
-> > +#define R_LARCH_ADD64                          51
-> > +#define R_LARCH_SUB8                           52
-> > +#define R_LARCH_SUB16                          53
-> > +#define R_LARCH_SUB24                          54
-> > +#define R_LARCH_SUB32                          55
-> > +#define R_LARCH_SUB64                          56
-> > +#define R_LARCH_GNU_VTINHERIT                  57
-> > +#define R_LARCH_GNU_VTENTRY                    58
-> > +
-> > +#ifndef ELF_ARCH
-> > +
-> > +/* ELF register definitions */
-> > +
-> > +/*
-> > + * General purpose have the following registers:
-> > + *     Register        Number
-> > + *     GPRs            32
-> > + *     EPC             1
-> > + *     BADVADDR        1
-> > + *     CRMD            1
-> > + *     PRMD            1
-> > + *     EUEN            1
-> > + *     ECFG            1
-> > + *     ESTAT           1
-> > + *     Reserved        6
-> > + */
-> > +#define ELF_NGREG      45
-> > +
-> > +/*
-> > + * Floating point have the following registers:
-> > + *     Register        Number
-> > + *     FPR             32
-> > + *     FCC             1
-> > + *     FCSR            1
-> > + */
-> > +#define ELF_NFPREG     34
-> > +
-> > +typedef unsigned long elf_greg_t;
-> > +typedef elf_greg_t elf_gregset_t[ELF_NGREG];
-> > +
-> > +typedef double elf_fpreg_t;
-> > +typedef elf_fpreg_t elf_fpregset_t[ELF_NFPREG];
-> > +
-> > +void loongarch_dump_regs64(u64 *uregs, const struct pt_regs *regs);
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +/*
-> > + * This is used to ensure we don't load something for the wrong architecture.
-> > + */
-> > +#define elf_check_arch elf32_check_arch
-> > +
-> > +/*
-> > + * These are used to set parameters in the core dumps.
-> > + */
-> > +#define ELF_CLASS      ELFCLASS32
-> > +
-> > +#define ELF_CORE_COPY_REGS(dest, regs) \
-> > +       loongarch_dump_regs32((u32 *)&(dest), (regs));
-> > +
-> > +#endif /* CONFIG_32BIT */
-> > +
-> > +#ifdef CONFIG_64BIT
-> > +/*
-> > + * This is used to ensure we don't load something for the wrong architecture.
-> > + */
-> > +#define elf_check_arch elf64_check_arch
-> > +
-> > +/*
-> > + * These are used to set parameters in the core dumps.
-> > + */
-> > +#define ELF_CLASS      ELFCLASS64
-> > +
-> > +#define ELF_CORE_COPY_REGS(dest, regs) \
-> > +       loongarch_dump_regs64((u64 *)&(dest), (regs));
-> > +
-> > +#endif /* CONFIG_64BIT */
-> > +
-> > +/*
-> > + * These are used to set parameters in the core dumps.
-> > + */
-> > +#define ELF_DATA       ELFDATA2LSB
-> > +#define ELF_ARCH       EM_LOONGARCH
-> > +
-> > +#endif /* !defined(ELF_ARCH) */
-> > +
-> > +#define loongarch_elf_check_machine(x) ((x)->e_machine == EM_LOONGARCH)
-> > +
-> > +#define vmcore_elf32_check_arch loongarch_elf_check_machine
-> > +#define vmcore_elf64_check_arch loongarch_elf_check_machine
-> > +
-> > +/*
-> > + * Return non-zero if HDR identifies an 32bit ELF binary.
-> > + */
-> > +#define elf32_check_arch(hdr)                                          \
-> > +({                                                                     \
-> > +       int __res = 1;                                                  \
-> > +       struct elfhdr *__h = (hdr);                                     \
-> > +                                                                       \
-> > +       if (!loongarch_elf_check_machine(__h))                          \
-> > +               __res = 0;                                              \
-> > +       if (__h->e_ident[EI_CLASS] != ELFCLASS32)                       \
-> > +               __res = 0;                                              \
-> > +                                                                       \
-> > +       __res;                                                          \
-> > +})
-> > +
-> > +/*
-> > + * Return non-zero if HDR identifies an 64bit ELF binary.
-> > + */
-> > +#define elf64_check_arch(hdr)                                          \
-> > +({                                                                     \
-> > +       int __res = 1;                                                  \
-> > +       struct elfhdr *__h = (hdr);                                     \
-> > +                                                                       \
-> > +       if (!loongarch_elf_check_machine(__h))                          \
-> > +               __res = 0;                                              \
-> > +       if (__h->e_ident[EI_CLASS] != ELFCLASS64)                       \
-> > +               __res = 0;                                              \
-> > +                                                                       \
-> > +       __res;                                                          \
-> > +})
-> > +
-> > +struct loongarch_abi;
-> > +extern struct loongarch_abi loongarch_abi;
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +
-> > +#define SET_PERSONALITY2(ex, state)                                    \
-> > +do {                                                                   \
-> > +       current->thread.abi = &loongarch_abi;                           \
-> > +                                                                       \
-> > +       loongarch_set_personality_fcsr(state);                          \
-> > +                                                                       \
-> > +       if (personality(current->personality) != PER_LINUX)             \
-> > +               set_personality(PER_LINUX);                             \
-> > +} while (0)
-> > +
-> > +#endif /* CONFIG_32BIT */
-> > +
-> > +#ifdef CONFIG_64BIT
-> > +
-> > +#define SET_PERSONALITY2(ex, state)                                    \
-> > +do {                                                                   \
-> > +       unsigned int p;                                                 \
-> > +                                                                       \
-> > +       clear_thread_flag(TIF_32BIT_REGS);                              \
-> > +       clear_thread_flag(TIF_32BIT_ADDR);                              \
-> > +                                                                       \
-> > +       current->thread.abi = &loongarch_abi;                   \
-> > +       loongarch_set_personality_fcsr(state);                          \
-> > +                                                                       \
-> > +       p = personality(current->personality);                          \
-> > +       if (p != PER_LINUX32 && p != PER_LINUX)                         \
-> > +               set_personality(PER_LINUX);                             \
-> > +} while (0)
-> > +
-> > +#endif /* CONFIG_64BIT */
-> > +
-> > +#define CORE_DUMP_USE_REGSET
-> > +#define ELF_EXEC_PAGESIZE      PAGE_SIZE
-> > +
-> > +/*
-> > + * This yields a mask that user programs can use to figure out what
-> > + * instruction set this cpu supports. This could be done in userspace,
-> > + * but it's not easy, and we've already done it here.
-> > + */
-> > +
-> > +#define ELF_HWCAP      (elf_hwcap)
-> > +extern unsigned int elf_hwcap;
-> > +#include <asm/hwcap.h>
-> > +
-> > +/*
-> > + * This yields a string that ld.so will use to load implementation
-> > + * specific libraries for optimization.         This is more specific in
-> > + * intent than poking at uname or /proc/cpuinfo.
-> > + */
-> > +
-> > +#define ELF_PLATFORM  __elf_platform
-> > +extern const char *__elf_platform;
-> > +
-> > +/* The regs[11] (a7) holds the syscall number and should not cleared */
-> > +#define ELF_PLAT_INIT(_r, load_addr)   do { \
-> > +       _r->regs[1] = _r->regs[2] = _r->regs[3] = _r->regs[4] = 0;      \
-> > +       _r->regs[5] = _r->regs[6] = _r->regs[7] = _r->regs[8] = 0;      \
-> > +       _r->regs[9] = _r->regs[10] = _r->regs[12] = _r->regs[13] = 0;   \
-> > +       _r->regs[14] = _r->regs[15] = _r->regs[16] = _r->regs[17] = 0;  \
-> > +       _r->regs[18] = _r->regs[19] = _r->regs[20] = _r->regs[21] = 0;  \
-> > +       _r->regs[22] = _r->regs[23] = _r->regs[24] = _r->regs[25] = 0;  \
-> > +       _r->regs[26] = _r->regs[27] = _r->regs[28] = _r->regs[29] = 0;  \
-> > +       _r->regs[30] = _r->regs[31] = 0;                                \
-> > +} while (0)
-> > +
-> > +/*
-> > + * This is the location that an ET_DYN program is loaded if exec'ed. Typical
-> > + * use of this is to invoke "./ld.so someprog" to test out a new version of
-> > + * the loader. We need to make sure that it is out of the way of the program
-> > + * that it will "exec", and that there is sufficient room for the brk.
-> > + */
-> > +
-> > +#ifndef ELF_ET_DYN_BASE
-> > +#define ELF_ET_DYN_BASE                (TASK_SIZE / 3 * 2)
-> > +#endif
-> > +
-> > +/* update AT_VECTOR_SIZE_ARCH if the number of NEW_AUX_ENT entries changes */
-> > +#define ARCH_DLINFO                                                    \
-> > +do {                                                                   \
-> > +       NEW_AUX_ENT(AT_SYSINFO_EHDR,                                    \
-> > +                   (unsigned long)current->mm->context.vdso);          \
-> > +} while (0)
-> > +
-> > +#define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
-> > +struct linux_binprm;
-> > +extern int arch_setup_additional_pages(struct linux_binprm *bprm,
-> > +                                      int uses_interp);
-> > +
-> > +struct arch_elf_state {
-> > +       int fp_abi;
-> > +       int interp_fp_abi;
-> > +};
-> > +
-> > +#define LOONGARCH_ABI_FP_ANY   (0)
-> > +
-> > +#define INIT_ARCH_ELF_STATE {                  \
-> > +       .fp_abi = LOONGARCH_ABI_FP_ANY,         \
-> > +       .interp_fp_abi = LOONGARCH_ABI_FP_ANY,  \
-> > +}
-> > +
-> > +
-> > +extern int arch_elf_pt_proc(void *ehdr, void *phdr, struct file *elf,
-> > +                           bool is_interp, struct arch_elf_state *state);
-> > +
-> > +extern int arch_check_elf(void *ehdr, bool has_interpreter, void *interp_ehdr,
-> > +                         struct arch_elf_state *state);
-> > +
-> > +extern void loongarch_set_personality_fcsr(struct arch_elf_state *state);
-> > +
-> > +#define elf_read_implies_exec(ex, stk) loongarch_elf_read_implies_exec(&(ex), stk)
-> > +extern int loongarch_elf_read_implies_exec(void *elf_ex, int exstack);
-> > +
-> > +#endif /* _ASM_ELF_H */
-> > diff --git a/arch/loongarch/include/asm/exec.h b/arch/loongarch/include/asm/exec.h
-> > new file mode 100644
-> > index 000000000000..00df07ce3529
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/exec.h
-> > @@ -0,0 +1,10 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_EXEC_H
-> > +#define _ASM_EXEC_H
-> > +
-> > +extern unsigned long arch_align_stack(unsigned long sp);
-> > +
-> > +#endif /* _ASM_EXEC_H */
-> > diff --git a/arch/loongarch/include/asm/module.h b/arch/loongarch/include/asm/module.h
-> > new file mode 100644
-> > index 000000000000..6df72c6228e0
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/module.h
-> > @@ -0,0 +1,15 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_MODULE_H
-> > +#define _ASM_MODULE_H
-> > +
-> > +#include <asm-generic/module.h>
-> > +
-> > +#define RELA_STACK_DEPTH 16
-> > +
-> > +struct mod_arch_specific {
-> > +};
-> > +
-> > +#endif /* _ASM_MODULE_H */
-> > diff --git a/arch/loongarch/include/asm/vermagic.h b/arch/loongarch/include/asm/vermagic.h
-> > new file mode 100644
-> > index 000000000000..9882dfd4702a
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/asm/vermagic.h
-> > @@ -0,0 +1,19 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +#ifndef _ASM_VERMAGIC_H
-> > +#define _ASM_VERMAGIC_H
-> > +
-> > +#define MODULE_PROC_FAMILY "LOONGARCH "
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +#define MODULE_KERNEL_TYPE "32BIT "
-> > +#elif defined CONFIG_64BIT
-> > +#define MODULE_KERNEL_TYPE "64BIT "
-> > +#endif
-> > +
-> > +#define MODULE_ARCH_VERMAGIC \
-> > +       MODULE_PROC_FAMILY MODULE_KERNEL_TYPE
-> > +
-> > +#endif /* _ASM_VERMAGIC_H */
-> > diff --git a/arch/loongarch/include/uapi/asm/auxvec.h b/arch/loongarch/include/uapi/asm/auxvec.h
-> > new file mode 100644
-> > index 000000000000..5a2200fd75bf
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/uapi/asm/auxvec.h
-> > @@ -0,0 +1,17 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-> > +/*
-> > + * Author: Hanlu Li <lihanlu@loongson.cn>
-> > + *         Huacai Chen <chenhuacai@loongson.cn>
-> > + *
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +
-> > +#ifndef __ASM_AUXVEC_H
-> > +#define __ASM_AUXVEC_H
-> > +
-> > +/* Location of VDSO image. */
-> > +#define AT_SYSINFO_EHDR                33
-> > +
-> > +#define AT_VECTOR_SIZE_ARCH 1 /* entries in ARCH_DLINFO */
-> > +
-> > +#endif /* __ASM_AUXVEC_H */
-> > diff --git a/arch/loongarch/include/uapi/asm/hwcap.h b/arch/loongarch/include/uapi/asm/hwcap.h
-> > new file mode 100644
-> > index 000000000000..8840b72fa8e8
-> > --- /dev/null
-> > +++ b/arch/loongarch/include/uapi/asm/hwcap.h
-> > @@ -0,0 +1,20 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +#ifndef _UAPI_ASM_HWCAP_H
-> > +#define _UAPI_ASM_HWCAP_H
-> > +
-> > +/* HWCAP flags */
-> > +#define HWCAP_LOONGARCH_CPUCFG         (1 << 0)
-> > +#define HWCAP_LOONGARCH_LAM            (1 << 1)
-> > +#define HWCAP_LOONGARCH_UAL            (1 << 2)
-> > +#define HWCAP_LOONGARCH_FPU            (1 << 3)
-> > +#define HWCAP_LOONGARCH_LSX            (1 << 4)
-> > +#define HWCAP_LOONGARCH_LASX           (1 << 5)
-> > +#define HWCAP_LOONGARCH_CRC32          (1 << 6)
-> > +#define HWCAP_LOONGARCH_COMPLEX                (1 << 7)
-> > +#define HWCAP_LOONGARCH_CRYPTO         (1 << 8)
-> > +#define HWCAP_LOONGARCH_LVZ            (1 << 9)
-> > +#define HWCAP_LOONGARCH_LBT_X86                (1 << 10)
-> > +#define HWCAP_LOONGARCH_LBT_ARM                (1 << 11)
-> > +#define HWCAP_LOONGARCH_LBT_MIPS       (1 << 12)
-> > +
-> > +#endif /* _UAPI_ASM_HWCAP_H */
-> > diff --git a/arch/loongarch/kernel/elf.c b/arch/loongarch/kernel/elf.c
-> > new file mode 100644
-> > index 000000000000..072dfd40f0b5
-> > --- /dev/null
-> > +++ b/arch/loongarch/kernel/elf.c
-> > @@ -0,0 +1,41 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Author: Huacai Chen <chenhuacai@loongson.cn>
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +
-> > +#include <linux/binfmts.h>
-> > +#include <linux/elf.h>
-> > +#include <linux/export.h>
-> > +#include <linux/sched.h>
-> > +
-> > +#include <asm/cpu-features.h>
-> > +#include <asm/cpu-info.h>
-> > +
-> > +int arch_elf_pt_proc(void *_ehdr, void *_phdr, struct file *elf,
-> > +                    bool is_interp, struct arch_elf_state *state)
-> > +{
-> > +       return 0;
-> > +}
-> > +
-> > +int arch_check_elf(void *_ehdr, bool has_interpreter, void *_interp_ehdr,
-> > +                  struct arch_elf_state *state)
-> > +{
-> > +       return 0;
-> > +}
-> > +
-> > +void loongarch_set_personality_fcsr(struct arch_elf_state *state)
-> > +{
-> > +       current->thread.fpu.fcsr = boot_cpu_data.fpu_csr0;
-> > +}
-> > +
-> > +int loongarch_elf_read_implies_exec(void *elf_ex, int exstack)
-> > +{
-> > +       if (exstack != EXSTACK_DISABLE_X) {
-> > +               /* The binary doesn't request a non-executable stack */
-> > +               return 1;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +EXPORT_SYMBOL(loongarch_elf_read_implies_exec);
-> > diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/module.c
-> > new file mode 100644
-> > index 000000000000..af7c403b032b
-> > --- /dev/null
-> > +++ b/arch/loongarch/kernel/module.c
-> > @@ -0,0 +1,652 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Author: Hanlu Li <lihanlu@loongson.cn>
-> > + *         Huacai Chen <chenhuacai@loongson.cn>
-> > + *
-> > + * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-> > + */
-> > +
-> > +#undef DEBUG
-> > +
-> > +#include <linux/moduleloader.h>
-> > +#include <linux/elf.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/vmalloc.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/string.h>
-> > +#include <linux/kernel.h>
-> > +
-> > +static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       if (*rela_stack_top >= RELA_STACK_DEPTH)
-> > +               return -ENOEXEC;
-> > +
-> > +       rela_stack[(*rela_stack_top)++] = stack_value;
-> > +       pr_debug("%s stack_value = 0x%llx\n", __func__, stack_value);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int rela_stack_pop(s64 *stack_value, s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       if (*rela_stack_top == 0)
-> > +               return -ENOEXEC;
-> > +
-> > +       *stack_value = rela_stack[--(*rela_stack_top)];
-> > +       pr_debug("%s stack_value = 0x%llx\n", __func__, *stack_value);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_none(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_32(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       *location = v;
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_64(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       *(Elf_Addr *)location = v;
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_mark_la(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_mark_pcrel(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_push_pcrel(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       return rela_stack_push(v - (u64)location, rela_stack, rela_stack_top);
-> > +}
-> > +
-> > +static int apply_r_larch_sop_push_absolute(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       return rela_stack_push(v, rela_stack, rela_stack_top);
-> > +}
-> > +
-> > +static int apply_r_larch_sop_push_dup(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_push_plt_pcrel(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       return apply_r_larch_sop_push_pcrel(me, location, v, rela_stack, rela_stack_top);
-> > +}
-> > +
-> > +static int apply_r_larch_sop_sub(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1, opr2;
-> > +
-> > +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1 - opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_sl(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1, opr2;
-> > +
-> > +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1 << opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_sr(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1, opr2;
-> > +
-> > +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1 >> opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_add(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1, opr2;
-> > +
-> > +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1 + opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +static int apply_r_larch_sop_and(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1, opr2;
-> > +
-> > +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1 & opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_if_else(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1, opr2, opr3;
-> > +
-> > +       err = rela_stack_pop(&opr3, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr2, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +       err = rela_stack_push(opr1 ? opr2 : opr3, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_10_5(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 5-bit signed */
-> > +       if ((opr1 & ~(u64)0xf) &&
-> > +           (opr1 & ~(u64)0xf) != ~(u64)0xf) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) [14 ... 10] = opr [4 ... 0] */
-> > +       *location = (*location & (~(u32)0x7c00)) | ((opr1 & 0x1f) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_u_10_12(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 12-bit unsigned */
-> > +       if (opr1 & ~(u64)0xfff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) [21 ... 10] = opr [11 ... 0] */
-> > +       *location = (*location & (~(u32)0x3ffc00)) | ((opr1 & 0xfff) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_10_12(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 12-bit signed */
-> > +       if ((opr1 & ~(u64)0x7ff) &&
-> > +           (opr1 & ~(u64)0x7ff) != ~(u64)0x7ff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) [21 ... 10] = opr [11 ... 0] */
-> > +       *location = (*location & (~(u32)0x3ffc00)) | ((opr1 & 0xfff) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_10_16(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 16-bit signed */
-> > +       if ((opr1 & ~(u64)0x7fff) &&
-> > +           (opr1 & ~(u64)0x7fff) != ~(u64)0x7fff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) [25 ... 10] = opr [15 ... 0] */
-> > +       *location = (*location & 0xfc0003ff) | ((opr1 & 0xffff) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_10_16_s2(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 4-aligned */
-> > +       if (opr1 % 4) {
-> > +               pr_err("module %s: opr1 = 0x%llx unaligned! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       opr1 >>= 2;
-> > +       /* check 18-bit signed */
-> > +       if ((opr1 & ~(u64)0x7fff) &&
-> > +           (opr1 & ~(u64)0x7fff) != ~(u64)0x7fff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) [25 ... 10] = opr [17 ... 2] */
-> > +       *location = (*location & 0xfc0003ff) | ((opr1 & 0xffff) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_5_20(struct module *me, u32 *location, Elf_Addr v,
-> > +                                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 20-bit signed */
-> > +       if ((opr1 & ~(u64)0x7ffff) &&
-> > +           (opr1 & ~(u64)0x7ffff) != ~(u64)0x7ffff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) [24 ... 5] = opr [19 ... 0] */
-> > +       *location = (*location & (~(u32)0x1ffffe0)) | ((opr1 & 0xfffff) << 5);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_0_5_10_16_s2(struct module *me, u32 *location, Elf_Addr v,
-> > +                                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 4-aligned */
-> > +       if (opr1 % 4) {
-> > +               pr_err("module %s: opr1 = 0x%llx unaligned! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       opr1 >>= 2;
-> > +       /* check 23-bit signed */
-> > +       if ((opr1 & ~(u64)0xfffff) &&
-> > +           (opr1 & ~(u64)0xfffff) != ~(u64)0xfffff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /*
-> > +        * (*(uint32_t *) PC) [4 ... 0] = opr [22 ... 18]
-> > +        * (*(uint32_t *) PC) [25 ... 10] = opr [17 ... 2]
-> > +        */
-> > +       *location = (*location & 0xfc0003e0)
-> > +               | ((opr1 & 0x1f0000) >> 16) | ((opr1 & 0xffff) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_s_0_10_10_16_s2(struct module *me, u32 *location, Elf_Addr v,
-> > +                                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 4-aligned */
-> > +       if (opr1 % 4) {
-> > +               pr_err("module %s: opr1 = 0x%llx unaligned! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       opr1 >>= 2;
-> > +       /* check 28-bit signed */
-> > +       if ((opr1 & ~(u64)0x1ffffff) &&
-> > +           (opr1 & ~(u64)0x1ffffff) != ~(u64)0x1ffffff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /*
-> > +        * (*(uint32_t *) PC) [9 ... 0] = opr [27 ... 18]
-> > +        * (*(uint32_t *) PC) [25 ... 10] = opr [17 ... 2]
-> > +        */
-> > +       *location = (*location & 0xfc000000)
-> > +               | ((opr1 & 0x3ff0000) >> 16) | ((opr1 & 0xffff) << 10);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sop_pop_32_u(struct module *me, u32 *location, Elf_Addr v,
-> > +                                       s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       int err = 0;
-> > +       s64 opr1;
-> > +
-> > +       err = rela_stack_pop(&opr1, rela_stack, rela_stack_top);
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       /* check 32-bit unsigned */
-> > +       if (opr1 & ~(u64)0xffffffff) {
-> > +               pr_err("module %s: opr1 = 0x%llx overflow! dangerous %s relocation\n",
-> > +                       me->name, opr1, __func__);
-> > +               return -ENOEXEC;
-> > +       }
-> > +
-> > +       /* (*(uint32_t *) PC) = opr */
-> > +       *location = (u32)opr1;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_add32(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       *(s32 *)location += v;
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_add64(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       *(s64 *)location += v;
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sub32(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       *(s32 *)location -= v;
-> > +       return 0;
-> > +}
-> > +
-> > +static int apply_r_larch_sub64(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top)
-> > +{
-> > +       *(s64 *)location -= v;
-> > +       return 0;
-> > +}
-> > +
-> > +/*
-> > + * reloc_handlers_rela() - Apply a particular relocation to a module
-> > + * @me: the module to apply the reloc to
-> > + * @location: the address at which the reloc is to be applied
-> > + * @v: the value of the reloc, with addend for RELA-style
-> > + * @rela_stack: the stack used for store relocation info, LOCAL to THIS module
-> > + * @rela_stac_top: where the stack operation(pop/push) applies to
-> > + *
-> > + * Return: 0 upon success, else -ERRNO
-> > + */
-> > +typedef int (*reloc_rela_handler)(struct module *me, u32 *location, Elf_Addr v,
-> > +                               s64 *rela_stack, size_t *rela_stack_top);
-> > +
-> > +/* The handlers for known reloc types */
-> > +static reloc_rela_handler reloc_rela_handlers[] = {
-> > +       [R_LARCH_NONE]                          = apply_r_larch_none,
-> > +       [R_LARCH_32]                            = apply_r_larch_32,
-> > +       [R_LARCH_64]                            = apply_r_larch_64,
-> > +       [R_LARCH_MARK_LA]                       = apply_r_larch_mark_la,
-> > +       [R_LARCH_MARK_PCREL]                    = apply_r_larch_mark_pcrel,
-> > +       [R_LARCH_SOP_PUSH_PCREL]                = apply_r_larch_sop_push_pcrel,
-> > +       [R_LARCH_SOP_PUSH_ABSOLUTE]             = apply_r_larch_sop_push_absolute,
-> > +       [R_LARCH_SOP_PUSH_DUP]                  = apply_r_larch_sop_push_dup,
-> > +       [R_LARCH_SOP_PUSH_PLT_PCREL]            = apply_r_larch_sop_push_plt_pcrel,
-> > +       [R_LARCH_SOP_SUB]                       = apply_r_larch_sop_sub,
-> > +       [R_LARCH_SOP_SL]                        = apply_r_larch_sop_sl,
-> > +       [R_LARCH_SOP_SR]                        = apply_r_larch_sop_sr,
-> > +       [R_LARCH_SOP_ADD]                       = apply_r_larch_sop_add,
-> > +       [R_LARCH_SOP_AND]                       = apply_r_larch_sop_and,
-> > +       [R_LARCH_SOP_IF_ELSE]                   = apply_r_larch_sop_if_else,
-> > +       [R_LARCH_SOP_POP_32_S_10_5]             = apply_r_larch_sop_pop_32_s_10_5,
-> > +       [R_LARCH_SOP_POP_32_U_10_12]            = apply_r_larch_sop_pop_32_u_10_12,
-> > +       [R_LARCH_SOP_POP_32_S_10_12]            = apply_r_larch_sop_pop_32_s_10_12,
-> > +       [R_LARCH_SOP_POP_32_S_10_16]            = apply_r_larch_sop_pop_32_s_10_16,
-> > +       [R_LARCH_SOP_POP_32_S_10_16_S2]         = apply_r_larch_sop_pop_32_s_10_16_s2,
-> > +       [R_LARCH_SOP_POP_32_S_5_20]             = apply_r_larch_sop_pop_32_s_5_20,
-> > +       [R_LARCH_SOP_POP_32_S_0_5_10_16_S2]     = apply_r_larch_sop_pop_32_s_0_5_10_16_s2,
-> > +       [R_LARCH_SOP_POP_32_S_0_10_10_16_S2]    = apply_r_larch_sop_pop_32_s_0_10_10_16_s2,
-> > +       [R_LARCH_SOP_POP_32_U]                  = apply_r_larch_sop_pop_32_u,
-> > +       [R_LARCH_ADD32]                         = apply_r_larch_add32,
-> > +       [R_LARCH_ADD64]                         = apply_r_larch_add64,
-> > +       [R_LARCH_SUB32]                         = apply_r_larch_sub32,
-> > +       [R_LARCH_SUB64]                         = apply_r_larch_sub64,
-> > +};
-> > +
-> > +int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
-> > +                  unsigned int symindex, unsigned int relsec,
-> > +                  struct module *me)
-> > +{
-> > +       int i, err;
-> > +       unsigned int type;
-> > +       s64 rela_stack[RELA_STACK_DEPTH];
-> > +       size_t rela_stack_top = 0;
-> > +       reloc_rela_handler handler;
-> > +       void *location;
-> > +       Elf_Addr v;
-> > +       Elf_Sym *sym;
-> > +       Elf_Rel *rel = (void *) sechdrs[relsec].sh_addr;
-> > +
-> > +       pr_debug("%s: Applying relocate section %u to %u\n", __func__, relsec,
-> > +              sechdrs[relsec].sh_info);
-> > +
-> > +       rela_stack_top = 0;
-> > +       for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-> > +               /* This is where to make the change */
-> > +               location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr + rel[i].r_offset;
-> > +               /* This is the symbol it is referring to */
-> > +               sym = (Elf_Sym *)sechdrs[symindex].sh_addr + ELF_R_SYM(rel[i].r_info);
-> > +               if (IS_ERR_VALUE(sym->st_value)) {
-> > +                       /* Ignore unresolved weak symbol */
-> > +                       if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
-> > +                               continue;
-> > +                       pr_warn("%s: Unknown symbol %s\n", me->name, strtab + sym->st_name);
-> > +                       return -ENOENT;
-> > +               }
-> > +
-> > +               type = ELF_R_TYPE(rel[i].r_info);
-> > +
-> > +               if (type < ARRAY_SIZE(reloc_rela_handlers))
-> > +                       handler = reloc_rela_handlers[type];
-> > +               else
-> > +                       handler = NULL;
-> > +
-> > +               if (!handler) {
-> > +                       pr_err("%s: Unknown relocation type %u\n", me->name, type);
-> > +                       return -EINVAL;
-> > +               }
-> > +
-> > +               v = sym->st_value;
-> > +               err = handler(me, location, v, rela_stack, &rela_stack_top);
-> > +               if (err)
-> > +                       return err;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
-> > +                      unsigned int symindex, unsigned int relsec,
-> > +                      struct module *me)
-> > +{
-> > +       int i, err;
-> > +       unsigned int type;
-> > +       s64 rela_stack[RELA_STACK_DEPTH];
-> > +       size_t rela_stack_top = 0;
-> > +       reloc_rela_handler handler;
-> > +       void *location;
-> > +       Elf_Addr v;
-> > +       Elf_Sym *sym;
-> > +       Elf_Rela *rel = (void *) sechdrs[relsec].sh_addr;
-> > +
-> > +       pr_debug("%s: Applying relocate section %u to %u\n", __func__, relsec,
-> > +              sechdrs[relsec].sh_info);
-> > +
-> > +       rela_stack_top = 0;
-> > +       for (i = 0; i < sechdrs[relsec].sh_size / sizeof(*rel); i++) {
-> > +               /* This is where to make the change */
-> > +               location = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr + rel[i].r_offset;
-> > +               /* This is the symbol it is referring to */
-> > +               sym = (Elf_Sym *)sechdrs[symindex].sh_addr + ELF_R_SYM(rel[i].r_info);
-> > +               if (IS_ERR_VALUE(sym->st_value)) {
-> > +                       /* Ignore unresolved weak symbol */
-> > +                       if (ELF_ST_BIND(sym->st_info) == STB_WEAK)
-> > +                               continue;
-> > +                       pr_warn("%s: Unknown symbol %s\n", me->name, strtab + sym->st_name);
-> > +                       return -ENOENT;
-> > +               }
-> > +
-> > +               type = ELF_R_TYPE(rel[i].r_info);
-> > +
-> > +               if (type < ARRAY_SIZE(reloc_rela_handlers))
-> > +                       handler = reloc_rela_handlers[type];
-> > +               else
-> > +                       handler = NULL;
-> > +
-> > +               if (!handler) {
-> > +                       pr_err("%s: Unknown relocation type %u\n", me->name, type);
-> > +                       return -EINVAL;
-> > +               }
-> > +
-> > +               pr_debug("type %d st_value %llx r_addend %llx loc %llx\n",
-> > +                      (int)ELF64_R_TYPE(rel[i].r_info),
-> > +                      sym->st_value, rel[i].r_addend, (u64)location);
-> > +
-> > +               v = sym->st_value + rel[i].r_addend;
-> > +               err = handler(me, location, v, rela_stack, &rela_stack_top);
-> > +               if (err)
-> > +                       return err;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > --
-> > 2.27.0
-> >
+This function have been unmaintained for a long time and is confusing
+reader. So simplify it for better readability.
+
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ mm/slub.c | 46 +++++++++++-----------------------------------
+ 1 file changed, 11 insertions(+), 35 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 3d2025f7163b..26fe1eb50d88 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2815,40 +2815,6 @@ static inline bool pfmemalloc_match_unsafe(struct page *page, gfp_t gfpflags)
+ 	return true;
+ }
+ 
+-/*
+- * Check the page->freelist of a page and either transfer the freelist to the
+- * per cpu freelist or deactivate the page.
+- *
+- * The page is still frozen if the return value is not NULL.
+- *
+- * If this function returns NULL then the page has been unfrozen.
+- */
+-static inline void *get_freelist(struct kmem_cache *s, struct page *page)
+-{
+-	struct page new;
+-	unsigned long counters;
+-	void *freelist;
+-
+-	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock));
+-
+-	do {
+-		freelist = page->freelist;
+-		counters = page->counters;
+-
+-		new.counters = counters;
+-		VM_BUG_ON(!new.frozen);
+-
+-		new.inuse = page->objects;
+-		new.frozen = freelist != NULL;
+-
+-	} while (!__cmpxchg_double_slab(s, page,
+-		freelist, counters,
+-		NULL, new.counters,
+-		"get_freelist"));
+-
+-	return freelist;
+-}
+-
+ /*
+  * Slow path. The lockless freelist is empty or we need to perform
+  * debugging duties.
+@@ -2874,6 +2840,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	void *freelist;
+ 	struct page *page;
+ 	unsigned long flags;
++	unsigned long counters;
+ 
+ 	stat(s, ALLOC_SLOWPATH);
+ 
+@@ -2920,12 +2887,21 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+ 		goto reread_page;
+ 	}
++
+ 	freelist = c->freelist;
+ 	if (freelist)
+ 		goto load_freelist;
+ 
+-	freelist = get_freelist(s, page);
++	/* deactivate page */
++	do {
++		freelist = page->freelist;
++		counters = page->counters;
++	} while (!__cmpxchg_double_slab(s, page,
++		freelist, counters,
++		NULL, counters,
++		"deactivate_page"));
+ 
++	/* there was no free objects in that page  */
+ 	if (!freelist) {
+ 		c->page = NULL;
+ 		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
+-- 
+2.27.0
+
