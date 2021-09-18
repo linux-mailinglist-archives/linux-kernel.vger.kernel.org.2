@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1017341054A
+	by mail.lfdr.de (Postfix) with ESMTP id A172F41054C
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 11:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237983AbhIRJES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 05:04:18 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54566 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233888AbhIRJEO (ORCPT
+        id S238035AbhIRJFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 05:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233888AbhIRJFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 05:04:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UomJtwg_1631955766;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UomJtwg_1631955766)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 18 Sep 2021 17:02:49 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     oder_chiou@realtek.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] ASoC: rt5682s: make rt5682s_aif2_dai_ops and rt5682s_soc_component_dev
-Date:   Sat, 18 Sep 2021 17:02:06 +0800
-Message-Id: <1631955726-77693-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 18 Sep 2021 05:05:53 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA71C061574;
+        Sat, 18 Sep 2021 02:04:30 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1631955868;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gpNR9/8KPrecHc3D9k5DESAhJBWWTEnz6U1deJxRqNU=;
+        b=YzOVL+0c1++sx274jUEo8EWYWi+x4BRWsta6u1HAzAEpLFouD6E4tBIRRgV5nr9rjLwMIh
+        A9RpTJV1H37fNPBujcK/4eB5oJHIIfcfbXgexG+CuP6sb6dluRKblsLxlcWdlfO67Wq32M
+        wS/aRc5c397fdBCIGqh5obPsCDcdng0=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] net: net_namespace: Fix undefined member in key_remove_domain()
+Date:   Sat, 18 Sep 2021 17:04:10 +0800
+Message-Id: <20210918090410.29772-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This symbol is not used outside of rt5682s.c, so marks it static.
+The key_domain member in struct net only exists if we define CONFIG_KEYS.
+So we should add the define when we used key_domain.
 
-Fix the following sparse warning:
-
-sound/soc/codecs/rt5682s.c:2848:39: warning: symbol
-'rt5682s_soc_component_dev' was not declared. Should it be static?
-
-sound/soc/codecs/rt5682s.c:2842:30: warning: symbol
-'rt5682s_aif2_dai_ops' was not declared. Should it be static?
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Fixes: 9b242610514f ("keys: Network namespace domain tag")
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- sound/soc/codecs/rt5682s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/net_namespace.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
-index d878a20..d3e965b 100644
---- a/sound/soc/codecs/rt5682s.c
-+++ b/sound/soc/codecs/rt5682s.c
-@@ -2839,13 +2839,13 @@ static int rt5682s_resume(struct snd_soc_component *component)
- 	.set_bclk_ratio = rt5682s_set_bclk1_ratio,
- };
+diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
+index a448a9b5bb2d..202fa5eacd0f 100644
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -473,7 +473,9 @@ struct net *copy_net_ns(unsigned long flags,
  
--const struct snd_soc_dai_ops rt5682s_aif2_dai_ops = {
-+static const struct snd_soc_dai_ops rt5682s_aif2_dai_ops = {
- 	.hw_params = rt5682s_hw_params,
- 	.set_fmt = rt5682s_set_dai_fmt,
- 	.set_bclk_ratio = rt5682s_set_bclk2_ratio,
- };
- 
--const struct snd_soc_component_driver rt5682s_soc_component_dev = {
-+static const struct snd_soc_component_driver rt5682s_soc_component_dev = {
- 	.probe = rt5682s_probe,
- 	.remove = rt5682s_remove,
- 	.suspend = rt5682s_suspend,
+ 	if (rv < 0) {
+ put_userns:
++#ifdef CONFIG_KEYS
+ 		key_remove_domain(net->key_domain);
++#endif
+ 		put_user_ns(user_ns);
+ 		net_free(net);
+ dec_ucounts:
+@@ -605,7 +607,9 @@ static void cleanup_net(struct work_struct *work)
+ 	list_for_each_entry_safe(net, tmp, &net_exit_list, exit_list) {
+ 		list_del_init(&net->exit_list);
+ 		dec_net_namespaces(net->ucounts);
++#ifdef CONFIG_KEYS
+ 		key_remove_domain(net->key_domain);
++#endif
+ 		put_user_ns(net->user_ns);
+ 		net_free(net);
+ 	}
 -- 
-1.8.3.1
+2.32.0
 
