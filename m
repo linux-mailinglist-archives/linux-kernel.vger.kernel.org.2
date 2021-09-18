@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEEB4106FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7231D41072D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbhIRONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 10:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
+        id S239668AbhIRO5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbhIRONO (ORCPT
+        with ESMTP id S239475AbhIRO5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 10:13:14 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D0DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:11:51 -0700 (PDT)
-Received: from dslb-178-004-203-016.178.004.pools.vodafone-ip.de ([178.4.203.16] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        Sat, 18 Sep 2021 10:57:02 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610DBC061574;
+        Sat, 18 Sep 2021 07:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pVMUuxlIP6jTGtPA9HirkcO62g0chCPvUE5SjO1ir58=; b=YmLPElUHDL74qD5Fmp0gPYTbVD
+        kra1SoDI/+2AB6K5BKMtKMwTD9i0sWdNpcZR4h6NVe7mdQ0ybBf5zZmc7L7DalHrR6bzoo71niPNU
+        lPCD/Nv2lEtoQcxwA7vbF6X98pFsyTI+MCs9AfHif1jMqqEyYon6myRLDjCsd7kC68Kg=;
+Received: from p200300ccff3476001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff34:7600:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mRb4F-00027V-2H; Sat, 18 Sep 2021 16:11:47 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH] staging: r8188eu: remove rtw_free_pwrctrl_priv prototype
-Date:   Sat, 18 Sep 2021 16:11:41 +0200
-Message-Id: <20210918141141.28547-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
+        (envelope-from <andreas@kemnade.info>)
+        id 1mRb8r-0003mD-Nw; Sat, 18 Sep 2021 16:16:33 +0200
+Received: from andi by aktux with local (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1mRb8r-008zMd-2u; Sat, 18 Sep 2021 16:16:33 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     robh+dt@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, krzk@kernel.org,
+        leoyang.li@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH 0/4] ARM: dts: add E70K02 based eBook readers
+Date:   Sat, 18 Sep 2021 16:16:23 +0200
+Message-Id: <20210918141627.2142457-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rtw_free_pwrctrl_priv has already been removed in commit 6729e7541934
-("staging: r8188eu: _free_pwrlock is empty"). Remove the prototype as well.
+Add devicetrees for E70K02 based ebook readers. 
+Name on mainboard is: 37NB-E70K0M+6A3
+Serials start with: E70K02 (a number also seen in vendor kernel
+sources).
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/r8188eu/include/rtw_pwrctrl.h | 1 -
- 1 file changed, 1 deletion(-)
+These boards are found in the Kobo Libra H2O with an i.MX6SLL and
+in the Tolino Vision 5 with an i.MX6SL.
 
-diff --git a/drivers/staging/r8188eu/include/rtw_pwrctrl.h b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-index a77fb76a0b09..e412ef71b54b 100644
---- a/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-+++ b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
-@@ -134,7 +134,6 @@ struct pwrctrl_priv {
- 				       (pwrctrl)->pwr_state_check_interval)
- 
- void rtw_init_pwrctrl_priv(struct adapter *adapter);
--void rtw_free_pwrctrl_priv(struct adapter *adapter);
- 
- void rtw_set_ps_mode(struct adapter *adapter, u8 ps_mode, u8 smart_ps,
- 		     u8 bcn_ant_mode);
+Work is based on code from the vendor kernel at
+https://github.com/kobolabs/Kobo-Reader/blob/master/hw/imx6sll-librah2o/kernel.tar.bz2
+but things need to be heavily reworked due to
+incompatible bindings
+
+Andreas Kemnade (4):
+  dt-bindings: arm: fsl: Add E70K02 based ebook readers
+  ARM: dts: add Netronix E70K02 board common file
+  ARM: dts: imx: add devicetree for Kobo Libra H2O
+  ARM: dts: imx: add devicetree for Tolino Vision 5
+
+ .../devicetree/bindings/arm/fsl.yaml          |   2 +
+ arch/arm/boot/dts/Makefile                    |   4 +-
+ arch/arm/boot/dts/e70k02.dtsi                 | 320 ++++++++++++++++
+ arch/arm/boot/dts/imx6sl-tolino-vision5.dts   | 349 ++++++++++++++++++
+ arch/arm/boot/dts/imx6sll-kobo-librah2o.dts    | 339 +++++++++++++++++
+ 5 files changed, 1013 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/e70k02.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6sl-tolino-vision5.dts
+ create mode 100644 arch/arm/boot/dts/imx6sll-kobo-librah2o.dts
+
 -- 
-2.20.1
+2.30.2
 
