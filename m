@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB774106F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 15:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2DE4106FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238325AbhIRN7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 09:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
+        id S238423AbhIROF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbhIRN7C (ORCPT
+        with ESMTP id S234566AbhIROFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 09:59:02 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E42DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 06:57:39 -0700 (PDT)
-Received: from dslb-178-004-203-016.178.004.pools.vodafone-ip.de ([178.4.203.16] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mRaqV-0001vu-8k; Sat, 18 Sep 2021 15:57:35 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v3 2/2] staging: r8188eu: remove rtw_hw_resume
-Date:   Sat, 18 Sep 2021 15:57:22 +0200
-Message-Id: <20210918135722.23976-2-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210918135722.23976-1-martin@kaiser.cx>
-References: <20210911161019.26881-1-martin@kaiser.cx>
- <20210918135722.23976-1-martin@kaiser.cx>
+        Sat, 18 Sep 2021 10:05:53 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E223C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:04:29 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 70so6533975wme.5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DpjBJY1Cq+qltZ9DGxMp7uTj8fnDmJWHBXHXLgVRsKM=;
+        b=MzEmML0mVi4/gcsHx77eWSdixfhaarBPpCLf54PiSlHKdzLhiPu/D4hrvEViMczsIM
+         roHH4SkoHHvpI2476uD+TCS1h32/naCa5ZOmmaxHjBuFiHn7blck4IlYdnXW1iTUJHvb
+         kV0wcfliPMdpEaYt1OSQEPK7VAGS8RiNg4njbsVmVgSMLvzOeJ2DSs/s//PMV6PvKZwf
+         191hRhCLLNLwp5TSNkGzNhywPH+DOp2OG6FxgCaE8Nk3W26XmDjHhdKH9YT9h6l3vwJg
+         mPN87/rDY+mXnXisWvtYvIC9VJJ5auitMDdInxvSEeAtJsmZFvZPMyfKHxI/gXaVgNZ+
+         2peA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DpjBJY1Cq+qltZ9DGxMp7uTj8fnDmJWHBXHXLgVRsKM=;
+        b=TQKnHP+SEQa+vxISEh+CeUo1GCT0hZTO8KFV5oVI9P/aStWgg3aJ01s8v4/t633pBL
+         Pw7Ybogk5wn70idxtWAENVaMce5x2bUy7gygrZtpS2VFXO3nbFSGLTYFUTDCNGKMBDSv
+         HRL7jZC5yCezXe0niP48c/xsbSYbbwGxKblTeFj7HCIePMsl7UadGVwQyCN8qv4359lJ
+         La1+Pi4jcAx7RQIccrHGXtsZ0fAW3iGOUNBy207Wnesf2yrr+QOUrzf5WDtRmMv2zQo9
+         H7fpTO4m/zqUTaaRpcs55a1WtR+ikpyft76eO6Er6mguAQef/VpycGkKEf8+PSiU3cLW
+         P8QA==
+X-Gm-Message-State: AOAM531wktmw9NeTuACL2rSQvAgDJ8ojcB/CBYUECW9KWn7PM/avkS8g
+        b2rnd0GRzh2AzU3tOQeJtg==
+X-Google-Smtp-Source: ABdhPJzKFMpBEx1H5UuJ71s4zcPrWpC8AQ1cTfNrTu4hwch0/BFCFMtPRqMdq86Y3t9dmHls7ipAsg==
+X-Received: by 2002:a7b:cb0c:: with SMTP id u12mr15404422wmj.70.1631973867807;
+        Sat, 18 Sep 2021 07:04:27 -0700 (PDT)
+Received: from alex-ThinkPad-E480.. (ip5b434083.dynamic.kabel-deutschland.de. [91.67.64.131])
+        by smtp.googlemail.com with ESMTPSA id x5sm11764429wmk.32.2021.09.18.07.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 07:04:27 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] drm: bridge: it66121: Fix return value it66121_probe
+Date:   Sat, 18 Sep 2021 16:04:20 +0200
+Message-Id: <20210918140420.231346-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c0a099b7341c ("staging: r8188eu: bHWPwrPindetect is always false")
-removed the only call to rtw_hw_resume.
+Currently it66121_probe returns -EPROBE_DEFER if the there is no remote
+endpoint found in the device tree which doesn't seem helpful, since this
+is not going to change later and it is never checked if the next bridge
+has been initialized yet. It will fail in that case later while doing
+drm_bridge_attach for the next bridge in it66121_bridge_attach.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Since the bindings documentation for it66121 bridge driver states
+there has to be a remote endpoint defined, its safe to return -EINVAL
+in that case.
+This additonally adds a check, if the remote endpoint is enabled and
+returns -EPROBE_DEFER, if the remote bridge hasn't been initialized
+(yet).
+
+Fixes: 988156dc2fc9 ("drm: bridge: add it66121 driver")
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
-v3:
-- another rebase against today's staging-testing branch
+ drivers/gpu/drm/bridge/ite-it66121.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-v2:
-- rebased against today's staging-testing branch
-
- drivers/staging/r8188eu/include/osdep_intf.h |  1 -
- drivers/staging/r8188eu/os_dep/usb_intf.c    | 39 --------------------
- 2 files changed, 40 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/include/osdep_intf.h b/drivers/staging/r8188eu/include/osdep_intf.h
-index 5a2c7a98f023..da36770852f8 100644
---- a/drivers/staging/r8188eu/include/osdep_intf.h
-+++ b/drivers/staging/r8188eu/include/osdep_intf.h
-@@ -58,6 +58,5 @@ void rtw_ips_dev_unload(struct adapter *padapter);
+diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+index 2f2a09adb4bc..4e945efc8eb9 100644
+--- a/drivers/gpu/drm/bridge/ite-it66121.c
++++ b/drivers/gpu/drm/bridge/ite-it66121.c
+@@ -918,11 +918,23 @@ static int it66121_probe(struct i2c_client *client,
+ 		return -EINVAL;
  
- int rtw_ips_pwr_up(struct adapter *padapter);
- void rtw_ips_pwr_down(struct adapter *padapter);
--int rtw_hw_resume(struct adapter *padapter);
+ 	ep = of_graph_get_remote_node(dev->of_node, 1, -1);
+-	if (!ep)
+-		return -EPROBE_DEFER;
++	if (!ep) {
++		dev_err(ctx->dev, "The endpoint is unconnected\n");
++		return -EINVAL;
++	}
++
++	if (!of_device_is_available(ep)) {
++		of_node_put(ep);
++		dev_err(ctx->dev, "The remote device is disabled\n");
++		return -ENODEV;
++	}
  
- #endif	/* _OSDEP_INTF_H_ */
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index 25dc90847380..11a584cbe9d8 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -278,45 +278,6 @@ static void process_spec_devid(const struct usb_device_id *pdid)
- 	}
- }
+ 	ctx->next_bridge = of_drm_find_bridge(ep);
+ 	of_node_put(ep);
++	if (!ctx->next_bridge) {
++		dev_dbg(ctx->dev, "Next bridge not found, deferring probe\n");
++		return -EPROBE_DEFER;
++	}
  
--int rtw_hw_resume(struct adapter *padapter)
--{
--	struct pwrctrl_priv *pwrpriv;
--	struct net_device *pnetdev = padapter->pnetdev;
--
--	if (!padapter)
--		goto error_exit;
--	pwrpriv = &padapter->pwrctrlpriv;
--	DBG_88E("==> rtw_hw_resume\n");
--	_enter_pwrlock(&pwrpriv->lock);
--	pwrpriv->bips_processing = true;
--	rtw_reset_drv_sw(padapter);
--
--	if (pm_netdev_open(pnetdev, false) != 0) {
--		_exit_pwrlock(&pwrpriv->lock);
--		goto error_exit;
--	}
--
--	netif_device_attach(pnetdev);
--	netif_carrier_on(pnetdev);
--
--	if (!netif_queue_stopped(pnetdev))
--		netif_start_queue(pnetdev);
--	else
--		netif_wake_queue(pnetdev);
--
--	pwrpriv->bkeepfwalive = false;
--
--	pwrpriv->rf_pwrstate = rf_on;
--	pwrpriv->bips_processing = false;
--
--	_exit_pwrlock(&pwrpriv->lock);
--
--	return 0;
--error_exit:
--	DBG_88E("%s, Open net dev failed\n", __func__);
--	return -1;
--}
--
- static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
- {
- 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
+ 	i2c_set_clientdata(client, ctx);
+ 	mutex_init(&ctx->lock);
 -- 
-2.20.1
+2.30.2
 
