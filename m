@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CB44104DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84B64104E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243393AbhIRHn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40364 "EHLO
+        id S242316AbhIRHs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243443AbhIRHnX (ORCPT
+        with ESMTP id S241157AbhIRHs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:43:23 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F820C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:42:00 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so9025582pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:42:00 -0700 (PDT)
+        Sat, 18 Sep 2021 03:48:57 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B88C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:47:34 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id h3so11936614pgb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1w7Q+TlbIJEDf050IMqqi4cI13qRxqpQFb6QhY6iVGE=;
-        b=i04if8NfZTO3k1BrW7F/zgWb8x94oUdoIIHjvbHWlPUdYsJNQW7FL2ANRQ0BsBFw7w
-         wbiudpDZgWPdTEs/kVJIE6qF4ePRFW2TyArUaQezkGph99ZbXjpMoM3dxG7DQOXST8mZ
-         c1+eKdVcvJvnkJkIZ+RLeSEwzGni10yYKWgsbcXzi13MxuIv7sOIdVDDLI7HiPItq4zS
-         TAA55ETYxapXT870Io7ZOvAMKNOgZYl2gm04ks2Eo+5hDlSyG4ANAqm3XADSgyT0GKxV
-         R0oJ4swklTVnfgCLsOjQm8yGUnOR+u5uger8LPHgzPCVYeAtrLXwJkqAbv6tt1l5OvoJ
-         kAeA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lmG7kULAosVeD24CKK0iUu1HsWWrJCRFGs06Wu9DN7M=;
+        b=GxqjAe11r1iFVzUpHH78B9JBVmQ0Zu4TvLhf8jPr+yKPPNZcuTgpmAzTKXXtzF5nsk
+         WZpW29QgilW7haIhf2jUR9byYWbVIowZRbV3luVt1tCSsf5qxRhLOmil91qZiVrk7C2L
+         70lAsbgceSt0fLT+MH01KoH9daHA2i9HYlocBsrfBA8h+EMvpDIt+xKD2Q4GMA9gKMN5
+         8ecoMSUQaz8V09oXWsrbc2BIsgOULQRHJEgjfeu/mPGUVs5047VNk2/EfYMUs0OLelhn
+         ABxm1L4h/F3XryeBSUhbLR+dFVChhv3/QzGjlneqQbxrasnHKG/68ZvOgY42IzrL4ek8
+         +FSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1w7Q+TlbIJEDf050IMqqi4cI13qRxqpQFb6QhY6iVGE=;
-        b=gcxo74C4+HlQb5Zif1yLmtLdQKWungeioh07+nY7yQCBWRmLPP3jxXcd7Cmj77DPoO
-         ZsYzlnBDmF/kSAYTQeHWjmyAwBHk9THx1N/W5NG1Qvrq+wNc1fRODrDIOgSoAH7p8RIu
-         +CjQXb82FYIEXBYBB+JhQiFiBpdcXRVIpxzpoyXx04AS6dfRIGOtJGuYKKAwAZOwqpJs
-         7N32tIfEnJtvxQqid7w0J0QfvohhtiO94iY/Q8JV0i/FLmGN9DJXGOoRfTc1mpetc8IP
-         OXspoBa7zyNEPhfWqiEFyNRYwsuofOu2eezWZPuGvyvn44yC39c+hhyYSkPL3MSPd1fS
-         gy0Q==
-X-Gm-Message-State: AOAM532zkzV0yxvwmfSh0vqOS72qpwOFK2BaxXm3OulUWQ4AV7AqeBBe
-        y50tJSKXJrZdr+ZK3vjOwXA=
-X-Google-Smtp-Source: ABdhPJziyTQakmlQBaNSFkvjppamnRchFXlgLPonnDHc26LrwGve1C+vTvVaMQK9sIX0aOsnDjPWXw==
-X-Received: by 2002:a17:90a:fc8e:: with SMTP id ci14mr17052054pjb.12.1631950920077;
-        Sat, 18 Sep 2021 00:42:00 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
-        by smtp.gmail.com with ESMTPSA id l142sm1276569pfd.87.2021.09.18.00.41.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lmG7kULAosVeD24CKK0iUu1HsWWrJCRFGs06Wu9DN7M=;
+        b=KBEQXq3RQ0afeZ8KiREpdajDaJLFCxK2GW1LGnsVWxVUycmoCCQuERQ5KE6GDa7MW8
+         HX7U5V0VJis0iPmtxoEdBmPCr9tdL8Dirz1UITe1iHlHFjhp9rIMYPxNgvDECfO8E4r6
+         SNxgvdsCyHqPKMmzP2aCDw0irlsDXQXnJx6j/H8LJTuBXZSt0v5RMwcNL0/asaDRIs3m
+         a7S4ri3h110o+eloJCKlz1MRGwd6FeJBgApYJR70B/iKKPMHx6Zxm8IIovIYGFLW8Xbo
+         TFWm2HjHYMhbKayNH/3+SM1O87JVzJ3oZWWCkzEGMyNPE7Q17+gzMU7ZMNXK6oQkMn9q
+         uwlQ==
+X-Gm-Message-State: AOAM530AElxii+dfoMisYjI1GJiH0p2SX4ImRtYfSSxyygr2jJVhc7LK
+        dSA0+38+qdjGti7C9fkev7U=
+X-Google-Smtp-Source: ABdhPJwh3qCt8EFiO4vb8uMP2Fd3JLCnl45BemOQv6Nq7kjXzH3HW8mu3SeNnjq+h9pnF6G4adHU7Q==
+X-Received: by 2002:a05:6a00:234f:b0:3eb:3ffd:6da2 with SMTP id j15-20020a056a00234f00b003eb3ffd6da2mr14602460pfj.15.1631951253987;
+        Sat, 18 Sep 2021 00:47:33 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id s22sm1223040pfe.76.2021.09.18.00.47.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 00:41:59 -0700 (PDT)
-Date:   Sat, 18 Sep 2021 07:41:55 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, 42.hyeyoo@gmail.com
-Subject: Sorry for annoyance. it's buggy.
-Message-ID: <20210918074155.GA53700@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20210918071552.53171-1-42.hyeyoo@gmail.com>
+        Sat, 18 Sep 2021 00:47:33 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     peterz@infradead.org
+Cc:     jpoimboe@redhat.com, jbaron@akamai.com, rostedt@goodmis.org,
+        ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>
+Subject: [PATCH] Add exception handling
+Date:   Sat, 18 Sep 2021 07:47:18 +0000
+Message-Id: <20210918074718.240511-1-yang.guang5@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210918071552.53171-1-42.hyeyoo@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-it was actually misunderstanding.
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-I misunderstood counters - it is union, not just unsigned long :(
-So changing inuse and frozen affects count and it's not meaningless. 
+If the type is abnormal input from argument, the code will be NULL.
+So it should return as default;
 
-Sorry for annoyance.
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+---
+ arch/x86/kernel/static_call.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
+index f608e6710300..696da3eccf28 100644
+--- a/arch/x86/kernel/static_call.c
++++ b/arch/x86/kernel/static_call.c
+@@ -45,6 +45,8 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void
+ 		code = text_gen_insn(RET_INSN_OPCODE, insn, func);
+ 		size = RET_INSN_SIZE;
+ 		break;
++	default:
++		return;
+ 	}
+ 
+ 	if (memcmp(insn, code, size) == 0)
+-- 
+2.25.1
+
