@@ -2,118 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C5F410600
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 13:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06485410601
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 13:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238856AbhIRLDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 07:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S238803AbhIRLPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 07:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238803AbhIRLDW (ORCPT
+        with ESMTP id S238373AbhIRLPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 07:03:22 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CF8C061574;
-        Sat, 18 Sep 2021 04:01:58 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id q3so40037593edt.5;
-        Sat, 18 Sep 2021 04:01:58 -0700 (PDT)
+        Sat, 18 Sep 2021 07:15:17 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03113C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 04:13:53 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id q3so40117277edt.5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 04:13:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tgwWxXw9qWF2mVmQmH8HomBdLaqa+aeD+D207S0R8ng=;
-        b=lN6I6aPUKmTKLDI68h3zBHjMSSGs872bSN081mM5Hgxr9QKqBGUbcbrvl1T8xbqNrE
-         No0TnssdKr0M12kaVlsMUlSn1Ejf583f9lzeCVudQ37+pOtA3vuiw0J3afTyEx+NSZg0
-         YVybYMTtQNkjXHBMokgfidQnvbjHIN9rHgHBdjeEJWHTjd5mNZaBQh5MFnEmExLxqj8D
-         qgHq2fFREKQBI9jtGlPTlbP2sLfa1Duzo+8bv1q67U2yfmIe92XnMGvjraxTRJTQBUD0
-         PeyVpGGhGNWkq8Yn2htEHAa1syQ9LyiH/KWgT9QXxTv5N880wvo3EOLDnWuHiXmDwCwR
-         aKkA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4vr2U1g0cHwYjPOSj/zot+rofFLB5h1tCK6NQz/LyYE=;
+        b=ktJ6F95cTA1GygDzE7c5ZtbpuPy6Uini85+rNZuEpmM732dC56TDIuHQ42No5D3rNq
+         xyLHzOa1lykeFa47OuvPsmpoSPWjjrYyQZbfqiLeOCgCPzuMSiDCfxq48e2VGCfzXcjX
+         C5F5E15K5+3DLlNcprvf9L3JkXkD7r58aYYJw4/KiEEnQvH8ud/kGhJEBFIoyLig7yKM
+         aDgPjViPmAiFNx/3S4MzcI5MIn1zDVhzZNxykhGOnizx9CksOpRbfxU1oFIVhPtGh6Gc
+         aamk33p1cAkCqpI0dE5m+mrmKKUM/EHQyy4iNwfmh2qaWVwQgzoeyP2LNS2/ESmYVmp6
+         /ziw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tgwWxXw9qWF2mVmQmH8HomBdLaqa+aeD+D207S0R8ng=;
-        b=npSsgFWPilyrVUwI9bgCHcJ6siuiaUBmoT9SAhH2I4twPhL0Vdk0+glVMjgDEY8+QN
-         nlFSZT6JimnvQsMiQWFw143vmxJ7Wf84c/nAe+QT8bhO+aLLRVVmiPfvEQ6bAmHciVNo
-         vUPLsiM3PjvO2F6ulMYoiQ6/S+PHq24wTzdLxSRwLzLmykviMBf2exEleKVGvgSWZQuC
-         HcnoUASCy6MQSfNpZkvA1/c9tc8ZG+tQ5d9BYW3vlUa7xbjX5FZNYlT+7VQnf8FwhYow
-         U1QglJqQr5aLJDznjT1i5GMljGKKnC4KVy9E64HghY7Spel1jsT0oMp734W+H6BdCvRS
-         I9cg==
-X-Gm-Message-State: AOAM530Hg8qmcjh16DDbnK/BeQjNv32dmhHRe/zU++/T5JKZc7m8aAGQ
-        CEKFBW9/7Zwm7G80T8s6YxLxjInohCN3u4fRvsM=
-X-Google-Smtp-Source: ABdhPJxjPMJGz7fysVmvyYs/Qt49TE0aDl7xo4okt8Q49xuOgw86nnNYix5jG4r11bj/73Ba0CidOtG9WTvEsezTgpE=
-X-Received: by 2002:a17:907:75ed:: with SMTP id jz13mr17217421ejc.506.1631962917396;
- Sat, 18 Sep 2021 04:01:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4vr2U1g0cHwYjPOSj/zot+rofFLB5h1tCK6NQz/LyYE=;
+        b=onpcy9rDzFSex+RQJKQk8BF0bLge4v/infzVDZ131XuI1MA5w+Z+QING9YtRZPu/Dg
+         vpIBFB0CsXhUo6/DNPdUSuc18itZaXXyno/wEHkOh1bw2pi347ALJnnoYThPjSqUfAhb
+         itVtZyvGIVb4vH4rwehRe63er7yrQECRBRtZ5gciqEoEqQhqM2NpkRiIOwp5yxIn/KED
+         7BVAkOJyyIS8CVQRtFxc3zYCIQWvYtiyo/mUrll5l1M0G3gjdrLU0jvfCsXtwd7vQSG+
+         dfj2pezIPulEbfaIUi2frZ2A1pCrp9ON7J7WPp7MwN8ICtyaXxN8tm8pgx5c3WQ5sakO
+         OcnA==
+X-Gm-Message-State: AOAM532JQt+A+8DBkyHdM0Hm6EClFzDsun/hOn3EQX5cWlP90R2dhvXD
+        UILz9cOjdDufH94x4uzEMR4=
+X-Google-Smtp-Source: ABdhPJw+Wub1Nm0D6xiJKPChmzA+MVSq3jw11+5fT1PMrsC8+XDpKgxxZOHPfzaabMZg03AVVX8OcQ==
+X-Received: by 2002:a17:906:3fd7:: with SMTP id k23mr17245844ejj.176.1631963632371;
+        Sat, 18 Sep 2021 04:13:52 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
+        by smtp.gmail.com with ESMTPSA id a24sm4055999edu.49.2021.09.18.04.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 04:13:51 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v7 15/19] staging: r8188eu: clean up usbctrl_vendorreq()
+Date:   Sat, 18 Sep 2021 13:13:48 +0200
+Message-ID: <1988292.s3joEKjhKX@localhost.localdomain>
+In-Reply-To: <YUSpwTneDgRtUBvM@kroah.com>
+References: <20210917071837.10926-1-fmdefrancesco@gmail.com> <20210917071837.10926-16-fmdefrancesco@gmail.com> <YUSpwTneDgRtUBvM@kroah.com>
 MIME-Version: 1.0
-References: <20210917034815.80264-1-songmuchun@bytedance.com>
- <20210917034815.80264-4-songmuchun@bytedance.com> <CAGsJ_4yWZTcRqnBmLrYJ3Z1Yo_7oWRgR4B3qK5m570xgpeJ-5Q@mail.gmail.com>
- <CAMZfGtW1_U2d=zQFCYBEDfKWB=EkoYTGgVcCHauX-iv4VD7U8Q@mail.gmail.com>
-In-Reply-To: <CAMZfGtW1_U2d=zQFCYBEDfKWB=EkoYTGgVcCHauX-iv4VD7U8Q@mail.gmail.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Sat, 18 Sep 2021 23:01:46 +1200
-Message-ID: <CAGsJ_4wPDxq=wK8zny-G+H9wV9ebouojfdwcoYNb6-_AJHMLdw@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 3/4] mm: sparsemem: use page table lock to
- protect kernel pmd operations
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 10:51 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Sat, Sep 18, 2021 at 1:07 PM Barry Song <21cnbao@gmail.com> wrote:
-> >
-> > On Sat, Sep 18, 2021 at 12:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > The init_mm.page_table_lock is used to protect kernel page tables, we
-> > > can use it to serialize splitting vmemmap PMD mappings instead of mmap
-> > > write lock, which can increase the concurrency of vmemmap_remap_free().
-> > >
-> >
-> > Curious what is the actual benefit we get in user scenarios from this patch,
-> > 1. we set bootargs to reserve hugetlb statically
-> > 2. we "echo" some figures to sys or proc.
-> >
-> > In other words, Who is going to care about this concurrency?
->
-> Actually, It increase the concurrency between allocations of
-> HugeTLB pages. But it is not my first consideration. There are
-> a lot of users of mmap read lock of init_mm. The mmap write
-> lock is holding through vmemmap_remap_free(), I want to make
-> it does not affect other users of mmap read lock.
+On Friday, September 17, 2021 4:44:17 PM CEST Greg Kroah-Hartman wrote:
+> On Fri, Sep 17, 2021 at 09:18:33AM +0200, Fabio M. De Francesco wrote:
+> > Clean up usbctrl_vendoreq() in usb_ops_linux.c.
+> > 
+> > List of changes:
+> > 
+> > 1) Rename variables:
+> > 	pdata => data
+> >         pio_priv => io_priv
+> >         pintfhdl => intfhdl
+> >         wvalue => address.
+> > 2) Reorder variables declarations according to the "Reverse Xmas Tree"
+> >    style.
+> > 3) Remove unnecessary test for "!pIo_buf".
+> > 4) Move comments one line below code.
+> > 5) Remove unnecessary excess parentheses.
+> > 6) Remove unnecessary extra spaces.
+> > 7) Remove unnecessary comments.
+> > 8) Fix grammar errors (checksumed => checksummed).
+> 
+> When you find yourself listing all of the different things you have done
+> in a single commit, that is a HUGE hint that you need to break this up
+> into smaller pieces.
+> 
+> Please do so here, this should not be just one change, as it's almost
+> impossible to look at this and "know" it's all still the same logic
+> happening here.  But if you had broken this down into 8 different
+> changes, then it would have been obvious and I could easily have applied
+> the changes.
 
-generically makes sense. I guess it wouldn't be critical at all for hugetlb
-allocation as practically we are not going to reserve and release hugtlb
-often as they are not THP.
+Dear Greg,
 
-anyway, it is not making anything worse and always a win to move.
+My first thought when I read you message was to simply delete this patch 
+because usbctrl_vendorreq() is going to be deleted in 18/19. But then I 
+rethought of the original purpose behind this patch and (after talking with 
+Pavel) we decided to do the task you asked and split this patch into 8 
+smaller ones. The only reason is because, as you noticed, we "[]are moving 
+code around", so, although I'm not required to clean up code in 
+usbctrl_vendorreq(), I'm required to make the new usb_read() and usb_write() 
+the cleaner the possible. This preventive clean up helps me a lot.
 
->
-> I suppose a lot of developers are trying to avoid using mmap write
-> lock. I am also one of them.
->
-> > Can we have some details on this to put in the commit log?
->
-> For sure. Those judgments above should be placed in the
-> commit log.
->
-> Thanks.
+Obviously I guess that I'm required to split also the next patch of this 
+series in 3 because there are also there 3 different kind of clean-ups.
 
-Thanks
-barry
+So, we'll have a total of 11 clean-ups.
+
+> 
+> I've taken the first 14 patches in this series, it's great work, thank
+> you all for doing this.  
+
+Thanks to you for the "great work". We appreciated it.
+
+> But this, and the remaining patches in here
+> need to be split up more to make it obvious that the changes are correct
+> and should be accepted.  Please feel free to start the numbering of the
+> patch series over now, given that the first 14 are now merged into my
+> tree.
+
+We're working on this.
+
+Thanks,
+
+Fabio
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+
+
+
