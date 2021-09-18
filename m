@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ACF410715
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6111241071B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhIROmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 10:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
+        id S238498AbhIROo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238210AbhIROmG (ORCPT
+        with ESMTP id S238165AbhIROo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 10:42:06 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882FAC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 07:40:42 -0700 (PDT)
-Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D2B1F3E7C9;
-        Sat, 18 Sep 2021 16:40:39 +0200 (CEST)
-Date:   Sat, 18 Sep 2021 16:40:38 +0200
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v3 0/2] Use "ref" clocks from firmware for DSI PLL VCO
- parent
-Message-ID: <20210918144038.6q352hzqopx7vvdu@SoMainline.org>
-References: <20210911131922.387964-1-marijn.suijten@somainline.org>
- <163165584152.763609.4056232270079096475@swboyd.mtv.corp.google.com>
+        Sat, 18 Sep 2021 10:44:56 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1FAC061574;
+        Sat, 18 Sep 2021 07:43:32 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso16994692ots.5;
+        Sat, 18 Sep 2021 07:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=a6FtsXt8FRaob/TTCEZKvL8sXiNm89kkIlCc0h30xZU=;
+        b=LIyiSB3ljq97JFE43AxJJ9uiBAoYKEkQdwytpPs83E9hENsucCcnSlEwY2hFqMcFdN
+         2G7mG2ZAG3G0hWKS8gDklj+1TmISomBkHKucJ0SOBRdP+0wMAGGea9HNMUty8xTdyyvl
+         JURCZAW7c8/njL/nSHJoOr/T5+ZzKAB/aPT2Oylo/PHu+NA1QdpdHtK+C2zRZ+Aplmob
+         +y2Zggsimufm2QX066wbf5FYgkkb1Fo80PesAKjjR7VKJoOZOtE+3NbPej3JmMKj3GGO
+         192Rs9DriBgB1QOQmnoeq8ozqbfJCvpqVebRkRe83oSUsyHGUTFMgB1IaO21nnF8B0R2
+         eqlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=a6FtsXt8FRaob/TTCEZKvL8sXiNm89kkIlCc0h30xZU=;
+        b=w8yGa/Yeh3HpkWmFklhVcKIjExbWw4vKTIXPHtkMNeR+jT9sebu7wB82AVJbuDzhLM
+         dEPqaoGq7Svp/CZTXCOhDASTlwRBp3CPRMuuaX5iIcLIj6TH4wcqvj2QidLyK9gNRaPz
+         Bro0lw8X/P6e8KS79BZOFcGZPJUNvSkEQc6MyQHGTe/WN5SSSvD45s2E2/SVw61LyI3o
+         Cny7dWstFkatqnl9Bps12EY9no7n2hu91ocu12AnQOhDezFWD0NJqu35z9POJO416+4E
+         lRMgRgXS85H+wImbGzHw2bn5+6PLCzZML5qJZql0SRs7BVx6l0nFPjypB3140M4l2Fex
+         Wepg==
+X-Gm-Message-State: AOAM532xJ52QxXhX/B8JqjXgSlfCnPZcL+QyZmDW3kXkAkbN9BcPG9uA
+        AxFPbQWp0ty8P+459TBUoZ8=
+X-Google-Smtp-Source: ABdhPJySjr4NHbqaXBMbjVTBy8WhRXLZCj9NwR5MUxkEaqaa2IUOEmQaR09w914R5ZznRTMdGFiRZA==
+X-Received: by 2002:a9d:6192:: with SMTP id g18mr13965936otk.314.1631976212032;
+        Sat, 18 Sep 2021 07:43:32 -0700 (PDT)
+Received: from [172.31.250.1] ([47.184.51.90])
+        by smtp.gmail.com with ESMTPSA id s24sm2248090oic.34.2021.09.18.07.43.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Sep 2021 07:43:31 -0700 (PDT)
+Message-ID: <27568193-170d-af8e-9667-b6cce97c27df@gmail.com>
+Date:   Sat, 18 Sep 2021 09:43:31 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163165584152.763609.4056232270079096475@swboyd.mtv.corp.google.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v4 1/2] docs: Add block device (blkdev) LED trigger
+ documentation
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     hch@infradead.org, pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kabel@kernel.org
+References: <20210916202127.1216994-1-arequipeno@gmail.com>
+ <20210916202127.1216994-2-arequipeno@gmail.com> <YUQzdyG+WWoiJ2I9@kroah.com>
+ <e09257e0-ce95-623c-3a04-cc033aa9fec2@gmail.com> <YUWQSlXjIb58eCJZ@kroah.com>
+From:   Ian Pilcher <arequipeno@gmail.com>
+In-Reply-To: <YUWQSlXjIb58eCJZ@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-14 14:44:01, Stephen Boyd wrote:
-> Quoting Marijn Suijten (2021-09-11 06:19:19)
-> > All DSI PHY/PLL drivers were referencing their VCO parent clock by a
-> > global name, most of which don't exist or have been renamed.  These
-> > clock drivers seem to function fine without that except the 14nm driver
-> > for sdm6xx [1].
-> > 
-> > At the same time all DTs provide a "ref" clock as per the requirements
-> > of dsi-phy-common.yaml, but the clock is never used.  This patchset puts
-> > that clock to use without relying on a global clock name, so that all
-> > dependencies are explicitly defined in DT (the firmware) in the end.
-> 
-> I can take this through clk tree if it helps avoid conflicts. There are
-> some other patches to sdm660.c in the clk tree already.
+On 9/18/21 02:07, Greg KH wrote:
+> On Fri, Sep 17, 2021 at 03:46:55PM -0500, Ian Pilcher wrote:
+>> As far as using kernel names, that would be my preference, but I simply
+>> don't know of any way to do so with the existing block API.  To my
+>> knowledge, there simply isn't anything like a blkdev_get_by_name() API.
 
-Might be useful to maintain proper ordering of these dependent patches
-but it's up to Dmitry and Rob to decide, whom I'm sending this mail
-directly to so that they can chime in.
+...
+
+> Just use the kernel block device name and that way you do not have to
+> parse anything as it is unique and no paths are having to be followed.
+> 
+> That's the way that other LED apis are working, right?
+
+Greg -
+
+There are 2 existing LED triggers that have similar functionality (i.e.
+they allow LEDs to be "associated" with devices by name), and they both
+use subsystem-specific APIs to "resolve" those names to the actual
+kernel objects on which they operate.
+
+   * The *netdev* trigger uses dev_get_by_name(), which is specific to
+     network devices (despite its name).
+
+   * The *tty* trigger uses tty_dev_name_to_number() and
+     tty_kopen_shared().
+
+As I've been saying, I simply don't know of any similar API for block
+devices.  The block API provides blkdev_get_by_path(), which I am using,
+and blkdev_get_by_dev(), which takes the device number (dev_t).
+
+If you know of an API that will allow me to resolve a block device (or
+dev_t) by its kernel name, please share that information.
+
+Thanks!
+
+-- 
+========================================================================
+                  In Soviet Russia, Google searches you!
+========================================================================
