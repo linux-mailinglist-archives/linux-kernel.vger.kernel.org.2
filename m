@@ -2,130 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0750D41052E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB70410533
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 10:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237822AbhIRIit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 04:38:49 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:49481 "EHLO pegase2.c-s.fr"
+        id S237919AbhIRIkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 04:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236345AbhIRIis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 04:38:48 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HBPMR2qpfz9sTp;
-        Sat, 18 Sep 2021 10:37:23 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EfG-Wo9it80d; Sat, 18 Sep 2021 10:37:23 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HBPMR1GVGz9sTK;
-        Sat, 18 Sep 2021 10:37:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0FE278B768;
-        Sat, 18 Sep 2021 10:37:23 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 18YJ-zT83g0K; Sat, 18 Sep 2021 10:37:22 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.70])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8AE2D8B764;
-        Sat, 18 Sep 2021 10:37:22 +0200 (CEST)
-Subject: Re: [PATCH v2] powerpc/32: Don't use a struct based type for pte_t
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
- <87tuiiimwu.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <05827f28-873e-ead1-ad32-7aad883b5418@csgroup.eu>
-Date:   Sat, 18 Sep 2021 10:37:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236345AbhIRIke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 04:40:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B506124B;
+        Sat, 18 Sep 2021 08:39:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631954351;
+        bh=I3OXBH6Jsft3MeFXXif2KAYrH0PL5mHvHWDLsrpF3p0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a9hjTcoDC0ygV/THN5MB4kBvc1nnulxFRN2ENZlTd88T2ditC8k61LEK7nro1pcKy
+         58YoRM/lwtdqh8GyJ8qXWBf/3Vx0F85rmORFagsAOyvTiRfGxdRnqMcvWAcFYC1YKF
+         375MnAbUtdYufFWtwtFjnlbzHb6ShWIbS2AWBWorMK1G9X3G85uL7vshrzItTf70VH
+         KTqdnkocRfkn3jy+f8FEJabg3VvC7uH3Jng6O9C4dPMmbmv18gCNn/jpIMEJRH7Dyi
+         MKcdnMDQZoWAMPe1dUw+5D79OrlymmveofL+SMizg3O59N3058HbTxrnBCSp1x6q3B
+         G5psP8Km2jW+A==
+Received: by mail-oo1-f42.google.com with SMTP id k20-20020a4ad114000000b0029133123994so4012936oor.4;
+        Sat, 18 Sep 2021 01:39:11 -0700 (PDT)
+X-Gm-Message-State: AOAM530yNhgT/PGtBX4j6jqqBmEn98rlAaaf5lLpTWVl48iOjaUgdEmA
+        TsTgsbNsWrjA9SzrobPZX/rlPSOJW0lmqTJYlJ4=
+X-Google-Smtp-Source: ABdhPJwhjcwUIBun9pdQA2AKk6/UkuNunTe3+nY6kMyQMkX2egUVkh/hJR0L43iF+/kZGTei1N8EB2+UDKBIhXdrDvg=
+X-Received: by 2002:a05:6820:1049:: with SMTP id x9mr4953726oot.40.1631954350758;
+ Sat, 18 Sep 2021 01:39:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87tuiiimwu.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca> <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local> <20210916131014.GK3544071@ziepe.ca> <YUSKSHBC9uI49wZZ@phenom.ffwll.local>
+In-Reply-To: <YUSKSHBC9uI49wZZ@phenom.ffwll.local>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Sat, 18 Sep 2021 11:38:42 +0300
+X-Gmail-Original-Message-ID: <CAFCwf12o-+wtbk8J8k8hP4_k0a8Lco4m9f4s1vBobkQwNtn39w@mail.gmail.com>
+Message-ID: <CAFCwf12o-+wtbk8J8k8hP4_k0a8Lco4m9f4s1vBobkQwNtn39w@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 17, 2021 at 3:30 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Thu, Sep 16, 2021 at 10:10:14AM -0300, Jason Gunthorpe wrote:
+> > On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
+> > > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
+> > > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > >
+> > > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> > > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > > > > > > Hi,
+> > > > > > > Re-sending this patch-set following the release of our user-space TPC
+> > > > > > > compiler and runtime library.
+> > > > > > >
+> > > > > > > I would appreciate a review on this.
+> > > > > >
+> > > > > > I think the big open we have is the entire revoke discussions. Having the
+> > > > > > option to let dma-buf hang around which map to random local memory ranges,
+> > > > > > without clear ownership link and a way to kill it sounds bad to me.
+> > > > > >
+> > > > > > I think there's a few options:
+> > > > > > - We require revoke support. But I've heard rdma really doesn't like that,
+> > > > > >   I guess because taking out an MR while holding the dma_resv_lock would
+> > > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
+> > > > > >   hold-up was again that makes this a no-go?
+> > > > >
+> > > > > RDMA HW can't do revoke.
+> > >
+> > > Like why? I'm assuming when the final open handle or whatever for that MR
+> > > is closed, you do clean up everything? Or does that MR still stick around
+> > > forever too?
+> >
+> > It is a combination of uAPI and HW specification.
+> >
+> > revoke here means you take a MR object and tell it to stop doing DMA
+> > without causing the MR object to be destructed.
+> >
+> > All the drivers can of course destruct the MR, but doing such a
+> > destruction without explicit synchronization with user space opens
+> > things up to a serious use-after potential that could be a security
+> > issue.
+> >
+> > When the open handle closes the userspace is synchronized with the
+> > kernel and we can destruct the HW objects safely.
+> >
+> > So, the special HW feature required is 'stop doing DMA but keep the
+> > object in an error state' which isn't really implemented, and doesn't
+> > extend very well to other object types beyond simple MRs.
+>
+> Yeah revoke without destroying the MR doesn't work, and it sounds like
+> revoke by destroying the MR just moves the can of worms around to another
+> place.
+>
+> > > 1. User A opens gaudi device, sets up dma-buf export
+> > >
+> > > 2. User A registers that with RDMA, or anything else that doesn't support
+> > > revoke.
+> > >
+> > > 3. User A closes gaudi device
+> > >
+> > > 4. User B opens gaudi device, assumes that it has full control over the
+> > > device and uploads some secrets, which happen to end up in the dma-buf
+> > > region user A set up
+> >
+> > I would expect this is blocked so long as the DMABUF exists - eg the
+> > DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
+> > that #3 can't actually happen.
+> >
+> > > It's not mlocked memory, it's mlocked memory and I can exfiltrate
+> > > it.
+> >
+> > That's just bug, don't make buggy drivers :)
+>
+> Well yeah, but given that habanalabs hand rolled this I can't just check
+> for the usual things we have to enforce this in drm. And generally you can
+> just open chardevs arbitrarily, and multiple users fighting over each
+> another. The troubles only start when you have private state or memory
+> allocations of some kind attached to the struct file (instead of the
+> underlying device), or something else that requires device exclusivity.
+> There's no standard way to do that.
+>
+> Plus in many cases you really want revoke on top (can't get that here
+> unfortunately it seems), and the attempts to get towards a generic
+> revoke() just never went anywhere. So again it's all hand-rolled
+> per-subsystem. *insert lament about us not having done this through a
+> proper subsystem*
+>
+> Anyway it sounds like the code takes care of that.
+> -Daniel
 
+Daniel, Jason,
+Thanks for reviewing this code.
 
-Le 18/09/2021 à 05:26, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Long time ago we had a config item called STRICT_MM_TYPECHECKS
->> to build the kernel with pte_t defined as a structure in order
->> to perform additional build checks or build it with pte_t
->> defined as a simple type in order to get simpler generated code.
->>
->> Commit 670eea924198 ("powerpc/mm: Always use STRICT_MM_TYPECHECKS")
->> made the struct based definition the only one, considering that the
->> generated code was similar in both cases.
->>
->> That's right on ppc64 because the ABI is such that the content of a
->> struct having a single simple type element is passed as register,
->> but on ppc32 such a structure is passed via the stack like any
->> structure.
->>
->> Simple test function:
->>
->> 	pte_t test(pte_t pte)
->> 	{
->> 		return pte;
->> 	}
->>
->> Before this patch we get
->>
->> 	c00108ec <test>:
->> 	c00108ec:	81 24 00 00 	lwz     r9,0(r4)
->> 	c00108f0:	91 23 00 00 	stw     r9,0(r3)
->> 	c00108f4:	4e 80 00 20 	blr
->>
->> So, for PPC32, restore the simple type behaviour we got before
->> commit 670eea924198, but instead of adding a config option to
->> activate type check, do it when __CHECKER__ is set so that type
->> checking is performed by 'sparse' and provides feedback like:
->>
->> 	arch/powerpc/mm/pgtable.c:466:16: warning: incorrect type in return expression (different base types)
->> 	arch/powerpc/mm/pgtable.c:466:16:    expected unsigned long
->> 	arch/powerpc/mm/pgtable.c:466:16:    got struct pte_t [usertype] x
-> 
-> OK that's a good trade off.
-> 
-> One question below ...
-> 
->> diff --git a/arch/powerpc/include/asm/pgtable-types.h b/arch/powerpc/include/asm/pgtable-types.h
->> index d11b4c61d686..c60199fc6fa6 100644
->> --- a/arch/powerpc/include/asm/pgtable-types.h
->> +++ b/arch/powerpc/include/asm/pgtable-types.h
->> @@ -5,14 +5,26 @@
->>   /* PTE level */
->>   #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
->>   typedef struct { pte_basic_t pte, pte1, pte2, pte3; } pte_t;
->> -#else
->> +#elif defined(__CHECKER__) || !defined(CONFIG_PPC32)
-> 
-> It would be nicer if this logic was in Kconfig.
-> 
-> eg. restore config STRICT_MM_TYPECHECKS but make it always enabled for
-> 64-bit, and depend on CHECKER for 32-bit.
-> 
-> The only thing is I'm not sure if we can test __CHECKER__ in Kconfig?
+Can I get an R-B / A-B from you for this patch-set ?
 
-
-I think Kconfig doesn't see __CHECKER__, otherwise it would mean that a 
-build may get different whether you build with C=1/2 or not.
-
-__CHECKER__ is a define added by sparse when doing the CHECK on a per 
-object basis.
-
-What I can do is to add:
-
-#if defined(__CHECKER__) || !defined(CONFIG_PPC32)
-#define STRICT_MM_TYPECHECKS
-#endif
-
-Christophe
+Thanks,
+Oded
