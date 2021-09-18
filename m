@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ABE41067B
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 14:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E552F41069F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 15:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236333AbhIRMsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 08:48:46 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:48415 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235206AbhIRMsp (ORCPT
+        id S238331AbhIRNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 09:04:08 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:62332 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237181AbhIRNED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:48:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Uon0NRt_1631969229;
-Received: from B-LB6YLVDL-0141.local(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uon0NRt_1631969229)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 18 Sep 2021 20:47:10 +0800
-Subject: Re: [PATCH v8 2/3] tty: hvc: pass DMA capable memory to put_chars()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Daniel Axtens <dja@axtens.net>, jirislaby@kernel.org,
-        amit@kernel.org, arnd@arndb.de, osandov@fb.com,
-        shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20210818082122.166881-1-xianting.tian@linux.alibaba.com>
- <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
- <87pmu8ehkk.fsf@linkitivity.dja.id.au>
- <6e36640d-b55f-ece4-4cab-437ecec0964a@linux.alibaba.com>
- <614b778b-8486-c20f-d5ed-37cc3b92ada1@linux.alibaba.com>
- <YUXeSUVQRDXzAqhf@kroah.com>
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-Message-ID: <9678a0e1-f80f-89af-e7a0-f52bd914384d@linux.alibaba.com>
-Date:   Sat, 18 Sep 2021 20:47:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Sat, 18 Sep 2021 09:04:03 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 48d4320e991614c8; Sat, 18 Sep 2021 15:02:39 +0200
+Received: from kreacher.localnet (89-77-51-84.dynamic.chello.pl [89.77.51.84])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5236266A568;
+        Sat, 18 Sep 2021 15:02:38 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 0/3] PCI: ACPI: glue: Get rid of acpi_pci_bus and rearrange code
+Date:   Sat, 18 Sep 2021 14:51:24 +0200
+Message-ID: <1794818.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <YUXeSUVQRDXzAqhf@kroah.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.77.51.84
+X-CLIENT-HOSTNAME: 89-77-51-84.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedgheejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdejjedrhedurdekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrjeejrdehuddrkeegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhig
+ rdhinhhtvghlrdgtohhmpdhrtghpthhtoheprghnughrihihrdhshhgvvhgthhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-thanks Greg, I will submit v9 patch for reviewing.
+Hi All,
 
-Before, I was waiting for a new reply:(
+After commit 375553a93201 ("PCI: Setup ACPI fwnode early and at the same time
+with OF"), PCI only uses acpi_pci_bus for running the ->setup() and ->cleanup()
+callbacks from there, but the functions pointed to by them can be invoked
+directly from the ACPI "glue" code if the device being processed is a PCI one,
+so patch [1/3] drops acpi_pci_bus and rearranges the code to call the PCI
+"setup" and "cleanup" routines directly.
 
-ÔÚ 2021/9/18 ÏÂÎç8:40, Greg KH Ð´µÀ:
-> On Sat, Sep 18, 2021 at 08:32:01PM +0800, Xianting Tian wrote:
->> hi
->>
->> Will you consider to continue the disscussion of this patch? thanks
-> I do not see a newer version of this series.
->
-> thanks,
->
-> greg k-h
+After that, the ->cleanup callback in struct acpi_bus_type has no users, so
+patch [2/3] gets rid of it.
+
+Finally, patch [3/3] rearranges acpi_device_notify() to avoid looking up
+the "ACPI bus type" of the device in bus_type_list if its ACPI companion has
+been set upfront.
+
+Thanks!
+
+
+
