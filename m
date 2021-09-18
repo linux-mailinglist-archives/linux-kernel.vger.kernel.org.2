@@ -2,131 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1854104B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C3C4104AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 09:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243002AbhIRHZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 03:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S236629AbhIRHY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 03:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhIRHZR (ORCPT
+        with ESMTP id S231351AbhIRHY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:25:17 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C056EC061574;
-        Sat, 18 Sep 2021 00:23:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j6so11350536pfa.4;
-        Sat, 18 Sep 2021 00:23:54 -0700 (PDT)
+        Sat, 18 Sep 2021 03:24:26 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFF2C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d18so7645047pll.11
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ckRfr93jBVrtk8m8fXQMVODVnsoXUNlxu8pmu/jGZwU=;
-        b=V40M3+XujcVD9Mu31p8qoTcaqOpcMCaBwTOCkyK5pha9fCoD7gUHJcPIeko1b41OlW
-         6U/vO+M/gAvyZ7jUWPaonLX1Ft7SRBEKrEBPiAxEhOv/cC/IK4Mqf83DhR3YT20IQcdS
-         yoMZBTxwg2Iyv8kOCDPV2Rwi3DrueJi73q6dPr+M7Nti/2UyQ3T+FIOEh0bp4Ufc9Rhg
-         sFxRm4s/Vt5hglVt+skwefl7wjn6MSk4B13PtlvXWHyFRdetb23lS1SdHvJM6ysWjOoM
-         AKk3chMBZ5/QugQeZJFuWTDsldudNbcDQIAKuRwrlM85nexl57wqZ4Mf5K5V5jOKVjNs
-         l4yQ==
+        d=0x0f.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3/DBi7RwM1M3KB0MW8LaNgi4t6NDHut6TlL12sSGe3I=;
+        b=ee4W6IXi42isoeIZ0wephrXbvBx4HHDA254kQiLwvCc6GiGEzIIV5369o3RPPk5p9z
+         wwn/pFJ7gXHA7JDHoULYnmmBTWeS7t6qekNjjx5bSmoujWlpXvsGpDLVaxups4Gigetw
+         p7AgFhLyHig56IQMPpXtTsJ5VtzdgZIdOOnDM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ckRfr93jBVrtk8m8fXQMVODVnsoXUNlxu8pmu/jGZwU=;
-        b=q0veAL2cbdNf+0VDMOTKnKBBtbYDv10uRPjRgaizwVKjl8cPLfzUaTGnCOxmf6aB40
-         rV8yfyY4Lg9jHJ7uwg3qA1W56+TBnBCgo7sFyif616zglcMuf9I9fVBLbYUemp4yg1zY
-         zn+vS4aTFWnQvWtFp55zNaL2LdXknnqaBD1VM9+CZHG2DNzTcAr5RBxVz6CePqi9Mxm9
-         X7SkOMmrxTuqDxZbLAtfbR3PoyH5DzfgGVRSKNVMxKm1O4sEq4+mOC+whzneUhIO6x+M
-         ejqpAEKbP7Ty/su1aR7WyyfBqZ8wNbGgD8KDAb7CnDKjP9YIjrLgwsuQ6raJ3MpSBn3f
-         62tQ==
-X-Gm-Message-State: AOAM533kTjrqYiVlWbUfn5yeSEGCgBYUi1OyjmMBXGpYW4N19A9BBoS6
-        bEOnF4MqvegpsByCwfaOTgc=
-X-Google-Smtp-Source: ABdhPJxx1DKWw5kauwnMk0diOZasSfNwdkeqJALPc/oDmor2aynQZj6EF8FQEEYdZqLMDK+pO4lLAQ==
-X-Received: by 2002:a63:4b24:: with SMTP id y36mr13626066pga.230.1631949834391;
-        Sat, 18 Sep 2021 00:23:54 -0700 (PDT)
-Received: from localhost.localdomain (mail.lemote.com. [222.92.8.138])
-        by smtp.gmail.com with ESMTPSA id i27sm8144498pfq.184.2021.09.18.00.23.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3/DBi7RwM1M3KB0MW8LaNgi4t6NDHut6TlL12sSGe3I=;
+        b=e6GPM+QqofKBKby/wcjVaqtu30YwGStcfL2dJEDKB7SAwo3at4Dv+FGpaAdr0qsM4I
+         Mx83hpw2Y6Pf9VcLPA66KI6fbVi7Tzodj0sLnuudGv6WWtngEAsJJGq62L8o5Ego6vih
+         aeKUD4P2pjxvfnzxPTiYA2gH8K5Qdsa9Sy4+zlR+jEZ4vguPQySc92u2Z+Kwa7W3HdkP
+         qZYZSl6MoVNKLTf3juiNPyh6U6YtEtMJAukDAUvFrlqrBOro8CrsdQ/JvlgGh2K3T3tb
+         b8MMS9T63yNgNnBzeTL1sm85NbgSlAiyVAX5dusNm+nW74jRvjrQ3S6QRHxKOvresONL
+         6cDg==
+X-Gm-Message-State: AOAM533MfLRYc/jbpx1PiorDY4O6wFD0pLdz3FLFgrkibNdYjuL5hRAh
+        qGx6uFM15z0SAYGkZe9Cl2DKeQ==
+X-Google-Smtp-Source: ABdhPJxYHdiYIx+50COYvEYU/ZRBpmNm7i5m7K/Gj8ydbBTNU4S0LYI1x8J2scs4T700kMM1ysSJ1g==
+X-Received: by 2002:a17:902:7103:b0:13d:9a6f:d158 with SMTP id a3-20020a170902710300b0013d9a6fd158mr2562644pll.49.1631949783096;
+        Sat, 18 Sep 2021 00:23:03 -0700 (PDT)
+Received: from shiro.work (p864106-ipngn200510sizuokaden.shizuoka.ocn.ne.jp. [180.9.58.106])
+        by smtp.googlemail.com with ESMTPSA id b7sm8746411pgs.64.2021.09.18.00.23.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 00:23:53 -0700 (PDT)
-From:   Dian zheng <paniaguaholt597336@gmail.com>
-X-Google-Original-From: Dian zheng <zhengd@lemote.com>
-To:     jiaxun.yang@flygoat.com
-Cc:     cand@gmx.com, chenhuacai@kernel.org, daniel.lezcano@linaro.org,
-        drjones@redhat.com, fancer.lancer@gmail.com, huangll@lemote.com,
-        john.garry@huawei.com, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, marcan@marcan.st,
-        mgorman@techsingularity.net, ndesaulniers@google.com,
-        paul@crapouillou.net, romain.naour@gmail.com,
-        sudipm.mukherjee@gmail.com, sumanthk@linux.ibm.com,
-        tanj@lemote.com, tglx@linutronix.de, tmricht@linux.ibm.com,
-        tom.zanussi@linux.intel.com, tsbogend@alpha.franken.de,
-        will@kernel.org, yangtiezhu@loongson.cn,
-        zhangshaokun@hisilicon.com, zhengd@lemote.com,
-        zhouyanjie@wanyeetech.com
-Subject: [PATCH v1 2/3] MIPS: time: Add plat_have_sched_clock That variable That variable would allow platform to register their own sched_clock instead of csrc-r4k.
-Date:   Sat, 18 Sep 2021 15:21:59 +0800
-Message-Id: <20210918072200.95304-2-zhengd@lemote.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210918072200.95304-1-zhengd@lemote.com>
-References: <cf32762f-888a-b50b-9685-89b830049f6d@flygoat.com>
- <20210918072200.95304-1-zhengd@lemote.com>
+        Sat, 18 Sep 2021 00:23:02 -0700 (PDT)
+From:   Daniel Palmer <daniel@0x0f.com>
+To:     linux-mtd@lists.infradead.org, tudor.ambarus@microchip.com
+Cc:     michael@walle.cc, p.yadav@ti.com, linux-kernel@vger.kernel.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [PATCH] mtd: spi-nor: Add support for ZB25VQ128
+Date:   Sat, 18 Sep 2021 16:22:56 +0900
+Message-Id: <20210918072256.3505379-1-daniel@0x0f.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dian Zheng <zhengd@lemote.com>
+Add support for the ZBIT ZB25VQ128 128MBit SPI NOR
+flash.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Dian Zheng <zhengd@lemote.com>
+Link: http://www.cipatelje.eu/pdf/ZB25VQ128.pdf
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/mips/include/asm/time.h | 3 +++
- arch/mips/kernel/csrc-r4k.c  | 5 ++---
- arch/mips/kernel/time.c      | 3 +++
- 3 files changed, 8 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/Makefile |  1 +
+ drivers/mtd/spi-nor/core.c   |  1 +
+ drivers/mtd/spi-nor/core.h   |  1 +
+ drivers/mtd/spi-nor/zbit.c   | 21 +++++++++++++++++++++
+ 4 files changed, 24 insertions(+)
+ create mode 100644 drivers/mtd/spi-nor/zbit.c
 
-diff --git a/arch/mips/include/asm/time.h b/arch/mips/include/asm/time.h
-index e855a3611d92..e235b8a27768 100644
---- a/arch/mips/include/asm/time.h
-+++ b/arch/mips/include/asm/time.h
-@@ -28,6 +28,9 @@ extern void plat_time_init(void);
-  */
- extern unsigned int mips_hpt_frequency;
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 6b904e439372..a6f3646824cb 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
+ spi-nor-objs			+= winbond.o
+ spi-nor-objs			+= xilinx.o
+ spi-nor-objs			+= xmc.o
++spi-nor-objs			+= zbit.o
+ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
  
-+/* True if platform registered sched_clock by itself */
-+extern bool plat_have_sched_clock __initdata;
+ obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index cc08bd707378..75f6ac9485b9 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -1846,6 +1846,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+ 	&spi_nor_winbond,
+ 	&spi_nor_xilinx,
+ 	&spi_nor_xmc,
++	&spi_nor_zbit,
+ };
+ 
+ static const struct flash_info *
+diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+index 3348e1dd1445..ad3b34a3b80f 100644
+--- a/drivers/mtd/spi-nor/core.h
++++ b/drivers/mtd/spi-nor/core.h
+@@ -489,6 +489,7 @@ extern const struct spi_nor_manufacturer spi_nor_sst;
+ extern const struct spi_nor_manufacturer spi_nor_winbond;
+ extern const struct spi_nor_manufacturer spi_nor_xilinx;
+ extern const struct spi_nor_manufacturer spi_nor_xmc;
++extern const struct spi_nor_manufacturer spi_nor_zbit;
+ 
+ extern const struct attribute_group *spi_nor_sysfs_groups[];
+ 
+diff --git a/drivers/mtd/spi-nor/zbit.c b/drivers/mtd/spi-nor/zbit.c
+new file mode 100644
+index 000000000000..d240dd65d249
+--- /dev/null
++++ b/drivers/mtd/spi-nor/zbit.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021, Daniel Palmer<daniel@thingy.jp>
++ */
 +
- /*
-  * The performance counter IRQ on MIPS is a close relative to the timer IRQ
-  * so it lives here.
-diff --git a/arch/mips/kernel/csrc-r4k.c b/arch/mips/kernel/csrc-r4k.c
-index edc4afc080fa..b50a24da6528 100644
---- a/arch/mips/kernel/csrc-r4k.c
-+++ b/arch/mips/kernel/csrc-r4k.c
-@@ -122,9 +122,8 @@ int __init init_r4k_clocksource(void)
- 
- 	clocksource_register_hz(&clocksource_mips, mips_hpt_frequency);
- 
--#ifndef CONFIG_CPU_FREQ
--	sched_clock_register(r4k_read_sched_clock, 32, mips_hpt_frequency);
--#endif
-+	if (!IS_ENABLED(CONFIG_CPU_FREQ) && !plat_have_sched_clock)
-+		sched_clock_register(r4k_read_sched_clock, 32, mips_hpt_frequency);
- 
- 	return 0;
- }
-diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
-index caa01457dce6..baf33da8c79d 100644
---- a/arch/mips/kernel/time.c
-+++ b/arch/mips/kernel/time.c
-@@ -123,6 +123,9 @@ EXPORT_SYMBOL(perf_irq);
- unsigned int mips_hpt_frequency;
- EXPORT_SYMBOL_GPL(mips_hpt_frequency);
- 
-+/* True if platform registered sched_clock by itself */
-+bool plat_have_sched_clock __initdata;
++#include <linux/mtd/spi-nor.h>
 +
- static __init int cpu_has_mfc0_count_bug(void)
- {
- 	switch (current_cpu_type()) {
++#include "core.h"
++
++static const struct flash_info zbit_parts[] = {
++	/* zbit */
++	{ "zb25vq128", INFO(0x5e4018, 0, 64 * 1024, 256,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++};
++
++const struct spi_nor_manufacturer spi_nor_zbit = {
++	.name = "zbit",
++	.parts = zbit_parts,
++	.nparts = ARRAY_SIZE(zbit_parts),
++};
 -- 
-2.18.1
+2.33.0
 
