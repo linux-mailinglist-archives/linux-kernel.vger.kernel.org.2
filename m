@@ -2,171 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07164107C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 19:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD8D4107BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 19:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238442AbhIRRNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 13:13:45 -0400
-Received: from mout.gmx.net ([212.227.15.19]:44729 "EHLO mout.gmx.net"
+        id S238075AbhIRRK4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 18 Sep 2021 13:10:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233210AbhIRRNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 13:13:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631985125;
-        bh=HaaOH1N5B34fUsGwuYxHkOP8Bmo2FI+Nxh0L4luHKr8=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=VB7DZQsSQo3NdthY+tY5Lzk2zptqyURBOMmdUSo5Agucie2GLm8aROBoioKi0lKvD
-         Ld0DnLhHissWEqrg7drrzOVbytBJyYGOyLxJ3qg2tzLEjpw/pEc89piEVlG0qFH81L
-         TTNjPM3g0mTe/KElMKvOXjWbqSwUF9dVX+7en8AU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8hV5-1mWIaL2lUX-004l1v; Sat, 18
- Sep 2021 19:12:04 +0200
-Date:   Sat, 18 Sep 2021 19:11:47 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH] net: mana: Prefer struct_size over open coded arithmetic
-Message-ID: <20210918152604.GB15999@titan>
-References: <20210911102818.3804-1-len.baker@gmx.com>
- <20210918132010.GA15999@titan>
- <D81D1EE2-92A0-42D5-9238-9B05E4BDE230@chromium.org>
+        id S233210AbhIRRKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 13:10:55 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3F5661179;
+        Sat, 18 Sep 2021 17:09:29 +0000 (UTC)
+Date:   Sat, 18 Sep 2021 18:13:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Nuno Sa <Nuno.Sa@analog.com>
+Subject: Re: [PATCH v2 15/16] iio: adc: max1027: Add support for external
+ triggers
+Message-ID: <20210918181308.1b41cc3a@jic23-huawei>
+In-Reply-To: <20210915121832.7766fdd7@xps13>
+References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
+        <20210902211437.503623-16-miquel.raynal@bootlin.com>
+        <20210905171046.1681482d@jic23-huawei>
+        <20210915121832.7766fdd7@xps13>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D81D1EE2-92A0-42D5-9238-9B05E4BDE230@chromium.org>
-X-Provags-ID: V03:K1:/jOFZgiazp1Mu4q1yJZMZHCqZguWrTCVgOiUcRwDstkREyaTGYs
- UBQwp8eIVfvNPaQRfAJFF6LevZRZFI3xZ7MwzMmBLXd1W+g/m5XnL7waXh0U0kTdndpmAi0
- ep8beAtJmIfSZXxkf5ZwEUPtSYRTGnVO38vTd3E9Hlc/eloGCAHpZj4eeqnyIixDxUm7vwb
- h6tbGt6bwtugEagOhPyqw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4M+R8W0zYpQ=:FygVzFs7OR1agH0Yq+kqbo
- 4yXp3xJ45NY4137+M42bmwT+MbhbJ0gdkcvFzqOqph1/eLu8KfjQNG6U4FE9XtJiC1sSCxdNW
- EaufVRWhjFaqnoorFfuL9EVRZH7P7TkwnjcfrDZFLcu/1h1zopwG6y4FkcZOZkxk0juI65Y4A
- WjzLJj+NfCR10KLu37ov9IZGJ+Q/30nFgC0dQ/gQXYcMxe9e784tPXZN0/kdwrjB0nfu6XRXQ
- 2ZuzQIcW7PNfpl+RwMalhB8F+zffRXsJKZPc32CwByUD9+FLsMRUWEJv1IK3VdZzjXFL0mhBD
- U9be7KyiyTTldxEjrJPDRSgWcNLDb/zr5cpMo827V1uzexubCxYgrbX5+gigQQ/p0cBfUs421
- qvxH+F10bxectyJ9DisLbsYTx04tO36WbLKZ1dtN4QvcbzMeDsiUTVcTWBzPEM93Il2ERzZDN
- 93wmvaFCe3p38Ihg6h+E75ndNbMScdzS1PInTaJ7GAh0rsxMqdUuc27M7qzsqJcWFV0LAis+V
- TWXqh1Uf7wk6dQ9rpiAHZjsfZrO9bTkD5a/faEQbpkH1vC4AHtydAbNzwTY5uubOj8uLZ9MbY
- 6anjM+JsE0XYCGgvaxeQoFkdbW+TP3LO6i6NeQ4ifONktoaMAjW8D+8hGzSIuyoYJ9SHgRLc/
- VIyr/mORl/sE1edb5tClgyOVEyaXz6/pHdD5QjpzT91ISUXJdtMsqpEsX24DQaO/Jhh/7m2Rt
- tmNp3MoQeutCBpKxwWBjy1mTBUnPkG1lHUiWWpC3vm9mZPgsVoHTuC7RkZ0h2XcqE82B3mOOV
- cfRegKZakpuFCCJ4vtOe6Pm7Q68C5wFFCRmPnfQcprgnnIECvazOq2VEaS/YEtctIV+08BSjs
- 1FOxrecBbk0+gCKqzDR2w8D+2kvagp+vz+VJvR2+LwWRPjHgJW+Q/JjylBMEK8Bj56dNMkydi
- TBKvRa7/lp1mUKg4Aak9PeyvqUFz/GZK1sYg3JAnmEyKgADMCV3MSyW6KWijB9lxp9fJtI+bZ
- 2Z3i4YDjxzyt+SfTI18TVMJ8NW2ti2a1PussYNfR0/ZxbZteypJI16nT5m5IGWPzZJi4l0o8A
- ze7E3OPLoamLG0=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On Wed, 15 Sep 2021 12:18:32 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-On Sat, Sep 18, 2021 at 06:51:51AM -0700, Kees Cook wrote:
->
->
-> On September 18, 2021 6:20:10 AM PDT, Len Baker <len.baker@gmx.com> wrot=
-e:
-> >Hi,
-> >
-> >On Sat, Sep 11, 2021 at 12:28:18PM +0200, Len Baker wrote:
-> >> As noted in the "Deprecated Interfaces, Language Features, Attributes=
-,
-> >> and Conventions" documentation [1], size calculations (especially
-> >> multiplication) should not be performed in memory allocator (or simil=
-ar)
-> >> function arguments due to the risk of them overflowing. This could le=
-ad
-> >> to values wrapping around and a smaller allocation being made than th=
-e
-> >> caller was expecting. Using those allocations could lead to linear
-> >> overflows of heap memory and other misbehaviors.
-> >>
-> >> So, use the struct_size() helper to do the arithmetic instead of the
-> >> argument "size + count * size" in the kzalloc() function.
-> >>
-> >> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#ope=
-n-coded-arithmetic-in-allocator-arguments
-> >>
-> >> Signed-off-by: Len Baker <len.baker@gmx.com>
-> >> ---
-> >>  drivers/net/ethernet/microsoft/mana/hw_channel.c | 4 +---
-> >>  1 file changed, 1 insertion(+), 3 deletions(-)
-> >>
-> >> diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drive=
-rs/net/ethernet/microsoft/mana/hw_channel.c
-> >> index 1a923fd99990..0efdc6c3c32a 100644
-> >> --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> >> +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> >> @@ -398,9 +398,7 @@ static int mana_hwc_alloc_dma_buf(struct hw_chann=
-el_context *hwc, u16 q_depth,
-> >>  	int err;
-> >>  	u16 i;
-> >>
-> >> -	dma_buf =3D kzalloc(sizeof(*dma_buf) +
-> >> -			  q_depth * sizeof(struct hwc_work_request),
-> >> -			  GFP_KERNEL);
-> >> +	dma_buf =3D kzalloc(struct_size(dma_buf, reqs, q_depth), GFP_KERNEL=
-);
-> >>  	if (!dma_buf)
-> >>  		return -ENOMEM;
-> >>
-> >> --
-> >> 2.25.1
-> >>
-> >
-> >I have received a email from the linux-media subsystem telling that thi=
-s
-> >patch is not applicable. The email is the following:
-> >
-> >Hello,
-> >
-> >The following patch (submitted by you) has been updated in Patchwork:
-> >
-> > * linux-media: net: mana: Prefer struct_size over open coded arithmeti=
-c
-> >     - http://patchwork.linuxtv.org/project/linux-media/patch/202109111=
-02818.3804-1-len.baker@gmx.com/
-> >     - for: Linux Media kernel patches
-> >    was: New
-> >    now: Not Applicable
-> >
-> >This email is a notification only - you do not need to respond.
-> >
-> >The question is: Why it is not applicable?. I have no received any bad =
-comment
-> >and a "Reviewed-by:" tag from Haiyang Zhang. So, what is the reason for=
- the
-> >"Not Applicable" state?.
->
-> That is the "Media" subsystem patch tracker. The patch appears to be for=
- networking, so the Media tracker has marked it as "not applicable [to the=
- media subsystem]".
->
-> The CC list for this patch seems rather wide (media, dri). I would have =
-expected only netdev. Were you using scripts/get_maintainer.pl for getting=
- addresses?
+> Hi Jonathan, Nuno,
+> 
+> jic23@kernel.org wrote on Sun, 5 Sep 2021 17:10:46 +0100:
+> 
+> > On Thu,  2 Sep 2021 23:14:36 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >   
+> > > So far the driver only supported to use the hardware cnvst trigger. This
+> > > was purely a software limitation.
+> > > 
+> > > The IRQ handler is already registered as being a poll function and thus
+> > > can be called upon external triggering. In this case, a new conversion
+> > > must be started, and one must wait for the data to be ready before
+> > > reading the samples.
+> > > 
+> > > As the same handler can be called from different places, we check the
+> > > value of the current IRQ with the value of the registered device
+> > > IRQ. Indeed, the first step is to get called with a different IRQ number
+> > > than ours, this is the "pullfunc" version which requests a new    
+> > 
+> > pullfunc?
+> >   
+> > > conversion. During the execution of the handler, we will wait for the
+> > > EOC interrupt to happen. This interrupt is handled by the same
+> > > helper. This time the IRQ number is the one we registered, we can in
+> > > this case call complete() to unlock the primary handler and return. The
+> > > primary handler continues executing by retrieving the data normally and
+> > > finally returns.    
+> > 
+> > Interesting to use the irq number..
+> > 
+> > I'm a little nervous about how this has ended up structured.
+> > I'm not 100% sure my understanding of how you've done it is correct.
+> > 
+> > We should have the following situation:
+> > 
+> > IRQ IN
+> >   |
+> >   v
+> > Trigger IRQ / EOC IRQ  (this is the spi->irq)  (currently iio_trigger_generic_data_poll_ready)
+> >   |              |
+> >   ---------      v
+> >   |        |   complete
+> >   v        v
+> > TrigH1    (TrigH2)   (these are the IRQs below the irq_chip IIO uses to demux triggers)
+> > 
+> > 
+> > So when using it's own trigger we are using an internal interrupt
+> > tree burried inside the IIO core.  When using it only as an EOC interrupt we shouldn't
+> > be anywhere near that internal interrupt chip.
+> > 
+> > So I'm surprised the IRQ matches with the spi->irq as 
+> > those trigH1 and trigH2 will have their own IRQ numbers.
+> > 
+> > For reference I think your architecture is currently
+> > 
+> > IRQ IN
+> >   |
+> >   v
+> >   Trigger IRQ
+> >   |
+> >   v
+> >  TRIG H1
+> >  Either fills the buffer or does the completion.
+> > 
+> > I am a little confused how this works with an external trigger because the Trig H1 interrupt
+> > should be disabled unless we are using the trigger.  That control isn't exposed to the
+> > driver at all.
+> > 
+> > Is my understanding right or have I gotten confused somewhere?  
+> 
+> I think the confusion comes from the fact that in the
+> current implementation, Trigger IRQ and EOC IRQ handlers are the same.
+> This comes from a possible misunderstanding in the previous review,
+> where I understood that you and Nuno wanted to keep using
+> iio_trigger_generic_data_rdy_poll() hand have a single handler in the
+> driver (which I think is far from optimal). I can try to split that
+> handler again to have two distinct paths.
+That is the right thing to do.  The split should be done a little differently
+than you have it in v3. I've added comments to that patch.
 
-Yes, my workflow is scripts/checkpatch.pl and then scripts/get_maintainer.=
-pl
-before sending any patch :)
+Data ready triggers are always a little messy because we end up with a split that
+is:
 
-Regards,
-Len
->
-> -Kees
+Trigger side -  Interrupt comes in here...
+
+--------- GENERIC IIO HANDLING ----- Take the trigger and routes it to the device code --- 
+
+Device side - We do the data reading here.
+
+The reason for this is that we may well have other devices using the same trigger
+and we want to keep the model looking the same for all devices.
+
+A push into an iio buffer should always be on the device side of that boundary.
+
+> 
+> > I also can't see a path in which the eoc interrupt will get fired for raw_reads.
+> > 
+> > Could you talk me through how that works currently?
+> > 
+> > I suspect part of the confusion here is that this driver happens to be using the
+> > standard core handler iio_trigger_generic_data_rdy_poll which hides away that
+> > there are two interrupt handlers in a normal IIO driver for a device with a
+> > trigger and buffered mode.
+> > 1 for the trigger and 1 for the buffer.  Whether the buffer one is a result
+> > of the trigger one (via iio_poll_trigger) is down to whether the device is
+> > using it's own trigger or not.  
+> 
+> Also, to answer Nuno about the question: is this actually working: IIRC
+> I mentioned it in the cover letter but my hardware does not have the
+> EOC line wired so I am unable to actually test that I am not breaking
+> this. My main goal is to be able to use external triggers (such as a
+> timer) and I am a bit struggling with the constraints of my hardware +
+> the design of this chip.
+> 
+> I will provide a third implementation in v3 and if this still does not
+> fit your mental model please guide me with maybe an untested code
+> snippet just to show me how you think this should be implemented.
+> 
+> Thank you both for the numerous reviews and precious feedback anyway!
+> Miquèl
+> 
+
