@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76634106D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 15:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE584106D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 15:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239169AbhIRNdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 09:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238371AbhIRNdP (ORCPT
+        id S238901AbhIRNdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 09:33:20 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:48762 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239009AbhIRNdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 09:33:15 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD37C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 06:31:51 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id e26so9419014wmk.2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 06:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
-         :subject:content-transfer-encoding;
-        bh=btttk93aUSoAIGuvA0mTkUBQEce9Eyd/W3I2VtkIz5w=;
-        b=Xhl6QYeEWdrSrlNtd2m8HCfgmI7HSzhbg3rAvOI+cTykhjCqUaR6TRMvnN0e1F5YEy
-         dlUa99GeTEiwnz/CW/SLZ8315ZcwZOZIZDOz16YqYCnjgcI655mBl22FIPqKh/QezEZF
-         4IFaeDTsGJwtAvPiVgvbkUIgzr6vgk8K8iukxvl1htLUKeAF1NITk65TkHhTO9KVESdr
-         NNYQEMK7pSytNsYL5jVvUHXY3Q9ZdFTT6iBoYGEFIkY7w6cVEWF49cZCJ3l86666pren
-         40j76a6aGqeltIOwACZmjWGOSM4vFD4+KjYwAj+zd3ZG24u9WSi5M9ASgtiSCt4q6y4s
-         Ga9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:from:subject:content-transfer-encoding;
-        bh=btttk93aUSoAIGuvA0mTkUBQEce9Eyd/W3I2VtkIz5w=;
-        b=fEYcUR5aKaAVLiKGaakTTUrpxsALwnmBNd0uQKyibMF/NcbjXfkbHvtCSzPrOIdgpU
-         q6WbTh5OIfDZcQVR9Zafi9v0YFvu6ZGRd2yHpksXuAlUObYRFDVsOXmtFXcnomTPO34r
-         RuOAWU0wf5M1HE+536AbaBzk0yx9nZ5KjbxwM37vr8CwsbWpkB8xLfRTJpJasXkG19Po
-         RW68kueK7z2S49ocuqXfefy+xZn0JjcteZlasmIFAgjLcvKzwtYwFAmh9F0L13P5074z
-         qjBhk5li6qfqJjNlJSTtKyxkBZKecDjAlBO9cdQynAA4Nzanbep0aXI1gnrv7rRJhvQL
-         AEWg==
-X-Gm-Message-State: AOAM530BQiZLdT/wIO92ZFsqVtmCNWksa2IYjLWl3qAQEnCnLmkXbThB
-        ncyEHylFOsAKHq5+mJDLTnI=
-X-Google-Smtp-Source: ABdhPJzW5QuBHT1//iBN/LEipFfEVSJ3k8S4oCN2WTOnucZO6OPPwus7sCOefy0VdP7e1altBeEMDA==
-X-Received: by 2002:a1c:3845:: with SMTP id f66mr15396060wma.63.1631971910196;
-        Sat, 18 Sep 2021 06:31:50 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::cde? ([2a02:8108:96c0:3b88::cde])
-        by smtp.gmail.com with ESMTPSA id l124sm13781028wml.8.2021.09.18.06.31.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Sep 2021 06:31:49 -0700 (PDT)
-Message-ID: <7f1c135a-d85d-d271-f315-d665a5fe1472@gmail.com>
+        Sat, 18 Sep 2021 09:33:17 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id fac171cdf082cbb6; Sat, 18 Sep 2021 15:31:52 +0200
+Received: from kreacher.localnet (89-77-51-84.dynamic.chello.pl [89.77.51.84])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 690F666A569;
+        Sat, 18 Sep 2021 15:31:49 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        x86 Maintainers <x86@kernel.org>
+Subject: [PATCH v1 0/5] PCI: ACPI: Get rid of struct pci_platform_pm_ops and clean up code
 Date:   Sat, 18 Sep 2021 15:31:48 +0200
+Message-ID: <2341482.jE0xQCEvom@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Content-Language: en-US
-To:     Larry.Finger@lwfinger.net, Phillip Potter <phil@philpotter.co.uk>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   Michael Straube <straube.linux@gmail.com>
-Subject: staging: r8188eu: Can odm_DynamicTxPowerNIC() be removed?
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.77.51.84
+X-CLIENT-HOSTNAME: 89-77-51-84.dynamic.chello.pl
+X-VADE-SPAMSTATE: spam:low
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedgieefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenogfuphgrmhfkphculdeftddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepkeelrdejjedrhedurdekgeenucfuphgrmhfkphepkeelrdejjedrhedurdekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrjeejrdehuddrkeegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgv
+ lhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopeigkeeisehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=56 Fuz1=56 Fuz2=56
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Larry, Phillip and all.
+Hi All,
 
-While removing code that checks for the chip type I stumbled upon this:
+As explained in the changelog of patch [2/5], using struct pci_platform_pm_ops
+for ACPI is not particularly beneficial, so it is better to get rid of it and
+call the functions pointed to by it directly from the PCI core.
+
+However, struct pci_platform_pm_ops is also used by the Intel MID support code
+that basically is regarded as dead which is why the majority of it has been
+dropped already as of commit 4590d98f5a4f ("sfi: Remove framework for deprecated
+firmware").  Since it doesn't make much sense to update that code, patch [1/5]
+drops the PCI part of it along with some arch pieces that are only needed for
+the PCI stuff.
+
+The main modification is made by patch [2/5] (see the changelog thereof for
+details).
+
+The rest is just cleanups and some code consolidation on top of that.
+
+Thanks!
 
 
-void odm_DynamicTxPowerNIC(struct odm_dm_struct *pDM_Odm)
-{
-	if (!(pDM_Odm->SupportAbility & ODM_BB_DYNAMIC_TXPWR))
-		return;
 
-	if (pDM_Odm->SupportICType == ODM_RTL8188E) {
-		/*  ??? */
-		/*  This part need to be redefined. */
-	}
-}
-
-
-(pDM_Odm->SupportICType == ODM_RTL8188E) is always true in this driver.
-Currently the function does nothing and the driver seems to work fine.
-Because of the comment I'm not sure if the whole function can just be
-removed?
-
-Regards,
-Michael
