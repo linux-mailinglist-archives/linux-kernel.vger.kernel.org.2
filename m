@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734E2410342
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 05:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3D0410343
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 05:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241369AbhIRD1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Sep 2021 23:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        id S241576AbhIRD2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Sep 2021 23:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234698AbhIRD1k (ORCPT
+        with ESMTP id S234698AbhIRD2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Sep 2021 23:27:40 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E78C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:26:17 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id a25so11307457vso.5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=7WJKF+zfVSquGby0jEE4jBUvuyjcALvpIdFM1QC2+j0=;
-        b=oRRwWUS5a+Zlov5yK3+mN66WamTqVJTbkHfp04drcu55fpm5COf3UpuwJEi4BpmJx+
-         gZ1+HY+2iRlfFag+kHMCRz1KFN+78T4BT8h09Jbl/WwJHEXtltWv46j1XhPRo/JPv58j
-         ISPI8L8O9HLfWn5+ZHf4FH1KMKODZzX0ENnHPeUr/ULfeNDF3nCE8TJJvFN9Y1adgP8F
-         fZRoqdL3zjHoIwAgFFO5ECRGCbMMh1mygzw7CLazniFfS+7FUKlQpgeGyqYnJSpQ5InS
-         MRkRpT2wF2WxNjurY5Mba5dxElZIjw4vMvtQglbLPj1qkOU2QPNKKhlAfPEkAwnIEKl0
-         S6kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=7WJKF+zfVSquGby0jEE4jBUvuyjcALvpIdFM1QC2+j0=;
-        b=79sfcfqSvvpnKHGFahE9cW6jlcpqxqTKxApjgAKKi17ialXre7i7f5vlZBYcgx3L7x
-         G69aQNGlMlB0GDXsuSj6LRj7rGdL8in/IvB15JsJXsa+DWQEf2vRXnZS/znPIVRlTBJy
-         XPWc5JGLXm+pdQsWvQxSSarMnnOdv9uLQJeZeHSJox7iHNGTyXTXQHLr+cCnrArpGjHV
-         8vLOg9eZqdYuBxHg6DMAZSwho2Fjvrzm0+azHiaC8qxRZBD0Y4r3u1vf8jaZFqTb+Urk
-         usQTBk2VPLeyc2INaBJIMigcoqM+N1YLDisRjLgy6FTH6HGhDwm5sQVNl4mRcWkEI7dL
-         jvEQ==
-X-Gm-Message-State: AOAM530v6ETPGnrkPJVxCGYid8CNQR9dktx5vIpY2OL6AhQClgSbpMg0
-        OaOpijUE9qxWUgaNuvfUIeOIGLdwj+lFe/djjXE=
-X-Google-Smtp-Source: ABdhPJy3UMMTPttXlqqzZsyXKChpQkOadYBPOGfam5YaQb7CrqK/toD7XeJtBXwMlF2ZeO72RmJYgBNcDf+Y0oOkAzE=
-X-Received: by 2002:a67:ea99:: with SMTP id f25mr11292656vso.28.1631935576112;
- Fri, 17 Sep 2021 20:26:16 -0700 (PDT)
+        Fri, 17 Sep 2021 23:28:31 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCB3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Sep 2021 20:27:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1631935624;
+        bh=2bTe2HFevLjQ4dA9TYlB4P8vEbsjdrVvlgNzwhq0U2o=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EEb72HSnmYCo67/e0LfInIJ/C4NiLLB7KZU2pH2tGZO4ZKcHuIBxAWl3sNanpAGCA
+         QJYJ9fQ32GPB884/xjz+H8mOEI4O1E+JGKGRxV+6HQnyDR+RXy7YxI2qNt6ZylDA46
+         b1ii0NIq7q5uVui6xRsHUG1Lj4IzzwEmlIgRJHExN3YO2l5es7UCmGFvzmVLAJ27aH
+         JASdHLOJrQlJq3l/K2XlhH13a6Kus+FmsdEs0bzUHydgvt6nBBM3J5SRDSkLyqYGX+
+         nltVfESCe0ixpxyvzBJ5wNuMn2XRFmRND/CLsEiuCXoFMQG+WvPqpzmu/CKsa7Th3m
+         R9pQj0Xirak8g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HBGTN2KPCz9sW4;
+        Sat, 18 Sep 2021 13:27:03 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2] powerpc/32: Don't use a struct based type for pte_t
+In-Reply-To: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
+References: <c904599f33aaf6bb7ee2836a9ff8368509e0d78d.1631887042.git.christophe.leroy@csgroup.eu>
+Date:   Sat, 18 Sep 2021 13:26:57 +1000
+Message-ID: <87tuiiimwu.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Sender: buscarhank@gmail.com
-Received: by 2002:a05:6102:acb:0:0:0:0 with HTTP; Fri, 17 Sep 2021 20:26:15
- -0700 (PDT)
-From:   Jackie Fowler <jackiefowler597@gmail.com>
-Date:   Sat, 18 Sep 2021 03:26:15 +0000
-X-Google-Sender-Auth: 1sYSz83p9XZRSVsuUQfe_24DJb8
-Message-ID: <CADXwykfO5xXR+f9c2-T36gHKxX92Gmj1OnztVPGyLZYhDLKF9g@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello my dear,
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Long time ago we had a config item called STRICT_MM_TYPECHECKS
+> to build the kernel with pte_t defined as a structure in order
+> to perform additional build checks or build it with pte_t
+> defined as a simple type in order to get simpler generated code.
+>
+> Commit 670eea924198 ("powerpc/mm: Always use STRICT_MM_TYPECHECKS")
+> made the struct based definition the only one, considering that the
+> generated code was similar in both cases.
+>
+> That's right on ppc64 because the ABI is such that the content of a
+> struct having a single simple type element is passed as register,
+> but on ppc32 such a structure is passed via the stack like any
+> structure.
+>
+> Simple test function:
+>
+> 	pte_t test(pte_t pte)
+> 	{
+> 		return pte;
+> 	}
+>
+> Before this patch we get
+>
+> 	c00108ec <test>:
+> 	c00108ec:	81 24 00 00 	lwz     r9,0(r4)
+> 	c00108f0:	91 23 00 00 	stw     r9,0(r3)
+> 	c00108f4:	4e 80 00 20 	blr
+>
+> So, for PPC32, restore the simple type behaviour we got before
+> commit 670eea924198, but instead of adding a config option to
+> activate type check, do it when __CHECKER__ is set so that type
+> checking is performed by 'sparse' and provides feedback like:
+>
+> 	arch/powerpc/mm/pgtable.c:466:16: warning: incorrect type in return expression (different base types)
+> 	arch/powerpc/mm/pgtable.c:466:16:    expected unsigned long
+> 	arch/powerpc/mm/pgtable.c:466:16:    got struct pte_t [usertype] x
 
-  I am glad to know you, but God knows you better and he knows why he
-has directed me to you at this point in time so do not be surprised at
-all. My name are Mrs.Fowler Jackie.i'm a widow, i have been suffering
-from ovarian cancer disease. At this moment i am about to end the race
-like this because the illness has gotten to a very bad stage, without
-a child of my own. I hope that you will not expose or betray this
-trust and confidence that I am about to entrust to you for the mutual
-benefit of the orphans and the less privileged ones. I have some funds
-I inherited from my late husband,the sum of ($12,500,000.000,
-dollars.) deposited in the Bank. Having known my present health
-status, I decided to entrust this fund to you believing that you will
-utilize it the way i am going to instruct herein.
- Therefore I need you to assist me and reclaim this money and use it
-for Charity works, for orphanages and giving justice and help to the
-poor, needy and to promote the words of God and the effort that the
-house of God will be maintained says The Lord." Jeremiah 22:15-16."
-It will be my great pleasure to compensate you with 35 % percent of
-the total money for your personal use, 5 % percent for any expenses
-that may occur during the international transfer process while 60% of
-the money will go to the charity project.
+OK that's a good trade off.
 
-All I require from you is sincerity and the ability to complete God's
-task without any failure. It will be my pleasure to see that the bank
-has finally released and transferred the fund into your bank account
-therein your country even before I die here in the hospital, because
-of my present health status everything needs to be processed rapidly
-as soon as possible. Please I am waiting for your immediate reply on
-my private email (jackiefowler597@gmail.com) for further details of
-the transaction and execution of this charitable project.
-God bless you and your family.
-Best Regard's.
-Mrs.Fowler Jackie.
-Written from the hospital.
+One question below ...
+
+> diff --git a/arch/powerpc/include/asm/pgtable-types.h b/arch/powerpc/include/asm/pgtable-types.h
+> index d11b4c61d686..c60199fc6fa6 100644
+> --- a/arch/powerpc/include/asm/pgtable-types.h
+> +++ b/arch/powerpc/include/asm/pgtable-types.h
+> @@ -5,14 +5,26 @@
+>  /* PTE level */
+>  #if defined(CONFIG_PPC_8xx) && defined(CONFIG_PPC_16K_PAGES)
+>  typedef struct { pte_basic_t pte, pte1, pte2, pte3; } pte_t;
+> -#else
+> +#elif defined(__CHECKER__) || !defined(CONFIG_PPC32)
+
+It would be nicer if this logic was in Kconfig.
+
+eg. restore config STRICT_MM_TYPECHECKS but make it always enabled for
+64-bit, and depend on CHECKER for 32-bit.
+
+The only thing is I'm not sure if we can test __CHECKER__ in Kconfig?
+
+cheers
