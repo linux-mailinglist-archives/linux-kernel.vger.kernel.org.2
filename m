@@ -2,114 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8FF410703
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A584410706
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Sep 2021 16:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbhIROX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 10:23:26 -0400
-Received: from mout.gmx.net ([212.227.17.22]:59955 "EHLO mout.gmx.net"
+        id S239048AbhIROZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 10:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237771AbhIROXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 10:23:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631974912;
-        bh=UmWycZcizNYid4Z+392DMeF7EKIyi4qx+X3CFcO1uDE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=OHL5tT3y1TiXx0wkB4k4slkZMZI8KDCqbWKc5Q/EfYtvF6NluuoyY9yoJP4YD9gPc
-         kOiKCdeyfrg9M6eb9R1PUYhsu/qy6vcNmHvC2Wa4VzgxCcC+a7IG1JciPyJ+vYHapK
-         AR+DjUc4Kjgwl5XEUFwoiAawV1qbTBW0/nG7t5pM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MdebB-1n0O0n1DxB-00ZjGv; Sat, 18 Sep 2021 16:21:52 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-hardening@vger.kernel.org,
+        id S237771AbhIROZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 10:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C2761244;
+        Sat, 18 Sep 2021 14:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631975067;
+        bh=i/T3C8RaSdRa/qVoDl89Hi6Xm9ewowToJoJTEnSMyME=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ERMs1GLh0EMepqUQqE7GPSFePQWWesZooOZk87or+wbj9ylRz+nyLYCDWz1Lsf2E0
+         1x66VEEtX4wm/FZDs9UZlmst9L+3gNJlrlu037y8tWJeVp9I/ZIhX9X8GkREZJAUgy
+         7iEtVjgDZxNg63v76xhyUmuRSGsZh+MNduZB4gko=
+Date:   Sat, 18 Sep 2021 16:24:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: PPC: Replace zero-length array with flexible array member
-Date:   Sat, 18 Sep 2021 16:21:38 +0200
-Message-Id: <20210918142138.17709-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH 1/2] staging: r8188eu: remove unused defines from
+ odm_RegDefine11N.h
+Message-ID: <YUX2mNXLzqJXmer4@kroah.com>
+References: <20210918081120.2798-1-straube.linux@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nUjxkWAcJOBgMwjffXAt1QuuDOCIXUU/JKmzX9iUDs9pGqz2aHN
- 98GDDCSWE9bq+l3Sk5BPYQ5vXYhDBd6i6m9oBE/LNW0YxvO/oLjzioqf/Ji0uzBVOm9chr0
- LL9bRwvN7Fce6JyKqT87QUtYysU10VZEQcZZKM2WuxjcBrS1kJvveJZIa+QYFSTgKVzdzcF
- 5QICgt5PO1IAWzYmd7a8Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RM7jumJIPRc=:iV3Dwa2P7AD02q/3KO68IT
- BDzSVfG1ioBkwhrb+6qgNASCHxUj9Q/aArb1XlOug0eTZo7EX0tS/9NcbcL0gFVq7ZiK7juec
- aw+TghlsV9LQa5Ab4H5yeHGk0H6nj6B8NbQ2TstFwNlbxh2MqxJjrfMPNXTad7dxB8cZJPdN1
- igLcjxvmZjs/JmZxWWMzf2z2WY87Q9L4+b5ssB9aMIqj8TcNWZfHTpL1O9y5XmxwGfqPMMtdV
- lTxgVnjIhym06uO7OUfYZWIJVHEU7sFRH0yYPBLA6XJzmLPbq+LXlw0eQ9P1Ho6ogRHG2DS3c
- 0JZKvyMZ7Gi9aqlxb8hQj5WyfDWAMTjYXCR8j3YFRAJ1WRJ0UyRKctaAwZSYEnmjYVGJDhQ19
- dPPt152wY9NjQBc3Hn7UgUhXHcSb70hIxNxQHRB+foCmSGwCQwsiGfJ9aZi+PSspzri3kEJW8
- i1thsYq8MTvOW3OLDv1iqHVDMni5wJIwKZqqWDhIWovfesZZ5k4DIF9QWkvW7z6P+ovABo5Wd
- j5HiWNZxxqdBZA1mBxyxe5hglT1H15Z+9v2JuWw7Yd/ATfvksdQjMZ/7HpsJ2TrNxF2twTMay
- s4yaFIj6/SBsngxuQ52uPAbxM9hCp3Il0g+9wBzE0HX3QAw+fNosh/2fM9N9D07T79yQMevCv
- QRWygqOq+PS7QU3vcJE+9PD2DpIMC8jr5n6pVK80AxxV2yK1lbLmV4MLFhwYn63Wo7REVNSTX
- g0NCghfK9b8jA0runYKHxOf4whbKHtsPf4lFYYNSDjdIfnkJuAsPu55RB4gB6evPW7rgxE6os
- uka2MC208rgCXyYKnQeWPakWWEC1WXveod36ovFxvraYU4GEK1dRFAKK5wPIruIwJQBptcCVj
- 0Zf7vmXOTwGKA9T5AxPsMfaP5V1XR95fvMV73zHAwfuW+8LSgIfCepvfXh+GMYPoOQ683DsxF
- 4PmOqPwM8OS038ga1mnPs/aQhfat5tzpxxDHsjplerHiZ9I51+aXdsjmGza1VVjut2rFfV2Fu
- KxL08FdYrJDx/nxab6C/N+Ux0B18NAs1Z60J9YoO7dRbx1vMlqSwskF4hBxXACceg/mH/t7yq
- o/7JJ0W4gKEMJg=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210918081120.2798-1-straube.linux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use "flexible array members" [1] for these cases. The
-older style of one-element or zero-length arrays should no longer be
-used[2].
+On Sat, Sep 18, 2021 at 10:11:19AM +0200, Michael Straube wrote:
+> Remove unused defines from odm_RegDefine11N.h.
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  .../r8188eu/include/odm_RegDefine11N.h        | 96 -------------------
+>  1 file changed, 96 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/include/odm_RegDefine11N.h b/drivers/staging/r8188eu/include/odm_RegDefine11N.h
+> index 5d1d73490c1c..3e2fd6b1c793 100644
+> --- a/drivers/staging/r8188eu/include/odm_RegDefine11N.h
+> +++ b/drivers/staging/r8188eu/include/odm_RegDefine11N.h
+> @@ -4,56 +4,20 @@
+>  #ifndef	__ODM_REGDEFINE11N_H__
+>  #define __ODM_REGDEFINE11N_H__
+>  
+> -/* 2 RF REG LIST */
+> -#define	ODM_REG_RF_MODE_11N				0x00
+> -#define	ODM_REG_RF_0B_11N				0x0B
+> -#define	ODM_REG_CHNBW_11N				0x18
+> -#define	ODM_REG_T_METER_11N				0x24
+> -#define	ODM_REG_RF_25_11N				0x25
+> -#define	ODM_REG_RF_26_11N				0x26
+> -#define	ODM_REG_RF_27_11N				0x27
+> -#define	ODM_REG_RF_2B_11N				0x2B
+> -#define	ODM_REG_RF_2C_11N				0x2C
+> -#define	ODM_REG_RXRF_A3_11N				0x3C
+> -#define	ODM_REG_T_METER_92D_11N			0x42
+> -#define	ODM_REG_T_METER_88E_11N			0x42
+> -
+>  /* 2 BB REG LIST */
+>  /* PAGE 8 */
+> -#define	ODM_REG_BB_CTRL_11N				0x800
+> -#define	ODM_REG_RF_PIN_11N				0x804
+> -#define	ODM_REG_PSD_CTRL_11N				0x808
+>  #define	ODM_REG_TX_ANT_CTRL_11N			0x80C
+> -#define	ODM_REG_BB_PWR_SAV5_11N			0x818
+> -#define	ODM_REG_CCK_RPT_FORMAT_11N		0x824
+>  #define	ODM_REG_RX_DEFUALT_A_11N		0x858
+> -#define	ODM_REG_RX_DEFUALT_B_11N		0x85A
+> -#define	ODM_REG_BB_PWR_SAV3_11N			0x85C
+>  #define	ODM_REG_ANTSEL_CTRL_11N			0x860
+>  #define	ODM_REG_RX_ANT_CTRL_11N			0x864
+>  #define	ODM_REG_PIN_CTRL_11N				0x870
+> -#define	ODM_REG_BB_PWR_SAV1_11N			0x874
+> -#define	ODM_REG_ANTSEL_PATH_11N			0x878
+> -#define	ODM_REG_BB_3WIRE_11N			0x88C
+>  #define	ODM_REG_SC_CNT_11N				0x8C4
+> -#define	ODM_REG_PSD_DATA_11N			0x8B4
+>  /* PAGE 9 */
+>  #define	ODM_REG_ANT_MAPPING1_11N		0x914
+> -#define	ODM_REG_ANT_MAPPING2_11N		0x918
+>  /* PAGE A */
+>  #define	ODM_REG_CCK_ANTDIV_PARA1_11N	0xA00
+>  #define	ODM_REG_CCK_CCA_11N				0xA0A
+>  #define	ODM_REG_CCK_ANTDIV_PARA2_11N	0xA0C
+> -#define	ODM_REG_CCK_ANTDIV_PARA3_11N	0xA10
+> -#define	ODM_REG_CCK_ANTDIV_PARA4_11N	0xA14
+> -#define	ODM_REG_CCK_FILTER_PARA1_11N	0xA22
+> -#define	ODM_REG_CCK_FILTER_PARA2_11N	0xA23
+> -#define	ODM_REG_CCK_FILTER_PARA3_11N	0xA24
+> -#define	ODM_REG_CCK_FILTER_PARA4_11N	0xA25
+> -#define	ODM_REG_CCK_FILTER_PARA5_11N	0xA26
+> -#define	ODM_REG_CCK_FILTER_PARA6_11N	0xA27
+> -#define	ODM_REG_CCK_FILTER_PARA7_11N	0xA28
+> -#define	ODM_REG_CCK_FILTER_PARA8_11N	0xA29
+>  #define	ODM_REG_CCK_FA_RST_11N			0xA2C
+>  #define	ODM_REG_CCK_FA_MSB_11N			0xA58
+>  #define	ODM_REG_CCK_FA_LSB_11N			0xA5C
+> @@ -61,28 +25,10 @@
+>  #define	ODM_REG_BB_PWR_SAV4_11N			0xA74
+>  /* PAGE B */
+>  #define	ODM_REG_LNA_SWITCH_11N			0xB2C
+> -#define	ODM_REG_PATH_SWITCH_11N			0xB30
+> -#define	ODM_REG_RSSI_CTRL_11N			0xB38
+> -#define	ODM_REG_CONFIG_ANTA_11N			0xB68
+> -#define	ODM_REG_RSSI_BT_11N				0xB9C
+>  /* PAGE C */
+>  #define	ODM_REG_OFDM_FA_HOLDC_11N		0xC00
+> -#define	ODM_REG_RX_PATH_11N				0xC04
+> -#define	ODM_REG_TRMUX_11N				0xC08
+>  #define	ODM_REG_OFDM_FA_RSTC_11N		0xC0C
+> -#define	ODM_REG_RXIQI_MATRIX_11N		0xC14
+> -#define	ODM_REG_TXIQK_MATRIX_LSB1_11N	0xC4C
+>  #define	ODM_REG_IGI_A_11N				0xC50
+> -#define	ODM_REG_ANTDIV_PARA2_11N		0xC54
+> -#define	ODM_REG_IGI_B_11N					0xC58
+> -#define	ODM_REG_ANTDIV_PARA3_11N		0xC5C
+> -#define	ODM_REG_BB_PWR_SAV2_11N			0xC70
+> -#define	ODM_REG_RX_OFF_11N				0xC7C
+> -#define	ODM_REG_TXIQK_MATRIXA_11N		0xC80
+> -#define	ODM_REG_TXIQK_MATRIXB_11N		0xC88
+> -#define	ODM_REG_TXIQK_MATRIXA_LSB2_11N	0xC94
+> -#define	ODM_REG_TXIQK_MATRIXB_LSB2_11N	0xC9C
+> -#define	ODM_REG_RXIQK_MATRIX_LSB_11N	0xCA0
+>  #define	ODM_REG_ANTDIV_PARA1_11N		0xCA4
+>  #define	ODM_REG_OFDM_FA_TYPE1_11N		0xCF0
+>  /* PAGE D */
+> @@ -90,52 +36,10 @@
+>  #define	ODM_REG_OFDM_FA_TYPE2_11N		0xDA0
+>  #define	ODM_REG_OFDM_FA_TYPE3_11N		0xDA4
+>  #define	ODM_REG_OFDM_FA_TYPE4_11N		0xDA8
+> -/* PAGE E */
+> -#define	ODM_REG_TXAGC_A_6_18_11N		0xE00
+> -#define	ODM_REG_TXAGC_A_24_54_11N		0xE04
+> -#define	ODM_REG_TXAGC_A_1_MCS32_11N	0xE08
+> -#define	ODM_REG_TXAGC_A_MCS0_3_11N		0xE10
+> -#define	ODM_REG_TXAGC_A_MCS4_7_11N		0xE14
+> -#define	ODM_REG_TXAGC_A_MCS8_11_11N	0xE18
+> -#define	ODM_REG_TXAGC_A_MCS12_15_11N	0xE1C
+> -#define	ODM_REG_FPGA0_IQK_11N			0xE28
+> -#define	ODM_REG_TXIQK_TONE_A_11N		0xE30
+> -#define	ODM_REG_RXIQK_TONE_A_11N		0xE34
+> -#define	ODM_REG_TXIQK_PI_A_11N			0xE38
+> -#define	ODM_REG_RXIQK_PI_A_11N			0xE3C
+> -#define	ODM_REG_TXIQK_11N				0xE40
+> -#define	ODM_REG_RXIQK_11N				0xE44
+> -#define	ODM_REG_IQK_AGC_PTS_11N			0xE48
+> -#define	ODM_REG_IQK_AGC_RSP_11N			0xE4C
+> -#define	ODM_REG_BLUETOOTH_11N			0xE6C
+> -#define	ODM_REG_RX_WAIT_CCA_11N			0xE70
+> -#define	ODM_REG_TX_CCK_RFON_11N			0xE74
+> -#define	ODM_REG_TX_CCK_BBON_11N			0xE78
+> -#define	ODM_REG_OFDM_RFON_11N			0xE7C
+> -#define	ODM_REG_OFDM_BBON_11N			0xE80
+> -#define		ODM_REG_TX2RX_11N				0xE84
+> -#define	ODM_REG_TX2TX_11N				0xE88
+> -#define	ODM_REG_RX_CCK_11N				0xE8C
+> -#define	ODM_REG_RX_OFDM_11N				0xED0
+> -#define	ODM_REG_RX_WAIT_RIFS_11N		0xED4
+> -#define	ODM_REG_RX2RX_11N				0xED8
+> -#define	ODM_REG_STANDBY_11N				0xEDC
+> -#define	ODM_REG_SLEEP_11N				0xEE0
+> -#define	ODM_REG_PMPD_ANAEN_11N			0xEEC
+>  
+>  /* 2 MAC REG LIST */
+> -#define	ODM_REG_BB_RST_11N				0x02
+>  #define	ODM_REG_ANTSEL_PIN_11N			0x4C
+> -#define	ODM_REG_EARLY_MODE_11N			0x4D0
+> -#define	ODM_REG_RSSI_MONITOR_11N		0x4FE
+> -#define	ODM_REG_EDCA_VO_11N				0x500
+> -#define	ODM_REG_EDCA_VI_11N				0x504
+> -#define	ODM_REG_EDCA_BE_11N				0x508
+> -#define	ODM_REG_EDCA_BK_11N				0x50C
+> -#define	ODM_REG_TXPAUSE_11N				0x522
+>  #define	ODM_REG_RESP_TX_11N				0x6D8
+> -#define	ODM_REG_ANT_TRAIN_PARA1_11N	0x7b0
+> -#define	ODM_REG_ANT_TRAIN_PARA2_11N	0x7b4
+>  
+>  /* DIG Related */
+>  #define	ODM_BIT_IGI_11N					0x0000007F
+> -- 
+> 2.33.0
+> 
+> 
 
-Also, make use of the struct_size() helper in kzalloc().
+I get the following build error after applying this series:
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-le=
-ngth-and-one-element-arrays
+In file included from drivers/staging/r8188eu/hal/../include/odm_precomp.h:28,
+                 from drivers/staging/r8188eu/hal/odm.c:6:
+drivers/staging/r8188eu/hal/odm.c: In function ‘ODM_Write_DIG’:
+drivers/staging/r8188eu/hal/../include/odm_interface.h:30:41: error: ‘ODM_REG_IGI_B_11N’ undeclared (first use in this function); did you mean ‘ODM_REG_IGI_A_11N’?
+   30 | #define _reg_11N(_name)                 ODM_REG_##_name##_11N
+      |                                         ^~~~~~~~
+drivers/staging/r8188eu/hal/../include/odm_interface.h:37:52: note: in expansion of macro ‘_reg_11N’
+   37 |                 ((_ic_type) & ODM_IC_11N_SERIES) ? _func##_11N(_name) : \
+      |                                                    ^~~~~
+drivers/staging/r8188eu/hal/../include/odm_interface.h:45:34: note: in expansion of macro ‘_cat’
+   45 | #define ODM_REG(_name, _pDM_Odm) _cat(_name, _pDM_Odm->SupportICType, _reg)
+      |                                  ^~~~
+drivers/staging/r8188eu/hal/odm.c:486:55: note: in expansion of macro ‘ODM_REG’
+  486 |                                 ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_B, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+      |                                                       ^~~~~~~
+drivers/staging/r8188eu/hal/../include/odm_interface.h:30:41: note: each undeclared identifier is reported only once for each function it appears in
+   30 | #define _reg_11N(_name)                 ODM_REG_##_name##_11N
+      |                                         ^~~~~~~~
+drivers/staging/r8188eu/hal/../include/odm_interface.h:37:52: note: in expansion of macro ‘_reg_11N’
+   37 |                 ((_ic_type) & ODM_IC_11N_SERIES) ? _func##_11N(_name) : \
+      |                                                    ^~~~~
+drivers/staging/r8188eu/hal/../include/odm_interface.h:45:34: note: in expansion of macro ‘_cat’
+   45 | #define ODM_REG(_name, _pDM_Odm) _cat(_name, _pDM_Odm->SupportICType, _reg)
+      |                                  ^~~~
+drivers/staging/r8188eu/hal/odm.c:486:55: note: in expansion of macro ‘ODM_REG’
+  486 |                                 ODM_SetBBReg(pDM_Odm, ODM_REG(IGI_B, pDM_Odm), ODM_BIT(IGI, pDM_Odm), CurrentIGI);
+      |                                                       ^~~~~~~
+make[3]: *** [scripts/Makefile.build:277: drivers/staging/r8188eu/hal/odm.o] Error 1
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- arch/powerpc/include/asm/kvm_host.h | 2 +-
- arch/powerpc/kvm/book3s_64_vio.c    | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/as=
-m/kvm_host.h
-index 080a7feb7731..3aed653373a5 100644
-=2D-- a/arch/powerpc/include/asm/kvm_host.h
-+++ b/arch/powerpc/include/asm/kvm_host.h
-@@ -190,7 +190,7 @@ struct kvmppc_spapr_tce_table {
- 	u64 size;		/* window size in pages */
- 	struct list_head iommu_tables;
- 	struct mutex alloc_lock;
--	struct page *pages[0];
-+	struct page *pages[];
- };
 
- /* XICS components, defined in book3s_xics.c */
-diff --git a/arch/powerpc/kvm/book3s_64_vio.c b/arch/powerpc/kvm/book3s_64=
-_vio.c
-index 6365087f3160..d42b4b6d4a79 100644
-=2D-- a/arch/powerpc/kvm/book3s_64_vio.c
-+++ b/arch/powerpc/kvm/book3s_64_vio.c
-@@ -295,8 +295,7 @@ long kvm_vm_ioctl_create_spapr_tce(struct kvm *kvm,
- 		return ret;
+Looks like these defines are used :(
 
- 	ret =3D -ENOMEM;
--	stt =3D kzalloc(sizeof(*stt) + npages * sizeof(struct page *),
--		      GFP_KERNEL);
-+	stt =3D kzalloc(struct_size(stt, pages, npages), GFP_KERNEL);
- 	if (!stt)
- 		goto fail_acct;
+How did you test this?
 
-=2D-
-2.25.1
-
+greg k-h
