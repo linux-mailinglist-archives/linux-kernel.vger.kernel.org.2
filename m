@@ -2,51 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67503410B70
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F33410B7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhISMDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:03:47 -0400
-Received: from rosenzweig.io ([138.197.143.207]:46640 "EHLO rosenzweig.io"
+        id S231887AbhISMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:11:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231921AbhISMDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:03:35 -0400
-Date:   Sun, 19 Sep 2021 07:51:17 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mailbox: apple: Add driver for Apple mailboxes
-Message-ID: <YUckNbQwfD4X2PA7@sunset>
-References: <20210916154911.3168-1-sven@svenpeter.dev>
- <20210916154911.3168-3-sven@svenpeter.dev>
+        id S229572AbhISMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:11:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 56EE261268;
+        Sun, 19 Sep 2021 12:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632053408;
+        bh=VSb5hNaJwWMS+OAmqPn8iI/reBAoCRECl6qFmcAcZ18=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Pbfzm6flTF+XFpcl/qdsGr+1jEXUCivNtMWc19K5lWVXNfA4AMufpyZ/sTzxeXg89
+         rk7KMdn72zNC+qjJig+OMTjvhluM+rhK0Dh82Ok1CuX0hZ7c1I4IPY316yYkHkPLQL
+         I8s5UMHYP9ZFTOLQPXcmlZYfcOjkFZ3jJHnUc/DtXuwDbIA2jwljErR+hyVWr9+lRg
+         rce9uGy9SYQU44aX6GUzPsTQq9bEwtpAVk26zcxR2d21liX3boFRHMFYfO0vvTu3Dy
+         TQN1F1NZ0hrOmzIrK1Dt4/VXS8PYLIn+ET9XZiPJv30T4UvSuXpzR6czrt/Yj57VVX
+         EdlGFUUgL3k1A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3F235608B9;
+        Sun, 19 Sep 2021 12:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916154911.3168-3-sven@svenpeter.dev>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [patch] net: core: Correct the sock::sk_lock.owned lockdep
+ annotations
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163205340825.3254.11987805094738440197.git-patchwork-notify@kernel.org>
+Date:   Sun, 19 Sep 2021 12:10:08 +0000
+References: <20210918114626.399467843@linutronix.de>
+In-Reply-To: <20210918114626.399467843@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        mingo@kernel.org, peterz@infradead.org, bigeasy@linutronix.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#define APPLE_ASC_MBOX_CONTROL_FULL  BIT(16)
-> +#define APPLE_ASC_MBOX_CONTROL_EMPTY BIT(17)
-...
-> +#define APPLE_M3_MBOX_CONTROL_FULL  BIT(16)
-> +#define APPLE_M3_MBOX_CONTROL_EMPTY BIT(17)
+Hello:
 
-It might make sense to combine these to just
+This patch was applied to netdev/net.git (refs/heads/master):
 
-> +#define APPLE_MBOX_CONTROL_FULL  BIT(16)
-> +#define APPLE_MBOX_CONTROL_EMPTY BIT(17)
+On Sat, 18 Sep 2021 14:42:35 +0200 (CEST) you wrote:
+> lock_sock_fast() and lock_sock_nested() contain lockdep annotations for the
+> sock::sk_lock.owned 'mutex'. sock::sk_lock.owned is not a regular mutex. It
+> is just lockdep wise equivalent. In fact it's an open coded trivial mutex
+> implementation with some interesting features.
+> 
+> sock::sk_lock.slock is a regular spinlock protecting the 'mutex'
+> representation sock::sk_lock.owned which is a plain boolean. If 'owned' is
+> true, then some other task holds the 'mutex', otherwise it is uncontended.
+> As this locking construct is obviously endangered by lock ordering issues as
+> any other locking primitive it got lockdep annotated via a dedicated
+> dependency map sock::sk_lock.dep_map which has to be updated at the lock
+> and unlock sites.
+> 
+> [...]
 
-..unless we have a reason to think the status bits otherwise differ.
+Here is the summary with links:
+  - net: core: Correct the sock::sk_lock.owned lockdep annotations
+    https://git.kernel.org/netdev/net/c/2dcb96bacce3
 
-Regardless of that minor nit, this is
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Reviewed-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+
