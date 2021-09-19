@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64548410B5E
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08097410B62
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhISMBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:01:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34452 "EHLO mail.kernel.org"
+        id S231811AbhISMDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:03:22 -0400
+Received: from rosenzweig.io ([138.197.143.207]:46410 "EHLO rosenzweig.io"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230393AbhISMBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:01:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 89ADB61242;
-        Sun, 19 Sep 2021 12:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632052806;
-        bh=idhBYtsa+/HLclRp1EqonjDmiBufo6Xb4ip9Lg/NJPM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nugNTXe984kCnRC0RVMN8iT+3uZizXue3OO+tHCfWpfHTg7CcIs/CVRq3Dec9aiV/
-         BsCSCHan8OD45WVJErng2UCAADqyZXwQhu8ElPPfKzgUOBRBLKWMUarhYZLdOIIUQY
-         KAhBKnSv3W6hNS7RA6Uf++967G1HUvqR/ga7zFlu7yweRCQ4X3btflALaad+DjtPj5
-         h2w681k/K5W8xd+qb75JWO+isrM7lA/gv1S2RkDJd8T3SnrAZMMTuZwqom5oq+k3f9
-         G6ucOgko+3GPe0TshDhbKY9inbQOhJ3o1pLtfNDqLqSuf+8mrjppgJ7Z5WmzWcZNXO
-         iZD5oF7+1yLag==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 809CE60A37;
-        Sun, 19 Sep 2021 12:00:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230393AbhISMDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:03:21 -0400
+Date:   Sun, 19 Sep 2021 07:25:59 -0400
+From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alexander Graf <graf@amazon.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [RFT PATCH 1/9] dt-bindings: usb: tps6598x: Add Apple CD321x
+ compatible
+Message-ID: <YUceR+9p8YS1HeCt@sunset>
+References: <20210918120934.28252-1-sven@svenpeter.dev>
+ <20210918120934.28252-2-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: rtnetlink: convert rcu_assign_pointer to
- RCU_INIT_POINTER
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163205280652.31254.5182228878527831931.git-patchwork-notify@kernel.org>
-Date:   Sun, 19 Sep 2021 12:00:06 +0000
-References: <20210918063607.23681-1-yajun.deng@linux.dev>
-In-Reply-To: <20210918063607.23681-1-yajun.deng@linux.dev>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210918120934.28252-2-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Reviewed-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat, 18 Sep 2021 14:36:07 +0800 you wrote:
-> It no need barrier when assigning a NULL value to an RCU protected
-> pointer. So use RCU_INIT_POINTER() instead for more fast.
+On Sat , Sep 18, 2021 at 02:09:26PM +0200, Sven Peter wrote:
+> A variant of the TI TPS 6598x Type-C Port Switch and Power Delivery
+> controller known as Apple CD321x is present on boards with Apple SoCs
+> such as the M1. Add its compatible to the device tree binding.
 > 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
 > ---
->  net/core/rtnetlink.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-
-Here is the summary with links:
-  - [net-next] net: rtnetlink: convert rcu_assign_pointer to RCU_INIT_POINTER
-    https://git.kernel.org/netdev/net-next/c/4fc29989835a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>  Documentation/devicetree/bindings/usb/ti,tps6598x.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> index f6819bf2a3b5..a4c53b1f1af3 100644
+> --- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
+> @@ -12,10 +12,14 @@ maintainers:
+>  description: |
+>    Texas Instruments 6598x Type-C Port Switch and Power Delivery controller
+>  
+> +  A variant of this controller known as Apple CD321x or Apple ACE is also
+> +  present on hardware with Apple SoCs such as the M1.
+> +
+>  properties:
+>    compatible:
+>      enum:
+>        - ti,tps6598x
+> +      - apple,cd321x
+>    reg:
+>      maxItems: 1
+>  
+> -- 
+> 2.25.1
+> 
