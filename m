@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5DE410DD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41859410DDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhISXgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 19:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhISXgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 19:36:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B4A60F93;
-        Sun, 19 Sep 2021 23:35:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632094513;
-        bh=9BtKLYV2SwBw6eP4jLE8SnXaFNs5TvaXNr7aenlK12s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DlSpik6RVVa7VHRdC0EnN/kzXP6U/KvMjcl3auo2ncWjFHhvq41pfqhcpy4JbrH3D
-         LahJd1hyvD22J1weWMrTq1jL1WkibFYQjIm9AVLyxzNOcP5kTf6/SiDi0Y9CsLhDCC
-         U1jP6ujJUJCHDTNLNLQyZ/3XyGMWxPpvMGcIlRtw=
-Date:   Sun, 19 Sep 2021 16:35:11 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Weizhao Ouyang <o451686892@gmail.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/debug: sync up latest migrate_reason to
- migrate_reason_names
-Message-Id: <20210919163511.9f82c3634cf48d3769ccab42@linux-foundation.org>
-In-Reply-To: <20210917061432.323777-1-o451686892@gmail.com>
-References: <20210917061432.323777-1-o451686892@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233514AbhISXn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 19:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhISXn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 19:43:57 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF22CC061574;
+        Sun, 19 Sep 2021 16:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632094949;
+        bh=t3XAqssDcPfatFRPhgTNkvbefdAl81jeSjE68b9LNGU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BGgS4kc9G/IOMHgm25/+E9n6sGyECZW3bPQArlzlkTvlwcWR6vppYF7LCWZLj1OdT
+         EdmOmTWkPLqnbeSMFsk8u9JFyWcNPF3hJ9LI67TmLeseWhgs1QQn92F1Zo8R8ZQoYf
+         B5i7vF9LwykWPPoA80/dvOzmAlLBrKJJQnPlOLVOxic9Tg+Gz9jkeQesh15Ym3dipl
+         v24O7DBfDTqENo2DCkIVkc9m7VhJNwDeZNye1j+VChEPSGlqozrhXXIXbYl28K/tn8
+         404uzXN1Ar/iDNK/taoi90byNfvU0cuQ1oZa3J2qSUQ+ggzhLrT8nxHttR+1xlBk1a
+         SWrBSzxjq8zVw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCPPH2x48z9ssP;
+        Mon, 20 Sep 2021 09:42:27 +1000 (AEST)
+Date:   Mon, 20 Sep 2021 09:42:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ulrich Teichert <krypton@ulrich-teichert.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the origin tree
+Message-ID: <20210920094226.55df55a6@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/D=FLeTPS+5VyFV+xzC2b/Nh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 14:14:32 +0800 Weizhao Ouyang <o451686892@gmail.com> wrote:
+--Sig_/D=FLeTPS+5VyFV+xzC2b/Nh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> After related migrate page updates, sync up latest migrate_reason to
-> migrate_reason_names, page_owner use it to parse the page migrate
-> reason.
+Hi all,
 
-A slight problem.
+Building Linus' tree, today's linux-next build (sparc64 allmodconfig,
+arm64 allmodconfig, riscv defconfig and others) failed like this:
 
-> Fixes: d1e153fea2a8 ("mm/gup: migrate pinned pages out of movable zone")
-> Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
+In file included from arch/sparc/include/asm/io_32.h:21:0,
+                 from arch/sparc/include/asm/io.h:7,
+                 from arch/sparc/vdso/vdso32/../vclock_gettime.c:18,
+                 from arch/sparc/vdso/vdso32/vclock_gettime.c:22:
+include/asm-generic/io.h:1059:21: error: static declaration of 'pci_iounmap=
+' follows non-static declaration
+ #define pci_iounmap pci_iounmap
+                     ^
+include/asm-generic/io.h:1060:20: note: in expansion of macro 'pci_iounmap'
+ static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+                    ^
 
-d1e153fea2a8 is from May 2021, so a -stable backport would be appropriate.
+Presumably caused by commit
 
-But 26aa2d199d6f is only in 5.15-rc1, so no cc:stable.
+  9caea0007601 ("parisc: Declare pci_iounmap() parisc version only when CON=
+FIG_PCI enabled")
 
-So can you please prepare this as a two-patch series with the first
-patch (which fixes d1e153fea2a8) marked cc:stable?
+--=20
+Cheers,
+Stephen Rothwell
 
-Thanks.
+--Sig_/D=FLeTPS+5VyFV+xzC2b/Nh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFHyuIACgkQAVBC80lX
+0GwsLAf+LY6MucMB1ZX/UVqeZ8IjlyfzkXqoS/WdpCBl2CswtHMx3zfyKqEZAArY
+i+4QY0Y4fCJd/oRxg5gvnWZRtxy+bFJzuhs5F8iaOXRmdFHMx8ONXdVvXvMEyt6t
+sO6fIR4wqF/I4IJMfDhvqu578yUEghcr5tTDMe7QGCxeRuedI3FS2Lvem+ZXGs4W
+wtN/dyWVWB/1KrsplI3DeeCyAAeJT+GTsP11lsJ09WAZ/pvtk+qvsr5gsQYCgtty
+FoUkfNGcdVyLUbURTh7x97HjTt2+IsFBRmOY2OmYhBpqtCbD5dxPQGi/0AjmiuMc
+jaOfV3E4XBhnG3Ia0OHY8+SosKVFSw==
+=e1c4
+-----END PGP SIGNATURE-----
+
+--Sig_/D=FLeTPS+5VyFV+xzC2b/Nh--
