@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0FE410BB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 15:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD98410BB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 15:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhISNLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 09:11:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhISNLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 09:11:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EA3136127A;
-        Sun, 19 Sep 2021 13:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632057007;
-        bh=GsmDGuPnsB11Q7aTkunZZTCkdpVlkA/FCh7xgnfJxZA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jRZD7lbtZotBKVWRBWkqZtXwxl/je5mZIKpj+uNmvSAJcGorNomt84r5Pe7qEuYkk
-         SZht5LvKz9dzCWX97OYpzAwQWZNhx7lXj7l67u3EUcj+EJM2kap0n1WwooJkBaLj2a
-         L3oec0pdQ6o2Nues46WY1MaDGawJureg4Imhi+EO+UTpFuXXfX7FUEKKY1T4+hek1f
-         tTyBXftycYrxbpp/3hzuvzQ8BKdHbHUWxV6LN4Gz6Nj17949LTwOJE1FjorbVfBoYe
-         eioZlBS+a9xH4Wv0zyYxItSI32uc7uiTuiDECmeNk0fWwiHojAAUFonyIyZTng8IBD
-         YbbPQ4nzEklKg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DA33860A2A;
-        Sun, 19 Sep 2021 13:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230289AbhISNMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 09:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhISNMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 09:12:33 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F8DC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 06:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1632057065;
+        bh=72IPhh7RuIGTEvyrIjs6WnEABlmeKQrraAdsE7FrU1c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PrS8xBVJWwiCRQ9nbO9B+oU6hZlNXeM/g6FJZ3RiQ0FaSVhr9yISG0ewvXMUOFOF4
+         bZay9ZZdlbr4Gl+Ij9WQJVay9A8kNLGHMZ7KeoAvqX7Btpw68re2jSasZg4FFci3C8
+         9k0cQEYAXSAqZGs21+JXHYO7TtLTgyvn8oOovsvIABQik5kGAQHu12e1sP1uD0DCCW
+         ZNmBDEv54lvC4cgNl52bfFSesQz7iszRaw3ZEbMwpPd0o05jzoFi1nc+edsV8sN3+6
+         t9Kc81qm2WL9iBSXiv9/SYCOIahcNZEmzBoLsW/ySJFjZxQEb1Ydb+l8qiZTwLcJaB
+         8ahS6H2byXX1g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HC7Nn1pC9z9sRK;
+        Sun, 19 Sep 2021 23:11:05 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     clg@kaod.org, ganeshgr@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-2 tag
+Date:   Sun, 19 Sep 2021 23:11:04 +1000
+Message-ID: <87o88oiuc7.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next] octeontx2-af: verify CQ context updates
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163205700688.29079.17551015849615589599.git-patchwork-notify@kernel.org>
-Date:   Sun, 19 Sep 2021 13:10:06 +0000
-References: <20210917131024.19352-1-hkelam@marvell.com>
-In-Reply-To: <20210917131024.19352-1-hkelam@marvell.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
-        sbhatta@marvell.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Hi Linus,
 
-On Fri, 17 Sep 2021 18:40:24 +0530 you wrote:
-> As per HW errata AQ modification to CQ could be discarded on heavy
-> traffic. This patch implements workaround for the same after each
-> CQ write by AQ check whether the requested fields (except those
-> which HW can update eg: avg_level) are properly updated or not.
-> 
-> If CQ context is not updated then perform AQ write again.
-> 
-> [...]
+Please pull powerpc fixes for 5.15:
 
-Here is the summary with links:
-  - [net-next] octeontx2-af: verify CQ context updates
-    https://git.kernel.org/netdev/net-next/c/14e94f9445a9
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-You are awesome, thank you!
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.15-2
+
+for you to fetch changes up to c006a06508db4841d256d82f42da392d6391f3d9:
+
+  powerpc/xics: Set the IRQ chip data for the ICS native backend (2021-09-1=
+5 22:05:53 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.15 #2
+
+Fix crashes when scv (System Call Vectored) is used to make a syscall when =
+a transaction
+is active, on Power9 or later.
+
+Fix bad interactions between rfscv (Return-from scv) and Power9 fake-suspen=
+d mode.
+
+Fix crashes when handling machine checks in LPARs using the Hash MMU.
+
+Partly revert a recent change to our XICS interrupt controller code, which =
+broke the
+recently added Microwatt support.
+
+Thanks to: C=C3=A9dric Le Goater, Eirik Fuller, Ganesh Goudar, Gustavo Rome=
+ro, Joel Stanley,
+Nicholas Piggin.
+
+- ------------------------------------------------------------------
+C=C3=A9dric Le Goater (1):
+      powerpc/xics: Set the IRQ chip data for the ICS native backend
+
+Ganesh Goudar (1):
+      powerpc/mce: Fix access error in mce handler
+
+Nicholas Piggin (4):
+      powerpc/64s: system call scv tabort fix for corrupt irq soft-mask sta=
+te
+      selftests/powerpc: Add scv versions of the basic TM syscall tests
+      powerpc/64s: system call rfscv workaround for TM bugs
+      KVM: PPC: Book3S HV: Tolerate treclaim. in fake-suspend mode changing=
+ registers
+
+
+ arch/powerpc/kernel/interrupt.c                     | 43 +++++++++++++++++=
++++
+ arch/powerpc/kernel/interrupt_64.S                  | 41 -----------------=
 --
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ arch/powerpc/kernel/mce.c                           | 17 +++++++-
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S             | 36 +++++++++++++++-
+ arch/powerpc/sysdev/xics/xics-common.c              |  4 +-
+ tools/testing/selftests/powerpc/tm/tm-syscall-asm.S | 37 ++++++++++++++++-
+ tools/testing/selftests/powerpc/tm/tm-syscall.c     | 36 ++++++++++++----
+ 7 files changed, 159 insertions(+), 55 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmFHMuoACgkQUevqPMjh
+pYD59RAAsMPzDU+iT15Vm2dC9Ar4hmlLvC0Ew3I/JigC/XSf1bcyGPM4ybSUsoLj
+wop5AeOyoaAtegWki3HxMM5iC99KRI9GuJd8Fa8yrSwKYz/O+6oqVJdq0oJY/rLl
+NpHDgFCencKya/H0UV+Xobfb41ol25bGchMfcuhQw5G6JVCtWbYSFQXUefTcC3lt
+GjYy9jLzvNT7DGlmJBJaeIU78vqRbXLmbHgBwLhxIIBD0us48BQX4elDWcP5Jjwr
+UMyz962EaWLAb/nyac9BHzqO9OS6awYJGI5lx3CPJz3+VA6RI/Vu8WoentfejupP
+GaiGnCcRBnUAkcUuapy0XQtcv9197yOLkLi5XUPgS82o9EuI2+TLtpoZCwLBOceu
+HLpcjYbxf6rV79wYb+P5+oZkPIUi+JWEzF9hCMSFDIJO3mY8rqoDqbEnGEIdiQUi
+6IhihFw6s4a15vd+sn0J1KsUvceeA98zE/7zFXW1tYTqxn2zlJFn923EJuHMr+24
+mCQb4JvsWlUi+8YuEvr1659I0nstFJaUxY1BFDuFr5oR4/ZFDwnRUs2JbAw8No8Y
+uzM7wuq1PMswnKLm5cnR3tsYOVgwTdR6O9wCe3Uva4PoOoB5Y97VpSU8ElfPI+c+
+ePdHNteAjRiMLTggWzLryCUNw+2T8wny/r9nyx5tfI2JswXgSvg=3D
+=3DKZ/U
+-----END PGP SIGNATURE-----
