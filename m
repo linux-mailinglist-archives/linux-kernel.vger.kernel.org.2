@@ -2,68 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3AE410CED
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 20:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC59F410CF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 20:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhISSl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 14:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhISSl1 (ORCPT
+        id S231339AbhISSsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 14:48:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45734 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhISSsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 14:41:27 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259F9C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 11:40:02 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f302e00e933c602c4b95b78.dip0.t-ipconnect.de [IPv6:2003:ec:2f30:2e00:e933:c602:c4b9:5b78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 19 Sep 2021 14:48:36 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 36A411EC0287;
-        Sun, 19 Sep 2021 20:39:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632076794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=y7s5JPf4MLgaXX7S3eVLHT/yv9IOqUfMVCkV12ErJbQ=;
-        b=dyufiRGV4nwEI894No3KAhBo4gQ7ckkkRnsS762FcmmWbAOlLhzKfZfFeoaKEVXoMTSkGT
-        +N9H2ejeuSEjON006JSxHMzfZq1mY0HqclsJYafKuAoDPKwxavBHqQ0pD0S5/D98EVYIr3
-        xYJYYwnTOf4mrIPitVg9aitFBph+IOw=
-Date:   Sun, 19 Sep 2021 20:39:48 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [GIT pull] x86/urgent for v5.15-rc2
-Message-ID: <YUeD9Gcx99EbMyMA@zn.tnic>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B254021C93;
+        Sun, 19 Sep 2021 18:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632077229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ptnL15rBQHdpzUMTpnJzyEbA+djEUj1yhTF8RUuKZLQ=;
+        b=yv7OZjMzP9Nh2dDLOw4S0lqt8XteHR7pasN59eloColETsnnadQICQkmzGaNXIdwti0UYS
+        NWHGwF3vznkoLAk2WVLFsafAo9EJmsdkZQg6yWv7qQKbGGTYgIZ59PHLVzFDj4yj4Cdg/1
+        ru/uJS0pS570/SMymfDJR9WIvObVu0s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632077229;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ptnL15rBQHdpzUMTpnJzyEbA+djEUj1yhTF8RUuKZLQ=;
+        b=HqKPv47cQW4aJFZAbRfzzQ5Cz0XeV5OBOCI75yyTHabJETdkV50lu8iSWSl4xMtuqmszvN
+        UiTiHIh74epW2LCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D84113A4A;
+        Sun, 19 Sep 2021 18:47:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ofQaJq2FR2E6DgAAMHmgww
+        (envelope-from <bp@suse.de>); Sun, 19 Sep 2021 18:47:09 +0000
+Date:   Sun, 19 Sep 2021 20:47:09 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: [GIT PULL] Updated x86/urgent for v5.15-rc2
+Message-ID: <YUeFrR016RVgUf/d@zn.tnic>
 References: <163207602242.947088.16824174748243890514.tglx@xen13>
  <163207602540.947088.6038710845965846842.tglx@xen13>
+ <YUeD9Gcx99EbMyMA@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <163207602540.947088.6038710845965846842.tglx@xen13>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YUeD9Gcx99EbMyMA@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-On Sun, Sep 19, 2021 at 08:28:10PM +0200, Thomas Gleixner wrote:
-> Juergen Gross (1):
->       x86/setup: Call early_reserve_memory() earlier
+here's the updated x86/urgent set of changes for 5.15-rc2.
 
-this one has been reported as failing on some machines:
-
-https://lkml.kernel.org/r/4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de
-
-please hold off on merging this.
-
-I'm preparing a new pull without it.
+Please merge this one instead with the broken patch removed.
 
 Thx.
 
+---
+
+The following changes since commit 8596e589b787732c8346f0482919e83cc9362db1:
+
+  Merge tag 'timers-core-2021-08-30' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2021-08-30 15:31:33 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc2
+
+for you to fetch changes up to 81065b35e2486c024c7aa86caed452e1f01a59d4:
+
+  x86/mce: Avoid infinite loop for copy from user recovery (2021-09-14 10:27:03 +0200)
+
+----------------------------------------------------------------
+A set of x86 fixes:
+
+  - Prevent a infinite loop in the MCE recovery on return to user space,
+    which was caused by a second MCE queueing work for the same page and
+    thereby creating a circular work list.
+
+  - Make kern_addr_valid() handle existing PMD entries, which are marked not
+    present in the higher level page table, correctly instead of blindly
+    dereferencing them.
+
+  - Pass a valid address to sanitize_phys(). This was caused by the mixture
+    of inclusive and exclusive ranges. memtype_reserve() expect 'end' being
+    exclusive, but sanitize_phys() wants it inclusive. This worked so far,
+    but with end being the end of the physical address space the fail is
+    exposed.
+
+ - Increase the maximum supported GPIO numbers for 64bit. Newer SoCs exceed
+   the previous maximum.
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      x86/platform: Increase maximum GPIO number for X86_64
+
+Jeff Moyer (1):
+      x86/pat: Pass valid address to sanitize_phys()
+
+Mike Rapoport (1):
+      x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
+
+Tony Luck (1):
+      x86/mce: Avoid infinite loop for copy from user recovery
+
+ arch/x86/Kconfig               |  5 +++++
+ arch/x86/kernel/cpu/mce/core.c | 43 +++++++++++++++++++++++++++++++-----------
+ arch/x86/mm/init_64.c          |  6 +++---
+ arch/x86/mm/pat/memtype.c      |  7 ++++++-
+ include/linux/sched.h          |  1 +
+ 5 files changed, 47 insertions(+), 15 deletions(-)
 -- 
 Regards/Gruss,
     Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+-- 
