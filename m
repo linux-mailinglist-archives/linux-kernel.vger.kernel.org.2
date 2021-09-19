@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B6410CC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63467410CB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhISR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:58:14 -0400
-Received: from imsva.erbakan.edu.tr ([95.183.198.89]:45766 "EHLO
-        imsva.erbakan.edu.tr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhISR6M (ORCPT
+        id S230508AbhISRkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 13:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhISRkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:58:12 -0400
-X-Greylist: delayed 1190 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Sep 2021 13:58:11 EDT
-Received: from imsva.erbakan.edu.tr (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B281812490F;
-        Sun, 19 Sep 2021 20:28:57 +0300 (+03)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=erbakan.edu.tr;
-        s=dkim; t=1632072537;
-        bh=GF0kCZVzMAbL+zC2eGZ6bprg0BK693Z+UfWbMwtUgEs=; h=Date:From:To;
-        b=n4hjaV27ttunJIa21KLGUtONCDRq8waqC/C0N3+iJGjlRHjR0Xg4V0nsUrxiauzIQ
-         MXV+gEIJEiyBRV0EaVYaSfBX7wVDC8twvZSsK9g7TOH4nndxS0ywJ/jHS0nDqBg8lv
-         F7dJLaWN5lOtSgiP4cc0RFd84iDu9j7+8dCkhoCw=
-Received: from imsva.erbakan.edu.tr (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D9D612490D;
-        Sun, 19 Sep 2021 20:28:57 +0300 (+03)
-Received: from eposta.erbakan.edu.tr (unknown [172.42.40.30])
-        by imsva.erbakan.edu.tr (Postfix) with ESMTPS;
-        Sun, 19 Sep 2021 20:28:57 +0300 (+03)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by eposta.erbakan.edu.tr (Postfix) with ESMTP id 47D851217BB7E;
-        Sun, 19 Sep 2021 20:36:42 +0300 (+03)
-Received: from eposta.erbakan.edu.tr ([127.0.0.1])
-        by localhost (eposta.erbakan.edu.tr [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id wtp9dEPy57R1; Sun, 19 Sep 2021 20:36:40 +0300 (+03)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by eposta.erbakan.edu.tr (Postfix) with ESMTP id 58A731217BB6F;
-        Sun, 19 Sep 2021 20:36:33 +0300 (+03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 eposta.erbakan.edu.tr 58A731217BB6F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=erbakan.edu.tr;
-        s=9A114B22-0D17-11E9-AE7D-5CB170D0BDE7; t=1632072997;
-        bh=UE+6Rh6p+D/Q/qnCC1rilRTfAwcozVy4J0wYoa1QJws=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=EyA6BzG7IGR5gku5c2zM/5BjceotVOM3v6MC+Is94B78ce+gjSJAs7z4YPXONrWRS
-         YRRCsAy5S7FlVrS258gWjGBzGjm2bAqbwvpK4KxUGtOGm7uApt8lxFxbdqWZu76ELQ
-         r66TvFN/LPp92itOqf1Zf6xuZk+0LwPG1y1OlhxCYpONVlEZYTUNhGC/VN54SCQ+Z/
-         OLb2RMDhbjUJndcqEAj5XDnw0ACk+EvV8JBgorpx7RwZsNKvgqZZ/b1wqEwHeIZ6QX
-         hjrKwfks75RYic2Sav+Iuu+F8h4BN8t2ZScq7MmFtGmb5YJ9+tYMzgGS69fvpjcMb2
-         o57SXfB/k9WGQ==
-X-Virus-Scanned: amavisd-new at eposta.erbakan.edu.tr
-Received: from eposta.erbakan.edu.tr ([127.0.0.1])
-        by localhost (eposta.erbakan.edu.tr [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id oBaPQgyvZCZ0; Sun, 19 Sep 2021 20:36:28 +0300 (+03)
-Received: from eposta.erbakan.edu.tr (eposta.konya.edu.tr [172.42.44.72])
-        by eposta.erbakan.edu.tr (Postfix) with ESMTP id 7EB281217BB06;
-        Sun, 19 Sep 2021 20:36:25 +0300 (+03)
-Date:   Sun, 19 Sep 2021 20:36:23 +0300 (EET)
-From:   =?utf-8?B?eWFyxLHFn21h?= gsf <yarismagsf@erbakan.edu.tr>
-Reply-To: =?utf-8?B?eWFyxLHFn21h?= gsf <oasisportfb@gmail.com>
-Message-ID: <390000657.524466.1632072983607.JavaMail.zimbra@erbakan.edu.tr>
-Subject: Re: Quick loan
+        Sun, 19 Sep 2021 13:40:25 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D331C061574;
+        Sun, 19 Sep 2021 10:38:50 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id t6so51432856edi.9;
+        Sun, 19 Sep 2021 10:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5M7w7zPy21obTvYguz5Oq3eJq+JEdmpFilnfj/UaVzQ=;
+        b=LhN5noFjo+451RFhaPdyEiaEskENVgpQpw/AKZYzB8yPg8w21uDQt3oeX0bOsbP3Gr
+         CGbr7gmvPPmOjUdEtYO1vPUHutZjRsb2Qz9ekOMJ9IuCgg1/ArcVxFt7UeAyH1dESchQ
+         TifLDaNGbXnep5im/SQaOK2V8JBxUNsIiwi720vH6zqPKVpELwe09vto+ju7FUNMMn1N
+         gU4slJRLmX75YPFoPC/T02fI96cx4hv6v05GkCo7tUDhkmnQftykur0LfeKdjI1NZIvs
+         Y5++L/weCha9F5RhlJCbiweOVNPBFO5bD4F3ywAQIwH54pEdF7MqpE//ZPSgmjSdnZfZ
+         nUXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5M7w7zPy21obTvYguz5Oq3eJq+JEdmpFilnfj/UaVzQ=;
+        b=svHDiyI+2S58ekWXxPolli2uu6cYk8ZQlJFhYyTqloQtG6P2of8E8ZHVM+T3AVzO30
+         7TaDSUX4nuMpjsxxUM9WCpET55SjTcKYGRH9tZesa6IHtEbj1rCsAVlKmhMqh1ADV+ip
+         oTCZrg2WCBRZojuKaSncTDlH0LFNJpj/UFOOrrDglQzkAedSPOBEUN4rcO0KN2U4+ptB
+         v3iISRdqZCzc1WWinNr97AFkYS8UJNZVrbLT1osRivKURWDBurufAJT49WF2Iin+UfyE
+         i6ZnK38FjBQqfsOTtF8wHVIieCvkW+GSTTCSWM/44DDynI8jsLlqlhP529nX4mChIxr9
+         c0Pw==
+X-Gm-Message-State: AOAM533pSIi8PQqwS54mcdo3W3RrL/pg5e96YTr6JzdGNkv5nJlSYh+P
+        huo/iJVtb75IBBp9Qka53V4=
+X-Google-Smtp-Source: ABdhPJzIc1p2YHYXKQUZaJF5CsnCuPC6aHASPs/54dQ8LsS6ySMakHNHKw85yPRAQNwt3LxaJWqlFw==
+X-Received: by 2002:a05:6402:88e:: with SMTP id e14mr25583141edy.342.1632073128991;
+        Sun, 19 Sep 2021 10:38:48 -0700 (PDT)
+Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id c28sm5214401ejc.102.2021.09.19.10.38.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 10:38:48 -0700 (PDT)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
+Date:   Sun, 19 Sep 2021 19:38:47 +0200
+Message-ID: <2435067.tOv7cHfTnj@archbook>
+In-Reply-To: <20210916122549.GF5048@sirena.org.uk>
+References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com> <42974939.Tn3hggVSkZ@archbook> <20210916122549.GF5048@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.11_GA_3799 (ZimbraWebClient - GC92 (Win)/8.8.11_GA_3787)
-Thread-Index: 8gws71bxw7x/cE3wMq8fURTAwh/Mig==
-Thread-Topic: Quick loan
-To:     undisclosed-recipients:;
-X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oasis is offering quick loans, without credit check to old and new customers. We give Short or long term loan with a relatively low interest rate of about 0.2% on Instant approval.
-Oasis Fintech a onetime solution to all your financial need.
-Contact us today via email, oasisportfb@gmail.com,  and complete the loan form below....
-Your Full Name:
-Amount Required:
-Contact Phone #:
-Occupation:
-Loan Duration:
-Purpose:
-Location:
- 
-Ms. Bauer
-Contact us via: email:  oasisportfb@gmail.com
+On Donnerstag, 16. September 2021 14:25:49 CEST Mark Brown wrote:
+> On Wed, Sep 15, 2021 at 07:06:14PM +0200, Nicolas Frattaroli wrote:
+> > On Mittwoch, 15. September 2021 16:10:12 CEST Mark Brown wrote:
+> > > Why is this not part of the normal bus format configuration?  I don't
+> > > know what this is but it sounds a lot like I2S mode...
+> > 
+> > This affects all TDM I2S modes, i.e. TDM Normal, TDM Left Justified and
+> > TDM
+> > Right Justified.
+> > 
+> > Without tdm-fsync-half-frame, we purportedly get the following output in
+> > TDM Normal Mode (I2S Format):
+> > (ch0l = channel 0 left, ch0r = channel 0 right)
+> > 
+> > fsync: 	_____________________________
+> > 
+> >                      	            \____________________________
+> > 
+> > sdi/sdo: ch0l, ch0r, ..., ch3l, ch3r,  ch0l, ch0r, ...
+> > 
+> > With tdm-fsync-half-frame, we purportedly get the following:
+> > 
+> > fsync: 	_____________________________
+> > 
+> >                      	            \____________________________
+> > 
+> > sdi/sdo: ch0l,  ch1l,  ch2l,  ch3l,   ch0r,  ch1r,  ch2r,  ch3r
+> > 
+> > At least, according to the TRM. I do not have an oscilloscope to verify
+> > this myself, and in the following paragraphs, I will elaborate why this
+> > seems confusing to me.
+> 
+> fsync-half-frame is just normal TDM for I2S, the default mode is how DSP
+> mode normally operates.  I don't know that there's any pressing need to
+> support mix'n'match here, you could but it should be through the TDM
+> configuration API.
+> 
+> > So to answer the question, it's not part of the bus format because it
+> > applies to three bus formats, and I'm completely out of my depth here and
+> > wouldn't define three separate bus formats based on my own speculation of
+> > how this works.
+> 
+> It is part of the bus format really.  I suspect the hardware is the kind
+> that only really implements DSP mode and can just fake up a LRCLK for
+> I2S in order to interoperate.
+
+Thank you for your explanation!
+
+Going forward, what would be a solution that is acceptable for upstream? As 
+far as I understand, the obvious route here is to drop the rockchip,fsync-
+half-frame property and just always set this mode when we're using a TDM bus 
+format. Is this correct?
+
+According to the TRM, the register bit this sets only affects TDM modes. 
+Though since TDM is not standardised in any way from what I've read online, it 
+is possible that there is hardware out there which expects the non-fsync-half-
+frame mode, but I am completely fine with only thinking about this hardware 
+when it actually surfaces.
+
+Regards,
+Nicolas Frattaroli
+
+
