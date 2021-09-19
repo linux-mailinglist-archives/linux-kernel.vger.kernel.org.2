@@ -2,151 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D3B410952
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 04:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2406410957
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 04:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235466AbhISChD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 22:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
+        id S235875AbhISCoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 22:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234631AbhISChC (ORCPT
+        with ESMTP id S234631AbhISCoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 22:37:02 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FB3C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 19:35:38 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id i132so2160089qke.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 19:35:38 -0700 (PDT)
+        Sat, 18 Sep 2021 22:44:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A26AC061574;
+        Sat, 18 Sep 2021 19:42:40 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id y1so1856588plk.10;
+        Sat, 18 Sep 2021 19:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bk4AhLnNfk3EYFQjUK0lAUBPIa1P/jSFZkkuoC+UJA8=;
-        b=fbF2hxSNHg0/ExIIdnB5g+Zhy7Uq1b0xHEIuKTJMs62/xEA19OHtbeXx8GJA5e+AZw
-         F0AXdQEIqyDtkxKyirrqudgI7tWh7mNU3GQbYg18HM4orwe8H81qA0kK7xGnzn+aWyE4
-         uELuzQ2xce70pZeYO8F6GTxIylqJPWucx3aec=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jL0YyZVYNJH18NhjsKC4FdXboGYe7Tnw5QmBZVOO0WU=;
+        b=CE2LVR2Q5LIFuUVbwlSY3zrM0GK969+BFKkHmnW2ipzwoiTT7sCKT6l4Omebb79Z1H
+         73EGTduin7EEbQ723Ooo8RJB+hP2laKGPpJQ4mKNgscpSY/Kl5J+V6zxLK1Ho6Wvjqln
+         r0wwmEo8CiuzRrodfJlqiq4THNfpJUkoPDXOz5y6gRgzpO77dWiINPv7fcPTGM/MgK37
+         oCZ0ohvmTCar+YzHMvRtPDnbUtblDcrD+SZaRByT+zCFDwtkCRLnjZj0qfJXgrwagejv
+         e1SHQfpiGCTKLQKYozuC6xMQE+KZMpxeBlw/i5UMyykxQ9VZuhHaRv/7ONaL7RLMRlnU
+         xIAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bk4AhLnNfk3EYFQjUK0lAUBPIa1P/jSFZkkuoC+UJA8=;
-        b=UevpPEqmKp9KsTmPJHrXXkcldCU31vf9l6I/tyi0MvBLGyuapr22l20mc5jNy7uuEm
-         ORFRJj+awgcMc8D1htGIZ3JFItH7fUdOFHBI082y5/OmsNO9KqHMfjZjelR5HxH4Ly3W
-         FXB237dqUCf+gywanuqFiFYTKXzqlLyBldYdYC8GWbrxaGn/UsSK2ZckSTvFac8BSG0j
-         x61n0jmcX2J1390LbfXEXNkDL7zXCLy4t/4CsElzBQ6ZB2LrGYIKSMMXytOLk7vS641M
-         2gHOwIpFivoAdC5A71e3ebKpubtewn7L/elHaSnwY9n9zrT50Ryw6IMW20xb9Gki+02f
-         NheA==
-X-Gm-Message-State: AOAM533jvmWz5Jix1R+4pMpftop/XRaDjAXSzIIvI9chPDsj00LK+cT+
-        PBLGA7/vQSTNc09xulLvaK4VERtq5RmnIQ/cnBH/
-X-Google-Smtp-Source: ABdhPJwhpLY5/KBgGMVSWOLJn+k3TDnINgm6FVVrxdMPHncdxwCwvLkkoJlHrBOJpOLFTpBNyITbDxSPz6aXzlN3UBc=
-X-Received: by 2002:a25:c745:: with SMTP id w66mr3323239ybe.505.1632018937524;
- Sat, 18 Sep 2021 19:35:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jL0YyZVYNJH18NhjsKC4FdXboGYe7Tnw5QmBZVOO0WU=;
+        b=YBoJgb/QAS2NEA2K/7NLJI6oPnXmQjNoJmEO+5KFohl9WcMFzVDRBrKlQJkKloj5II
+         kESxDkxRL0rdomKeECj8sSZCJzAHcRPjOlolcv4X5qX5dox5gnJxCtSgmrB2gx+Ng34M
+         gJbe9/qp2r7U6MWH3UXoX1Pdh+2mJOUOU1/9vjn1a4s0S+tkooT/FiktLDUk+dkSusrj
+         3EvYQ7rHWHeHo/De87mUfwKjs1PiYh+vFtjbznXsJcbOWNhDmioiPcfTFR5DWpAa/B9e
+         hjXCKELEDIzKH/Aq4+YWkKDSV6jt2EkZ0FO75kTe+65X1SvanxhTLiINkJ1/Ndu+2tKJ
+         kZgQ==
+X-Gm-Message-State: AOAM5329v7mI6S0DKKDwuNHbwFmNyFBbrT+Gf7Oxu1kPMGLsTV7PqAmd
+        /1L38E5D/9t5lVWx5rKEIFbqd6vxmhWNmQ==
+X-Google-Smtp-Source: ABdhPJx/wB3o5lG6xJlbJaRWTqWokYNiqF0hPzUuNzOutoCmmppCSa+HR07u5LIASG9vyu12W08VsA==
+X-Received: by 2002:a17:90a:5583:: with SMTP id c3mr21002987pji.133.1632019359514;
+        Sat, 18 Sep 2021 19:42:39 -0700 (PDT)
+Received: from localhost ([198.11.178.15])
+        by smtp.gmail.com with ESMTPSA id v197sm2409266pfc.125.2021.09.18.19.42.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 18 Sep 2021 19:42:39 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>
+Subject: [PATCH 0/2] KVM: X86: Don't reset mmu context when changing PGE or PCID
+Date:   Sun, 19 Sep 2021 10:42:44 +0800
+Message-Id: <20210919024246.89230-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-References: <20210918160221.111902-1-alex@ghiti.fr>
-In-Reply-To: <20210918160221.111902-1-alex@ghiti.fr>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Sat, 18 Sep 2021 19:35:26 -0700
-Message-ID: <CAOnJCU++j8z1f6F8SPKe-SeSJYQYg1Sra27HPPTRFijyGXdOyA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Flush current cpu icache before other cpus
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 9:03 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> On SiFive Unmatched, I recently fell onto the following BUG when booting:
->
-> [    0.000000] ftrace: allocating 36610 entries in 144 pages
-> [    0.000000] Oops - illegal instruction [#1]
-> [    0.000000] Modules linked in:
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.13.1+ #5
-> [    0.000000] Hardware name: SiFive HiFive Unmatched A00 (DT)
-> [    0.000000] epc : riscv_cpuid_to_hartid_mask+0x6/0xae
-> [    0.000000]  ra : __sbi_rfence_v02+0xc8/0x10a
-> [    0.000000] epc : ffffffff80007240 ra : ffffffff80009964 sp : ffffffff81803e10
-> [    0.000000]  gp : ffffffff81a1ea70 tp : ffffffff8180f500 t0 : ffffffe07fe30000
-> [    0.000000]  t1 : 0000000000000004 t2 : 0000000000000000 s0 : ffffffff81803e60
-> [    0.000000]  s1 : 0000000000000000 a0 : ffffffff81a22238 a1 : ffffffff81803e10
-> [    0.000000]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
-> [    0.000000]  a5 : 0000000000000000 a6 : ffffffff8000989c a7 : 0000000052464e43
-> [    0.000000]  s2 : ffffffff81a220c8 s3 : 0000000000000000 s4 : 0000000000000000
-> [    0.000000]  s5 : 0000000000000000 s6 : 0000000200000100 s7 : 0000000000000001
-> [    0.000000]  s8 : ffffffe07fe04040 s9 : ffffffff81a22c80 s10: 0000000000001000
-> [    0.000000]  s11: 0000000000000004 t3 : 0000000000000001 t4 : 0000000000000008
-> [    0.000000]  t5 : ffffffcf04000808 t6 : ffffffe3ffddf188
-> [    0.000000] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000002
-> [    0.000000] [<ffffffff80007240>] riscv_cpuid_to_hartid_mask+0x6/0xae
-> [    0.000000] [<ffffffff80009474>] sbi_remote_fence_i+0x1e/0x26
-> [    0.000000] [<ffffffff8000b8f4>] flush_icache_all+0x12/0x1a
-> [    0.000000] [<ffffffff8000666c>] patch_text_nosync+0x26/0x32
-> [    0.000000] [<ffffffff8000884e>] ftrace_init_nop+0x52/0x8c
-> [    0.000000] [<ffffffff800f051e>] ftrace_process_locs.isra.0+0x29c/0x360
-> [    0.000000] [<ffffffff80a0e3c6>] ftrace_init+0x80/0x130
-> [    0.000000] [<ffffffff80a00f8c>] start_kernel+0x5c4/0x8f6
-> [    0.000000] ---[ end trace f67eb9af4d8d492b ]---
-> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-> [    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
->
-> While ftrace is looping over a list of addresses to patch, it always failed
-> when patching the same function: riscv_cpuid_to_hartid_mask. Looking at the
-> backtrace, the illegal instruction is encountered in this same function.
-> However, patch_text_nosync, after patching the instructions, calls
-> flush_icache_range. But looking at what happens in this function:
->
-> flush_icache_range -> flush_icache_all
->                    -> sbi_remote_fence_i
->                    -> __sbi_rfence_v02
->                    -> riscv_cpuid_to_hartid_mask
->
-> The icache and dcache of the current cpu are never synchronized between the
-> patching of riscv_cpuid_to_hartid_mask and calling this same function.
->
-> So fix this by flushing the current cpu's icache before asking for the other
-> cpus to do the same.
->
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Is this the same bugs described in this thread ?
+This patchset uses kvm_vcpu_flush_tlb_guest() instead of kvm_mmu_reset_context()
+when X86_CR4_PGE is changed or X86_CR4_PCIDE is changed 1->0.
 
-http://lkml.iu.edu/hypermail/linux/kernel/2108.1/05465.html
+Neither X86_CR4_PGE nor X86_CR4_PCIDE participates in kvm_mmu_role, so
+kvm_mmu_reset_context() is not required to be invoked.  Only flushing tlb
+is required as SDM says.
 
+The patchset has nothing to do with performance, because the overheads of
+kvm_mmu_reset_context() and kvm_vcpu_flush_tlb_guest() are the same.  And
+even in the [near] future, kvm_vcpu_flush_tlb_guest() will be optimized,
+the code is not in the hot path.
 
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->  arch/riscv/mm/cacheflush.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-> index 094118663285..89f81067e09e 100644
-> --- a/arch/riscv/mm/cacheflush.c
-> +++ b/arch/riscv/mm/cacheflush.c
-> @@ -16,6 +16,8 @@ static void ipi_remote_fence_i(void *info)
->
->  void flush_icache_all(void)
->  {
-> +       local_flush_icache_all();
-> +
->         if (IS_ENABLED(CONFIG_RISCV_SBI))
->                 sbi_remote_fence_i(NULL);
->         else
-> --
-> 2.30.2
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+This patchset makes the code more clear when to reset the mmu context.
+And it makes KVM_MMU_CR4_ROLE_BITS consistent with kvm_mmu_role.
 
+Lai Jiangshan (2):
+  KVM: X86: Don't reset mmu context when X86_CR4_PCIDE 1->0
+  KVM: X86: Don't reset mmu context when toggling X86_CR4_PGE
 
+ arch/x86/kvm/mmu.h | 5 ++---
+ arch/x86/kvm/x86.c | 7 +++++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
 -- 
-Regards,
-Atish
+2.19.1.6.gb485710b
+
