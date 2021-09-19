@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF7F410C32
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACFC410C3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhISPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 11:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
+        id S233562AbhISPpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 11:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbhISPjJ (ORCPT
+        with ESMTP id S233783AbhISPpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 11:39:09 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBACC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 08:37:43 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id v127so571568wme.5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 08:37:43 -0700 (PDT)
+        Sun, 19 Sep 2021 11:45:30 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB9C061757;
+        Sun, 19 Sep 2021 08:44:04 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 194so9147913qkj.11;
+        Sun, 19 Sep 2021 08:44:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DYzK0av1B+bTJZIOX9KF9ReEi3WLK2A6GBcuFXUyJpU=;
-        b=HgKZPg0PbpAs9xdoUdE8ZhSTGfuCrCKgm07OZitcGfVbFVTAvC2LJSvcqdujKAgLLt
-         dzLUdpgWxgvS/0zUdPttLOngPuYWUTOueYHXFCIQ47/hhOnJUR3Z61MKVQNB23rcbHU5
-         TrLpOL3JQ/XH9svxxxl5h6JnmyhFNKOyode7PwU9GFaEZbSpgqoZIjpHPtLsYStvBpH2
-         W4aVor2axUI2YFMUmJYD7N9tPaRPhfTuwtz2/ueoaKCetCc0lWOkA/wUvgUZVKt7FG69
-         Xd13+kOuOZMZbtfnmaYZbdQS6WEhtalpiLFEvtp727/h/JFAYyUHM9xvg21AIQ1GPxit
-         NQag==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HDkakuhEl/Dan5KAuhVlwRPEvRkbpGxHTjJ5gNV/EIk=;
+        b=WVeaQ9SrUmuZi0cz8l2Sq/poppYj+QuHxhOuKQXs67o20rWjkzR/ki56QVKdliuUKT
+         hCEWO7y3AmTgt9our3tVgZrxgmutzSam9XQ+4VuwGKE6CkKc6Q28F7Bfd03i5R7Gpr47
+         XSNpIqhIoVgNc2zCyYmtjV6B/9ouGlG1unCUypji9x5ZmaBrPBDHD1nDrku9yYxEVZlE
+         cQfHBnZhvamFFgnr4iQmicx3yfmX/NMb4L1X7DTdBIHRXtsOgpkt4YFFZXXpUpOO0dnK
+         nGbsTtLts2AkRWooJ6cwjigp+z6/SfysKNpeCoHvuHe5NV8oPwdPCJSwJPSP7/4+xSxW
+         U42g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DYzK0av1B+bTJZIOX9KF9ReEi3WLK2A6GBcuFXUyJpU=;
-        b=awC23nk5vNOTJf82Y55vjcJgfHsu6kD0ETRCVl5ecB7TXnKA5FeyAlpMLM15je4cEa
-         wonDnh/2qQNDPUCu8mwyTtkIoHIvW1d8guXE3SnQjHkyByVoZriSUDDL4YG998A0O8dK
-         wfRIT2qlf7c4/8zIwNzuSp8bDYnemrrW5XGy9hLhAmb5v/BUd4IImnO2tarfTwxMtRFN
-         2t6ZqcgC2kzKBA8xyVxaauyDSp9qmB1f7PA8pDYtyiPrDQ29llzaKjEOzvvQpGd18nca
-         jdhuxwZPScMmKQQ4Y4sZWWZlrouFeg53AAahXNrm3oUe8CU75c/6CaK0xTuKc/TWSmFT
-         YTXw==
-X-Gm-Message-State: AOAM530bq/BNrVmBh6z9QZNDt4R37f4zZoGJPlIbuXtrFiQbxd94Hho5
-        e5RYx0vAvozGEWxI8j5TR6M=
-X-Google-Smtp-Source: ABdhPJxlEG1btintB5Hyd74gdIoc8Rs5f5vtYOz1FDHRndyOPtS7ZHSDGsAFuO2qeciS2OWDYckLFw==
-X-Received: by 2002:a1c:7ed3:: with SMTP id z202mr14963643wmc.152.1632065862571;
-        Sun, 19 Sep 2021 08:37:42 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cde])
-        by smtp.gmail.com with ESMTPSA id l15sm16614501wme.42.2021.09.19.08.37.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HDkakuhEl/Dan5KAuhVlwRPEvRkbpGxHTjJ5gNV/EIk=;
+        b=AG2LNCZB9O9eOnoWU3MjHEOcN2P0ZCPqCmJQ3dBYq8EfTSqJ/c8Exr1DGE8ra7oKfl
+         VqtoG35QSM25ORIkfZPMeA+3fsMa10UmV0d91/76EBvXk/ByNDGRrsPxjm0bT5Tf7FPo
+         FThTrQ5jCX0Ohj+OFObo5MmPldnKEsHDn3xRK9FIuH/I6HpviH9Lc/4r8QqET2diTeMR
+         nZgMXkzA6M15uCg974ChqJ0e/8ynTotavgJzfDhjNP269b4Kz346rwRHeIR1XtUBw7jc
+         BjGy72yU1lteeXIZrQRmSvPPiOw1bsB00L/1Bjj5y1rqqfAbur1r4LJuYfkqFkZIvxCy
+         +WZA==
+X-Gm-Message-State: AOAM531O0ZyPfrjD2yLi7uf+20X97MvBTbi/Chuz6Wx4h8jcequXhbIG
+        CE7KhAS13YBaFXYO+oJ50IWZYFmC8YDCgA==
+X-Google-Smtp-Source: ABdhPJwFOaJ1dD3KlhVVHe2LD/Lu3ChbAnuIgPKC8VCKqyEwsmv1k4YQYtrBi/2iqVcEbEVelG+RJw==
+X-Received: by 2002:a37:e17:: with SMTP id 23mr18365389qko.301.1632066244022;
+        Sun, 19 Sep 2021 08:44:04 -0700 (PDT)
+Received: from luigi.stachecki.net (pool-96-246-29-33.nycmny.fios.verizon.net. [96.246.29.33])
+        by smtp.gmail.com with ESMTPSA id bl36sm8849057qkb.37.2021.09.19.08.44.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 08:37:42 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 6/6] staging: r8188eu: remove rtw_set_macaddr_acl()
-Date:   Sun, 19 Sep 2021 17:36:59 +0200
-Message-Id: <20210919153659.20826-7-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210919153659.20826-1-straube.linux@gmail.com>
-References: <20210919153659.20826-1-straube.linux@gmail.com>
+        Sun, 19 Sep 2021 08:44:03 -0700 (PDT)
+From:   "Tyler J. Stachecki" <stachecki.tyler@gmail.com>
+Cc:     fankaixi.li@bytedance.com, stachecki.tyler@gmail.com,
+        xiexiaohui.xxh@bytedance.com, cong.wang@bytedance.com,
+        Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ovs: Only clear tstamp when changing namespaces
+Date:   Sun, 19 Sep 2021 11:43:37 -0400
+Message-Id: <20210919154337.9243-1-stachecki.tyler@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function rtw_set_macaddr_acl() is not used, remove it.
+As of "ovs: clear skb->tstamp in forwarding path", the
+tstamp is now being cleared unconditionally to fix fq qdisc
+operation with ovs vports.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+While this is mostly correct and fixes forwarding for that
+use case, a slight adjustment is necessary to ensure that
+the tstamp is cleared *only when the forwarding is across
+namespaces*.
+
+Signed-off-by: Tyler J. Stachecki <stachecki.tyler@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_ap.c    | 10 ----------
- drivers/staging/r8188eu/include/rtw_ap.h |  1 -
- 2 files changed, 11 deletions(-)
+ net/openvswitch/vport.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index 49858adf486e..94e02aad96b7 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -557,16 +557,6 @@ void update_sta_info_apmode(struct adapter *padapter, struct sta_info *psta)
- 	spin_unlock_bh(&psta->lock);
- }
+diff --git a/net/openvswitch/vport.c b/net/openvswitch/vport.c
+index cf2ce5812489..c2d32a5c3697 100644
+--- a/net/openvswitch/vport.c
++++ b/net/openvswitch/vport.c
+@@ -507,7 +507,8 @@ void ovs_vport_send(struct vport *vport, struct sk_buff *skb, u8 mac_proto)
+ 	}
  
--void rtw_set_macaddr_acl(struct adapter *padapter, int mode)
--{
--	struct sta_priv *pstapriv = &padapter->stapriv;
--	struct wlan_acl_pool *pacl_list = &pstapriv->acl_list;
--
--	DBG_88E("%s, mode =%d\n", __func__, mode);
--
--	pacl_list->mode = mode;
--}
--
- static void update_bcn_fixed_ie(struct adapter *padapter)
- {
- 	DBG_88E("%s\n", __func__);
-diff --git a/drivers/staging/r8188eu/include/rtw_ap.h b/drivers/staging/r8188eu/include/rtw_ap.h
-index 134a9a8143b2..724229fe84aa 100644
---- a/drivers/staging/r8188eu/include/rtw_ap.h
-+++ b/drivers/staging/r8188eu/include/rtw_ap.h
-@@ -21,7 +21,6 @@ void add_RATid(struct adapter *padapter, struct sta_info *psta,
- void expire_timeout_chk(struct adapter *padapter);
- void update_sta_info_apmode(struct adapter *padapter, struct sta_info *psta);
- void rtw_ap_restore_network(struct adapter *padapter);
--void rtw_set_macaddr_acl(struct adapter *padapter, int mode);
+ 	skb->dev = vport->dev;
+-	skb->tstamp = 0;
++	if (dev_net(skb->dev))
++		skb->tstamp = 0;
+ 	vport->ops->send(skb);
+ 	return;
  
- void associated_clients_update(struct adapter *padapter, u8 updated);
- void bss_cap_update_on_sta_join(struct adapter *padapter, struct sta_info *psta);
 -- 
-2.33.0
+2.20.1
 
