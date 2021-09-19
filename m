@@ -2,154 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CE8410D7C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 23:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE082410D7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 23:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhISVbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 17:31:49 -0400
-Received: from mail.pqgruber.com ([52.59.78.55]:35270 "EHLO mail.pqgruber.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhISVbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 17:31:48 -0400
-X-Greylist: delayed 535 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Sep 2021 17:31:47 EDT
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 5F156C729FA;
-        Sun, 19 Sep 2021 23:21:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1632086485;
-        bh=W4bwPMqP8nSOjKU9TQJwR3PZHLDME7bJ9DGUBxvfU8I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qRant5hRfu+022RnYNR07udj3pqXk4Rxd3HMBBSwlsITuBf8wuE5NDfi6rNHQbgG0
-         TZGs1i9Gi8H1LmZs7/Yf/BVKKxlJUpWMFHllKF8+37S0u4V/yTChvFzS8s/wmRg11J
-         KHL0tU698xbC79emUCK9glSk0jod3Ex6rXAPN0Jg=
-Date:   Sun, 19 Sep 2021 23:21:22 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>, bala.senthil@intel.com,
-        Dipen Patel <dipenp@nvidia.com>
-Subject: Re: [RFC PATCH v1 07/20] gpio: Add output event generation method to
- GPIOLIB and PMC Driver
-Message-ID: <YUep0gtZkc6D3ukt@workstation.tuxnet>
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
- <20210824164801.28896-8-lakshmi.sowjanya.d@intel.com>
- <CACRpkdYJkPgaz-BvQ1X0PHRCCbn0hrMDabouDwHkn+pr9d-dSQ@mail.gmail.com>
- <20210917072755.d4ynxkp4scxrk6rq@pengutronix.de>
- <CACRpkdZmjWQ_mNw_JOZnkvvU15qS26gB3GL_9k=Vao3m=w_N9w@mail.gmail.com>
+        id S232841AbhISVdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 17:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhISVdQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 17:33:16 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3764C061574;
+        Sun, 19 Sep 2021 14:31:50 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id v19so10590317pjh.2;
+        Sun, 19 Sep 2021 14:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S5wcLSMUUek1zUXBGHTi9rruAn4oSmVgDe1fOAA1Xkg=;
+        b=Y/N3J24yLgRRME487s1w+trnRf3GM3/ZCj+Rz0s4m3s5uVhn1oKBO4wnKRmwVf2M+Y
+         ofxcScY2nKHlydUwPMx4fL3DH4W14o8mAL43MB2rmcJkE0gMakXGyW3+8CJ4OZUeK3Vw
+         aUZS4plpLVwhl0dOlAsTMQfmF3ptb6dnDti2Gigp4awhgnvwVM+1hyiM4s7r1WQcSirD
+         8CCBnBdkuCIF+4sCpLQk7nY8fABo4jJz8NjuxXBqq6o8XbrEnoT7Xc7qCCi346YFJEbC
+         yYKL629szenYQULrk3mL1t665kaNh/77sedCQIce/Z87Q+RxcKAARLDY1JEfTgaFzWLM
+         dVUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S5wcLSMUUek1zUXBGHTi9rruAn4oSmVgDe1fOAA1Xkg=;
+        b=Km2kEMOkfAdjx7svU/V46+dY1LAyNg6ffbe8tiPeuZqrEAMqe2ikdd65/3XmVoKGY6
+         RN4QcOyZLGidH5aA/vUPYwNtNn08uRMjXXis0h6laL9dpO+hLEJRg4R25jxWyqnzCHRZ
+         6OSRq8CRj0dMm+1VDM5CCpKLvBzV/10pjhzIbRoyFTY5VInNPEN7xoG/KKwTDjCwNLLd
+         74D1cOTiYbPDeRSSqe2xqAj+pGJ8lYfU+DIKUUpXt84pPhgjV/o7EMNqnNH+krpi2IP9
+         mnLj7vO5UJEcwDtVTty3QVzPZ2Kvid+nw5setvSWBLqnECpTCGBVynvmHUVs+L80UTJF
+         Ymyg==
+X-Gm-Message-State: AOAM533Jzi9t/30MB2MM7utxJ5ioCu2VQBOc6MEPY9GpghafjI0c8i9g
+        9fLpLMX6D6G7Ahf87wJ+6aU=
+X-Google-Smtp-Source: ABdhPJwJdFeXtYKqEAT69skINXiw+B63LnASvCir2sKFfBwsrp57j29JzZL2xt/mcCWwRHR8uXQQIg==
+X-Received: by 2002:a17:903:22ce:b0:13b:9a00:f090 with SMTP id y14-20020a17090322ce00b0013b9a00f090mr19799864plg.11.1632087110550;
+        Sun, 19 Sep 2021 14:31:50 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.29])
+        by smtp.gmail.com with ESMTPSA id m9sm11973459pfo.44.2021.09.19.14.31.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 14:31:50 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCH] arm64: dts: meson-g12b-odroid-n2: add 5v regulator gpio
+Date:   Sun, 19 Sep 2021 21:31:34 +0000
+Message-Id: <20210919213135.4928-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdZmjWQ_mNw_JOZnkvvU15qS26gB3GL_9k=Vao3m=w_N9w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 09:38:58PM +0200, Linus Walleij wrote:
-> On Fri, Sep 17, 2021 at 9:27 AM Uwe Kleine-König
-> <u.kleine-koenig@pengutronix.de> wrote:
-> > On Thu, Sep 16, 2021 at 11:42:04PM +0200, Linus Walleij wrote:
-> > > On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
-> > >
-> > > > From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> > > >
-> > > > Intel Timed I/O hardware supports output scheduled in hardware. Enable
-> > > > this functionality using GPIOlib
-> > > >
-> > > > Adds GPIOlib generate_output() hook into the driver. The driver is
-> > > > supplied with a timestamp in terms of realtime system clock (the same
-> > > > used for input timestamping). The driver must know how to translate this
-> > > > into a timebase meaningful for the hardware.
-> > > >
-> > > > Adds userspace write() interface. Output can be selected using the line
-> > > > event create ioctl. The write() interface takes a single timestamp
-> > > > event request parameter. An output edge rising or falling is generated
-> > > > for each event request.
-> > > >
-> > > > The user application supplies a trigger time in terms of the realtime
-> > > > clock the driver converts this into the corresponding ART clock value
-> > > > that is used to 'arm' the output.
-> > > >
-> > > > Work around device quirk that doesn't allow the output to be explicitly
-> > > > set. Instead, count the output edges and insert an additional edge as
-> > > > needed to reset the output to zero.
-> > > >
-> > > > Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
-> > > > Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-> > > > Signed-off-by: Tamal Saha <tamal.saha@intel.com>
-> > > > Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> > > > Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> > >
-> > > So this is some street organ machine that generates sequences
-> > > with determined timing between positive and negative edges
-> > > right?
-> > >
-> > > I can't see how this hardware is different from a PWM, or well
-> > > I do to some extent, you can control the period of several
-> > > subsequent waves, but that is really just an elaborate version
-> > > of PWM in my book.
-> >
-> > From looking in the patch I think this is more versatile than the PWM
-> > framework abstracts. I wonder if there is a usecase for the
-> > functionality that cannot be expressed using pwm_apply_state?!
-> >
-> > I remember we had approaches before that implemented repeating patterns
-> > (something like: active for 5ms, inactive for 10 ms, active for 30 ms,
-> > inactive for 10 ms, repeat) and limiting the number of periods
-> > (something like: .duty_cycle = 5ms, .period = 20ms, after 5 periods go
-> > into inactive state). These were considered to be too special to be
-> > abstracted in drivers/pwm.
-> >
-> > > It seems to me that this part of the functionality belongs in the
-> > > PWM subsystem which already has interfaces for similar
-> > > things, and you should probably extend PWM to handle
-> > > random waveforms rather than trying to shoehorn this
-> > > into the GPIO subsystem.
-> >
-> > I agree that GPIO is a worse candidate than PWM to abstract that. But
-> > I'm not convinced (yet?) that it's a good idea to extend PWM
-> > accordingly.
-> 
-> Yeah it is a bit unfortunate.
-> 
-> I think we need to fully understand the intended usecase before
-> we can deal with this: exactly what was this hardware constructed
-> to handle? Sound? Robotic stepper motors? It must be something
-> and apparently there are users.
-> 
-> Maybe even a new subsystem is needed, like a
-> drivers/gpio-patterns or drivers/stepper-motor or whatever this
-> is supposed to drive.
+As described in the Odroid-n2 & Odroid-n2-plus schematics,
+the 5V regulator is controlled by GPIOH_8 and in Open Drain
+since this GPIO doesn't support Push-Pull.
 
-This would be interesting. Maybe even more abstract, not just supporting
-GPIO patterns but also PWM patterns.
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-E.g. Set gpiochip1 line 2 to 1, wait 5ms, set it to 0
-Or set pwmchip1 pwm 2 to 100%, wait 250ms, set it back to 50% duty cycle
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+index 4f33820aba1f..e8a00a2f8812 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+@@ -99,6 +99,8 @@ vcc_5v: regulator-vcc_5v {
+ 		regulator-max-microvolt = <5000000>;
+ 		regulator-always-on;
+ 		vin-supply = <&main_12v>;
++		gpio = <&gpio GPIOH_8 GPIO_OPEN_DRAIN>;
++		enable-active-high;
+ 	};
+ 
+ 	vcc_1v8: regulator-vcc_1v8 {
+-- 
+2.33.0
 
-This subsystem could then implement the patterns with hrtimers and be
-usable with every GPIO or PWM device supported in Linux, and for
-special hardware like the Intel Timed I/O, it could configure it to
-output the pattern itself.
-
-One usecase besides stepper motors and Robotics would be solenoid
-valves: You often have different sequences for opening, closing and
-maintenance. E.g. for liquid valves, especially if the liquid is
-viscuous, you have to first use 100% duty cycle PWM for e.g. 250ms to
-get it open and then dial back to 50% to keep it open without
-overheating it.
-
-Of course this can be done in userspace.. but it may also be useful to
-have some kind of pattern generator in the kernel. What do you think?
-
-Clemens
