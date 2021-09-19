@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783B1410AA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD695410AB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 10:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhISH5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 03:57:54 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:39187 "EHLO todd.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhISH5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 03:57:53 -0400
-Date:   Sun, 19 Sep 2021 09:56:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
-        t=1632038184; bh=xL2yRU3hqjAA5AqzA2w+f8V99mm7v0UdBYoQwkYruO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nys5Uaav2i7LlbeSiyABxBYqroPRxVhUJAupsl0zqwyFqWmWgzM/Zn+Hn4njNnpt2
-         QsWIxEyiTj0G8OzYSmzxgQJRpr3kPHCQwo4Oe54z4xuIp/K/TlUelx7vVjhYDVX6Se
-         VPMoF89DkpBUjeKI7qQQE9A0Nb1F+24q1V4MzzL4=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [RFC] Expose request_module via syscall
-Message-ID: <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
-References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
- <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
- <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
- <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
+        id S237056AbhISILR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 04:11:17 -0400
+Received: from mail.v3.sk ([167.172.186.51]:53056 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231346AbhISILQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 04:11:16 -0400
+X-Greylist: delayed 327 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Sep 2021 04:11:15 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id D1957DF899;
+        Sun, 19 Sep 2021 07:55:34 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bfo8kFGkd-8V; Sun, 19 Sep 2021 07:55:34 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id BE704E1BF5;
+        Sun, 19 Sep 2021 07:55:33 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id vjVf6D2RSTGF; Sun, 19 Sep 2021 07:55:33 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 84BECDF899;
+        Sun, 19 Sep 2021 07:55:33 +0000 (UTC)
+Date:   Sun, 19 Sep 2021 10:04:14 +0200
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: host: ehci-mv: drop duplicated MODULE_ALIAS
+Message-ID: <YUbu/skzkdvw5VCN@demiurge.local>
+References: <20210916170531.138335-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
+In-Reply-To: <20210916170531.138335-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-18T11:47-0700, Andy Lutomirski wrote:
-> On Thu, Sep 16, 2021, at 2:27 AM, Christian Brauner wrote:
-> > On Wed, Sep 15, 2021 at 09:47:25AM -0700, Andy Lutomirski wrote:
-> > > On Wed, Sep 15, 2021 at 8:50 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > I would like to propose a new syscall that exposes the functionality of
-> > > > request_module() to userspace.
-> > > >
-> > > > Propsed signature: request_module(char *module_name, char **args, int flags);
-> > > > Where args and flags have to be NULL and 0 for the time being.
-> > > >
-> > > > Rationale:
-> > > >
-> > > > We are using nested, privileged containers which are loading kernel modules.
-> > > > Currently we have to always pass around the contents of /lib/modules from the
-> > > > root namespace which contains the modules.
-> > > > (Also the containers need to have userspace components for moduleloading
-> > > > installed)
-> > > >
-> > > > The syscall would remove the need for this bookkeeping work.
-> > > 
-> > > I feel like I'm missing something, and I don't understand the purpose
-> > > of this syscall.  Wouldn't the right solution be for the container to
-> > > have a stub module loader (maybe doable with a special /sbin/modprobe
-> > > or maybe a kernel patch would be needed, depending on the exact use
-> > > case) and have the stub call out to the container manager to request
-> > > the module?  The container manager would check its security policy and
-> > > load the module or not load it as appropriate.
-> > 
-> > I don't see the need for a syscall like this yet either.
-> > 
-> > This should be the job of the container manager. modprobe just calls the
-> > init_module() syscall, right?
+On Thu, Sep 16, 2021 at 07:05:31PM +0200, Krzysztof Kozlowski wrote:
+> There is one MODULE_ALIAS already.
 > 
-> Not quite so simple. modprobe parses things in /lib/modules and maybe /etc to decide what init_module() calls to do.
+> Fixes: 0440fa3d1b4e ("USB: EHCI: make ehci-mv a separate driver")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+Thanks,
+
+Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
+
+> ---
+>  drivers/usb/host/ehci-mv.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> But I admit I’m a bit confused.  What exactly is the container doing that causes the container’s copy of modprobe to be called?
-
-The container is running an instance of the docker daemon in swarm mode.
-That needs the "ip_vs" module (amongst others) and explicitly tries to load it
-via modprobe.
-
-> > If so the seccomp notifier can be used to intercept this system call for
-> > the container and verify the module against an allowlist similar to how
-> > we currently handle mount.
-> > 
-> > Christian
-> > 
+> diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
+> index 8fd27249ad25..fa46d217dd10 100644
+> --- a/drivers/usb/host/ehci-mv.c
+> +++ b/drivers/usb/host/ehci-mv.c
+> @@ -258,8 +258,6 @@ static int mv_ehci_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -MODULE_ALIAS("mv-ehci");
+> -
+>  static const struct platform_device_id ehci_id_table[] = {
+>  	{"pxa-u2oehci", 0},
+>  	{"pxa-sph", 0},
+> -- 
+> 2.30.2
+> 
