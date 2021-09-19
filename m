@@ -2,126 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56363410CB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F72410CAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhISReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbhISReP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:34:15 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874C5C061574;
-        Sun, 19 Sep 2021 10:32:50 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id d11so12162383ilc.8;
-        Sun, 19 Sep 2021 10:32:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Gbr6qUKWHVKiXPdk5V4pk0xSy2NBQ/5pmcHqgFNJHo=;
-        b=AXOm5AdXPt/dNYXBz0ZQmUVAkNTQysRL+nzDPvs+OfsKKjeW8e7zcwbLtMKOJgBqwk
-         Sd/HH4Lj60j5HOcrUXyycsW53ObpyAMuKQtekdws7y1dshwkTOZhaYtdBeeEKjQzx0fX
-         BaZlbeBn/8FMR0kPDjr8LukGKNuy1vaVsypjh7VaVhWUGj4rhpKiu3TOvfLfigQQAKJu
-         aXL1sl41FtbDTO7QCjyzbSK7VR8PRz3esnq7ovQFfEqdXl2gW16MCvRdgvu1pSOQeIvM
-         Kc/9nzw5jraMY6ERb/dRgJLsdd6qHrU0E2zp6EFZrQkuhPEITgpWcNxAvKqowHvQCurH
-         88Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Gbr6qUKWHVKiXPdk5V4pk0xSy2NBQ/5pmcHqgFNJHo=;
-        b=R1ijs+G3+BFZ51Lz84F+WRK4DrnutqJsdiwRA3y+QFd3Ewluc2CN+XRG4gzXYYKsuo
-         DdvRy/6x3HqdO/kkf9sIIAJTrEhs25IPwo636RI/Sa1U4cGx1FUIjTEiD/qgHOO4UEKF
-         wHXjxKSOW8rbPkzFnvWk1f6QtwLdJ7s7nq3B04222ujYRS3d2rrkCREJ8sjLmS32WQwx
-         kaiRlMyO+X3gk+OF5DLGhCCrYW5zqslUipqlQsRVuYuACTQjVcAV+ZjmgzmjwcphTDKN
-         9o4BxahjAdXOIAzX3Srs92KZYpsOAO7/c7sR8yUaMLqNxRc6P5PJ6uaJteN+S2qXW8y3
-         yZfg==
-X-Gm-Message-State: AOAM533BPSEwbeoB/RAWGUfNTbgt6V8Rl2mwuvPnuv/5P59gts0sp411
-        yQB9c2Yv37oCWtn6BRBTYC5WxK03KqAix4wecOc=
-X-Google-Smtp-Source: ABdhPJxP1B+9Kdk+qN58zeHUOx+M9WqXgfLUyibiCfebby9oMAIQOYaggirngAIT5qDJstvUfMfpsim8DJBqG28QhtM=
-X-Received: by 2002:a05:6e02:1bed:: with SMTP id y13mr5594036ilv.249.1632072769987;
- Sun, 19 Sep 2021 10:32:49 -0700 (PDT)
+        id S230333AbhISRbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 13:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230156AbhISRbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 13:31:12 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 739766101C;
+        Sun, 19 Sep 2021 17:29:44 +0000 (UTC)
+Date:   Sun, 19 Sep 2021 18:33:25 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>, <linux-iio@vger.kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: dac: stm32-dac:  Make use of the helper function
+ devm_platform_ioremap_resource()
+Message-ID: <20210919183325.7bb5a8d9@jic23-huawei>
+In-Reply-To: <20210908105638.1525-1-caihuoqing@baidu.com>
+References: <20210908105638.1525-1-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
-From:   Alim Akhtar <alim.akhtar@gmail.com>
-Date:   Sun, 19 Sep 2021 23:02:14 +0530
-Message-ID: <CAGOxZ50i6URzUQ7o7V4m7MR=2TqSeD6qx5fQaQDs+5nEq4fa2A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] soc: samsung: exynos-chipid: be a module!
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof
+On Wed, 8 Sep 2021 18:56:38 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-On Sun, Sep 19, 2021 at 6:28 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> Hi,
->
-> Changes since v1
-> ================
-> 1. Drop patch 1/2 - exporting soc_device_to_device
-> 2. Add new patches: 1/3 and 3/3.
->
-> Question
-> ========
->
-> A question - what is the convention for naming modules: underscores '_' or
-> hyphens '-'?
->
-> The C-unit file already uses a hyphen "exynos-chipid.c", so I could
-> create a module named:
-> 1. exynos_chipid
-> 2. soc-exynos-chipid
-> 3. exynos-chip-id
->
-> The Linux device name is "exynos-chipid".
->
-> Best regards,
-> Krzysztof
->
->
-> Krzysztof Kozlowski (3):
->   soc: samsung: exynos-chipid: avoid soc_device_to_device()
->   soc: samsung: exynos-chipid: convert to a module
->   soc: samsung: exynos-chipid: do not enforce built-in
->
->  arch/arm/mach-exynos/Kconfig         |  1 -
->  drivers/soc/samsung/Kconfig          |  4 +++-
->  drivers/soc/samsung/Makefile         |  3 ++-
->  drivers/soc/samsung/exynos-chipid.c  | 14 +++++++++++---
->  drivers/soc/samsung/exynos5422-asv.c |  1 +
->  5 files changed, 17 insertions(+), 6 deletions(-)
->
-Thanks for the patches. For this series
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-Also tested on exynos7 based platform, so
-Tested-by: Alim Akhtar <alim.akhtar@samsung.com>
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to see if it can find any problems that we missed.
 
-> --
-> 2.30.2
->
+Thanks,
 
+Jonathan
 
--- 
-Regards,
-Alim
+> ---
+>  drivers/iio/dac/stm32-dac-core.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/dac/stm32-dac-core.c b/drivers/iio/dac/stm32-dac-core.c
+> index 906436780347..9a6a68b11b2a 100644
+> --- a/drivers/iio/dac/stm32-dac-core.c
+> +++ b/drivers/iio/dac/stm32-dac-core.c
+> @@ -90,7 +90,6 @@ static int stm32_dac_probe(struct platform_device *pdev)
+>  	const struct stm32_dac_cfg *cfg;
+>  	struct stm32_dac_priv *priv;
+>  	struct regmap *regmap;
+> -	struct resource *res;
+>  	void __iomem *mmio;
+>  	struct reset_control *rst;
+>  	int ret;
+> @@ -106,8 +105,7 @@ static int stm32_dac_probe(struct platform_device *pdev)
+>  	cfg = (const struct stm32_dac_cfg *)
+>  		of_match_device(dev->driver->of_match_table, dev)->data;
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	mmio = devm_ioremap_resource(dev, res);
+> +	mmio = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(mmio))
+>  		return PTR_ERR(mmio);
+>  
+
