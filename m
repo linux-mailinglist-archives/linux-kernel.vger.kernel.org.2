@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B24B410AA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783B1410AA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhISHyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 03:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        id S231346AbhISH5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 03:57:54 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:39187 "EHLO todd.t-8ch.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230463AbhISHyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 03:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A12FE611F0;
-        Sun, 19 Sep 2021 07:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632037966;
-        bh=WdwtFfMy28r+sBybSIq6bYfhIIywUctEKEPF7euBt48=;
+        id S229508AbhISH5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 03:57:53 -0400
+Date:   Sun, 19 Sep 2021 09:56:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=t-8ch.de; s=mail;
+        t=1632038184; bh=xL2yRU3hqjAA5AqzA2w+f8V99mm7v0UdBYoQwkYruO8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vJ6M6QYwx9oAN2gVTZwL0/ugST75FL9SLfBd+MuyNEm2pJJojgK2qUfJFda25hZsm
-         2me9pitJRw2+JpKEmluNgDFFslhULuL2IFlwyMYxrDRzCatdIcQkFRvfyxqth7NJ9E
-         8fSWFuE+jANRCfEo73KRNICgDVaeHe9efjK1jtoM=
-Date:   Sun, 19 Sep 2021 09:52:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Tobias Klauser <tklauser@distanz.ch>,
-        Yury Norov <yury.norov@gmail.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpumask: Omit terminating null byte in
- cpumap_print_{list,bitmask}_to_buf
-Message-ID: <YUbsOtEQ4la3hfrf@kroah.com>
-References: <20210916222705.13554-1-tklauser@distanz.ch>
- <aa4bc59c44b345ae814c61f6593a7178@hisilicon.com>
- <YUPQ6F8M822fLzpx@yury-ThinkPad>
- <20210917084526.uzpish2owb24szng@distanz.ch>
- <CAGsJ_4wftev=z1tf7fzVKS5wRPneWSOimSxG+E0qy2CGuRykKQ@mail.gmail.com>
+        b=nys5Uaav2i7LlbeSiyABxBYqroPRxVhUJAupsl0zqwyFqWmWgzM/Zn+Hn4njNnpt2
+         QsWIxEyiTj0G8OzYSmzxgQJRpr3kPHCQwo4Oe54z4xuIp/K/TlUelx7vVjhYDVX6Se
+         VPMoF89DkpBUjeKI7qQQE9A0Nb1F+24q1V4MzzL4=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [RFC] Expose request_module via syscall
+Message-ID: <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
+References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
+ <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
+ <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
+ <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAGsJ_4wftev=z1tf7fzVKS5wRPneWSOimSxG+E0qy2CGuRykKQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 07:33:52PM +1200, Barry Song wrote:
-> On Sat, Sep 18, 2021 at 1:27 AM Tobias Klauser <tklauser@distanz.ch> wrote:
-> >
-> > On 2021-09-17 at 01:19:04 +0200, Yury Norov <yury.norov@gmail.com> wrote:
-> > > [CC Greg KH <gregkh@linuxfoundation.org>]
-> > >
-> > > On Thu, Sep 16, 2021 at 10:53:39PM +0000, Song Bao Hua (Barry Song) wrote:
+On 2021-09-18T11:47-0700, Andy Lutomirski wrote:
+> On Thu, Sep 16, 2021, at 2:27 AM, Christian Brauner wrote:
+> > On Wed, Sep 15, 2021 at 09:47:25AM -0700, Andy Lutomirski wrote:
+> > > On Wed, Sep 15, 2021 at 8:50 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
 > > > >
+> > > > Hi,
 > > > >
-> > > > > -----Original Message-----
-> > > > > From: Tobias Klauser [mailto:tklauser@distanz.ch]
-> > > > > Sent: Friday, September 17, 2021 10:27 AM
-> > > > > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Jonathan Cameron
-> > > > > <jonathan.cameron@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Song Bao
-> > > > > Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> > > > > Cc: Andrew Morton <akpm@linux-foundation.org>; Andy Shevchenko
-> > > > > <andriy.shevchenko@linux.intel.com>; Yury Norov <yury.norov@gmail.com>; Peter
-> > > > > Zijlstra <peterz@infradead.org>; linux-kernel@vger.kernel.org
-> > > > > Subject: [PATCH] cpumask: Omit terminating null byte in
-> > > > > cpumap_print_{list,bitmask}_to_buf
-> > > > >
-> > > > > The changes in the patch series [1] introduced a terminating null byte
-> > > > > when reading from cpulist or cpumap sysfs files, for example:
-> > > > >
-> > > > >   $ xxd /sys/devices/system/node/node0/cpulist
-> > > > >   00000000: 302d 310a 00                             0-1..
-> > > > >
-> > > > > Before this change, the output looked as follows:
-> > > > >
-> > > > >   $ xxd /sys/devices/system/node/node0/cpulist
-> > > > >   00000000: 302d 310a                                0-1.
+> > > > I would like to propose a new syscall that exposes the functionality of
+> > > > request_module() to userspace.
 > > > >
-> > > > If we don't use xxd, I don't see any actual harm of this NULL byte
-> > > > by cat, lscpu, numactl etc. this doesn't break them at all.
-> > >
-> > > Barry, Tobias' script that uses xxd is userspace. Linux kernel never breaks
-> > > userspace.
-> >
-> > FWIW, the example using xxd was just to illustrate the issue in a
-> > concise way for the commit message. This is breaking other userspace
-> > programs as well. Originally, I discovered this because Kubernetes'
-> > kubelet was crashing on a bpf-next kernel. See [1] and following
-> > comments for more information:
-> >
-> > [1] https://github.com/cilium/cilium/pull/17394#issuecomment-920902042
-> >
+> > > > Propsed signature: request_module(char *module_name, char **args, int flags);
+> > > > Where args and flags have to be NULL and 0 for the time being.
+> > > >
+> > > > Rationale:
+> > > >
+> > > > We are using nested, privileged containers which are loading kernel modules.
+> > > > Currently we have to always pass around the contents of /lib/modules from the
+> > > > root namespace which contains the modules.
+> > > > (Also the containers need to have userspace components for moduleloading
+> > > > installed)
+> > > >
+> > > > The syscall would remove the need for this bookkeeping work.
+> > > 
+> > > I feel like I'm missing something, and I don't understand the purpose
+> > > of this syscall.  Wouldn't the right solution be for the container to
+> > > have a stub module loader (maybe doable with a special /sbin/modprobe
+> > > or maybe a kernel patch would be needed, depending on the exact use
+> > > case) and have the stub call out to the container manager to request
+> > > the module?  The container manager would check its security policy and
+> > > load the module or not load it as appropriate.
+> > 
+> > I don't see the need for a syscall like this yet either.
+> > 
+> > This should be the job of the container manager. modprobe just calls the
+> > init_module() syscall, right?
 > 
-> cat, lscpu, numactl tools were tested. the above was not in the test cases.
-> Anyway, if some apps depend on the last character, this patch makes
-> sense. we need this one. sorry for missing the test case.
+> Not quite so simple. modprobe parses things in /lib/modules and maybe /etc to decide what init_module() calls to do.
 > 
-> Acked-by: Barry Song <song.bao.hua@hisilicon.com>
-> 
-> Greg, can you please help merge this one into 5.15?
+> But I admit I’m a bit confused.  What exactly is the container doing that causes the container’s copy of modprobe to be called?
 
-Yes, will apply it to my tree soon.
+The container is running an instance of the docker daemon in swarm mode.
+That needs the "ip_vs" module (amongst others) and explicitly tries to load it
+via modprobe.
 
-thanks,
-
-greg k-h
+> > If so the seccomp notifier can be used to intercept this system call for
+> > the container and verify the module against an allowlist similar to how
+> > we currently handle mount.
+> > 
+> > Christian
+> > 
