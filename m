@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F338F410CB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2B6410CC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhISRce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230396AbhISRcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:32:33 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1502F6101C;
-        Sun, 19 Sep 2021 17:31:05 +0000 (UTC)
-Date:   Sun, 19 Sep 2021 18:34:47 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Heiko Stuebner <heiko@sntech.de>, <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: adc: rockchip_saradc: Make use of the helper
- function devm_platform_ioremap_resource()
-Message-ID: <20210919183447.33adf804@jic23-huawei>
-In-Reply-To: <20210908105631.1474-1-caihuoqing@baidu.com>
-References: <20210908105631.1474-1-caihuoqing@baidu.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229985AbhISR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 13:58:14 -0400
+Received: from imsva.erbakan.edu.tr ([95.183.198.89]:45766 "EHLO
+        imsva.erbakan.edu.tr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhISR6M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 13:58:12 -0400
+X-Greylist: delayed 1190 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Sep 2021 13:58:11 EDT
+Received: from imsva.erbakan.edu.tr (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B281812490F;
+        Sun, 19 Sep 2021 20:28:57 +0300 (+03)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=erbakan.edu.tr;
+        s=dkim; t=1632072537;
+        bh=GF0kCZVzMAbL+zC2eGZ6bprg0BK693Z+UfWbMwtUgEs=; h=Date:From:To;
+        b=n4hjaV27ttunJIa21KLGUtONCDRq8waqC/C0N3+iJGjlRHjR0Xg4V0nsUrxiauzIQ
+         MXV+gEIJEiyBRV0EaVYaSfBX7wVDC8twvZSsK9g7TOH4nndxS0ywJ/jHS0nDqBg8lv
+         F7dJLaWN5lOtSgiP4cc0RFd84iDu9j7+8dCkhoCw=
+Received: from imsva.erbakan.edu.tr (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D9D612490D;
+        Sun, 19 Sep 2021 20:28:57 +0300 (+03)
+Received: from eposta.erbakan.edu.tr (unknown [172.42.40.30])
+        by imsva.erbakan.edu.tr (Postfix) with ESMTPS;
+        Sun, 19 Sep 2021 20:28:57 +0300 (+03)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by eposta.erbakan.edu.tr (Postfix) with ESMTP id 47D851217BB7E;
+        Sun, 19 Sep 2021 20:36:42 +0300 (+03)
+Received: from eposta.erbakan.edu.tr ([127.0.0.1])
+        by localhost (eposta.erbakan.edu.tr [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id wtp9dEPy57R1; Sun, 19 Sep 2021 20:36:40 +0300 (+03)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by eposta.erbakan.edu.tr (Postfix) with ESMTP id 58A731217BB6F;
+        Sun, 19 Sep 2021 20:36:33 +0300 (+03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 eposta.erbakan.edu.tr 58A731217BB6F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=erbakan.edu.tr;
+        s=9A114B22-0D17-11E9-AE7D-5CB170D0BDE7; t=1632072997;
+        bh=UE+6Rh6p+D/Q/qnCC1rilRTfAwcozVy4J0wYoa1QJws=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=EyA6BzG7IGR5gku5c2zM/5BjceotVOM3v6MC+Is94B78ce+gjSJAs7z4YPXONrWRS
+         YRRCsAy5S7FlVrS258gWjGBzGjm2bAqbwvpK4KxUGtOGm7uApt8lxFxbdqWZu76ELQ
+         r66TvFN/LPp92itOqf1Zf6xuZk+0LwPG1y1OlhxCYpONVlEZYTUNhGC/VN54SCQ+Z/
+         OLb2RMDhbjUJndcqEAj5XDnw0ACk+EvV8JBgorpx7RwZsNKvgqZZ/b1wqEwHeIZ6QX
+         hjrKwfks75RYic2Sav+Iuu+F8h4BN8t2ZScq7MmFtGmb5YJ9+tYMzgGS69fvpjcMb2
+         o57SXfB/k9WGQ==
+X-Virus-Scanned: amavisd-new at eposta.erbakan.edu.tr
+Received: from eposta.erbakan.edu.tr ([127.0.0.1])
+        by localhost (eposta.erbakan.edu.tr [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id oBaPQgyvZCZ0; Sun, 19 Sep 2021 20:36:28 +0300 (+03)
+Received: from eposta.erbakan.edu.tr (eposta.konya.edu.tr [172.42.44.72])
+        by eposta.erbakan.edu.tr (Postfix) with ESMTP id 7EB281217BB06;
+        Sun, 19 Sep 2021 20:36:25 +0300 (+03)
+Date:   Sun, 19 Sep 2021 20:36:23 +0300 (EET)
+From:   =?utf-8?B?eWFyxLHFn21h?= gsf <yarismagsf@erbakan.edu.tr>
+Reply-To: =?utf-8?B?eWFyxLHFn21h?= gsf <oasisportfb@gmail.com>
+Message-ID: <390000657.524466.1632072983607.JavaMail.zimbra@erbakan.edu.tr>
+Subject: Re: Quick loan
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.8.11_GA_3799 (ZimbraWebClient - GC92 (Win)/8.8.11_GA_3787)
+Thread-Index: 8gws71bxw7x/cE3wMq8fURTAwh/Mig==
+Thread-Topic: Quick loan
+To:     undisclosed-recipients:;
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sep 2021 18:56:30 +0800
-Cai Huoqing <caihuoqing@baidu.com> wrote:
-
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-
-Hi Cai,
-
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day to
-see if it can find anything we missed.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/adc/rockchip_saradc.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
-> index a237fe469a30..a56a0d7337ca 100644
-> --- a/drivers/iio/adc/rockchip_saradc.c
-> +++ b/drivers/iio/adc/rockchip_saradc.c
-> @@ -319,7 +319,6 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
->  	struct rockchip_saradc *info = NULL;
->  	struct device_node *np = pdev->dev.of_node;
->  	struct iio_dev *indio_dev = NULL;
-> -	struct resource	*mem;
->  	const struct of_device_id *match;
->  	int ret;
->  	int irq;
-> @@ -348,8 +347,7 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> -	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	info->regs = devm_ioremap_resource(&pdev->dev, mem);
-> +	info->regs = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(info->regs))
->  		return PTR_ERR(info->regs);
->  
-
+Oasis is offering quick loans, without credit check to old and new customers. We give Short or long term loan with a relatively low interest rate of about 0.2% on Instant approval.
+Oasis Fintech a onetime solution to all your financial need.
+Contact us today via email, oasisportfb@gmail.com,  and complete the loan form below....
+Your Full Name:
+Amount Required:
+Contact Phone #:
+Occupation:
+Loan Duration:
+Purpose:
+Location:
+ 
+Ms. Bauer
+Contact us via: email:  oasisportfb@gmail.com
