@@ -2,448 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F7B410A93
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E900F410A99
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236444AbhISHll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 03:41:41 -0400
-Received: from mail-dm6nam11on2062.outbound.protection.outlook.com ([40.107.223.62]:58220
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231495AbhISHlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 03:41:39 -0400
+        id S236595AbhISHnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 03:43:45 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:10518 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230463AbhISHno (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 03:43:44 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18INDCWM001377;
+        Sun, 19 Sep 2021 00:42:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=OHlhnsCp8WJgJ/QsctAWvhc/kBtYliPeBZF0uEhEKGw=;
+ b=AornoYC2Byljp4X9PLq0hhVMa1s7tcD4/LP9CELTypsqBUoUT2ble2Ype8eVFlUATSrj
+ OITGruLpofd+CL514HbbpFhauxc6NQcI5WomkdqfJFD/QHWMJTX+BzaozqAeyswTxffD
+ 2aPlUGWGVdo6pP4xTvr+tmwii5UEDg/6JYkFaU+CEUck6Mn6w6e4wY0Zlw6VZ9oFP/TF
+ XT+UupdyubM9cVPI47c/qk4uA/ooNZniTxNN24LiOZhlFT3ouaZHc5MkJLClfJLItI9M
+ 31E9k5vAdLzirKA5MvZ5zhJJ47OOPBMRfmu+qPvqQNotM8I50sSf7KrVsoLS4fr81Oav Vw== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 3b5cnwa1j5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 19 Sep 2021 00:42:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X5Ug5/5M/7T7lX0ligAJKl4ym0tZkaty8LxUjSNgcD+AZhjMc3Y/MoQ1AN/4TrXBnRxGlgokFswbADuU05pH+yBZNqiZ0ywX2cj1IjB26xzWCat6isUHC8iXXD8mzc3GI657W9ah41YdAKBzW1ZVRUZEZ4OZ4qUO0P1Yk81vsJcz4Y7KKryKyyJ5LAB1yk06y9/hgi5s5pNSYYGDyAt77ZrVge/+FRGtrrpRFvOCZKy7/tWYPoF/sKFKwU6tJsnnCftjkTn4L6jJThUEiRno/cdHJU7MrnkMvSAntgXw/7OtGCYE8WwsWgrgUR2A+55RNOZCO9UwTGfmJno9wCeC9Q==
+ b=A2+ge00iRsJ34UyIxcuGXNOT4RhT6qVAQROKJwLVF8NOpIQw2wyzLW9+w2PpyMZMNA98AqeHEFEAGrmLdQuMnmU1IUAYpjepy3cQn/vkDW4HlCD3RweBSTIISaanJwCIaaEcQKCmkYKVfK/TzMlfXC/wfMw8FeU61DGB66u6UjHLBXO7fZIk7Jn842BWxYoe18ETCau0KYOWiemj0dkoE8ogvMlfd9O/1Vcsx47XjTtIWapTEJj6r2UKHGnv1/vKAltY+uHFagXP3HU0dUtBx57BcgDE34SLlGqk8Yeeew9VEQSdMYa/CvJ/8CyskcXhBDCtSHpKL/u+qGTxGszrCw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=wtZWXqo2x8u3YiIQ/+yjlYi8OAE9Vn6wUrEvLAl1900=;
- b=lxNl+Bw12GcNJhLaPmInBFliBF5ODRljxPhGFAmO1O5VNNMff60GAuMP35xz9k/54x+KohHQJRQo5gq5IwHraweNa2G5uWKvWCO6ATuudT8K5KKeRTWxRdbWLHlZi3EBHBAHXENePSkHniZkRGIBWI9OOuyAlS/aAYUNipKD0f20n8qXSvKf6TvhA9p6sLZWPK07Jp8XDmI2Iid5C0pFeyTjItmNptMF/jOo1y9vh6OcfBfa+oOCeQZjJemHupjZB++64UAxu9KECGkgCCPtWIHsN+aHTz0Ur1UFQWrukw3+HX1KO124nA1r9QWpHU8N/IjhzHQ7bD4SccvmQogDIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ bh=OHlhnsCp8WJgJ/QsctAWvhc/kBtYliPeBZF0uEhEKGw=;
+ b=izSQOofETNrZAOMhTc12/UAl+yEaR5/5wqlvmriKL5FH1LHXTQQdB8+G1RGGMhCDrFrISkUwAwfDU1EtExP17JTTLVK2sGWfM7WwC82yk93QgM/Rq9IBvSv2cirLCzlI1Ksgsx+GlCvES+QqOKXxfX21F9ic91MNSz8J/+rzOnCxrf4i/7dTHmmEEHoj7Z7lFI90tnYNoQIcu0F9BSo3Jz2uhoW80MFpxrBU7S2JezxPpPzTtZp1mYpzOh9LEBjVeREZaHFvn+QS+y/idCiqIMQ2bWGXRKWdZbRZm0qshD1yuNShIdB0GfDW0pi6iVujNz5Tq4hzPq0Po0TJefU1uw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wtZWXqo2x8u3YiIQ/+yjlYi8OAE9Vn6wUrEvLAl1900=;
- b=LvYuMfs8Oqw9gjwApF1PfRne9GLd2v+rX7Jt+1kfxE11xVCUTrpZG/iLHj/uYxIlun3wj7Rqu4GMiTe/PK+fahoU+vpbCDOfODqh6uJ4kiqaBbawO8y6c9MNmO+5wnlWu72Ept6biU40HfuDq9y17KkXFQ0M5L+j7/cBJKlldVnCoFxHJQzn6DRPN9ioUusdSZFwEu9wBHlEMTo8Ed+HR6JBGo0HJlhDAB89G/jeimeXMrhmyJXy1eleiRyn3WaKSsYWEDwhHsVLwp/P4ujmMakLUYApLlG0vJyjPvwD1IEkA9FvyVRq89Of+pjoVexG86BP3dTSnp7vWVTZUNIipA==
-Received: from BN9PR03CA0309.namprd03.prod.outlook.com (2603:10b6:408:112::14)
- by BN7PR12MB2611.namprd12.prod.outlook.com (2603:10b6:408:27::24) with
+ bh=OHlhnsCp8WJgJ/QsctAWvhc/kBtYliPeBZF0uEhEKGw=;
+ b=PZ8s9DC0U7ehJSdLNvRGSoHbFIvO3jyxUq0GEFym1p25Ak4btgLqZctHFCyWOs0Pskdqg2ZjBjcfaox74+JC/gOkA73SNQ/O89fKuAIov9HybhFDU1cR8gaP7pds0nIbqS0SV9psnKZYfgG42DD0zIpKHsRm33M4UKi/8OfpEkA=
+Received: from CY4PR07MB2757.namprd07.prod.outlook.com (2603:10b6:903:22::20)
+ by CY4PR07MB2950.namprd07.prod.outlook.com (2603:10b6:903:2a::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Sun, 19 Sep
- 2021 07:40:12 +0000
-Received: from BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:112:cafe::45) by BN9PR03CA0309.outlook.office365.com
- (2603:10b6:408:112::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
- Transport; Sun, 19 Sep 2021 07:40:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT018.mail.protection.outlook.com (10.13.176.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4523.14 via Frontend Transport; Sun, 19 Sep 2021 07:40:12 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 19 Sep
- 2021 07:40:11 +0000
-Received: from [172.27.12.123] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 19 Sep
- 2021 07:40:09 +0000
-Message-ID: <b2f9291a-4c6f-99f5-00be-21dfef110e12@nvidia.com>
-Date:   Sun, 19 Sep 2021 10:40:03 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101
- Thunderbird/93.0
-Subject: Re: [PATCH net-next v4] net/mlx5e: Add extack msgs related to TC for
- better debug
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Sun, 19 Sep
+ 2021 07:42:13 +0000
+Received: from CY4PR07MB2757.namprd07.prod.outlook.com
+ ([fe80::903b:e71d:a584:9c87]) by CY4PR07MB2757.namprd07.prod.outlook.com
+ ([fe80::903b:e71d:a584:9c87%3]) with mapi id 15.20.4523.018; Sun, 19 Sep 2021
+ 07:42:13 +0000
+From:   Parshuram Raju Thombare <pthombar@cadence.com>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "lukas@wunner.de" <lukas@wunner.de>,
+        "p.yadav@ti.com" <p.yadav@ti.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Milind Parab <mparab@cadence.com>
+Subject: RE: [PATCH v6 0/2] add support for Cadence's XSPI controller
+Thread-Topic: [PATCH v6 0/2] add support for Cadence's XSPI controller
+Thread-Index: AQHXrSljm2YVPXY7a0CBN3hvEXZwSquq+UUw
+Date:   Sun, 19 Sep 2021 07:42:12 +0000
+Message-ID: <CY4PR07MB2757F107F4DAF1CC2FB54FF3C1DF9@CY4PR07MB2757.namprd07.prod.outlook.com>
+References: <1632037121-21019-1-git-send-email-pthombar@cadence.com>
+In-Reply-To: <1632037121-21019-1-git-send-email-pthombar@cadence.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Abhiram R N <abhiramrn@gmail.com>
-CC:     <arn@redhat.com>, <hakhande@redhat.com>, <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <76ab8d32-4457-8dd2-8df0-d31919d8441f@nvidia.com>
- <20210914115053.42338-1-abhiramrn@gmail.com>
-From:   Roi Dayan <roid@nvidia.com>
-In-Reply-To: <20210914115053.42338-1-abhiramrn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 633ac520-f001-4838-ded6-08d97b40b6c4
-X-MS-TrafficTypeDiagnostic: BN7PR12MB2611:
-X-Microsoft-Antispam-PRVS: <BN7PR12MB2611D2F1554866F1908E0E05B8DF9@BN7PR12MB2611.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0umVQFgVqJ+DMxy9xb0DBcePLn8qximWglnl/+SmSk2k4WrqZSgM4m9Az80tHBRVhE6IPvJP6jQeWv4khDlJdIIv1eXVWNqy3k+9NOJZeSIyuuwB63Cnu8askDNj7vnLfIx1iVoDOOSnjS5e4lnMt34P50gEQ1+RXs/0gE5rI6DZjos1w460Qxf6WmsvBzGGWvSRnNXtCZJqCLqXQRDvrq/JqE3IkrnQYKTnG4wDH3Nrhxs+auqXUZd5csxtdTj9unMIdZM8jEETt9ck5fXgztf2vB0lf2Ppast/slvhNQDKZLzpXBzYQMXL+r876IDDT5dn310XO6ZnD5jReNAfd3O1j941ZeeTuTCtlgpoHdKy37HW7qJsnl6wbu2fMVswiaBBlHx3fPo0KbOk8CS+tKOJ1kbzOOZ4j+0IARTBQxLi0MD6+aNB+VXP5Z6NCub8aWxHsA+1nYddvooaSUBn+wbTZ2bWsxSr1hqPXF+ZeloJ40J8CbL/Vxi78uJPLqVo8joRlqrJHb/9aqb8SWObR6wdmwp1C3hY6T7e9YfmNuR+/gXJAMXHlKwdxBMAkTAs3B8o1sjc83cCI4ASB2eFrCBpBhEFnKngLoUuGK956ory6HRQbwd/2iifrVBEvbO9/Vl75ufN9YjoLHB9LNCUT0LEFrcfVGjtjPxcU0/YGoZKIRLeGkCmehWIpvQibUtBA4hKMZJoU5Yq+pC+DakQpvP7Y8GNhCnMaqpx7Ay0IFOAiWAyUFmdyw9mWxNMoTZtMVkb6Uv7m3A881BML4IiuQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(36840700001)(46966006)(70206006)(47076005)(5660300002)(8936002)(30864003)(83380400001)(336012)(82310400003)(70586007)(53546011)(26005)(36756003)(36860700001)(82740400003)(478600001)(4326008)(426003)(6666004)(186003)(6916009)(16526019)(316002)(7636003)(16576012)(36906005)(31686004)(356005)(2906002)(31696002)(86362001)(2616005)(8676002)(54906003)(43740500002)(309714004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2021 07:40:12.2355
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccHRob21iYXJcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0xNzA5Y2Q1YS0xOTFkLTExZWMtODY0MC0xMDY1MzBlZjIyZjVcYW1lLXRlc3RcMTcwOWNkNWMtMTkxZC0xMWVjLTg2NDAtMTA2NTMwZWYyMmY1Ym9keS50eHQiIHN6PSIzMzUyIiB0PSIxMzI3NjUxMDkyODMzMjg5MzQiIGg9IkhNdXRKRnlzTWxRMndJQ1g5SzlmRmtxTEt4VT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 34ebce79-de7c-4e5f-e333-08d97b40febd
+x-ms-traffictypediagnostic: CY4PR07MB2950:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR07MB295056F0888459205812D8D6C1DF9@CY4PR07MB2950.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 23zCGs/uZi6Jelai+iURRsqJH/ZHhO0rT+ATOV7zW9E43F2dP9BYQBlumdvxo5U14nHDH0HURse4khE0NCrO1NZciF4xvEVTM1CEreiR0y+MOuTYy8c06iHVi0xXKcETnoozXQqAwkfaCPo2qMcJE1RILZA6R9th97u/NNkHBHtiuvzfuGZxxQFZThf7OY9PzNvj8R6uGMOa5VcuXVimKoMoGihEprpuqbzsn/UBgzqvKmAiYOK4ECIqa/70Y9+gIIg8MUz94fz+RtXEBLdMhWUZgCWSvV9vqh110uJ41CexnabsAHIu731EKa4gaCjgjFegaS1OemZYTCtnvR0FUkJSvL1wmo3VMnBctICdGpWcljsq6jkaqwp+Sj4EeJqMJxRSMRSF5H1OLwJjkB1YF/yQTBjEdnUxkiLUphvWuO7Cb9jNRhwGDw7HJ1T9BXXqsuVacmt0ihnWGjoorlJKs/GZAzyVYqLJLxxJzTW/D0sO0G4RZAFxVZEJmVmLytkIqkBlAMWP6VW7WdPoafWfVAkxIrEM4JKhZDqkdayMR1GFW/DYrznaqJd2eNYVUERTMye0xUkRvun2ercmSR+x4HrMQpp4xm95Qicwoy0LboHppST4CLkqlAlPOVvqEFeshdUDopN+NUuiWorvOTU1jlo2RHm+PjWFx5zuDOXjpRPuBShQxpELBI3QPxkIw06umisqolVRBYKJIVLWi4X0Sa1I/1DKe+zoRWj+eCbafeqJ7h2pYV7ZcoACmJg/pa0t
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR07MB2757.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(346002)(366004)(136003)(36092001)(64756008)(66946007)(8936002)(66476007)(8676002)(6506007)(66556008)(52536014)(186003)(38100700002)(4326008)(122000001)(71200400001)(478600001)(76116006)(66446008)(26005)(2906002)(7696005)(5660300002)(9686003)(316002)(33656002)(54906003)(83380400001)(38070700005)(110136005)(86362001)(107886003)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ytd1Ip09k5ir6a2v53g9VZK2wSlVPcj/BA+3CE3QefdHlGI17/BeHL54ezxx?=
+ =?us-ascii?Q?WkCC6C4DCSR14bV6HPUP2ZgsDycG85EhChhQ0gaDW1/R9XFFRT5UHhfNm3Yk?=
+ =?us-ascii?Q?a04+aob+fyJDb23S27Xvqqpe5e2rokAnSctAWeFgzomlHuJDVyJUo9bYnFub?=
+ =?us-ascii?Q?4CljoK22vDno3H07SDlGheBXb1hmtH5QnFpxv05fXFV8RYmUNGJ0PkwwGYVb?=
+ =?us-ascii?Q?RcRZy6JLepFDI6BLjggF5qiwWTgKHC4YJ0Aes0/Xj0hG+cbio07CyKzb3rww?=
+ =?us-ascii?Q?PNOASt84l38KF8BmoPYOS8zh90EPKrktzkQKyb7hoIX3G36BzmhrV1fmjDuN?=
+ =?us-ascii?Q?PUgm9KDzjlPpjPYB6pmgwH1FlhoM2Q7TrVfDhkCPGo1G8trCJBh82Pa3QvJl?=
+ =?us-ascii?Q?sCKA98vzaxvl3m0ZLl5UflcTtpAMQPKgygnu6krR5uWPwayiP6kqIPHPw8p6?=
+ =?us-ascii?Q?TtigFdjn7KLb6bIN44fCusch5PBF06Kgyk+X3cB9ct1vJofwTYKtAkyQO89D?=
+ =?us-ascii?Q?/3C9INypaZ9KNbbaB13XONGttYoxvNzkPTN1Y3hQoxUxDmBcoLWqiPjogg47?=
+ =?us-ascii?Q?EVMvWzSobUsPOerWtXJU3hdW1+8HrpOI7a/7g/NBAnXRcYwliG9tu1fWQ7zb?=
+ =?us-ascii?Q?iWpFtxUQcq+C4BzY0+F3UXP54i7FgdxjEgrrXyeedRcuvRWVAh68b8C25esf?=
+ =?us-ascii?Q?Mw4CCNXGMODT0p5fy8Sm+Qx6/y+trRM4p5yux7/LNF1XCP14pJLAqtbVh6lf?=
+ =?us-ascii?Q?XNgDvkehrdMsu2xSQ8/Pz5RsLQUObwe7DqHnzc6z0ggdaZ6FihuBrWWEbCMb?=
+ =?us-ascii?Q?zK/FqqHX2L+1puGxBy+jgza5lrrD0dr6uj1RbCFlTFGtAAApjzOpIzCDYBJx?=
+ =?us-ascii?Q?GkjpQac6FAEkZYqVc2FyGUkEkZNzM60SyjK6ileigi8uP1XuuprTob+Pagg0?=
+ =?us-ascii?Q?MKw6+Xu5typDm4QJiIKM8EXB2fkVgZ2BJVpdLoeMdAU2i2Jrs/YlsIzgw9pa?=
+ =?us-ascii?Q?XhjP3SDNJi5+MJIZLRo3PX0QOCWDPU5dDEj8AMKcGuTYcGMYNlDrHYmAjvlR?=
+ =?us-ascii?Q?KZN8HOnv8c94IrQSdzXI9+C5Z7ULf9y1JwoQZ4ZvadT35GzyEGR/M58NOI9H?=
+ =?us-ascii?Q?99aFG9oshpwRIpqttHfMf2XwqgGvvrdJ1coPwWXKnkmaEgUMDdqE3TVveBSl?=
+ =?us-ascii?Q?fLdzxRXB0aVRvRdWolqzUNhdlJerjyuHQxZ+0vGKmrYJ6BffG3QkZ2C8lbGl?=
+ =?us-ascii?Q?2gsee/6Hk1GUPwpu1Il2c+GZzB1qQzifwCDfIDywvr0jR8nLLb4ivNgCxmvl?=
+ =?us-ascii?Q?pUel1iTwEeHBxMYqaE5JKd73?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR07MB2757.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34ebce79-de7c-4e5f-e333-08d97b40febd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2021 07:42:12.8737
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 633ac520-f001-4838-ded6-08d97b40b6c4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT018.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2611
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hlQNmwDo3BwJsj0NSlK8ENnaiRBwqGUs0dPx/PqI6bUCpTM/J25O39+U1xVs2vOy3mcDhRgx6OltsKXOtk5aKSU/+wfShund7OyFSNHmVcY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR07MB2950
+X-Proofpoint-GUID: CGXBRmgvV1gfmPfpiC2QbX-HIVy4jc_u
+X-Proofpoint-ORIG-GUID: CGXBRmgvV1gfmPfpiC2QbX-HIVy4jc_u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-19_02,2021-09-17_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
+ priorityscore=1501 phishscore=0 adultscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 spamscore=0
+ mlxlogscore=985 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109190054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Please ignore this patch series.
 
+Regards,
+Parshuram Thombare
 
-On 2021-09-14 2:50 PM, Abhiram R N wrote:
-> As multiple places EOPNOTSUPP and EINVAL is returned from driver
-> it becomes difficult to understand the reason only with error code.
-> With the netlink extack message exact reason will be known and will
-> aid in debugging.
-> 
-> Signed-off-by: Abhiram R N <abhiramrn@gmail.com>
-> ---
->   .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 106 +++++++++++++-----
->   1 file changed, 76 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> index ba8164792016..0272ba429c81 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-> @@ -1896,8 +1896,10 @@ static int parse_tunnel_attr(struct mlx5e_priv *priv,
->   	bool needs_mapping, sets_mapping;
->   	int err;
->   
-> -	if (!mlx5e_is_eswitch_flow(flow))
-> +	if (!mlx5e_is_eswitch_flow(flow)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Match on tunnel is not supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	needs_mapping = !!flow->attr->chain;
->   	sets_mapping = flow_requires_tunnel_mapping(flow->attr->chain, f);
-> @@ -2269,8 +2271,10 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
->   		addr_type = match.key->addr_type;
->   
->   		/* the HW doesn't support frag first/later */
-> -		if (match.mask->flags & FLOW_DIS_FIRST_FRAG)
-> +		if (match.mask->flags & FLOW_DIS_FIRST_FRAG) {
-> +			NL_SET_ERR_MSG_MOD(extack, "Match on frag first/later is not supported");
->   			return -EOPNOTSUPP;
-> +		}
->   
->   		if (match.mask->flags & FLOW_DIS_IS_FRAGMENT) {
->   			MLX5_SET(fte_match_set_lyr_2_4, headers_c, frag, 1);
-> @@ -2437,8 +2441,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
->   		switch (ip_proto) {
->   		case IPPROTO_ICMP:
->   			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
-> -			      MLX5_FLEX_PROTO_ICMP))
-> +			      MLX5_FLEX_PROTO_ICMP)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "Match on Flex protocols for ICMP is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   			MLX5_SET(fte_match_set_misc3, misc_c_3, icmp_type,
->   				 match.mask->type);
->   			MLX5_SET(fte_match_set_misc3, misc_v_3, icmp_type,
-> @@ -2450,8 +2457,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
->   			break;
->   		case IPPROTO_ICMPV6:
->   			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
-> -			      MLX5_FLEX_PROTO_ICMPV6))
-> +			      MLX5_FLEX_PROTO_ICMPV6)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "Match on Flex protocols for ICMPV6 is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   			MLX5_SET(fte_match_set_misc3, misc_c_3, icmpv6_type,
->   				 match.mask->type);
->   			MLX5_SET(fte_match_set_misc3, misc_v_3, icmpv6_type,
-> @@ -2557,15 +2567,19 @@ static int pedit_header_offsets[] = {
->   #define pedit_header(_ph, _htype) ((void *)(_ph) + pedit_header_offsets[_htype])
->   
->   static int set_pedit_val(u8 hdr_type, u32 mask, u32 val, u32 offset,
-> -			 struct pedit_headers_action *hdrs)
-> +			 struct pedit_headers_action *hdrs,
-> +			 struct netlink_ext_ack *extack)
->   {
->   	u32 *curr_pmask, *curr_pval;
->   
->   	curr_pmask = (u32 *)(pedit_header(&hdrs->masks, hdr_type) + offset);
->   	curr_pval  = (u32 *)(pedit_header(&hdrs->vals, hdr_type) + offset);
->   
-> -	if (*curr_pmask & mask)  /* disallow acting twice on the same location */
-> +	if (*curr_pmask & mask) { /* disallow acting twice on the same location */
-> +		NL_SET_ERR_MSG_MOD(extack,
-> +				   "curr_pmask and new mask same. Acting twice on same location");
->   		goto out_err;
-> +	}
->   
->   	*curr_pmask |= mask;
->   	*curr_pval  |= (val & mask);
-> @@ -2898,7 +2912,7 @@ parse_pedit_to_modify_hdr(struct mlx5e_priv *priv,
->   	val = act->mangle.val;
->   	offset = act->mangle.offset;
->   
-> -	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd]);
-> +	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd], extack);
->   	if (err)
->   		goto out_err;
->   
-> @@ -2918,8 +2932,10 @@ parse_pedit_to_reformat(struct mlx5e_priv *priv,
->   	u32 mask, val, offset;
->   	u32 *p;
->   
-> -	if (act->id != FLOW_ACTION_MANGLE)
-> +	if (act->id != FLOW_ACTION_MANGLE) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Unsupported action id");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	if (act->mangle.htype != FLOW_ACT_MANGLE_HDR_TYPE_ETH) {
->   		NL_SET_ERR_MSG_MOD(extack, "Only Ethernet modification is supported");
-> @@ -3368,12 +3384,16 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
->   	u32 action = 0;
->   	int err, i;
->   
-> -	if (!flow_action_has_entries(flow_action))
-> +	if (!flow_action_has_entries(flow_action)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow Action doesn't have any entries");
+>-----Original Message-----
+>From: Parshuram Thombare <pthombar@cadence.com>
+>Sent: Sunday, September 19, 2021 1:09 PM
+>To: broonie@kernel.org; lukas@wunner.de; p.yadav@ti.com;
+>robh+dt@kernel.org
+>Cc: linux-spi@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>kernel@vger.kernel.org; Jayshri Dajiram Pawar <jpawar@cadence.com>; Milind
+>Parab <mparab@cadence.com>; Parshuram Raju Thombare
+><pthombar@cadence.com>
+>Subject: [PATCH v6 0/2] add support for Cadence's XSPI controller
+>
+>This patch series adds support for Cadence's XSPI controller.
+>It supports 3 work modes.
+>1. ACMD (auto command) work mode
+>    ACMD name is because it uses auto command engine in the controller.
+>    It further has 2 modes PIO and CDMA (command DMA).
+>    The CDMA work mode is dedicated for high-performance application
+>    where very low software overhead is required. In this mode the
+>    Command Engine is programmed by the series of linked descriptors
+>    stored in system memory. These descriptors provide commands to execute
+>    and store status information for finished commands.
+>    The PIO mode work mode is dedicated for single operation where
+>    constructing a linked list of descriptors would require too
+>    much effort.
+>2. STIG (Software Triggered Instruction Generator) work mode
+>    In STIG mode, controller sends low-level instructions to memory.
+>    Each instruction is 128-bit width. There is special instruction
+>    DataSequence which carries information about data phase.
+>    Driver uses Slave DMA interface to transfer data as only this
+>    interface can be used in STIG work mode.
+>3. Direct work mode
+>    This work mode allows sending data without invoking any command throug=
+h
+>    the slave interface.
+>Currently only STIG work mode is enabled, remaining work modes will
+>be added later.
+>
+>Changes since v5:
+>1. Added adjust_op_size to adjust op size according to sdma size.
+>
+>Changes since v4:
+>1. Changed reg region names and lengths as suggested by Rob.
+>
+>Changes since v3:
+>1. Removed ACMD PIO mode.
+>2. Return IRQ_HANDLED only for handled interrupts.
+>3. DT binding changes.
+>
+>Changes since v2:
+>1. Removed extra lock around exec_op.
+>2. Removed PHY parameters setting from the driver, those will be
+>   handled by bootstrap pins available in the controller.
+>
+>Changes since v1:
+>1. Use ACMD PIO work mode for NOR read, program and erase operations,
+>   for everything else use STIG(Software Triggered Instruction
+>   Generator) work mode.
+>2. Changes suggested by Lukas.
+>
+>Parshuram Thombare (2):
+>  spi: cadence: add dt-bindings documentation for Cadence XSPI
+>    controller
+>  spi: cadence: add support for Cadence XSPI controller
+>
+> .../devicetree/bindings/spi/cdns,xspi.yaml         |  77 +++
+> drivers/spi/Kconfig                                |  12 +
+> drivers/spi/Makefile                               |   1 +
+> drivers/spi/spi-cadence-xspi.c                     | 639 ++++++++++++++++=
++++++
+> 4 files changed, 729 insertions(+)
+> create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> create mode 100644 drivers/spi/spi-cadence-xspi.c
+>
+>--
+>2.7.4
 
-There is no need for capital letter in action. just "Flow action .."
-
->   		return -EINVAL;
-> +	}
->   
->   	if (!flow_action_hw_stats_check(flow_action, extack,
-> -					FLOW_ACTION_HW_STATS_DELAYED_BIT))
-> +					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow Action HW stats check not supported");
-
-There is no need for capital first letter action.
-also the msg is about hw stats type so a better msg would be:
-"Flow action HW stats type is not supported"
-
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	nic_attr = attr->nic_attr;
->   	nic_attr->flow_tag = MLX5_FS_DEFAULT_FLOW_TAG;
-> @@ -3462,7 +3482,8 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
->   			flow_flag_set(flow, CT);
->   			break;
->   		default:
-> -			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
-> +			NL_SET_ERR_MSG_MOD(extack,
-> +					   "The offload action is not supported in NIC action");
->   			return -EOPNOTSUPP;
->   		}
->   	}
-> @@ -3517,19 +3538,25 @@ static bool is_merged_eswitch_vfs(struct mlx5e_priv *priv,
->   static int parse_tc_vlan_action(struct mlx5e_priv *priv,
->   				const struct flow_action_entry *act,
->   				struct mlx5_esw_flow_attr *attr,
-> -				u32 *action)
-> +				u32 *action,
-> +				struct netlink_ext_ack *extack)
->   {
->   	u8 vlan_idx = attr->total_vlan;
->   
-> -	if (vlan_idx >= MLX5_FS_VLAN_DEPTH)
-> +	if (vlan_idx >= MLX5_FS_VLAN_DEPTH) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Total vlans used is greater than supported");
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	switch (act->id) {
->   	case FLOW_ACTION_VLAN_POP:
->   		if (vlan_idx) {
->   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
-> -								 MLX5_FS_VLAN_DEPTH))
-> +								 MLX5_FS_VLAN_DEPTH)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "vlan pop action is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_POP_2;
->   		} else {
-> @@ -3545,20 +3572,27 @@ static int parse_tc_vlan_action(struct mlx5e_priv *priv,
->   
->   		if (vlan_idx) {
->   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
-> -								 MLX5_FS_VLAN_DEPTH))
-> +								 MLX5_FS_VLAN_DEPTH)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "vlan push action is not supported for vlan depth > 1");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH_2;
->   		} else {
->   			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev, 1) &&
->   			    (act->vlan.proto != htons(ETH_P_8021Q) ||
-> -			     act->vlan.prio))
-> +			     act->vlan.prio)) {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "vlan push action is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH;
->   		}
->   		break;
->   	default:
-> +		NL_SET_ERR_MSG_MOD(extack, "Unexpected action id for VLAN");
->   		return -EINVAL;
->   	}
->   
-> @@ -3592,7 +3626,8 @@ static struct net_device *get_fdb_out_dev(struct net_device *uplink_dev,
->   static int add_vlan_push_action(struct mlx5e_priv *priv,
->   				struct mlx5_flow_attr *attr,
->   				struct net_device **out_dev,
-> -				u32 *action)
-> +				u32 *action,
-> +				struct netlink_ext_ack *extack)
->   {
->   	struct net_device *vlan_dev = *out_dev;
->   	struct flow_action_entry vlan_act = {
-> @@ -3603,7 +3638,7 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
->   	};
->   	int err;
->   
-> -	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
-> +	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
->   	if (err)
->   		return err;
->   
-> @@ -3614,14 +3649,15 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
->   		return -ENODEV;
->   
->   	if (is_vlan_dev(*out_dev))
-> -		err = add_vlan_push_action(priv, attr, out_dev, action);
-> +		err = add_vlan_push_action(priv, attr, out_dev, action, extack);
->   
->   	return err;
->   }
->   
->   static int add_vlan_pop_action(struct mlx5e_priv *priv,
->   			       struct mlx5_flow_attr *attr,
-> -			       u32 *action)
-> +			       u32 *action,
-> +			       struct netlink_ext_ack *extack)
->   {
->   	struct flow_action_entry vlan_act = {
->   		.id = FLOW_ACTION_VLAN_POP,
-> @@ -3631,7 +3667,7 @@ static int add_vlan_pop_action(struct mlx5e_priv *priv,
->   	nest_level = attr->parse_attr->filter_dev->lower_level -
->   						priv->netdev->lower_level;
->   	while (nest_level--) {
-> -		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
-> +		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
->   		if (err)
->   			return err;
->   	}
-> @@ -3753,12 +3789,16 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   	int err, i, if_count = 0;
->   	bool mpls_push = false;
->   
-> -	if (!flow_action_has_entries(flow_action))
-> +	if (!flow_action_has_entries(flow_action)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow action doesn't have any entries");
->   		return -EINVAL;
-> +	}
->   
->   	if (!flow_action_hw_stats_check(flow_action, extack,
-> -					FLOW_ACTION_HW_STATS_DELAYED_BIT))
-> +					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow Action HW stats check is not supported");
-
-same here.
-the msg is about hw stats type so a better msg would be:
-"Flow action HW stats type is not supported"
-
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	esw_attr = attr->esw_attr;
->   	parse_attr = attr->parse_attr;
-> @@ -3902,14 +3942,14 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   				if (is_vlan_dev(out_dev)) {
->   					err = add_vlan_push_action(priv, attr,
->   								   &out_dev,
-> -								   &action);
-> +								   &action, extack);
->   					if (err)
->   						return err;
->   				}
->   
->   				if (is_vlan_dev(parse_attr->filter_dev)) {
->   					err = add_vlan_pop_action(priv, attr,
-> -								  &action);
-> +								  &action, extack);
->   					if (err)
->   						return err;
->   				}
-> @@ -3955,10 +3995,13 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   			break;
->   		case FLOW_ACTION_TUNNEL_ENCAP:
->   			info = act->tunnel;
-> -			if (info)
-> +			if (info) {
->   				encap = true;
-> -			else
-> +			} else {
-> +				NL_SET_ERR_MSG_MOD(extack,
-> +						   "Zero tunnel attributes is not supported");
->   				return -EOPNOTSUPP;
-> +			}
->   
->   			break;
->   		case FLOW_ACTION_VLAN_PUSH:
-> @@ -3972,7 +4015,7 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   							      act, parse_attr, hdrs,
->   							      &action, extack);
->   			} else {
-> -				err = parse_tc_vlan_action(priv, act, esw_attr, &action);
-> +				err = parse_tc_vlan_action(priv, act, esw_attr, &action, extack);
->   			}
->   			if (err)
->   				return err;
-> @@ -4025,7 +4068,8 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
->   			flow_flag_set(flow, SAMPLE);
->   			break;
->   		default:
-> -			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
-> +			NL_SET_ERR_MSG_MOD(extack,
-> +					   "The offload action is not supported in FDB action");
->   			return -EOPNOTSUPP;
->   		}
->   	}
-> @@ -4733,8 +4777,10 @@ static int scan_tc_matchall_fdb_actions(struct mlx5e_priv *priv,
->   		return -EOPNOTSUPP;
->   	}
->   
-> -	if (!flow_action_basic_hw_stats_check(flow_action, extack))
-> +	if (!flow_action_basic_hw_stats_check(flow_action, extack)) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Flow Action HW stats check is not supported");
-
-same here
-the msg is about hw stats type so a better msg would be:
-"Flow action HW stats type is not supported"
-
->   		return -EOPNOTSUPP;
-> +	}
->   
->   	flow_action_for_each(i, act, flow_action) {
->   		switch (act->id) {
-> 
