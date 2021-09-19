@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F385C410D57
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E067B410D59
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhISUiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 16:38:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54348 "EHLO mail.kernel.org"
+        id S232587AbhISUi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 16:38:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231329AbhISUiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232370AbhISUiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 19 Sep 2021 16:38:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2E4E060F9D;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4897161004;
         Sun, 19 Sep 2021 20:36:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632083806;
-        bh=XTHmTVV2APP632VHdloycbk+OBnt05lAmiyLvwqYOxs=;
+        bh=oL5DK29DZiD8EJnXk081cm+yiXfY+yJk26PyFjy9CBg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=NToxPfQIVWUxYtAbDmWh7AGCRWYsQOD9Y24YoFMjKQfemW7H2S2mst1ocBbUxVfBh
-         uAIcgp0YGCfleLYSrwUVa50wVN0zFIqhOKiyTG4Ug9M5I7FsIHxovdE00BemH5hgsV
-         n7uIY2bEtyAPbRTN0bF72LqlyVL6N6wOTuPRo8IHyTyhqdQASmcc/k8gnpJCOxlAHu
-         JWo/5ABTtbw33KLqygmWmhcpq9gxemoct4ZNe/K9wK8rlhkdpumFcRAh654LpJS0re
-         +YWY+8+JCqoCFhRtwRbg2xjhzt/SzNTE0gUgvZo6s1qRJVHiOkDEp71FWwngeDh1e5
-         RbQ2vrdjJDuUg==
+        b=UOkDck99C1bfPniXGaCyDwGFFcBmT6c3iZG+93SaAKOMEO8payRN8n1VIEWLnWO0/
+         xRAUOUB2qAmGe9lZLotxlxqO+JscjrUpIheiuknaeA7vdz5VsqyMMwLo/wC5mexPCV
+         a0rV98robDOmFY6K1CZ4OuBxq1JNdzjeFUx4UlzxeMUMhzTNTTUP1OMlE/Utlb3hIN
+         uR+5o5KfMhfunrt+bM3Zfkv9CACXfy7hkilgTq3glYxchxOT+oNN+7JQGUQiSGzOV9
+         8BeqNLuGW++l+LRFQRrvCAwIiGygJl9GqqxItu9LPOK93zJg8m322aUytzYxO80LNb
+         HJZZzpuqqDhBA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 23B7060A3A;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 32FDC60A2A;
         Sun, 19 Sep 2021 20:36:46 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-2 tag
+Subject: Re: [GIT pull] locking/urgent for v5.15-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87o88oiuc7.fsf@mpe.ellerman.id.au>
-References: <87o88oiuc7.fsf@mpe.ellerman.id.au>
+In-Reply-To: <163207602242.947088.16824174748243890514.tglx@xen13>
+References: <163207602242.947088.16824174748243890514.tglx@xen13>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87o88oiuc7.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-2
-X-PR-Tracked-Commit-Id: c006a06508db4841d256d82f42da392d6391f3d9
+X-PR-Tracked-Message-Id: <163207602242.947088.16824174748243890514.tglx@xen13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-09-19
+X-PR-Tracked-Commit-Id: 81121524f1c798c9481bd7900450b72ee7ac2eef
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 62453a460a000156b100bf20ab78cf77232284d0
-Message-Id: <163208380614.27843.1001207654153663082.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: f5e29a26c42b2c1b149118319a03bf937f168298
+Message-Id: <163208380620.27843.13519687686916533818.pr-tracker-bot@kernel.org>
 Date:   Sun, 19 Sep 2021 20:36:46 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, clg@kaod.org,
-        ganeshgr@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 19 Sep 2021 23:11:04 +1000:
+The pull request you sent on Sun, 19 Sep 2021 20:28:07 +0200 (CEST):
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.15-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-09-19
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/62453a460a000156b100bf20ab78cf77232284d0
+https://git.kernel.org/torvalds/c/f5e29a26c42b2c1b149118319a03bf937f168298
 
 Thank you!
 
