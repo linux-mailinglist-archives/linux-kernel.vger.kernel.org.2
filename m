@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D35A410BDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 16:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C02410BE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 16:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhISO0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 10:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        id S232112AbhISOeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 10:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhISO0g (ORCPT
+        with ESMTP id S231918AbhISOet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 10:26:36 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C4EC061574;
-        Sun, 19 Sep 2021 07:25:11 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [80.241.60.245])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4HC92B1qTRzQjgJ;
-        Sun, 19 Sep 2021 16:25:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:in-reply-to
-        :from:from:references:content-language:subject:subject
-        :mime-version:date:date:message-id:received; s=mail20150812; t=
-        1632061502; bh=rOZLDTtW4FsPmLA23JYFH070GWoMQDtlb6u6WIlvx9A=; b=w
-        w/u4Gh4g1PTdRQlMvYhPnrrwXzz1CAVHFcHSAl7GNiJ9Shispe1m96SPGX1i0bQc
-        LT3eLcWkYUIyqonMk4uXT17gUsHQe52QSjt+tTfUgVZ3QBjgQAfu/Z3suCgSM5Ln
-        0PuUOTcbhRoFFclPxeCKf96eumzJYkipUKa8A0c+KWcqSgvNmWwRDPvXM/wjbgxd
-        CZ0+PAnh6AowR3yJjhdJGzhpajxj4LTLDucTyMMonio7mxST5lk3siiajGWLrBaV
-        yy7m0nK0sYo+RzOswGo9AKEGgTgOCnOofIU3YJighBLgCwoYF/p5qa54Qr/2r8qm
-        LA7mvSLxkfwPmnqOlBqyw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1632061504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OFCrzvvitWWIdA/0PvlWnf7mKmr8FXHcOdNEzLMV3CE=;
-        b=xCPc7UyDVIh7ePp1LmvZfgL7rLX3s5lHX3enCNpu0tTH2N6IonxO91ReYzY6KrptwDYVaH
-        yvhLJLtOxQbujlD7q2EXY6cvqvKUrcMT9TJzYqRcOjcdEIqo3IYAaJFtC9MinoF5iKoAwI
-        0rGMirQXKxPZCylMJh6kkSrKVlBEphapEUrleVIz3Adq5DZ0JrutZabFzqUkHszIi6WYlg
-        SDmFIjGMl+XQPuNfW/Sd2F5bvodq3pfGIPuiBu6r3LeiyIJLEZDUdBUaWn8wtYpL0/khHS
-        Qn7fUa1QOVTzZ5h2ftcAZTRbAEKYza4MVEIpgLSp3/xsQY2IMS2fuTWXWHuD/g==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Message-ID: <f071dfb3-1aad-003c-00bc-6b7ecf103e91@mailbox.org>
-Date:   Sun, 19 Sep 2021 14:24:49 +0000
+        Sun, 19 Sep 2021 10:34:49 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A1FC061574;
+        Sun, 19 Sep 2021 07:33:23 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id s11so14759849pgr.11;
+        Sun, 19 Sep 2021 07:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BDxzixVW4qLygzz/rLWj9i1sOmn4ydTQ+VNVepgXop4=;
+        b=bQXsrcOSH4L3JxdQRZRCUYUU4dxddjNDV2CKo1g88ucDU2jw4z5k24S1G3roj70hxI
+         XoAPo11ZZdYCz8yOwiFkv4BDAoCtErTCf7IGVyR1c4obYEpe61d+pyNRTjoJXvqbgFaR
+         HfziQO2K7pQS/eOvh5pbowqVnxfJVD7gshi0Nf9c5nwE7gx0KkwQRD/r5Qm6/GoY3QPG
+         g6S3/atA31w0BwKjZczj3XsCZNoFvaD4r5ytdd3Uxk5qG30oOeW8ZoDDdurn6I+fBLSp
+         EzY96o2wYnYSRTPqHWJ8Kr4ORzY7T6cQUrkIEQ9vVddFUR++u7SHDrKN1GPx4Zv+L8Uv
+         kcNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BDxzixVW4qLygzz/rLWj9i1sOmn4ydTQ+VNVepgXop4=;
+        b=4pBkQ05+7YOGtglYqPdctayiICkcz/j/3A6fIhjQLXEoUhtkpLM5XOz8ERL/v6jzaR
+         m1xNgcjsfBI/UagZtis39NWlpxeCLjdij2ge8BcXl2nO0PQ4wBdyfLl6VkwUmuHGQKvG
+         tARF3BxT6R2J1P0TBCGkJRTw5eUL6UzL1/K3TH+7mzZg3l/s/vcaTy/32qbCZwJP1fVP
+         ohAXlDDvjvmFAoAElZWOhrJqnqvDhU1rMwRsY2LIWoZWhSHLGNmJ8bx6Nl0+f86ONCHX
+         /9slYkxfzjGWzJ2TGxqJhyKZ+0pMQ+AHLzDMX8g1IOJ0okwsLkUk4faD5uRsU+kloc0C
+         qOxw==
+X-Gm-Message-State: AOAM530tnI5Rew+UZTiXuR0svfaCNbnwps4fk1Vy531zGk4Ziv+6TRo5
+        Xj4BiJ4nOY9kE9lAdzFA7cSyEqUnpZG0bg==
+X-Google-Smtp-Source: ABdhPJwUIh6IB3dx/EHH8UIYeMxZ/aDKDyVul/PTJJsUNhJZxC+tGt+oEU38ATN29dWoZjnFc40sdw==
+X-Received: by 2002:a62:8015:0:b0:43b:400c:7a73 with SMTP id j21-20020a628015000000b0043b400c7a73mr21045432pfd.34.1632062002769;
+        Sun, 19 Sep 2021 07:33:22 -0700 (PDT)
+Received: from skynet-linux.local ([106.201.127.154])
+        by smtp.googlemail.com with ESMTPSA id m2sm13062149pgd.70.2021.09.19.07.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 07:33:22 -0700 (PDT)
+From:   Sireesh Kodali <sireeshkodali1@gmail.com>
+To:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Sireesh Kodali <sireeshkodali1@gmail.com>
+Subject: [PATCH 0/1] Add support for metadata in bam_dma
+Date:   Sun, 19 Sep 2021 20:03:10 +0530
+Message-Id: <20210919143311.31015-1-sireeshkodali1@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-Content-Language: en-US
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210901151643.13562-1-hpa@redhat.com>
- <3e26e7a5-0d99-b993-d5ce-aa517e1bf1bb@redhat.com>
- <yq1h7f24y6f.fsf@ca-mkp.ca.oracle.com>
- <238d0841-0f03-928f-5441-89d5c9dcf9b9@redhat.com>
- <cd75fa32-8c4d-664e-5adb-f2f325d3c58e@redhat.com>
- <yq14kb24e97.fsf@ca-mkp.ca.oracle.com>
-From:   Tor Vic <torvic9@mailbox.org>
-In-Reply-To: <yq14kb24e97.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 029B326C
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+IPA v2.x uses BAM to send and receive IP packets, to and from the AP.
+However, unlike its predecessor BAM-DMUX, it doesn't send information
+about the packet length. To find the length of the packet, one must
+instead read the bam_desc metadata. This patch adds support for sending
+the size metadata over the dmaengine metadata api. Currently only the
+dma size is stored in the metadata. Only client-side metadata is
+supported for now, because host-side metadata doesn't make sense for
+IPA, where more than one DMA descriptors could be waiting to be acked
+and processed.
 
-I saw that v2 (?) of this patch has made it into stable, which
-is quite reasonable given the number of bug reports.
-Are there any plans to "enhance" this patch once sufficient data
-on controller support/drive combinations has been collected?
+Sireesh Kodali (1):
+  dmaengine: qcom: bam_dma: Add support for metadata
 
-I didn't run any benchmarks to see whether performance has changed,
-but I now have this on 5.14.6:
+ drivers/dma/qcom/bam_dma.c | 74 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
-   /sys/class/ata_device/dev3.0/trim:forced_unqueued
-   /sys/class/ata_device/dev4.0/trim:forced_unqueued
+-- 
+2.33.0
 
-Before:
-
-   /sys/class/ata_device/dev3.0/trim:queued
-   /sys/class/ata_device/dev4.0/trim:queued
-
-These correspond to 860 Pro and 860 Evo, connected to a X570
-mainboard (AMD FCH controller).
-Note that neither before nor after this commit I had any problems
-with these drives.
-
-
-On 03.09.21 03:21, Martin K. Petersen wrote:
-> 
-> Hans,
-> 
->> I just realized that all newer Samsung models are non SATA...
->>
->> Still I cponsider it likely that some of the other vendors also
->> implement queued trim support and there are no reports of issues
->> with the other vendors' SSDs.
-> 
-> When I originally worked on this the only other drive that supported
-> queued trim was a specific controller generation from Crucial/Micron.
-> 
-> Since performance-sensitive workloads quickly moved to NVMe, I don't
-> know if implementing queued trim has been very high on the SSD
-> manufacturers' todo lists. FWIW, I just checked and none of the more
-> recent SATA SSD drives I happen to have support queued trim.
-> 
-> Purely anecdotal: I have a Samsung 863 which I believe is
-> architecturally very similar to the 860. That drive clocked over 40K
-> hours as my main git repo/build drive until it was retired last
-> fall. And it ran a queued fstrim every night.
-> 
-> Anyway. I am not against disabling queued trim for these drives. As far
-> as I'm concerned it was a feature that didn't quite get enough industry
-> momentum. It just irks me that we don't have a good understanding of why
-> it works for some and not for others...
-> 
