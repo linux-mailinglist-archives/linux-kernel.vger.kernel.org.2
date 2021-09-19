@@ -2,276 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F5B410BF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 16:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43851410BF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 16:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhISOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 10:44:28 -0400
-Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:47946 "EHLO
-        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232730AbhISOoS (ORCPT
+        id S232772AbhISOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 10:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232478AbhISOoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 10:44:18 -0400
-Received: from MTA-13-3.privateemail.com (mta-13-1.privateemail.com [198.54.122.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 0D1D880379;
-        Sun, 19 Sep 2021 10:42:52 -0400 (EDT)
-Received: from mta-13.privateemail.com (localhost [127.0.0.1])
-        by mta-13.privateemail.com (Postfix) with ESMTP id 4F32818000BE;
-        Sun, 19 Sep 2021 10:42:49 -0400 (EDT)
-Received: from hal-station.. (unknown [10.20.151.206])
-        by mta-13.privateemail.com (Postfix) with ESMTPA id 75B9E18000AB;
-        Sun, 19 Sep 2021 10:42:48 -0400 (EDT)
-From:   Hamza Mahfooz <someguy@effective-light.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel test robot <yujie.liu@intel.com>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org
-Subject: [PATCH v2] aio: convert active_reqs into a hashtable
-Date:   Sun, 19 Sep 2021 10:41:46 -0400
-Message-Id: <20210919144146.19531-1-someguy@effective-light.com>
+        Sun, 19 Sep 2021 10:44:16 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20418C061574;
+        Sun, 19 Sep 2021 07:42:51 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id j14so2231759plx.4;
+        Sun, 19 Sep 2021 07:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BDxzixVW4qLygzz/rLWj9i1sOmn4ydTQ+VNVepgXop4=;
+        b=bFP3ASPSwK0f3oo6hhya5wy0m6LwqyFrTdEoE+EsuHd7Ssa/F5K5DNHSmHD9YQe5mD
+         XJJt02G1rxeEZl9HSqLZI6uqYGw2C8RDvRMJm93Hj7yj3YHW5e53tdszA3WADPet9JwZ
+         XKicVtb2RJWKSDyTNp+SYr1H3L6rop25kkV0I0W2nfHZdRNM24C29tkhRbWBG9LqYVPm
+         Z/6jwNKMspDVFZAA8Q5MmgFLP0BzHwt8yQLYfRnTdzLVOAW1noApJoaW9nUbz3/GAbFt
+         l2M9HRJKMU+MEmLDL0AtOMDmqWHHzbSFVoW4PH9QzydKD5KgeCO3Fex5tehLXa6qpuFU
+         5xmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BDxzixVW4qLygzz/rLWj9i1sOmn4ydTQ+VNVepgXop4=;
+        b=jR0sX1cwfq/U5Vy9bmmlkvWd3UZHHxlHr4mfU4yOrW+5DL2GrEQeLK+fNFBn8vW+gt
+         vU8FYWZuJiMOwVgYJOqBfQqcg9M0PtG89Vyq1352Zjmf3nyrryGvJzzqGJCTbOAogVs2
+         wv0YlwAsyH4p01+2nor5ljthIjfWM3AunFqbYOt/kFbSbKo30/zebDdSUDmmxyiIN51Q
+         +imcNS75zxOMkK4pos2nVpSk0/kI5kHq/AoqBH95bL1jw9pQM6Sv7vqo0X1A8IcDncF5
+         XjVAQC/lQqwrbNVmW+94d+300Mm95hWt6tF45QwT8BNCHLXpYupM/dHNv9Q6zSvTFevz
+         a4UQ==
+X-Gm-Message-State: AOAM5305tCQdAKQg1cp+1lSGba2lrbCJPAyN2+xiACWlXM2No+ul61qY
+        1fuAXql2qNqHcR9/OgGP1w+e/o4BOYK9tw==
+X-Google-Smtp-Source: ABdhPJw/0Jmwhw+JrJdfw+mjxFr4gQ17jjgvGrYZSoEfVMDWdke9OFspq+RwCbOefOkjbDAjcnLM1g==
+X-Received: by 2002:a17:90a:e41:: with SMTP id p1mr24368045pja.137.1632062570352;
+        Sun, 19 Sep 2021 07:42:50 -0700 (PDT)
+Received: from skynet-linux.local ([106.201.127.154])
+        by smtp.googlemail.com with ESMTPSA id v4sm11716151pff.11.2021.09.19.07.42.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 07:42:49 -0700 (PDT)
+From:   Sireesh Kodali <sireeshkodali1@gmail.com>
+To:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Sireesh Kodali <sireeshkodali1@gmail.com>
+Subject: [PATCH 0/1] Add support for metadata in bam_dma
+Date:   Sun, 19 Sep 2021 20:12:40 +0530
+Message-Id: <20210919144242.31776-1-sireeshkodali1@gmail.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 833f4154ed56 ("aio: fold lookup_kiocb() into its sole caller")
-suggests that, the fact that active_reqs is a linked-list means aio_kiocb
-lookups in io_cancel() are inefficient. So, to get faster lookups (on
-average) while maintaining similar insertion and deletion characteristics,
-turn active_reqs into a hashtable.
+IPA v2.x uses BAM to send and receive IP packets, to and from the AP.
+However, unlike its predecessor BAM-DMUX, it doesn't send information
+about the packet length. To find the length of the packet, one must
+instead read the bam_desc metadata. This patch adds support for sending
+the size metadata over the dmaengine metadata api. Currently only the
+dma size is stored in the metadata. Only client-side metadata is
+supported for now, because host-side metadata doesn't make sense for
+IPA, where more than one DMA descriptors could be waiting to be acked
+and processed.
 
-Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
----
-v2: fix a null pointer dereference.
----
- fs/aio.c | 76 ++++++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 49 insertions(+), 27 deletions(-)
+Sireesh Kodali (1):
+  dmaengine: qcom: bam_dma: Add support for metadata
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 51b08ab01dff..b60519f2e3fc 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -116,6 +116,8 @@ struct kioctx {
- 	 */
- 	unsigned		max_reqs;
- 
-+	unsigned int		hash_bits;
-+
- 	/* Size of ringbuffer, in units of struct io_event */
- 	unsigned		nr_events;
- 
-@@ -146,7 +148,7 @@ struct kioctx {
- 
- 	struct {
- 		spinlock_t	ctx_lock;
--		struct list_head active_reqs;	/* used for cancellation */
-+		struct hlist_head *active_reqs;	/* used for cancellation */
- 	} ____cacheline_aligned_in_smp;
- 
- 	struct {
-@@ -206,7 +208,7 @@ struct aio_kiocb {
- 
- 	struct io_event		ki_res;
- 
--	struct list_head	ki_list;	/* the aio core uses this
-+	struct hlist_node	ki_node;	/* the aio core uses this
- 						 * for cancellation */
- 	refcount_t		ki_refcnt;
- 
-@@ -563,11 +565,13 @@ void kiocb_set_cancel_fn(struct kiocb *iocb, kiocb_cancel_fn *cancel)
- 	struct kioctx *ctx = req->ki_ctx;
- 	unsigned long flags;
- 
--	if (WARN_ON_ONCE(!list_empty(&req->ki_list)))
-+	if (WARN_ON_ONCE(hash_hashed(&req->ki_node)))
- 		return;
- 
- 	spin_lock_irqsave(&ctx->ctx_lock, flags);
--	list_add_tail(&req->ki_list, &ctx->active_reqs);
-+	hlist_add_head(&req->ki_node,
-+		       &ctx->active_reqs[hash_min(req->ki_res.obj,
-+						  ctx->hash_bits)]);
- 	req->ki_cancel = cancel;
- 	spin_unlock_irqrestore(&ctx->ctx_lock, flags);
- }
-@@ -584,6 +588,7 @@ static void free_ioctx(struct work_struct *work)
- 					  free_rwork);
- 	pr_debug("freeing %p\n", ctx);
- 
-+	kfree(ctx->active_reqs);
- 	aio_free_ring(ctx);
- 	free_percpu(ctx->cpu);
- 	percpu_ref_exit(&ctx->reqs);
-@@ -611,16 +616,21 @@ static void free_ioctx_reqs(struct percpu_ref *ref)
-  */
- static void free_ioctx_users(struct percpu_ref *ref)
- {
-+	int i;
- 	struct kioctx *ctx = container_of(ref, struct kioctx, users);
- 	struct aio_kiocb *req;
-+	struct hlist_head *list;
-+	struct hlist_node *node;
- 
- 	spin_lock_irq(&ctx->ctx_lock);
- 
--	while (!list_empty(&ctx->active_reqs)) {
--		req = list_first_entry(&ctx->active_reqs,
--				       struct aio_kiocb, ki_list);
--		req->ki_cancel(&req->rw);
--		list_del_init(&req->ki_list);
-+	for (i = 0; i < (1U << ctx->hash_bits); i++) {
-+		list = &ctx->active_reqs[i];
-+
-+		hlist_for_each_entry_safe(req, node, list, ki_node) {
-+			req->ki_cancel(&req->rw);
-+			hash_del(&req->ki_node);
-+		}
- 	}
- 
- 	spin_unlock_irq(&ctx->ctx_lock);
-@@ -735,6 +745,7 @@ static struct kioctx *ioctx_alloc(unsigned nr_events)
- 		return ERR_PTR(-ENOMEM);
- 
- 	ctx->max_reqs = max_reqs;
-+	ctx->hash_bits = ilog2(max_reqs);
- 
- 	spin_lock_init(&ctx->ctx_lock);
- 	spin_lock_init(&ctx->completion_lock);
-@@ -744,7 +755,14 @@ static struct kioctx *ioctx_alloc(unsigned nr_events)
- 	mutex_lock(&ctx->ring_lock);
- 	init_waitqueue_head(&ctx->wait);
- 
--	INIT_LIST_HEAD(&ctx->active_reqs);
-+	ctx->active_reqs = kmalloc_array(1U << ctx->hash_bits,
-+					 sizeof(struct hlist_head),
-+					 GFP_KERNEL);
-+
-+	if (!ctx->active_reqs)
-+		goto err;
-+
-+	__hash_init(ctx->active_reqs, 1U << ctx->hash_bits);
- 
- 	if (percpu_ref_init(&ctx->users, free_ioctx_users, 0, GFP_KERNEL))
- 		goto err;
-@@ -799,6 +817,7 @@ static struct kioctx *ioctx_alloc(unsigned nr_events)
- 	aio_free_ring(ctx);
- err:
- 	mutex_unlock(&ctx->ring_lock);
-+	kfree(ctx->active_reqs);
- 	free_percpu(ctx->cpu);
- 	percpu_ref_exit(&ctx->reqs);
- 	percpu_ref_exit(&ctx->users);
-@@ -1037,7 +1056,7 @@ static inline struct aio_kiocb *aio_get_req(struct kioctx *ctx)
- 
- 	percpu_ref_get(&ctx->reqs);
- 	req->ki_ctx = ctx;
--	INIT_LIST_HEAD(&req->ki_list);
-+	INIT_HLIST_NODE(&req->ki_node);
- 	refcount_set(&req->ki_refcnt, 2);
- 	req->ki_eventfd = NULL;
- 	return req;
-@@ -1407,22 +1426,17 @@ SYSCALL_DEFINE1(io_destroy, aio_context_t, ctx)
- 	return -EINVAL;
- }
- 
--static void aio_remove_iocb(struct aio_kiocb *iocb)
-+static void aio_complete_rw(struct kiocb *kiocb, long res, long res2)
- {
--	struct kioctx *ctx = iocb->ki_ctx;
- 	unsigned long flags;
-+	struct aio_kiocb *iocb = container_of(kiocb, struct aio_kiocb, rw);
-+	struct kioctx *ctx = iocb->ki_ctx;
- 
- 	spin_lock_irqsave(&ctx->ctx_lock, flags);
--	list_del(&iocb->ki_list);
-+	if (hash_hashed(&iocb->ki_node))
-+		hlist_del(&iocb->ki_node);
- 	spin_unlock_irqrestore(&ctx->ctx_lock, flags);
--}
- 
--static void aio_complete_rw(struct kiocb *kiocb, long res, long res2)
--{
--	struct aio_kiocb *iocb = container_of(kiocb, struct aio_kiocb, rw);
--
--	if (!list_empty_careful(&iocb->ki_list))
--		aio_remove_iocb(iocb);
- 
- 	if (kiocb->ki_flags & IOCB_WRITE) {
- 		struct inode *inode = file_inode(kiocb->ki_filp);
-@@ -1644,7 +1658,7 @@ static void aio_poll_complete_work(struct work_struct *work)
- 		spin_unlock_irq(&ctx->ctx_lock);
- 		return;
- 	}
--	list_del_init(&iocb->ki_list);
-+	hash_del(&iocb->ki_node);
- 	iocb->ki_res.res = mangle_poll(mask);
- 	req->done = true;
- 	spin_unlock_irq(&ctx->ctx_lock);
-@@ -1692,7 +1706,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
- 		 * call this function with IRQs disabled and because IRQs
- 		 * have to be disabled before ctx_lock is obtained.
- 		 */
--		list_del(&iocb->ki_list);
-+		hlist_del(&iocb->ki_node);
- 		iocb->ki_res.res = mangle_poll(mask);
- 		req->done = true;
- 		if (iocb->ki_eventfd && eventfd_signal_allowed()) {
-@@ -1739,6 +1753,7 @@ static int aio_poll(struct aio_kiocb *aiocb, const struct iocb *iocb)
- 	struct aio_poll_table apt;
- 	bool cancel = false;
- 	__poll_t mask;
-+	struct hlist_head *list;
- 
- 	/* reject any unknown events outside the normal event mask. */
- 	if ((u16)iocb->aio_buf != iocb->aio_buf)
-@@ -1778,7 +1793,9 @@ static int aio_poll(struct aio_kiocb *aiocb, const struct iocb *iocb)
- 		} else if (cancel) {
- 			WRITE_ONCE(req->cancelled, true);
- 		} else if (!req->done) { /* actually waiting for an event */
--			list_add_tail(&aiocb->ki_list, &ctx->active_reqs);
-+			list = &ctx->active_reqs[hash_min(aiocb->ki_res.obj,
-+							  ctx->hash_bits)];
-+			hlist_add_head(&aiocb->ki_node, list);
- 			aiocb->ki_cancel = aio_poll_cancel;
- 		}
- 		spin_unlock(&req->head->lock);
-@@ -2007,6 +2024,8 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, struct iocb __user *, iocb,
- 	struct aio_kiocb *kiocb;
- 	int ret = -EINVAL;
- 	u32 key;
-+	struct hlist_head *list;
-+	struct hlist_node *node;
- 	u64 obj = (u64)(unsigned long)iocb;
- 
- 	if (unlikely(get_user(key, &iocb->aio_key)))
-@@ -2019,14 +2038,17 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, struct iocb __user *, iocb,
- 		return -EINVAL;
- 
- 	spin_lock_irq(&ctx->ctx_lock);
--	/* TODO: use a hash or array, this sucks. */
--	list_for_each_entry(kiocb, &ctx->active_reqs, ki_list) {
-+
-+	list = &ctx->active_reqs[hash_min(obj, ctx->hash_bits)];
-+
-+	hlist_for_each_entry_safe(kiocb, node, list, ki_node) {
- 		if (kiocb->ki_res.obj == obj) {
- 			ret = kiocb->ki_cancel(&kiocb->rw);
--			list_del_init(&kiocb->ki_list);
-+			hash_del(&kiocb->ki_node);
- 			break;
- 		}
- 	}
-+
- 	spin_unlock_irq(&ctx->ctx_lock);
- 
- 	if (!ret) {
+ drivers/dma/qcom/bam_dma.c | 74 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+
 -- 
 2.33.0
 
