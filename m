@@ -2,236 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCF6410C7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78BD410C89
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhISRDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:03:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54882 "EHLO mail.kernel.org"
+        id S229778AbhISRJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 13:09:40 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:48578 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229801AbhISRDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:03:39 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1BA461028;
-        Sun, 19 Sep 2021 17:02:11 +0000 (UTC)
-Date:   Sun, 19 Sep 2021 18:05:52 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mihail Chindris <mihail.chindris@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH v5 3/6] iio: triggered-buffer: extend support to
- configure output buffers
-Message-ID: <20210919180552.41e1a7c9@jic23-huawei>
-In-Reply-To: <20210916182914.1810-4-mihail.chindris@analog.com>
-References: <20210916182914.1810-1-mihail.chindris@analog.com>
-        <20210916182914.1810-4-mihail.chindris@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229689AbhISRJh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 13:09:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=tVV0k8mB14p0z/fC7DcAQMhh5dY2sRTyvTnQkgS+R88=; b=tGOJ8y+K3uCYIE4MuKKzkqrJWK
+        CyFKePd/f420EtxomE/x8Rno3oB27FDe4gtgmcXRY7euEzra1KSeNMW5K2Qkh6Kg/uUfaW12REgjN
+        E8JMVoxihYokkQTnXaeIXAOt6ZLoJ/aIMo2uI8AiQVAwy9e1U1XxNqy7sG4t3Y7CMMfM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mS0IP-007Mhb-AK; Sun, 19 Sep 2021 19:08:05 +0200
+Date:   Sun, 19 Sep 2021 19:08:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 1/3] net: phy: at803x: add support for qca
+ 8327 A variant internal phy
+Message-ID: <YUdudXezLjpC1DO5@lunn.ch>
+References: <20210919162817.26924-1-ansuelsmth@gmail.com>
+ <20210919162817.26924-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210919162817.26924-2-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 18:29:11 +0000
-Mihail Chindris <mihail.chindris@analog.com> wrote:
-
-> From: Alexandru Ardelean <alexandru.ardelean@analog.com>
+On Sun, Sep 19, 2021 at 06:28:15PM +0200, Ansuel Smith wrote:
+> For qca8327 internal phy there are 2 different switch variant with 2
+> different phy id. Add this missing variant so the internal phy can be
+> correctly identified and fixed.
 > 
-> Now that output (kfifo) buffers are supported, we need to extend the
-> {devm_}iio_triggered_buffer_setup_ext() parameter list to take a direction
-> parameter.
-> 
-> This allows us to attach an output triggered buffer to a DAC device.
-> Unfortunately it's a bit difficult to add another macro to avoid changing 5
-> drivers where {devm_}iio_triggered_buffer_setup_ext() is used.
-> Well, it's doable, but may not be worth the trouble vs just updating all
-> these 5 drivers.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
-Mihael,
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-This one is one of the categories where you must add your own
-Signed-off-by: line to fulfill the kernel DCO requirements.
-You are posting this patch of Alex's so you need to sign off to indicate
-you 'handled' the patch on the way to mainline.
-
-Patch looks good other than that.
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/accel/adxl372.c                           |  1 +
->  drivers/iio/accel/bmc150-accel-core.c                 |  1 +
->  drivers/iio/adc/at91-sama5d2_adc.c                    |  4 ++--
->  drivers/iio/buffer/industrialio-triggered-buffer.c    |  8 ++++++--
->  .../iio/common/cros_ec_sensors/cros_ec_sensors_core.c |  5 +++--
->  drivers/iio/common/hid-sensors/hid-sensor-trigger.c   |  5 +++--
->  include/linux/iio/triggered_buffer.h                  | 11 +++++++++--
->  7 files changed, 25 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/iio/accel/adxl372.c b/drivers/iio/accel/adxl372.c
-> index fc9592407717..758952584f8c 100644
-> --- a/drivers/iio/accel/adxl372.c
-> +++ b/drivers/iio/accel/adxl372.c
-> @@ -1214,6 +1214,7 @@ int adxl372_probe(struct device *dev, struct regmap *regmap,
->  	ret = devm_iio_triggered_buffer_setup_ext(dev,
->  						  indio_dev, NULL,
->  						  adxl372_trigger_handler,
-> +						  IIO_BUFFER_DIRECTION_IN,
->  						  &adxl372_buffer_ops,
->  						  adxl372_fifo_attributes);
->  	if (ret < 0)
-> diff --git a/drivers/iio/accel/bmc150-accel-core.c b/drivers/iio/accel/bmc150-accel-core.c
-> index e8693a42ad46..63216321cdb5 100644
-> --- a/drivers/iio/accel/bmc150-accel-core.c
-> +++ b/drivers/iio/accel/bmc150-accel-core.c
-> @@ -1734,6 +1734,7 @@ int bmc150_accel_core_probe(struct device *dev, struct regmap *regmap, int irq,
->  	ret = iio_triggered_buffer_setup_ext(indio_dev,
->  					     &iio_pollfunc_store_time,
->  					     bmc150_accel_trigger_handler,
-> +					     IIO_BUFFER_DIRECTION_IN,
->  					     &bmc150_accel_buffer_ops,
->  					     fifo_attrs);
->  	if (ret < 0) {
-> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-> index ea5ca163d879..7093611e321e 100644
-> --- a/drivers/iio/adc/at91-sama5d2_adc.c
-> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
-> @@ -1681,8 +1681,8 @@ static int at91_adc_buffer_and_trigger_init(struct device *dev,
->  		fifo_attrs = NULL;
->  
->  	ret = devm_iio_triggered_buffer_setup_ext(&indio->dev, indio,
-> -		&iio_pollfunc_store_time,
-> -		&at91_adc_trigger_handler, &at91_buffer_setup_ops, fifo_attrs);
-> +		&iio_pollfunc_store_time, &at91_adc_trigger_handler,
-> +		IIO_BUFFER_DIRECTION_IN, &at91_buffer_setup_ops, fifo_attrs);
->  	if (ret < 0) {
->  		dev_err(dev, "couldn't initialize the buffer.\n");
->  		return ret;
-> diff --git a/drivers/iio/buffer/industrialio-triggered-buffer.c b/drivers/iio/buffer/industrialio-triggered-buffer.c
-> index f77c4538141e..8d4fc97d1005 100644
-> --- a/drivers/iio/buffer/industrialio-triggered-buffer.c
-> +++ b/drivers/iio/buffer/industrialio-triggered-buffer.c
-> @@ -19,6 +19,7 @@
->   * @indio_dev:		IIO device structure
->   * @h:			Function which will be used as pollfunc top half
->   * @thread:		Function which will be used as pollfunc bottom half
-> + * @direction:		Direction of the data stream (in/out).
->   * @setup_ops:		Buffer setup functions to use for this device.
->   *			If NULL the default setup functions for triggered
->   *			buffers will be used.
-> @@ -38,6 +39,7 @@
->  int iio_triggered_buffer_setup_ext(struct iio_dev *indio_dev,
->  	irqreturn_t (*h)(int irq, void *p),
->  	irqreturn_t (*thread)(int irq, void *p),
-> +	enum iio_buffer_direction direction,
->  	const struct iio_buffer_setup_ops *setup_ops,
->  	const struct attribute **buffer_attrs)
->  {
-> @@ -68,6 +70,7 @@ int iio_triggered_buffer_setup_ext(struct iio_dev *indio_dev,
->  	/* Flag that polled ring buffering is possible */
->  	indio_dev->modes |= INDIO_BUFFER_TRIGGERED;
->  
-> +	buffer->direction = direction;
->  	buffer->attrs = buffer_attrs;
->  
->  	ret = iio_device_attach_buffer(indio_dev, buffer);
-> @@ -105,13 +108,14 @@ int devm_iio_triggered_buffer_setup_ext(struct device *dev,
->  					struct iio_dev *indio_dev,
->  					irqreturn_t (*h)(int irq, void *p),
->  					irqreturn_t (*thread)(int irq, void *p),
-> +					enum iio_buffer_direction direction,
->  					const struct iio_buffer_setup_ops *ops,
->  					const struct attribute **buffer_attrs)
->  {
->  	int ret;
->  
-> -	ret = iio_triggered_buffer_setup_ext(indio_dev, h, thread, ops,
-> -					     buffer_attrs);
-> +	ret = iio_triggered_buffer_setup_ext(indio_dev, h, thread, direction,
-> +					     ops, buffer_attrs);
->  	if (ret)
->  		return ret;
->  
-> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> index 28bde13003b7..e9f64da06f89 100644
-> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> @@ -360,8 +360,9 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
->  			 * The only way to get samples in buffer is to set a
->  			 * software trigger (systrig, hrtimer).
->  			 */
-> -			ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
-> -					NULL, trigger_capture, NULL);
-> +			ret = devm_iio_triggered_buffer_setup_ext(dev,
-> +					indio_dev, NULL, trigger_capture,
-> +					IIO_BUFFER_DIRECTION_IN, NULL);
->  			if (ret)
->  				return ret;
->  		}
-> diff --git a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> index a4ec11a3b68a..1151434038d4 100644
-> --- a/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> +++ b/drivers/iio/common/hid-sensors/hid-sensor-trigger.c
-> @@ -241,8 +241,9 @@ int hid_sensor_setup_trigger(struct iio_dev *indio_dev, const char *name,
->  		fifo_attrs = NULL;
->  
->  	ret = iio_triggered_buffer_setup_ext(indio_dev,
-> -					     &iio_pollfunc_store_time,
-> -					     NULL, NULL, fifo_attrs);
-> +					     &iio_pollfunc_store_time, NULL,
-> +					     IIO_BUFFER_DIRECTION_IN,
-> +					     NULL, fifo_attrs);
->  	if (ret) {
->  		dev_err(&indio_dev->dev, "Triggered Buffer Setup Failed\n");
->  		return ret;
-> diff --git a/include/linux/iio/triggered_buffer.h b/include/linux/iio/triggered_buffer.h
-> index 7f154d1f8739..7490b05fc5b2 100644
-> --- a/include/linux/iio/triggered_buffer.h
-> +++ b/include/linux/iio/triggered_buffer.h
-> @@ -2,6 +2,7 @@
->  #ifndef _LINUX_IIO_TRIGGERED_BUFFER_H_
->  #define _LINUX_IIO_TRIGGERED_BUFFER_H_
->  
-> +#include <linux/iio/buffer.h>
->  #include <linux/interrupt.h>
->  
->  struct attribute;
-> @@ -11,21 +12,27 @@ struct iio_buffer_setup_ops;
->  int iio_triggered_buffer_setup_ext(struct iio_dev *indio_dev,
->  	irqreturn_t (*h)(int irq, void *p),
->  	irqreturn_t (*thread)(int irq, void *p),
-> +	enum iio_buffer_direction direction,
->  	const struct iio_buffer_setup_ops *setup_ops,
->  	const struct attribute **buffer_attrs);
->  void iio_triggered_buffer_cleanup(struct iio_dev *indio_dev);
->  
->  #define iio_triggered_buffer_setup(indio_dev, h, thread, setup_ops)		\
-> -	iio_triggered_buffer_setup_ext((indio_dev), (h), (thread), (setup_ops), NULL)
-> +	iio_triggered_buffer_setup_ext((indio_dev), (h), (thread),		\
-> +					IIO_BUFFER_DIRECTION_IN, (setup_ops),	\
-> +					NULL)
->  
->  int devm_iio_triggered_buffer_setup_ext(struct device *dev,
->  					struct iio_dev *indio_dev,
->  					irqreturn_t (*h)(int irq, void *p),
->  					irqreturn_t (*thread)(int irq, void *p),
-> +					enum iio_buffer_direction direction,
->  					const struct iio_buffer_setup_ops *ops,
->  					const struct attribute **buffer_attrs);
->  
->  #define devm_iio_triggered_buffer_setup(dev, indio_dev, h, thread, setup_ops)	\
-> -	devm_iio_triggered_buffer_setup_ext((dev), (indio_dev), (h), (thread), (setup_ops), NULL)
-> +	devm_iio_triggered_buffer_setup_ext((dev), (indio_dev), (h), (thread),	\
-> +					    IIO_BUFFER_DIRECTION_IN,		\
-> +					    (setup_ops), NULL)
->  
->  #endif
-
+    Andrew
