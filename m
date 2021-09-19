@@ -2,219 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A422A410AEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFA2410AF0
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237657AbhISJfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 05:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235817AbhISJfR (ORCPT
+        id S237789AbhISJos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 05:44:48 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:36562
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237716AbhISJor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 05:35:17 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790F1C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 02:33:52 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id lb1-20020a17090b4a4100b001993f863df2so10527253pjb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 02:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0Molecvvfb2ReCeU7roxyRTuWjWkUVYEjp8G6FhVA14=;
-        b=T5hWy86pNt0hF9Iu0pzm4G2y/8WSBkw7UJLvVZYK8H7uSrL/4BhGph1XXgXVXM+8et
-         7wMqskIpQ8gvUOU5fnVIOxEUq3zrWqAVbPvHbaeVrGgpBJCBbq4/eRmliw7avwt1T5m1
-         o4uEamZ+dxaSMBXWBP22xLBai7hUdgt+x1JvGp9+OFGDtlFQO9qcjCk62SHfjU6ISjNr
-         FXBB+t5P/NXaQMNaA29dgimoa9Oan4RUVuFR61UIx45JuXD5z0cYEOnyYOvxFcMjo0Q8
-         ECjBDFX5xj5EjffRhVk0FlMcbPUTPJE6txJupBMOq69aJBbf+e6arO62KCzLsZ7OX5yD
-         baiA==
+        Sun, 19 Sep 2021 05:44:47 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AAD324018F
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 09:43:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632044600;
+        bh=uaNs/xYVK85AxU1iGJvmG2bpbl9HxTnxXvUi2iolq6o=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=LDUfJFGExkVPACZTgAMKEKV+PSuYmFg1D3saFjGMNX1ia0IncFljFJQTVRuwmRRdb
+         7k20aI81DWYcfZ15vASItwoZpJ9zKSb6piF6zrOikhU9VfT3iSw/GcIWGPNn1MrKN2
+         I54JQF6OGpAmcziTUR6E3Z2Fe4hxcm0b4Q5dqiaQaQE+d8iTqRrv9cOdDv7V+Ocsiz
+         /MlIBWKSd5p6YHscKE0378UH94UsD22ZyuXPtkD6aq81hkFyoR5wThq/QTwc41ytLj
+         dXW9wJBmSJgoMFqjj95WFzCMde4pDlvyA2WUvp8NuwcfHbtk4RDHQeuu74zgw84jZh
+         GS2A4tSm4bthg==
+Received: by mail-ed1-f72.google.com with SMTP id r23-20020a50d697000000b003d824845066so4683849edi.8
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 02:43:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0Molecvvfb2ReCeU7roxyRTuWjWkUVYEjp8G6FhVA14=;
-        b=pyXpx1SDg0vZDmIXtF/NaP43i8YEz5jrjh0Z7ZNiMgfH1219A0eZZYQ3SoWyt+P8Cr
-         G+op8eXTQ/JyzhuMIYBm1P32xZkU5lHWwKBkYXX957STbWgA3LnF/eG+1/M9rKleTVfz
-         fD46nm01WGlxVNiS5KZ2VwKYztPDDrYeLjmpeLUljB/i+mDuceyOxz22hjvU3oFVzhMs
-         k+YO+lI6xVL2AoieJKbtqq1aGcc3UT5dlQCK/Y0NK2fxNcg5IHXRiLpEqTl59QA7qZyT
-         162RjKHBEnFGE7UdTDNM5IbcdQD67VpJ5ECGc8cwFa3/7uXf34CuF7TfovMYUgje1k9o
-         o1vQ==
-X-Gm-Message-State: AOAM5320zqgd9VQPk0fI5EEWrWA+OBVQ/tHCfpUEcI9JyX4oA5hrKC6/
-        uB7MV5lAs49RhQO/S2hKzWkNlM0jpHE=
-X-Google-Smtp-Source: ABdhPJxBnH0nSBgI+9mlxYg0ifBnQETxTH+Wp3Fsd8Q7/J+WsvW2IpOmBZ1svEj7/KZEINwkmDys0A==
-X-Received: by 2002:a17:90a:3fca:: with SMTP id u10mr7704573pjm.95.1632044031288;
-        Sun, 19 Sep 2021 02:33:51 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id g4sm11682679pgs.42.2021.09.19.02.33.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Sep 2021 02:33:50 -0700 (PDT)
-Subject: Re: [PATCH v2] extcon: extcon-axp288: use P-Unit semaphore lock for
- register accesses
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        bh=uaNs/xYVK85AxU1iGJvmG2bpbl9HxTnxXvUi2iolq6o=;
+        b=izz19v61BkJjT3TkfckdsNOh2hTzdLtKnkYGY62LItZVNNvQzdrGhCZuuSfyh+K6ic
+         EN6vfKOvAMWDFv07INLH0lW2AGJ2PyWVtHhd1Yxc7qgaLW5KON+QM+BxxlTq5ym5Gzvn
+         XOhD9/El1eqJIteo5ZQNeCeH6Y6kyA6cCpRc+bF8TzxtMq/0aKqa6YX/6mdMOdItjACP
+         RBbUCPGSBpq8foJZNu0t7Qbw9SMTR9N3+AyRrF8SkOi8dnzrquryZNLA92zcEkUfnoys
+         B0VKmmRceWABg7HWQ3rbYHWcNxK+QWZKfgdLzGM+ITeey8TzEnI3ke66MZCEgJu3dk5M
+         SXFg==
+X-Gm-Message-State: AOAM5334sTMmFleXPk1w92ldZFTCpFoEPMo+QeRRYd0YbmBzxWLA9C1g
+        ieD8jY0JKjAbMsGE9hiHPmwWCAO0v4MLOJxjr4kdgK7R4BQjZf2Zc3AZwXK5HIdGThoDSsLFHph
+        i/KNTqpsBJjn6JV1RI7sOiSJXdaKBZNs78iYZvD95zQ==
+X-Received: by 2002:a17:907:1c01:: with SMTP id nc1mr22609924ejc.504.1632044600026;
+        Sun, 19 Sep 2021 02:43:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGT4606JPYMwEU1a10XdgBbQ/KWQjrmYj4MW/2J+egl2qD355Htf5c2+iR0SHaiwij1MfkZA==
+X-Received: by 2002:a17:907:1c01:: with SMTP id nc1mr22609908ejc.504.1632044599845;
+        Sun, 19 Sep 2021 02:43:19 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id c21sm4637015ejz.69.2021.09.19.02.43.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 02:43:19 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Dan Williams <dan.j.williams@intel.com>,
         Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20210916071255.2572-1-fabioaiuto83@gmail.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <77beb286-09fb-3d9c-f212-91c1633dbd10@gmail.com>
-Date:   Sun, 19 Sep 2021 18:33:47 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Alexandra Yates <alexandra.yates@linux.intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2] ahci: remove duplicated PCI device IDs
+Date:   Sun, 19 Sep 2021 11:43:13 +0200
+Message-Id: <20210919094313.52666-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210916071255.2572-1-fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 9. 16. 오후 4:12, Fabio Aiuto wrote:
-> use low level P-Unit semaphore lock for axp288 register
-> accesses directly and for more than one access a time,
-> to reduce the number of times this semaphore is locked
-> and released which is an expensive operation.
-> 
-> i2c-bus to the XPower is shared between the kernel and the
-> SoCs P-Unit. The P-Unit has a semaphore wich the kernel must
-> lock for axp288 register accesses. When the P-Unit semaphore
-> is locked CPU and GPU power states cannot change or the system
-> will freeze.
-> 
-> The P-Unit semaphore lock is already managed inside the regmap
-> access logic, but for each access the semaphore is locked and
-> released. So use directly iosf_mbi_(un)block_punit_i2c_access(),
-> we are safe in doing so because nested calls to the same
-> semaphore are turned to nops.
-> 
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> Tested-by: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> ---
-> Changes in v2:
-> 	- shortened patch title within 75 char
-> 	- added return value check in function
-> 	  iosf_mbi_lock_punit_i2c_access() calls
-> 
->   drivers/extcon/Kconfig         |  2 +-
->   drivers/extcon/extcon-axp288.c | 31 +++++++++++++++++++++++++++++--
->   2 files changed, 30 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
-> index c69d40ae5619..aab87c9b35c8 100644
-> --- a/drivers/extcon/Kconfig
-> +++ b/drivers/extcon/Kconfig
-> @@ -23,7 +23,7 @@ config EXTCON_ADC_JACK
->   
->   config EXTCON_AXP288
->   	tristate "X-Power AXP288 EXTCON support"
-> -	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI
-> +	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI && IOSF_MBI
->   	select USB_ROLE_SWITCH
->   	help
->   	  Say Y here to enable support for USB peripheral detection
-> diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
-> index fdb31954cf2b..7c6d5857ff25 100644
-> --- a/drivers/extcon/extcon-axp288.c
-> +++ b/drivers/extcon/extcon-axp288.c
-> @@ -24,6 +24,7 @@
->   
->   #include <asm/cpu_device_id.h>
->   #include <asm/intel-family.h>
-> +#include <asm/iosf_mbi.h>
->   
->   /* Power source status register */
->   #define PS_STAT_VBUS_TRIGGER		BIT(0)
-> @@ -215,6 +216,10 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
->   	unsigned int cable = info->previous_cable;
->   	bool vbus_attach = false;
->   
-> +	ret = iosf_mbi_block_punit_i2c_access();
-> +	if (ret < 0)
-> +		return ret;
-> +
->   	vbus_attach = axp288_get_vbus_attach(info);
->   	if (!vbus_attach)n
->   		goto no_vbus;
-> @@ -253,6 +258,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
->   	}
->   
->   no_vbus:
-> +	iosf_mbi_unblock_punit_i2c_access();
-> +
->   	extcon_set_state_sync(info->edev, info->previous_cable, false);
->   	if (info->previous_cable == EXTCON_CHG_USB_SDP)
->   		extcon_set_state_sync(info->edev, EXTCON_USB, false);
-> @@ -275,6 +282,8 @@ static int axp288_handle_chrg_det_event(struct axp288_extcon_info *info)
->   	return 0;
->   
->   dev_det_ret:
-> +	iosf_mbi_unblock_punit_i2c_access();
-> +
->   	if (ret < 0)
->   		dev_err(info->dev, "failed to detect BC Mod\n");
->   
-> @@ -305,13 +314,23 @@ static irqreturn_t axp288_extcon_isr(int irq, void *data)
->   	return IRQ_HANDLED;
->   }
->   
-> -static void axp288_extcon_enable(struct axp288_extcon_info *info)
-> +static int axp288_extcon_enable(struct axp288_extcon_info *info)
->   {
-> +	int ret = 0;
-> +
-> +	ret = iosf_mbi_block_punit_i2c_access();
-> +	if (ret < 0)
-> +		return ret;
-> +
->   	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
->   						BC_GLOBAL_RUN, 0);
->   	/* Enable the charger detection logic */
->   	regmap_update_bits(info->regmap, AXP288_BC_GLOBAL_REG,
->   					BC_GLOBAL_RUN, BC_GLOBAL_RUN);
-> +
-> +	iosf_mbi_unblock_punit_i2c_access();
-> +
-> +	return ret;
->   }
->   
->   static void axp288_put_role_sw(void *data)
-> @@ -384,10 +403,16 @@ static int axp288_extcon_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> +	ret = iosf_mbi_block_punit_i2c_access();
-> +	if (ret < 0)
-> +		return ret;
-> +
->   	info->vbus_attach = axp288_get_vbus_attach(info);
->   
->   	axp288_extcon_log_rsi(info);
->   
-> +	iosf_mbi_unblock_punit_i2c_access();
-> +
->   	/* Initialize extcon device */
->   	info->edev = devm_extcon_dev_allocate(&pdev->dev,
->   					      axp288_extcon_cables);
-> @@ -441,7 +466,9 @@ static int axp288_extcon_probe(struct platform_device *pdev)
->   	}
->   
->   	/* Start charger cable type detection */
-> -	axp288_extcon_enable(info);
-> +	ret = axp288_extcon_enable(info);
-> +	if (ret < 0)
-> +		return ret;
->   
->   	device_init_wakeup(dev, true);
->   	platform_set_drvdata(pdev, info);
-> 
+Intel devices 0x2822, 0x2823, 0x2826 and 0x2827 are already on the list
+as Lewisburg AHCI/RAID.  They use same configuration except 0x2822 which
+has board_ahci_nosntf (for ICH8).
 
-Applied it. Thanks.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
+---
+
+Not tested.
+
+Changes since v1:
+1. Use still board_ahci_nosntf for 0x2822.
+---
+ drivers/ata/ahci.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 186cbf90c8ea..63198ad95ed9 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -258,7 +258,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x2683), board_ahci }, /* ESB2 */
+ 	{ PCI_VDEVICE(INTEL, 0x27c6), board_ahci }, /* ICH7-M DH */
+ 	{ PCI_VDEVICE(INTEL, 0x2821), board_ahci }, /* ICH8 */
+-	{ PCI_VDEVICE(INTEL, 0x2822), board_ahci_nosntf }, /* ICH8 */
++	{ PCI_VDEVICE(INTEL, 0x2822), board_ahci_nosntf }, /* ICH8/Lewisburg RAID*/
+ 	{ PCI_VDEVICE(INTEL, 0x2824), board_ahci }, /* ICH8 */
+ 	{ PCI_VDEVICE(INTEL, 0x2829), board_ahci }, /* ICH8M */
+ 	{ PCI_VDEVICE(INTEL, 0x282a), board_ahci }, /* ICH8M */
+@@ -316,7 +316,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x1d02), board_ahci }, /* PBG AHCI */
+ 	{ PCI_VDEVICE(INTEL, 0x1d04), board_ahci }, /* PBG RAID */
+ 	{ PCI_VDEVICE(INTEL, 0x1d06), board_ahci }, /* PBG RAID */
+-	{ PCI_VDEVICE(INTEL, 0x2826), board_ahci }, /* PBG RAID */
++	{ PCI_VDEVICE(INTEL, 0x2826), board_ahci }, /* PBG/Lewisburg RAID*/
+ 	{ PCI_VDEVICE(INTEL, 0x2323), board_ahci }, /* DH89xxCC AHCI */
+ 	{ PCI_VDEVICE(INTEL, 0x1e02), board_ahci }, /* Panther Point AHCI */
+ 	{ PCI_VDEVICE(INTEL, 0x1e03), board_ahci_mobile }, /* Panther M AHCI */
+@@ -358,8 +358,8 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x1f37), board_ahci_avn }, /* Avoton RAID */
+ 	{ PCI_VDEVICE(INTEL, 0x1f3e), board_ahci_avn }, /* Avoton RAID */
+ 	{ PCI_VDEVICE(INTEL, 0x1f3f), board_ahci_avn }, /* Avoton RAID */
+-	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Wellsburg RAID */
+-	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Wellsburg RAID */
++	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Wellsburg/Lewisburg AHCI*/
++	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Wellsburg/Lewisburg RAID*/
+ 	{ PCI_VDEVICE(INTEL, 0x43d4), board_ahci }, /* Rocket Lake PCH-H RAID */
+ 	{ PCI_VDEVICE(INTEL, 0x43d5), board_ahci }, /* Rocket Lake PCH-H RAID */
+ 	{ PCI_VDEVICE(INTEL, 0x43d6), board_ahci }, /* Rocket Lake PCH-H RAID */
+@@ -394,10 +394,6 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+ 	{ PCI_VDEVICE(INTEL, 0xa106), board_ahci }, /* Sunrise Point-H RAID */
+ 	{ PCI_VDEVICE(INTEL, 0xa107), board_ahci_mobile }, /* Sunrise M RAID */
+ 	{ PCI_VDEVICE(INTEL, 0xa10f), board_ahci }, /* Sunrise Point-H RAID */
+-	{ PCI_VDEVICE(INTEL, 0x2822), board_ahci }, /* Lewisburg RAID*/
+-	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Lewisburg AHCI*/
+-	{ PCI_VDEVICE(INTEL, 0x2826), board_ahci }, /* Lewisburg RAID*/
+-	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Lewisburg RAID*/
+ 	{ PCI_VDEVICE(INTEL, 0xa182), board_ahci }, /* Lewisburg AHCI*/
+ 	{ PCI_VDEVICE(INTEL, 0xa186), board_ahci }, /* Lewisburg RAID*/
+ 	{ PCI_VDEVICE(INTEL, 0xa1d2), board_ahci }, /* Lewisburg RAID*/
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+2.30.2
+
