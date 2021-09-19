@@ -2,53 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6840E410C93
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE93F410C87
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhISRK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:10:28 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48600 "EHLO vps0.lunn.ch"
+        id S229673AbhISRJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 13:09:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230060AbhISRKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:10:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=8Y+OpDNn+ugZGReZXtFXn4IRPD8QQNtJuVSEb6ILLLg=; b=a2sZKB6rLhXDLHdgfrf498JosX
-        Ul5WnYXxZzr759Msv/5ZZcS6CjYeaphI4ZUwHB4uu+Olg9CfyVCLwqMFZuKd6S9fTJ8NAukPBt1J5
-        K3nP1jmO/GOSIvD0yZFtmxbm33kWUjXLkinpk3rEmcd9t6Qg42vFIYZ+v+vgoNvCyBnE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mS0JB-007MiU-L6; Sun, 19 Sep 2021 19:08:53 +0200
-Date:   Sun, 19 Sep 2021 19:08:53 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 3/3] net: phy: at803x: fix spacing and
- improve name for 83xx phy
-Message-ID: <YUdupavAO7CPEme6@lunn.ch>
-References: <20210919162817.26924-1-ansuelsmth@gmail.com>
- <20210919162817.26924-4-ansuelsmth@gmail.com>
+        id S229483AbhISRIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 13:08:55 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE07761028;
+        Sun, 19 Sep 2021 17:07:27 +0000 (UTC)
+Date:   Sun, 19 Sep 2021 18:11:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Mihail Chindris <mihail.chindris@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 4/6] drivers: iio: dac: ad5766: Fix dt property name
+Message-ID: <20210919181108.41e61514@jic23-huawei>
+In-Reply-To: <CA+U=Dsrm8daPO+0gob1USqSSxrkpCwR=L-2zQrW=DNEDk9ZhLA@mail.gmail.com>
+References: <20210916182914.1810-1-mihail.chindris@analog.com>
+        <20210916182914.1810-5-mihail.chindris@analog.com>
+        <CA+U=Dsrm8daPO+0gob1USqSSxrkpCwR=L-2zQrW=DNEDk9ZhLA@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919162817.26924-4-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 06:28:17PM +0200, Ansuel Smith wrote:
-> Fix spacing and improve name for 83xx phy following other phy in the
-> same driver.
+On Fri, 17 Sep 2021 10:53:54 +0300
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+
+> On Fri, Sep 17, 2021 at 9:11 AM Mihail Chindris
+> <mihail.chindris@analog.com> wrote:
+> >
+> > In the documentation the name for the property is
+> > output-range-microvolts which is a standard name, therefore this name
+> > must be used.
+> >  
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> This requires a Fixes tag.
+> With that addressed:
+> 
+> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Good catch. These cases are always a mess. 
+As the binding doc went in with the driver, there should have been no window
+in which anyone who was actually checking their DTS files against the yaml could
+have this wrong. Hopefully that means we don't have any broken ones out there in the wild
 
-    Andrew
+As this is binding related, sensible to cc Rob and the dt list.
++CC
+
+
+> 
+> > Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
+> > ---
+> >  drivers/iio/dac/ad5766.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/iio/dac/ad5766.c b/drivers/iio/dac/ad5766.c
+> > index 3104ec32dfac..dafda84fdea3 100644
+> > --- a/drivers/iio/dac/ad5766.c
+> > +++ b/drivers/iio/dac/ad5766.c
+> > @@ -503,13 +503,13 @@ static int ad5766_get_output_range(struct ad5766_state *st)
+> >         int i, ret, min, max, tmp[2];
+> >
+> >         ret = device_property_read_u32_array(&st->spi->dev,
+> > -                                            "output-range-voltage",
+> > +                                            "output-range-microvolts",
+> >                                              tmp, 2);
+> >         if (ret)
+> >                 return ret;
+> >
+> > -       min = tmp[0] / 1000;
+> > -       max = tmp[1] / 1000;
+> > +       min = tmp[0] / 1000000;
+> > +       max = tmp[1] / 1000000;
+> >         for (i = 0; i < ARRAY_SIZE(ad5766_span_tbl); i++) {
+> >                 if (ad5766_span_tbl[i].min != min ||
+> >                     ad5766_span_tbl[i].max != max)
+> > --
+> > 2.27.0
+> >  
+
