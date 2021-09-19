@@ -2,322 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EA9410B47
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C106410B4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhISL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 07:29:48 -0400
-Received: from mga11.intel.com ([192.55.52.93]:47045 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230051AbhISL3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 07:29:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10111"; a="219819853"
-X-IronPort-AV: E=Sophos;i="5.85,305,1624345200"; 
-   d="scan'208";a="219819853"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2021 04:28:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,305,1624345200"; 
-   d="scan'208";a="701954213"
-Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 19 Sep 2021 04:28:21 -0700
-Received: from kbuild by 285e7b116627 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mRuzc-0005SR-Lh; Sun, 19 Sep 2021 11:28:20 +0000
-Date:   Sun, 19 Sep 2021 19:27:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- e739f98b4b11337a4e3865364b8922a9e5ad32b6
-Message-ID: <61471e9a.BWzZ/Gy7U5jLVhOU%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231348AbhISLi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 07:38:29 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:32406 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhISLi2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 07:38:28 -0400
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 18JBam15016555;
+        Sun, 19 Sep 2021 20:36:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 18JBam15016555
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1632051409;
+        bh=wDEK8hkdweS2PIzKbc3TjqmEdv9Hq1OPbScjxMt9QOY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hUV7kwRbVKAgr1qc7SpyWa5gXe7fBjUil2Sr3A8A9KDKZTIGkveQyJSK5AAsAzKDG
+         Uz042kXOA5xWy7B89XhwiwzwxIwKUsJLJtUNxKP3f9AD/RIhHtobHgFMkDMeufKU/B
+         dkzH02n1sj1A6m/6oUEWW5WlL1PLODyMc1oFvXdwMXr6nb1XeUkU4YFY2o1qptZrMJ
+         RsArVQ6sXJoyCRk/VuMEak+VJ6CH+UG/xQctJTQzcQ8QLU0McnesQYXhlc2KsWtoys
+         +LAErYZ4iuuHI1Rhvgzs0qSFYEagfQnzyY15ct3OiwtH5Aqyv63vwzdfx5K2A39t3I
+         4hR6uCLlrNCZQ==
+X-Nifty-SrcIP: [209.85.216.54]
+Received: by mail-pj1-f54.google.com with SMTP id me1so1376134pjb.4;
+        Sun, 19 Sep 2021 04:36:48 -0700 (PDT)
+X-Gm-Message-State: AOAM533JgT2o9H4xf/RGSl/Rv/K0jSC6tPSJNfZdj4UHPeFuQbGexK+r
+        RRawKKCnflVSGpCpxW18xBQOTdoEEBzdO6D+12I=
+X-Google-Smtp-Source: ABdhPJw2ZdewXhDn/bjSvRAh/1hGO1Ls5xPU0f7dnJEHIxSzaqxh/mQfSsMv9BPnl3VvmjBwJ9PPG+cfJOmiEKZ7Siw=
+X-Received: by 2002:a17:902:6b42:b0:13a:54d0:39c4 with SMTP id
+ g2-20020a1709026b4200b0013a54d039c4mr17778287plt.42.1632051407751; Sun, 19
+ Sep 2021 04:36:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210910130954.1392104-1-lucjan.lucjanov@gmail.com> <CAL2Yj0QvoNZ3VeYfk63oMUTenP3eypJx+fB6f09rprV-fCphGw@mail.gmail.com>
+In-Reply-To: <CAL2Yj0QvoNZ3VeYfk63oMUTenP3eypJx+fB6f09rprV-fCphGw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 19 Sep 2021 20:36:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATBvZBmuznFaFQgZeOO_F_UsisPYBobDC7LYDMVW3Yd=w@mail.gmail.com>
+Message-ID: <CAK7LNATBvZBmuznFaFQgZeOO_F_UsisPYBobDC7LYDMVW3Yd=w@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: use smaller dictionary size for zstd module compression
+To:     =?UTF-8?Q?Piotr_G=C3=B3rski?= <lucjan.lucjanov@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: e739f98b4b11337a4e3865364b8922a9e5ad32b6  genirq: Move prio assignment into the newly created thread
+On Sat, Sep 18, 2021 at 12:07 AM Piotr G=C3=B3rski <lucjan.lucjanov@gmail.c=
+om> wrote:
+>
+> Ping...
+>
+> pt., 10 wrz 2021 o 15:10 Piotr Gorski <lucjan.lucjanov@gmail.com> napisa=
+=C5=82(a):
+> >
+> > By default, zstd without parameters uses a dictionary size of 8 MB.
+> > However, most modules are much smaller than that.
+> > Use a dictionary size of 2 MB for module compression, resulting in
+> > slightly higher compression speed while still maintaining a good
+> > compression ratio.
+> > The --zstd=3Dwlog=3D21 option is equivalent to --lzma2=3Ddict=3D2MiB us=
+ed in XZ compression.
 
-elapsed time: 2704m
 
-configs tested: 260
-configs skipped: 4
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+What is a benefit of this patch?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210918
-i386                 randconfig-c001-20210916
-arm                       omap2plus_defconfig
-powerpc                      ep88xc_defconfig
-arm                        spear6xx_defconfig
-powerpc                 mpc8313_rdb_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                     tqm8540_defconfig
-ia64                                defconfig
-mips                      pic32mzda_defconfig
-sh                          r7785rp_defconfig
-powerpc                      ppc6xx_defconfig
-arm                          simpad_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                      malta_kvm_defconfig
-powerpc                     taishan_defconfig
-mips                           ip32_defconfig
-arm                          ixp4xx_defconfig
-powerpc                     tqm5200_defconfig
-arm                           h3600_defconfig
-powerpc                        warp_defconfig
-arm                       multi_v4t_defconfig
-arm                          pxa910_defconfig
-mips                   sb1250_swarm_defconfig
-s390                          debug_defconfig
-arc                     haps_hs_smp_defconfig
-arm                           omap1_defconfig
-powerpc                         wii_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                         orion5x_defconfig
-arm                       mainstone_defconfig
-arm                            qcom_defconfig
-um                           x86_64_defconfig
-arm                          pcm027_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arm                             mxs_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                          lboxre2_defconfig
-m68k                        m5307c3_defconfig
-m68k                        mvme16x_defconfig
-powerpc                        fsp2_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7750_defconfig
-mips                        omega2p_defconfig
-arm                      pxa255-idp_defconfig
-m68k                       m5208evb_defconfig
-openrisc                            defconfig
-m68k                       bvme6000_defconfig
-arc                            hsdk_defconfig
-arm                        neponset_defconfig
-powerpc                      pmac32_defconfig
-ia64                        generic_defconfig
-arm                        vexpress_defconfig
-m68k                        m5272c3_defconfig
-mips                           ip27_defconfig
-arm64                            alldefconfig
-mips                           rs90_defconfig
-powerpc                      ppc40x_defconfig
-arm                            zeus_defconfig
-powerpc                      tqm8xx_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                     sequoia_defconfig
-arm                        mini2440_defconfig
-arm                         cm_x300_defconfig
-m68k                         apollo_defconfig
-mips                             allyesconfig
-powerpc                mpc7448_hpc2_defconfig
-ia64                            zx1_defconfig
-powerpc                       maple_defconfig
-arm                             pxa_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                           tegra_defconfig
-sh                           se7780_defconfig
-powerpc                      chrp32_defconfig
-sh                          sdk7786_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                        spear3xx_defconfig
-arc                                 defconfig
-sh                          kfr2r09_defconfig
-arm                       cns3420vb_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                     mpc83xx_defconfig
-mips                     loongson1b_defconfig
-mips                           xway_defconfig
-um                                  defconfig
-arc                     nsimosci_hs_defconfig
-xtensa                  audio_kc705_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                     ppa8548_defconfig
-arm                         palmz72_defconfig
-mips                          ath79_defconfig
-powerpc                    adder875_defconfig
-powerpc                    socrates_defconfig
-powerpc                       eiger_defconfig
-mips                         cobalt_defconfig
-mips                  maltasmvp_eva_defconfig
-arc                           tb10x_defconfig
-xtensa                           alldefconfig
-powerpc                     skiroot_defconfig
-ia64                             allmodconfig
-powerpc                 linkstation_defconfig
-powerpc                     mpc512x_defconfig
-arm                        oxnas_v6_defconfig
-powerpc                        cell_defconfig
-arm                          pxa168_defconfig
-x86_64               randconfig-c001-20210918
-arm                  randconfig-c002-20210918
-x86_64               randconfig-c001-20210919
-i386                 randconfig-c001-20210919
-arm                  randconfig-c002-20210919
-x86_64               randconfig-c001-20210916
-arm                  randconfig-c002-20210916
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210919
-x86_64               randconfig-a004-20210919
-x86_64               randconfig-a006-20210919
-x86_64               randconfig-a003-20210919
-x86_64               randconfig-a001-20210919
-x86_64               randconfig-a005-20210919
-i386                 randconfig-a004-20210919
-i386                 randconfig-a005-20210919
-i386                 randconfig-a002-20210919
-i386                 randconfig-a006-20210919
-i386                 randconfig-a001-20210919
-i386                 randconfig-a003-20210919
-i386                 randconfig-a004-20210917
-i386                 randconfig-a005-20210917
-i386                 randconfig-a006-20210917
-i386                 randconfig-a002-20210917
-i386                 randconfig-a003-20210917
-i386                 randconfig-a001-20210917
-x86_64               randconfig-a013-20210918
-x86_64               randconfig-a016-20210918
-x86_64               randconfig-a012-20210918
-x86_64               randconfig-a011-20210918
-x86_64               randconfig-a014-20210918
-x86_64               randconfig-a015-20210918
-i386                 randconfig-a016-20210916
-i386                 randconfig-a015-20210916
-i386                 randconfig-a011-20210916
-i386                 randconfig-a012-20210916
-i386                 randconfig-a013-20210916
-i386                 randconfig-a014-20210916
-i386                 randconfig-a016-20210918
-i386                 randconfig-a012-20210918
-i386                 randconfig-a011-20210918
-i386                 randconfig-a015-20210918
-i386                 randconfig-a013-20210918
-i386                 randconfig-a014-20210918
-riscv                randconfig-r042-20210916
-s390                 randconfig-r044-20210916
-arc                  randconfig-r043-20210916
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+It claims "slightly higher compression", but I do not see a difference.
+(15.0577 sec   --> 15.013 sec)
 
-clang tested configs:
-riscv                randconfig-c006-20210917
-x86_64               randconfig-c007-20210917
-mips                 randconfig-c004-20210917
-powerpc              randconfig-c003-20210917
-arm                  randconfig-c002-20210917
-i386                 randconfig-c001-20210917
-s390                 randconfig-c005-20210917
-riscv                randconfig-c006-20210918
-x86_64               randconfig-c007-20210918
-powerpc              randconfig-c003-20210918
-mips                 randconfig-c004-20210918
-i386                 randconfig-c001-20210918
-arm                  randconfig-c002-20210918
-s390                 randconfig-c005-20210918
-riscv                randconfig-c006-20210919
-x86_64               randconfig-c007-20210919
-powerpc              randconfig-c003-20210919
-mips                 randconfig-c004-20210919
-i386                 randconfig-c001-20210919
-arm                  randconfig-c002-20210919
-s390                 randconfig-c005-20210919
-x86_64               randconfig-a002-20210916
-x86_64               randconfig-a003-20210916
-x86_64               randconfig-a006-20210916
-x86_64               randconfig-a004-20210916
-x86_64               randconfig-a005-20210916
-x86_64               randconfig-a001-20210916
-x86_64               randconfig-a002-20210918
-x86_64               randconfig-a004-20210918
-x86_64               randconfig-a006-20210918
-x86_64               randconfig-a003-20210918
-x86_64               randconfig-a001-20210918
-x86_64               randconfig-a005-20210918
-i386                 randconfig-a004-20210916
-i386                 randconfig-a005-20210916
-i386                 randconfig-a006-20210916
-i386                 randconfig-a002-20210916
-i386                 randconfig-a003-20210916
-i386                 randconfig-a001-20210916
-i386                 randconfig-a004-20210918
-i386                 randconfig-a005-20210918
-i386                 randconfig-a002-20210918
-i386                 randconfig-a006-20210918
-i386                 randconfig-a001-20210918
-i386                 randconfig-a003-20210918
-x86_64               randconfig-a016-20210917
-x86_64               randconfig-a013-20210917
-x86_64               randconfig-a012-20210917
-x86_64               randconfig-a011-20210917
-x86_64               randconfig-a014-20210917
-x86_64               randconfig-a015-20210917
-x86_64               randconfig-a013-20210919
-x86_64               randconfig-a016-20210919
-x86_64               randconfig-a012-20210919
-x86_64               randconfig-a011-20210919
-x86_64               randconfig-a014-20210919
-x86_64               randconfig-a015-20210919
-i386                 randconfig-a016-20210919
-i386                 randconfig-a012-20210919
-i386                 randconfig-a011-20210919
-i386                 randconfig-a015-20210919
-i386                 randconfig-a013-20210919
-i386                 randconfig-a014-20210919
-hexagon              randconfig-r045-20210918
-hexagon              randconfig-r041-20210918
-hexagon              randconfig-r045-20210916
-hexagon              randconfig-r041-20210916
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+[1] build  allmodconfig
+[2] collect *.ko files whose size is less than 2MB
+[3] measure the time elapsed for compressing all of them
+
+I did 'perf stat --repeat 10'.
+
+
+
+
+
+
+The default zstd:
+
+
+
+ Performance counter stats for '/tmp/zstd2/test.sh' (10 runs):
+
+         19,250.23 msec task-clock                #    1.278 CPUs
+utilized            ( +-  0.49% )
+            65,424      context-switches          #    0.003 M/sec
+               ( +-  0.03% )
+             5,609      cpu-migrations            #    0.291 K/sec
+               ( +-  0.25% )
+         4,207,419      page-faults               #    0.219 M/sec
+               ( +-  0.19% )
+    54,349,495,038      cycles                    #    2.823 GHz
+               ( +-  0.15% )  (85.93%)
+     3,833,225,032      stalled-cycles-frontend   #    7.05% frontend
+cycles idle     ( +-  0.47% )  (86.34%)
+    20,789,203,221      stalled-cycles-backend    #   38.25% backend
+cycles idle      ( +-  0.31% )  (85.92%)
+    65,385,071,612      instructions              #    1.20  insn per
+cycle
+                                                  #    0.32  stalled
+cycles per insn  ( +-  0.09% )  (86.54%)
+    11,033,842,879      branches                  #  573.180 M/sec
+               ( +-  0.10% )  (86.38%)
+       288,314,097      branch-misses             #    2.61% of all
+branches          ( +-  0.16% )  (86.33%)
+
+           15.0577 +- 0.0728 seconds time elapsed  ( +-  0.48% )
+
+
+
+zstd --zstd=3Dwlog=3D21:
+
+
+
+
+ Performance counter stats for '/tmp/zstd2/test2.sh' (10 runs):
+
+         19,203.08 msec task-clock                #    1.279 CPUs
+utilized            ( +-  0.85% )
+            65,404      context-switches          #    0.003 M/sec
+               ( +-  0.05% )
+             5,617      cpu-migrations            #    0.293 K/sec
+               ( +-  0.15% )
+         4,214,502      page-faults               #    0.219 M/sec
+               ( +-  0.12% )
+    54,495,218,169      cycles                    #    2.838 GHz
+               ( +-  0.29% )  (85.55%)
+     3,867,166,903      stalled-cycles-frontend   #    7.10% frontend
+cycles idle     ( +-  0.26% )  (87.22%)
+    20,950,577,113      stalled-cycles-backend    #   38.44% backend
+cycles idle      ( +-  0.38% )  (86.51%)
+    65,500,859,667      instructions              #    1.20  insn per
+cycle
+                                                  #    0.32  stalled
+cycles per insn  ( +-  0.12% )  (86.65%)
+    11,045,504,296      branches                  #  575.194 M/sec
+               ( +-  0.12% )  (85.90%)
+       288,729,169      branch-misses             #    2.61% of all
+branches          ( +-  0.12% )  (85.59%)
+
+            15.013 +- 0.129 seconds time elapsed  ( +-  0.86% )
+
+
+
+
+
+
+> > Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
+> > ---
+> >  scripts/Makefile.modinst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
+> > index ff9b09e4cfca..c3475e5aca7c 100644
+> > --- a/scripts/Makefile.modinst
+> > +++ b/scripts/Makefile.modinst
+> > @@ -97,7 +97,7 @@ quiet_cmd_gzip =3D GZIP    $@
+> >  quiet_cmd_xz =3D XZ      $@
+> >        cmd_xz =3D $(XZ) --lzma2=3Ddict=3D2MiB -f $<
+> >  quiet_cmd_zstd =3D ZSTD    $@
+> > -      cmd_zstd =3D $(ZSTD) -T0 --rm -f -q $<
+> > +      cmd_zstd =3D $(ZSTD) --zstd=3Dwlog=3D21 -T0 --rm -f -q $<
+> >
+> >  $(dst)/%.ko.gz: $(dst)/%.ko FORCE
+> >         $(call cmd,gzip)
+> > --
+> > 2.33.0.142.ge0a2f5cbc5
+> >
+
+
+
+--
+Best Regards
+Masahiro Yamada
