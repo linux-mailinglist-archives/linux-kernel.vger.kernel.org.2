@@ -2,162 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12017410C7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4B0410C5C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 18:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhISRCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234158AbhISRBx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:01:53 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F144C061574;
-        Sun, 19 Sep 2021 10:00:27 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g8so51245223edt.7;
-        Sun, 19 Sep 2021 10:00:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FWSZ0ScdX9/vFWzS9q81FlnqYgwmAD2fUqhq1c6CFi4=;
-        b=VnLfLkfhU4W9W/apJuUjRraKmWJuth6e9BJg4ygIs8ft6/NsmkQL7KLXZO2T4KcgSe
-         OciXYe9RSLo5ZndAZlZ9J9jiJ/Lw5/hmmQZzezQBak8BD0vCZ3BKXKmE4AB1905VYXU9
-         SUsBC6Jzef9cvPcDQ3ZJDOH+vcsFluTItzNqagwrpBqHDMWs1UbuwRrWJrBdViFjzVUe
-         vvTLf9NiuHEZOLh/94dsiMx0H4tuk5feDmRR7wy/q7CBEGqW8y6wugKcoxgIUbHLwbpg
-         iiQ8JIxNVFSdc1nXEBcWd5OgxBG6v+fQoYXIO82mVVysWq3Vi8SpYS3l23Olipz6PYWt
-         hwkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FWSZ0ScdX9/vFWzS9q81FlnqYgwmAD2fUqhq1c6CFi4=;
-        b=qhfjHeUknxZmRvrnFnT5811XnCHSgLWrXVsUIwA7qCDSoCw38UWujl7c20sHlqGh08
-         wUmw2w0XRLRvmWqd8bR0Fg2kwZYU41Bd9HabsB67ozMUyBT699IfP7+58L33KXz59Eot
-         slgju9qoGn5HWGpA52sZ+mb/yI8hg8PuxFm7M+H4AXvZl47sbvfFFwy+8A9m5GNLyEiS
-         f/c+jaBAECcZSAKSUVs2Qlt38NRUIa6b4nuPTCK/N7gZS9MeYpAXFmP1dkGsKU4IjhPl
-         udxnV9eLWsr39NuwOY/lY8BdaIonuOSIsJQ9qEeiTkFeZn0vtBZRZhS9EQp33zUzcU4G
-         ygSw==
-X-Gm-Message-State: AOAM532SQBal+XzBdSpK7E4e70EJB5gdoHCv1pELMj8qFWtp2cWbjd3l
-        5/MEE4vAUjI1nN+7E8g9+d2JKvXXddE=
-X-Google-Smtp-Source: ABdhPJyyu9Y7ZhAHoQSx4pjam8aHz0XEKp1SgNs4uR0NbE40NPvG1d/5ajR23tA5s/PLqoauANILpg==
-X-Received: by 2002:a17:906:1510:: with SMTP id b16mr25101733ejd.332.1632070825756;
-        Sun, 19 Sep 2021 10:00:25 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-67-254.ip85.fastwebnet.it. [93.42.67.254])
-        by smtp.googlemail.com with ESMTPSA id a15sm6101760edr.2.2021.09.19.10.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 10:00:25 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 3/3] net: phy: at803x: fix spacing and improve name for 83xx phy
-Date:   Sun, 19 Sep 2021 18:28:17 +0200
-Message-Id: <20210919162817.26924-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210919162817.26924-1-ansuelsmth@gmail.com>
-References: <20210919162817.26924-1-ansuelsmth@gmail.com>
+        id S229930AbhISQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 12:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhISQhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 12:37:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36AC6611C8
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:35:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632069340;
+        bh=V4HgvipBQttIvPWgUIeG7T7DNHIK6v4oOUEZtOGIJV0=;
+        h=Date:From:To:Subject:Reply-To:References:In-Reply-To:From;
+        b=F0e22hv5XKqRvR/3JWM1ZNxaafu9pA+RcnEXd5fG3seWzzBBq/AiXInHpn3BoZLBx
+         ltZDagnjgKwAikiWVeyU/g54m2RfR0jYh3loJ0N9+nZ2szmVwmxXDk5UfL5vXTD+vl
+         N73UlTZT9BYPas2C/yGQqKH9lyL3PNGJDiOZ56tVRSk59USnPuHYaqh7b9VpyRUS1k
+         Qjnme8Ea4Hqz/W4tqfg1EF9eeHk7J0oVRNnSAWrhPaR8X+Qbo/zRYTVqNS5XpnL6D2
+         30PmGnoFYNxCAT84g1njYs/wHf/mPYX8DouwE3etK0Pz5zOiR8nD++VPCn1sDP8GI3
+         kFOGSNSuj/3jQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id F13845C0692; Sun, 19 Sep 2021 09:35:39 -0700 (PDT)
+Date:   Sun, 19 Sep 2021 09:35:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Re: call_rcu data race patch
+Message-ID: <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210917191555.GA2198@bender.morinfr.org>
+ <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210917213404.GA14271@bender.morinfr.org>
+ <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918003933.GA25868@bender.morinfr.org>
+ <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918070836.GA19555@bender.morinfr.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210918070836.GA19555@bender.morinfr.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix spacing and improve name for 83xx phy following other phy in the
-same driver.
+On Sat, Sep 18, 2021 at 09:08:38AM +0200, Guillaume Morin wrote:
+> On 17 Sep 21:00, Paul E. McKenney wrote:
+> > That is them!  There are some flags that control their activities:
+> > 
+> > o	rcu_data structure's ->nocb_gp_sleep field (rcuog)
+> > o	rcu_data structure's ->nocb_cb_sleep field (rcuoc)
+> 
+> >From the same kdump:
+> 
+> crash> pd rcu_data:all | grep -E 'nocb_cb_sleep|nocb_gp_sleep|per_cpu'
+> per_cpu(rcu_data, 0) = $69 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = false, 
+> per_cpu(rcu_data, 1) = $70 = {
+>   nocb_gp_sleep = 1 '\001', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 2) = $71 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 3) = $72 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 4) = $73 = {
+>   nocb_gp_sleep = 1 '\001', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 5) = $74 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 6) = $75 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 7) = $76 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 8) = $77 = {
+>   nocb_gp_sleep = 1 '\001', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 9) = $78 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 10) = $79 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 11) = $80 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 12) = $81 = {
+>   nocb_gp_sleep = 1 '\001', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 13) = $82 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 14) = $83 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 15) = $84 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 16) = $85 = {
+>   nocb_gp_sleep = 1 '\001', 
+>   nocb_cb_sleep = true, 
+> per_cpu(rcu_data, 17) = $86 = {
+>   nocb_gp_sleep = 0 '\000', 
+>   nocb_cb_sleep = true, 
+> crash>
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/phy/at803x.c | 60 ++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
+This is consistent with CPU 0's rcuoc kthread processing callbacks
+and all of the rcuog threads waiting for more callbacks.
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index db432d228d07..3feee4d59030 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1410,47 +1410,47 @@ static struct phy_driver at803x_driver[] = {
- 	.config_aneg		= at803x_config_aneg,
- }, {
- 	/* QCA8337 */
--	.phy_id = QCA8337_PHY_ID,
--	.phy_id_mask = QCA8K_PHY_ID_MASK,
--	.name = "QCA PHY 8337",
-+	.phy_id			= QCA8337_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8337 internal PHY",
- 	/* PHY_GBIT_FEATURES */
--	.probe = at803x_probe,
--	.flags = PHY_IS_INTERNAL,
--	.config_init = qca83xx_config_init,
--	.soft_reset = genphy_soft_reset,
--	.get_sset_count = at803x_get_sset_count,
--	.get_strings = at803x_get_strings,
--	.get_stats = at803x_get_stats,
-+	.probe			= at803x_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= at803x_get_sset_count,
-+	.get_strings		= at803x_get_strings,
-+	.get_stats		= at803x_get_stats,
- 	.suspend		= genphy_suspend,
- 	.resume			= genphy_resume,
- }, {
- 	/* QCA8327-A from switch QCA8327-AL1A */
--	.phy_id = QCA8327_A_PHY_ID,
--	.phy_id_mask = QCA8K_PHY_ID_MASK,
--	.name = "QCA PHY 8327-A",
-+	.phy_id			= QCA8327_A_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8327-A internal PHY",
- 	/* PHY_GBIT_FEATURES */
--	.probe = at803x_probe,
--	.flags = PHY_IS_INTERNAL,
--	.config_init = qca83xx_config_init,
--	.soft_reset = genphy_soft_reset,
--	.get_sset_count = at803x_get_sset_count,
--	.get_strings = at803x_get_strings,
--	.get_stats = at803x_get_stats,
-+	.probe			= at803x_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= at803x_get_sset_count,
-+	.get_strings		= at803x_get_strings,
-+	.get_stats		= at803x_get_stats,
- 	.suspend		= genphy_suspend,
- 	.resume			= genphy_resume,
- }, {
- 	/* QCA8327-B from switch QCA8327-BL1A */
--	.phy_id = QCA8327_B_PHY_ID,
--	.phy_id_mask = QCA8K_PHY_ID_MASK,
--	.name = "QCA PHY 8327-B",
-+	.phy_id			= QCA8327_B_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8327-B internal PHY",
- 	/* PHY_GBIT_FEATURES */
--	.probe = at803x_probe,
--	.flags = PHY_IS_INTERNAL,
--	.config_init = qca83xx_config_init,
--	.soft_reset = genphy_soft_reset,
--	.get_sset_count = at803x_get_sset_count,
--	.get_strings = at803x_get_strings,
--	.get_stats = at803x_get_stats,
-+	.probe			= at803x_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= at803x_get_sset_count,
-+	.get_strings		= at803x_get_strings,
-+	.get_stats		= at803x_get_stats,
- 	.suspend		= genphy_suspend,
- 	.resume			= genphy_resume,
- }, };
--- 
-2.32.0
+How is the testing of the patches going?  (I am guessing nothing yet
+based on the failure times, but who knows?)
 
+						Thanx, Paul
