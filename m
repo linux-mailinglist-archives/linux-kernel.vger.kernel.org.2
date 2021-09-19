@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7254410B7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C707410B85
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhISMLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
+        id S231849AbhISMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229664AbhISMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:11:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7410261284;
-        Sun, 19 Sep 2021 12:10:08 +0000 (UTC)
+        id S230158AbhISMVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:21:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BD9CA61074;
+        Sun, 19 Sep 2021 12:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632053408;
-        bh=CCmY0DXt8tsabY/K5nuBfQ4udwppfLMUdVteoXnO+PI=;
+        s=k20201202; t=1632054007;
+        bh=juJaSv0GiyOfkymwzpKe+oRrnnW9W6D26nuvMHCibgU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OIe+qsSuZ/eALWDkg09tfLdOgrDoe1HvCZxE7+JFUwarTzTuamcAuzQIiW3Ce7lxj
-         BNPIunKsUvxUxhFamMB7BDmvlRyyQYKBLnajftOH4hwpOAdVZbE4AvropfkqIVl5b2
-         83D3o1OfHMjGZEKj1yNf1Mi+8+NndwGTVE0bR9OVCIBnOiy7p2y34IRhOYl1HEOnrp
-         Uf73NtUyw3gilnKXSB8PxP8wcjfL/oWF5FNYz/4i19C7/Q50O0ZVCk2SsLNcxmxH74
-         ZO+rLIYs93fTyqBkwmUXINM7Es8/n2sglzPEQu3iG4AEIZuguPH1WgASGwBBE3FZD0
-         kngx++JQYoIfw==
+        b=CyLJQ59Z27l7gSQGmek1ivVkfZKgwcjvqjLjBMHsBwmJyjGyMSzMGzZtVkpwrFTUI
+         H/EICPqni/qN2QiGIiC4iCejXq7VZhFyU5p74HtojlxGGd4VJwyRC2zxD3lkPZNiLE
+         xIM85SH47zvsaDPws1Sxn6aZAcvZSd/7I11APH8Tttc6sR5vJ3HI+zA+HkwdqWHoz2
+         QOk14y/8dz6RTC57SnKSRU0PtUPiT7oG5gSjJhb7y8dkZR/mhOwWFQXdGAcU/nxy9m
+         YkwmLzKFtPzMndJIZZP1i8zqKmgIsn9HaYstwmrTbqoHfmemkhK2/Kc3Lap/gKihXV
+         /qOGUdCNTQiHg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5C13A60A2A;
-        Sun, 19 Sep 2021 12:10:08 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ABA17608B9;
+        Sun, 19 Sep 2021 12:20:07 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: freescale: drop unneeded MODULE_ALIAS
+Subject: Re: [PATCH] selftests: net: af_unix: Fix incorrect args in test result
+ msg
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163205340837.3254.218063855879635135.git-patchwork-notify@kernel.org>
-Date:   Sun, 19 Sep 2021 12:10:08 +0000
-References: <20210917092058.19420-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210917092058.19420-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, qiangqing.zhang@nxp.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org
+Message-Id: <163205400769.8407.15151406750714105944.git-patchwork-notify@kernel.org>
+Date:   Sun, 19 Sep 2021 12:20:07 +0000
+References: <20210917192614.24862-1-skhan@linuxfoundation.org>
+In-Reply-To: <20210917192614.24862-1-skhan@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,18 +48,30 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Fri, 17 Sep 2021 11:20:58 +0200 you wrote:
-> The MODULE_DEVICE_TABLE already creates proper alias for platform
-> driver.  Having another MODULE_ALIAS causes the alias to be duplicated.
+On Fri, 17 Sep 2021 13:26:14 -0600 you wrote:
+> Fix the args to fprintf(). Splitting the message ends up passing
+> incorrect arg for "sigurg %d" and an extra arg overall. The test
+> result message ends up incorrect.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  drivers/net/ethernet/freescale/fec_main.c | 1 -
->  1 file changed, 1 deletion(-)
+> test_unix_oob.c: In function ‘main’:
+> test_unix_oob.c:274:43: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘char *’ [-Wformat=]
+>   274 |   fprintf(stderr, "Test 3 failed, sigurg %d len %d OOB %c ",
+>       |                                          ~^
+>       |                                           |
+>       |                                           int
+>       |                                          %s
+>   275 |   "atmark %d\n", signal_recvd, len, oob, atmark);
+>       |   ~~~~~~~~~~~~~
+>       |   |
+>       |   char *
+> test_unix_oob.c:274:19: warning: too many arguments for format [-Wformat-extra-args]
+>   274 |   fprintf(stderr, "Test 3 failed, sigurg %d len %d OOB %c ",
+> 
+> [...]
 
 Here is the summary with links:
-  - net: freescale: drop unneeded MODULE_ALIAS
-    https://git.kernel.org/netdev/net/c/fdb475838539
+  - selftests: net: af_unix: Fix incorrect args in test result msg
+    https://git.kernel.org/netdev/net/c/48514a223330
 
 You are awesome, thank you!
 --
