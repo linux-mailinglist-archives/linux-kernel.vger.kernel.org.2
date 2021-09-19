@@ -2,136 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFA2410AF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB6C410AF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237789AbhISJos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 05:44:48 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:36562
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237716AbhISJor (ORCPT
+        id S237846AbhISJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 05:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237818AbhISJpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 05:44:47 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AAD324018F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 09:43:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632044600;
-        bh=uaNs/xYVK85AxU1iGJvmG2bpbl9HxTnxXvUi2iolq6o=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=LDUfJFGExkVPACZTgAMKEKV+PSuYmFg1D3saFjGMNX1ia0IncFljFJQTVRuwmRRdb
-         7k20aI81DWYcfZ15vASItwoZpJ9zKSb6piF6zrOikhU9VfT3iSw/GcIWGPNn1MrKN2
-         I54JQF6OGpAmcziTUR6E3Z2Fe4hxcm0b4Q5dqiaQaQE+d8iTqRrv9cOdDv7V+Ocsiz
-         /MlIBWKSd5p6YHscKE0378UH94UsD22ZyuXPtkD6aq81hkFyoR5wThq/QTwc41ytLj
-         dXW9wJBmSJgoMFqjj95WFzCMde4pDlvyA2WUvp8NuwcfHbtk4RDHQeuu74zgw84jZh
-         GS2A4tSm4bthg==
-Received: by mail-ed1-f72.google.com with SMTP id r23-20020a50d697000000b003d824845066so4683849edi.8
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 02:43:20 -0700 (PDT)
+        Sun, 19 Sep 2021 05:45:16 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CCDC061574;
+        Sun, 19 Sep 2021 02:43:46 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id n18so14378973pgm.12;
+        Sun, 19 Sep 2021 02:43:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ujZYCN2hNIBT5RbdU8R3eOc6j6lEG3PQETpYdg9DbBc=;
+        b=MRfUZHjikWvtbxL9OaHghlwj40Fx/p2cDFvuKXkLmqdBPDvOSgx9Rmhuayid1vNXcD
+         GlGdc+shfLUDhFE4jaPnEWlCa/OZ9cQRpY8i9ewKdbC4V08O6D2INQvVvHFKlK1qMGNq
+         Xw9niYzj5ddgEtVfkrOMt7NNQpNO6/pmhVtwzpMbtWYD/+FtkZjBWRUcLj30SfpUxTlF
+         dZ4N/WQhGchhvzTBixOhZ0RSlz5+c3dqdBzUMQ891gcS6ukQGrUMfnlcWVrCNf6PJyU2
+         RQ5mKVGbGyCVcp5ugIv7nq36a31GaNsfnuMaCX+IFrwlOjSqcHq0Yn+Zuz8ca9EQ8CXf
+         RQ1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uaNs/xYVK85AxU1iGJvmG2bpbl9HxTnxXvUi2iolq6o=;
-        b=izz19v61BkJjT3TkfckdsNOh2hTzdLtKnkYGY62LItZVNNvQzdrGhCZuuSfyh+K6ic
-         EN6vfKOvAMWDFv07INLH0lW2AGJ2PyWVtHhd1Yxc7qgaLW5KON+QM+BxxlTq5ym5Gzvn
-         XOhD9/El1eqJIteo5ZQNeCeH6Y6kyA6cCpRc+bF8TzxtMq/0aKqa6YX/6mdMOdItjACP
-         RBbUCPGSBpq8foJZNu0t7Qbw9SMTR9N3+AyRrF8SkOi8dnzrquryZNLA92zcEkUfnoys
-         B0VKmmRceWABg7HWQ3rbYHWcNxK+QWZKfgdLzGM+ITeey8TzEnI3ke66MZCEgJu3dk5M
-         SXFg==
-X-Gm-Message-State: AOAM5334sTMmFleXPk1w92ldZFTCpFoEPMo+QeRRYd0YbmBzxWLA9C1g
-        ieD8jY0JKjAbMsGE9hiHPmwWCAO0v4MLOJxjr4kdgK7R4BQjZf2Zc3AZwXK5HIdGThoDSsLFHph
-        i/KNTqpsBJjn6JV1RI7sOiSJXdaKBZNs78iYZvD95zQ==
-X-Received: by 2002:a17:907:1c01:: with SMTP id nc1mr22609924ejc.504.1632044600026;
-        Sun, 19 Sep 2021 02:43:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGT4606JPYMwEU1a10XdgBbQ/KWQjrmYj4MW/2J+egl2qD355Htf5c2+iR0SHaiwij1MfkZA==
-X-Received: by 2002:a17:907:1c01:: with SMTP id nc1mr22609908ejc.504.1632044599845;
-        Sun, 19 Sep 2021 02:43:19 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id c21sm4637015ejz.69.2021.09.19.02.43.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 02:43:19 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Alexandra Yates <alexandra.yates@linux.intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH v2] ahci: remove duplicated PCI device IDs
-Date:   Sun, 19 Sep 2021 11:43:13 +0200
-Message-Id: <20210919094313.52666-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        bh=ujZYCN2hNIBT5RbdU8R3eOc6j6lEG3PQETpYdg9DbBc=;
+        b=MtAKbHGjJUEwxOzneet4gbgGLd6no3KD6WBp3DxHAqsioiKJpYeIrBjbCt4UT9GeSJ
+         lxc5ekZBySuWMwRdjqtUdI2p8/ZdRvmq/bJyFdHsrjTnTCRFRs1xXjJhSH8gscb346AW
+         1yl6lT1Eur68KfMw3suIp/KMdX8xtHdq0WX4fgeK5mYriiTPggOHWN1L6IJh9QWp54HR
+         KF9kpPY2DywgwwxyFhARinIBOLoFeomI+/4tkhJW6CfJ7EC0BAeZ1TeFUInUuH2Pi/Z9
+         ymZtLqY2XYx0WMakp12sLibJZMb2TX0b8vDXO3tjGDBvdi+saMcUefk7ydGS48XMOm4E
+         9dBg==
+X-Gm-Message-State: AOAM531tDdrw8f9IY7cH1pNKGSGBfc77S9lbbKDSY/F2YKJEmXBluUz5
+        5TsV9ks2THg+on5U5p65OqGFO2nkVj4=
+X-Google-Smtp-Source: ABdhPJxbbHzNmfgc5i6PcrHjAWEr1DMvwBIs+hDKpJBTdjeXbNpu+gig3MhSpK+FL8ySD6H3hcMnOw==
+X-Received: by 2002:a63:ce57:: with SMTP id r23mr18549344pgi.271.1632044625811;
+        Sun, 19 Sep 2021 02:43:45 -0700 (PDT)
+Received: from [172.30.1.2] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id y80sm6403104pfb.196.2021.09.19.02.43.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Sep 2021 02:43:45 -0700 (PDT)
+Subject: Re: [PATCH v1 4/4] PM / devfreq: tegra30: Check whether
+ clk_round_rate() returns zero rate
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+References: <20210912184458.17995-1-digetx@gmail.com>
+ <20210912184458.17995-5-digetx@gmail.com>
+ <9fa66405-883a-3653-eb5d-3cd7eee07a0a@gmail.com>
+ <e9233eeb-6780-b390-dffa-8de9315effa3@gmail.com>
+ <26d90b01-13d5-3bd8-da0a-b9ff61c7845a@gmail.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <4b5faca8-c0fc-e7bb-5a0b-c66714bc5f61@gmail.com>
+Date:   Sun, 19 Sep 2021 18:43:41 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <26d90b01-13d5-3bd8-da0a-b9ff61c7845a@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel devices 0x2822, 0x2823, 0x2826 and 0x2827 are already on the list
-as Lewisburg AHCI/RAID.  They use same configuration except 0x2822 which
-has board_ahci_nosntf (for ICH8).
+On 21. 9. 16. 오전 10:28, Dmitry Osipenko wrote:
+> 15.09.2021 21:31, Chanwoo Choi пишет:
+>> On 21. 9. 15. 오후 12:51, Chanwoo Choi wrote:
+>>> Hi,
+>>>
+>>> On 21. 9. 13. 오전 3:44, Dmitry Osipenko wrote:
+>>>> EMC clock is always-on and can't be zero. Check whether clk_round_rate()
+>>>> returns zero rate and error out if it does. It can return zero if clock
+>>>> tree isn't initialized properly.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>>> ---
+>>>>    drivers/devfreq/tegra30-devfreq.c | 4 ++--
+>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/devfreq/tegra30-devfreq.c
+>>>> b/drivers/devfreq/tegra30-devfreq.c
+>>>> index d83fdc2713ed..65ecf17a36f4 100644
+>>>> --- a/drivers/devfreq/tegra30-devfreq.c
+>>>> +++ b/drivers/devfreq/tegra30-devfreq.c
+>>>> @@ -891,9 +891,9 @@ static int tegra_devfreq_probe(struct
+>>>> platform_device *pdev)
+>>>>            return err;
+>>>>        rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
+>>>> -    if (rate < 0) {
+>>>> +    if (rate <= 0) {
+>>>>            dev_err(&pdev->dev, "Failed to round clock rate: %ld\n",
+>>>> rate);
+>>>> -        return rate;
+>>>> +        return rate ?: -EINVAL;
+>>
+>> If rate is 0, It doesn't return and fall-through? even if print the
+>> error message. 'return rate ?: -EINVAL;' style is strange for me
+>> because it doesn't specify the 'return value' when rate is true.
+> 
+> It's not clear to me what do you mean by "return and fall-through".
+> 
+> It specifies the 'return value' when rate is true. It's a short form of
+> "rate ? rate : -EINVAL".
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+I has not known this short form. Thanks for comment. I understand.
 
----
 
-Not tested.
 
-Changes since v1:
-1. Use still board_ahci_nosntf for 0x2822.
----
- drivers/ata/ahci.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-index 186cbf90c8ea..63198ad95ed9 100644
---- a/drivers/ata/ahci.c
-+++ b/drivers/ata/ahci.c
-@@ -258,7 +258,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, 0x2683), board_ahci }, /* ESB2 */
- 	{ PCI_VDEVICE(INTEL, 0x27c6), board_ahci }, /* ICH7-M DH */
- 	{ PCI_VDEVICE(INTEL, 0x2821), board_ahci }, /* ICH8 */
--	{ PCI_VDEVICE(INTEL, 0x2822), board_ahci_nosntf }, /* ICH8 */
-+	{ PCI_VDEVICE(INTEL, 0x2822), board_ahci_nosntf }, /* ICH8/Lewisburg RAID*/
- 	{ PCI_VDEVICE(INTEL, 0x2824), board_ahci }, /* ICH8 */
- 	{ PCI_VDEVICE(INTEL, 0x2829), board_ahci }, /* ICH8M */
- 	{ PCI_VDEVICE(INTEL, 0x282a), board_ahci }, /* ICH8M */
-@@ -316,7 +316,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, 0x1d02), board_ahci }, /* PBG AHCI */
- 	{ PCI_VDEVICE(INTEL, 0x1d04), board_ahci }, /* PBG RAID */
- 	{ PCI_VDEVICE(INTEL, 0x1d06), board_ahci }, /* PBG RAID */
--	{ PCI_VDEVICE(INTEL, 0x2826), board_ahci }, /* PBG RAID */
-+	{ PCI_VDEVICE(INTEL, 0x2826), board_ahci }, /* PBG/Lewisburg RAID*/
- 	{ PCI_VDEVICE(INTEL, 0x2323), board_ahci }, /* DH89xxCC AHCI */
- 	{ PCI_VDEVICE(INTEL, 0x1e02), board_ahci }, /* Panther Point AHCI */
- 	{ PCI_VDEVICE(INTEL, 0x1e03), board_ahci_mobile }, /* Panther M AHCI */
-@@ -358,8 +358,8 @@ static const struct pci_device_id ahci_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, 0x1f37), board_ahci_avn }, /* Avoton RAID */
- 	{ PCI_VDEVICE(INTEL, 0x1f3e), board_ahci_avn }, /* Avoton RAID */
- 	{ PCI_VDEVICE(INTEL, 0x1f3f), board_ahci_avn }, /* Avoton RAID */
--	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Wellsburg RAID */
--	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Wellsburg RAID */
-+	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Wellsburg/Lewisburg AHCI*/
-+	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Wellsburg/Lewisburg RAID*/
- 	{ PCI_VDEVICE(INTEL, 0x43d4), board_ahci }, /* Rocket Lake PCH-H RAID */
- 	{ PCI_VDEVICE(INTEL, 0x43d5), board_ahci }, /* Rocket Lake PCH-H RAID */
- 	{ PCI_VDEVICE(INTEL, 0x43d6), board_ahci }, /* Rocket Lake PCH-H RAID */
-@@ -394,10 +394,6 @@ static const struct pci_device_id ahci_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, 0xa106), board_ahci }, /* Sunrise Point-H RAID */
- 	{ PCI_VDEVICE(INTEL, 0xa107), board_ahci_mobile }, /* Sunrise M RAID */
- 	{ PCI_VDEVICE(INTEL, 0xa10f), board_ahci }, /* Sunrise Point-H RAID */
--	{ PCI_VDEVICE(INTEL, 0x2822), board_ahci }, /* Lewisburg RAID*/
--	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Lewisburg AHCI*/
--	{ PCI_VDEVICE(INTEL, 0x2826), board_ahci }, /* Lewisburg RAID*/
--	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Lewisburg RAID*/
- 	{ PCI_VDEVICE(INTEL, 0xa182), board_ahci }, /* Lewisburg AHCI*/
- 	{ PCI_VDEVICE(INTEL, 0xa186), board_ahci }, /* Lewisburg RAID*/
- 	{ PCI_VDEVICE(INTEL, 0xa1d2), board_ahci }, /* Lewisburg RAID*/
 -- 
-2.30.2
-
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
