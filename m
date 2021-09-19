@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9F5410DE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB96410DE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbhISX5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 19:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
+        id S234202AbhISX5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 19:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbhISXzu (ORCPT
+        with ESMTP id S233754AbhISXzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 19 Sep 2021 19:55:50 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4D9C061768
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:14 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g8so54010535edt.7
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:14 -0700 (PDT)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671A7C0613C1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:15 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h17so54024321edj.6
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uDnPnwL+7XkZTxo58W8/NTcNsnLRwxUMFNIfr0Kxy7I=;
-        b=pZyQ5qa2TK3BdsKWPDGNS/snLnDRx+5G36Et14fO1W+J7qAjQcZfwx8cqJx1lhvyrS
-         4zMttTXdznbO73vVyZ5PE/KgzZ5bsPhQEd1o7l7joZdN8205rTAqM3/k0ogM/FGeSoSB
-         jjBzWnuzIisrSEpR6K28rotjJnEOXuvd8Agiiyo4vv3Sx8ONTpoN39BMU319vT1XFszk
-         +PI2a/wMce1LXf1OdJv/XcEl8NotZtA5Q0aGwjtO9OZpvM8e2vpBts8nhgLcmB4MKrkb
-         BcJk/sK5DijyF/e1jQAIf1GyRgRK6l0rZBfm/V/M7wbUy5BzLObf91UAmyiBA7xhtVzQ
-         yZ0Q==
+        bh=ktm/yZReSCWv5NkITk4sdfOLi4wFSyG0BAFOLT+GU08=;
+        b=jqEAaMbueBa5q2pHXR8mOKvhRYDzEd2LCXE8BC7IGCmq8YJPiGF0BI8eQ2Y6N5i/xa
+         A2Fn2u56IgDpeRq3WhbbXouRmsRmNWtLErvsqcisiv38NQqLntCoNKOu7aXh9E6oEBah
+         Zw+SJMKPep48x1hbXc+VAFs07pWCvmepIvBcA2zgkOhhLXMgED//0bE+q2q7X92noDRH
+         giyQXOjl+DM+Zpkk5SciSSj9Xv12DrbD1mTqbdzN6bJzlv9yrZkJsBg/1PDS/LCzXxKH
+         LQAKx3ScQE7jCVqJWujYCMP9O0Wfbju+RGcpEKbWkzS0HkmHYWDet/8RiDeEgCXZMOii
+         mXqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uDnPnwL+7XkZTxo58W8/NTcNsnLRwxUMFNIfr0Kxy7I=;
-        b=oywDj9hwmfrjaU9vAyZYs44TjZRtDuEXZzuFic6yz+9rdNsLIMNxnlAiLainr/KvPc
-         G3yE7Fr4uZPeWBiicuvPmouLsZ8Wz3FS91ry1mT89RCbqEbyvL8jT/HBt6xzDA0lUrRI
-         HismxBKZAShl89Cx8yvTvdtfMfw/uzJQRanccziUPPTIblrBHJRhrxTT6Vs9HTKS2cMB
-         lRJxguUihHse7qx9GxzgQ5j8/EUepmZlsuP0ArogueL4LsgbATTloFmZArmm+dH3/Ipv
-         p/RZsrEo8OOxb4n0JdNJAKZX2rYMrxwHwEVThSO20x8i3CKb8IIBsIeFhSUBoJ92brgR
-         A1gg==
-X-Gm-Message-State: AOAM532PGNgBMi3MxItJNr0Lam6xo43CpDQDfCMW5f5Hd6fyx/Bwssej
-        fEmQzqHWJsb5dor3CwRXPU4=
-X-Google-Smtp-Source: ABdhPJzkbdLZxls26VaGH1peQvTKahCXxu7PElxN/zHBV0I+XHit/Sf3dGLtM3BSStpHvgL1cZEU2A==
-X-Received: by 2002:a05:6402:2cd:: with SMTP id b13mr26036625edx.267.1632095652780;
-        Sun, 19 Sep 2021 16:54:12 -0700 (PDT)
+        bh=ktm/yZReSCWv5NkITk4sdfOLi4wFSyG0BAFOLT+GU08=;
+        b=vdLCkvasGjREPURzjWcFKtChS6qV0AmI09SJyk2dKJsyDcm5sBHt/reNrNyc9Cizgh
+         j55g5rdbdw38lWucilOlCSLwtjaxLDzs5j+LoONsIlwJyGHuk6vi6YltFAAvBE9sxe4O
+         52F+kQCLqOdG+UQgS/0nE0YKDe03x2iFVUjH/YXVzEVKde4L5KZ5Ev6Vvc3SEECtZEkx
+         z0mmDXxz1Y0ULp77S9SQJ+DVyDwFRTCVgqlzPypxBo49h01Up/3IgDGLUpETvfjPevFp
+         930WGXhFk4h2cOgcG7UX08Da8YrCO0exVjRHiIt0kRE7MbCXf82OM0sUugy9egtzqiSj
+         YG9w==
+X-Gm-Message-State: AOAM530AMM8z0e0Buk8bD7l8dOPKvkzwSMJKAIFEkX7w+0atsZHd1IbD
+        IqlOlSq3zsDxe6LYgL1vnnI=
+X-Google-Smtp-Source: ABdhPJwtlVJRCgnubUXnFE8+omzMaTh9OHMdLkAk0NXqbO9fjJgUpspRD53oGCgnstA1mrsDxTQ6Xw==
+X-Received: by 2002:aa7:d5c3:: with SMTP id d3mr26119351eds.151.1632095654060;
+        Sun, 19 Sep 2021 16:54:14 -0700 (PDT)
 Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
-        by smtp.gmail.com with ESMTPSA id e11sm5353636ejm.41.2021.09.19.16.54.11
+        by smtp.gmail.com with ESMTPSA id e11sm5353636ejm.41.2021.09.19.16.54.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 16:54:12 -0700 (PDT)
+        Sun, 19 Sep 2021 16:54:13 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
@@ -58,9 +58,9 @@ To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Dan Carpenter <dan.carpenter@oracle.com>,
         Martin Kaiser <martin@kaiser.cx>
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v8 08/19] staging: r8188eu: fix grammar mistake in usbctrl_vendorreq()
-Date:   Mon, 20 Sep 2021 01:53:45 +0200
-Message-Id: <20210919235356.4151-9-fmdefrancesco@gmail.com>
+Subject: [PATCH v8 09/19] staging: r8188eu: remove unnecessary braces in usbctrl_vendorreq()
+Date:   Mon, 20 Sep 2021 01:53:46 +0200
+Message-Id: <20210919235356.4151-10-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210919235356.4151-1-fmdefrancesco@gmail.com>
 References: <20210919235356.4151-1-fmdefrancesco@gmail.com>
@@ -70,29 +70,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a grammar mistake in usbctrl_vendorreq(): "checksumed" =>
-"checksummed".
+Remove unnecessary braces in usbctrl_vendorreq().
 
 Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/staging/r8188eu/hal/usb_ops_linux.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-index fc3da0fbf474..3ca2959f4bcd 100644
+index 3ca2959f4bcd..a270cb4249b5 100644
 --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
 +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-@@ -85,7 +85,7 @@ static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u1
+@@ -72,9 +72,8 @@ static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u1
+ 			} else {
+ 				/* status != len && status >= 0 */
+ 				if (status > 0) {
+-					if (requesttype == REALTEK_USB_VENQT_READ) {
++					if (requesttype == REALTEK_USB_VENQT_READ)
+ 						memcpy(data, io_buf,  len);
+-					}
+ 				}
+ 			}
  
- 		}
- 
--		/*  firmware download is checksumed, don't retry */
-+		/*  firmware download is checksummed, don't retry */
- 		if ((value >= FW_8188E_START_ADDRESS && value <= FW_8188E_END_ADDRESS) || status == len)
- 			break;
- 	}
 -- 
 2.33.0
 
