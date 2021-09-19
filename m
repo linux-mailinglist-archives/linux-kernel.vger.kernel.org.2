@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF30410B6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEA3410B6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238014AbhISMDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:03:43 -0400
-Received: from rosenzweig.io ([138.197.143.207]:46608 "EHLO rosenzweig.io"
+        id S232912AbhISMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:03:41 -0400
+Received: from rosenzweig.io ([138.197.143.207]:46618 "EHLO rosenzweig.io"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhISMDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:03:35 -0400
-Date:   Sun, 19 Sep 2021 07:39:32 -0400
+        id S235729AbhISMDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:03:34 -0400
+Date:   Sun, 19 Sep 2021 07:47:28 -0400
 From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
         Hector Martin <marcan@marcan.st>,
-        Robin Murphy <Robin.Murphy@arm.com>, kernel-team@android.com
-Subject: Re: [PATCH v3 00/10] PCI: Add support for Apple M1
-Message-ID: <YUchdKwx6Ce2KaYw@sunset>
-References: <20210913182550.264165-1-maz@kernel.org>
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Apple Mailbox Controller support
+Message-ID: <YUcjUFv5AKky1Zb9@sunset>
+References: <20210916154911.3168-1-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210913182550.264165-1-maz@kernel.org>
+In-Reply-To: <20210916154911.3168-1-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for giving this another push, the changes look great. The series
-is
+I've dropped v1 from my tree and cherry-picked "mailbox: apple: Add
+driver for Apple mailboxes". NVMe and DCP both still work, so this is
 
 	Tested-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
 
-On Mon, Sep 13, 2021 at 07:25:40PM +0100, Marc Zyngier wrote:
-> I have resumed my earlier effort to bring the Apple-M1 into the world
-> of living by equipping it with a PCIe controller driver. Huge thanks
-> to Alyssa Rosenzweig for kicking it into shape and providing the first
-> two versions of this series.
+Thanks!
+
+On Thu , Sep 16, 2021 at 05:49:09PM +0200, Sven Peter wrote:
+> Hi,
 > 
-> Much has changed since v2[2]. Mark Kettenis is doing a great job with
-> the binding [0], so I have dropped that from the series, and strictly
-> focused on the Linux side of thing. I am now using this binding as is,
-> with the exception of a single line change, which I believe is a fix
-> [1].
+> This is the second version of my series which adds support for the mailbox
+> controllers found on the Apple M1.
 > 
-> Supporting the per-port interrupt controller has brought in a couple
-> of fixes for the core DT code.  Also, some work has gone into dealing
-> with excluding the MSI page from the IOVA range, as well as
-> programming the RID-to-SID mapper.
+> v1: https://lore.kernel.org/lkml/20210907145501.69161-1-sven@svenpeter.dev/
 > 
-> Overall, the driver is now much cleaner and most probably feature
-> complete when it comes to supporting internal devices (although I
-> haven't investigated things like power management). TB support is
-> another story, and will require some more hacking.
+> Thanks to Jassi, Mark and Alyssa for the initial review. I've addressed
+> your comments with the following changes:
 > 
-> This of course still depends on the clock and pinctrl drivers that are
-> otherwise in flight, and will affect this driver one way or another.
-> I have pushed a branch with all the dependencies (and more) at [3].
+>  - switched to txdone_irq instead of introducing a new mode
+>  - switched to a threaded interrupt handler for receiving messages
+>  - added co-processor examples to the device tree binding 
+>  - reformatted the register defines and clarified multiple comments
 > 
-> * From v2 [2]:
->   - Refactor DT parsing to match the new version of the binding
->   - Add support for INTx and port-private interrupts
->   - Signal link-up/down using interrupts
->   - Export of_phandle_args_to_fwspec
->   - Fix generic parsing of interrupt map
->   - Rationalise port setup (data structure, self discovery)
->   - Tell DART to exclude MSI doorbell from the IOVA mappings
->   - Get rid of the setup bypass if the link was found up on boot
->   - Prevent the module from being removed
->   - Program the RID-to-SID mapper on device discovery
->   - Rebased on 5.15-rc1
+> Best,
 > 
-> [0] https://lore.kernel.org/r/20210827171534.62380-1-mark.kettenis@xs4all.nl
-> [1] https://lore.kernel.org/r/871r5tcwhp.wl-maz@kernel.org
-> [2] https://lore.kernel.org/r/20210816031621.240268-1-alyssa@rosenzweig.io
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/log/?h=hack/m1-pcie-v3
+> Sven
 > 
-> Alyssa Rosenzweig (2):
->   PCI: apple: Add initial hardware bring-up
->   PCI: apple: Set up reference clocks when probing
+> Sven Peter (2):
+>   dt-bindings: mailbox: Add Apple mailbox bindings
+>   mailbox: apple: Add driver for Apple mailboxes
 > 
-> Marc Zyngier (8):
->   irqdomain: Make of_phandle_args_to_fwspec generally available
->   of/irq: Allow matching of an interrupt-map local to an interrupt
->     controller
->   PCI: of: Allow matching of an interrupt-map local to a pci device
->   PCI: apple: Add INTx and per-port interrupt support
->   arm64: apple: t8103: Add root port interrupt routing
->   PCI: apple: Implement MSI support
->   iommu/dart: Exclude MSI doorbell from PCIe device IOVA range
->   PCI: apple: Configure RID to SID mapper on device addition
-> 
->  MAINTAINERS                          |   7 +
->  arch/arm64/boot/dts/apple/t8103.dtsi |  33 +-
->  drivers/iommu/apple-dart.c           |  25 +
->  drivers/of/irq.c                     |  17 +-
->  drivers/pci/controller/Kconfig       |  17 +
->  drivers/pci/controller/Makefile      |   1 +
->  drivers/pci/controller/pcie-apple.c  | 818 +++++++++++++++++++++++++++
->  drivers/pci/of.c                     |  10 +-
->  include/linux/irqdomain.h            |   4 +
->  kernel/irq/irqdomain.c               |   6 +-
->  10 files changed, 925 insertions(+), 13 deletions(-)
->  create mode 100644 drivers/pci/controller/pcie-apple.c
+>  .../bindings/mailbox/apple,mailbox.yaml       |  84 ++++
+>  MAINTAINERS                                   |   3 +
+>  drivers/mailbox/Kconfig                       |  12 +
+>  drivers/mailbox/Makefile                      |   2 +
+>  drivers/mailbox/apple-mailbox.c               | 431 ++++++++++++++++++
+>  include/linux/apple-mailbox.h                 |  18 +
+>  6 files changed, 550 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/apple,mailbox.yaml
+>  create mode 100644 drivers/mailbox/apple-mailbox.c
+>  create mode 100644 include/linux/apple-mailbox.h
 > 
 > -- 
-> 2.30.2
+> 2.25.1
 > 
