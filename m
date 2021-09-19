@@ -2,162 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29EC410C3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFC2410C16
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhISPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 11:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
+        id S233114AbhISPO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 11:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233562AbhISPpM (ORCPT
+        with ESMTP id S230503AbhISPO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 11:45:12 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766D5C061574;
-        Sun, 19 Sep 2021 08:43:46 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v24so50626740eda.3;
-        Sun, 19 Sep 2021 08:43:46 -0700 (PDT)
+        Sun, 19 Sep 2021 11:14:57 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01765C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 08:13:31 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id d11so11915035ilc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 08:13:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cdE3tlr27r+sjfChK7knCeuUo8PGCjjDp/M+CvdPjmg=;
-        b=hhUgILbuYNm6pTiR5yB6kasYLq5KnxMIEisqdjuTPwQtkdxyxTgJHCB0bPMoEhIjIe
-         4m2P11Wkg+c09xWySzIatDu6OD0K2+G4OCnVtUEtYotGPLQBzNoXZRUqOqTkfgrN2+LA
-         g9l+8PgToTL4Y+umPGwEWrIhuBz72w28QD1Yex01uVQoFm0dWmrDOGXFaq1HrEQJA6Vf
-         cRPPkGSNMXoj9fa3/69QXSNP7fNM6Egw5OJgMqj13Mx3dZ85qLwF+eTz5GT8WS0PtDUG
-         cRQOebUcABmqOnPAjmqQDch+UzL5/GRSOPt26WMVbJ1+898mtEbCRI8qNR6eEViJ4Bjv
-         pA/A==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=MSQ1PRJSvjZhtx9fo6nozZKkifyjqLJzfpGjrSbvl2M=;
+        b=aIwe8FJMFJeObwYIMX5lM2PB/WNWWNLZv9GtNz9niUIiNfUN+LNx/fPm3XtO8aT5sI
+         MmuUfQhkBAxyPnzuIayQv0PqsV8UjQbGD6mrQX43gq6OmLYdXGe2OdFCrNeHqxRV+6Da
+         QRsALJNAaii63VyyAjYUd8DrJa6N8LEBvGV4qD8k6Rpk6Vqhus2gQTz+VQepeyilSluJ
+         +HUol3kQZJg6/2m7XBSS9PIZUROETPkCTKMJWkssrWMQBvijVmLy3AfeJQBMq6yJdeDf
+         tINY/5N53WOAFuV2/bri/W2QwRuDtDlFn0ZsIvv0XXPAurcG2U02cWEY17zgtJvaSxju
+         bmIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cdE3tlr27r+sjfChK7knCeuUo8PGCjjDp/M+CvdPjmg=;
-        b=T+72BC8yJR7MMlIr44bVaM7LdmLRN5nWGpjHbPR3UZM2dCd5/j5pToERxnWyqfQ4J6
-         5cP82ekbuluuA5nDIm28+zd/crIHaUGpzfbwRRt1CeEQciKeCseYBzBws+ItS2HaYR/4
-         K2xF6MydkCLARdc0zaURnrD/gzIW+aDM6jPCbbsVkITbvx/Mafz+fMvZWs9opT3YsNcL
-         6uuUKvYRiS2zS0iJlnosd1muAmjaDaMN4ZRP0lfmfEAtNCaSRzG55nRHIDBQPHnRFVGn
-         xhg34RjS9ZgrJuzmWqjRkNebb+PTwVgnehDcVOQo4/J5Nm8JWHjyIzG8Skzk4UAd8qES
-         Ho8w==
-X-Gm-Message-State: AOAM530iaac52xLRERkoRKKiRwCKJI74Z5hlQGP2cg3rmqNT/SklbjfY
-        4WFKtPTRMBqKtKs/AshH1ei/ZofjpYo=
-X-Google-Smtp-Source: ABdhPJy+8m5K7XvuDsGAV3V4a6JGGjPwaeRZKUEvwB2u7px2G/voQUJ79njLRDW5sfWlBcITw6qh/w==
-X-Received: by 2002:a17:906:3b56:: with SMTP id h22mr23385797ejf.141.1632066224875;
-        Sun, 19 Sep 2021 08:43:44 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-67-254.ip85.fastwebnet.it. [93.42.67.254])
-        by smtp.googlemail.com with ESMTPSA id g10sm4999309ejj.44.2021.09.19.08.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 08:43:44 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 3/3] net: phy: at803x: fix spacing and improve name for 83xx phy
-Date:   Sun, 19 Sep 2021 17:11:46 +0200
-Message-Id: <20210919151146.10501-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210919151146.10501-1-ansuelsmth@gmail.com>
-References: <20210919151146.10501-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=MSQ1PRJSvjZhtx9fo6nozZKkifyjqLJzfpGjrSbvl2M=;
+        b=6mPuyEOYbmqUke+Pkffo4hkBZjeq0r3VRYgL+ZZomn0BGwi57sKOEedxuV/30xnx9n
+         dDGGRJmurCpeV9M4bREIBARc6WnP0xwXt5PV9r0fw79C/oRRUA9q9dD1VWcpHkl1GWvA
+         ckIMYcAIsZ6sEBsVHEnYiEYW6DePuy7cNSjC/c00Pg8uDhUZwc52Ntla5Z4wRCdeAzjg
+         Dzigo4ea5dKUPq3CMSIpbRABKvqq3cCpJLHP9Hwv3ZWHyzzPZS6h0l2P3YTjkQdmB+VW
+         FuazyZ204KBdMM8k/V66dsWk++l5dwSogMPXh/gYfv2RGAUiKavXSMsrerzo9E/n3ir9
+         HuwA==
+X-Gm-Message-State: AOAM532UvT+sFK0zkGn1xiHlNdGuT/wkAVI0ho+Rq7Y3Jr5rOR2fPSQV
+        xtBWkiHWcJLvV9OruqlzdmKvTL37PxTdk2IDVos=
+X-Google-Smtp-Source: ABdhPJzCKGZwfn0uNfABp5dk8zXgMm5Em9fWfDpJiM1PjSmUfVEhEMNjA9NPjp6xlnmidj6/GmraIBu+cAnEfzSUT/Q=
+X-Received: by 2002:a05:6e02:1c04:: with SMTP id l4mr11534829ilh.83.1632064411303;
+ Sun, 19 Sep 2021 08:13:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a02:aa9a:0:0:0:0:0 with HTTP; Sun, 19 Sep 2021 08:13:30
+ -0700 (PDT)
+Reply-To: fu04@lnvitop.com
+From:   Donna Coaster <jessicahernandez980@gmail.com>
+Date:   Sun, 19 Sep 2021 08:13:30 -0700
+Message-ID: <CAHb0DLpzYdJton8ZDubZO=ySSj9gFueuWnaQLMRFHr3QyHNN_g@mail.gmail.com>
+Subject: ORDER INQUIRY FOR SEPTEMBER
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix spacing and improve name for 83xx phy following other phy in the
-same driver.
+Hi,
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/phy/at803x.c | 60 ++++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 30 deletions(-)
+Hope everything is going very well with you!
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index 8156fbc7f00d..f6f44d343667 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1422,47 +1422,47 @@ static struct phy_driver at803x_driver[] = {
- 	.config_aneg		= at803x_config_aneg,
- }, {
- 	/* QCA8337 */
--	.phy_id = QCA8337_PHY_ID,
--	.phy_id_mask = QCA8K_PHY_ID_MASK,
--	.name = "QCA PHY 8337",
-+	.phy_id			= QCA8337_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8337 internal PHY",
- 	/* PHY_GBIT_FEATURES */
--	.probe = at803x_probe,
--	.flags = PHY_IS_INTERNAL,
--	.config_init = qca83xx_config_init,
--	.soft_reset = genphy_soft_reset,
--	.get_sset_count = at803x_get_sset_count,
--	.get_strings = at803x_get_strings,
--	.get_stats = at803x_get_stats,
-+	.probe			= at803x_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= at803x_get_sset_count,
-+	.get_strings		= at803x_get_strings,
-+	.get_stats		= at803x_get_stats,
- 	.suspend		= qca83xx_suspend,
- 	.resume			= qca83xx_resume,
- }, {
- 	/* QCA8327-A from switch QCA8327-AL1A */
--	.phy_id = QCA8327_A_PHY_ID,
--	.phy_id_mask = QCA8K_PHY_ID_MASK,
--	.name = "QCA PHY 8327-A",
-+	.phy_id			= QCA8327_A_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8327-A internal PHY",
- 	/* PHY_GBIT_FEATURES */
--	.probe = at803x_probe,
--	.flags = PHY_IS_INTERNAL,
--	.config_init = qca83xx_config_init,
--	.soft_reset = genphy_soft_reset,
--	.get_sset_count = at803x_get_sset_count,
--	.get_strings = at803x_get_strings,
--	.get_stats = at803x_get_stats,
-+	.probe			= at803x_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= at803x_get_sset_count,
-+	.get_strings		= at803x_get_strings,
-+	.get_stats		= at803x_get_stats,
- 	.suspend		= qca83xx_suspend,
- 	.resume			= qca83xx_resume,
- }, {
- 	/* QCA8327-B from switch QCA8327-BL1A */
--	.phy_id = QCA8327_B_PHY_ID,
--	.phy_id_mask = QCA8K_PHY_ID_MASK,
--	.name = "QCA PHY 8327-B",
-+	.phy_id			= QCA8327_B_PHY_ID,
-+	.phy_id_mask		= QCA8K_PHY_ID_MASK,
-+	.name			= "Qualcomm Atheros 8327-B internal PHY",
- 	/* PHY_GBIT_FEATURES */
--	.probe = at803x_probe,
--	.flags = PHY_IS_INTERNAL,
--	.config_init = qca83xx_config_init,
--	.soft_reset = genphy_soft_reset,
--	.get_sset_count = at803x_get_sset_count,
--	.get_strings = at803x_get_strings,
--	.get_stats = at803x_get_stats,
-+	.probe			= at803x_probe,
-+	.flags			= PHY_IS_INTERNAL,
-+	.config_init		= qca83xx_config_init,
-+	.soft_reset		= genphy_soft_reset,
-+	.get_sset_count		= at803x_get_sset_count,
-+	.get_strings		= at803x_get_strings,
-+	.get_stats		= at803x_get_stats,
- 	.suspend		= qca83xx_suspend,
- 	.resume			= qca83xx_resume,
- }, };
--- 
-2.32.0
+Please we need the below listed items, Can you quote us your prices
+base on the quantities attached.
 
+------------------
+Thanks & best regards,
+
+Donna Coaster
+Purchasing Manager.
