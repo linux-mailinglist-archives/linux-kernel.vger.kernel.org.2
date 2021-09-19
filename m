@@ -2,153 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465D5410C6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 18:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1192C410C6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 18:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhISQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 12:52:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32914 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231449AbhISQws (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 12:52:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632070282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G9A/ZW/hYr0iV04kgVzIKko+q+g2fbtqUk/FZXyEAQM=;
-        b=M/kWPRcgI2nPkaSD6YKvuBHIsK7UwlHeYGwjvPTD0UouJylMX3xdJAK+nvaLlJNb5DILXR
-        uioQL+yiPPquknz6R9hFbqXrBRaFo106oICifJy6nlR6XTZrBo70dT1rbgllOBQtdAw/hU
-        IKjDup70BQE+6WcSfPYeqsV/9IFO3e4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-rhlz5vU0NdSdMhkCviwjfQ-1; Sun, 19 Sep 2021 12:51:21 -0400
-X-MC-Unique: rhlz5vU0NdSdMhkCviwjfQ-1
-Received: by mail-ed1-f69.google.com with SMTP id b7-20020a50e787000000b003d59cb1a923so12690703edn.5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 09:51:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G9A/ZW/hYr0iV04kgVzIKko+q+g2fbtqUk/FZXyEAQM=;
-        b=NRtS8coYyV6AxHNWlXzZOdM2Q9jTHCfJ5uuheXfAucCRhQ8OGAorrnq1c2ZJUxBVX+
-         icQGx9Ri84Nx7QBEp/OV9MsXVdyPPCwnKPJA6XxrrzllC2U0B/WpX5kLVdc9XQ6/0vI/
-         rk0h6iLnwPk+j1UvDu6iBYv9pOTjFCTABKvSNfLm6l+aE1/kpo2Jh3hGFn+U8xlJhD1x
-         GOCuMvuBScblKPWmeYnHwXe/j4Lheb9yHdvs3GWsgm9UcZ9FjPLgiSaumVPRDpR0+Zrs
-         r7+IiAqWcntPpaSAmXiqmwvhmh3nEWWRJtlYlyMtr44dqVI1zS26jwMGTPKMLlP6E6Se
-         3LYA==
-X-Gm-Message-State: AOAM531Cu41/0ebHbtSqp5LulpSlZ0zEcJRHLa15j0ebFasPwOvxiSeJ
-        SzhoVxvJArvYM++lOe0VCaf2PJdEYi6sq/53F4ZvaBiposIvUzVUYyx5cq6E6KmxbHKx/8f8Zlp
-        oLZGFfr0qRnjdLiHerq8LoJ7x1shYWd18yehqinB0ZxR8yd3XIBU2SbPNtivlzDxJpdjEW8jGxR
-        XG
-X-Received: by 2002:a17:906:544f:: with SMTP id d15mr24857559ejp.520.1632070280219;
-        Sun, 19 Sep 2021 09:51:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwu9tmc5IiASoxzvTqmp01CKGM4gJcPBoC8MmukNHpp+eGCuR+z/e3wHMSPI4q1UQCKZCuUKA==
-X-Received: by 2002:a17:906:544f:: with SMTP id d15mr24857543ejp.520.1632070280004;
-        Sun, 19 Sep 2021 09:51:20 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id h8sm5277277ejj.22.2021.09.19.09.51.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Sep 2021 09:51:19 -0700 (PDT)
-Subject: Re: [PATCH v5] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-To:     Tor Vic <torvic9@mailbox.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210901151643.13562-1-hpa@redhat.com>
- <3e26e7a5-0d99-b993-d5ce-aa517e1bf1bb@redhat.com>
- <yq1h7f24y6f.fsf@ca-mkp.ca.oracle.com>
- <238d0841-0f03-928f-5441-89d5c9dcf9b9@redhat.com>
- <cd75fa32-8c4d-664e-5adb-f2f325d3c58e@redhat.com>
- <yq14kb24e97.fsf@ca-mkp.ca.oracle.com>
- <f071dfb3-1aad-003c-00bc-6b7ecf103e91@mailbox.org>
- <967d7639-fc31-a209-8c21-ea8ab3718de6@redhat.com>
- <66b4c377-1b17-1972-847e-207620cc9364@mailbox.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <361d702e-44c4-625f-5b6b-121a4dc07105@redhat.com>
-Date:   Sun, 19 Sep 2021 18:51:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234037AbhISQtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 12:49:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhISQtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 12:49:17 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0834B60EFF;
+        Sun, 19 Sep 2021 16:47:49 +0000 (UTC)
+Date:   Sun, 19 Sep 2021 17:51:30 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Roan van Dijk <roan@protonic.nl>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v2 4/4] iio: documentation: Document scd4x calibration
+ use
+Message-ID: <20210919175130.410d4ac2@jic23-huawei>
+In-Reply-To: <20210913080020.1265027-5-roan@protonic.nl>
+References: <20210913080020.1265027-1-roan@protonic.nl>
+        <20210913080020.1265027-5-roan@protonic.nl>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <66b4c377-1b17-1972-847e-207620cc9364@mailbox.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 13 Sep 2021 10:00:20 +0200
+Roan van Dijk <roan@protonic.nl> wrote:
 
-On 9/19/21 6:27 PM, Tor Vic wrote:
+> Add entries from Documentation/ABI/testing/sysfs-bus-iio-scd30
+> to Documentation/ABI/testing/sysfs-bus-iio. The attributes of the scd4x
+> and scd30 are common.
 > 
+> Remove Documentation/ABI/testing/sysfs-bus-iio-scd30.
 > 
-> On 19.09.21 15:27, Hans de Goede wrote:
->> Hi Tor,
->>
->> On 9/19/21 4:24 PM, Tor Vic wrote:
->>> Hi,
->>>
->>> I saw that v2 (?) of this patch has made it into stable, which
->>> is quite reasonable given the number of bug reports.
->>> Are there any plans to "enhance" this patch once sufficient data
->>> on controller support/drive combinations has been collected?
->>
->> ATM there are no plans to limit these quirks, we have bug
->> reports of queued trims being an issue over all usual chip-vendors
->> of sata controllers (including more recent AMD models).
->>
->> Note that unless you have immediate "discard" enabled as an option
->> on all layers of your storage stack (dmcrypt, device-mapper/raid,
->> filesystem) then this change will not impact you at all.
+> Signed-off-by: Roan van Dijk <roan@protonic.nl>
+Hi Roan,
+
+Great to move these, but there is a bit too much 'specific' detail in here
+reflecting the scd30.  We either need to make the descriptions more generic
+or state some parts are only true for that device.
+
+Some suggestions inline.  Make sure they also apply to your new driver.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  Documentation/ABI/testing/sysfs-bus-iio       | 35 +++++++++++++++++++
+>  Documentation/ABI/testing/sysfs-bus-iio-scd30 | 34 ------------------
+>  2 files changed, 35 insertions(+), 34 deletions(-)
+>  delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
 > 
-> Is that the "discard" mount option?
-> I added this to one of the partitions residing on my 860 Evo,
-> reverted the patch, and it still seems to work just fine.
-> 
->   $ mount | grep sdb
-> 
-> 
->   /dev/sdb1 on /mnt/vbox type ext4 (rw,nosuid,nodev,noatime,discard)
-> 
-> Is there another place where discard has to be enabled?
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> index 6ad47a67521c..56492c564f72 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> @@ -1957,3 +1957,38 @@ Description:
+>  		Specify the percent for light sensor relative to the channel
+>  		absolute value that a data field should change before an event
+>  		is generated. Units are a percentage of the prior reading.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
+> +Date:		June 2020
+> +KernelVersion:	5.8
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Contaminants build-up in the measurement chamber or optical
+> +		elements deterioration leads to sensor drift.
 
-No since you do not seem to be using dmcrypt/raid/lvm that should
-do the trick.
+Given this is a top level ABI doc, we don't know it is sensor with a measurement
+chamber or that it's optical.  This might be an ADC.
 
-Except that it sounds like this is a partition carrying vm
-images. Those never delete storage, they only grow, to
-effectively trim you need to either punch holes in files,
-or remove files. Discard only comes in to play when used
-diskspace becomes unused.
+We could make this an example.
 
-To test preferably remove several large files at once while
-also generating a whole bunch of other diskio (e.g.
-compile the kernel while also deleting several large files
-from the same disk, with discard enable).
+		Some sensors have the ability to apply auto calibration at
+		runtime.  For example, it may be necessary to compensate for
+		contaminant build-up in a measurement chamber or optical
+		element deterioration that would otherwise lead to sensor drift.
 
-But even if that works for you, that is 1 report that this
-works in some cases, vs many that it does not work; and also
-note that you had to manually enable this, it was not
-enabled before. So this really is going to impact the
-performance of very few users, while looking at the amount
-of bugreports about hangs / disk-corruption the problem
-of having queued-trim support enabled is much much bigger,
-so I see very little reason to re-enable this even if it
-happens to work in your case.
+		Writing 1 or 0 to this attribute will respectively activate or
+		deactivate this auto calibration function.
 
-> Or is there a way to check that discard is effectively enabled?
+		Upon reading, the current status is returned.
+> +
+> +		One can compensate for sensor drift by using automatic self
+> +		calibration procedure (asc).
+> +
+> +		Writing 1 or 0 to this attribute will respectively activate or
+> +		deactivate asc.
+> +
+> +		Upon reading current asc status is returned.
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
+> +Date:		June 2020
+> +KernelVersion:	5.8
+> +Contact:	linux-iio@vger.kernel.org
+> +Description:
+> +		Contaminants build-up in the measurement chamber or optical
+> +		elements deterioration leads to sensor drift.
+> +
+> +		One can compensate for sensor drift by using forced
+> +		recalibration (frc). This is useful in case there's known
+> +		co2 reference available nearby the sensor.
 
-There probably is, but I don't know where / how to check this.
+Remove the c02 specific references from here and have something like
 
-Regards,
+		Some sensors have the ability to apply a manual calibration using
+		a known measurement value, perhaps obtained from an external
+		reference device. 
 
-Hans
+		Writing a value to this function will force such a calibration
+		change. For the scd30 the value should be from the range
+		[400 1 2000].
 
+		Note that a valid value may only be obtained once it is has been
+		written.  Until then any read back of this value should be ignored.
 
+Hmm. That last bit is rather ugly.  I'd rather we returned an error code if the
+value had not yet been forced.  We should clean that up at some stage and also
+add an appropriate _available so we don't need to document the range in this file.
+
+		
+> +
+> +		Picking value from the range [400 1 2000] and writing it to the
+> +		sensor will set frc.
+> +
+> +		Upon reading current frc value is returned. Note that after
+> +		power cycling default value (i.e 400) is returned even though
+> +		internally sensor had recalibrated itself.
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-scd30 b/Documentation/ABI/testing/sysfs-bus-iio-scd30
+> deleted file mode 100644
+> index b9712f390bec..000000000000
+> --- a/Documentation/ABI/testing/sysfs-bus-iio-scd30
+> +++ /dev/null
+> @@ -1,34 +0,0 @@
+> -What:		/sys/bus/iio/devices/iio:deviceX/calibration_auto_enable
+> -Date:		June 2020
+> -KernelVersion:	5.8
+> -Contact:	linux-iio@vger.kernel.org
+> -Description:
+> -		Contaminants build-up in the measurement chamber or optical
+> -		elements deterioration leads to sensor drift.
+> -
+> -		One can compensate for sensor drift by using automatic self
+> -		calibration procedure (asc).
+> -
+> -		Writing 1 or 0 to this attribute will respectively activate or
+> -		deactivate asc.
+> -
+> -		Upon reading current asc status is returned.
+> -
+> -What:		/sys/bus/iio/devices/iio:deviceX/calibration_forced_value
+> -Date:		June 2020
+> -KernelVersion:	5.8
+> -Contact:	linux-iio@vger.kernel.org
+> -Description:
+> -		Contaminants build-up in the measurement chamber or optical
+> -		elements deterioration leads to sensor drift.
+> -
+> -		One can compensate for sensor drift by using forced
+> -		recalibration (frc). This is useful in case there's known
+> -		co2 reference available nearby the sensor.
+> -
+> -		Picking value from the range [400 1 2000] and writing it to the
+> -		sensor will set frc.
+> -
+> -		Upon reading current frc value is returned. Note that after
+> -		power cycling default value (i.e 400) is returned even though
+> -		internally sensor had recalibrated itself.
 
