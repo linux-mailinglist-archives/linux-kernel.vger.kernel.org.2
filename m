@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1190D410C51
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8533C410C56
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 18:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhISQBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 12:01:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33568 "EHLO mail.kernel.org"
+        id S233804AbhISQNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 12:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229933AbhISQBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 12:01:16 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S229933AbhISQNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 12:13:04 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E16FC6101B;
-        Sun, 19 Sep 2021 15:59:49 +0000 (UTC)
-Date:   Sun, 19 Sep 2021 17:03:30 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: accel: mma7660: Mark acpi match table as maybe
- unused
-Message-ID: <20210919170330.0b79cb0e@jic23-huawei>
-In-Reply-To: <20210919072616.3849723-1-daniel@0x0f.com>
-References: <20210919072616.3849723-1-daniel@0x0f.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2334610A8;
+        Sun, 19 Sep 2021 16:11:38 +0000 (UTC)
+Date:   Sun, 19 Sep 2021 12:11:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Carles Pey <carles.pey@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/1] ftrace: add unit test for removing trace
+ function
+Message-ID: <20210919121137.33d687b8@rorschach.local.home>
+In-Reply-To: <20210918153043.318016-1-carles.pey@gmail.com>
+References: <20210918153043.318016-1-carles.pey@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,37 +33,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Sep 2021 16:26:16 +0900
-Daniel Palmer <daniel@0x0f.com> wrote:
+On Sat, 18 Sep 2021 19:30:42 +0400
+Carles Pey <carles.pey@gmail.com> wrote:
 
-> When building kernels without ACPI support the table is declared
-> but is not used because ACPI_PTR() turns it into a NULL.
+> Hi,
 > 
-> Add the __maybe_unused attribute to stop the compiler whining.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-Applied to the togreg branch of iio.git which is initially pushed out as testing
-to let 0-day poke at it and see if we missed anything.
+> This patch adds a basic startup self-test for removing a traced
+> function.
 
-Thanks,
+Thanks for the patch, but note, because I'm highly involved in the
+organization of Linux Plumbers that is taking place next week, I may
+not have time to look at it for a couple of weeks.
 
-Jonathan
-
-> ---
->  drivers/iio/accel/mma7660.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/accel/mma7660.c b/drivers/iio/accel/mma7660.c
-> index 47f5cd66e996..cd6cdf2c51b0 100644
-> --- a/drivers/iio/accel/mma7660.c
-> +++ b/drivers/iio/accel/mma7660.c
-> @@ -254,7 +254,7 @@ static const struct of_device_id mma7660_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, mma7660_of_match);
->  
-> -static const struct acpi_device_id mma7660_acpi_id[] = {
-> +static const struct acpi_device_id __maybe_unused mma7660_acpi_id[] = {
->  	{"MMA7660", 0},
->  	{}
->  };
-
+-- Steve
