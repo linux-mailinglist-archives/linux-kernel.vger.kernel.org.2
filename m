@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8CC410B9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E841410BAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhISM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhISM4t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:56:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8317AC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 05:55:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632056123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+OLK43v2moJaSmMHQZXfBdQNFh+lvMLEft1206Pu7Vw=;
-        b=G6dmn4q6Kdle+J90FlW2oZ8k9j1FlZtT0qJpYY+0ugIHdz1xGP5dM4jesMBMz2ojKeOpvB
-        F00KsDio1txfNen7JzNPc7QFax59wWkD6QqaQpHx+9Xa2Rxs3DWbwVB6uHWc0zfU6hAAYY
-        RDs5v9e8jBcosR/KKU2lsIVEqSYrzSo7LZ+Pqw9YioRzORJjdOIOEwmwILoFERQ58iq9Dj
-        JMWX0x8C+S7rTcsVtyabuDHrXGL0bF+mcz/cdvL0xvEkggBiTwC9KsHbSjqa79U4koRbi8
-        BnO9NWHrjHxTqaunx6Gd415x0N+joH0kyYpYj+QSkzJLMpPKofY7xrZElwwK2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632056123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+OLK43v2moJaSmMHQZXfBdQNFh+lvMLEft1206Pu7Vw=;
-        b=NgjdzzGoz48EsMmQGlQtCIVq4nEXPwV9UxjfV9+2sF0gWeAXWa1VTlqp75UZIaci9hIAQE
-        g8q2T8ow4tG/IOAw==
-To:     syzbot <syzbot+4546a69bfcab9a42f280@syzkaller.appspotmail.com>,
-        bp@alien8.de, dwmw@amazon.co.uk, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, x86@kernel.org,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [syzbot] WARNING in insert_work
-In-Reply-To: <000000000000343aaf05cc027f83@google.com>
-References: <000000000000343aaf05cc027f83@google.com>
-Date:   Sun, 19 Sep 2021 14:55:22 +0200
-Message-ID: <87o88o7mit.ffs@tglx>
+        id S232649AbhISM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:58:20 -0400
+Received: from mout.perfora.net ([74.208.4.194]:40169 "EHLO mout.perfora.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232394AbhISM6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:58:07 -0400
+Received: from localhost.localdomain ([81.221.236.183]) by mrelay.perfora.net
+ (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1Mk0iC-1nCFXq27NA-00kNtD;
+ Sun, 19 Sep 2021 14:55:51 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Fabio Estevam <festevam@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>, Marek Vasut <marex@denx.de>,
+        Martin KaFai Lau <kafai@fb.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Olof Johansson <olof@lixom.net>,
+        Otavio Salvador <otavio@ossystems.com.br>,
+        Pascal Zimmermann <pzimmermann@dh-electronics.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Tim Harvey <tharvey@gateworks.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        soc@kernel.org
+Subject: [PATCH v3 0/9] ARM: prepare and add colibri imx6ull 1gb (emmc) support
+Date:   Sun, 19 Sep 2021 14:55:27 +0200
+Message-Id: <20210919125536.117743-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:yuHgL3suxeZmdwsdlRvLWnSFvJn72p/B2Q+ZQMEX0ze4w1sIYue
+ y5CCiA2Zjt4hqEwc22z/ciodKapEGTsgjSZShBuM/nYLBbNnaXur+tYDPaHdgJvqz8WYdZx
+ HRtEiZYYcRkwUx+8TzP8GU0gXZmwORQYNE4dom17cic0jOMbzX+lEu3b9EqtdIeg5a3ap2p
+ U+nLna7CUpHhSTMhHZiLw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4pLuSYrx7r0=:D+0o56dgmtQTlUwxMTBXpY
+ ej4Vj3DrdFy5Bhcy4iFBN7UFMLXF9p1ZktceuqBkqPU19t5/ppDxw9gyEH6QLAEYREb98lxUa
+ cyDFqVcrrDDyaMOEOEfX0a1BaRY/Dvif7lLLC1YjDCGVkmcbf/gblePOSIrZRxufHz2L2evAu
+ JflJaNUyw0cdADJQIW972jMipMhMsk64sb+VWu6ixoqrL7detfBONhFMumoDD8FAb4NdksdIg
+ V2zRLtd+Zhy+pzIqjNbmqOAFy0Qn6Vq7bcJ1fE9m6ChhfLIIYjB7WPCHc659wZfI8pSNHIKaj
+ XPL97aaQ5Pp/9Zdxeg6yjtVYD/ydii98KQcTrexBTRG3/Qx1MkfJFI9oEgHKRzAtl5mH56TiN
+ E0JHZ0PpwGuX4NEgVFtPkrPpVGR58o61rWrNkDFG7DQz4Q3kJ5v5a2ASsKrCGvbHebz9FEZ7K
+ Ynxh0oxZUaS1Dg9edMivS/pbpQeQAw1RBmIrFfAmUXyJZaKCcrBfWsUiqMnRWwaBE6xXydv4p
+ Na/W/W1k2c2zKsqAD+6N6a2EurymF55/h1qcC5c6HJzGKR/jY53vwnN7q9bZ2lGp/IvIV8jOD
+ j5nYHpcMmhSSecsD65++pwq+rcehlTMi+jpQTh6wMPu9Wn5TynHXzDDL8nQY0s/7oh53/AI8i
+ Fs4wcOjae1pFtdWUXTLtInwlRKrBM+72kCU/1VovrGBb1asGARcsapPh6z9Gv9XIx5epPbwmg
+ PNPt8pT4f8FEOVkKeA/Hq235+0pNcsbo+2OqGg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14 2021 at 23:06, syzbot wrote:
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 set_work_data kernel/workqueue.c:633 [inline]
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-That is this warning in set_work_data():
 
-     WARN_ON_ONCE(!work_pending(work));
+Clean-up imx_v6_v7_defconfig and then add support for the new Colibri
+iMX6ULL 1GB (eMMC) which builds on the success of the existing Colibri
+iMX6ULL SKUs using raw NAND but replaces this with more RAM (1 GB) and
+an eMMC (4 GB).
 
-> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 set_work_pwq kernel/workqueue.c:640 [inline]
-> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 insert_work+0x2a7/0x370 kernel/workqueue.c:1356
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:set_work_data kernel/workqueue.c:633 [inline]
-> RIP: 0010:set_work_pwq kernel/workqueue.c:640 [inline]
-> RIP: 0010:insert_work+0x2a7/0x370 kernel/workqueue.c:1356
-> Code: b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 7b 40 e8 30 93 05 00 eb 83 e8 09 86 2a 00 <0f> 0b e9 dc fd ff ff 48 89 ef e8 ca d0 71 00 e9 56 ff ff ff 4c 89
-> RSP: 0018:ffffc90000007c70 EFLAGS: 00010046
-> RAX: 0000000000000000 RBX: ffff888088ac54b0 RCX: 0000000000000100
-> RDX: ffffffff8b6bc680 RSI: ffffffff814b8737 RDI: 0000000000000003
-> RBP: 0000000000000005 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff814b8511 R11: 0000000000000000 R12: ffff888010c69858
-> R13: ffff888147c49800 R14: ffff888010c69800 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f4db76b6ab4 CR3: 000000000b68e000 CR4: 0000000000350ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-> Call Trace:
->  <IRQ>
->  __queue_work+0x5ca/0xee0 kernel/workqueue.c:1519
->  call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
+Changes in v3:
+- Add Fabio's reviewed-by. Thanks!
+- Added fixes tag as pointed out by Stefan and Fabio. Thanks!
+- Add Rob's ack. Thanks!
 
-So this is a delayed work. The timer fires and wants to queue the work,
-but the work is not pending. No idea how that can happen.
+Changes in v2:
+- New patch cleaning-up dt-bindings documentation.
+- Fix indentation.
+- Use latest agreed upon SPDX-License-Identifier GPL-2.0+ OR MIT.
+- Drop AG in our copyright statement as recommended by our legal.
+- New patch documenting dt-bindings.
 
-Unfortunately there is no hint which work item this could be. The
-warning does not tell which work function is associated to that
-work. That might be a useful hint (or not if it's some generic and
-widely used work function).
+Marcel Ziswiler (8):
+  ARM: imx_v6_v7_defconfig: enable mtd physmap
+  ARM: imx_v6_v7_defconfig: enable fb
+  ARM: imx_v6_v7_defconfig: change snd soc tlv320aic3x to i2c variant
+  ARM: imx_v6_v7_defconfig: rebuild default configuration
+  ARM: imx_v6_v7_defconfig: build imx sdma driver as module
+  ARM: imx_v6_v7_defconfig: enable bpf syscall and cgroup bpf
+  dt-bindings: arm: fsl: clean-up all toradex boards/modules
+  dt-bindings: arm: fsl: add toradex,colibri-imx6ull-emmc
 
-Thanks,
+Max Krummenacher (1):
+  ARM: dts: colibri-imx6ull-emmc: add device tree
 
-        tglx
+ .../devicetree/bindings/arm/fsl.yaml          |  87 ++++----
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/imx6ull-colibri-emmc-eval-v3.dts |  17 ++
+ .../dts/imx6ull-colibri-emmc-nonwifi.dtsi     | 185 ++++++++++++++++++
+ arch/arm/boot/dts/imx6ull-colibri.dtsi        |  32 ++-
+ arch/arm/configs/imx_v6_v7_defconfig          |  46 ++---
+ 6 files changed, 299 insertions(+), 69 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts
+ create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi
+
+-- 
+2.26.2
 
