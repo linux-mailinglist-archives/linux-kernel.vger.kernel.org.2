@@ -2,122 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2A241095B
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 04:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0C241097B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 05:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236926AbhISCo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 22:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        id S235890AbhISDMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 23:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbhISCoQ (ORCPT
+        with ESMTP id S229476AbhISDMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 22:44:16 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AED1C061574;
-        Sat, 18 Sep 2021 19:42:51 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k23-20020a17090a591700b001976d2db364so10206458pji.2;
-        Sat, 18 Sep 2021 19:42:51 -0700 (PDT)
+        Sat, 18 Sep 2021 23:12:45 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E8AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 20:11:20 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id 5so8812910plo.5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 20:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fz3Dg8ANWjwbm87N+aD2ACzPe3MP9bGNtGAl5p9KClk=;
-        b=YeI+KpvcdX5xyRlg0CgsG5JwjXUByuZQHG1LWBKllSDkyh6Yja4xzhPnmtQ/tk0CwD
-         zxiCqXiYO0wU74qqRhIissbgsAS9HHwv1yeig36iPgZMOpj5pxbGEOsrYDSK/pVlshjt
-         5qv79lzqqB6vPG4lXXFWy+Awg3qHgzl6R3lN7Vxb6GiL+p8R9zERDxoGMyDIfwNjHpJS
-         CAeyshqLx/i9mxnojMLGMTRTciT3DvrKFPCItf8dkSTWSxCDiHL5jRpGhMY8XC7x76Vv
-         I5At/p+q2phCBgZEarT9hPyCnrVKTTNMoymw7ALKAW8euqxqqgkQRjdytiwSaVn9f3v9
-         iCLw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=G6BucwPaZnnmqaLd4fYBveJkURWi7kDjQMGIY7cMKK0=;
+        b=r554Mpl0BWcOt8Cj0gmLagxeJwfxwlc/lRfhLTiC/U10hq1fm02juk0DBXOnlhO7mZ
+         eFTtK4sU4KRhV9WL5ip37UxxO2DIOlGG1CWc+fEtBkxnM0vOrZnczvUShnT4pX0ukXLH
+         1UcS09Gs5zyYd1hMxAhh9Dv+grhC2FjI1cR2NnP1eLXmXFSFKgX0gSpa6AU5ZbFABRxb
+         CuvgcLJ8iFhsYUHLFmzz84762YJSYQBiLmFOEOV2z1b9dh0389DftNeiT5knN0Q2m2HI
+         mrXP940pu86rSEjg1TCwE80SUQT89FltRfKCNuNqczD3ELv2yj/pBvuNVsg+Q8EUOZvI
+         SZ8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fz3Dg8ANWjwbm87N+aD2ACzPe3MP9bGNtGAl5p9KClk=;
-        b=Kreal0/W8/Ay5M6bmPxTr5nouHu3pt88Cx+M5swbo5K06a296aOj4U1lpw+WdjkCGf
-         s/mXy7L7Enf9Q7BcaxlfjYQrAlMP+JyCSxiTRK/Bc73/bp5lo/HUMsiOpMYE4ILm1Gox
-         iLzA/EgoGkX8ye7yV8TAZSbA/M6sRdxbTeJt//6kVCOEpnXoHaQ4y5oo70rAIh+22lOn
-         LL0EwuT0QcwdhpkaescyGfZ7yiuMWfimlGXIdJZRS0WGFyumBBcA8XN0RRVAiZTyYoG4
-         wXjUmHU0BtANCzKajjw946dUH4NHBitndLrIea/Qo0JCEVjoRBdQ0ZWzemgTxfJKt7aV
-         1Sug==
-X-Gm-Message-State: AOAM530wP6hz91QIDmSN2d2RBe3dz/DF29Tq4jSUp2KnAlhHN5pNGYKk
-        eCu4Wcsvi9srihvnreTglYFwZlxsu+/6Ag==
-X-Google-Smtp-Source: ABdhPJxJyA9ekbXcrsgCWnaP/lOFwltpVmetzNyOS80wTpOAmpLBxXBbkGMTFDrs3Jyn81GJnybKlA==
-X-Received: by 2002:a17:903:120e:b0:138:d732:3b01 with SMTP id l14-20020a170903120e00b00138d7323b01mr16470531plh.21.1632019370951;
-        Sat, 18 Sep 2021 19:42:50 -0700 (PDT)
-Received: from localhost ([198.11.178.15])
-        by smtp.gmail.com with ESMTPSA id m7sm11025008pgn.32.2021.09.18.19.42.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 18 Sep 2021 19:42:50 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 2/2] KVM: X86: Don't reset mmu context when toggling X86_CR4_PGE
-Date:   Sun, 19 Sep 2021 10:42:46 +0800
-Message-Id: <20210919024246.89230-3-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210919024246.89230-1-jiangshanlai@gmail.com>
-References: <20210919024246.89230-1-jiangshanlai@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=G6BucwPaZnnmqaLd4fYBveJkURWi7kDjQMGIY7cMKK0=;
+        b=Gd3sBCvYAZ07pS9ddal99EWUzskoeSUyNzaQU/PQ953EIR/WDCOeoAGsHLDn+FfN2k
+         OLcdkzuVtu05CpdPMfoRdRKack4tTBBDj3l/woAoGArSHylwg8rsFBVgIXmfrlKOWj89
+         QQAXQUtCI0HQc/lu46XkoUTWjxtOhc1LHRkOT7c52HjejFBPrDPTbK7ElixO5jagEVmo
+         0oCUgq03Rx0p9zcQl6onDBtdnQGzxvab2g8ucBugvUmlBQDGhVJ0MrzH5R+gsC7YyR0l
+         HTG8Hb1mUelomp+Gf1ayYGUz2A1gvY32jGUMCowiBXObNYlKWfn9Hv+Vr2us9rfBeZ4N
+         oMiw==
+X-Gm-Message-State: AOAM531MbWBPy4hrQJre0bVgP8oD8D8pT4PXqlZhujXDryJ0rZK606Aq
+        uFLWm89AjOh6jrVCBqJoMafs7A==
+X-Google-Smtp-Source: ABdhPJyD0FI4fnI4/dC47KuFVzltQiWcHwub0OlDiE8wqzPFlaUZqzP3X0SR2VsCBK4dWHaKdSVv4Q==
+X-Received: by 2002:a17:903:1208:b0:13a:8c8:8a33 with SMTP id l8-20020a170903120800b0013a08c88a33mr16701433plh.89.1632021079903;
+        Sat, 18 Sep 2021 20:11:19 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id 132sm10224931pfy.190.2021.09.18.20.11.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Sep 2021 20:11:19 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 0/2] Add QUSB2 PHY support for QCM2290
+Date:   Sun, 19 Sep 2021 11:11:08 +0800
+Message-Id: <20210919031110.25064-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+The series adds QUSB2 PHY support for QCM2290 platform, by documenting
+the compatible and it into driver match table.
 
-X86_CR4_PGE doesn't participate in kvm_mmu_role, so the mmu context
-doesn't need to be reset.  It is only required to flush all the guest
-tlb.
+Shawn Guo (2):
+  dt-bindings: phy: qcom,qusb2: Add compatible for QCM2290
+  phy: qcom-qusb2: Add compatible for QCM2290
 
-It is also inconsistent that X86_CR4_PGE is in KVM_MMU_CR4_ROLE_BITS
-while kvm_mmu_role doesn't use X86_CR4_PGE.  So X86_CR4_PGE is also
-removed from KVM_MMU_CR4_ROLE_BITS.
+ Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 1 +
+ drivers/phy/qualcomm/phy-qcom-qusb2.c                     | 3 +++
+ 2 files changed, 4 insertions(+)
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- arch/x86/kvm/mmu.h | 5 ++---
- arch/x86/kvm/x86.c | 3 ++-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 75367af1a6d3..e53ef2ae958f 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -44,9 +44,8 @@
- #define PT32_ROOT_LEVEL 2
- #define PT32E_ROOT_LEVEL 3
- 
--#define KVM_MMU_CR4_ROLE_BITS (X86_CR4_PGE | X86_CR4_PSE | X86_CR4_PAE | \
--			       X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE | \
--			       X86_CR4_LA57)
-+#define KVM_MMU_CR4_ROLE_BITS (X86_CR4_PSE | X86_CR4_PAE | X86_CR4_LA57 | \
-+			       X86_CR4_SMEP | X86_CR4_SMAP | X86_CR4_PKE)
- 
- #define KVM_MMU_CR0_ROLE_BITS (X86_CR0_PG | X86_CR0_WP)
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 7494ea0e7922..97772e37e8ee 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1045,7 +1045,8 @@ void kvm_post_set_cr4(struct kvm_vcpu *vcpu, unsigned long old_cr4, unsigned lon
- {
- 	if ((cr4 ^ old_cr4) & KVM_MMU_CR4_ROLE_BITS)
- 		kvm_mmu_reset_context(vcpu);
--	else if (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE))
-+	else if (((cr4 ^ old_cr4) & X86_CR4_PGE) ||
-+		 (!(cr4 & X86_CR4_PCIDE) && (old_cr4 & X86_CR4_PCIDE)))
- 		kvm_vcpu_flush_tlb_guest(vcpu);
- }
- EXPORT_SYMBOL_GPL(kvm_post_set_cr4);
 -- 
-2.19.1.6.gb485710b
+2.17.1
 
