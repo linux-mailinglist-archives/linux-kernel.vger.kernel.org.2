@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB6C410AF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F9B410AF4
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhISJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 05:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237818AbhISJpQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 05:45:16 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CCDC061574;
-        Sun, 19 Sep 2021 02:43:46 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id n18so14378973pgm.12;
-        Sun, 19 Sep 2021 02:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ujZYCN2hNIBT5RbdU8R3eOc6j6lEG3PQETpYdg9DbBc=;
-        b=MRfUZHjikWvtbxL9OaHghlwj40Fx/p2cDFvuKXkLmqdBPDvOSgx9Rmhuayid1vNXcD
-         GlGdc+shfLUDhFE4jaPnEWlCa/OZ9cQRpY8i9ewKdbC4V08O6D2INQvVvHFKlK1qMGNq
-         Xw9niYzj5ddgEtVfkrOMt7NNQpNO6/pmhVtwzpMbtWYD/+FtkZjBWRUcLj30SfpUxTlF
-         dZ4N/WQhGchhvzTBixOhZ0RSlz5+c3dqdBzUMQ891gcS6ukQGrUMfnlcWVrCNf6PJyU2
-         RQ5mKVGbGyCVcp5ugIv7nq36a31GaNsfnuMaCX+IFrwlOjSqcHq0Yn+Zuz8ca9EQ8CXf
-         RQ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ujZYCN2hNIBT5RbdU8R3eOc6j6lEG3PQETpYdg9DbBc=;
-        b=MtAKbHGjJUEwxOzneet4gbgGLd6no3KD6WBp3DxHAqsioiKJpYeIrBjbCt4UT9GeSJ
-         lxc5ekZBySuWMwRdjqtUdI2p8/ZdRvmq/bJyFdHsrjTnTCRFRs1xXjJhSH8gscb346AW
-         1yl6lT1Eur68KfMw3suIp/KMdX8xtHdq0WX4fgeK5mYriiTPggOHWN1L6IJh9QWp54HR
-         KF9kpPY2DywgwwxyFhARinIBOLoFeomI+/4tkhJW6CfJ7EC0BAeZ1TeFUInUuH2Pi/Z9
-         ymZtLqY2XYx0WMakp12sLibJZMb2TX0b8vDXO3tjGDBvdi+saMcUefk7ydGS48XMOm4E
-         9dBg==
-X-Gm-Message-State: AOAM531tDdrw8f9IY7cH1pNKGSGBfc77S9lbbKDSY/F2YKJEmXBluUz5
-        5TsV9ks2THg+on5U5p65OqGFO2nkVj4=
-X-Google-Smtp-Source: ABdhPJxbbHzNmfgc5i6PcrHjAWEr1DMvwBIs+hDKpJBTdjeXbNpu+gig3MhSpK+FL8ySD6H3hcMnOw==
-X-Received: by 2002:a63:ce57:: with SMTP id r23mr18549344pgi.271.1632044625811;
-        Sun, 19 Sep 2021 02:43:45 -0700 (PDT)
-Received: from [172.30.1.2] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id y80sm6403104pfb.196.2021.09.19.02.43.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Sep 2021 02:43:45 -0700 (PDT)
-Subject: Re: [PATCH v1 4/4] PM / devfreq: tegra30: Check whether
- clk_round_rate() returns zero rate
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-References: <20210912184458.17995-1-digetx@gmail.com>
- <20210912184458.17995-5-digetx@gmail.com>
- <9fa66405-883a-3653-eb5d-3cd7eee07a0a@gmail.com>
- <e9233eeb-6780-b390-dffa-8de9315effa3@gmail.com>
- <26d90b01-13d5-3bd8-da0a-b9ff61c7845a@gmail.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <4b5faca8-c0fc-e7bb-5a0b-c66714bc5f61@gmail.com>
-Date:   Sun, 19 Sep 2021 18:43:41 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237866AbhISJp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 05:45:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237818AbhISJpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 05:45:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73712610A8;
+        Sun, 19 Sep 2021 09:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632044657;
+        bh=XvNnS/0B+zW3GGy7xwtCUzNn/A2pr7pa4LjzYtMKWSk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rGnEPxj2T/BEjjqe+27gnv/VytWeKdtHuYNhPUEbFCqdlAHuba1asW3D+sAeeq4vT
+         MIWdwI1uUX7qGoce0xY3dTfr+V4xE61sbG5adWxSGw2YItr3l6OuwXw7ZgrF5GVMT6
+         zP5VOOxriPmylJn53kgsNWmD6wgxPcnR5IjxFCiFpFJ/qDHnY26GLNO2Z5hfU/d+Ho
+         wZs7NFiT1wcp78E3OMXCgpjTpUClOSl1x/pvUaz+OoUvzmvBnIagzSoqS/2EPQXCbL
+         pf9HvD2TPglmCGAO1uSnkVMm1PORyDa33y9Juv8ToHNJEC+Nc5Uu2gLglNIP8BsCrJ
+         hEDBvXY7/J69w==
+Date:   Sun, 19 Sep 2021 12:44:13 +0300
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs fixes for 5.15-rc3
+Message-ID: <20210919094413.GA25155@ogabbay-vm2.habana-labs.com>
 MIME-Version: 1.0
-In-Reply-To: <26d90b01-13d5-3bd8-da0a-b9ff61c7845a@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 9. 16. 오전 10:28, Dmitry Osipenko wrote:
-> 15.09.2021 21:31, Chanwoo Choi пишет:
->> On 21. 9. 15. 오후 12:51, Chanwoo Choi wrote:
->>> Hi,
->>>
->>> On 21. 9. 13. 오전 3:44, Dmitry Osipenko wrote:
->>>> EMC clock is always-on and can't be zero. Check whether clk_round_rate()
->>>> returns zero rate and error out if it does. It can return zero if clock
->>>> tree isn't initialized properly.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>    drivers/devfreq/tegra30-devfreq.c | 4 ++--
->>>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/devfreq/tegra30-devfreq.c
->>>> b/drivers/devfreq/tegra30-devfreq.c
->>>> index d83fdc2713ed..65ecf17a36f4 100644
->>>> --- a/drivers/devfreq/tegra30-devfreq.c
->>>> +++ b/drivers/devfreq/tegra30-devfreq.c
->>>> @@ -891,9 +891,9 @@ static int tegra_devfreq_probe(struct
->>>> platform_device *pdev)
->>>>            return err;
->>>>        rate = clk_round_rate(tegra->emc_clock, ULONG_MAX);
->>>> -    if (rate < 0) {
->>>> +    if (rate <= 0) {
->>>>            dev_err(&pdev->dev, "Failed to round clock rate: %ld\n",
->>>> rate);
->>>> -        return rate;
->>>> +        return rate ?: -EINVAL;
->>
->> If rate is 0, It doesn't return and fall-through? even if print the
->> error message. 'return rate ?: -EINVAL;' style is strange for me
->> because it doesn't specify the 'return value' when rate is true.
-> 
-> It's not clear to me what do you mean by "return and fall-through".
-> 
-> It specifies the 'return value' when rate is true. It's a short form of
-> "rate ? rate : -EINVAL".
+Hi Greg,
 
-I has not known this short form. Thanks for comment. I understand.
+Some important fixes for the habanalabs driver for 5.15.
+They fix a couple of bugs that can result in kernel BUG,
+data race, kernel log spamming, etc.
 
+Full details are in the tag.
 
+Thanks,
+Oded
 
--- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+The following changes since commit 25a1433216489de4abc889910f744e952cb6dbae:
+
+  mcb: fix error handling in mcb_alloc_bus() (2021-09-14 11:22:26 +0200)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-09-19
+
+for you to fetch changes up to c8fee41957f036cbc8e840bd91e2087731df7f7e:
+
+  habanalabs: expose a single cs seq in staged submissions (2021-09-14 15:00:04 +0300)
+
+----------------------------------------------------------------
+This tag contains the following fixes for 5.15-rc3:
+
+- Fix potential race when user waiting for interrupt ioctl
+- Prevent possible kernel oops in staged CS ioctl
+- Use direct MSI mechanism in Gaudi as a WA for a H/W issue
+  regarding FLR
+- Don't support collective wait ioctl operation when it
+  is not supported. e.g. when the NIC ports are disabled
+- Fix configuration of one of the security mechanism.
+- Change error print to be rate-limited as it can be initiated
+  by the user and spam the kernel log
+- Fix return value of CS ioctl when doing staged CS
+- Fix CS ioctl code when user doesn't supply an offset for
+  the memory area that we use as fence.
+- Spelling mistake fix
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      habanalabs: Fix spelling mistake "FEADBACK" -> "FEEDBACK"
+
+Oded Gabbay (1):
+      habanalabs/gaudi: fix LBW RR configuration
+
+Ofir Bitton (4):
+      habanalabs: fix potential race in interrupt wait ioctl
+      habanalabs: fail collective wait when not supported
+      habanalabs: rate limit multi CS completion errors
+      habanalabs: expose a single cs seq in staged submissions
+
+Omer Shpigelman (1):
+      habanalabs/gaudi: use direct MSI in single mode
+
+farah kassabri (2):
+      habanalabs: fix kernel OOPs related to staged cs
+      habanalabs: fix wait offset handling
+
+ .../misc/habanalabs/common/command_submission.c    |  71 +++++++++----
+ drivers/misc/habanalabs/common/hw_queue.c          |   9 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              |  11 +-
+ drivers/misc/habanalabs/gaudi/gaudi_security.c     | 115 ++++++++++++---------
+ .../habanalabs/include/gaudi/asic_reg/gaudi_regs.h |   2 +
+ 5 files changed, 134 insertions(+), 74 deletions(-)
