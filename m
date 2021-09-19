@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB70410D04
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 21:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFBD410D06
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 21:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhISTP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 15:15:28 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51280 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhISTP0 (ORCPT
+        id S231523AbhISTQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 15:16:44 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35312 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhISTQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 15:15:26 -0400
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4919920B6C5D;
-        Sun, 19 Sep 2021 12:14:01 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4919920B6C5D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1632078841;
-        bh=8vDM8D+5m8xPvdc2yp643jfDPpfQqKCVaC1Iss96USQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E++GjQEuD8h86PIj0eFgMLPpGHo+gv/gwOx/P7NfLnQbdgY0bSOUHjJmuVz2mHiR8
-         pJrOCSAQkUIbMVEi9FSrp4IFoK4OGDyZfoaOTKb7WUwu7FT5yf7xMeIpTp0A0RjQbo
-         VjBgxZQW3vwvDYnyb1hxag48GspctDRc9PPbi1K8=
-Received: by mail-pl1-f172.google.com with SMTP id l6so4846552plh.9;
-        Sun, 19 Sep 2021 12:14:01 -0700 (PDT)
-X-Gm-Message-State: AOAM532pSjV2cviUpGb7jX9L8uZj/7rKhEKo1EyzMhrmR76k16fyFtEH
-        cnRFC4WrnqvS5Iz0qi//ECdXKjGvPm+TqAQI+90=
-X-Google-Smtp-Source: ABdhPJwRxYzolnPsQJGaMuUvcKEJKkThU0IWA7kfqOzABVrfLg+jvZZTXQGJo0AcuHRn8asmnl9VkyPd1aOz75MQLPc=
-X-Received: by 2002:a17:90b:3447:: with SMTP id lj7mr3531940pjb.112.1632078840771;
- Sun, 19 Sep 2021 12:14:00 -0700 (PDT)
+        Sun, 19 Sep 2021 15:16:42 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E6B211C0B82; Sun, 19 Sep 2021 21:15:15 +0200 (CEST)
+Date:   Sun, 19 Sep 2021 21:15:15 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 080/306] SUNRPC query transports source port
+Message-ID: <20210919191515.GC12836@amd>
+References: <20210916155753.903069397@linuxfoundation.org>
+ <20210916155756.781145663@linuxfoundation.org>
 MIME-Version: 1.0
-References: <CAFnufp0eVejrDJoGE900D2U5-9qi-srVEmPOc9zHC5mSH4DgLg@mail.gmail.com>
- <mhng-22e6331c-16e1-40cc-b431-4990fda46ecf@palmerdabbelt-glaptop>
- <CAJF2gTTJ8M5FpL4=PDnPQgrrPaLxVhsZCTO2rXqaOm6MEn=gnA@mail.gmail.com> <9a8137149a164a13a7a04d72b133ad3b@AcuMS.aculab.com>
-In-Reply-To: <9a8137149a164a13a7a04d72b133ad3b@AcuMS.aculab.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sun, 19 Sep 2021 21:13:24 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2M_9_TRxoXbRK0bggPXyTgffYnA4moez=uWDNNb=aT8w@mail.gmail.com>
-Message-ID: <CAFnufp2M_9_TRxoXbRK0bggPXyTgffYnA4moez=uWDNNb=aT8w@mail.gmail.com>
-Subject: Re: [PATCH] riscv: use the generic string routines
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Guo Ren <guoren@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="WfZ7S8PLGjBY9Voh"
+Content-Disposition: inline
+In-Reply-To: <20210916155756.781145663@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:35 PM David Laight <David.Laight@aculab.com> wrote:
->
-> > > These ended up getting rejected by Linus, so I'm going to hold off on
-> > > this for now.  If they're really out of lib/ then I'll take the C
-> > > routines in arch/riscv, but either way it's an issue for the next
-> > > release.
-> > Agree, we should take the C routine in arch/riscv for common
-> > implementation. If any vendor what custom implementation they could
-> > use the alternative framework in errata for string operations.
->
-> I though the asm ones were significantly faster because
-> they were less affected by read latency.
->
-> (But they were horribly broken for misaligned transfers.)
->
 
-I can get the same exact performance (and a very similar machine code)
-in C with this on top of the C memset implementation:
+--WfZ7S8PLGjBY9Voh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---- a/arch/riscv/lib/string.c
-+++ b/arch/riscv/lib/string.c
-@@ -112,9 +112,12 @@ EXPORT_SYMBOL(__memmove);
- void *memmove(void *dest, const void *src, size_t count) __weak
-__alias(__memmove);
- EXPORT_SYMBOL(memmove);
+Hi!
 
-+#define BATCH 4
-+
- void *__memset(void *s, int c, size_t count)
- {
-  union types dest = { .as_u8 = s };
-+ int i;
+> [ Upstream commit a8482488a7d6d320f63a9ee1912dbb5ae5b80a61 ]
+>=20
+> Provide ability to query transport's source port.
 
-  if (count >= MIN_THRESHOLD) {
-  unsigned long cu = (unsigned long)c;
-@@ -138,8 +141,12 @@ void *__memset(void *s, int c, size_t count)
-  }
+This adds unused function to 5.10 kernel. Next patch fixes it up, but
+user does not show up. Do we want it in 5.10-stable?
 
-  /* Copy using the largest size allowed */
-- for (; count >= BYTES_LONG; count -= BYTES_LONG)
-- *dest.as_ulong++ = cu;
-+ for (; count >= BYTES_LONG * BATCH; count -= BYTES_LONG * BATCH) {
-+#pragma GCC unroll 4
-+     for (i = 0; i < BATCH; i++)
-+         dest.as_ulong[i] = cu;
-+     dest.as_ulong += BATCH;
-+ }
-  }
+Best regards,
+								Pavel
 
-On the BeagleV the memset speed with the different batch size are:
+> +++ b/net/sunrpc/xprtsock.c
+> @@ -1639,6 +1639,13 @@ static int xs_get_srcport(struct sock_xprt *transp=
+ort)
+>  	return port;
+>  }
+> =20
+> +unsigned short get_srcport(struct rpc_xprt *xprt)
+> +{
+> +	struct sock_xprt *sock =3D container_of(xprt, struct sock_xprt, xprt);
+> +	return sock->srcport;
+> +}
+> +EXPORT_SYMBOL(get_srcport);
+> +
+>  static unsigned short xs_next_srcport(struct sock_xprt *transport, unsig=
+ned short port)
+>  {
+>  	if (transport->srcport !=3D 0)
 
-1 (stock): 267 Mb/s
-2: 272 Mb/s
-4: 276 Mb/s
-8: 276 Mb/s
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-The problem with biggest batch size is that it will fallback to a
-single byte copy if the buffers are too small.
+--WfZ7S8PLGjBY9Voh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Regards,
--- 
-per aspera ad upstream
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmFHjEMACgkQMOfwapXb+vJ4iQCfUMaMR3foHMBW/0B/hbsMKLs+
+OHMAoJMJn1EagVCn597O71ll0htPse+q
+=lCw6
+-----END PGP SIGNATURE-----
+
+--WfZ7S8PLGjBY9Voh--
