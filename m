@@ -2,451 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9818410CE1
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 20:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD623410CE4
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 20:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhISS1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 14:27:22 -0400
-Received: from out0.migadu.com ([94.23.1.103]:49328 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231201AbhISS0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 14:26:17 -0400
-Date:   Mon, 20 Sep 2021 02:25:40 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1632075890;
+        id S231332AbhISS3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 14:29:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37690 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhISS3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 14:29:35 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632076088;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4C3lEksWVzl3mg3d/cunricm5QlTEZMFKSvIlQVBpWg=;
-        b=abCZfzG1VbVqBys9KEt3lv8KP3u5+1lAc83bNzesSPxEKQhpLFl5guFeE0vxXiHcn4yoIz
-        zP7ZcCFzNq2lyoqBGmIT3qx0+/WAoQqfnvib+59/418J64BIXGscD5I8FYJbjhu9amHWt+
-        vIFiBZ0E1j/F4XxPS+xcj8Q5/FUl9OA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>,
-        Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH 2/5 v0.6] sched/umcg: RFC: add userspace atomic helpers
-Message-ID: <YUeApJQ6AiFcy1+Z@geo.homenetwork>
-References: <20210917180323.278250-1-posk@google.com>
- <20210917180323.278250-3-posk@google.com>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9fV8aUhuEEEY5uksFS3ma4yaXWvVvRSRvypPDwsKURg=;
+        b=kxc85agu6WsDjNolZ8PrIvnOnclzVcpicc+WvAg2hqth9OMALvBYlT4FhPdyejH/hAld5/
+        1Y6W2ouCLI5aCw8hIANVKrWAWIzOHRalj1VoL0YVCtQaIw8KVm5k3I9q4REeyHPmd6oc7O
+        T0NrOeQWZFNMEwyJitYY8mJ+rdAW7TVwSJP/H+d9Dka0d2z7/VF6/MX+YJYBSG7WsS+1pv
+        maPTR+eqWERK1GNQt8lEnsx8f1nEDBEsCTCAbi2V41zNevWoJvc4Fkr0mkJl7ngJM2sxRT
+        9hogzODJzHVt0UFKW0OrVISY4qV4GBnwz+EqZy9EfdtVLIqAn2qoh+7ZkQWJYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632076088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9fV8aUhuEEEY5uksFS3ma4yaXWvVvRSRvypPDwsKURg=;
+        b=o8z+3Q5Xwy7ujFKmXw0Y3oPeRaCCvpkol2cjokA5OE2qv3FAcElb4cWaW3J2uZYFC8gYx2
+        o3RBXzayfADYBICg==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] locking/urgent for v5.15-rc2
+Message-ID: <163207602242.947088.16824174748243890514.tglx@xen13>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917180323.278250-3-posk@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Date:   Sun, 19 Sep 2021 20:28:07 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:03:20AM -0700, Peter Oskolkov wrote:
+Linus,
 
-> Add helper functions to work atomically with userspace 32/64 bit values -
-> there are some .*futex.* named helpers, but they are not exactly
-> what is needed for UMCG; I haven't found what else I could use, so I
-> rolled these.
-> 
-> At the moment only X86_64 is supported.
-> 
-> Note: the helpers should probably go into arch/ somewhere; I have
-> them in kernel/sched/umcg_uaccess.h temporarily for convenience. Please
-> let me know where I should put them.
-> 
-> Changelog:
-> v0.5->v0.6:
->  - replaced mmap_read_lock with mmap_read_lock_killable in fix_pagefault();
->  - fix_pagefault now validates proper uaddr alignment;
->  - renamed umcg.h to umcg_uaccess.h;
-> v0.4->v0.5:
->  - added xchg_user_** helpers;
-> v0.3->v0.4:
->  - added put_user_nosleep;
->  - removed linked list/stack operations patch;
-> v0.2->v0.3:
->  - renamed and refactored the helpers a bit, as described above;
->  - moved linked list/stack operations into a separate patch.
-> 
-> Signed-off-by: Peter Oskolkov <posk@google.com>
-> ---
->  kernel/sched/umcg_uaccess.h | 344 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 344 insertions(+)
->  create mode 100644 kernel/sched/umcg_uaccess.h
-> 
-> diff --git a/kernel/sched/umcg_uaccess.h b/kernel/sched/umcg_uaccess.h
-> new file mode 100644
-> index 000000000000..e4ead8d2fd62
-> --- /dev/null
-> +++ b/kernel/sched/umcg_uaccess.h
-> @@ -0,0 +1,344 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-> +#ifndef _KERNEL_SCHED_UMCG_UACCESS_H
-> +#define _KERNEL_SCHED_UMCG_UACCESS_H
-> +
-> +#ifdef CONFIG_X86_64
-> +
-> +#include <linux/uaccess.h>
-> +
-> +#include <asm/asm.h>
-> +#include <linux/atomic.h>
-> +#include <asm/uaccess.h>
-> +
-> +/* TODO: move atomic operations below into arch/ headers */
-> +static inline int __try_cmpxchg_user_32(u32 *uval, u32 __user *uaddr,
-> +						u32 oldval, u32 newval)
-> +{
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\t" LOCK_PREFIX "cmpxchgl %4, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %0\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
-> +		: "memory"
-> +	);
-> +	*uval = oldval;
-> +	return ret;
-> +}
-> +
-> +static inline int __try_cmpxchg_user_64(u64 *uval, u64 __user *uaddr,
-> +						u64 oldval, u64 newval)
-> +{
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\t" LOCK_PREFIX "cmpxchgq %4, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %0\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "+r" (ret), "=a" (oldval), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "r" (newval), "1" (oldval)
-> +		: "memory"
-> +	);
-> +	*uval = oldval;
-> +	return ret;
-> +}
-> +
-> +static inline int fix_pagefault(unsigned long uaddr, bool write_fault, int bytes)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	int ret;
-> +
-> +	/* Validate proper alignment. */
-> +	if (uaddr % bytes)
-> +		return -EINVAL;
-> +
-> +	if (mmap_read_lock_killable(mm))
-> +		return -EINTR;
-> +	ret = fixup_user_fault(mm, uaddr, write_fault ? FAULT_FLAG_WRITE : 0,
-> +			NULL);
-> +	mmap_read_unlock(mm);
-> +
-> +	return ret < 0 ? ret : 0;
-> +}
-> +
-> +/**
-> + * cmpxchg_32_user_nosleep - compare_exchange 32-bit values
-      ^^^^^^^^^^^^^^^^^^^^^^^
-Need to be consistent with the function name below.
+please pull the latest locking/urgent branch from:
 
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + * -EAGAIN: @expected did not match; consult @prev
-> + */
-> +static inline int cmpxchg_user_32_nosleep(u32 __user *uaddr, u32 *old, u32 new)
-> +{
-> +	int ret = -EFAULT;
-> +	u32 __old = *old;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	__uaccess_begin_nospec();
-> +	ret = __try_cmpxchg_user_32(old, uaddr, __old, new);
-> +	user_access_end();
-> +
-> +	if (!ret)
-> +		ret =  *old == __old ? 0 : -EAGAIN;
-> +
-> +	pagefault_enable();
-> +	return ret;
-> +}
-> +
-> +/**
-> + * cmpxchg_64_user_nosleep - compare_exchange 64-bit values
-      ^^^^^^^^^^^^^^^^^^^^^^^
-Ditto.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2=
+021-09-19
 
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + * -EAGAIN: @expected did not match; consult @prev
-> + */
-> +static inline int cmpxchg_user_64_nosleep(u64 __user *uaddr, u64 *old, u64 new)
-> +{
-> +	int ret = -EFAULT;
-> +	u64 __old = *old;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	__uaccess_begin_nospec();
-> +	ret = __try_cmpxchg_user_64(old, uaddr, __old, new);
-> +	user_access_end();
-> +
-> +	if (!ret)
-> +		ret =  *old == __old ? 0 : -EAGAIN;
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * cmpxchg_32_user - compare_exchange 32-bit values
-      ^^^^^^^^^^^^^^^
-Ditto.
-
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + * -EAGAIN: @expected did not match; consult @prev
-> + */
-> +static inline int cmpxchg_user_32(u32 __user *uaddr, u32 *old, u32 new)
-> +{
-> +	int ret = -EFAULT;
-> +	u32 __old = *old;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +		__uaccess_begin_nospec();
-> +		ret = __try_cmpxchg_user_32(old, uaddr, __old, new);
-> +		user_access_end();
-> +
-> +		if (!ret) {
-> +			ret =  *old == __old ? 0 : -EAGAIN;
-> +			break;
-> +		}
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +	return ret;
-> +}
-> +
-> +/**
-> + * cmpxchg_64_user - compare_exchange 64-bit values
-      ^^^^^^^^^^^^^^^
-Ditto.
-
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + * -EAGAIN: @expected did not match; consult @prev
-> + */
-> +static inline int cmpxchg_user_64(u64 __user *uaddr, u64 *old, u64 new)
-> +{
-> +	int ret = -EFAULT;
-> +	u64 __old = *old;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +		__uaccess_begin_nospec();
-> +		ret = __try_cmpxchg_user_64(old, uaddr, __old, new);
-> +		user_access_end();
-> +
-> +		if (!ret) {
-> +			ret =  *old == __old ? 0 : -EAGAIN;
-> +			break;
-> +		}
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +static inline int __try_xchg_user_32(u32 *oval, u32 __user *uaddr, u32 newval)
-> +{
-> +	u32 oldval = 0;
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\txchgl %0, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %0\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "=r" (oldval), "=r" (ret), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "0" (newval), "1" (0)
-> +	);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	*oval = oldval;
-> +	return 0;
-> +}
-> +
-> +static inline int __try_xchg_user_64(u64 *oval, u64 __user *uaddr, u64 newval)
-> +{
-> +	u64 oldval = 0;
-> +	int ret = 0;
-> +
-> +	asm volatile("\n"
-> +		"1:\txchgq %0, %2\n"
-> +		"2:\n"
-> +		"\t.section .fixup, \"ax\"\n"
-> +		"3:\tmov     %3, %0\n"
-> +		"\tjmp     2b\n"
-> +		"\t.previous\n"
-> +		_ASM_EXTABLE_UA(1b, 3b)
-> +		: "=r" (oldval), "=r" (ret), "+m" (*uaddr)
-> +		: "i" (-EFAULT), "0" (newval), "1" (0)
-> +	);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	*oval = oldval;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * xchg_32_user - atomically exchange 64-bit values
-      ^^^^^^^^^^^^
-Ditto.
-
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + */
-> +static inline int xchg_user_32(u32 __user *uaddr, u32 *val)
-> +{
-> +	int ret = -EFAULT;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +
-> +		__uaccess_begin_nospec();
-> +		ret = __try_xchg_user_32(val, uaddr, *val);
-> +		user_access_end();
-> +
-> +		if (!ret)
-> +			break;
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * xchg_64_user - atomically exchange 64-bit values
-      ^^^^^^^^^^^^
-Ditto.
-
-> + * Return:
-> + * 0 - OK
-> + * -EFAULT: memory access error
-> + */
-> +static inline int xchg_user_64(u64 __user *uaddr, u64 *val)
-> +{
-> +	int ret = -EFAULT;
-> +
-> +	if (unlikely(!access_ok(uaddr, sizeof(*uaddr))))
-> +		return -EFAULT;
-> +
-> +	pagefault_disable();
-> +
-> +	while (true) {
-> +
-> +		__uaccess_begin_nospec();
-> +		ret = __try_xchg_user_64(val, uaddr, *val);
-> +		user_access_end();
-> +
-> +		if (!ret)
-> +			break;
-> +
-> +		if (fix_pagefault((unsigned long)uaddr, true, sizeof(*uaddr)) < 0)
-> +			break;
-> +	}
-> +
-> +	pagefault_enable();
-> +
-> +	return ret;
-> +}
-> +
-> +/**
-> + * get_user_nosleep - get user value without sleeping.
-> + *
-> + * get_user() might sleep and therefore cannot be used in preempt-disabled
-> + * regions.
-> + */
-> +#define get_user_nosleep(out, uaddr)			\
-> +({							\
-> +	int ret = -EFAULT;				\
-> +							\
-> +	if (access_ok((uaddr), sizeof(*(uaddr)))) {	\
-> +		pagefault_disable();			\
-> +							\
-> +		if (!__get_user((out), (uaddr)))	\
-> +			ret = 0;			\
-> +							\
-> +		pagefault_enable();			\
-> +	}						\
-> +	ret;						\
-> +})
-> +
-> +#endif  /* CONFIG_X86_64 */
-> +#endif  /* _KERNEL_SCHED_UMCG_UACCESS_H */
-> --
-> 2.25.1
-> 
+up to:  81121524f1c7: locking/rwbase: Take care of ordering guarantee for fas=
+tpath reader
 
 
+A set of updates for the RT specific reader/writer locking base code:
+
+  - Make the fast path reader ordering guarantees correct.
+
+  - Code reshuffling to make the fix simpler.
 
 Thanks,
-Tao
+
+	tglx
+
+------------------>
+Boqun Feng (1):
+      locking/rwbase: Take care of ordering guarantee for fastpath reader
+
+Peter Zijlstra (2):
+      locking/rwbase: Properly match set_and_save_state() to restore_state()
+      locking/rwbase: Extract __rwbase_write_trylock()
+
+
+ kernel/locking/rwbase_rt.c | 65 ++++++++++++++++++++++++++++++++------------=
+--
+ 1 file changed, 45 insertions(+), 20 deletions(-)
+
+diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+index 4ba15088e640..88191f6e252c 100644
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -41,6 +41,12 @@
+  * The risk of writer starvation is there, but the pathological use cases
+  * which trigger it are not necessarily the typical RT workloads.
+  *
++ * Fast-path orderings:
++ * The lock/unlock of readers can run in fast paths: lock and unlock are only
++ * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
++ * semantics of rwbase_rt. Atomic ops should thus provide _acquire()
++ * and _release() (or stronger).
++ *
+  * Common code shared between RT rw_semaphore and rwlock
+  */
+=20
+@@ -53,6 +59,7 @@ static __always_inline int rwbase_read_trylock(struct rwbas=
+e_rt *rwb)
+ 	 * set.
+ 	 */
+ 	for (r =3D atomic_read(&rwb->readers); r < 0;) {
++		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
+ 		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
+ 			return 1;
+ 	}
+@@ -162,6 +169,8 @@ static __always_inline void rwbase_read_unlock(struct rwb=
+ase_rt *rwb,
+ 	/*
+ 	 * rwb->readers can only hit 0 when a writer is waiting for the
+ 	 * active readers to leave the critical section.
++	 *
++	 * dec_and_test() is fully ordered, provides RELEASE.
+ 	 */
+ 	if (unlikely(atomic_dec_and_test(&rwb->readers)))
+ 		__rwbase_read_unlock(rwb, state);
+@@ -172,7 +181,11 @@ static inline void __rwbase_write_unlock(struct rwbase_r=
+t *rwb, int bias,
+ {
+ 	struct rt_mutex_base *rtm =3D &rwb->rtmutex;
+=20
+-	atomic_add(READER_BIAS - bias, &rwb->readers);
++	/*
++	 * _release() is needed in case that reader is in fast path, pairing
++	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
++	 */
++	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
+ 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+ 	rwbase_rtmutex_unlock(rtm);
+ }
+@@ -196,6 +209,23 @@ static inline void rwbase_write_downgrade(struct rwbase_=
+rt *rwb)
+ 	__rwbase_write_unlock(rwb, WRITER_BIAS - 1, flags);
+ }
+=20
++static inline bool __rwbase_write_trylock(struct rwbase_rt *rwb)
++{
++	/* Can do without CAS because we're serialized by wait_lock. */
++	lockdep_assert_held(&rwb->rtmutex.wait_lock);
++
++	/*
++	 * _acquire is needed in case the reader is in the fast path, pairing
++	 * with rwbase_read_unlock(), provides ACQUIRE.
++	 */
++	if (!atomic_read_acquire(&rwb->readers)) {
++		atomic_set(&rwb->readers, WRITER_BIAS);
++		return 1;
++	}
++
++	return 0;
++}
++
+ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+ 				     unsigned int state)
+ {
+@@ -210,34 +240,30 @@ static int __sched rwbase_write_lock(struct rwbase_rt *=
+rwb,
+ 	atomic_sub(READER_BIAS, &rwb->readers);
+=20
+ 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+-	/*
+-	 * set_current_state() for rw_semaphore
+-	 * current_save_and_set_rtlock_wait_state() for rwlock
+-	 */
+-	rwbase_set_and_save_current_state(state);
++	if (__rwbase_write_trylock(rwb))
++		goto out_unlock;
+=20
+-	/* Block until all readers have left the critical section. */
+-	for (; atomic_read(&rwb->readers);) {
++	rwbase_set_and_save_current_state(state);
++	for (;;) {
+ 		/* Optimized out for rwlocks */
+ 		if (rwbase_signal_pending_state(state, current)) {
+-			__set_current_state(TASK_RUNNING);
++			rwbase_restore_current_state();
+ 			__rwbase_write_unlock(rwb, 0, flags);
+ 			return -EINTR;
+ 		}
++
++		if (__rwbase_write_trylock(rwb))
++			break;
++
+ 		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
++		rwbase_schedule();
++		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+=20
+-		/*
+-		 * Schedule and wait for the readers to leave the critical
+-		 * section. The last reader leaving it wakes the waiter.
+-		 */
+-		if (atomic_read(&rwb->readers) !=3D 0)
+-			rwbase_schedule();
+ 		set_current_state(state);
+-		raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+ 	}
+-
+-	atomic_set(&rwb->readers, WRITER_BIAS);
+ 	rwbase_restore_current_state();
++
++out_unlock:
+ 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+ 	return 0;
+ }
+@@ -253,8 +279,7 @@ static inline int rwbase_write_trylock(struct rwbase_rt *=
+rwb)
+ 	atomic_sub(READER_BIAS, &rwb->readers);
+=20
+ 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+-	if (!atomic_read(&rwb->readers)) {
+-		atomic_set(&rwb->readers, WRITER_BIAS);
++	if (__rwbase_write_trylock(rwb)) {
+ 		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+ 		return 1;
+ 	}
+
