@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3ACD410D50
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84C6410D52
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhISUbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 16:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
+        id S232318AbhISUb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 16:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232248AbhISUbQ (ORCPT
+        with ESMTP id S232276AbhISUb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 16:31:16 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2F6C061574;
-        Sun, 19 Sep 2021 13:29:50 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m26so14334075pff.3;
-        Sun, 19 Sep 2021 13:29:50 -0700 (PDT)
+        Sun, 19 Sep 2021 16:31:26 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8149C061574;
+        Sun, 19 Sep 2021 13:30:00 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id m26so14334330pff.3;
+        Sun, 19 Sep 2021 13:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JzpZaRn8s17gz8hdOcowBcPP+A1zOX5vRaz564FsmJ0=;
-        b=nbokdqW2NO/QctBqRLw05eYwij25GHtZvee97asZqoDzFH88t/A85gMntdYxuKfQ25
-         3CXV48uzVbhk+MZ0o6vgW9E5sCaMObR0Has+viTu2SPQ2/1dIqpQbgn2FvSWJwO3CvAM
-         TxtKa0JSHqosTSWsS4HQem/QM26P5k3mswV6/Czf6ozJUmh2wBzeL6qXnsIGOj/uFgZZ
-         MKlLeq0AINf6grFh9vL88YiqxH48tf/XqNktmNNoti1PoKkccdjHTNoJyNAO9aiDD1ok
-         Kx+BLtT0SE3/ppUEpOkGR1wXFqJD7rcJyYvNoCBN3YV/hN3Pc6WzIf5MGNO0/a5eF8yC
-         17/w==
+        bh=hfIkUcLEpAlJWRlXvHOKy1ap9NrTUyjC7y9+3wsR1OA=;
+        b=qTKnNrQcc1V082Uk593E1H8b2cbkKLLFeIqE1SAKBmZL1FearWgZKd5TlAy8wQiO7J
+         a1qvKkQRDd0JBXotGo1yv+CgH4NNQx/92bIlS57U8jJtExjmq6EhHqKqi3wkpEQ7xob0
+         qoW6KJeqtAP5LX2qph52tFIb0JAqtmbU3VuDJGu4ClZvrqe3F1YVSNvHrdfiVMZtaHHm
+         HA5Ii8rXfQnvfF9roSsXLYPSoXkiIllnkeaeCHno6guVQ6RpK6oPU+Czs0aIxTBLr4Vu
+         hAI07QOOvzouPMy5nIjs6y3GNG4n69CPuYvR8YYSiCeOhd1Tlc/B02eFoueZV/CeOtsx
+         61ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JzpZaRn8s17gz8hdOcowBcPP+A1zOX5vRaz564FsmJ0=;
-        b=Pj18Ngbm6HZyMFKqFrJACHExWRXqpQ8SM8/H1ZvV5KxMrvQJsa+TvEgTTEUwVxAt+1
-         Ugf2p6l/4B9+YDRUDbo02V6hd33WFQcM7iQ7T2km5cYvTWBjzNva4MKzbCHRh4/LdXeA
-         2bSJWKj0wo2syTQI+yQQMkCw5nj4bP8ES66tTbmrZu0htujS2fYPjU0ZVxY1wx+CbDL3
-         dueeudXESSqipfbKDV3f3hFAyoX1AspOQ3KCMgpiREiV6StPAC89EZsj6O8UuUEvtgQX
-         XIYyMQIE2gxyd1mfHVffDt79NdKVY3NEqMhwUI6V0Vqr/MM5i3VZXXlwPY5pSIGgFDPm
-         vXQQ==
-X-Gm-Message-State: AOAM530sdepuqrJUiw9D0UriMihbKhHkIt41omivujCLEQpeLtFCUvKw
-        dEvDQbdr6JUZUWJXOLJCfIw=
-X-Google-Smtp-Source: ABdhPJygvideB8trEIk/iGCOisO2WPAxvyxpXD78sPwk/NZhzoNjhU43gXGqfrShtuBWvUpuZuujJw==
-X-Received: by 2002:a63:4e65:: with SMTP id o37mr20655712pgl.202.1632083390037;
-        Sun, 19 Sep 2021 13:29:50 -0700 (PDT)
+        bh=hfIkUcLEpAlJWRlXvHOKy1ap9NrTUyjC7y9+3wsR1OA=;
+        b=lM7rFhw+BzDKRTCPhEyCeKW9DSsir4PY8LYjMB7/khPsRZxr//36Yuqg0rXWgT1fDc
+         zoFhprIfd9h32DthuRONg6bLHD2Xj7JQQORD78+77sYWbC5ZIp8HK5IB0CAook3PuoBG
+         +6mYIWHzsWS3QhZn02ISXK9rwNJ7KqiGZYLSBsnSjRsz/UqonvwYEgBZzgrKnJRiZTBy
+         r/D7drwk/pbdHMmxrUjQEXhMYb3GODXrz+cS3jxY120lWlvVMbiX6QELNNvHczikdXN3
+         DUr0XUzfVTaCe9OcbiQdMCU2WmZUVicYjLILdLllMwT8FGX90Bdu65AOh448R5uTObMs
+         S31Q==
+X-Gm-Message-State: AOAM533XTCGnBHVumM88HYyTKsg5yAbeAdftWA8EOwd64nXkMdHGvIiz
+        ie5JOMOly4u59Itj71Vmoncso8x4C7UK7A==
+X-Google-Smtp-Source: ABdhPJz8GXPpRzOLEMzTHk8o9/QQIi5Ny/ABtxTMydIBJnTsucvYJiEEVzHX6rZM7gWppnYbbQUN5Q==
+X-Received: by 2002:aa7:9d84:0:b0:447:c2f4:4a39 with SMTP id f4-20020aa79d84000000b00447c2f44a39mr397085pfq.86.1632083400348;
+        Sun, 19 Sep 2021 13:30:00 -0700 (PDT)
 Received: from archl-c2lm.. ([103.51.72.29])
-        by smtp.gmail.com with ESMTPSA id z11sm12663684pff.144.2021.09.19.13.29.46
+        by smtp.gmail.com with ESMTPSA id z11sm12663684pff.144.2021.09.19.13.29.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 13:29:49 -0700 (PDT)
+        Sun, 19 Sep 2021 13:29:59 -0700 (PDT)
 From:   Anand Moon <linux.amoon@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -59,9 +59,9 @@ Cc:     Anand Moon <linux.amoon@gmail.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Christian Hewitt <christianshewitt@gmail.com>,
         devicetree@vger.kernel.org
-Subject: [PATCHv2 2/3] arm64: dts: meson-g12b: Fix the pwm regulator supply properties
-Date:   Sun, 19 Sep 2021 20:29:10 +0000
-Message-Id: <20210919202918.3556-3-linux.amoon@gmail.com>
+Subject: [PATCHv2 3/3] arm64: dts: meson-sm1: Fix the pwm regulator supply properties
+Date:   Sun, 19 Sep 2021 20:29:11 +0000
+Message-Id: <20210919202918.3556-4-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210919202918.3556-1-linux.amoon@gmail.com>
 References: <20210919202918.3556-1-linux.amoon@gmail.com>
@@ -71,48 +71,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After enabling CONFIG_REGULATOR_DEBUG=y we observer below debug logs.
-Changes help link VDDCP_A and VDDCPU_B pwm regulator to 12V regulator
-supply instead of dummy regulator.
+After enabling CONFIG_REGULATOR_DEBUG=y we observe below debug logs.
+Changes help link VDDCPU pwm regulator to 12V regulator supply
+instead of dummy regulator.
 
-[    4.147196] VDDCPU_A: will resolve supply early: pwm
-[    4.147216] pwm-regulator regulator-vddcpu-a: Looking up pwm-supply from device tree
-[    4.147227] pwm-regulator regulator-vddcpu-a: Looking up pwm-supply property in node /regulator-vddcpu-a failed
-[    4.147258] VDDCPU_A: supplied by regulator-dummy
-[    4.147288] regulator-dummy: could not add device link regulator.12: -ENOENT
-[    4.147353] VDDCPU_A: 721 <--> 1022 mV at 871 mV, enabled
-[    4.152014] VDDCPU_B: will resolve supply early: pwm
-[    4.152035] pwm-regulator regulator-vddcpu-b: Looking up pwm-supply from device tree
-[    4.152047] pwm-regulator regulator-vddcpu-b: Looking up pwm-supply property in node /regulator-vddcpu-b failed
-[    4.152079] VDDCPU_B: supplied by regulator-dummy
-[    4.152108] regulator-dummy: could not add device link regulator.13: -ENOENT
+[   11.602281] pwm-regulator regulator-vddcpu: Looking up pwm-supply property
+               in node /regulator-vddcpu failed
+[   11.602344] VDDCPU: supplied by regulator-dummy
+[   11.602365] regulator-dummy: could not add device link regulator.11: -ENOENT
+[   11.602548] VDDCPU: 721 <--> 1022 mV at 1022 mV, enabled
 
-Fixes: c6d29c66e582 ("arm64: dts: meson-g12b-khadas-vim3: add initial device-tree")
-Fixes: d14734a04a8a ("arm64: dts: meson-g12b-odroid-n2: enable DVFS")
-Fixes: 3cb74db9b256 ("arm64: dts: meson: convert ugoos-am6 to common w400 dtsi")
+Fixes: 88d537bc92ca ("arm64: dts: meson: convert meson-sm1-odroid-c4 to dtsi")
+Fixes: 700ab8d83927 ("arm64: dts: khadas-vim3: add support for the SM1 based VIM3L")
+Fixes: 3d9e76483049 ("arm64: dts: meson-sm1-sei610: enable DVFS")
+Fixes: 976e920183e4 ("arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts")
 
 Cc: Neil Armstrong <narmstrong@baylibre.com>
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi | 4 ++--
- arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi   | 4 ++--
- arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi        | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts  | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi      | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts       | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
-index f42cf4b8af2d..16dd409051b4 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
-@@ -18,7 +18,7 @@ vddcpu_a: regulator-vddcpu-a {
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts
+index effaa138b5f9..212c6aa5a3b8 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts
+@@ -173,7 +173,7 @@ vddcpu: regulator-vddcpu {
  		regulator-min-microvolt = <690000>;
  		regulator-max-microvolt = <1050000>;
 
 -		vin-supply = <&dc_in>;
 +		pwm-supply = <&dc_in>;
 
- 		pwms = <&pwm_ab 0 1250 0>;
+ 		pwms = <&pwm_AO_cd 1 1250 0>;
  		pwm-dutycycle-range = <100 0>;
-@@ -37,7 +37,7 @@ vddcpu_b: regulator-vddcpu-b {
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index f2c098143594..9c0b544e2209 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -24,7 +24,7 @@ vddcpu: regulator-vddcpu {
  		regulator-min-microvolt = <690000>;
  		regulator-max-microvolt = <1050000>;
 
@@ -121,20 +121,11 @@ index f42cf4b8af2d..16dd409051b4 100644
 
  		pwms = <&pwm_AO_cd 1 1250 0>;
  		pwm-dutycycle-range = <100 0>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-index 344573e157a7..4f33820aba1f 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-@@ -130,7 +130,7 @@ vddcpu_a: regulator-vddcpu-a {
- 		regulator-min-microvolt = <721000>;
- 		regulator-max-microvolt = <1022000>;
-
--		vin-supply = <&main_12v>;
-+		pwm-supply = <&main_12v>;
-
- 		pwms = <&pwm_ab 0 1250 0>;
- 		pwm-dutycycle-range = <100 0>;
-@@ -149,7 +149,7 @@ vddcpu_b: regulator-vddcpu-b {
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+index fd0ad85c165b..f05bc9756393 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+@@ -116,7 +116,7 @@ vddcpu: regulator-vddcpu {
  		regulator-min-microvolt = <721000>;
  		regulator-max-microvolt = <1022000>;
 
@@ -143,27 +134,18 @@ index 344573e157a7..4f33820aba1f 100644
 
  		pwms = <&pwm_AO_cd 1 1250 0>;
  		pwm-dutycycle-range = <100 0>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
-index feb088504740..b40d2c1002c9 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
-@@ -96,7 +96,7 @@ vddcpu_a: regulator-vddcpu-a {
- 		regulator-min-microvolt = <721000>;
- 		regulator-max-microvolt = <1022000>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
+index 2194a778973f..427475846fc7 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
+@@ -185,7 +185,7 @@ vddcpu: regulator-vddcpu {
+ 		regulator-min-microvolt = <690000>;
+ 		regulator-max-microvolt = <1050000>;
 
--		vin-supply = <&main_12v>;
-+		pwm-supply = <&main_12v>;
+-		vin-supply = <&dc_in>;
++		pwm-supply = <&dc_in>;
 
- 		pwms = <&pwm_ab 0 1250 0>;
- 		pwm-dutycycle-range = <100 0>;
-@@ -115,7 +115,7 @@ vddcpu_b: regulator-vddcpu-b {
- 		regulator-min-microvolt = <721000>;
- 		regulator-max-microvolt = <1022000>;
-
--		vin-supply = <&main_12v>;
-+		pwm-supply = <&main_12v>;
-
- 		pwms = <&pwm_AO_cd 1 1250 0>;
+ 		pwms = <&pwm_AO_cd 1 1500 0>;
  		pwm-dutycycle-range = <100 0>;
 --
 2.33.0
