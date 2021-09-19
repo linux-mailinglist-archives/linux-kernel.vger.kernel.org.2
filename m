@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41859410DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2403410DDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhISXn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 19:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        id S233633AbhISXyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 19:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhISXn5 (ORCPT
+        with ESMTP id S229562AbhISXyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 19:43:57 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF22CC061574;
-        Sun, 19 Sep 2021 16:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632094949;
-        bh=t3XAqssDcPfatFRPhgTNkvbefdAl81jeSjE68b9LNGU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BGgS4kc9G/IOMHgm25/+E9n6sGyECZW3bPQArlzlkTvlwcWR6vppYF7LCWZLj1OdT
-         EdmOmTWkPLqnbeSMFsk8u9JFyWcNPF3hJ9LI67TmLeseWhgs1QQn92F1Zo8R8ZQoYf
-         B5i7vF9LwykWPPoA80/dvOzmAlLBrKJJQnPlOLVOxic9Tg+Gz9jkeQesh15Ym3dipl
-         v24O7DBfDTqENo2DCkIVkc9m7VhJNwDeZNye1j+VChEPSGlqozrhXXIXbYl28K/tn8
-         404uzXN1Ar/iDNK/taoi90byNfvU0cuQ1oZa3J2qSUQ+ggzhLrT8nxHttR+1xlBk1a
-         SWrBSzxjq8zVw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCPPH2x48z9ssP;
-        Mon, 20 Sep 2021 09:42:27 +1000 (AEST)
-Date:   Mon, 20 Sep 2021 09:42:26 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ulrich Teichert <krypton@ulrich-teichert.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the origin tree
-Message-ID: <20210920094226.55df55a6@canb.auug.org.au>
+        Sun, 19 Sep 2021 19:54:13 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CEEC061574;
+        Sun, 19 Sep 2021 16:52:47 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so13237818pjb.2;
+        Sun, 19 Sep 2021 16:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N4skwtsf086FxZVEYApSdLohPlkZnRA4CUZGUIx4mzk=;
+        b=UZm053QVwJ2XS2Em25JrOAFuvOS+0ariuZyJWoWL1g9KVa1dOMr1r/8JmQwU2kD1hY
+         WMT8urZ24lJdrQww/4vAK4K4CANNR1xmbNGueFrz4aTioIHDI1RfUe9bigsVy/LOcjCV
+         awi8+vN0Fq0ezF7CIcS1chCvRnE2obmJxD02MFLX7OIHIlCa/QRBJCXY1rDRNS+XOpVd
+         dbWX93gqIA2Wvt2lj0iTbYz3jYEoZtnq10pI77wCeM6djVCYxVy4DjFoSv+BWdBvQ3WQ
+         MBPm18IvaAHx8xOpqR9/O7tqgpfdK97Sux/XFQj5ubO+r0343vO7oApDNX0K2nS7RzOY
+         3eBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N4skwtsf086FxZVEYApSdLohPlkZnRA4CUZGUIx4mzk=;
+        b=2DTPLhbM7c5ikOCLK/GRGLiA/NZJ7hMNJ9AzmXe2u6v9KPkboKePC8Ch04KtPVrpyl
+         evXTzP1LD6DArqRUTJCe9OCihtjewb6KSpiegveQGnKLcz30UGj20JqfXCXgYzWXCNiO
+         R7hHEeBbwH/iBngyGFTTfge+HEP6o2JkXCft422HisFeCLtbhp6NkR7MIZBuvrIgo8n4
+         FnxHJ0gAcw6JoLfegOy71DPDyc/vaXe5gU0rhuWzLsdjNOEHXzaN3dc8yIJYQBlgmfR9
+         uEabdUrUtksDpac5LYSMg/YMijdXsGf9G+erMsg1TWEo10SPLsXysIZdwd+c4T+GuGUC
+         A+Pw==
+X-Gm-Message-State: AOAM533kZo7C0xm1P1fUeH4W4NZFITTxnJeMjRBB2w3nNMIOiwNbhEbo
+        jWrdg4jdpyYf4KiZITbDw87vUr1Co/cIEC2LwCk=
+X-Google-Smtp-Source: ABdhPJzi3Ud2RvVT0nhiUGeAuzxB3xnFs8f20/aXrCyrqb5+JJNXmz6YM1P3qyzErgrdl4AePnP354n5ADL28GpBSZk=
+X-Received: by 2002:a17:903:102:b0:13a:66a8:f28 with SMTP id
+ y2-20020a170903010200b0013a66a80f28mr20201925plc.62.1632095566733; Sun, 19
+ Sep 2021 16:52:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/D=FLeTPS+5VyFV+xzC2b/Nh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210916122943.19849-1-yajun.deng@linux.dev> <20210917183311.2db5f332@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87275ec67ed69d077e0265bc01acd8a2@linux.dev>
+In-Reply-To: <87275ec67ed69d077e0265bc01acd8a2@linux.dev>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sun, 19 Sep 2021 16:52:35 -0700
+Message-ID: <CAM_iQpXcqpEFpnyX=wLQFTWJBjWiAMofighQkpnrV2a0Fh83AQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: socket: add the case sock_no_xxx support
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/D=FLeTPS+5VyFV+xzC2b/Nh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Sep 18, 2021 at 5:11 AM <yajun.deng@linux.dev> wrote:
+>
+> September 18, 2021 9:33 AM, "Jakub Kicinski" <kuba@kernel.org> wrote:
+>
+> > On Thu, 16 Sep 2021 20:29:43 +0800 Yajun Deng wrote:
+> >
+> >> Those sock_no_{mmap, socketpair, listen, accept, connect, shutdown,
+> >> sendpage} functions are used many times in struct proto_ops, but they are
+> >> meaningless. So we can add them support in socket and delete them in struct
+> >> proto_ops.
+> >
+> > So the reason to do this is.. what exactly?
+> >
+> > Removing a couple empty helpers (which is not even part of this patch)?
+> >
+> > I'm not sold, sorry.
+>
+> When we define a struct proto_ops xxx, we only need to assign meaningful member variables that we need.
+> Those {mmap, socketpair, listen, accept, connect, shutdown, sendpage} members we don't need assign
+> it if we don't need. We just need do once in socket, not in every struct proto_ops.
+>
+> These members are assigned meaningless values far more often than meaningful ones, so this patch I used likely(!!sock->ops->xxx) for this case. This is the reason why I send this patch.
 
-Hi all,
+But you end up adding more code:
 
-Building Linus' tree, today's linux-next build (sparc64 allmodconfig,
-arm64 allmodconfig, riscv defconfig and others) failed like this:
+ 1 file changed, 58 insertions(+), 13 deletions(-)
 
-In file included from arch/sparc/include/asm/io_32.h:21:0,
-                 from arch/sparc/include/asm/io.h:7,
-                 from arch/sparc/vdso/vdso32/../vclock_gettime.c:18,
-                 from arch/sparc/vdso/vdso32/vclock_gettime.c:22:
-include/asm-generic/io.h:1059:21: error: static declaration of 'pci_iounmap=
-' follows non-static declaration
- #define pci_iounmap pci_iounmap
-                     ^
-include/asm-generic/io.h:1060:20: note: in expansion of macro 'pci_iounmap'
- static inline void pci_iounmap(struct pci_dev *dev, void __iomem *p)
-                    ^
+I don't see this as a gain from any perspective.
 
-Presumably caused by commit
-
-  9caea0007601 ("parisc: Declare pci_iounmap() parisc version only when CON=
-FIG_PCI enabled")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/D=FLeTPS+5VyFV+xzC2b/Nh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFHyuIACgkQAVBC80lX
-0GwsLAf+LY6MucMB1ZX/UVqeZ8IjlyfzkXqoS/WdpCBl2CswtHMx3zfyKqEZAArY
-i+4QY0Y4fCJd/oRxg5gvnWZRtxy+bFJzuhs5F8iaOXRmdFHMx8ONXdVvXvMEyt6t
-sO6fIR4wqF/I4IJMfDhvqu578yUEghcr5tTDMe7QGCxeRuedI3FS2Lvem+ZXGs4W
-wtN/dyWVWB/1KrsplI3DeeCyAAeJT+GTsP11lsJ09WAZ/pvtk+qvsr5gsQYCgtty
-FoUkfNGcdVyLUbURTh7x97HjTt2+IsFBRmOY2OmYhBpqtCbD5dxPQGi/0AjmiuMc
-jaOfV3E4XBhnG3Ia0OHY8+SosKVFSw==
-=e1c4
------END PGP SIGNATURE-----
-
---Sig_/D=FLeTPS+5VyFV+xzC2b/Nh--
+Thanks.
