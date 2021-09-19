@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1F0410D45
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8F9410D4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbhISU24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 16:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
+        id S232199AbhISUa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 16:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbhISU2z (ORCPT
+        with ESMTP id S232166AbhISUaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 16:28:55 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0F4C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 13:27:29 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id j134-20020a1c238c000000b0030b32367649so7669353wmj.3
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 13:27:29 -0700 (PDT)
+        Sun, 19 Sep 2021 16:30:55 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53001C061574;
+        Sun, 19 Sep 2021 13:29:30 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso13708936pji.4;
+        Sun, 19 Sep 2021 13:29:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PcjFfxcrjteANGpGF7D5h5Ro2oR8eemHGlF4IkMGOLA=;
-        b=xGzFp8r1r0uOS42WicW6cab3um5XLbPkFQJQm8JIU0K3l+0J6Z42tRvbq09SJlOnax
-         fuaeLB43yebhaS/4O+SpR1uEhJxIiXYskAXKUt5+G9oTJnzYPJVBDQ58VGFrAYBbWtGC
-         CPqw0pxp0BJncoFFI2h+8MV61GmQle4NOuEgcsCO/BC5rIp0wwd+1uH/uRe89qe+TdPo
-         /PqY1YCIrC3+XzG1EbYnd8vUZ95a/IwiuSHneUVdAo7XKG3iyYppgsBNjLD6oVrsyuRU
-         Mymko/6EBQdLpJN1/d0vpVk05JtLaqDr1mYb1JBbTmPjJNGPwDfqFDxkF3TlWkSmjMOs
-         PrEQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yBjSMPq/tc0MbMsuyhFQ5R0zfd/wCDAa5rcp0EQgEaE=;
+        b=lYdbvL9opmTy4v90dyhALAdqgj2jW0gtT5y2fppjGanjkhqQSamb4ZVgE/rHd6DZLR
+         qBESeBE8UgGzFjKp2XOGq/6hqha7HEWjt7wihYzM+8HB02ExZxGWuv34y7IrgVofHvev
+         lbQJGbhiHrnwc0OTXZp+SyEtcFMv2Xoc5vNqmedcc1GfqVD2cBJ1s266BUj9vORr+CV7
+         B1kzKNvuifwAxxXUgYsnmgCso8TOK0VXJmKuI/x1zbKIi7xYHohvW7+cN37Y0c3CZ4J5
+         zy+epdlDWbMsyW+krMaQrF0dbWI2c4DcijM50ZSF7RlWa1QpaSf6F4EL231pKrYyrV8a
+         Gc3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PcjFfxcrjteANGpGF7D5h5Ro2oR8eemHGlF4IkMGOLA=;
-        b=zoUe6rdSphoC3wMqrsKdhxpH83w77J5y+NPomrj1Q8ba/zpAmd5K+khuYlCg75F3kI
-         4jfA8xdW6uLk3Fjelr4QV4Q1tv/+tVRmgwKEcFjltzNiLBSp5I2Q9zfH8wBsxqSqlypb
-         xKHv09kQFclgL8ZDlF7n1/iMemauNXtFIp3DSWcHNZUEuJp8eoff508TmFED3iQVFscS
-         DzMcAaT4FaAxoZ8HqwyeAxEl8AtVIy4zFG4tcf8dNjKYXHN5rJkiYaT/2axy8QxpUHYZ
-         /jFKw/4JXhnV0G8OlVnsdiCN3IeG1Rqxffqc2C7aDFTpBFU/OyESWwq31cF0nAoqwGat
-         gnVw==
-X-Gm-Message-State: AOAM532Bh2ES/DcdejRzPXgFXVfH3aCmPVxkAPtCkYK4RG9pSiCkXUVz
-        zFv95rZFypmXLHn9MPtxFdHTX+gRoARFZA==
-X-Google-Smtp-Source: ABdhPJy4enHG97or0jjruzghXKph7A17B5yf1KXMX+/obgR+oI9hpHXdapukTthLw77i5Vt3cksTJg==
-X-Received: by 2002:a1c:7f11:: with SMTP id a17mr3130088wmd.166.1632083247680;
-        Sun, 19 Sep 2021 13:27:27 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id y8sm13407878wrh.44.2021.09.19.13.27.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yBjSMPq/tc0MbMsuyhFQ5R0zfd/wCDAa5rcp0EQgEaE=;
+        b=iphCVDZqabrzJrQZogUaklz4KE4ReO+oW0P5JwzA16jLWyr3cv/j+gZuKiAPBn8mPX
+         1exd5B9U110RsFQH2mruUWLg6uRQFTNMOyCntwWVBL0Gsnr5eqsgtYe1UVqo7+b1iSIU
+         iJNJglo83qXT6IFhGrqPBd+tEQA2U31EsDs+O7STWea8Ve5SALi8Li94XsdbgLSyWDyz
+         W+Daj+NtB/zuZ11rvX6G9knvXnevvlH93EUHf2O8RMCF7MtQV9bkuU1CD0R1X3IaAS0a
+         f2tpyFj7Hj2L4WRUwnd+Rp+jYM154lGD3YJqNUBxwWGk4bU5CaPCADgsnw0sX9WMfsf8
+         01xg==
+X-Gm-Message-State: AOAM530Oh8wOJPrw3IwaIjy5Qm9C/9CV5oh4ia7V+pdImgWR5Ju8BLpb
+        i6QyWhnRLNPpoiuDizaNpPSEp1NYp8avuA==
+X-Google-Smtp-Source: ABdhPJxoT9VPIS67Ft6batnOOnUBctnyPbP4zsaE4K0N3bJ3Ttj092+S5csLVDH6cJp1W6xUrz7//A==
+X-Received: by 2002:a17:90b:3b4f:: with SMTP id ot15mr34599158pjb.243.1632083369891;
+        Sun, 19 Sep 2021 13:29:29 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.29])
+        by smtp.gmail.com with ESMTPSA id z11sm12663684pff.144.2021.09.19.13.29.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 13:27:27 -0700 (PDT)
-Date:   Sun, 19 Sep 2021 21:27:25 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        martin@kaiser.cx, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] staging: r8188eu: remove unused functions from
- rtw_ap.c
-Message-ID: <YUedLaAAp1jZiUvL@equinox>
-References: <20210919153659.20826-1-straube.linux@gmail.com>
+        Sun, 19 Sep 2021 13:29:28 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCHv2 0/3] Fix the pwm regulator supply properties
+Date:   Sun, 19 Sep 2021 20:29:08 +0000
+Message-Id: <20210919202918.3556-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919153659.20826-1-straube.linux@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 05:36:53PM +0200, Michael Straube wrote:
-> This series removes all unused functions from rtw_ap.c.
-> 
-> Michael Straube (6):
->   staging: r8188eu: remove ap_sta_info_defer_update()
->   staging: r8188eu: remove rtw_acl_add_sta()
->   staging: r8188eu: remove rtw_acl_remove_sta()
->   staging: r8188eu: remove rtw_ap_inform_ch_switch()
->   staging: r8188eu: remove rtw_check_beacon_data()
->   staging: r8188eu: remove rtw_set_macaddr_acl()
-> 
->  drivers/staging/r8188eu/core/rtw_ap.c    | 584 -----------------------
->  drivers/staging/r8188eu/include/rtw_ap.h |   6 -
->  2 files changed, 590 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
+Changes PWM supply properties help fix internal link of PWM to
+main 12V supply as per the shematics.
 
-Dear Michael,
+V1: https://lkml.org/lkml/2021/6/29/288
 
-Looks good to me, built and tested here with no warnings and driver
-working fine still. Many thanks.
+Thanks
+-Anand
 
-For all six patches:
-Acked-by: Phillip Potter
+Anand Moon (3):
+  arm64: dts: meson-g12a: Fix the pwm regulator supply properties
+  arm64: dts: meson-g12b: Fix the pwm regulator supply properties
+  arm64: dts: meson-sm1: Fix the pwm regulator supply properties
 
-Regards,
-Phil
+ arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts       | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts         | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts      | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi | 4 ++--
+ arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi   | 4 ++--
+ arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi        | 4 ++--
+ arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts   | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts  | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi       | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts        | 2 +-
+ 10 files changed, 13 insertions(+), 13 deletions(-)
+
+--
+2.33.0
+
