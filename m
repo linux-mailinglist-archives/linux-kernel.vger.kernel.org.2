@@ -2,71 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2B2410B90
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FBC410B98
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhISMbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:31:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229542AbhISMbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 812A96126A;
-        Sun, 19 Sep 2021 12:30:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632054607;
-        bh=5GuwBvIei7SQsp0//NdDIDMmyxyqjw2gFLgRfaDSoEg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MQAJu1KrK+fmlRyMPvdi/WPkVELdojbARGGEG2no1TCn7C2QlXJ5fLA6/vARH1NNp
-         E7DhQNVhr/iSpWE/tSnJ5M0qWQXxYt/nFjS8Ckz/i4Mlmu7TsK0RfN7vR6yS2yXVLv
-         G0duTiPvWv5TuOXyDli7u/faRM4hnsv8B2SSvDqy8GSuMCqGiqVhByvFJ/gTHYx/nh
-         1CklPTy2nShtZDcB4+UNXJFio+Qyl4S/638oOxVCcIt/1/SI59ClN3HcrGn3DcOImm
-         OTEBgCRx8r1UaACQS4A2Y0bs32mmIVpn18LIP4cseWhp94pMiVHk+odlsWxZVym23y
-         n1Ybs+ZKejjdA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 75B6760A2A;
-        Sun, 19 Sep 2021 12:30:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231976AbhISMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhISMmr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:42:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F1C061574;
+        Sun, 19 Sep 2021 05:41:22 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632055280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fJ+hrUpU5MiPbitihsh+gHOnN+VL18gvd0mwNVsinxQ=;
+        b=LsGM8s+/IMvfPAuufPS6b/LxLmKMVB5d+13eFIC8MkwvaVoctGGb5awDoM40LKBk6G2Rzz
+        te8mT8yYqn3cxJh3SCwLVN3LqSoRBuGN2fUVDZHMNGgkEcxS0W/GkeaTD6tAR6HTAPGDJN
+        VFPa1sFqnMfTyWBYGPX9FfE4HlE/M/h7XNHe8wYwzj4vANeqpReOYfneQNlzUza3Lsao1N
+        b5ABMnuKPhPjk+/Fs/8SrwKz0I6Kbyvrcpiky8s4d2wdWinYJQwwazXjdHS5CCEt6jN7el
+        2TMv4aNICjpz6TP0cQ9How9OSLUIpUtb7rusvVkDOxP9xz3+3ILtKbeWnylTxw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632055280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fJ+hrUpU5MiPbitihsh+gHOnN+VL18gvd0mwNVsinxQ=;
+        b=f3GxbVALKFH02fjiUWP/En/F4kQ5sW5RGnLd/GOO8Eumo62RATeY86eimjCpZhU95HmdvX
+        p2fJ3L2WsBlIJgDA==
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, Waiman Long <llong@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [syzbot] WARNING in __init_work
+In-Reply-To: <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
+References: <000000000000423e0a05cc0ba2c4@google.com>
+ <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
+ <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
+Date:   Sun, 19 Sep 2021 14:41:18 +0200
+Message-ID: <87sfy07n69.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests: net: af_unix: Fix makefile to use TEST_GEN_PROGS
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163205460747.12471.18162549656003560869.git-patchwork-notify@kernel.org>
-Date:   Sun, 19 Sep 2021 12:30:07 +0000
-References: <20210917215356.33791-1-skhan@linuxfoundation.org>
-In-Reply-To: <20210917215356.33791-1-skhan@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Stephen,
 
-This patch was applied to netdev/net.git (refs/heads/master):
+On Wed, Sep 15 2021 at 19:29, Stephen Boyd wrote:
+> Quoting Andrew Morton (2021-09-15 16:14:57)
+>> On Wed, 15 Sep 2021 10:00:22 -0700 syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com> wrote:
+>> > 
+>> > ODEBUG: object ffffc90000fd8bc8 is NOT on stack ffffc900022a0000, but annotated.
+>
+> This is saying that the object was supposed to be on the stack because
+> debug objects was told that, but it isn't on the stack per the
+> definition of object_is_on_stack().
 
-On Fri, 17 Sep 2021 15:53:56 -0600 you wrote:
-> Makefile uses TEST_PROGS instead of TEST_GEN_PROGS to define
-> executables. TEST_PROGS is for shell scripts that need to be
-> installed and run by the common lib.mk framework. The common
-> framework doesn't touch TEST_PROGS when it does build and clean.
-> 
-> As a result "make kselftest-clean" and "make clean" fail to remove
-> executables. Run and install work because the common framework runs
-> and installs TEST_PROGS. Build works because the Makefile defines
-> "all" rule which is unnecessary if TEST_GEN_PROGS is used.
-> 
-> [...]
+Correct.
 
-Here is the summary with links:
-  - selftests: net: af_unix: Fix makefile to use TEST_GEN_PROGS
-    https://git.kernel.org/netdev/net/c/e30cd812dffa
+>> >  <IRQ>
+>> >  __init_work+0x2d/0x50 kernel/workqueue.c:519
+>> >  synchronize_rcu_expedited+0x392/0x620 kernel/rcu/tree_exp.h:847
+>
+> This line looks like
+>
+>   INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
+>
+> inside synchronize_rcu_expedited(). The rew structure is declared on the
+> stack
+>
+>    struct rcu_exp_work rew;
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Yes, but object_is_on_stack() checks for task stacks only. And the splat
+here is entirely correct:
 
+softirq()
+  ...
+  synchronize_rcu_expedited()
+     INIT_WORK_ONSTACK()
+     queue_work()
+     wait_event()
 
+is obviously broken. You cannot wait in soft irq context.
+
+synchronize_rcu_expedited() should really have a might_sleep() at the
+beginning to make that more obvious.
+
+The splat is clobbered btw:
+
+[  416.415111][    C1] ODEBUG: object ffffc90000fd8bc8 is NOT on stack ffffc900022a0000, but annotated.
+[  416.423424][T14850] truncated
+[  416.431623][    C1] ------------[ cut here ]------------
+[  416.438913][T14850] ------------[ cut here ]------------
+[  416.440189][    C1] WARNING: CPU: 1 PID: 2971 at lib/debugobjects.c:548 __debug_object_init.cold+0x252/0x2e5
+[  416.455797][T14850] refcount_t: addition on 0; use-after-free.
+
+So there is a refcount_t violation as well.
+
+Nevertheless a hint for finding the culprit is obviously here in that
+call chain:
+
+>> >  bdi_remove_from_list mm/backing-dev.c:938 [inline]
+>> >  bdi_unregister+0x177/0x5a0 mm/backing-dev.c:946
+>> >  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
+>> >  kref_put include/linux/kref.h:65 [inline]
+>> >  bdi_put+0x72/0xa0 mm/backing-dev.c:976
+>> >  bdev_free_inode+0x116/0x220 fs/block_dev.c:819
+>> >  i_callback+0x3f/0x70 fs/inode.c:224
+
+The inode code uses RCU for freeing an inode object which then ends up
+calling bdi_put() and subsequently in synchronize_rcu_expedited().
+
+>> >  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
+>> >  rcu_core+0x7ab/0x1470 kernel/rcu/tree.c:2743
+>> >  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+>> >  invoke_softirq kernel/softirq.c:432 [inline]
+>> >  __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
+>> >  irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+>> >  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
+>> >  </IRQ>
+>> 
+>> Seems that we have a debugobject in the incorrect state, but it doesn't
+>> necessarily mean there's something wrong in the bdi code.  It's just
+>> that the bdi code happened to be the place which called
+>> synchronize_rcu_expedited().
+
+Again, it cannot do that from a softirq because
+synchronize_rcu_expedited() might sleep.
+
+> Is it possible that object_is_on_stack() doesn't work in IRQ context?
+> I'm not really following along on x86 but I could see where
+> task_stack_page() gets the wrong "stack" pointer because the task has one
+> stack and the irq stack is some per-cpu dedicated allocation?
+
+Even if debug objects would support objects on irq stacks, the above is
+still bogus. But it does not and will not because the operations here
+have to be fully synchronous:
+
+    init() -> queue() or arm() -> wait() -> destroy()
+
+because you obviously cannot queue work or arm a timer which are on stack
+and then leave the function without waiting for the operation to complete.
+
+So these operations have to be synchronous which is a NONO when running
+in hard or soft interrupt context because waiting for the operation to
+complete is not possible there.
+
+Thanks,
+
+        tglx
