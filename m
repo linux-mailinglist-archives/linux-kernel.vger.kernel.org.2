@@ -2,308 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD57410A24
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 07:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730FF410A25
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 07:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhISFjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 01:39:40 -0400
-Received: from mail-dm6nam08on2058.outbound.protection.outlook.com ([40.107.102.58]:3009
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        id S232354AbhISFsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 01:48:12 -0400
+Received: from mail-bn1nam07on2062.outbound.protection.outlook.com ([40.107.212.62]:48495
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229558AbhISFjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 01:39:39 -0400
+        id S229558AbhISFsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 01:48:11 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KME/asKNhAqmFqA64vGHF7rR4lCmL/39FvacYr+nthnXNe4FJ7niO9x2ATjn3F3XA987de+TrQ3/jWBrieKJPcJWI2RRXUxA25Jlv2ZMGrM1QxH4312lBYPlUfiWYHFc41BK2XWF2uzllMb0Z6oLFVIoAdiLSLS9ax3/xSTW8DyoontV+5mmJOtYN0M+r/meZvUoaOrhTkBS/Lj61EaMAe8fdY+gENJUI2eAeBj7s7pjvlLUNBLVzxka390WMqZ4v2eqxiwu1yBbIRnUdhJ0omDhWLQ1Q2Zvxb3RiQ4HrpYV8LlHbMTEPvkM7ontiaavYum6MCEfpful3APziA3Q3Q==
+ b=CJ4V73HVMAJP3aRJa+xVGi1/Ax1HFlWpBw2kaW+AQEQbzo6G/4Qb7xZzo5OVhFsbTPFW6PLChaCYgpsK6v+pw/DNbXwD+rv07Tgl/BwzgOMLruCyHAuCXwI3GqHo0ft+tSMCfdU/GV/NC+bstVSkYNKyhesCQvs3DfJC9i62nIk8V3szg1GKAF1VssAXTjWSdevO++jHTGUSoYwfALi7mcqiMNkrgBalkDPY6EJDzW3Gorxk9gDe3WOFqUDIVI1bE0oaL8RMXWz9JwRImAddp5s+0gUU4W1Ka3Dye/rVOkIhJx+qAGVMj+YRZemR9/ineGbF9CBG6/GTnbmtyzIreg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=a44xLc72LA9fszVSF1INlFZAoGCITAW3L7u1jklVsYg=;
- b=SONDqvDA2N+BB96k6j1SHKonzXBso6c0qZ1DYxlT9f81w0Js9nISGhbJMf15TqXdALQ1XEpnXIox5k/xfkYnI7llDOpgKYpk/xxqgGC7Bct7tHz2lqHTNnN8H/qzOtoFRhF0FXZiUKMzrZg1D6wBKSFd9ZiWvDhWIogxymuByDlzWfEkdSPCRqZuAxF4/KmbcWT/3Zki7gydCqMrGOuFwAMYzSGtae2A+o7Ueu+1xxM0vLvWQPWX7/+9xSXXjcPYk4ehenwHEhZsuyL2DtRS8dWwXwektV1pwTXsERCWGhYyq2RebIk1N18ecmjuGxssLVptW7ugVJORmCmBs0Dd5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
+ bh=wwYFwqNFBSvrg2/XL+iiODSzWlM08n/EZ4f4uQc5vlA=;
+ b=Ewt81hCjsLgWe3OHxg622SATumdXmqmC4WCS1n4thUGqFaCTSxOdXRr30NJP8ImhqrCiPntQqj99uR0FPb1vr4kGeOzXmv9/wAjB/laYTubMaC2qms9wb2Ga6tZC22u0/IbN0S699Lvjed1ovMlK75JEQpufpYT1jzqDoWulMCvoIHq8W9IzaTjJp/69kn3p3U33GSYV9aiqRqxDIqzkvBvWoQNdPj9n78Ui9vkJyNQ9IpXga4+cjjwLFJRYg5UN3v34usM+IKSWHrHFnBA8tFDUAM96I1AAHbqCJLHT+T7pOgF7AtgDzHeuXenYabePVDTV0uhVb7FYfWLcZVbXyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=zeniv.linux.org.uk
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=quarantine sp=none pct=100)
+ action=none header.from=nvidia.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a44xLc72LA9fszVSF1INlFZAoGCITAW3L7u1jklVsYg=;
- b=drh9tMZPUDIEDomAivZXXjmZVp2cnzHVoFp8icAApJp1PIV7WbczOtlmkld3nZHbHjkg1LgY7LfwEc6KjMzO9jjM3EGaqym9jNKlldhpkzKJcvnhDknt8bbHqKor8+hjSX4jRHD0U0fNh2lUPjlV5MCrmXWU8cjmeDBd9bB0Ea2jAK9w5b+k6npLedB+k5boky3p3Gb9cRFrLtmHdGKOUjppNzhr5d133VbuXWjtnoTYZ12SDJ2/HWkWFJyZRJxr/BRJjZqizAcH92yQGjRA5i948UokW9abkH4GNUfDV3V9Zo8xoHFmrnVDxGeM34sk6TcRoKDVuiAqQ3Bz3AHcLA==
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by BY5PR12MB3972.namprd12.prod.outlook.com (2603:10b6:a03:1a8::10) with
+ bh=wwYFwqNFBSvrg2/XL+iiODSzWlM08n/EZ4f4uQc5vlA=;
+ b=AtKKj70VZKFJAwjiKvC5WRZOLBBjR4RKTkuAZBYJA0e5NiiijbOCcInwKth1Yrchjzw7XTFFepTaHowWMtbpSMJSwxWrUwFeIBtp2SULJT1E1R5JEWfeyccKkCx6eQRVJUs5bjSDo9EKEA1DPBzY0kYcYe7PmTzSIyD9d/A4r3zI6gG4+8GHxfk8W3tJkHLwk0vl7g5UlNW6U2B6NKtRQwwijJeSkAYfH+41BsWVeVCQjQCXcxKBaljs6NL8mag8SmxkgLeW1BeVVgpCG9OiyFeE48wdTM0vTPbSbQgELGdBYdD2YmKf1+Q0YBdWL8mVnFPB2uBc36R7mV14E+YNMQ==
+Received: from MW4PR03CA0272.namprd03.prod.outlook.com (2603:10b6:303:b5::7)
+ by BN8PR12MB2914.namprd12.prod.outlook.com (2603:10b6:408:95::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Sun, 19 Sep
- 2021 05:38:12 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6811:59ee:b39f:97b9]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6811:59ee:b39f:97b9%9]) with mapi id 15.20.4523.018; Sun, 19 Sep 2021
- 05:38:12 +0000
-Content-Type: multipart/mixed; boundary="------------6JJJW1UqstnyHETYV7hjMYnp"
-Message-ID: <cec9a286-f7b6-c80a-c518-480db65152fc@nvidia.com>
-Date:   Sat, 18 Sep 2021 22:38:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] mm/debug: sync up latest migrate_reason to
- migrate_reason_names
-Content-Language: en-US
-To:     Weizhao Ouyang <o451686892@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210917061432.323777-1-o451686892@gmail.com>
- <871r5nptt7.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <89a06743-b37a-b85a-1c04-5d863a1d2cb4@gmail.com>
- <3cf9bb7f-618e-4e4b-32d6-4d3c207b9a9a@nvidia.com>
- <b4123610-bddf-03b9-2190-7b0cda55b57c@gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <b4123610-bddf-03b9-2190-7b0cda55b57c@gmail.com>
-X-ClientProxiedBy: BYAPR01CA0038.prod.exchangelabs.com (2603:10b6:a03:94::15)
- To BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ 2021 05:46:44 +0000
+Received: from CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b5:cafe::8b) by MW4PR03CA0272.outlook.office365.com
+ (2603:10b6:303:b5::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Sun, 19 Sep 2021 05:46:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; zeniv.linux.org.uk; dkim=none (message not signed)
+ header.d=none;zeniv.linux.org.uk; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ CO1NAM11FT057.mail.protection.outlook.com (10.13.174.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Sun, 19 Sep 2021 05:46:44 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 19 Sep
+ 2021 05:46:43 +0000
+Received: from localhost (172.20.187.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 19 Sep 2021 05:46:42
+ +0000
+Date:   Sun, 19 Sep 2021 08:46:39 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
+CC:     <linux-kernel@vger.kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>
+Subject: Re: [PATCH -rc] init: don't panic if mount_nodev_root failed
+Message-ID: <YUbOv01OaWh9fQHp@unreal>
+References: <b83c61f6ab34c8f17672d88e0853a9d324c3d48a.1631610487.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Received: from [10.2.48.243] (216.228.112.22) by BYAPR01CA0038.prod.exchangelabs.com (2603:10b6:a03:94::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Sun, 19 Sep 2021 05:38:11 +0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <b83c61f6ab34c8f17672d88e0853a9d324c3d48a.1631610487.git.leonro@nvidia.com>
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 24625584-bbdd-4001-9768-08d97b2fab6b
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3972:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB397295F60F353BCC33908281A8DF9@BY5PR12MB3972.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 8336dfa5-c8b4-43fc-769b-08d97b30dcc1
+X-MS-TrafficTypeDiagnostic: BN8PR12MB2914:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB2914053059674749C997DECEBDDF9@BN8PR12MB2914.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ci9RJiH7zzMQHytL6idj69c4VqS+qnOXgaMNAnAIrdj2KvsdQqm6WaMzfQWI4o2ED9ZfvgLnt8RwBpSevS9IKKq1nO7B2HqWM5P4ItNZtvj1R2vOyL4FvSJtD6zC0ytFCDFf35xKrt5Qhh29Lz1pE57c8Sas9W/K+7vgojTQjscoP7rcDvuywUzBIn/yPnvsH+4LB18KJwx2idlLq807o7QaGADdF5wM4wRn/F+W6SoGxQJ1XtS5acy2ie85bFe4McQvnnO7upyQKBx7oh2j7BC0cXpL+6t+wgEioRevF6h+0Gj+HoVOcjEvxWAV/3KdUGlpCqgny98pDTnaAD+YcSwBqTPuKCKzlISAGibOAXdBbSt8ZkkgW0QfXDb0FJj17YDtyyQ5hANaIHYjSTmY1FXvkYkACsPRTpE2NIhSuYXBn2OomdWlbPPtdX8OVXI5uYcnFhF8lbVPEK8mKHQn05vydOY0pnje3/+mTrXH4XuM1udRs4T23qmRD5p085efK4scJPjdfZ9u3nVjCgKCh17yoT55lQuV1cNPLFYQdbHIcA8+T3I2E10LnVTTTv7obVeUwQM6dOHWaTY470M9PXEpSWwWuPomoyUNbXAmkgDQB+/r4rIXZj0MYKMJIGcAhNms4TC4ZLS7Ju0U+VCVZsk5FNgfFQ2ELfY7UyWpFFbLetoRJVKnLH3YZAtSiKWbXKWzWeIu8G7rJgSnvREKWg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(366004)(31696002)(33964004)(83380400001)(38100700002)(66616009)(31686004)(235185007)(186003)(66946007)(110136005)(66476007)(6486002)(5660300002)(66556008)(2906002)(36756003)(316002)(86362001)(4326008)(2616005)(54906003)(8936002)(16576012)(26005)(478600001)(956004)(8676002)(53546011)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZC9TaXpuSnJRMklqVkZmRUdlZTRHME5uNDU0WVpqMmp4RmpKZEJBSzZoaE5t?=
- =?utf-8?B?MDVpV2Q5TFRtN09oeXltRG5WSXYwQzF1U1JrcTdiNGpINnFDWGpTWCtDdTFp?=
- =?utf-8?B?ZzVaVnhYQldQR2RvalRjVUw5UVpEeFVYQ0tsTlh3UVhtZXJJNERzYnBETktD?=
- =?utf-8?B?OWNjRiszSHhEUXY0bnlTQjc3Y2hUR3luNUE1SHQwc0tmVUVrckUxSmV0c2VT?=
- =?utf-8?B?MnQ1NWU2RzdXaVVDOHlGMkxFRmhZZkc4V2xFdWNGby9Nc1JRdWpDeDNjNGll?=
- =?utf-8?B?My9xNzBRMmhlUjkyMWh1RTB1dGk4cEc0aVBuaEZWMUF6b0ZaSGdUNlp3cyta?=
- =?utf-8?B?YkQvZGJjemJRcThGSnY5VFlxQ3k5L0liWUQvcEZBMmZuektFdUxnQm9mdEZR?=
- =?utf-8?B?dUNHOTZUWDdncEJROWNVdys0SjhnNXpBTld1dFJKajNvVU5PdmU3M1N4OFhD?=
- =?utf-8?B?SUoyWHgwQ3V1MUhCemRNTklCRmMvVmplcUcwVC9FekhwaExqREc1VEJ2NjVT?=
- =?utf-8?B?UWF0Yk10SExrc3RjVG1YU01XZHhRajVyMjVLdDRjQnJEYWJSWVkxU25vY1Jo?=
- =?utf-8?B?Wmx6eUx5ZGNIb051RFlVTlJyKzhDNmxzWnN3dGY2S2JGeEVnbmhpaXBTZEFl?=
- =?utf-8?B?TzJmM1Z0VEJNaDZteXpsT241clVoM3NRdDVoVk8xb1pFb0JsR1hQSjFweEM5?=
- =?utf-8?B?ZGFxek5jSHY3RkV2SHhhQkxRbkRRdnp2ZXRzOE05Z2puR3ZDaDhxSnQ3NXFX?=
- =?utf-8?B?Q2U1RmhkWnkrMHBiZWw3M04xMHZVYUV6RWFacmZUK0htd0k4Y1NVekc3Um5M?=
- =?utf-8?B?K0xROXZNSGMwOXFJSUFWYVJpb3NZNXFSWWdCeWpkSEl6MmMzM1BZZWNiRlpR?=
- =?utf-8?B?RW9RMm9PVjh2VE5mYndXcUN3cXBkNHByVDczdC9TQUJCS0VaSU1rb3NrNTlN?=
- =?utf-8?B?UCtSTGR6cTE3VDRvVHZkM3RybFRxTFBlU080MjJudzYrdTNQZFpLeEF5ZDZR?=
- =?utf-8?B?eklVeVNpUzdkQk1WNmJ3NTNNSjNoMFNaVURUYWcxaVcxcEtNS09MVFFpNjBD?=
- =?utf-8?B?YjV4VGR1THUxMXV0cXBhZFczWEk3Z2ZLMHhSTzVvQ1ppRStUK3VpWDZCMy9S?=
- =?utf-8?B?ZXVaczdIVFRyUUxSSjFhOVFRTXBEM3BhczhDSHFQQitnSi9RTFRhN1YwMHg1?=
- =?utf-8?B?eE4rSjhYNXAvZFNlRnRUY3MwOTJQV1Zwdno4UFVxTFhoN3JZaHh6RDBhQm8y?=
- =?utf-8?B?ZC9VMlM0QUd2ai9ZTmpuVDVRSGJXNmlPZkQyNFphQzlMQjNHOHV5ZVp4YjVD?=
- =?utf-8?B?eVJkbmtoNzBHTStsL1hXWTFHaFYrQ3VxQTRNamNZOWNMNVdJcmpmd2h5NVF4?=
- =?utf-8?B?bWV3TzVUcU5BeE1OeVduRDd4L2wvdWZUQWZlN2FsVlpHTnlQTFZxSnhnMWRP?=
- =?utf-8?B?eEQ3TUVBbUFSVlF6UlZuWjk2cVhXQytnMzFmdTQxSkQzbXBiZlJSYXFFTXlt?=
- =?utf-8?B?bE9xdmpqM2dOU2RCUSs1ZTFtYmtoNTJoTll2c2hoUTVVdHdId2MrT2xEWVQz?=
- =?utf-8?B?R05vSWcyaUZDUU9EdFZVYjlGSEN0M1lLb3RxZ1g5citxc09reUVHdTh6cWpk?=
- =?utf-8?B?a1FEWEJwdDIxUk9BTGE3Mlk3UmhmUkoyUjIrZEsxbGNVVjZscCtpTmtFK2NB?=
- =?utf-8?B?NnAyQXBNNlNEekgza2ZaZ2pPWS9NOURDOXMwRlA5YUx2eGJBNXRyYURCODF6?=
- =?utf-8?Q?GCJQxdJxm1mXZAZUqahBrcPrS0cQMyAs7AVx6iE?=
+X-Microsoft-Antispam-Message-Info: AB5K+J3dAI5OgUybOth/9BGFaX6AetwwpZ+yJoRTDl3AlKQxL6kTZEqAVXviF0SM8D9CYDrfEGNWNxs7LCdeoTK9twrf2nBwAx5xqAoNRI/REmxJ/3exa3H6DNyvU+dfAV6zyUquvbz6dVnKWZ7QhDj/CxOqefbC6B0p4RS1xvkEZppxYgts8yWbpIzAXn6oyQxP5YJJMIsLfhMJFuyb1sVZqsz2KsYAz02A+Hh9oelCFNxTjjeOYESCiQ3jVzsOhTtYBw7xW+8yXteNiMtVGNZztiow0p7V2zUR7lMeWuiGcKy/i+lIa7MH0qigFgxpZlyRCDYKnTDy9oTqsUNG8hg1IDqH8MFfMwK6yvOu/IFq1K5aHcyqlsB/PMn7MSG7eDmnKdB+OBE96ZPJ+Unirgd/IXsK2BAtnVtTFcbETm9oZEqqPOgAhhVs6zzJ5GMppTNRAuDBLsJv9MShVyClv7Zcod1FAMHdrCczMtVWqHmaKvH+QqUztfB0a4PVMb9D8wMwrbCx7KHOHEO7Lne2oDfcQksGwIh0NbmYVSYbUr1HBbGIbfCLJAYYxAKHmvSQlmYpxbhMrFPZ9WtgFX4OFfdr4obWSudX68UKDUTpIi/ZfSOIiOeJDO7XEHsasKR7n+m4EzK30GVY25kGd37G6KYRwdhX5Od3YeY3Pb/+bnKcrvGe1M79d+yKJ/vpTLSteHRw2ksPwhXm2wuUSKytyAJ/oW8h3sKVO+p1e3pcqxCEVPR+p8hEhO8FlAu8J61Hiy+ksfVTZpMU/hYfeLHmttNSFdum6XCdMuZ0YnudNLE=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(7916004)(346002)(39860400002)(396003)(376002)(136003)(36840700001)(46966006)(8676002)(82740400003)(316002)(86362001)(82310400003)(54906003)(70586007)(36906005)(9686003)(6666004)(5660300002)(33716001)(4326008)(356005)(8936002)(83380400001)(186003)(36860700001)(2906002)(110136005)(7636003)(26005)(478600001)(16526019)(966005)(47076005)(70206006)(336012)(426003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24625584-bbdd-4001-9768-08d97b2fab6b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2021 05:38:12.0992
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Sep 2021 05:46:44.0979
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8336dfa5-c8b4-43fc-769b-08d97b30dcc1
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OOwF8Aq+AqiSojAlIXEy8eISKAa4BGjEjwv1bnfUWBZi9DQ0ogDSLFNUhwnmOh+WtOxkJ9MoCPYnqKpGXRhTmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3972
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT057.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB2914
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------6JJJW1UqstnyHETYV7hjMYnp
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 9/18/21 00:03, Weizhao Ouyang wrote:
-...
->   
-> Anyway, I didn't find a simply way the build the "everywhere" relationship behind
-> the packaged TRACE_DEFINE_ENUM , what do you think.
+On Tue, Sep 14, 2021 at 12:12:10PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-It's actually pretty easy, unless I'm unknowingly violating some rule
-here. But I did review tracing a bit before diving in, and I think this
-is reasonable.
+> Attempt to mount 9p file system as root gives the following kernel panic:
+> 
+>  9pnet_virtio: no channels available for device root
+>  Kernel panic - not syncing: VFS: Unable to mount root "root" (9p), err=-2
+>  CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc1+ #127
+>  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+>  Call Trace:
+>   dump_stack_lvl+0x45/0x59
+>   panic+0x1e2/0x44b
+>   ? __warn_printk+0xf3/0xf3
+>   ? free_unref_page+0x2d4/0x4a0
+>   ? trace_hardirqs_on+0x32/0x120
+>   ? free_unref_page+0x2d4/0x4a0
+>   mount_root+0x189/0x1e0
+>   prepare_namespace+0x136/0x165
+>   kernel_init_freeable+0x3b8/0x3cb
+>   ? rest_init+0x2e0/0x2e0
+>   kernel_init+0x19/0x130
+>   ret_from_fork+0x1f/0x30
+>  Kernel Offset: disabled
+>  ---[ end Kernel panic - not syncing: VFS: Unable to mount root "root" (9p), err=-2 ]---
+> 
+> QEMU command line:
+>  "qemu-system-x86_64 -append root=/dev/root rw rootfstype=9p rootflags=trans=virtio ..."
+> 
+> This error is because root_device_name is truncated in prepare_namespace() from
+> being "/dev/root" to be "root" prior to call to mount_nodev_root().
+> 
+> As a solution, don't treat errors in mount_nodev_root() as errors that
+> require panics and allow failback to the mount flow that existed before
+> patch citied in Fixes tag.
+> 
+> Fixes: f9259be6a9e7 ("init: allow mounting arbitrary non-blockdevice filesystems as root")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+> I'm not sure if this is the right thing to do, but it works for me.
+> ---
+>  init/do_mounts.c | 3 ---
+>  1 file changed, 3 deletions(-)
 
-The trace macros EM(), EMe(), and MIGRATE_REASON are flexible enough to
-get whatever you want, out of them. So, the trace header can be the one
-location for the definition of the enum-to-string mapping.
+Hi,
 
-The key is to move the enum to a common header file that both the trace
-system (trace/events/migrate.h) and the migrate header
-(include/linux/migrate.h) can include. Fortunately, that's already been
-started for enum migrate_mode: there is migrate_mode.h.
+I assume that after Christoph gave his ROB [1], the patch is ok.
+Should I do anything else in order to progress with merging it?
 
-So it all works approximately like this, below. (I'll attach a
-white-space-correct diff that you can apply directly, too). I've
-compiled tested and rebooted with it, but haven't checked much more
-than that yet.
+Thanks
 
----
-  include/linux/migrate.h      | 16 ++--------------
-  include/linux/migrate_mode.h | 13 +++++++++++++
-  mm/debug.c                   | 19 ++++++++++++-------
-  3 files changed, 27 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 326250996b4e..cb62fbc3d8d6 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -6,6 +6,7 @@
-  #include <linux/mempolicy.h>
-  #include <linux/migrate_mode.h>
-  #include <linux/hugetlb.h>
-+#include <linux/migrate_mode.h>
-
-  typedef struct page *new_page_t(struct page *page, unsigned long private);
-  typedef void free_page_t(struct page *page, unsigned long private);
-@@ -19,20 +20,7 @@ struct migration_target_control;
-   */
-  #define MIGRATEPAGE_SUCCESS		0
-
--enum migrate_reason {
--	MR_COMPACTION,
--	MR_MEMORY_FAILURE,
--	MR_MEMORY_HOTPLUG,
--	MR_SYSCALL,		/* also applies to cpusets */
--	MR_MEMPOLICY_MBIND,
--	MR_NUMA_MISPLACED,
--	MR_CONTIG_RANGE,
--	MR_LONGTERM_PIN,
--	MR_DEMOTION,
--	MR_TYPES
--};
--
--/* In mm/debug.c; also keep sync with include/trace/events/migrate.h */
-+/* In mm/debug.c */
-  extern const char *migrate_reason_names[MR_TYPES];
-
-  #ifdef CONFIG_MIGRATION
-diff --git a/include/linux/migrate_mode.h b/include/linux/migrate_mode.h
-index 883c99249033..f37cc03f9369 100644
---- a/include/linux/migrate_mode.h
-+++ b/include/linux/migrate_mode.h
-@@ -19,4 +19,17 @@ enum migrate_mode {
-  	MIGRATE_SYNC_NO_COPY,
-  };
-
-+enum migrate_reason {
-+	MR_COMPACTION,
-+	MR_MEMORY_FAILURE,
-+	MR_MEMORY_HOTPLUG,
-+	MR_SYSCALL,		/* also applies to cpusets */
-+	MR_MEMPOLICY_MBIND,
-+	MR_NUMA_MISPLACED,
-+	MR_CONTIG_RANGE,
-+	MR_LONGTERM_PIN,
-+	MR_DEMOTION,
-+	MR_TYPES
-+};
-+
-  #endif		/* MIGRATE_MODE_H_INCLUDED */
-diff --git a/mm/debug.c b/mm/debug.c
-index e73fe0a8ec3d..51152ffc1f29 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -17,14 +17,19 @@
-
-  #include "internal.h"
-
-+#include <trace/events/migrate.h>
-+
-+/*
-+ * Define EM() and EMe() so that MIGRATE_REASON from trace/events/migrate.h can
-+ * be used to populate migrate_reason_names[].
-+ */
-+#undef EM
-+#undef EMe
-+#define EM(a, b)	b,
-+#define EMe(a, b)	b
-+
-  const char *migrate_reason_names[MR_TYPES] = {
--	"compaction",
--	"memory_failure",
--	"memory_hotplug",
--	"syscall_or_cpuset",
--	"mempolicy_mbind",
--	"numa_misplaced",
--	"cma",
-+	MIGRATE_REASON
-  };
-
-  const struct trace_print_flags pageflag_names[] = {
--- 
-2.33.0
-
-thanks,
--- 
-John Hubbard
-NVIDIA
---------------6JJJW1UqstnyHETYV7hjMYnp
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-Use-one-definition-of-MIGRATE_REASON-strings-everywh.patch"
-Content-Disposition: attachment;
- filename*0="0001-Use-one-definition-of-MIGRATE_REASON-strings-everywh.pa";
- filename*1="tch"
-Content-Transfer-Encoding: base64
-
-RnJvbSA3YjEwNDE5YTFkZTliZTM1MjUzOWIzOGUyY2E3MGNjNWIxNDY4N2Q5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBKb2huIEh1YmJhcmQgPGpodWJiYXJkQG52aWRpYS5jb20+CkRh
-dGU6IFNhdCwgMTggU2VwIDIwMjEgMjI6MDc6MjAgLTA3MDAKU3ViamVjdDogW1BBVENIXSBVc2Ug
-b25lIGRlZmluaXRpb24gb2YgTUlHUkFURV9SRUFTT04gc3RyaW5ncywgZXZlcnl3aGVyZQpYLU5W
-Q29uZmlkZW50aWFsaXR5OiBwdWJsaWMKQ2M6IEpvaG4gSHViYmFyZCA8amh1YmJhcmRAbnZpZGlh
-LmNvbT4KCihDb21waWxlZC10ZXN0ZWQgb25seSwgc28gbm8gc2lnbmVkIG9mZiBieSB0YWcuKQot
-LS0KIGluY2x1ZGUvbGludXgvbWlncmF0ZS5oICAgICAgfCAxNiArKy0tLS0tLS0tLS0tLS0tCiBp
-bmNsdWRlL2xpbnV4L21pZ3JhdGVfbW9kZS5oIHwgMTMgKysrKysrKysrKysrKwogbW0vZGVidWcu
-YyAgICAgICAgICAgICAgICAgICB8IDE5ICsrKysrKysrKysrKy0tLS0tLS0KIDMgZmlsZXMgY2hh
-bmdlZCwgMjcgaW5zZXJ0aW9ucygrKSwgMjEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS9saW51eC9taWdyYXRlLmggYi9pbmNsdWRlL2xpbnV4L21pZ3JhdGUuaAppbmRleCAzMjYy
-NTA5OTZiNGUuLmNiNjJmYmMzZDhkNiAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9taWdyYXRl
-LmgKKysrIGIvaW5jbHVkZS9saW51eC9taWdyYXRlLmgKQEAgLTYsNiArNiw3IEBACiAjaW5jbHVk
-ZSA8bGludXgvbWVtcG9saWN5Lmg+CiAjaW5jbHVkZSA8bGludXgvbWlncmF0ZV9tb2RlLmg+CiAj
-aW5jbHVkZSA8bGludXgvaHVnZXRsYi5oPgorI2luY2x1ZGUgPGxpbnV4L21pZ3JhdGVfbW9kZS5o
-PgogCiB0eXBlZGVmIHN0cnVjdCBwYWdlICpuZXdfcGFnZV90KHN0cnVjdCBwYWdlICpwYWdlLCB1
-bnNpZ25lZCBsb25nIHByaXZhdGUpOwogdHlwZWRlZiB2b2lkIGZyZWVfcGFnZV90KHN0cnVjdCBw
-YWdlICpwYWdlLCB1bnNpZ25lZCBsb25nIHByaXZhdGUpOwpAQCAtMTksMjAgKzIwLDcgQEAgc3Ry
-dWN0IG1pZ3JhdGlvbl90YXJnZXRfY29udHJvbDsKICAqLwogI2RlZmluZSBNSUdSQVRFUEFHRV9T
-VUNDRVNTCQkwCiAKLWVudW0gbWlncmF0ZV9yZWFzb24gewotCU1SX0NPTVBBQ1RJT04sCi0JTVJf
-TUVNT1JZX0ZBSUxVUkUsCi0JTVJfTUVNT1JZX0hPVFBMVUcsCi0JTVJfU1lTQ0FMTCwJCS8qIGFs
-c28gYXBwbGllcyB0byBjcHVzZXRzICovCi0JTVJfTUVNUE9MSUNZX01CSU5ELAotCU1SX05VTUFf
-TUlTUExBQ0VELAotCU1SX0NPTlRJR19SQU5HRSwKLQlNUl9MT05HVEVSTV9QSU4sCi0JTVJfREVN
-T1RJT04sCi0JTVJfVFlQRVMKLX07Ci0KLS8qIEluIG1tL2RlYnVnLmM7IGFsc28ga2VlcCBzeW5j
-IHdpdGggaW5jbHVkZS90cmFjZS9ldmVudHMvbWlncmF0ZS5oICovCisvKiBJbiBtbS9kZWJ1Zy5j
-ICovCiBleHRlcm4gY29uc3QgY2hhciAqbWlncmF0ZV9yZWFzb25fbmFtZXNbTVJfVFlQRVNdOwog
-CiAjaWZkZWYgQ09ORklHX01JR1JBVElPTgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9taWdy
-YXRlX21vZGUuaCBiL2luY2x1ZGUvbGludXgvbWlncmF0ZV9tb2RlLmgKaW5kZXggODgzYzk5MjQ5
-MDMzLi5mMzdjYzAzZjkzNjkgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvbWlncmF0ZV9tb2Rl
-LmgKKysrIGIvaW5jbHVkZS9saW51eC9taWdyYXRlX21vZGUuaApAQCAtMTksNCArMTksMTcgQEAg
-ZW51bSBtaWdyYXRlX21vZGUgewogCU1JR1JBVEVfU1lOQ19OT19DT1BZLAogfTsKIAorZW51bSBt
-aWdyYXRlX3JlYXNvbiB7CisJTVJfQ09NUEFDVElPTiwKKwlNUl9NRU1PUllfRkFJTFVSRSwKKwlN
-Ul9NRU1PUllfSE9UUExVRywKKwlNUl9TWVNDQUxMLAkJLyogYWxzbyBhcHBsaWVzIHRvIGNwdXNl
-dHMgKi8KKwlNUl9NRU1QT0xJQ1lfTUJJTkQsCisJTVJfTlVNQV9NSVNQTEFDRUQsCisJTVJfQ09O
-VElHX1JBTkdFLAorCU1SX0xPTkdURVJNX1BJTiwKKwlNUl9ERU1PVElPTiwKKwlNUl9UWVBFUwor
-fTsKKwogI2VuZGlmCQkvKiBNSUdSQVRFX01PREVfSF9JTkNMVURFRCAqLwpkaWZmIC0tZ2l0IGEv
-bW0vZGVidWcuYyBiL21tL2RlYnVnLmMKaW5kZXggZTczZmUwYThlYzNkLi41MTE1MmZmYzFmMjkg
-MTAwNjQ0Ci0tLSBhL21tL2RlYnVnLmMKKysrIGIvbW0vZGVidWcuYwpAQCAtMTcsMTQgKzE3LDE5
-IEBACiAKICNpbmNsdWRlICJpbnRlcm5hbC5oIgogCisjaW5jbHVkZSA8dHJhY2UvZXZlbnRzL21p
-Z3JhdGUuaD4KKworLyoKKyAqIERlZmluZSBFTSgpIGFuZCBFTWUoKSBzbyB0aGF0IE1JR1JBVEVf
-UkVBU09OIGZyb20gdHJhY2UvZXZlbnRzL21pZ3JhdGUuaCBjYW4KKyAqIGJlIHVzZWQgdG8gcG9w
-dWxhdGUgbWlncmF0ZV9yZWFzb25fbmFtZXNbXS4KKyAqLworI3VuZGVmIEVNCisjdW5kZWYgRU1l
-CisjZGVmaW5lIEVNKGEsIGIpCWIsCisjZGVmaW5lIEVNZShhLCBiKQliCisKIGNvbnN0IGNoYXIg
-Km1pZ3JhdGVfcmVhc29uX25hbWVzW01SX1RZUEVTXSA9IHsKLQkiY29tcGFjdGlvbiIsCi0JIm1l
-bW9yeV9mYWlsdXJlIiwKLQkibWVtb3J5X2hvdHBsdWciLAotCSJzeXNjYWxsX29yX2NwdXNldCIs
-Ci0JIm1lbXBvbGljeV9tYmluZCIsCi0JIm51bWFfbWlzcGxhY2VkIiwKLQkiY21hIiwKKwlNSUdS
-QVRFX1JFQVNPTgogfTsKIAogY29uc3Qgc3RydWN0IHRyYWNlX3ByaW50X2ZsYWdzIHBhZ2VmbGFn
-X25hbWVzW10gPSB7Ci0tIAoyLjMzLjAKCg==
-
---------------6JJJW1UqstnyHETYV7hjMYnp--
+[1] https://lore.kernel.org/all/20210914150709.GA32708@lst.de/
