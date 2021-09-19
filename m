@@ -2,134 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1735D410D3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47EE410D48
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhISUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 16:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
+        id S232147AbhISU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 16:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhISUMb (ORCPT
+        with ESMTP id S232116AbhISU3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 16:12:31 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE02C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 13:11:05 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id y28so57231558lfb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 13:11:05 -0700 (PDT)
+        Sun, 19 Sep 2021 16:29:22 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9112DC061760;
+        Sun, 19 Sep 2021 13:27:56 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g8so52642364edt.7;
+        Sun, 19 Sep 2021 13:27:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9Y1JTruAJiennqoKHSUt8zJ7tlZwEeJ6qUN4lC6KPvo=;
-        b=ehQ47qxGSjYDaFqSk0LCuI2qANt8PLjKw6PwpbOXWSlxRA/h0M5OMRXDRqluaBmYbC
-         vz6ApeZPd2IeoRTE95yGaXVTnczEcFC3sErMCst05kDI63YNF0dioPU19cMBqpr5uwEG
-         C+I2SYENPDrSOQhX8edzTf4ARVhZeE03vE0bA=
+        bh=M6v530uQl/IBMDjOt1iPGFN8T7UMibEQIKXXYAgZsd4=;
+        b=CA8lJujaqBksQ/bi3zC4xkDc2TRjU3eQP6QyBu8aQwR2/atOCXwO92t5aNn73+E6rD
+         F7JCmkPTG097rC7LPLnplgT7Kyw3vLZO/ykamG6TrqSnSieG3l1Enj3o8gPbacxXYii3
+         mBdg/uQS6ofMBeU4o3fDex2B9KyQ9UZtplqXKf5lclmyJMwLQVV7ejM2QIqSae3OLhzL
+         VUqbcv0NrDQqg7YKB7kSsUfnmJmq5s3Jf3o7ErqdkiHSPsUpCj43sVolKOQ7Lk8kJbdJ
+         WpGxgLi/H80n2t9xXOGjXFZwD20lco9P9b7hAeihFqqBZuM963Wn0aDShwTc0o+sbND0
+         wsDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9Y1JTruAJiennqoKHSUt8zJ7tlZwEeJ6qUN4lC6KPvo=;
-        b=uhStBVTu6r9WzrOXVRjm7+SgjrOYw2ofeodrXGZxBoxzsHuoz4nfnZfKlDyD0eu8sQ
-         IffWNtPRs2xoh/5uIl49rPAHRLz3y/hzM1tQDXd3BqB6RbH35SmOd5rQYeyS5GzQaJ0q
-         aLLIkaxvRRBruMVAczTp8TqTUqJizRSKpe2oeIhrrJrLdD3ag9Xd/ixSkdjAWa6NMrr0
-         vyQQ3bLCVcr1Of+JGyx/+qY7vDqhDDSOLJpwu23s+He0Jkmly+IcO9eSZh/nFyb7tPlu
-         j6WE8P/6ejrWM69Y4DKdn2nFAbPOGhHhFWqixh0RzArZquSulqhqbU/3KgwPc66o2LLT
-         JHKg==
-X-Gm-Message-State: AOAM533o0kljPVaqPWhFYJupMd4UZUfn1AknDQYoE9i7l4Q7KOskcffS
-        +QD+c6Wxb22mi79XeEEK1zKCOMoBmn9K477Dm34=
-X-Google-Smtp-Source: ABdhPJzFQUQgWmeQQHTm+DYX//X2f7eqwmgOQUNKdnmG1eofV6yc7CaeUjRCvxePGi9Xi2vxUkMknQ==
-X-Received: by 2002:a05:6512:750:: with SMTP id c16mr17023246lfs.21.1632082263873;
-        Sun, 19 Sep 2021 13:11:03 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id j23sm691696lja.125.2021.09.19.13.11.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Sep 2021 13:11:02 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id x27so58180032lfu.5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 13:11:02 -0700 (PDT)
-X-Received: by 2002:a2e:7f1c:: with SMTP id a28mr18900378ljd.56.1632082261923;
- Sun, 19 Sep 2021 13:11:01 -0700 (PDT)
+        bh=M6v530uQl/IBMDjOt1iPGFN8T7UMibEQIKXXYAgZsd4=;
+        b=SIcrAPeuG867PkxApl323ELZzAyvqctAflrJrTcsWL40+bDv7fsubj8blX/B0iI5Tv
+         Fm68C9QMakf3mAdOKtmijw5+mNVhD6gII0dWPddBwmOI5RrYuc06er+95cPb9tJJ99MJ
+         nP3d1n9wRkwXysO6I7QgbVmBM4oXa5ZrtolFfKyB1XNZy5Ze4h/E95Li3c77hCbWSW4k
+         +EkV1aM0BYlnpEqn/JJ20SMEzs1f1Q//LRJ6ZadiIsbjsi00v8Cr5j2f37Pozg+rzf3Q
+         /pTdsd3cmsmFpXS5jrKpoWjkPNK82yLhPU2ZNSj9kfGmhhSgeZuWR6hi1X1etKx9OUBn
+         dQgA==
+X-Gm-Message-State: AOAM530QPrdN79THPWn/Ixq7IifwuydvtlHE4THXtrb2Ahru+nG+5R7T
+        vysUpmCPzu58mCgjJaJvdnDzZtNVaao7FPmf3ak=
+X-Google-Smtp-Source: ABdhPJwjvY5fmYqNGtV2kNvA1HdKK9Jz4KYV57WFaEDJwS+4jtZiPqWbEdBdHklQHy4pyUC0UFxyspoOicIErUiziTc=
+X-Received: by 2002:a17:906:3b56:: with SMTP id h22mr24379630ejf.141.1632083275022;
+ Sun, 19 Sep 2021 13:27:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <163207602242.947088.16824174748243890514.tglx@xen13>
-In-Reply-To: <163207602242.947088.16824174748243890514.tglx@xen13>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 19 Sep 2021 13:10:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiFY6Ys0bOrUUsocp_1YHt_9aEBi9CtPt4N0bRUTY8+5Q@mail.gmail.com>
-Message-ID: <CAHk-=wiFY6Ys0bOrUUsocp_1YHt_9aEBi9CtPt4N0bRUTY8+5Q@mail.gmail.com>
-Subject: Re: [GIT pull] locking/urgent for v5.15-rc2
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000077913705cc5ec3ed"
+References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com> <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 19 Sep 2021 23:27:14 +0300
+Message-ID: <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000077913705cc5ec3ed
-Content-Type: text/plain; charset="UTF-8"
-
-On Sun, Sep 19, 2021 at 11:28 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Sat, Sep 18, 2021 at 5:22 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
 >
->
-> -       atomic_add(READER_BIAS - bias, &rwb->readers);
-> +       /*
-> +        * _release() is needed in case that reader is in fast path, pairing
-> +        * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
-> +        */
-> +       (void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
+> This is a sloppy logic analyzer using GPIOs. It comes with a script to
+> isolate a CPU for polling. While this is definitely not a production
+> level analyzer, it can be a helpful first view when remote debugging.
+> Read the documentation for details.
 
-Ugh. This really needs fixing.
+Thanks for update, my comments below.
 
-atomic_add() is already much more than release-ordered on x86, and
-atomic_add_return_release() is much more expensive on some uarchs.
+...
 
-I think it should be easy to add a atomic_add_release() function, and
-it might be as simple as the attached patch, allowing architectures to
-add their own arch_atomic_add_release() as needed.
+> +       /* upper limit is arbitrary */
 
-I've pulled this, but please don't do things like the above hack.
+Not really. I believe if the upper limit is > PAGE_SIZE, you would get
+-ENOMEM with much higher chances. So, I think the comment should be
+amended,
 
-            Linus
+> +       if (count > 2048 || count & 1)
+> +               return -EINVAL;
 
---00000000000077913705cc5ec3ed
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ktrnmmkb0>
-X-Attachment-Id: f_ktrnmmkb0
+...
 
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL2F0b21pYy5oICAgICAgICAgICAgICAgfCAyICsrCiBpbmNs
-dWRlL2xpbnV4L2F0b21pYy9hdG9taWMtYXJjaC1mYWxsYmFjay5oIHwgNCArKysrCiBpbmNsdWRl
-L2xpbnV4L2F0b21pYy9hdG9taWMtaW5zdHJ1bWVudGVkLmggIHwgNyArKysrKysrCiAzIGZpbGVz
-IGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRl
-L2FzbS9hdG9taWMuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL2F0b21pYy5oCmluZGV4IDVlNzU0
-ZTg5NTc2Ny4uNmM1ODE0MTc3YzczIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9h
-dG9taWMuaAorKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9hdG9taWMuaApAQCAtNTUsNiArNTUs
-OCBAQCBzdGF0aWMgX19hbHdheXNfaW5saW5lIHZvaWQgYXJjaF9hdG9taWNfYWRkKGludCBpLCBh
-dG9taWNfdCAqdikKIAkJICAgICA6ICJpciIgKGkpIDogIm1lbW9yeSIpOwogfQogCisjZGVmaW5l
-IGFyY2hfYXRvbWljX2FkZF9yZWxlYXNlIGFyY2hfYXRvbWljX2FkZAorCiAvKioKICAqIGFyY2hf
-YXRvbWljX3N1YiAtIHN1YnRyYWN0IGludGVnZXIgZnJvbSBhdG9taWMgdmFyaWFibGUKICAqIEBp
-OiBpbnRlZ2VyIHZhbHVlIHRvIHN1YnRyYWN0CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2F0
-b21pYy9hdG9taWMtYXJjaC1mYWxsYmFjay5oIGIvaW5jbHVkZS9saW51eC9hdG9taWMvYXRvbWlj
-LWFyY2gtZmFsbGJhY2suaAppbmRleCBhM2RiYTMxZGYwMWUuLmFlNDM3ZDk2MWJkMSAxMDA2NDQK
-LS0tIGEvaW5jbHVkZS9saW51eC9hdG9taWMvYXRvbWljLWFyY2gtZmFsbGJhY2suaAorKysgYi9p
-bmNsdWRlL2xpbnV4L2F0b21pYy9hdG9taWMtYXJjaC1mYWxsYmFjay5oCkBAIC0xNjUsNiArMTY1
-LDEwIEBAIGFyY2hfYXRvbWljX3NldF9yZWxlYXNlKGF0b21pY190ICp2LCBpbnQgaSkKICNkZWZp
-bmUgYXJjaF9hdG9taWNfc2V0X3JlbGVhc2UgYXJjaF9hdG9taWNfc2V0X3JlbGVhc2UKICNlbmRp
-ZgogCisjaWZuZGVmIGFyY2hfYXRvbWljX2FkZF9yZWxlYXNlCisjZGVmaW5lIGFyY2hfYXRvbWlj
-X2FkZF9yZWxlYXNlICh2b2lkKWFyY2hfYXRvbWljX2FkZF9yZXR1cm5fcmVsZWFzZQorI2VuZGlm
-CisKICNpZm5kZWYgYXJjaF9hdG9taWNfYWRkX3JldHVybl9yZWxheGVkCiAjZGVmaW5lIGFyY2hf
-YXRvbWljX2FkZF9yZXR1cm5fYWNxdWlyZSBhcmNoX2F0b21pY19hZGRfcmV0dXJuCiAjZGVmaW5l
-IGFyY2hfYXRvbWljX2FkZF9yZXR1cm5fcmVsZWFzZSBhcmNoX2F0b21pY19hZGRfcmV0dXJuCmRp
-ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2F0b21pYy9hdG9taWMtaW5zdHJ1bWVudGVkLmggYi9p
-bmNsdWRlL2xpbnV4L2F0b21pYy9hdG9taWMtaW5zdHJ1bWVudGVkLmgKaW5kZXggYTBmNjU0Mzcw
-ZGEzLi40ODViODk4MDRiOWQgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvYXRvbWljL2F0b21p
-Yy1pbnN0cnVtZW50ZWQuaAorKysgYi9pbmNsdWRlL2xpbnV4L2F0b21pYy9hdG9taWMtaW5zdHJ1
-bWVudGVkLmgKQEAgLTU2LDYgKzU2LDEzIEBAIGF0b21pY19hZGQoaW50IGksIGF0b21pY190ICp2
-KQogCWFyY2hfYXRvbWljX2FkZChpLCB2KTsKIH0KIAorc3RhdGljIF9fYWx3YXlzX2lubGluZSB2
-b2lkCithdG9taWNfYWRkX3JlbGVhc2UoaW50IGksIGF0b21pY190ICp2KQoreworCWluc3RydW1l
-bnRfYXRvbWljX3JlYWRfd3JpdGUodiwgc2l6ZW9mKCp2KSk7CisJYXJjaF9hdG9taWNfYWRkX3Jl
-bGVhc2UoaSwgdik7Cit9CisKIHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgaW50CiBhdG9taWNfYWRk
-X3JldHVybihpbnQgaSwgYXRvbWljX3QgKnYpCiB7Cg==
---00000000000077913705cc5ec3ed--
+> +       ret = device_property_read_string_array(dev, "probe-names", gpio_names,
+> +                                               priv->descs->ndescs);
+> +       if (ret >= 0 && ret != priv->descs->ndescs)
+> +               ret = -ENODATA;
+> +       if (ret < 0) {
+
+> +               dev_err(dev, "error naming the GPIOs: %d\n", ret);
+> +               return ret;
+> +       }
+
+Perhaps
+
+  return dev_err_probe() ?
+
+And I think it might be split into two conditionals with
+distinguishable error messages.
+
+...
+
+> +       dev_info(dev, "initialized");
+
+Unneeded noise.
+
+...
+
+> +       [ -n "$cur_cpu" ] && fail "CPU$isol_cpu requested but CPU$cur_cpu already isolated"
+
+For the sake of style (handle errors on the error) I would use
+
+[ -z "..." ] || fail ...
+
+...
+
+> +       # Move tasks away from isolated CPU
+> +       for p in $(ps -o pid | tail -n +2); do
+> +               mask=$(taskset -p "$p") || continue
+> +               [ "${mask##*: }" != "$oldmask" ] && continue
+
+Perhaps
+
+  [ ... = ... ] || continue
+
+to be in alignment with the rest of the similar lines here?
+
+> +               taskset -p "$newmask" "$p" || continue
+> +       done 2>/dev/null >/dev/null
+
+...
+
+> +while true; do
+> +       case "$1" in
+> +       -c|--cpu) initcpu="$2"; shift;;
+> +       -d|--duration-us) duration="$2"; shift;;
+> +       -h|--help) print_help; exit 0;;
+> +       -i|--instance) lainstance="$2"; shift;;
+> +       -k|--kernel-debug-dir) debugdir="$2"; shift;;
+> +       -n|--num_samples) numsamples="$2"; shift;;
+> +       -o|--output-dir) outputdir="$2"; shift;;
+> +       -s|--sample_freq) samplefreq="$2"; shift;;
+> +       -t|--trigger) triggerdat="$2"; shift;;
+> +       --) break;;
+> +       *) fail "error parsing commandline: $*";;
+
+command line
+
+> +       esac
+> +       shift
+> +done
+
+...
+
+> +[ "$samplefreq" -eq 0 ] && fail "Invalid sample frequency"
+
+Same as above, use '... || fail ...' approach.
+
+...
+
+> +if [ -n "$lainstance" ]; then
+
+Shouldn't be rather '-d' ?
+
+> +       lasysfsdir="$sysfsdir/$lainstance"
+> +else
+> +       lasysfsdir="$(find "$sysfsdir" -mindepth 1 -type d -print -quit)"
+> +fi
+
+...
+
+> +[ ! -d "$lacpusetdir" ] && echo "Auto-Isolating CPU1" && init_cpu 1
+
+This ! along with double && is hard to read. Simply
+
+[ -d ... ] || {
+  ...
+}
+
+no?
+
+...
+
+> +[ -z "$workcpu" ] && fail "No isolated CPU found"
+
+As above, use ' ... || fail ...' approach.
+
+-- 
+With Best Regards,
+Andy Shevchenko
