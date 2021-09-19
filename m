@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E714D410D6D
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 23:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56DF410D71
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 23:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhISVFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 17:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45520 "EHLO
+        id S232615AbhISVNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 17:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhISVFM (ORCPT
+        with ESMTP id S229790AbhISVNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 17:05:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1B1C061574;
-        Sun, 19 Sep 2021 14:03:46 -0700 (PDT)
-Date:   Sun, 19 Sep 2021 21:03:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632085424;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHtSddGS6RwHOmqihnVgS6lv8ws8YpoUrVO1T/DKJdI=;
-        b=QeyFI9iLNdk6iOZ4IXWZQyIVTUpBDs2gKrngT9NUHkuQ0fdwJT7MMHDYH7A7q843DUVeeF
-        FGoI5gDeLEfSvpo4oSh4x06LRDRM+5JLmlciRHFkiMNNaQlutH6/FM4VAJ6fA4WGgZm45V
-        03C7FBc7ifdwsUT1nm81Cl186LQlEgtTEbqH/y5Zc871ImuugNPPxtKpzdlETK9pmCePrs
-        2UI7KyusY2AkKlRYa09UTxRuPnpbFGIBJg2gDDzUKtv3IDr60w3ZFrh1wwwELU9EuwMSAd
-        RnYXg5DD99iaI7iVB5agE8iqyh5eDSrMQdJ1YwHFojtnjuZJxjS6AVxV9ug95g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632085424;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHtSddGS6RwHOmqihnVgS6lv8ws8YpoUrVO1T/DKJdI=;
-        b=IVIlFSOLNffHq0HUUVseCrLQHL3ZAleyAoqxQ+gGGPdXF3R0XQKDSYn1pLxM8rd0UlZf2u
-        frNLj1uR5w9TyrBw==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Disable irqfixup/poll on PREEMPT_RT.
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20210917223841.c6j6jcaffojrnot3@linutronix.de>
-References: <20210917223841.c6j6jcaffojrnot3@linutronix.de>
+        Sun, 19 Sep 2021 17:13:10 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265CBC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 14:11:45 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id f129so15371245pgc.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 14:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYUcfWhUdZuh85e32IgUBDiou2vTR9MT2ExA/x9jGQo=;
+        b=i9RDUCz7FMUDmPstW+A3ZyFX4Cv5AUAQNM7V+p2B6+/xxKF+FyO6ihLMQ3TwSIIRuv
+         kASOGUdZa6hiV7pL1tR0Th5Q/YA+KccqF7fswOb7GSiOg7y1/6f4EGQJaIK3ZdHB0c+7
+         qOjm3HHWuKewLv2Wv1DBh2lZ5ysAS7v7ySFPF/SZu1E3tTt7AIVdQbeC8D7sKKXywanM
+         joRmbQ8aqVjo9PSGxAwR73U9U+w8Lmz16Jm2B3u5UKXiwjCjOwAuC0cMXYzRlWus5b4m
+         TLnpemAM71GToDGssu380CA7aZE8hvRzFrTvkJQ+lGM+sHBNnerk/EtmSJseZb6ps97X
+         /XSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYUcfWhUdZuh85e32IgUBDiou2vTR9MT2ExA/x9jGQo=;
+        b=Fz9MRW0e3EyX1xm1Nm5G5ZdndgW94wNzxnS02k0biEvPtAIWOBBX9NkCMM7ZvEOLEi
+         VkzKjqrWUj+Y/1o6LW5H0K7Zv7Xa3mmh33Gq1v+EncOp1T8PX8O/a1zfitDQwtgwJttL
+         COKIFJtvdAreDUsE+GOnrws00HuM4068pT9coG8CFuWY9367t7Evb9WJbFeFUajca3lQ
+         I6rXjytkcgg606myZzSp42bBmgBSXzV52QluAYHTlctEtjF0dn6AqjirwMVvcPSXn3N5
+         S1p8ipNIbK1CB+Llg6DwWuN2j5Wt5Kw97ZfC9rUKTP622xwabxsL8JTMyTZWXd8WGRQN
+         veVw==
+X-Gm-Message-State: AOAM533QYfQ+19vs0OELrABQoLKkScqmNe6RGM1RfjUSCh7aDtuxrUTF
+        gCXPh9NQ9TXtjh8w+fMZLx4=
+X-Google-Smtp-Source: ABdhPJx3ZyB5j+hqrEoO6Ya/OUKsB2JDkJGte0Vs6uQfGcLWrg644Fr7SnBQfvuZnetczpJDDNAfww==
+X-Received: by 2002:a63:7447:: with SMTP id e7mr20756338pgn.46.1632085904720;
+        Sun, 19 Sep 2021 14:11:44 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.29])
+        by smtp.gmail.com with ESMTPSA id j9sm13520565pjb.33.2021.09.19.14.11.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 14:11:44 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] regulator: pwm-regulator: Make use of the helper function dev_err_probe()
+Date:   Sun, 19 Sep 2021 21:11:28 +0000
+Message-Id: <20210919211129.4364-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Message-ID: <163208542290.25758.2684703909187888712.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+devm_regulator_register can return -EPROBE_DEFER if the
+regulator is not ready yet. Use dev_err_probe() for
+pwm regulator resources to indicate the deferral reason
+when waiting for the resource to come up.
 
-Commit-ID:     b70e13885cf63b6f99cbd9a1dbb6beaa2622bf68
-Gitweb:        https://git.kernel.org/tip/b70e13885cf63b6f99cbd9a1dbb6beaa2622bf68
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Fri, 03 Jul 2009 08:29:57 -05:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 19 Sep 2021 23:01:15 +02:00
+Fixes: 0cd71b9a43ad ("regulator: pwm: Don't warn on probe deferral")
 
-genirq: Disable irqfixup/poll on PREEMPT_RT.
-
-The support for misrouted IRQs is used on old / legacy systems and is
-not feasible on PREEMPT_RT.
-
-Polling for interrupts reduces the overall system performance.
-Additionally the interrupt latency depends on the polling frequency and
-delays are not desired for real time workloads.
-
-Disable IRQ polling on PREEMPT_RT and let the user know that it is not
-enabled. The compiler will optimize the real fixup/poll code out.
-
-[ bigeasy: Update changelog and switch to IS_ENABLED() ]
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210917223841.c6j6jcaffojrnot3@linutronix.de
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
- kernel/irq/spurious.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/regulator/pwm-regulator.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index c481d84..02b2daf 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -447,6 +447,10 @@ MODULE_PARM_DESC(noirqdebug, "Disable irq lockup detection when true");
+diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
+index 7629476d94ae..451e57a739f8 100644
+--- a/drivers/regulator/pwm-regulator.c
++++ b/drivers/regulator/pwm-regulator.c
+@@ -382,9 +382,9 @@ static int pwm_regulator_probe(struct platform_device *pdev)
+ 					    &drvdata->desc, &config);
+ 	if (IS_ERR(regulator)) {
+ 		ret = PTR_ERR(regulator);
+-		dev_err(&pdev->dev, "Failed to register regulator %s: %d\n",
+-			drvdata->desc.name, ret);
+-		return ret;
++		return dev_err_probe(&pdev->dev, ret,
++				     "Failed to register regulator %s: %d\n",
++				     drvdata->desc.name, ret);
+ 	}
  
- static int __init irqfixup_setup(char *str)
- {
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		pr_warn("irqfixup boot option not supported with PREEMPT_RT\n");
-+		return 1;
-+	}
- 	irqfixup = 1;
- 	printk(KERN_WARNING "Misrouted IRQ fixup support enabled.\n");
- 	printk(KERN_WARNING "This may impact system performance.\n");
-@@ -459,6 +463,10 @@ module_param(irqfixup, int, 0644);
- 
- static int __init irqpoll_setup(char *str)
- {
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-+		pr_warn("irqpoll boot option not supported with PREEMPT_RT\n");
-+		return 1;
-+	}
- 	irqfixup = 2;
- 	printk(KERN_WARNING "Misrouted IRQ fixup and polling support "
- 				"enabled\n");
+ 	return 0;
+-- 
+2.33.0
+
