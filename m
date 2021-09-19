@@ -2,388 +2,441 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917F94108F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 02:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036134108F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 02:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238486AbhIRX7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 19:59:17 -0400
-Received: from mga02.intel.com ([134.134.136.20]:7913 "EHLO mga02.intel.com"
+        id S240763AbhISAMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Sep 2021 20:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234764AbhIRX7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 19:59:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10111"; a="210215205"
-X-IronPort-AV: E=Sophos;i="5.85,305,1624345200"; 
-   d="gz'50?scan'50,208,50";a="210215205"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Sep 2021 16:57:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,305,1624345200"; 
-   d="gz'50?scan'50,208,50";a="531790896"
-Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 18 Sep 2021 16:57:49 -0700
-Received: from kbuild by 285e7b116627 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mRkDM-0005Bu-Vd; Sat, 18 Sep 2021 23:57:48 +0000
-Date:   Sun, 19 Sep 2021 07:56:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [axboe-block:misc-next 3/3] mm/slab_common.c:1326:5: error: no
- previous prototype for function 'should_failslab'
-Message-ID: <202109190735.sZaKYox8-lkp@intel.com>
+        id S239491AbhISAMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 18 Sep 2021 20:12:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 780F5610A4;
+        Sun, 19 Sep 2021 00:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632010241;
+        bh=9SsCQxZrS96pnOLzz0DUaN32f5TeS3l0zWmOCqHqGpI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ASqM21C0jvpxsYm36mJa6YbMMHa9UJQprXxJl9nlleRUvX5wY8UlJUU6eYlzybzsC
+         EhdKYS1ZLa0hla5HUdd54XOOi09VV/PkLpHYG4SxOHKoyrTxbnKw8pc2vHpTiymRaB
+         WqBNOnXmnJDmvyuVmsBbO9/nYJ7uFT+7Dlza1rK+XkB8mYHnafH+7VqA0vXhuSZ38c
+         RTa9HUa612AZXo8NJeLPtD1DDiJIP1vV1A0AGvqWmmk8+uiOhzYHjUAOcu5b2Ec8J0
+         taFM42Cb+F2FTQLOI/c5RZ07CbtV7hAm9p9F9sGW+Yzbt0EPOr8pf/WzrZq9Owt8Rr
+         eq4zz5406uynA==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Juri Lelli <jlelli@redhat.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [GIT PULL] perf tools fixes for v5.15: 1st batch
+Date:   Sat, 18 Sep 2021 21:10:30 -0300
+Message-Id: <20210919001030.301511-1-acme@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	Please consider pulling,
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git misc-next
-head:   35ad5bde8854eb2aeefe762fb06b9a6f75514657
-commit: 35ad5bde8854eb2aeefe762fb06b9a6f75514657 [3/3] mm: don't call should_failslab() for !CONFIG_FAILSLAB
-config: hexagon-buildonly-randconfig-r002-20210919 (attached as .config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c8b3d7d6d6de37af68b2f379d0e37304f78e115f)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?id=35ad5bde8854eb2aeefe762fb06b9a6f75514657
-        git remote add axboe-block https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
-        git fetch --no-tags axboe-block misc-next
-        git checkout 35ad5bde8854eb2aeefe762fb06b9a6f75514657
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
+Best regards,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> mm/slab_common.c:1326:5: error: no previous prototype for function 'should_failslab' [-Werror,-Wmissing-prototypes]
-   int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-       ^
-   mm/slab_common.c:1326:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-   ^
-   static 
-   1 error generated.
+- Arnaldo
 
 
-vim +/should_failslab +1326 mm/slab_common.c
+The following changes since commit 93ff9f13be91c5f36bb3e5d23237702155deae74:
 
-4f6923fbb352d12 Howard McLauchlan 2018-04-05  1325  
-4f6923fbb352d12 Howard McLauchlan 2018-04-05 @1326  int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+  Merge tag 's390-5.15-3' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2021-09-18 12:46:14 -0700)
 
-:::::: The code at line 1326 was first introduced by commit
-:::::: 4f6923fbb352d126659cabe34806cff75c7b5ea0 mm: make should_failslab always available for fault injection
+are available in the Git repository at:
 
-:::::: TO: Howard McLauchlan <hmclauchlan@fb.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-09-18
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+for you to fetch changes up to 219d720e6df71c2607d7120d6b9281614863e5b1:
 
---qDbXVdCdHGoSgWSk
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+  perf bpf: Ignore deprecation warning when using libbpf's btf__get_from_id() (2021-09-18 17:47:02 -0300)
 
-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
+----------------------------------------------------------------
+perf tools fixes for v5.15: first batch
 
---qDbXVdCdHGoSgWSk--
+- Fix ip display in 'perf script' when output type != attr->type.
+
+- Ignore deprecation warning when using libbpf'sg btf__get_from_id(),
+  fixing the build with libbpf v0.6+.
+
+- Make use of FD() robust in libperf, fixing a segfault with 'perf stat --iostat list'.
+
+- Initialize addr_location:srcline pointer to NULL when resolving
+  callchain addresses.
+
+- Fix fused instruction logic for assembly functions in 'perf annotate'.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+----------------------------------------------------------------
+Adrian Hunter (1):
+      perf script: Fix ip display when type != attr->type
+
+Andrii Nakryiko (1):
+      perf bpf: Ignore deprecation warning when using libbpf's btf__get_from_id()
+
+Ian Rogers (1):
+      libperf evsel: Make use of FD robust.
+
+Michael Petlan (1):
+      perf machine: Initialize srcline string member in add_location struct
+
+Ravi Bangoria (1):
+      perf annotate: Fix fused instr logic for assembly functions
+
+ tools/lib/perf/evsel.c            | 64 +++++++++++++++++++++++++--------------
+ tools/perf/builtin-script.c       | 24 ++++++++-------
+ tools/perf/ui/browser.c           | 33 ++++++++++++++------
+ tools/perf/ui/browser.h           |  2 +-
+ tools/perf/ui/browsers/annotate.c | 24 ++++++++++-----
+ tools/perf/util/bpf-event.c       |  3 ++
+ tools/perf/util/machine.c         |  1 +
+ 7 files changed, 100 insertions(+), 51 deletions(-)
+
+Test results:
+
+The first ones are container based builds of tools/perf with and without libelf
+support.  Where clang is available, it is also used to build perf with/without
+libelf, and building with LIBCLANGLLVM=1 (built-in clang) with gcc and clang
+when clang and its devel libraries are installed.
+
+The objtool and samples/bpf/ builds are disabled now that I'm switching from
+using the sources in a local volume to fetching them from a http server to
+build it inside the container, to make it easier to build in a container cluster.
+Those will come back later.
+
+Several are cross builds, the ones with -x-ARCH and the android one, and those
+may not have all the features built, due to lack of multi-arch devel packages,
+available and being used so far on just a few, like
+debian:experimental-x-{arm64,mipsel}.
+
+The 'perf test' one will perform a variety of tests exercising
+tools/perf/util/, tools/lib/{bpf,traceevent,etc}, as well as run perf commands
+with a variety of command line event specifications to then intercept the
+sys_perf_event syscall to check that the perf_event_attr fields are set up as
+expected, among a variety of other unit tests.
+
+Then there is the 'make -C tools/perf build-test' ones, that build tools/perf/
+with a variety of feature sets, exercising the build with an incomplete set of
+features as well as with a complete one.
+
+The following ones are now being run on all the containers, so far just with
+gcc, clang will come later. All clear for this batch.
+
+There is still the mageia:7 distro + clang 8 failure, seemingly unrelated to
+the patches in this series, it'll be investigated. It builds just fine with gcc
+8.4.
+
+There is also a strange one with openmandriva:cooker, where on the feature build
+test it doesn't manage to find libpthread, looks like a distro problem, will keep
+it there to see if a refreshed container cures this soon.
+
+  # export BUILD_TARBALL=http://192.168.100.2/perf/perf-5.15.0-rc1.tar.xz
+  # dm 
+     1	almalinux:8                   : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1) , clang version 11.0.0 (Red Hat 11.0.0-1.module_el8.4.0+2107+39fed697)
+     2	alpine:3.4                    : Ok   gcc (Alpine 5.3.0) 5.3.0 , clang version 3.8.0 (tags/RELEASE_380/final)
+     3	alpine:3.5                    : Ok   gcc (Alpine 6.2.1) 6.2.1 20160822 , clang version 3.8.1 (tags/RELEASE_381/final)
+     4	alpine:3.6                    : Ok   gcc (Alpine 6.3.0) 6.3.0 , clang version 4.0.0 (tags/RELEASE_400/final)
+     5	alpine:3.7                    : Ok   gcc (Alpine 6.4.0) 6.4.0 , Alpine clang version 5.0.0 (tags/RELEASE_500/final) (based on LLVM 5.0.0)
+     6	alpine:3.8                    : Ok   gcc (Alpine 6.4.0) 6.4.0 , Alpine clang version 5.0.1 (tags/RELEASE_501/final) (based on LLVM 5.0.1)
+     7	alpine:3.9                    : Ok   gcc (Alpine 8.3.0) 8.3.0 , Alpine clang version 5.0.1 (tags/RELEASE_502/final) (based on LLVM 5.0.1)
+     8	alpine:3.10                   : Ok   gcc (Alpine 8.3.0) 8.3.0 , Alpine clang version 8.0.0 (tags/RELEASE_800/final) (based on LLVM 8.0.0)
+     9	alpine:3.11                   : Ok   gcc (Alpine 9.3.0) 9.3.0 , Alpine clang version 9.0.0 (https://git.alpinelinux.org/aports f7f0d2c2b8bcd6a5843401a9a702029556492689) (based on LLVM 9.0.0)
+    10	alpine:3.12                   : Ok   gcc (Alpine 9.3.0) 9.3.0 , Alpine clang version 10.0.0 (https://gitlab.alpinelinux.org/alpine/aports.git 7445adce501f8473efdb93b17b5eaf2f1445ed4c)
+    11	alpine:3.13                   : Ok   gcc (Alpine 10.2.1_pre1) 10.2.1 20201203 , Alpine clang version 10.0.1 
+    12	alpine:3.14                   : Ok   gcc (Alpine 10.3.1_git20210424) 10.3.1 20210424 , Alpine clang version 11.1.0
+    13	alpine:edge                   : Ok   gcc (Alpine 10.3.1_git20210625) 10.3.1 20210625 , Alpine clang version 11.1.0
+    14	alt:p8                        : Ok   x86_64-alt-linux-gcc (GCC) 5.3.1 20151207 (ALT p8 5.3.1-alt3.M80P.1) , clang version 3.8.0 (tags/RELEASE_380/final)
+    15	alt:p9                        : Ok   x86_64-alt-linux-gcc (GCC) 8.4.1 20200305 (ALT p9 8.4.1-alt0.p9.1) , clang version 10.0.0 
+    16	alt:sisyphus                  : Ok   x86_64-alt-linux-gcc (GCC) 10.2.1 20210313 (ALT Sisyphus 10.2.1-alt3) , clang version 10.0.1 
+    17	amazonlinux:1                 : Ok   gcc (GCC) 7.2.1 20170915 (Red Hat 7.2.1-2) , clang version 3.6.2 (tags/RELEASE_362/final)
+    18	amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-13) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2)
+    19	centos:8                      : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1) , clang version 11.0.0 (Red Hat 11.0.0-1.module_el8.4.0+587+5187cac0)
+    20	centos:stream                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-3) , clang version 12.0.1 (Red Hat 12.0.1-1.module_el8.5.0+892+54d791e1)
+    21	clearlinux:latest             : Ok   gcc (Clear Linux OS for Intel Architecture) 11.2.1 20210907 releases/gcc-11.2.0-165-ga6e280558a , clang version 11.1.0
+    22	debian:9                      : Ok   gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516 , clang version 3.8.1-24 (tags/RELEASE_381/final)
+    23	debian:10                     : Ok   gcc (Debian 8.3.0-6) 8.3.0 , clang version 7.0.1-8+deb10u2 (tags/RELEASE_701/final)
+    24	debian:11                     : Ok   gcc (Debian 10.2.1-6) 10.2.1 20210110 , Debian clang version 11.0.1-2
+    25	debian:experimental           : Ok   gcc (Debian 10.3.0-10) 10.3.0 , Debian clang version 11.0.1-2
+    26	debian:experimental-x-arm64   : Ok   aarch64-linux-gnu-gcc (Debian 10.3.0-8) 10.3.0 
+    27	debian:experimental-x-mips    : Ok   mips-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110 
+    28	debian:experimental-x-mips64  : Ok   mips64-linux-gnuabi64-gcc (Debian 10.2.1-6) 10.2.1 20210110 
+    29	debian:experimental-x-mipsel  : Ok   mipsel-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110 
+    30	fedora:22                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6) , clang version 3.5.0 (tags/RELEASE_350/final)
+    31	fedora:23                     : Ok   gcc (GCC) 5.3.1 20160406 (Red Hat 5.3.1-6) , clang version 3.7.0 (tags/RELEASE_370/final)
+    32	fedora:24                     : Ok   gcc (GCC) 6.3.1 20161221 (Red Hat 6.3.1-1) , clang version 3.8.1 (tags/RELEASE_381/final)
+    33	fedora:24-x-ARC-uClibc        : Ok   arc-linux-gcc (ARCompact ISA Linux uClibc toolchain 2017.09-rc2) 7.1.1 20170710 
+    34	fedora:25                     : Ok   gcc (GCC) 6.4.1 20170727 (Red Hat 6.4.1-1) , clang version 3.9.1 (tags/RELEASE_391/final)
+    35	fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2) , clang version 4.0.1 (tags/RELEASE_401/final)
+    36	fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6) , clang version 5.0.2 (tags/RELEASE_502/final)
+    37	fedora:28                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2) , clang version 6.0.1 (tags/RELEASE_601/final)
+    38	fedora:29                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2) , clang version 7.0.1 (Fedora 7.0.1-6.fc29)
+    39	fedora:30                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2) , clang version 8.0.0 (Fedora 8.0.0-3.fc30)
+    40	fedora:31                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2) , clang version 9.0.1 (Fedora 9.0.1-4.fc31)
+    41	fedora:32                     : Ok   gcc (GCC) 10.3.1 20210422 (Red Hat 10.3.1-1) , clang version 10.0.1 (Fedora 10.0.1-3.fc32)
+    42	fedora:33                     : Ok   gcc (GCC) 10.3.1 20210422 (Red Hat 10.3.1-1) , clang version 11.0.0 (Fedora 11.0.0-3.fc33)
+    34	fedora:34                     : Ok   gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1) , clang version 12.0.1 (Fedora 12.0.1-1.fc34)
+    35	fedora:34-x-ARC-glibc         : Ok   arc-linux-gcc (ARC HS GNU/Linux glibc toolchain 2019.03-rc1) 8.3.1 20190225 
+    36	fedora:34-x-ARC-uClibc        : Ok   arc-linux-gcc (ARCv2 ISA Linux uClibc toolchain 2019.03-rc1) 8.3.1 20190225 
+    37	fedora:35                     : Ok   gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1) , clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
+    38	fedora:rawhide                : Ok   gcc (GCC) 11.2.1 20210728 (Red Hat 11.2.1-1) , clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
+    39	gentoo-stage3:latest          : Ok   gcc (Gentoo 10.3.0-r2 p3) 10.3.0 
+    40	mageia:6                      : Ok   gcc (Mageia 5.5.0-1.mga6) 5.5.0 , clang version 3.9.1 (tags/RELEASE_391/final)
+    41	mageia:7                      : FAIL clang version 8.0.0 (Mageia 8.0.0-1.mga7)
+            yychar = yylex (&yylval, &yylloc, scanner);
+                     ^
+      #define yylex           parse_events_lex
+                              ^
+      1 error generated.
+    make[3]: *** [/git/perf-5.15.0-rc1/tools/build/Makefile.build:139: util] Error 2
+    42  20210728 (OpenMandriva) (GCC) 
+      In file included from builtin-bench.c:22:
+      bench/bench.h:66:19: error: conflicting types for 'pthread_attr_setaffinity_np'; have 'int(pthread_attr_t *, size_t,  cpu_set_t *)' {aka 'int(pthread_attr_t *, long unsigned int,  cpu_set_t *)'}
+         66 | static inline int pthread_attr_setaffinity_np(pthread_attr_t *attr __maybe_unused,
+            |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+      In file included from bench/bench.h:64,
+                       from builtin-bench.c:22:
+      /usr/include/pthread.h:394:12: note: previous declaration of 'pthread_attr_setaffinity_np' with type 'int(pthread_attr_t *, size_t,  const cpu_set_t *)' {aka 'int(pthread_attr_t *, long unsigned int,  const cpu_set_t *)'}
+        394 | extern int pthread_attr_setaffinity_np (pthread_attr_t *__attr,
+            |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ld: warning: -r and --gc-sections may not be used together, disabling --gc-sections
+      ld: warning: -r and --icf may not be used together, disabling --icf
+      file: Compiled magic version [540] does not match with shared library magic version [539]
+    
+      file: Compiled magic version [540] does not match with shared library magic version [539]
+    
+      ld: warning: -r and --gc-sections may not be used together, disabling --gc-sections
+      ld: warning: -r and --icf may not be used together, disabling --icf
+    43	opensuse:15.0                 : Ok   gcc (SUSE Linux) 7.4.1 20190905 [gcc-7-branch revision 275407] , clang version 5.0.1 (tags/RELEASE_501/final 312548)
+    44	opensuse:15.1                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 7.0.1 (tags/RELEASE_701/final 349238)
+    45	opensuse:15.2                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 9.0.1 
+    46	opensuse:15.3                 : Ok   gcc (SUSE Linux) 7.5.0 , clang version 11.0.1
+    47	opensuse:tumbleweed           : Ok   gcc (SUSE Linux) 11.1.1 20210721 [revision 076930b9690ac3564638636f6b13bbb6bc608aea] , clang version 12.0.1
+    48	oraclelinux:8                 : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1.0.1) , clang version 11.0.0 (Red Hat 11.0.0-1.0.1.module+el8.4.0+20046+39fed697)
+    49	rockylinux:8                  : Ok   gcc (GCC) 8.4.1 20200928 (Red Hat 8.4.1-1) , clang version 11.0.0 (Red Hat 11.0.0-1.module+el8.4.0+412+05cf643f)
+    50	ubuntu:16.04                  : Ok   gcc (Ubuntu 5.4.0-6ubuntu1~16.04.12) 5.4.0 20160609 , clang version 3.8.0-2ubuntu4 (tags/RELEASE_380/final)
+    51	ubuntu:16.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609 
+    52	ubuntu:16.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609 
+    53	ubuntu:16.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609 
+    54	ubuntu:16.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609 
+    55	ubuntu:16.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609 
+    56	ubuntu:16.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609 
+    57	ubuntu:18.04                  : Ok   gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 , clang version 6.0.0-1ubuntu2 (tags/RELEASE_600/final)
+    58	ubuntu:18.04-x-arm            : Ok   arm-linux-gnueabihf-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0 
+    59	ubuntu:18.04-x-arm64          : Ok   aarch64-linux-gnu-gcc (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0 
+    60	ubuntu:18.04-x-m68k           : Ok   m68k-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    61	ubuntu:18.04-x-powerpc        : Ok   powerpc-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    62	ubuntu:18.04-x-powerpc64      : Ok   powerpc64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    63	ubuntu:18.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    64	ubuntu:18.04-x-riscv64        : Ok   riscv64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    65	ubuntu:18.04-x-s390           : Ok   s390x-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    66	ubuntu:18.04-x-sh4            : Ok   sh4-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    67	ubuntu:18.04-x-sparc64        : Ok   sparc64-linux-gnu-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0 
+    68	ubuntu:20.04                  : Ok   gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0 , clang version 10.0.0-4ubuntu1 
+    69	ubuntu:20.04-x-powerpc64el    : Ok   powerpc64le-linux-gnu-gcc (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0 
+    70	ubuntu:20.10                  : Ok   gcc (Ubuntu 10.3.0-1ubuntu1~20.10) 10.3.0 , Ubuntu clang version 11.0.0-2
+    71	ubuntu:21.04                  : Ok   gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0 , Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
+    72	ubuntu:21.10                  : Ok   gcc (Ubuntu 11.2.0-1ubuntu2) 11.2.0 , Ubuntu clang version 12.0.1-1
+
+  $ git log --oneline -1
+  219d720e6df71c26 (HEAD -> perf/urgent, seventh/perf/urgent, five/perf/urgent, acme.korg/tmp.perf/urgent) perf bpf: Ignore deprecation warning when using libbpf's btf__get_from_id()
+  # perf -vv
+  perf version 5.15.rc1.g219d720e6df7
+                   dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+      dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+                   glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
+           syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+                  libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
+                  libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+                 libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+  numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+                 libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+               libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
+                libslang: [ on  ]  # HAVE_SLANG_SUPPORT
+               libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
+               libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+      libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+                    zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+                    lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+               get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+                     bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+                     aio: [ on  ]  # HAVE_AIO_SUPPORT
+                    zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
+                 libpfm4: [ OFF ]  # HAVE_LIBPFM
+  # uname -a
+  Linux quaco 5.13.13-200.fc34.x86_64 #1 SMP Thu Aug 26 17:06:39 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+  # perf test
+   1: vmlinux symtab matches kallsyms                                 : Ok
+   2: Detect openat syscall event                                     : Ok
+   3: Detect openat syscall event on all cpus                         : Ok
+   4: Read samples using the mmap interface                           : Ok
+   5: Test data source output                                         : Ok
+   6: Parse event definition strings                                  : Ok
+   7: Simple expression parser                                        : Ok
+   8: PERF_RECORD_* events & perf_sample fields                       : Ok
+   9: Parse perf pmu format                                           : Ok
+  10: PMU events                                                      :
+  10.1: PMU event table sanity                                        : Ok
+  10.2: PMU event map aliases                                         : Ok
+  10.3: Parsing of PMU event table metrics                            : Ok
+  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+  11: DSO data read                                                   : Ok
+  12: DSO data cache                                                  : Ok
+  13: DSO data reopen                                                 : Ok
+  14: Roundtrip evsel->name                                           : Ok
+  15: Parse sched tracepoints fields                                  : Ok
+  16: syscalls:sys_enter_openat event fields                          : Ok
+  17: Setup struct perf_event_attr                                    : Ok
+  18: Match and link multiple hists                                   : Ok
+  19: 'import perf' in python                                         : Ok
+  20: Breakpoint overflow signal handler                              : Ok
+  21: Breakpoint overflow sampling                                    : Ok
+  22: Breakpoint accounting                                           : Ok
+  23: Watchpoint                                                      :
+  23.1: Read Only Watchpoint                                          : Skip (missing hardware support)
+  23.2: Write Only Watchpoint                                         : Ok
+  23.3: Read / Write Watchpoint                                       : Ok
+  23.4: Modify Watchpoint                                             : Ok
+  24: Number of exit events of a simple workload                      : Ok
+  25: Software clock events period values                             : Ok
+  26: Object code reading                                             : Ok
+  27: Sample parsing                                                  : Ok
+  28: Use a dummy software event to keep tracking                     : Ok
+  29: Parse with no sample_id_all bit set                             : Ok
+  30: Filter hist entries                                             : Ok
+  31: Lookup mmap thread                                              : Ok
+  32: Share thread maps                                               : Ok
+  33: Sort output of hist entries                                     : Ok
+  34: Cumulate child hist entries                                     : Ok
+  35: Track with sched_switch                                         : Ok
+  36: Filter fds with revents mask in a fdarray                       : Ok
+  37: Add fd to a fdarray, making it autogrow                         : Ok
+  38: kmod_path__parse                                                : Ok
+  39: Thread map                                                      : Ok
+  40: LLVM search and compile                                         :
+  40.1: Basic BPF llvm compile                                        : Ok
+  40.2: kbuild searching                                              : Ok
+  40.3: Compile source for BPF prologue generation                    : Ok
+  40.4: Compile source for BPF relocation                             : Ok
+  41: Session topology                                                : Ok
+  42: BPF filter                                                      :
+  42.1: Basic BPF filtering                                           : Ok
+  42.2: BPF pinning                                                   : Ok
+  42.3: BPF prologue generation                                       : Ok
+  43: Synthesize thread map                                           : Ok
+  44: Remove thread map                                               : Ok
+  45: Synthesize cpu map                                              : Ok
+  46: Synthesize stat config                                          : Ok
+  47: Synthesize stat                                                 : Ok
+  48: Synthesize stat round                                           : Ok
+  49: Synthesize attr update                                          : Ok
+  50: Event times                                                     : Ok
+  51: Read backward ring buffer                                       : Ok
+  52: Print cpu map                                                   : Ok
+  53: Merge cpu map                                                   : Ok
+  54: Probe SDT events                                                : Ok
+  55: is_printable_array                                              : Ok
+  56: Print bitmap                                                    : Ok
+  57: perf hooks                                                      : Ok
+  58: builtin clang support                                           : Skip (not compiled in)
+  59: unit_number__scnprintf                                          : Ok
+  60: mem2node                                                        : Ok
+  61: time utils                                                      : Ok
+  62: Test jit_write_elf                                              : Ok
+  63: Test libpfm4 support                                            : Skip (not compiled in)
+  64: Test api io                                                     : Ok
+  65: maps__merge_in                                                  : Ok
+  66: Demangle Java                                                   : Ok
+  67: Demangle OCaml                                                  : Ok
+  68: Parse and process metrics                                       : Ok
+  69: PE file support                                                 : Ok
+  70: Event expansion for cgroups                                     : Ok
+  71: Convert perf time to TSC                                        : Ok
+  72: dlfilter C API                                                  : Ok
+  73: x86 rdpmc                                                       : Ok
+  74: DWARF unwind                                                    : Ok
+  75: x86 instruction decoder - new instructions                      : Ok
+  76: Intel PT packet decoder                                         : Ok
+  77: x86 bp modify                                                   : Ok
+  78: x86 Sample parsing                                              : Ok
+  79: build id cache operations                                       : Ok
+  80: daemon operations                                               : Ok
+  81: perf pipe recording and injection test                          : Ok
+  82: Add vfs_getname probe to get syscall args filenames             : Ok
+  83: probe libc's inet_pton & backtrace it with ping                 : Ok
+  84: Use vfs_getname probe to get syscall args filenames             : Ok
+  85: Zstd perf.data compression/decompression                        : Ok
+  86: perf stat csv summary test                                      : Ok
+  87: perf stat metrics (shadow stat) test                            : Ok
+  88: perf stat --bpf-counters test                                   : Ok
+  89: Check Arm CoreSight trace data recording and synthesized samples: Skip
+  90: Check open filename arg using perf trace + vfs_getname          : Ok
+  # 
+
+  $ make -C tools/perf build-test
+  make: Entering directory '/var/home/acme/git/perf/tools/perf'
+  - tarpkg: ./tests/perf-targz-src-pkg .
+                   make_static: make LDFLAGS=-static NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 NO_JVMTI=1 -j24  DESTDIR=/tmp/tmp.wFXlgcCwdn
+                make_with_gtk2: make GTK2=1 -j24  DESTDIR=/tmp/tmp.wgw6SmpOCH
+            make_install_bin_O: make install-bin
+           make_with_libpfm4_O: make LIBPFM4=1
+           make_no_libpython_O: make NO_LIBPYTHON=1
+                   make_help_O: make help
+       make_util_pmu_bison_o_O: make util/pmu-bison.o
+                   make_pure_O: make
+                make_no_newt_O: make NO_NEWT=1
+  make_no_libdw_dwarf_unwind_O: make NO_LIBDW_DWARF_UNWIND=1
+                make_minimal_O: make NO_LIBPERL=1 NO_LIBPYTHON=1 NO_NEWT=1 NO_GTK2=1 NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1 NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1 NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1 NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1 NO_LIBZSTD=1 NO_LIBCAP=1 NO_SYSCALL_TABLE=1
+           make_no_libbionic_O: make NO_LIBBIONIC=1
+         make_with_coresight_O: make CORESIGHT=1
+                  make_no_ui_O: make NO_NEWT=1 NO_SLANG=1 NO_GTK2=1
+        make_with_babeltrace_O: make LIBBABELTRACE=1
+                    make_doc_O: make doc
+             make_util_map_o_O: make util/map.o
+              make_clean_all_O: make clean all
+                 make_no_sdt_O: make NO_SDT=1
+                make_no_gtk2_O: make NO_GTK2=1
+           make_no_libunwind_O: make NO_LIBUNWIND=1
+             make_no_scripts_O: make NO_LIBPYTHON=1 NO_LIBPERL=1
+             make_no_libnuma_O: make NO_LIBNUMA=1
+              make_no_libelf_O: make NO_LIBELF=1
+            make_no_auxtrace_O: make NO_AUXTRACE=1
+           make_no_libcrypto_O: make NO_LIBCRYPTO=1
+        make_no_libbpf_DEBUG_O: make NO_LIBBPF=1 DEBUG=1
+             make_no_libperl_O: make NO_LIBPERL=1
+            make_no_libaudit_O: make NO_LIBAUDIT=1
+                   make_tags_O: make tags
+         make_with_clangllvm_O: make LIBCLANGLLVM=1
+         make_libbpf_dynamic_O: make LIBBPF_DYNAMIC=1
+                make_install_O: make install
+               make_no_slang_O: make NO_SLANG=1
+            make_no_demangle_O: make NO_DEMANGLE=1
+                  make_debug_O: make DEBUG=1
+         make_no_syscall_tbl_O: make NO_SYSCALL_TABLE=1
+   make_install_prefix_slash_O: make install prefix=/tmp/krava/
+                 make_perf_o_O: make perf.o
+              make_no_libbpf_O: make NO_LIBBPF=1
+         make_install_prefix_O: make install prefix=/tmp/krava
+           make_no_backtrace_O: make NO_BACKTRACE=1
+  OK
+  make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+  $
