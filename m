@@ -2,316 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001CB410D13
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 21:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1DE410D17
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 21:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhISTXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 15:23:16 -0400
-Received: from mail-ed1-f47.google.com ([209.85.208.47]:38570 "EHLO
-        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbhISTXF (ORCPT
+        id S231622AbhISTaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 15:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230394AbhISTaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 15:23:05 -0400
-Received: by mail-ed1-f47.google.com with SMTP id q3so52209952edt.5;
-        Sun, 19 Sep 2021 12:21:40 -0700 (PDT)
+        Sun, 19 Sep 2021 15:30:19 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3639AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 12:28:53 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id e15so19456185lfr.10
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 12:28:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YUxoExa3Vl/56HsaDIt2/oCI+rjvSBChu/blLwgxZks=;
+        b=QSa+P4wof1Hrj4vF53V525fNAc/Ogs08uD5wscbihPnyfZsUuFbEqExpuY0+QNv8Am
+         Clnfw5cJWRwrkrfcAJycPUJ5qU6AbqzUapNrfoPp+bHtRyFCv9SCFG6xyYLGIko038F2
+         ltCaEhfujIOL6NlJAYmqcSASiGAjVkntSxbWsQv4I4eC3X9rCkDimehX7ZzZ7/H5Snnp
+         y2pv+wDyN/+HLwkNlji6pLDc0VlpOWnGrm3ETnbuHMsqB/573xrpguD8+B7SBTKDkROk
+         cCSGO/bkwNAdeBCt8eU0U3HGNAXdCsv1EVYtpIiDWKVcbulcvMBFOUIUGwFPNch5RtN+
+         mwNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6WKTUDHCnT3OPIFvure+beopQF+eNqtWBPQ4gjVkMTI=;
-        b=4pcux8WhROBGznopjrX8GQneNtVmyDuMuykF750jybo+BQXe84Igxq+wCDnjJHFddG
-         EaZCSI4Vb+gir4BsY3dgTRk/lin7IyFolEHXn42378dqIdqEcsTOKtyXxZ7ZjIzytOp6
-         mrmkVoYG5A1aLxiJFu5V8Uu5/rp1kt4fejI1YDMQm3o5zrczeTVedY22V4TivFgAAQwS
-         zBDqR1B7Hv6LqATqQbH6tdITgdgfT7gPbguwT36hT/W2nx/dTdY0sPjc8MTiOAImq6F6
-         W+XPvbJSiGXtDISNSEOG9kLd9loxnnG7ucZFCCLQfN4TC76Q4xDJJX0CDZi+wvTaFxpB
-         2aLA==
-X-Gm-Message-State: AOAM531o5iVFS7Ac3kiYEY2fd25/KCuu+zxoYTfUTwTi96MvBp6sTaie
-        LgUKQEXjQ8dV4zlnvJDDARE=
-X-Google-Smtp-Source: ABdhPJzBhq+wusZQHO1R26VyDP34hQgE/m5908flWiPlxtv1eZ2hpsrwywzIJFpM61oQ/n2aK066ww==
-X-Received: by 2002:a05:6402:4247:: with SMTP id g7mr25350958edb.287.1632079299299;
-        Sun, 19 Sep 2021 12:21:39 -0700 (PDT)
-Received: from turbo.teknoraver.net (net-2-34-36-22.cust.vodafonedsl.it. [2.34.36.22])
-        by smtp.gmail.com with ESMTPSA id 10sm5208525eju.12.2021.09.19.12.21.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 12:21:38 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v4 3/3] riscv: optimized memset
-Date:   Sun, 19 Sep 2021 21:21:04 +0200
-Message-Id: <20210919192104.98592-4-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210919192104.98592-1-mcroce@linux.microsoft.com>
-References: <20210919192104.98592-1-mcroce@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YUxoExa3Vl/56HsaDIt2/oCI+rjvSBChu/blLwgxZks=;
+        b=HGlYIMNbofPttQpjJwOGsTmKmRCmWdp0mbl7PgH+Q0wkAeQWL7L6rngVMqiRxD6JPH
+         6AB8rcd+9Jxzi2Qtql9EQx4/Ac5Vov5YWlXCTk3WliiOoVuEjg0mMLHDZkcH/QZCQZbM
+         5tJu6MGlLNOs9WFt8SOuSzsmljGoIpt77Ow8ShnjBE/2qJg5lqHpehWbANafl7aQZvmA
+         qvgwibJej4w8ErIG047aI5eGe8wp2KoqimVLuyzf2FDM1VHGcsWEG5054rwLzgh5eSoZ
+         t2OOmYtW5ocyrLxEzZSsCvFB+trN2qXbEGmmAqjZ4YLoxM2ov0u37zCv7uW+suEs+pDZ
+         56Dw==
+X-Gm-Message-State: AOAM532YXA1LVUMsQ/36ZIMSfwXoVRcvekZxBM6LcqDLpdONtE7uoy7V
+        +0OVSvyweKyuGcHzecRkfnbS8Iv+jMZ4WCKgkmbgLA==
+X-Google-Smtp-Source: ABdhPJySP1s5I02yVU0z+OVsOCndb6pnIAOk9ZmArvo0FYBcyHpd6gQEuqLGptLws72qC7Axz5zyVUrlcYDNiqORdnM=
+X-Received: by 2002:ac2:4d03:: with SMTP id r3mr16775620lfi.339.1632079731461;
+ Sun, 19 Sep 2021 12:28:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210916153156.14098-1-caihuoqing@baidu.com> <CACRpkdau6wCjmeQeFuadsyhi_XZQ6AATYw1okSBMOYbCoGkmCA@mail.gmail.com>
+ <20210917013525.GA17348@LAPTOP-UKSR4ENP.internal.baidu.com>
+In-Reply-To: <20210917013525.GA17348@LAPTOP-UKSR4ENP.internal.baidu.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 19 Sep 2021 21:28:40 +0200
+Message-ID: <CACRpkdbODGTv1i+KdPPnrwtPL2mFb4zw-acaLoTacjwHB9En_Q@mail.gmail.com>
+Subject: Re: [PATCH] Input: cyttsp - Make use of the helper function dev_err_probe()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Input <linux-input@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Fri, Sep 17, 2021 at 3:35 AM Cai Huoqing <caihuoqing@baidu.com> wrote:
+> On 17 9=E6=9C=88 21 00:30:32, Linus Walleij wrote:
+> > On Thu, Sep 16, 2021 at 5:32 PM Cai Huoqing <caihuoqing@baidu.com> wrot=
+e:
+> >
+> > >         if (IS_ERR(ts->reset_gpio)) {
+> > >                 error =3D PTR_ERR(ts->reset_gpio);
+> > > -               dev_err(dev, "Failed to request reset gpio, error %d\=
+n", error);
+> > > +               dev_err_probe(dev, error, "Failed to request reset gp=
+io\n");
+> > >                 return ERR_PTR(error);
+> >
+> > In this case you're supposed to do
+> >
+> > return dev_err_probe(dev, error, "Failed to request reset gpio\n");
+> the probe function is defined:
+> "struct cyttsp *cyttsp_probe("
+>
+> so it is required to return a PTR:cyttsp *.
 
-The generic memset is defined as a byte at time write. This is always
-safe, but it's slower than a 4 byte or even 8 byte write.
+What about
 
-Write a generic memset which fills the data one byte at time until the
-destination is aligned, then fills using the largest size allowed,
-and finally fills the remaining data one byte at time.
+return ERR_PTR(dev_err_probe(dev, error, "Failed to request reset gpio\n"))=
+;
 
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- arch/riscv/include/asm/string.h |  10 +--
- arch/riscv/kernel/Makefile      |   1 -
- arch/riscv/kernel/riscv_ksyms.c |  13 ----
- arch/riscv/lib/Makefile         |   1 -
- arch/riscv/lib/memset.S         | 113 --------------------------------
- arch/riscv/lib/string.c         |  41 ++++++++++++
- 6 files changed, 44 insertions(+), 135 deletions(-)
- delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
- delete mode 100644 arch/riscv/lib/memset.S
-
-diff --git a/arch/riscv/include/asm/string.h b/arch/riscv/include/asm/string.h
-index 25d9b9078569..90500635035a 100644
---- a/arch/riscv/include/asm/string.h
-+++ b/arch/riscv/include/asm/string.h
-@@ -6,14 +6,10 @@
- #ifndef _ASM_RISCV_STRING_H
- #define _ASM_RISCV_STRING_H
- 
--#include <linux/types.h>
--#include <linux/linkage.h>
--
--#define __HAVE_ARCH_MEMSET
--extern asmlinkage void *memset(void *, int, size_t);
--extern asmlinkage void *__memset(void *, int, size_t);
--
- #ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
-+#define __HAVE_ARCH_MEMSET
-+extern void *memset(void *s, int c, size_t count);
-+extern void *__memset(void *s, int c, size_t count);
- #define __HAVE_ARCH_MEMCPY
- extern void *memcpy(void *dest, const void *src, size_t count);
- extern void *__memcpy(void *dest, const void *src, size_t count);
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index 3397ddac1a30..fecf03822435 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -31,7 +31,6 @@ obj-y	+= syscall_table.o
- obj-y	+= sys_riscv.o
- obj-y	+= time.o
- obj-y	+= traps.o
--obj-y	+= riscv_ksyms.o
- obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
- obj-y	+= patch.o
-diff --git a/arch/riscv/kernel/riscv_ksyms.c b/arch/riscv/kernel/riscv_ksyms.c
-deleted file mode 100644
-index 361565c4db7e..000000000000
---- a/arch/riscv/kernel/riscv_ksyms.c
-+++ /dev/null
-@@ -1,13 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright (C) 2017 Zihao Yu
-- */
--
--#include <linux/export.h>
--#include <linux/uaccess.h>
--
--/*
-- * Assembly functions that may be used (directly or indirectly) by modules
-- */
--EXPORT_SYMBOL(memset);
--EXPORT_SYMBOL(__memset);
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index 484f5ff7b508..e33263cc622a 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
- lib-y			+= delay.o
--lib-y			+= memset.o
- lib-$(CONFIG_MMU)	+= uaccess.o
- lib-$(CONFIG_64BIT)	+= tishift.o
- lib-$(CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE) += string.o
-diff --git a/arch/riscv/lib/memset.S b/arch/riscv/lib/memset.S
-deleted file mode 100644
-index 34c5360c6705..000000000000
---- a/arch/riscv/lib/memset.S
-+++ /dev/null
-@@ -1,113 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright (C) 2013 Regents of the University of California
-- */
--
--
--#include <linux/linkage.h>
--#include <asm/asm.h>
--
--/* void *memset(void *, int, size_t) */
--ENTRY(__memset)
--WEAK(memset)
--	move t0, a0  /* Preserve return value */
--
--	/* Defer to byte-oriented fill for small sizes */
--	sltiu a3, a2, 16
--	bnez a3, 4f
--
--	/*
--	 * Round to nearest XLEN-aligned address
--	 * greater than or equal to start address
--	 */
--	addi a3, t0, SZREG-1
--	andi a3, a3, ~(SZREG-1)
--	beq a3, t0, 2f  /* Skip if already aligned */
--	/* Handle initial misalignment */
--	sub a4, a3, t0
--1:
--	sb a1, 0(t0)
--	addi t0, t0, 1
--	bltu t0, a3, 1b
--	sub a2, a2, a4  /* Update count */
--
--2: /* Duff's device with 32 XLEN stores per iteration */
--	/* Broadcast value into all bytes */
--	andi a1, a1, 0xff
--	slli a3, a1, 8
--	or a1, a3, a1
--	slli a3, a1, 16
--	or a1, a3, a1
--#ifdef CONFIG_64BIT
--	slli a3, a1, 32
--	or a1, a3, a1
--#endif
--
--	/* Calculate end address */
--	andi a4, a2, ~(SZREG-1)
--	add a3, t0, a4
--
--	andi a4, a4, 31*SZREG  /* Calculate remainder */
--	beqz a4, 3f            /* Shortcut if no remainder */
--	neg a4, a4
--	addi a4, a4, 32*SZREG  /* Calculate initial offset */
--
--	/* Adjust start address with offset */
--	sub t0, t0, a4
--
--	/* Jump into loop body */
--	/* Assumes 32-bit instruction lengths */
--	la a5, 3f
--#ifdef CONFIG_64BIT
--	srli a4, a4, 1
--#endif
--	add a5, a5, a4
--	jr a5
--3:
--	REG_S a1,        0(t0)
--	REG_S a1,    SZREG(t0)
--	REG_S a1,  2*SZREG(t0)
--	REG_S a1,  3*SZREG(t0)
--	REG_S a1,  4*SZREG(t0)
--	REG_S a1,  5*SZREG(t0)
--	REG_S a1,  6*SZREG(t0)
--	REG_S a1,  7*SZREG(t0)
--	REG_S a1,  8*SZREG(t0)
--	REG_S a1,  9*SZREG(t0)
--	REG_S a1, 10*SZREG(t0)
--	REG_S a1, 11*SZREG(t0)
--	REG_S a1, 12*SZREG(t0)
--	REG_S a1, 13*SZREG(t0)
--	REG_S a1, 14*SZREG(t0)
--	REG_S a1, 15*SZREG(t0)
--	REG_S a1, 16*SZREG(t0)
--	REG_S a1, 17*SZREG(t0)
--	REG_S a1, 18*SZREG(t0)
--	REG_S a1, 19*SZREG(t0)
--	REG_S a1, 20*SZREG(t0)
--	REG_S a1, 21*SZREG(t0)
--	REG_S a1, 22*SZREG(t0)
--	REG_S a1, 23*SZREG(t0)
--	REG_S a1, 24*SZREG(t0)
--	REG_S a1, 25*SZREG(t0)
--	REG_S a1, 26*SZREG(t0)
--	REG_S a1, 27*SZREG(t0)
--	REG_S a1, 28*SZREG(t0)
--	REG_S a1, 29*SZREG(t0)
--	REG_S a1, 30*SZREG(t0)
--	REG_S a1, 31*SZREG(t0)
--	addi t0, t0, 32*SZREG
--	bltu t0, a3, 3b
--	andi a2, a2, SZREG-1  /* Update count */
--
--4:
--	/* Handle trailing misalignment */
--	beqz a2, 6f
--	add a3, t0, a2
--5:
--	sb a1, 0(t0)
--	addi t0, t0, 1
--	bltu t0, a3, 5b
--6:
--	ret
--END(__memset)
-diff --git a/arch/riscv/lib/string.c b/arch/riscv/lib/string.c
-index da033af8fe2f..12daa71698fb 100644
---- a/arch/riscv/lib/string.c
-+++ b/arch/riscv/lib/string.c
-@@ -111,3 +111,44 @@ EXPORT_SYMBOL(__memmove);
- 
- void *memmove(void *dest, const void *src, size_t count) __weak __alias(__memmove);
- EXPORT_SYMBOL(memmove);
-+
-+void *__memset(void *s, int c, size_t count)
-+{
-+	union types dest = { .as_u8 = s };
-+
-+	if (count >= MIN_THRESHOLD) {
-+		unsigned long cu = (unsigned long)c;
-+
-+		/* Compose an ulong with 'c' repeated 4/8 times */
-+#ifdef CONFIG_ARCH_HAS_FAST_MULTIPLIER
-+		cu *= 0x0101010101010101UL;
-+#else
-+		cu |= cu << 8;
-+		cu |= cu << 16;
-+		/* Suppress warning on 32 bit machines */
-+		cu |= (cu << 16) << 16;
-+#endif
-+		if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
-+			/*
-+			 * Fill the buffer one byte at time until
-+			 * the destination is word aligned.
-+			 */
-+			for (; count && dest.as_uptr & WORD_MASK; count--)
-+				*dest.as_u8++ = c;
-+		}
-+
-+		/* Copy using the largest size allowed */
-+		for (; count >= BYTES_LONG; count -= BYTES_LONG)
-+			*dest.as_ulong++ = cu;
-+	}
-+
-+	/* copy the remainder */
-+	while (count--)
-+		*dest.as_u8++ = c;
-+
-+	return s;
-+}
-+EXPORT_SYMBOL(__memset);
-+
-+void *memset(void *s, int c, size_t count) __weak __alias(__memset);
-+EXPORT_SYMBOL(memset);
--- 
-2.31.1
-
+Yours,
+Linus Walleij
