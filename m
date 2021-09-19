@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A58D410DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E98410DEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 01:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbhISX6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 19:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
+        id S233874AbhISX6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 19:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233784AbhISXzv (ORCPT
+        with ESMTP id S233625AbhISXzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 19:55:51 -0400
+        Sun, 19 Sep 2021 19:55:53 -0400
 Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9BFC0613E1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id q3so54041793edt.5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A711C0613E2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:23 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id v22so49631903edd.11
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 16:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Yoxfg1/FcSiARfNU+jPYNat+4eHygLLGuEwb7dEESSg=;
-        b=i5bSKv7QdeEfoSfHm5QJHBy9FUVjhgX6jbNm0mQWjvrAVmvKjVI+K7xHf9m4CZzFOQ
-         tmcdhY49jNIznZHcR3T5B4l9MChXLtoNOsbv5wqU3AGP9sH7VTkfVr9i77gP9JN4BDYX
-         Bpcwb8kRawBPcRLTvbYX1MuotSmNTYVbmeOuNU/AXnugZJywNFT2CvzdG+S87KUwopSX
-         co/YDXyRaw7p3kHi+Uz0SsortvCnT6TeN8E1aLnlzcCW16hplsyBdX8btgxMPEui2JYC
-         XRZwTJ0yFGbw0VVmn0zTnzUhhuxhQ3p5jIEM46h42a8DkpStmuOZ8vEFYtj3mhl1OZdw
-         RSSA==
+        bh=erW3613vb3h40I0FgUxVUMwFB8GH00L3QkH0tCAOwl0=;
+        b=pyTlF0pfhV3XopquFDBbCbBQSSCeykoAW4AhpebLHotQbXOKBf+EzRaZgGJNFEZuoS
+         nMm4IfGY60yzwHVM4ENx813GwG8Ln9ZpDWc9Wkp+BrR172g5XXBFb/zdONRY25thy3qe
+         B3w94bSkoXydJLSLGDcn8So5rLLqJJrG4RhGRbpA4QGDyNN8WfDmaSIvkPHZ+vZ+54Sd
+         dvQEvVLfgfS5RlmMJP6YflHKwFQB2skKovZhz4VIgbReYbK6ZKkdX2Fuob1cjlkAnq7q
+         r3sobxtywJhd9ZHd5R2yoWq0acz5aUz7QoBoGL5r5dPPj50234MIBJd7SAOVJQImtl3Z
+         ZRXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Yoxfg1/FcSiARfNU+jPYNat+4eHygLLGuEwb7dEESSg=;
-        b=BUtsokhpRgC5kV/PqPqTN6rCgDhH5eIlpbnpNq8dLkkbdOt/PiYg211Zb0gDoKwlS+
-         8nT765WKvg/TEG5ZKk+lSVhoFMqByzhXyqZvnj3pgmuuFKp7cIabH0ZtIJQ82duRr8w7
-         gr007U1UjxU9uGBOJyFhJSu8SQr+4GxH6+0rOwg+NRn55DeWBwWWgWAddrUCNhi5xZ2w
-         rXOKV5WI6X/GVDTAh/0b1WNyGzh1A+Jga6PDIo13uC9HrMp/5XEpD1LdLDOGONweN03Q
-         khKRJfhH/DH4UBcJr7pr29wg38G+dwfnIsvi1xtfLbAWA2xOup5jQUS5KBrWJ3FdpIu7
-         ssrw==
-X-Gm-Message-State: AOAM5313P0sPsmZ+rOxFF0P5SVmks+Jk3mDXkUaL/1rH5RohzvKW07QS
-        4Fy1wm+bVOtOh74xlEQatsk=
-X-Google-Smtp-Source: ABdhPJz2KvPUTI4l+SPpmeBJzGBgDaiLSaw9Anf1fKPoFPupXUg4sZ3V5tR2GTcPOn6qWnXhrmBuMg==
-X-Received: by 2002:a05:6402:21c3:: with SMTP id bi3mr351829edb.79.1632095660433;
-        Sun, 19 Sep 2021 16:54:20 -0700 (PDT)
+        bh=erW3613vb3h40I0FgUxVUMwFB8GH00L3QkH0tCAOwl0=;
+        b=WRJj17PkYrgY/cBJvM8zn9f5U0RiH1MHO96fD7aKAxeE+pMaVzZn5NceLXKNsWQ929
+         0SMldXs5oMpOXw599F8T1GbQbME+I9np1oN1jdoJv4AP8UqKdZ0N88YQhpavcWLjqvtT
+         /2bK0vDe5zdKZjIQpR+tUGjtUg1tad7rPIubPexnCWWO1b4it9/mRmgbXAsW7SktGd6E
+         auSPsYZmKaJm5ryAqGtSC+cc3Vvsadn3qC5O1PIEGjQt1DZKOX38uKpHK/tCUTpv+kv/
+         xhdIHYi0MKDZklKVAEXQswfS2xbdwv4Uf0qpATWmTe2LZ+lSKQh532C4oRk+qdUYs7oC
+         dbRQ==
+X-Gm-Message-State: AOAM532q4lJ4kJBZ8ZlzN+fvbIo4h3yXzYcK4BMUdE3Mad+tUTGCHyKg
+        GaGfcIHPY1X/cKBl2xVmDpU=
+X-Google-Smtp-Source: ABdhPJxAP1kk6D7elhi7ouTfo7mvJpY1+/LxsYmU6si6EFCVhNRTjkZhSTe5gfIQsc2jYK+5wPW8dw==
+X-Received: by 2002:a50:ff0a:: with SMTP id a10mr26411862edu.273.1632095661721;
+        Sun, 19 Sep 2021 16:54:21 -0700 (PDT)
 Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
-        by smtp.gmail.com with ESMTPSA id e11sm5353636ejm.41.2021.09.19.16.54.19
+        by smtp.gmail.com with ESMTPSA id e11sm5353636ejm.41.2021.09.19.16.54.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 16:54:20 -0700 (PDT)
+        Sun, 19 Sep 2021 16:54:21 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
@@ -58,9 +58,9 @@ To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Dan Carpenter <dan.carpenter@oracle.com>,
         Martin Kaiser <martin@kaiser.cx>
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v8 14/19] staging: r8188eu: remove an unnecessary bit AND from rtw_writeN()
-Date:   Mon, 20 Sep 2021 01:53:51 +0200
-Message-Id: <20210919235356.4151-15-fmdefrancesco@gmail.com>
+Subject: [PATCH v8 15/19] staging: r8188eu: change the type of a variable in rtw_read16()
+Date:   Mon, 20 Sep 2021 01:53:52 +0200
+Message-Id: <20210919235356.4151-16-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210919235356.4151-1-fmdefrancesco@gmail.com>
 References: <20210919235356.4151-1-fmdefrancesco@gmail.com>
@@ -70,29 +70,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove an unnecessary bitwise AND because "length" can never be greater
-than 0xffff since VENDOR_CMD_MAX_DATA_LEN is defined as (a weird) '254'.
+Change the type of "data" from __le32 to __le16.
 
 Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- drivers/staging/r8188eu/hal/usb_ops_linux.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-index aa57bd7b8f10..625b29af9410 100644
+index 625b29af9410..c378b5740353 100644
 --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
 +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-@@ -178,7 +178,7 @@ int rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *data)
- 	if (length > VENDOR_CMD_MAX_DATA_LEN)
- 		return _FAIL;
+@@ -111,11 +111,11 @@ u16 rtw_read16(struct adapter *adapter, u32 addr)
+ 	struct io_priv *io_priv = &adapter->iopriv;
+ 	struct intf_hdl *intfhdl = &io_priv->intf;
+ 	u16 value = addr & 0xffff;
+-	__le32 data;
++	__le16 data;
  
--	ret = usbctrl_vendorreq(intfhdl, value, data, (length & 0xffff), REALTEK_USB_VENQT_WRITE);
-+	ret = usbctrl_vendorreq(intfhdl, value, data, length, REALTEK_USB_VENQT_WRITE);
+ 	usbctrl_vendorreq(intfhdl, value, &data, 2, REALTEK_USB_VENQT_READ);
  
- 	return RTW_STATUS_CODE(ret);
+-	return (u16)(le32_to_cpu(data) & 0xffff);
++	return le16_to_cpu(data);
  }
+ 
+ u32 rtw_read32(struct adapter *adapter, u32 addr)
 -- 
 2.33.0
 
