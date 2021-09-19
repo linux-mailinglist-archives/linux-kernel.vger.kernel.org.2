@@ -2,187 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C106410B4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD37410B50
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhISLi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 07:38:29 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:32406 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhISLi2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 07:38:28 -0400
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 18JBam15016555;
-        Sun, 19 Sep 2021 20:36:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 18JBam15016555
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1632051409;
-        bh=wDEK8hkdweS2PIzKbc3TjqmEdv9Hq1OPbScjxMt9QOY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hUV7kwRbVKAgr1qc7SpyWa5gXe7fBjUil2Sr3A8A9KDKZTIGkveQyJSK5AAsAzKDG
-         Uz042kXOA5xWy7B89XhwiwzwxIwKUsJLJtUNxKP3f9AD/RIhHtobHgFMkDMeufKU/B
-         dkzH02n1sj1A6m/6oUEWW5WlL1PLODyMc1oFvXdwMXr6nb1XeUkU4YFY2o1qptZrMJ
-         RsArVQ6sXJoyCRk/VuMEak+VJ6CH+UG/xQctJTQzcQ8QLU0McnesQYXhlc2KsWtoys
-         +LAErYZ4iuuHI1Rhvgzs0qSFYEagfQnzyY15ct3OiwtH5Aqyv63vwzdfx5K2A39t3I
-         4hR6uCLlrNCZQ==
-X-Nifty-SrcIP: [209.85.216.54]
-Received: by mail-pj1-f54.google.com with SMTP id me1so1376134pjb.4;
-        Sun, 19 Sep 2021 04:36:48 -0700 (PDT)
-X-Gm-Message-State: AOAM533JgT2o9H4xf/RGSl/Rv/K0jSC6tPSJNfZdj4UHPeFuQbGexK+r
-        RRawKKCnflVSGpCpxW18xBQOTdoEEBzdO6D+12I=
-X-Google-Smtp-Source: ABdhPJw2ZdewXhDn/bjSvRAh/1hGO1Ls5xPU0f7dnJEHIxSzaqxh/mQfSsMv9BPnl3VvmjBwJ9PPG+cfJOmiEKZ7Siw=
-X-Received: by 2002:a17:902:6b42:b0:13a:54d0:39c4 with SMTP id
- g2-20020a1709026b4200b0013a54d039c4mr17778287plt.42.1632051407751; Sun, 19
- Sep 2021 04:36:47 -0700 (PDT)
+        id S231463AbhISLmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 07:42:32 -0400
+Received: from mout.gmx.net ([212.227.17.21]:51267 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230051AbhISLmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 07:42:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632051657;
+        bh=zcMJKXoxY0q09KFAPU9VFCC+gFn0wKfbaB0yYvTThgM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Cjv1jpUK7CYyxLJCRDKAP/AKCnkoiCFyqPknEquYPvNyQH2dkiZ95NY2nBzuj6Mfp
+         dOWtTuuK5mWoAvTaPKwfMDqo1PgQ8fQIKAvQpXApHWjSPxhf2PznPxvEDFJQSAuMNW
+         873diz/YoT4FDNPasWXsDgcuI4VdwQ6jUJxK8CRY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MDQeU-1mZ2jv0Qa6-00ATTn; Sun, 19 Sep 2021 13:40:57 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nl80211: prefer struct_size over open coded arithmetic
+Date:   Sun, 19 Sep 2021 13:40:40 +0200
+Message-Id: <20210919114040.41522-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210910130954.1392104-1-lucjan.lucjanov@gmail.com> <CAL2Yj0QvoNZ3VeYfk63oMUTenP3eypJx+fB6f09rprV-fCphGw@mail.gmail.com>
-In-Reply-To: <CAL2Yj0QvoNZ3VeYfk63oMUTenP3eypJx+fB6f09rprV-fCphGw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 19 Sep 2021 20:36:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATBvZBmuznFaFQgZeOO_F_UsisPYBobDC7LYDMVW3Yd=w@mail.gmail.com>
-Message-ID: <CAK7LNATBvZBmuznFaFQgZeOO_F_UsisPYBobDC7LYDMVW3Yd=w@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: use smaller dictionary size for zstd module compression
-To:     =?UTF-8?Q?Piotr_G=C3=B3rski?= <lucjan.lucjanov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8TLI47CD+YebazCO/52EvQKfcvJPJGRJcO7Rtr9g4W7wWhbe46O
+ iUtegOwdVUxuSFfOuS4C/inGN5O91I9LZW7/83hJYbXPx+KhbFYsprZ/1TVuSCCLs7HoFdM
+ ejmGhtDtYFO6s76cCv/+VcZan3g+pgtOFWwTClg0paSD5g/OAUGipdUCQYjNKYXJQSXLJap
+ sV1am2MQkH2fwpXv+GNXA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oCn579lJzVg=:wiDu61UsML4WMCKlWU7zIY
+ zKngrsagcFnpKhIEnot7bqff58/FoEuLqU29ei9FcdJBSqxrBgqDKUJhIaxld//bx8xhasvh7
+ sKS6j/RcLPAgca5QWJTeKeq8zFw/0dSwHRYw34uWYQs/dAJiXNdaFP9LPRFR8XESkpB1DXC7X
+ 9iBR/mlBnJmEytTTWI579ffmFo3AGjy0H+qm0iXDdKzgAs4qKHhTiJQSRHVlY0WSjeubvK35u
+ KfSPwwPC9Hl5dEmekZIB8Ic1hYu82LeoV2bMdYTzGYWablFLI+WGtUpIOJMG9ASrZkCuhC1N4
+ 47GkqJFX3f1ZvZG6YxInW69Bmxs/B/mVo+qTAH5IYnn4+ReR7QPIsQn+CEi9RQuTuRPtrlurv
+ llIF3KToDpaPGNDtrXwakPsVefD5XYegKXqDSk43cGwUYqFigNXM6Ed8cPqaWCj5eAFmJgY20
+ 25FhlT+CD0S/zYYPdOU38/fFN2C6KNDYA6Im3TX50fPEdvTIf+rzdDgnmy26UDRpvaN9WAXOH
+ L7lS7oajJo4CeXoU6NhPaa443J+s+/TOHtLpOZ04eobr+rCcSrWpUwrAIu9fo7xkgpI6EQLGI
+ RLXSdn7axqg3K3tM1CgZ+fXDHz82/Pf0VjhOayirCLp0/8PCgSxuY9xKEhnOo0fTB6IkkNGeA
+ VnevqQiRAqICSSVjvfUGp9Xz/okiv935KoWoaVHUlkRv8lh7MncApDuYbgnddJLptm6OTIBw2
+ zu5S2aV51H6WT/9HuEPjJ1k0wliyDHnpMAnlqVyTb/DZh+QUZcRmm0IFO/zNZBWuVH37hYU5g
+ 3hJGvact71ARd/b2Xw2EaGDp2W95WmiRfSiPUFfQwIURyT26gYVP7z34JcEUesCOw9pjFDngv
+ efB4Q3xDBJwcLOsk8L8BFj/Cl0mRmT4OeljfPIMAXN67aVsTu8MbAKvLlMHJm29EXAjYrOLjJ
+ FKNwUATAbIOTCVKsTft05flQ9mBk7Vmkly5L1b1sevUoTH08LIR0Pg016dSeIo6KiHvE/H8Y0
+ 1DVcVeMyY+yaZoR4NwOB8Nw6bDVVYppPxNNW7qnSKCrVxvcIdZF9f96XbMmZR+Gb9P+8cgecs
+ NSopheKd2MzbwA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 12:07 AM Piotr G=C3=B3rski <lucjan.lucjanov@gmail.c=
-om> wrote:
->
-> Ping...
->
-> pt., 10 wrz 2021 o 15:10 Piotr Gorski <lucjan.lucjanov@gmail.com> napisa=
-=C5=82(a):
-> >
-> > By default, zstd without parameters uses a dictionary size of 8 MB.
-> > However, most modules are much smaller than that.
-> > Use a dictionary size of 2 MB for module compression, resulting in
-> > slightly higher compression speed while still maintaining a good
-> > compression ratio.
-> > The --zstd=3Dwlog=3D21 option is equivalent to --lzma2=3Ddict=3D2MiB us=
-ed in XZ compression.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + count * size" in the kzalloc() functions.
 
+Also, take the opportunity to refactor the memcpy() call to use the
+flex_array_size() helper.
 
-What is a benefit of this patch?
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-It claims "slightly higher compression", but I do not see a difference.
-(15.0577 sec   --> 15.013 sec)
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ net/wireless/nl80211.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index bf7cd4752547..b56856349ced 100644
+=2D-- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -11766,9 +11766,10 @@ static int nl80211_set_cqm_rssi(struct genl_info =
+*info,
+ 	wdev_lock(wdev);
+ 	if (n_thresholds) {
+ 		struct cfg80211_cqm_config *cqm_config;
++		size_t size =3D struct_size(cqm_config, rssi_thresholds,
++					  n_thresholds);
 
-[1] build  allmodconfig
-[2] collect *.ko files whose size is less than 2MB
-[3] measure the time elapsed for compressing all of them
+-		cqm_config =3D kzalloc(sizeof(struct cfg80211_cqm_config) +
+-				     n_thresholds * sizeof(s32), GFP_KERNEL);
++		cqm_config =3D kzalloc(size, GFP_KERNEL);
+ 		if (!cqm_config) {
+ 			err =3D -ENOMEM;
+ 			goto unlock;
+@@ -11777,7 +11778,8 @@ static int nl80211_set_cqm_rssi(struct genl_info *=
+info,
+ 		cqm_config->rssi_hyst =3D hysteresis;
+ 		cqm_config->n_rssi_thresholds =3D n_thresholds;
+ 		memcpy(cqm_config->rssi_thresholds, thresholds,
+-		       n_thresholds * sizeof(s32));
++		       flex_array_size(cqm_config, rssi_thresholds,
++				       n_thresholds));
 
-I did 'perf stat --repeat 10'.
+ 		wdev->cqm_config =3D cqm_config;
+ 	}
+@@ -15081,9 +15083,7 @@ static int nl80211_set_sar_specs(struct sk_buff *s=
+kb, struct genl_info *info)
+ 	if (specs > rdev->wiphy.sar_capa->num_freq_ranges)
+ 		return -EINVAL;
 
+-	sar_spec =3D kzalloc(sizeof(*sar_spec) +
+-			   specs * sizeof(struct cfg80211_sar_sub_specs),
+-			   GFP_KERNEL);
++	sar_spec =3D kzalloc(struct_size(sar_spec, sub_specs, specs), GFP_KERNEL=
+);
+ 	if (!sar_spec)
+ 		return -ENOMEM;
 
+=2D-
+2.25.1
 
-
-
-
-The default zstd:
-
-
-
- Performance counter stats for '/tmp/zstd2/test.sh' (10 runs):
-
-         19,250.23 msec task-clock                #    1.278 CPUs
-utilized            ( +-  0.49% )
-            65,424      context-switches          #    0.003 M/sec
-               ( +-  0.03% )
-             5,609      cpu-migrations            #    0.291 K/sec
-               ( +-  0.25% )
-         4,207,419      page-faults               #    0.219 M/sec
-               ( +-  0.19% )
-    54,349,495,038      cycles                    #    2.823 GHz
-               ( +-  0.15% )  (85.93%)
-     3,833,225,032      stalled-cycles-frontend   #    7.05% frontend
-cycles idle     ( +-  0.47% )  (86.34%)
-    20,789,203,221      stalled-cycles-backend    #   38.25% backend
-cycles idle      ( +-  0.31% )  (85.92%)
-    65,385,071,612      instructions              #    1.20  insn per
-cycle
-                                                  #    0.32  stalled
-cycles per insn  ( +-  0.09% )  (86.54%)
-    11,033,842,879      branches                  #  573.180 M/sec
-               ( +-  0.10% )  (86.38%)
-       288,314,097      branch-misses             #    2.61% of all
-branches          ( +-  0.16% )  (86.33%)
-
-           15.0577 +- 0.0728 seconds time elapsed  ( +-  0.48% )
-
-
-
-zstd --zstd=3Dwlog=3D21:
-
-
-
-
- Performance counter stats for '/tmp/zstd2/test2.sh' (10 runs):
-
-         19,203.08 msec task-clock                #    1.279 CPUs
-utilized            ( +-  0.85% )
-            65,404      context-switches          #    0.003 M/sec
-               ( +-  0.05% )
-             5,617      cpu-migrations            #    0.293 K/sec
-               ( +-  0.15% )
-         4,214,502      page-faults               #    0.219 M/sec
-               ( +-  0.12% )
-    54,495,218,169      cycles                    #    2.838 GHz
-               ( +-  0.29% )  (85.55%)
-     3,867,166,903      stalled-cycles-frontend   #    7.10% frontend
-cycles idle     ( +-  0.26% )  (87.22%)
-    20,950,577,113      stalled-cycles-backend    #   38.44% backend
-cycles idle      ( +-  0.38% )  (86.51%)
-    65,500,859,667      instructions              #    1.20  insn per
-cycle
-                                                  #    0.32  stalled
-cycles per insn  ( +-  0.12% )  (86.65%)
-    11,045,504,296      branches                  #  575.194 M/sec
-               ( +-  0.12% )  (85.90%)
-       288,729,169      branch-misses             #    2.61% of all
-branches          ( +-  0.12% )  (85.59%)
-
-            15.013 +- 0.129 seconds time elapsed  ( +-  0.86% )
-
-
-
-
-
-
-> > Signed-off-by: Piotr Gorski <lucjan.lucjanov@gmail.com>
-> > ---
-> >  scripts/Makefile.modinst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-> > index ff9b09e4cfca..c3475e5aca7c 100644
-> > --- a/scripts/Makefile.modinst
-> > +++ b/scripts/Makefile.modinst
-> > @@ -97,7 +97,7 @@ quiet_cmd_gzip =3D GZIP    $@
-> >  quiet_cmd_xz =3D XZ      $@
-> >        cmd_xz =3D $(XZ) --lzma2=3Ddict=3D2MiB -f $<
-> >  quiet_cmd_zstd =3D ZSTD    $@
-> > -      cmd_zstd =3D $(ZSTD) -T0 --rm -f -q $<
-> > +      cmd_zstd =3D $(ZSTD) --zstd=3Dwlog=3D21 -T0 --rm -f -q $<
-> >
-> >  $(dst)/%.ko.gz: $(dst)/%.ko FORCE
-> >         $(call cmd,gzip)
-> > --
-> > 2.33.0.142.ge0a2f5cbc5
-> >
-
-
-
---
-Best Regards
-Masahiro Yamada
