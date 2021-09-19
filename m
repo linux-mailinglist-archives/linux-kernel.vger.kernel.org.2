@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D161E410D55
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0D5410D5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 22:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232359AbhISUd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 16:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhISUd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 16:33:28 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDEDC061574;
-        Sun, 19 Sep 2021 13:32:02 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id t6so52589898edi.9;
-        Sun, 19 Sep 2021 13:32:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mcJVgPjSz0j9w6YEbM+uE5ixcnUtoWZ/F6Bciss8GDM=;
-        b=Iyl2X6uPJSEsXf4CFU/f4V9+XRYRCZP5Px+BxAd8ujPoH2kyY+y6FThp8IgN2D0MTq
-         QCu8xVSVnNldb9n6CuJu0rfpIFVxk+iqHsk22rsoFvSKE1sHPQHuzDvqdbzPsBdye8U2
-         XBBsaJUH4fwb5GGyrQGFdTWzg2IcJbbQwbX00fX8prDZwqMQIqFHZlGeL4+gPUAWELby
-         tXiDRKJiCsdBNcGqh6n4EENQHSMHjU11XMqPoKQDS7FbHpKc/M7GuCEX2DE7O/cMODGn
-         ND8a56uoS5Q5+B2a/+6pLPRe/CKI8nKiCs6pG0G1DfaCjaq8sGBq+vRCq7tu5RfncjZ2
-         9pyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mcJVgPjSz0j9w6YEbM+uE5ixcnUtoWZ/F6Bciss8GDM=;
-        b=pPWKn3jq7XcvmyrZ84PoDb5a35RRvd2D4Kd/g+nyBA1rWNBgtT2CxZv2/dl8/DETJc
-         o5+Lub9JyDHfc2+akygMFo0NBSFTx04WfzTQ1HbFxSRIWMbT0zzV6JqEXd2KlUm+m0wy
-         7v0nIjIt8SLqW7jpSnBU+8CPjL+a2FBgC0az48gOO9ky6HlraH5SWTyAqlEKXG6/bKfS
-         eRj8j3zlH110X7UyQ94lBfxCMLD34Q1v5Xun0eXaIgfJVvnuLEnUmXcQdgopqyf1vfqM
-         cLNlc0YrjYILlrT2pvaP4JVOawtwGprkHxCQppfBXxD6aeGt1AT/BbWOq6Ot1+TyNR9i
-         uS7g==
-X-Gm-Message-State: AOAM533od88uR8kPdskksZ2yX4jpL6qOiHpMuYqHGJV/QGxigbCDLyCB
-        C3CXZvs4AdlkPOxFYKftmaSLK76D+N/ymihq4NsrRrdnlcs=
-X-Google-Smtp-Source: ABdhPJwHjrJ6nHgi95mDr5Jobn5IPasjSCAtcR1RmSSFw1/RDHK+gp25CKfc6dd6QNDOtzCP0tW63mZmugbt9iV3xQk=
-X-Received: by 2002:a50:e188:: with SMTP id k8mr4539919edl.119.1632083520837;
- Sun, 19 Sep 2021 13:32:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <8003272.NyiUUSuA9g@kreacher> <1798761.CQOukoFCf9@kreacher>
-In-Reply-To: <1798761.CQOukoFCf9@kreacher>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 19 Sep 2021 23:31:23 +0300
-Message-ID: <CAHp75VdoFwH2sQT6dwz4BCorkgJgmYEBHq-+YpT18HZx2cpmrA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] PCI: PM: x86: Drop Intel MID PCI PM support
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        x86 Maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Len Brown <len.brown@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232456AbhISUib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 16:38:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232004AbhISUiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 16:38:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1776760240;
+        Sun, 19 Sep 2021 20:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632083806;
+        bh=T2c8bMYXBskh9FZsrU6GF3pxxSkFGJVq3SeIae8HZl0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ApukXedAYArl44wjPZw8WIbITY9mO7ywuxlSNtxdb1w5RG05G/HKBq6kyn9nURztx
+         Y39maP+gHeoLKn4VKnOW2oMNx+PJNzn7vi9hY1ldMUMOs7NG4FT6yWWXnuWdBb1L18
+         9O4pFGFm2YoX7S+UcsAXwVHVk9z8p4MvjvuQGrfCyWJEmUulzH5EnOvkzF4/EaBOVd
+         4lcsV0/+QaixLa6umLyrorx+JnEX9/Rn+/DtFoNiyEoWkCrhayIiDqTItgOuj2xWHI
+         YLLRjDIVGNepsSkqOBSBTmVnNJR6SQhsIdH6uv9nHssU3Mnt8kjO2jB+qs3a/h34zn
+         scTcINuYfnnJg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 03B0360A2A;
+        Sun, 19 Sep 2021 20:36:46 +0000 (UTC)
+Subject: Re: [GIT PULL] perf tools fixes for v5.15: 1st batch
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210919001030.301511-1-acme@kernel.org>
+References: <20210919001030.301511-1-acme@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210919001030.301511-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-09-18
+X-PR-Tracked-Commit-Id: 219d720e6df71c2607d7120d6b9281614863e5b1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d94f395772aeee64325d8b2f279560f08ac06fac
+Message-Id: <163208380595.27843.9098127255998207602.pr-tracker-bot@kernel.org>
+Date:   Sun, 19 Sep 2021 20:36:45 +0000
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Juri Lelli <jlelli@redhat.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 9:01 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Support for Intel MID platforms has mostly gone away with the SFI
-> support removal in commit 4590d98f5a4f ("sfi: Remove framework for
-> deprecated firmware"), but there are some pieces of it still in the
-> tree.  One of them is the MID PCI PM support code which gets in the
-> way of subsequent PCI PM simplifications and trying to update it is
-> rather pointless, so get rid of it completely along with the arch
-> code pieces that are only used by it.
->
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->
-> I am going to post patches removing the rest of MID support from arch/x86/
-> and elsewhere, but that is still quite a bit of stuff and I don't want this
-> simple PCI PM series to depend on that work.
+The pull request you sent on Sat, 18 Sep 2021 21:10:30 -0300:
 
-This is still being used by MID with ACPI assisted (*) support.
-Hence, not ack.
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.15-2021-09-18
 
-*) ACPI layer is provided by U-Boot and can't fulfill all possible
-features that ACPI may use in the Linux kernel.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d94f395772aeee64325d8b2f279560f08ac06fac
+
+Thank you!
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
