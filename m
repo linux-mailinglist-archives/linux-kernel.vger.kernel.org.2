@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F9B410AF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418E6410AF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237866AbhISJp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 05:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        id S237501AbhISJrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 05:47:10 -0400
+Received: from mout.gmx.net ([212.227.17.22]:33063 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237818AbhISJpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 05:45:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73712610A8;
-        Sun, 19 Sep 2021 09:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632044657;
-        bh=XvNnS/0B+zW3GGy7xwtCUzNn/A2pr7pa4LjzYtMKWSk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rGnEPxj2T/BEjjqe+27gnv/VytWeKdtHuYNhPUEbFCqdlAHuba1asW3D+sAeeq4vT
-         MIWdwI1uUX7qGoce0xY3dTfr+V4xE61sbG5adWxSGw2YItr3l6OuwXw7ZgrF5GVMT6
-         zP5VOOxriPmylJn53kgsNWmD6wgxPcnR5IjxFCiFpFJ/qDHnY26GLNO2Z5hfU/d+Ho
-         wZs7NFiT1wcp78E3OMXCgpjTpUClOSl1x/pvUaz+OoUvzmvBnIagzSoqS/2EPQXCbL
-         pf9HvD2TPglmCGAO1uSnkVMm1PORyDa33y9Juv8ToHNJEC+Nc5Uu2gLglNIP8BsCrJ
-         hEDBvXY7/J69w==
-Date:   Sun, 19 Sep 2021 12:44:13 +0300
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs fixes for 5.15-rc3
-Message-ID: <20210919094413.GA25155@ogabbay-vm2.habana-labs.com>
+        id S234537AbhISJrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 05:47:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632044692;
+        bh=aBDCFlNyvlfJIyH2IMrQLyE2PqTuWdoxUKo2Qm78p8E=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Hl0BQZhpSaZk1KGH7qplP3Lkye5LU25E2LvsYeULpeau6zFCzJjIyf4YCr4gD/QVF
+         T8+H/5olMvZlgD08YJxcxCXoNk6YYodcKNW7soDOVLG14pMCYKLNFGTDcuzIBrMjW0
+         etQQshbqQXjqTwGuuRaM0bMBDm3NwCdMI7nbR8CQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MMXUN-1m8Qqp1cqV-00JedI; Sun, 19 Sep 2021 11:44:52 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>
+Cc:     Len Baker <len.baker@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-afs@lists.infradead.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Prefer struct_size over open coded arithmetic
+Date:   Sun, 19 Sep 2021 11:44:32 +0200
+Message-Id: <20210919094432.30510-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:atwHMRMtMSb4G+x9ytkpl64iqhfhlSU9FzgMUwkfrlCeQvi7lmx
+ 3LI0WfuSja+uW4DrJO+iEe3rymC0yv/OGWoXdpicHPD1Z4n1mFV/QlFiZmCWQte2ZP7Vwrh
+ hJPEhgN1d1aLTrnBJ4rjJ0isi8wMT05xNLy9h+mj+xfnnKcWAJn6rrI/D7O8ZOpLE/hgAPA
+ /rwrsPOvt/+tnfKLrbJXg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jw9VNew2nUg=:4DZRDq0uojWSP6rF16MB6o
+ 138aPFhx5DTXyxufdek2mqo11X73k3NifxtwHlKs1hWLYMBlmvoQWhiKar71QkaXxVMxKd9z8
+ kC24GEtoGq42H0tPlgAeICHs1g1pT3y0uJT9nzcXDIQGwy0og0dPSB0e6Ax1ys/oc6rXoIU3a
+ Kb+Nhj8cKSQNl3TsiVHMP1P2H/3HqJVkSC54wq8xKVkKfwBwT5dTLWcPu9XaYVrvkRenVlmCa
+ 6gqxOxXGWHOzPi1y1AP8gV2mtPvaL6tOReBRHcLpgvYZN0ALwyPLbIEjfomO2LvMXRJCbtZE8
+ tT6t0CksHaCxJzeRsrZi0ngikUjAfj9cZ3iVtpT770s3FzD98enzDO7afO4INnL635dmC5VS7
+ 7MhPzGwnpKCOTxLQvOwte4W8PWuIA3Nc9WPpWcl4udb5V/TvFZh0PX+MO3eAn7htsE0XZh7Qj
+ jHcouTjDZEa6bB+j3CvsNxN5l+K5lJ2QHCUnbzrmgVGNLQKfZVH2H2ADHIHezX9ELB8F10h2h
+ ym5JKMbIj/KRVC4F4XVM3g7L2UrME+jp3Y60GpJiswLzaZf/kzVqBnnnXYV1jKOZi7YWEgBsV
+ kxOpm0AjYev3dKBAr/Ev+4psMD/F3E0G0n3fesAttmfTcSyfUkVt27x7PUHNR3vrjJq5E6ZxI
+ y/Bmmsi/gQvpHx1TX5/ZwL7Kkmsq2aYBIMzkOj77n/ahmqyvlmgmVy5AAwsvsHjf1TwLx7It7
+ RTv1/t7XWdffOYtDKDHGK+w4c9xrXRKtjgk6gdGOZwPtKXqBERMyDvba/MjW+/DwCcaYsVL3q
+ fhi3YqlzB/rKOTnvYdWzhVcDiDOGZb2cO0hn3KH/jbiOcI/c3Up5bp/ebrIvm+wkspwiHBiQK
+ Vml9KZoyZsCuJbPp6dichII73GyrIDOJOVf8sdVQcY3rHqpJDbuGGtpPgZQDSi8+Ce2XzGW3v
+ ayfP8xu6fH2C8HwPc9K6IGbA1yVfsycFW27yPDY896OHRQBTIV76JU3GiyrbKXak8xpg6WOI8
+ sKiT+eCIJNzxb8J23cb4cH8SB72UxuT4uoCG0X55g3NhIf09MAPr7Tyx7y4PtlqLRsPxPmH6G
+ CeUc3mI/Fzw4K8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Some important fixes for the habanalabs driver for 5.15.
-They fix a couple of bugs that can result in kernel BUG,
-data race, kernel log spamming, etc.
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + size * count" in the kzalloc() function.
 
-Full details are in the tag.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-Thanks,
-Oded
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ fs/afs/security.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-The following changes since commit 25a1433216489de4abc889910f744e952cb6dbae:
+diff --git a/fs/afs/security.c b/fs/afs/security.c
+index 3c7a8fc4f93f..7c6a63a30394 100644
+=2D-- a/fs/afs/security.c
++++ b/fs/afs/security.c
+@@ -219,8 +219,7 @@ void afs_cache_permit(struct afs_vnode *vnode, struct =
+key *key,
+ 	 * yet.
+ 	 */
+ 	size++;
+-	new =3D kzalloc(sizeof(struct afs_permits) +
+-		      sizeof(struct afs_permit) * size, GFP_NOFS);
++	new =3D kzalloc(struct_size(new, permits, size), GFP_NOFS);
+ 	if (!new)
+ 		goto out_put;
 
-  mcb: fix error handling in mcb_alloc_bus() (2021-09-14 11:22:26 +0200)
+=2D-
+2.25.1
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-fixes-2021-09-19
-
-for you to fetch changes up to c8fee41957f036cbc8e840bd91e2087731df7f7e:
-
-  habanalabs: expose a single cs seq in staged submissions (2021-09-14 15:00:04 +0300)
-
-----------------------------------------------------------------
-This tag contains the following fixes for 5.15-rc3:
-
-- Fix potential race when user waiting for interrupt ioctl
-- Prevent possible kernel oops in staged CS ioctl
-- Use direct MSI mechanism in Gaudi as a WA for a H/W issue
-  regarding FLR
-- Don't support collective wait ioctl operation when it
-  is not supported. e.g. when the NIC ports are disabled
-- Fix configuration of one of the security mechanism.
-- Change error print to be rate-limited as it can be initiated
-  by the user and spam the kernel log
-- Fix return value of CS ioctl when doing staged CS
-- Fix CS ioctl code when user doesn't supply an offset for
-  the memory area that we use as fence.
-- Spelling mistake fix
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      habanalabs: Fix spelling mistake "FEADBACK" -> "FEEDBACK"
-
-Oded Gabbay (1):
-      habanalabs/gaudi: fix LBW RR configuration
-
-Ofir Bitton (4):
-      habanalabs: fix potential race in interrupt wait ioctl
-      habanalabs: fail collective wait when not supported
-      habanalabs: rate limit multi CS completion errors
-      habanalabs: expose a single cs seq in staged submissions
-
-Omer Shpigelman (1):
-      habanalabs/gaudi: use direct MSI in single mode
-
-farah kassabri (2):
-      habanalabs: fix kernel OOPs related to staged cs
-      habanalabs: fix wait offset handling
-
- .../misc/habanalabs/common/command_submission.c    |  71 +++++++++----
- drivers/misc/habanalabs/common/hw_queue.c          |   9 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              |  11 +-
- drivers/misc/habanalabs/gaudi/gaudi_security.c     | 115 ++++++++++++---------
- .../habanalabs/include/gaudi/asic_reg/gaudi_regs.h |   2 +
- 5 files changed, 134 insertions(+), 74 deletions(-)
