@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D45410D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 00:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B767410D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 00:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhISWI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 18:08:26 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:38511 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233170AbhISWIV (ORCPT
+        id S232456AbhISWHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 18:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229689AbhISWHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 18:08:21 -0400
-X-Greylist: delayed 3828 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Sep 2021 18:08:19 EDT
-Received: from [77.244.183.192] (port=65316 helo=[192.168.178.41])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1mS3xn-00BOKz-4D; Sun, 19 Sep 2021 23:03:03 +0200
-Subject: Re: [PATCH v2 0/4] PCI: dwc: pci-dra7xx: miscellaneous improvements
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, kishon@ti.com
-Cc:     linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-References: <20210531085934.2662457-1-luca@lucaceresoli.net>
- <20210621144109.GC27516@lpieralisi> <20210813155328.GC15515@lpieralisi>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <46422460-ae9b-3c04-1f59-54bb6631317e@lucaceresoli.net>
-Date:   Sun, 19 Sep 2021 23:03:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 19 Sep 2021 18:07:49 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1F5C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 15:06:23 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id a10so36197394qka.12
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 15:06:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qnvBHVofCI078vE8ENwQVrZQWxUC8kXdsfVEs8ZqGPc=;
+        b=EmPmJimiwzUaOxywPMLvTOyZc0SUnhOlErQoTUmX7st9GVg8SjD/ELsfCeSTEb4zVa
+         cu4wJFO6HzK/vKl5K+V2or5TTslnUu/SkhR3sMtLId4M/Lm5VoKRnsuBCzdk5cfoyf01
+         bF5eFG3T4UBoLA0rIRcgqbnNK42SKc7pcgXEWYkfwntxMqPRHaKHAtR7BMAcTbaZPF7N
+         UyWvHhdjvUhm2P8D93k3BlMlEqIAqeWLPaK79nDaCTRFZPAZYEuFiHLg6EuA13OZm2xL
+         09pyZCIMwxovOyVi3cxltpkJJqBliaDxpWrQJXBTPrNd6YvwnVLmU+t/U2y4e3mqKOJM
+         KyMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qnvBHVofCI078vE8ENwQVrZQWxUC8kXdsfVEs8ZqGPc=;
+        b=oKy1aOP8tIT1jXCf0y+uUP3uU4YzNgItSNAqHTXm19joFSmiHjIb7wTcImt87BvQjZ
+         nN0TDalF2eEblOC422pkfK0k/m80RkuWb6dvspAa59SKXuAEqUxgB32EA3JqwfeuPiKT
+         Qpy8XtoL2IQ8WqogbbRjR94jY+W6qWoqNmkwghq0g8CYp305tuIklkkaTugDwQWk7ddR
+         98phWNv3w98Rv/BMjJZrGtMADYQXo+Y3hBjzJy7IMClSn7ANMDGYG4BvioTVSHFn7qki
+         6+2vikIRz090zuX71Sp4+GcNioVivp7Xw2J/qN/XIYxYig7pky/3Jmk6SC4yqPKLxew1
+         kjcg==
+X-Gm-Message-State: AOAM530Nyvx3OOf+ELcBwoAXuxBZFhn9UfF2RyTHDUGp4fFTuYd5K7p8
+        hnG8rlIFkbQt3JocVLVbwMc=
+X-Google-Smtp-Source: ABdhPJzgctTUWico0bxsBx08tGbafnOdLRfiTf++cbU5TqsqExBO43BBC5f5IDmma2KnhiRAYkFaZA==
+X-Received: by 2002:a37:a793:: with SMTP id q141mr21055987qke.10.1632089182434;
+        Sun, 19 Sep 2021 15:06:22 -0700 (PDT)
+Received: from localhost.localdomain ([191.84.236.195])
+        by smtp.gmail.com with ESMTPSA id t23sm246313qkj.31.2021.09.19.15.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 15:06:21 -0700 (PDT)
+From:   Gaston Gonzalez <gascoar@gmail.com>
+To:     linux-staging@lists.linux.dev
+Cc:     gregkh@linuxfoundation.org, nsaenz@kernel.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, gascoar@gmail.com
+Subject: [PATCH v2 0/7] staging: vchiq_arm: Various cleanups
+Date:   Sun, 19 Sep 2021 18:59:07 -0300
+Message-Id: <20210919215914.539805-1-gascoar@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210813155328.GC15515@lpieralisi>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo, Kishon,
+This set of patches consists in some code style fixes.
 
-On 13/08/21 17:53, Lorenzo Pieralisi wrote:
-> On Mon, Jun 21, 2021 at 03:41:09PM +0100, Lorenzo Pieralisi wrote:
->> On Mon, May 31, 2021 at 10:59:30AM +0200, Luca Ceresoli wrote:
->>> This is an series of mixed improvements to the DRA7 PCI controller driver:
->>> allow building as a loadabel module, allow to get and enable a clock and a
->>> small cleanup.
->>>
->>> Luca
->>>
->>> Luca Ceresoli (4):
->>>   PCI: dwc: Export more symbols to allow modular drivers
->>>   PCI: dra7xx: Make it a kernel module
->>>   PCI: dra7xx: Remove unused include
->>>   PCI: dra7xx: Get an optional clock
->>>
->>>  drivers/pci/controller/dwc/Kconfig            |  6 ++---
->>>  drivers/pci/controller/dwc/pci-dra7xx.c       | 22 +++++++++++++++++--
->>>  .../pci/controller/dwc/pcie-designware-ep.c   |  1 +
->>>  drivers/pci/controller/dwc/pcie-designware.c  |  1 +
->>>  4 files changed, 25 insertions(+), 5 deletions(-)
->>
->> Hi Kishon,
->>
->> I'd need your ACK to proceed with this series that looks like it
->> is ready to go, please let me know.
-> 
-> Still need it - please let me know.
-> 
-> Lorenzo
+v1 -> v2:
+    - Remove patch vchiq_arm: replace sleep() with usleep_range() from the series
+    - Add cover letter to the series
 
-Should I resend the series?
+Gaston Gonzalez (7):
+  staging: vchiq_arm: cleanup code alignment issues
+  staging: vchiq_arm: remove unnecessary space in cast
+  staging: vchiq_arm: clarify multiplication expressions
+  staging: vchiq_arm: cleanup blank lines
+  staging: vchiq_arm: fix quoted strings split across lines
+  staging: vchiq_arm: remove extra blank line
+  staging: vchiq_arm: use __func__ to get function name in debug message
 
-BTW it still applies cleanly on both the pci next branch and on mainline
-master.
+ .../interface/vchiq_arm/vchiq_arm.c           | 221 +++++++-----------
+ .../interface/vchiq_arm/vchiq_arm.h           |   1 -
+ 2 files changed, 84 insertions(+), 138 deletions(-)
 
 -- 
-Luca
+2.33.0
+
