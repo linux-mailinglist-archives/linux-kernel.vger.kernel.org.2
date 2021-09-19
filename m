@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3163410B54
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64548410B5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhISLvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 07:51:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56020 "EHLO mail.kernel.org"
+        id S231753AbhISMBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:01:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231460AbhISLvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 07:51:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5979A61242;
-        Sun, 19 Sep 2021 11:50:07 +0000 (UTC)
+        id S230393AbhISMBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 08:01:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 89ADB61242;
+        Sun, 19 Sep 2021 12:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632052207;
-        bh=4cATa78od9a+ZgrbaAty5fYxNPCuRIoDM1e5fk+5+A4=;
+        s=k20201202; t=1632052806;
+        bh=idhBYtsa+/HLclRp1EqonjDmiBufo6Xb4ip9Lg/NJPM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cIBgTVUI+qmYQeDtZzLN/zOxIk9lFQ1PP7E/xM5qbqpqs/N3ZKnbw/xe/jnypl5nF
-         RCqRqg+LAHNjyXXeycWUOguNdvj+9fuG0e6pP7/YIc6dL3FfUWuHGGKa6pToAkSZ87
-         WTvkhKwuvtQ8SAjbDOUz9R/kRVFdauYOBr30w147bPmMutUxgEwMpyvgANp0nJL5Su
-         hzpB6q/bV7ddDHu9WiretrWTn3NNOZv5KzO2eBb9MB/W/9rJH6AlJVU6Xs2dF4HbEC
-         EB9DpK/GPNvyIGCzClSv1k42OOny4OJ9N2iauiNU/BK5fTkQRghwNtLveIJsYHLwDD
-         LO86i0lEOIgUA==
+        b=nugNTXe984kCnRC0RVMN8iT+3uZizXue3OO+tHCfWpfHTg7CcIs/CVRq3Dec9aiV/
+         BsCSCHan8OD45WVJErng2UCAADqyZXwQhu8ElPPfKzgUOBRBLKWMUarhYZLdOIIUQY
+         KAhBKnSv3W6hNS7RA6Uf++967G1HUvqR/ga7zFlu7yweRCQ4X3btflALaad+DjtPj5
+         h2w681k/K5W8xd+qb75JWO+isrM7lA/gv1S2RkDJd8T3SnrAZMMTuZwqom5oq+k3f9
+         G6ucOgko+3GPe0TshDhbKY9inbQOhJ3o1pLtfNDqLqSuf+8mrjppgJ7Z5WmzWcZNXO
+         iZD5oF7+1yLag==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 464A660A3A;
-        Sun, 19 Sep 2021 11:50:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 809CE60A37;
+        Sun, 19 Sep 2021 12:00:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH]     NET: IPV4: fix error "do not initialise globals to 0"
+Subject: Re: [PATCH net-next] net: rtnetlink: convert rcu_assign_pointer to
+ RCU_INIT_POINTER
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163205220728.27306.15673066563508279538.git-patchwork-notify@kernel.org>
-Date:   Sun, 19 Sep 2021 11:50:07 +0000
-References: <20210918093910.31127-1-wangzhitong@uniontech.com>
-In-Reply-To: <20210918093910.31127-1-wangzhitong@uniontech.com>
-To:     wangzhitong <wangzhitong@uniontech.com>
-Cc:     paul@paul-moore.com, davem@davemloft.net, ckuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <163205280652.31254.5182228878527831931.git-patchwork-notify@kernel.org>
+Date:   Sun, 19 Sep 2021 12:00:06 +0000
+References: <20210918063607.23681-1-yajun.deng@linux.dev>
+In-Reply-To: <20210918063607.23681-1-yajun.deng@linux.dev>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,19 +47,18 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Sat, 18 Sep 2021 17:39:10 +0800 you wrote:
-> this patch fixes below Errors reported by checkpatch
->     ERROR: do not initialise globals to 0
->     +int cipso_v4_rbm_optfmt = 0;
+On Sat, 18 Sep 2021 14:36:07 +0800 you wrote:
+> It no need barrier when assigning a NULL value to an RCU protected
+> pointer. So use RCU_INIT_POINTER() instead for more fast.
 > 
-> Signed-off-by: wangzhitong <wangzhitong@uniontech.com>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 > ---
->  net/ipv4/cipso_ipv4.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  net/core/rtnetlink.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 Here is the summary with links:
-  - NET: IPV4: fix error "do not initialise globals to 0"
-    https://git.kernel.org/netdev/net-next/c/db9c8e2b1e24
+  - [net-next] net: rtnetlink: convert rcu_assign_pointer to RCU_INIT_POINTER
+    https://git.kernel.org/netdev/net-next/c/4fc29989835a
 
 You are awesome, thank you!
 --
