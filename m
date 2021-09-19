@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DA0410990
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 05:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CFB410A19
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 06:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236147AbhISDgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Sep 2021 23:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235586AbhISDgw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Sep 2021 23:36:52 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ECAC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 20:35:28 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id u18so13965785pgf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Sep 2021 20:35:28 -0700 (PDT)
+        id S230202AbhISErg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 00:47:36 -0400
+Received: from mx20.pku.edu.cn ([162.105.129.183]:7710 "EHLO pku.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229558AbhISErf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 00:47:35 -0400
+X-Greylist: delayed 374 seconds by postgrey-1.27 at vger.kernel.org; Sun, 19 Sep 2021 00:47:34 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=2ZHVK/Jt1mzqXZxHbsZQx8f4Inu42Nq3yYQLi7QmACA=;
-        b=yDXRj+7JMxBz4eJVFeHMHnBiwLOzFA7A0Idi+V8spGFR6kLdjnBgQankrYQ6dMk6fJ
-         ZqXEVNw+EbCJRergP2xlyOSvLiBr8ORsxQP5dkvX6ZvjmZUYm5QDcCeKvo41KYz4J2J9
-         3jKEf4uzCQDgMw/tgMIlzPJ/h+vRuQ7kF61vyOLpqV52zwg3KbTZlA436EO17teF1Vzr
-         yYuzf+x/Uda4WbKCZA2dbrmSf8hZL4tJLy+XCpLHQDwwbiN82HLF8DL6PntmC+4BuKQu
-         dMVGoXl30wP0GEACIG5UvLwswV8itAiULFVPJ/1EacGkitCkS0zfDtkPxa/3s4MAS97e
-         bABg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=2ZHVK/Jt1mzqXZxHbsZQx8f4Inu42Nq3yYQLi7QmACA=;
-        b=zv8N4IkscdozEGLohRTJBrRXWqYIC4uiIaDpCbe7/fkykA8QJDYhJySvR/obDulGiZ
-         5YjRnbjg1BjiyqBK8MiqNBXJYV/kHhv+t12oIAc6ICsPDfpXi3RK3dSHleDYdiSh2sOv
-         dKRfYTx4ZaIK+tiO/9ynzImmCgvSwgEGPS5SIOizgzdB1CZfb+4SFSuIbN0YRtUmeCNA
-         PgFQvk2mNxXeAwUXPQyCDL0H9+SxP0CkD4wKmVx+VZyPW3Qar2CW02aj4q1LwcRxji0q
-         vB4mVX0k159vqUNYZDAVRgSrIIxgmDki/re5eYoyszeexh9DIF5SmsuMgZwiOBAejBCH
-         ksjg==
-X-Gm-Message-State: AOAM530GyrfEet3OVcSwrYXaYbWxhxAz1zwlV+hMz0AQ5iNRKEqWlHnC
-        ywU8gODAAdvfyKPBG8cvYeVxmA==
-X-Google-Smtp-Source: ABdhPJy8kRKK01qfSwpFJtkhq1N9s3rgKcp2JFmJyloTNrozfp56ZQ5kzL6yUVOU6GzPOUA9NL8w7A==
-X-Received: by 2002:a62:774b:0:b0:43c:36de:ed14 with SMTP id s72-20020a62774b000000b0043c36deed14mr19028132pfc.36.1632022526820;
-        Sat, 18 Sep 2021 20:35:26 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id s2sm1644509pjs.56.2021.09.18.20.35.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Sep 2021 20:35:26 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH] dt-bindings: phy: qcom,qusb2: Update maintainer email
-Date:   Sun, 19 Sep 2021 11:35:19 +0800
-Message-Id: <20210919033519.29559-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        d=pku.edu.cn; s=dkim; h=Received:Message-ID:Subject:From:To:Cc:
+        Date:In-Reply-To:Content-Type:User-Agent:MIME-Version:
+        Content-Transfer-Encoding; bh=85t6yqqNE/Vrx8HG2DuwJ8LV7217ypghY0
+        qAy8RQMHw=; b=tUJ92pSUltdxKMGI9UlaZq4KzlhhhovW3Betsh1Kal6vXCdmLd
+        YO+aGgpGThfDb1H1LHKiHP5yg85tHLZzLSCKOkZBYJRsEUq/pR3/zPFKf+4icQIS
+        O8nyyAOfUH39PsBC9gtGnwrNFzAECJqtqyVyWTZLwzk7QeFKY60Club3w=
+Received: from [10.8.0.4] (unknown [222.29.156.242])
+        by front01 (Coremail) with SMTP id 5oFpogDn+7j_vkZhAwVFAA--.15701S2;
+        Sun, 19 Sep 2021 12:39:27 +0800 (CST)
+Message-ID: <01b7d4575faf616fafd3c1569e351f6f10b1fe10.camel@pku.edu.cn>
+Subject: Re: [PATCH v2] x86/fault: Fix wrong signal when vsyscall fails with
+ pkey
+From:   Jiashuo Liang <liangjs@pku.edu.cn>
+To:     dave.hansen@intel.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, peterz@infradead.org, tglx@linutronix.de,
+        x86@kernel.org
+Cc:     liangjs@pku.edu.cn
+Date:   Sun, 19 Sep 2021 12:39:27 +0800
+In-Reply-To: <d8105e66-8e67-889a-5762-47506e0cb393@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: 5oFpogDn+7j_vkZhAwVFAA--.15701S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZry7Jw17CFy8JF15AFWUArb_yoWkZrb_Gr
+        4xurn29a1jvFs2yF13tr4SqrWftF18XrW8JFs8tFy3Kr13ZrWkWFn0kFWvgF10qay8WFnI
+        9rs0qrsa9w129jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        ACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK
+        6r45MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Kr1UJr1l4I8I3I0E4IkC6x
+        0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+        zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+        CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUe89NUUUUU
+X-CM-SenderInfo: isqqijqrtqmio6sn3hxhgxhubq/1tbiAwEFBVPy7swMsgACs9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Manu's codeaurora.org email address bounces.  Before he comes
-back with his new email, fill Vinod's address in there.
+On Mon, 2021-08-23 at 07:55 -0700, Dave Hansen wrote:
+> On 7/29/21 8:01 PM, Jiashuo Liang wrote:
+>> The function __bad_area_nosemaphore() calls kernelmode_fixup_or_oops() with
+>> parameter "signal" being "pkey", which will send a signal numbered "pkey".
+>>
+>> This bug appears when the kernel fail to access user-given memory pages
+>> that are protected by pkey, so it can go through the do_user_addr_fault()
+>> path and pass the !user_mode() check in __bad_area_nosemaphore(). Most
+>> cases will simply run the kernel fixup code to make an -EFAULT. But when
+>> another condition current->thread.sig_on_uaccess_err is met, which is
+>> only used to emulate vsyscall, we will generate the wrong signal.
+>>
+>> A new parameter "pkey" is added to kernelmode_fixup_or_oops() to fix it.
+>>
+>> Fixes: 5042d40a264c ("x86/fault: Bypass no_context() for implicit kernel faults from usermode")
+>> Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
+>
+> This is pretty obscure, only affecting vsyscall emulation, but:
+>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
----
- Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ping... Is there anyone reviewing/committing this patch?
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
-index ec9ccaaba098..d6301471780c 100644
---- a/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,qusb2-phy.yaml
-@@ -8,7 +8,7 @@ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
- title: Qualcomm QUSB2 phy controller
- 
- maintainers:
--  - Manu Gautam <mgautam@codeaurora.org>
-+  - Vinod Koul <vkoul@kernel.org>
- 
- description:
-   QUSB2 controller supports LS/FS/HS usb connectivity on Qualcomm chipsets.
--- 
-2.17.1
+Thanks!
 
