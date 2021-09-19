@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D687A410AEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0709C410AED
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 11:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237674AbhISJc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 05:32:56 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:40592
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237649AbhISJcu (ORCPT
+        id S237779AbhISJc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 05:32:58 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:36466
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237648AbhISJcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 05:32:50 -0400
+        Sun, 19 Sep 2021 05:32:52 -0400
 Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DC7CF40262
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 09:31:24 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7713440268
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 09:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632043884;
-        bh=ZK+VXD8gxhx/mjWHqKBF1YSNqbZHXzRbC1073HoZOfw=;
+        s=20210705; t=1632043886;
+        bh=kQQ3DII0goGULsKC3IpaIdAzj47jj9Kr+j3EHg4ikV4=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=pfgD4SJI02C4K19ur8dP+YMThlFbTxyTjZNLVI+KKU9In3ko4s+umNZpxd2bOiqq1
-         BHiBcUXfblFb62FyfuNEjxGoE1i3qajlhDjNvD+Z9JPGtBOxozscrq5njHoJlqmpcW
-         jKvUlSvitVxYJHyYaB4SlRWmWyLQ8zTCqe+wy97L/IHklsaC65C+R5xuCc4LFhcGDS
-         9Vni+UK1ded8lTaBq+wb5M8G+28rC8AwAYLV4AZq0GdP6sltjRxd/Ml4A50gUmcnGt
-         ASMLr4i7Ml1NoRofjWqOoRmQEjnqjrtNh3mQfFkmGD6cgmJl54M/6Yaqg2QqATniLr
-         tYDUguVdgF2Dw==
-Received: by mail-ed1-f69.google.com with SMTP id w24-20020a056402071800b003cfc05329f8so13133645edx.19
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 02:31:24 -0700 (PDT)
+        b=na/6ARgKSk4/gNsBLxTVV1GLpyaJDj6P6Z8Z3qM4BF0i81EiHJIPji7GHgLIDAPPC
+         oimtHcGxbtykZ8xeNzO1APDOHWXgpvOUR+kMJTEVb3UoBc8KP8BS3HoM4PoNz9YnD+
+         ng0FKOyMEdeC2RU64GZuSTgNzxcISM7vHmaFV60RNWV94c78p0BYIxHjNfhKLcAauZ
+         bMTX/IcdiJPD1ZVIE0M//YoAu2HnYPW9N/IRZwsQT32QVCr9isDBf29TXbtn4qSz6Q
+         EmpWVrUH6kLTXIGgflZ2JovkGMHTVd4o8EAiUbgwpqB6bK4NmcqREJrX72Pd8QuSed
+         CgKcWSlw3GWfQ==
+Received: by mail-ed1-f69.google.com with SMTP id n5-20020a05640206c500b003cf53f7cef2so10363873edy.12
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 02:31:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZK+VXD8gxhx/mjWHqKBF1YSNqbZHXzRbC1073HoZOfw=;
-        b=20/cP3G3O7lu6jOnGP4HTtgX8XXdkGmBdB+PvXoStpUmXbSqURhlzNJJ/W1UqLCy5a
-         r5xsZJ4KUmPmLmBWsIIwcRSnWf3iE3n8YWraM7we8uR2Tq1HeAzERus6/sbhXdv/XrG/
-         59X/J2zG/Cbnv6rLRNRHDQRMY0tacGZde+X2vQNF0wkanF7O3oorNnMm8e9037lSilbG
-         9R7wbL5WrQKm9FFCn1ucNiSuL067b5NmS7TSnFM1jnhG/g8iuASKR08s8AqHmOb9TtPL
-         HPAMJmPOu/BC2XTxk/3jHnhT4TKGbOQQ2e4T39LRpiNeIeyH3oy0xgF7ux6+hyj4h4eW
-         ZSHA==
-X-Gm-Message-State: AOAM533PwgJokUuH6yLpk3CJKJvy6zhh2byuF2hJYob8imds9hugo+C7
-        hAFID0tsphR/4+PKZMl69RhjbcOJf6r/sLmZ5YeKbCVSi3Td/Iy07If7fWkSJGo1aFVjAO13hpa
-        909+JHcgcIsrRGAOchdoI9Lc1jo9D2Dv1uvy2TM+C6Q==
-X-Received: by 2002:a17:906:52c5:: with SMTP id w5mr22093752ejn.567.1632043883946;
-        Sun, 19 Sep 2021 02:31:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiIdx1f8hVgqGPm9ahXSP2VgGM2d2n4WF4eeiUA+ez9LIqX3F6ubdGXPQ6Oqkcr1zug1//Eg==
-X-Received: by 2002:a17:906:52c5:: with SMTP id w5mr22093732ejn.567.1632043883779;
-        Sun, 19 Sep 2021 02:31:23 -0700 (PDT)
+        bh=kQQ3DII0goGULsKC3IpaIdAzj47jj9Kr+j3EHg4ikV4=;
+        b=ynDgEf94OhnKU9kplkqTbS5401xZv+POdaEpnyAJm7ZSOPLiTXV/50jm9uV1YeRKGa
+         hHM+YKRL5qCM78JPdyTOkGgWYwZkOah0UZgNl2kJN0EM9MPzrZqvVCCCGdlrhmhQxqIR
+         YDx0Comfxzxt5aHfJp6xE2krvDeLcTNbPYdW5vWrJepYGgcivnie/+IwfWdppHe9VcDi
+         RgNu0/S3CSDqXvlaM1q5eG2hjkMshXVP2+OG4OKfVuL7Aa6jtKUePNyqYyX3I2kgEdpl
+         4bOPW3HYNAjT9H8mJna2YBWiLWp94ej1a/ChjOY1d+pKNZ6f7h8gicw1HzolioxIcQVD
+         QhJQ==
+X-Gm-Message-State: AOAM530tg/VqxyEouc7XT8kMZIVNYaYskKqqZjd0VXYt+1ep6/aySlQe
+        KnZ22Mh1dJzFBoJe83Db7Zev4X0TIaucEAGY8gSElBbmJSWZl+xR203tlQ/j1zVv8GbB1HGGNfR
+        xSJ6mUy7H89fudTAxYaEe1thDMFCyxkb5jvqyKOCnbg==
+X-Received: by 2002:a17:906:9742:: with SMTP id o2mr22771109ejy.532.1632043885746;
+        Sun, 19 Sep 2021 02:31:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzEFAa7c6Av7U5U1PtRddqgYSD610UFSt0vKxt2koSA5G3bvhYKyXN1L5uDJ1+O+zIJYe7yrQ==
+X-Received: by 2002:a17:906:9742:: with SMTP id o2mr22771093ejy.532.1632043885610;
+        Sun, 19 Sep 2021 02:31:25 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id p24sm514111edq.27.2021.09.19.02.31.22
+        by smtp.gmail.com with ESMTPSA id p24sm514111edq.27.2021.09.19.02.31.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 02:31:23 -0700 (PDT)
+        Sun, 19 Sep 2021 02:31:25 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
@@ -67,9 +67,9 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Alim Akhtar <alim.akhtar@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Pankaj Dubey <pankaj.dubey@samsung.com>
-Subject: [PATCH v2 2/3] soc: samsung: exynos-chipid: convert to a module
-Date:   Sun, 19 Sep 2021 11:31:13 +0200
-Message-Id: <20210919093114.35987-3-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v2 3/3] soc: samsung: exynos-chipid: do not enforce built-in
+Date:   Sun, 19 Sep 2021 11:31:14 +0200
+Message-Id: <20210919093114.35987-4-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
 References: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
@@ -79,101 +79,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exynos ChipID and ASV (Adaptive Supply Voltage) driver is not essential
-to system boot and it can successfully be built and loaded as module.
-
-This makes core kernel image smaller and reduces the memory footprint
-when multi-platform kernel is booted on non-Exynos board.  Usually it is
-also distro-friendly.
-
-Add multiple authors of the driver since its conversion from
-mach-exynos, ordered alphabetically by first name.
+After converting the Exynos ChipID and ASV driver to a module, allow to
+actually choose it to be a module, while being a default built-in.  The
+side effect is that driver could be now entirely disabled even for
+kernel with ARCH_EXYNOS, but this is not a critical issue because driver
+is not necessary for the proper platform boot.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/soc/samsung/Kconfig          |  3 ++-
- drivers/soc/samsung/Makefile         |  3 ++-
- drivers/soc/samsung/exynos-chipid.c  | 11 ++++++++++-
- drivers/soc/samsung/exynos5422-asv.c |  1 +
- 4 files changed, 15 insertions(+), 3 deletions(-)
+ arch/arm/mach-exynos/Kconfig | 1 -
+ drivers/soc/samsung/Kconfig  | 3 ++-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
+index 5a48abac6af4..30f930e20599 100644
+--- a/arch/arm/mach-exynos/Kconfig
++++ b/arch/arm/mach-exynos/Kconfig
+@@ -13,7 +13,6 @@ menuconfig ARCH_EXYNOS
+ 	select ARM_GIC
+ 	select EXYNOS_IRQ_COMBINER
+ 	select COMMON_CLK_SAMSUNG
+-	select EXYNOS_CHIPID
+ 	select EXYNOS_THERMAL
+ 	select EXYNOS_PMU
+ 	select EXYNOS_SROM
 diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
-index 1f643c0f5c93..fe139f26d093 100644
+index fe139f26d093..e2cedef1e8d1 100644
 --- a/drivers/soc/samsung/Kconfig
 +++ b/drivers/soc/samsung/Kconfig
-@@ -13,13 +13,14 @@ config EXYNOS_ASV_ARM
+@@ -13,8 +13,9 @@ config EXYNOS_ASV_ARM
  	depends on EXYNOS_CHIPID
  
  config EXYNOS_CHIPID
--	bool "Exynos ChipID controller and ASV driver" if COMPILE_TEST
-+	tristate "Exynos ChipID controller and ASV driver" if COMPILE_TEST
+-	tristate "Exynos ChipID controller and ASV driver" if COMPILE_TEST
++	tristate "Exynos ChipID controller and ASV driver"
  	depends on ARCH_EXYNOS || COMPILE_TEST
++	default ARCH_EXYNOS
  	select EXYNOS_ASV_ARM if ARM && ARCH_EXYNOS
  	select MFD_SYSCON
  	select SOC_BUS
- 	help
- 	  Support for Samsung Exynos SoC ChipID and Adaptive Supply Voltage.
-+	  This driver can also be built as module (exynos_chipid).
- 
- config EXYNOS_PMU
- 	bool "Exynos PMU controller driver" if COMPILE_TEST
-diff --git a/drivers/soc/samsung/Makefile b/drivers/soc/samsung/Makefile
-index 0c523a8de4eb..2ae4bea804cf 100644
---- a/drivers/soc/samsung/Makefile
-+++ b/drivers/soc/samsung/Makefile
-@@ -1,8 +1,9 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_EXYNOS_ASV_ARM)	+= exynos5422-asv.o
-+obj-$(CONFIG_EXYNOS_CHIPID)	+= exynos_chipid.o
-+exynos_chipid-y			+= exynos-chipid.o exynos-asv.o
- 
--obj-$(CONFIG_EXYNOS_CHIPID)	+= exynos-chipid.o exynos-asv.o
- obj-$(CONFIG_EXYNOS_PMU)	+= exynos-pmu.o
- 
- obj-$(CONFIG_EXYNOS_PMU_ARM_DRIVERS)	+= exynos3250-pmu.o exynos4-pmu.o \
-diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
-index dcd9a08ce706..b2627a3a127a 100644
---- a/drivers/soc/samsung/exynos-chipid.c
-+++ b/drivers/soc/samsung/exynos-chipid.c
-@@ -15,6 +15,7 @@
- #include <linux/device.h>
- #include <linux/errno.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -128,6 +129,7 @@ static const struct of_device_id exynos_chipid_of_device_ids[] = {
- 	{ .compatible = "samsung,exynos4210-chipid" },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, exynos_chipid_of_device_ids);
- 
- static struct platform_driver exynos_chipid_driver = {
- 	.driver = {
-@@ -137,4 +139,11 @@ static struct platform_driver exynos_chipid_driver = {
- 	.probe	= exynos_chipid_probe,
- 	.remove	= exynos_chipid_remove,
- };
--builtin_platform_driver(exynos_chipid_driver);
-+module_platform_driver(exynos_chipid_driver);
-+
-+MODULE_DESCRIPTION("Samsung Exynos ChipID controller and ASV driver");
-+MODULE_AUTHOR("Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>");
-+MODULE_AUTHOR("Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>");
-+MODULE_AUTHOR("Pankaj Dubey <pankaj.dubey@samsung.com>");
-+MODULE_AUTHOR("Sylwester Nawrocki <s.nawrocki@samsung.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/soc/samsung/exynos5422-asv.c b/drivers/soc/samsung/exynos5422-asv.c
-index ca409a976e34..475ae5276529 100644
---- a/drivers/soc/samsung/exynos5422-asv.c
-+++ b/drivers/soc/samsung/exynos5422-asv.c
-@@ -503,3 +503,4 @@ int exynos5422_asv_init(struct exynos_asv *asv)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(exynos5422_asv_init);
 -- 
 2.30.2
 
