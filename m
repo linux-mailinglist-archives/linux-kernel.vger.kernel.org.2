@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD98410BB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 15:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6275C410BB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 15:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhISNMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 09:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S230308AbhISNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 09:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhISNMd (ORCPT
+        with ESMTP id S229938AbhISNOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 09:12:33 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F8DC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 06:11:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1632057065;
-        bh=72IPhh7RuIGTEvyrIjs6WnEABlmeKQrraAdsE7FrU1c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PrS8xBVJWwiCRQ9nbO9B+oU6hZlNXeM/g6FJZ3RiQ0FaSVhr9yISG0ewvXMUOFOF4
-         bZay9ZZdlbr4Gl+Ij9WQJVay9A8kNLGHMZ7KeoAvqX7Btpw68re2jSasZg4FFci3C8
-         9k0cQEYAXSAqZGs21+JXHYO7TtLTgyvn8oOovsvIABQik5kGAQHu12e1sP1uD0DCCW
-         ZNmBDEv54lvC4cgNl52bfFSesQz7iszRaw3ZEbMwpPd0o05jzoFi1nc+edsV8sN3+6
-         t9Kc81qm2WL9iBSXiv9/SYCOIahcNZEmzBoLsW/ySJFjZxQEb1Ydb+l8qiZTwLcJaB
-         8ahS6H2byXX1g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Sun, 19 Sep 2021 09:14:18 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B724C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 06:12:53 -0700 (PDT)
+Received: from localhost (unknown [151.237.229.131])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HC7Nn1pC9z9sRK;
-        Sun, 19 Sep 2021 23:11:05 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     clg@kaod.org, ganeshgr@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-2 tag
-Date:   Sun, 19 Sep 2021 23:11:04 +1000
-Message-ID: <87o88oiuc7.fsf@mpe.ellerman.id.au>
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 252B2BF2677;
+        Sun, 19 Sep 2021 15:12:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1632057170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aCl+VghzyEiyjUoK2790KFGP0asW0O8HexpK5Dl0aDY=;
+        b=UMgO/lyGpAm5aWHQkE7Cx3jA4PYYN7nOLCUsyxMwBPQVVTAv/Xy0aHhzCJ6PAXfN5wIiZ4
+        PR3NfiCZW3ydjZTOUJQc8/6qonJz0hl5gNyZtRZFQUdvIj1eLGUreOuDq2a2gpgAujuxmu
+        wHqn8jfXkhTXahOuJQhEBjxTwzYAveY=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Laight <David.Laight@ACULAB.COM>
+Subject: [RFC v2 PATCH 0/3] mm: common PAGE_SIZE shift macros
+Date:   Sun, 19 Sep 2021 15:12:45 +0200
+Message-Id: <20210919131248.489798-1-oleksandr@natalenko.name>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+There are various places where the K(x) macro (or its alternative and/or
+counterpart) is defined. This submission gets rid of multiple definitions
+and provides common ones.
 
-Hi Linus,
+Based on discussion with Miaohe Lin [1].
 
-Please pull powerpc fixes for 5.15:
+The patch is based on top of next-20210910 and is compile-tested using
+allyesconfig.
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+RFC v1: [2].
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+Changes since RFC v1:
 
-are available in the git repository at:
+* change name from K(x) to PG2KB(x)
+* also provide KB2PG(x)
+* replace open-coded variants
+* do not use separate header file for macro definitions
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
-werpc-5.15-2
+[1] https://lore.kernel.org/linux-mm/9161665.bUqNH3lxUD@natalenko.name/
+[2] https://lore.kernel.org/lkml/20210901092149.994791-1-oleksandr@natalenko.name/
 
-for you to fetch changes up to c006a06508db4841d256d82f42da392d6391f3d9:
+Oleksandr Natalenko (3):
+  mm: add PG2KB/KB2PG helper macros
+  mm: replace custom PG2KB/KB2PG macros with common ones
+  mm: replace open-coded PG2KB/KB2PG variants with macros
 
-  powerpc/xics: Set the IRQ chip data for the ICS native backend (2021-09-1=
-5 22:05:53 +1000)
+ arch/alpha/kernel/setup.c                     |  3 +-
+ arch/arc/include/asm/arcregs.h                |  4 +-
+ arch/mips/mm/init.c                           |  2 +-
+ arch/powerpc/platforms/pseries/cmm.c          | 17 ++--
+ arch/s390/appldata/appldata_mem.c             | 19 ++--
+ arch/x86/kernel/cpu/mtrr/cleanup.c            | 17 ++--
+ block/blk-sysfs.c                             |  9 +-
+ drivers/base/node.c                           | 69 ++++++++-------
+ drivers/gpu/drm/v3d/v3d_debugfs.c             |  3 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c |  5 +-
+ drivers/md/md-bitmap.c                        |  4 +-
+ drivers/scsi/mpt3sas/mpt3sas_base.c           |  5 +-
+ drivers/xen/xen-balloon.c                     | 11 ++-
+ fs/ceph/addr.c                                |  2 +-
+ fs/ceph/super.h                               |  3 +-
+ fs/fs-writeback.c                             |  2 +-
+ fs/nfs/write.c                                |  4 +-
+ fs/nfsd/nfscache.c                            |  3 +-
+ fs/proc/meminfo.c                             |  4 +-
+ fs/proc/task_mmu.c                            |  3 +-
+ include/linux/mm.h                            |  3 +
+ include/trace/events/writeback.h              | 19 ++--
+ kernel/debug/kdb/kdb_main.c                   |  3 +-
+ kernel/events/core.c                          |  2 +-
+ kernel/fork.c                                 |  2 +-
+ mm/backing-dev.c                              | 22 +++--
+ mm/hugetlb.c                                  |  2 +-
+ mm/memcontrol.c                               | 18 ++--
+ mm/mmap.c                                     |  6 +-
+ mm/nommu.c                                    |  4 +-
+ mm/oom_kill.c                                 | 16 ++--
+ mm/page-writeback.c                           |  4 +-
+ mm/page_alloc.c                               | 86 +++++++++----------
+ mm/shmem.c                                    |  3 +-
+ mm/swap_state.c                               |  5 +-
+ mm/swapfile.c                                 | 11 ++-
+ mm/util.c                                     |  6 +-
+ 37 files changed, 197 insertions(+), 204 deletions(-)
 
-- ------------------------------------------------------------------
-powerpc fixes for 5.15 #2
+-- 
+2.33.0
 
-Fix crashes when scv (System Call Vectored) is used to make a syscall when =
-a transaction
-is active, on Power9 or later.
-
-Fix bad interactions between rfscv (Return-from scv) and Power9 fake-suspen=
-d mode.
-
-Fix crashes when handling machine checks in LPARs using the Hash MMU.
-
-Partly revert a recent change to our XICS interrupt controller code, which =
-broke the
-recently added Microwatt support.
-
-Thanks to: C=C3=A9dric Le Goater, Eirik Fuller, Ganesh Goudar, Gustavo Rome=
-ro, Joel Stanley,
-Nicholas Piggin.
-
-- ------------------------------------------------------------------
-C=C3=A9dric Le Goater (1):
-      powerpc/xics: Set the IRQ chip data for the ICS native backend
-
-Ganesh Goudar (1):
-      powerpc/mce: Fix access error in mce handler
-
-Nicholas Piggin (4):
-      powerpc/64s: system call scv tabort fix for corrupt irq soft-mask sta=
-te
-      selftests/powerpc: Add scv versions of the basic TM syscall tests
-      powerpc/64s: system call rfscv workaround for TM bugs
-      KVM: PPC: Book3S HV: Tolerate treclaim. in fake-suspend mode changing=
- registers
-
-
- arch/powerpc/kernel/interrupt.c                     | 43 +++++++++++++++++=
-+++
- arch/powerpc/kernel/interrupt_64.S                  | 41 -----------------=
---
- arch/powerpc/kernel/mce.c                           | 17 +++++++-
- arch/powerpc/kvm/book3s_hv_rmhandlers.S             | 36 +++++++++++++++-
- arch/powerpc/sysdev/xics/xics-common.c              |  4 +-
- tools/testing/selftests/powerpc/tm/tm-syscall-asm.S | 37 ++++++++++++++++-
- tools/testing/selftests/powerpc/tm/tm-syscall.c     | 36 ++++++++++++----
- 7 files changed, 159 insertions(+), 55 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmFHMuoACgkQUevqPMjh
-pYD59RAAsMPzDU+iT15Vm2dC9Ar4hmlLvC0Ew3I/JigC/XSf1bcyGPM4ybSUsoLj
-wop5AeOyoaAtegWki3HxMM5iC99KRI9GuJd8Fa8yrSwKYz/O+6oqVJdq0oJY/rLl
-NpHDgFCencKya/H0UV+Xobfb41ol25bGchMfcuhQw5G6JVCtWbYSFQXUefTcC3lt
-GjYy9jLzvNT7DGlmJBJaeIU78vqRbXLmbHgBwLhxIIBD0us48BQX4elDWcP5Jjwr
-UMyz962EaWLAb/nyac9BHzqO9OS6awYJGI5lx3CPJz3+VA6RI/Vu8WoentfejupP
-GaiGnCcRBnUAkcUuapy0XQtcv9197yOLkLi5XUPgS82o9EuI2+TLtpoZCwLBOceu
-HLpcjYbxf6rV79wYb+P5+oZkPIUi+JWEzF9hCMSFDIJO3mY8rqoDqbEnGEIdiQUi
-6IhihFw6s4a15vd+sn0J1KsUvceeA98zE/7zFXW1tYTqxn2zlJFn923EJuHMr+24
-mCQb4JvsWlUi+8YuEvr1659I0nstFJaUxY1BFDuFr5oR4/ZFDwnRUs2JbAw8No8Y
-uzM7wuq1PMswnKLm5cnR3tsYOVgwTdR6O9wCe3Uva4PoOoB5Y97VpSU8ElfPI+c+
-ePdHNteAjRiMLTggWzLryCUNw+2T8wny/r9nyx5tfI2JswXgSvg=3D
-=3DKZ/U
------END PGP SIGNATURE-----
