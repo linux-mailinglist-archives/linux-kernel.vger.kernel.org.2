@@ -2,64 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F793410D0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 21:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A032410D0E
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 21:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbhISTUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 15:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhISTUe (ORCPT
+        id S231653AbhISTXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 15:23:06 -0400
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:43597 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhISTXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 15:20:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C7C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 12:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JrB8crO5qmaGGk/74p/+OVhuoZ1TfR35Lx0zXoUidCI=; b=rCz14sYtUeua4iC+9TqwrhIiUw
-        I56zfeXHqGOVnH/VuCZnHcNFI8FtqNp0tjAdVosBlKR/G2dPRBhOgoNRxRSSlWV2+umiSQQq46nBh
-        8GADJj/calkA6xctVt4qeHyp5oXBsBL8/qi/BJEvBDovDDNlxV0BQHXnIst8G1CMpq4pE+8T0sdxx
-        RtaXz6r3jOqNi9fBqBN+87fRWOsNN2XibRgirfQAdfWyefht+VsWsgl3G4rY9PiGCxdUV2gJpVo3C
-        kSznnWhx8cl+vtDYDr/W44mH9wz0vBDzwgvCubbuIkCwHp7XA6DemFMVZ6D+6KEWf4AAmj2m+Gvx0
-        +NVIIoVA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mS2Js-0025mj-By; Sun, 19 Sep 2021 19:17:56 +0000
-Date:   Sun, 19 Sep 2021 20:17:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC PATCH] Introducing lockless cache built on top of slab
- allocator
-Message-ID: <YUeM2J7X/i0CHjrz@casper.infradead.org>
-References: <20210919164239.49905-1-42.hyeyoo@gmail.com>
+        Sun, 19 Sep 2021 15:23:02 -0400
+Received: by mail-ed1-f45.google.com with SMTP id n10so51395777eda.10;
+        Sun, 19 Sep 2021 12:21:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YPQno8A85O4WeBnY/bkDmDISB83i8fh43dkMBVfbagg=;
+        b=Wv5zk3qmRhU6wk38WDi5IUQM0oQe4ATvmqg+6PE9Q4TC+9cQY3WWah6myn8GlWp/6i
+         fKfXqP34u0iPHd0kvfcAHb/aR/6mkRSmevwIzb4TCUxcWL6HKDp8NTIgYREc0PbXNsV0
+         eujsMzSCxNZcwt61z4mbgzITKOb9wA/moELMBQ2k7pMMPq6SI+aaWXIciD35hA3oLbBk
+         TgNje/nQ5kbCrZE3V4WP1QbnckfgSaT929OFIMBZuJD3Tt5ZZ9/YESVyMU6vo0L5Xe77
+         nBF/X19J59T1wsc3RleVX3LMG+ZR25FXguZBqve8gTBAwSfPpoOAMFKX+pH/C9SBDoGG
+         OONQ==
+X-Gm-Message-State: AOAM5337B1V+D2/MiF5BiVnTtHat638cH9+0b+lbMwlbgoz0Uj7iGsEZ
+        ic0D4gWU1uS3uwxNtn+WjSE=
+X-Google-Smtp-Source: ABdhPJw6bKrJh6VBPCsEdw0Z3ZJq549XyeLF8IcT+WCASbLSolRQjT+vBCfpq9w+BytaqdW8R4vjng==
+X-Received: by 2002:a17:906:6dd4:: with SMTP id j20mr24232036ejt.316.1632079295730;
+        Sun, 19 Sep 2021 12:21:35 -0700 (PDT)
+Received: from turbo.teknoraver.net (net-2-34-36-22.cust.vodafonedsl.it. [2.34.36.22])
+        by smtp.gmail.com with ESMTPSA id 10sm5208525eju.12.2021.09.19.12.21.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 12:21:35 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v4 0/3] riscv: optimized mem* functions
+Date:   Sun, 19 Sep 2021 21:21:01 +0200
+Message-Id: <20210919192104.98592-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919164239.49905-1-42.hyeyoo@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 04:42:39PM +0000, Hyeonggon Yoo wrote:
-> It is just simple proof of concept, and not ready for submission yet.
-> There can be wrong code (like wrong gfp flags, or wrong error handling,
-> etc) it is just simple proof of concept. I want comment from you.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Have you read:
+Replace the assembly mem{cpy,move,set} with C equivalent.
 
-https://www.usenix.org/legacy/event/usenix01/full_papers/bonwick/bonwick_html/
+Try to access RAM with the largest bit width possible, but without
+doing unaligned accesses.
 
-The relevant part of that paper is section 3, magazines.  We should have
-low and high water marks for number of objects, and we should allocate
-from / free to the slab allocator in batches.  Slab has bulk alloc/free
-APIs already.
+A further improvement could be to use multiple read and writes as the
+assembly version was trying to do.
 
-I'd rather see this be part of the slab allocator than a separate API.
+Tested on a BeagleV Starlight with a SiFive U74 core, where the
+improvement is noticeable.
+
+v3 -> v4:
+- incorporate changes from proposed generic version:
+  https://lore.kernel.org/lkml/20210617152754.17960-1-mcroce@linux.microsoft.com/
+
+v2 -> v3:
+- alias mem* to __mem* and not viceversa
+- use __alias instead of a tail call
+
+v1 -> v2:
+- reduce the threshold from 64 to 16 bytes
+- fix KASAN build
+- optimize memset
+
+Matteo Croce (3):
+  riscv: optimized memcpy
+  riscv: optimized memmove
+  riscv: optimized memset
+
+ arch/riscv/include/asm/string.h |  18 ++--
+ arch/riscv/kernel/Makefile      |   1 -
+ arch/riscv/kernel/riscv_ksyms.c |  17 ----
+ arch/riscv/lib/Makefile         |   4 +-
+ arch/riscv/lib/memcpy.S         | 108 ----------------------
+ arch/riscv/lib/memmove.S        |  64 -------------
+ arch/riscv/lib/memset.S         | 113 -----------------------
+ arch/riscv/lib/string.c         | 154 ++++++++++++++++++++++++++++++++
+ 8 files changed, 164 insertions(+), 315 deletions(-)
+ delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
+ delete mode 100644 arch/riscv/lib/memcpy.S
+ delete mode 100644 arch/riscv/lib/memmove.S
+ delete mode 100644 arch/riscv/lib/memset.S
+ create mode 100644 arch/riscv/lib/string.c
+
+-- 
+2.31.1
+
