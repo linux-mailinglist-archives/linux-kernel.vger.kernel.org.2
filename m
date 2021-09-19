@@ -2,220 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E900F410A99
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B24B410AA2
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 09:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236595AbhISHnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 03:43:45 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:10518 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230463AbhISHno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 03:43:44 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18INDCWM001377;
-        Sun, 19 Sep 2021 00:42:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=OHlhnsCp8WJgJ/QsctAWvhc/kBtYliPeBZF0uEhEKGw=;
- b=AornoYC2Byljp4X9PLq0hhVMa1s7tcD4/LP9CELTypsqBUoUT2ble2Ype8eVFlUATSrj
- OITGruLpofd+CL514HbbpFhauxc6NQcI5WomkdqfJFD/QHWMJTX+BzaozqAeyswTxffD
- 2aPlUGWGVdo6pP4xTvr+tmwii5UEDg/6JYkFaU+CEUck6Mn6w6e4wY0Zlw6VZ9oFP/TF
- XT+UupdyubM9cVPI47c/qk4uA/ooNZniTxNN24LiOZhlFT3ouaZHc5MkJLClfJLItI9M
- 31E9k5vAdLzirKA5MvZ5zhJJ47OOPBMRfmu+qPvqQNotM8I50sSf7KrVsoLS4fr81Oav Vw== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 3b5cnwa1j5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 19 Sep 2021 00:42:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A2+ge00iRsJ34UyIxcuGXNOT4RhT6qVAQROKJwLVF8NOpIQw2wyzLW9+w2PpyMZMNA98AqeHEFEAGrmLdQuMnmU1IUAYpjepy3cQn/vkDW4HlCD3RweBSTIISaanJwCIaaEcQKCmkYKVfK/TzMlfXC/wfMw8FeU61DGB66u6UjHLBXO7fZIk7Jn842BWxYoe18ETCau0KYOWiemj0dkoE8ogvMlfd9O/1Vcsx47XjTtIWapTEJj6r2UKHGnv1/vKAltY+uHFagXP3HU0dUtBx57BcgDE34SLlGqk8Yeeew9VEQSdMYa/CvJ/8CyskcXhBDCtSHpKL/u+qGTxGszrCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=OHlhnsCp8WJgJ/QsctAWvhc/kBtYliPeBZF0uEhEKGw=;
- b=izSQOofETNrZAOMhTc12/UAl+yEaR5/5wqlvmriKL5FH1LHXTQQdB8+G1RGGMhCDrFrISkUwAwfDU1EtExP17JTTLVK2sGWfM7WwC82yk93QgM/Rq9IBvSv2cirLCzlI1Ksgsx+GlCvES+QqOKXxfX21F9ic91MNSz8J/+rzOnCxrf4i/7dTHmmEEHoj7Z7lFI90tnYNoQIcu0F9BSo3Jz2uhoW80MFpxrBU7S2JezxPpPzTtZp1mYpzOh9LEBjVeREZaHFvn+QS+y/idCiqIMQ2bWGXRKWdZbRZm0qshD1yuNShIdB0GfDW0pi6iVujNz5Tq4hzPq0Po0TJefU1uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OHlhnsCp8WJgJ/QsctAWvhc/kBtYliPeBZF0uEhEKGw=;
- b=PZ8s9DC0U7ehJSdLNvRGSoHbFIvO3jyxUq0GEFym1p25Ak4btgLqZctHFCyWOs0Pskdqg2ZjBjcfaox74+JC/gOkA73SNQ/O89fKuAIov9HybhFDU1cR8gaP7pds0nIbqS0SV9psnKZYfgG42DD0zIpKHsRm33M4UKi/8OfpEkA=
-Received: from CY4PR07MB2757.namprd07.prod.outlook.com (2603:10b6:903:22::20)
- by CY4PR07MB2950.namprd07.prod.outlook.com (2603:10b6:903:2a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Sun, 19 Sep
- 2021 07:42:13 +0000
-Received: from CY4PR07MB2757.namprd07.prod.outlook.com
- ([fe80::903b:e71d:a584:9c87]) by CY4PR07MB2757.namprd07.prod.outlook.com
- ([fe80::903b:e71d:a584:9c87%3]) with mapi id 15.20.4523.018; Sun, 19 Sep 2021
- 07:42:13 +0000
-From:   Parshuram Raju Thombare <pthombar@cadence.com>
-To:     Parshuram Raju Thombare <pthombar@cadence.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "p.yadav@ti.com" <p.yadav@ti.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jayshri Dajiram Pawar <jpawar@cadence.com>,
-        Milind Parab <mparab@cadence.com>
-Subject: RE: [PATCH v6 0/2] add support for Cadence's XSPI controller
-Thread-Topic: [PATCH v6 0/2] add support for Cadence's XSPI controller
-Thread-Index: AQHXrSljm2YVPXY7a0CBN3hvEXZwSquq+UUw
-Date:   Sun, 19 Sep 2021 07:42:12 +0000
-Message-ID: <CY4PR07MB2757F107F4DAF1CC2FB54FF3C1DF9@CY4PR07MB2757.namprd07.prod.outlook.com>
-References: <1632037121-21019-1-git-send-email-pthombar@cadence.com>
-In-Reply-To: <1632037121-21019-1-git-send-email-pthombar@cadence.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccHRob21iYXJcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy0xNzA5Y2Q1YS0xOTFkLTExZWMtODY0MC0xMDY1MzBlZjIyZjVcYW1lLXRlc3RcMTcwOWNkNWMtMTkxZC0xMWVjLTg2NDAtMTA2NTMwZWYyMmY1Ym9keS50eHQiIHN6PSIzMzUyIiB0PSIxMzI3NjUxMDkyODMzMjg5MzQiIGg9IkhNdXRKRnlzTWxRMndJQ1g5SzlmRmtxTEt4VT0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 34ebce79-de7c-4e5f-e333-08d97b40febd
-x-ms-traffictypediagnostic: CY4PR07MB2950:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR07MB295056F0888459205812D8D6C1DF9@CY4PR07MB2950.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 23zCGs/uZi6Jelai+iURRsqJH/ZHhO0rT+ATOV7zW9E43F2dP9BYQBlumdvxo5U14nHDH0HURse4khE0NCrO1NZciF4xvEVTM1CEreiR0y+MOuTYy8c06iHVi0xXKcETnoozXQqAwkfaCPo2qMcJE1RILZA6R9th97u/NNkHBHtiuvzfuGZxxQFZThf7OY9PzNvj8R6uGMOa5VcuXVimKoMoGihEprpuqbzsn/UBgzqvKmAiYOK4ECIqa/70Y9+gIIg8MUz94fz+RtXEBLdMhWUZgCWSvV9vqh110uJ41CexnabsAHIu731EKa4gaCjgjFegaS1OemZYTCtnvR0FUkJSvL1wmo3VMnBctICdGpWcljsq6jkaqwp+Sj4EeJqMJxRSMRSF5H1OLwJjkB1YF/yQTBjEdnUxkiLUphvWuO7Cb9jNRhwGDw7HJ1T9BXXqsuVacmt0ihnWGjoorlJKs/GZAzyVYqLJLxxJzTW/D0sO0G4RZAFxVZEJmVmLytkIqkBlAMWP6VW7WdPoafWfVAkxIrEM4JKhZDqkdayMR1GFW/DYrznaqJd2eNYVUERTMye0xUkRvun2ercmSR+x4HrMQpp4xm95Qicwoy0LboHppST4CLkqlAlPOVvqEFeshdUDopN+NUuiWorvOTU1jlo2RHm+PjWFx5zuDOXjpRPuBShQxpELBI3QPxkIw06umisqolVRBYKJIVLWi4X0Sa1I/1DKe+zoRWj+eCbafeqJ7h2pYV7ZcoACmJg/pa0t
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR07MB2757.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(346002)(366004)(136003)(36092001)(64756008)(66946007)(8936002)(66476007)(8676002)(6506007)(66556008)(52536014)(186003)(38100700002)(4326008)(122000001)(71200400001)(478600001)(76116006)(66446008)(26005)(2906002)(7696005)(5660300002)(9686003)(316002)(33656002)(54906003)(83380400001)(38070700005)(110136005)(86362001)(107886003)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ytd1Ip09k5ir6a2v53g9VZK2wSlVPcj/BA+3CE3QefdHlGI17/BeHL54ezxx?=
- =?us-ascii?Q?WkCC6C4DCSR14bV6HPUP2ZgsDycG85EhChhQ0gaDW1/R9XFFRT5UHhfNm3Yk?=
- =?us-ascii?Q?a04+aob+fyJDb23S27Xvqqpe5e2rokAnSctAWeFgzomlHuJDVyJUo9bYnFub?=
- =?us-ascii?Q?4CljoK22vDno3H07SDlGheBXb1hmtH5QnFpxv05fXFV8RYmUNGJ0PkwwGYVb?=
- =?us-ascii?Q?RcRZy6JLepFDI6BLjggF5qiwWTgKHC4YJ0Aes0/Xj0hG+cbio07CyKzb3rww?=
- =?us-ascii?Q?PNOASt84l38KF8BmoPYOS8zh90EPKrktzkQKyb7hoIX3G36BzmhrV1fmjDuN?=
- =?us-ascii?Q?PUgm9KDzjlPpjPYB6pmgwH1FlhoM2Q7TrVfDhkCPGo1G8trCJBh82Pa3QvJl?=
- =?us-ascii?Q?sCKA98vzaxvl3m0ZLl5UflcTtpAMQPKgygnu6krR5uWPwayiP6kqIPHPw8p6?=
- =?us-ascii?Q?TtigFdjn7KLb6bIN44fCusch5PBF06Kgyk+X3cB9ct1vJofwTYKtAkyQO89D?=
- =?us-ascii?Q?/3C9INypaZ9KNbbaB13XONGttYoxvNzkPTN1Y3hQoxUxDmBcoLWqiPjogg47?=
- =?us-ascii?Q?EVMvWzSobUsPOerWtXJU3hdW1+8HrpOI7a/7g/NBAnXRcYwliG9tu1fWQ7zb?=
- =?us-ascii?Q?iWpFtxUQcq+C4BzY0+F3UXP54i7FgdxjEgrrXyeedRcuvRWVAh68b8C25esf?=
- =?us-ascii?Q?Mw4CCNXGMODT0p5fy8Sm+Qx6/y+trRM4p5yux7/LNF1XCP14pJLAqtbVh6lf?=
- =?us-ascii?Q?XNgDvkehrdMsu2xSQ8/Pz5RsLQUObwe7DqHnzc6z0ggdaZ6FihuBrWWEbCMb?=
- =?us-ascii?Q?zK/FqqHX2L+1puGxBy+jgza5lrrD0dr6uj1RbCFlTFGtAAApjzOpIzCDYBJx?=
- =?us-ascii?Q?GkjpQac6FAEkZYqVc2FyGUkEkZNzM60SyjK6ileigi8uP1XuuprTob+Pagg0?=
- =?us-ascii?Q?MKw6+Xu5typDm4QJiIKM8EXB2fkVgZ2BJVpdLoeMdAU2i2Jrs/YlsIzgw9pa?=
- =?us-ascii?Q?XhjP3SDNJi5+MJIZLRo3PX0QOCWDPU5dDEj8AMKcGuTYcGMYNlDrHYmAjvlR?=
- =?us-ascii?Q?KZN8HOnv8c94IrQSdzXI9+C5Z7ULf9y1JwoQZ4ZvadT35GzyEGR/M58NOI9H?=
- =?us-ascii?Q?99aFG9oshpwRIpqttHfMf2XwqgGvvrdJ1coPwWXKnkmaEgUMDdqE3TVveBSl?=
- =?us-ascii?Q?fLdzxRXB0aVRvRdWolqzUNhdlJerjyuHQxZ+0vGKmrYJ6BffG3QkZ2C8lbGl?=
- =?us-ascii?Q?2gsee/6Hk1GUPwpu1Il2c+GZzB1qQzifwCDfIDywvr0jR8nLLb4ivNgCxmvl?=
- =?us-ascii?Q?pUel1iTwEeHBxMYqaE5JKd73?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234172AbhISHyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 03:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230463AbhISHyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 03:54:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A12FE611F0;
+        Sun, 19 Sep 2021 07:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632037966;
+        bh=WdwtFfMy28r+sBybSIq6bYfhIIywUctEKEPF7euBt48=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vJ6M6QYwx9oAN2gVTZwL0/ugST75FL9SLfBd+MuyNEm2pJJojgK2qUfJFda25hZsm
+         2me9pitJRw2+JpKEmluNgDFFslhULuL2IFlwyMYxrDRzCatdIcQkFRvfyxqth7NJ9E
+         8fSWFuE+jANRCfEo73KRNICgDVaeHe9efjK1jtoM=
+Date:   Sun, 19 Sep 2021 09:52:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Tobias Klauser <tklauser@distanz.ch>,
+        Yury Norov <yury.norov@gmail.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpumask: Omit terminating null byte in
+ cpumap_print_{list,bitmask}_to_buf
+Message-ID: <YUbsOtEQ4la3hfrf@kroah.com>
+References: <20210916222705.13554-1-tklauser@distanz.ch>
+ <aa4bc59c44b345ae814c61f6593a7178@hisilicon.com>
+ <YUPQ6F8M822fLzpx@yury-ThinkPad>
+ <20210917084526.uzpish2owb24szng@distanz.ch>
+ <CAGsJ_4wftev=z1tf7fzVKS5wRPneWSOimSxG+E0qy2CGuRykKQ@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR07MB2757.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34ebce79-de7c-4e5f-e333-08d97b40febd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2021 07:42:12.8737
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hlQNmwDo3BwJsj0NSlK8ENnaiRBwqGUs0dPx/PqI6bUCpTM/J25O39+U1xVs2vOy3mcDhRgx6OltsKXOtk5aKSU/+wfShund7OyFSNHmVcY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR07MB2950
-X-Proofpoint-GUID: CGXBRmgvV1gfmPfpiC2QbX-HIVy4jc_u
-X-Proofpoint-ORIG-GUID: CGXBRmgvV1gfmPfpiC2QbX-HIVy4jc_u
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-19_02,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
- priorityscore=1501 phishscore=0 adultscore=0 clxscore=1015 mlxscore=0
- impostorscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 spamscore=0
- mlxlogscore=985 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109030001 definitions=main-2109190054
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4wftev=z1tf7fzVKS5wRPneWSOimSxG+E0qy2CGuRykKQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this patch series.
+On Sun, Sep 19, 2021 at 07:33:52PM +1200, Barry Song wrote:
+> On Sat, Sep 18, 2021 at 1:27 AM Tobias Klauser <tklauser@distanz.ch> wrote:
+> >
+> > On 2021-09-17 at 01:19:04 +0200, Yury Norov <yury.norov@gmail.com> wrote:
+> > > [CC Greg KH <gregkh@linuxfoundation.org>]
+> > >
+> > > On Thu, Sep 16, 2021 at 10:53:39PM +0000, Song Bao Hua (Barry Song) wrote:
+> > > >
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Tobias Klauser [mailto:tklauser@distanz.ch]
+> > > > > Sent: Friday, September 17, 2021 10:27 AM
+> > > > > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Jonathan Cameron
+> > > > > <jonathan.cameron@huawei.com>; tiantao (H) <tiantao6@hisilicon.com>; Song Bao
+> > > > > Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > > > Cc: Andrew Morton <akpm@linux-foundation.org>; Andy Shevchenko
+> > > > > <andriy.shevchenko@linux.intel.com>; Yury Norov <yury.norov@gmail.com>; Peter
+> > > > > Zijlstra <peterz@infradead.org>; linux-kernel@vger.kernel.org
+> > > > > Subject: [PATCH] cpumask: Omit terminating null byte in
+> > > > > cpumap_print_{list,bitmask}_to_buf
+> > > > >
+> > > > > The changes in the patch series [1] introduced a terminating null byte
+> > > > > when reading from cpulist or cpumap sysfs files, for example:
+> > > > >
+> > > > >   $ xxd /sys/devices/system/node/node0/cpulist
+> > > > >   00000000: 302d 310a 00                             0-1..
+> > > > >
+> > > > > Before this change, the output looked as follows:
+> > > > >
+> > > > >   $ xxd /sys/devices/system/node/node0/cpulist
+> > > > >   00000000: 302d 310a                                0-1.
+> > > >
+> > > > If we don't use xxd, I don't see any actual harm of this NULL byte
+> > > > by cat, lscpu, numactl etc. this doesn't break them at all.
+> > >
+> > > Barry, Tobias' script that uses xxd is userspace. Linux kernel never breaks
+> > > userspace.
+> >
+> > FWIW, the example using xxd was just to illustrate the issue in a
+> > concise way for the commit message. This is breaking other userspace
+> > programs as well. Originally, I discovered this because Kubernetes'
+> > kubelet was crashing on a bpf-next kernel. See [1] and following
+> > comments for more information:
+> >
+> > [1] https://github.com/cilium/cilium/pull/17394#issuecomment-920902042
+> >
+> 
+> cat, lscpu, numactl tools were tested. the above was not in the test cases.
+> Anyway, if some apps depend on the last character, this patch makes
+> sense. we need this one. sorry for missing the test case.
+> 
+> Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+> 
+> Greg, can you please help merge this one into 5.15?
 
-Regards,
-Parshuram Thombare
+Yes, will apply it to my tree soon.
 
->-----Original Message-----
->From: Parshuram Thombare <pthombar@cadence.com>
->Sent: Sunday, September 19, 2021 1:09 PM
->To: broonie@kernel.org; lukas@wunner.de; p.yadav@ti.com;
->robh+dt@kernel.org
->Cc: linux-spi@vger.kernel.org; devicetree@vger.kernel.org; linux-
->kernel@vger.kernel.org; Jayshri Dajiram Pawar <jpawar@cadence.com>; Milind
->Parab <mparab@cadence.com>; Parshuram Raju Thombare
-><pthombar@cadence.com>
->Subject: [PATCH v6 0/2] add support for Cadence's XSPI controller
->
->This patch series adds support for Cadence's XSPI controller.
->It supports 3 work modes.
->1. ACMD (auto command) work mode
->    ACMD name is because it uses auto command engine in the controller.
->    It further has 2 modes PIO and CDMA (command DMA).
->    The CDMA work mode is dedicated for high-performance application
->    where very low software overhead is required. In this mode the
->    Command Engine is programmed by the series of linked descriptors
->    stored in system memory. These descriptors provide commands to execute
->    and store status information for finished commands.
->    The PIO mode work mode is dedicated for single operation where
->    constructing a linked list of descriptors would require too
->    much effort.
->2. STIG (Software Triggered Instruction Generator) work mode
->    In STIG mode, controller sends low-level instructions to memory.
->    Each instruction is 128-bit width. There is special instruction
->    DataSequence which carries information about data phase.
->    Driver uses Slave DMA interface to transfer data as only this
->    interface can be used in STIG work mode.
->3. Direct work mode
->    This work mode allows sending data without invoking any command throug=
-h
->    the slave interface.
->Currently only STIG work mode is enabled, remaining work modes will
->be added later.
->
->Changes since v5:
->1. Added adjust_op_size to adjust op size according to sdma size.
->
->Changes since v4:
->1. Changed reg region names and lengths as suggested by Rob.
->
->Changes since v3:
->1. Removed ACMD PIO mode.
->2. Return IRQ_HANDLED only for handled interrupts.
->3. DT binding changes.
->
->Changes since v2:
->1. Removed extra lock around exec_op.
->2. Removed PHY parameters setting from the driver, those will be
->   handled by bootstrap pins available in the controller.
->
->Changes since v1:
->1. Use ACMD PIO work mode for NOR read, program and erase operations,
->   for everything else use STIG(Software Triggered Instruction
->   Generator) work mode.
->2. Changes suggested by Lukas.
->
->Parshuram Thombare (2):
->  spi: cadence: add dt-bindings documentation for Cadence XSPI
->    controller
->  spi: cadence: add support for Cadence XSPI controller
->
-> .../devicetree/bindings/spi/cdns,xspi.yaml         |  77 +++
-> drivers/spi/Kconfig                                |  12 +
-> drivers/spi/Makefile                               |   1 +
-> drivers/spi/spi-cadence-xspi.c                     | 639 ++++++++++++++++=
-+++++
-> 4 files changed, 729 insertions(+)
-> create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> create mode 100644 drivers/spi/spi-cadence-xspi.c
->
->--
->2.7.4
+thanks,
 
+greg k-h
