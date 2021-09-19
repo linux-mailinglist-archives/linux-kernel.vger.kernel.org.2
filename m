@@ -2,163 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FBC410B98
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8CC410B9A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 14:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhISMms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 08:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        id S231124AbhISM4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 08:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhISMmr (ORCPT
+        with ESMTP id S229508AbhISM4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 08:42:47 -0400
+        Sun, 19 Sep 2021 08:56:49 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F1C061574;
-        Sun, 19 Sep 2021 05:41:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8317AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 05:55:24 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632055280;
+        s=2020; t=1632056123;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fJ+hrUpU5MiPbitihsh+gHOnN+VL18gvd0mwNVsinxQ=;
-        b=LsGM8s+/IMvfPAuufPS6b/LxLmKMVB5d+13eFIC8MkwvaVoctGGb5awDoM40LKBk6G2Rzz
-        te8mT8yYqn3cxJh3SCwLVN3LqSoRBuGN2fUVDZHMNGgkEcxS0W/GkeaTD6tAR6HTAPGDJN
-        VFPa1sFqnMfTyWBYGPX9FfE4HlE/M/h7XNHe8wYwzj4vANeqpReOYfneQNlzUza3Lsao1N
-        b5ABMnuKPhPjk+/Fs/8SrwKz0I6Kbyvrcpiky8s4d2wdWinYJQwwazXjdHS5CCEt6jN7el
-        2TMv4aNICjpz6TP0cQ9How9OSLUIpUtb7rusvVkDOxP9xz3+3ILtKbeWnylTxw==
+        bh=+OLK43v2moJaSmMHQZXfBdQNFh+lvMLEft1206Pu7Vw=;
+        b=G6dmn4q6Kdle+J90FlW2oZ8k9j1FlZtT0qJpYY+0ugIHdz1xGP5dM4jesMBMz2ojKeOpvB
+        F00KsDio1txfNen7JzNPc7QFax59wWkD6QqaQpHx+9Xa2Rxs3DWbwVB6uHWc0zfU6hAAYY
+        RDs5v9e8jBcosR/KKU2lsIVEqSYrzSo7LZ+Pqw9YioRzORJjdOIOEwmwILoFERQ58iq9Dj
+        JMWX0x8C+S7rTcsVtyabuDHrXGL0bF+mcz/cdvL0xvEkggBiTwC9KsHbSjqa79U4koRbi8
+        BnO9NWHrjHxTqaunx6Gd415x0N+joH0kyYpYj+QSkzJLMpPKofY7xrZElwwK2w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632055280;
+        s=2020e; t=1632056123;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fJ+hrUpU5MiPbitihsh+gHOnN+VL18gvd0mwNVsinxQ=;
-        b=f3GxbVALKFH02fjiUWP/En/F4kQ5sW5RGnLd/GOO8Eumo62RATeY86eimjCpZhU95HmdvX
-        p2fJ3L2WsBlIJgDA==
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, Waiman Long <llong@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [syzbot] WARNING in __init_work
-In-Reply-To: <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
-References: <000000000000423e0a05cc0ba2c4@google.com>
- <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
- <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
-Date:   Sun, 19 Sep 2021 14:41:18 +0200
-Message-ID: <87sfy07n69.ffs@tglx>
+        bh=+OLK43v2moJaSmMHQZXfBdQNFh+lvMLEft1206Pu7Vw=;
+        b=NgjdzzGoz48EsMmQGlQtCIVq4nEXPwV9UxjfV9+2sF0gWeAXWa1VTlqp75UZIaci9hIAQE
+        g8q2T8ow4tG/IOAw==
+To:     syzbot <syzbot+4546a69bfcab9a42f280@syzkaller.appspotmail.com>,
+        bp@alien8.de, dwmw@amazon.co.uk, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, x86@kernel.org,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [syzbot] WARNING in insert_work
+In-Reply-To: <000000000000343aaf05cc027f83@google.com>
+References: <000000000000343aaf05cc027f83@google.com>
+Date:   Sun, 19 Sep 2021 14:55:22 +0200
+Message-ID: <87o88o7mit.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen,
-
-On Wed, Sep 15 2021 at 19:29, Stephen Boyd wrote:
-> Quoting Andrew Morton (2021-09-15 16:14:57)
->> On Wed, 15 Sep 2021 10:00:22 -0700 syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com> wrote:
->> > 
->> > ODEBUG: object ffffc90000fd8bc8 is NOT on stack ffffc900022a0000, but annotated.
+On Tue, Sep 14 2021 at 23:06, syzbot wrote:
 >
-> This is saying that the object was supposed to be on the stack because
-> debug objects was told that, but it isn't on the stack per the
-> definition of object_is_on_stack().
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 set_work_data kernel/workqueue.c:633 [inline]
 
-Correct.
+That is this warning in set_work_data():
 
->> >  <IRQ>
->> >  __init_work+0x2d/0x50 kernel/workqueue.c:519
->> >  synchronize_rcu_expedited+0x392/0x620 kernel/rcu/tree_exp.h:847
->
-> This line looks like
->
->   INIT_WORK_ONSTACK(&rew.rew_work, wait_rcu_exp_gp);
->
-> inside synchronize_rcu_expedited(). The rew structure is declared on the
-> stack
->
->    struct rcu_exp_work rew;
+     WARN_ON_ONCE(!work_pending(work));
 
-Yes, but object_is_on_stack() checks for task stacks only. And the splat
-here is entirely correct:
+> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 set_work_pwq kernel/workqueue.c:640 [inline]
+> WARNING: CPU: 0 PID: 0 at kernel/workqueue.c:633 insert_work+0x2a7/0x370 kernel/workqueue.c:1356
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:set_work_data kernel/workqueue.c:633 [inline]
+> RIP: 0010:set_work_pwq kernel/workqueue.c:640 [inline]
+> RIP: 0010:insert_work+0x2a7/0x370 kernel/workqueue.c:1356
+> Code: b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cc 00 00 00 48 8b 7b 40 e8 30 93 05 00 eb 83 e8 09 86 2a 00 <0f> 0b e9 dc fd ff ff 48 89 ef e8 ca d0 71 00 e9 56 ff ff ff 4c 89
+> RSP: 0018:ffffc90000007c70 EFLAGS: 00010046
+> RAX: 0000000000000000 RBX: ffff888088ac54b0 RCX: 0000000000000100
+> RDX: ffffffff8b6bc680 RSI: ffffffff814b8737 RDI: 0000000000000003
+> RBP: 0000000000000005 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff814b8511 R11: 0000000000000000 R12: ffff888010c69858
+> R13: ffff888147c49800 R14: ffff888010c69800 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f4db76b6ab4 CR3: 000000000b68e000 CR4: 0000000000350ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+> Call Trace:
+>  <IRQ>
+>  __queue_work+0x5ca/0xee0 kernel/workqueue.c:1519
+>  call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
 
-softirq()
-  ...
-  synchronize_rcu_expedited()
-     INIT_WORK_ONSTACK()
-     queue_work()
-     wait_event()
+So this is a delayed work. The timer fires and wants to queue the work,
+but the work is not pending. No idea how that can happen.
 
-is obviously broken. You cannot wait in soft irq context.
-
-synchronize_rcu_expedited() should really have a might_sleep() at the
-beginning to make that more obvious.
-
-The splat is clobbered btw:
-
-[  416.415111][    C1] ODEBUG: object ffffc90000fd8bc8 is NOT on stack ffffc900022a0000, but annotated.
-[  416.423424][T14850] truncated
-[  416.431623][    C1] ------------[ cut here ]------------
-[  416.438913][T14850] ------------[ cut here ]------------
-[  416.440189][    C1] WARNING: CPU: 1 PID: 2971 at lib/debugobjects.c:548 __debug_object_init.cold+0x252/0x2e5
-[  416.455797][T14850] refcount_t: addition on 0; use-after-free.
-
-So there is a refcount_t violation as well.
-
-Nevertheless a hint for finding the culprit is obviously here in that
-call chain:
-
->> >  bdi_remove_from_list mm/backing-dev.c:938 [inline]
->> >  bdi_unregister+0x177/0x5a0 mm/backing-dev.c:946
->> >  release_bdi+0xa1/0xc0 mm/backing-dev.c:968
->> >  kref_put include/linux/kref.h:65 [inline]
->> >  bdi_put+0x72/0xa0 mm/backing-dev.c:976
->> >  bdev_free_inode+0x116/0x220 fs/block_dev.c:819
->> >  i_callback+0x3f/0x70 fs/inode.c:224
-
-The inode code uses RCU for freeing an inode object which then ends up
-calling bdi_put() and subsequently in synchronize_rcu_expedited().
-
->> >  rcu_do_batch kernel/rcu/tree.c:2508 [inline]
->> >  rcu_core+0x7ab/0x1470 kernel/rcu/tree.c:2743
->> >  __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
->> >  invoke_softirq kernel/softirq.c:432 [inline]
->> >  __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
->> >  irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
->> >  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
->> >  </IRQ>
->> 
->> Seems that we have a debugobject in the incorrect state, but it doesn't
->> necessarily mean there's something wrong in the bdi code.  It's just
->> that the bdi code happened to be the place which called
->> synchronize_rcu_expedited().
-
-Again, it cannot do that from a softirq because
-synchronize_rcu_expedited() might sleep.
-
-> Is it possible that object_is_on_stack() doesn't work in IRQ context?
-> I'm not really following along on x86 but I could see where
-> task_stack_page() gets the wrong "stack" pointer because the task has one
-> stack and the irq stack is some per-cpu dedicated allocation?
-
-Even if debug objects would support objects on irq stacks, the above is
-still bogus. But it does not and will not because the operations here
-have to be fully synchronous:
-
-    init() -> queue() or arm() -> wait() -> destroy()
-
-because you obviously cannot queue work or arm a timer which are on stack
-and then leave the function without waiting for the operation to complete.
-
-So these operations have to be synchronous which is a NONO when running
-in hard or soft interrupt context because waiting for the operation to
-complete is not possible there.
+Unfortunately there is no hint which work item this could be. The
+warning does not tell which work function is associated to that
+work. That might be a useful hint (or not if it's some generic and
+widely used work function).
 
 Thanks,
 
         tglx
+
