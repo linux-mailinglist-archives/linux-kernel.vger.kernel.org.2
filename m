@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74593410CAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56363410CB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 19:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbhISRcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 13:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S231189AbhISReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 13:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhISRcA (ORCPT
+        with ESMTP id S230523AbhISReP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 13:32:00 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2976DC061574;
-        Sun, 19 Sep 2021 10:30:34 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id g1so57452630lfj.12;
-        Sun, 19 Sep 2021 10:30:34 -0700 (PDT)
+        Sun, 19 Sep 2021 13:34:15 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874C5C061574;
+        Sun, 19 Sep 2021 10:32:50 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id d11so12162383ilc.8;
+        Sun, 19 Sep 2021 10:32:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=kOSFz2D6+eH9b+3DWsE71fA2DR/exZeFlC9o9EQE9T0=;
-        b=ke5n12ahCp2QxEqA0pdymPX69j9zSl68u7SlOzf/4ptxz4dfy6J/lhXOG4hg6bpcQs
-         c45eOGeRWQ2eeIDn25T28VSw7+32IPl5ddHZiiN4AAxTcpsjC/+NA7KDp/wCHCfVrd8Y
-         NKzXj21l+/XxNSST99p91QMyoIhb4XQF+BCgIsXl2k1MuJ28FLhp7aRVekjIy6W67D2Q
-         EMDcRbonA0pONvjDVpPB6x3KBbD+/iYWQ79Gz3Yff9+8L6wgvAHbQPoGqqwBwEXE2Cv1
-         xoQ61Ks9KEaZ8ZosGlK3+MJ0GIAsrAnEcYNI6Lhq7eEUIldc0HC19QDRvXdl67zebRcD
-         12PQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Gbr6qUKWHVKiXPdk5V4pk0xSy2NBQ/5pmcHqgFNJHo=;
+        b=AXOm5AdXPt/dNYXBz0ZQmUVAkNTQysRL+nzDPvs+OfsKKjeW8e7zcwbLtMKOJgBqwk
+         Sd/HH4Lj60j5HOcrUXyycsW53ObpyAMuKQtekdws7y1dshwkTOZhaYtdBeeEKjQzx0fX
+         BaZlbeBn/8FMR0kPDjr8LukGKNuy1vaVsypjh7VaVhWUGj4rhpKiu3TOvfLfigQQAKJu
+         aXL1sl41FtbDTO7QCjyzbSK7VR8PRz3esnq7ovQFfEqdXl2gW16MCvRdgvu1pSOQeIvM
+         Kc/9nzw5jraMY6ERb/dRgJLsdd6qHrU0E2zp6EFZrQkuhPEITgpWcNxAvKqowHvQCurH
+         88Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=kOSFz2D6+eH9b+3DWsE71fA2DR/exZeFlC9o9EQE9T0=;
-        b=YvSzPtLa2SqF1+kXJha66ZUOzPDJWyBJxJm1nsBpun5b+SLDs5rfGpCmNgi+IxTlu9
-         OCNFaEaxw0cPK5GnOiOVPzbgzVMx4k8KVZVNs0busEHtztM9+3MKSO4qJogJ5R56EYU2
-         /8Pt/t8Sk3UFGM5Jbkc1J0Uzop3JjY+V4E4fNjhj1qWIMLjuSNLqB4vAD/YQDD6tFWj1
-         eSB/cP9F0CxKxVAvutWfOI0ZnI6yxc83zAbbHs1RMaTUpADHbATjIzsFFWEsj4zhD9HO
-         tGgsP2ebLVMI9pmGxhxlbO1LgsWdIYv6gLl8PYK1Z9mOeZLolJHvokznj4BxqZBtV7SD
-         18/g==
-X-Gm-Message-State: AOAM530d+LxHKCpqQ5e8PT3BJ0NCvkopqhCDqY6WLg5rNiB93H7QMUQ7
-        XOFBOzSZdgcSc78Z88c7L6k=
-X-Google-Smtp-Source: ABdhPJxtISb8vCLb7fFcByCn/Badi4I34lO+aCwKa4ertrRuF1rCbjqFbRFIefX0cb7jeKn4FmhxjQ==
-X-Received: by 2002:a2e:5442:: with SMTP id y2mr17534810ljd.436.1632072632206;
-        Sun, 19 Sep 2021 10:30:32 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.49])
-        by smtp.gmail.com with ESMTPSA id v7sm1063931lfq.192.2021.09.19.10.30.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Sep 2021 10:30:31 -0700 (PDT)
-Message-ID: <e537c6bf-df7f-0364-c883-39cf695d0714@gmail.com>
-Date:   Sun, 19 Sep 2021 20:30:27 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Gbr6qUKWHVKiXPdk5V4pk0xSy2NBQ/5pmcHqgFNJHo=;
+        b=R1ijs+G3+BFZ51Lz84F+WRK4DrnutqJsdiwRA3y+QFd3Ewluc2CN+XRG4gzXYYKsuo
+         DdvRy/6x3HqdO/kkf9sIIAJTrEhs25IPwo636RI/Sa1U4cGx1FUIjTEiD/qgHOO4UEKF
+         wHXjxKSOW8rbPkzFnvWk1f6QtwLdJ7s7nq3B04222ujYRS3d2rrkCREJ8sjLmS32WQwx
+         kaiRlMyO+X3gk+OF5DLGhCCrYW5zqslUipqlQsRVuYuACTQjVcAV+ZjmgzmjwcphTDKN
+         9o4BxahjAdXOIAzX3Srs92KZYpsOAO7/c7sR8yUaMLqNxRc6P5PJ6uaJteN+S2qXW8y3
+         yZfg==
+X-Gm-Message-State: AOAM533BPSEwbeoB/RAWGUfNTbgt6V8Rl2mwuvPnuv/5P59gts0sp411
+        yQB9c2Yv37oCWtn6BRBTYC5WxK03KqAix4wecOc=
+X-Google-Smtp-Source: ABdhPJxP1B+9Kdk+qN58zeHUOx+M9WqXgfLUyibiCfebby9oMAIQOYaggirngAIT5qDJstvUfMfpsim8DJBqG28QhtM=
+X-Received: by 2002:a05:6e02:1bed:: with SMTP id y13mr5594036ilv.249.1632072769987;
+ Sun, 19 Sep 2021 10:32:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH] input: cm109: fix URB submitted while active
-Content-Language: en-US
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     dmitry.torokhov@gmail.com, aeh@db.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+2d6d691af5ab4b7e66df@syzkaller.appspotmail.com
-References: <20210804145801.2762-1-paskripkin@gmail.com>
- <19948c76-fa3c-26bb-7604-6de392ad9d49@gmail.com>
-In-Reply-To: <19948c76-fa3c-26bb-7604-6de392ad9d49@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
+From:   Alim Akhtar <alim.akhtar@gmail.com>
+Date:   Sun, 19 Sep 2021 23:02:14 +0530
+Message-ID: <CAGOxZ50i6URzUQ7o7V4m7MR=2TqSeD6qx5fQaQDs+5nEq4fa2A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] soc: samsung: exynos-chipid: be a module!
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Pankaj Dubey <pankaj.dubey@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/21 14:07, Pavel Skripkin wrote:
-> On 8/4/21 5:58 PM, Pavel Skripkin wrote:
->> Syzbot reported, that dev->urb_ctl was submitted while active. The
->> problem was in missing validation check. We should check, that dev->urb_ctl
->> is not pending before sumbitting it again.
->> 
->> Fail log:
->> 
->> URB 00000000cfeee59c submitted while active
->> WARNING: CPU: 1 PID: 8459 at drivers/usb/core/urb.c:378 usb_submit_urb+0x1271/0x1540 drivers/usb/core/urb.c:378
->> ...
->> Call Trace:
->>   <IRQ>
->>   cm109_urb_irq_callback+0x44f/0xaa0 drivers/input/misc/cm109.c:422
->>   __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1656
->>   usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1726
->> 
->> Reported-and-tested-by: syzbot+2d6d691af5ab4b7e66df@syzkaller.appspotmail.com
->> Fixes: c04148f915e5 ("Input: add driver for USB VoIP phones with CM109 chipset")
->> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
->> ---
-> 
-> 
-> Gentle ping :)
-> 
-> 
+Hello Krzysztof
 
-Hi, Dmitry,
+On Sun, Sep 19, 2021 at 6:28 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Hi,
+>
+> Changes since v1
+> ================
+> 1. Drop patch 1/2 - exporting soc_device_to_device
+> 2. Add new patches: 1/3 and 3/3.
+>
+> Question
+> ========
+>
+> A question - what is the convention for naming modules: underscores '_' or
+> hyphens '-'?
+>
+> The C-unit file already uses a hyphen "exynos-chipid.c", so I could
+> create a module named:
+> 1. exynos_chipid
+> 2. soc-exynos-chipid
+> 3. exynos-chip-id
+>
+> The Linux device name is "exynos-chipid".
+>
+> Best regards,
+> Krzysztof
+>
+>
+> Krzysztof Kozlowski (3):
+>   soc: samsung: exynos-chipid: avoid soc_device_to_device()
+>   soc: samsung: exynos-chipid: convert to a module
+>   soc: samsung: exynos-chipid: do not enforce built-in
+>
+>  arch/arm/mach-exynos/Kconfig         |  1 -
+>  drivers/soc/samsung/Kconfig          |  4 +++-
+>  drivers/soc/samsung/Makefile         |  3 ++-
+>  drivers/soc/samsung/exynos-chipid.c  | 14 +++++++++++---
+>  drivers/soc/samsung/exynos5422-asv.c |  1 +
+>  5 files changed, 17 insertions(+), 6 deletions(-)
+>
+Thanks for the patches. For this series
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-did you have a chance to review this one? Thanks :)
+Also tested on exynos7 based platform, so
+Tested-by: Alim Akhtar <alim.akhtar@samsung.com>
+
+> --
+> 2.30.2
+>
 
 
-
-
-With regards,
-Pavel Skripkin
+-- 
+Regards,
+Alim
