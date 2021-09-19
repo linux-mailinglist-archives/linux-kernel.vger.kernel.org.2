@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACFC410C3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06C7410C45
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 17:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233562AbhISPpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 11:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        id S233705AbhISPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 11:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233783AbhISPpa (ORCPT
+        with ESMTP id S233274AbhISPyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 11:45:30 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB9C061757;
-        Sun, 19 Sep 2021 08:44:04 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id 194so9147913qkj.11;
-        Sun, 19 Sep 2021 08:44:04 -0700 (PDT)
+        Sun, 19 Sep 2021 11:54:07 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE14AC061574;
+        Sun, 19 Sep 2021 08:52:41 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id d207-20020a1c1dd8000000b00307e2d1ec1aso10297234wmd.5;
+        Sun, 19 Sep 2021 08:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HDkakuhEl/Dan5KAuhVlwRPEvRkbpGxHTjJ5gNV/EIk=;
-        b=WVeaQ9SrUmuZi0cz8l2Sq/poppYj+QuHxhOuKQXs67o20rWjkzR/ki56QVKdliuUKT
-         hCEWO7y3AmTgt9our3tVgZrxgmutzSam9XQ+4VuwGKE6CkKc6Q28F7Bfd03i5R7Gpr47
-         XSNpIqhIoVgNc2zCyYmtjV6B/9ouGlG1unCUypji9x5ZmaBrPBDHD1nDrku9yYxEVZlE
-         cQfHBnZhvamFFgnr4iQmicx3yfmX/NMb4L1X7DTdBIHRXtsOgpkt4YFFZXXpUpOO0dnK
-         nGbsTtLts2AkRWooJ6cwjigp+z6/SfysKNpeCoHvuHe5NV8oPwdPCJSwJPSP7/4+xSxW
-         U42g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ct6BHiuUGfmZnCOMnrBPm1D3sUejQVBqmg146vwiSS8=;
+        b=ZC6Qufv+8GnvnNGlV3HqjefUztw6KTFZLsAPGMM/ESw1teZRZalSyGJ+DQcGyaupiE
+         MCii3OkJMNuLb8TwP1h2xszyK6CtLRocWcmtGg1k9V97CxlmVuuubW/z3JJVv6k7T5i8
+         3KhSzwfu0zrXIFmkXE92oUHdG8atoRL+Cj0jROzH558WmnNwxOSsE41Ac+2b92ZU6raI
+         Yj3FMpVmWcQofH7QlKefXgomrbGb3orWq9YZyvkAX8Jd5dCn4mcZP7nrquFJoT0jLysF
+         rdyP5BaB1SpBqFQCitRUEYZkN18SIaFMKpneC0VEse03VwQA7XdBsdUbYnLTDgRKAK6q
+         IZwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HDkakuhEl/Dan5KAuhVlwRPEvRkbpGxHTjJ5gNV/EIk=;
-        b=AG2LNCZB9O9eOnoWU3MjHEOcN2P0ZCPqCmJQ3dBYq8EfTSqJ/c8Exr1DGE8ra7oKfl
-         VqtoG35QSM25ORIkfZPMeA+3fsMa10UmV0d91/76EBvXk/ByNDGRrsPxjm0bT5Tf7FPo
-         FThTrQ5jCX0Ohj+OFObo5MmPldnKEsHDn3xRK9FIuH/I6HpviH9Lc/4r8QqET2diTeMR
-         nZgMXkzA6M15uCg974ChqJ0e/8ynTotavgJzfDhjNP269b4Kz346rwRHeIR1XtUBw7jc
-         BjGy72yU1lteeXIZrQRmSvPPiOw1bsB00L/1Bjj5y1rqqfAbur1r4LJuYfkqFkZIvxCy
-         +WZA==
-X-Gm-Message-State: AOAM531O0ZyPfrjD2yLi7uf+20X97MvBTbi/Chuz6Wx4h8jcequXhbIG
-        CE7KhAS13YBaFXYO+oJ50IWZYFmC8YDCgA==
-X-Google-Smtp-Source: ABdhPJwFOaJ1dD3KlhVVHe2LD/Lu3ChbAnuIgPKC8VCKqyEwsmv1k4YQYtrBi/2iqVcEbEVelG+RJw==
-X-Received: by 2002:a37:e17:: with SMTP id 23mr18365389qko.301.1632066244022;
-        Sun, 19 Sep 2021 08:44:04 -0700 (PDT)
-Received: from luigi.stachecki.net (pool-96-246-29-33.nycmny.fios.verizon.net. [96.246.29.33])
-        by smtp.gmail.com with ESMTPSA id bl36sm8849057qkb.37.2021.09.19.08.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 08:44:03 -0700 (PDT)
-From:   "Tyler J. Stachecki" <stachecki.tyler@gmail.com>
-Cc:     fankaixi.li@bytedance.com, stachecki.tyler@gmail.com,
-        xiexiaohui.xxh@bytedance.com, cong.wang@bytedance.com,
-        Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ovs: Only clear tstamp when changing namespaces
-Date:   Sun, 19 Sep 2021 11:43:37 -0400
-Message-Id: <20210919154337.9243-1-stachecki.tyler@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ct6BHiuUGfmZnCOMnrBPm1D3sUejQVBqmg146vwiSS8=;
+        b=BUz00ekVashnGBbnNhIo4wxLzCxcJss+RbYhdaX4wMXC3qgU2Bp+BgYaRk4eJuvPfV
+         7g0lBHc+/r6yrmK+0gTDybaUPX3m4JzVeZATrL/QEU0DsHOf1izjF8eZdLkxmFwadvnF
+         r0MOWJzkUmq/L1qCKBNEohYRw/mqUiwjCUiEPpx707fwzyDvRJdSylcWCIFZAxoTtf4O
+         QbTGQek7xOdkFM7UBWt3oTrpJmc2YwDx/Oky+7rKD24qJgW8zZbLAdaomyc+c5aO+0dL
+         5QnVgcVqpH1t788LIbTnUcg1EJRf1/26kW2G7VtO8ZfrOdrasJ25CXENrwp6d7grAc6z
+         DqlQ==
+X-Gm-Message-State: AOAM530ZASLYDLB516dFM/+4/co/qGZ7d5cc8eRHubYiSr+MC6vQBvlQ
+        l9IYZ8xsqP24a93MjAmLigypnq5Lt5kb5teB2pggcZywJM4NpOZa
+X-Google-Smtp-Source: ABdhPJwdQ9X4JU7dqWUBFFTvSNN16QehVpQcHBnL24Z12m1sZigp/dU7wUT45yTv4MGF3bSD+OoBzyxnbh+wipYc/1I=
+X-Received: by 2002:a1c:9d07:: with SMTP id g7mr12736526wme.76.1632066760499;
+ Sun, 19 Sep 2021 08:52:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210919143311.31015-1-sireeshkodali1@gmail.com>
+In-Reply-To: <20210919143311.31015-1-sireeshkodali1@gmail.com>
+From:   Sirsireesh <sireeshkodali1@gmail.com>
+Date:   Sun, 19 Sep 2021 21:22:29 +0530
+Message-ID: <CAFvbNjZr-WdDAKQ8f-P1beiOkZzfinpr5ua+wVoKaagtE_EcNQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] Add support for metadata in bam_dma
+To:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        dmaengine@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of "ovs: clear skb->tstamp in forwarding path", the
-tstamp is now being cleared unconditionally to fix fq qdisc
-operation with ovs vports.
+Hi,
 
-While this is mostly correct and fixes forwarding for that
-use case, a slight adjustment is necessary to ensure that
-the tstamp is cleared *only when the forwarding is across
-namespaces*.
+Sorry, I accidentally sent this patch twice. Please ignore the second one
+(i.e. the one I'm replying to now)
 
-Signed-off-by: Tyler J. Stachecki <stachecki.tyler@gmail.com>
----
- net/openvswitch/vport.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+lkml link to original: https://lkml.org/lkml/2021/9/19/126
 
-diff --git a/net/openvswitch/vport.c b/net/openvswitch/vport.c
-index cf2ce5812489..c2d32a5c3697 100644
---- a/net/openvswitch/vport.c
-+++ b/net/openvswitch/vport.c
-@@ -507,7 +507,8 @@ void ovs_vport_send(struct vport *vport, struct sk_buff *skb, u8 mac_proto)
- 	}
- 
- 	skb->dev = vport->dev;
--	skb->tstamp = 0;
-+	if (dev_net(skb->dev))
-+		skb->tstamp = 0;
- 	vport->ops->send(skb);
- 	return;
- 
--- 
-2.20.1
+Sorry for the inconvenience
+Sireesh
 
+
+
+On Sun, Sep 19, 2021 at 8:03 PM Sireesh Kodali <sireeshkodali1@gmail.com> wrote:
+>
+> IPA v2.x uses BAM to send and receive IP packets, to and from the AP.
+> However, unlike its predecessor BAM-DMUX, it doesn't send information
+> about the packet length. To find the length of the packet, one must
+> instead read the bam_desc metadata. This patch adds support for sending
+> the size metadata over the dmaengine metadata api. Currently only the
+> dma size is stored in the metadata. Only client-side metadata is
+> supported for now, because host-side metadata doesn't make sense for
+> IPA, where more than one DMA descriptors could be waiting to be acked
+> and processed.
+>
+> Sireesh Kodali (1):
+>   dmaengine: qcom: bam_dma: Add support for metadata
+>
+>  drivers/dma/qcom/bam_dma.c | 74 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>
+> --
+> 2.33.0
+>
