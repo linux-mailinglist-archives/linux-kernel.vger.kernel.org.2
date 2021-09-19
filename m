@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B289C410B46
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EA9410B47
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Sep 2021 13:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhISL2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 07:28:48 -0400
-Received: from mga01.intel.com ([192.55.52.88]:17245 "EHLO mga01.intel.com"
+        id S231244AbhISL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 07:29:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:47045 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230051AbhISL2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 07:28:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10111"; a="245412191"
+        id S230051AbhISL3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 07:29:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10111"; a="219819853"
 X-IronPort-AV: E=Sophos;i="5.85,305,1624345200"; 
-   d="scan'208";a="245412191"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2021 04:27:22 -0700
+   d="scan'208";a="219819853"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2021 04:28:22 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,305,1624345200"; 
-   d="scan'208";a="510797751"
+   d="scan'208";a="701954213"
 Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Sep 2021 04:27:20 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 19 Sep 2021 04:28:21 -0700
 Received: from kbuild by 285e7b116627 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mRuye-0005RS-9z; Sun, 19 Sep 2021 11:27:20 +0000
-Date:   Sun, 19 Sep 2021 19:26:56 +0800
+        id 1mRuzc-0005SR-Lh; Sun, 19 Sep 2021 11:28:20 +0000
+Date:   Sun, 19 Sep 2021 19:27:22 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/wwmutex] BUILD SUCCESS
- 12235da8c80a1f9909008e4ca6036d5772b81192
-Message-ID: <61471e80.MVa+ZcfoHAWiRQoi%lkp@intel.com>
+Subject: [tip:irq/core] BUILD SUCCESS
+ e739f98b4b11337a4e3865364b8922a9e5ad32b6
+Message-ID: <61471e9a.BWzZ/Gy7U5jLVhOU%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,13 +39,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/wwmutex
-branch HEAD: 12235da8c80a1f9909008e4ca6036d5772b81192  kernel/locking: Add context to ww_mutex_trylock()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+branch HEAD: e739f98b4b11337a4e3865364b8922a9e5ad32b6  genirq: Move prio assignment into the newly created thread
 
-elapsed time: 2703m
+elapsed time: 2704m
 
-configs tested: 278
-configs skipped: 48
+configs tested: 260
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -58,12 +58,6 @@ arm                              allyesconfig
 arm                              allmodconfig
 i386                 randconfig-c001-20210918
 i386                 randconfig-c001-20210916
-s390                          debug_defconfig
-sh                          r7780mp_defconfig
-arm                            mmp2_defconfig
-mips                     loongson1c_defconfig
-um                                  defconfig
-sh                   rts7751r2dplus_defconfig
 arm                       omap2plus_defconfig
 powerpc                      ep88xc_defconfig
 arm                        spear6xx_defconfig
@@ -75,12 +69,6 @@ mips                      pic32mzda_defconfig
 sh                          r7785rp_defconfig
 powerpc                      ppc6xx_defconfig
 arm                          simpad_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                    amigaone_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                       m5475evb_defconfig
-arm                          exynos_defconfig
-mips                           ip22_defconfig
 powerpc                  mpc866_ads_defconfig
 powerpc                 xes_mpc85xx_defconfig
 mips                      malta_kvm_defconfig
@@ -93,6 +81,7 @@ powerpc                        warp_defconfig
 arm                       multi_v4t_defconfig
 arm                          pxa910_defconfig
 mips                   sb1250_swarm_defconfig
+s390                          debug_defconfig
 arc                     haps_hs_smp_defconfig
 arm                           omap1_defconfig
 powerpc                         wii_defconfig
@@ -126,11 +115,6 @@ mips                           ip27_defconfig
 arm64                            alldefconfig
 mips                           rs90_defconfig
 powerpc                      ppc40x_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                          rm200_defconfig
-arm                         s5pv210_defconfig
-sh                           sh2007_defconfig
-mips                        nlm_xlp_defconfig
 arm                            zeus_defconfig
 powerpc                      tqm8xx_defconfig
 arm                        mvebu_v5_defconfig
@@ -146,10 +130,6 @@ arm                             pxa_defconfig
 arc                 nsimosci_hs_smp_defconfig
 arm                           tegra_defconfig
 sh                           se7780_defconfig
-powerpc                         ps3_defconfig
-parisc                              defconfig
-powerpc                  storcenter_defconfig
-powerpc                    gamecube_defconfig
 powerpc                      chrp32_defconfig
 sh                          sdk7786_defconfig
 powerpc                 mpc85xx_cds_defconfig
@@ -161,6 +141,7 @@ sh                        apsh4ad0a_defconfig
 powerpc                     mpc83xx_defconfig
 mips                     loongson1b_defconfig
 mips                           xway_defconfig
+um                                  defconfig
 arc                     nsimosci_hs_defconfig
 xtensa                  audio_kc705_defconfig
 arm                  colibri_pxa270_defconfig
@@ -203,10 +184,11 @@ nios2                            allyesconfig
 h8300                            allyesconfig
 sh                               allmodconfig
 xtensa                           allyesconfig
-s390                             allyesconfig
-parisc                           allyesconfig
+parisc                              defconfig
 s390                                defconfig
 s390                             allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
@@ -221,18 +203,18 @@ x86_64               randconfig-a006-20210919
 x86_64               randconfig-a003-20210919
 x86_64               randconfig-a001-20210919
 x86_64               randconfig-a005-20210919
-i386                 randconfig-a004-20210917
-i386                 randconfig-a005-20210917
-i386                 randconfig-a006-20210917
-i386                 randconfig-a002-20210917
-i386                 randconfig-a003-20210917
-i386                 randconfig-a001-20210917
 i386                 randconfig-a004-20210919
 i386                 randconfig-a005-20210919
 i386                 randconfig-a002-20210919
 i386                 randconfig-a006-20210919
 i386                 randconfig-a001-20210919
 i386                 randconfig-a003-20210919
+i386                 randconfig-a004-20210917
+i386                 randconfig-a005-20210917
+i386                 randconfig-a006-20210917
+i386                 randconfig-a002-20210917
+i386                 randconfig-a003-20210917
+i386                 randconfig-a001-20210917
 x86_64               randconfig-a013-20210918
 x86_64               randconfig-a016-20210918
 x86_64               randconfig-a012-20210918
