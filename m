@@ -2,90 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEED74110CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0364110CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbhITIRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235397AbhITIRo (ORCPT
+        id S234622AbhITISl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:18:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52110 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhITISj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:17:44 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BA0C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:16:18 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so22510775otq.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SxNY97BOa0XmidHr8ngX6Xmdmy0rlhDyfhQlgL+xf9M=;
-        b=PflVeIefh9PtZyUXgOPqCGhfsFGQSSoYDchsSVS5Wrh2uVaeVBJbila4EfZ/2fVXuP
-         HJdnuNyXvRsF090bByE/Gj43INuq+5RbRXH78KatIS86fIQ8WgTnLdTMMOhRoFklJyMw
-         uKIr96sGaEhw3+PQnryCOySdDSsY/f03Dbp50ugJ+HputJhUOvh1RuS9f6F3Q7X0Dp4f
-         q6B9fYWrfi1TncQIfoET8rvBi3dL1XRRlB0DOapn9zdASXH15Lut5vMByWA82nxCboTN
-         0Q+cH15PLPCz+7qviSSM31rZpLHpPCqoP/mfcigc+aq2YOWHGP8UPUfQbAWChLz+39ff
-         2U1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SxNY97BOa0XmidHr8ngX6Xmdmy0rlhDyfhQlgL+xf9M=;
-        b=uksncBFFPM9IR9q4YVe15JzPl/ZJGXEZmCj6wy4mQxanl7M40xq8rVaXt7aBAp++g7
-         z131q9yM5rPQmaXxoFeKDJZ99G7wLAhE+8/lvFAfAp0RSPCFPwNoKMKBzuJnFRD0wO+x
-         RW4f89j1U7hQaaqTh1b0BHFAeRSKpQUu7p2842I2T+xhb1zXpnauhcnh+jFTKAM2V2KZ
-         gMzh9FGE+xHrZxUuzBQcF0jIH6nszxsCu9pH+gGp/B/GT//CTwqZOA5IMaazdq/XriFC
-         4ZzHNR56MHQsYpbVUrfn5xlBp0zManUgc22BVvXtikd7KkUa6UEjmvENvKUFjAt7IRaG
-         QHSA==
-X-Gm-Message-State: AOAM533vDbzkeMwfDsbtIB+tceH4S/9eCeQSjXwjczDcPl28LejYZDkG
-        /yu4nO+h4vokxcaOHcqvJbVEwGzk0lZatBdCHTd0Xg==
-X-Google-Smtp-Source: ABdhPJxQYvOjJDSfjPQAxmlMvAz00/cVUDbJh6wOo5gIhqB/Ki9Kim5C50bKjMQiFlkco3PXh5M74WpTTLLbTThY1X0=
-X-Received: by 2002:a9d:7244:: with SMTP id a4mr20552216otk.137.1632125777610;
- Mon, 20 Sep 2021 01:16:17 -0700 (PDT)
+        Mon, 20 Sep 2021 04:18:39 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A472D20040;
+        Mon, 20 Sep 2021 08:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632125832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BlvArk2LrzTX1DFBLWBhfR1GWQExq1j7zO7vLtNwSg0=;
+        b=XWVTsrGfIQ4VokqkS8eL9uSMtjVe0Nt01sbv9FkNAVMSIiCvSamb3FwPhdQXe90cdzdrDi
+        2gnJbKOPx5aYBefKzF9Wynm+S3rTvG0E39m5zmKQMmS09ci7hYGCUuEek19GGH5iAXMdtL
+        oO/KtuXYa4N7tacpOQP1kfA/oQqAspY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632125832;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BlvArk2LrzTX1DFBLWBhfR1GWQExq1j7zO7vLtNwSg0=;
+        b=2XUKdDGKaw/5Jz1QjQ/7tSljLVSSbLKajYfC6RdxJnAXZFLBqD8pi9R1YUpBB3VGxh9fB+
+        /IFPew5xU8A3meAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 69AC913ACC;
+        Mon, 20 Sep 2021 08:17:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id O+K1GIhDSGE7FgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 20 Sep 2021 08:17:12 +0000
+Message-ID: <7c128e03-842a-57b3-0c11-24fed9d4d126@suse.de>
+Date:   Mon, 20 Sep 2021 10:17:11 +0200
 MIME-Version: 1.0
-References: <00000000000022acbf05c06d9f0d@google.com> <00000000000053c98205cac53625@google.com>
-In-Reply-To: <00000000000053c98205cac53625@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 20 Sep 2021 10:16:06 +0200
-Message-ID: <CACT4Y+bnH0-6_M_BbB614j=1Vi3sjnU3oSxoKHKVYF-aGVBooQ@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in io_poll_double_wake
-To:     syzbot <syzbot+f2aca089e6f77e5acd46@syzkaller.appspotmail.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, haoxu@linux.alibaba.com,
-        hdanton@sina.com, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH] drm/ast: Atomic CR/SR reg R/W
+Content-Language: en-US
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+        jenmin_yuan@aspeedtech.com, arc_sung@aspeedtech.com
+References: <20210917072226.17357-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20210917072226.17357-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------J0tzjfeHbIuZ7U4SSOmk2mP1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 13:34, syzbot
-<syzbot+f2aca089e6f77e5acd46@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit a890d01e4ee016978776e45340e521b3bbbdf41f
-> Author: Hao Xu <haoxu@linux.alibaba.com>
-> Date:   Wed Jul 28 03:03:22 2021 +0000
->
->     io_uring: fix poll requests leaking second poll entries
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15d8819d300000
-> start commit:   98f7fdced2e0 Merge tag 'irq-urgent-2021-07-11' of git://gi..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=139b08f9b7481d26
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f2aca089e6f77e5acd46
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11650180300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1510c6b0300000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: io_uring: fix poll requests leaking second poll entries
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------J0tzjfeHbIuZ7U4SSOmk2mP1
+Content-Type: multipart/mixed; boundary="------------fwHSHDrLxK530AXw5btAj8YY";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
+ jenmin_yuan@aspeedtech.com, arc_sung@aspeedtech.com
+Message-ID: <7c128e03-842a-57b3-0c11-24fed9d4d126@suse.de>
+Subject: Re: [PATCH] drm/ast: Atomic CR/SR reg R/W
+References: <20210917072226.17357-1-kuohsiang_chou@aspeedtech.com>
+In-Reply-To: <20210917072226.17357-1-kuohsiang_chou@aspeedtech.com>
 
-Looks sane (io_uring commit fixes an issue in io_uring):
+--------------fwHSHDrLxK530AXw5btAj8YY
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-#syz fix: io_uring: fix poll requests leaking second poll entries
+SGkNCg0KQW0gMTcuMDkuMjEgdW0gMDk6MjIgc2NocmllYiBLdW9Ic2lhbmcgQ2hvdToNCj4g
+MS4gQXZvaWQgSU8taW5kZXggcmFjaW5nDQo+IDIuIElPLWluZGV4IHJhY2luZyBoYXBwZW5l
+ZCBvbiByZXNvbHVzdGlvbiBzd2l0Y2hpbmcNCj4gICAgIGFuZCBtb3VzZSBtb3ZpbmcgYXQg
+dGhlIHNhbWUgdGltZQ0KPiAzLiBTeXN0ZW0gaHVuZyB3aGlsZSBJTy1pbmRleCByYWNpbmcg
+b2NjdXJyZWQuDQoNCkknZCBzYXkgdGhhdCB0aGVyZSdzIHNvbWV0aGluZyBlbHNlIGdvaW5n
+IG9uZSBoZXJlLiBNb2RlIHNldHRpbmcgYW5kIA0KY3Vyc29yIG1vdmVtZW50IHNob3VsZCBi
+ZSBwcm90ZWN0ZWQgYWdhaW5zdCBlYWNoIG90aGVyIGJ5IERSTSBsb2NraW5nLiANCkNoYW5n
+aW5nIHRoZXNlIGxvdy1sZXZlbCBmdW5jdGlvbnMgd291bGQgbm90IHNvbHZlIHRoZSBpc3N1
+ZXMuIEknbGwgdHJ5IA0KdG8gcmVwcm9kdWNlIHRoZSBwcm9ibGVtIEFTQVAuDQoNCkJlc3Qg
+cmVnYXJkcw0KVGhvbWFzDQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEt1b0hzaWFuZyBDaG91
+IDxrdW9oc2lhbmdfY2hvdUBhc3BlZWR0ZWNoLmNvbT4NCj4gLS0tDQo+ICAgZHJpdmVycy9n
+cHUvZHJtL2FzdC9hc3RfbWFpbi5jIHwgNDggKysrKysrKysrKysrKysrKysrKysrKysrKy0t
+LS0tLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCspLCAxMiBkZWxl
+dGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9t
+YWluLmMgYi9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9tYWluLmMNCj4gaW5kZXggNzlhMzYx
+ODY3Li4xZDhmYTcwYzUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hc3QvYXN0
+X21haW4uYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9tYWluLmMNCj4gQEAg
+LTQxLDI4ICs0MSw1MiBAQCB2b2lkIGFzdF9zZXRfaW5kZXhfcmVnX21hc2soc3RydWN0IGFz
+dF9wcml2YXRlICphc3QsDQo+ICAgCQkJICAgIHVpbnQzMl90IGJhc2UsIHVpbnQ4X3QgaW5k
+ZXgsDQo+ICAgCQkJICAgIHVpbnQ4X3QgbWFzaywgdWludDhfdCB2YWwpDQo+ICAgew0KPiAt
+CXU4IHRtcDsNCj4gLQlhc3RfaW9fd3JpdGU4KGFzdCwgYmFzZSwgaW5kZXgpOw0KPiAtCXRt
+cCA9IChhc3RfaW9fcmVhZDgoYXN0LCBiYXNlICsgMSkgJiBtYXNrKSB8IHZhbDsNCj4gLQlh
+c3Rfc2V0X2luZGV4X3JlZyhhc3QsIGJhc2UsIGluZGV4LCB0bXApOw0KPiArCXVpbnQxNl90
+IHZvbGF0aWxlIHVzRGF0YTsNCj4gKwl1aW50OF90ICB2b2xhdGlsZSBqRGF0YTsNCj4gKw0K
+PiArCWRvIHsNCj4gKwkJYXN0X2lvX3dyaXRlOChhc3QsIGJhc2UsIGluZGV4KTsNCj4gKwkJ
+dXNEYXRhID0gYXN0X2lvX3JlYWQxNihhc3QsIGJhc2UpOw0KPiArCX0gd2hpbGUgKCh1aW50
+OF90KSh1c0RhdGEpICE9IGluZGV4KTsNCj4gKw0KPiArCWpEYXRhICA9ICh1aW50OF90KSh1
+c0RhdGEgPj4gOCk7DQo+ICsJakRhdGEgJj0gbWFzazsNCj4gKwlqRGF0YSB8PSB2YWw7DQo+
+ICsJdXNEYXRhID0gKCh1aW50MTZfdCkgakRhdGEgPDwgOCkgfCAodWludDE2X3QpIGluZGV4
+Ow0KPiArCWFzdF9pb193cml0ZTE2KGFzdCwgYmFzZSwgdXNEYXRhKTsNCj4gICB9DQo+IA0K
+PiAgIHVpbnQ4X3QgYXN0X2dldF9pbmRleF9yZWcoc3RydWN0IGFzdF9wcml2YXRlICphc3Qs
+DQo+ICAgCQkJICB1aW50MzJfdCBiYXNlLCB1aW50OF90IGluZGV4KQ0KPiAgIHsNCj4gLQl1
+aW50OF90IHJldDsNCj4gLQlhc3RfaW9fd3JpdGU4KGFzdCwgYmFzZSwgaW5kZXgpOw0KPiAt
+CXJldCA9IGFzdF9pb19yZWFkOChhc3QsIGJhc2UgKyAxKTsNCj4gLQlyZXR1cm4gcmV0Ow0K
+PiArCXVpbnQxNl90IHZvbGF0aWxlIHVzRGF0YTsNCj4gKwl1aW50OF90ICB2b2xhdGlsZSBq
+RGF0YTsNCj4gKw0KPiArCWRvIHsNCj4gKwkJYXN0X2lvX3dyaXRlOChhc3QsIGJhc2UsIGlu
+ZGV4KTsNCj4gKwkJdXNEYXRhID0gYXN0X2lvX3JlYWQxNihhc3QsIGJhc2UpOw0KPiArCX0g
+d2hpbGUgKCh1aW50OF90KSh1c0RhdGEpICE9IGluZGV4KTsNCj4gKw0KPiArCWpEYXRhICA9
+ICh1aW50OF90KSh1c0RhdGEgPj4gOCk7DQo+ICsNCj4gKwlyZXR1cm4gakRhdGE7DQo+ICAg
+fQ0KPiANCj4gICB1aW50OF90IGFzdF9nZXRfaW5kZXhfcmVnX21hc2soc3RydWN0IGFzdF9w
+cml2YXRlICphc3QsDQo+ICAgCQkJICAgICAgIHVpbnQzMl90IGJhc2UsIHVpbnQ4X3QgaW5k
+ZXgsIHVpbnQ4X3QgbWFzaykNCj4gICB7DQo+IC0JdWludDhfdCByZXQ7DQo+IC0JYXN0X2lv
+X3dyaXRlOChhc3QsIGJhc2UsIGluZGV4KTsNCj4gLQlyZXQgPSBhc3RfaW9fcmVhZDgoYXN0
+LCBiYXNlICsgMSkgJiBtYXNrOw0KPiAtCXJldHVybiByZXQ7DQo+ICsJdWludDE2X3Qgdm9s
+YXRpbGUgdXNEYXRhOw0KPiArCXVpbnQ4X3QgIHZvbGF0aWxlIGpEYXRhOw0KPiArDQo+ICsJ
+ZG8gew0KPiArCQlhc3RfaW9fd3JpdGU4KGFzdCwgYmFzZSwgaW5kZXgpOw0KPiArCQl1c0Rh
+dGEgPSBhc3RfaW9fcmVhZDE2KGFzdCwgYmFzZSk7DQo+ICsJfSB3aGlsZSAoKHVpbnQ4X3Qp
+KHVzRGF0YSkgIT0gaW5kZXgpOw0KPiArDQo+ICsJakRhdGEgID0gKHVpbnQ4X3QpKHVzRGF0
+YSA+PiA4KTsNCj4gKwlqRGF0YSAmPSBtYXNrOw0KPiArDQo+ICsJcmV0dXJuIGpEYXRhOw0K
+PiAgIH0NCj4gDQo+ICAgc3RhdGljIHZvaWQgYXN0X2RldGVjdF9jb25maWdfbW9kZShzdHJ1
+Y3QgZHJtX2RldmljZSAqZGV2LCB1MzIgKnNjdV9yZXYpDQo+IC0tDQo+IDIuMTguNA0KPiAN
+Cg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0K
+U1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1LCA5
+MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykNCkdl
+c2Now6RmdHNmw7xocmVyOiBGZWxpeCBJbWVuZMO2cmZmZXINCg==
+
+--------------fwHSHDrLxK530AXw5btAj8YY--
+
+--------------J0tzjfeHbIuZ7U4SSOmk2mP1
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFIQ4cFAwAAAAAACgkQlh/E3EQov+DI
+/A/8D9ziwgXT1JJnyk7haI/HX8w/TemA5X9WGNrid06BGeU7hIlZWWka2IZlg3y1MB/8e9TFaEoF
+pgBlOWk8Husm/zKe0N7OFvf/xiYe4PzLCf89L2cOVY4noxe1fazntVxYPjexW8H5Ah7lZLAdoZTw
+Gb1LcP1zQ2Ngg3KB5O8wwzBoNYBpz+8gNKhW/jl51KSRr7jdTgKSQaFJMoGzUCsxvcl9QRBSgRVx
+UGQyDnXtngLpv/GzrkeLqxe1DLm8xZvYMfdAaOCxeBrzMQW7bRZJdfaoBSsdurGwQwqoSmKHx7Yj
+QMmVUxB660801Bw3X1p995SUsdR1rQje1X6MyJ8GnUckUlMExpM8s0yNuerCqsdov/v6cb/pdjEL
+ekP34oDpu58RQH3J2wRCENWmrViJrPtJb3NDvnhLSjvnUjKq7+6CY65cFIyH+QwQCn41KZL4+cbg
+ngrQglMWs3gxXxrxTpI9RYtOFk8K1NuvBKJgrD3+i1yWkERYgFWISpSuyFXHAnBrQzJrLnWMx9xU
+VG6HIhhSbgTh5BzFShawHGPPgwjxgj0lZtnLFaOR8Yb4TD+mlLrUOvi98/XdksepEKlGy7z97mho
+3EWaFd4ByC1WNaTg5GT1QARwLpG/vUCEOK8PVv0Ek/WgT3st8ANq6s1z/2SOtmGKVXBCPZsiJNcR
+nPA=
+=GHkq
+-----END PGP SIGNATURE-----
+
+--------------J0tzjfeHbIuZ7U4SSOmk2mP1--
