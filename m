@@ -2,92 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875614126E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87AE4126F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347961AbhITTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 15:30:25 -0400
-Received: from mail-oo1-f53.google.com ([209.85.161.53]:37567 "EHLO
-        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245515AbhITT2Y (ORCPT
+        id S1348191AbhITTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 15:33:39 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:52010 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230481AbhITTbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 15:28:24 -0400
-Received: by mail-oo1-f53.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso2210712oom.4;
-        Mon, 20 Sep 2021 12:26:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=8RDZosyarrVHJMRIOrOYWRs07UC95UsBIK16bZM00bU=;
-        b=yBncfJSMrMGyW1lY0gWYCKnaxRMCcfsQvSlY4wkggkntOS6IBplpKy5ZcI8fSCysqr
-         MEANr3cv4zk9pfSkGevVPEquMJl5jp9CQg9tfcUPxtYM+9WULU3Ui3z79poxpN8zqY2e
-         xx+byLgTp46MC1DGIOcJjX+f07WYdNYh7VRUv+UQ4jcAMKsmlFPCL1zKABcUt6+6MUgz
-         LwsqYrfTBy+Wb2Q/W89cpFseqx5NSkPMh+ZWIxKFKC9eXcya376GWQTD1mvVZ0+uYlBH
-         G2oP3bvRjzZvPhDkf7yCw+MzVbM7SqhR7XR3LC0rejiyIxDNWu11LuNnXPcAjS6vUYpz
-         fq5A==
-X-Gm-Message-State: AOAM531aYlOWCXo/TDSzv+SwNytnDfeu8taSGB42qNhs9AjbGGOmPRsL
-        PxPVss+Cmo2+rgyXQVP/YQ==
-X-Google-Smtp-Source: ABdhPJxUCxd0cnnhBxoTHwKVzXGKJSzPZe/6gN7UIs+ewnpW2DHKak1OfYaEYrgDm+4SjMcJ3aAkMw==
-X-Received: by 2002:a4a:6412:: with SMTP id o18mr13727649ooc.79.1632166017034;
-        Mon, 20 Sep 2021 12:26:57 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bj27sm3222072oib.58.2021.09.20.12.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 12:26:56 -0700 (PDT)
-Received: (nullmailer pid 586175 invoked by uid 1000);
-        Mon, 20 Sep 2021 19:26:55 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        linux-mtd@lists.infradead.org, michael@walle.cc,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-In-Reply-To: <20210920142713.129295-2-a-nandan@ti.com>
-References: <20210920142713.129295-1-a-nandan@ti.com> <20210920142713.129295-2-a-nandan@ti.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema format
-Date:   Mon, 20 Sep 2021 14:26:55 -0500
-Message-Id: <1632166015.061759.586174.nullmailer@robh.at.kernel.org>
+        Mon, 20 Sep 2021 15:31:34 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KI44sm026691;
+        Mon, 20 Sep 2021 19:30:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=twx/poF39noCLQs4aAkBnBA9IKpiTltwMBDfusJ7u+c=;
+ b=Js04bF9R3n3f8X65KxGtwf4q/4ZEqYrv8MMsZsSw+x+JqYc813FVQVqaOCEExmkJXH3U
+ n9y2sCV9L0sd3VCc7LdeqVGYJ88cpnQFEgfyIA68f7f+r5euO2TIBvtLtH9BrGLS0oCf
+ c5I7ynDxMnUU15VBm7kSF4aWkC+VGau7i2iHgVOMIbFkqS85RpGz2TlaJJ6GTL8lvvm7
+ vVhsbdQK4yf04yXvyTGQnkAsMdoJpkMYrCRLELMx+RysXZDiu56VsJHf3VwHsIf7uvCb
+ Cjj2IdtDTI6wDas6uJN0ZOD0blGpiLq6grIDu6Ri03IDK1Ssc6s3Lf8KKDQog+cyEbxq uA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b6426cf7q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 19:30:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18KJJuGo041061;
+        Mon, 20 Sep 2021 19:29:59 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
+        by userp3020.oracle.com with ESMTP id 3b5svr5n48-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 19:29:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YTN0oDPsNO7zVLU+nh6/JcEc65bV5TopVBBna/TYRUNGPW67FV5mw6EnBUrp3A3qAFOLpyjLXHaFF0ReA2/Za87MG/3Ita8kmAuXo79am225QvkiOXHXxBikOlDQRrYyNbv0L482LMjRdcinN7RHeedKRblHhzN/gN8oQpZsipCFEuYWumAj7WknN/uU6ueC73piOQc/HOfTzXJsY2KuqRKWHzB/s8FXPqn8xn03J8+L2Oy1ICJv86ZnNcfZ1zV+/SUa5J2dkwJsXXqiOWkQZ/KdIJ6W7kuQawKkeVBkDxWFMRV/bBukDhzTo0dkwRy6/g6nqygDFBeBU+xhRFCFcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=twx/poF39noCLQs4aAkBnBA9IKpiTltwMBDfusJ7u+c=;
+ b=gkhp67FtZoNaPT4fn/MMbonagAbedxFeqZsd9voWTHVDpJ5EDlfkogf9OysWGlcHnZVrgDAaCAN5URQx64hUqIBemksnTyXAwyWD4Ldszh7feSOaLaYgrBNC0EHo+W3kapGrex8tFJdDEQYpRTq5E0iH3faiD54/0suoJ1YB0JjPsOaZT7qobXSX3rm/IzdEOiOk5QwBcvPK1uBfn4O4fY1sGb/8U0PJHpxKj88Tx20ci9JDmoZYRL5YOP0wXehGJD1a5k8fUMVj88mLrheQPZVBt8oBFCUlrOng3A2M0VTc1gONJAcmNS00jZvYnPjkj5Jk5BRKuWGHLZFq5M6fYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=twx/poF39noCLQs4aAkBnBA9IKpiTltwMBDfusJ7u+c=;
+ b=b49yOdN+VEcegujH0+nSWKIWshjqD1Eelb6s51Q4Z2BBlyIrMGfQxU057gh6jV+cKRtT5QX4io98v/6tlzZigQNb95vSdgtYBpzyY7TBscTfrCqNna5daeH0Gvhou7xxtBON9cCTljUykV1rgVJ/NDRTOMkwUY9BjOBVxm1kpgg=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4160.namprd10.prod.outlook.com (2603:10b6:208:1df::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Mon, 20 Sep
+ 2021 19:29:57 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f520:b987:b36e:618f]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f520:b987:b36e:618f%7]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
+ 19:29:57 +0000
+Subject: Re: [PATCH] xen/balloon: fix balloon kthread freezing
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>
+References: <20210920100345.21939-1-jgross@suse.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <1b13768c-d2ba-196b-c3ea-8f9375bb94b8@oracle.com>
+Date:   Mon, 20 Sep 2021 15:29:53 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <20210920100345.21939-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SA9PR13CA0133.namprd13.prod.outlook.com
+ (2603:10b6:806:27::18) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+Received: from [10.74.117.74] (138.3.201.10) by SA9PR13CA0133.namprd13.prod.outlook.com (2603:10b6:806:27::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.7 via Frontend Transport; Mon, 20 Sep 2021 19:29:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a317567-b3c4-4ffa-5855-08d97c6d07b6
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4160:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB41606534071285001ABD41B98AA09@MN2PR10MB4160.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:318;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RjZqus4HPjkDDRmxbWY8tgtBpAeGNEODsiCwh6urgqWVGZ4QAoG+veaG0ReisTU4mIVzhy8Nkp6ZIwg25vk4P3zvumMfevCXlTS5ZE5Ck+FDlWQL34/9nO3TKxTkHB3aNii0Oktkq7ESAXOy+/3QZaaFVJ7zW1rX6onPF/Pb7oBxLUnm5yrB/uqwSG/krNaUiiPkpV5xFPGGiHpnRqFDxLJ6vtKPcgwOa+eM7wvbMFFNzndcc+S2qb1eSLojYLmzCpkiBVkCkSZ32XZZbHq69fdNGmNwLqvjd/99OGZESfHnEiNjwSbi7+5gPfPKxqrEdScLggpYK7qC9qBd2fF6B3v/e702hiIjR6suztVr8mHBmfzjAh45aDqkHO22/1H06A70y5L4fF+HLyPfSEkCsfKwuPfM/91DFhEZUfXUbzBd2e9khElH8oDXFAclXOcAjC/9rieygChWW7lLn1/yqo6XIJBB2ZKABt+MJFIp8LqM0jtgLXkRJUeAAN0WwG4APXSUzj9Lsrrd6/1gUekxeeS77lWkubNs9XdHODS6b1WfmL9hXCYeaeMWQQAjeixq9rRcfOijTCbumlIuSAuWJctUOR/nxlLR5s8dcoug0Igs+wH0aGC8ugu8by636i7TU0CJTDasxAUpqRrnKG9vUi9NWO9JqXSw2x2SL9a4HoEKFN3KIWQLqY++wLu29GK+valxHEgnfR+doJpe71nrqD3KIGOQVncz64VqiVbugkEMmEnw7U3vO7Zkg1yE+Gja
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(39860400002)(396003)(346002)(478600001)(44832011)(31686004)(36756003)(5660300002)(186003)(6666004)(66476007)(66556008)(2616005)(956004)(2906002)(6486002)(31696002)(4744005)(53546011)(4326008)(66946007)(316002)(86362001)(16576012)(8936002)(83380400001)(8676002)(38100700002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?em5GU2FHMzIrUWFkM3cxamhhUjN1TmxCQW0xelpNOU9aQWdJNHhqMytQVGZP?=
+ =?utf-8?B?c3VDV0JPK3pPeEtmVkZFNTVCUmdnamZ6ZlRPZkF4bmVmSVVBaTl5YkxSbXlX?=
+ =?utf-8?B?eFNKNkhDejZub25kT0xLcWVJZUxKNUdmRW9lSXk5a1Qxd01HQm1HQUw2NHFx?=
+ =?utf-8?B?MThXRHVZNEVPV1lGQWFOK28rRjZ3SWhnTjdKNjhFZlN0ZzhMd1B3am1Ld1Fz?=
+ =?utf-8?B?RHFrVlZJZHUxbysxNjgrajNySnVSaDFXZGsyTlBza2JTTDB4Q0FLOHJOYWhU?=
+ =?utf-8?B?akg5UUpVRWtCem1XOXpLR0ptMDdJVmY5SWNWellyaURaLy9NdXFjRmU3T0RR?=
+ =?utf-8?B?bHFpOGNJYVBiYW1zdG5Td0xMeUxncWdBMERnYTJZdnY1dmgvb0hCUWlBblg3?=
+ =?utf-8?B?Mmh3SXB1dElYOGh3dXZqbko1eUMzU0N6SWQzd3ZNMjJRT2lLRTBlM3h2ZU9I?=
+ =?utf-8?B?K0doaDQ5UzhRV0h0VjVkeEoyM3BaQmdlNXNzNG81eEJzanJYSWx2QlBGbHlP?=
+ =?utf-8?B?TDBJMHZZN1dxMnRqWFVyUURQamxaVElnNVpRRWtwdmwrUnlaTG43emJMOFZr?=
+ =?utf-8?B?dURnRS9pYVVCd1dHWXZIckxId0pwOGozVnlwaWk1emRRTi84UHlrcHRaTTJh?=
+ =?utf-8?B?Y3B0Z1ovWGVtR1I2VHpxMHpaOVRsSTBMRk9IcjRuL29oMUVtOTl1am1Ea3oz?=
+ =?utf-8?B?YUNKVDVSQXBZZ1lzQnNlbHV0a3ZlSjVEQTVpcjNBTVhsREh4QzBZb2tqUDVP?=
+ =?utf-8?B?cTAvUkZKRXNFT0VOdEhCWXhjZHZJRVdreE94L0YwQlQ4ZExwdFQrRVYzVWVv?=
+ =?utf-8?B?QWxlRmNnd1ZKMHdKR2JSNit5ZmVUa01WMUdJZlpUVjRmZ3o3VEpzQ3ZsNi93?=
+ =?utf-8?B?QlpNZGZacnRKNGVZQVhSNVA2ZlBRdVhSdTgzU2FOYkZkbllSakI3NHBwUUlO?=
+ =?utf-8?B?UEwzcGtYK3JIbkNzQ2tiamMzamIxaUZPdUxLcEFES2RmSDE4Z3VQS08yQnNs?=
+ =?utf-8?B?ZDZwM2tjYjN1eEJLeWRVZ0d3TlBzWjh4YXAwVFJQbkRTdU13c1ZPeGh6aytE?=
+ =?utf-8?B?eG1HODJmQXM4QXM5QnNUaTVxeGNtbXpZL0c2L3YwREdxMGRhK3IvWTVQT1Zq?=
+ =?utf-8?B?aS9ySUlNVWdnR2diYUpOT2loM3ltVkNITnNNWXAvV2R5NmpmOTMrMWFRSkhz?=
+ =?utf-8?B?NHd5ZVIyaWRVVGlhd2FXWUlJTmJJcEVjNXJLcVROYmNWQnJPYkdiVnJGSDZ2?=
+ =?utf-8?B?SlhPdXpBZU1MUHlRWnJFcVRPblo0NG8wTldTTkwrYk1kWmtUVzFtUG4wK1NK?=
+ =?utf-8?B?RjhhdDh1MWJYRC9RRTNDWUN6ZEpSNmRhalpwMnM0NHZUd2tHMEk4V25VeFd3?=
+ =?utf-8?B?YWFEckdNM3h3dDUrc0RwdFVqREUyQ014d1ppYTlLMkNRc2ZxdVRJaGNCcXkx?=
+ =?utf-8?B?SGFmaWNQMWNPRkZIUThZeW5CN2I4UWZMRWhsWm8wK1ZPeDBUSnVXVFAveVB2?=
+ =?utf-8?B?dWk5SEtuNEZKUFc4ZFJHYm1rUFF3NDRvNDZJTTg5U0IwMU94cW9zZEIzNDVy?=
+ =?utf-8?B?RDFTaVFhVGFDamFaYmcvMUQ4RW9MMU5YQ2tja2FiREpSdGJzVE4ySFp2T1hl?=
+ =?utf-8?B?N3lSc2prRUJTVFFUS2JtTmFLNW1hUWFCUFRpcEgrMkt6aHBwZnpjL2RSSk12?=
+ =?utf-8?B?dnIvUW1JSWhXUldXbXhvbGRadTQwSitMMkdMMFNrQngzM3dnSHorS3RuNDZK?=
+ =?utf-8?Q?BShtY4oQ8T7qNXNUgKTF+jq06CEThc/FAZoJn8k?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a317567-b3c4-4ffa-5855-08d97c6d07b6
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2021 19:29:57.4028
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HJALA8IrJeEP53x88yiDwtcvML5aS0XQ1KtPW72iZt+6llzTqfuwg/A43XDsBczHwfShaimBt2tAnuNKm3o5dciCLKRtdUBhlfAkX45famw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4160
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10113 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200112
+X-Proofpoint-ORIG-GUID: MuX1xbbT9VFEqIxjO6dnjIflt9JJNKMR
+X-Proofpoint-GUID: MuX1xbbT9VFEqIxjO6dnjIflt9JJNKMR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 19:57:12 +0530, Apurva Nandan wrote:
-> Convert spi-nand.txt binding to YAML format with an added example.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
->  2 files changed, 62 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On 9/20/21 6:03 AM, Juergen Gross wrote:
+> Commit 8480ed9c2bbd56 ("xen/balloon: use a kernel thread instead a
+> workqueue") switched the Xen balloon driver to use a kernel thread.
+> Unfortunately the patch omitted to call try_to_freeze() or to use
+> wait_event_freezable_timeout(), causing a system suspend to fail.
+>
+> Fixes: 8480ed9c2bbd56 ("xen/balloon: use a kernel thread instead a workqueue")
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-yamllint warnings/errors:
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml: spi-flash@1: $nodename:0: 'spi-flash@1' does not match '^flash(@.*)?$'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mtd/spi-nand.yaml
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1530166
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
