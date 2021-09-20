@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AB9412520
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC37412526
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353548AbhITSlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52012 "EHLO mail.kernel.org"
+        id S1353519AbhITSlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:41:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380177AbhITSgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1380297AbhITSgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2957161360;
-        Mon, 20 Sep 2021 17:29:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5486761406;
+        Mon, 20 Sep 2021 17:29:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158961;
-        bh=Ru+MEAzX5O2omW4RBoXa85+qcuUCRwT4xf5WvCKbfnQ=;
+        s=korg; t=1632158963;
+        bh=T7SIofURIVF3X4OIUNNKYwN8beYr8BiPk7L0p0U2Lig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ns8Cqti5fFECXWUkwtYxa3kPxxNplHRHzH0MDr6+IYQ4RcKKB6F6g1dZuIjhdtKGN
-         c9HpcR4VgXK5+w0u44EvHJW2RQhjRbJiPFZxVRah0oowTYVZIgSCFSksI24jmM2hy0
-         HlRwx2UFeOdw4r89IA2/5L5nLwOkGBaoax5zvCEw=
+        b=NzL82nYD4a0FzoF3L2rABXMQeyQXfd8D9F0XJ6ZM5M2tBPQfpeKZK1Zx6uUoNfHu0
+         T2LQg/tXK6X7Ps9Cb/hCMB41tqD3veo+4TMuTxtEwHqG2IVCoDEyEaocu6OLpE58Kw
+         5O97jG/fqmAHl/g8s+M4L5QvM7xkKIB4/F5AxQfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>
-Subject: [PATCH 5.14 013/168] drm/amd/pm: fix runpm hang when amdgpu loaded prior to sound driver
-Date:   Mon, 20 Sep 2021 18:42:31 +0200
-Message-Id: <20210920163922.088118246@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Ernst=20Sj=C3=B6strand?= <ernstp@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.14 014/168] drm/amd/amdgpu: Increase HWIP_MAX_INSTANCE to 10
+Date:   Mon, 20 Sep 2021 18:42:32 +0200
+Message-Id: <20210920163922.119271099@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -42,130 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Ernst Sjöstrand <ernstp@gmail.com>
 
-commit 8b514e898ee7f861eb8863c647d258f71053af40 upstream.
+commit 67a44e659888569a133a8f858c8230e9d7aad1d5 upstream.
 
-Current RUNPM mechanism relies on PMFW to master the timing for BACO
-in/exit. And that needs cooperation from sound driver for dstate
-change notification for function 1(audio). Otherwise(on sound driver
-missing), BACO cannot be kicked in correctly and hang will be observed
-on RUNPM exit.
+Seems like newer cards can have even more instances now.
+Found by UBSAN: array-index-out-of-bounds in
+drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:318:29
+index 8 is out of range for type 'uint32_t *[8]'
 
-By switching back to legacy message way on sound driver missing,
-we are able to fix the runpm hang observed for the scenario below:
-amdgpu driver loaded -> runpm suspend kicked -> sound driver loaded
-
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reported-and-tested-by: Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>
-Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
-Reviewed-by: Guchun Chen <guchun.chen@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1697
 Cc: stable@vger.kernel.org
+Signed-off-by: Ernst Sjöstrand <ernstp@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c         |   24 ++++++++++++++--
- drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c |    4 +-
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c                  |   21 ++++++++++++++
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.h                  |    2 +
- 4 files changed, 47 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-@@ -2269,7 +2269,27 @@ static int navi10_baco_enter(struct smu_
- {
- 	struct amdgpu_device *adev = smu->adev;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -757,7 +757,7 @@ enum amd_hw_ip_block_type {
+ 	MAX_HWIP
+ };
  
--	if (adev->in_runpm)
-+	/*
-+	 * This aims the case below:
-+	 *   amdgpu driver loaded -> runpm suspend kicked -> sound driver loaded
-+	 *
-+	 * For NAVI10 and later ASICs, we rely on PMFW to handle the runpm. To
-+	 * make that possible, PMFW needs to acknowledge the dstate transition
-+	 * process for both gfx(function 0) and audio(function 1) function of
-+	 * the ASIC.
-+	 *
-+	 * The PCI device's initial runpm status is RUNPM_SUSPENDED. So as the
-+	 * device representing the audio function of the ASIC. And that means
-+	 * even if the sound driver(snd_hda_intel) was not loaded yet, it's still
-+	 * possible runpm suspend kicked on the ASIC. However without the dstate
-+	 * transition notification from audio function, pmfw cannot handle the
-+	 * BACO in/exit correctly. And that will cause driver hang on runpm
-+	 * resuming.
-+	 *
-+	 * To address this, we revert to legacy message way(driver masters the
-+	 * timing for BACO in/exit) on sound driver missing.
-+	 */
-+	if (adev->in_runpm && smu_cmn_is_audio_func_enabled(adev))
- 		return smu_v11_0_baco_set_armd3_sequence(smu, BACO_SEQ_BACO);
- 	else
- 		return smu_v11_0_baco_enter(smu);
-@@ -2279,7 +2299,7 @@ static int navi10_baco_exit(struct smu_c
- {
- 	struct amdgpu_device *adev = smu->adev;
+-#define HWIP_MAX_INSTANCE	8
++#define HWIP_MAX_INSTANCE	10
  
--	if (adev->in_runpm) {
-+	if (adev->in_runpm && smu_cmn_is_audio_func_enabled(adev)) {
- 		/* Wait for PMFW handling for the Dstate change */
- 		msleep(10);
- 		return smu_v11_0_baco_set_armd3_sequence(smu, BACO_SEQ_ULPS);
---- a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-@@ -2133,7 +2133,7 @@ static int sienna_cichlid_baco_enter(str
- {
- 	struct amdgpu_device *adev = smu->adev;
- 
--	if (adev->in_runpm)
-+	if (adev->in_runpm && smu_cmn_is_audio_func_enabled(adev))
- 		return smu_v11_0_baco_set_armd3_sequence(smu, BACO_SEQ_BACO);
- 	else
- 		return smu_v11_0_baco_enter(smu);
-@@ -2143,7 +2143,7 @@ static int sienna_cichlid_baco_exit(stru
- {
- 	struct amdgpu_device *adev = smu->adev;
- 
--	if (adev->in_runpm) {
-+	if (adev->in_runpm && smu_cmn_is_audio_func_enabled(adev)) {
- 		/* Wait for PMFW handling for the Dstate change */
- 		msleep(10);
- 		return smu_v11_0_baco_set_armd3_sequence(smu, BACO_SEQ_ULPS);
---- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-@@ -1053,3 +1053,24 @@ int smu_cmn_set_mp1_state(struct smu_con
- 
- 	return ret;
- }
-+
-+bool smu_cmn_is_audio_func_enabled(struct amdgpu_device *adev)
-+{
-+	struct pci_dev *p = NULL;
-+	bool snd_driver_loaded;
-+
-+	/*
-+	 * If the ASIC comes with no audio function, we always assume
-+	 * it is "enabled".
-+	 */
-+	p = pci_get_domain_bus_and_slot(pci_domain_nr(adev->pdev->bus),
-+			adev->pdev->bus->number, 1);
-+	if (!p)
-+		return true;
-+
-+	snd_driver_loaded = pci_is_enabled(p) ? true : false;
-+
-+	pci_dev_put(p);
-+
-+	return snd_driver_loaded;
-+}
---- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.h
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.h
-@@ -110,5 +110,7 @@ void smu_cmn_init_soft_gpu_metrics(void
- int smu_cmn_set_mp1_state(struct smu_context *smu,
- 			  enum pp_mp1_state mp1_state);
- 
-+bool smu_cmn_is_audio_func_enabled(struct amdgpu_device *adev);
-+
- #endif
- #endif
+ struct amd_powerplay {
+ 	void *pp_handle;
 
 
