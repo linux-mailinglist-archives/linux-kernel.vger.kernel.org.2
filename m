@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5E641267E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402774124EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354446AbhITS6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:58:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33246 "EHLO mail.kernel.org"
+        id S1381785AbhITSjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:39:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384558AbhITSsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:48:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 309A263371;
-        Mon, 20 Sep 2021 17:33:59 +0000 (UTC)
+        id S1380561AbhITSeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:34:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78FFF63304;
+        Mon, 20 Sep 2021 17:28:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159239;
-        bh=WJe888GmZMO8tNP8Mva3SIeLGpeDoflV3yrH7klLyPQ=;
+        s=korg; t=1632158900;
+        bh=tyK7mFga0GrJhQJBhe9x3vdSka4ErZBnDxT4AeOq1hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwmBFXhxzuQGo/9Bf1o9I5xplO+lYTWnnZsAgZNjPYrF1ozJNHgQU8uXeylMg+g3O
-         IQm4lMjt8XOudtFisEvNwSJgR9mGmZJRNo0ZuPCgY1AoWOntqSemYmwSHGqguiVfad
-         7Yd4LoBLGP7tbvaRGbAyV8ISQGpBzbT9kSvq5FpA=
+        b=C4K+W0KSHzYSwp4Oi93HyBImEByi8gAk2PPhgV06epY9reGoTrVsifPfje0NRgRu+
+         WQSZstPLfG5xnIRvYZR/ruvYCOMgN/DlXo04IeyVPHU78X0OvD+e4jMtlbfeF9e8Jj
+         qDYl/rTbiA9NI3VX4aj1OvAFzKtD3Xb6fBIFDQlQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Huafei <lihuafei1@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        He Kuang <hekuang@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Zhang Jinhao <zhangjinhao2@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 141/168] perf unwind: Do not overwrite FEATURE_CHECK_LDFLAGS-libunwind-{x86,aarch64}
-Date:   Mon, 20 Sep 2021 18:44:39 +0200
-Message-Id: <20210920163926.291811876@linuxfoundation.org>
+Subject: [PATCH 5.10 108/122] fq_codel: reject silly quantum parameters
+Date:   Mon, 20 Sep 2021 18:44:40 +0200
+Message-Id: <20210920163919.350460260@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,135 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Huafei <lihuafei1@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit cdf32b44678c382a31dc183d9a767306915cda7b ]
+[ Upstream commit c7c5e6ff533fe1f9afef7d2fa46678987a1335a7 ]
 
-When setting LIBUNWIND_DIR, we first set
+syzbot found that forcing a big quantum attribute would crash hosts fast,
+essentially using this:
 
- FEATURE_CHECK_LDFLAGS-libunwind-{aarch64,x86} = -L$(LIBUNWIND_DIR)/lib.
+tc qd replace dev eth0 root fq_codel quantum 4294967295
 
-<committer note>
-This happens a bit before, the overwritting, in:
+This is because fq_codel_dequeue() would have to loop
+~2^31 times in :
 
-  libunwind_arch_set_flags = $(eval $(libunwind_arch_set_flags_code))
-  define libunwind_arch_set_flags_code
-    FEATURE_CHECK_CFLAGS-libunwind-$(1)  = -I$(LIBUNWIND_DIR)/include
-    FEATURE_CHECK_LDFLAGS-libunwind-$(1) = -L$(LIBUNWIND_DIR)/lib
-  endef
+	if (flow->deficit <= 0) {
+		flow->deficit += q->quantum;
+		list_move_tail(&flow->flowchain, &q->old_flows);
+		goto begin;
+	}
 
-  ifdef LIBUNWIND_DIR
-    LIBUNWIND_CFLAGS  = -I$(LIBUNWIND_DIR)/include
-    LIBUNWIND_LDFLAGS = -L$(LIBUNWIND_DIR)/lib
-    LIBUNWIND_ARCHS = x86 x86_64 arm aarch64 debug-frame-arm debug-frame-aarch64
-    $(foreach libunwind_arch,$(LIBUNWIND_ARCHS),$(call libunwind_arch_set_flags,$(libunwind_arch)))
-  endif
+SFQ max quantum is 2^19 (half a megabyte)
+Lets adopt a max quantum of one megabyte for FQ_CODEL.
 
-Look at that 'foreach' on all the LIBUNWIND_ARCHS.
-</>
-
-After commit 5c4d7c82c0dc ("perf unwind: Do not put libunwind-{x86,aarch64}
-in FEATURE_TESTS_BASIC"), FEATURE_CHECK_LDFLAGS-libunwind-{x86,aarch64} is
-overwritten. As a result, the remote libunwind libraries cannot be searched
-from $(LIBUNWIND_DIR)/lib directory during feature check tests. Fix it with
-variable appending.
-
-Before this patch:
-
-  perf$ make VF=1 LIBUNWIND_DIR=/opt/libunwind_aarch64
-   BUILD:   Doing 'make -j16' parallel build
-  <SNIP>
-  ...
-  ...                    libopencsd: [ OFF ]
-  ...                 libunwind-x86: [ OFF ]
-  ...              libunwind-x86_64: [ OFF ]
-  ...                 libunwind-arm: [ OFF ]
-  ...             libunwind-aarch64: [ OFF ]
-  ...         libunwind-debug-frame: [ OFF ]
-  ...     libunwind-debug-frame-arm: [ OFF ]
-  ... libunwind-debug-frame-aarch64: [ OFF ]
-  ...                           cxx: [ OFF ]
-  <SNIP>
-
-  perf$ cat ../build/feature/test-libunwind-aarch64.make.output
-  /usr/bin/ld: cannot find -lunwind-aarch64
-  /usr/bin/ld: cannot find -lunwind-aarch64
-  collect2: error: ld returned 1 exit status
-
-After this patch:
-
-  perf$ make VF=1 LIBUNWIND_DIR=/opt/libunwind_aarch64
-   BUILD:   Doing 'make -j16' parallel build
-  <SNIP>
-  ...                    libopencsd: [ OFF ]
-  ...                 libunwind-x86: [ OFF ]
-  ...              libunwind-x86_64: [ OFF ]
-  ...                 libunwind-arm: [ OFF ]
-  ...             libunwind-aarch64: [ on  ]
-  ...         libunwind-debug-frame: [ OFF ]
-  ...     libunwind-debug-frame-arm: [ OFF ]
-  ... libunwind-debug-frame-aarch64: [ OFF ]
-  ...                           cxx: [ OFF ]
-  <SNIP>
-
-  perf$ cat ../build/feature/test-libunwind-aarch64.make.output
-
-  perf$ ldd ./perf
-        linux-vdso.so.1 (0x00007ffdf07da000)
-        libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f30953dc000)
-        librt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x00007f30951d4000)
-        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3094e36000)
-        libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f3094c32000)
-        libelf.so.1 => /usr/lib/x86_64-linux-gnu/libelf.so.1 (0x00007f3094a18000)
-        libdw.so.1 => /usr/lib/x86_64-linux-gnu/libdw.so.1 (0x00007f30947cc000)
-        libunwind-x86_64.so.8 => /usr/lib/x86_64-linux-gnu/libunwind-x86_64.so.8 (0x00007f30945ad000)
-        libunwind.so.8 => /usr/lib/x86_64-linux-gnu/libunwind.so.8 (0x00007f3094392000)
-        liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f309416c000)
-        libunwind-aarch64.so.8 => not found
-        libslang.so.2 => /lib/x86_64-linux-gnu/libslang.so.2 (0x00007f3093c8a000)
-        libpython2.7.so.1.0 => /usr/local/lib/libpython2.7.so.1.0 (0x00007f309386b000)
-        libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f309364e000)
-        libnuma.so.1 => /usr/lib/x86_64-linux-gnu/libnuma.so.1 (0x00007f3093443000)
-        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3093052000)
-        /lib64/ld-linux-x86-64.so.2 (0x00007f3096097000)
-        libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007f3092e42000)
-        libutil.so.1 => /lib/x86_64-linux-gnu/libutil.so.1 (0x00007f3092c3f000)
-
-Fixes: 5c4d7c82c0dceccf ("perf unwind: Do not put libunwind-{x86,aarch64} in FEATURE_TESTS_BASIC")
-Signed-off-by: Li Huafei <lihuafei1@huawei.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: He Kuang <hekuang@huawei.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Zhang Jinhao <zhangjinhao2@huawei.com>
-Link: http://lore.kernel.org/lkml/20210823134340.60955-1-lihuafei1@huawei.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 4b549a2ef4be ("fq_codel: Fair Queue Codel AQM")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/Makefile.config | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/uapi/linux/pkt_sched.h |  2 ++
+ net/sched/sch_fq_codel.c       | 12 ++++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index eb8e487ef90b..29ffd57f5cd8 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -133,10 +133,10 @@ FEATURE_CHECK_LDFLAGS-libunwind = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
- FEATURE_CHECK_CFLAGS-libunwind-debug-frame = $(LIBUNWIND_CFLAGS)
- FEATURE_CHECK_LDFLAGS-libunwind-debug-frame = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
+diff --git a/include/uapi/linux/pkt_sched.h b/include/uapi/linux/pkt_sched.h
+index 9e7c2c607845..69079fbf3ed2 100644
+--- a/include/uapi/linux/pkt_sched.h
++++ b/include/uapi/linux/pkt_sched.h
+@@ -826,6 +826,8 @@ struct tc_codel_xstats {
  
--FEATURE_CHECK_LDFLAGS-libunwind-arm = -lunwind -lunwind-arm
--FEATURE_CHECK_LDFLAGS-libunwind-aarch64 = -lunwind -lunwind-aarch64
--FEATURE_CHECK_LDFLAGS-libunwind-x86 = -lunwind -llzma -lunwind-x86
--FEATURE_CHECK_LDFLAGS-libunwind-x86_64 = -lunwind -llzma -lunwind-x86_64
-+FEATURE_CHECK_LDFLAGS-libunwind-arm += -lunwind -lunwind-arm
-+FEATURE_CHECK_LDFLAGS-libunwind-aarch64 += -lunwind -lunwind-aarch64
-+FEATURE_CHECK_LDFLAGS-libunwind-x86 += -lunwind -llzma -lunwind-x86
-+FEATURE_CHECK_LDFLAGS-libunwind-x86_64 += -lunwind -llzma -lunwind-x86_64
+ /* FQ_CODEL */
  
- FEATURE_CHECK_LDFLAGS-libcrypto = -lcrypto
++#define FQ_CODEL_QUANTUM_MAX (1 << 20)
++
+ enum {
+ 	TCA_FQ_CODEL_UNSPEC,
+ 	TCA_FQ_CODEL_TARGET,
+diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
+index bbd5f8753600..99e8db262198 100644
+--- a/net/sched/sch_fq_codel.c
++++ b/net/sched/sch_fq_codel.c
+@@ -369,6 +369,7 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
+ {
+ 	struct fq_codel_sched_data *q = qdisc_priv(sch);
+ 	struct nlattr *tb[TCA_FQ_CODEL_MAX + 1];
++	u32 quantum = 0;
+ 	int err;
  
+ 	if (!opt)
+@@ -386,6 +387,13 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
+ 		    q->flows_cnt > 65536)
+ 			return -EINVAL;
+ 	}
++	if (tb[TCA_FQ_CODEL_QUANTUM]) {
++		quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
++		if (quantum > FQ_CODEL_QUANTUM_MAX) {
++			NL_SET_ERR_MSG(extack, "Invalid quantum");
++			return -EINVAL;
++		}
++	}
+ 	sch_tree_lock(sch);
+ 
+ 	if (tb[TCA_FQ_CODEL_TARGET]) {
+@@ -412,8 +420,8 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
+ 	if (tb[TCA_FQ_CODEL_ECN])
+ 		q->cparams.ecn = !!nla_get_u32(tb[TCA_FQ_CODEL_ECN]);
+ 
+-	if (tb[TCA_FQ_CODEL_QUANTUM])
+-		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
++	if (quantum)
++		q->quantum = quantum;
+ 
+ 	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
+ 		q->drop_batch_size = max(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
 -- 
 2.30.2
 
