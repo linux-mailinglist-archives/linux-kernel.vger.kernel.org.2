@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD344110C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C16D4110BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235540AbhITIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbhITIQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234426AbhITIQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 20 Sep 2021 04:16:50 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE05C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:15:24 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so3691684otx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=21r3SlBBRDN7c0GadObCkHwMNcefKesbIlR1sAlPsLQ=;
-        b=SQWorY7ZsfFtuloE/lG1ja9FAvI18dl+3bl39aMZLpZxDz27fU31wFPgbMvWVtOdh/
-         jH5lPNVNUsKGROWbTpJVqcFsltAcTwYq6aD3Qr+5PAA7SeVT1zKKDMSLqv7v81XUiv42
-         tLQKsYubNAudAduG3VA2BvmY5PzrTUH32YWZwuT/we2r/LH7pP++EwPC4RvZPzD5CBWU
-         zTEXxcBJcgaf4n199H6aPWL/uU67ZsIRMgZaPcf/PHYjRcVI5MVqZIKnhwPKag68NCqD
-         koCbJjQKlGy7LSty428a/2+jF10JJS8pdJV/zHpNGg+z9pTFoUePAAxc/broobCeL+ga
-         pNPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=21r3SlBBRDN7c0GadObCkHwMNcefKesbIlR1sAlPsLQ=;
-        b=6Su3zNujLRDCgFvsKMU2P8obB9GNWH4ElOop70fdUOTAuwVPIu6OY2jQEW+Z/aqmap
-         ObowYfA1MfD7C0zfFJsRUc+6TjgznPHtdUeqv/KS5u7KZfzYpoBbonFSHbm4whcFZZsX
-         A0AVSzYSidmyOS8sdK4/JIsI3hNH6XZqWcGMdMn+Tae3GExRct8oeGQFPOUj0MfFlA5/
-         4mBQ1SR52p9wZ69kf81020IIlZ3jy/vYPRQE4jIKZGJkXhYFMyA/0p2qNtNJkgbGxEQs
-         GAECLRKJUb3OCiUDcsDipgqPmDmEo+ZBZkK01Mb1Z80PiV+ucFXOAkjwXVeMSIhu2JbP
-         jnBA==
-X-Gm-Message-State: AOAM532AJjunql5HGpsn5CggvS+JIloVMKYkJFF7S3FtlYMGccPsiH70
-        k/8CDHfmlJpJ20UlUIfw1sfsIvI0QBihYSAxAr94HA==
-X-Google-Smtp-Source: ABdhPJzEDVSSzCivHfiy0IzQdQlADqrjIknyU8CHTYUeZMc4g90+xJaP6rpoqArVDCE1Y9MpCoy2Dueb/K4l59izd04=
-X-Received: by 2002:a9d:2f28:: with SMTP id h37mr10592929otb.196.1632125723220;
- Mon, 20 Sep 2021 01:15:23 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233811AbhITIQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 04:16:45 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22311C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:15:19 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a2a0063d0dab944a9c04a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2a00:63d0:dab9:44a9:c04a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9FD121EC0354;
+        Mon, 20 Sep 2021 10:15:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632125713;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Paa1kzOmpJBMRxri1T1/v3bJ/87hSVXjiGD94CSac6I=;
+        b=Wd1Oo1WzCVjhv2Z3jVSPmQaJvCKFebmMUzmkYAceAfhB4dMEn/2Q8gYVpQcS4PgaZSA9M6
+        AIUwGr1AOD87tmB+nyaI21sY0IxAo2mByg+ZTjX8mZ6CiJ37mqhujQaz9q9oT0eIQaYXVK
+        SQFNx2F6DQCVAg0K7yxLTfCNeqmqszM=
+Date:   Mon, 20 Sep 2021 10:15:13 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     "Luck, Tony" <tony.luck@intel.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
+Message-ID: <YUhDEToGR5C/t0ZY@zn.tnic>
+References: <20210917105355.2368-1-bp@alien8.de>
+ <20210917105355.2368-3-bp@alien8.de>
+ <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com>
+ <5eb3ac0a-4887-08b2-82fa-0348e04ace95@rasmusvillemoes.dk>
 MIME-Version: 1.0
-References: <0ddad8d7-03c2-4432-64a4-b717bbc90fb4@gmail.com> <000000000000526fb105cc1d3f5b@google.com>
-In-Reply-To: <000000000000526fb105cc1d3f5b@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 20 Sep 2021 10:15:12 +0200
-Message-ID: <CACT4Y+bdXWBBXc9PfpU09d=zAGvKmMVuq=etQJ3b5WLgRwjGHg@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in __percpu_ref_exit (2)
-To:     syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, coreteam@netfilter.org,
-        davem@davemloft.net, dsahern@kernel.org, fw@strlen.de,
-        hdanton@sina.com, io-uring@vger.kernel.org, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, ming.lei@redhat.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5eb3ac0a-4887-08b2-82fa-0348e04ace95@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 16:01, syzbot
-<syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
->
-> Reported-and-tested-by: syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com
->
-> Tested on:
->
-> commit:         5318e5b9 io_uring: quiesce files reg
-> git tree:       https://github.com/isilence/linux.git syz_test_quiesce_files
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f7d9f99709463d21
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Note: testing is done by a robot and is best-effort only.
+On Mon, Sep 20, 2021 at 09:42:22AM +0200, Rasmus Villemoes wrote:
+> And, since in the concrete case mca_config just has four bool members
+> before the bitfields, we see that the 1-bit bitfields are put within the
+> first 8 bytes of the struct, while the __reserved field gets an entire
+> u64 all to itself:
 
-OK, since it's not failing, I assume we can say:
+I probably should move that into alignment.
 
-#syz fix: io_uring: fix link timeout refs
+> But why the messy mix between 1-bit bitfields and _Bools in the first place?
 
-(and it's better to close it with a wrong fix, then to keep it open
-forever anyway)
+My intention was to convert those boolean flags into a bitfield.
+But you can't convert them all, unfortunately:
+
+In file included from ./include/linux/miscdevice.h:7,
+                 from arch/x86/kernel/cpu/mce/core.c:14:
+./include/linux/device.h:148:64: error: cannot take address of bit-field ‘dont_log_ce’
+  148 |   { __ATTR(_name, _mode, device_show_bool, device_store_bool), &(_var) }
+      |                                                                ^
+arch/x86/kernel/cpu/mce/core.c:2415:8: note: in expansion of macro ‘DEVICE_BOOL_ATTR’
+ 2415 | static DEVICE_BOOL_ATTR(dont_log_ce, 0644, mca_cfg.dont_log_ce);
+      |        ^~~~~~~~~~~~~~~~
+make[4]: *** [scripts/Makefile.build:277: arch/x86/kernel/cpu/mce/core.o] Error 1
+make[3]: *** [scripts/Makefile.build:540: arch/x86/kernel/cpu/mce] Error 2
+make[3]: *** Waiting for unfinished jobs....
+make[2]: *** [scripts/Makefile.build:540: arch/x86/kernel/cpu] Error 2
+make[1]: *** [scripts/Makefile.build:540: arch/x86/kernel] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1874: arch/x86] Error 2
+make: *** Waiting for unfinished jobs....
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
