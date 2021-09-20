@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F224C4124CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C559D4123FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353264AbhITSiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
+        id S1379401AbhITS3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:29:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380246AbhITSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:33:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EED2C63302;
-        Mon, 20 Sep 2021 17:28:13 +0000 (UTC)
+        id S1347699AbhITSW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:22:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92DC9632BD;
+        Mon, 20 Sep 2021 17:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158894;
-        bh=P1hrLYW79xzFWhURSrD3E32TZFMAZ3cLWzEPY9zz+ck=;
+        s=korg; t=1632158678;
+        bh=jimwPGKDJIs+U4A1ZXtA5K/rN5J/j8KvjjUvd1/x4Zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Brxv/OOxcS6NCcTMjyjLE94lwvq/PEYAYbD1mZPARdb+Le3NOKeSyqHQ+JEw3RCpB
-         jGpNhhHIR51oOWTm9wFs1lknMsX+IndMl3aFxakIl8Yhfrq56G/YvA8NjPA/sEeNlY
-         bXpcy1mY7q9di7uswwMW+ihfWTbQSQ6TZtWTq5J0=
+        b=jPG4470gCgcBOb3q3uzSHX4aUHyr3I3CijRb327oyH7vzgIoFItTLw2bQaKkk/Mv7
+         yAmmtniOkhxCQFXx75ehxKJPCdHnK6LkywqzEL4f7/bl8Qkb4E7GEod4hKyk+3KG4Z
+         Q/uQpWGXAKa1g7HGMXtkUJEpCJAuxnEKDSdzMb1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@idosch.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 105/122] net: dsa: b53: Fix calculating number of switch ports
+Subject: [PATCH 5.4 259/260] ip_gre: validate csum_start only on pull
 Date:   Mon, 20 Sep 2021 18:44:37 +0200
-Message-Id: <20210920163919.240672303@linuxfoundation.org>
+Message-Id: <20210920163939.908174353@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit cdb067d31c0fe4cce98b9d15f1f2ef525acaa094 ]
+[ Upstream commit 8a0ed250f911da31a2aef52101bc707846a800ff ]
 
-It isn't true that CPU port is always the last one. Switches BCM5301x
-have 9 ports (port 6 being inactive) and they use port 5 as CPU by
-default (depending on design some other may be CPU ports too).
+The GRE tunnel device can pull existing outer headers in ipge_xmit.
+This is a rare path, apparently unique to this device. The below
+commit ensured that pulling does not move skb->data beyond csum_start.
 
-A more reliable way of determining number of ports is to check for the
-last set bit in the "enabled_ports" bitfield.
+But it has a false positive if ip_summed is not CHECKSUM_PARTIAL and
+thus csum_start is irrelevant.
 
-This fixes b53 internal state, it will allow providing accurate info to
-the DSA and is required to fix BCM5301x support.
+Refine to exclude this. At the same time simplify and strengthen the
+test.
 
-Fixes: 967dd82ffc52 ("net: dsa: b53: Add support for Broadcom RoboSwitch")
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Simplify, by moving the check next to the offending pull, making it
+more self documenting and removing an unnecessary branch from other
+code paths.
+
+Strengthen, by also ensuring that the transport header is correct and
+therefore the inner headers will be after skb_reset_inner_headers.
+The transport header is set to csum_start in skb_partial_csum_set.
+
+Link: https://lore.kernel.org/netdev/YS+h%2FtqCJJiQei+W@shredder/
+Fixes: 1d011c4803c7 ("ip_gre: add validation for csum_start")
+Reported-by: Ido Schimmel <idosch@idosch.org>
+Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/ipv4/ip_gre.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 52100d4fe5a2..a8e915dd826a 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -2556,9 +2556,8 @@ static int b53_switch_init(struct b53_device *dev)
- 			dev->cpu_port = 5;
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index fd8298b8b1c5..c4989e5903e4 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -446,8 +446,6 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
+ 
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ {
+-	if (csum && skb_checksum_start(skb) < skb->data)
+-		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
+ 
+@@ -605,15 +603,20 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
  	}
  
--	/* cpu port is always last */
--	dev->num_ports = dev->cpu_port + 1;
- 	dev->enabled_ports |= BIT(dev->cpu_port);
-+	dev->num_ports = fls(dev->enabled_ports);
+ 	if (dev->header_ops) {
++		const int pull_len = tunnel->hlen + sizeof(struct iphdr);
++
+ 		if (skb_cow_head(skb, 0))
+ 			goto free_skb;
  
- 	/* Include non standard CPU port built-in PHYs to be probed */
- 	if (is539x(dev) || is531x5(dev)) {
+ 		tnl_params = (const struct iphdr *)skb->data;
+ 
++		if (pull_len > skb_transport_offset(skb))
++			goto free_skb;
++
+ 		/* Pull skb since ip_tunnel_xmit() needs skb->data pointing
+ 		 * to gre header.
+ 		 */
+-		skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
++		skb_pull(skb, pull_len);
+ 		skb_reset_mac_header(skb);
+ 	} else {
+ 		if (skb_cow_head(skb, dev->needed_headroom))
 -- 
 2.30.2
 
