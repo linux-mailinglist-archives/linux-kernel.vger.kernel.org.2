@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED20411E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87194411C14
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347738AbhITR0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
+        id S1345618AbhITRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:05:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345846AbhITRXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:23:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F73F61A7A;
-        Mon, 20 Sep 2021 17:01:40 +0000 (UTC)
+        id S1344095AbhITRDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:03:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19EA961440;
+        Mon, 20 Sep 2021 16:53:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157300;
-        bh=w19I8oZ9rhYp53yKQs341qULcXAwjcFJktO1aC5SfCE=;
+        s=korg; t=1632156835;
+        bh=Q6vNTJ1K8C74ByiFgwhH/YMFugWO33c8Ms9B2BkYMEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T+GSfVBA0yjupxKCMpNY5heHTXZ3B7YPWI5pmZy2L3ClGdSAjHmdYIAZorsg4l/ed
-         +WE72lZUsSh8qkKSA+E9mhq5OAL9diRzRpIAmOjoYw1gbyD2tQmB510AlXMPUNsbf/
-         l7ckb2xQTrbg1pnakOPcacYSbAsVAMR+88FTwCp8=
+        b=YmGPYyLW6AGz/P0sH8j8NFJ9kDVJux3yrcQy5fWM5l3sjBmlNSPuAOiUDPJeItfCp
+         szh5uJFMxb5ZzrrmC6GfS5dIhqO1M3qqKFOvKNkXRfJtgZa+QF0/g0ChCxQXHPFDND
+         YMedrVojY4aCe5YYFKVcMpKCY1EWCvMqRbNKY8zw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 4.14 103/217] xen: fix setting of max_pfn in shared_info
+        stable@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 075/175] mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
 Date:   Mon, 20 Sep 2021 18:42:04 +0200
-Message-Id: <20210920163928.129083534@linuxfoundation.org>
+Message-Id: <20210920163920.509491740@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 4b511d5bfa74b1926daefd1694205c7f1bcf677f upstream.
+[ Upstream commit c3ff0189d3bc9c03845fe37472c140f0fefd0c79 ]
 
-Xen PV guests are specifying the highest used PFN via the max_pfn
-field in shared_info. This value is used by the Xen tools when saving
-or migrating the guest.
+Depending on the DMA driver being used, the struct dma_slave_config may
+need to be initialized to zero for the unused data.
 
-Unfortunately this field is misnamed, as in reality it is specifying
-the number of pages (including any memory holes) of the guest, so it
-is the highest used PFN + 1. Renaming isn't possible, as this is a
-public Xen hypervisor interface which needs to be kept stable.
+For example, we have three DMA drivers using src_port_window_size and
+dst_port_window_size. If these are left uninitialized, it can cause DMA
+failures.
 
-The kernel will set the value correctly initially at boot time, but
-when adding more pages (e.g. due to memory hotplug or ballooning) a
-real PFN number is stored in max_pfn. This is done when expanding the
-p2m array, and the PFN stored there is even possibly wrong, as it
-should be the last possible PFN of the just added P2M frame, and not
-one which led to the P2M expansion.
+For dw_mmc, this is probably not currently an issue but is still good to
+fix though.
 
-Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
-
-Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Link: https://lore.kernel.org/r/20210730092622.9973-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3fc7eaef44db ("mmc: dw_mmc: Add external dma interface support")
+Cc: Shawn Lin <shawn.lin@rock-chips.com>
+Cc: Jaehoon Chung <jh80.chung@samsung.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210810081644.19353-2-tony@atomide.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/p2m.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mmc/host/dw_mmc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -613,8 +613,8 @@ int xen_alloc_p2m_entry(unsigned long pf
- 	}
+diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+index c6b91efaa956..209bdf0317b3 100644
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -762,6 +762,7 @@ static int dw_mci_edmac_start_dma(struct dw_mci *host,
+ 	int ret = 0;
  
- 	/* Expanded the p2m? */
--	if (pfn > xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = pfn;
-+	if (pfn >= xen_p2m_last_pfn) {
-+		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
- 		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
- 	}
- 
+ 	/* Set external dma config: burst size, burst width */
++	memset(&cfg, 0, sizeof(cfg));
+ 	cfg.dst_addr = host->phy_regs + fifo_offset;
+ 	cfg.src_addr = cfg.dst_addr;
+ 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-- 
+2.30.2
+
 
 
