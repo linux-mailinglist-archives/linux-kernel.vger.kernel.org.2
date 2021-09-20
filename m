@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11A24125C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9F1412150
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384522AbhITSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:48:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56474 "EHLO mail.kernel.org"
+        id S1345520AbhITSEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:04:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383437AbhITSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:44:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8877A63357;
-        Mon, 20 Sep 2021 17:32:56 +0000 (UTC)
+        id S1350188AbhITR5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:57:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C00A8630EE;
+        Mon, 20 Sep 2021 17:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159177;
-        bh=2+f0q9COo9y3qm6fO0LOOCVmBLhraM8f7noOmNchM60=;
+        s=korg; t=1632158084;
+        bh=TJFSe8JPmG4bLn8+Xy/N7cR/daTic0JPMZDE5sZVnwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PX21X4DDO3w7ImVvm8FoBDlJtV4N77C1Ne3zzRLIzy40aS96Yl09VW9qyCvAtLSsv
-         YKXFfvWP24auoeGHKIvjgprCz+1z32oUW4JylU1JCk02ofceS1t0n4o0Whhcpa8Q9h
-         eoUv6vFR00Z3HUaYUiygN+Oo7koBzPU0HZuA56Ps=
+        b=sZlyubPYwg79nDpKrgd3V67lL0ERNZpmcwxbm0zoTbgOeEJiKd0TqOWNAqiauRbs9
+         HL+nLQ2BM0duL4P4fOjDWEUirmvt25ncThqUOn9y2WlONFNbLxZ6tusPu0EfMOSPp0
+         TS+ZO/a8aubyQQ8pD35AXatRHVdS5vsQCMw2EPGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 112/168] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
+Subject: [PATCH 4.19 288/293] net: dsa: b53: Fix calculating number of switch ports
 Date:   Mon, 20 Sep 2021 18:44:10 +0200
-Message-Id: <20210920163925.320031775@linuxfoundation.org>
+Message-Id: <20210920163943.291225200@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
+[ Upstream commit cdb067d31c0fe4cce98b9d15f1f2ef525acaa094 ]
 
-Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
-0x1061 composition in order to avoid bind error.
+It isn't true that CPU port is always the last one. Switches BCM5301x
+have 9 ports (port 6 being inactive) and they use port 5 as CPU by
+default (depending on design some other may be CPU ports too).
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+A more reliable way of determining number of ports is to check for the
+last set bit in the "enabled_ports" bitfield.
+
+This fixes b53 internal state, it will allow providing accurate info to
+the DSA and is required to fix BCM5301x support.
+
+Fixes: 967dd82ffc52 ("net: dsa: b53: Add support for Broadcom RoboSwitch")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc_mbim.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/dsa/b53/b53_common.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
-index 4c4ab7b38d78..82bb5ed94c48 100644
---- a/drivers/net/usb/cdc_mbim.c
-+++ b/drivers/net/usb/cdc_mbim.c
-@@ -654,6 +654,11 @@ static const struct usb_device_id mbim_devs[] = {
- 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
- 	},
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index 7eaeab65d39f..451121f47c89 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -2135,9 +2135,8 @@ static int b53_switch_init(struct b53_device *dev)
+ 			dev->cpu_port = 5;
+ 	}
  
-+	/* Telit LN920 */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
-+	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
-+	},
-+
- 	/* default entry */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
- 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
+-	/* cpu port is always last */
+-	dev->num_ports = dev->cpu_port + 1;
+ 	dev->enabled_ports |= BIT(dev->cpu_port);
++	dev->num_ports = fls(dev->enabled_ports);
+ 
+ 	/* Include non standard CPU port built-in PHYs to be probed */
+ 	if (is539x(dev) || is531x5(dev)) {
 -- 
 2.30.2
 
