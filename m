@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87C841240F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3357412416
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379130AbhITSaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
+        id S1379780AbhITSa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:30:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378348AbhITSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1378349AbhITSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B519C6140D;
-        Mon, 20 Sep 2021 17:25:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8F8B632C8;
+        Mon, 20 Sep 2021 17:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158704;
-        bh=rHM8pExSYGB04i59AgI0OSz9coKtLAGDTOw1Due3n4I=;
+        s=korg; t=1632158706;
+        bh=BoLplh6bBEsyA6OP7XqisN8yxIN+vNcJcvH1zW8/lns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GfmfbN8sOQ+bR42ijnkFAjMbyzSvDZuZJSdhKSnrDxaxoSVTtJcVb889n9ut2BmL1
-         fx/+TT+jMsNy9nq4WarG3UKS6pAfXIN/L0Bkc+D8gPZ537a1aNdSKsst5OnyGGSbyQ
-         jQNUetLJp2Rlsa9CY7zJmkMSGcnsHpNGPjrA5xJE=
+        b=snZ+xBe5aNxbQ4XK4Wj9V4LTg0DA4graIrcfANIqQn1+d7KL9UlKt1F9CVCQu7UyC
+         x5wMbZaa8EIbGfS2GCfJ0zC+KfTt8WO6oGdUZ3yfT0JXyR1HRUY+DNSXSt3Xk1nkRD
+         nsTqTfLF8YAjo5LmflmengC0M605zTgwMeSryXhM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.10 018/122] s390/sclp: fix Secure-IPL facility detection
-Date:   Mon, 20 Sep 2021 18:43:10 +0200
-Message-Id: <20210920163916.370908208@linuxfoundation.org>
+        stable@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        David Hildenbrand <david@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH 5.10 019/122] x86/pat: Pass valid address to sanitize_phys()
+Date:   Mon, 20 Sep 2021 18:43:11 +0200
+Message-Id: <20210920163916.406099512@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -41,40 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
+From: Jeff Moyer <jmoyer@redhat.com>
 
-commit d76b14f3971a0638b6cd0da289f8b48acee287d0 upstream.
+commit aeef8b5089b76852bd84889f2809e69a7cfb414e upstream.
 
-Prevent out-of-range access if the returned SCLP SCCB response is smaller
-in size than the address of the Secure-IPL flag.
+The end address passed to memtype_reserve() is handed directly to
+sanitize_phys().  However, end is exclusive and sanitize_phys() expects
+an inclusive address.  If end falls at the end of the physical address
+space, sanitize_phys() will return 0.  This can result in drivers
+failing to load, and the following warning:
 
-Fixes: c9896acc7851 ("s390/ipl: Provide has_secure sysfs attribute")
-Cc: stable@vger.kernel.org # 5.2+
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+ WARNING: CPU: 26 PID: 749 at arch/x86/mm/pat.c:354 reserve_memtype+0x262/0x450
+ reserve_memtype failed: [mem 0x3ffffff00000-0xffffffffffffffff], req uncached-minus
+ Call Trace:
+  [<ffffffffa427b1f2>] reserve_memtype+0x262/0x450
+  [<ffffffffa42764aa>] ioremap_nocache+0x1a/0x20
+  [<ffffffffc04620a1>] mpt3sas_base_map_resources+0x151/0xa60 [mpt3sas]
+  [<ffffffffc0465555>] mpt3sas_base_attach+0xf5/0xa50 [mpt3sas]
+ ---[ end trace 6d6eea4438db89ef ]---
+ ioremap reserve_memtype failed -22
+ mpt3sas_cm0: unable to map adapter memory! or resource not found
+ mpt3sas_cm0: failure at drivers/scsi/mpt3sas/mpt3sas_scsih.c:10597/_scsih_probe()!
+
+Fix this by passing the inclusive end address to sanitize_phys().
+
+Fixes: 510ee090abc3 ("x86/mm/pat: Prepare {reserve, free}_memtype() for "decoy" addresses")
+Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/x49o8a3pu5i.fsf@segfault.boston.devel.redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/char/sclp_early.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/mm/pat/memtype.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/s390/char/sclp_early.c
-+++ b/drivers/s390/char/sclp_early.c
-@@ -40,13 +40,14 @@ static void __init sclp_early_facilities
- 	sclp.has_gisaf = !!(sccb->fac118 & 0x08);
- 	sclp.has_hvs = !!(sccb->fac119 & 0x80);
- 	sclp.has_kss = !!(sccb->fac98 & 0x01);
--	sclp.has_sipl = !!(sccb->cbl & 0x4000);
- 	if (sccb->fac85 & 0x02)
- 		S390_lowcore.machine_flags |= MACHINE_FLAG_ESOP;
- 	if (sccb->fac91 & 0x40)
- 		S390_lowcore.machine_flags |= MACHINE_FLAG_TLB_GUEST;
- 	if (sccb->cpuoff > 134)
- 		sclp.has_diag318 = !!(sccb->byte_134 & 0x80);
-+	if (sccb->cpuoff > 137)
-+		sclp.has_sipl = !!(sccb->cbl & 0x4000);
- 	sclp.rnmax = sccb->rnmax ? sccb->rnmax : sccb->rnmax2;
- 	sclp.rzm = sccb->rnsize ? sccb->rnsize : sccb->rnsize2;
- 	sclp.rzm <<= 20;
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -583,7 +583,12 @@ int memtype_reserve(u64 start, u64 end,
+ 	int err = 0;
+ 
+ 	start = sanitize_phys(start);
+-	end = sanitize_phys(end);
++
++	/*
++	 * The end address passed into this function is exclusive, but
++	 * sanitize_phys() expects an inclusive address.
++	 */
++	end = sanitize_phys(end - 1) + 1;
+ 	if (start >= end) {
+ 		WARN(1, "%s failed: [mem %#010Lx-%#010Lx], req %s\n", __func__,
+ 				start, end - 1, cattr_name(req_type));
 
 
