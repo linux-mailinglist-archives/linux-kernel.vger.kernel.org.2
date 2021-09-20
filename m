@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05216412D01
+	by mail.lfdr.de (Postfix) with ESMTP id 4F528412D02
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346918AbhIUCwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
+        id S1347109AbhIUCwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237680AbhIUCXc (ORCPT
+        with ESMTP id S1348926AbhIUCZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:23:32 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914EAC1DDC6B;
-        Mon, 20 Sep 2021 11:50:00 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id h3-20020a17090a580300b0019ce70f8243so124131pji.4;
-        Mon, 20 Sep 2021 11:50:00 -0700 (PDT)
+        Mon, 20 Sep 2021 22:25:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D74C0A8891;
+        Mon, 20 Sep 2021 11:53:01 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id p12-20020a17090adf8c00b0019c959bc795so671744pjv.1;
+        Mon, 20 Sep 2021 11:53:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=AEf79rWn/9hTeD9zwPcYIx29i0uIYHTFx/+Rb5okHyA=;
-        b=aUNnRE2bPwUnM530gy1QMPLkyf+ddc/uzBEVJqypT0HenlLa66c+jST32dpWaTo2As
-         uEFu30EtvlSpI5a9YXGEKaCeUJQIOIBA3uobm1n/C5RgdO8HSb03NF62mK1oxX7S6MLC
-         vcYYIH2VlZV9ym4bVe7VpmR/0/M1tQWnQ6isG+jpCHuuIQ6XPhOGpe8kyYG/F+j991yc
-         aAiJ1emuz0ce5OERRV0xHXQ9mpNeI4jXT+hLROrQeti0kZWUY2H+tKqYx6KRW++kKSma
-         Mwfwu7RN7+9uJ6qMzDx0pGZOdeOQ4X84I0l1MY2SEgarjsgTVat83o6+1agECW+Iyuu/
-         c7Pg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m5BJH16boVP7rRcxwqeiaoZfcWc5Kg084T+ceyYOfzo=;
+        b=oJc/mSWJ+6G5qMi+zuSGSH9E9w6QKkTk5a8HuUBIl0Yak9fvmcsArwM6i8VZQZcfjM
+         FZyl/1gPNCHqOENpkm3HTtAVqk+M7cYPtkr3rLUiNT1QnaLT+DFylTknRNrncbayaa8c
+         KHYcOjKHnq1DXAAW+pZCIppmT2Uzf03STjYQ8ULXwDEgZgFH6XJHRD2SzlY1PDJ5Bba/
+         zrNW3ZIjRR27DY3nwpZqJ9Pi1pkyfRxd2fdqTsAU1BsqaxjLo474SIdmBPOGLLCYBnZn
+         DRmqdl+5O25sZ1XWGhRVuEVI3HXF1Opy0y9TUqQDhJOtmdRIniofg36aXvY0Y2j3vAoQ
+         JybQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=AEf79rWn/9hTeD9zwPcYIx29i0uIYHTFx/+Rb5okHyA=;
-        b=LkekmXPmz4/9D+6DOIe2LuTm1wQXIQ9yn+123zDJYA1HRZtcZbX6fctW9aNkxGUaKl
-         v8GhlgVrLf0uKJTMnEAHZEWSp5BrV+qZNMC6GM10j6xztPPTltBlo+1RCyfJ0IsNo6L0
-         v/CzXUPBKf9hh9otMHNSduvyj2rrJyEiSDBmndRbpWD7yZzWm1lQKn5TL8Bo/GJutNhj
-         ulGkIuXY25nt3DwAiZwiGTWEQjjgMIj49vrjQR/pURpmJmuUJ/awUERdH6lKjPSmM2gr
-         o77CJHygVx3AA0o7uweAoo+MQrXkv+ym2W1dIlN5/6KTYu4AKh7+phEZB9xqaIcKkwBv
-         EOgg==
-X-Gm-Message-State: AOAM533BrN3GCr6oqChJmW6o6yzhl8x+JqyhTTTDHbBM/F6UlOi1r26b
-        n6e9ScSDF/ZWxNmtBC8r25A=
-X-Google-Smtp-Source: ABdhPJwyRtjipL3juujjlnSSZ7iaf9xGw/l+MgfBA1qbjWuI79wP+PUEyOKmCYlq7okQqpUaNhcyrQ==
-X-Received: by 2002:a17:90b:4d8a:: with SMTP id oj10mr494845pjb.233.1632163800115;
-        Mon, 20 Sep 2021 11:50:00 -0700 (PDT)
-Received: from [10.69.44.239] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z17sm5450158pfa.148.2021.09.20.11.49.59
+        bh=m5BJH16boVP7rRcxwqeiaoZfcWc5Kg084T+ceyYOfzo=;
+        b=DUGwy9uxCejeQc0EEH7aqB599LcafUEPGvgMVy80Qdr2DIovAu1Ly1WJdsiOkA+JOZ
+         8otOeqA+Eo7SUf9i6OHjLAPhwpG+ubzNuWbA3jFHFipPtNIvaG+D5Yhz576J1285NfDm
+         AF6UqppELF2suekSNoCzcc2vSCq2x7yNtACbzi5dmkNVVJ4eKNR7sGBLL7O1VEb5TSNQ
+         HnZTJP7VSkOrtFT0RwSZl7lWYR4cLiHNzgmp4ulVWR7gO/RUjQCZ3y5gRSRPfLvHJTxG
+         EcaJ896e28xPNcl30m+N9ShYY02d6oB5kK9Ho7/qNm4vm49GftIPE4Oq0rmoqHqYu0id
+         Fikg==
+X-Gm-Message-State: AOAM533G/1Y0Ah5Tn2GuBrXoi4eg+DgJ2fFpUqDL0UV2PPgWh4l7bl99
+        QMaLyi0YkzWr75+wSBvENnqnWaz10nE=
+X-Google-Smtp-Source: ABdhPJy5NSfuI0AqjYGXwD2OlgtSs/4jSGaCEqNWfEX46HZINvEbcu5J4GCPhQbKO5tWzpKOJ4LcIA==
+X-Received: by 2002:a17:902:e752:b0:13b:7e90:af8b with SMTP id p18-20020a170902e75200b0013b7e90af8bmr23778990plf.12.1632163980272;
+        Mon, 20 Sep 2021 11:53:00 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id t13sm577924pjj.1.2021.09.20.11.52.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 11:49:59 -0700 (PDT)
-Message-ID: <a4c0a2fd-8b33-8b30-ed74-e033136d496a@gmail.com>
-Date:   Mon, 20 Sep 2021 11:49:58 -0700
+        Mon, 20 Sep 2021 11:52:59 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/122] 5.10.68-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210920163915.757887582@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <27465b72-212f-9f09-478f-2f8b3032620d@gmail.com>
+Date:   Mon, 20 Sep 2021 11:52:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH] scsi: lpfc: Fix gcc -Wstringop-overread warning, again
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Justin Tee <justin.tee@broadcom.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Gaurav Srivastava <gaurav.srivastava@broadcom.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210920095628.1191676-1-arnd@kernel.org>
-From:   James Smart <jsmart2021@gmail.com>
-In-Reply-To: <20210920095628.1191676-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/2021 2:56 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 9/20/21 9:42 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.68 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I fixed a stringop-overread warning earlier this year, now a
-> second copy of the original code was added and the warning came
-> back:
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
 > 
-> drivers/scsi/lpfc/lpfc_attr.c: In function 'lpfc_cmf_info_show':
-> drivers/scsi/lpfc/lpfc_attr.c:289:25: error: 'strnlen' specified bound 4095 exceeds source size 24 [-Werror=stringop-overread]
->    289 |                         strnlen(LPFC_INFO_MORE_STR, PAGE_SIZE - 1),
->        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.68-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> Fix it the same way as the other copy.
+> thanks,
 > 
-> Fixes: ada48ba70f6b ("scsi: lpfc: Fix gcc -Wstringop-overread warning")
-> Fixes: 74a7baa2a3ee ("scsi: lpfc: Add cmf_info sysfs entry")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/scsi/lpfc/lpfc_attr.c | 7 ++-----
+> greg k-h
 
+[snip]
 
-Thank You Arnd. Looks good.
+> Rafał Miłecki <rafal@milecki.pl>
+>     net: dsa: b53: Set correct number of ports in the DSA struct
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+This patch will cause an out of bounds access on two platforms that use
+the b53 driver, you would need to wait for this commit:
 
--- james
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=02319bf15acf54004216e40ac9c171437f24be24
+
+to land in Linus' tree and then you can also take Rafal's b53 change.
+This is applicable to both the 5.14 and 5.10 trees and any tree where
+this change would be back ported to in between.
+
+Thank you!
+-- 
+Florian
