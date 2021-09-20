@@ -2,106 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39382410F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 08:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C9F410F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 08:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhITGNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 02:13:16 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:21630 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230269AbhITGNN (ORCPT
+        id S232103AbhITGXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 02:23:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50408 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhITGXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 02:13:13 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18JMXS8H007602;
-        Mon, 20 Sep 2021 02:11:45 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3b6ccp1k9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 02:11:45 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 18K6BiDH045014
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Sep 2021 02:11:44 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Mon, 20 Sep 2021
- 02:11:43 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Mon, 20 Sep 2021 02:11:43 -0400
-Received: from ramonaalexandra-Precision-5520.ad.analog.com ([10.48.65.154])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 18K6BfpF009620;
-        Mon, 20 Sep 2021 02:11:41 -0400
-From:   Ramona Alexandra Nechita <ramona.nechita@analog.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        Ramona Alexandra Nechita <ramona.nechita@analog.com>
-Subject: [PATCH v2] regulators: fix typo in Kconfig and max8973-regulator
-Date:   Mon, 20 Sep 2021 09:11:37 +0300
-Message-ID: <20210920061137.10884-1-ramona.nechita@analog.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 20 Sep 2021 02:23:49 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18K6M8cR105491;
+        Mon, 20 Sep 2021 01:22:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632118928;
+        bh=cGzq+LElCi0WvquyL9h04M9GQMqt65EWmM2LFPx7TSM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Ji8QzlKOv8kBMVaGYBtnG9gVpAfAAlLqHrJfGkB8Ls/csigL0yVMYbdk3qYsmorCS
+         kV768iiE9blPcHxew98zksrQ16lbYnSZEKS8y1ghG/jWlwZNuZH0JJAWKDs/1rF9st
+         9F/gTq6jQyFAnEDXRbEHZC5vdZLBPXaVA4m1Iiwk=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18K6M8b1038594
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Sep 2021 01:22:08 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
+ Sep 2021 01:22:07 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 20 Sep 2021 01:22:07 -0500
+Received: from [10.250.232.18] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18K6M5nq027605;
+        Mon, 20 Sep 2021 01:22:06 -0500
+Subject: Re: [QUERY] Using same ITS device ID for two PCI devices (two PCI
+ Requestor ID)
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Vutla, Lokesh" <lokeshvutla@ti.com>,
+        "Nori, Sekhar" <nsekhar@ti.com>
+References: <5f8f586b-4308-dad7-d87d-9a341a248680@ti.com>
+ <87sfy4bd8h.wl-maz@kernel.org>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <7cf627db-9859-c7e1-5f07-0ab29f2efe7e@ti.com>
+Date:   Mon, 20 Sep 2021 11:52:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: j0DxxjgHOiaKZwXSFTXE8FuRs1fzjLqx
-X-Proofpoint-ORIG-GUID: j0DxxjgHOiaKZwXSFTXE8FuRs1fzjLqx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-20_03,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxlogscore=936 clxscore=1015 adultscore=0
- bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109200037
+In-Reply-To: <87sfy4bd8h.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAX8973 is supposed to be MAX8973A. Kconfig and the
-initial comment of max8973-regulator.c were modified
-accordingly.
+Hi Marc,
 
-Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
----
- drivers/regulator/Kconfig             | 4 ++--
- drivers/regulator/max8973-regulator.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+On 16/09/21 11:43 pm, Marc Zyngier wrote:
+> Kishon,
+> 
+> On Thu, 16 Sep 2021 14:02:58 +0100,
+> Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>
+>> Hi Marc, Thomas,
+>>
+>> TI's K3 platforms use GIT ITS for PCIe MSI/MSI-X interrupts. It uses
+>> *pre_its_window* as implemented by
+>> *its_enable_quirk_socionext_synquacer* in irq-gic-v3-its.c.
+> 
+> I see it coming... If it sounds like a car crash, if it smells like a
+> car crash, it probably is a car crash...
+> 
+>> So PCIe controller instead of directly writing to GITS_TRANSLATER,
+>> will write to a separate window and the device ID is taken from the
+>> offset to which the PCIe device writes (instead of dedicated lines
+>> from PCIe controller to GIC ITS). So every 4-byte register address
+>> maps in this window maps to a unique ITS device id.
+>>
+>> All of this is already implemented in Linux Kernel
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/irqchip/irq-gic-v3-its.c#n4645
+>>
+>> Now TI's AM64 has an issue in that it doesn't trigger interrupt if
+>> the address in the *pre_its_window* is not aligned to 8-bytes (this
+>> is due to an invalid bridge configuration in HW).
+>>
+>> This means there will not be interrupts for devices with PCIe
+>> requestor ID, 0x1, 0x3, 0x5..., as the address in the pre-ITS window
+>> would be 4 (1 << 2), 12 (3 << 2), 20 (5 << 2) respectively.
+> 
+> Let me get this straight: instead of using the existing infrastructure
+> and propagating the RIDs to the ITS, TI decided to go our of their way
+> to copy the Socionext utter madness, something that was already a
+> glaring bug, and managed to add a bug of their own on top of it?
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 3ee63531f6d5..7daacb8c63ed 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -518,12 +518,12 @@ config REGULATOR_MAX8952
- 	  modes ranging from 0.77V to 1.40V by 0.01V steps.
- 
- config REGULATOR_MAX8973
--	tristate "Maxim MAX8973 voltage regulator "
-+	tristate "Maxim MAX8973A voltage regulator"
- 	depends on I2C
- 	depends on THERMAL && THERMAL_OF
- 	select REGMAP_I2C
- 	help
--	  The MAXIM MAX8973 high-efficiency. three phase, DC-DC step-down
-+	  The MAXIM MAX8973A high-efficiency. three phase, DC-DC step-down
- 	  switching regulator delivers up to 9A of output current. Each
- 	  phase operates at a 2MHz fixed frequency with a 120 deg shift
- 	  from the adjacent phase, allowing the use of small magnetic component.
-diff --git a/drivers/regulator/max8973-regulator.c b/drivers/regulator/max8973-regulator.c
-index 9aee1444181d..f25514f714a9 100644
---- a/drivers/regulator/max8973-regulator.c
-+++ b/drivers/regulator/max8973-regulator.c
-@@ -1,7 +1,7 @@
- /*
-- * max8973-regulator.c -- Maxim max8973
-+ * max8973-regulator.c -- Maxim max8973A
-  *
-- * Regulator driver for MAXIM 8973 DC-DC step-down switching regulator.
-+ * Regulator driver for MAXIM 8973A DC-DC step-down switching regulator.
-  *
-  * Copyright (c) 2012, NVIDIA Corporation.
-  *
--- 
-2.25.1
+unfortunately yes.
+> 
+> Not only this completely breaks device isolation (the Socionext bug),
+> but you can't even have an odd-numbered function generating MSIs? Good
 
+Yes.
+> thing I'm on holiday, I can have an early drink to forget...
+> 
+>> So in order to provide 8 byte aligned address always, I mapped the PCIe
+>> requestor ID to ITS device ID such that it always provides 8-byte aligned
+>> address. The DT property like below helped me achieve that.
+>>
+>> msi-map = <0x0 &gic_its 0x0 0x10000>;
+>> msi-map-mask = <0xfffe>;
+>>
+>> So this would result in creating one "struct its_device" for 2 PCIe
+>> devices and the pre-ITS address will be aligned to 8-bytes.
+>>
+>> However with this, its_alloc_device_irq() for the 2nd PCIe device is failing
+>> since we create "struct its_device" with the number of interrupt vectors
+>> requested by the 1st PCIe device.
+>>
+>> Would like to get your opinion on what would be the best way to
+>> workaround this for AM64.
+> 
+> My preferred workaround would be to take a drill and end the life of
+> this thing right now. I guess this isn't an option, so see below for
+> the next best thing.
+> 
+>> One option would be to create a new compatible for AM64 ("ti,am64,gic-v3-its")
+>> allocate a minimal number of interrupt vector while creating "struct
+>> its_device". Would that be acceptable? Any other ideas?
+> 
+> No. Messing with the core ITS allocation isn't acceptable. If there is
+> such a hack, it has to be dealt within the ITS PCI backend (I assume
+> you don't have anything but PCI devices targeting the ITS, right?).
+
+That's right!
+> 
+> We already have to deal with cases where the endpoints are behind
+> aliasing bridges, meaning that we can't distinguish between them, and
+> have to account for all the endpoints behind this bridge. You will
+> have to perform something similar and compute the upper bound for
+> these two devices (functions of the same device actually). See
+> its_pci_msi_prepare() for the gory details.
+
+Thanks for the hint. Let me take a stab at it.
+
+Regards,
+Kishon
