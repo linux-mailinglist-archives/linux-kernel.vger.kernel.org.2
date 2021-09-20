@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AC141206A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44492411AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355546AbhITRzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:55:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52986 "EHLO mail.kernel.org"
+        id S243158AbhITQvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345985AbhITRtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:49:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B52761BC2;
-        Mon, 20 Sep 2021 17:11:25 +0000 (UTC)
+        id S240786AbhITQtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:49:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84DC461264;
+        Mon, 20 Sep 2021 16:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157885;
-        bh=xe70vIt72YFdj5RAjDRRzRRdgCGG+uduzHGLstwLBsU=;
+        s=korg; t=1632156487;
+        bh=2xMlWFHiXOi120R/jSPT9RMjHQNRuLCblCgFLo8tWIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ssea8KPwdGQtTncCYp4Yr1xPKuVvVkPL9DLYgp3DNIlbyIBA4+WGv1wkhO42Cq5VH
-         fiq8jaSSqko0AzKwXdY5io2WduG7GHGOXsUsikcDc1fmKDc9o8vhALb02IZXF6UlRt
-         Cjrc5i9h6rXfa2ACcp/0dX7YEiVv9oAzPRa9qrHA=
+        b=gVB5u0YzSXSwnLqBXSShk+qCP2qsqhF2dlphEKKvIuRQdAg8oZM68X41B2tL+SVUV
+         Y4CZ+N2GRLIukJxFeP6cLpJWjwuCduTWarK8akZvJJoVufdKal7bBKNOve9GZT6uOR
+         ahVtwi6eOjx01HUyP9avuu3blvVAKLu2SdqhEU8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 196/293] serial: 8250: Define RX trigger levels for OxSemi 950 devices
-Date:   Mon, 20 Sep 2021 18:42:38 +0200
-Message-Id: <20210920163939.978178012@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?R=C3=B6tti?= 
+        <espressobinboardarmbiantempmailaddress@posteo.de>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 4.4 081/133] PCI: Restrict ASMedia ASM1062 SATA Max Payload Size Supported
+Date:   Mon, 20 Sep 2021 18:42:39 +0200
+Message-Id: <20210920163915.292942521@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit d7aff291d069c4418285f3c8ee27b0ff67ce5998 ]
+commit b12d93e9958e028856cbcb061b6e64728ca07755 upstream.
 
-Oxford Semiconductor 950 serial port devices have a 128-byte FIFO and in
-the enhanced (650) mode, which we select in `autoconfig_has_efr' with
-the ECB bit set in the EFR register, they support the receive interrupt
-trigger level selectable with FCR bits 7:6 from the set of 16, 32, 112,
-120.  This applies to the original OX16C950 discrete UART[1] as well as
-950 cores embedded into more complex devices.
+The ASMedia ASM1062 SATA controller advertises Max_Payload_Size_Supported
+of 512, but in fact it cannot handle incoming TLPs with payload size of
+512.
 
-For these devices we set the default to 112, which sets an excessively
-high level of 112 or 7/8 of the FIFO capacity, unlike with other port
-types where we choose at most 1/2 of their respective FIFO capacities.
-Additionally we don't make the trigger level configurable.  Consequently
-frequent input overruns happen with high bit rates where hardware flow
-control cannot be used (e.g. terminal applications) even with otherwise
-highly-performant systems.
+We discovered this issue on PCIe controllers capable of MPS = 512 (Aardvark
+and DesignWare), where the issue presents itself as an External Abort.
+Bjorn Helgaas says:
 
-Lower the default receive interrupt trigger level to 32 then, and make
-it configurable.  Document the trigger levels along with other port
-types, including the set of 16, 32, 64, 112 for the transmit interrupt
-as well[2].
+  Probably ASM1062 reports a Malformed TLP error when it receives a data
+  payload of 512 bytes, and Aardvark, DesignWare, etc convert this to an
+  arm64 External Abort. [1]
 
+To avoid this problem, limit the ASM1062 Max Payload Size Supported to 256
+bytes, so we set the Max Payload Size of devices that may send TLPs to the
+ASM1062 to 256 or less.
 
-[1] "OX16C950 rev B High Performance UART with 128 byte FIFOs", Oxford
-    Semiconductor, Inc., DS-0031, Sep 05, Table 10: "Receiver Trigger
-    Levels", p. 22
-
-[2] same, Table 9: "Transmit Interrupt Trigger Levels", p. 22
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2106260608480.37803@angie.orcam.me.uk
+[1] https://lore.kernel.org/linux-pci/20210601170907.GA1949035@bjorn-Precision-5520/
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212695
+Link: https://lore.kernel.org/r/20210624171418.27194-2-kabel@kernel.org
+Reported-by: Rötti <espressobinboardarmbiantempmailaddress@posteo.de>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_port.c | 3 ++-
- include/uapi/linux/serial_reg.h     | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/pci/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 68f71298c11b..39e821d6e537 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -132,7 +132,8 @@ static const struct serial8250_config uart_config[] = {
- 		.name		= "16C950/954",
- 		.fifo_size	= 128,
- 		.tx_loadsz	= 128,
--		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
-+		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01,
-+		.rxtrig_bytes	= {16, 32, 112, 120},
- 		/* UART_CAP_EFR breaks billionon CF bluetooth card. */
- 		.flags		= UART_CAP_FIFO | UART_CAP_SLEEP,
- 	},
-diff --git a/include/uapi/linux/serial_reg.h b/include/uapi/linux/serial_reg.h
-index be07b5470f4b..f51bc8f36813 100644
---- a/include/uapi/linux/serial_reg.h
-+++ b/include/uapi/linux/serial_reg.h
-@@ -62,6 +62,7 @@
-  * ST16C654:	 8  16  56  60		 8  16  32  56	PORT_16654
-  * TI16C750:	 1  16  32  56		xx  xx  xx  xx	PORT_16750
-  * TI16C752:	 8  16  56  60		 8  16  32  56
-+ * OX16C950:	16  32 112 120		16  32  64 112	PORT_16C950
-  * Tegra:	 1   4   8  14		16   8   4   1	PORT_TEGRA
-  */
- #define UART_FCR_R_TRIG_00	0x00
--- 
-2.30.2
-
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -2921,6 +2921,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SO
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_ASMEDIA, 0x0612, fixup_mpss_256);
+ 
+ /* Intel 5000 and 5100 Memory controllers have an errata with read completion
+  * coalescing (which is enabled by default on some BIOSes) and MPS of 256B.
 
 
