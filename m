@@ -2,269 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8345C410FC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057F7410FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhITHD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbhITHD4 (ORCPT
+        id S233599AbhITHEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:04:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40294 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233629AbhITHEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:03:56 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5194AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:02:30 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i25so64008267lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kempniu.pl; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uwX463CfZcgcAEGDKTQtHmIWmuhaxRyDNTp5tk3A/KU=;
-        b=D57tUjfGKE06ipxPR5P/669BPlTAG/z2zkLzGnL3jZeR2GBp0t6GEGgEjHty2YJUUg
-         0gYq3WVTJ3Ajki7NEG+gPcw/DR2hDbW9CPF75MYRygBkLvLEOMrJpjZ7hvtKSE14n04A
-         5W3vtJCEiHdEWh8XzAjifehywwocmQUQ5fpSA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uwX463CfZcgcAEGDKTQtHmIWmuhaxRyDNTp5tk3A/KU=;
-        b=EW0RNfGBrS6JIbIljHvoxqoKziqvb6Gn3sA5/dw5uPEpJL2+vE5XXgp/2bC1jNqgC2
-         GBKWIc1l5U714QZ73N1Dx87DYKKZ6iFYGP2WJfDQRELwpU35ETkSXxDHwA3D9u32ZgeA
-         AfoO44te2l0rpyBPJfAUCu8sUCMcwddVXJD+UpsZLJO3M641Db4/+XsMwtN6azSG8O1F
-         pMRT9xKnot3sdbijZeps6/4uV78LN4Y12/KWwAQpuW29xvcMrpTXdy16jq8MHAS5FfbY
-         WfOYmX3/VMOmuLETVU9rsO/rfZ3oO/3W6eEBEscm56PEwGpF3H1Ghwj9XMcg19gC3C+5
-         ShCQ==
-X-Gm-Message-State: AOAM531Ptg/4PTcw5rZNe6allAP+681ucmVsPtgdeG2IgnygnkvG4a1R
-        bfJCIL5psAQmnBcWdNVMn/SJWQ==
-X-Google-Smtp-Source: ABdhPJytlcqh48wCpOcBvVgtRr+vTQplqLvN+bYsTDdT2/dyjBZAlfjsHQtBMBXBO3l1MXzbh+4sIw==
-X-Received: by 2002:a2e:a36c:: with SMTP id i12mr21816389ljn.427.1632121348630;
-        Mon, 20 Sep 2021 00:02:28 -0700 (PDT)
-Received: from larwa.hq.kempniu.pl ([2001:470:64df:111::e02])
-        by smtp.gmail.com with ESMTPSA id s30sm1286415lfb.90.2021.09.20.00.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 00:02:27 -0700 (PDT)
-From:   =?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: add MEMREAD ioctl
-Date:   Mon, 20 Sep 2021 09:02:21 +0200
-Message-Id: <20210920070221.10173-1-kernel@kempniu.pl>
-X-Mailer: git-send-email 2.33.0
+        Mon, 20 Sep 2021 03:04:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632121373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PyM/RfJt0D4t8AyTheIl5UBEkGQN9Z7Je9+vK9jPaBE=;
+        b=bCnhREcfGejQYrSDL6iBTTOLkn6c+kCWfi4UZ/+4AuAhJlkfc2v5ge9uutcbRaS90rx7oE
+        P73f/epC2dBxGvKbiB3CzW4g/EypwbGCpoSHKhh+ESIU/hPND18NVjo90AkwRICUPi31Zh
+        bR02bWodFXMIHE0z1GmG66hvS7iMV/A3J7Y7dMn1nwJgi0pZiTmhNPcd8owwjY4W8/i5iR
+        /hzGKQ2GXybK8nAV8ZiIXM8P/8bULmQjOxJwNtWvEvdccDjsFzqSo89B3XkYGoXpU0UxiJ
+        iXoS7qYc0He2eBTukZdpXWWNjtqdqK/Ttl4q2TKV2zh8hZp73E5Ci6eUGs2qmg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632121373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PyM/RfJt0D4t8AyTheIl5UBEkGQN9Z7Je9+vK9jPaBE=;
+        b=+Bo+8Euft3f4goj3Z1zauLuEkIa0dEqj7XvrB179V6+nFEZMqdwdwDJbNhVIMNJFXS8gef
+        ZGclBbEbeJHDdjBg==
+To:     Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH] mm/migrate: fix CPUHP state to update node demotion order
+In-Reply-To: <20210918025849.88901-1-ying.huang@intel.com>
+References: <20210918025849.88901-1-ying.huang@intel.com>
+Date:   Mon, 20 Sep 2021 09:02:52 +0200
+Message-ID: <87lf3r7mqr.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-User-space applications making use of MTD devices via /dev/mtd*
-character devices currently have limited capabilities for reading data:
+On Sat, Sep 18 2021 at 10:58, Huang Ying wrote:
+> @@ -72,6 +72,7 @@ enum cpuhp_state {
+>  	CPUHP_SLUB_DEAD,
+>  	CPUHP_DEBUG_OBJ_DEAD,
+>  	CPUHP_MM_WRITEBACK_DEAD,
+> +	CPUHP_MM_DEMOTION_OFFLINE,
 
-  - only deprecated methods of accessing OOB layout information exist,
+Please keep the _DEAD convention in that section. The plugged CPU is
+already gone.
 
-  - there is no way to explicitly specify MTD operation mode to use; it
-    is auto-selected based on the MTD file mode (MTD_FILE_MODE_*) set
-    for the character device; in particular, this prevents using
-    MTD_OPS_AUTO_OOB for reads,
+>  	CPUHP_MM_VMSTAT_DEAD,
+>  	CPUHP_SOFTIRQ_DEAD,
+>  	CPUHP_NET_MVNETA_DEAD,
+> @@ -240,6 +241,7 @@ enum cpuhp_state {
+>  	CPUHP_AP_BASE_CACHEINFO_ONLINE,
+>  	CPUHP_AP_ONLINE_DYN,
+>  	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
+> +	CPUHP_AP_MM_DEMOTION_ONLINE,
 
-  - all existing user-space interfaces which cause mtd_read() or
-    mtd_read_oob() to be called (via mtdchar_read() and
-    mtdchar_read_oob(), respectively) return success even when those
-    functions return -EUCLEAN or -EBADMSG; this renders user-space
-    applications using these interfaces unaware of any corrected
-    bitflips or uncorrectable ECC errors detected during reads.
+Are there any ordering requirements of these states vs. other CPU
+hotplug states?
 
-Note that the existing MEMWRITE ioctl allows the MTD operation mode to
-be explicitly set, allowing user-space applications to write page data
-and OOB data without requiring them to know anything about the OOB
-layout of the MTD device they are writing to (MTD_OPS_AUTO_OOB).  Also,
-the MEMWRITE ioctl does not mangle the return value of mtd_write_oob().
+If not, then please use the dynamically allocated states.
 
-Add a new ioctl, MEMREAD, which addresses the above issues.  It is
-intended to be a read-side counterpart of the existing MEMWRITE ioctl.
+If so, then please add a comment:
 
-Update include/uapi/mtd/mtd-abi.h accordingly.
++	/* Must be before CPUHP_XXX and after CPUHP_YYY */
++	CPUHP_MM_DEMOTION_OFFLINE,
 
-Signed-off-by: Michał Kępień <kernel@kempniu.pl>
----
-This patch is a shameless calque^W^W^Wheavily inspired by MEMWRITE code,
-so quite a lot of copy-pasting happened.  I guess it is somewhat
-expected when adding a read-side counterpart of existing code which
-takes care of writes, but please excuse me if I went too far.
+Thanks,
 
-Note that "scripts/checkpatch.pl --strict" returns two alignment
-warnings for this patch.  Given that existing code triggers the same
-warnings, I assumed that local consistency trumps checkpatch.pl's
-complaints.
-
- drivers/mtd/mtdchar.c      | 60 ++++++++++++++++++++++++++++++++++++++
- include/uapi/mtd/mtd-abi.h | 43 +++++++++++++++++++++++----
- 2 files changed, 98 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 155e991d9d75..92e0024bdcf7 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -621,6 +621,58 @@ static int mtdchar_write_ioctl(struct mtd_info *mtd,
- 	return ret;
- }
- 
-+static int mtdchar_read_ioctl(struct mtd_info *mtd,
-+		struct mtd_read_req __user *argp)
-+{
-+	struct mtd_info *master = mtd_get_master(mtd);
-+	struct mtd_read_req req;
-+	struct mtd_oob_ops ops = {};
-+	void __user *usr_data, *usr_oob;
-+	int ret;
-+
-+	if (copy_from_user(&req, argp, sizeof(req)))
-+		return -EFAULT;
-+
-+	usr_data = (void __user *)(uintptr_t)req.usr_data;
-+	usr_oob = (void __user *)(uintptr_t)req.usr_oob;
-+
-+	if (!master->_read_oob)
-+		return -EOPNOTSUPP;
-+	ops.mode = req.mode;
-+	ops.len = (size_t)req.len;
-+	ops.ooblen = (size_t)req.ooblen;
-+	ops.ooboffs = 0;
-+
-+	if (usr_data) {
-+		ops.datbuf = kmalloc(ops.len, GFP_KERNEL);
-+		if (IS_ERR(ops.datbuf))
-+			return PTR_ERR(ops.datbuf);
-+	} else {
-+		ops.datbuf = NULL;
-+	}
-+
-+	if (usr_oob) {
-+		ops.oobbuf = kmalloc(ops.ooblen, GFP_KERNEL);
-+		if (IS_ERR(ops.oobbuf)) {
-+			kfree(ops.datbuf);
-+			return PTR_ERR(ops.oobbuf);
-+		}
-+	} else {
-+		ops.oobbuf = NULL;
-+	}
-+
-+	ret = mtd_read_oob(mtd, (loff_t)req.start, &ops);
-+
-+	if (copy_to_user(usr_data, ops.datbuf, ops.retlen) ||
-+	    copy_to_user(usr_oob, ops.oobbuf, ops.oobretlen))
-+		ret = -EFAULT;
-+
-+	kfree(ops.datbuf);
-+	kfree(ops.oobbuf);
-+
-+	return ret;
-+}
-+
- static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- {
- 	struct mtd_file_info *mfi = file->private_data;
-@@ -643,6 +695,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	case MEMGETINFO:
- 	case MEMREADOOB:
- 	case MEMREADOOB64:
-+	case MEMREAD:
- 	case MEMISLOCKED:
- 	case MEMGETOOBSEL:
- 	case MEMGETBADBLOCK:
-@@ -817,6 +870,13 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 		break;
- 	}
- 
-+	case MEMREAD:
-+	{
-+		ret = mtdchar_read_ioctl(mtd,
-+		      (struct mtd_read_req __user *)arg);
-+		break;
-+	}
-+
- 	case MEMLOCK:
- 	{
- 		struct erase_info_user einfo;
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index b869990c2db2..337e6e597fad 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -55,9 +55,9 @@ struct mtd_oob_buf64 {
-  * @MTD_OPS_RAW:	data are transferred as-is, with no error correction;
-  *			this mode implies %MTD_OPS_PLACE_OOB
-  *
-- * These modes can be passed to ioctl(MEMWRITE) and are also used internally.
-- * See notes on "MTD file modes" for discussion on %MTD_OPS_RAW vs.
-- * %MTD_FILE_MODE_RAW.
-+ * These modes can be passed to ioctl(MEMWRITE) and ioctl(MEMREAD); they are
-+ * also used internally. See notes on "MTD file modes" for discussion on
-+ * %MTD_OPS_RAW vs. %MTD_FILE_MODE_RAW.
-  */
- enum {
- 	MTD_OPS_PLACE_OOB = 0,
-@@ -91,6 +91,32 @@ struct mtd_write_req {
- 	__u8 padding[7];
- };
- 
-+/**
-+ * struct mtd_read_req - data structure for requesting a read operation
-+ *
-+ * @start:	start address
-+ * @len:	length of data buffer
-+ * @ooblen:	length of OOB buffer
-+ * @usr_data:	user-provided data buffer
-+ * @usr_oob:	user-provided OOB buffer
-+ * @mode:	MTD mode (see "MTD operation modes")
-+ * @padding:	reserved, must be set to 0
-+ *
-+ * This structure supports ioctl(MEMREAD) operations, allowing data and/or OOB
-+ * reads in various modes. To read from OOB-only, set @usr_data == NULL, and to
-+ * read data-only, set @usr_oob == NULL. However, setting both @usr_data and
-+ * @usr_oob to NULL is not allowed.
-+ */
-+struct mtd_read_req {
-+	__u64 start;
-+	__u64 len;
-+	__u64 ooblen;
-+	__u64 usr_data;
-+	__u64 usr_oob;
-+	__u8 mode;
-+	__u8 padding[7];
-+};
-+
- #define MTD_ABSENT		0
- #define MTD_RAM			1
- #define MTD_ROM			2
-@@ -207,6 +233,12 @@ struct otp_info {
- #define MEMWRITE		_IOWR('M', 24, struct mtd_write_req)
- /* Erase a given range of user data (must be in mode %MTD_FILE_MODE_OTP_USER) */
- #define OTPERASE		_IOW('M', 25, struct otp_info)
-+/*
-+ * Most generic read interface; can read in-band and/or out-of-band in various
-+ * modes (see "struct mtd_read_req"). This ioctl is not supported for flashes
-+ * without OOB, e.g., NOR flash.
-+ */
-+#define MEMREAD			_IOWR('M', 26, struct mtd_read_req)
- 
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
-@@ -270,8 +302,9 @@ struct mtd_ecc_stats {
-  * Note: %MTD_FILE_MODE_RAW provides the same functionality as %MTD_OPS_RAW -
-  * raw access to the flash, without error correction or autoplacement schemes.
-  * Wherever possible, the MTD_OPS_* mode will override the MTD_FILE_MODE_* mode
-- * (e.g., when using ioctl(MEMWRITE)), but in some cases, the MTD_FILE_MODE is
-- * used out of necessity (e.g., `write()', ioctl(MEMWRITEOOB64)).
-+ * (e.g., when using ioctl(MEMWRITE) or ioctl(MEMREAD)), but in some cases, the
-+ * MTD_FILE_MODE is used out of necessity (e.g., `write()',
-+ * ioctl(MEMWRITEOOB64)).
-  */
- enum mtd_file_modes {
- 	MTD_FILE_MODE_NORMAL = MTD_OTP_OFF,
--- 
-2.33.0
-
+        tglx
