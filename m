@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2F14120BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B4C411E32
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348953AbhITR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:57:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53088 "EHLO mail.kernel.org"
+        id S1350239AbhITR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:27:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354730AbhITRvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:51:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3A8C61350;
-        Mon, 20 Sep 2021 17:12:21 +0000 (UTC)
+        id S1349935AbhITRZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:25:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 634926134F;
+        Mon, 20 Sep 2021 17:02:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157942;
-        bh=/8D9dnPGMra73WqruByJ/UljnZ9TG3HBcxJ5tADVSd0=;
+        s=korg; t=1632157341;
+        bh=0af7XYpiDaqKh3arO7Wo+2DKVh53HZlCjD+rRxGqUBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0b8gIwdFSbXH3aHFBtkxE7+MQpa80NFXwbW298rYm4CLbOJAAbc9Vx/XWkPhoHNX
-         KgCnBe1nfkJzuwP55Fnhv0YtmighLaBsn0+SE/SObltfjrZMVOZ81WHRG7Fzi1rWHf
-         tdUEFqvLZSNWv0w8MSIf2vgWzvQIi+Rwlua7X6rs=
+        b=s/gEXxG/x2r9/G/CtMsdcZxHnu5mdSIBOzXsnc06odqsGzbQ6fwS6ZUkj0g2JpZrQ
+         7OI+t2JBRZPiFTdctia/Oesl1ZgL2t5PNHuY2/IlFp/wZ7gXC4pFlT8EZjSSf8gVo5
+         KJlcIupysZdQvdNXSt3hU6lP+jRcYOmZk5Mq9rkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 223/293] gfs2: Dont call dlm after protocol is unmounted
+Subject: [PATCH 4.14 164/217] gpu: drm: amd: amdgpu: amdgpu_i2c: fix possible uninitialized-variable access in amdgpu_i2c_router_select_ddc_port()
 Date:   Mon, 20 Sep 2021 18:43:05 +0200
-Message-Id: <20210920163941.019917656@linuxfoundation.org>
+Message-Id: <20210920163930.201337027@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit d1340f80f0b8066321b499a376780da00560e857 ]
+[ Upstream commit a211260c34cfadc6068fece8c9e99e0fe1e2a2b6 ]
 
-In the gfs2 withdraw sequence, the dlm protocol is unmounted with a call
-to lm_unmount. After a withdraw, users are allowed to unmount the
-withdrawn file system. But at that point we may still have glocks left
-over that we need to free via unmount's call to gfs2_gl_hash_clear.
-These glocks may have never been completed because of whatever problem
-caused the withdraw (IO errors or whatever).
+The variable val is declared without initialization, and its address is
+passed to amdgpu_i2c_get_byte(). In this function, the value of val is
+accessed in:
+  DRM_DEBUG("i2c 0x%02x 0x%02x read failed\n",
+       addr, *val);
 
-Before this patch, function gdlm_put_lock would still try to call into
-dlm to unlock these leftover glocks, which resulted in dlm returning
--EINVAL because the lock space was abandoned. These glocks were never
-freed because there was no mechanism after that to free them.
+Also, when amdgpu_i2c_get_byte() returns, val may remain uninitialized,
+but it is accessed in:
+  val &= ~amdgpu_connector->router.ddc_mux_control_pin;
 
-This patch adds a check to gdlm_put_lock to see if the locking protocol
-was inactive (DFL_UNMOUNT flag) and if so, free the glock and not
-make the invalid call into dlm.
+To fix this possible uninitialized-variable access, initialize val to 0 in
+amdgpu_i2c_router_select_ddc_port().
 
-I could have combined this "if" with the one that follows, related to
-leftover glock LVBs, but I felt the code was more readable with its own
-if clause.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/lock_dlm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/lock_dlm.c b/fs/gfs2/lock_dlm.c
-index 56dddc1f8ddd..9e90e42c495e 100644
---- a/fs/gfs2/lock_dlm.c
-+++ b/fs/gfs2/lock_dlm.c
-@@ -295,6 +295,11 @@ static void gdlm_put_lock(struct gfs2_glock *gl)
- 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
- 	gfs2_update_request_times(gl);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
+index f2739995c335..199eccee0b0b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c
+@@ -338,7 +338,7 @@ static void amdgpu_i2c_put_byte(struct amdgpu_i2c_chan *i2c_bus,
+ void
+ amdgpu_i2c_router_select_ddc_port(const struct amdgpu_connector *amdgpu_connector)
+ {
+-	u8 val;
++	u8 val = 0;
  
-+	/* don't want to call dlm if we've unmounted the lock protocol */
-+	if (test_bit(DFL_UNMOUNT, &ls->ls_recover_flags)) {
-+		gfs2_glock_free(gl);
-+		return;
-+	}
- 	/* don't want to skip dlm_unlock writing the lvb when lock has one */
- 
- 	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
+ 	if (!amdgpu_connector->router.ddc_valid)
+ 		return;
 -- 
 2.30.2
 
