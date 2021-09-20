@@ -2,55 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34369410F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 06:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36905410F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 07:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhITE6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 00:58:40 -0400
-Received: from mga05.intel.com ([192.55.52.43]:51037 "EHLO mga05.intel.com"
+        id S231137AbhITFCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 01:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229695AbhITE6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 00:58:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10112"; a="308606107"
-X-IronPort-AV: E=Sophos;i="5.85,307,1624345200"; 
-   d="scan'208";a="308606107"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2021 21:57:11 -0700
-X-IronPort-AV: E=Sophos;i="5.85,307,1624345200"; 
-   d="scan'208";a="702257181"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2021 21:57:10 -0700
-Date:   Sun, 19 Sep 2021 21:57:09 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
-Message-ID: <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com>
-References: <20210917105355.2368-1-bp@alien8.de>
- <20210917105355.2368-3-bp@alien8.de>
+        id S229695AbhITFCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 01:02:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDA460F48;
+        Mon, 20 Sep 2021 05:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632114047;
+        bh=SAAFIBCTlMvHcxiOaZR0P2LnXmk54optXmYs7GE19rU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P4z64WN8H9YlAle+bsWv+IAtGmsOm4293x3+9x11URYrzZw7zYSJPM9xfItetY+fm
+         57vqOirnCW5rGpgyv8bRKeWG0f+RorTqbLGfna+feV20G2zHU4D6qss8QEi2GKPc+b
+         aJ6RPTHj1olFovza4Jy186A6WI2XnumDhtwux0yU=
+Date:   Mon, 20 Sep 2021 07:00:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kevin Hao <haokexin@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 5.10 033/306] cpufreq: schedutil: Use kobject release()
+ method to free sugov_tunables
+Message-ID: <YUgVfJFQQhMnUWfF@kroah.com>
+References: <20210916155753.903069397@linuxfoundation.org>
+ <20210916155755.075805845@linuxfoundation.org>
+ <bb93bcd1-b9b3-fc11-0321-7be6eee5beb0@intel.com>
+ <YUN89bXPrsLsTAYB@kroah.com>
+ <175d4888-1147-9a2f-32d6-7c90c2628af5@ispras.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917105355.2368-3-bp@alien8.de>
+In-Reply-To: <175d4888-1147-9a2f-32d6-7c90c2628af5@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 12:53:53PM +0200, Borislav Petkov wrote:
-> @@ -126,7 +123,9 @@ struct mca_config {
->  	      ser			: 1,
->  	      recovery			: 1,
->  	      bios_cmci_threshold	: 1,
-> -	      __reserved		: 59;
-> +	      /* Proper #MC exception handler is set */
-> +	      initialized		: 1,
-> +	      __reserved		: 58;
+On Sun, Sep 19, 2021 at 09:36:20PM +0300, Alexey Khoroshilov wrote:
+> Hi Greg,
+> 
+> I am trying to get familiar with stable release process, because we
+> would like to start testing stable release candidates. But I cannot get
+> all the nuances how to get automatically information regarding rc code
+> ready to be tested.
 
-Does this __reserved field do anything useful? It seems to
-just be an annoyance that must be updated each time a new
-bit is added. Surely the compiler will see that these bitfields
-are in a "u64" and do the math and skip to the right boundary
-without this.
+You might want to start a new thread and not bury it down in a response
+to a specific commit in order to make sure that people see it.
 
--Tony
+What specifically have you tried that did not work for detecting the -rc
+releases?
+
+> Also I wonder how we could automatically detect situations when stable
+> release is expected to became diverged from the rc, e.g. like
+> [PATCH 5.10 033/306] cpufreq: schedutil: Use kobject release() method to
+> free sugov_tunables
+> was dropped from 5.10.67 without announcing the 5.10.67-rc2?
+
+Look at the stable queue tree, that has all of the information in it,
+right?
+
+thanks,
+
+greg k-h
