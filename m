@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB324124DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FCE412387
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381577AbhITSin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49304 "EHLO mail.kernel.org"
+        id S1345119AbhITSZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380111AbhITSce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:32:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C6461AA7;
-        Mon, 20 Sep 2021 17:27:57 +0000 (UTC)
+        id S1377345AbhITSSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:18:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45166632A3;
+        Mon, 20 Sep 2021 17:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158878;
-        bh=LFNy3iIa87mVaeGgL4yMp5NJGuXQztt4Sr4cbRdUIVI=;
+        s=korg; t=1632158575;
+        bh=XWkpzJb/KnyqQR8Y4OpztpvxB+7uORp6FVnCibL+cqA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=keQ0D1LHzM/hjj4bZ0BiSktKF/0eX+olGaZzDeOKCLM6xPmpdePexwOB6XvDwyPeh
-         y6mOrkN0kbO6prSoa5z53beuxpUhnW/UYk0XXPHsoUyubuaIbCqwDOgZdYSitdtClL
-         VT/DQJ7mxCvuRkJ7GNsedFfGkyYz/HC8MUd71AdA=
+        b=AVy0IPO0bKq2Jh0YUSB1O353GMekBM3PQD2fyMJSKflaZJ0LPNdoxKHxJ/nHjFzmx
+         Woq20ID6+MXh87srv4vLbdwnRuM2VDTIMee7KBeVGGFbFyaS8EQglEV7Km68z2vhTq
+         D7clqJu1vxZtsejGVZWmDrsxWbFU8h+m6OaKDCB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 064/122] tracing/probes: Reject events which have the same name of existing one
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: [PATCH 5.4 218/260] net/mlx5: Fix potential sleeping in atomic context
 Date:   Mon, 20 Sep 2021 18:43:56 +0200
-Message-Id: <20210920163917.876178732@linuxfoundation.org>
+Message-Id: <20210920163938.515016657@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,128 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Maor Gottlieb <maorg@nvidia.com>
 
-[ Upstream commit 8e242060c6a4947e8ae7d29794af6a581db08841 ]
+commit ee27e330a953595903979ffdb84926843595a9fe upstream.
 
-Since kprobe_events and uprobe_events only check whether the
-other same-type probe event has the same name or not, if the
-user gives the same name of the existing tracepoint event (or
-the other type of probe events), it silently fails to create
-the tracefs entry (but registered.) as below.
+Fixes the below flow of sleeping in atomic context by releasing
+the RCU lock before calling to free_match_list.
 
-/sys/kernel/tracing # ls events/task/task_rename
-enable   filter   format   hist     id       trigger
-/sys/kernel/tracing # echo p:task/task_rename vfs_read >> kprobe_events
-[  113.048508] Could not create tracefs 'task_rename' directory
-/sys/kernel/tracing # cat kprobe_events
-p:task/task_rename vfs_read
+build_match_list() <- disables preempt
+-> free_match_list()
+   -> tree_put_node()
+      -> down_write_ref_node() <- take write lock
 
-To fix this issue, check whether the existing events have the
-same name or not in trace_probe_register_event_call(). If exists,
-it rejects to register the new event.
-
-Link: https://lkml.kernel.org/r/162936876189.187130.17558311387542061930.stgit@devnote2
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 693c6883bbc4 ("net/mlx5: Add hash table for flow groups in flow table")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace_kprobe.c |  6 +++++-
- kernel/trace/trace_probe.c  | 25 +++++++++++++++++++++++++
- kernel/trace/trace_probe.h  |  1 +
- kernel/trace/trace_uprobe.c |  6 +++++-
- 4 files changed, 36 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 68150b9cbde9..552dbc9d5226 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -647,7 +647,11 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
- 	/* Register new event */
- 	ret = register_kprobe_event(tk);
- 	if (ret) {
--		pr_warn("Failed to register probe event(%d)\n", ret);
-+		if (ret == -EEXIST) {
-+			trace_probe_log_set_index(0);
-+			trace_probe_log_err(0, EVENT_EXIST);
-+		} else
-+			pr_warn("Failed to register probe event(%d)\n", ret);
- 		goto end;
- 	}
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
+@@ -1606,9 +1606,9 @@ static int build_match_list(struct match
  
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index d2867ccc6aca..1d31bc4acf7a 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -1029,11 +1029,36 @@ error:
- 	return ret;
+ 		curr_match = kmalloc(sizeof(*curr_match), GFP_ATOMIC);
+ 		if (!curr_match) {
++			rcu_read_unlock();
+ 			free_match_list(match_head, ft_locked);
+-			err = -ENOMEM;
+-			goto out;
++			return -ENOMEM;
+ 		}
+ 		if (!tree_get_node(&g->node)) {
+ 			kfree(curr_match);
+@@ -1617,7 +1617,6 @@ static int build_match_list(struct match
+ 		curr_match->g = g;
+ 		list_add_tail(&curr_match->list, &match_head->list);
+ 	}
+-out:
+ 	rcu_read_unlock();
+ 	return err;
  }
- 
-+static struct trace_event_call *
-+find_trace_event_call(const char *system, const char *event_name)
-+{
-+	struct trace_event_call *tp_event;
-+	const char *name;
-+
-+	list_for_each_entry(tp_event, &ftrace_events, list) {
-+		if (!tp_event->class->system ||
-+		    strcmp(system, tp_event->class->system))
-+			continue;
-+		name = trace_event_name(tp_event);
-+		if (!name || strcmp(event_name, name))
-+			continue;
-+		return tp_event;
-+	}
-+
-+	return NULL;
-+}
-+
- int trace_probe_register_event_call(struct trace_probe *tp)
- {
- 	struct trace_event_call *call = trace_probe_event_call(tp);
- 	int ret;
- 
-+	lockdep_assert_held(&event_mutex);
-+
-+	if (find_trace_event_call(trace_probe_group_name(tp),
-+				  trace_probe_name(tp)))
-+		return -EEXIST;
-+
- 	ret = register_trace_event(&call->event);
- 	if (!ret)
- 		return -ENODEV;
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 2f703a20c724..6d41e20c47ce 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -398,6 +398,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
- 	C(NO_EVENT_NAME,	"Event name is not specified"),		\
- 	C(EVENT_TOO_LONG,	"Event name is too long"),		\
- 	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
-+	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
- 	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
- 	C(BAD_STACK_NUM,	"Invalid stack number"),		\
- 	C(BAD_ARG_NUM,		"Invalid argument number"),		\
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 3cf7128e1ad3..0dd6e286e519 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -514,7 +514,11 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
- 
- 	ret = register_uprobe_event(tu);
- 	if (ret) {
--		pr_warn("Failed to register probe event(%d)\n", ret);
-+		if (ret == -EEXIST) {
-+			trace_probe_log_set_index(0);
-+			trace_probe_log_err(0, EVENT_EXIST);
-+		} else
-+			pr_warn("Failed to register probe event(%d)\n", ret);
- 		goto end;
- 	}
- 
--- 
-2.30.2
-
 
 
