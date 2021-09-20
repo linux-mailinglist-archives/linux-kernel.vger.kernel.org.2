@@ -2,147 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4ECD41277B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E7F41275D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236865AbhITUsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:48:39 -0400
-Received: from linderud.dev ([163.172.10.146]:56146 "EHLO linderud.pw"
+        id S231474AbhITUjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:39:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230356AbhITUqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:46:37 -0400
-X-Greylist: delayed 576 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Sep 2021 16:46:37 EDT
-Received: from linderud.pw (localhost [127.0.0.1])
-        by linderud.pw (Postfix) with ESMTP id D7453C01B4;
-        Mon, 20 Sep 2021 22:35:00 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.5-pre1 (2020-06-20) on velox
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.5-pre1
-Received: from localhost (host-37-191-241-102.lynet.no [37.191.241.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: morten)
-        by linderud.pw (Postfix) with ESMTPSA id 8BCA6C001C;
-        Mon, 20 Sep 2021 22:35:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linderud.pw;
-        s=linderud; t=1632170100;
-        bh=OwdRbJc/TbitNW2Zx/UmsifqU/l9t7XuLiHqlNN609c=;
-        h=From:To:Cc:Subject:Date;
-        b=WD0ci4ptMwbSYIcJHKMInvTa5b8ONt7V3npXO1wu5FgHIFAKvf8w0YLpyLFCUd+1t
-         1gHzIML2FPa6/7sFhkEMxNQ6uc5GnAz4gvqxK4TN4DgbANwZy6ZtLGmDfW9zTEAFQ2
-         n1eVMml+AFuexCp2wrGAI97vvng1+QfmOQ27w3GPvwD5XgnHGJ8/nrwW7C7Yzo96In
-         rXgkWHxIuCBREF6WyrsUuFe7FOJzsuURZuBOv1Fa3j4cETCRsFI0a/0tbP9GEaAuVB
-         viMs9A+mazsQzHJvXV+PjR/lBBGlh5MWAqUfKO7TGyrQd8068TFZ8+jN4hdh4/nXoq
-         3n4VM38hpTozUBzJk662t5lhZy3J34OChEjwbxl13cOXFl92LYF09FBtaLsjeWkDfj
-         +hp7O1tijTpQyJYhOx3AEvnGqWMyq3/c9lbMcE4uwREc5IzxEN4u9yMFtXs7wHwli8
-         sECyYYBppWTOuFiMmyPnLz1ujTvYW4gM8izvqMYalh3RKU6EEsq4ynt0qbANFMZ0EU
-         grWkQ6sge+ws2lTFo94A4Kyxa4AkfPHotZ7kLkt1d1mtQaR+86FS2Sxcv5Zn53qqTy
-         Q7G1kDLHoTXGxMj5OlFXVY7BHyFLCBL8AsXIhOZ7c6BU8CrfsrrmRQui4I0jeL4iWk
-         VKuBZVFOi1PfEUzRTp/CzqIA=
-From:   Morten Linderud <morten@linderud.pw>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Morten Linderud <morten@linderud.pw>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Oleksandr Natalenko <oleksandr@natalenko.name>
-Subject: [PATCH] tpm/eventlog: Don't abort tpm_read_log on faulty ACPI config
-Date:   Mon, 20 Sep 2021 22:34:47 +0200
-Message-Id: <20210920203447.4124005-1-morten@linderud.pw>
-X-Mailer: git-send-email 2.33.0
+        id S229697AbhITUhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 16:37:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A1E604DC;
+        Mon, 20 Sep 2021 20:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632170138;
+        bh=voQEBfP9XzUDzXjG0DL0BLZOIItOzN1mK1/I5iKEvUE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=CavUB91uBNFDnMchx2C9ZotlZ2lp7cLpSEIrhMu8L5ixnwF1So13GBAG2Nh+Q5hbm
+         nXyvIb0HsQqjaLzgzCJwLzGBRa8jHrYs7i1JKhHraTi5sLA5fzrgB+ZZ5PaZvExidK
+         Dlab+C+lHdvYWm/UxZcjrP1ZCoA+cg/eB3DYLPv9RkaHlbBR0gdxan5awocdBsrhQ2
+         wcmiy6UAl8B8IwNhLuZu+CAIZonGpmKxMUIHoIdewx5w9qWgYlYW1xNrKpDL5XAU5l
+         fgqo37Am9WDcRCwVm6ujaOoZXvkuRsmRDGscGvldKxM523PV138P8D8eFnygxyGtAp
+         yuLscK4aXPOhQ==
+Date:   Mon, 20 Sep 2021 15:35:36 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] PCI/portdrv: Do not setup up IRQs if there are no
+ users
+Message-ID: <20210920203536.GA37479@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f9a13ac-8ab1-15ac-06cb-c131b488a36f@siemens.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some vendors report faulty values in the acpi TPM2 table. This causes
-the function to abort with EIO and essentially short circuits the
-tpm_read_log function as we never even attempt to read the EFI
-configuration table for a log.
+On Mon, Aug 30, 2021 at 10:08:10AM +0200, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> Avoid registering service IRQs if there is no service that offers them
+> or no driver to register a handler against them. This saves IRQ vectors
+> when they are limited (e.g. on x86) and also avoids that spurious events
+> could hit a missing handler. Such spurious events need to be generated
+> by the Jailhouse hypervisor for active MSI vectors when enabling or
+> disabling itself.
+> 
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 
-This changes the condition to only look for a positive return value,
-else hands over the eventlog discovery to the EFI configuration table
-which should hopefully work better.
+Applied to pci/portdrv for v5.16, thanks!
 
-It's unclear to me if there is a better solution to this then just
-failing. However, I do not see any clear reason why we can't properly
-fallback to the EFI configuration table.
-
-The following hardware was used to test this issue on:
-    Framework Laptop (Pre-production)
-    BIOS: INSYDE Corp, Revision: 3.2
-    TPM Device: NTC, Firmware Revision: 7.2
-
-Dump of the fault ACPI TPM2 table:
-    [000h 0000   4]                    Signature : "TPM2"    [Trusted Platform Module hardware interface Table]
-    [004h 0004   4]                 Table Length : 0000004C
-    [008h 0008   1]                     Revision : 04
-    [009h 0009   1]                     Checksum : 2B
-    [00Ah 0010   6]                       Oem ID : "INSYDE"
-    [010h 0016   8]                 Oem Table ID : "TGL-ULT"
-    [018h 0024   4]                 Oem Revision : 00000002
-    [01Ch 0028   4]              Asl Compiler ID : "ACPI"
-    [020h 0032   4]        Asl Compiler Revision : 00040000
-
-    [024h 0036   2]               Platform Class : 0000
-    [026h 0038   2]                     Reserved : 0000
-    [028h 0040   8]              Control Address : 0000000000000000
-    [030h 0048   4]                 Start Method : 06 [Memory Mapped I/O]
-
-    [034h 0052  12]            Method Parameters : 00 00 00 00 00 00 00 00 00 00 00 00
-    [040h 0064   4]           Minimum Log Length : 00010000
-    [044h 0068   8]                  Log Address : 000000004053D000
-
-Signed-off-by: Morten Linderud <morten@linderud.pw>
----
- drivers/char/tpm/eventlog/acpi.c   | 5 +++--
- drivers/char/tpm/eventlog/common.c | 6 +++++-
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/char/tpm/eventlog/acpi.c b/drivers/char/tpm/eventlog/acpi.c
-index 1b18ce5ebab1..9ce39cdb0bd8 100644
---- a/drivers/char/tpm/eventlog/acpi.c
-+++ b/drivers/char/tpm/eventlog/acpi.c
-@@ -136,8 +136,10 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 
- 	ret = -EIO;
- 	virt = acpi_os_map_iomem(start, len);
--	if (!virt)
-+	if (!virt) {
-+		dev_warn(&chip->dev, "%s: Failed to map acpi memory\n", __func__);
- 		goto err;
-+	}
- 
- 	memcpy_fromio(log->bios_event_log, virt, len);
- 
-@@ -145,7 +147,6 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 
- 	if (chip->flags & TPM_CHIP_FLAG_TPM2 &&
- 	    !tpm_is_tpm2_log(log->bios_event_log, len)) {
--		/* try EFI log next */
- 		ret = -ENODEV;
- 		goto err;
- 	}
-diff --git a/drivers/char/tpm/eventlog/common.c b/drivers/char/tpm/eventlog/common.c
-index 8512ec76d526..f64256bc2f89 100644
---- a/drivers/char/tpm/eventlog/common.c
-+++ b/drivers/char/tpm/eventlog/common.c
-@@ -83,7 +83,11 @@ static int tpm_read_log(struct tpm_chip *chip)
- 	}
- 
- 	rc = tpm_read_log_acpi(chip);
--	if (rc != -ENODEV)
-+	/*
-+	 * only return if we found a log else we try look for a
-+	 * log in the EFI configuration table
-+	 */
-+	if (rc > 0)
- 		return rc;
- 
- 	rc = tpm_read_log_efi(chip);
--- 
-2.33.0
+> ---
+> 
+> Changes in v2:
+>  - move initialization of irqs to address test bot finding
+> 
+>  drivers/pci/pcie/portdrv_core.c | 47 +++++++++++++++++++++------------
+>  1 file changed, 30 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+> index e1fed6649c41..0e2556269429 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -166,9 +166,6 @@ static int pcie_init_service_irqs(struct pci_dev *dev, int *irqs, int mask)
+>  {
+>  	int ret, i;
+>  
+> -	for (i = 0; i < PCIE_PORT_DEVICE_MAXSERVICES; i++)
+> -		irqs[i] = -1;
+> -
+>  	/*
+>  	 * If we support PME but can't use MSI/MSI-X for it, we have to
+>  	 * fall back to INTx or other interrupts, e.g., a system shared
+> @@ -312,8 +309,10 @@ static int pcie_device_init(struct pci_dev *pdev, int service, int irq)
+>   */
+>  int pcie_port_device_register(struct pci_dev *dev)
+>  {
+> -	int status, capabilities, i, nr_service;
+> -	int irqs[PCIE_PORT_DEVICE_MAXSERVICES];
+> +	int status, capabilities, irq_services, i, nr_service;
+> +	int irqs[PCIE_PORT_DEVICE_MAXSERVICES] = {
+> +		[0 ... PCIE_PORT_DEVICE_MAXSERVICES-1] = -1
+> +	};
+>  
+>  	/* Enable PCI Express port device */
+>  	status = pci_enable_device(dev);
+> @@ -326,18 +325,32 @@ int pcie_port_device_register(struct pci_dev *dev)
+>  		return 0;
+>  
+>  	pci_set_master(dev);
+> -	/*
+> -	 * Initialize service irqs. Don't use service devices that
+> -	 * require interrupts if there is no way to generate them.
+> -	 * However, some drivers may have a polling mode (e.g. pciehp_poll_mode)
+> -	 * that can be used in the absence of irqs.  Allow them to determine
+> -	 * if that is to be used.
+> -	 */
+> -	status = pcie_init_service_irqs(dev, irqs, capabilities);
+> -	if (status) {
+> -		capabilities &= PCIE_PORT_SERVICE_HP;
+> -		if (!capabilities)
+> -			goto error_disable;
+> +
+> +	irq_services = 0;
+> +	if (IS_ENABLED(CONFIG_PCIE_PME))
+> +		irq_services |= PCIE_PORT_SERVICE_PME;
+> +	if (IS_ENABLED(CONFIG_PCIEAER))
+> +		irq_services |= PCIE_PORT_SERVICE_AER;
+> +	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
+> +		irq_services |= PCIE_PORT_SERVICE_HP;
+> +	if (IS_ENABLED(CONFIG_PCIE_DPC))
+> +		irq_services |= PCIE_PORT_SERVICE_DPC;
+> +	irq_services &= capabilities;
+> +
+> +	if (irq_services) {
+> +		/*
+> +		 * Initialize service irqs. Don't use service devices that
+> +		 * require interrupts if there is no way to generate them.
+> +		 * However, some drivers may have a polling mode (e.g.
+> +		 * pciehp_poll_mode) that can be used in the absence of irqs.
+> +		 * Allow them to determine if that is to be used.
+> +		 */
+> +		status = pcie_init_service_irqs(dev, irqs, irq_services);
+> +		if (status) {
+> +			irq_services &= PCIE_PORT_SERVICE_HP;
+> +			if (!irq_services)
+> +				goto error_disable;
+> +		}
+>  	}
+>  
+>  	/* Allocate child services if any */
+> -- 
+> 2.31.1
