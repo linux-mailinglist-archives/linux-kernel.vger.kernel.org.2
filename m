@@ -2,147 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F364411398
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C7B41139C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237008AbhITLeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236982AbhITLeQ (ORCPT
+        id S237186AbhITLei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:34:38 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34216 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237165AbhITLef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:34:16 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A87C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 04:32:50 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g8so60141847edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 04:32:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BgCuE98X6TCt4JKWIbSXAM4IkPGNAtaWBz0dljdjTPw=;
-        b=VjlmVqgovwILxWWg6zQPtHu+raMSSpIPKhK3D9Qjrf+jbuoUiVaL2d+sqKhh4qfQ9j
-         eFxHvAv9xMFOAZiZWbSKf6WhQKh5IKxnuzetkEKJqjt8yqYP0AoyTV6RczlwP0FdJByF
-         BNNU5zi3Ui9L29gSHG52v1m8YJgXiGKjrKl4okVxSMowmIxEDm0x7MvwnZV7O2wgD6hv
-         xy0EiHMnZGQmRhUWvmKEUS9783Ih2xcXZqYMr6UHC4pQa10u+0EXFpMQF5OOd4aLU6bh
-         qXektjul0jcsIsgPL8j1SxEYD8OzQqf/2XeqyEqN3Bx4x4/DvMhbf1dXCuMRZl4m7EmQ
-         aD1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BgCuE98X6TCt4JKWIbSXAM4IkPGNAtaWBz0dljdjTPw=;
-        b=ekRbLeXlaFMNq2gxkzj0hgAD3YAB9CgXGCv6kCKd80VGFuDJGkoLqwdBGbNObWBJpG
-         rphVXdoLut6OdqcHFXnEZXu1jrSol8SCtSNMYbFWfHsjAxQKSamy9/CRPnakCsf6icVF
-         bCiqDbw1KbdUA7Zu4zvuCtI4M0H86HuBG5cJdgTsMnBYjaybRYbgxctjnvEHiKgDXzlc
-         UKoqC7t6N3qasG0zliqolT6llxwOxjE64Bi/QWDZoMx0O4sV0SRdZTdqyHF16DpnBJI6
-         sEQy/mRiqf4T/Dcs+YI8/YIusLjiIVJSEzsH4pn3ogHNeASrLDNveNepoaW6Gqo3Ihl0
-         C98A==
-X-Gm-Message-State: AOAM532SUIOBi3vrjdinRN4i3Sp6yYIH3o5wk+l0cR5NdPd7foDMhXkA
-        GskXqW86OtQ7N3Ff7A3oK4b8Tg==
-X-Google-Smtp-Source: ABdhPJxp7HP0ZCD/gF7ezj4POAz9/BIWr2mGzY1yBiwLo+kmyrPFqhA0SWJxEeVU4CHJssbsrfoaCA==
-X-Received: by 2002:a17:906:dc4b:: with SMTP id yz11mr28678212ejb.460.1632137568558;
-        Mon, 20 Sep 2021 04:32:48 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id j14sm6966806edk.7.2021.09.20.04.32.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 04:32:47 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] nvmem: core: introduce cells parser
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Robert Marko <robert.marko@sartura.hr>
-References: <20210608190327.22071-1-vadym.kochan@plvision.eu>
- <20210608190327.22071-2-vadym.kochan@plvision.eu>
- <43023500-dd6a-5180-057e-cecc1f1b6500@linaro.org>
- <20210616123356.GA9951@plvision.eu>
- <fea907ed-06ce-5c82-667d-d11f3e902616@linaro.org>
- <vrcxh2zgsnl841.fsf@plvision.eu>
- <7e6d75ed-cebc-597f-7062-34261d184968@linaro.org>
- <vrcxh2pmt3bl4h.fsf@plvision.eu>
- <0e471789-fe29-b747-5153-75c9b4616c7f@linaro.org>
- <vrcxh2o88nbias.fsf@plvision.eu>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <1da03714-8f23-1004-e89a-891e4599e04a@linaro.org>
-Date:   Mon, 20 Sep 2021 12:32:46 +0100
+        Mon, 20 Sep 2021 07:34:35 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EE2D62203C;
+        Mon, 20 Sep 2021 11:33:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632137587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MirnV4XaCZRSzPuBlLYw5YJQD01O5bRFc0ZpCNmCdXI=;
+        b=lvhIfWCNEM3+PbsVB/qJWG3fDirJOOl1VXEe8v30J2/tOEp5zmOjdETV3wC8twFcUtIxJF
+        xEB29JHX4czWDOWbzkgRwFiF++afnPT8to0p1oa+yvwlFAOaU+y2P4lIudixiY2qbTqTHg
+        SOb3ZD1YVHVYb+QCF18JyEoZcTvqabc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9B09F13483;
+        Mon, 20 Sep 2021 11:33:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KKfXI3NxSGGwDQAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 20 Sep 2021 11:33:07 +0000
+Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
+To:     Mike Galbraith <efault@gmx.de>, Mike Rapoport <rppt@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        marmarek@invisiblethingslab.com, Borislav Petkov <bp@suse.de>,
+        stable@vger.kernel.org, x86@kernel.org
+References: <20210914094108.22482-1-jgross@suse.com>
+ <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
+ <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
+ <YUdtm8hVH0ps18BK@linux.ibm.com>
+ <fc21617d65338078366e70704eb55789a810e45e.camel@gmx.de>
+ <YUhTwPhva5olB87d@linux.ibm.com>
+ <65a61ffdb4c8090320ec98fe5004e6f7808fa4b9.camel@gmx.de>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <6499cba1-1f86-f793-a3a7-815a71296249@suse.com>
+Date:   Mon, 20 Sep 2021 13:33:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <vrcxh2o88nbias.fsf@plvision.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <65a61ffdb4c8090320ec98fe5004e6f7808fa4b9.camel@gmx.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="HGOSxBhvvKD3CTR2nXApYeLmZXYMdCGmJ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HGOSxBhvvKD3CTR2nXApYeLmZXYMdCGmJ
+Content-Type: multipart/mixed; boundary="sR76SZiWH70JVyavjhxL1zjS8lXQ29FZt";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Mike Galbraith <efault@gmx.de>, Mike Rapoport <rppt@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+ marmarek@invisiblethingslab.com, Borislav Petkov <bp@suse.de>,
+ stable@vger.kernel.org, x86@kernel.org
+Message-ID: <6499cba1-1f86-f793-a3a7-815a71296249@suse.com>
+Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
+References: <20210914094108.22482-1-jgross@suse.com>
+ <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
+ <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
+ <YUdtm8hVH0ps18BK@linux.ibm.com>
+ <fc21617d65338078366e70704eb55789a810e45e.camel@gmx.de>
+ <YUhTwPhva5olB87d@linux.ibm.com>
+ <65a61ffdb4c8090320ec98fe5004e6f7808fa4b9.camel@gmx.de>
+In-Reply-To: <65a61ffdb4c8090320ec98fe5004e6f7808fa4b9.camel@gmx.de>
 
+--sR76SZiWH70JVyavjhxL1zjS8lXQ29FZt
+Content-Type: multipart/mixed;
+ boundary="------------27CF52266B77C1EE58768F16"
+Content-Language: en-US
 
-On 20/09/2021 12:25, Vadym Kochan wrote:
->>> Or, treat cells with length "0" in a special way and allow to update
->>> cell info later.you can update irrespective of the length, as long as this is done
->> before register.
+This is a multi-part message in MIME format.
+--------------27CF52266B77C1EE58768F16
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 20.09.21 13:25, Mike Galbraith wrote:
+> On Mon, 2021-09-20 at 12:26 +0300, Mike Rapoport wrote:
 >>
->>
->>>> };
->>>>
->>>> some_dev_node {
->>>> 	compatible = "xxx";
->>>> 	nvmem-cells = <&mac_address>;
->>>> 	nvmem-cell-names = "mac-address";
->>>> };
->>>>
->>>> == CODE ==
->>>> ret = of_get_mac_address(dev->of_node, base_mac);
->>>> ==========
->>>>
->>>>
->>>> If you notice the mac_address node reg is 0.
->>>> This node "reg" property should be updated ( using of_update_property())
->>>> by nvmem-provider driver while tlv parsing and by matching the node name
->>>> with tlv name.
->>>>
->>> I assume parser driver can just invoke add_cell_table (with may be
->>> by adding 'bool update' field to the cell_info struct) and core.c will just
->>> update existing cells parsed from OF.
->>>
->> Lets keep the core code clean for now, I would expect the provider
->> driver along with parser function to do update the nodes.
->>
->> --srini
->>
-> core.c sequence:
-> 
-> 1) after cells parsed from OF:
-> 
-> 2) lookup the parser
-> 
-> 3) parser->cells_parse(ctx, table)
-> 
-> 3.a) update existing cells matched by name from table
-> 
-> 4) parser->cells_clean(ctx, table)
-> /* to free cell's_info allocated by the parser driver */
-> 
-> as alternative way, I think it would be more generic to
-> provide nvmem-provider.h API to update the existing cell info,
-> however it makes sense only when cells were parsed
-> by the cell parser, in the other situations the
-> cell should be well defined.
-> 
-> with this approach the parser driver will be just called
-> via parser->cells_parse(ctx) and will call nvmem_cell_info_update()
-> for each parsed cells.
+>> Can't say anything caught my eye, except the early microcode update.
+>> Just to rule that out, can you try booting without the early microcode=
 
-TBH, This is an over kill.
+>> update?
+>=20
+> Nogo.
+>=20
+>> And, to check Juergen's suggestion about failure in
+>> memblock_x86_reserve_range_setup_data(), can you try this patch on top=
+ of
+>> the failing tip:
+>=20
+> Yup, patchlet detoxified it for both boxen.
 
-In nvmem provider driver probe you can parse the tlv data and update the 
-dt nodes before nvmem register.
+Yay!
 
-rest of the code should just work as it is.
+Will respin my patch moving the call of early_reserve_memory() just
+before the call of e820__memory_setup().
 
---srini
+Thanks for reporting the issue and verifying my suspicion.
 
 
-> 
+Juergen
+
+--------------27CF52266B77C1EE58768F16
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------27CF52266B77C1EE58768F16--
+
+--sR76SZiWH70JVyavjhxL1zjS8lXQ29FZt--
+
+--HGOSxBhvvKD3CTR2nXApYeLmZXYMdCGmJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFIcXIFAwAAAAAACgkQsN6d1ii/Ey8Q
+EQf+L0ksCIwO2zF9MmuEv2TmEkAN7xW6UI50V3sPaow6v4E0wqOG6fP+dXHr6AiZSMlHXHVhWD+Y
+EiVCabtcp+drREf/sBMxpGk+V4W1NyFeWSfyompqOfPjgdCPG6bGPpKNwSzv8Ly+DFUk6tkkp6oj
+XeXC5prqUuUVGxxFMm5bRE8oxAjH3RPe1Od3Y6SVtnaVt52gG4A67AtwxBktAwJcz3xS7ht5gZ2Y
+Q12/bMg8YlbU3fd+s0AhXJJf+QxLA0wd2hRvKVjZS76eYMbV1dniiZtBvWWWYMoiS72bgI78xeoN
+zNDdrG+5AzavL/x9bik4pd++K0J88i4kkdXkMgGfFA==
+=xqsn
+-----END PGP SIGNATURE-----
+
+--HGOSxBhvvKD3CTR2nXApYeLmZXYMdCGmJ--
