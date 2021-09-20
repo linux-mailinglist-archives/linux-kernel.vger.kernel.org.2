@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97504126CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700B24126E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhITTWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 15:22:50 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50858 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245388AbhITTUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 15:20:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=TkN2Ia7bums+Ijew637ZfATCHcWZLf84rC4MSNogrQc=; b=zfVXbzPogWtzueEw5yX5NKNkwJ
-        ZsvdtMjs25dfU6fsCVGbwZbV4U5pTiodfR9l8f1S0AfR++CK7+y8zgi5CPDLHE/vCW2KYaNBteUSE
-        HzBIPdT6P6IA0/h1oh+MuAk1cSeR5L5uqloHR8Xw+pIr10eME5OGE1TEh7QxzJmja8c0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mSOor-007XDO-1m; Mon, 20 Sep 2021 21:19:13 +0200
-Date:   Mon, 20 Sep 2021 21:19:13 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH 1/2] drivers: net: dsa: qca8k: add support
- for led config
-Message-ID: <YUjesc5nLItkUNxy@lunn.ch>
-References: <20210920180851.30762-1-ansuelsmth@gmail.com>
- <YUjZNA1Swo6Bv3/Q@lunn.ch>
- <YUja1JsFJNwh8hXr@Ansuel-xps.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUja1JsFJNwh8hXr@Ansuel-xps.localdomain>
+        id S1348063AbhITTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 15:30:28 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:42594 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346623AbhITT20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 15:28:26 -0400
+Received: by mail-oi1-f178.google.com with SMTP id x124so2652064oix.9;
+        Mon, 20 Sep 2021 12:26:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Ltg68ai17ryA61wLEpw2gWNDTuZWgZYYvpF3Lm1beig=;
+        b=k3YnuI5huJKCUin9mRb4ys9aJqP51LkqiUs+iGLoXDOcVRMaOwEax+JsOgmeQ90LGD
+         CJ1yk/gWTEqGNNLe5zXlQTRib5Bh43dc8XaDoEf6b09/oFWpWLW8j7Ud5bKtBO32ibc6
+         RR1H7fKaRgACN14a+znCTahDCaOmoSsp0CI9/nnEmOgEXgQfhFlQIUOI+Og4PmnD42e6
+         Y2yQNLRAAo1RIyZm1JobSDeqgRWs2Fjyz/YC+UMaC4QnkWXHbLiMIoL1tXktS64dwTI2
+         mPsfYg3myw9vsGrqC8z7jZs2KuFPyCv0SH7AP9WbqoPhz+eHy9WepDVv4ez9u4cuYmSr
+         b6oQ==
+X-Gm-Message-State: AOAM5318CHZCNrZ8CYXoyENdJLy2OMM1myUw4mcFJX/bJQEKyDnGMfP8
+        Bym8CoBTmkc5dXFoTvrXCA==
+X-Google-Smtp-Source: ABdhPJz0ghhIQUq0/xBQQZcGfNHP33ZoBoPP4+VhuvRF80iBYfK9SyWhV3s1G7XFCiXra9a7WP+VNQ==
+X-Received: by 2002:a05:6808:2191:: with SMTP id be17mr574215oib.30.1632166019071;
+        Mon, 20 Sep 2021 12:26:59 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bg38sm3452836oib.26.2021.09.20.12.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 12:26:58 -0700 (PDT)
+Received: (nullmailer pid 586178 invoked by uid 1000);
+        Mon, 20 Sep 2021 19:26:55 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>, devicetree@vger.kernel.org,
+        linux-spi@vger.kernel.org, michael@walle.cc,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>
+In-Reply-To: <20210920142713.129295-3-a-nandan@ti.com>
+References: <20210920142713.129295-1-a-nandan@ti.com> <20210920142713.129295-3-a-nandan@ti.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: snps,dw-apb-ssi: Use 'flash' node name instead of 'spi-flash' in example
+Date:   Mon, 20 Sep 2021 14:26:55 -0500
+Message-Id: <1632166015.080380.586177.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Yes, can you point me to the discussion?
+On Mon, 20 Sep 2021 19:57:13 +0530, Apurva Nandan wrote:
+> Change the nodename in the example with spi-nand from 'spi-flash@1'
+> to 'flash@1' to make the schema uniform with both spi-nand and spi-nor
+> flashes. jedec,spi-nor.yaml uses 'flash@' nodename for spi-nor flashes,
+> so make the spi-nand examples in dt-bindings use it too for uniformity.
+> 
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> ---
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-It has gone through many cycles :-(
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-The linux-led list is probably the better archive to look through, it
-is a lot lower volume than netdev.
+yamllint warnings/errors:
 
-https://www.spinics.net/lists/linux-leds/msg18652.html
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml:0:0: /example-0/spi@fff00000/flash@1: failed to match any schema with compatible: ['spi-nand']
 
-https://www.spinics.net/lists/linux-leds/msg18527.html
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/patch/1530168
 
-> I post this as RFC for this exact reason... I read somehwere that there
-> was a discussion on how to implementd leds for switch but never ever
-> found it.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-Most of the discussion so far has been about PHY LEDs, where the PHY
-driver controls the LEDs. However some Ethernet switches also have LED
-controls, which are not part of the PHY. And then there are some MAC
-drivers which control the PHY in firmware, and have firmware calls for
-controlling the LEDs. We need a generic solution which scales across
-all this. And it needs to work without DT, or at least, not block ACPI
-being added later.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-But progress is slow. I hope that the PHY use case will drive things
-forward, get the ABI defined. We can then scale it out to include
-switches, maybe with a bit of code refactoring.
+pip3 install dtschema --upgrade
 
-	  Andrew
+Please check and re-submit.
+
