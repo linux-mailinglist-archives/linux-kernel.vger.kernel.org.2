@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F22411E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFC341206B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350527AbhITR3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:29:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56978 "EHLO mail.kernel.org"
+        id S1355569AbhITRzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:55:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347752AbhITR0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:26:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0764A61439;
-        Mon, 20 Sep 2021 17:02:55 +0000 (UTC)
+        id S1354203AbhITRtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:49:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF6A261177;
+        Mon, 20 Sep 2021 17:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157376;
-        bh=CY71r+NTD1SPdVZRbJumo3tdI7iwjstJ8isvjopW9/Y=;
+        s=korg; t=1632157890;
+        bh=v6+CyDVCHXj4E1pUKK8Z0p2O+fCTC4zZOPVHoRbrJqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/dQBIb6nMjzga3ENqcAvYzrkqX3cEonMS1lDlkvPAXGQ01lnCsfCoE8dbRwwTpTf
-         MM5bQbeFhpXlwzRPthzujYe3Wad5etLznaUsDspfD4TnKNeSDy3JPAvJYfMolHry9f
-         Z019+XiZcGm/RtR5RSSfJlIelqoY1gmjnUE1bt2E=
+        b=RDxYwBYAQPyOXRKp9Sx2GJWNpmNkt2a0OgrbLyYS57G3E4Jw/7bVvW3RUtSLKddK2
+         HstgpM8xn420jWEIcEDuIuBVyaGnNA9k/t7ANb8YfeE3XVfSLqNhT4I099P4rPHsc6
+         prHUoGTZgGwKBRu397DI5x35G9ZuYluPgDMOib7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kelly Devilliv <kelly.devilliv@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 138/217] usb: host: fotg210: fix the endpoints transactional opportunities calculation
-Date:   Mon, 20 Sep 2021 18:42:39 +0200
-Message-Id: <20210920163929.327268165@linuxfoundation.org>
+        stable@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Jiri Slaby <jslaby@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 198/293] hvsi: dont panic on tty_register_driver failure
+Date:   Mon, 20 Sep 2021 18:42:40 +0200
+Message-Id: <20210920163940.048339709@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,139 +39,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kelly Devilliv <kelly.devilliv@gmail.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit c2e898764245c852bc8ee4857613ba4f3a6d761d ]
+[ Upstream commit 7ccbdcc4d08a6d7041e4849219bbb12ffa45db4c ]
 
-Now that usb_endpoint_maxp() only returns the lowest
-11 bits from wMaxPacketSize, we should make use of the
-usb_endpoint_* helpers instead and remove the unnecessary
-max_packet()/hb_mult() macro.
+The alloc_tty_driver failure is handled gracefully in hvsi_init. But
+tty_register_driver is not. panic is called if that one fails.
 
-Signed-off-by: Kelly Devilliv <kelly.devilliv@gmail.com>
-Link: https://lore.kernel.org/r/20210627125747.127646-3-kelly.devilliv@gmail.com
+So handle the failure of tty_register_driver gracefully too. This will
+keep at least the console functional as it was enabled earlier by
+console_initcall in hvsi_console_init. Instead of shooting down the
+whole system.
+
+This means, we disable interrupts and restore hvsi_wait back to
+poll_for_state().
+
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210723074317.32690-3-jslaby@suse.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/fotg210-hcd.c | 36 ++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ drivers/tty/hvc/hvsi.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index bbe1ea00d887..849816ab5b77 100644
---- a/drivers/usb/host/fotg210-hcd.c
-+++ b/drivers/usb/host/fotg210-hcd.c
-@@ -2536,11 +2536,6 @@ static unsigned qh_completions(struct fotg210_hcd *fotg210,
- 	return count;
- }
+diff --git a/drivers/tty/hvc/hvsi.c b/drivers/tty/hvc/hvsi.c
+index 66f95f758be0..73226337f561 100644
+--- a/drivers/tty/hvc/hvsi.c
++++ b/drivers/tty/hvc/hvsi.c
+@@ -1038,7 +1038,7 @@ static const struct tty_operations hvsi_ops = {
  
--/* high bandwidth multiplier, as encoded in highspeed endpoint descriptors */
--#define hb_mult(wMaxPacketSize) (1 + (((wMaxPacketSize) >> 11) & 0x03))
--/* ... and packet size, for any kind of endpoint descriptor */
--#define max_packet(wMaxPacketSize) ((wMaxPacketSize) & 0x07ff)
--
- /* reverse of qh_urb_transaction:  free a list of TDs.
-  * used for cleanup after errors, before HC sees an URB's TDs.
-  */
-@@ -2626,7 +2621,7 @@ static struct list_head *qh_urb_transaction(struct fotg210_hcd *fotg210,
- 		token |= (1 /* "in" */ << 8);
- 	/* else it's already initted to "out" pid (0 << 8) */
- 
--	maxpacket = max_packet(usb_maxpacket(urb->dev, urb->pipe, !is_input));
-+	maxpacket = usb_maxpacket(urb->dev, urb->pipe, !is_input);
- 
- 	/*
- 	 * buffer gets wrapped in one or more qtds;
-@@ -2740,9 +2735,11 @@ static struct fotg210_qh *qh_make(struct fotg210_hcd *fotg210, struct urb *urb,
- 		gfp_t flags)
+ static int __init hvsi_init(void)
  {
- 	struct fotg210_qh *qh = fotg210_qh_alloc(fotg210, flags);
-+	struct usb_host_endpoint *ep;
- 	u32 info1 = 0, info2 = 0;
- 	int is_input, type;
- 	int maxp = 0;
-+	int mult;
- 	struct usb_tt *tt = urb->dev->tt;
- 	struct fotg210_qh_hw *hw;
+-	int i;
++	int i, ret;
  
-@@ -2757,14 +2754,15 @@ static struct fotg210_qh *qh_make(struct fotg210_hcd *fotg210, struct urb *urb,
- 
- 	is_input = usb_pipein(urb->pipe);
- 	type = usb_pipetype(urb->pipe);
--	maxp = usb_maxpacket(urb->dev, urb->pipe, !is_input);
-+	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-+	maxp = usb_endpoint_maxp(&ep->desc);
-+	mult = usb_endpoint_maxp_mult(&ep->desc);
- 
- 	/* 1024 byte maxpacket is a hardware ceiling.  High bandwidth
- 	 * acts like up to 3KB, but is built from smaller packets.
- 	 */
--	if (max_packet(maxp) > 1024) {
--		fotg210_dbg(fotg210, "bogus qh maxpacket %d\n",
--				max_packet(maxp));
-+	if (maxp > 1024) {
-+		fotg210_dbg(fotg210, "bogus qh maxpacket %d\n", maxp);
- 		goto done;
+ 	hvsi_driver = alloc_tty_driver(hvsi_count);
+ 	if (!hvsi_driver)
+@@ -1069,12 +1069,25 @@ static int __init hvsi_init(void)
  	}
+ 	hvsi_wait = wait_for_state; /* irqs active now */
  
-@@ -2778,8 +2776,7 @@ static struct fotg210_qh *qh_make(struct fotg210_hcd *fotg210, struct urb *urb,
- 	 */
- 	if (type == PIPE_INTERRUPT) {
- 		qh->usecs = NS_TO_US(usb_calc_bus_time(USB_SPEED_HIGH,
--				is_input, 0,
--				hb_mult(maxp) * max_packet(maxp)));
-+				is_input, 0, mult * maxp));
- 		qh->start = NO_FRAME;
+-	if (tty_register_driver(hvsi_driver))
+-		panic("Couldn't register hvsi console driver\n");
++	ret = tty_register_driver(hvsi_driver);
++	if (ret) {
++		pr_err("Couldn't register hvsi console driver\n");
++		goto err_free_irq;
++	}
  
- 		if (urb->dev->speed == USB_SPEED_HIGH) {
-@@ -2816,7 +2813,7 @@ static struct fotg210_qh *qh_make(struct fotg210_hcd *fotg210, struct urb *urb,
- 			think_time = tt ? tt->think_time : 0;
- 			qh->tt_usecs = NS_TO_US(think_time +
- 					usb_calc_bus_time(urb->dev->speed,
--					is_input, 0, max_packet(maxp)));
-+					is_input, 0, maxp));
- 			qh->period = urb->interval;
- 			if (qh->period > fotg210->periodic_size) {
- 				qh->period = fotg210->periodic_size;
-@@ -2879,11 +2876,11 @@ static struct fotg210_qh *qh_make(struct fotg210_hcd *fotg210, struct urb *urb,
- 			 * to help them do so.  So now people expect to use
- 			 * such nonconformant devices with Linux too; sigh.
- 			 */
--			info1 |= max_packet(maxp) << 16;
-+			info1 |= maxp << 16;
- 			info2 |= (FOTG210_TUNE_MULT_HS << 30);
- 		} else {		/* PIPE_INTERRUPT */
--			info1 |= max_packet(maxp) << 16;
--			info2 |= hb_mult(maxp) << 30;
-+			info1 |= maxp << 16;
-+			info2 |= mult << 30;
- 		}
- 		break;
- 	default:
-@@ -3953,6 +3950,7 @@ static void iso_stream_init(struct fotg210_hcd *fotg210,
- 	int is_input;
- 	long bandwidth;
- 	unsigned multi;
-+	struct usb_host_endpoint *ep;
+ 	printk(KERN_DEBUG "HVSI: registered %i devices\n", hvsi_count);
  
- 	/*
- 	 * this might be a "high bandwidth" highspeed endpoint,
-@@ -3960,14 +3958,14 @@ static void iso_stream_init(struct fotg210_hcd *fotg210,
- 	 */
- 	epnum = usb_pipeendpoint(pipe);
- 	is_input = usb_pipein(pipe) ? USB_DIR_IN : 0;
--	maxp = usb_maxpacket(dev, pipe, !is_input);
-+	ep = usb_pipe_endpoint(dev, pipe);
-+	maxp = usb_endpoint_maxp(&ep->desc);
- 	if (is_input)
- 		buf1 = (1 << 11);
- 	else
- 		buf1 = 0;
- 
--	maxp = max_packet(maxp);
--	multi = hb_mult(maxp);
-+	multi = usb_endpoint_maxp_mult(&ep->desc);
- 	buf1 |= maxp;
- 	maxp *= multi;
+ 	return 0;
++err_free_irq:
++	hvsi_wait = poll_for_state;
++	for (i = 0; i < hvsi_count; i++) {
++		struct hvsi_struct *hp = &hvsi_ports[i];
++
++		free_irq(hp->virq, hp);
++	}
++	tty_driver_kref_put(hvsi_driver);
++
++	return ret;
+ }
+ device_initcall(hvsi_init);
  
 -- 
 2.30.2
