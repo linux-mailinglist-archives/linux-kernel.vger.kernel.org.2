@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B099411BD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E015C411D42
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343988AbhITRDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:03:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
+        id S244316AbhITRRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:17:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345061AbhITQ77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:59:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF1E613E6;
-        Mon, 20 Sep 2021 16:52:47 +0000 (UTC)
+        id S1345746AbhITRPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:15:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2088161A07;
+        Mon, 20 Sep 2021 16:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156768;
-        bh=a2TUNuH1+x0m23FFz5Pe4Pa0RQARuJhn2OcjxP2iapo=;
+        s=korg; t=1632157122;
+        bh=uuZMw6J5hMtC9lRbJ1wg88tUyZpGYzYRmpNXWwfNY5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=awTBKmGcJ6u3es5N2jA1/AogLYOdBugSs/mYtLmJr7IWHGTirrFWM5hEwvFR1j2Bj
-         37XZO2QfuqUQW1K6D9oucPcSArwUmGGXqjpDeH9X6IPMRj3EAWF+rulAGVrqem8EVp
-         yjWM1nGTs7itEEj/9L7pBkNgYwn9IzSq5++Zb+fo=
+        b=Nsxwt2TeoLhdPpe/ZsNrkJ4Kde72hgzHpZTkxyggHT3AngJFMP+dtDkoKdrIaLlKm
+         s45NEp7cqNU0O8fnuth863Z1z9EoWlCrxU/bOvKxE/at30hZ07cJNVMof4SWiVPB7U
+         JdsdDcwLaKjuoA634s/nsPSzdOlmxVGUlSpNxykc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeongtae Park <jeongtae.park@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 035/175] regmap: fix the offset of register error log
+Subject: [PATCH 4.14 063/217] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
 Date:   Mon, 20 Sep 2021 18:41:24 +0200
-Message-Id: <20210920163919.210495333@linuxfoundation.org>
+Message-Id: <20210920163926.761883757@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeongtae Park <jeongtae.park@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 1852f5ed358147095297a09cc3c6f160208a676d ]
+[ Upstream commit 713baf3dae8f45dc8ada4ed2f5fdcbf94a5c274d ]
 
-This patch fixes the offset of register error log
-by using regmap_get_offset().
+An earlier commit replaced using batostr to using %pMR sprintf for the
+construction of session->name. Static analysis detected that this new
+method can use a total of 21 characters (including the trailing '\0')
+so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
+buffer overflows.
 
-Signed-off-by: Jeongtae Park <jeongtae.park@gmail.com>
-Link: https://lore.kernel.org/r/20210701142630.44936-1-jeongtae.park@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 2 +-
+ net/bluetooth/cmtp/cmtp.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index cd984b59a8a1..40a9e5378633 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1375,7 +1375,7 @@ int _regmap_raw_write(struct regmap *map, unsigned int reg,
- 			if (ret) {
- 				dev_err(map->dev,
- 					"Error in caching of register: %x ret: %d\n",
--					reg + i, ret);
-+					reg + regmap_get_offset(map, i), ret);
- 				return ret;
- 			}
- 		}
+diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
+index c32638dddbf9..f6b9dc4e408f 100644
+--- a/net/bluetooth/cmtp/cmtp.h
++++ b/net/bluetooth/cmtp/cmtp.h
+@@ -26,7 +26,7 @@
+ #include <linux/types.h>
+ #include <net/bluetooth/bluetooth.h>
+ 
+-#define BTNAMSIZ 18
++#define BTNAMSIZ 21
+ 
+ /* CMTP ioctl defines */
+ #define CMTPCONNADD	_IOW('C', 200, int)
 -- 
 2.30.2
 
