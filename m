@@ -2,71 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BD84125AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E054125D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384207AbhITSrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:47:00 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39008
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353270AbhITSnV (ORCPT
+        id S1384117AbhITSsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:42 -0400
+Received: from mail-0301.mail-europe.com ([188.165.51.139]:58799 "EHLO
+        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1383476AbhITSoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:43:21 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id CE4204018A;
-        Mon, 20 Sep 2021 18:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632163312;
-        bh=RJZDrQJzd/PSuwhwBqk2LEL2gE5VbirT5KM+/uoAMZM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=GJt9l1cX84J2OP93j5YuUFiPQVNMKb3ZV1UjuSiApMhiEzNho20YzONtFWFl47Kvj
-         KZq6nr7iBQBlyhVu+gpYlXjG20kCNSqxBMxZBdZMi51yhrVV+h/aYL4eAqWjnqlCuD
-         WCCTOaFWc4k3zLACjF1atwK1eyKnvR3CfMer690J8IKq6+j4eOXoaqXDOvWRRCgQOy
-         x9YAjM1Xj5ihTYbYjSgcyEZ0K53T48Vgk5iF7lYXs0MGoaml9M6w40eq4rPALAMerh
-         wwwrD/jCqWjCLOWq8z0mOL3EhLsHzq1MHgG0gstz9yJBLrIsrjanG4bBkJ+RC2yQ3Y
-         Qkc/+igRL9p8A==
-From:   Colin King <colin.king@canonical.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: Fix spelling mistake "Fronend" -> "Frontend"
-Date:   Mon, 20 Sep 2021 19:41:52 +0100
-Message-Id: <20210920184152.18109-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 20 Sep 2021 14:44:37 -0400
+Date:   Mon, 20 Sep 2021 18:43:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1632163386;
+        bh=/dCPObPUPU/gLuQE7BcDq2GKMnutPsgeme1TLL+i1X8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=LXJlDbv/5HUdDFxFWVaJ5m4aeqMgCjK/JDv5MifAyIggBs09G1vantspUmWIZ7gAs
+         H3vG8NnKotCXCGQhd7o4I0pg1yyS0NBlnKQxNbXCkPql09l/rRGrThwTljm5ekslF5
+         YU2ZwkVoWQYGpf1igJ47A1Tw6ZNoijuUbqDrxE6s=
+To:     =?utf-8?Q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     hdegoede@redhat.com, alex.hung@canonical.com,
+        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tobias Gurtzick <magic@wizardtales.com>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH] platform/x86/intel: hid: Add DMI switches allow list
+Message-ID: <NgI8poho2fFBrbj2ivUSWphaZbwgMIxHVovWWqI2UWdJA8FNhlDtkFk-Y7cp4mYxiiOtkFQHoCQj-kkGh71lQfsvzJ1sg0IgixkJqdEdcnM=@protonmail.com>
+In-Reply-To: <20210920160312.9787-1-jose.exposito89@gmail.com>
+References: <20210920160312.9787-1-jose.exposito89@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi
 
-There is a spelling mistake in the module description. Fix it.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/qcom/qdsp6/q6afe-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+2021. szeptember 20., h=C3=A9tf=C5=91 18:03 keltez=C3=A9ssel, Jos=C3=A9 Exp=
+=C3=B3sito =C3=ADrta:
+> Some devices, even non convertible ones, can send incorrect
+> SW_TABLET_MODE reports.
+>
+> Add an allow list and accept such reports only from devices in it.
+>
+> Bug reported for Dell XPS 17 9710 on:
+> https://gitlab.freedesktop.org/libinput/libinput/-/issues/662
+>
+> Reported-by: Tobias Gurtzick <magic@wizardtales.com>
+> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+> Tested-by: Tobias Gurtzick <magic@wizardtales.com>
+> Signed-off-by: Jos=C3=A9 Exp=C3=B3sito <jose.exposito89@gmail.com>
+> ---
+>  drivers/platform/x86/intel/hid.c | 33 +++++++++++++++++++++++++++-----
+>  1 file changed, 28 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/platform/x86/intel/hid.c b/drivers/platform/x86/inte=
+l/hid.c
+> index a33a5826e81a..24d26336e39a 100644
+> --- a/drivers/platform/x86/intel/hid.c
+> +++ b/drivers/platform/x86/intel/hid.c
+> @@ -118,6 +118,24 @@ static const struct dmi_system_id dmi_vgbs_allow_lis=
+t[] =3D {
+>  =09{ }
+>  };
+>
+> +/*
+> + * Some devices, even non convertible ones, can send incorrect SW_TABLET=
+_MODE
+> + * reports. Accept such reports only from devices in this list.
+> + */
+> +static const struct dmi_system_id dmi_switches_auto_add_allow_list[] =3D=
+ {
+> +=09{
+> +=09=09.matches =3D {
+> +=09=09=09DMI_EXACT_MATCH(DMI_CHASSIS_TYPE, "31" /* Convertible */),
+> +=09=09},
+> +=09},
+> +=09{
+> +=09=09.matches =3D {
+> +=09=09=09DMI_EXACT_MATCH(DMI_CHASSIS_TYPE, "32" /* Detachable */),
+> +=09=09},
+> +=09},
+> +=09{} /* Array terminator */
+> +};
+> +
+>  struct intel_hid_priv {
+>  =09struct input_dev *input_dev;
+>  =09struct input_dev *array;
+> @@ -455,11 +473,16 @@ static void notify_handler(acpi_handle handle, u32 =
+event, void *context)
+>  =09 *
+>  =09 * See dual_accel_detect.h for more info on the dual_accel check.
+>  =09 */
+> -=09if (!priv->switches && !priv->dual_accel && (event =3D=3D 0xcc || eve=
+nt =3D=3D 0xcd)) {
+> -=09=09dev_info(&device->dev, "switch event received, enable switches sup=
+ports\n");
+> -=09=09err =3D intel_hid_switches_setup(device);
+> -=09=09if (err)
+> -=09=09=09pr_err("Failed to setup Intel HID switches\n");
+> +=09if (event =3D=3D 0xcc || event =3D=3D 0xcd) {
+> +=09=09if (!dmi_check_system(dmi_switches_auto_add_allow_list))
+> +=09=09=09return;
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index ac8f7324e94b..8b664cbf6fa6 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -1747,5 +1747,5 @@ static struct platform_driver q6afe_dai_platform_driver = {
- };
- module_platform_driver(q6afe_dai_platform_driver);
- 
--MODULE_DESCRIPTION("Q6 Audio Fronend dai driver");
-+MODULE_DESCRIPTION("Q6 Audio Frontend dai driver");
- MODULE_LICENSE("GPL v2");
--- 
-2.32.0
+I think you should not check it every time. Maybe add a `bool` member
+to `struct intel_hid_priv`. Or maybe better: rename `dual_accel` to somethi=
+ng like
+`autodetect_switch` and initialize it with `!dual_accel_detect() && dmi_che=
+ck_system(...)`.
 
+
+> +
+> +=09=09if (!priv->switches && !priv->dual_accel) {
+> +=09=09=09dev_info(&device->dev, "switch event received, enable switches =
+supports\n");
+> +=09=09=09err =3D intel_hid_switches_setup(device);
+> +=09=09=09if (err)
+> +=09=09=09=09pr_err("Failed to setup Intel HID switches\n");
+> +=09=09}
+>  =09}
+>
+>  =09if (priv->wakeup_mode) {
+> --
+> 2.25.1
+>
+>
+
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
