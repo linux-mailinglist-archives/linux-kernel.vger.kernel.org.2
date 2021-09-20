@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F92411DF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75621411C61
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345398AbhITR0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55750 "EHLO mail.kernel.org"
+        id S1344317AbhITRIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:08:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349474AbhITRXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:23:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65900613D3;
-        Mon, 20 Sep 2021 17:01:42 +0000 (UTC)
+        id S1345932AbhITRGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:06:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FCAF61374;
+        Mon, 20 Sep 2021 16:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157302;
-        bh=5fmRdW1C1OQH/3S8aaj/J58PqkHgwB3nv/Xmeurrkzw=;
+        s=korg; t=1632156915;
+        bh=5DE08k53AFm6jaC5cL0oBCr2ZiaYYOFJ2ifxKjrUXew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E7bmswdbRvfwmqN5vP3CYTLg+Ffe802/eFPD3JN0RDFCwJ3aWtGbAA44M57FWzmEC
-         4Zs9KKhNghb+lsmAHBk2cYNjYAD4Q6PEzMikHjnCQtni8ljRUiiWrliELjs1QCYF7A
-         JSekUmXPyUbNRqR5o2keXNKzl8PV1aRthJveoECU=
+        b=AZFwLdABzouSxFYkvShxYRJTNeS5/nuSUgIMYccwzrpRapRhJbG8+NCV/oVD5L2mj
+         vE8xKouF0fuimRQgj9wn9SoL9RwVi25tNAANBcG5gtEVAJtYE36T2td16dDzELheTi
+         OugZyKJ4MEAxMrcDRYEV235HBlUO1ozfl9wAh33g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kelly Devilliv <kelly.devilliv@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 139/217] usb: host: fotg210: fix the actual_length of an iso packet
-Date:   Mon, 20 Sep 2021 18:42:40 +0200
-Message-Id: <20210920163929.359861528@linuxfoundation.org>
+Subject: [PATCH 4.9 112/175] usb: host: fotg210: fix the actual_length of an iso packet
+Date:   Mon, 20 Sep 2021 18:42:41 +0200
+Message-Id: <20210920163921.733432058@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,10 +56,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index 849816ab5b77..3008d692000a 100644
+index 725abc08550e..f0ec538a8813 100644
 --- a/drivers/usb/host/fotg210-hcd.c
 +++ b/drivers/usb/host/fotg210-hcd.c
-@@ -4487,13 +4487,12 @@ static bool itd_complete(struct fotg210_hcd *fotg210, struct fotg210_itd *itd)
+@@ -4488,13 +4488,12 @@ static bool itd_complete(struct fotg210_hcd *fotg210, struct fotg210_itd *itd)
  
  			/* HC need not update length with this error */
  			if (!(t & FOTG210_ISOC_BABBLE)) {
@@ -76,10 +76,10 @@ index 849816ab5b77..3008d692000a 100644
  		} else {
  			/* URB was too late */
 diff --git a/drivers/usb/host/fotg210.h b/drivers/usb/host/fotg210.h
-index 7fcd785c7bc8..0f1da9503bc6 100644
+index b5cfa7aeb277..1a3f94123c88 100644
 --- a/drivers/usb/host/fotg210.h
 +++ b/drivers/usb/host/fotg210.h
-@@ -683,11 +683,6 @@ static inline unsigned fotg210_read_frame_index(struct fotg210_hcd *fotg210)
+@@ -682,11 +682,6 @@ static inline unsigned fotg210_read_frame_index(struct fotg210_hcd *fotg210)
  	return fotg210_readl(fotg210, &fotg210->regs->frame_index);
  }
  
