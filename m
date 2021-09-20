@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDC64120E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6852C411E9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356287AbhITR7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
+        id S1346236AbhITRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:32:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349448AbhITRwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:52:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CFE261359;
-        Mon, 20 Sep 2021 17:13:03 +0000 (UTC)
+        id S1350867AbhITRaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:30:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 116A261AE3;
+        Mon, 20 Sep 2021 17:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157983;
-        bh=2WWMFcYrSSA8Uqwsq5ULjNmvsLcSWjfaxgSajwuiT0M=;
+        s=korg; t=1632157446;
+        bh=Yo1xx5wu/2PwqdkQajsx15DqBkqVN1/9NdGm4l+7Mrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=csi42rc+Mdtm7uuNyjhwnNmvlWjbET2ZoQJVP0VYWt2WweJM1Gc2typonuPEcKbJ/
-         fNRo5TdgH4/YcV/oxTBakJorP7iDsVKm77vtpsv1AQPpuRSUA+HEHc8/1Ruq2WbD2P
-         U5RRL1PH22LyWDVHyjTG0prN/fsLLS7R4bGYhWZw=
+        b=riC+EjAnTbkeEaDJJPt+HRPfpqOTy2JavKtaFfyyWPHjbSBuPRoQs/GGnLsMvJojD
+         Ap+bfbekhFqmWzf6841t2y2LDchNP6lfsiM5Kznz3pkJFOkZSXNdTzwA2R1ncbUNKX
+         m/cnCADQiCEhtzI7dizifOXw/gDZ55XHx83oYC5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 240/293] net: w5100: check return value after calling platform_get_resource()
+Subject: [PATCH 4.14 181/217] ath9k: fix sleeping in atomic context
 Date:   Mon, 20 Sep 2021 18:43:22 +0200
-Message-Id: <20210920163941.608875342@linuxfoundation.org>
+Message-Id: <20210920163930.759479477@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-[ Upstream commit a39ff4a47f3e1da3b036817ef436b1a9be10783a ]
+[ Upstream commit 7c48662b9d56666219f526a71ace8c15e6e12f1f ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+The problem is that gpio_free() can sleep and the cfg_soc() can be
+called with spinlocks held. One problematic call tree is:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+--> ath_reset_internal() takes &sc->sc_pcu_lock spin lock
+   --> ath9k_hw_reset()
+      --> ath9k_hw_gpio_request_in()
+         --> ath9k_hw_gpio_request()
+            --> ath9k_hw_gpio_cfg_soc()
+
+Remove gpio_free(), use error message instead, so we should make sure
+there is no GPIO conflict.
+
+Also remove ath9k_hw_gpio_free() from ath9k_hw_apply_gpio_override(),
+as gpio_mask will never be set for SOC chips.
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1628481916-15030-1-git-send-email-miaoqing@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/wiznet/w5100.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath9k/hw.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
-index d8ba512f166a..41040756307a 100644
---- a/drivers/net/ethernet/wiznet/w5100.c
-+++ b/drivers/net/ethernet/wiznet/w5100.c
-@@ -1059,6 +1059,8 @@ static int w5100_mmio_probe(struct platform_device *pdev)
- 		mac_addr = data->mac_addr;
+diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
+index 933d4f49d6b0..9e3db55a8684 100644
+--- a/drivers/net/wireless/ath/ath9k/hw.c
++++ b/drivers/net/wireless/ath/ath9k/hw.c
+@@ -1595,7 +1595,6 @@ static void ath9k_hw_apply_gpio_override(struct ath_hw *ah)
+ 		ath9k_hw_gpio_request_out(ah, i, NULL,
+ 					  AR_GPIO_OUTPUT_MUX_AS_OUTPUT);
+ 		ath9k_hw_set_gpio(ah, i, !!(ah->gpio_val & BIT(i)));
+-		ath9k_hw_gpio_free(ah, i);
+ 	}
+ }
  
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -EINVAL;
- 	if (resource_size(mem) < W5100_BUS_DIRECT_SIZE)
- 		ops = &w5100_mmio_indirect_ops;
- 	else
+@@ -2702,14 +2701,17 @@ static void ath9k_hw_gpio_cfg_output_mux(struct ath_hw *ah, u32 gpio, u32 type)
+ static void ath9k_hw_gpio_cfg_soc(struct ath_hw *ah, u32 gpio, bool out,
+ 				  const char *label)
+ {
++	int err;
++
+ 	if (ah->caps.gpio_requested & BIT(gpio))
+ 		return;
+ 
+-	/* may be requested by BSP, free anyway */
+-	gpio_free(gpio);
+-
+-	if (gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label))
++	err = gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label);
++	if (err) {
++		ath_err(ath9k_hw_common(ah), "request GPIO%d failed:%d\n",
++			gpio, err);
+ 		return;
++	}
+ 
+ 	ah->caps.gpio_requested |= BIT(gpio);
+ }
 -- 
 2.30.2
 
