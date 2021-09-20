@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4387411BE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB62C411DEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344969AbhITRDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
+        id S1344955AbhITR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235934AbhITRAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:00:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8B126135E;
-        Mon, 20 Sep 2021 16:53:02 +0000 (UTC)
+        id S1346058AbhITRXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:23:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0642A613A9;
+        Mon, 20 Sep 2021 17:01:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156783;
-        bh=ecdzkSPgQbxYf5hpjar8p9p+f2rloYzIymYxhWyvR8w=;
+        s=korg; t=1632157298;
+        bh=K8pMz4GG5vZ4j7mBHnBy4fP4BXnwbBH0ttasQhiXOb8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ammXn4tX6FcX23t2vAkPve24gfKe5jleI/i47oW7kQiIdM9aBkY/PKD5oEXYuLUHf
-         0WEZtn/ZvmsK0TIDBFTMo+fTncDs5iMzF2PDkuP2nttD4rY7c8sk0cnlMF35FCTjH/
-         snG0+5A/EzML9Abf8Fj7ljCtGgMU0I7eNr8U2YP0=
+        b=KXWy3tzcNxieY2GMbP9RM1jqzU0Sykyx0jGW+nkaM3KPK1e5NbgzINtpgiELW0+v/
+         jA94ejh6OlzXV7tYNp+5f3HE3Cng8z2c3IgtPuTjItOy2wZjBncnVTyWtzY8tU5gDi
+         CdbuiK/Ii5WckuqPYhjezouNNDI3x5TQX8moBXqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 084/175] KVM: x86: Update vCPUs hv_clock before back to guest when tsc_offset is adjusted
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.14 112/217] media: uvc: dont do DMA on stack
 Date:   Mon, 20 Sep 2021 18:42:13 +0200
-Message-Id: <20210920163920.822847551@linuxfoundation.org>
+Message-Id: <20210920163928.436721549@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zelin Deng <zelin.deng@linux.alibaba.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-commit d9130a2dfdd4b21736c91b818f87dbc0ccd1e757 upstream.
+commit 1a10d7fdb6d0e235e9d230916244cc2769d3f170 upstream.
 
-When MSR_IA32_TSC_ADJUST is written by guest due to TSC ADJUST feature
-especially there's a big tsc warp (like a new vCPU is hot-added into VM
-which has been up for a long time), tsc_offset is added by a large value
-then go back to guest. This causes system time jump as tsc_timestamp is
-not adjusted in the meantime and pvclock monotonic character.
-To fix this, just notify kvm to update vCPU's guest time before back to
-guest.
+As warned by smatch:
+	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
+	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <1619576521-81399-2-git-send-email-zelin.deng@linux.alibaba.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+those two functions call uvc_query_ctrl passing a pointer to
+a data at the DMA stack. those are used to send URBs via
+usb_control_msg(). Using DMA stack is not supported and should
+not work anymore on modern Linux versions.
+
+So, use a kmalloc'ed buffer.
+
+Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/usb/uvc/uvc_v4l2.c |   34 +++++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 11 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2315,6 +2315,10 @@ int kvm_set_msr_common(struct kvm_vcpu *
- 			if (!msr_info->host_initiated) {
- 				s64 adj = data - vcpu->arch.ia32_tsc_adjust_msr;
- 				adjust_tsc_offset_guest(vcpu, adj);
-+				/* Before back to guest, tsc_timestamp must be adjusted
-+				 * as well, otherwise guest's percpu pvclock time could jump.
-+				 */
-+				kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
- 			}
- 			vcpu->arch.ia32_tsc_adjust_msr = data;
- 		}
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -876,8 +876,8 @@ static int uvc_ioctl_g_input(struct file
+ {
+ 	struct uvc_fh *handle = fh;
+ 	struct uvc_video_chain *chain = handle->chain;
++	u8 *buf;
+ 	int ret;
+-	u8 i;
+ 
+ 	if (chain->selector == NULL ||
+ 	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
+@@ -885,22 +885,27 @@ static int uvc_ioctl_g_input(struct file
+ 		return 0;
+ 	}
+ 
++	buf = kmalloc(1, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
+ 	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
+ 			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
+-			     &i, 1);
+-	if (ret < 0)
+-		return ret;
++			     buf, 1);
++	if (!ret)
++		*input = *buf - 1;
+ 
+-	*input = i - 1;
+-	return 0;
++	kfree(buf);
++
++	return ret;
+ }
+ 
+ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
+ {
+ 	struct uvc_fh *handle = fh;
+ 	struct uvc_video_chain *chain = handle->chain;
++	u8 *buf;
+ 	int ret;
+-	u32 i;
+ 
+ 	ret = uvc_acquire_privileges(handle);
+ 	if (ret < 0)
+@@ -916,10 +921,17 @@ static int uvc_ioctl_s_input(struct file
+ 	if (input >= chain->selector->bNrInPins)
+ 		return -EINVAL;
+ 
+-	i = input + 1;
+-	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
+-			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
+-			      &i, 1);
++	buf = kmalloc(1, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	*buf = input + 1;
++	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
++			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
++			     buf, 1);
++	kfree(buf);
++
++	return ret;
+ }
+ 
+ static int uvc_ioctl_queryctrl(struct file *file, void *fh,
 
 
