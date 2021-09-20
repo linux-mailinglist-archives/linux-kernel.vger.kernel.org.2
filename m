@@ -2,84 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99129411703
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF1A411706
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240693AbhITObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:31:10 -0400
-Received: from mail-vk1-f179.google.com ([209.85.221.179]:44807 "EHLO
-        mail-vk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237796AbhITObJ (ORCPT
+        id S240749AbhITOb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240681AbhITObX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:31:09 -0400
-Received: by mail-vk1-f179.google.com with SMTP id s137so2144790vke.11;
-        Mon, 20 Sep 2021 07:29:42 -0700 (PDT)
+        Mon, 20 Sep 2021 10:31:23 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5ADC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:29:56 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id me1so3467741pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:29:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+lb5rV0LOZG6X4x4PyLRz7UJbh4IgA+uGggBnk9a57k=;
+        b=EyUOu+EEkFGht9RZ5nV10ztgYdhuiiq0Jv2vp8uvpWYgvxfjMw8sVjMueajk5VXipv
+         /oBwOAF3DtkDkuMxgwIsRcoKguHdtJ8vffvGHaa4qQxivNzK+5/DSlzFOlP2fyeqrwm8
+         OvQoHu2ajNIlD5PhUdF9shFYfZd6HhXFp6JSE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=21YkALx8MY4xYqXIBqwCtbg9uR4choq3iXSql033QuY=;
-        b=ncjGd+zdQglCnUZItsBwHnwXR8WWGMewgRuCbWnpbL4N0Jfg56DiaH6xnG4yZ532uz
-         EnyJLQPK+T28H/Teq0lv3HCNvkYh4lP4X+T/+IPpdI3DkmkXnjlbfrbUszStqjQJoj4c
-         8FtKHUy4WL1hMIZVDqnCOh0Ai5rZLjaZMcOHnjBLfmCtd89NzpuHgCCj1ZuBw4uz8xF/
-         BOSIDmRR7EgScC2jeYtbzUxIhGiJityfn/02HbVlWAdUJYmcvIgVcn4otX5OkAexD6AU
-         Yb4otYsIUA2NuUoi4FYr9qbfsACGMlxoK79Dm+dTH4/jvS2D2fONH5x7bDXVFC9KpkXn
-         /gdQ==
-X-Gm-Message-State: AOAM531jfwgRia0S2Jm5nqHdVOnlJgAdwI2NnuomFsMDK9IqBnQuGq7R
-        zdmidZzFaUc9i0yELZRBmrHsJBlyzRic+TQ+1RQG5o80
-X-Google-Smtp-Source: ABdhPJzYwvtLjl5QDwoV+CHITQjvFv+87GrxeChNSj2O8dfOTy5rVYi5P2u2LoaRXbU19nG7yQpelDKN8sKmTzppk8c=
-X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr3803629vka.19.1632148182010;
- Mon, 20 Sep 2021 07:29:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+lb5rV0LOZG6X4x4PyLRz7UJbh4IgA+uGggBnk9a57k=;
+        b=jb5wYDGW7oU5PHmPaF97Nx4cADx64eLp1QyvbdeLXtTZ+kVgVOw0n21B22c13d22NN
+         if+Yx0ok5AaXEdMeZAYRsUQ7u8a/l/Y/01LbWsmwPsalaZdud8sGPqZGMJDGarrVtFVT
+         QMPBU7+BhP3/eBo4T4N+11YmKSLTFynNxQVaf/feJLpOaiXtnivXNKdzmV0klmsGrfJD
+         XWXQQfjAwVBISIYfSgVawUagN5RdTK9XYKKbAb3x7c866e3dtlt8DTi1fHIKNKMlYxHR
+         luFhJNcIznv1i69+/iLQVLFRNQaNCeND/s1HIR1hD7DibBZUZ6sjMtF+a3CageoO4pST
+         P9lQ==
+X-Gm-Message-State: AOAM531slyGgc+IqOy3lSvH4IsFE16freiNTJs76dFaar86qjbCju38n
+        GfkVp0uLvh2LJzQdNjBaRNuc4g==
+X-Google-Smtp-Source: ABdhPJwCfCkT5eXYYiNM8mNLhrjhZNHW7wB9H1w4DK0n5yjIGjtLA5jebXVcPBUaU2l4kUKjMyPyCQ==
+X-Received: by 2002:a17:90b:4a88:: with SMTP id lp8mr13737014pjb.159.1632148196291;
+        Mon, 20 Sep 2021 07:29:56 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b142sm7613439pfb.17.2021.09.20.07.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 07:29:55 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 07:29:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug
+ is enabled
+Message-ID: <202109200726.2EFEDC5@keescook>
+References: <20210601182202.3011020-1-swboyd@chromium.org>
+ <20210601182202.3011020-5-swboyd@chromium.org>
 MIME-Version: 1.0
-References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl>
- <20210920140938.GA24424@lst.de>
-In-Reply-To: <20210920140938.GA24424@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Sep 2021 16:29:30 +0200
-Message-ID: <CAMuHMdXoZdhSydMpbW8B6oQJNnpYpTxmhHrV5CJNTUP7T1KsoA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Joel Becker <jlbec@evilplan.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210601182202.3011020-5-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Tue, Jun 01, 2021 at 11:22:02AM -0700, Stephen Boyd wrote:
+> Obscuring the pointers that slub shows when debugging makes for some
+> confusing slub debug messages:
+> 
+>  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
+> 
+> Those addresses are hashed for kernel security reasons. If we're trying
+> to be secure with slub_debug on the commandline we have some big
+> problems given that we dump whole chunks of kernel memory to the kernel
+> logs. Let's force on the no_hash_pointers commandline flag when
+> slub_debug is on the commandline. This makes slub debug messages more
+> meaningful and if by chance a kernel address is in some slub debug
+> object dump we will have a better chance of figuring out what went
+> wrong.
+> 
+> Note that we don't use %px in the slub code because we want to reduce
+> the number of places that %px is used in the kernel. This also nicely
+> prints a big fat warning at kernel boot if slub_debug is on the
+> commandline so that we know that this kernel shouldn't be used on
+> production systems.
 
-On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
-> On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
-> > For better readability and maintenance: use the BIT() macro for flag
-> > definitions.
->
-> NAK.  BIT() is the stupidest macro in the kernel and shall not be used
-> ever.  And I'm pretty sure we had this discussion a few times.
+Eeeek. I missed this patch. NAK NAK. People use slub_debug for
+production systems to gain redzoning, etc, as a layer of defense, and
+they absolutely do not want %p-hashing disabled. %p hashing is
+controlled by the no_hash_pointers boot param (since v5.12), and needs to stay
+separate from slub_debug.
 
-Care to explain why it is a stupid macro?
+Can we please revert this in Linus's tree and in v5.14?
 
-TIA!
+-Kees
 
-Gr{oetje,eeting}s,
-
-                        Geert
+> 
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  include/linux/kernel.h | 2 ++
+>  lib/vsprintf.c         | 2 +-
+>  mm/slub.c              | 4 ++++
+>  3 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 15d8bad3d2f2..bf950621febf 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -357,6 +357,8 @@ int sscanf(const char *, const char *, ...);
+>  extern __scanf(2, 0)
+>  int vsscanf(const char *, const char *, va_list);
+>  
+> +extern int no_hash_pointers_enable(char *str);
+> +
+>  extern int get_option(char **str, int *pint);
+>  extern char *get_options(const char *str, int nints, int *ints);
+>  extern unsigned long long memparse(const char *ptr, char **retptr);
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index f0c35d9b65bf..cc281f5895f9 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2186,7 +2186,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>  bool no_hash_pointers __ro_after_init;
+>  EXPORT_SYMBOL_GPL(no_hash_pointers);
+>  
+> -static int __init no_hash_pointers_enable(char *str)
+> +int __init no_hash_pointers_enable(char *str)
+>  {
+>  	if (no_hash_pointers)
+>  		return 0;
+> diff --git a/mm/slub.c b/mm/slub.c
+> index bf4949115412..a722794f1dbd 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4460,6 +4460,10 @@ void __init kmem_cache_init(void)
+>  	if (debug_guardpage_minorder())
+>  		slub_max_order = 0;
+>  
+> +	/* Print slub debugging pointers without hashing */
+> +	if (static_branch_unlikely(&slub_debug_enabled))
+> +		no_hash_pointers_enable(NULL);
+> +
+>  	kmem_cache_node = &boot_kmem_cache_node;
+>  	kmem_cache = &boot_kmem_cache;
+>  
+> -- 
+> https://chromeos.dev
+> 
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kees Cook
