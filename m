@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE73D411B7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E1C411FAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242041AbhITQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47332 "EHLO mail.kernel.org"
+        id S1353119AbhITRnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245349AbhITQ4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F07061356;
-        Mon, 20 Sep 2021 16:51:11 +0000 (UTC)
+        id S1346877AbhITRld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:41:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA5E61B45;
+        Mon, 20 Sep 2021 17:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156671;
-        bh=gQJnFsEZZ6LoCy1qCubzgnFF5iRoPg0fhVkQZxv9ovw=;
+        s=korg; t=1632157713;
+        bh=JfgHE8lv2SVDUPY+i/lPSsZ8d2M2s/c94wckuT7lds0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y6xkMz4D2RYDR56UZdFddjBz0x8MvDIvX98/ms6sTnDunWh5qhI+knJWclgm6vktW
-         sP9gYECcwSk0sQ6NNcZYIkhG04nINieWLHE8P6wLKyHJxiiT6WBSta7jXvfMVfUOKL
-         iBGIJp/beUP53i5Kz3xF0cwIv/R/J9fse60318bU=
+        b=bxXZlqfzwANC/8vWmpZsh2ewj59SRFAmFUcNJ4jKV0zvLLxZxD3Mfk35U5Zc/2re0
+         uJjeonHMmlAVdZ3R0gXm/0kptcO5yfuSCsVnQor9DN5jxCjt+6GIurIo2+9xUi1Yzy
+         oUeaarkGPV53Gfl5tTlH3ctS9p+3hSnoxkxdzaqU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 031/175] mm/page_alloc: speed up the iteration of max_order
+        stable@vger.kernel.org, Anton Bambura <jenneron@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 4.19 118/293] rtc: tps65910: Correct driver module alias
 Date:   Mon, 20 Sep 2021 18:41:20 +0200
-Message-Id: <20210920163919.083855964@linuxfoundation.org>
+Message-Id: <20210920163937.302169070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,73 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-commit 7ad69832f37e3cea8557db6df7c793905f1135e8 upstream.
+commit 8d448fa0a8bb1c8d94eef7647edffe9ac81a281e upstream.
 
-When we free a page whose order is very close to MAX_ORDER and greater
-than pageblock_order, it wastes some CPU cycles to increase max_order to
-MAX_ORDER one by one and check the pageblock migratetype of that page
-repeatedly especially when MAX_ORDER is much larger than pageblock_order.
+The TPS65910 RTC driver module doesn't auto-load because of the wrong
+module alias that doesn't match the device name, fix it.
 
-We also should not be checking migratetype of buddy when "order ==
-MAX_ORDER - 1" as the buddy pfn may be invalid, so adjust the condition.
-With the new check, we don't need the max_order check anymore, so we
-replace it.
-
-Also adjust max_order initialization so that it's lower by one than
-previously, which makes the code hopefully more clear.
-
-Link: https://lkml.kernel.org/r/20201204155109.55451-1-songmuchun@bytedance.com
-Fixes: d9dddbf55667 ("mm/page_alloc: prevent merging between isolated and other pageblocks")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Reported-by: Anton Bambura <jenneron@protonmail.com>
+Tested-by: Anton Bambura <jenneron@protonmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210808160030.8556-1-digetx@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/page_alloc.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/rtc/rtc-tps65910.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -814,7 +814,7 @@ static inline void __free_one_page(struc
- 	struct page *buddy;
- 	unsigned int max_order;
+--- a/drivers/rtc/rtc-tps65910.c
++++ b/drivers/rtc/rtc-tps65910.c
+@@ -470,6 +470,6 @@ static struct platform_driver tps65910_r
+ };
  
--	max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
-+	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
- 
- 	VM_BUG_ON(!zone_is_initialized(zone));
- 	VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
-@@ -829,7 +829,7 @@ static inline void __free_one_page(struc
- 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
- 
- continue_merging:
--	while (order < max_order - 1) {
-+	while (order < max_order) {
- 		buddy_idx = __find_buddy_index(page_idx, order);
- 		buddy = page + (buddy_idx - page_idx);
- 		if (!page_is_buddy(page, buddy, order))
-@@ -850,7 +850,7 @@ continue_merging:
- 		page_idx = combined_idx;
- 		order++;
- 	}
--	if (max_order < MAX_ORDER) {
-+	if (order < MAX_ORDER - 1) {
- 		/* If we are here, it means order is >= pageblock_order.
- 		 * We want to prevent merge between freepages on isolate
- 		 * pageblock and normal pageblock. Without this, pageblock
-@@ -871,7 +871,7 @@ continue_merging:
- 						is_migrate_isolate(buddy_mt)))
- 				goto done_merging;
- 		}
--		max_order++;
-+		max_order = order + 1;
- 		goto continue_merging;
- 	}
- 
+ module_platform_driver(tps65910_rtc_driver);
+-MODULE_ALIAS("platform:rtc-tps65910");
++MODULE_ALIAS("platform:tps65910-rtc");
+ MODULE_AUTHOR("Venu Byravarasu <vbyravarasu@nvidia.com>");
+ MODULE_LICENSE("GPL");
 
 
