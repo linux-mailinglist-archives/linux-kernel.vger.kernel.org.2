@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1858A410FB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 08:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB869410FB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbhITG5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 02:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
+        id S233446AbhITHB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhITG5c (ORCPT
+        with ESMTP id S231823AbhITHBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 02:57:32 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DE1C061574;
-        Sun, 19 Sep 2021 23:56:05 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id m4so17502394ilj.9;
-        Sun, 19 Sep 2021 23:56:05 -0700 (PDT)
+        Mon, 20 Sep 2021 03:01:25 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002FFC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 23:59:58 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id m26so15373465pff.3
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 23:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=izw6L99FizrdgPwr1IzT8U5HxF1mXHWHNm6b2HR3A8s=;
-        b=qOjBJLGif2a7YzwQq1dMe5aRyy5djPYdu8/aJeKnDoPWGDUzAsvyo0GkkV2x0KOUZv
-         Lq9iaVg5hkeJ2m+eYkYYaPtON5eBHQJpKaovewnloGDQHFNn6nwoMeyed6MGW3HmRwh+
-         j3gNr5IY32NeM7qxopu/b9Gdtn2D81/7VYfWlbr3roleL0y6TBrOPkyQfgYzgenouN5I
-         PsaZWwMi43DPttO9DErFGwt+oSuS9W5Xh0bindLi7dCUJVHQdgBIBuRCAUKPYiHcZu48
-         ysj1KN0IvGGTC5l3XNqxGdu6JZRrKooki71RKW3Rpi/EYbRanw1s3LRUND2v27KoWsdC
-         l9gQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9f/uoH0k3kcTrJoBN4xkFEVn3LDPuL95GvB2FHHsCJY=;
+        b=nQh65a8mRcM96mOvKTtKO1GHdqpqYYHSImR7TUz+hO51elCwJPtoPE49ey40V++j4e
+         aD6Fedx+KRVpN9tWVWDID+dSoLEaetnh1EvRN/EPtownN/QN36JjkPcxmxCZIZgEiowu
+         KxUL90WiD2kvhEVM6dPEHYNZZ+H+U0hEiPZNGFANjaAym4WO7OvH+M5R+pYZKgktnNHV
+         xplrA8/u/fctvqjTuo0jOHjRLiKm6FENyWGqCF/wZIaKTApT9GYi9PpLa8eoBlPptHVa
+         iqlwPODsPUmiXmiStJ+ogWm2phq5vb2Glkkz9/oKfTLgphNBnfDMzIYkkNs409xOjW0x
+         QQnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=izw6L99FizrdgPwr1IzT8U5HxF1mXHWHNm6b2HR3A8s=;
-        b=uXlrt547p3Y22DjIr3gYaEjdTYXq7DY4jqDxhAuMnqT/bQa8jj5zOCPxu9pfGmVWns
-         tRKfyH0n+Jf3cyvnPMjkP9AQZeU6AapuRWpj/tpOjCHSrJ/lpFKL34Phwv2f1Sw86sxC
-         guzEk3sqOvRR/4QilILsP5gKsdo2sIRDp1SsJ10jrqLBGVbeiHXA/jQy+w2vTreNW5/N
-         5W0uENKzEj7yUk3o2vUi/cA9B26Y21lgeeJM9dYI/pN5JA2WydFUrnSCOQPia4aOPXdb
-         WJDpQ/sMTjQnejxy/cJ13R+URHDqjQAVHpGjwV/r2aIpesiC83hrV/cNOH53jHc1uNmN
-         6gHA==
-X-Gm-Message-State: AOAM533fxROTv/xYyxyG+6bwquSPVJVgxIOWXkuOhQZ3ZAuE2Nl3fEhd
-        cRHhHV1A2F3BtyYLpewoo08O3QTCi8i8emEnRZdrms0SK08=
-X-Google-Smtp-Source: ABdhPJwDhOjPBiPVsrlxtgSZHUTfLwlgt3HBjiXZ1pGAheIaZfE3sE7ZTMEwMtBocZI7y82A+c/o2ZhZZPNbPT+H9IM=
-X-Received: by 2002:a05:6e02:13e3:: with SMTP id w3mr16783279ilj.25.1632120965042;
- Sun, 19 Sep 2021 23:56:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9f/uoH0k3kcTrJoBN4xkFEVn3LDPuL95GvB2FHHsCJY=;
+        b=TA3Ixc/eR5u7ZVjmYJ/Im7GKDneK1pJUD8sIWpJMXNfbADM/DjwHhQ1o9Tlx8B1lI/
+         +LFFNTdfcRzl7BouJupUXTPVNfrLUWreNas0/DQiPBz6fVnc6noy18RMyMwJRHrD/1ht
+         8TmWEwyd9kou+N9o7CYJLvRNSx6I2w9UrR1ua+NmoFa0SnhW2bSm9wl+iwncZ1058K8j
+         cla0AgGrR3HOUJaxiiMuSfeYbQaDDHXuqJ0KhuDaLhurFYOXCQ3lxboyHDrRXrQUoOtr
+         nCP6qmZOjrnMgnpW1ZhZm2dxDxs7FQP+lZz+cWW72uSdHXcyFYCpwK/k+aGrgUawIbAM
+         hvCg==
+X-Gm-Message-State: AOAM531MPoayiYZj2cOhvvG3WL8KiqWwGWbCX/XgMooCTlxu60GdLvf1
+        uWTjO33nzzCKB/Gpo7xkcBx2
+X-Google-Smtp-Source: ABdhPJzynZnY3/+qUe0q4BQT2fPVEv59drurXiTSvxUmqHifbHPK84m7SA2qsr/ZcAe5w0hwoW7JIw==
+X-Received: by 2002:a65:6398:: with SMTP id h24mr21590975pgv.367.1632121198220;
+        Sun, 19 Sep 2021 23:59:58 -0700 (PDT)
+Received: from localhost.localdomain ([59.92.98.104])
+        by smtp.gmail.com with ESMTPSA id p15sm12768349pff.194.2021.09.19.23.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 23:59:57 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, bjorn.andersson@linaro.org,
+        sallenki@codeaurora.org, skananth@codeaurora.org,
+        vpernami@codeaurora.org, vbadigan@codeaurora.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v8 0/3] Add Qualcomm PCIe Endpoint driver support
+Date:   Mon, 20 Sep 2021 12:29:43 +0530
+Message-Id: <20210920065946.15090-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210920113330.29f12b99@canb.auug.org.au>
-In-Reply-To: <20210920113330.29f12b99@canb.auug.org.au>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 20 Sep 2021 14:55:29 +0800
-Message-ID: <CALOAHbDYExn1uRaHX1jNZrST80if7QjA-MuL0at1C7fHzQgV8g@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the tip tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 9:33 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the tip tree, today's linux-next build (powerpc_ppc64
-> defconfig) produced this warning:
->
-> kernel/sched/debug.c: In function 'print_cfs_group_stats':
-> kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused-variable]
->   460 |                struct sched_statistics *stats =  __schedstats_from_se(se);
->       |                                         ^~~~~
->
-> Caused by commit
->
->   cb3e971c435d ("sched: Make struct sched_statistics independent of fair sched class")
->
-> # CONFIG_SCHEDSTATS is not set
->
+Hello,
 
-Hi Stephen,
+This series adds support for Qualcomm PCIe Endpoint controller found
+in platforms like SDX55. The Endpoint controller is based on the designware
+core with additional Qualcomm wrappers around the core.
 
-Thanks for the report.
+The driver is added separately unlike other Designware based drivers that
+combine RC and EP in a single driver. This is done to avoid complexity and
+to maintain this driver autonomously.
 
-We have discussed this issue before[1].
-This warning happens when CONFIG_SCHEDSTATS is not set and
-schedstat_enabled() is 0, so the whole scope should be not compiled.
-It seems that we don't need to fix this warning.
+The driver has been validated with an out of tree MHI function driver on
+SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
 
-[1]. https://lore.kernel.org/lkml/20210911082505.115758-1-laoar.shao@gmail.com/
+Thanks,
+Mani
+
+Changes in v8:
+
+* Added Reviewed-by tag from Rob for the driver patch
+* Rebased on top of v5.15-rc1
+
+Changes in v7:
+
+* Used existing naming convention for callback functions
+* Used active low state for PERST# gpio
+
+Changes in v6:
+
+* Removed status property in DT and added reviewed tag from Rob
+* Switched to _relaxed variants as suggested by Rob
+
+Changes in v5:
+
+* Removed the DBI register settings that are not needed
+* Used the standard definitions available in pci_regs.h
+* Added defines for all the register fields
+* Removed the left over code from previous iteration
+
+Changes in v4:
+
+* Removed the active_config settings needed for IPA integration
+* Switched to writel for couple of relaxed versions that sneaked in
+
+Changes in v3:
+
+* Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+* Noticeable changes are:
+  - Got rid of _relaxed calls and used readl/writel
+  - Got rid of separate TCSR memory region and used syscon for getting the
+    register offsets for Perst registers
+  - Changed the wake gpio handling logic
+  - Added remove() callback and removed "suppress_bind_attrs"
+  - stop_link() callback now just disables PERST IRQ
+* Added MMIO region and doorbell interrupt to the binding
+* Added logic to write MMIO physicall address to MHI base address as it is
+  for the function driver to work
+
+Changes in v2:
+
+* Addressed the comments from Rob on bindings patch
+* Modified the driver as per binding change
+* Fixed the warnings reported by Kbuild bot
+* Removed the PERST# "enable_irq" call from probe()
+
+Manivannan Sadhasivam (3):
+  dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+    controller
+  PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+  MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+ MAINTAINERS                                   |  10 +-
+ drivers/pci/controller/dwc/Kconfig            |  10 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+ 5 files changed, 888 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
 
 -- 
-Thanks
-Yafang
+2.25.1
+
