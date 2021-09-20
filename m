@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5073F411437
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75ADE411440
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237803AbhITMVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48400 "EHLO mail.kernel.org"
+        id S237937AbhITMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:22:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237741AbhITMVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:21:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 730B66109E;
-        Mon, 20 Sep 2021 12:20:07 +0000 (UTC)
+        id S238112AbhITMVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:21:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 176C361040;
+        Mon, 20 Sep 2021 12:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632140407;
-        bh=/9Ys0WipdohzajzCBX6QMT2XxKHtdjKOKRlCaqPs2Us=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mqVeFzTD7jOwUtQHVFD8tJbjteU1Z9MeYbkox0TxedV+z2NuaERgDpYVuQARf7G4O
-         AUHSwmCQk3KAB14479iLu/TK6xaYjAOZPl8fY1qSeqICD0Jm0G1n18WbkX7SRfLulJ
-         zPAnE6EUaO0lKRUd7M/RdBWH9mlpWyyPo11o98RJzPa2rSFxe6NrleJ9Q8NMdEOfTq
-         67H1aowGPgjDPwnVj6MeL2m0XqwKWgWk3CV7dS1UT4gdO7VgyP/znfcVBJbi1I74v9
-         /YU4ng35y0yHCnl0aQhCwVSqUJ73j79Ms+KwnCkSS8CXhwXUmvbfCh6WhkRpfK9MD4
-         Zfqc6UNjjj/Sw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5DA6D60A3A;
-        Mon, 20 Sep 2021 12:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1632140423;
+        bh=DNASYScwZsRujYme3RVQ9/30XQXpMz6y3ULryioQXxg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eafrHMDEo7lOkA9NtBehUH4SI76ZrOXd6fXtRWVIQgdz3k1ynxjpgDeCg8TVK/3Kf
+         u5bc9h5rSBahZjERcDOJZtwM/+/XkhPLQPshPl0Kezq2sq6PKz6Hc2OX6F54zysX0T
+         0UYi0z1Km4aSlbKZHn5DXXWsicxpXFGywa+gyQFyQqrPH4y85CbNWONloK9IFfiEcj
+         pUmIDkXdDQFQGAm1KM7rCT6uU1jcEAfXIwnNo8cBtY87N9XQ7yU4LcCg9v7Cnytler
+         hW8knaRY+2FkhcUBjTgBjXFPmVEb974Lgy9oO5VT+UvgXrHUujoVk7RcRHC4EeZaac
+         y96x/jFw3EPkQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Jianqiang Chen <jianqiang.chen@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dmaengine: remove debugfs #ifdef
+Date:   Mon, 20 Sep 2021 14:20:07 +0200
+Message-Id: <20210920122017.205975-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH -next] net/ipv4/tcp_fastopen.c: remove superfluous header
- files from tcp_fastopen.c
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163214040737.3439.14491914886555041180.git-patchwork-notify@kernel.org>
-Date:   Mon, 20 Sep 2021 12:20:07 +0000
-References: <20210920113416.26545-1-liumh1@shanghaitech.edu.cn>
-In-Reply-To: <20210920113416.26545-1-liumh1@shanghaitech.edu.cn>
-To:     Mianhan Liu <liumh1@shanghaitech.edu.cn>
-Cc:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Arnd Bergmann <arnd@arndb.de>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+The ptdma driver has added debugfs support, but this fails to build
+when debugfs is disabled:
 
-On Mon, 20 Sep 2021 19:34:16 +0800 you wrote:
-> tcp_fastopen.c hasn't use any macro or function declared in crypto.h, err.h,
-> init.h, list.h, rculist.h and inetpeer.h. Thus, these files can be removed
-> from tcp_fastopen.c safely without affecting the compilation of the net module.
-> 
-> Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
-> 
-> 
-> [...]
+drivers/dma/ptdma/ptdma-debugfs.c: In function 'ptdma_debugfs_setup':
+drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: 'struct dma_device' has no member named 'dbg_dev_root'
+   93 |         debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
+      |                                                      ^
+drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: 'struct dma_device' has no member named 'dbg_dev_root'
+   96 |         debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
+      |                                                       ^
+drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: 'struct dma_device' has no member named 'dbg_dev_root'
+  102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
+      |                                                    ^
 
-Here is the summary with links:
-  - [-next] net/ipv4/tcp_fastopen.c: remove superfluous header files from tcp_fastopen.c
-    https://git.kernel.org/netdev/net-next/c/222a31408ab0
+Remove the #ifdef in the header, as this only saves a few bytes,
+but would require ugly #ifdefs in each driver using it.
+Simplify the other user while we're at it.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Fixes: e2fb2e2a33fa ("dmaengine: ptdma: Add debugfs entries for PTDMA")
+Fixes: 26cf132de6f7 ("dmaengine: Create debug directories for DMA devices")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/dma/xilinx/xilinx_dpdma.c | 15 +--------------
+ include/linux/dmaengine.h         |  2 --
+ 2 files changed, 1 insertion(+), 16 deletions(-)
 
+diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
+index b280a53e8570..ce5c66e6897d 100644
+--- a/drivers/dma/xilinx/xilinx_dpdma.c
++++ b/drivers/dma/xilinx/xilinx_dpdma.c
+@@ -271,9 +271,6 @@ struct xilinx_dpdma_device {
+ /* -----------------------------------------------------------------------------
+  * DebugFS
+  */
+-
+-#ifdef CONFIG_DEBUG_FS
+-
+ #define XILINX_DPDMA_DEBUGFS_READ_MAX_SIZE	32
+ #define XILINX_DPDMA_DEBUGFS_UINT16_MAX_STR	"65535"
+ 
+@@ -299,7 +296,7 @@ struct xilinx_dpdma_debugfs_request {
+ 
+ static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
+ {
+-	if (chan->id == dpdma_debugfs.chan_id)
++	if (IS_ENABLED(CONFIG_DEBUG_FS) && chan->id == dpdma_debugfs.chan_id)
+ 		dpdma_debugfs.xilinx_dpdma_irq_done_count++;
+ }
+ 
+@@ -462,16 +459,6 @@ static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
+ 		dev_err(xdev->dev, "Failed to create debugfs testcase file\n");
+ }
+ 
+-#else
+-static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
+-{
+-}
+-
+-static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
+-{
+-}
+-#endif /* CONFIG_DEBUG_FS */
+-
+ /* -----------------------------------------------------------------------------
+  * I/O Accessors
+  */
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index e5c2c9e71bf1..9000f3ffce8b 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -944,10 +944,8 @@ struct dma_device {
+ 	void (*device_issue_pending)(struct dma_chan *chan);
+ 	void (*device_release)(struct dma_device *dev);
+ 	/* debugfs support */
+-#ifdef CONFIG_DEBUG_FS
+ 	void (*dbg_summary_show)(struct seq_file *s, struct dma_device *dev);
+ 	struct dentry *dbg_dev_root;
+-#endif
+ };
+ 
+ static inline int dmaengine_slave_config(struct dma_chan *chan,
+-- 
+2.29.2
 
