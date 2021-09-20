@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE5B412132
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7747411C84
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345533AbhITSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54560 "EHLO mail.kernel.org"
+        id S1343929AbhITRKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355741AbhITR4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D0FE63156;
-        Mon, 20 Sep 2021 17:14:21 +0000 (UTC)
+        id S1346573AbhITRHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:07:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C69E3617E6;
+        Mon, 20 Sep 2021 16:55:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158062;
-        bh=K/KDn5XN9ILhtKfOVWsqrXgoFClZtPwe1tuyUK9bwE8=;
+        s=korg; t=1632156948;
+        bh=KUe582VJtgGZabFDrgxZbLWdHNKJM0l/JO/BSUaJiU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Mrz5gMeOVBk6DT7d0rC/IXE1n2fM6H9lgYmqWvx9wMLbk0s4HyFwKuQpx4cbVSOP
-         P19sbAOXhFBAPkcqsq367nmcrV0Q8633IOqeoTeZPmAYR0BnlBoYKnw6zacFfR09xA
-         pt9RJFRADx/lYmFurwJ3QJlW4Q8lZcGdyLLgmVrk=
+        b=J/SF953dWRj/5DSEFD4Y7A1ZVQ0QUa9kNbzM01HGXxsKIv8uzFBhJaS5KxE6rvZon
+         TDNqgW1BY5qZgSdiZ/3eIn4fd9KIkFle77pfZEFXWZiEgDvjFGVwjqGeUsNmTDYbM5
+         S19Gw+IyJ70Ct75zy5Mz8qnvhUtEexF2qc/vbis8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Zixian <liuzixian4@huawei.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 246/293] mm/hugetlb: initialize hugetlb_usage in mm_init
+        stable@vger.kernel.org, Andrius V <vezhlys@gmail.com>,
+        Darek Strugacz <darek.strugacz@op.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 159/175] r6040: Restore MDIO clock frequency after MAC reset
 Date:   Mon, 20 Sep 2021 18:43:28 +0200
-Message-Id: <20210920163941.812970901@linuxfoundation.org>
+Message-Id: <20210920163923.269933842@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,73 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Zixian <liuzixian4@huawei.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 13db8c50477d83ad3e3b9b0ae247e5cd833a7ae4 upstream.
+commit e3f0cc1a945fcefec0c7c9d9dfd028a51daa1846 upstream.
 
-After fork, the child process will get incorrect (2x) hugetlb_usage.  If
-a process uses 5 2MB hugetlb pages in an anonymous mapping,
+A number of users have reported that they were not able to get the PHY
+to successfully link up, especially after commit c36757eb9dee ("net:
+phy: consider AN_RESTART status when reading link status") where we
+stopped reading just BMSR, but we also read BMCR to determine the link
+status.
 
-	HugetlbPages:	   10240 kB
+Andrius at NetBSD did a wonderful job at debugging the problem
+and found out that the MDIO bus clock frequency would be incorrectly set
+back to its default value which would prevent the MDIO bus controller
+from reading PHY registers properly. Back when we only read BMSR, if we
+read all 1s, we could falsely indicate a link status, though in general
+there is a cable plugged in, so this went unnoticed. After a second read
+of BMCR was added, a wrong read will lead to the inability to determine
+a link UP condition which is when it started to be visibly broken, even
+if it was long before that.
 
-and then forks, the child will show,
+The fix consists in restoring the value of the MD_CSR register that was
+set prior to the MAC reset.
 
-	HugetlbPages:	   20480 kB
-
-The reason for double the amount is because hugetlb_usage will be copied
-from the parent and then increased when we copy page tables from parent
-to child.  Child will have 2x actual usage.
-
-Fix this by adding hugetlb_count_init in mm_init.
-
-Link: https://lkml.kernel.org/r/20210826071742.877-1-liuzixian4@huawei.com
-Fixes: 5d317b2b6536 ("mm: hugetlb: proc: add HugetlbPages field to /proc/PID/status")
-Signed-off-by: Liu Zixian <liuzixian4@huawei.com>
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: http://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=53494
+Fixes: 90f750a81a29 ("r6040: consolidate MAC reset to its own function")
+Reported-by: Andrius V <vezhlys@gmail.com>
+Reported-by: Darek Strugacz <darek.strugacz@op.pl>
+Tested-by: Darek Strugacz <darek.strugacz@op.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/hugetlb.h |    9 +++++++++
- kernel/fork.c           |    1 +
- 2 files changed, 10 insertions(+)
+ drivers/net/ethernet/rdc/r6040.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -513,6 +513,11 @@ static inline spinlock_t *huge_pte_lockp
+--- a/drivers/net/ethernet/rdc/r6040.c
++++ b/drivers/net/ethernet/rdc/r6040.c
+@@ -133,6 +133,8 @@
+ #define PHY_ST		0x8A	/* PHY status register */
+ #define MAC_SM		0xAC	/* MAC status machine */
+ #define  MAC_SM_RST	0x0002	/* MAC status machine reset */
++#define MD_CSC		0xb6	/* MDC speed control register */
++#define  MD_CSC_DEFAULT	0x0030
+ #define MAC_ID		0xBE	/* Identifier register */
  
- void hugetlb_report_usage(struct seq_file *m, struct mm_struct *mm);
- 
-+static inline void hugetlb_count_init(struct mm_struct *mm)
-+{
-+	atomic_long_set(&mm->hugetlb_usage, 0);
-+}
-+
- static inline void hugetlb_count_add(long l, struct mm_struct *mm)
+ #define TX_DCNT		0x80	/* TX descriptor count */
+@@ -368,8 +370,9 @@ static void r6040_reset_mac(struct r6040
  {
- 	atomic_long_add(l, &mm->hugetlb_usage);
-@@ -593,6 +598,10 @@ static inline spinlock_t *huge_pte_lockp
- 	return &mm->page_table_lock;
+ 	void __iomem *ioaddr = lp->base;
+ 	int limit = MAC_DEF_TIMEOUT;
+-	u16 cmd;
++	u16 cmd, md_csc;
+ 
++	md_csc = ioread16(ioaddr + MD_CSC);
+ 	iowrite16(MAC_RST, ioaddr + MCR1);
+ 	while (limit--) {
+ 		cmd = ioread16(ioaddr + MCR1);
+@@ -381,6 +384,10 @@ static void r6040_reset_mac(struct r6040
+ 	iowrite16(MAC_SM_RST, ioaddr + MAC_SM);
+ 	iowrite16(0, ioaddr + MAC_SM);
+ 	mdelay(5);
++
++	/* Restore MDIO clock frequency */
++	if (md_csc != MD_CSC_DEFAULT)
++		iowrite16(md_csc, ioaddr + MD_CSC);
  }
  
-+static inline void hugetlb_count_init(struct mm_struct *mm)
-+{
-+}
-+
- static inline void hugetlb_report_usage(struct seq_file *f, struct mm_struct *m)
- {
- }
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -964,6 +964,7 @@ static struct mm_struct *mm_init(struct
- 	mm->pmd_huge_pte = NULL;
- #endif
- 	mm_init_uprobes_state(mm);
-+	hugetlb_count_init(mm);
- 
- 	if (current->mm) {
- 		mm->flags = current->mm->flags & MMF_INIT_MASK;
+ static void r6040_init_mac_regs(struct net_device *dev)
 
 
