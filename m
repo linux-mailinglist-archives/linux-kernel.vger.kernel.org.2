@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9331B41258B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21B3412496
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383975AbhITSqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:46:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
+        id S1380634AbhITSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:34:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382858AbhITSmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC9976334F;
-        Mon, 20 Sep 2021 17:32:12 +0000 (UTC)
+        id S1379165AbhITS21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E231C632E2;
+        Mon, 20 Sep 2021 17:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159133;
-        bh=hjns1O5VBB1oEQxpCGhtIp+uuv+3hKCDt4L6L2WPSCw=;
+        s=korg; t=1632158791;
+        bh=GzxPKoFSUPqjQDPedCrh21+0h4qkVoTJdFaYoAVuqa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wXZSMMC6+qrnmwAqREytGqUNxZl8ft2GwKRhGlXG2RMVKZK5Kk2Vpnvpe/aQXDXEz
-         +GvQidjrOBPIAS6CIOwK9e/eAM455g1Y5fi8+zGEdVOhs3yG9z1RGjqJ1QIONWfQSc
-         NoDebc2IHvrkUVLfBd7SjQF9rI53hUJUfrmnOB10=
+        b=hM5jwCxuGgXiijLhd0g2Iq4aeZOQvHmXtBJLef9le4YqDdWGlsVHDPcqSd7/r0bBG
+         sLr3N23Ooh4Ze0x58fBbObi+kHoN/eQFx2jw559zXuYvQ7xG1KIW/5b9fQNQGoxcxx
+         tOI/zGsLXyim/7I2j8FBgGx4+bQBdmW2XB5FhD1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Ryan J. Barnett" <ryan.barnett@collins.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 090/168] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
+        stable@vger.kernel.org, phone-devel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 056/122] mfd: db8500-prcmu: Adjust map to reality
 Date:   Mon, 20 Sep 2021 18:43:48 +0200
-Message-Id: <20210920163924.593863090@linuxfoundation.org>
+Message-Id: <20210920163917.622342639@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
+[ Upstream commit ec343111c056ec3847800302f6dbc57281f833fa ]
 
-"PAGESIZE / 512" is the number of ECC chunks.
-"ECC_BYTES" is the number of bytes needed to store a single ECC code.
-"2" is the space reserved by the bad block marker.
+These are the actual frequencies reported by the PLL, so let's
+report these. The roundoffs are inappropriate, we should round
+to the frequency that the clock will later report.
 
-"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
-than the total number of OOB bytes, otherwise it won't fit.
+Drop some whitespace at the same time.
 
-Fix the equation by substituting s/>=/<=/.
-
-Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
+Cc: phone-devel@vger.kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/db8500-prcmu.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index 44919d48d241..c459f169a904 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -122,7 +122,7 @@ on various other factors also like;
- 	so the device should have enough free bytes available its OOB/Spare
- 	area to accommodate ECC for entire page. In general following expression
- 	helps in determining if given device can accommodate ECC syndrome:
--	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
-+	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
- 	where
- 		OOBSIZE		number of bytes in OOB/spare area
- 		PAGESIZE	number of bytes in main-area of device page
+diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
+index a5983d515db0..8d5f8f07d8a6 100644
+--- a/drivers/mfd/db8500-prcmu.c
++++ b/drivers/mfd/db8500-prcmu.c
+@@ -1622,22 +1622,20 @@ static long round_clock_rate(u8 clock, unsigned long rate)
+ }
+ 
+ static const unsigned long db8500_armss_freqs[] = {
+-	200000000,
+-	400000000,
+-	800000000,
++	199680000,
++	399360000,
++	798720000,
+ 	998400000
+ };
+ 
+ /* The DB8520 has slightly higher ARMSS max frequency */
+ static const unsigned long db8520_armss_freqs[] = {
+-	200000000,
+-	400000000,
+-	800000000,
++	199680000,
++	399360000,
++	798720000,
+ 	1152000000
+ };
+ 
+-
+-
+ static long round_armss_rate(unsigned long rate)
+ {
+ 	unsigned long freq = 0;
 -- 
 2.30.2
 
