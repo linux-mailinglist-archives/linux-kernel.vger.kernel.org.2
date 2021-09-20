@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B75F412747
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72B441274E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbhITU30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:29:26 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47176 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhITU1X (ORCPT
+        id S231135AbhITUdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:33:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53466 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231719AbhITUbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:27:23 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9E4651C0B79; Mon, 20 Sep 2021 22:25:55 +0200 (CEST)
-Date:   Mon, 20 Sep 2021 22:25:55 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 000/133] 4.4.284-rc1 review
-Message-ID: <20210920202555.GC17566@duo.ucw.cz>
-References: <20210920163912.603434365@linuxfoundation.org>
+        Mon, 20 Sep 2021 16:31:41 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9CCFC21DF7;
+        Mon, 20 Sep 2021 20:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632169813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BqPXGLxBTE8qoccsVMO4rB8AvTGsYllp8B25Awtj3T8=;
+        b=ijDkGCb15uUNE6To4BOCCB+9rkupV1KEgJf5DHafl2WXLO9CqsTq3Khkt9ihhfa2YepUE1
+        VxoBfzgvS8hdZFcwhOjY8jw95/L1BU33VYNiT++jDHdjboDuDi8eQP7K9WxBXYTzhYcLE6
+        h8tftd7o73eNusxrtA8tQJw2qdGMKhY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 64D9FA3B99;
+        Mon, 20 Sep 2021 20:30:13 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 22:30:12 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
+Message-ID: <YUjvVP8pFL3Be9Jv@dhcp22.suse.cz>
+References: <20210918233920.9174-1-sultan@kerneltoast.com>
+ <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
+ <YUiu42krQjSTVPnc@sultan-box.localdomain>
+ <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
+ <YUjeF6YsHKljSFis@sultan-box.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9Ek0hoCL9XbhcSqy"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YUjeF6YsHKljSFis@sultan-box.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 20-09-21 12:16:39, Sultan Alsawaf wrote:
+> On Mon, Sep 20, 2021 at 07:34:26PM +0200, Michal Hocko wrote:
+> > The intention and the scope of the patch should be in the changelog.
+> > Your Fixes tag suggests there is a problem to fixed.
+> 
+> I guess References would be more appropriate here? I'm not familiar with every
+> subsystem's way of doing things, so I just rolled with Fixes to leave a
+> breadcrumb trail to the original commit implicated in my change. What would you
+> suggest in a case like this for mm patches?
 
---9Ek0hoCL9XbhcSqy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+We usually tend to provide Fixes where there has been something fixed.
+It seems just confusing if it is used for non functional changes,
+cleanups etc. Thera are gray zones of course.
 
-Hi!
+> > My memory has faded but I suspect it was to make sure that the oom
+> > reaper is not blocking the system wide freezing. The operation mode of
+> > the thread is to wait for oom victims and then do the unmapping without
+> > any blocking. While it can be frozen during the operation I do not
+> > remember that causing any problems and the waiting is exactly the point
+> > when that is obviously safe - hence wait_event_freezable which I believe
+> > is the proper API to use.
+> 
+> This isn't clear to me. Kthreads come with PF_NOFREEZE set by default, so the
+> system-wide freezing will already ignore the reaper thread as-is, although it
+> will make that determination from inside freeze_task() and thus
+> freezing_slow_path(), which involves acquiring a lock. You could set
+> PF_FREEZER_SKIP to skip the slowpath evaluation entirely.
 
-> This is the start of the stable review cycle for the 4.4.284 release.
-> There are 133 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+I am not sure I follow. My understanding is that we need to make sure
+oom_reaper is not running after the quiescent state as it is changing
+user space address space. For that I believe we need to freeze the
+kthread at a proper moment. That is currently the entry point and maybe
+we can extend that even to the reaping loop but I haven't really
+explored that. PF_FREEZER_SKIP would skip over the reaper and that could
+result in it racing with the snapshotting no?
 
-CIP testing did not find any problems here:
+> Furthermore, the use of wait_event_freezable() will make the reaper thread enter
+> try_to_freeze() every time it's woken up. This seems wasteful considering that
+> the reaper thread will never actually freeze.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+Is this something to really worry about?
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---9Ek0hoCL9XbhcSqy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUjuUwAKCRAw5/Bqldv6
-8rj1AKCSM61DG9hWWqeUxdem/h7Mv5trKQCfZA9O7m5iOk/1JVAEF8Z7zh01CXs=
-=RPWI
------END PGP SIGNATURE-----
-
---9Ek0hoCL9XbhcSqy--
+-- 
+Michal Hocko
+SUSE Labs
