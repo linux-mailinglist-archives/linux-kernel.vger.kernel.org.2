@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6729F4118D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBBB4118DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238300AbhITQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:06:11 -0400
-Received: from mga09.intel.com ([134.134.136.24]:58493 "EHLO mga09.intel.com"
+        id S238046AbhITQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:07:36 -0400
+Received: from smtp4-g21.free.fr ([212.27.42.4]:10920 "EHLO smtp4-g21.free.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238046AbhITQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:06:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="223200297"
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="223200297"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 09:04:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="612592589"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Sep 2021 09:04:36 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 20 Sep 2021 09:04:36 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 20 Sep 2021 09:04:35 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Mon, 20 Sep 2021 09:04:35 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
-Thread-Topic: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
-Thread-Index: AQHXq7JZqQ9bryoS2UW7jIyiI+uv+ausYIyAgACsBICAAAwU4A==
-Date:   Mon, 20 Sep 2021 16:04:35 +0000
-Message-ID: <d090a19ce8f74b0ea557f180d185df3e@intel.com>
-References: <20210917105355.2368-1-bp@alien8.de>
- <20210917105355.2368-3-bp@alien8.de>
- <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com> <YUhCg/dQLEeaYM+T@zn.tnic>
-In-Reply-To: <YUhCg/dQLEeaYM+T@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232262AbhITQHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:07:35 -0400
+Received: from bender.morinfr.org (unknown [82.64.86.27])
+        by smtp4-g21.free.fr (Postfix) with ESMTPS id B75D519F5B2;
+        Mon, 20 Sep 2021 18:06:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
+        ; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Reply-To:
+        Message-ID:Subject:Cc:To:From:Date:Sender:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RKjXYi91sm7Ea3vEffGcG1Ew3/UF7y6Pi6GRhcrx0wg=; b=KvHy/Y8YvXwYnJsW5LdSvbfmWe
+        9qYtrqlZwlkk1jMGs+PMwEBHJ5Fj+z3X4rgZyPa6+YjM3kRxMsTVmbjJ93dKua+iIonQdWlI5iaGH
+        QWHBDibmYPTpCWAmmdVt4xTXYvlnNLQxl92q6SZjDiX5lMQtHBC7StWrnRYpxEFGKIJA=;
+Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
+        (envelope-from <guillaume@morinfr.org>)
+        id 1mSLnY-000058-EI; Mon, 20 Sep 2021 18:05:40 +0200
+Date:   Mon, 20 Sep 2021 18:05:40 +0200
+From:   Guillaume Morin <guillaume@morinfr.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: call_rcu data race patch
+Message-ID: <20210920160540.GA31426@bender.morinfr.org>
+Reply-To: Guillaume Morin <guillaume@morinfr.org>
+Mail-Followup-To: "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210917191555.GA2198@bender.morinfr.org>
+ <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210917213404.GA14271@bender.morinfr.org>
+ <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918003933.GA25868@bender.morinfr.org>
+ <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
+ <20210918070836.GA19555@bender.morinfr.org>
+ <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJdCBpcyB0aGVyZSB0byB0ZWxsIHlvdSBob3cgbWFueSBiaXRzIHlvdSBoYXZlIGxlZnQgc28g
-dGhhdCB5b3UgZG9uJ3QNCj4gaGF2ZSB0byBjb3VudCBlYWNoIHRpbWUuIEFuZCB1cGRhdGluZyBp
-dCBlYWNoIHRpbWUgaXMgc2ltcGx5IEN0cmwteCBpbg0KPiB2aW0uDQoNCllvdSB3YW50IHRvIGtu
-b3cgaG93IG1hbnkgYml0IGFyZSBsZWZ0IGZvciBzb21lIHJlYXNvbj8gIElzIHRoZXJlIHNvbWUN
-CnVzZXIgQVBJIHRoYXQgd2lsbCBicmVhayBpZiB3ZSBvdmVyZmxvdyBhbmQgc3RhcnQgYWxsb2Nh
-dGluZyBiaXRzIGZyb20gdGhlIG5leHQNCjY0LWJpdCB3b3JkPyBPciBpcyB0aGlzIGp1c3QgdGhl
-IGNvdW50ZG93biBmb3Igd2hlbiB5b3UgYW5kIEkgYm90aCBoYXZlIGEgbmVydm91cw0KYnJlYWtk
-b3duIHRyeWluZyB0byBrZWVwIHRyYWNrIG9mIHRoYXQgbWFueSBkaWZmZXJlbnQgb3B0aW9uIHBh
-dGhzIHRocm91Z2ggdGhlDQptYWNoaW5lIGNoZWNrIGNvZGUgOi0pDQoNClRoYW5rcyBmb3IgdGhl
-IHRpcCBhYm91dCBDdHJsLXggdG8gZGVjcmVtZW50IGEgbnVtYmVyIGluIHZpbSAoR29vZ2xlDQp0
-ZWxsIG1lIEN0cmwtYSBpbmNyZW1lbnRzKS4gTGVhcm5lZCBzb21ldGhpbmcgbmV3IHRvZGF5IDot
-KQ0KDQotVG9ueQ0K
+On 19 Sep  9:35, Paul E. McKenney wrote:
+> How is the testing of the patches going?  (I am guessing nothing yet
+> based on the failure times, but who knows?)
+
+Nothing yet. I think we'll have a better idea by wednesday.
+
+Guillaume.
+
+-- 
+Guillaume Morin <guillaume@morinfr.org>
