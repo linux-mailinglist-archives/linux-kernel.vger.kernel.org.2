@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CBD412550
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232D041254D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349398AbhITSnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:43:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
+        id S1381149AbhITSnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:43:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381476AbhITSiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:38:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFABF61ACF;
-        Mon, 20 Sep 2021 17:29:55 +0000 (UTC)
+        id S1381484AbhITSiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:38:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14AD26331D;
+        Mon, 20 Sep 2021 17:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158996;
-        bh=VJjytp67vwM1TkryO4l8rgARDKsjcSsoayLe3yLjQE4=;
+        s=korg; t=1632158998;
+        bh=YUVk19KBBd5oNKIWdem0ilUR52CnlfnPNYdNYsXsA3Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u/xAR+ozUITeS/3k+JQ7aEdzr++th8Hwc0zpg2+fYCiDD868559LG+tjVSX7WmXzr
-         bqmW//ebMATDRpYgbkCKFMFKYIjI1bzw53/zwP9DVwXhHAHooDBoXoJvC1sySf6hrn
-         YcFHTKZnvMyD5IYqnvAM1fx/pwa8U+EeUMeJ2zCE=
+        b=ZqexsyE01t5IOVNHUKxl2V4KQmpQosetVEBDxO0NW1Ln+TMP84XFON4sONFEajPAx
+         40KDuBlFHIBg1IDZZG7Ft/j0nv0gKRdR6xubPTq7luBFWv+twS6wHxVMI4veeZwugK
+         4rJPfWhXMfAv7BbY3M5V2ZQTrnI8v2KQpG97fJEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Bunk <bunk@kernel.org>,
-        YunQiang Su <wzssyqa@gmail.com>,
-        Shai Malin <smalin@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.14 006/168] bnx2x: Fix enabling network interfaces without VFs
-Date:   Mon, 20 Sep 2021 18:42:24 +0200
-Message-Id: <20210920163921.855841599@linuxfoundation.org>
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.14 007/168] arm64/sve: Use correct size when reinitialising SVE state
+Date:   Mon, 20 Sep 2021 18:42:25 +0200
+Message-Id: <20210920163921.888344722@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -41,35 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Bunk <bunk@kernel.org>
+From: Mark Brown <broonie@kernel.org>
 
-commit 52ce14c134a003fee03d8fc57442c05a55b53715 upstream.
+commit e35ac9d0b56e9efefaeeb84b635ea26c2839ea86 upstream.
 
-This function is called to enable SR-IOV when available,
-not enabling interfaces without VFs was a regression.
+When we need a buffer for SVE register state we call sve_alloc() to make
+sure that one is there. In order to avoid repeated allocations and frees
+we keep the buffer around unless we change vector length and just memset()
+it to ensure a clean register state. The function that deals with this
+takes the task to operate on as an argument, however in the case where we
+do a memset() we initialise using the SVE state size for the current task
+rather than the task passed as an argument.
 
-Fixes: 65161c35554f ("bnx2x: Fix missing error code in bnx2x_iov_init_one()")
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
-Reported-by: YunQiang Su <wzssyqa@gmail.com>
-Tested-by: YunQiang Su <wzssyqa@gmail.com>
-Cc: stable@vger.kernel.org
-Acked-by: Shai Malin <smalin@marvell.com>
-Link: https://lore.kernel.org/r/20210912190523.27991-1-bunk@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This is only an issue in the case where we are setting the register state
+for a task via ptrace and the task being configured has a different vector
+length to the task tracing it. In the case where the buffer is larger in
+the traced process we will leak old state from the traced process to
+itself, in the case where the buffer is smaller in the traced process we
+will overflow the buffer and corrupt memory.
+
+Fixes: bc0ee4760364 ("arm64/sve: Core task context handling")
+Cc: <stable@vger.kernel.org> # 4.15.x
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210909165356.10675-1-broonie@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c |    2 +-
+ arch/arm64/kernel/fpsimd.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-@@ -1224,7 +1224,7 @@ int bnx2x_iov_init_one(struct bnx2x *bp,
- 
- 	/* SR-IOV capability was enabled but there are no VFs*/
- 	if (iov->total == 0) {
--		err = -EINVAL;
-+		err = 0;
- 		goto failed;
+--- a/arch/arm64/kernel/fpsimd.c
++++ b/arch/arm64/kernel/fpsimd.c
+@@ -511,7 +511,7 @@ size_t sve_state_size(struct task_struct
+ void sve_alloc(struct task_struct *task)
+ {
+ 	if (task->thread.sve_state) {
+-		memset(task->thread.sve_state, 0, sve_state_size(current));
++		memset(task->thread.sve_state, 0, sve_state_size(task));
+ 		return;
  	}
  
 
