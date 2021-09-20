@@ -2,64 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEAA4117BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCBB4117D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237982AbhITPEK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 11:04:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:9745 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231887AbhITPEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:04:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="210228951"
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="210228951"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 08:02:29 -0700
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="548820723"
-Received: from msgunjal-mobl.amr.corp.intel.com (HELO localhost) ([10.249.254.154])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 08:02:24 -0700
-Content-Type: text/plain; charset="utf-8"
+        id S241128AbhITPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235441AbhITPKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 11:10:12 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AA8C061574;
+        Mon, 20 Sep 2021 08:08:43 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id g1so69621591lfj.12;
+        Mon, 20 Sep 2021 08:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zHBcy62XBnwwIXR6J0uJZFxZPjvGorUc2wPW3wjD7m8=;
+        b=DO5x9hFYScnYzeAJQV+nm5mz3uSaWz+2uG8C6WGB09WCtCoEtj3VeVAULgoR7t4icc
+         l3cAnhjyZdjYexiF6AvgsxL6aSGoR1Wts5KS4UY/gRg1kopMBSHCt7rDFC9rX4WUHPff
+         vaJU04Zppn4ym8YDhHWpDIg1fxhHC9YxeujQoTRdw/vdOQT8nPYClU8JnTwfDn8+dB19
+         opjDk1x8kg0LrnI4u+QQMWt5FvDPc9dY0yChZyohWP+NvdToQlnnLmKmxtIuxcCUmz67
+         G7gynfWVZ1fyhZaCHLUza5XppEO/j6S03WiRZ2kbo6/B6rsm1rxYtBTu/HTTFZNROLzS
+         LdqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zHBcy62XBnwwIXR6J0uJZFxZPjvGorUc2wPW3wjD7m8=;
+        b=BX1OScuPbMDeB5glkl8FbNNgYdKk8HBpImWR+e2NlJN+mQmxC+3t6ftv4NGfzODBGX
+         A915W3Fr0FOpRgLeGDX9ls3mtOxDXYMvwmapy5TMPAoUCsfkg9PbfTNQ9T6gMY2UV79u
+         4bYWCyiwIQ4GRl0iRDI71zh+BkNegyYkhwecom7a4+0p0Hi6fEAzJwMcvnCH0KfIfYIf
+         Db7lB4ZTIsaXAnbF3mFplvLJ3bTUoZvpREVspYNHEbS3MFC+Nfd7Z4K6fbKWq7egmQNC
+         C3NPs7UrTHVHkikpTL3fWfVFT4ooD6Q+fexYaS58l0jq/RSQ3P/cAPWmAFXKBQZRhjXR
+         kNrw==
+X-Gm-Message-State: AOAM531f+yNA2zHm/4LJs/xnLSB0wJzKv/2tcG7X7nVTsAdXOHdUoTPx
+        xEWymCW5OVZPQcHDipeteKdQ+I359DPUrQ==
+X-Google-Smtp-Source: ABdhPJy4OYzYqeDYcjPz6Mwx9k9+fK4xv1m5cyhQyXfKOeYKeK4hSfbYYvdWr5tpKKfZUg9/vzt5MQ==
+X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr22868490ljk.121.1632150414239;
+        Mon, 20 Sep 2021 08:06:54 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id v26sm1319921ljv.77.2021.09.20.08.06.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 08:06:53 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 18:06:51 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, michael@walle.cc
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema
+ format
+Message-ID: <20210920150651.vvdhennblwhdi3jw@mobilestation>
+References: <20210920142713.129295-1-a-nandan@ti.com>
+ <20210920142713.129295-2-a-nandan@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <YUSUb+JP+e0f+00G@hirez.programming.kicks-ass.net>
-References: <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com> <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com> <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net> <e8a7754e-23e7-0250-5718-101a56d008f0@linux.intel.com> <YUBGPdDDjKlxAuXJ@hirez.programming.kicks-ass.net> <205e1591-343b-fb77-cfca-9c16af1484bd@linux.intel.com> <YUCpfrbfPSZvD3Xl@phenom.ffwll.local> <a374d768-213e-58e7-d281-1c46d1c0c105@linux.intel.com> <YUNGaztoBrTzEuEG@hirez.programming.kicks-ass.net> <YUSUb+JP+e0f+00G@hirez.programming.kicks-ass.net>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kernel/locking: Add context to ww_mutex_trylock.
-From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-Message-ID: <163215014127.5950.11970655278841631448@jlahtine-mobl.ger.corp.intel.com>
-User-Agent: alot/0.8.1
-Date:   Mon, 20 Sep 2021 18:02:21 +0300
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920142713.129295-2-a-nandan@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Peter Zijlstra (2021-09-17 16:13:19)
-> On Thu, Sep 16, 2021 at 03:28:11PM +0200, Peter Zijlstra wrote:
-> > On Thu, Sep 16, 2021 at 03:00:39PM +0200, Maarten Lankhorst wrote:
-> > 
-> > > > For merge logistics, can we pls have a stable branch? I expect that the
-> > > > i915 patches will be ready for 5.16.
-> > > >
-> > > > Or send it in for -rc2 so that the interface change doesn't cause needless
-> > > > conflicts, whatever you think is best.
-> > 
-> > > Yeah, some central branch drm could pull from, would make upstreaming patches that depends on it easier. :)
-> > 
-> > I think I'll make tip/locking/wwmutex and include that in
-> > tip/locking/core, let me have a poke.
+Hello Apurva
+
+On Mon, Sep 20, 2021 at 07:57:12PM +0530, Apurva Nandan wrote:
+> Convert spi-nand.txt binding to YAML format with an added example.
 > 
-> This is now so. Enjoy!
+> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> ---
+>  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+>  .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
+>  2 files changed, 62 insertions(+), 5 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 
-This is now merged to drm-intel-gt-next.
+Thanks for the bindings conversion patch. There are several comments
+below. But before addressing them it would be better to also get a
+response from Rob.
 
-Regards, Joonas
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> deleted file mode 100644
+> index 8b51f3b6d55c..000000000000
+> --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> +++ /dev/null
+> @@ -1,5 +0,0 @@
+> -SPI NAND flash
+> -
+> -Required properties:
+> -- compatible: should be "spi-nand"
+> -- reg: should encode the chip-select line used to access the NAND chip
+> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> new file mode 100644
+> index 000000000000..601beba8d971
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SPI NAND flash
+> +
+> +maintainers:
+> +  - Apurva Nandan <a-nandan@ti.com>
+> +
+> +allOf:
+> +  - $ref: "mtd.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    const: spi-nand
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+
+> +  spi-max-frequency: true
+> +  spi-rx-bus-width: true
+> +  spi-tx-bus-width: true
+> +  rx-sample-delay-ns: true
+
+Since it's an SPI-client device there are more than these properties
+could be set for it. See the SPI-controller bindings schema:
+Documentation/devicetree/bindings/spi/spi-controller.yaml
+So there is two possible ways to make it more generic:
+1) Detach the spi-client part from the spi-controller.yaml bindings
+into a dedicated DT-schema file and refer to that new scheme from
+here.
+2) Forget about these controller-specific properties and let the
+parental SPI-controller bindings parsing them. Of course there must be
+at least one of the next properties declared for it to work:
+{unevaluatedProperties, additionalProperties}.
+
+It's up to Rob to decided which approach is better though...
+
+> +
+> +  '#address-cells': true
+> +  '#size-cells': true
+
+Aren't they always equal to 1?
+
+> +
+> +additionalProperties:
+> +  type: object
+
+I'd suggest to elaborate the way the partition sub-nodes looks
+like, for instance, the node names, supported compatible names,
+labels, etc.
+
+-Sergey
+
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        flash@6 {
+> +            #address-cells = <1>;
+> +            #size-cells = <1>;
+> +            compatible = "spi-nand";
+> +            reg = <0x6>;
+> +            spi-max-frequency = <42000000>;
+> +
+> +            partitions {
+> +                compatible = "fixed-partitions";
+> +                #address-cells = <1>;
+> +                #size-cells = <1>;
+> +
+> +                partition@0 {
+> +                    label = "boot";
+> +                    reg = <0 0x200000>;
+> +                };
+> +
+> +                partition@200000 {
+> +                    label = "rootfs";
+> +                    reg = <0x200000 0xce0000>;
+> +                };
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.25.1
+> 
