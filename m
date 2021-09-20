@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBB14123EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73254125C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348718AbhITS2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:28:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
+        id S1384458AbhITSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377997AbhITSW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:22:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 857B9632C1;
-        Mon, 20 Sep 2021 17:24:24 +0000 (UTC)
+        id S1383440AbhITSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB3CC61AF7;
+        Mon, 20 Sep 2021 17:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158665;
-        bh=eDcCp76EHO0fPVw4RAAsYaLXU8H1Qd1XCp3t2eZwF4s=;
+        s=korg; t=1632159170;
+        bh=xmOalj1X7W0gV9J62wTmVJJ+9Tn7bwTmKErqAg6smwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gdoqlI0eBWOezryRMDznEf+eSG86patPNXjjOy0DIhPUujk+dCneKDcw7/ilZ6jEc
-         g5sKObaJ1TfAqvEZdrTb1TOmWQmYVBzMuDGsUinQ4LWLnmgy55xB7XmtmC/MiAdgOA
-         5GtheJqf1ngU5A6zIhvDxRaWtIyZUHLyTmm9SeF0=
+        b=uqFuAdwKC6bqw/CSGmHCPiwnVox3Ph9K4VYG96A7uUatVefHh7YulpDcJNAdlKT8b
+         0DhxP4t6lX3kXu0ZcwxG9DsKw7aoIGIAEyp4oDrg7ZiMKD9t0XGwTMvgNjYkgMeeZt
+         0yEij4nNiEvJGaOdy+lIjRo6SCVl2Aw5nuDCF4bA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 229/260] net: hns3: change affinity_mask to numa node range
+        stable@vger.kernel.org, Smadar Fuks <smadarf@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 109/168] octeontx2-af: Add additional register check to rvu_poll_reg()
 Date:   Mon, 20 Sep 2021 18:44:07 +0200
-Message-Id: <20210920163938.897265924@linuxfoundation.org>
+Message-Id: <20210920163925.220037225@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
+From: Smadar Fuks <smadarf@marvell.com>
 
-commit 1dc839ec09d3ab2a4156dc98328b8bc3586f2b70 upstream.
+[ Upstream commit 21274aa1781941884599a97ab59be7f8f36af98c ]
 
-Currently, affinity_mask is set to a single cpu. As a result,
-irqbalance becomes invalid in SUBSET or EXACT mode. To solve
-this problem, change affinity_mask to numa node range. In this
-way, irqbalance can be performed on the cpu of the numa node.
+Check one more time before exiting the API with an error.
+Fix API to poll at least twice, in case there are other high priority
+tasks and this API doesn't get CPU cycles for multiple jiffies update.
 
-Fixes: 0812545487ec ("net: hns3: add interrupt affinity support for misc interrupt")
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+In addition, increase timeout from usecs_to_jiffies(10000) to
+usecs_to_jiffies(20000), to prevent the case that for CONFIG_100HZ
+timeout will be a single jiffies.
+A single jiffies results actual timeout that can be any time between
+1usec and 10msec. To solve this, a value of usecs_to_jiffies(20000)
+ensures that timeout is 2 jiffies.
+
+Signed-off-by: Smadar Fuks <smadarf@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -1328,9 +1328,10 @@ static void hclge_init_kdump_kernel_conf
- 
- static int hclge_configure(struct hclge_dev *hdev)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+index 5fe277e354f7..c10cae78e79f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+@@ -92,7 +92,8 @@ static void rvu_setup_hw_capabilities(struct rvu *rvu)
+  */
+ int rvu_poll_reg(struct rvu *rvu, u64 block, u64 offset, u64 mask, bool zero)
  {
-+	const struct cpumask *cpumask = cpu_online_mask;
- 	struct hclge_cfg cfg;
- 	unsigned int i;
--	int ret;
-+	int node, ret;
+-	unsigned long timeout = jiffies + usecs_to_jiffies(10000);
++	unsigned long timeout = jiffies + usecs_to_jiffies(20000);
++	bool twice = false;
+ 	void __iomem *reg;
+ 	u64 reg_val;
  
- 	ret = hclge_get_cfg(hdev, &cfg);
- 	if (ret) {
-@@ -1390,11 +1391,12 @@ static int hclge_configure(struct hclge_
- 
- 	hclge_init_kdump_kernel_config(hdev);
- 
--	/* Set the init affinity based on pci func number */
--	i = cpumask_weight(cpumask_of_node(dev_to_node(&hdev->pdev->dev)));
--	i = i ? PCI_FUNC(hdev->pdev->devfn) % i : 0;
--	cpumask_set_cpu(cpumask_local_spread(i, dev_to_node(&hdev->pdev->dev)),
--			&hdev->affinity_mask);
-+	/* Set the affinity based on numa node */
-+	node = dev_to_node(&hdev->pdev->dev);
-+	if (node != NUMA_NO_NODE)
-+		cpumask = cpumask_of_node(node);
-+
-+	cpumask_copy(&hdev->affinity_mask, cpumask);
- 
- 	return ret;
+@@ -107,6 +108,15 @@ again:
+ 		usleep_range(1, 5);
+ 		goto again;
+ 	}
++	/* In scenarios where CPU is scheduled out before checking
++	 * 'time_before' (above) and gets scheduled in such that
++	 * jiffies are beyond timeout value, then check again if HW is
++	 * done with the operation in the meantime.
++	 */
++	if (!twice) {
++		twice = true;
++		goto again;
++	}
+ 	return -EBUSY;
  }
+ 
+-- 
+2.30.2
+
 
 
