@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25299411847
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3DC411849
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241661AbhITPdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
+        id S241730AbhITPd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:33:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241563AbhITPdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:33:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B3A61107;
-        Mon, 20 Sep 2021 15:31:51 +0000 (UTC)
+        id S241635AbhITPdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 11:33:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0863F61159;
+        Mon, 20 Sep 2021 15:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632151912;
-        bh=kW5h4Wp87ZySDniC1nxTtzJqO7Y1LElsVScvvjvZqWM=;
+        s=k20201202; t=1632151917;
+        bh=8BrvNywnL/2fizTFpg68l//vyzBPBhEWeaGUMITqrRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g/h5ImWaDriQyw1F6OxleG+ut1hQLVNC9avWfgfw6oWKtcC8Q+MdFWKr4q80PXpFN
-         bXU3gfXst8amN4xAFcfIh3P0k+ossMuvxriMTdNwrLuNZkc5E7klPkIXMIvBnrmoIn
-         f5Xnj+dYq+0uRH9c/9RyGOQzkPvfLZWemiQXYL1ZK5CgCegz5MiJAkI0jYeEPs6tIV
-         MeYHHPDettiCGGo8jV1X6kUmU723lau+S4QK88JK+x5EHYf2Dl/tFsB8X+Wkh+jojK
-         eb+9aw1XyYlwasdsbWUD7ieC8R+v2Yhp6YcCBwMAJ2zIN+FXKf0nsFNZvJEN5vk15w
-         ZzOVQnupicfiw==
+        b=RP3R7lsn7smRECTj02UEz2ApNXU3sjarbt1Sk+JzBJpFEuqSrNQKPYycY9IfONZG2
+         EhljzTZvaXMdKWrPuDpytZKdrALkRuoSY7HIikNDk0xJJqgUkse+bZ3affVNDX6b2l
+         w+FvAX5g4kNKlK5/k+PyNoW0PsD3V29kdDBP3teY3Igp3mca/hmT/IFcw8RFRkFuBf
+         iMGkGLi3QOK2/4NZ/hu9lZ0kwke49nbWTLlxaZdNCQZuUBn72sOdygdEk/AqmoEuG/
+         aeowRqgyxzrTOexhvOsyq1Z4hsygO0eFcSAkSH5wCnpGnnBhIbfjtOrNWRB6ySYqi/
+         BPJKn8XmyTFmQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Derek Fang <derek.fang@realtek.com>, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: rt5682s: correct several errors
-Date:   Mon, 20 Sep 2021 16:30:49 +0100
-Message-Id: <163215150720.38322.16264774156845282309.b4-ty@kernel.org>
+To:     oder_chiou@realtek.com,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        perex@perex.cz, tiwai@suse.com
+Subject: Re: [PATCH] ASoC: rt5682s: make rt5682s_aif2_dai_ops and rt5682s_soc_component_dev
+Date:   Mon, 20 Sep 2021 16:30:51 +0100
+Message-Id: <163215150720.38322.7115113856653513250.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
-References: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <1631955726-77693-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1631955726-77693-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,15 +42,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 13:21:06 +0200, Krzysztof Kozlowski wrote:
-> Correct several errors in rt5682s dtschema:
-> 1. The examples should be under "examples":
->     'example' is not one of ['$id', '$schema', 'title', 'description', 'examples', ...
+On Sat, 18 Sep 2021 17:02:06 +0800, Jiapeng Chong wrote:
+> This symbol is not used outside of rt5682s.c, so marks it static.
 > 
-> 2. Missing type for vendor properties
+> Fix the following sparse warning:
 > 
-> 3. clock-names should be an array:
->     properties:clock-names:items: {'const': 'mclk'} is not of type 'array'
+> sound/soc/codecs/rt5682s.c:2848:39: warning: symbol
+> 'rt5682s_soc_component_dev' was not declared. Should it be static?
 > 
 > [...]
 
@@ -61,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: rt5682s: correct several errors
-      commit: a7a18abbd26caf22e40165eb734e67d338735f5b
+[1/1] ASoC: rt5682s: make rt5682s_aif2_dai_ops and rt5682s_soc_component_dev
+      commit: cf21e114f6f44fdb06b7ceaaee5f2c360883bd74
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
