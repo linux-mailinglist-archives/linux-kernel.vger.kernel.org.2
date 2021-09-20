@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C44411B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EF3411C41
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhITQ4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:56:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37262 "EHLO mail.kernel.org"
+        id S1346484AbhITRH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:07:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243396AbhITQw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:52:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB8396135E;
-        Mon, 20 Sep 2021 16:49:48 +0000 (UTC)
+        id S1345996AbhITREx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:04:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CEE6152B;
+        Mon, 20 Sep 2021 16:54:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156589;
-        bh=dzAigAepBsLS1JtEPhZgzE3+YL6NfLUinqhExcTXxbQ=;
+        s=korg; t=1632156874;
+        bh=59sDWJMXqarVD76JAkCVQg7tFgkmaD5Uo8dNABsz5jc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bSkaB/RZvIQfPuZEhNkfVGImvjxWFsCRBuwQr0bt4XWcywthJLl2eWVFDwPxZf+0w
-         hGOHB/zz7vsMs/Jk4/X7k9sfDid6qLIOCvNavadKMcrkVLlbUQYUFfrJY3ZDDCWsuS
-         wWRxAOeQRP/mGL2489zXKM9g0S+nMhngOamy2QW8=
+        b=bABnfJEtsyFYUmk4n6QQubdyz6BVqHQ7zYgZqgCuFHIOB69lbBkxtZdTxXw+bMQp1
+         6KLv2xz2j1PfpuvOqFieXb2bizOIc7+bKO63bRrgNnkRfPVAF/b1aCo2nTSA8wW/eR
+         3zpa9QFdr9d5SfJPATzLFxr32KOP5cCmxhvQAhyc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 095/133] bpf/tests: Do not PASS tests without actually testing the result
-Date:   Mon, 20 Sep 2021 18:42:53 +0200
-Message-Id: <20210920163915.744092346@linuxfoundation.org>
+Subject: [PATCH 4.9 125/175] serial: 8250: Define RX trigger levels for OxSemi 950 devices
+Date:   Mon, 20 Sep 2021 18:42:54 +0200
+Message-Id: <20210920163922.158325833@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-[ Upstream commit 2b7e9f25e590726cca76700ebdb10e92a7a72ca1 ]
+[ Upstream commit d7aff291d069c4418285f3c8ee27b0ff67ce5998 ]
 
-Each test case can have a set of sub-tests, where each sub-test can
-run the cBPF/eBPF test snippet with its own data_size and expected
-result. Before, the end of the sub-test array was indicated by both
-data_size and result being zero. However, most or all of the internal
-eBPF tests has a data_size of zero already. When such a test also had
-an expected value of zero, the test was never run but reported as
-PASS anyway.
+Oxford Semiconductor 950 serial port devices have a 128-byte FIFO and in
+the enhanced (650) mode, which we select in `autoconfig_has_efr' with
+the ECB bit set in the EFR register, they support the receive interrupt
+trigger level selectable with FCR bits 7:6 from the set of 16, 32, 112,
+120.  This applies to the original OX16C950 discrete UART[1] as well as
+950 cores embedded into more complex devices.
 
-Now the test runner always runs the first sub-test, regardless of the
-data_size and result values. The sub-test array zero-termination only
-applies for any additional sub-tests.
+For these devices we set the default to 112, which sets an excessively
+high level of 112 or 7/8 of the FIFO capacity, unlike with other port
+types where we choose at most 1/2 of their respective FIFO capacities.
+Additionally we don't make the trigger level configurable.  Consequently
+frequent input overruns happen with high bit rates where hardware flow
+control cannot be used (e.g. terminal applications) even with otherwise
+highly-performant systems.
 
-There are other ways fix it of course, but this solution at least
-removes the surprise of eBPF tests with a zero result always succeeding.
+Lower the default receive interrupt trigger level to 32 then, and make
+it configurable.  Document the trigger levels along with other port
+types, including the set of 16, 32, 64, 112 for the transmit interrupt
+as well[2].
 
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210721103822.3755111-1-johan.almbladh@anyfinetworks.com
+
+[1] "OX16C950 rev B High Performance UART with 128 byte FIFOs", Oxford
+    Semiconductor, Inc., DS-0031, Sep 05, Table 10: "Receiver Trigger
+    Levels", p. 22
+
+[2] same, Table 9: "Transmit Interrupt Trigger Levels", p. 22
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Link: https://lore.kernel.org/r/alpine.DEB.2.21.2106260608480.37803@angie.orcam.me.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/test_bpf.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_port.c | 3 ++-
+ include/uapi/linux/serial_reg.h     | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 7db8d06006d8..cf2880d2ce3f 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -5399,7 +5399,14 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
- 		u64 duration;
- 		u32 ret;
- 
--		if (test->test[i].data_size == 0 &&
-+		/*
-+		 * NOTE: Several sub-tests may be present, in which case
-+		 * a zero {data_size, result} tuple indicates the end of
-+		 * the sub-test array. The first test is always run,
-+		 * even if both data_size and result happen to be zero.
-+		 */
-+		if (i > 0 &&
-+		    test->test[i].data_size == 0 &&
- 		    test->test[i].result == 0)
- 			break;
- 
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 611bc0556571..460c35b2b54d 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -125,7 +125,8 @@ static const struct serial8250_config uart_config[] = {
+ 		.name		= "16C950/954",
+ 		.fifo_size	= 128,
+ 		.tx_loadsz	= 128,
+-		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
++		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01,
++		.rxtrig_bytes	= {16, 32, 112, 120},
+ 		/* UART_CAP_EFR breaks billionon CF bluetooth card. */
+ 		.flags		= UART_CAP_FIFO | UART_CAP_SLEEP,
+ 	},
+diff --git a/include/uapi/linux/serial_reg.h b/include/uapi/linux/serial_reg.h
+index b4c04842a8c0..bad5c56a78a2 100644
+--- a/include/uapi/linux/serial_reg.h
++++ b/include/uapi/linux/serial_reg.h
+@@ -61,6 +61,7 @@
+  * ST16C654:	 8  16  56  60		 8  16  32  56	PORT_16654
+  * TI16C750:	 1  16  32  56		xx  xx  xx  xx	PORT_16750
+  * TI16C752:	 8  16  56  60		 8  16  32  56
++ * OX16C950:	16  32 112 120		16  32  64 112	PORT_16C950
+  * Tegra:	 1   4   8  14		16   8   4   1	PORT_TEGRA
+  */
+ #define UART_FCR_R_TRIG_00	0x00
 -- 
 2.30.2
 
