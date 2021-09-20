@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11619411A6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96138411D9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243884AbhITQtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
+        id S229919AbhITRTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:19:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243300AbhITQs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF17611AE;
-        Mon, 20 Sep 2021 16:46:58 +0000 (UTC)
+        id S1348122AbhITRRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:17:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC4CB613CF;
+        Mon, 20 Sep 2021 16:59:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156419;
-        bh=B5Yzeoee29PRAotFD0SAuZNvKzUzhZ9AqeuINJp0T8E=;
+        s=korg; t=1632157157;
+        bh=NabYh7x3+QPX3JYtMXpqmDMct38vpFNc2vD4IRFmfnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yMkyJKaKknVfUnRdTplJNMbzA2AiW1kMuTmleMEXFwPsxTh1v0PI026VZFQTYhz4h
-         6/tiDanEd5kayZqhBcqsnTfqjPn/KnUIyZv7NAiG7LVljKcuWEx0HIpx9m0wRGjjcN
-         OHccRi+kkWelTR+2U9i9DYqdk4LNUMjbRliR0iw0=
+        b=ZaQeygTswvonjFGnqEVY+WXwcVw7S3VxHKM0ttN8gqT5rX4//xMUNgziPxYes3WCc
+         CqaysuDeyiq+dCXseTLfiwcRMmWm/ToWFursfWGYBdA2mwsIX64v9lQ2mj6ZhBsdjS
+         /rngr0S3rlKxeYz9/4A1M2IgjGAxO6PmQa/nNxkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fangrui Song <maskray@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.4 023/133] powerpc/boot: Delete unneeded .globl _zimage_start
+        stable@vger.kernel.org, Len Baker <len.baker@gmx.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 080/217] CIFS: Fix a potencially linear read overflow
 Date:   Mon, 20 Sep 2021 18:41:41 +0200
-Message-Id: <20210920163913.371597245@linuxfoundation.org>
+Message-Id: <20210920163927.339032763@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Len Baker <len.baker@gmx.com>
 
-commit 968339fad422a58312f67718691b717dac45c399 upstream.
+[ Upstream commit f980d055a0f858d73d9467bb0b570721bbfcdfb8 ]
 
-.globl sets the symbol binding to STB_GLOBAL while .weak sets the
-binding to STB_WEAK. GNU as let .weak override .globl since
-binutils-gdb 5ca547dc2399a0a5d9f20626d4bf5547c3ccfddd (1996). Clang
-integrated assembler let the last win but it may error in the future.
+strlcpy() reads the entire source buffer first. This read may exceed the
+destination size limit. This is both inefficient and can lead to linear
+read overflows if a source string is not NUL-terminated.
 
-Since it is a convention that only one binding directive is used, just
-delete .globl.
+Also, the strnlen() call does not avoid the read overflow in the strlcpy
+function when a not NUL-terminated string is passed.
 
-Fixes: ee9d21b3b358 ("powerpc/boot: Ensure _zimage_start is a weak symbol")
-Signed-off-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200325164257.170229-1-maskray@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So, replace this block by a call to kstrndup() that avoids this type of
+overflow and does the same.
+
+Fixes: 066ce6899484d ("cifs: rename cifs_strlcpy_to_host and make it use new functions")
+Signed-off-by: Len Baker <len.baker@gmx.com>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/boot/crt0.S |    3 ---
- 1 file changed, 3 deletions(-)
+ fs/cifs/cifs_unicode.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
---- a/arch/powerpc/boot/crt0.S
-+++ b/arch/powerpc/boot/crt0.S
-@@ -49,9 +49,6 @@ p_end:		.long	_end
- p_pstack:	.long	_platform_stack_top
- #endif
+diff --git a/fs/cifs/cifs_unicode.c b/fs/cifs/cifs_unicode.c
+index 9986817532b1..7932e20555d2 100644
+--- a/fs/cifs/cifs_unicode.c
++++ b/fs/cifs/cifs_unicode.c
+@@ -371,14 +371,9 @@ cifs_strndup_from_utf16(const char *src, const int maxlen,
+ 		if (!dst)
+ 			return NULL;
+ 		cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
+-			       NO_MAP_UNI_RSVD);
++				NO_MAP_UNI_RSVD);
+ 	} else {
+-		len = strnlen(src, maxlen);
+-		len++;
+-		dst = kmalloc(len, GFP_KERNEL);
+-		if (!dst)
+-			return NULL;
+-		strlcpy(dst, src, len);
++		dst = kstrndup(src, maxlen, GFP_KERNEL);
+ 	}
  
--	.globl	_zimage_start
--	/* Clang appears to require the .weak directive to be after the symbol
--	 * is defined. See https://bugs.llvm.org/show_bug.cgi?id=38921  */
- 	.weak	_zimage_start
- _zimage_start:
- 	.globl	_zimage_start_lib
+ 	return dst;
+-- 
+2.30.2
+
 
 
