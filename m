@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035AF412175
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D066341216F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350519AbhITSF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57648 "EHLO mail.kernel.org"
+        id S1347416AbhITSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356431AbhITR7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1356430AbhITR7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 13:59:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32EF663222;
-        Mon, 20 Sep 2021 17:15:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 599C66321F;
+        Mon, 20 Sep 2021 17:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158134;
-        bh=fkpJmItxZAh1VTg2jjoL2N7YC7WgQwXD95DqcrK7egA=;
+        s=korg; t=1632158136;
+        bh=Zhu1OoCzJaXAMICKev8cGL5rUeXBdFePCekqWLl0ZK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T4P9cfP0bFZFL2O2kYJcm+dNLsKtL2nf0QKzNaDe4l+eEpVvFinjoiHuArNd4400M
-         70AnzI0rRLFpM868WLY47Wz9U56s51FyiQGkfTMGSZHW1ijqSvwW4idr+0NPBbgc2l
-         Y7Vs8TMJkRRhUwPr3K2ec8bXIIylzevAd68AS3RM=
+        b=uZwc4z++O1IeYnlHuvDbhaN7GnFkIhpFGBkY+NaDTckyWglj+DLcQzFcK/ZWNRkSR
+         XlL39yzygFyF8MfA6gA87AwI2zGZlDzCDIUC5icXkUGGKwSpLKVyXaMMPoAmLmT3yg
+         YxVL9BzmAnY390QCXGHlZL9l7Q794uXXXt9xOlpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 5.4 008/260] xen: fix setting of max_pfn in shared_info
-Date:   Mon, 20 Sep 2021 18:40:26 +0200
-Message-Id: <20210920163931.414630351@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 009/260] include/linux/list.h: add a macro to test if entry is pointing to the head
+Date:   Mon, 20 Sep 2021 18:40:27 +0200
+Message-Id: <20210920163931.446107503@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -39,51 +42,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 4b511d5bfa74b1926daefd1694205c7f1bcf677f upstream.
+commit e130816164e244b692921de49771eeb28205152d upstream.
 
-Xen PV guests are specifying the highest used PFN via the max_pfn
-field in shared_info. This value is used by the Xen tools when saving
-or migrating the guest.
+Add a macro to test if entry is pointing to the head of the list which is
+useful in cases like:
 
-Unfortunately this field is misnamed, as in reality it is specifying
-the number of pages (including any memory holes) of the guest, so it
-is the highest used PFN + 1. Renaming isn't possible, as this is a
-public Xen hypervisor interface which needs to be kept stable.
+  list_for_each_entry(pos, &head, member) {
+    if (cond)
+      break;
+  }
+  if (list_entry_is_head(pos, &head, member))
+    return -ERRNO;
 
-The kernel will set the value correctly initially at boot time, but
-when adding more pages (e.g. due to memory hotplug or ballooning) a
-real PFN number is stored in max_pfn. This is done when expanding the
-p2m array, and the PFN stored there is even possibly wrong, as it
-should be the last possible PFN of the just added P2M frame, and not
-one which led to the P2M expansion.
+that allows to avoid additional variable to be added to track if loop has
+not been stopped in the middle.
 
-Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
+While here, convert list_for_each_entry*() family of macros to use a new one.
 
-Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Link: https://lore.kernel.org/r/20210730092622.9973-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Link: https://lkml.kernel.org/r/20200929134342.51489-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/xen/p2m.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/list.h |   29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -622,8 +622,8 @@ int xen_alloc_p2m_entry(unsigned long pf
- 	}
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -568,6 +568,15 @@ static inline void list_splice_tail_init
+ 	     pos = n, n = pos->prev)
  
- 	/* Expanded the p2m? */
--	if (pfn > xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = pfn;
-+	if (pfn >= xen_p2m_last_pfn) {
-+		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
- 		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
- 	}
+ /**
++ * list_entry_is_head - test if the entry points to the head of the list
++ * @pos:	the type * to cursor
++ * @head:	the head for your list.
++ * @member:	the name of the list_head within the struct.
++ */
++#define list_entry_is_head(pos, head, member)				\
++	(&pos->member == (head))
++
++/**
+  * list_for_each_entry	-	iterate over list of given type
+  * @pos:	the type * to use as a loop cursor.
+  * @head:	the head for your list.
+@@ -575,7 +584,7 @@ static inline void list_splice_tail_init
+  */
+ #define list_for_each_entry(pos, head, member)				\
+ 	for (pos = list_first_entry(head, typeof(*pos), member);	\
+-	     &pos->member != (head);					\
++	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_next_entry(pos, member))
  
+ /**
+@@ -586,7 +595,7 @@ static inline void list_splice_tail_init
+  */
+ #define list_for_each_entry_reverse(pos, head, member)			\
+ 	for (pos = list_last_entry(head, typeof(*pos), member);		\
+-	     &pos->member != (head); 					\
++	     !list_entry_is_head(pos, head, member); 			\
+ 	     pos = list_prev_entry(pos, member))
+ 
+ /**
+@@ -611,7 +620,7 @@ static inline void list_splice_tail_init
+  */
+ #define list_for_each_entry_continue(pos, head, member) 		\
+ 	for (pos = list_next_entry(pos, member);			\
+-	     &pos->member != (head);					\
++	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_next_entry(pos, member))
+ 
+ /**
+@@ -625,7 +634,7 @@ static inline void list_splice_tail_init
+  */
+ #define list_for_each_entry_continue_reverse(pos, head, member)		\
+ 	for (pos = list_prev_entry(pos, member);			\
+-	     &pos->member != (head);					\
++	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_prev_entry(pos, member))
+ 
+ /**
+@@ -637,7 +646,7 @@ static inline void list_splice_tail_init
+  * Iterate over list of given type, continuing from current position.
+  */
+ #define list_for_each_entry_from(pos, head, member) 			\
+-	for (; &pos->member != (head);					\
++	for (; !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_next_entry(pos, member))
+ 
+ /**
+@@ -650,7 +659,7 @@ static inline void list_splice_tail_init
+  * Iterate backwards over list of given type, continuing from current position.
+  */
+ #define list_for_each_entry_from_reverse(pos, head, member)		\
+-	for (; &pos->member != (head);					\
++	for (; !list_entry_is_head(pos, head, member);			\
+ 	     pos = list_prev_entry(pos, member))
+ 
+ /**
+@@ -663,7 +672,7 @@ static inline void list_splice_tail_init
+ #define list_for_each_entry_safe(pos, n, head, member)			\
+ 	for (pos = list_first_entry(head, typeof(*pos), member),	\
+ 		n = list_next_entry(pos, member);			\
+-	     &pos->member != (head); 					\
++	     !list_entry_is_head(pos, head, member); 			\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+@@ -679,7 +688,7 @@ static inline void list_splice_tail_init
+ #define list_for_each_entry_safe_continue(pos, n, head, member) 		\
+ 	for (pos = list_next_entry(pos, member), 				\
+ 		n = list_next_entry(pos, member);				\
+-	     &pos->member != (head);						\
++	     !list_entry_is_head(pos, head, member);				\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+@@ -694,7 +703,7 @@ static inline void list_splice_tail_init
+  */
+ #define list_for_each_entry_safe_from(pos, n, head, member) 			\
+ 	for (n = list_next_entry(pos, member);					\
+-	     &pos->member != (head);						\
++	     !list_entry_is_head(pos, head, member);				\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ /**
+@@ -710,7 +719,7 @@ static inline void list_splice_tail_init
+ #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
+ 	for (pos = list_last_entry(head, typeof(*pos), member),		\
+ 		n = list_prev_entry(pos, member);			\
+-	     &pos->member != (head); 					\
++	     !list_entry_is_head(pos, head, member); 			\
+ 	     pos = n, n = list_prev_entry(n, member))
+ 
+ /**
 
 
