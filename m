@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132EB412B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5783412B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346141AbhIUCRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S1346877AbhIUCTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241752AbhIUCDR (ORCPT
+        with ESMTP id S242492AbhIUCE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:03:17 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210A1C08EBAC
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:13:38 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id a13so2367121qtw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:13:38 -0700 (PDT)
+        Mon, 20 Sep 2021 22:04:56 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84300C143A49
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:17:22 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id l17-20020a4ae391000000b00294ad0b1f52so6149761oov.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:17:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pvo6MEzKPqvSnqMuVSEU2j4Wc9oFmpkpJEqXAbkOyyM=;
-        b=D2Zn3m+Po3J2M65Ciea5U6ug8D3yclkghX6docLBBmmRuzBib2C6FKhJnFHTTYGrKx
-         zeJSrdylCQFeIYilxcFlb5k17oHOTp8XXX961fO0hDRCqOrMiWCe6kxlwDvxQYM81HIq
-         NKKQlzETS+kJ6YElb8n7t9FomlfrnpkC6JpM0=
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=JjZwsjLoE1v3IYa2GVHYD3KilZhhQVThWYCXDu9nvYo=;
+        b=a63x+bgfAIdvw+z6zqMvEu6JrCNqun+9IqImsNVfxFsirapOdMZ+eBj0e2g1IRZA8g
+         AhQnWYI3S1LMtRTf3cyc5VHr2OowcGQUtv7/UympQw8t+7yyJIH+q8S1hc4KHM47rWK6
+         ICe0PLjGSWwqVqs4PwDznSR8RBSF3gFpTPQfI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pvo6MEzKPqvSnqMuVSEU2j4Wc9oFmpkpJEqXAbkOyyM=;
-        b=WcMPeRmBtbFuMDlTy/aEhcgcDDKTCzTXx8aR8ZYxv2oi38UG41+GFV0NjUYEV6pOam
-         QRqrXnXanbf5Dbmt4JB/5BgjjS37HeeB1A2wD0X/1BrGFXMuj1lkuQ1QJp3uUD4syRqN
-         Jol40+PK26/jsduZS8IRhrGuZsFiWGhUX1aUt7wjkVCwaWKbzo3Cu8HZ5C3qFYQrX+wo
-         gJBItZu6xIQ1skj0s4j+KMHqNjWoNuECSDMMSDGcYcpi0yj8y03Qm9e1I7tQX1P1MCzm
-         cWBoK/1v9D3WfqZzlWZ7Oi5pAbzgzAn+8MI/e9zq06n6iJuLxpBIRtu6GIhmLxtwUnGg
-         LI9Q==
-X-Gm-Message-State: AOAM5324JPQrAxFaZUmTyLZ+i0Bq2x6UoK6gBVD+Z6CEOpH5cy9Hg64S
-        CZBr8SrhdMfLCuDTnYpTaPtRVSksGvkAaY93J3hloQ==
-X-Google-Smtp-Source: ABdhPJxv3M4Q3DyA/8nV9kXnhwWl4Jp/tLX6DzdAtOGhsSMaVriT0Tvl6jC6gMjFAotBRgBZ9aRtyaV6+FYHNi+U33Q=
-X-Received: by 2002:ac8:5d91:: with SMTP id d17mr3609906qtx.18.1632161615279;
- Mon, 20 Sep 2021 11:13:35 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=JjZwsjLoE1v3IYa2GVHYD3KilZhhQVThWYCXDu9nvYo=;
+        b=NqLxd89C3KkuqDGspG7HMuQjVdjB++hmJ/qnurwlBK54U+Q58pVECDi/E72DJnRQfW
+         scgoMVyquVLwGxabZ/CTijT4VmNGcyQXWIPftc4ncg53REZAaU/FHwV6fvSbQvO3NCIe
+         afmQ9Q4TOA2b9z4FEuJyLdYj7xqSSeRdAp3JIBm7MgSQZ8z7/BrfSF86VzIIiXzwhSVH
+         CmIx2DKjylY384M+MGzN7TqUfeLpKOHsiS6xYMTNusbhwfsI2OMuSpzkpse7z6hgzKPP
+         kRNHs5n5UNAb/L4PDMzfNsbKsiDj9GwbrA1PNZauyfgdbYlePhACkj6P1mZdKfNpurQd
+         bTdw==
+X-Gm-Message-State: AOAM533kQvfGJKh9r5KVLDMf7D55gL9BgyhiWKvUGyn/BRW3TB2f21oA
+        /ESC24kyp0A//VmxT98w0i7DYkX29RuO7SDJqxMY8g==
+X-Google-Smtp-Source: ABdhPJwVjR/WftKlNJXp2AGVuRgbTEYRYkgthir6kT3bKkja1m6mMkzqMgaNf1nOTAkyliApojmA+4e7jQQ/i3tbxgo=
+X-Received: by 2002:a4a:c3c2:: with SMTP id e2mr7886842ooq.8.1632161840976;
+ Mon, 20 Sep 2021 11:17:20 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 20 Sep 2021 11:17:20 -0700
 MIME-Version: 1.0
-References: <20210920163921.633181900@linuxfoundation.org> <20210920163927.070105317@linuxfoundation.org>
-In-Reply-To: <20210920163927.070105317@linuxfoundation.org>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Mon, 20 Sep 2021 11:13:24 -0700
-Message-ID: <CACKFLin7kZFio3Tj+2M7Juq_Vxrfw4KPPkVnE0rtm-hBgQK7nA@mail.gmail.com>
-Subject: Re: [PATCH 5.14 164/168] bnxt_en: Fix possible unintended driver
- initiated error recovery
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
+In-Reply-To: <1632123331-2425-2-git-send-email-srivasam@codeaurora.org>
+References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org> <1632123331-2425-2-git-send-email-srivasam@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 20 Sep 2021 11:17:20 -0700
+Message-ID: <CAE-0n51L7YSA4FDLv_2Q9U3nzxK1YY8hRtZ-G0cs42nomySMTA@mail.gmail.com>
+Subject: Re: [PATCH 1/7] ASoC: qcom: Add compatible names in va,wsa,rx,tx
+ codec drivers for sc7280
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        judyhsiao@chromium.org, lgirdwood@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+        tiwai@suse.com
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:35 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Quoting Srinivasa Rao Mandadapu (2021-09-20 00:35:25)
+> Add compatible names for sc7280 based targets in digital codec drivers
+> va,wsa,rx and tx.
 >
-> From: Michael Chan <michael.chan@broadcom.com>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+>  sound/soc/codecs/lpass-rx-macro.c  | 1 +
+>  sound/soc/codecs/lpass-tx-macro.c  | 1 +
+>  sound/soc/codecs/lpass-va-macro.c  | 1 +
+>  sound/soc/codecs/lpass-wsa-macro.c | 1 +
+>  4 files changed, 4 insertions(+)
 >
-> [ Upstream commit 1b2b91831983aeac3adcbb469aa8b0dc71453f89 ]
+> diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+> index 196b068..520c760 100644
+> --- a/sound/soc/codecs/lpass-rx-macro.c
+> +++ b/sound/soc/codecs/lpass-rx-macro.c
+> @@ -3578,6 +3578,7 @@ static int rx_macro_remove(struct platform_device *pdev)
 >
+>  static const struct of_device_id rx_macro_dt_match[] = {
+>         { .compatible = "qcom,sm8250-lpass-rx-macro" },
+> +       { .compatible = "qcom,sc7280-lpass-rx-macro" },
 
-Please include this patch as well:
+Please sort alphabetically on compatible string.
 
-eca4cf12acda bnxt_en: Fix error recovery regression
-
-Otherwise, it can cause a regression.  Thanks.
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(of, rx_macro_dt_match);
