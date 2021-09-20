@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA592411BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738494120A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245209AbhITRFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:05:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54518 "EHLO mail.kernel.org"
+        id S1355683AbhITR4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:56:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345228AbhITRBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:01:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 902D16134F;
-        Mon, 20 Sep 2021 16:53:22 +0000 (UTC)
+        id S1354588AbhITRui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:50:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D841761880;
+        Mon, 20 Sep 2021 17:11:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156803;
-        bh=Bi6+0tvVMg2bvDTKx7eAnXNzqB6+GbCNe6ES9zLfERk=;
+        s=korg; t=1632157916;
+        bh=CKGk5DMQB0Ej3NiAMtZARtfrYAtpgmsWv53+pidWk+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NxGbMvp77Aga9oz687j/aZeIJMgwGxNEXLgs41Cv7Jqjx3/0GJHxdoswpFOf/xg6m
-         NiMTqvRQbixoCWTHLFulfZfbkdJYbFx4IsaWrhYAHaD3bO2wHvIYkUJBh5vj43pXIj
-         iqU4Bmpv8chqTs7jUrnwYDvP0sV3l6RiWd2kvw/w=
+        b=Crg+3sIoqt19U//3ki4Qu7hz4u6aQZnlpOfQczeXE4QkIoiveqs1RmsEdwKv/oNY3
+         1LJCrfMr7d03tdtvO8pK+UveeKWfqifdQdKmBe4/ccogyt7T4NFsgH1lqWyh99UA8b
+         lBrwP2McIQB0JreWtnIR4wLSXmssFCyw32wrrLuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhenwei pi <pizhenwei@bytedance.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 4.9 092/175] crypto: public_key: fix overflow during implicit conversion
+        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 179/293] netlink: Deal with ESRCH error in nlmsg_notify()
 Date:   Mon, 20 Sep 2021 18:42:21 +0200
-Message-Id: <20210920163921.088114847@linuxfoundation.org>
+Message-Id: <20210920163939.404821797@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhenwei pi <pizhenwei@bytedance.com>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-commit f985911b7bc75d5c98ed24d8aaa8b94c590f7c6a upstream.
+[ Upstream commit fef773fc8110d8124c73a5e6610f89e52814637d ]
 
-Hit kernel warning like this, it can be reproduced by verifying 256
-bytes datafile by keyctl command, run script:
-RAWDATA=rawdata
-SIGDATA=sigdata
+Yonghong Song report:
+The bpf selftest tc_bpf failed with latest bpf-next.
+The following is the command to run and the result:
+$ ./test_progs -n 132
+[   40.947571] bpf_testmod: loading out-of-tree module taints kernel.
+test_tc_bpf:PASS:test_tc_bpf__open_and_load 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create(BPF_TC_INGRESS) 0 nsec
+test_tc_bpf:PASS:bpf_tc_hook_create invalid hook.attach_point 0 nsec
+test_tc_bpf_basic:PASS:bpf_obj_get_info_by_fd 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_attach replace mode 0 nsec
+test_tc_bpf_basic:PASS:bpf_tc_query 0 nsec
+test_tc_bpf_basic:PASS:handle set 0 nsec
+test_tc_bpf_basic:PASS:priority set 0 nsec
+test_tc_bpf_basic:PASS:prog_id set 0 nsec
+libbpf: Kernel error message: Failed to send filter delete notification
+test_tc_bpf_basic:FAIL:bpf_tc_detach unexpected error: -3 (errno 3)
+test_tc_bpf:FAIL:test_tc_internal ingress unexpected error: -3 (errno 3)
 
-modprobe pkcs8_key_parser
+The failure seems due to the commit
+    cfdf0d9ae75b ("rtnetlink: use nlmsg_notify() in rtnetlink_send()")
 
-rm -rf *.der *.pem *.pfx
-rm -rf $RAWDATA
-dd if=/dev/random of=$RAWDATA bs=256 count=1
+Deal with ESRCH error in nlmsg_notify() even the report variable is zero.
 
-openssl req -nodes -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem \
-  -subj "/C=CN/ST=GD/L=SZ/O=vihoo/OU=dev/CN=xx.com/emailAddress=yy@xx.com"
-
-KEY_ID=`openssl pkcs8 -in key.pem -topk8 -nocrypt -outform DER | keyctl \
-  padd asymmetric 123 @s`
-
-keyctl pkey_sign $KEY_ID 0 $RAWDATA enc=pkcs1 hash=sha1 > $SIGDATA
-keyctl pkey_verify $KEY_ID 0 $RAWDATA $SIGDATA enc=pkcs1 hash=sha1
-
-Then the kernel reports:
- WARNING: CPU: 5 PID: 344556 at crypto/rsa-pkcs1pad.c:540
-   pkcs1pad_verify+0x160/0x190
- ...
- Call Trace:
-  public_key_verify_signature+0x282/0x380
-  ? software_key_query+0x12d/0x180
-  ? keyctl_pkey_params_get+0xd6/0x130
-  asymmetric_key_verify_signature+0x66/0x80
-  keyctl_pkey_verify+0xa5/0x100
-  do_syscall_64+0x35/0xb0
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The reason of this issue, in function 'asymmetric_key_verify_signature':
-'.digest_size(u8) = params->in_len(u32)' leads overflow of an u8 value,
-so use u32 instead of u8 for digest_size field. And reorder struct
-public_key_signature, it saves 8 bytes on a 64-bit machine.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Link: https://lore.kernel.org/r/20210719051816.11762-1-yajun.deng@linux.dev
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/crypto/public_key.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netlink/af_netlink.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/include/crypto/public_key.h
-+++ b/include/crypto/public_key.h
-@@ -35,9 +35,9 @@ extern void public_key_free(struct publi
- struct public_key_signature {
- 	struct asymmetric_key_id *auth_ids[2];
- 	u8 *s;			/* Signature */
--	u32 s_size;		/* Number of bytes in signature */
- 	u8 *digest;
--	u8 digest_size;		/* Number of bytes in digest */
-+	u32 s_size;		/* Number of bytes in signature */
-+	u32 digest_size;	/* Number of bytes in digest */
- 	const char *pkey_algo;
- 	const char *hash_algo;
- };
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index ac3fe507bc1c..b0fd268ed65e 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -2498,13 +2498,15 @@ int nlmsg_notify(struct sock *sk, struct sk_buff *skb, u32 portid,
+ 		/* errors reported via destination sk->sk_err, but propagate
+ 		 * delivery errors if NETLINK_BROADCAST_ERROR flag is set */
+ 		err = nlmsg_multicast(sk, skb, exclude_portid, group, flags);
++		if (err == -ESRCH)
++			err = 0;
+ 	}
+ 
+ 	if (report) {
+ 		int err2;
+ 
+ 		err2 = nlmsg_unicast(sk, skb, portid);
+-		if (!err || err == -ESRCH)
++		if (!err)
+ 			err = err2;
+ 	}
+ 
+-- 
+2.30.2
+
 
 
