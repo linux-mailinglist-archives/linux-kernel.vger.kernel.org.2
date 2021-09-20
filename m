@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5392C411C5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9D74120B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346648AbhITRIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:08:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S1347540AbhITR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:57:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344405AbhITRFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:05:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD27A615A6;
-        Mon, 20 Sep 2021 16:55:06 +0000 (UTC)
+        id S1354108AbhITRsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:48:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27DA461BB2;
+        Mon, 20 Sep 2021 17:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156907;
-        bh=zkJXNiOWHCHmQ+k/IaEzh/5tMPvplbf31/yZRRetPMg=;
+        s=korg; t=1632157883;
+        bh=pPUTDhlbhoWxCecJxjTKaCYpbhlU/dyhrWccM8e4UF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UajIokCnsOR3KVhPjjxHc2KOHReEMeMfBPNOXIrxeWxJu8qyUHgjNQR1Ih6lJQxrw
-         WzJZY+aEnT5nX4MFJa1q38prpf7sFzn46VknCTwRtk3CBX6cmJzXcTAm04ENqC90br
-         l6oc2FIU003otpUPHXO2MqRXTObrXVL8bJ10eOsk=
+        b=q9iZ0CX2vmyEoxL4Dx2E9aEU1vKc2SdKnMrbmKSSoXpBxETiIofgQ0gxMVQFBAkFg
+         8iWUF9r6J/14yUtsp7+a4XHpk/PWNPFKGEO+K88YK220DhQocDEi0PMZf1lQVhgrI/
+         xK91mfPwZdYQnFxqeo//Aa0RpS5emz5N9OQw7TrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 108/175] video: fbdev: kyro: fix a DoS bug by restricting user input
+Subject: [PATCH 4.19 195/293] s390/jump_label: print real address in a case of a jump label bug
 Date:   Mon, 20 Sep 2021 18:42:37 +0200
-Message-Id: <20210920163921.608933684@linuxfoundation.org>
+Message-Id: <20210920163939.945703939@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 98a65439172dc69cb16834e62e852afc2adb83ed ]
+[ Upstream commit 5492886c14744d239e87f1b0b774b5a341e755cc ]
 
-The user can pass in any value to the driver through the 'ioctl'
-interface. The driver dost not check, which may cause DoS bugs.
+In case of a jump label print the real address of the piece of code
+where a mismatch was detected. This is right before the system panics,
+so there is nothing revealed.
 
-The following log reveals it:
-
-divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
-Call Trace:
- kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
- kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
- do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
- fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
- do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1626235762-2590-1-git-send-email-zheyuma97@gmail.com
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/kyro/fbdev.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/s390/kernel/jump_label.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
-index f77478fb3d14..517057a48dd4 100644
---- a/drivers/video/fbdev/kyro/fbdev.c
-+++ b/drivers/video/fbdev/kyro/fbdev.c
-@@ -372,6 +372,11 @@ static int kyro_dev_overlay_viewport_set(u32 x, u32 y, u32 ulWidth, u32 ulHeight
- 		/* probably haven't called CreateOverlay yet */
- 		return -EINVAL;
+diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
+index 68f415e334a5..10009a0cdb37 100644
+--- a/arch/s390/kernel/jump_label.c
++++ b/arch/s390/kernel/jump_label.c
+@@ -41,7 +41,7 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
+ 	unsigned char *ipe = (unsigned char *)expected;
+ 	unsigned char *ipn = (unsigned char *)new;
  
-+	if (ulWidth == 0 || ulWidth == 0xffffffff ||
-+	    ulHeight == 0 || ulHeight == 0xffffffff ||
-+	    (x < 2 && ulWidth + 2 == 0))
-+		return -EINVAL;
-+
- 	/* Stop Ramdac Output */
- 	DisableRamdacOutput(deviceInfo.pSTGReg);
- 
+-	pr_emerg("Jump label code mismatch at %pS [%p]\n", ipc, ipc);
++	pr_emerg("Jump label code mismatch at %pS [%px]\n", ipc, ipc);
+ 	pr_emerg("Found:    %6ph\n", ipc);
+ 	pr_emerg("Expected: %6ph\n", ipe);
+ 	pr_emerg("New:      %6ph\n", ipn);
 -- 
 2.30.2
 
