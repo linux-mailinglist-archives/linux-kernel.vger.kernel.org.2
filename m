@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9193A411506
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A62411507
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238928AbhITMzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:55:36 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:33532 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238846AbhITMze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238985AbhITMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:55:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43224 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238758AbhITMze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 08:55:34 -0400
-From:   Jiri Valek - 2N <valek@2n.cz>
-To:     <jic23@kernel.org>
-CC:     Jiri Valek - 2N <valek@2n.cz>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] iio: light: opt3001: Fixed timeout error when 0 lux
-Date:   Mon, 20 Sep 2021 14:53:48 +0200
-Message-ID: <20210920125351.6569-1-valek@2n.cz>
-X-Mailer: git-send-email 2.20.1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632142447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fDLQq5MvPSzAt6PnqUmCdhsPlz4Motg42ahab6MSZ50=;
+        b=VNGQsxRNGL4E5hwxYCeASpM5JDblbMPW1k7H5k+vNlMN70gFfvHeJlCKiqyeHVZ+wrU8KJ
+        5CyGfOMuy+r+1jlAJcoCAWNmwcITEU8+iFZfLlYl2Ap3f4VQ0B2CDlnQZzgxNYP1pbXfW4
+        kIU0OeIsSk01Hh+LbVrz6QntRhakF1Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441--bOW6NYZO16OJnQqaNzPsg-1; Mon, 20 Sep 2021 08:54:04 -0400
+X-MC-Unique: -bOW6NYZO16OJnQqaNzPsg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0A6619253C3;
+        Mon, 20 Sep 2021 12:54:02 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F3311346F;
+        Mon, 20 Sep 2021 12:54:02 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Subject: [PATCH 0/2] x86: sgx_vepc: implement ioctl to EREMOVE all pages
+Date:   Mon, 20 Sep 2021 08:53:59 -0400
+Message-Id: <20210920125401.2389105-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail06w.axis.com (10.20.40.12) To se-mail03w.axis.com
- (10.20.40.9)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading from sensor returned timeout error under
-zero light conditions.
+Add to /dev/sgx_vepc a ioctl that brings vEPC pages back to uninitialized
+state with EREMOVE.  This is useful in order to match the expectations
+of guests after reboot, and to match the behavior of real hardware.
 
-Signed-off-by: Jiri Valek - 2N <valek@2n.cz>
----
- drivers/iio/light/opt3001.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The ioctl is a cleaner alternative to closing and reopening the
+/dev/sgx_vepc device; reopening /dev/sgx_vepc could be problematic in
+case userspace has sandboxed itself since the time it first opened the
+device, and has thus lost permissions to do so.
 
-diff --git a/drivers/iio/light/opt3001.c b/drivers/iio/light/opt3001.c
-index 52963da401a7..1880bd5bb258 100644
---- a/drivers/iio/light/opt3001.c
-+++ b/drivers/iio/light/opt3001.c
-@@ -276,6 +276,8 @@ static int opt3001_get_lux(struct opt3001 *opt, int *val, int *val2)
- 		ret = wait_event_timeout(opt->result_ready_queue,
- 				opt->result_ready,
- 				msecs_to_jiffies(OPT3001_RESULT_READY_LONG));
-+		if (ret == 0)
-+			return -ETIMEDOUT;
- 	} else {
- 		/* Sleep for result ready time */
- 		timeout = (opt->int_time == OPT3001_INT_TIME_SHORT) ?
-@@ -312,9 +314,7 @@ static int opt3001_get_lux(struct opt3001 *opt, int *val, int *val2)
- 		/* Disallow IRQ to access the device while lock is active */
- 		opt->ok_to_ignore_lock = false;
- 
--	if (ret == 0)
--		return -ETIMEDOUT;
--	else if (ret < 0)
-+	if (ret < 0)
- 		return ret;
- 
- 	if (opt->use_irq) {
+If possible, I would like these patches to be included in 5.15 through
+either the x86 or the KVM tree.
+
+Thanks,
+
+Paolo
+
+Changes from RFC:
+- improved commit messages, added documentation
+- renamed ioctl from SGX_IOC_VEPC_REMOVE to SGX_IOC_VEPC_REMOVE_ALL
+
+Paolo Bonzini (2):
+  x86: sgx_vepc: extract sgx_vepc_remove_page
+  x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL ioctl
+
+ Documentation/x86/sgx.rst       | 14 ++++++++++
+ arch/x86/include/uapi/asm/sgx.h |  2 ++
+ arch/x86/kernel/cpu/sgx/virt.c  | 48 ++++++++++++++++++++++++++++++---
+ 3 files changed, 61 insertions(+), 3 deletions(-)
+
 -- 
-2.20.1
+2.27.0
 
