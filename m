@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35DE411D62
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB555411BB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346759AbhITRTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:19:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42200 "EHLO mail.kernel.org"
+        id S1345173AbhITRBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:01:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347709AbhITRRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:17:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA19C61A10;
-        Mon, 20 Sep 2021 16:59:14 +0000 (UTC)
+        id S245547AbhITQ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:58:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EEF361252;
+        Mon, 20 Sep 2021 16:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157155;
-        bh=eDf+Y2pKgCWX3tDOUyAt5Id4kBZZh9MhoiHT6Dkrezk=;
+        s=korg; t=1632156711;
+        bh=2JqvXqvVZJfH9DPbT6roUpriO96zABwe2vLAyDsNh4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BuHssyvdp9jYI1ZL9IK6bYYU/ViZon5U9ypZFGs+vClr8p6Ac4wLDui++iPklJ0f3
-         Ib6L2O9lB1pMGO6/iCciJB9/UxyLduHzQ8gtahKAz6amDU++eYTp1DtLyCietGcZdQ
-         ZK9Sjdq1bTLdY+yMsNm0xemQdXR7egWZeG5KSvIs=
+        b=KCicF/KbL8ues47hMQbO/Oh6W82A+neDcs958ZTHoZ9x60Rv+HV2v0UvOKDA/Eiik
+         zTRCncTLZcwY5aZsZ/YDZ5ERVu7xpsk0HSJFsk+14dzNg/L98jiIoHO/F9m0FUirDS
+         vsRQoZ7LmYJk5HQ6VSPI55ODjpafZr4LoqFAuBW4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonas Jensen <jonas.jensen@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 079/217] mmc: moxart: Fix issue with uninitialized dma_slave_config
+Subject: [PATCH 4.9 051/175] certs: Trigger creation of RSA module signing key if its not an RSA key
 Date:   Mon, 20 Sep 2021 18:41:40 +0200
-Message-Id: <20210920163927.305807196@linuxfoundation.org>
+Message-Id: <20210920163919.727129870@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-[ Upstream commit ee5165354d498e5bceb0b386e480ac84c5f8c28c ]
+[ Upstream commit ea35e0d5df6c92fa2e124bb1b91d09b2240715ba ]
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+Address a kbuild issue where a developer created an ECDSA key for signing
+kernel modules and then builds an older version of the kernel, when bi-
+secting the kernel for example, that does not support ECDSA keys.
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
+If openssl is installed, trigger the creation of an RSA module signing
+key if it is not an RSA key.
 
-For moxart, this is probably not currently an issue but is still good to
-fix though.
-
-Fixes: 1b66e94e6b99 ("mmc: moxart: Add MOXA ART SD/MMC driver")
-Cc: Jonas Jensen <jonas.jensen@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081644.19353-3-tony@atomide.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
+Cc: David Howells <dhowells@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/moxart-mmc.c | 1 +
- 1 file changed, 1 insertion(+)
+ certs/Makefile | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index a0670e9cd012..5553a5643f40 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -631,6 +631,7 @@ static int moxart_probe(struct platform_device *pdev)
- 			 host->dma_chan_tx, host->dma_chan_rx);
- 		host->have_dma = true;
+diff --git a/certs/Makefile b/certs/Makefile
+index 2773c4afa24c..4417cc5cf5e8 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -39,11 +39,19 @@ endif
+ redirect_openssl	= 2>&1
+ quiet_redirect_openssl	= 2>&1
+ silent_redirect_openssl = 2>/dev/null
++openssl_available       = $(shell openssl help 2>/dev/null && echo yes)
  
-+		memset(&cfg, 0, sizeof(cfg));
- 		cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 		cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 
+ # We do it this way rather than having a boolean option for enabling an
+ # external private key, because 'make randconfig' might enable such a
+ # boolean option and we unfortunately can't make it depend on !RANDCONFIG.
+ ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
++
++ifeq ($(openssl_available),yes)
++X509TEXT=$(shell openssl x509 -in "certs/signing_key.pem" -text 2>/dev/null)
++
++$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
++endif
++
+ $(obj)/signing_key.pem: $(obj)/x509.genkey
+ 	@$(kecho) "###"
+ 	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
 -- 
 2.30.2
 
