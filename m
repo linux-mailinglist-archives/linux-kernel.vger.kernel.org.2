@@ -2,198 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCBB4117D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA1F4117DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241128AbhITPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235441AbhITPKM (ORCPT
+        id S241177AbhITPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:10:29 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44022
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235723AbhITPK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:10:12 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AA8C061574;
-        Mon, 20 Sep 2021 08:08:43 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id g1so69621591lfj.12;
-        Mon, 20 Sep 2021 08:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zHBcy62XBnwwIXR6J0uJZFxZPjvGorUc2wPW3wjD7m8=;
-        b=DO5x9hFYScnYzeAJQV+nm5mz3uSaWz+2uG8C6WGB09WCtCoEtj3VeVAULgoR7t4icc
-         l3cAnhjyZdjYexiF6AvgsxL6aSGoR1Wts5KS4UY/gRg1kopMBSHCt7rDFC9rX4WUHPff
-         vaJU04Zppn4ym8YDhHWpDIg1fxhHC9YxeujQoTRdw/vdOQT8nPYClU8JnTwfDn8+dB19
-         opjDk1x8kg0LrnI4u+QQMWt5FvDPc9dY0yChZyohWP+NvdToQlnnLmKmxtIuxcCUmz67
-         G7gynfWVZ1fyhZaCHLUza5XppEO/j6S03WiRZ2kbo6/B6rsm1rxYtBTu/HTTFZNROLzS
-         LdqA==
+        Mon, 20 Sep 2021 11:10:28 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id BF0EA40267
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632150540;
+        bh=RrUHW9qWnN4ubyMN56WONJrQMAnYJXVEP7VdjrUGoI4=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=AFOM6TcHjSb05N9wnmVVk1u0W60SnXAKhn8eO5V+/9/e2NPCKMg5XylKOafVa9Lz1
+         oqR+Xe/BXXVd2ooH7qnLXYTWmzLssyTv3gtDFLFkW9oDxiqQNKkg8Fj+otyeU3XPA6
+         NC8T6/pqJ72uQYXFcqckXpY/yHzswwN5pL0UqXzbP+PCUqTjHzuT8AFAeHiTfjLOC6
+         5jjcMMS3wVfDCumkBtLpClI3XA2Sk2yZOBGVYUvgmXRzrlyf+CRwanKxIFoWfCZgbC
+         4JxwgZCdoQkaKUcBB3ohPQhB7rulMVndO8KmGLRIuuG6NDoUFk3HUB4WDVb8HJKPvy
+         GOW0Q7R1plg4Q==
+Received: by mail-wr1-f72.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so2075671wrh.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:09:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zHBcy62XBnwwIXR6J0uJZFxZPjvGorUc2wPW3wjD7m8=;
-        b=BX1OScuPbMDeB5glkl8FbNNgYdKk8HBpImWR+e2NlJN+mQmxC+3t6ftv4NGfzODBGX
-         A915W3Fr0FOpRgLeGDX9ls3mtOxDXYMvwmapy5TMPAoUCsfkg9PbfTNQ9T6gMY2UV79u
-         4bYWCyiwIQ4GRl0iRDI71zh+BkNegyYkhwecom7a4+0p0Hi6fEAzJwMcvnCH0KfIfYIf
-         Db7lB4ZTIsaXAnbF3mFplvLJ3bTUoZvpREVspYNHEbS3MFC+Nfd7Z4K6fbKWq7egmQNC
-         C3NPs7UrTHVHkikpTL3fWfVFT4ooD6Q+fexYaS58l0jq/RSQ3P/cAPWmAFXKBQZRhjXR
-         kNrw==
-X-Gm-Message-State: AOAM531f+yNA2zHm/4LJs/xnLSB0wJzKv/2tcG7X7nVTsAdXOHdUoTPx
-        xEWymCW5OVZPQcHDipeteKdQ+I359DPUrQ==
-X-Google-Smtp-Source: ABdhPJy4OYzYqeDYcjPz6Mwx9k9+fK4xv1m5cyhQyXfKOeYKeK4hSfbYYvdWr5tpKKfZUg9/vzt5MQ==
-X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr22868490ljk.121.1632150414239;
-        Mon, 20 Sep 2021 08:06:54 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id v26sm1319921ljv.77.2021.09.20.08.06.53
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RrUHW9qWnN4ubyMN56WONJrQMAnYJXVEP7VdjrUGoI4=;
+        b=Q8n3GmpiwlzSusBtc3wPL8iYnaaincXt8F3BDec3YT6l2mmO12/OCFJliJvZg6aoRB
+         i6Lyd5KWBw2F6OcQDKRQmlJf0DITvTVDqpLpcjs1E+W0FkvHK8e4iOFuSdSKD0X0QnoE
+         pdeUUZJS/lmKZr/fzOZPmYLCA8ojwzHKc/b4Us945sYMTbKrOOFkpvkWIJJ9fJvXlPyu
+         L5x0FxyDmiI9H4GE1mS+GiKqhBaa9PCU0v+czdoAYrzGkTp++00JtwBRyNTO4ikTp5oN
+         5O9j9y3w8uPAehjUxjVe7ofB1bWL2LNHKwtuMUGjusL93d4I8YSqNpIF7XQkGkjorX5J
+         QfZA==
+X-Gm-Message-State: AOAM530isuPNCaTTCEoQQCH9xCMVaML+wKQ7UywgMpzfbh9Ym1GmWKMb
+        i3r6uY27zQBow6hX5yDbZLpw/sLLRaGwnYG02CuxRdZuX3DK7ke8Y7mW/Y+BN134Tjk14EpRuaH
+        WMF+y7IKxQTyAEF0yY26iKy9Q8h5ppx9fCcNbHMBCzA==
+X-Received: by 2002:a1c:4d17:: with SMTP id o23mr23903322wmh.125.1632150540355;
+        Mon, 20 Sep 2021 08:09:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9q96BO6SmIHFGad+uos8pAFJ1J9kCDWwhrXRWKfSkT84ucEy7lcgN0Rquc/RlyJ/PH3RBzA==
+X-Received: by 2002:a1c:4d17:: with SMTP id o23mr23903276wmh.125.1632150540071;
+        Mon, 20 Sep 2021 08:09:00 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id i2sm15803136wrq.78.2021.09.20.08.08.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 08:06:53 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 18:06:51 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mon, 20 Sep 2021 08:08:55 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, michael@walle.cc
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema
- format
-Message-ID: <20210920150651.vvdhennblwhdi3jw@mobilestation>
-References: <20210920142713.129295-1-a-nandan@ti.com>
- <20210920142713.129295-2-a-nandan@ti.com>
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v3 1/6] dt-bindings: mmc: cdns: document Microchip MPFS MMC/SDHCI controller
+Date:   Mon, 20 Sep 2021 17:08:02 +0200
+Message-Id: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920142713.129295-2-a-nandan@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Apurva
+The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
+without any additional vendor compatible:
 
-On Mon, Sep 20, 2021 at 07:57:12PM +0530, Apurva Nandan wrote:
-> Convert spi-nand.txt binding to YAML format with an added example.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
->  .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
->  2 files changed, 62 insertions(+), 5 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible:0: 'cdns,sd4hc' is not one of ['socionext,uniphier-sd4hc']
+  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible: ['cdns,sd4hc'] is too short
 
-Thanks for the bindings conversion patch. There are several comments
-below. But before addressing them it would be better to also get a
-response from Rob.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> deleted file mode 100644
-> index 8b51f3b6d55c..000000000000
-> --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> +++ /dev/null
-> @@ -1,5 +0,0 @@
-> -SPI NAND flash
-> -
-> -Required properties:
-> -- compatible: should be "spi-nand"
-> -- reg: should encode the chip-select line used to access the NAND chip
-> diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> new file mode 100644
-> index 000000000000..601beba8d971
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SPI NAND flash
-> +
-> +maintainers:
-> +  - Apurva Nandan <a-nandan@ti.com>
-> +
-> +allOf:
-> +  - $ref: "mtd.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    const: spi-nand
-> +
-> +  reg:
-> +    maxItems: 1
-> +
+---
 
-> +  spi-max-frequency: true
-> +  spi-rx-bus-width: true
-> +  spi-tx-bus-width: true
-> +  rx-sample-delay-ns: true
+Changes since v2:
+1. Document vendor compatible instead of dropping it.
+---
+ Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Since it's an SPI-client device there are more than these properties
-could be set for it. See the SPI-controller bindings schema:
-Documentation/devicetree/bindings/spi/spi-controller.yaml
-So there is two possible ways to make it more generic:
-1) Detach the spi-client part from the spi-controller.yaml bindings
-into a dedicated DT-schema file and refer to that new scheme from
-here.
-2) Forget about these controller-specific properties and let the
-parental SPI-controller bindings parsing them. Of course there must be
-at least one of the next properties declared for it to work:
-{unevaluatedProperties, additionalProperties}.
+diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+index af7442f73881..4207fed62dfe 100644
+--- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
++++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
+@@ -17,6 +17,7 @@ properties:
+   compatible:
+     items:
+       - enum:
++          - microchip,mpfs-sd4hc
+           - socionext,uniphier-sd4hc
+       - const: cdns,sd4hc
+ 
+-- 
+2.30.2
 
-It's up to Rob to decided which approach is better though...
-
-> +
-> +  '#address-cells': true
-> +  '#size-cells': true
-
-Aren't they always equal to 1?
-
-> +
-> +additionalProperties:
-> +  type: object
-
-I'd suggest to elaborate the way the partition sub-nodes looks
-like, for instance, the node names, supported compatible names,
-labels, etc.
-
--Sergey
-
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@6 {
-> +            #address-cells = <1>;
-> +            #size-cells = <1>;
-> +            compatible = "spi-nand";
-> +            reg = <0x6>;
-> +            spi-max-frequency = <42000000>;
-> +
-> +            partitions {
-> +                compatible = "fixed-partitions";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +
-> +                partition@0 {
-> +                    label = "boot";
-> +                    reg = <0 0x200000>;
-> +                };
-> +
-> +                partition@200000 {
-> +                    label = "rootfs";
-> +                    reg = <0x200000 0xce0000>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.25.1
-> 
