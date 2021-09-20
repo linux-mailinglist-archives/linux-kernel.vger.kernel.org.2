@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2EB412458
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC97412563
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378883AbhITSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:33:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45092 "EHLO mail.kernel.org"
+        id S1383580AbhITSoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:44:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352244AbhITS0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:26:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE95D632E8;
-        Mon, 20 Sep 2021 17:25:57 +0000 (UTC)
+        id S1382336AbhITSkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:40:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC737614C8;
+        Mon, 20 Sep 2021 17:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158758;
-        bh=cdIMnGOF4CkU42daacZN2R1isEuvbkTI+FGt9W79hLE=;
+        s=korg; t=1632159066;
+        bh=uPKAT3YKWHt2IcxCoKpHMe+GaRVzNlVrPnJhuZgcJPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXTq8MRPZ/Q94EdW5H+kEyPjUEyR5cGJH8gMJAmTP2mXokfC2zMQQHtIijWeGG/oT
-         dI2Sim3eH9F3OR35ZbRpUrWbdc+1fC0+FYS4F/NI7Gq0HrMljuOEg4njXyoiaX2nX5
-         vTgknYMvFpzr6nNulSZKmvB67q7q1S4VhoX4zwNg=
+        b=BxYDtIRxrC/qstJfscq8rTfxhPEyu3Z7mLCGAVO1JnGFTKFKsUlvgjB+tQ3Y/5vGm
+         DdI3UI/j8tE2WwXldiiRrJABAlKaQuliMR0TCFFZ7GeRYO2CWxIb7ckrTlI4XZh/jh
+         p/tqwavWUvAkuqMOQBqe/E1/ZlCCCXl9KO1zu+Mg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Cochran <richard.cochran@omicron.at>,
-        John Stultz <john.stultz@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 025/122] ptp: dp83640: dont define PAGE0
+        stable@vger.kernel.org, Kortan <kortanzh@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.14 059/168] gen_compile_commands: fix missing sys package
 Date:   Mon, 20 Sep 2021 18:43:17 +0200
-Message-Id: <20210920163916.626364739@linuxfoundation.org>
+Message-Id: <20210920163923.580466564@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +40,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Kortan <kortanzh@gmail.com>
 
-commit 7366c23ff492ad260776a3ee1aaabba9fc773a8b upstream.
+commit ec783c7cb2495c5a3b8ca10db8056d43c528f940 upstream.
 
-Building dp83640.c on arch/parisc/ produces a build warning for
-PAGE0 being redefined. Since the macro is not used in the dp83640
-driver, just make it a comment for documentation purposes.
+We need to import the 'sys' package since the script has called
+sys.exit() method.
 
-In file included from ../drivers/net/phy/dp83640.c:23:
-../drivers/net/phy/dp83640_reg.h:8: warning: "PAGE0" redefined
-    8 | #define PAGE0                     0x0000
-                 from ../drivers/net/phy/dp83640.c:11:
-../arch/parisc/include/asm/page.h:187: note: this is the location of the previous definition
-  187 | #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
-
-Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Cochran <richard.cochran@omicron.at>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20210913220605.19682-1-rdunlap@infradead.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 6ad7cbc01527 ("Makefile: Add clang-tidy and static analyzer support to makefile")
+Signed-off-by: Kortan <kortanzh@gmail.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/dp83640_reg.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/clang-tools/gen_compile_commands.py |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/phy/dp83640_reg.h
-+++ b/drivers/net/phy/dp83640_reg.h
-@@ -5,7 +5,7 @@
- #ifndef HAVE_DP83640_REGISTERS
- #define HAVE_DP83640_REGISTERS
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -13,6 +13,7 @@ import logging
+ import os
+ import re
+ import subprocess
++import sys
  
--#define PAGE0                     0x0000
-+/* #define PAGE0                  0x0000 */
- #define PHYCR2                    0x001c /* PHY Control Register 2 */
- 
- #define PAGE4                     0x0004
+ _DEFAULT_OUTPUT = 'compile_commands.json'
+ _DEFAULT_LOG_LEVEL = 'WARNING'
 
 
