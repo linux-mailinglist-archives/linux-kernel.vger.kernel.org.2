@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81813411A46
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C7A411FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236955AbhITQsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:48:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35830 "EHLO mail.kernel.org"
+        id S1349441AbhITRrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:47:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243426AbhITQrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A5A960F38;
-        Mon, 20 Sep 2021 16:46:24 +0000 (UTC)
+        id S1353492AbhITRow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F042161875;
+        Mon, 20 Sep 2021 17:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156384;
-        bh=ygTgi3ZOuywsl37Y3rfKuIb8lCI6FVLBpXonPSgzYwY=;
+        s=korg; t=1632157785;
+        bh=TUEd5GgCPvHCqT4uiCo//+eCmN6z45ot8WQiTPkqidw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OOF/O70f4lAM72sbo3MNxMFs49aH4yObQQ4r2KzTZnKWkfhk4Xuev/LscZf2hseqa
-         jVaHkuMMEBFOKCBLCif9VNlmOHcvpxl7Y70lF47cCBRw8bVaWJz88oPlfodu68Cydr
-         jsExIvKTqWnS/4SzKXJGBvi32ITiuyrDXihHgsSo=
+        b=PcUenqJnoyMHqyHNV8p3ZehuyklZ4JTQjA9FDXr1lCh3Y1nZNow2KUvCqXgLGA7s4
+         2K9EGyanMpmid0S47zSOYLG1tO8q+rM88kmM+sZdyZ2Mhjd7oKlk5cOYUAKeWxee00
+         7vtWBc4ZcoT0ZQD+tgdl3Dqvy9phPr50w8DzHf6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stian Skjelstad <stian.skjelstad@gmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 035/133] udf_get_extendedattr() had no boundary checks.
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        David Heidelberg <david@ixit.cz>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.19 151/293] ARM: 9105/1: atags_to_fdt: dont warn about stack size
 Date:   Mon, 20 Sep 2021 18:41:53 +0200
-Message-Id: <20210920163913.771559949@linuxfoundation.org>
+Message-Id: <20210920163938.449309386@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stian Skjelstad <stian.skjelstad@gmail.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit 58bc6d1be2f3b0ceecb6027dfa17513ec6aa2abb ]
+commit b30d0289de72c62516df03fdad8d53f552c69839 upstream.
 
-When parsing the ExtendedAttr data, malicous or corrupt attribute length
-could cause kernel hangs and buffer overruns in some special cases.
+The merge_fdt_bootargs() function by definition consumes more than 1024
+bytes of stack because it has a 1024 byte command line on the stack,
+meaning that we always get a warning when building this file:
 
-Link: https://lore.kernel.org/r/20210822093332.25234-1-stian.skjelstad@gmail.com
-Signed-off-by: Stian Skjelstad <stian.skjelstad@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
+arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+
+However, as this is the decompressor and we know that it has a very shallow
+call chain, and we do not actually risk overflowing the kernel stack
+at runtime here.
+
+This just shuts up the warning by disabling the warning flag for this
+file.
+
+Tested on Nexus 7 2012 builds.
+
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/udf/misc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/arm/boot/compressed/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/udf/misc.c b/fs/udf/misc.c
-index 71d1c25f360d..8c7f9ea251e5 100644
---- a/fs/udf/misc.c
-+++ b/fs/udf/misc.c
-@@ -175,13 +175,22 @@ struct genericFormat *udf_get_extendedattr(struct inode *inode, uint32_t type,
- 		else
- 			offset = le32_to_cpu(eahd->appAttrLocation);
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -90,6 +90,8 @@ $(addprefix $(obj)/,$(libfdt_objs) atags
+ 	$(addprefix $(obj)/,$(libfdt_hdrs))
  
--		while (offset < iinfo->i_lenEAttr) {
-+		while (offset + sizeof(*gaf) < iinfo->i_lenEAttr) {
-+			uint32_t attrLength;
-+
- 			gaf = (struct genericFormat *)&ea[offset];
-+			attrLength = le32_to_cpu(gaf->attrLength);
-+
-+			/* Detect undersized elements and buffer overflows */
-+			if ((attrLength < sizeof(*gaf)) ||
-+			    (attrLength > (iinfo->i_lenEAttr - offset)))
-+				break;
-+
- 			if (le32_to_cpu(gaf->attrType) == type &&
- 					gaf->attrSubtype == subtype)
- 				return gaf;
- 			else
--				offset += le32_to_cpu(gaf->attrLength);
-+				offset += attrLength;
- 		}
- 	}
+ ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
++CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
++CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
+ OBJS	+= $(libfdt_objs) atags_to_fdt.o
+ endif
  
--- 
-2.30.2
-
 
 
