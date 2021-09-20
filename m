@@ -2,84 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8DB411992
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F6D411996
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242726AbhITQST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:18:19 -0400
-Received: from phobos.denx.de ([85.214.62.61]:54364 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242910AbhITQQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:16:24 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 918D080EEA;
-        Mon, 20 Sep 2021 18:14:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1632154496;
-        bh=yS7en13J7rnW4XQUJmNyAzrBQGHNd4sbRM9BKk+8/RQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=0Usi7mEBrbAF92TAqjuUGCtU+1XQG2HXo0deDO7YIQiCqI+kuDmP2ro1lWIRqGm/b
-         5lZ68/WOSVpFnkjXQ6jWvoNZd0nYBwAkDVkDb7lBz4PzleNNmnS+Pk5T7JUXJisbCT
-         JD+aqUPdiSVBdbeNN1yzHyHvD0O46N19UJWqBBC926MfphR3li+vReIXuyQMNVGGKz
-         mA7IgKlLk5zYU/SNin00Wnm7vENzT9N2eS+/7zwE6G11EuFYyjGyv++7/nhUI/RgLF
-         JfnIGhwYBLV6Z7ese3U96jBbLmlklms13sjVCz778wKbyl3JlPSeUEVXb1vTguw5DT
-         0xlmz0lRyVvrQ==
-Subject: Re: [PATCH v4 5/9] ARM: imx_v6_v7_defconfig: build imx sdma driver as
- module
-To:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Cc:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "andreas@kemnade.info" <andreas@kemnade.info>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "pzimmermann@dh-electronics.com" <pzimmermann@dh-electronics.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210920144938.314588-1-marcel@ziswiler.com>
- <20210920144938.314588-6-marcel@ziswiler.com>
- <dc987232-8687-a3cc-cc44-9e82e94ddd52@denx.de>
- <b399f461991b3dc6ba3d3332a054e7feea1d37f1.camel@toradex.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <f4d57f8e-2c84-0abb-7031-1f878eb28c08@denx.de>
-Date:   Mon, 20 Sep 2021 18:14:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <b399f461991b3dc6ba3d3332a054e7feea1d37f1.camel@toradex.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S242922AbhITQSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:18:41 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:32906 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242960AbhITQQo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:16:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632154516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WWTOVr6n18LVQWTFZ5IgrK+XEg6IjbR5yJNW3Rr67PA=;
+        b=GSzwG1sRjmUWzNm3sJkrmFF0+JJzvWfraVBjnaGJ3oz/sCL5kht1+TzGYDNdzihzgX0fak
+        xFdLcJ1z+fDe6hGr6fI1geNAWieB1qXam97xS+6ea5d8bTr2R5h2opAy6YJgeebONE4j4e
+        HdA/hCvsRFCJ9q3T4WZHBAmf9PMaagg=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2111.outbound.protection.outlook.com [104.47.18.111])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-24-V1gM9exIMDKGjqoKRo1uDQ-2; Mon, 20 Sep 2021 18:15:15 +0200
+X-MC-Unique: V1gM9exIMDKGjqoKRo1uDQ-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HnacVZSZLA6zNFiwykV0C43C/WgHxUJ9XeIxIy+upi30PoWB6o37wkrNvyS+z49GmrXR7zmw+qrL/Etcd9HNoXxobVQxJ9uMa8CO1up38Jhu+g++Yq1D48oLKw0SO+C7IC3EUs1i5cdfopZpPMw3ZlX1VRszixQYNWn1PJhIhDKn2hzalBl7zdvDhqkVbNF9gY5ML6L2y4Ss14z3KFIKdfewWLvzIl/fpkt30GRgOmDr9fnptW8aVJ5fCA5qKXU6t4z6OUhUNZZ2KJu9j5M1Ip8yFWSorUT6xZQLRnFUOvw5ue5mxLsfwVPUARgMZafZmbnG9wwb128ms1jrN7J1vA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WWTOVr6n18LVQWTFZ5IgrK+XEg6IjbR5yJNW3Rr67PA=;
+ b=AVG841M2Mzt1tsK8PkNOGAtGxy2RtpQ1wN1/5zZDfCCbEJB2iEAYJtLrr7o6bxweDQuXU9rhV7p89grYMzaawnk+zX0dANA4er6eaBArFJdHyH4qU4SnHXwvb+4G5xrj5chDUXE/rCfaehaMOEcKZ8tt0j7ENv218Fwus84Fz1CMArClCUPnYNuleynZi5C7mQv2d64y78+j+ibu81DglHnJST6kwrlTThSnJ3Y0HM6ysUpkw8Mu70s2ilfwhc6xT7hQtJq6LtPPThAnuA/+Hqal6nECnYBaPEWCEt2B9b5zqO41Xsb0tcJNW2U15EM5btWk9qq/OUOtOdfzvsuocA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR0402MB3534.eurprd04.prod.outlook.com (2603:10a6:803:8::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Mon, 20 Sep
+ 2021 16:15:12 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
+ 16:15:12 +0000
+From:   Jan Beulich <jbeulich@suse.com>
+Subject: [PATCH v2] xen/x86: fix PV trap handling on secondary processors
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+Message-ID: <7a266932-092e-b68f-f2bb-1473b61adc6e@suse.com>
+Date:   Mon, 20 Sep 2021 18:15:11 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM3PR04CA0141.eurprd04.prod.outlook.com (2603:10a6:207::25)
+ To VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by AM3PR04CA0141.eurprd04.prod.outlook.com (2603:10a6:207::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16 via Frontend Transport; Mon, 20 Sep 2021 16:15:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 651d9b1d-876b-436e-cece-08d97c51d326
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3534:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB35343DA76F38D518C40A3A68B3A09@VI1PR0402MB3534.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UYw56eljep7LbKo7WpuJUD+P4hXiBK+59UCb8zKDcJYKHWw52dv+2z1JgfpLwlHvgYuCwC4vHn+oaLFqcTcSfh9kdM/v7y5Qvs7p355PhapGSHGMUTn2SQjkMNbk7AfYk/PRYVrmX0Kt2Ggmwi03t4znmiS1wka5Po57skqX92hOTvx0AuCJmdF5O/WKTmf+idy55XupVQN6ZsnPWSWfmxQImwkdD8CTJ8Sfq3NB9uUCTWmzOlujWlnJ3XpxCIpHdWQT7bZh/SVagDJpuQjnPRGk9hmuaRgQQm23RgpWAqIjTAF/c1Lt6v6Rd7XhZW/+dAhMpvY8DOIz5eXDKEtzsAeHc1VHdAuDCAOKlQTl93GHGqpOzjyLPglOlpcdqG2q07Byue+RCjW10CHCEge+o0NCIH4iuHySj5/Yh0eNdKpFCP5P0nOf2zQzGkRCZbgnlCQ9bsHuRahx3MG87k5d1lBL8Yza1t3lm86BISnIJ9oF0iLSra364MJAQQyZIP4wosuGDyQhsmk4/1650Yg28NcgsjYaaE7XZoWt7GCwS8RYfQvRTBPTu1pQsd8gOOqRoEawS61aqCIgsszlrIl1kzLpK7ZoDn1F0ci2L3u6TJlYsijJwlsW6DFaCfWz2IEpGepJz9c0IGbjdNpY0HMpLVQHbkDSlKhwVSROieOISEExVVQwshe1/hxUodDaApKca/JFisNQQpYUY3hS0YEI3R9sG5PH9uXCxllqH0jeHw4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(39860400002)(136003)(376002)(2906002)(5660300002)(6486002)(31686004)(38100700002)(66946007)(2616005)(478600001)(956004)(316002)(8676002)(83380400001)(186003)(66476007)(8936002)(66556008)(16576012)(31696002)(26005)(4326008)(86362001)(110136005)(36756003)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVpGczdNTENRM2pBa0F3SS8xL0szNkFyTUZQUG1PSnQvOVZ2VjdhakRkZ2JG?=
+ =?utf-8?B?d0lPVFgrRVVvK1VZZFk2Q2x3cnNvZ2xzbmdySGZ2RjBWNVZ6cEJWM1dKaXlz?=
+ =?utf-8?B?bWc0QzIrU25aZEpVMnBaV1RjaXRaRFUrYmlVTm00Ynl4Nk1KNkc3UU9Hc1dS?=
+ =?utf-8?B?THRCeHZIR2tNQTl1cnZHZDZuZGlWakJyZ3QvK2ExVmY4Uk5Pd3ZpNUVuaTFm?=
+ =?utf-8?B?TFZQMzlKV21iSEZXUW4reERScXoxemVabG40RUZWQktlSkdoYnVWVm4rQi9u?=
+ =?utf-8?B?MlBYbEZER0lyRXZCejgrQU1BTHlxNDZkUE84bk41bk9selJ2RW1JUmdhSXhs?=
+ =?utf-8?B?Q3dZUXdCSHNtMUpkY3hzYzVuL1ZWZDVlVjVBREFoTWxHQ3pKd2IrelI3MUM0?=
+ =?utf-8?B?ejJKZDBMdWorY2xYSDJkWTNIYWJNWGVQemdnbkxBNWRRWFNBWFZ2WjBEMjlS?=
+ =?utf-8?B?Wi90dVlORjhodjhSRk5WUHhub3JyWlZ3TDZxeU9mWEhxb2xjUG5rU0wwYXVh?=
+ =?utf-8?B?eFE2UEpnWUI2c2NHUUJaR3ZqanpXdEVIWUxTUXFHTWRTUnhYMncwU24xbFk5?=
+ =?utf-8?B?VzErZ24yelBaSHJ4ckJhMGFleWZVUWJ0WGFNOWI5UURQYTdkSXdEQzVVRkk0?=
+ =?utf-8?B?dm1ua0djSGt6blllb3U4YVFWTVMyTDVkWmtONUVXTzRPNldIaGdkRGk2MzV1?=
+ =?utf-8?B?cDdmOWsvSm5acmcrVVFob0FSR1VHMURmZG5ma2pub3NXeEFncTBXdjVNSUVS?=
+ =?utf-8?B?NGxPaVAwTXk0NXp0WmZ6d2oxMy9ybytmbEVkcnJNOWtodGlIbHJBUXdZOWhj?=
+ =?utf-8?B?aEEyb1NtaU1HeU5IM2J6TlVrbW9YeGtKQVpPTWx6b0lkbHpxUzJ0Y3NpcXhL?=
+ =?utf-8?B?dXRUWDlpRGpXdUM5aUNLb0Ftb0lNTDBaeExvVEdiSnBXR2h1T3F4L2hmOG0x?=
+ =?utf-8?B?SG9wM0szVm5TZ0N4UVhjNFVNUjFrVlAyS0h1SXhCZCtRR2dNOTJpZGVqbWY4?=
+ =?utf-8?B?SXp6QklBMXBpMC9laXVTK3Z0b01SeFdnVFV3NnpRclVSNXAzeEVtMEluUXVQ?=
+ =?utf-8?B?Y3dnQ09QT2l6ejlxdDU5alNJL2RVMlp5UTRHVXVHUnZLNkdjSmlHYXlCUFZR?=
+ =?utf-8?B?dEFvcXNpTUh0TEc0dEFuZ3JNYmJBa3FNeEF6YVJ1Mk84cVNqOVpLZVpETmdi?=
+ =?utf-8?B?bWlDUjJnam5SN1NyY0ZrTldVTlVWaDRIZHZqQWhHZGYvbkVVR082bGVrbzF6?=
+ =?utf-8?B?YzBoYnVaNnJBMUQ4Y0JNcFIxbm13eDNWMlpBUFh0M0ZHa2NTaXFjanpHQmRS?=
+ =?utf-8?B?bEFXOXpWRDMwRko5TkFSVlpRYlZ4SEUzN1N5SEc5Q3Q4dFNOTHNzeXgzUzVB?=
+ =?utf-8?B?OGFaUGg1dFdQYU8yR0lZNU1uMVlPa3NnMG9qK3pWbmJ4eUdUVGZlRzh3aTA0?=
+ =?utf-8?B?UUdxZVVUaTZTalBGa0VaWTlJdlZEdmQ1VHByY2lMMGJjUllSU2ZpVEQ5NkRt?=
+ =?utf-8?B?VWZoU2FGOEFOWHcyYkhrSjBKVGlwNk1RQy91L2NiaDNsOUZLL0M1aHZpT2NI?=
+ =?utf-8?B?ZEU2aFlqT2g3b3paZlhlcTVnTW9IaUs5NE9wMWNyL3BldjF0NW5xbm9CVFg2?=
+ =?utf-8?B?NmU4cEFrdzh0M0pZMGhVTE5NVHpCOWk1dUFQS25YYmR0TU5wNHc4TG1HZHZy?=
+ =?utf-8?B?SmIzNWFNR3duSCtsZHlUMDRLdmRkWm81ZEt5S0xEYzRyVmtiOUxKanNCZWVs?=
+ =?utf-8?Q?5zhk5zkTCu1kRVXI7M02FM0R/3Tk/yZFftJmCWV?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 651d9b1d-876b-436e-cece-08d97c51d326
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2021 16:15:12.7766
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BKbQ9X1KldTfnMsBJAsLgyDk+0IeDyntYFJsBaQJQT5MSAzCvakUU4IJbStOXv46LCSiOxzWp3/SwLMzghDjPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3534
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 5:55 PM, Marcel Ziswiler wrote:
-> On Mon, 2021-09-20 at 16:52 +0200, Marek Vasut wrote:
->> On 9/20/21 4:49 PM, Marcel Ziswiler wrote:
->>> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
->>>
->>> Build CONFIG_IMX_SDMA as a module to avoid the following boot issue:
->>>
->>> [    5.214751] imx-sdma 20ec000.sdma: Direct firmware load for
->>>    imx/sdma/sdma-imx6q.bin failed with error -2
->>> [    5.215762] imx-sdma 20ec000.sdma: Falling back to sysfs fallback
->>>    for: imx/sdma/sdma-imx6q.bin
->>
->> Isn't there some ROM-side SDMA firmware baked into the MX6 which is used
->> as a fallback if loading newer one from filesystem fails ? I suspect the
->> default ROM firmware might be buggy.
-> 
-> I'm not so sure about this. At least it seems to fail if no external firmware can be loaded.
+The initial observation was that in PV mode under Xen 32-bit user space
+didn't work anymore. Attempts of system calls ended in #GP(0x402). All
+of the sudden the vector 0x80 handler was not in place anymore. As it
+turns out up to 5.13 redundant initialization did occur: Once from
+cpu_initialize_context() (through its VCPUOP_initialise hypercall) and a
+2nd time while each CPU was brought fully up. This 2nd initialization is
+now gone, uncovering that the 1st one was flawed: Unlike for the
+set_trap_table hypercall, a full virtual IDT needs to be specified here;
+the "vector" fields of the individual entries are of no interest. With
+many (kernel) IDT entries still(?) (i.e. at that point at least) empty,
+the syscall vector 0x80 ended up in slot 0x20 of the virtual IDT, thus
+becoming the domain's handler for vector 0x20.
 
-See e.g. SDMA chapter in MX6SDLRM or similar, it does talk about 4k boot 
-ROM, which contains scripts and utilities later referenced by scripts in 
-RAM. It might be worth looking into that a bit further, but that seems 
-like a separate topic from this patch.
+Make xen_convert_trap_info() fit for either purpose, leveraging the fact
+that on the xen_copy_trap_info() path the table starts out zero-filled.
+This includes moving out the writing of the sentinel, which would also
+have lead to a buffer overrun in the xen_copy_trap_info() case if all
+(kernel) IDT entries were populated. Convert the writing of the sentinel
+to clearing of the entire table entry rather than just the address
+field.
+
+(I didn't bother trying to identify the commit which uncovered the issue
+in 5.14; the commit named below is the one which actually introduced the
+bad code.)
+
+Fixes: f87e4cac4f4e ("xen: SMP guest support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+---
+In how far it is correct to use the current CPU's IDT is unclear to me.
+Looks at least like another latent trap.
+---
+v2: Switch back to using xen_convert_trap_info().
+
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -755,8 +755,8 @@ static void xen_write_idt_entry(gate_des
+ 	preempt_enable();
+ }
+ 
+-static void xen_convert_trap_info(const struct desc_ptr *desc,
+-				  struct trap_info *traps)
++static unsigned xen_convert_trap_info(const struct desc_ptr *desc,
++				      struct trap_info *traps, bool full)
+ {
+ 	unsigned in, out, count;
+ 
+@@ -766,17 +766,18 @@ static void xen_convert_trap_info(const
+ 	for (in = out = 0; in < count; in++) {
+ 		gate_desc *entry = (gate_desc *)(desc->address) + in;
+ 
+-		if (cvt_gate_to_trap(in, entry, &traps[out]))
++		if (cvt_gate_to_trap(in, entry, &traps[out]) || full)
+ 			out++;
+ 	}
+-	traps[out].address = 0;
++
++	return out;
+ }
+ 
+ void xen_copy_trap_info(struct trap_info *traps)
+ {
+ 	const struct desc_ptr *desc = this_cpu_ptr(&idt_desc);
+ 
+-	xen_convert_trap_info(desc, traps);
++	xen_convert_trap_info(desc, traps, true);
+ }
+ 
+ /* Load a new IDT into Xen.  In principle this can be per-CPU, so we
+@@ -786,6 +787,7 @@ static void xen_load_idt(const struct de
+ {
+ 	static DEFINE_SPINLOCK(lock);
+ 	static struct trap_info traps[257];
++	unsigned out;
+ 
+ 	trace_xen_cpu_load_idt(desc);
+ 
+@@ -793,7 +795,8 @@ static void xen_load_idt(const struct de
+ 
+ 	memcpy(this_cpu_ptr(&idt_desc), desc, sizeof(idt_desc));
+ 
+-	xen_convert_trap_info(desc, traps);
++	out = xen_convert_trap_info(desc, traps, false);
++	memset(&traps[out], 0, sizeof(traps[0]));
+ 
+ 	xen_mc_flush();
+ 	if (HYPERVISOR_set_trap_table(traps))
+
