@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05764123BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8641E4125F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378511AbhITS0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
+        id S1348387AbhITSvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377693AbhITSUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:20:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B65D632AA;
-        Mon, 20 Sep 2021 17:23:30 +0000 (UTC)
+        id S1383981AbhITSqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:46:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80D4261AFA;
+        Mon, 20 Sep 2021 17:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158610;
-        bh=t2iXuvRApkXkndxKEFV8qBh7oCRTavfhVfmUtTDE7LU=;
+        s=korg; t=1632159190;
+        bh=W067M9YuUs/H/l/wOW2OpgBb+e2lq9U28N6uJgw6CEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CeqZSUeDrk+lxF243lVVkSTdIgTib5rbGTYvn1qsjD44l8rM73+u6mvTAmylD/W5M
-         fFCZ3KUcwGO0dDyXhqehn/qLU2rUiXvN01YMQi9gnvAFVyGDtWd8meIWTsMFUjU035
-         97RJBgewkRAnPY610agz2g//isJnwYX/hw+FTt2Y=
+        b=aPsOuWouAA7eEdL4Mmtery8zq0rRTmhsazsYMITR2vLWDeTx4gXO5qIAGJPuEzT2r
+         dqkpVGGIYlbN0qaV3xskCV50o5JB3h/OFMTyUFgI56pahBfq9frsdBplFKLbxSHsz/
+         zbjlmtp1EEth6O2GqZZAMtVBg1ORqWRsh6InCEGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, lijiazi <lijiazi@xiaomi.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 236/260] fuse: fix use after free in fuse_read_interrupt()
-Date:   Mon, 20 Sep 2021 18:44:14 +0200
-Message-Id: <20210920163939.145541437@linuxfoundation.org>
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 117/168] NTB: Fix an error code in ntb_msit_probe()
+Date:   Mon, 20 Sep 2021 18:44:15 +0200
+Message-Id: <20210920163925.485854416@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit e1e71c168813564be0f6ea3d6740a059ca42d177 ]
+[ Upstream commit 319f83ac98d7afaabab84ce5281a819a358b9895 ]
 
-There is a potential race between fuse_read_interrupt() and
-fuse_request_end().
+When the value of nm->isr_ctx is false, the value of ret is 0.
+So, we set ret to -ENOMEM to indicate this error.
 
-TASK1
-  in fuse_read_interrupt(): delete req->intr_entry (while holding
-  fiq->lock)
+Clean up smatch warning:
+drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing
+error code 'ret'.
 
-TASK2
-  in fuse_request_end(): req->intr_entry is empty -> skip fiq->lock
-  wake up TASK3
-
-TASK3
-  request is freed
-
-TASK1
-  in fuse_read_interrupt(): dereference req->in.h.unique ***BAM***
-
-Fix by always grabbing fiq->lock if the request was ever interrupted
-(FR_INTERRUPTED set) thereby serializing with concurrent
-fuse_read_interrupt() calls.
-
-FR_INTERRUPTED is set before the request is queued on fiq->interrupts.
-Dequeing the request is done with list_del_init() but FR_INTERRUPTED is not
-cleared in this case.
-
-Reported-by: lijiazi <lijiazi@xiaomi.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/ntb/test/ntb_msi_test.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-index 16aa55b73ccf..7205a89fbb5f 100644
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -282,10 +282,10 @@ void fuse_request_end(struct fuse_conn *fc, struct fuse_req *req)
+diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
+index 7095ecd6223a..4e18e08776c9 100644
+--- a/drivers/ntb/test/ntb_msi_test.c
++++ b/drivers/ntb/test/ntb_msi_test.c
+@@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
+ 	if (ret)
+ 		goto remove_dbgfs;
  
- 	/*
- 	 * test_and_set_bit() implies smp_mb() between bit
--	 * changing and below intr_entry check. Pairs with
-+	 * changing and below FR_INTERRUPTED check. Pairs with
- 	 * smp_mb() from queue_interrupt().
- 	 */
--	if (!list_empty(&req->intr_entry)) {
-+	if (test_bit(FR_INTERRUPTED, &req->flags)) {
- 		spin_lock(&fiq->lock);
- 		list_del_init(&req->intr_entry);
- 		spin_unlock(&fiq->lock);
+-	if (!nm->isr_ctx)
++	if (!nm->isr_ctx) {
++		ret = -ENOMEM;
+ 		goto remove_dbgfs;
++	}
+ 
+ 	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
+ 
 -- 
 2.30.2
 
