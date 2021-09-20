@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F8A41126F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED85411275
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhITKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:00:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235146AbhITKAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:00:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CCC160FC0;
-        Mon, 20 Sep 2021 09:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632131914;
-        bh=xGTDUY6etx4mvWGTyYfaqkyCJe8IjP1eL1OrpZKEXZY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kfnTcImb8uyt9guvJHsThKvSkTnjlgwd8wBedX7rKyuvSAv1QAWMEm1tXgbVz8sGD
-         2wR5nNDegLZaDiorsUUJ4RiSU8YZ3cgTi8F/axZU6LcPQfxO/umq619tAkNexN7+U6
-         HkEotJL9JrVEjaX4/2c6VKAPwbTh7UkkYmL9pQyKK7HH9stgnSLgyLBp7lTNl5SB5J
-         rsjywGKeeM/sRHV1MSx2sN080GbyjPd0O7cm2tFsdqQ/dbMgyVEQYL9jIikOgpHbJ1
-         Ykuny+u3kie+assaUPaBNOjEctKxSswORqwqpH/Vs4DyFDOsdfvXADvKsG6NB4YyyS
-         hq/7cYK4EDLXQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Martina Krasteva <martinax.krasteva@intel.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: i2c: select V4L2_ASYNC where needed
-Date:   Mon, 20 Sep 2021 11:58:24 +0200
-Message-Id: <20210920095830.1259051-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234406AbhITKBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:01:52 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:53891 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhITKBu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 06:01:50 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 829542000B;
+        Mon, 20 Sep 2021 10:00:19 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 12:00:19 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, linux@armlinux.org.uk, f.fainelli@gmail.com,
+        vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 02/12] net: phy: mchp: Add support for
+ LAN8804 PHY
+Message-ID: <YUhbs4P9jHKBYpYK@piout.net>
+References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
+ <20210920095218.1108151-3-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920095218.1108151-3-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-I came across a link failure from randconfig builds:
+On 20/09/2021 11:52:08+0200, Horatiu Vultur wrote:
+> The LAN8804 SKY has same features as that of LAN8804 SKY except that it
 
-x86_64-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_remove':
-ths8200.c:(.text+0x491): undefined reference to `v4l2_async_unregister_subdev'
-x86_64-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_probe':
-ths8200.c:(.text+0xe49): undefined reference to `v4l2_async_register_subdev'
-x86_64-linux-ld: drivers/media/i2c/tw9910.o: in function `tw9910_remove':
-tw9910.c:(.text+0x467): undefined reference to `v4l2_async_unregister_subdev'
-x86_64-linux-ld: drivers/media/i2c/tw9910.o: in function `tw9910_probe':
-tw9910.c:(.text+0x1123): undefined reference to `v4l2_async_register_subdev'
+On of those part name should be different ;)
 
-These clearly lack a 'select' statement, but I don't know why
-this started happening only now. I had a bit of a look around to find
-other configs that have the same problem, but could not come up with
-a reliable way and found nothing else through experimentation.
-It is likely that other symbols like these exist that need an extra
-select.
+> doesn't support 1588, SyncE or Q-USGMII.
+> 
+> This PHY is found inside the LAN966X switches.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  drivers/net/phy/micrel.c   | 73 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/micrel_phy.h |  1 +
+>  2 files changed, 74 insertions(+)
+> 
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index 5c928f827173..34800b547004 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -1537,6 +1537,65 @@ static int ksz886x_cable_test_get_status(struct phy_device *phydev,
+>  	return ret;
+>  }
+>  
+> +#define LAN_EXT_PAGE_ACCESS_CONTROL			0x16
+> +#define LAN_EXT_PAGE_ACCESS_ADDRESS_DATA		0x17
+> +#define LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC		0x4000
+> +
+> +#define LAN8804_ALIGN_SWAP				0x4a
+> +#define LAN8804_ALIGN_TX_A_B_SWAP			0x1
+> +#define LAN8804_ALIGN_TX_A_B_SWAP_MASK			GENMASK(2, 0)
+> +#define LAN8814_CLOCK_MANAGEMENT			0xd
+> +#define LAN8814_LINK_QUALITY				0x8e
+> +
+> +static int lanphy_read_page_reg(struct phy_device *phydev, int page, u32 addr)
+> +{
+> +	u32 data;
+> +
+> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, page);
+> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
+> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL,
+> +		  (page | LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC));
+> +	data = phy_read(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA);
+> +
+> +	return data;
+> +}
+> +
+> +static int lanphy_write_page_reg(struct phy_device *phydev, int page, u16 addr,
+> +				 u16 val)
+> +{
+> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, page);
+> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
+> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL,
+> +		  (page | LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC));
+> +
+> +	val = phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, val);
+> +	if (val) {
+> +		phydev_err(phydev, "Error: phy_write has returned error %d\n",
+> +			   val);
+> +		return val;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int lan8804_config_init(struct phy_device *phydev)
+> +{
+> +	int val;
+> +
+> +	/* MDI-X setting for swap A,B transmit */
+> +	val = lanphy_read_page_reg(phydev, 2, LAN8804_ALIGN_SWAP);
+> +	val &= ~LAN8804_ALIGN_TX_A_B_SWAP_MASK;
+> +	val |= LAN8804_ALIGN_TX_A_B_SWAP;
+> +	lanphy_write_page_reg(phydev, 2, LAN8804_ALIGN_SWAP, val);
+> +
+> +	/* Make sure that the PHY will not stop generating the clock when the
+> +	 * link partner goes down
+> +	 */
+> +	lanphy_write_page_reg(phydev, 31, LAN8814_CLOCK_MANAGEMENT, 0x27e);
+> +	lanphy_read_page_reg(phydev, 1, LAN8814_LINK_QUALITY);
+> +
+> +	return 0;
+> +}
+> +
+>  static struct phy_driver ksphy_driver[] = {
+>  {
+>  	.phy_id		= PHY_ID_KS8737,
+> @@ -1718,6 +1777,20 @@ static struct phy_driver ksphy_driver[] = {
+>  	.get_stats	= kszphy_get_stats,
+>  	.suspend	= genphy_suspend,
+>  	.resume		= kszphy_resume,
+> +}, {
+> +	.phy_id		= PHY_ID_LAN8804,
+> +	.phy_id_mask	= MICREL_PHY_ID_MASK,
+> +	.name		= "Microchip LAN966X Gigabit PHY",
+> +	.config_init	= lan8804_config_init,
+> +	.driver_data	= &ksz9021_type,
+> +	.probe		= kszphy_probe,
+> +	.soft_reset	= genphy_soft_reset,
+> +	.read_status	= ksz9031_read_status,
+> +	.get_sset_count	= kszphy_get_sset_count,
+> +	.get_strings	= kszphy_get_strings,
+> +	.get_stats	= kszphy_get_stats,
+> +	.suspend	= genphy_suspend,
+> +	.resume		= kszphy_resume,
+>  }, {
+>  	.phy_id		= PHY_ID_KSZ9131,
+>  	.phy_id_mask	= MICREL_PHY_ID_MASK,
+> diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
+> index 3d43c60b49fa..1f7c33b2f5a3 100644
+> --- a/include/linux/micrel_phy.h
+> +++ b/include/linux/micrel_phy.h
+> @@ -28,6 +28,7 @@
+>  #define PHY_ID_KSZ9031		0x00221620
+>  #define PHY_ID_KSZ9131		0x00221640
+>  #define PHY_ID_LAN8814		0x00221660
+> +#define PHY_ID_LAN8804		0x00221670
+>  
+>  #define PHY_ID_KSZ886X		0x00221430
+>  #define PHY_ID_KSZ8863		0x00221435
+> -- 
+> 2.31.1
+> 
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/i2c/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 08feb3e8c1bf..d49eecc4fe33 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -450,6 +450,7 @@ config VIDEO_TW9906
- config VIDEO_TW9910
- 	tristate "Techwell TW9910 video decoder"
- 	depends on VIDEO_V4L2 && I2C
-+	select V4L2_ASYNC
- 	help
- 	  Support for Techwell TW9910 NTSC/PAL/SECAM video decoder.
- 
-@@ -597,6 +598,7 @@ config VIDEO_AK881X
- config VIDEO_THS8200
- 	tristate "Texas Instruments THS8200 video encoder"
- 	depends on VIDEO_V4L2 && I2C
-+	select V4L2_ASYNC
- 	help
- 	  Support for the Texas Instruments THS8200 video encoder.
- 
 -- 
-2.29.2
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
