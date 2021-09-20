@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB2F411C96
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6381B411C9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245528AbhITRLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:11:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
+        id S1347165AbhITRLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245350AbhITRJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:09:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A63C61875;
-        Mon, 20 Sep 2021 16:56:07 +0000 (UTC)
+        id S1346791AbhITRJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AABD76128A;
+        Mon, 20 Sep 2021 16:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156967;
-        bh=+pym0QwsC8Fviq7aC3T+wd9qCQclUcQD/hEuj45WaZ8=;
+        s=korg; t=1632156972;
+        bh=Hk6/lm38Mo/E7s7d+TYfx7X+xQAAR/8dc+MEWNECQQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08zXXR4iRpTXF9Vc581rXX0/mEsDx025p1lYgMnRQwhyuxHzOTZx2tCvv6dRkr9Y0
-         hhF1K4wwi6PUFMS9Q/9WPPlb/JWEXPiFB0mBckTC3ZOmvjaFV+csMpYiFajMKxmLID
-         M7+VAgL40cryPpOGRZq/Ha7fvC5fPobPGmnl0+kk=
+        b=PmWDSIk7ADJqcUxVx1sI53SCkfxcGtL5tx1PNieg0jISVe0uZmMdNTFYaugDJibfQ
+         gH5vg81ieCz6e8piJAdoKjEG8+FIs1Egts/ZsqgA30JVow+m1TKRgc8uomNo1u5hSB
+         a85QPHP7zEKqMnKeUbLqyVSfPP+0zec1b1b+ElBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 168/175] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
-Date:   Mon, 20 Sep 2021 18:43:37 +0200
-Message-Id: <20210920163923.559185395@linuxfoundation.org>
+Subject: [PATCH 4.9 169/175] ethtool: Fix an error code in cxgb2.c
+Date:   Mon, 20 Sep 2021 18:43:38 +0200
+Message-Id: <20210920163923.599410900@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
 References: <20210920163918.068823680@linuxfoundation.org>
@@ -40,36 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
+[ Upstream commit 7db8263a12155c7ae4ad97e850f1e499c73765fc ]
 
-Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
-0x1061 composition in order to avoid bind error.
+When adapter->registered_device_map is NULL, the value of err is
+uncertain, we set err to -EINVAL to avoid ambiguity.
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Clean up smatch warning:
+drivers/net/ethernet/chelsio/cxgb/cxgb2.c:1114 init_one() warn: missing
+error code 'err'
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc_mbim.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
-index 4c8baba72933..d86132d41416 100644
---- a/drivers/net/usb/cdc_mbim.c
-+++ b/drivers/net/usb/cdc_mbim.c
-@@ -647,6 +647,11 @@ static const struct usb_device_id mbim_devs[] = {
- 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
- 	},
+diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+index f5f1b0b51ebd..79eb2257a30e 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
++++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+@@ -1133,6 +1133,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (!adapter->registered_device_map) {
+ 		pr_err("%s: could not register any net devices\n",
+ 		       pci_name(pdev));
++		err = -EINVAL;
+ 		goto out_release_adapter_res;
+ 	}
  
-+	/* Telit LN920 */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
-+	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
-+	},
-+
- 	/* default entry */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
- 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
 -- 
 2.30.2
 
