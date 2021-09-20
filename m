@@ -2,62 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22568412926
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A00412938
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhITXBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 19:01:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232016AbhITW7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 18:59:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D02C0610A0;
-        Mon, 20 Sep 2021 22:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632178677;
-        bh=t32r/UNDAKqQ2H+2kaeKxyON17il0qBt5QdF2iYLzZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZhosC+o0YPt67CpA3fw8kRB1RXniPzCZesIhuvdeBL+wpXNT4Sl12rr1CFkS9nmbI
-         d/EANN9Fmgkf2bjeqEoaQ69Lk0rCKQZ7sBupWl+xvyoBVt5iKUeXYX8MqrTGnpXV0l
-         Nm9MHTFMVrSLlj/twxw+Mm+bfJBRjYa3T1MV6IWH9SspASg2DiupGjmxNgTjQnH6jA
-         skrE0+DL6T4dB3xXfOwTYXnZn03oHmUQeZjsPN/O0FKqhUIxTToRusKwhCLiP73ljK
-         xa3YK3ozMBh78upKlfKDacQOxd2u8gi6mrSjGRvMNUaKyEGrP5Apo51dDt9/duXUEb
-         0aRaK/ac7MQ2w==
-Date:   Mon, 20 Sep 2021 15:57:55 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     Daeho Jeong <daeho43@gmail.com>,
-        Daeho Jeong <daehojeong@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-Message-ID: <YUkR84sklj0SgosC@google.com>
-References: <20210902172404.3517626-1-daeho43@gmail.com>
- <YTvmhVhLlBPeASHT@google.com>
- <9f4a2954-e8c9-abc5-5df4-a7cec53433a3@kernel.org>
+        id S238909AbhITXLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 19:11:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35898 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232799AbhITXJv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 19:09:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632179303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g7bKpAyTX7x8C8f1trrgcEx0ZWLT6lt0pjDqefZ3l1Q=;
+        b=aaQGEfNZadiNS2vcP1nDXWlDo16kKDnu9u+KUwZqm7bU6qJ3H2N5wI2bAYaD6adL3ymFG7
+        LpLgAGkeZ563LBIj1hNogg2EUvSESGY4FBaPLZs+qn8f79HhI0P9smoHTZ+VSlajSC+wgq
+        tqaJKdNBfXYvtK4+O2Xgz2PKNXrk69s=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-q579rHFuN72-iOPUwpHNJg-1; Mon, 20 Sep 2021 19:08:20 -0400
+X-MC-Unique: q579rHFuN72-iOPUwpHNJg-1
+Received: by mail-oo1-f72.google.com with SMTP id x23-20020a4a3957000000b0029aff3ae536so6882712oog.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:08:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=g7bKpAyTX7x8C8f1trrgcEx0ZWLT6lt0pjDqefZ3l1Q=;
+        b=G6WbgCzGiPdx2KzNjA053Jdb6nkD7L9ogk9AQ4OJh5EaRYIF3RMeg3IurCf7kPIZzg
+         mDWeCQTwijnvTTNoOi6xR5WhPb4tx/0yAKkiBHom8BIjJExsmnZkr4f5CnCacAQvw5XG
+         aCMddevYmUwUL2hYThlnSE5dQ4I6022kUQUo8E764i1Xc0Xw9SarAjhwo9rUBRRKYcJ7
+         3CmMvHQdaEmWU3oBbwqU7bL/sKWo5/3RniDi1qUJPFQE5gW2n6RE934ztWGiwwOirdaL
+         GI/s/H7Vb3+DlsosFKtMFzx7oe9/X9+dhRoDC8M7lxDrp1nnZksC3a/6VtUOnid5Xhxo
+         ylPQ==
+X-Gm-Message-State: AOAM531ecMQrLc1nRz33SYTHuVbjklmt4pyxjvl6/ziGZRrdtC2eN2GD
+        J5UbbURmt3Gq2xz7U7emoXaDK9pfRG61pT2B7GJIdIG+0quWqGG1Uzt3sMlHdMAr/4ZKPyLqWxk
+        D9g7qQVAd0bpEvXkxViecZoTg
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr21991974otp.159.1632179299853;
+        Mon, 20 Sep 2021 16:08:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLp/e5IRrlOF0BrSHhE7BuQByvaS73fu5gWXW17CjzvDKE8uc/ZdiPcjOkFCctyn4D2drE1g==
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr21991968otp.159.1632179299636;
+        Mon, 20 Sep 2021 16:08:19 -0700 (PDT)
+Received: from ibm-p8-rhevm-15-fsp.mgmt.pnr.lab.eng.rdu2.redhat.com ([12.183.173.244])
+        by smtp.gmail.com with ESMTPSA id d26sm837804oij.49.2021.09.20.16.08.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 16:08:19 -0700 (PDT)
+Subject: Re: [PATCH] octeontx2-af: fix uninitialized variable
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, nathan@kernel.org,
+        schalla@marvell.com, vvelumuri@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Colin Ian King <colin.king@canonical.com>
+References: <20210920165347.164087-1-trix@redhat.com>
+ <CAKwvOdkSt5VymxtJ4jmOe9LM1rdy+CV7yYXhjCgOFAgbKGEPfQ@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <9926e65d-6083-8d9d-efa2-a755c411ea03@redhat.com>
+Date:   Mon, 20 Sep 2021 16:08:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f4a2954-e8c9-abc5-5df4-a7cec53433a3@kernel.org>
+In-Reply-To: <CAKwvOdkSt5VymxtJ4jmOe9LM1rdy+CV7yYXhjCgOFAgbKGEPfQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12, Chao Yu wrote:
-> On 2021/9/11 7:13, Jaegeuk Kim wrote:
-> > Wait. Why do we need to add so many options here? I was expecting to see
-> > performance difference when getting random segments or random blocks as
-> > an extreme case. I don't get the point why we need the middle of those cases.
-> 
-> I guess we can simply the aging test procedure of filesystem by changing a bit
-> based on this patch.
 
-My question was on "fragment:fixed_block".
+On 9/20/21 3:22 PM, Nick Desaulniers wrote:
+> On Mon, Sep 20, 2021 at 9:54 AM <trix@redhat.com> wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> Building with clang 13 reports this error
+>> rvu_nix.c:4600:7: error: variable 'val' is used uninitialized whenever
+>>    'if' condition is false
+>>                  if (!is_rvu_otx2(rvu))
+>>                      ^~~~~~~~~~~~~~~~~
+>>
+>> So initialize val.
+>>
+>> Fixes: 4b5a3ab17c6c ("octeontx2-af: Hardware configuration for inline IPsec")
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+> Thanks for the patch, but it looks like Colin beat you to the punch.
+> In linux-next, I see:
+> commit d853f1d3c900 ("octeontx2-af: Fix uninitialized variable val")
 
-> 
-> See comments in below thread.
-> 
-> https://lore.kernel.org/lkml/425daf77-8020-26ce-dc9f-019d9a881b78@kernel.org/
-> 
-> Thanks,
+No worries, those allyesconfig breaks are easy to find :)
+
+Tom
+
+>
+>> ---
+>>   drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+>> index ea3e03fa55d45c..70431db866b328 100644
+>> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+>> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+>> @@ -4592,7 +4592,7 @@ static void nix_inline_ipsec_cfg(struct rvu *rvu, struct nix_inline_ipsec_cfg *r
+>>                                   int blkaddr)
+>>   {
+>>          u8 cpt_idx, cpt_blkaddr;
+>> -       u64 val;
+>> +       u64 val = 0;
+>>
+>>          cpt_idx = (blkaddr == BLKADDR_NIX0) ? 0 : 1;
+>>          if (req->enable) {
+>> --
+>> 2.26.3
+>>
+>
+
