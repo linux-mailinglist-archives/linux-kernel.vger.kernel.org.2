@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D9E412A9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF308412A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhIUBoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
+        id S234521AbhIUBot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232930AbhIUBkn (ORCPT
+        with ESMTP id S233114AbhIUBlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:40:43 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B33C06EA8D
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:46:20 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id h20so20199235ilj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:46:20 -0700 (PDT)
+        Mon, 20 Sep 2021 21:41:02 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B8CC06EAA4;
+        Mon, 20 Sep 2021 13:47:53 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pf3-20020a17090b1d8300b0019e081aa87bso923390pjb.0;
+        Mon, 20 Sep 2021 13:47:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Na4bI2RIoAWJG++IZgxN0vC+TC/18LddBM+x8YPaYaE=;
-        b=wfHm0PS6hmpGOVVTgGEUsVEjRm8PiEraDhP3gsrJQDDsx6W05DX7o7dYOEp2Yq2iY4
-         V3w8YKxLGRsmZc0FB7WWmCjj1GsBlnKGF5l8hkkZgZ2rs26N3aEFENzE1QuF1H7btNPe
-         bCV4xPr7WdAbthGGY7k+ZUr+4b8KUtaIyW7feQTSHVmqQ9Jl73MALs/iA3wYEMaCACPd
-         m7Bh1A4N8aGgjh9oGdVbYhaI1WM3+DXCMzM4KgPM1bsUYUfhdhJ7UuK9Amt3/Ki7m0GB
-         QitSFUKMmKXAwBEUv/SjYQya9bNARsn74UYaTVKjIO6V93edqfNyRs2P7DhpQH5nRaje
-         hwgw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=negJEmlBwychqQvUaf9DSXZmOiuLhN4g0dv45lSP0LQ=;
+        b=L3TNF6EN7cHguOBzCM0Arz5/bPR7CEAfuw4xkWoHYts2enJhLBfEBEDkFF6l5aGrEo
+         tX9Ks9e+ivtQjfJzm3LHaVWI85AI0UNW8/c3BF8+yhmLCz21mt2+EQgMJUtdcdcekk04
+         kfT53llaWsbMcSClBYIVhVVUQ3YWIzjhZVrhmwFmp+o6lU/ecOhSy6wegKdAgsVG6wEl
+         eSiTmtEZ9pEhulNUhBvo4YZQi0lm0eJEL8QKIwJr8CXkJ2t+4qAjbq2Jabdhb0V9nJQ7
+         OiYBYythj59uoJ4MBLGbToI3NULR6fQLUFade1YEPIgHFjD/eBnJNPs10d5kRCeWMT41
+         ncfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Na4bI2RIoAWJG++IZgxN0vC+TC/18LddBM+x8YPaYaE=;
-        b=FxRLPNUnpVHHeo8uIuh76gStA/R5O7T2gWKDHxkvZ19yc6TDDILZx5bjOREjI/Ws+5
-         wI/8VbmM9WzOk/YGGKkIAslAsre+tHR0LIZ1v1E7KCwA2GUhjcgpebEAS9ZUI+nyaaN0
-         7wQ7k7Lwe8AiIBAvtUPFcy09kYMGwplfYWq17tH1O/PbbocvXfQUc7k2Z+V5MXYO5zvL
-         0FkQZI6Hi2L4nOiHgfUVVw7Nq8MVYB4OSrxgUC4NhUPGKeltCTZBzBuaH+NxeGmap2Z+
-         cPXtWe9CErvBMj3RAf45bOF8gvAYFuOmow1GN1jXOn6gIhEpog22uduriUMic0LVpCF2
-         JoaA==
-X-Gm-Message-State: AOAM5302jMKOl4ZLsm0kwPRGRTB4H8QaVp49GvjlkEcJtzeONAvJjt7c
-        kRTcOM5I7TgWVpk8YIJq8yy4L0cZiVCgMJEN0ETtRw==
-X-Google-Smtp-Source: ABdhPJzuC7qd+6LCeZTIOuuvehAPjDL8aSaBRqXjWA5WrOFBNf+Dd+Cz8sNU6WQPKhdm7LvZ088eqmzOye0I2ubwaQA=
-X-Received: by 2002:a05:6e02:1be8:: with SMTP id y8mr10312578ilv.109.1632170779498;
- Mon, 20 Sep 2021 13:46:19 -0700 (PDT)
-MIME-Version: 1.0
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Tue, 21 Sep 2021 02:15:43 +0530
-Message-ID: <CAMi1Hd3k2snB4-=M57pVrMVom=a9_2a0DTFk-+Hzpubwk-Pr9Q@mail.gmail.com>
-Subject: dwc3-qcom: tx-fifo-resize regression on Poco F1 (sdm845) with v5.15-rc1
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=negJEmlBwychqQvUaf9DSXZmOiuLhN4g0dv45lSP0LQ=;
+        b=ap+LNxntdtN7by4vQTWShhFuDIs+iVOWU1IDE1IKGqEWXrI7oS6zjFt4kGhOvXwl00
+         UuMKtnCZ6LUq0eQLB2EXRi6NVJ7k0Xnz6y3MHeaZGOnfu8ef5ujyS1dCe2h51ZTUAuY6
+         wN0S+1KU8mpDUO3iqFSwZNqr35YJh1r8OtPHsNj7qqltGxjy/H2rS5MKHPDoOidHsRwo
+         akAhEHkNEmJf9PDl2/SxjjaWfSSWAApw4lPvfueKWHFYfli4RQd+PlrE1ECHGBdUydkp
+         kbFedWJ3/bnbkhDBi/m6lG/TTIW45YW6VbtkddaSTNoLSH9Bv2ETk5E+W/mM9l8NBCQN
+         xHrw==
+X-Gm-Message-State: AOAM530XYun3klqPEsImbcNvqNtU8TfFKvpwpx48azYHlpXVEdM10opv
+        Ske+wlHLitDb8f8pP51fbNU=
+X-Google-Smtp-Source: ABdhPJzM7a6CEuViVnduDd3u0m+ZsprmeQW+c4ZNJ6T0udLTS8gWdvP73PxgnLhxbPjlGU30vi6qLw==
+X-Received: by 2002:a17:90b:605:: with SMTP id gb5mr1031850pjb.51.1632170873344;
+        Mon, 20 Sep 2021 13:47:53 -0700 (PDT)
+Received: from archl-c2lm.. ([103.51.72.29])
+        by smtp.gmail.com with ESMTPSA id u10sm15250263pfn.147.2021.09.20.13.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 13:47:52 -0700 (PDT)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-usb@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        devicetree@vger.kernel.org
+Subject: [Patchv2] arm64: dts: meson-g12b-odroid-n2: add 5v regulator gpio
+Date:   Mon, 20 Sep 2021 20:47:37 +0000
+Message-Id: <20210920204739.950-1-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wesley, All,
+As described in the Odroid-n2 & Odroid-n2-plus schematics,
+the 5V regulator is controlled by GPIOH_8 and in Open Drain
+since this GPIO doesn't support Push-Pull.
 
-I see a reboot loop on Xiaomi Pocophone F1 (sdm845) with TX FIFO
-resize patches which landed in v5.15-rc1. Upstream commit cefdd52fa045
-"usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default" to
-be specific, which switched on this feature by default.
+Fixes: c35f6dc5c377 ("arm64: dts: meson: Add minimal support for Odroid-N2")
+Fixes: ef599f5f3e10 ("arm64: dts: meson: convert ODROID-N2 to dtsi")
 
-At times the phone crashes into the fastboot mode after the reboot
-loop, but mostly end up booting to UI after a while. This is what it
-looks like https://people.linaro.org/~amit.pundir/beryllium-userdebug/PXL_20210920_162749483.mp4.
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+V1- Added missing Fix tags and update the Neil's Ack
+---
+ arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-PocoF1 does support TX fifo resizing as I can see that in the
-downstream dts. So maybe it is the tx-fifo-max-num which need to be
-adjusted for the device? I couldn't find the tx-fifo-max-num
-equivalent in the downstream tree though
-https://github.com/MiCode/Xiaomi_Kernel_OpenSource/tree/dipper-q-oss/
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+index 344573e157a7..26943c53dfa7 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+@@ -99,6 +99,8 @@ vcc_5v: regulator-vcc_5v {
+ 		regulator-max-microvolt = <5000000>;
+ 		regulator-always-on;
+ 		vin-supply = <&main_12v>;
++		gpio = <&gpio GPIOH_8 GPIO_OPEN_DRAIN>;
++		enable-active-high;
+ 	};
+ 
+ 	vcc_1v8: regulator-vcc_1v8 {
+-- 
+2.33.0
 
-Curious if you had any ideas what might be going wrong? For now I'll
-keep digging around tx-fifo-max-num, but I figured I'd ask just in
-case it's obvious to you.
-
-Regards,
-Amit Pundir
