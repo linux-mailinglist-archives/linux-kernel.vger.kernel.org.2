@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6649412672
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248FB412159
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387469AbhITS6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
+        id S1357539AbhITSE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:04:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384477AbhITSsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:48:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E16763369;
-        Mon, 20 Sep 2021 17:33:46 +0000 (UTC)
+        id S1350141AbhITR6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:58:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34F89619F9;
+        Mon, 20 Sep 2021 17:15:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159226;
-        bh=alr/Fr+3BEJGzOrZJdEg4FUj83fn8nf0tz1XUxDuecY=;
+        s=korg; t=1632158101;
+        bh=phAjSoCyI3ewBD64UJ15KDAR0prdvYouAlArjNQJPf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f+y+WTGgwBVLnx2cu4a8A+lHOjBFwXxs5eesVHlXt2d1fcNNQ/GtzQdWy3CFxJBL2
-         B3vRGPkvWvsDvh+x3v0KBXZ79+BK+rKCQsj55LMVaY8Z7g8ghleCraV25y+XWx/xOS
-         tshMHbNnLHwMt7WTawMIBjJyAClqMOGtiVOqajK4=
+        b=vyAli0q9L5rsYUGohWCT/UrEQEjKuicJzm7RV+N39rQtttlJOeVMk879Z45rqeiZ9
+         mlId9TO2dur78FPJ5NEGuvj/WnVg8q/BRXxrIN3MPp4ioDXsS1vDlTUyQWlH5sD96o
+         ZKFHx5tM3hQoJ+GBfCzulVFaMwBNEZLVM5UUAdEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 103/168] PCI: cadence: Use bitfield for *quirk_retrain_flag* instead of bool
-Date:   Mon, 20 Sep 2021 18:44:01 +0200
-Message-Id: <20210920163925.023361338@linuxfoundation.org>
+Subject: [PATCH 4.19 280/293] ethtool: Fix an error code in cxgb2.c
+Date:   Mon, 20 Sep 2021 18:44:02 +0200
+Message-Id: <20210920163943.006677991@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit f4455748b2126a9ba2bcc9cfb2fbcaa08de29bb2 ]
+[ Upstream commit 7db8263a12155c7ae4ad97e850f1e499c73765fc ]
 
-No functional change. As we are intending to add additional 1-bit
-members in struct j721e_pcie_data/struct cdns_pcie_rc, use bitfields
-instead of bool since it takes less space. As discussed in [1],
-the preference is to use bitfileds instead of bool inside structures.
+When adapter->registered_device_map is NULL, the value of err is
+uncertain, we set err to -EINVAL to avoid ambiguity.
 
-[1] -> https://lore.kernel.org/linux-fsdevel/CA+55aFzKQ6Pj18TB8p4Yr0M4t+S+BsiHH=BJNmn=76-NcjTj-g@mail.gmail.com/
+Clean up smatch warning:
+drivers/net/ethernet/chelsio/cxgb/cxgb2.c:1114 init_one() warn: missing
+error code 'err'
 
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Link: https://lore.kernel.org/r/20210811123336.31357-2-kishon@ti.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/cadence/pci-j721e.c    | 2 +-
- drivers/pci/controller/cadence/pcie-cadence.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 35e61048e133..0c5813b230b4 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -66,7 +66,7 @@ enum j721e_pcie_mode {
+diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+index 0ccdde366ae1..540d99f59226 100644
+--- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
++++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
+@@ -1153,6 +1153,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (!adapter->registered_device_map) {
+ 		pr_err("%s: could not register any net devices\n",
+ 		       pci_name(pdev));
++		err = -EINVAL;
+ 		goto out_release_adapter_res;
+ 	}
  
- struct j721e_pcie_data {
- 	enum j721e_pcie_mode	mode;
--	bool quirk_retrain_flag;
-+	unsigned int		quirk_retrain_flag:1;
- };
- 
- static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 30db2d68c17a..bc27d126f239 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -303,7 +303,7 @@ struct cdns_pcie_rc {
- 	u32			vendor_id;
- 	u32			device_id;
- 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
--	bool                    quirk_retrain_flag;
-+	unsigned int		quirk_retrain_flag:1;
- };
- 
- /**
 -- 
 2.30.2
 
