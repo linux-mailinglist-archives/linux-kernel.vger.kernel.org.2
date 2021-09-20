@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09267411F7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736D0411F82
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352560AbhITRln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:41:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
+        id S1346934AbhITRl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:41:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352361AbhITRjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1352362AbhITRjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 13:39:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B71CB61B54;
-        Mon, 20 Sep 2021 17:07:36 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCB3B6138B;
+        Mon, 20 Sep 2021 17:07:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157657;
-        bh=fz1/QylEBCzGHxkqcKKKVK44SfT7RlLM0AJI4IcPicY=;
+        s=korg; t=1632157659;
+        bh=dLC7/2nxNSTWWLV+3lpYKwsSqm5LejDyBfS6eAdo/oY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pgEKk9lBuCaF6zvcS/LW3vLYHfSWndvvFgX7PpI+iCXrTJFQ+VfJTyrU+66YRE42M
-         /SRRup8GqI7Ks0BAWiacl/8Ahld55lUBsqiV3tHWplnkUXP3OvI74DYCdJCwjYYGTu
-         3LO24YitED0gGFn8C+7BSlN1uDBLg5NAA3vB3IVc=
+        b=jRxuQZQvg6z756vkEnUSX97LEiioXTSHTXriR/GhKNM6BqjZzfQB1hXQxpJOrt/+n
+         82HluJKjbwVPKyPY0pwSpxfd+hmiBnqUx08FvFUfnGTCoDhSW/H7LTWBRGofUsfa0p
+         ODLOZx2czJgKpPaJRrhzZYaZtypB4BBKospr/6r0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 091/293] i2c: s3c2410: fix IRQ check
-Date:   Mon, 20 Sep 2021 18:40:53 +0200
-Message-Id: <20210920163936.380526993@linuxfoundation.org>
+        stable@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 092/293] mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
+Date:   Mon, 20 Sep 2021 18:40:54 +0200
+Message-Id: <20210920163936.417097474@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -40,36 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit d6840a5e370b7ea4fde16ce2caf431bcc87f9a75 ]
+[ Upstream commit c3ff0189d3bc9c03845fe37472c140f0fefd0c79 ]
 
-Iff platform_get_irq() returns 0, the driver's probe() method will return 0
-early (as if the method's call was successful).  Let's consider IRQ0 valid
-for simplicity -- devm_request_irq() can always override that decision...
+Depending on the DMA driver being used, the struct dma_slave_config may
+need to be initialized to zero for the unused data.
 
-Fixes: e0d1ec97853f ("i2c-s3c2410: Change IRQ to be plain integer.")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+For example, we have three DMA drivers using src_port_window_size and
+dst_port_window_size. If these are left uninitialized, it can cause DMA
+failures.
+
+For dw_mmc, this is probably not currently an issue but is still good to
+fix though.
+
+Fixes: 3fc7eaef44db ("mmc: dw_mmc: Add external dma interface support")
+Cc: Shawn Lin <shawn.lin@rock-chips.com>
+Cc: Jaehoon Chung <jh80.chung@samsung.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210810081644.19353-2-tony@atomide.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-s3c2410.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mmc/host/dw_mmc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/i2c/busses/i2c-s3c2410.c b/drivers/i2c/busses/i2c-s3c2410.c
-index d3603e261a84..4c6036920388 100644
---- a/drivers/i2c/busses/i2c-s3c2410.c
-+++ b/drivers/i2c/busses/i2c-s3c2410.c
-@@ -1179,7 +1179,7 @@ static int s3c24xx_i2c_probe(struct platform_device *pdev)
- 	 */
- 	if (!(i2c->quirks & QUIRK_POLL)) {
- 		i2c->irq = ret = platform_get_irq(pdev, 0);
--		if (ret <= 0) {
-+		if (ret < 0) {
- 			dev_err(&pdev->dev, "cannot find IRQ\n");
- 			clk_unprepare(i2c->clk);
- 			return ret;
+diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+index 8e09586f880f..e3991df078ef 100644
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -808,6 +808,7 @@ static int dw_mci_edmac_start_dma(struct dw_mci *host,
+ 	int ret = 0;
+ 
+ 	/* Set external dma config: burst size, burst width */
++	memset(&cfg, 0, sizeof(cfg));
+ 	cfg.dst_addr = host->phy_regs + fifo_offset;
+ 	cfg.src_addr = cfg.dst_addr;
+ 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
 -- 
 2.30.2
 
