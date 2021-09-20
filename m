@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66242412168
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7704125FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358085AbhITSFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56114 "EHLO mail.kernel.org"
+        id S1385675AbhITSvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:51:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350067AbhITR5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:57:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F87663211;
-        Mon, 20 Sep 2021 17:14:47 +0000 (UTC)
+        id S1383896AbhITSqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:46:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8DB86335D;
+        Mon, 20 Sep 2021 17:33:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158088;
-        bh=4b+FEYBFsrp7C5AadIDF3q+aauus9Zm1j/Ui/Od/HZE=;
+        s=korg; t=1632159181;
+        bh=Jw4U4ftzzDsPSsfXsuww/SwEe7hHyW068K7bPWkIikw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mk2pIvDJ0nmvJHVjvYpY4JsThIv8WjNbXP/uJTt8hpaPJ6hb9m95HcLBgdP736y8t
-         IrklA0Dellrn1xdvo/W7iZQqty6VUKPc2t7GNPBUiuVNnunMgZx3KvTzB+zLdJhacB
-         ntYL5tJ4PCIEh39NjgTOkgFOTZ6Cmo8cqcH35Z2w=
+        b=ktGiPhbDdXa4t9j40kcGMXdzsZjH2hPunF38Yin9HAp3xllbLohG7Nh5LFTPdd4N8
+         1PPWnh3nSY4YRYXqRPv9iriJKpdwgNQumfQ+i+oUl6FB4RZAoHaHe0sR/8P7B+kzDC
+         jEkSotohQpfwqL2ItW/yF6iT6SsWpX8b67G3L3i0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Vishal Aslot <os.vaslot@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 290/293] fq_codel: reject silly quantum parameters
+Subject: [PATCH 5.14 114/168] PCI: ibmphp: Fix double unmap of io_mem
 Date:   Mon, 20 Sep 2021 18:44:12 +0200
-Message-Id: <20210920163943.356543513@linuxfoundation.org>
+Message-Id: <20210920163925.385330820@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,87 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Vishal Aslot <os.vaslot@gmail.com>
 
-[ Upstream commit c7c5e6ff533fe1f9afef7d2fa46678987a1335a7 ]
+[ Upstream commit faa2e05ad0dccf37f995bcfbb8d1980d66c02c11 ]
 
-syzbot found that forcing a big quantum attribute would crash hosts fast,
-essentially using this:
+ebda_rsrc_controller() calls iounmap(io_mem) on the error path. Its caller,
+ibmphp_access_ebda(), also calls iounmap(io_mem) on good and error paths.
 
-tc qd replace dev eth0 root fq_codel quantum 4294967295
+Remove the iounmap(io_mem) invocation from ebda_rsrc_controller().
 
-This is because fq_codel_dequeue() would have to loop
-~2^31 times in :
-
-	if (flow->deficit <= 0) {
-		flow->deficit += q->quantum;
-		list_move_tail(&flow->flowchain, &q->old_flows);
-		goto begin;
-	}
-
-SFQ max quantum is 2^19 (half a megabyte)
-Lets adopt a max quantum of one megabyte for FQ_CODEL.
-
-Fixes: 4b549a2ef4be ("fq_codel: Fair Queue Codel AQM")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[bhelgaas: remove item from TODO]
+Link: https://lore.kernel.org/r/20210818165751.591185-1-os.vaslot@gmail.com
+Signed-off-by: Vishal Aslot <os.vaslot@gmail.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/pkt_sched.h |  2 ++
- net/sched/sch_fq_codel.c       | 12 ++++++++++--
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/pci/hotplug/TODO          | 3 ---
+ drivers/pci/hotplug/ibmphp_ebda.c | 5 +----
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/include/uapi/linux/pkt_sched.h b/include/uapi/linux/pkt_sched.h
-index 8975fd1a1421..24ce2aab8946 100644
---- a/include/uapi/linux/pkt_sched.h
-+++ b/include/uapi/linux/pkt_sched.h
-@@ -779,6 +779,8 @@ struct tc_codel_xstats {
+diff --git a/drivers/pci/hotplug/TODO b/drivers/pci/hotplug/TODO
+index a32070be5adf..cc6194aa24c1 100644
+--- a/drivers/pci/hotplug/TODO
++++ b/drivers/pci/hotplug/TODO
+@@ -40,9 +40,6 @@ ibmphp:
  
- /* FQ_CODEL */
+ * The return value of pci_hp_register() is not checked.
  
-+#define FQ_CODEL_QUANTUM_MAX (1 << 20)
-+
- enum {
- 	TCA_FQ_CODEL_UNSPEC,
- 	TCA_FQ_CODEL_TARGET,
-diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
-index a862d9990be7..e4f69c779b8c 100644
---- a/net/sched/sch_fq_codel.c
-+++ b/net/sched/sch_fq_codel.c
-@@ -382,6 +382,7 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
- {
- 	struct fq_codel_sched_data *q = qdisc_priv(sch);
- 	struct nlattr *tb[TCA_FQ_CODEL_MAX + 1];
-+	u32 quantum = 0;
- 	int err;
+-* iounmap(io_mem) is called in the error path of ebda_rsrc_controller()
+-  and once more in the error path of its caller ibmphp_access_ebda().
+-
+ * The various slot data structures are difficult to follow and need to be
+   simplified.  A lot of functions are too large and too complex, they need
+   to be broken up into smaller, manageable pieces.  Negative examples are
+diff --git a/drivers/pci/hotplug/ibmphp_ebda.c b/drivers/pci/hotplug/ibmphp_ebda.c
+index 11a2661dc062..7fb75401ad8a 100644
+--- a/drivers/pci/hotplug/ibmphp_ebda.c
++++ b/drivers/pci/hotplug/ibmphp_ebda.c
+@@ -714,8 +714,7 @@ static int __init ebda_rsrc_controller(void)
+ 		/* init hpc structure */
+ 		hpc_ptr = alloc_ebda_hpc(slot_num, bus_num);
+ 		if (!hpc_ptr) {
+-			rc = -ENOMEM;
+-			goto error_no_hpc;
++			return -ENOMEM;
+ 		}
+ 		hpc_ptr->ctlr_id = ctlr_id;
+ 		hpc_ptr->ctlr_relative_id = ctlr;
+@@ -910,8 +909,6 @@ error:
+ 	kfree(tmp_slot);
+ error_no_slot:
+ 	free_ebda_hpc(hpc_ptr);
+-error_no_hpc:
+-	iounmap(io_mem);
+ 	return rc;
+ }
  
- 	if (!opt)
-@@ -399,6 +400,13 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
- 		    q->flows_cnt > 65536)
- 			return -EINVAL;
- 	}
-+	if (tb[TCA_FQ_CODEL_QUANTUM]) {
-+		quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
-+		if (quantum > FQ_CODEL_QUANTUM_MAX) {
-+			NL_SET_ERR_MSG(extack, "Invalid quantum");
-+			return -EINVAL;
-+		}
-+	}
- 	sch_tree_lock(sch);
- 
- 	if (tb[TCA_FQ_CODEL_TARGET]) {
-@@ -425,8 +433,8 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
- 	if (tb[TCA_FQ_CODEL_ECN])
- 		q->cparams.ecn = !!nla_get_u32(tb[TCA_FQ_CODEL_ECN]);
- 
--	if (tb[TCA_FQ_CODEL_QUANTUM])
--		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
-+	if (quantum)
-+		q->quantum = quantum;
- 
- 	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
- 		q->drop_batch_size = max(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
 -- 
 2.30.2
 
