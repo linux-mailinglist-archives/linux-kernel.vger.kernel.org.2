@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD61411E71
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C42E411C87
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347845AbhITRa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56130 "EHLO mail.kernel.org"
+        id S1345306AbhITRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:10:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350321AbhITR2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD7E261AAC;
-        Mon, 20 Sep 2021 17:03:17 +0000 (UTC)
+        id S1344858AbhITRIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:08:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84F6F6162E;
+        Mon, 20 Sep 2021 16:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157398;
-        bh=R6JsaxzHS3n+4oKo8hy8SgXPN/CtAdobzGO7SI6r+Ek=;
+        s=korg; t=1632156957;
+        bh=wOrD6SbBlVYd0Y7Ybb2/4lFOyuZbLCmpr/M+AGuSKDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=klE94abTzzFXkDPBqec/IQXmMtUgglnhclGh+yRtPl2p4XDlEC3aNsp3uPiLti77H
-         uTI2DH8gebpdRRUCFVr+ToeybFV+NOECR0bYuRNfrryJuNvsRZkM4ZVax5rdAJbuLM
-         2YZb7nPwrIYbWnBdF0sgAfMPpFlR5/co4aQIjcIQ=
+        b=Tjk/pzrWQXnfCnlM8Pr7mGinNk+vWl7bGS8QRfp0NSlysVr/3Ou/TYdoqK7QEcFhR
+         9gD2QkFWQtkWh86q2KElw42dEf0DUR6dVHx9OGYD4Fj0DL7K7SFEASr4yjJOoHdcrL
+         vfae+NzxL/+mwzL7Sgq2tK4U1ZNvKbFFb7TmBt30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 4.14 191/217] xen: reset legacy rtc flag for PV domU
+        stable@vger.kernel.org, zhenggy <zhenggy@chinatelecom.cn>,
+        Eric Dumazet <edumazet@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 163/175] tcp: fix tp->undo_retrans accounting in tcp_sacktag_one()
 Date:   Mon, 20 Sep 2021 18:43:32 +0200
-Message-Id: <20210920163931.107421685@linuxfoundation.org>
+Message-Id: <20210920163923.397180896@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,71 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: zhenggy <zhenggy@chinatelecom.cn>
 
-commit f68aa100d815b5b4467fd1c3abbe3b99d65fd028 upstream.
+commit 4f884f3962767877d7aabbc1ec124d2c307a4257 upstream.
 
-A Xen PV guest doesn't have a legacy RTC device, so reset the legacy
-RTC flag. Otherwise the following WARN splat will occur at boot:
+Commit 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit
+time") may directly retrans a multiple segments TSO/GSO packet without
+split, Since this commit, we can no longer assume that a retransmitted
+packet is a single segment.
 
-[    1.333404] WARNING: CPU: 1 PID: 1 at /home/gross/linux/head/drivers/rtc/rtc-mc146818-lib.c:25 mc146818_get_time+0x1be/0x210
-[    1.333404] Modules linked in:
-[    1.333404] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         5.14.0-rc7-default+ #282
-[    1.333404] RIP: e030:mc146818_get_time+0x1be/0x210
-[    1.333404] Code: c0 64 01 c5 83 fd 45 89 6b 14 7f 06 83 c5 64 89 6b 14 41 83 ec 01 b8 02 00 00 00 44 89 63 10 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <0f> 0b 48 c7 c7 30 0e ef 82 4c 89 e6 e8 71 2a 24 00 48 c7 c0 ff ff
-[    1.333404] RSP: e02b:ffffc90040093df8 EFLAGS: 00010002
-[    1.333404] RAX: 00000000000000ff RBX: ffffc90040093e34 RCX: 0000000000000000
-[    1.333404] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000000000000000d
-[    1.333404] RBP: ffffffff82ef0e30 R08: ffff888005013e60 R09: 0000000000000000
-[    1.333404] R10: ffffffff82373e9b R11: 0000000000033080 R12: 0000000000000200
-[    1.333404] R13: 0000000000000000 R14: 0000000000000002 R15: ffffffff82cdc6d4
-[    1.333404] FS:  0000000000000000(0000) GS:ffff88807d440000(0000) knlGS:0000000000000000
-[    1.333404] CS:  10000e030 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.333404] CR2: 0000000000000000 CR3: 000000000260a000 CR4: 0000000000050660
-[    1.333404] Call Trace:
-[    1.333404]  ? wakeup_sources_sysfs_init+0x30/0x30
-[    1.333404]  ? rdinit_setup+0x2b/0x2b
-[    1.333404]  early_resume_init+0x23/0xa4
-[    1.333404]  ? cn_proc_init+0x36/0x36
-[    1.333404]  do_one_initcall+0x3e/0x200
-[    1.333404]  kernel_init_freeable+0x232/0x28e
-[    1.333404]  ? rest_init+0xd0/0xd0
-[    1.333404]  kernel_init+0x16/0x120
-[    1.333404]  ret_from_fork+0x1f/0x30
+This patch fixes the tp->undo_retrans accounting in tcp_sacktag_one()
+that use the actual segments(pcount) of the retransmitted packet.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 8d152e7a5c7537 ("x86/rtc: Replace paravirt rtc check with platform legacy quirk")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20210903084937.19392-3-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Before that commit (10d3be569243), the assumption underlying the
+tp->undo_retrans-- seems correct.
+
+Fixes: 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit time")
+Signed-off-by: zhenggy <zhenggy@chinatelecom.cn>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+Acked-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/xen/enlighten_pv.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ net/ipv4/tcp_input.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1214,6 +1214,11 @@ static void __init xen_dom0_set_legacy_f
- 	x86_platform.legacy.rtc = 1;
- }
- 
-+static void __init xen_domu_set_legacy_features(void)
-+{
-+	x86_platform.legacy.rtc = 0;
-+}
-+
- /* First C function to be called on Xen boot */
- asmlinkage __visible void __init xen_start_kernel(void)
- {
-@@ -1375,6 +1380,8 @@ asmlinkage __visible void __init xen_sta
- 		add_preferred_console("hvc", 0, NULL);
- 		if (pci_xen)
- 			x86_init.pci.arch_init = pci_xen_init;
-+		x86_platform.set_legacy_features =
-+				xen_domu_set_legacy_features;
- 	} else {
- 		const struct dom0_vga_console_info *info =
- 			(void *)((char *)xen_start_info +
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -1220,7 +1220,7 @@ static u8 tcp_sacktag_one(struct sock *s
+ 	if (dup_sack && (sacked & TCPCB_RETRANS)) {
+ 		if (tp->undo_marker && tp->undo_retrans > 0 &&
+ 		    after(end_seq, tp->undo_marker))
+-			tp->undo_retrans--;
++			tp->undo_retrans = max_t(int, 0, tp->undo_retrans - pcount);
+ 		if (sacked & TCPCB_SACKED_ACKED)
+ 			state->reord = min(fack_count, state->reord);
+ 	}
 
 
