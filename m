@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35106411A4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DA9411A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243041AbhITQsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36518 "EHLO mail.kernel.org"
+        id S243640AbhITQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:49:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237833AbhITQsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1E161211;
-        Mon, 20 Sep 2021 16:46:32 +0000 (UTC)
+        id S243148AbhITQsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 648D961252;
+        Mon, 20 Sep 2021 16:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156393;
-        bh=HHqY1ev6eyJK1MPUdupiJ7mVkEyP7VGaewKnwPOqjS4=;
+        s=korg; t=1632156397;
+        bh=RDXPhV+XhK+KSulAbJypG6MW1JMnxdbZe8aVEVQvtW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=112aspXFTZfGrbI88KqqHApJ4K0miWNFpLkE/Uh5NGRZvaSfTJp9wnWuWRGlIw3va
-         TGCmMXxJ7e/vA4iNQFeRbyT+USYqmHDq3Nsaz7I5a/XHfayp3Ad15oZbzgcUB0718e
-         DiUhgRW58+U8YxyC5ntDC220+m+2OZujM47oNGvQ=
+        b=DVSkVYx5V2Iji66xu9/ZTm+GyEhAM24N+Kz/Rchr9aGfDKa7GLHORfhpuacs4e6X5
+         2xcC0GQh9pzrFXcbZ+/YGRlPOrS0UPt0rxLVNSHd2BQFVpKlRI3mT0hSNoToqebs/d
+         QykgUaHWVS80OQ2TtKpWJcE3wokqXOCjQN7oLeLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Sean Young <sean@mess.org>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 039/133] media: dvb-usb: fix uninit-value in vp702x_read_mac_addr
-Date:   Mon, 20 Sep 2021 18:41:57 +0200
-Message-Id: <20210920163913.922367155@linuxfoundation.org>
+Subject: [PATCH 4.4 040/133] media: go7007: remove redundant initialization
+Date:   Mon, 20 Sep 2021 18:41:58 +0200
+Message-Id: <20210920163913.964733082@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
 References: <20210920163912.603434365@linuxfoundation.org>
@@ -41,55 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 797c061ad715a9a1480eb73f44b6939fbe3209ed ]
+[ Upstream commit 6f5885a7750545973bf1a942d2f0f129aef0aa06 ]
 
-If vp702x_usb_in_op fails, the mac address is not initialized.
-And vp702x_read_mac_addr does not handle this failure, which leads to
-the uninit-value in dvb_usb_adapter_dvb_init.
+In go7007_alloc() kzalloc() is used for struct go7007
+allocation. It means that there is no need in zeroing
+any members, because kzalloc will take care of it.
 
-Fix this by handling the failure of vp702x_usb_in_op.
+Removing these reduntant initialization steps increases
+execution speed a lot:
 
-Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
+	Before:
+		+ 86.802 us   |    go7007_alloc();
+	After:
+		+ 29.595 us   |    go7007_alloc();
+
+Fixes: 866b8695d67e8 ("Staging: add the go7007 video driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/vp702x.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/media/usb/go7007/go7007-driver.c | 26 ------------------------
+ 1 file changed, 26 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/vp702x.c b/drivers/media/usb/dvb-usb/vp702x.c
-index ee1e19e36445..55d515507f0e 100644
---- a/drivers/media/usb/dvb-usb/vp702x.c
-+++ b/drivers/media/usb/dvb-usb/vp702x.c
-@@ -294,16 +294,22 @@ static int vp702x_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
- static int vp702x_read_mac_addr(struct dvb_usb_device *d,u8 mac[6])
+diff --git a/drivers/media/usb/go7007/go7007-driver.c b/drivers/media/usb/go7007/go7007-driver.c
+index ae1cfa792c58..11429bf28c8a 100644
+--- a/drivers/media/usb/go7007/go7007-driver.c
++++ b/drivers/media/usb/go7007/go7007-driver.c
+@@ -698,49 +698,23 @@ struct go7007 *go7007_alloc(const struct go7007_board_info *board,
+ 						struct device *dev)
  {
- 	u8 i, *buf;
-+	int ret;
- 	struct vp702x_device_state *st = d->priv;
+ 	struct go7007 *go;
+-	int i;
  
- 	mutex_lock(&st->buf_mutex);
- 	buf = st->buf;
--	for (i = 6; i < 12; i++)
--		vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1, &buf[i - 6], 1);
-+	for (i = 6; i < 12; i++) {
-+		ret = vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1,
-+				       &buf[i - 6], 1);
-+		if (ret < 0)
-+			goto err;
-+	}
+ 	go = kzalloc(sizeof(struct go7007), GFP_KERNEL);
+ 	if (go == NULL)
+ 		return NULL;
+ 	go->dev = dev;
+ 	go->board_info = board;
+-	go->board_id = 0;
+ 	go->tuner_type = -1;
+-	go->channel_number = 0;
+-	go->name[0] = 0;
+ 	mutex_init(&go->hw_lock);
+ 	init_waitqueue_head(&go->frame_waitq);
+ 	spin_lock_init(&go->spinlock);
+ 	go->status = STATUS_INIT;
+-	memset(&go->i2c_adapter, 0, sizeof(go->i2c_adapter));
+-	go->i2c_adapter_online = 0;
+-	go->interrupt_available = 0;
+ 	init_waitqueue_head(&go->interrupt_waitq);
+-	go->input = 0;
+ 	go7007_update_board(go);
+-	go->encoder_h_halve = 0;
+-	go->encoder_v_halve = 0;
+-	go->encoder_subsample = 0;
+ 	go->format = V4L2_PIX_FMT_MJPEG;
+ 	go->bitrate = 1500000;
+ 	go->fps_scale = 1;
+-	go->pali = 0;
+ 	go->aspect_ratio = GO7007_RATIO_1_1;
+-	go->gop_size = 0;
+-	go->ipb = 0;
+-	go->closed_gop = 0;
+-	go->repeat_seqhead = 0;
+-	go->seq_header_enable = 0;
+-	go->gop_header_enable = 0;
+-	go->dvd_mode = 0;
+-	go->interlace_coding = 0;
+-	for (i = 0; i < 4; ++i)
+-		go->modet[i].enable = 0;
+-	for (i = 0; i < 1624; ++i)
+-		go->modet_map[i] = 0;
+-	go->audio_deliver = NULL;
+-	go->audio_enabled = 0;
  
- 	memcpy(mac, buf, 6);
-+err:
- 	mutex_unlock(&st->buf_mutex);
--	return 0;
-+	return ret;
+ 	return go;
  }
- 
- static int vp702x_frontend_attach(struct dvb_usb_adapter *adap)
 -- 
 2.30.2
 
