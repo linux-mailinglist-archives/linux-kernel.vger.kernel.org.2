@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352AB411C10
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683E2411AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345753AbhITRET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:04:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54332 "EHLO mail.kernel.org"
+        id S244438AbhITQwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239881AbhITRBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:01:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 072D061244;
-        Mon, 20 Sep 2021 16:53:15 +0000 (UTC)
+        id S244043AbhITQt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:49:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42FC76126A;
+        Mon, 20 Sep 2021 16:48:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156796;
-        bh=6CxgdGrVJ0MGEM/4hU0l4geVwAUiZnKv8uWB3SO70a0=;
+        s=korg; t=1632156508;
+        bh=zBOa4a2NLtFvjXQzzYMCfKFizliRUmmgMZgOtvlFwvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tiG+AAt2rJpiozyvivu/Qmy9qHejmpFQajapC6/E9AEFr6UX80U7FKcCgmVs2GjeG
-         RccSX5NoFi7AMuRxsn10GkAHAARbfxaEOp7WUHMQl9swxAIpEaSRXKUAqwyyu1Eplw
-         uRnvaAst4wJVgAWU6Z5iu4LA4nHKhqYa/aX7OH/A=
+        b=wawWn2lLyLCFYkeRqKTC00aFll6ky8+7SkJAkKgtjmQ87v2p2Gj6cr7MX2z656nDV
+         k/ukurOjTDMgi1WEwnnP/289eVf6PFHy9VIBrRoYtSDPb2iMAcazw1q9R5fXEQjM7L
+         b7rGY/fq/bTkjybFKKSqVzWbe/MPGlQiOREZ84UA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.9 089/175] PCI/MSI: Skip masking MSI-X on Xen PV
+        stable@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 060/133] mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
 Date:   Mon, 20 Sep 2021 18:42:18 +0200
-Message-Id: <20210920163920.990514478@linuxfoundation.org>
+Message-Id: <20210920163914.613873335@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
+[ Upstream commit c3ff0189d3bc9c03845fe37472c140f0fefd0c79 ]
 
-When running as Xen PV guest, masking MSI-X is a responsibility of the
-hypervisor. The guest has no write access to the relevant BAR at all - when
-it tries to, it results in a crash like this:
+Depending on the DMA driver being used, the struct dma_slave_config may
+need to be initialized to zero for the unused data.
 
-    BUG: unable to handle page fault for address: ffffc9004069100c
-    #PF: supervisor write access in kernel mode
-    #PF: error_code(0x0003) - permissions violation
-    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
-     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
-     e1000_probe+0x41f/0xdb0 [e1000e]
-     local_pci_probe+0x42/0x80
-    (...)
+For example, we have three DMA drivers using src_port_window_size and
+dst_port_window_size. If these are left uninitialized, it can cause DMA
+failures.
 
-The recently introduced function msix_mask_all() does not check the global
-variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
-of MSI[-X] interrupts.
+For dw_mmc, this is probably not currently an issue but is still good to
+fix though.
 
-Add the check to make this function XEN PV compatible.
-
-Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
-Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3fc7eaef44db ("mmc: dw_mmc: Add external dma interface support")
+Cc: Shawn Lin <shawn.lin@rock-chips.com>
+Cc: Jaehoon Chung <jh80.chung@samsung.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210810081644.19353-2-tony@atomide.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/msi.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mmc/host/dw_mmc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -777,6 +777,9 @@ static void msix_mask_all(void __iomem *
- 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
- 	int i;
+diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+index 9eff3b41a086..03ac8d599763 100644
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -701,6 +701,7 @@ static int dw_mci_edmac_start_dma(struct dw_mci *host,
+ 	int ret = 0;
  
-+	if (pci_msi_ignore_mask)
-+		return;
-+
- 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
- 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
- }
+ 	/* Set external dma config: burst size, burst width */
++	memset(&cfg, 0, sizeof(cfg));
+ 	cfg.dst_addr = host->phy_regs + fifo_offset;
+ 	cfg.src_addr = cfg.dst_addr;
+ 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-- 
+2.30.2
+
 
 
