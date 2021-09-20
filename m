@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DD341216E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DE7412196
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358230AbhITSFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
+        id S1358446AbhITSGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356433AbhITR7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:59:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFA82613AD;
-        Mon, 20 Sep 2021 17:15:40 +0000 (UTC)
+        id S1356705AbhITSBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF0536322E;
+        Mon, 20 Sep 2021 17:16:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158141;
-        bh=Dsw9xe01S1S97w7FMJ4EIPuomsucu92qTCqrP671lcM=;
+        s=korg; t=1632158165;
+        bh=GU2Z7/AwJSTTaqUDY2O7hlm3FYTmsB1TFalm7Ie9rF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FmngW9CEOoNQgEK3/wnyAoK9BtVCKkk5+ZEIeuM0ZxJJu3M+bcgtR1hqJgEsqI88X
-         QRwN1kis74B4W2FabSaRjvFG6WB9cIZssLnbVZ2tGKGlQv1G+mIAKhTMc0gB9q2bMX
-         phDXstoG12BYNcFWS19HGc0H2vDUU0x5zzYF+feE=
+        b=a+g2Iti7LS0SevDU8pGW7iBNqji/94u7crHO1KERoQ39KR4yYgeaqKuTZG6JNKpLk
+         0r5vhSbJFMtGbZaSr7bzxmd/roKivSqgDVNCPHn5ewkmKCAvYvJ4ZPQ914aW0KSziL
+         EHB6dSFbh0/KlQYG3lIsCh1HnJOSXgpQ0f5aBWEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Subject: [PATCH 5.4 012/260] pinctrl: stmfx: Fix hazardous u8[] to unsigned long cast
-Date:   Mon, 20 Sep 2021 18:40:30 +0200
-Message-Id: <20210920163931.539678972@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
+        <zhouyanjie@wanyeetech.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.4 013/260] pinctrl: ingenic: Fix incorrect pull up/down info
+Date:   Mon, 20 Sep 2021 18:40:31 +0200
+Message-Id: <20210920163931.572972960@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -42,57 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 1b73e588f47397dee6e4bdfd953e0306c60b5fe5 upstream.
+commit d5e931403942b3af39212960c2592b5ba741b2bf upstream.
 
-Casting a small array of u8 to an unsigned long is *never* OK:
+Fix the pull up/down info for both the JZ4760 and JZ4770 SoCs, as the
+previous values sometimes contradicted what's written in the programming
+manual.
 
-- it does funny thing when the array size is less than that of a long,
-  as it accesses random places in the stack
-- it makes everything even more fun with a BE kernel
-
-Fix this by building the unsigned long used as a bitmap byte by byte,
-in a way that works across endianess and has no undefined behaviours.
-
-An extra BUILD_BUG_ON() catches the unlikely case where the array
-would be larger than a single unsigned long.
-
-Fixes: 1490d9f841b1 ("pinctrl: Add STMFX GPIO expander Pinctrl/GPIO driver")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Link: https://lore.kernel.org/r/20210725180830.250218-1-maz@kernel.org
+Fixes: b5c23aa46537 ("pinctrl: add a pinctrl driver for the Ingenic jz47xx SoCs")
+Cc: <stable@vger.kernel.org> # v4.12
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Tested-by: 周琰杰 (Zhou Yanjie)<zhouyanjie@wanyeetech.com>
+Link: https://lore.kernel.org/r/20210717174836.14776-1-paul@crapouillou.net
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pinctrl/pinctrl-stmfx.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pinctrl/pinctrl-ingenic.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-stmfx.c
-+++ b/drivers/pinctrl/pinctrl-stmfx.c
-@@ -540,7 +540,7 @@ static irqreturn_t stmfx_pinctrl_irq_thr
- 	u8 pending[NR_GPIO_REGS];
- 	u8 src[NR_GPIO_REGS] = {0, 0, 0};
- 	unsigned long n, status;
--	int ret;
-+	int i, ret;
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -348,7 +348,7 @@ static const struct ingenic_chip_info jz
+ };
  
- 	ret = regmap_bulk_read(pctl->stmfx->map, STMFX_REG_IRQ_GPI_PENDING,
- 			       &pending, NR_GPIO_REGS);
-@@ -550,7 +550,9 @@ static irqreturn_t stmfx_pinctrl_irq_thr
- 	regmap_bulk_write(pctl->stmfx->map, STMFX_REG_IRQ_GPI_SRC,
- 			  src, NR_GPIO_REGS);
+ static const u32 jz4760_pull_ups[6] = {
+-	0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 0xfffff00f,
++	0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 0x0000000f,
+ };
  
--	status = *(unsigned long *)pending;
-+	BUILD_BUG_ON(NR_GPIO_REGS > sizeof(status));
-+	for (i = 0, status = 0; i < NR_GPIO_REGS; i++)
-+		status |= (unsigned long)pending[i] << (i * 8);
- 	for_each_set_bit(n, &status, gc->ngpio) {
- 		handle_nested_irq(irq_find_mapping(gc->irq.domain, n));
- 		stmfx_pinctrl_irq_toggle_trigger(pctl, n);
+ static const u32 jz4760_pull_downs[6] = {
+@@ -611,11 +611,11 @@ static const struct ingenic_chip_info jz
+ };
+ 
+ static const u32 jz4770_pull_ups[6] = {
+-	0x3fffffff, 0xfff0030c, 0xffffffff, 0xffff4fff, 0xfffffb7c, 0xffa7f00f,
++	0x3fffffff, 0xfff0f3fc, 0xffffffff, 0xffff4fff, 0xfffffb7c, 0x0024f00f,
+ };
+ 
+ static const u32 jz4770_pull_downs[6] = {
+-	0x00000000, 0x000f0c03, 0x00000000, 0x0000b000, 0x00000483, 0x00580ff0,
++	0x00000000, 0x000f0c03, 0x00000000, 0x0000b000, 0x00000483, 0x005b0ff0,
+ };
+ 
+ static int jz4770_uart0_data_pins[] = { 0xa0, 0xa3, };
 
 
