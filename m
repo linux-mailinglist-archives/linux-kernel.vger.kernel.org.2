@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74E2412795
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0757A412797
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhITU7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:59:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22816 "EHLO
+        id S236891AbhITU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:59:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60728 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231375AbhITU5J (ORCPT
+        by vger.kernel.org with ESMTP id S231784AbhITU5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:57:09 -0400
+        Mon, 20 Sep 2021 16:57:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632171342;
+        s=mimecast20190719; t=1632171348;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gGG4Fa5Smycs29b77eteLeOLTMiK3YmJo+qPCM0YDLQ=;
-        b=Jb6Wm7KbqS3HDdV8kRmoFVnUxf6nXAacuVIJOyBzF/wCNZlEuWJm+xDZc8ndeM2lARdJ6m
-        67RqMtUggRbwzVsx36anh5wObd+dXrsqRFIvim9vtMpfsCUGhRCMs95onUGFEStIjFVL/M
-        bTxXGBOEURV4UN8l+1+NV65Vk59iPkg=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-USRw-uNYME2LVkHC1meR8w-1; Mon, 20 Sep 2021 16:55:41 -0400
-X-MC-Unique: USRw-uNYME2LVkHC1meR8w-1
-Received: by mail-io1-f69.google.com with SMTP id n8-20020a6b7708000000b005bd491bdb6aso43933393iom.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:55:41 -0700 (PDT)
+        bh=S4VKFLtrv5F+Sqia58aIUV8mMMq0gd6yS5dG8Lafx1o=;
+        b=CGCyXxSpI5BUR0dMsspifQ7dBMja61d3L3mugVMxPnu1BeqcZ5HHf7WCmgEYBwmCJ0rvVk
+        DjSSfdQv9dUDxXsoB2Oh0bX+Af2rYyFZkY5/ZqwzU4+XWp3pi5TZCv1i5OstFI/w+GzvAv
+        9eJA+bggDho84w3OPxCLLzoa+5qjW3w=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207--lCGBGwTMNWsjDsZg1eFjg-1; Mon, 20 Sep 2021 16:55:46 -0400
+X-MC-Unique: -lCGBGwTMNWsjDsZg1eFjg-1
+Received: by mail-il1-f197.google.com with SMTP id f10-20020a92b50a000000b002412aa49d44so40449401ile.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:55:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gGG4Fa5Smycs29b77eteLeOLTMiK3YmJo+qPCM0YDLQ=;
-        b=3W6OWkNNj6JIbGpk6Fm09AARptvUOqiFM2mclNK9U0q6et9Q49Q7qhiDuGnlT/++MY
-         kAq2NygLtph1g4T7xWGBqnDh2IXimJXxLprlbJfWbOaaWsteACLHsvSK7laNtcQnzQaU
-         XRypdyvscBpVD+PFgM7k/4u8NdIaulOtG2cmh02jQKeCiu8sGE05hUqzIeIcyD7hR3Ac
-         anol4CZ9If/nzx8TEQo1Q0QyIckKqKfljHELiD9rfjBDolz4HkDDJfUjhvOi83+OaXIp
-         dlcKhwJb6Sdw0sG1/WZjfSJIq65ubhoR/TgsxNnxfXrdE7aSIeCqjt47CQ61CeLh2AXq
-         g0Gg==
-X-Gm-Message-State: AOAM531slF6VDj1x3D7IfUAbevHda2ttZa/KDMVuwe67uXtPrJXkf9uY
-        ZPvszqx3QMrelN3fr4GfIPg3OKm8x2v0QiF0I+1CjpN0ZM4QFLqrvyYIvZ7a1fNyKST5oco4/3f
-        y46WCwKDlbpe81Pt/inWHgPTU
-X-Received: by 2002:a05:6e02:1d0c:: with SMTP id i12mr19819226ila.209.1632171340237;
-        Mon, 20 Sep 2021 13:55:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDKfMpj8cq7GhlsXwG1CjbZWqXyz04Jbgy+lToeDrSaZKUoEBUGTMtxZB5pQaNXzRHe5ybDw==
-X-Received: by 2002:a05:6e02:1d0c:: with SMTP id i12mr19819214ila.209.1632171340044;
-        Mon, 20 Sep 2021 13:55:40 -0700 (PDT)
+        bh=S4VKFLtrv5F+Sqia58aIUV8mMMq0gd6yS5dG8Lafx1o=;
+        b=Wa8PU5jOFlwbVv60VU+AP7OUIX4CAgmlwq3yxNC+f03UvrfiMSSA0N2gGiBJQfu/cV
+         rEpd4Zm9lvNN8YR9U0seO8nS4NTZfpn/QnPXZxS/o2My6Ng6xaj+xh/vjJhrNZkfAYzZ
+         VDwgQpdXfs7A5RArsTpeW615LaqxoLRg1mv1Fr+M4CfqGU7XHOlVnKmmnVlF2JZco/zQ
+         Es9XFCYeQY4dJjZV5Ip1oqNEFZSAO/ydx8njZGQFT/6NYKiuxNO6IjUoAPEQ367ORAfU
+         T4fFxvn3/XDatf1oiDObN271R1MKvQEjZ52um+d5TMN1pGKc3mfcZq/UeuxT4PIdv7DI
+         RVPQ==
+X-Gm-Message-State: AOAM530paHBiUWM2I7t6+kr3XBiYpHuHnGKQPZtXsIHt3hIhk5iK1ZbY
+        tQiBoz1VSmrv2R1nqIqjs81eYI58NM4nKIrQOZrEOuv+vqNBUxXqzN1xlgU8tw2o32qSCNyIwtc
+        OxwiHaOYkx0HgoAPvuL0M0sDK
+X-Received: by 2002:a6b:cd01:: with SMTP id d1mr17336334iog.88.1632171346330;
+        Mon, 20 Sep 2021 13:55:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwe95i2375dC+5VC3FwfOiZ49FuXMNgnAsnCt+5yXxUVqT8mSI59DRcKPEVF0316d9KBE3J2w==
+X-Received: by 2002:a6b:cd01:: with SMTP id d1mr17336329iog.88.1632171346122;
+        Mon, 20 Sep 2021 13:55:46 -0700 (PDT)
 Received: from halaneylaptop.redhat.com (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id v9sm9268905ilc.16.2021.09.20.13.55.39
+        by smtp.gmail.com with ESMTPSA id v9sm9268905ilc.16.2021.09.20.13.55.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 13:55:39 -0700 (PDT)
+        Mon, 20 Sep 2021 13:55:45 -0700 (PDT)
 From:   Andrew Halaney <ahalaney@redhat.com>
 To:     Jason Baron <jbaron@akamai.com>, Jonathan Corbet <corbet@lwn.net>,
         Jim Cromie <jim.cromie@gmail.com>
 Cc:     Andrew Halaney <ahalaney@redhat.com>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/3] dyndbg: Remove support for ddebug_query param
-Date:   Mon, 20 Sep 2021 15:54:43 -0500
-Message-Id: <20210920205444.20068-3-ahalaney@redhat.com>
+Subject: [PATCH v3 3/3] Documentation: dyndbg: Improve cli param examples
+Date:   Mon, 20 Sep 2021 15:54:44 -0500
+Message-Id: <20210920205444.20068-4-ahalaney@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210920205444.20068-1-ahalaney@redhat.com>
 References: <20210920205444.20068-1-ahalaney@redhat.com>
@@ -68,99 +68,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This param has been deprecated for a very long time now, let's rip it
-out.
+Jim pointed out that using $module.dyndbg= is always a more flexible
+choice for using dynamic debug on the command line. The $module.dyndbg
+style is checked at boot and handles if $module is a builtin. If it is
+actually a loadable module, it is handled again later when the module is
+loaded.
+
+If you just use dyndbg="module $module +p" dynamic debug is only enabled
+when $module is a builtin.
+
+It was recommended to illustrate wildcard usage as well.
 
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+Suggested-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- .../admin-guide/dynamic-debug-howto.rst       |  6 ++---
- .../admin-guide/kernel-parameters.txt         |  5 ----
- lib/dynamic_debug.c                           | 25 -------------------
- 3 files changed, 2 insertions(+), 34 deletions(-)
+ Documentation/admin-guide/dynamic-debug-howto.rst | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index b119b8277b3e..d0911e7cc271 100644
+index d0911e7cc271..ae264aab42b6 100644
 --- a/Documentation/admin-guide/dynamic-debug-howto.rst
 +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -249,8 +249,7 @@ Debug messages during Boot Process
- 
- To activate debug messages for core code and built-in modules during
- the boot process, even before userspace and debugfs exists, use
--``dyndbg="QUERY"``, ``module.dyndbg="QUERY"``, or ``ddebug_query="QUERY"``
--(``ddebug_query`` is obsoleted by ``dyndbg``, and deprecated).  QUERY follows
-+``dyndbg="QUERY"`` or ``module.dyndbg="QUERY"``.  QUERY follows
- the syntax described above, but must not exceed 1023 characters.  Your
- bootloader may impose lower limits.
- 
-@@ -270,8 +269,7 @@ this boot parameter for debugging purposes.
- 
- If ``foo`` module is not built-in, ``foo.dyndbg`` will still be processed at
- boot time, without effect, but will be reprocessed when module is
--loaded later. ``ddebug_query=`` and bare ``dyndbg=`` are only processed at
--boot.
-+loaded later. Bare ``dyndbg=`` is only processed at boot.
- 
- 
- Debug Messages at Module Initialization Time
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 91ba391f9b32..9c0c57d1ca78 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -841,11 +841,6 @@
- 			Format: <port#>,<type>
- 			See also Documentation/input/devices/joystick-parport.rst
- 
--	ddebug_query=	[KNL,DYNAMIC_DEBUG] Enable debug messages at early boot
--			time. See
--			Documentation/admin-guide/dynamic-debug-howto.rst for
--			details.  Deprecated, see dyndbg.
--
- 	debug		[KNL] Enable kernel debugging (events log level).
- 
- 	debug_boot_weak_hash
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 84c16309cc63..130ce0eb550d 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -746,21 +746,6 @@ EXPORT_SYMBOL(__dynamic_ibdev_dbg);
- 
- #endif
- 
--#define DDEBUG_STRING_SIZE 1024
--static __initdata char ddebug_setup_string[DDEBUG_STRING_SIZE];
--
--static __init int ddebug_setup_query(char *str)
--{
--	if (strlen(str) >= DDEBUG_STRING_SIZE) {
--		pr_warn("ddebug boot param string too large\n");
--		return 0;
--	}
--	strlcpy(ddebug_setup_string, str, DDEBUG_STRING_SIZE);
--	return 1;
--}
--
--__setup("ddebug_query=", ddebug_setup_query);
--
- /*
-  * Install a noop handler to make dyndbg look like a normal kernel cli param.
-  * This avoids warnings about dyndbg being an unknown cli param when supplied
-@@ -1133,16 +1118,6 @@ static int __init dynamic_debug_init(void)
- 		 entries, modct, (int)((modct * sizeof(struct ddebug_table)) >> 10),
- 		 (int)((entries * sizeof(struct _ddebug)) >> 10));
- 
--	/* apply ddebug_query boot param, dont unload tables on err */
--	if (ddebug_setup_string[0] != '\0') {
--		pr_warn("ddebug_query param name is deprecated, change it to dyndbg\n");
--		ret = ddebug_exec_queries(ddebug_setup_string, NULL);
--		if (ret < 0)
--			pr_warn("Invalid ddebug boot param %s\n",
--				ddebug_setup_string);
--		else
--			pr_info("%d changes by ddebug_query\n", ret);
--	}
- 	/* now that ddebug tables are loaded, process all boot args
- 	 * again to find and activate queries given in dyndbg params.
- 	 * While this has already been done for known boot params, it
+@@ -357,7 +357,10 @@ Examples
+   Kernel command line: ...
+     // see whats going on in dyndbg=value processing
+     dynamic_debug.verbose=1
+-    // enable pr_debugs in 2 builtins, #cmt is stripped
+-    dyndbg="module params +p #cmt ; module sys +p"
++    // enable pr_debugs in the btrfs module (can be builtin or loadable)
++    btrfs.dyndbg="+p"
++    // enable pr_debugs in all files under init/
++    // and the function parse_one, #cmt is stripped
++    dyndbg="file init/* +p #cmt ; func parse_one +p"
+     // enable pr_debugs in 2 functions in a module loaded later
+     pc87360.dyndbg="func pc87360_init_device +p; func pc87360_find +p"
 -- 
 2.31.1
 
