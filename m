@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C2D41235A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F73412450
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348473AbhITSXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:23:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
+        id S1380341AbhITSdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:33:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376453AbhITSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:16:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A00560F23;
-        Mon, 20 Sep 2021 17:22:06 +0000 (UTC)
+        id S1378885AbhITS04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:26:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A11C632EE;
+        Mon, 20 Sep 2021 17:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158527;
-        bh=dvEQaBtT3CrUmziPooU70WI/b4R7p17DHjSF1gv8UtM=;
+        s=korg; t=1632158764;
+        bh=yg4Ps3VUDzAa+n+FwBjZD7iXQmBjHkZuZ9/f/VvJoz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SEKGi+T45/Wf/n/DjgYmiM9LuSy/zylW3n/V+D4Bxu5pjV4MPOtRDcU7+tZTapAOk
-         TDoQi9yOQP0qo83LGQDB1orbvHn5e9n/wjjx3Xno2xS06QIeoPNa6y9JmpEpqhdEjA
-         K9lTAXXnOWftD1Wf8BBHB5guFvINNgkl0A2hMjJ8=
+        b=TMHbVti3iM9jTvM4Gr/LDV2Kd5kb33KjGFCgPkXd7iETlmj0H6kmHtT31lgUgr3Ib
+         FLVmVReOWk91C+uDfAefTrS+BdqAipZD3LIawzgxsS49ce3QGAv5LmkltzsaDH5+ry
+         g6jAiq7++cg0Ltq5A0lmmEVcIGbc33ymGgZ4RAGs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ernst=20Sj=C3=B6strand?= <ernstp@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 198/260] drm/amd/amdgpu: Increase HWIP_MAX_INSTANCE to 10
-Date:   Mon, 20 Sep 2021 18:43:36 +0200
-Message-Id: <20210920163937.838885574@linuxfoundation.org>
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 045/122] udp_tunnel: Fix udp_tunnel_nic work-queue type
+Date:   Mon, 20 Sep 2021 18:43:37 +0200
+Message-Id: <20210920163917.269126860@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ernst Sjöstrand <ernstp@gmail.com>
+From: Aya Levin <ayal@nvidia.com>
 
-commit 67a44e659888569a133a8f858c8230e9d7aad1d5 upstream.
+commit e50e711351bdc656a8e6ca1022b4293cae8dcd59 upstream.
 
-Seems like newer cards can have even more instances now.
-Found by UBSAN: array-index-out-of-bounds in
-drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:318:29
-index 8 is out of range for type 'uint32_t *[8]'
+Turn udp_tunnel_nic work-queue to an ordered work-queue. This queue
+holds the UDP-tunnel configuration commands of the different netdevs.
+When the netdevs are functions of the same NIC the order of
+execution may be crucial.
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1697
-Cc: stable@vger.kernel.org
-Signed-off-by: Ernst Sjöstrand <ernstp@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Problem example:
+NIC with 2 PFs, both PFs declare offload quota of up to 3 UDP-ports.
+ $ifconfig eth2 1.1.1.1/16 up
+
+ $ip link add eth2_19503 type vxlan id 5049 remote 1.1.1.2 dev eth2 dstport 19053
+ $ip link set dev eth2_19503 up
+
+ $ip link add eth2_19504 type vxlan id 5049 remote 1.1.1.3 dev eth2 dstport 19054
+ $ip link set dev eth2_19504 up
+
+ $ip link add eth2_19505 type vxlan id 5049 remote 1.1.1.4 dev eth2 dstport 19055
+ $ip link set dev eth2_19505 up
+
+ $ip link add eth2_19506 type vxlan id 5049 remote 1.1.1.5 dev eth2 dstport 19056
+ $ip link set dev eth2_19506 up
+
+NIC RX port offload infrastructure offloads the first 3 UDP-ports (on
+all devices which sets NETIF_F_RX_UDP_TUNNEL_PORT feature) and not
+UDP-port 19056. So both PFs gets this offload configuration.
+
+ $ip link set dev eth2_19504 down
+
+This triggers udp-tunnel-core to remove the UDP-port 19504 from
+offload-ports-list and offload UDP-port 19056 instead.
+
+In this scenario it is important that the UDP-port of 19504 will be
+removed from both PFs before trying to add UDP-port 19056. The NIC can
+stop offloading a UDP-port only when all references are removed.
+Otherwise the NIC may report exceeding of the offload quota.
+
+Fixes: cc4e3835eff4 ("udp_tunnel: add central NIC RX port offload infrastructure")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu.h |    2 +-
+ net/ipv4/udp_tunnel_nic.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -762,7 +762,7 @@ enum amd_hw_ip_block_type {
- 	MAX_HWIP
- };
+--- a/net/ipv4/udp_tunnel_nic.c
++++ b/net/ipv4/udp_tunnel_nic.c
+@@ -935,7 +935,7 @@ static int __init udp_tunnel_nic_init_mo
+ {
+ 	int err;
  
--#define HWIP_MAX_INSTANCE	8
-+#define HWIP_MAX_INSTANCE	10
+-	udp_tunnel_nic_workqueue = alloc_workqueue("udp_tunnel_nic", 0, 0);
++	udp_tunnel_nic_workqueue = alloc_ordered_workqueue("udp_tunnel_nic", 0);
+ 	if (!udp_tunnel_nic_workqueue)
+ 		return -ENOMEM;
  
- struct amd_powerplay {
- 	void *pp_handle;
 
 
