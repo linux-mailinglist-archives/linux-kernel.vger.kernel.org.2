@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185254118DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8336D4118E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238798AbhITQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:09:15 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:58006 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236641AbhITQJN (ORCPT
+        id S238858AbhITQLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234422AbhITQLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:09:13 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 0C0B2808E5;
-        Mon, 20 Sep 2021 19:07:45 +0300 (MSK)
+        Mon, 20 Sep 2021 12:11:19 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63835C061574;
+        Mon, 20 Sep 2021 09:09:52 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id h9so19261886ile.6;
+        Mon, 20 Sep 2021 09:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632154065;
-        bh=LCc4A1W9PLfKmwUmn9LJPwFX/fEx6flwgoYMDiWnoYQ=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=N496+tCQWBQnqCJOEHbxFYuiyFvZ2NIWQ+LD45VyqDQdzUnyLDhCNpB01au0JINYm
-         +zLcbxvtWi50W+Cttcf+NpDQ1vttaLrwpGtnCxSLZkXSOrDMXsuIQSE9y3IMb1/sYh
-         lchnebHvmXtUcfylc1tMuy4fxgrzdkGp/iC91hXo=
-Received: from [192.168.211.150] (192.168.211.150) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 20 Sep 2021 19:07:44 +0300
-Message-ID: <61328d8b-2298-f206-aa43-323587a8b082@paragon-software.com>
-Date:   Mon, 20 Sep 2021 19:07:44 +0300
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S+yIrQ/P9U9GqL93qgveOM47ac0T/0riSAL7QQlHIRY=;
+        b=Uv67J2tGqG9qgB2Wbhy4O6dwph6sqdwFFhctbkUJEq/U/88+oYDUbnn+YfMLE9AcLy
+         uThZz4t/OnaTtpFnucmu7ntjeDuNq1HhXZ7UwO5y1VQA3kCwbFXBE0loYGI66Z2n6hPU
+         KKSZmOYPlIthkfNdyDWNBQ1pRgoqIv8EgBFqPhwvTZMjUBzpgc+d2xXNgycdSrg3yP6R
+         rmI7VEuCMVwZcI3cs8otsVZcdwHwe2OJjwojWznHp4ircYSKPhezPdfmdyrIL8FahruG
+         LklISVU3nbBlAeYAKwBNfbi8xO+ZKGDvbWffmpmmIL3Rp9pWpy5qeGbp1+5Y+qbdYhVT
+         VSyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S+yIrQ/P9U9GqL93qgveOM47ac0T/0riSAL7QQlHIRY=;
+        b=EoZSUeXtQ4GUG/XNrLevOBZ3E/Cnw0zxhZMTgLP7JFrfKjMywrL0YaF/yLmC+H7JxA
+         5zP/lRNmD5wHxwbAfK3t6uHXkUPD/X8je+SP9OQHfqIdW0XW/yIZAFBUtw4lH/xCFw76
+         bAwhocG834PPg5anSu9LtGEZDm9cGSDiegXaHjlQVaXsziIHhzkbzGxL8zdT4H3xZT+S
+         qI5TtQ/MOkOsH2cuCMc1iUYcjbD6RPJqFjUvs3tfdMXTge7JNz18lj/EutRbI4YXRBn6
+         wBqjwLdcEm3O5K0JEs/z5Ij+iytPGXkE4wtdFFAMYpxZj3/FE1oitnGHkRAcnfFYIWEg
+         05ew==
+X-Gm-Message-State: AOAM531+6j5tZ9TzRp8TCNsLp0IJafqTPNMTm7Cwlvw9Q5op4A0ufOnj
+        CT3rt/ZwW49lJyu0iKXRa27m++0pF5scqPqX84t1tfT8tAQ=
+X-Google-Smtp-Source: ABdhPJxp8Cy0ttSj3gFCW8toj7uyh7aFqXZHRsHKAt9fOh/H5KP5zegtHAqyJO0si1RoyqW4oH4yWDrdUPdB+uiQxPM=
+X-Received: by 2002:a92:c98b:: with SMTP id y11mr17731458iln.205.1632154191766;
+ Mon, 20 Sep 2021 09:09:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH 00/11] fs/ntfs3: Refactor fill_super
-Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <20210909180942.8634-1-kari.argillander@gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210909180942.8634-1-kari.argillander@gmail.com>
+References: <CACkBjsZB8iYMX9Gp7yorf09PFnTUFw267ULsbRMy_NZcJckYKw@mail.gmail.com>
+In-Reply-To: <CACkBjsZB8iYMX9Gp7yorf09PFnTUFw267ULsbRMy_NZcJckYKw@mail.gmail.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 21 Sep 2021 00:09:40 +0800
+Message-ID: <CAJhGHyCCeyJbWxPX98QmS8zP9Hh3nAw0rqN=mb2YMNr2r34f0w@mail.gmail.com>
+Subject: Re: WARNING in __queue_work
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.150]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 20, 2021 at 9:13 PM Hao Sun <sunhao.th@gmail.com> wrote:
+>
+> Hello,
+>
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+>
+> HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/10dFvcbiBLWmCS05daXKnBH-ZEa8M7aI9/view?usp=sharing
+> kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
+>
+> Sorry, I don't have a reproducer for this crash, hope the symbolized
+> report can help.
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+> Bluetooth: hci1: command 0x040f tx timeout
+> ------------[ cut here ]------------
+> WARNING: CPU: 2 PID: 10555 at kernel/workqueue.c:1440
+> __queue_work+0x437/0x8d0 kernel/workqueue.c:1440
+> Modules linked in:
+> CPU: 2 PID: 10555 Comm: kworker/2:7 Not tainted 5.15.0-rc1+ #19
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Workqueue: events hci_cmd_timeout
 
+Add CC to Bluetooth people to deal with it together since the code
+is also just changed.
 
-On 09.09.2021 21:09, Kari Argillander wrote:
-> Two first ones are only ones that fix something. Everything else
-> just take off dead code or make it little bit cleaner. They should
-> be pretty trivial.
-> 
-> As promise to Christian, 10/11 makes one section cleaner as he
-> wanted [1].
-> 
-> [1]: lore.kernel.org/ntfs3/20210824113217.ncuwc3zs452mdgec@wittgenstein
-> 
-> Kari Argillander (11):
->   fs/ntfs3: Fix wrong error message $Logfile -> $UpCase
->   fs/ntfs3: Change EINVAL to ENOMEM when d_make_root fails
->   fs/ntfs3: Remove impossible fault condition in fill_super
->   fs/ntfs3: Return straight without goto in fill_super
->   fs/ntfs3: Remove unnecessary variable loading in fill_super
->   fs/ntfs3: Use sb instead of sbi->sb in fill_super
->   fs/ntfs3: Remove tmp var is_ro in ntfs_fill_super
->   fs/ntfs3: Remove tmp pointer bd_inode in fill_super
->   fs/ntfs3: Remove tmp pointer upcase in fill_super
->   fs/ntfs3: Initialize pointer before use place in fill_super
->   fs/ntfs3: Initiliaze sb blocksize only in one place + refactor
-> 
->  fs/ntfs3/super.c | 121 +++++++++++++----------------------------------
->  1 file changed, 33 insertions(+), 88 deletions(-)
-> 
-> 
-> base-commit: 15b2ae776044ac52cddda8a3e6c9fecd15226b8c
-> 
-
-Thanks for work - applied!
+It seems cmd_timer or cmd_timer.work is still active or pending for
+unknown reasons when hdev->workqueue is being drained.
