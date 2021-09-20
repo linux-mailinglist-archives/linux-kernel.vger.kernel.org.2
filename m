@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0264111FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334E4411200
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhITJl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235382AbhITJlQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:41:16 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39085C061764;
-        Mon, 20 Sep 2021 02:39:09 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a2a0063d0dab944a9c04a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2a00:63d0:dab9:44a9:c04a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BD9AA1EC0287;
-        Mon, 20 Sep 2021 11:39:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632130743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=qjO2xRf02NNWauQIz6XEzlkghXmGsDJ5dp1Bk7wS1xc=;
-        b=TkrLW8/x/yu6eCxsiTAVVip/KZk5JBnVao0yQOJmjm/tpPc4pMHhrmXWkZ50HJBtJMUmqs
-        5YzRtENb8jGwVbXm4MFf3mS94X5kD3fK2dX1DzrNtnS45aeNWWD12fxXLVrbfEHVrUTFnF
-        Y1EdIDLMPtSW5efQ/e64pOZMJFbUi1M=
-Date:   Mon, 20 Sep 2021 11:38:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Mike Galbraith <efault@gmx.de>, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org, marmarek@invisiblethingslab.com,
-        Juergen Gross <jgross@suse.com>, stable@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
-Message-ID: <YUhWsOM1y3EEQWWH@zn.tnic>
-References: <20210914094108.22482-1-jgross@suse.com>
- <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
- <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
- <YUdtm8hVH0ps18BK@linux.ibm.com>
- <fc21617d65338078366e70704eb55789a810e45e.camel@gmx.de>
- <YUhTwPhva5olB87d@linux.ibm.com>
+        id S236238AbhITJmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:42:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234983AbhITJme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:42:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BEA60F58;
+        Mon, 20 Sep 2021 09:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632130809;
+        bh=8tiTnLVffN6ZWxDDdUg5QGF6UzX0ktUwJLwWv0V7DrY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MCXx/mm/qbozdDv7d85aMaP6gsUPDqVzN5tbx4oHi2956ZScaqYlUMAFPyYPiAce2
+         Xu1YYqnjDw2qiybyIDboUJWc/SYtR8Y6lDavlpl2rhEKT7I2zWGES7lOOPJnUUoDFK
+         T6K+bP6vbbZgJctZLxJHCLGnm5Sf9T9aqaTdkpy+Fi6joTp7GBkfRQYk78BApwO6rY
+         OqRkjD5sAGp6eVrKndV2LPeY8AAxpSTI9+OzkuTrw6pn4cRXwDFJLDS/qo+0tWY1HU
+         BitbtZ3PjjyPfbMPhQY8wHicmf1VmEtzD7RpDN2AyOPqkz0JuhbTql0Zu0Vlm5nX14
+         CRsCjBgQvDgaQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mSFmR-0000oA-TZ; Mon, 20 Sep 2021 11:40:08 +0200
+Date:   Mon, 20 Sep 2021 11:40:07 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 17/30] ABI: sysfs-class-gnss: use wildcards on What
+ definitions
+Message-ID: <YUhW9wbwnAXIj+oN@hovoldconsulting.com>
+References: <cover.1631782432.git.mchehab+huawei@kernel.org>
+ <80b7f60a6bac7bb1938d60dca509d75dff3c2c62.1631782432.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUhTwPhva5olB87d@linux.ibm.com>
+In-Reply-To: <80b7f60a6bac7bb1938d60dca509d75dff3c2c62.1631782432.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 12:26:24PM +0300, Mike Rapoport wrote:
-> Can't say anything caught my eye, except the early microcode update.
-> Just to rule that out, can you try booting without the early microcode
-> update?
+On Thu, Sep 16, 2021 at 10:59:44AM +0200, Mauro Carvalho Chehab wrote:
+> An "N" upper letter is not a wildcard, nor can easily be identified
+> by script, specially since the USB sysfs define things like.
+> bNumInterfaces. Use, instead, <N>, in order to let script/get_abi.pl
+> to convert it into a Regex.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-That should be unrelated but sure, worth a try, you can boot with
-"dis_ucode_ldr" on the cmdline.
+Acked-by: Johan Hovold <johan@kernel.org>
 
--- 
-Regards/Gruss,
-    Boris.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  Documentation/ABI/testing/sysfs-class-gnss | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-gnss b/Documentation/ABI/testing/sysfs-class-gnss
+> index c8553d972edd..9650f3a7fc03 100644
+> --- a/Documentation/ABI/testing/sysfs-class-gnss
+> +++ b/Documentation/ABI/testing/sysfs-class-gnss
+> @@ -1,4 +1,4 @@
+> -What:		/sys/class/gnss/gnssN/type
+> +What:		/sys/class/gnss/gnss<N>/type
+>  Date:		May 2018
+>  KernelVersion:	4.18
+>  Contact:	Johan Hovold <johan@kernel.org>
