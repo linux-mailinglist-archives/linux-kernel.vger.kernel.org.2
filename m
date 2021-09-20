@@ -2,125 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD034110F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0004110FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhITIcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235812AbhITIbu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:31:50 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD90C061574;
-        Mon, 20 Sep 2021 01:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632126620;
-        bh=5eQURRoDRABro2TOkaUezat98SAJTdaIwcERp9k+uwE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q0ZuLVGSnIawm9F6X92cEDyIBtNadvpIBisflTkwrh8wXWrlbsxpXJr2uyqYhegIx
-         hwAMrTUo+oM8H1sl4IxS9f7Xx30MnsAXkJAcYc5gKUK22dTJ44sH2edLiKIvAUrlZw
-         TC20fclkI45wCCSoeANo9P6ZFxM2AFBRkG5DyDDwPcM69qkTUbshRuTgI9QEcIoV1w
-         CjLfe6H5XfBPPaXlV8gtzfoFZkYWhNgvzsW2SxAqO2tw8q8yawBr042akm23cQPaqc
-         Bp2yn9Z9BcYQXbevQfs1qt4P18BQpPuad6QRPX+73Wwp1DOKcJI70A9wbjvo8SE5qs
-         /ycxd+yuyxbxQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCd6K5WCxz9sPT;
-        Mon, 20 Sep 2021 18:30:17 +1000 (AEST)
-Date:   Mon, 20 Sep 2021 18:30:16 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tip tree
-Message-ID: <20210920183016.3a4778b5@canb.auug.org.au>
-In-Reply-To: <CALOAHbDYExn1uRaHX1jNZrST80if7QjA-MuL0at1C7fHzQgV8g@mail.gmail.com>
-References: <20210920113330.29f12b99@canb.auug.org.au>
-        <CALOAHbDYExn1uRaHX1jNZrST80if7QjA-MuL0at1C7fHzQgV8g@mail.gmail.com>
+        id S235854AbhITIdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:33:01 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:58795 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233968AbhITIdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 04:33:00 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HCd7m17fJz9sVK;
+        Mon, 20 Sep 2021 10:31:32 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fYMMj16bYXCA; Mon, 20 Sep 2021 10:31:32 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HCd7m04Dqz9sVH;
+        Mon, 20 Sep 2021 10:31:32 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DD8168B774;
+        Mon, 20 Sep 2021 10:31:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id tx5ESXAfHsUr; Mon, 20 Sep 2021 10:31:31 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id ADD358B770;
+        Mon, 20 Sep 2021 10:31:31 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18K8VMmB989756
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 10:31:22 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18K8VMT1989755;
+        Mon, 20 Sep 2021 10:31:22 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v4 1/3] powerpc/bitops: Use immediate operand when possible
+Date:   Mon, 20 Sep 2021 10:31:17 +0200
+Message-Id: <db9d01d5c543c5add4b2beadb03d39e99c7ada2c.1632126669.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0cMlg/2xDouH=vlIzL4F=zS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0cMlg/2xDouH=vlIzL4F=zS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Today we get the following code generation for bitops like
+set or clear bit:
 
-Hi Yafang,
+	c0009fe0:	39 40 08 00 	li      r10,2048
+	c0009fe4:	7c e0 40 28 	lwarx   r7,0,r8
+	c0009fe8:	7c e7 53 78 	or      r7,r7,r10
+	c0009fec:	7c e0 41 2d 	stwcx.  r7,0,r8
 
-On Mon, 20 Sep 2021 14:55:29 +0800 Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> On Mon, Sep 20, 2021 at 9:33 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
-> >
-> > Hi all,
-> >
-> > After merging the tip tree, today's linux-next build (powerpc_ppc64
-> > defconfig) produced this warning:
-> >
-> > kernel/sched/debug.c: In function 'print_cfs_group_stats':
-> > kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused=
--variable]
-> >   460 |                struct sched_statistics *stats =3D  __schedstats=
-_from_se(se);
-> >       |                                         ^~~~~
-> >
-> > Caused by commit
-> >
-> >   cb3e971c435d ("sched: Make struct sched_statistics independent of fai=
-r sched class")
-> >
-> > # CONFIG_SCHEDSTATS is not set
-> > =20
->=20
-> Thanks for the report.
->=20
-> We have discussed this issue before[1].
-> This warning happens when CONFIG_SCHEDSTATS is not set and
-> schedstat_enabled() is 0, so the whole scope should be not compiled.
-> It seems that we don't need to fix this warning.
->=20
-> [1]. https://lore.kernel.org/lkml/20210911082505.115758-1-laoar.shao@gmai=
-l.com/
+	c000d568:	39 00 18 00 	li      r8,6144
+	c000d56c:	7c c0 38 28 	lwarx   r6,0,r7
+	c000d570:	7c c6 40 78 	andc    r6,r6,r8
+	c000d574:	7c c0 39 2d 	stwcx.  r6,0,r7
 
-Clearly it will be compiled if CONFIG_SCHEDSTATS is not set as that is
-exactly what this build has ... even sections of code guarded by "if
-(0)" are compiled, they may just not produce any output in the binary.
+Most set bits are constant on lower 16 bits, so it can easily
+be replaced by the "immediate" version of the operation. Allow
+GCC to choose between the normal or immediate form.
 
-Also, I do not have W=3D1 for this build.
+For clear bits, on 32 bits 'rlwinm' can be used instead of 'andc' for
+when all bits to be cleared are consecutive.
 
-If you turned schedstat_val() into a static inline function, then this
-warning would go away.  That also means that argument types and return
-values will be better checked.
+On 64 bits we don't have any equivalent single operation for clearing,
+single bits or a few bits, we'd need two 'rldicl' so it is not
+worth it, the li/andc sequence is doing the same.
 
-So, please fix this.
---=20
-Cheers,
-Stephen Rothwell
+With this patch we get:
 
---Sig_/0cMlg/2xDouH=vlIzL4F=zS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+	c0009fe0:	7d 00 50 28 	lwarx   r8,0,r10
+	c0009fe4:	61 08 08 00 	ori     r8,r8,2048
+	c0009fe8:	7d 00 51 2d 	stwcx.  r8,0,r10
 
------BEGIN PGP SIGNATURE-----
+	c000d558:	7c e0 40 28 	lwarx   r7,0,r8
+	c000d55c:	54 e7 05 64 	rlwinm  r7,r7,0,21,18
+	c000d560:	7c e0 41 2d 	stwcx.  r7,0,r8
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFIRpkACgkQAVBC80lX
-0GydMwf+JEFic2nt1mzqF0mBC64IlIHRKT1Eth0OJ4FT/Uv6VCVPhv4BRcEwwH/O
-BE8DJkFyhvAQUzQx5EkKcFTeili9w4oHu5og14Oae3Lp3xltGTkldOkbMohiy/UN
-GB3JwM1+FHu3/fL1BcSfuBejKmGoSfyY5Py4jz+S3lH1zw4eJ6VaVOojC8FeIvV/
-HX7md9PzRbDj9Ic5jXScJK/cRh/uwEWxINzXZaTX/z3qRBwxXu8dXlGkh+TLAnqk
-oKQ56T8qitDk4F0wwDMEFay6qNSQL91KUM5fTO2MC+TISL8mBYK1Q6zybKnAlh/t
-8iZHbQkEeKINOSV7Z/jB5NxP0luPHw==
-=x15c
------END PGP SIGNATURE-----
+On pmac32_defconfig, it reduces the text by approx 10 kbytes.
 
---Sig_/0cMlg/2xDouH=vlIzL4F=zS--
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v4: Rebased
+
+v3:
+- Using the mask validation proposed by Segher
+
+v2:
+- Use "n" instead of "i" as constraint for the rlwinm mask
+- Improve mask verification to handle more than single bit masks
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/bitops.h | 89 ++++++++++++++++++++++++++++---
+ 1 file changed, 81 insertions(+), 8 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/bitops.h b/arch/powerpc/include/asm/bitops.h
+index 11847b6a244e..bbc5def2b85e 100644
+--- a/arch/powerpc/include/asm/bitops.h
++++ b/arch/powerpc/include/asm/bitops.h
+@@ -71,19 +71,61 @@ static inline void fn(unsigned long mask,	\
+ 	__asm__ __volatile__ (			\
+ 	prefix					\
+ "1:"	PPC_LLARX "%0,0,%3,0\n"			\
+-	stringify_in_c(op) "%0,%0,%2\n"		\
++	#op "%I2 %0,%0,%2\n"			\
+ 	PPC_STLCX "%0,0,%3\n"			\
+ 	"bne- 1b\n"				\
+ 	: "=&r" (old), "+m" (*p)		\
+-	: "r" (mask), "r" (p)			\
++	: "rK" (mask), "r" (p)			\
+ 	: "cc", "memory");			\
+ }
+ 
+ DEFINE_BITOP(set_bits, or, "")
+-DEFINE_BITOP(clear_bits, andc, "")
+-DEFINE_BITOP(clear_bits_unlock, andc, PPC_RELEASE_BARRIER)
+ DEFINE_BITOP(change_bits, xor, "")
+ 
++static __always_inline bool is_rlwinm_mask_valid(unsigned long x)
++{
++	if (!x)
++		return false;
++	if (x & 1)
++		x = ~x;	// make the mask non-wrapping
++	x += x & -x;	// adding the low set bit results in at most one bit set
++
++	return !(x & (x - 1));
++}
++
++#define DEFINE_CLROP(fn, prefix)					\
++static inline void fn(unsigned long mask, volatile unsigned long *_p)	\
++{									\
++	unsigned long old;						\
++	unsigned long *p = (unsigned long *)_p;				\
++									\
++	if (IS_ENABLED(CONFIG_PPC32) &&					\
++	    __builtin_constant_p(mask) && is_rlwinm_mask_valid(~mask)) {\
++		asm volatile (						\
++			prefix						\
++		"1:"	"lwarx	%0,0,%3\n"				\
++			"rlwinm	%0,%0,0,%2\n"				\
++			"stwcx.	%0,0,%3\n"				\
++			"bne- 1b\n"					\
++			: "=&r" (old), "+m" (*p)			\
++			: "n" (~mask), "r" (p)				\
++			: "cc", "memory");				\
++	} else {							\
++		asm volatile (						\
++			prefix						\
++		"1:"	PPC_LLARX "%0,0,%3,0\n"				\
++			"andc %0,%0,%2\n"				\
++			PPC_STLCX "%0,0,%3\n"				\
++			"bne- 1b\n"					\
++			: "=&r" (old), "+m" (*p)			\
++			: "r" (mask), "r" (p)				\
++			: "cc", "memory");				\
++	}								\
++}
++
++DEFINE_CLROP(clear_bits, "")
++DEFINE_CLROP(clear_bits_unlock, PPC_RELEASE_BARRIER)
++
+ static inline void arch_set_bit(int nr, volatile unsigned long *addr)
+ {
+ 	set_bits(BIT_MASK(nr), addr + BIT_WORD(nr));
+@@ -116,12 +158,12 @@ static inline unsigned long fn(			\
+ 	__asm__ __volatile__ (				\
+ 	prefix						\
+ "1:"	PPC_LLARX "%0,0,%3,%4\n"			\
+-	stringify_in_c(op) "%1,%0,%2\n"			\
++	#op "%I2 %1,%0,%2\n"				\
+ 	PPC_STLCX "%1,0,%3\n"				\
+ 	"bne- 1b\n"					\
+ 	postfix						\
+ 	: "=&r" (old), "=&r" (t)			\
+-	: "r" (mask), "r" (p), "i" (IS_ENABLED(CONFIG_PPC64) ? eh : 0)	\
++	: "rK" (mask), "r" (p), "i" (IS_ENABLED(CONFIG_PPC64) ? eh : 0)	\
+ 	: "cc", "memory");				\
+ 	return (old & mask);				\
+ }
+@@ -130,11 +172,42 @@ DEFINE_TESTOP(test_and_set_bits, or, PPC_ATOMIC_ENTRY_BARRIER,
+ 	      PPC_ATOMIC_EXIT_BARRIER, 0)
+ DEFINE_TESTOP(test_and_set_bits_lock, or, "",
+ 	      PPC_ACQUIRE_BARRIER, 1)
+-DEFINE_TESTOP(test_and_clear_bits, andc, PPC_ATOMIC_ENTRY_BARRIER,
+-	      PPC_ATOMIC_EXIT_BARRIER, 0)
+ DEFINE_TESTOP(test_and_change_bits, xor, PPC_ATOMIC_ENTRY_BARRIER,
+ 	      PPC_ATOMIC_EXIT_BARRIER, 0)
+ 
++static inline unsigned long test_and_clear_bits(unsigned long mask, volatile unsigned long *_p)
++{
++	unsigned long old, t;
++	unsigned long *p = (unsigned long *)_p;
++
++	if (IS_ENABLED(CONFIG_PPC32) &&
++	    __builtin_constant_p(mask) && is_rlwinm_mask_valid(mask)) {
++		asm volatile (
++			PPC_ATOMIC_ENTRY_BARRIER
++		"1:"	"lwarx %0,0,%3\n"
++			"rlwinm	%1,%0,0,%2\n"
++			"stwcx. %1,0,%3\n"
++			"bne- 1b\n"
++			PPC_ATOMIC_EXIT_BARRIER
++			: "=&r" (old), "=&r" (t)
++			: "n" (~mask), "r" (p)
++			: "cc", "memory");
++	} else {
++		asm volatile (
++			PPC_ATOMIC_ENTRY_BARRIER
++		"1:"	PPC_LLARX "%0,0,%3,0\n"
++			"andc	%1,%0,%2\n"
++			PPC_STLCX "%1,0,%3\n"
++			"bne- 1b\n"
++			PPC_ATOMIC_EXIT_BARRIER
++			: "=&r" (old), "=&r" (t)
++			: "r" (mask), "r" (p)
++			: "cc", "memory");
++	}
++
++	return (old & mask);
++}
++
+ static inline int arch_test_and_set_bit(unsigned long nr,
+ 					volatile unsigned long *addr)
+ {
+-- 
+2.31.1
+
