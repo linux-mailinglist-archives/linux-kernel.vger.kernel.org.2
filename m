@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD7E411C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D9B412081
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346252AbhITRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:06:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
+        id S1347290AbhITRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:55:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345672AbhITREH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:04:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB2436147F;
-        Mon, 20 Sep 2021 16:54:18 +0000 (UTC)
+        id S1354422AbhITRtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:49:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 580CC61BD2;
+        Mon, 20 Sep 2021 17:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156859;
-        bh=UDiClydY6tObt0PZNd1SZt9G8hnhTbLPunilXpDsPXc=;
+        s=korg; t=1632157909;
+        bh=1a5y8LiFONH2ffe+Lg7p+xIrgh8MKkOsFNyV/nOJ6tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n0Xis6/5f+ULmlFxyi2gZ4w0glA9c6SeW0vLLsfx+SiwGKja1a6DjPdc7sLhx/cmV
-         G1LE8dMX2gQqYIquSts1Gcxeb8uZpfSPdzlz5gh9uZR/911mVACfUSL8ZkEc0O3PLv
-         7lhLN/sBB7vvbTMOkLYeJQ1HIbTOC92nBPgPuSNk=
+        b=HXsD8KTS2rNJf8e3/Bt2MPUg0KQmgI/GWXYjKsAbI1CZdBaPS/99uXkNMYwXvI3c0
+         /K/RxiUpDw84fDtCHgPPlIxN5ToWOKn6opliCRY50L0tPyY+9fErJfwMNJux1USF75
+         96GCL8BhTKY2ZKJDLcXCD3Tbhy0+ma+I0W2P2iBU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Umang Jain <umang.jain@ideasonboard.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 119/175] video: fbdev: asiliantfb: Error out if pixclock equals zero
+Subject: [PATCH 4.19 206/293] media: imx258: Rectify mismatch of VTS value
 Date:   Mon, 20 Sep 2021 18:42:48 +0200
-Message-Id: <20210920163921.970101592@linuxfoundation.org>
+Message-Id: <20210920163940.315279181@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit b36b242d4b8ea178f7fd038965e3cac7f30c3f09 ]
+[ Upstream commit 51f93add3669f1b1f540de1cf397815afbd4c756 ]
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of 'pixclock',
-it may cause divide error.
+The frame_length_lines (0x0340) registers are hard-coded as follows:
 
-Fix this by checking whether 'pixclock' is zero first.
+- 4208x3118
+  frame_length_lines = 0x0c50
 
-The following log reveals it:
+- 2104x1560
+  frame_length_lines = 0x0638
 
-[   43.861711] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-[   43.861737] CPU: 2 PID: 11764 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #224
-[   43.861756] RIP: 0010:asiliantfb_check_var+0x4e/0x730
-[   43.861843] Call Trace:
-[   43.861848]  ? asiliantfb_remove+0x190/0x190
-[   43.861858]  fb_set_var+0x2e4/0xeb0
-[   43.861866]  ? fb_blank+0x1a0/0x1a0
-[   43.861873]  ? lock_acquire+0x1ef/0x530
-[   43.861884]  ? lock_release+0x810/0x810
-[   43.861892]  ? lock_is_held_type+0x100/0x140
-[   43.861903]  ? ___might_sleep+0x1ee/0x2d0
-[   43.861914]  ? __mutex_lock+0x620/0x1190
-[   43.861921]  ? do_fb_ioctl+0x313/0x700
-[   43.861929]  ? mutex_lock_io_nested+0xfa0/0xfa0
-[   43.861936]  ? __this_cpu_preempt_check+0x1d/0x30
-[   43.861944]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-[   43.861952]  ? lockdep_hardirqs_on+0x59/0x100
-[   43.861959]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-[   43.861967]  ? trace_hardirqs_on+0x6a/0x1c0
-[   43.861978]  do_fb_ioctl+0x31e/0x700
+- 1048x780
+  frame_length_lines = 0x034c
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-2-git-send-email-zheyuma97@gmail.com
+The driver exposes the V4L2_CID_VBLANK control in read-only mode and
+sets its value to vts_def - height, where vts_def is a mode-dependent
+value coming from the supported_modes array. It is set using one of
+the following macros defined in the driver:
+
+  #define IMX258_VTS_30FPS                0x0c98
+  #define IMX258_VTS_30FPS_2K             0x0638
+  #define IMX258_VTS_30FPS_VGA            0x034c
+
+There's a clear mismatch in the value for the full resolution mode i.e.
+IMX258_VTS_30FPS. Fix it by rectifying the macro with the value set for
+the frame_length_lines register as stated above.
+
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/asiliantfb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/i2c/imx258.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/asiliantfb.c b/drivers/video/fbdev/asiliantfb.c
-index 91eea4583382..ceb579eff1ea 100644
---- a/drivers/video/fbdev/asiliantfb.c
-+++ b/drivers/video/fbdev/asiliantfb.c
-@@ -227,6 +227,9 @@ static int asiliantfb_check_var(struct fb_var_screeninfo *var,
- {
- 	unsigned long Ftarget, ratio, remainder;
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index 31a1e2294843..68ce63333744 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -22,7 +22,7 @@
+ #define IMX258_CHIP_ID			0x0258
  
-+	if (!var->pixclock)
-+		return -EINVAL;
-+
- 	ratio = 1000000 / var->pixclock;
- 	remainder = 1000000 % var->pixclock;
- 	Ftarget = 1000000 * ratio + (1000000 * remainder) / var->pixclock;
+ /* V_TIMING internal */
+-#define IMX258_VTS_30FPS		0x0c98
++#define IMX258_VTS_30FPS		0x0c50
+ #define IMX258_VTS_30FPS_2K		0x0638
+ #define IMX258_VTS_30FPS_VGA		0x034c
+ #define IMX258_VTS_MAX			0xffff
 -- 
 2.30.2
 
