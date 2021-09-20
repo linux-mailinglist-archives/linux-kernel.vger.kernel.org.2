@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E22D412546
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC187412343
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349764AbhITSmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
+        id S1378053AbhITSWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381956AbhITSjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0875663330;
-        Mon, 20 Sep 2021 17:30:43 +0000 (UTC)
+        id S1376679AbhITSOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:14:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C965761401;
+        Mon, 20 Sep 2021 17:21:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159044;
-        bh=0YO+yd29LWIkvNhKysFcgrpTQN9N3rzyRK6vgBxhNZo=;
+        s=korg; t=1632158471;
+        bh=fE1o4jHCk4lA44B02vJseXJKWuRTeDMS3VaFxh/kDUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H22sduIDMlj1jRTFEqJ9TYspSaWxpXylpoZ78Q9tAAk85Lhi0Xoy7zDsEEqUijCaK
-         xjO02RdLqaR6EXwmg2lZXcroJCbNxJTxorpFZ6XnHnKsmrVSmWKZhskTIwqEQVYDzh
-         TgyxRj5uUPvyyNMztNdv8Jpe5Nbe7t932q9REkzo=
+        b=zJuF+9OpongsywaW9F6g7YorwWOQFTd2RROBoBNUvM7K/UQ+FPqhVAP/ylAa63vJy
+         jf4jUJGQY2i6sSy3C+GS7YSqJxvSz52DUstGJBt0qHSiPjYiW9aKfBUzLAGMkuoXGr
+         /sCPasDFkjw0TYXoZWr9p+hjH9HXC2v8XpAR2sPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Petlan <mpetlan@redhat.com>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Jiri Olsa <jolsa@redhat.com>, Juri Lelli <jlelli@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.14 050/168] perf machine: Initialize srcline string member in add_location struct
-Date:   Mon, 20 Sep 2021 18:43:08 +0200
-Message-Id: <20210920163923.282678505@linuxfoundation.org>
+        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
+        Michael Wang <yun.wang@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 171/260] net: fix NULL pointer reference in cipso_v4_doi_free
+Date:   Mon, 20 Sep 2021 18:43:09 +0200
+Message-Id: <20210920163936.892692782@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,132 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Petlan <mpetlan@redhat.com>
+From: 王贇 <yun.wang@linux.alibaba.com>
 
-commit 57f0ff059e3daa4e70a811cb1d31a49968262d20 upstream.
+[ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
 
-It's later supposed to be either a correct address or NULL. Without the
-initialization, it may contain an undefined value which results in the
-following segmentation fault:
+In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
+failed, we sometime observe panic:
 
-  # perf top --sort comm -g --ignore-callees=do_idle
+  BUG: kernel NULL pointer dereference, address:
+  ...
+  RIP: 0010:cipso_v4_doi_free+0x3a/0x80
+  ...
+  Call Trace:
+   netlbl_cipsov4_add_std+0xf4/0x8c0
+   netlbl_cipsov4_add+0x13f/0x1b0
+   genl_family_rcv_msg_doit.isra.15+0x132/0x170
+   genl_rcv_msg+0x125/0x240
 
-terminates with:
+This is because in cipso_v4_doi_free() there is no check
+on 'doi_def->map.std' when 'doi_def->type' equal 1, which
+is possibe, since netlbl_cipsov4_add_std() haven't initialize
+it before alloc 'doi_def->map.std'.
 
-  #0  0x00007ffff56b7685 in __strlen_avx2 () from /lib64/libc.so.6
-  #1  0x00007ffff55e3802 in strdup () from /lib64/libc.so.6
-  #2  0x00005555558cb139 in hist_entry__init (callchain_size=<optimized out>, sample_self=true, template=0x7fffde7fb110, he=0x7fffd801c250) at util/hist.c:489
-  #3  hist_entry__new (template=template@entry=0x7fffde7fb110, sample_self=sample_self@entry=true) at util/hist.c:564
-  #4  0x00005555558cb4ba in hists__findnew_entry (hists=hists@entry=0x5555561d9e38, entry=entry@entry=0x7fffde7fb110, al=al@entry=0x7fffde7fb420,
-      sample_self=sample_self@entry=true) at util/hist.c:657
-  #5  0x00005555558cba1b in __hists__add_entry (hists=hists@entry=0x5555561d9e38, al=0x7fffde7fb420, sym_parent=<optimized out>, bi=bi@entry=0x0, mi=mi@entry=0x0,
-      sample=sample@entry=0x7fffde7fb4b0, sample_self=true, ops=0x0, block_info=0x0) at util/hist.c:288
-  #6  0x00005555558cbb70 in hists__add_entry (sample_self=true, sample=0x7fffde7fb4b0, mi=0x0, bi=0x0, sym_parent=<optimized out>, al=<optimized out>, hists=0x5555561d9e38)
-      at util/hist.c:1056
-  #7  iter_add_single_cumulative_entry (iter=0x7fffde7fb460, al=<optimized out>) at util/hist.c:1056
-  #8  0x00005555558cc8a4 in hist_entry_iter__add (iter=iter@entry=0x7fffde7fb460, al=al@entry=0x7fffde7fb420, max_stack_depth=<optimized out>, arg=arg@entry=0x7fffffff7db0)
-      at util/hist.c:1231
-  #9  0x00005555557cdc9a in perf_event__process_sample (machine=<optimized out>, sample=0x7fffde7fb4b0, evsel=<optimized out>, event=<optimized out>, tool=0x7fffffff7db0)
-      at builtin-top.c:842
-  #10 deliver_event (qe=<optimized out>, qevent=<optimized out>) at builtin-top.c:1202
-  #11 0x00005555558a9318 in do_flush (show_progress=false, oe=0x7fffffff80e0) at util/ordered-events.c:244
-  #12 __ordered_events__flush (oe=oe@entry=0x7fffffff80e0, how=how@entry=OE_FLUSH__TOP, timestamp=timestamp@entry=0) at util/ordered-events.c:323
-  #13 0x00005555558a9789 in __ordered_events__flush (timestamp=<optimized out>, how=<optimized out>, oe=<optimized out>) at util/ordered-events.c:339
-  #14 ordered_events__flush (how=OE_FLUSH__TOP, oe=0x7fffffff80e0) at util/ordered-events.c:341
-  #15 ordered_events__flush (oe=oe@entry=0x7fffffff80e0, how=how@entry=OE_FLUSH__TOP) at util/ordered-events.c:339
-  #16 0x00005555557cd631 in process_thread (arg=0x7fffffff7db0) at builtin-top.c:1114
-  #17 0x00007ffff7bb817a in start_thread () from /lib64/libpthread.so.0
-  #18 0x00007ffff5656dc3 in clone () from /lib64/libc.so.6
+This patch just add the check to prevent panic happen for similar
+cases.
 
-If you look at the frame #2, the code is:
-
-488	 if (he->srcline) {
-489          he->srcline = strdup(he->srcline);
-490          if (he->srcline == NULL)
-491              goto err_rawdata;
-492	 }
-
-If he->srcline is not NULL (it is not NULL if it is uninitialized rubbish),
-it gets strdupped and strdupping a rubbish random string causes the problem.
-
-Also, if you look at the commit 1fb7d06a509e, it adds the srcline property
-into the struct, but not initializing it everywhere needed.
-
-Committer notes:
-
-Now I see, when using --ignore-callees=do_idle we end up here at line
-2189 in add_callchain_ip():
-
-2181         if (al.sym != NULL) {
-2182                 if (perf_hpp_list.parent && !*parent &&
-2183                     symbol__match_regex(al.sym, &parent_regex))
-2184                         *parent = al.sym;
-2185                 else if (have_ignore_callees && root_al &&
-2186                   symbol__match_regex(al.sym, &ignore_callees_regex)) {
-2187                         /* Treat this symbol as the root,
-2188                            forgetting its callees. */
-2189                         *root_al = al;
-2190                         callchain_cursor_reset(cursor);
-2191                 }
-2192         }
-
-And the al that doesn't have the ->srcline field initialized will be
-copied to the root_al, so then, back to:
-
-1211 int hist_entry_iter__add(struct hist_entry_iter *iter, struct addr_location *al,
-1212                          int max_stack_depth, void *arg)
-1213 {
-1214         int err, err2;
-1215         struct map *alm = NULL;
-1216
-1217         if (al)
-1218                 alm = map__get(al->map);
-1219
-1220         err = sample__resolve_callchain(iter->sample, &callchain_cursor, &iter->parent,
-1221                                         iter->evsel, al, max_stack_depth);
-1222         if (err) {
-1223                 map__put(alm);
-1224                 return err;
-1225         }
-1226
-1227         err = iter->ops->prepare_entry(iter, al);
-1228         if (err)
-1229                 goto out;
-1230
-1231         err = iter->ops->add_single_entry(iter, al);
-1232         if (err)
-1233                 goto out;
-1234
-
-That al at line 1221 is what hist_entry_iter__add() (called from
-sample__resolve_callchain()) saw as 'root_al', and then:
-
-        iter->ops->add_single_entry(iter, al);
-
-will go on with al->srcline with a bogus value, I'll add the above
-sequence to the cset and apply, thanks!
-
-Signed-off-by: Michael Petlan <mpetlan@redhat.com>
-CC: Milian Wolff <milian.wolff@kdab.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Fixes: 1fb7d06a509e ("perf report Use srcline from callchain for hist entries")
-Link: https //lore.kernel.org/r/20210719145332.29747-1-mpetlan@redhat.com
-Reported-by: Juri Lelli <jlelli@redhat.com>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/machine.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/netlabel/netlabel_cipso_v4.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2149,6 +2149,7 @@ static int add_callchain_ip(struct threa
+diff --git a/net/netlabel/netlabel_cipso_v4.c b/net/netlabel/netlabel_cipso_v4.c
+index 8cd3daf0e3db..1778e4e8ce24 100644
+--- a/net/netlabel/netlabel_cipso_v4.c
++++ b/net/netlabel/netlabel_cipso_v4.c
+@@ -144,8 +144,8 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
+ 		return -ENOMEM;
+ 	doi_def->map.std = kzalloc(sizeof(*doi_def->map.std), GFP_KERNEL);
+ 	if (doi_def->map.std == NULL) {
+-		ret_val = -ENOMEM;
+-		goto add_std_failure;
++		kfree(doi_def);
++		return -ENOMEM;
+ 	}
+ 	doi_def->type = CIPSO_V4_MAP_TRANS;
  
- 	al.filtered = 0;
- 	al.sym = NULL;
-+	al.srcline = NULL;
- 	if (!cpumode) {
- 		thread__find_cpumode_addr_location(thread, ip, &al);
- 	} else {
+-- 
+2.30.2
+
 
 
