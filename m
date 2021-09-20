@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2834124F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751644124F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382322AbhITSkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:40:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52526 "EHLO mail.kernel.org"
+        id S1382430AbhITSk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381067AbhITSfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:35:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FDB261AAC;
-        Mon, 20 Sep 2021 17:29:01 +0000 (UTC)
+        id S1379309AbhITSgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:36:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A98026331A;
+        Mon, 20 Sep 2021 17:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158942;
-        bh=6I/5+lZTxVowLex+9DEtwKrtO2w5YLB5jsD+GBWlSsY=;
+        s=korg; t=1632158944;
+        bh=66xlvQD0Gb9FNYNhXTZe5EXDwOjLwO5ScT1YPxrSOsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tnl+aFC0ttYVetQTolsakzGV9GC3f3iJtWpH/bTXFd6FHL8FCAPZyF18yzST1q/uj
-         zQM/m4qnplOKc8rkgU/UVwfqDXdh7xZMAcG1iHcY/EZt3nmHjPyKQlawDciFsb+xgi
-         YiFhGzyrgGYsWD4p/FutncM+z+hz6R7VE26SmTq0=
+        b=GwJxpV9R3oJz2N4eZZhSsueHuRcEW3iPu975jrCOfnKaybvZfQL00ZknSDqV7VeIu
+         fujsQdxgwhIKurcT9C/0XdixKx9RnjGsqiXuRaamD2Cr/Z5oDxb5umw+3pr1CIw0As
+         1BpiwmjmS61NS/ylef6AP7JjpFQn2kAWYLchdv5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 100/122] gpio: mpc8xxx: Fix a potential double iounmap call in mpc8xxx_probe()
-Date:   Mon, 20 Sep 2021 18:44:32 +0200
-Message-Id: <20210920163919.067590477@linuxfoundation.org>
+Subject: [PATCH 5.10 101/122] gpio: mpc8xxx: Use devm_gpiochip_add_data() to simplify the code and avoid a leak
+Date:   Mon, 20 Sep 2021 18:44:33 +0200
+Message-Id: <20210920163919.100326398@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -43,75 +43,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 7d6588931ccd4c09e70a08175cf2e0cf7fc3b869 ]
+[ Upstream commit 889a1b3f35db6ba5ba6a0c23a3a55594570b6a17 ]
 
-Commit 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support") has switched to a
-managed version when dealing with 'mpc8xxx_gc->regs'. So the corresponding
-'iounmap()' call in the error handling path and in the remove should be
-removed to avoid a double unmap.
+If an error occurs after a 'gpiochip_add_data()' call it must be undone by
+a corresponding 'gpiochip_remove()' as already done in the remove function.
 
-This also allows some simplification in the probe. All the error handling
-paths related to managed resources can be direct returns and a NULL check
-in what remains in the error handling path can be removed.
+To simplify the code a fix a leak in the error handling path of the probe,
+use the managed version instead (i.e. 'devm_gpiochip_add_data()')
 
-Fixes: 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support")
+Fixes: 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-mpc8xxx.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/gpio/gpio-mpc8xxx.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-index 5b2a919a6644..a4983c5d1f16 100644
+index a4983c5d1f16..023b99bf098d 100644
 --- a/drivers/gpio/gpio-mpc8xxx.c
 +++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -329,7 +329,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
- 				 mpc8xxx_gc->regs + GPIO_DIR, NULL,
- 				 BGPIOF_BIG_ENDIAN);
- 		if (ret)
--			goto err;
-+			return ret;
- 		dev_dbg(&pdev->dev, "GPIO registers are LITTLE endian\n");
- 	} else {
- 		ret = bgpio_init(gc, &pdev->dev, 4,
-@@ -339,7 +339,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
- 				 BGPIOF_BIG_ENDIAN
- 				 | BGPIOF_BIG_ENDIAN_BYTE_ORDER);
- 		if (ret)
--			goto err;
-+			return ret;
- 		dev_dbg(&pdev->dev, "GPIO registers are BIG endian\n");
- 	}
+@@ -374,7 +374,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 	    of_device_is_compatible(np, "fsl,ls1088a-gpio"))
+ 		gc->write_reg(mpc8xxx_gc->regs + GPIO_IBE, 0xffffffff);
  
-@@ -378,7 +378,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+-	ret = gpiochip_add_data(gc, mpc8xxx_gc);
++	ret = devm_gpiochip_add_data(&pdev->dev, gc, mpc8xxx_gc);
  	if (ret) {
  		pr_err("%pOF: GPIO chip registration failed with status %d\n",
  		       np, ret);
--		goto err;
-+		return ret;
+@@ -419,8 +419,6 @@ static int mpc8xxx_remove(struct platform_device *pdev)
+ 		irq_domain_remove(mpc8xxx_gc->irq);
  	}
  
- 	mpc8xxx_gc->irqn = irq_of_parse_and_map(np, 0);
-@@ -406,9 +406,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
- 
- 	return 0;
- err:
--	if (mpc8xxx_gc->irq)
--		irq_domain_remove(mpc8xxx_gc->irq);
--	iounmap(mpc8xxx_gc->regs);
-+	irq_domain_remove(mpc8xxx_gc->irq);
- 	return ret;
- }
- 
-@@ -422,7 +420,6 @@ static int mpc8xxx_remove(struct platform_device *pdev)
- 	}
- 
- 	gpiochip_remove(&mpc8xxx_gc->gc);
--	iounmap(mpc8xxx_gc->regs);
- 
+-	gpiochip_remove(&mpc8xxx_gc->gc);
+-
  	return 0;
  }
+ 
 -- 
 2.30.2
 
