@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131F3411A9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17853411DDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243470AbhITQut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:50:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37262 "EHLO mail.kernel.org"
+        id S1347181AbhITRZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230132AbhITQtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:49:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3280C61262;
-        Mon, 20 Sep 2021 16:47:49 +0000 (UTC)
+        id S1349209AbhITRW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 192C461A6E;
+        Mon, 20 Sep 2021 17:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156469;
-        bh=R5RubUIDV5mJf/Ntg1nlkaygmNTmSRGtpF4N1JRkJbs=;
+        s=korg; t=1632157272;
+        bh=9RrJridCyeIaTpWSPDq1JdAM+qoNsgp7pYlCX1cssbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g57UynP5mKg5GZUCeZCWn8PATzX7r/35v7UsPvD55DPwfSmaEg1FKQvfo4hKcyMjo
-         uG4W20ulDfNuE0IObrag2I0iokff3EKhVDIrvjcRrXAQob5TFd2r5D3Vr3OCdxctGZ
-         o0JBe70tiGQTrzAWIoLm5uqJkDg3cMi6V2Dzgr40=
+        b=1769gCdQqUsTsx/5YMY4SqGHj3z57o2DerJo28KHUJIiCz/zBlI0WQPM6dl+EXpHr
+         Nsu2YBjHSsifuwyQyRdPkMWRarcPKDUy5Vr73IACDqn8xOcI08wOMx2lNxmOSaWiD0
+         AtCbWTBESZou5SBLt1+cBxpSHGsREwj7kHy5eDkY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 4.4 074/133] xen: fix setting of max_pfn in shared_info
-Date:   Mon, 20 Sep 2021 18:42:32 +0200
-Message-Id: <20210920163915.067760490@linuxfoundation.org>
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 132/217] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+Date:   Mon, 20 Sep 2021 18:42:33 +0200
+Message-Id: <20210920163929.132062698@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 4b511d5bfa74b1926daefd1694205c7f1bcf677f upstream.
+[ Upstream commit 14858dcc3b3587f4bb5c48e130ee7d68fc2b0a29 ]
 
-Xen PV guests are specifying the highest used PFN via the max_pfn
-field in shared_info. This value is used by the Xen tools when saving
-or migrating the guest.
+Updating the current_state field of struct pci_dev the way it is done
+in pci_enable_device_flags() before calling do_pci_enable_device() may
+not work.  For example, if the given PCI device depends on an ACPI
+power resource whose _STA method initially returns 0 ("off"), but the
+config space of the PCI device is accessible and the power state
+retrieved from the PCI_PM_CTRL register is D0, the current_state
+field in the struct pci_dev representing that device will get out of
+sync with the power.state of its ACPI companion object and that will
+lead to power management issues going forward.
 
-Unfortunately this field is misnamed, as in reality it is specifying
-the number of pages (including any memory holes) of the guest, so it
-is the highest used PFN + 1. Renaming isn't possible, as this is a
-public Xen hypervisor interface which needs to be kept stable.
+To avoid such issues, make pci_enable_device_flags() call
+pci_update_current_state() which takes ACPI device power management
+into account, if present, to retrieve the current power state of the
+device.
 
-The kernel will set the value correctly initially at boot time, but
-when adding more pages (e.g. due to memory hotplug or ballooning) a
-real PFN number is stored in max_pfn. This is done when expanding the
-p2m array, and the PFN stored there is even possibly wrong, as it
-should be the last possible PFN of the just added P2M frame, and not
-one which led to the P2M expansion.
-
-Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
-
-Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Link: https://lore.kernel.org/r/20210730092622.9973-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/xen/p2m.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/pci.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -623,8 +623,8 @@ int xen_alloc_p2m_entry(unsigned long pf
- 	}
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 1c5c0937c5da..4ff7f2575d28 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1384,11 +1384,7 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
+ 	 * so that things like MSI message writing will behave as expected
+ 	 * (e.g. if the device really is in D0 at enable time).
+ 	 */
+-	if (dev->pm_cap) {
+-		u16 pmcsr;
+-		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+-		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
+-	}
++	pci_update_current_state(dev, dev->current_state);
  
- 	/* Expanded the p2m? */
--	if (pfn > xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = pfn;
-+	if (pfn >= xen_p2m_last_pfn) {
-+		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
- 		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
- 	}
- 
+ 	if (atomic_inc_return(&dev->enable_cnt) > 1)
+ 		return 0;		/* already enabled */
+-- 
+2.30.2
+
 
 
