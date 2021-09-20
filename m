@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF37411F25
+	by mail.lfdr.de (Postfix) with ESMTP id 966E1411F26
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348251AbhITRiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:38:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
+        id S1348256AbhITRiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:38:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346930AbhITRfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF39761B26;
-        Mon, 20 Sep 2021 17:06:20 +0000 (UTC)
+        id S1348137AbhITRgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:36:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D715B61B1E;
+        Mon, 20 Sep 2021 17:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157581;
-        bh=dJl91C0/eX+mQIGkNEJEiZiVrhcnNqrdebm1P6xLDPg=;
+        s=korg; t=1632157583;
+        bh=lYhlJUiZeJ71eAsBUsEU418h4Qd1oNkRZB8M5J6fuKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yhnkmo0nZEtqqJ6J8+RPTSmibwox3grNSWMuCZ6+NP9W8y53AguVnDCC8dwoV4fEv
-         aUcTqz/iUWYFj59Zfnj633OvS61EPCcNOeCF4KsXsRfZIoFwulwOAb/1WPLrQPyxLQ
-         7c0WvQIqflX0O5isttFB0Xn1abiuxpWbTR/7NqD4=
+        b=oWsYmu43/mzoIsL8emvSpE0tL/wNIWeUyMh5FGeOYg6gq2byIWQfNXdUInenZXn07
+         rFFYBw40pY7F6GKWM8O4YXDxGnnBr8GPThj5NYkdQwR7C0XJriSKFZqEJm+uHJkVr/
+         8g0j3R6kytcmv8dSv57y5o5QQHaqKmF6G2q2Ds2I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Purna Chandra Mandal <purna.mandal@microchip.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hongbo Li <herberthbli@tencent.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 056/293] spi: spi-pic32: Fix issue with uninitialized dma_slave_config
-Date:   Mon, 20 Sep 2021 18:40:18 +0200
-Message-Id: <20210920163935.177054984@linuxfoundation.org>
+Subject: [PATCH 4.19 057/293] lib/mpi: use kcalloc in mpi_resize
+Date:   Mon, 20 Sep 2021 18:40:19 +0200
+Message-Id: <20210920163935.208923682@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -44,44 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Hongbo Li <herberthbli@tencent.com>
 
-[ Upstream commit 976c1de1de147bb7f4e0d87482f375221c05aeaf ]
+[ Upstream commit b6f756726e4dfe75be1883f6a0202dcecdc801ab ]
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+We should set the additional space to 0 in mpi_resize().
+So use kcalloc() instead of kmalloc_array().
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
+In lib/mpi/ec.c:
+/****************
+ * Resize the array of A to NLIMBS. the additional space is cleared
+ * (set to 0) [done by m_realloc()]
+ */
+int mpi_resize(MPI a, unsigned nlimbs)
 
-For spi-pic32, this is probably not currently an issue but is still good to
-fix though.
+Like the comment of kernel's mpi_resize() said, the additional space
+need to be set to 0, but when a->d is not NULL, it does not set.
 
-Fixes: 1bcb9f8ceb67 ("spi: spi-pic32: Add PIC32 SPI master driver")
-Cc: Purna Chandra Mandal <purna.mandal@microchip.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081727.19491-2-tony@atomide.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The kernel's mpi lib is from libgcrypt, the mpi resize in libgcrypt
+is _gcry_mpi_resize() which set the additional space to 0.
+
+This bug may cause mpi api which use mpi_resize() get wrong result
+under the condition of using the additional space without initiation.
+If this condition is not met, the bug would not be triggered.
+Currently in kernel, rsa, sm2 and dh use mpi lib, and they works well,
+so the bug is not triggered in these cases.
+
+add_points_edwards() use the additional space directly, so it will
+get a wrong result.
+
+Fixes: cdec9cb5167a ("crypto: GnuPG based MPI lib - source files (part 1)")
+Signed-off-by: Hongbo Li <herberthbli@tencent.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-pic32.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/mpi/mpiutil.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
-index 661a40c653e9..d8cdb13ce3e4 100644
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -369,6 +369,7 @@ static int pic32_spi_dma_config(struct pic32_spi *pic32s, u32 dma_width)
- 	struct dma_slave_config cfg;
- 	int ret;
+diff --git a/lib/mpi/mpiutil.c b/lib/mpi/mpiutil.c
+index 20ed0f766787..00825028cc84 100644
+--- a/lib/mpi/mpiutil.c
++++ b/lib/mpi/mpiutil.c
+@@ -91,7 +91,7 @@ int mpi_resize(MPI a, unsigned nlimbs)
+ 		return 0;	/* no need to do it */
  
-+	memset(&cfg, 0, sizeof(cfg));
- 	cfg.device_fc = true;
- 	cfg.src_addr = pic32s->dma_base + buf_offset;
- 	cfg.dst_addr = pic32s->dma_base + buf_offset;
+ 	if (a->d) {
+-		p = kmalloc_array(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
++		p = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
+ 		if (!p)
+ 			return -ENOMEM;
+ 		memcpy(p, a->d, a->alloced * sizeof(mpi_limb_t));
 -- 
 2.30.2
 
