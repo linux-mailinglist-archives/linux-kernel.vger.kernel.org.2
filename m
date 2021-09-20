@@ -2,220 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B66412A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6E1412A72
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhIUBeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
+        id S233215AbhIUBlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhIUBeH (ORCPT
+        with ESMTP id S231752AbhIUBid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:34:07 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B39CC124A52
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:08:57 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t11so1095322plq.11
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:08:57 -0700 (PDT)
+        Mon, 20 Sep 2021 21:38:33 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A44DC122764
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:32:49 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id w19so26292947oik.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:32:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ghoO8vylrdI8hi6Tt30rRCJNGnXjoCjzQ+6Kg2uuqtk=;
-        b=Mb/S0HS3nmZk/74q7Z77YZ+J8jlDOkyRESjhg0+WBGWdwYK47aKB7HsFRpZSB+aDnn
-         YoKnxbcb2UdFBwEkYE+iUyi99i+5SqrOay4/tEzkCeP19IZj2YcTSUst0GPRvad/+Nui
-         hUciPCLK78KvOR/dLI7Py4VuKg3s3XCwcs960=
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=RcfKZ8RQR7lkEDrRbmC3NNXvVvlQ4D4N2QPf10IkPsk=;
+        b=VIWhZSszUjwNbxpn1xKTaTCO8/eniwjzjZNSj9/SrcvTosNfs1c+KEAtHJ4aiAulyh
+         TSuSJ5ukOh0Dxqvn7SBlOsx1xNi/uKN4o0X+G08X/e+YM7hcASjH6n25jzrpmpokcp9E
+         dTAMQOvhKeFnwFTLyaBDEm2aDiLrBSmtCqXYE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ghoO8vylrdI8hi6Tt30rRCJNGnXjoCjzQ+6Kg2uuqtk=;
-        b=1s2HS6u2FuoS/nCn8yLWThcLVfnSSzYOIinF9cZhLjvVYL9nZ8R7Ush/l4E4wT5uRo
-         inEMXVQKbZf4mgsyDmSz1rBneVYo4/GoOn3EcCX+YnjRglJZmnPxDEOq92o/rINj+osf
-         BgAY994JHmdCvKLB0BPUairWOrTh08hW4gBJqj90ZP9OiANoDRHICr/pBK4DA18E5nSG
-         QPhNZ2iqyFc5hUJtoBDNAV35ETdWlDUg/pXLG0fV3fq9TvxV/+HD1JnwYYrC3DY7eLx8
-         h4F8LIWW8UOl7zxuKlr0dZIoUE49RUtdl+mDYUj8w54Pztr22FLg449WwdUZlLEOFaZt
-         JPCw==
-X-Gm-Message-State: AOAM533HmGcSjF9D3KRu1AtkzWprfhjVdu/O22adZch2vuqG909l041B
-        Glnx+hQos76shs/kkcqjmd41Pg==
-X-Google-Smtp-Source: ABdhPJxxNE9E0ONnMG7IKmLV3vOgEPcmq68f2gc8ALCv0/GbLpIdnN9VP01X374pPq3Fyw90oaGLEw==
-X-Received: by 2002:a17:902:7144:b0:13c:9821:75cb with SMTP id u4-20020a170902714400b0013c982175cbmr23915047plm.33.1632161337116;
-        Mon, 20 Sep 2021 11:08:57 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 141sm16720868pgf.46.2021.09.20.11.08.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 11:08:56 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Keith Busch <kbusch@kernel.org>, Len Baker <len.baker@gmx.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH 2/2] test_overflow: Regularize test reporting output
-Date:   Mon, 20 Sep 2021 11:08:53 -0700
-Message-Id: <20210920180853.1825195-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920180853.1825195-1-keescook@chromium.org>
-References: <20210920180853.1825195-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=RcfKZ8RQR7lkEDrRbmC3NNXvVvlQ4D4N2QPf10IkPsk=;
+        b=n7oHGkDCjz5LfOnVhFObamNo3khUm70msEN7LeZluXeN4rfJiUWT2Jp56CXWUvvnIS
+         VbmIDZxL9BcSthGaUptoceM/RlGpZITPclRL9jflwYXsWmNFWuKrXE4zj+EBVRq1/B/L
+         JspKLy8endFubEmKCJa761NYSi6m/OifEfX856fXjG8xbKV5qj/YFIE8ZoYJ0FvRZL5i
+         TtjavnmQWX62co7RjVMNb+xCm3c0XKq6Uc8lXLUYi+SGfMo+PDEpDP/+RkHUznPy+j14
+         cveO2fSyZMtuH9xY5/rHuCpLN+a4DfxHT6EPRjGVPqtQ0+GjcXpqBRFRwgWSBEL5XGCm
+         7BJw==
+X-Gm-Message-State: AOAM531vxRjauFpIfYnMQZZOp46a8NiCRtpMW+mnXqw+R5KaVKjJ7Znv
+        ClwaC9HZAJFUl/pthIpYd22UeGgQ4+2v7nwkrea7gA==
+X-Google-Smtp-Source: ABdhPJy5gNNMMyTTsHsOw5F7pEwhDmSOBb0xz/TedbZBQOomMd6+H6P35RPPrZR2q+09IXhthEvSnpFhcR2JLAAjhZ0=
+X-Received: by 2002:aca:3110:: with SMTP id x16mr587519oix.64.1632166368784;
+ Mon, 20 Sep 2021 12:32:48 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 20 Sep 2021 12:32:48 -0700
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5283; h=from:subject; bh=ngvKd0VV85H03jehfbaSVhjFlezpvhhQZYYqP8+XnJI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhSM40EEDAZt7CSShMBrgESBuI4VDuu8KznCLXKNBF goT3bNuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYUjONAAKCRCJcvTf3G3AJvLSEA CFFg0tEU3pFeHEdgWciKQj6HTHc7OvzAda2N6R9ilIOY9UeRdMsrPgiggtN80z4Thgs6DZF8p4OES8 lW7G8Dah0PTRgp/9zpuT39cbqdOJmWsydNMuEIWNcBS8SZdLc62mDWco1e+gG6a8/uua6lyeuJOBiI sX4/9kAqgoT69k3NgjmqX7rS/9/ERWoimcggooy5Y5emcKKAZipjoyHzCsFngP3rgX5DfuI/Dw72U0 T6W0+sPU2eDwvtE52V6OM2NtexEp99HPPU5WlTAuIsTe5xPPxDhRF1qmraXA5MfWpVzqLk9WdeZ4eg /mRoryGB0ZxQOF3fmBsB46O2Atdm2iBqpxyiYla+jK6p4pXM3tAsDmpaNYcNKrseqbUM7pVHp6gyMX FGuWDaomvu/ac3QiEXi/FdnGj6bsdm5AzjmRZU+dC1TAxWkbWTMh4mDEwHhQEUXINbIHTlIj29+9Vd CErLkZgOMK9DaoxUVMI8vIQmBqeROZKll62SAUlXMQbJwqNY7CNBOUZoeClCJ7NuLRkwBX5Yaph7rk N6tScoWL58ZO+hl6IsEnG8/a6vyYi/agmtJXYhm1Gl7JHhQ1WEqYHh2h3vWD4PvoSDrF+Q3qniNiOm OeAZ84fVoGQmvfawT3VfG+BtOSHjZyxkVmSQ6HXl5SDCPm2W2yRdTE1ZkKIQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org> <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 20 Sep 2021 12:32:48 -0700
+Message-ID: <CAE-0n51Xrv54XVLJwz9ENTtOhtCKWG7WtQg2o2+SFEoru1M4VA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Satya Priya <skakit@codeaurora.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, mka@chromium.org,
+        Das Srinagesh <gurus@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Report test run summaries more regularly, so it's easier to understand
-the output:
-- Remove noisy "ok" reports for shift and allocator tests.
-- Reorganize per-type output to the end of each type's tests.
-- Replace redundant vmalloc tests with __vmalloc so that __GFP_NO_WARN
-  can be used to keep the expected failure warnings out of dmesg,
-  similar to commit 8e060c21ae2c ("lib/test_overflow.c: avoid tainting
-  the kernel and fix wrap size")
+Quoting Satya Priya (2021-09-17 03:45:35)
+> Add pm8008-regulator node and example.
+>
+> Signed-off-by: Satya Priya <skakit@codeaurora.org>
+> ---
+>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 ++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+> index ec3138c..de182f8 100644
+> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+> @@ -45,6 +45,10 @@ properties:
+>      const: 0
+>
+>  patternProperties:
+> +  "^pm8008[a-z]?-regulator$":
 
-Resulting output:
+Shouldn't it be ^pm8008-regulator$ without the a-z optional letter?
 
-  test_overflow: 18 u8 arithmetic tests finished
-  test_overflow: 19 s8 arithmetic tests finished
-  test_overflow: 17 u16 arithmetic tests finished
-  test_overflow: 17 s16 arithmetic tests finished
-  test_overflow: 17 u32 arithmetic tests finished
-  test_overflow: 17 s32 arithmetic tests finished
-  test_overflow: 17 u64 arithmetic tests finished
-  test_overflow: 21 s64 arithmetic tests finished
-  test_overflow: 113 shift tests finished
-  test_overflow: 17 overflow size helper tests finished
-  test_overflow: 11 allocation overflow tests finished
-  test_overflow: all tests passed
-
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- lib/test_overflow.c | 50 +++++++++++++++++++++++----------------------
- 1 file changed, 26 insertions(+), 24 deletions(-)
-
-diff --git a/lib/test_overflow.c b/lib/test_overflow.c
-index 01a469ff7ff6..e1fd2d72dc61 100644
---- a/lib/test_overflow.c
-+++ b/lib/test_overflow.c
-@@ -252,10 +252,10 @@ static int __init test_ ## t ## _overflow(void) {			\
- 	int err = 0;							\
- 	unsigned i;							\
- 									\
--	pr_info("%-3s: %zu arithmetic tests\n", #t,			\
--		ARRAY_SIZE(t ## _tests));				\
- 	for (i = 0; i < ARRAY_SIZE(t ## _tests); ++i)			\
- 		err |= do_test_ ## t(&t ## _tests[i]);			\
-+	pr_info("%zu %s arithmetic tests finished\n",			\
-+		ARRAY_SIZE(t ## _tests), #t);				\
- 	return err;							\
- }
- 
-@@ -291,6 +291,7 @@ static int __init test_overflow_calculation(void)
- static int __init test_overflow_shift(void)
- {
- 	int err = 0;
-+	int count = 0;
- 
- /* Args are: value, shift, type, expected result, overflow expected */
- #define TEST_ONE_SHIFT(a, s, t, expect, of) ({				\
-@@ -313,9 +314,7 @@ static int __init test_overflow_shift(void)
- 			pr_warn("got %llu\n", (u64)__d);		\
- 		__failed = 1;						\
- 	}								\
--	if (!__failed)							\
--		pr_info("ok: (%s)(%s << %s) == %s\n", #t, #a, #s,	\
--			of ? "overflow" : #expect);			\
-+	count++;							\
- 	__failed;							\
- })
- 
-@@ -479,6 +478,8 @@ static int __init test_overflow_shift(void)
- 	err |= TEST_ONE_SHIFT(0, 31, s32, 0, false);
- 	err |= TEST_ONE_SHIFT(0, 63, s64, 0, false);
- 
-+	pr_info("%d shift tests finished\n", count);
-+
- 	return err;
- }
- 
-@@ -530,7 +531,6 @@ static int __init test_ ## func (void *arg)				\
- 		free ## want_arg (free_func, arg, ptr);			\
- 		return 1;						\
- 	}								\
--	pr_info(#func " detected saturation\n");			\
- 	return 0;							\
- }
- 
-@@ -544,10 +544,7 @@ DEFINE_TEST_ALLOC(kmalloc,	 kfree,	     0, 1, 0);
- DEFINE_TEST_ALLOC(kmalloc_node,	 kfree,	     0, 1, 1);
- DEFINE_TEST_ALLOC(kzalloc,	 kfree,	     0, 1, 0);
- DEFINE_TEST_ALLOC(kzalloc_node,  kfree,	     0, 1, 1);
--DEFINE_TEST_ALLOC(vmalloc,	 vfree,	     0, 0, 0);
--DEFINE_TEST_ALLOC(vmalloc_node,  vfree,	     0, 0, 1);
--DEFINE_TEST_ALLOC(vzalloc,	 vfree,	     0, 0, 0);
--DEFINE_TEST_ALLOC(vzalloc_node,  vfree,	     0, 0, 1);
-+DEFINE_TEST_ALLOC(__vmalloc,	 vfree,	     0, 1, 0);
- DEFINE_TEST_ALLOC(kvmalloc,	 kvfree,     0, 1, 0);
- DEFINE_TEST_ALLOC(kvmalloc_node, kvfree,     0, 1, 1);
- DEFINE_TEST_ALLOC(kvzalloc,	 kvfree,     0, 1, 0);
-@@ -559,8 +556,14 @@ static int __init test_overflow_allocation(void)
- {
- 	const char device_name[] = "overflow-test";
- 	struct device *dev;
-+	int count = 0;
- 	int err = 0;
- 
-+#define check_allocation_overflow(alloc)	({	\
-+	count++;					\
-+	test_ ## alloc(dev);				\
-+})
-+
- 	/* Create dummy device for devm_kmalloc()-family tests. */
- 	dev = root_device_register(device_name);
- 	if (IS_ERR(dev)) {
-@@ -568,23 +571,22 @@ static int __init test_overflow_allocation(void)
- 		return 1;
- 	}
- 
--	err |= test_kmalloc(NULL);
--	err |= test_kmalloc_node(NULL);
--	err |= test_kzalloc(NULL);
--	err |= test_kzalloc_node(NULL);
--	err |= test_kvmalloc(NULL);
--	err |= test_kvmalloc_node(NULL);
--	err |= test_kvzalloc(NULL);
--	err |= test_kvzalloc_node(NULL);
--	err |= test_vmalloc(NULL);
--	err |= test_vmalloc_node(NULL);
--	err |= test_vzalloc(NULL);
--	err |= test_vzalloc_node(NULL);
--	err |= test_devm_kmalloc(dev);
--	err |= test_devm_kzalloc(dev);
-+	err |= check_allocation_overflow(kmalloc);
-+	err |= check_allocation_overflow(kmalloc_node);
-+	err |= check_allocation_overflow(kzalloc);
-+	err |= check_allocation_overflow(kzalloc_node);
-+	err |= check_allocation_overflow(__vmalloc);
-+	err |= check_allocation_overflow(kvmalloc);
-+	err |= check_allocation_overflow(kvmalloc_node);
-+	err |= check_allocation_overflow(kvzalloc);
-+	err |= check_allocation_overflow(kvzalloc_node);
-+	err |= check_allocation_overflow(devm_kmalloc);
-+	err |= check_allocation_overflow(devm_kzalloc);
- 
- 	device_unregister(dev);
- 
-+	pr_info("%d allocation overflow tests finished\n", count);
-+
- 	return err;
- }
- 
--- 
-2.30.2
-
+> +    type: object
+> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
+> +
+>    "^gpio@[0-9a-f]+$":
+>      type: object
+>
