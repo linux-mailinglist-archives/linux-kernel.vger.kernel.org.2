@@ -2,189 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72F7411E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC64411F0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244500AbhITR2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:28:06 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:53116 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347482AbhITRZ6 (ORCPT
+        id S1346630AbhITRhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:37:08 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:45929 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351638AbhITRef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:25:58 -0400
-Received: by mail-il1-f198.google.com with SMTP id 8-20020a92c648000000b002318992f65bso40987841ill.19
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 10:24:30 -0700 (PDT)
+        Mon, 20 Sep 2021 13:34:35 -0400
+Received: by mail-ot1-f49.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso24569598otv.12;
+        Mon, 20 Sep 2021 10:33:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=szW7gdFAOHZy2bLhqrEBYtVYWa5ODoAyvKWMsAnCIgE=;
-        b=zhVmO1VrDlX0ehBGxDFinHu+KHwOxi++8wYQCotYaK2QaMHiedhd6JYS0P7Ftl8LKq
-         yBsjxq2HbBb1I82kfydmSr0heq34biOjNKLBUBOP1q/P/Orft+WPnwhXYpSAblmj9DtA
-         6hz33dS1ecst6QSsbimAHvfLsUwn+vbe+b14fTsJ/Vuz/py4gLxccbjD3PbO8LUAi00M
-         w1rd0eBVZpKDjsywhFP9UDqauamuCi73tqu/FNsaf6q5gK4F3AHkps++jpLlRuhRyKMl
-         mxm3SYtDYccR/hww9FTa6j/ZkS1LHpjiaU8GnzlzviGwGMxDBIjEfGDzRITSqZ35Sy3A
-         pjIw==
-X-Gm-Message-State: AOAM531smXcJaCE2Y+AG/xWGEO1CEQbk3qebODTDH4APtlKZjBJRYNac
-        WwnrTzm643ppvZ+KEbxD93rXe9o3ACbKDuA0im99H1/MNvR3
-X-Google-Smtp-Source: ABdhPJzxE3F+JIpMqceOqPa/rS5mPO6/aQ9Mzm/1QL26hKygaLRnXbQVjzwYLu+4zBuo+9fLQYB+c4mv15DMa6Rn2SrRpInP1QIR
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D/fnKawn3e+PlYXmYSKy1jDEJMKkz3oshJ3rc6YnaMw=;
+        b=uo1aYta0/my5D9xHjBDUZthBcj07VYM+k2Z5wC2RLO9SXtrQTQdNTIIL+pjXBRiUpX
+         dsO4SIZ0oJZibmxPIazgN1fNykjGh1zFN5kCOQTVChnUgLfh2YpA0DOrEE1jMX/pSwiz
+         qYdVfjte64vmO30vJLJj3t5spOiGdwpvITyu3vjdrlHdEUbBC0cRZnofadPGeQgig7Q2
+         trN6bKiIPA91MBit6k7yjULGJnzDD21kPpPk2EuFVCh24pZf9LJ6Yxm04FQGkF33/Re8
+         eI1KTfNsTFw+x1+ysdnIziwHmO7Al15k61HA1zhFnj34qFSFTBRiAtzPy4k/K+TGTGqg
+         PCYQ==
+X-Gm-Message-State: AOAM531eWmIJcwNYm46nw/IOrL5ycn9r+giz+18rKDzPsl0Fi4/h1+J7
+        2w08M6JlfYKhNNV+pjLciThobCXboIazIoi+vvg=
+X-Google-Smtp-Source: ABdhPJzJCYEFPitZMZzYluNMtLoOtNASKL6dUFfbGgBbEnA/TfjStj/Yb08kNaZPL2SgbMtzdMvOTkrcrIWJAA/2jzg=
+X-Received: by 2002:a9d:4d93:: with SMTP id u19mr22249291otk.86.1632159187086;
+ Mon, 20 Sep 2021 10:33:07 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:6a14:: with SMTP id x20mr19000658iog.177.1632158670074;
- Mon, 20 Sep 2021 10:24:30 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 10:24:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf39a905cc708daf@google.com>
-Subject: [syzbot] possible deadlock in bond_xmit_tlb_slave_get
-From:   syzbot <syzbot+86111bc0ec8ab90759ba@syzkaller.appspotmail.com>
-To:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        vfalico@gmail.com
+References: <20210910122820.26886-1-justin.he@arm.com> <20210910143223.6705-1-justin.he@arm.com>
+ <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
+ <20210916160827.GA4525@lpieralisi> <20210920170055.GA13861@lpieralisi>
+In-Reply-To: <20210920170055.GA13861@lpieralisi>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 20 Sep 2021 19:32:56 +0200
+Message-ID: <CAJZ5v0iee2j=NoPFpNstEZYJXWvFYfv22hK7QeH6+kdP6+MhLw@mail.gmail.com>
+Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Harb Abdulhamid <harb@amperecomputing.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 20, 2021 at 7:03 PM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Thu, Sep 16, 2021 at 05:08:27PM +0100, Lorenzo Pieralisi wrote:
+> > On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
+> > > On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
+> > > >
+> > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
+> > > >
+> > > > After this commit, a boot panic is alway hit on an Ampere EMAG server
+> > > > with call trace as follows:
+> > > >  Internal error: synchronous external abort: 96000410 [#1] SMP
+> > > >  Modules linked in:
+> > > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
+> > > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
+> > > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> > > > [...snip...]
+> > > >  Call trace:
+> > > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
+> > > >   acpi_ev_address_space_dispatch+0x228/0x2c4
+> > > >   acpi_ex_access_region+0x114/0x268
+> > > >   acpi_ex_field_datum_io+0x128/0x1b8
+> > > >   acpi_ex_extract_from_field+0x14c/0x2ac
+> > > >   acpi_ex_read_data_from_field+0x190/0x1b8
+> > > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
+> > > >   acpi_ex_resolve_to_value+0x250/0x274
+> > > >   acpi_ds_evaluate_name_path+0xac/0x124
+> > > >   acpi_ds_exec_end_op+0x90/0x410
+> > > >   acpi_ps_parse_loop+0x4ac/0x5d8
+> > > >   acpi_ps_parse_aml+0xe0/0x2c8
+> > > >   acpi_ps_execute_method+0x19c/0x1ac
+> > > >   acpi_ns_evaluate+0x1f8/0x26c
+> > > >   acpi_ns_init_one_device+0x104/0x140
+> > > >   acpi_ns_walk_namespace+0x158/0x1d0
+> > > >   acpi_ns_initialize_devices+0x194/0x218
+> > > >   acpi_initialize_objects+0x48/0x50
+> > > >   acpi_init+0xe0/0x498
+> > > >
+> > > > As mentioned by Lorenzo:
+> > > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
+> > > >   eMAG does not like at all and I'd need to understand why. It looks
+> > > >   like the issue happen in SystemMemory Opregion handler."
+> > > >
+> > > > Hence just revert it before everything is clear.
+> > > >
+> > >
+> > > Can we try to find the root cause first? -rc1 is not even out yet, and
+> > > reverting it now means we can not resubmit it until the next merge
+> > > window.
+> >
+> > I am waiting to debug this on an eMAG but I noticed something that
+> > I wanted to bring up.
+> >
+> > SystemMemory Operation region handler - ie
+> >
+> > acpi_ex_system_memory_space_handler()
+> >
+> > maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
+> > with acpi_os_map_memory() and I believe that's what is causing this
+> > bug.
+> >
+> > On the other hand, acpi_os_map_generic_address(), to handle spaceid
+> > ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
+> > in line with my expectations.
+>
+> Hi Rafael,
+>
+> I wanted to ask please if you have any insights on why
+>
+> (1) acpi_ex_system_memory_space_handler()
+> (2) acpi_os_map_generic_address()
+>
+> Use two different calls to map memory for the _same_ address space ID
+> (SystemMemory).
+>
+> (3) acpi_os_map_memory()
+> vs
+> (4) acpi_os_map_iomem()
 
-syzbot found the following issue on:
+I don't really have a good answer here.
 
-HEAD commit:    73367f05b25d Merge tag 'nfsd-5.14-1' of git://linux-nfs.or..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1197cde1300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=765eea9a273a8879
-dashboard link: https://syzkaller.appspot.com/bug?extid=86111bc0ec8ab90759ba
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+On x86 this doesn't really matter and that's where
+acpi_ex_system_memory_space_handler() was first introduced.  It is not
+only used for IOMEM (there are SystemMemory operation regions in RAM),
+but since it may be in IOMEM, it should assume so.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> I am struggling to understand why (1) uses (3) ("memory semantics") when
+> (2) uses (4) - it is actually unclear how the distinction between
+> the two mapping APIs is to be drawn and on what basis one should
+> choose which one to use.
+>
+> I am still waiting to grab some HW to debug this report but the issue
+> here is that we are mapping an OpRegion SystemMemory with (3) in the
+> memory space handler and given the patch we are reverting we end up
+> mapping the operation region with normal non-cacheable memory attributes
+> that probably the physical address range behind the OpRegion does not
+> support.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+86111bc0ec8ab90759ba@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-5.14.0-rc7-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.5/28166 is trying to acquire lock:
-ffff8880383d8c98 (&bond->mode_lock){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff8880383d8c98 (&bond->mode_lock){+.-.}-{2:2}, at: tlb_choose_channel drivers/net/bonding/bond_alb.c:236 [inline]
-ffff8880383d8c98 (&bond->mode_lock){+.-.}-{2:2}, at: bond_xmit_tlb_slave_get.part.0+0xb0/0x4f0 drivers/net/bonding/bond_alb.c:1359
-
-but task is already holding lock:
-ffff88807b208c98 (&bond->mode_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
-ffff88807b208c98 (&bond->mode_lock){+.-.}-{2:2}, at: bond_3ad_unbind_slave+0xae/0x1fe0 drivers/net/bonding/bond_3ad.c:2103
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&bond->mode_lock);
-  lock(&bond->mode_lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-7 locks held by syz-executor.5/28166:
- #0: ffffffff8d0cd528 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:72 [inline]
- #0: ffffffff8d0cd528 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3be/0xb80 net/core/rtnetlink.c:5572
- #1: ffff88807b208c98 (&bond->mode_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
- #1: ffff88807b208c98 (&bond->mode_lock){+.-.}-{2:2}, at: bond_3ad_unbind_slave+0xae/0x1fe0 drivers/net/bonding/bond_3ad.c:2103
- #2: ffffffff8b97c220 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1da/0x3620 net/core/dev.c:4219
- #3: ffff88802d7a3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: spin_trylock include/linux/spinlock.h:364 [inline]
- #3: ffff88802d7a3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: qdisc_run_begin include/net/sch_generic.h:173 [inline]
- #3: ffff88802d7a3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_xmit_skb net/core/dev.c:3873 [inline]
- #3: ffff88802d7a3258 (dev->qdisc_tx_busylock ?: &qdisc_tx_busylock){+...}-{2:2}, at: __dev_queue_xmit+0x122c/0x3620 net/core/dev.c:4253
- #4: ffffffff8b97c220 (rcu_read_lock_bh){....}-{1:2}, at: lwtunnel_xmit_redirect include/net/lwtunnel.h:92 [inline]
- #4: ffffffff8b97c220 (rcu_read_lock_bh){....}-{1:2}, at: ip_finish_output2+0x290/0x2220 net/ipv4/ip_output.c:216
- #5: ffffffff8b97c220 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1da/0x3620 net/core/dev.c:4219
- #6: ffffffff8b97c280 (rcu_read_lock){....}-{1:2}, at: is_netpoll_tx_blocked include/net/bonding.h:109 [inline]
- #6: ffffffff8b97c280 (rcu_read_lock){....}-{1:2}, at: bond_start_xmit+0x88/0x1220 drivers/net/bonding/bond_main.c:4878
-
-stack backtrace:
-CPU: 1 PID: 28166 Comm: syz-executor.5 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_deadlock_bug kernel/locking/lockdep.c:2944 [inline]
- check_deadlock kernel/locking/lockdep.c:2987 [inline]
- validate_chain kernel/locking/lockdep.c:3776 [inline]
- __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- tlb_choose_channel drivers/net/bonding/bond_alb.c:236 [inline]
- bond_xmit_tlb_slave_get.part.0+0xb0/0x4f0 drivers/net/bonding/bond_alb.c:1359
- bond_xmit_tlb_slave_get drivers/net/bonding/bond_alb.c:1384 [inline]
- bond_tlb_xmit+0x169/0x1a0 drivers/net/bonding/bond_alb.c:1383
- __bond_start_xmit drivers/net/bonding/bond_main.c:4861 [inline]
- bond_start_xmit+0x831/0x1220 drivers/net/bonding/bond_main.c:4883
- __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
- netdev_start_xmit include/linux/netdevice.h:4958 [inline]
- xmit_one net/core/dev.c:3659 [inline]
- dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3675
- __dev_queue_xmit+0x2988/0x3620 net/core/dev.c:4285
- neigh_resolve_output net/core/neighbour.c:1496 [inline]
- neigh_resolve_output+0x50e/0x820 net/core/neighbour.c:1476
- neigh_output include/net/neighbour.h:510 [inline]
- ip_finish_output2+0x804/0x2220 net/ipv4/ip_output.c:230
- __ip_finish_output net/ipv4/ip_output.c:308 [inline]
- __ip_finish_output+0x396/0x640 net/ipv4/ip_output.c:290
- ip_finish_output+0x32/0x200 net/ipv4/ip_output.c:318
- NF_HOOK_COND include/linux/netfilter.h:296 [inline]
- ip_output+0x196/0x310 net/ipv4/ip_output.c:432
- dst_output include/net/dst.h:448 [inline]
- ip_local_out+0xaf/0x1a0 net/ipv4/ip_output.c:126
- iptunnel_xmit+0x5a3/0x9c0 net/ipv4/ip_tunnel_core.c:82
- ip_tunnel_xmit+0x10a6/0x2b60 net/ipv4/ip_tunnel.c:810
- gre_tap_xmit+0x577/0x6a0 net/ipv4/ip_gre.c:737
- __netdev_start_xmit include/linux/netdevice.h:4944 [inline]
- netdev_start_xmit include/linux/netdevice.h:4958 [inline]
- xmit_one net/core/dev.c:3659 [inline]
- dev_hard_start_xmit+0x1eb/0x920 net/core/dev.c:3675
- sch_direct_xmit+0x19f/0xbb0 net/sched/sch_generic.c:342
- __dev_xmit_skb net/core/dev.c:3886 [inline]
- __dev_queue_xmit+0x1493/0x3620 net/core/dev.c:4253
- ad_lacpdu_send+0x577/0x6c0 drivers/net/bonding/bond_3ad.c:869
- bond_3ad_unbind_slave+0x88c/0x1fe0 drivers/net/bonding/bond_3ad.c:2122
- __bond_release_one+0x401/0x4d0 drivers/net/bonding/bond_main.c:2262
- bond_uninit+0x107/0x170 drivers/net/bonding/bond_main.c:5073
- unregister_netdevice_many+0xc85/0x1790 net/core/dev.c:11110
- rtnl_delete_link net/core/rtnetlink.c:3066 [inline]
- rtnl_dellink+0x354/0xa80 net/core/rtnetlink.c:3118
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5575
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3d889d5188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056c0f0 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000005
-RBP: 00000000004bfcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0f0
-R13: 00007ffc3091fedf R14: 00007f3d889d5300 R15: 0000000000022000
-bond5 (unregistering): (slave gretap5): Releasing backup interface
-bond5 (unregistering): Released all slaves
+If that is the case, there needs to be a mechanism to decide what kind
+of mapping to use for SystemMemory operation regions based on the type
+of physical memory the address range in question is located in.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > Question is: is the mapping in acpi_ex_system_memory_space_handler()
+> > wrong (and should be patched with acpi_os_map_iomem() ?)
+> >
+> > On x86 this should not change a thing, on ARM it would.
+> >
+> > I don't think it is right to map SystemMemory Operation regions with
+> > memory semantics but on the other hand, other than the EFI memory map,
+> > there is nothing we can do to determine what a SystemMemory Operation
+> > region address space actually represents.
+> >
+> > Thoughts ? Before embarking on patching
+> >
+> > acpi_ex_system_memory_space_handler()
+> >
+> > I want to make sure my understanding of the SystemMemory space is
+> > correct, comments welcome.
+> >
+> > I will pinpoint the trigger for this bug shortly and before doing
+> > anything else.
+> >
+> > Thanks,
+> > Lorenzo
