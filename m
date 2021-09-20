@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FC04120D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F29411A08
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356061AbhITR6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54556 "EHLO mail.kernel.org"
+        id S239478AbhITQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:45:06 -0400
+Received: from mga14.intel.com ([192.55.52.115]:58896 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354995AbhITRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:52:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8311461BF5;
-        Mon, 20 Sep 2021 17:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157964;
-        bh=bUgsprxYkWRQV0vT9CE+lHVKPe6ac3+wr/LEurofRg8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BfBmFS5ZFxmYSyMDZqq68zIec/3jwjoImpChJ8HGqrUyhXhXGccax5jU9Tw5JDcO+
-         +LrGdts/4FivxsGlaHF2IFUYl4bapsS954SPEMDZWtFjU9P43bh+95ex4+Y0OdBr6q
-         0pw7UIfbuCW1tpxu8uCBqUhSKfXe+EYOeD85wvS4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 232/293] usbip: give back URBs for unsent unlink requests during cleanup
-Date:   Mon, 20 Sep 2021 18:43:14 +0200
-Message-Id: <20210920163941.338325417@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S237709AbhITQpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:45:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="222821628"
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="222821628"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 09:43:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="434822284"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga006.jf.intel.com with ESMTP; 20 Sep 2021 09:43:15 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 20 Sep 2021 09:43:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 20 Sep 2021 09:43:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
+ Mon, 20 Sep 2021 09:43:14 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "Song, Youquan" <youquan.song@intel.com>,
+        "huangcun@sangfor.com.cn" <huangcun@sangfor.com.cn>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 3/3] x86/mce: Drop copyin special case for #MC
+Thread-Topic: [PATCH v2 3/3] x86/mce: Drop copyin special case for #MC
+Thread-Index: AQHXk8gq8Qe1g5tesEOw6jGkHsNov6utTUoAgAAAgWCAAHuLgP//i9Tw
+Date:   Mon, 20 Sep 2021 16:43:14 +0000
+Message-ID: <b65f57dd40e54572b3e00c571bafe1e3@intel.com>
+References: <20210706190620.1290391-1-tony.luck@intel.com>
+ <20210818002942.1607544-1-tony.luck@intel.com>
+ <20210818002942.1607544-4-tony.luck@intel.com> <YUhQsOKLeY/QV6ag@zn.tnic>
+ <9d4690a2f3f143f882f63bd88c355004@intel.com> <YUi4v6BHqN5WqJUd@zn.tnic>
+In-Reply-To: <YUi4v6BHqN5WqJUd@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
-
-[ Upstream commit 258c81b341c8025d79073ce2d6ce19dcdc7d10d2 ]
-
-In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
-not given back. This sometimes causes usb_kill_urb to wait indefinitely
-for that urb to be given back. syzbot has reported a hung task issue [1]
-for this.
-
-To fix this, give back the urbs corresponding to unsent unlink requests
-(unlink_tx list) similar to how urbs corresponding to unanswered unlink
-requests (unlink_rx list) are given back.
-
-[1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
-
-Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210820190122.16379-2-mail@anirudhrb.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/usb/usbip/vhci_hcd.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index b13ed5a7618d..a4ead4099869 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -957,8 +957,32 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
- 	spin_lock(&vdev->priv_lock);
- 
- 	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
-+		struct urb *urb;
-+
-+		/* give back urb of unsent unlink request */
- 		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
-+
-+		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
-+		if (!urb) {
-+			list_del(&unlink->list);
-+			kfree(unlink);
-+			continue;
-+		}
-+
-+		urb->status = -ENODEV;
-+
-+		usb_hcd_unlink_urb_from_ep(hcd, urb);
-+
- 		list_del(&unlink->list);
-+
-+		spin_unlock(&vdev->priv_lock);
-+		spin_unlock_irqrestore(&vhci->lock, flags);
-+
-+		usb_hcd_giveback_urb(hcd, urb, urb->status);
-+
-+		spin_lock_irqsave(&vhci->lock, flags);
-+		spin_lock(&vdev->priv_lock);
-+
- 		kfree(unlink);
- 	}
- 
--- 
-2.30.2
-
-
-
+PiBJcyB0aGlzIGhvdyB5b3UgZ2VuZXJhdGVkIHRoYXQgbGlzdCwgcGVyIGNoYW5jZT8NCj4NCj4g
+JCBnaXQgbG9nIC0tb25lbGluZSB2NS4xNCAtLSBsaWIvaW92X2l0ZXIuYw0KDQpBbG1vc3QuIEkg
+aGFkICJ2NS4xNCBedjUuMTMiIHRvIHN0b3AgZ2l0IGZyb20gZ29pbmcgYmFjaw0KZnVydGhlciB0
+aGFuIHdoZW4gSSB0aGluayBBbCBzdGFydGVkIGFwcGx5aW5nIHRob3NlIGZpeGVzLg0KDQotVG9u
+eQ0K
