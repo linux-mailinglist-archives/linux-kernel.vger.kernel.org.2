@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5701641110C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AE941110D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235947AbhITIgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:36:02 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:51680
+        id S235965AbhITIgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:36:04 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:51698
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235893AbhITIf6 (ORCPT
+        by vger.kernel.org with ESMTP id S235899AbhITIgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:35:58 -0400
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+        Mon, 20 Sep 2021 04:36:00 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 153383F4B9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:34:31 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E54343F331
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632126871;
-        bh=QOuDhjEYBpbLsCkja2E5kIg84mTo7Mp3bww45iwZuuc=;
+        s=20210705; t=1632126872;
+        bh=GlnCPL/n2TbFZ5lKXBBdaGTEcyYQg+Xe+TKmdfu9J3o=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=g6JzfbbWEYxZz5ei2fucQV+VI0c0khFzhk07yLSYQtm8jvpeLkcnqhpOd1nahbCBz
-         c/gOVi6jRd3aDRVkdbJIPOcgs5rLbl/9jgTyMwD0+sgvwlTKpMvpbPSpWuaCHlvUoR
-         lsvy5EttoMxjdNiGKHjoJVnKdxSE8pkgQVvXVwI/fLhf1B+QwoiYU0Mzqw9sNp/17Z
-         VaKKApmuLrO54yen2Uu5aW+hpwxdc/EXRP3LR569TozsIPKFMxlUv6qrG4qajLZJyj
-         nTIxn0fA9z03PY0QfRC9J3zBl2nkF7ulK4wNkjdTgzzXQ67p3zF7Zwwgqt7n4g2boG
-         gk4Dui88ZIcFg==
-Received: by mail-wm1-f70.google.com with SMTP id c2-20020a7bc8420000b0290238db573ab7so5466714wml.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:34:31 -0700 (PDT)
+        b=k3NQkMTJCzpxEaXtrsQYxD1tozAA27mjEdZTmW8rk2xphZA2q53u+aisx5jCsSlnV
+         32HtqlBG3ASoJMNCJav+Ga7Oat1H/j0aC9XJysVHR/YgqT0TCpC1jvne0VDdfZlhHe
+         zSX344WdjePs97xnJ6rMZZe8z/sWyK7gM9ZMpHYYDKH5VYAaasTQZCmLNGSN9de+es
+         4V0tJuS884SmGNfKFVTTxbIgowIM6ff6vJ4vhyj3nc90A+ndZYUoAYm3I1dFclVwDX
+         qFswYj2TCAb6C0ZmkusmkbXm/Rgg29DLJttiZHTPCbYKfx122UJvBJ1rsDfFh6oyhx
+         G+l0mueS42WBw==
+Received: by mail-wm1-f69.google.com with SMTP id z194-20020a1c7ecb000000b0030b7ccea080so537005wmc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:34:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QOuDhjEYBpbLsCkja2E5kIg84mTo7Mp3bww45iwZuuc=;
-        b=j/hFE368BGtzSUgPHiLpqLpVMSkYbjufuLHF8dHRKcbeevipQIsmO+ERr3Eg+jxj4z
-         0lVDhJWiVYvah5d3L5HhisLXPbVakUt8YDnu8gO2qM4WJriI1Z1ZbedC/KxcEFmUpgdz
-         M9NZLCF3wsBeywLlPMIWLuiZaEm3AcUrNmT98zBIu61wL2cvL4RXi3wHQtWA6CGJykHd
-         d5b9Ups9nOLyYrjPc3AMr8XvR8xnH0zxw4ful2ijX1TwNjmP19B5EhqHVKEL0zURwIRS
-         l0RStgmLapymfT86G3sTuVpPA7b4fbp9EfB/TIpvH4cts2PTLDIAxujkknRSvRgYGt3d
-         rybA==
-X-Gm-Message-State: AOAM530MDiqPN4sMLZ6wI40Fgdu3Is7YTBmQhxV9F4oLxYauCn9tk7qX
-        C7jbid3sIVaNfWmzqUs0+/ZsojzVh5VEqLPKLpviuaxAbSAAqgIut5cYCeDov1kYbax3SY0W0yv
-        mXuApKSM36Fdx+KtEju9TU9acjfI7CZnBZgmDuWzPbg==
-X-Received: by 2002:a7b:c0d1:: with SMTP id s17mr28624755wmh.139.1632126870599;
-        Mon, 20 Sep 2021 01:34:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz/Z8xXI2Qq35LGBSF3xaoKtEJihngmysxU/0sHU8yCajr8fdzEoTawRUZVVBarprNDrWcgkA==
-X-Received: by 2002:a7b:c0d1:: with SMTP id s17mr28624744wmh.139.1632126870473;
-        Mon, 20 Sep 2021 01:34:30 -0700 (PDT)
+        bh=GlnCPL/n2TbFZ5lKXBBdaGTEcyYQg+Xe+TKmdfu9J3o=;
+        b=7CH0fiR/+uXUU6DJMdD0vzKKJd9CzhBZuvA9f0ycLr9mb8BNZRBZsGxlF4+f5EdFne
+         OsiFGW+dxp+SpgMebnd8UAZErSWXJF8uvYMAMbxv7WaV/Gwjm27zoulS78UcIjzyy47q
+         J5CZM2hcjcVYb/npk0d+zka1qc+HLScoGJl/cOf4GMZKnK1d+c6LwYit4Jwm4sDG+sP/
+         XcvZG9TZDVLJbNjShNxSyeBsz4osip8TApZqD1Tbg4strBp+kiUbO7fqGXNHGK/OIO5k
+         XTh+8Ut/nkIRSCsJlWAz5eUMp9szWSl/pQNKi0qhe3nLPqu4aIsN7OzRwcXhmrPOvhbc
+         sxwg==
+X-Gm-Message-State: AOAM5322iAq3kg9KBz+VEZ94z8fgsxibi/mW7RWFjJSU0TRShUNO9pKn
+        V2t1A0+861UQRpNNlmy48vv2D6ITJJwLN5a9EOX7dTgQa3P+OtNqkjVAYLX45wxnlEBWGFpz0bJ
+        N+gHOsLWaP8gakQBnXHL6f7soElSMG6PLTYd1SDue1g==
+X-Received: by 2002:a1c:2056:: with SMTP id g83mr27578671wmg.27.1632126872641;
+        Mon, 20 Sep 2021 01:34:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZ9ERCT7KUv6zwsHvcBjFyA/Y/awEBukLBanBzL4Ra5L9b9at0dRM9wxlTaF4DW/RU0R/XQw==
+X-Received: by 2002:a1c:2056:: with SMTP id g83mr27578645wmg.27.1632126872454;
+        Mon, 20 Sep 2021 01:34:32 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id v188sm4658891wme.38.2021.09.20.01.34.29
+        by smtp.gmail.com with ESMTPSA id v188sm4658891wme.38.2021.09.20.01.34.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 01:34:30 -0700 (PDT)
+        Mon, 20 Sep 2021 01:34:31 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
+To:     p.zabel@pengutronix.de, viresh.kumar@linaro.org, robh@kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>, amitk@kernel.org,
+        kw@linux.com, rafael@kernel.org, thierry.reding@gmail.com,
+        lorenzo.pieralisi@arm.com, daniel.lezcano@linaro.org,
+        rui.zhang@intel.com, jonathanh@nvidia.com
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] memory: tegra: Remove interconnect state syncing hack
-Date:   Mon, 20 Sep 2021 10:34:26 +0200
-Message-Id: <163212685894.112070.3043725946674605837.b4-ty@canonical.com>
+Subject: Re: (subset) [PATCH 3/5] memory: tegra186-emc: Handle errors in BPMP response
+Date:   Mon, 20 Sep 2021 10:34:27 +0200
+Message-Id: <163212685894.112070.7948621267940223581.b4-ty@canonical.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210912183009.6400-1-digetx@gmail.com>
-References: <20210912183009.6400-1-digetx@gmail.com>
+In-Reply-To: <20210915085517.1669675-3-mperttunen@nvidia.com>
+References: <20210915085517.1669675-1-mperttunen@nvidia.com> <20210915085517.1669675-3-mperttunen@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -73,20 +76,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Sep 2021 21:30:09 +0300, Dmitry Osipenko wrote:
-> State syncing works properly now, previously the sync callback was never
-> invoked. Apparently it was fixed in drivers core, so let's remove the
-> hack. The state won't be synced until all consumer drivers of devices
-> that reference memory controller in a device-tree are probed, i.e. keeping
-> bandwidth at maximum until both display and devfreq drivers are probed.
+On Wed, 15 Sep 2021 11:55:15 +0300, Mikko Perttunen wrote:
+> The return value from tegra_bpmp_transfer indicates the success or
+> failure of the IPC transaction with BPMP. If the transaction
+> succeeded, we also need to check the actual command's result code.
+> Add code to do this.
 > 
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] memory: tegra: Remove interconnect state syncing hack
-      commit: 77b14c9d05bd72d6a3f11b4982591d6cb0090ffe
+[3/5] memory: tegra186-emc: Handle errors in BPMP response
+      commit: 13324edbe9269e6fbca4d0f5146b18ef8478c958
 
 Best regards,
 -- 
