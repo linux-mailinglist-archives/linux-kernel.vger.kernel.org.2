@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4279411E83
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C2D41210B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344760AbhITRbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:31:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56978 "EHLO mail.kernel.org"
+        id S1356385AbhITSBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:01:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350438AbhITR2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 818EB61406;
-        Mon, 20 Sep 2021 17:03:39 +0000 (UTC)
+        id S1355342AbhITRyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:54:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADC03619EA;
+        Mon, 20 Sep 2021 17:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157420;
-        bh=cEV1XptVCF814R36KtZ9hpfT1HKlmfxAhy55CveX/jY=;
+        s=korg; t=1632158023;
+        bh=Mdf+Xl0GHfADmY1M5BhOFaJG7sBmJPf506QHXx1dJts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0DpdPMUAmiNnPerGCgokRxpoChvsfv2tH0jAgBkPDyvC5Yub20cN+tgfJ1YKoRRj4
-         ubmgZP4r99NamLzFPKBsJKezmXgzQWW/yofSSp0EJc6zP74uYsMWl0eaBrhV/Ltbdb
-         925DQQJDbI/R1T8t+snhdcrjg/GEuolvb12wm4jE=
+        b=VmCW2xfr9WeWsKQdA3PZsMZWpsi8RgnZL1u+Ak6GDybxb1tZgMepGjrbZYEE3F/6x
+         9qv9mcbgGdfi3b18IKQgXJO1dBdJMDinGbDHoMyK6kKXLmvFII3MHDGgTrfxj4XsiO
+         AvY7NFiGp/wBPxxNF5BABJPEZzpTrR1uj9KznkFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
+        stable@vger.kernel.org, Zhenpeng Lin <zplin@psu.edu>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 200/217] tipc: increase timeout in tipc_sk_enqueue()
-Date:   Mon, 20 Sep 2021 18:43:41 +0200
-Message-Id: <20210920163931.410748091@linuxfoundation.org>
+Subject: [PATCH 4.19 260/293] dccp: dont duplicate ccid when cloning dccp sock
+Date:   Mon, 20 Sep 2021 18:43:42 +0200
+Message-Id: <20210920163942.296149850@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Lin, Zhenpeng <zplin@psu.edu>
 
-commit f4bb62e64c88c93060c051195d3bbba804e56945 upstream.
+commit d9ea761fdd197351890418acd462c51f241014a7 upstream.
 
-In tipc_sk_enqueue() we use hardcoded 2 jiffies to extract
-socket buffer from generic queue to particular socket.
-The 2 jiffies is too short in case there are other high priority
-tasks get CPU cycles for multiple jiffies update. As result, no
-buffer could be enqueued to particular socket.
+Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
+a UAF but reintroduced CVE-2017-6074.
 
-To solve this, we switch to use constant timeout 20msecs.
-Then, the function will be expired between 2 jiffies (CONFIG_100HZ)
-and 20 jiffies (CONFIG_1000HZ).
+When the sock is cloned, two dccps_hc_tx_ccid will reference to the
+same ccid. So one can free the ccid object twice from two socks after
+cloning.
 
-Fixes: c637c1035534 ("tipc: resolve race problem at unicast message reception")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+This issue was found by "Hadar Manor" as well and assigned with
+CVE-2020-16119, which was fixed in Ubuntu's kernel. So here I port
+the patch from Ubuntu to fix it.
+
+The patch prevents cloned socks from referencing the same ccid.
+
+Fixes: 2677d2067731410 ("dccp: don't free ccid2_hc_tx_sock ...")
+Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/dccp/minisocks.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1775,7 +1775,7 @@ static int tipc_backlog_rcv(struct sock
- static void tipc_sk_enqueue(struct sk_buff_head *inputq, struct sock *sk,
- 			    u32 dport, struct sk_buff_head *xmitq)
- {
--	unsigned long time_limit = jiffies + 2;
-+	unsigned long time_limit = jiffies + usecs_to_jiffies(20000);
- 	struct sk_buff *skb;
- 	unsigned int lim;
- 	atomic_t *dcnt;
+--- a/net/dccp/minisocks.c
++++ b/net/dccp/minisocks.c
+@@ -98,6 +98,8 @@ struct sock *dccp_create_openreq_child(c
+ 		newdp->dccps_role	    = DCCP_ROLE_SERVER;
+ 		newdp->dccps_hc_rx_ackvec   = NULL;
+ 		newdp->dccps_service_list   = NULL;
++		newdp->dccps_hc_rx_ccid     = NULL;
++		newdp->dccps_hc_tx_ccid     = NULL;
+ 		newdp->dccps_service	    = dreq->dreq_service;
+ 		newdp->dccps_timestamp_echo = dreq->dreq_timestamp_echo;
+ 		newdp->dccps_timestamp_time = dreq->dreq_timestamp_time;
 
 
