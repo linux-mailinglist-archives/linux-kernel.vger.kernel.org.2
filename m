@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDB941262F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7034125FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354792AbhITS4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:56:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384926AbhITSwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB71606A5;
-        Mon, 20 Sep 2021 18:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632163487;
-        bh=7fU7b/cAIa+MPWF5CIYZiPgVGFO3AZYQ1DrtG9/NlOE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2VGFr1pWZXOVcZooHLan70yYq5H+mYfkijp5TezjAyz/Mu0wW3u16ePnRxGAdDvXa
-         BFiCaYxcS7giPgse3l2Lr2Y2HlDZQbwE/xxZLF0uk2MutP18GKwI9Ay+dwhVr2xQRS
-         N1hkQZ4vUIEWppnRHm8oHOW7hDloXrv/gIJhpQEg=
-Date:   Mon, 20 Sep 2021 20:44:45 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Michael Chan <michael.chan@broadcom.com>
-Cc:     open list <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 118/122] bnxt_en: Fix possible unintended driver
- initiated error recovery
-Message-ID: <YUjWnR75ohAfAYeU@kroah.com>
-References: <20210920163915.757887582@linuxfoundation.org>
- <20210920163919.680890632@linuxfoundation.org>
- <CACKFLi=a_5Qhr1rRq2gKqmO1su-pwxt3845K1AVjVqq5iOXJ5A@mail.gmail.com>
+        id S1355041AbhITSv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:51:57 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:39346
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1384890AbhITStR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:49:17 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id DA14740185;
+        Mon, 20 Sep 2021 18:47:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632163668;
+        bh=pudimRprKHdN4/qqulTzwk5MafxvF6f7MetF1EElfYY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=X7yJs3uBx9QI0k6reeuqzJX/UBqzQfiZ9jlgZqMuvamtkQr8CJEYwGYU2sR9WOJ0Q
+         k+ODPVbsNs3y1zDLqEl7DI+5hpZ+1qOsy//HupvLtwqpot6Hbnh9C/36Ffiw36Ekat
+         OMP/HGIYC0D0Sp92YqeZXAzIyqAXJR8HLY39ka2RC+w0OWeFyI5OAVUzrs3F8Py20B
+         SnzJfacuqjcFYhes3a1QZj0sAdZiWw6VraKOIH7YnqHf8PnN6x/2XTve5a0HSgbOl1
+         vIXF3ye9VzlUW5vk9TuMTqZ/43kdpZSIZmLW62EFUY06EfxXFadbMUc8+7tYYwI4CK
+         BYPaSOaC9fCpw==
+From:   Colin King <colin.king@canonical.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: drivers/input/joystick: Fix spelling mistake "Millenium" -> "Millennium"
+Date:   Mon, 20 Sep 2021 19:47:48 +0100
+Message-Id: <20210920184748.18519-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACKFLi=a_5Qhr1rRq2gKqmO1su-pwxt3845K1AVjVqq5iOXJ5A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:11:39AM -0700, Michael Chan wrote:
-> On Mon, Sep 20, 2021 at 10:28 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Michael Chan <michael.chan@broadcom.com>
-> >
-> > [ Upstream commit 1b2b91831983aeac3adcbb469aa8b0dc71453f89 ]
-> >
-> 
-> Please include this patch as well:
-> 
-> eca4cf12acda bnxt_en: Fix error recovery regression
-> 
-> Otherwise, it can cause a regression.  Thanks.
+From: Colin Ian King <colin.king@canonical.com>
 
-Now added to 5.10 and 5.14, thanks!
+There is a spelling mistake in the name  of a joystick. Fix it.
 
-greg k-h
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/input/joystick/tmdc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/input/joystick/tmdc.c b/drivers/input/joystick/tmdc.c
+index f89e9aa6d328..7416de84b955 100644
+--- a/drivers/input/joystick/tmdc.c
++++ b/drivers/input/joystick/tmdc.c
+@@ -83,7 +83,7 @@ static const struct tmdc_model {
+ 	const signed char *axes;
+ 	const short *buttons;
+ } tmdc_models[] = {
+-	{   1, "ThrustMaster Millenium 3D Inceptor",	  6, 2, { 4, 2 }, { 4, 6 }, tmdc_abs, tmdc_btn_joy },
++	{   1, "ThrustMaster Millennium 3D Inceptor",	  6, 2, { 4, 2 }, { 4, 6 }, tmdc_abs, tmdc_btn_joy },
+ 	{   3, "ThrustMaster Rage 3D Gamepad",		  2, 0, { 8, 2 }, { 0, 0 }, tmdc_abs, tmdc_btn_pad },
+ 	{   4, "ThrustMaster Attack Throttle",		  5, 2, { 4, 6 }, { 4, 2 }, tmdc_abs_at, tmdc_btn_at },
+ 	{   8, "ThrustMaster FragMaster",		  4, 0, { 8, 2 }, { 0, 0 }, tmdc_abs_fm, tmdc_btn_fm },
+-- 
+2.32.0
+
