@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF214121BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBCA412321
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347700AbhITSIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:08:52 -0400
-Received: from mout.gmx.net ([212.227.15.19]:54279 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357240AbhITSDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:03:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632160919;
-        bh=qs0DArqAPOvJVRu48rowJhF8MgdjMaPpAg6EqgXnKTY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=HfeksWb8LsK1BsT0Rl64NbuI6PRBJqR+5afGmXMVOpT9MQ1sGhbd4aj4wKnqg/u0/
-         WrfhZhz7yfGSieU/yXeb42bdH/pP+Foq5+xtvqElrDnj/AmkUWvZ7qETaZTC3if+Vg
-         lCzK14K/5EENOL21FIyHBP400DgQNiVDIJ3AgrjY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.139.149]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M9FnZ-1mYijQ0r9L-006KF7; Mon, 20
- Sep 2021 20:01:59 +0200
-Subject: Re: [PATCH] agp: define proper stubs for empty helpers
-To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org
-References: <20210920121728.94045-1-arnd@kernel.org>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <964b57bd-d9ea-2df7-72f8-4fe0a24e365c@gmx.de>
-Date:   Mon, 20 Sep 2021 20:01:52 +0200
+        id S1377482AbhITSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:21:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42762 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1358228AbhITSFs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:05:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632161061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gopq2BZfkhjQI2xV/FKOoo6DL77eDjWiZmjGPcNNBzk=;
+        b=TbWuNdPYobo4tMZEHf49jhXuraQ7qnb6/itxXs2lpYA4HcOc1VAoKThz2mAFt4FbSiqGvF
+        oxDDWxFMLQF/MMM2aeuiNyM4e+QxEALrVwHV/vvqUHAp65uX2R1AcufhgWjCOdK9nnlSLw
+        jj6xmNhKTHw8CRx/sLfc/yhWlpfacSQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-27fxhFY8Ncmu5WW4bDsyJg-1; Mon, 20 Sep 2021 14:04:20 -0400
+X-MC-Unique: 27fxhFY8Ncmu5WW4bDsyJg-1
+Received: by mail-wr1-f72.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so6759524wrn.12
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:04:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gopq2BZfkhjQI2xV/FKOoo6DL77eDjWiZmjGPcNNBzk=;
+        b=yOgYLKHuRfM/mlKwDn08xdBeC64+i9gCjWg/ZLsFlbRrLmlzR34IkYibBeLf9A3Lb1
+         i0zIBNVsH6f75zBZLwO28SzDMA+WDGZ1czNqtypymd9vXE0jxS5Czqm1e9k2ygajePp9
+         ll67sSzwwOumdRmszFwKEsVn8+IciuPaImX5t+5SwyQkNBRhh505H0PaUwpleVvVQW6l
+         i3ZUHyY3MaSQog9xCEM7244nqap6jQqOwtturgYa4cshB0k/wJZizUgAlvSbleUt8N3Q
+         JwQw1UvllU0d/9+DRR1vVKovd1zHzrQV1DjTjnOEfOrpJlVwb7WRzwIs4RkwpsrW2PoM
+         Ir/w==
+X-Gm-Message-State: AOAM5321VT21GqXXGLeIyCcLIyc5BQvMNkJk1Hm/zfFlOuiAfcp7+P8Q
+        6dl22Q82ngQmdBV1MOoOEIpLbHV6Iq8M/zYxQNAXb0tuCL0AqTWBwQLBunJAe0B+SJKidYvuiCJ
+        HtryvZ2Lbn/ZkeBlXRjLucIl0
+X-Received: by 2002:a05:600c:4b87:: with SMTP id e7mr368767wmp.108.1632161058107;
+        Mon, 20 Sep 2021 11:04:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz8yCyXTPQoZtRcZQsJIQbJE0GIxqbCuoyPq+LQY2WknfXjhfcSPzpz1/IggdbHc197w7rocw==
+X-Received: by 2002:a05:600c:4b87:: with SMTP id e7mr368722wmp.108.1632161057696;
+        Mon, 20 Sep 2021 11:04:17 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f5sm199154wmb.47.2021.09.20.11.04.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 11:04:17 -0700 (PDT)
+Subject: Re: [PATCH v5 0/8] KVM: Various fixes and improvements around kicking
+ vCPUs
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210903075141.403071-1-vkuznets@redhat.com>
+ <87h7ef9ubo.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <21214d34-68b6-ba8e-c12e-2fa44a430540@redhat.com>
+Date:   Mon, 20 Sep 2021 20:04:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210920121728.94045-1-arnd@kernel.org>
+In-Reply-To: <87h7ef9ubo.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ielC16M4jNM8r9XDB90QignHCy/6YlUha15mhFWovRcMy9O1zzb
- 8QypFMtAxF5MzAHK++H1MBI81Sa75wLy/setk5x13DasmVS0AKNKY6GfUyCrzNgdbtkCKTc
- kwWR86U72xfpyB6Hrky0K/RNzjOCDlpPupfFbZssjNmoecQixWFYM7O/WLC1GhFaR6lMazX
- yBDHtqk4g/mtZryfF0OBQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:C/wqI77xvAo=:HRjvLc6nN+tv6C/BrmKRSq
- WKcOglc7y5AqtARLrn1+leF9neQNkKr82co/040Gxm7EJ+yY13wgWDcHM+ltiUt6FxyBZ9d5k
- 1bwC0RiNnFLO3gEM4KXxkyl8qK0jX4PAeuysc0Hnh+wrIJvBeAN45i4J8tguZxMTYVp6BTA95
- xXAfx5a28vu9RZlTaN7V1RPjnVwRxsOVSUA1IBORZprdzG4zoegm8ZHIFL/kV+s+T1Bpd81cH
- EVfVEyM2p5HFn6ozGuaV/xi7QlFhdFtDHCsvAPeYdRu/vDFjLyXsUXVRTf40igCLBe/sCuF0I
- 4dzjsZ/xCGzQ2vqidVfuKnOqUmdO6cx3TcKHiXMHyZpbHgzmHlxde0nH2nRRxHuvDSDdqOkXG
- QETmwXxWNyc6vJJE5fe6vA7bPIV7Hvw8xkqtZDG8z7jHxsuAsi88u3RRl9/Ia0crUKPBDiB8F
- z13T5dDSmqJcSTU3gUzmPoNxJD83aRFGY+CbrFxrDSexaNijgHO4vympYNcO3SfmeAi2QF9VN
- MPiFrqCqLcx/6JF59MRnLlyM/MmX5WjIwtJNazFd8JFcnKvqEmMemQX9OdzVTh85d62mKRxx8
- LXmQOSl2PJyciYWePTbhHhDSRUpyVo/pcL10CsBPaZX3Ux+qgMEfAKTXKhFTTXalsDbImF2TV
- zQJfbjEy3qdXrNtasPETDkJmPo2FeuBXtV5v8osPkxZo7Ew+Xyo2NpHRH7Wh9+ChnT9xiMcQC
- e0IuZ5Ktpgz1Y2nmng13PrGWD7VgOBPzLnYPikjlAxgrp/r5E4OAU20frGFDyWal0RYppWlWk
- BczjLrqVR9i+2f64AKfli9cYRTpvBDhzXssdxzqzO3QQEc+Fvdmo8qRQTkBWutfqRL2PF2QE/
- A+y/5JftYjrOUQ+nJNqmLunrtUpUbygu7fxX+sC4PfE/+LYDEzTfm/rVjbf2lqRrtzQPOaTd1
- 1/wVfzKDreknGXRA5+Sfjykp1RGHZ3JhqOZpuYBdHzVhKiMcwtTrHCIw3smrupIOF88E2wMbn
- SdlleS7Lfiw9A+j4ou7ClrVwGe5QYtPpZQ1Jyu87gSVLfdM0Cs+A6o1Tw06Eia4zbUX4l4kyz
- ULO/TkD8wCoZS0=
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 2:17 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The empty unmap_page_from_agp() macro causes a warning when
-> building with 'make W=3D1' on a couple of architectures:
->
-> drivers/char/agp/generic.c: In function 'agp_generic_destroy_page':
-> drivers/char/agp/generic.c:1265:28: error: suggest braces around empty b=
-ody in an 'if' statement [-Werror=3Dempty-body]
->   1265 |   unmap_page_from_agp(page);
->
-> Change the definitions to a 'do { } while (0)' construct to
-> make these more reliable.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 20/09/21 16:48, Vitaly Kuznetsov wrote:
+> 
+>> Patch6 fixes a real problem with ioapic_write_indirect() KVM does
+>> out-of-bounds access to stack memory.
+> Paolo,
+> 
+> while the rest of the series is certainly not urgent, PATCH6 seems to be
+> fixing a real problem introduced in 5.10. Would it be possible to send
+> it for one of the upcoming 5.15 rcs (and probably to stable@)?
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+Yep, I'm back to KVM now.
 
-Thanks,
-Helge
-
-> ---
->   arch/parisc/include/asm/agp.h  | 4 ++--
->   arch/powerpc/include/asm/agp.h | 4 ++--
->   arch/sparc/include/asm/agp.h   | 6 +++---
->   3 files changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/parisc/include/asm/agp.h b/arch/parisc/include/asm/agp=
-.h
-> index cb04470e63d0..14ae54cfd368 100644
-> --- a/arch/parisc/include/asm/agp.h
-> +++ b/arch/parisc/include/asm/agp.h
-> @@ -8,8 +8,8 @@
->    *
->    */
->
-> -#define map_page_into_agp(page)		/* nothing */
-> -#define unmap_page_from_agp(page)	/* nothing */
-> +#define map_page_into_agp(page)		do { } while (0)
-> +#define unmap_page_from_agp(page)	do { } while (0)
->   #define flush_agp_cache()		mb()
->
->   /* GATT allocation. Returns/accepts GATT kernel virtual address. */
-> diff --git a/arch/powerpc/include/asm/agp.h b/arch/powerpc/include/asm/a=
-gp.h
-> index b29b1186f819..6b6485c988dd 100644
-> --- a/arch/powerpc/include/asm/agp.h
-> +++ b/arch/powerpc/include/asm/agp.h
-> @@ -5,8 +5,8 @@
->
->   #include <asm/io.h>
->
-> -#define map_page_into_agp(page)
-> -#define unmap_page_from_agp(page)
-> +#define map_page_into_agp(page) do {} while (0)
-> +#define unmap_page_from_agp(page) do {} while (0)
->   #define flush_agp_cache() mb()
->
->   /* GATT allocation. Returns/accepts GATT kernel virtual address. */
-> diff --git a/arch/sparc/include/asm/agp.h b/arch/sparc/include/asm/agp.h
-> index efe0d6a12e5a..2d0ff84cee3f 100644
-> --- a/arch/sparc/include/asm/agp.h
-> +++ b/arch/sparc/include/asm/agp.h
-> @@ -4,9 +4,9 @@
->
->   /* dummy for now */
->
-> -#define map_page_into_agp(page)
-> -#define unmap_page_from_agp(page)
-> -#define flush_agp_cache() mb()
-> +#define map_page_into_agp(page)		do { } while (0)
-> +#define unmap_page_from_agp(page)	do { } while (0)
-> +#define flush_agp_cache()		mb()
->
->   /* GATT allocation. Returns/accepts GATT kernel virtual address. */
->   #define alloc_gatt_pages(order)		\
->
+Paolo
 
