@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F34C41252C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5F8412436
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382640AbhITSmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
+        id S1379638AbhITSbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:31:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381640AbhITSjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24F7D63326;
-        Mon, 20 Sep 2021 17:30:20 +0000 (UTC)
+        id S1348137AbhITSZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:25:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F5D632D0;
+        Mon, 20 Sep 2021 17:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159020;
-        bh=hjQw1FsWVyVIKSRoQkKjd5yOzPMsspegKkmUG41isls=;
+        s=korg; t=1632158723;
+        bh=Rzk16eFGZCHkcQPmr+mLyNt0vij5JEP7qj3OXPPf9mQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mzjdNEEToXcPB/NhuqOi152aAmdX0ItPO4MPvx8YElR9CikuD+pUG4/UfOuVXSWba
-         +VYBu5sH8M9HZp6gpJbDdbVqsxe6iUJbw0zpraZlcyrx75l1eEFoevPU7a3Nqwqp/E
-         KCYxIsz4d9893FBT1rWpiyNG31WSA0JqX4/g4CC4=
+        b=ChnCeAT5dTQbw0u8rW4gq5XR/FIxBsaD+r4VD4WuWxErWyTUb4Yp0dC8Pvl2pCtID
+         Y96oiIkKM2jwBVnqQRl9E0OOyZW+x09puCyF1xIEicbWBBNX5ri07daw9igjqcoS0N
+         BhSTz8lvs4kPg5vSQWJivAMowDxlr4eWk3zwRE5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 040/168] net/{mlx5|nfp|bnxt}: Remove unnecessary RTNL lock assert
+        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.10 006/122] arm64/sve: Use correct size when reinitialising SVE state
 Date:   Mon, 20 Sep 2021 18:42:58 +0200
-Message-Id: <20210920163922.968661000@linuxfoundation.org>
+Message-Id: <20210920163915.970625637@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Mark Brown <broonie@kernel.org>
 
-commit 7c3a0a018e672a9723a79b128227272562300055 upstream.
+commit e35ac9d0b56e9efefaeeb84b635ea26c2839ea86 upstream.
 
-Remove the assert from the callback priv lookup function since it does
-not require RTNL lock and is already protected by flow_indr_block_lock.
+When we need a buffer for SVE register state we call sve_alloc() to make
+sure that one is there. In order to avoid repeated allocations and frees
+we keep the buffer around unless we change vector length and just memset()
+it to ensure a clean register state. The function that deals with this
+takes the task to operate on as an argument, however in the case where we
+do a memset() we initialise using the SVE state size for the current task
+rather than the task passed as an argument.
 
-This will avoid warnings from being emitted to dmesg if the driver
-registers its callback after an ingress qdisc was created for a
-netdevice.
+This is only an issue in the case where we are setting the register state
+for a task via ptrace and the task being configured has a different vector
+length to the task tracing it. In the case where the buffer is larger in
+the traced process we will leak old state from the traced process to
+itself, in the case where the buffer is smaller in the traced process we
+will overflow the buffer and corrupt memory.
 
-The warnings started after the following patch was merged:
-commit 74fc4f828769 ("net: Fix offloading indirect devices dependency on qdisc order creation")
-
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bc0ee4760364 ("arm64/sve: Core task context handling")
+Cc: <stable@vger.kernel.org> # 4.15.x
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210909165356.10675-1-broonie@kernel.org
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c        |    3 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c |    3 ---
- drivers/net/ethernet/netronome/nfp/flower/offload.c |    3 ---
- 3 files changed, 9 deletions(-)
+ arch/arm64/kernel/fpsimd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-@@ -1870,9 +1870,6 @@ bnxt_tc_indr_block_cb_lookup(struct bnxt
+--- a/arch/arm64/kernel/fpsimd.c
++++ b/arch/arm64/kernel/fpsimd.c
+@@ -510,7 +510,7 @@ size_t sve_state_size(struct task_struct
+ void sve_alloc(struct task_struct *task)
  {
- 	struct bnxt_flower_indr_block_cb_priv *cb_priv;
+ 	if (task->thread.sve_state) {
+-		memset(task->thread.sve_state, 0, sve_state_size(current));
++		memset(task->thread.sve_state, 0, sve_state_size(task));
+ 		return;
+ 	}
  
--	/* All callback list access should be protected by RTNL. */
--	ASSERT_RTNL();
--
- 	list_for_each_entry(cb_priv, &bp->tc_indr_block_list, list)
- 		if (cb_priv->tunnel_netdev == netdev)
- 			return cb_priv;
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c
-@@ -300,9 +300,6 @@ mlx5e_rep_indr_block_priv_lookup(struct
- {
- 	struct mlx5e_rep_indr_block_priv *cb_priv;
- 
--	/* All callback list access should be protected by RTNL. */
--	ASSERT_RTNL();
--
- 	list_for_each_entry(cb_priv,
- 			    &rpriv->uplink_priv.tc_indr_block_priv_list,
- 			    list)
---- a/drivers/net/ethernet/netronome/nfp/flower/offload.c
-+++ b/drivers/net/ethernet/netronome/nfp/flower/offload.c
-@@ -1766,9 +1766,6 @@ nfp_flower_indr_block_cb_priv_lookup(str
- 	struct nfp_flower_indr_block_cb_priv *cb_priv;
- 	struct nfp_flower_priv *priv = app->priv;
- 
--	/* All callback list access should be protected by RTNL. */
--	ASSERT_RTNL();
--
- 	list_for_each_entry(cb_priv, &priv->indr_block_cb_priv, list)
- 		if (cb_priv->netdev == netdev)
- 			return cb_priv;
 
 
