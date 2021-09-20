@@ -2,110 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CFC41144C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDD4411453
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237732AbhITMYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233511AbhITMYK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:24:10 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521DDC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:22:43 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q11so29102270wrr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tCMyAI4JO6VKkU7AmoNIAzglb9xaZgl9kmlNL3VEvL4=;
-        b=JZQ2+zI+W0SL7cwiKWYbsuiuWplyCzFrYondKJhbn30f0ST4w3KQPKCOEdfN2X7qL/
-         e4Hf5Vp6LoppSpnYVor+/hGghyQHmG3ZsUR/ZkmnRXReGgnd/kbYeYCMGt1miVcU5f3G
-         eNrhTmqpmBt7jczLwm/DagTdp961iGwu1mGwr07e26mO2nxiv9gSoHKsqNmjtJHR0HcX
-         hI7cPlwBB2bo6KeAzNOUNVycXeEL2/Q1YCKti0uiy/CKnOWe/u0dsztQYYvqJgGdIRbD
-         CvhkmLu1/MZ9EDXANpLWWBXiXKRFLqRL7fo7MybclREbWmfjsU5fKJc/MxS7ek7iq0wc
-         7WCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tCMyAI4JO6VKkU7AmoNIAzglb9xaZgl9kmlNL3VEvL4=;
-        b=QtS/Cfm5A3el8HeHpvbKVFOt2aoXW+y/j6buRZMaf2xF3O8Srg0FMdgH3AOUxDZ5lK
-         0k1BiB8pzZhbwT7f+5f/mQjacqjH5xAKpKBLK38w9++Lpf4Zrqe8ieYnUQaW8vOa46AO
-         S6pSPva3vY4twy2s5gPb00rggDlWOb0GB0gyEoU/SOKUFoYJToOIiuquHvWwe0chR4WE
-         GhSr6cu+DOWp6t0sISICjg2+cx8+9vc2DkGdtFSSp86K/8OpY8nlmu7v22he31/tNvbl
-         kVMVLQvoD4IH0+iWnfx6gizmkczbh7YtpBA8ZKhJUHqVb1+OdWgkFP3E493rcM8MjooG
-         IE2g==
-X-Gm-Message-State: AOAM533T3nOlVb1E6uQgZ9P05htHkdDw0QjNy/uS5bFn8Lz3acI8e3lT
-        7psQ4zmxwxnV0Jiu3nn7LamngZQycDJaD4oX
-X-Google-Smtp-Source: ABdhPJwghoiUF31ZcV1Our+qvNK3DzJ3CUzQX74ij+vo4OEmaDXRO6ym4AzRjtnXIVr8AS5Bn9Zzhw==
-X-Received: by 2002:a05:600c:17d1:: with SMTP id y17mr29272700wmo.135.1632140561722;
-        Mon, 20 Sep 2021 05:22:41 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:aa8a:ef22:59c5:1bf3? ([2001:861:44c0:66c0:aa8a:ef22:59c5:1bf3])
-        by smtp.gmail.com with ESMTPSA id a72sm19889422wme.5.2021.09.20.05.22.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 05:22:41 -0700 (PDT)
-Subject: Re: [PATCH 2/9] firmware: meson: simplify getting .driver_data
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        id S237903AbhITMZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:25:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235204AbhITMZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:25:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC6A60F58;
+        Mon, 20 Sep 2021 12:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632140645;
+        bh=QAFA1wMFi/Pt4kxfmYpb2lbYqcOVrXCfBWOndEjPAec=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KNmdjrKewHJ7XmsH64GBGGbmuCbR9yFQsMo5kVFKh7gos0w4bh4CnC4ceeFYThhy6
+         p7QXI1HcpmIhmILsF51Km2dgWxLHy88eZHnqxWzyLMSk2/iGj+Vj4Gfxvs+zQLwLMa
+         ssgWJuICSY0zJVQsn3rYmcm+I1tMgzlx1G8ez1EKTWN1xd/XgcFK+2IKqauengYrq6
+         POlT0HCl9zqiCfZyq8zCmLDvHMU9EWhRBIcN4O8nAMAGqpph3cgsDNKuthDjdO0Rqv
+         Z5wixoL3kGZarkZMeyxtWFJmKDX8V4HB+Hlb46Amhp9E/FGtNjeK9rHglHbYGHiSea
+         ZJREI+jT7XGDA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bob Copeland <me@bobcopeland.com>,
+        "John W. Linville" <linville@tuxdriver.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
- <20210920090522.23784-3-wsa+renesas@sang-engineering.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <ad855cb8-0ed4-4e42-7434-2073855249fa@baylibre.com>
-Date:   Mon, 20 Sep 2021 14:22:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: [PATCH] [v2] ath5k: fix building with LEDS=m
+Date:   Mon, 20 Sep 2021 14:23:44 +0200
+Message-Id: <20210920122359.353810-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210920090522.23784-3-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 11:05, Wolfram Sang wrote:
-> We should get 'driver_data' from 'struct device' directly. Going via
-> platform_device is an unneeded step back and forth.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
-> 
-> Build tested only. buildbot is happy.
-> 
->  drivers/firmware/meson/meson_sm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/firmware/meson/meson_sm.c b/drivers/firmware/meson/meson_sm.c
-> index 77aa5c6398aa..714016e3aab3 100644
-> --- a/drivers/firmware/meson/meson_sm.c
-> +++ b/drivers/firmware/meson/meson_sm.c
-> @@ -240,12 +240,11 @@ EXPORT_SYMBOL_GPL(meson_sm_get);
->  static ssize_t serial_show(struct device *dev, struct device_attribute *attr,
->  			 char *buf)
->  {
-> -	struct platform_device *pdev = to_platform_device(dev);
->  	struct meson_sm_firmware *fw;
->  	uint8_t *id_buf;
->  	int ret;
->  
-> -	fw = platform_get_drvdata(pdev);
-> +	fw = dev_get_drvdata(dev);
->  
->  	id_buf = kmalloc(SM_CHIP_ID_LENGTH, GFP_KERNEL);
->  	if (!id_buf)
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Randconfig builds still show a failure for the ath5k driver,
+similar to the one that was fixed for ath9k earlier:
+
+WARNING: unmet direct dependencies detected for MAC80211_LEDS
+  Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
+  Selected by [m]:
+  - ATH5K [=m] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && (PCI [=y] || ATH25) && MAC80211 [=y]
+net/mac80211/led.c: In function 'ieee80211_alloc_led_names':
+net/mac80211/led.c:34:22: error: 'struct led_trigger' has no member named 'name'
+   34 |         local->rx_led.name = kasprintf(GFP_KERNEL, "%srx",
+      |                      ^
+
+Copying the same logic from my ath9k patch makes this one work
+as well, stubbing out the calls to the LED subsystem.
+
+Fixes: b64acb28da83 ("ath9k: fix build error with LEDS_CLASS=m")
+Fixes: 72cdab808714 ("ath9k: Do not select MAC80211_LEDS by default")
+Fixes: 3a078876caee ("ath5k: convert LED code to use mac80211 triggers")
+Link: https://lore.kernel.org/all/20210722105501.1000781-1-arnd@kernel.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+Changes in v2:
+- avoid link failure when NEW_LEDS is disabled
+---
+ drivers/net/wireless/ath/ath5k/Kconfig |  4 +---
+ drivers/net/wireless/ath/ath5k/led.c   | 10 ++++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath5k/Kconfig b/drivers/net/wireless/ath/ath5k/Kconfig
+index f35cd8de228e..6914b37bb0fb 100644
+--- a/drivers/net/wireless/ath/ath5k/Kconfig
++++ b/drivers/net/wireless/ath/ath5k/Kconfig
+@@ -3,9 +3,7 @@ config ATH5K
+ 	tristate "Atheros 5xxx wireless cards support"
+ 	depends on (PCI || ATH25) && MAC80211
+ 	select ATH_COMMON
+-	select MAC80211_LEDS
+-	select LEDS_CLASS
+-	select NEW_LEDS
++	select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
+ 	select ATH5K_AHB if ATH25
+ 	select ATH5K_PCI if !ATH25
+ 	help
+diff --git a/drivers/net/wireless/ath/ath5k/led.c b/drivers/net/wireless/ath/ath5k/led.c
+index 6a2a16856763..33e9928af363 100644
+--- a/drivers/net/wireless/ath/ath5k/led.c
++++ b/drivers/net/wireless/ath/ath5k/led.c
+@@ -89,7 +89,8 @@ static const struct pci_device_id ath5k_led_devices[] = {
+ 
+ void ath5k_led_enable(struct ath5k_hw *ah)
+ {
+-	if (test_bit(ATH_STAT_LEDSOFT, ah->status)) {
++	if (IS_ENABLED(CONFIG_MAC80211_LEDS) &&
++	    test_bit(ATH_STAT_LEDSOFT, ah->status)) {
+ 		ath5k_hw_set_gpio_output(ah, ah->led_pin);
+ 		ath5k_led_off(ah);
+ 	}
+@@ -104,7 +105,8 @@ static void ath5k_led_on(struct ath5k_hw *ah)
+ 
+ void ath5k_led_off(struct ath5k_hw *ah)
+ {
+-	if (!test_bit(ATH_STAT_LEDSOFT, ah->status))
++	if (!IS_ENABLED(CONFIG_MAC80211_LEDS) ||
++	    !test_bit(ATH_STAT_LEDSOFT, ah->status))
+ 		return;
+ 	ath5k_hw_set_gpio(ah, ah->led_pin, !ah->led_on);
+ }
+@@ -146,7 +148,7 @@ ath5k_register_led(struct ath5k_hw *ah, struct ath5k_led *led,
+ static void
+ ath5k_unregister_led(struct ath5k_led *led)
+ {
+-	if (!led->ah)
++	if (!IS_ENABLED(CONFIG_MAC80211_LEDS) || !led->ah)
+ 		return;
+ 	led_classdev_unregister(&led->led_dev);
+ 	ath5k_led_off(led->ah);
+@@ -169,7 +171,7 @@ int ath5k_init_leds(struct ath5k_hw *ah)
+ 	char name[ATH5K_LED_MAX_NAME_LEN + 1];
+ 	const struct pci_device_id *match;
+ 
+-	if (!ah->pdev)
++	if (!IS_ENABLED(CONFIG_MAC80211_LEDS) || !ah->pdev)
+ 		return 0;
+ 
+ #ifdef CONFIG_ATH5K_AHB
+-- 
+2.29.2
+
