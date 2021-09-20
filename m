@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9D1411A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D93411D8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240451AbhITQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
+        id S1349034AbhITRVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:21:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243737AbhITQsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAFE261222;
-        Mon, 20 Sep 2021 16:46:43 +0000 (UTC)
+        id S1348476AbhITRTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:19:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB9DF61A4E;
+        Mon, 20 Sep 2021 17:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156404;
-        bh=IqbTn1MvFeXAy+rBiPf4JN0oCguSHwSyiWLudmzB/Vc=;
+        s=korg; t=1632157207;
+        bh=6XHjWAKNerRQDiuqKYanKdBuBCzG8ARQBBmSZljs6v4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vXCOmcW/o4f3ZUN+IO5q4BeI6bY8ojhSytPUwsyJHRnIaxQsu472CzzOMFeHNbEGM
-         gaTVpg9tenFUgw/M4L/3e4Jksfak763SheboDvemMYab3r75G5Ye+9gvoY+M/vBRBn
-         i4NH2TI3Q65UqVALRwtjgKWVzv78QliuJ5c8d0ZI=
+        b=NK1ODeH/SBrpCe3jsDZfMO9uypvDbGpyFhSpZNzIlsfCrNJPTOzGrY7n9yonTbL10
+         RcHxx3f5q8Lc8B2zuOpGu/Xnf8PV/YVKVmpgYRgNlRUNyWHc855TeYbbuP/2H6DJbM
+         4TWsg18RxesR6a7aGelsHwndOq/TAIdVZQhPtZ5k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 043/133] net: cipso: fix warnings in netlbl_cipsov4_add_std
-Date:   Mon, 20 Sep 2021 18:42:01 +0200
-Message-Id: <20210920163914.059902750@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.14 101/217] PCI/MSI: Skip masking MSI-X on Xen PV
+Date:   Mon, 20 Sep 2021 18:42:02 +0200
+Message-Id: <20210920163928.061154020@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,70 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
-[ Upstream commit 8ca34a13f7f9b3fa2c464160ffe8cc1a72088204 ]
+commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
 
-Syzbot reported warning in netlbl_cipsov4_add(). The
-problem was in too big doi_def->map.std->lvl.local_size
-passed to kcalloc(). Since this value comes from userpace there is
-no need to warn if value is not correct.
+When running as Xen PV guest, masking MSI-X is a responsibility of the
+hypervisor. The guest has no write access to the relevant BAR at all - when
+it tries to, it results in a crash like this:
 
-The same problem may occur with other kcalloc() calls in
-this function, so, I've added __GFP_NOWARN flag to all
-kcalloc() calls there.
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-Reported-and-tested-by: syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
-Fixes: 96cb8e3313c7 ("[NetLabel]: CIPSOv4 and Unlabeled packet integration")
-Acked-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The recently introduced function msix_mask_all() does not check the global
+variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
+of MSI[-X] interrupts.
+
+Add the check to make this function XEN PV compatible.
+
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netlabel/netlabel_cipso_v4.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/pci/msi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/netlabel/netlabel_cipso_v4.c b/net/netlabel/netlabel_cipso_v4.c
-index 7fd1104ba900..d31cd4d509ca 100644
---- a/net/netlabel/netlabel_cipso_v4.c
-+++ b/net/netlabel/netlabel_cipso_v4.c
-@@ -205,14 +205,14 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
- 		}
- 	doi_def->map.std->lvl.local = kcalloc(doi_def->map.std->lvl.local_size,
- 					      sizeof(u32),
--					      GFP_KERNEL);
-+					      GFP_KERNEL | __GFP_NOWARN);
- 	if (doi_def->map.std->lvl.local == NULL) {
- 		ret_val = -ENOMEM;
- 		goto add_std_failure;
- 	}
- 	doi_def->map.std->lvl.cipso = kcalloc(doi_def->map.std->lvl.cipso_size,
- 					      sizeof(u32),
--					      GFP_KERNEL);
-+					      GFP_KERNEL | __GFP_NOWARN);
- 	if (doi_def->map.std->lvl.cipso == NULL) {
- 		ret_val = -ENOMEM;
- 		goto add_std_failure;
-@@ -279,7 +279,7 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
- 		doi_def->map.std->cat.local = kcalloc(
- 					      doi_def->map.std->cat.local_size,
- 					      sizeof(u32),
--					      GFP_KERNEL);
-+					      GFP_KERNEL | __GFP_NOWARN);
- 		if (doi_def->map.std->cat.local == NULL) {
- 			ret_val = -ENOMEM;
- 			goto add_std_failure;
-@@ -287,7 +287,7 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
- 		doi_def->map.std->cat.cipso = kcalloc(
- 					      doi_def->map.std->cat.cipso_size,
- 					      sizeof(u32),
--					      GFP_KERNEL);
-+					      GFP_KERNEL | __GFP_NOWARN);
- 		if (doi_def->map.std->cat.cipso == NULL) {
- 			ret_val = -ENOMEM;
- 			goto add_std_failure;
--- 
-2.30.2
-
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -754,6 +754,9 @@ static void msix_mask_all(void __iomem *
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
+ 
++	if (pci_msi_ignore_mask)
++		return;
++
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
 
 
