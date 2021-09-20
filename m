@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133D14123DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E11412406
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378452AbhITS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:28:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
+        id S1352617AbhITSaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348448AbhITSWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1351952AbhITSWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5490B632B9;
-        Mon, 20 Sep 2021 17:24:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 881CD632BB;
+        Mon, 20 Sep 2021 17:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158649;
-        bh=3fYyaJ4Xf31JXWgk6Y3IPHvm2t7r5vua+XlOfzUZYPE=;
+        s=korg; t=1632158652;
+        bh=1Ba3KhtEOml4S43b/+tqGlRyZIVlN/+Kmc1slN5ZFSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OSf4DIEUqs1BwZTkWB+zif2c/SMDR15H0zat4BbKlvy8CqGNKourcqFuF5wAL5EoU
-         ZfvL7mki5zWR5HM6XiFZ9SOUOzrpT88s+ztAbmKwb9z+SVfpkF7HG56JopFBeldPB4
-         G5DRIHR7Zi6E8l3MMztxUEO5i0Lip5qSp4iRP9aU=
+        b=FY5QgaYwQ80u0ueE8EqFFqbXWYT3OSV3lv0LOq6K5g3ZXFeZrEwuvSBaZFxpP7VKC
+         ciS0mSUxCbR/6lx2aHFn0WbjLBacMCq7L1gU7EOpfkW3P04ADg8UxozdEKXumbLSyx
+         kkFcI+DxMC6gUR4dV5P5rmanHUCFGTShzvx2gSRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 252/260] mtd: rawnand: cafe: Fix a resource leak in the error handling path of cafe_nand_probe()
-Date:   Mon, 20 Sep 2021 18:44:30 +0200
-Message-Id: <20210920163939.671365802@linuxfoundation.org>
+Subject: [PATCH 5.4 253/260] ARC: export clear_user_page() for modules
+Date:   Mon, 20 Sep 2021 18:44:31 +0200
+Message-Id: <20210920163939.702656454@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -41,47 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 6b430c7595e4eb95fae8fb54adc3c3ce002e75ae ]
+[ Upstream commit 6b5ff0405e4190f23780362ea324b250bc495683 ]
 
-A successful 'init_rs_non_canonical()' call should be balanced by a
-corresponding 'free_rs()' call in the error handling path of the probe, as
-already done in the remove function.
+0day bot reports a build error:
+  ERROR: modpost: "clear_user_page" [drivers/media/v4l2-core/videobuf-dma-sg.ko] undefined!
+so export it in arch/arc/ to fix the build error.
 
-Update the error handling path accordingly.
+In most ARCHes, clear_user_page() is a macro. OTOH, in a few
+ARCHes it is a function and needs to be exported.
+PowerPC exported it in 2004. It looks like nds32 and nios2
+still need to have it exported.
 
-Fixes: 8c61b7a7f4d4 ("[MTD] [NAND] Use rslib for CAFÉ ECC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/fd313d3fb787458bcc73189e349f481133a2cdc9.1629532640.git.christophe.jaillet@wanadoo.fr
+Fixes: 4102b53392d63 ("ARC: [mm] Aliasing VIPT dcache support 2/4")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-snps-arc@lists.infradead.org
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arc/mm/cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 2d1c22dc88c1..cc5009200cc2 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -757,7 +757,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 			  "CAFE NAND", mtd);
- 	if (err) {
- 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
--		goto out_ior;
-+		goto out_free_rs;
- 	}
+diff --git a/arch/arc/mm/cache.c b/arch/arc/mm/cache.c
+index a2fbea3ee07c..102418ac5ff4 100644
+--- a/arch/arc/mm/cache.c
++++ b/arch/arc/mm/cache.c
+@@ -1123,7 +1123,7 @@ void clear_user_page(void *to, unsigned long u_vaddr, struct page *page)
+ 	clear_page(to);
+ 	clear_bit(PG_dc_clean, &page->flags);
+ }
+-
++EXPORT_SYMBOL(clear_user_page);
  
- 	/* Disable master reset, enable NAND clock */
-@@ -801,6 +801,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
- 	free_irq(pdev->irq, mtd);
-+ out_free_rs:
-+	free_rs(cafe->rs);
-  out_ior:
- 	pci_iounmap(pdev, cafe->mmio);
-  out_free_mtd:
+ /**********************************************************************
+  * Explicit Cache flush request from user space via syscall
 -- 
 2.30.2
 
