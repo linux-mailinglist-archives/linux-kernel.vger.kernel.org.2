@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70071412484
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11A24125C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352918AbhITSfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47618 "EHLO mail.kernel.org"
+        id S1384522AbhITSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379769AbhITSa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91FA8632F4;
-        Mon, 20 Sep 2021 17:27:16 +0000 (UTC)
+        id S1383437AbhITSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8877A63357;
+        Mon, 20 Sep 2021 17:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158837;
-        bh=P8tuf+tDy2pcR8mAryvwRZSmAXGTiQWLnb3UXVnShc0=;
+        s=korg; t=1632159177;
+        bh=2+f0q9COo9y3qm6fO0LOOCVmBLhraM8f7noOmNchM60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=isbZ4vTb3HhJE4tTDS0QM7vEA2YAYzbMI8aJ0VGajqsklo1F7NKsRR/YhZE1O6jkh
-         10mtdzi4QHMRwMlyTeky/tEM1gPDMU7o3Q5XCeRK03xnRwiVtobpRg8f3A93z83bNh
-         pAjO0gxPSXeXzH+CoFPjRzKnzJeke9aFsvbIZelA=
+        b=PX21X4DDO3w7ImVvm8FoBDlJtV4N77C1Ne3zzRLIzy40aS96Yl09VW9qyCvAtLSsv
+         YKXFfvWP24auoeGHKIvjgprCz+1z32oUW4JylU1JCk02ofceS1t0n4o0Whhcpa8Q9h
+         eoUv6vFR00Z3HUaYUiygN+Oo7koBzPU0HZuA56Ps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 078/122] NTB: perf: Fix an error code in perf_setup_inbuf()
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 112/168] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
 Date:   Mon, 20 Sep 2021 18:44:10 +0200
-Message-Id: <20210920163918.342617070@linuxfoundation.org>
+Message-Id: <20210920163925.320031775@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-[ Upstream commit 0097ae5f7af5684f961a5f803ff7ad3e6f933668 ]
+[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
 
-When the function IS_ALIGNED() returns false, the value of ret is 0.
-So, we set ret to -EINVAL to indicate this error.
+Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
+0x1061 composition in order to avoid bind error.
 
-Clean up smatch warning:
-drivers/ntb/test/ntb_perf.c:602 perf_setup_inbuf() warn: missing error
-code 'ret'.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_perf.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/usb/cdc_mbim.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
-index 89df1350fefd..65e1e5cf1b29 100644
---- a/drivers/ntb/test/ntb_perf.c
-+++ b/drivers/ntb/test/ntb_perf.c
-@@ -598,6 +598,7 @@ static int perf_setup_inbuf(struct perf_peer *peer)
- 		return -ENOMEM;
- 	}
- 	if (!IS_ALIGNED(peer->inbuf_xlat, xlat_align)) {
-+		ret = -EINVAL;
- 		dev_err(&perf->ntb->dev, "Unaligned inbuf allocated\n");
- 		goto err_free_inbuf;
- 	}
+diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
+index 4c4ab7b38d78..82bb5ed94c48 100644
+--- a/drivers/net/usb/cdc_mbim.c
++++ b/drivers/net/usb/cdc_mbim.c
+@@ -654,6 +654,11 @@ static const struct usb_device_id mbim_devs[] = {
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
+ 	},
+ 
++	/* Telit LN920 */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
++	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
++	},
++
+ 	/* default entry */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
 -- 
 2.30.2
 
