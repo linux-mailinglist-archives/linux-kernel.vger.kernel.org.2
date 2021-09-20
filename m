@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7F9412448
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE88C4125AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378179AbhITSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:33:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
+        id S1384194AbhITSqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:46:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378787AbhITS00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:26:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6056561244;
-        Mon, 20 Sep 2021 17:25:51 +0000 (UTC)
+        id S1382341AbhITSmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0A42606A5;
+        Mon, 20 Sep 2021 17:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158751;
-        bh=aHzs2Pypu+HwoFsHuPJXCeG8sMuoKR+6muI/CLd3l2A=;
+        s=korg; t=1632159094;
+        bh=KWobmcZSd6RR3vyoGzkU3FQ8g5SyZFJgL0SLDDI7sHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZnmUKQmidXegRZBvRDZ1Q8XiqJT/a42HlUj2SueX5KG7turx7C2oWFI+v8WlhddU
-         uYYls0HFu6K4bo2AdFQ7Uea/CsWAM+C39+hSyZXiu8ixX7bEC1wd5KpHbAoi1MX1vu
-         thfI2/zjzluYrmGvtkzwMlq2C/e8wUC70xZgLJKg=
+        b=hRrI/lrNeqMAqnMb7Rd7zBNayOrLqmNLYyn8xN5NjSIkOOu3s++dvTWEFLAYYqeiR
+         1kOH2SDEG4ZXmeoaBl1h/kyuScgp6RuhSlsUn5DuSLCuxDtpLyEBmDfgHKz1npwjdP
+         3b2FhvagGUTeC64dhvyKhRpgdldz5tn1dZfwLT60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 040/122] net: dsa: destroy the phylink instance on any error in dsa_slave_phy_setup
+        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 074/168] bnxt_en: make bnxt_free_skbs() safe to call after bnxt_free_mem()
 Date:   Mon, 20 Sep 2021 18:43:32 +0200
-Message-Id: <20210920163917.103844544@linuxfoundation.org>
+Message-Id: <20210920163924.076495809@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Edwin Peer <edwin.peer@broadcom.com>
 
-commit 6a52e73368038f47f6618623d75061dc263b26ae upstream.
+commit 1affc01fdc6035189a5ab2a24948c9419ee0ecf2 upstream.
 
-DSA supports connecting to a phy-handle, and has a fallback to a non-OF
-based method of connecting to an internal PHY on the switch's own MDIO
-bus, if no phy-handle and no fixed-link nodes were present.
+The call to bnxt_free_mem(..., false) in the bnxt_half_open_nic() error
+path will deallocate ring descriptor memory via bnxt_free_?x_rings(),
+but because irq_re_init is false, the ring info itself is not freed.
 
-The -ENODEV error code from the first attempt (phylink_of_phy_connect)
-is what triggers the second attempt (phylink_connect_phy).
+To simplify error paths, deallocation functions have generally been
+written to be safe when called on unallocated memory. It should always
+be safe to call dev_close(), which calls bnxt_free_skbs() a second time,
+even in this semi- allocated ring state.
 
-However, when the first attempt returns a different error code than
--ENODEV, this results in an unbalance of calls to phylink_create and
-phylink_destroy by the time we exit the function. The phylink instance
-has leaked.
+Calling bnxt_free_skbs() a second time with the rings already freed will
+cause NULL pointer dereference.  Fix it by checking the rings are valid
+before proceeding in bnxt_free_tx_skbs() and
+bnxt_free_one_rx_ring_skbs().
 
-There are many other error codes that can be returned by
-phylink_of_phy_connect. For example, phylink_validate returns -EINVAL.
-So this is a practical issue too.
-
-Fixes: aab9c4067d23 ("net: dsa: Plug in PHYLINK support")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/20210914134331.2303380-1-vladimir.oltean@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 975bc99a4a39 ("bnxt_en: Refactor bnxt_free_rx_skbs().")
+Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/slave.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -1728,13 +1728,11 @@ static int dsa_slave_phy_setup(struct ne
- 		 * use the switch internal MDIO bus instead
- 		 */
- 		ret = dsa_slave_phy_connect(slave_dev, dp->index);
--		if (ret) {
--			netdev_err(slave_dev,
--				   "failed to connect to port %d: %d\n",
--				   dp->index, ret);
--			phylink_destroy(dp->pl);
--			return ret;
--		}
-+	}
-+	if (ret) {
-+		netdev_err(slave_dev, "failed to connect to PHY: %pe\n",
-+			   ERR_PTR(ret));
-+		phylink_destroy(dp->pl);
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -2680,6 +2680,9 @@ static void bnxt_free_tx_skbs(struct bnx
+ 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
+ 		int j;
+ 
++		if (!txr->tx_buf_ring)
++			continue;
++
+ 		for (j = 0; j < max_idx;) {
+ 			struct bnxt_sw_tx_bd *tx_buf = &txr->tx_buf_ring[j];
+ 			struct sk_buff *skb;
+@@ -2764,6 +2767,9 @@ static void bnxt_free_one_rx_ring_skbs(s
  	}
  
- 	return ret;
+ skip_rx_tpa_free:
++	if (!rxr->rx_buf_ring)
++		goto skip_rx_buf_free;
++
+ 	for (i = 0; i < max_idx; i++) {
+ 		struct bnxt_sw_rx_bd *rx_buf = &rxr->rx_buf_ring[i];
+ 		dma_addr_t mapping = rx_buf->mapping;
+@@ -2786,6 +2792,11 @@ skip_rx_tpa_free:
+ 			kfree(data);
+ 		}
+ 	}
++
++skip_rx_buf_free:
++	if (!rxr->rx_agg_ring)
++		goto skip_rx_agg_free;
++
+ 	for (i = 0; i < max_agg_idx; i++) {
+ 		struct bnxt_sw_rx_agg_bd *rx_agg_buf = &rxr->rx_agg_ring[i];
+ 		struct page *page = rx_agg_buf->page;
+@@ -2802,6 +2813,8 @@ skip_rx_tpa_free:
+ 
+ 		__free_page(page);
+ 	}
++
++skip_rx_agg_free:
+ 	if (rxr->rx_page) {
+ 		__free_page(rxr->rx_page);
+ 		rxr->rx_page = NULL;
 
 
