@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D30B412021
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC79411D69
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349250AbhITRtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:49:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        id S1346800AbhITRUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:20:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348345AbhITRqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:46:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A92961B7C;
-        Mon, 20 Sep 2021 17:10:37 +0000 (UTC)
+        id S244754AbhITRRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:17:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BCD61A09;
+        Mon, 20 Sep 2021 16:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157837;
-        bh=mNINtN00EoE5fNjTY0n3xsXJqBYhlUF+h6yxqaYywuM=;
+        s=korg; t=1632157161;
+        bh=24/E/U+6FDqECccTGlcsh9mtP/uLKfWS5SKnNvV4lgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ads+7+DGwAGq5b04hFQA2hVF+n+ov2sDRmU8hzwuI/C7V6wt3zKwH/9/4gSJr+Jg+
-         jKjTy1CGvsL2JyIT36h2WqlyHgYIwthxjYuZa8io2UGHRDfwfE8uOmxheLppDs5cLk
-         iP2OCfcjStc75wfz+mr9S2FK4BUf9LH5QXFQxP0M=
+        b=Nv3FbS2TiEvKomqYOlas5TKxyN926CIWfiWJwZXrQ6MkJCuyeTAF8OfJFk5H3vPJ7
+         M746QnIik3GmsHeeivm70ZX5u1v2K5t1TFLsts5ggzESTK1HNv0QRvUPfYHi2gO9vh
+         A47vjoWobAhdxJGdcu20GlyQRjWRm6kQL9Y+GUlI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Iwona Winiarska <iwona.winiarska@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>
-Subject: [PATCH 4.19 141/293] soc: aspeed: lpc-ctrl: Fix boundary check for mmap
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Evgeny Novikov <novikov@ispras.ru>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 082/217] usb: ehci-orion: Handle errors of clk_prepare_enable() in probe
 Date:   Mon, 20 Sep 2021 18:41:43 +0200
-Message-Id: <20210920163938.108245817@linuxfoundation.org>
+Message-Id: <20210920163927.413480588@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Iwona Winiarska <iwona.winiarska@intel.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-commit b49a0e69a7b1a68c8d3f64097d06dabb770fec96 upstream.
+[ Upstream commit 4720f1bf4ee4a784d9ece05420ba33c9222a3004 ]
 
-The check mixes pages (vm_pgoff) with bytes (vm_start, vm_end) on one
-side of the comparison, and uses resource address (rather than just the
-resource size) on the other side of the comparison.
-This can allow malicious userspace to easily bypass the boundary check and
-map pages that are located outside memory-region reserved by the driver.
+ehci_orion_drv_probe() did not account for possible errors of
+clk_prepare_enable() that in particular could cause invocation of
+clk_disable_unprepare() on clocks that were not prepared/enabled yet,
+e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
+there were several patches fixing different issues with clocks in this
+driver, they did not solve this problem.
 
-Fixes: 6c4e97678501 ("drivers/misc: Add Aspeed LPC control driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Tested-by: Andrew Jeffery <andrew@aj.id.au>
-Reviewed-by: Joel Stanley <joel@aj.id.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
+to avoid calls of clk_disable_unprepare() without previous successful
+invocation of clk_prepare_enable().
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
+Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Link: https://lore.kernel.org/r/20210825170902.11234-1-novikov@ispras.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/aspeed-lpc-ctrl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/ehci-orion.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/drivers/misc/aspeed-lpc-ctrl.c
-+++ b/drivers/misc/aspeed-lpc-ctrl.c
-@@ -50,7 +50,7 @@ static int aspeed_lpc_ctrl_mmap(struct f
- 	unsigned long vsize = vma->vm_end - vma->vm_start;
- 	pgprot_t prot = vma->vm_page_prot;
+diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
+index 1aec87ec68df..753c73624fb6 100644
+--- a/drivers/usb/host/ehci-orion.c
++++ b/drivers/usb/host/ehci-orion.c
+@@ -253,8 +253,11 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
+ 	 * the clock does not exists.
+ 	 */
+ 	priv->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(priv->clk))
+-		clk_prepare_enable(priv->clk);
++	if (!IS_ERR(priv->clk)) {
++		err = clk_prepare_enable(priv->clk);
++		if (err)
++			goto err_put_hcd;
++	}
  
--	if (vma->vm_pgoff + vsize > lpc_ctrl->mem_base + lpc_ctrl->mem_size)
-+	if (vma->vm_pgoff + vma_pages(vma) > lpc_ctrl->mem_size >> PAGE_SHIFT)
- 		return -EINVAL;
- 
- 	/* ast2400/2500 AHB accesses are not cache coherent */
+ 	priv->phy = devm_phy_optional_get(&pdev->dev, "usb");
+ 	if (IS_ERR(priv->phy)) {
+@@ -315,6 +318,7 @@ err_phy_init:
+ err_phy_get:
+ 	if (!IS_ERR(priv->clk))
+ 		clk_disable_unprepare(priv->clk);
++err_put_hcd:
+ 	usb_put_hcd(hcd);
+ err:
+ 	dev_err(&pdev->dev, "init %s fail, %d\n",
+-- 
+2.30.2
+
 
 
