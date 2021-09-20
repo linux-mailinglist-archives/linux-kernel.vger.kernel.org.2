@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2324120F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2470411B4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356587AbhITSAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:00:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54548 "EHLO mail.kernel.org"
+        id S245478AbhITQ5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:57:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355176AbhITRyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:54:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA07561C4F;
-        Mon, 20 Sep 2021 17:13:22 +0000 (UTC)
+        id S243500AbhITQwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6EEA6134F;
+        Mon, 20 Sep 2021 16:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158003;
-        bh=SueQYwpv99GQGxKfVB4UpOLiYZpOz1H7abY1IwtjASg=;
+        s=korg; t=1632156602;
+        bh=ltZZyCsnjnNoe+sQ9hulck8kwCSo5dN6HI0l2iLLg8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ap20apWYMUg0No+pgWuqg9VwvfY/OyszTj0v/WmXUebPJS4Xs1CTPiOFa7WOd/xXN
-         tFyUewTHz6IE9py2JJyH80ozHZD52W+2jR5b5SKve+XLZLeD5fpUOHdyHWuWFl1aJh
-         0WiFk2NwA5xrA7ZOWCczPvXaOIpUuAWiFwEUEww4=
+        b=J16quz47XA1yaL74MPBytqTEEGqBM1phGCF6rRXMyyv1ENnZ55kVYvgoG/xw2N4Q4
+         ffx13ImtVRB1f4C8x0avhKvJCZ5sFOThaDDUiZn6a42bS/ZUdQAqICXJmFh4CZrZht
+         etRD2NXNaZceJMESYU/igHThG+BU6MOBWxpfr4Jc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.19 243/293] scsi: BusLogic: Fix missing pr_cont() use
+        stable@vger.kernel.org,
+        "Ryan J. Barnett" <ryan.barnett@collins.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 127/133] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
 Date:   Mon, 20 Sep 2021 18:43:25 +0200
-Message-Id: <20210920163941.713196729@linuxfoundation.org>
+Message-Id: <20210920163916.780183161@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,108 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 44d01fc86d952f5a8b8b32bdb4841504d5833d95 upstream.
+[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
 
-Update BusLogic driver's messaging system to use pr_cont() for continuation
-lines, bringing messy output:
+"PAGESIZE / 512" is the number of ECC chunks.
+"ECC_BYTES" is the number of bytes needed to store a single ECC code.
+"2" is the space reserved by the bad block marker.
 
-pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
-scsi0:   PCI Bus: 0, Device: 19, Address:
-0xE0012000,
-Host Adapter SCSI ID: 7
-scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
-scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
-scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
-scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
-scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
-scsi0:   Tagged Queue Depth:
-Automatic
-, Untagged Queue Depth: 3
-scsi0:   SCSI Bus Termination: Both Enabled
-, SCAM: Disabled
+"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
+than the total number of OOB bytes, otherwise it won't fit.
 
-scsi0: *** BusLogic BT-958 Initialized Successfully ***
-scsi host0: BusLogic BT-958
+Fix the equation by substituting s/>=/<=/.
 
-back to order:
-
-pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
-scsi0:   PCI Bus: 0, Device: 19, Address: 0xE0012000, Host Adapter SCSI ID: 7
-scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
-scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
-scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
-scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
-scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
-scsi0:   Tagged Queue Depth: Automatic, Untagged Queue Depth: 3
-scsi0:   SCSI Bus Termination: Both Enabled, SCAM: Disabled
-scsi0: *** BusLogic BT-958 Initialized Successfully ***
-scsi host0: BusLogic BT-958
-
-Also diagnostic output such as with the BusLogic=TraceConfiguration
-parameter is affected and becomes vertical and therefore hard to read.
-This has now been corrected, e.g.:
-
-pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
-blogic_cmd(95) Status = 28: (Modify I/O Address)
-blogic_cmd(91) Status = 30:  1 ==>  1: 01
-blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
-blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
-scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
-blogic_cmd(0B) Status = 30:  3 ==>  3: 00 08 07
-blogic_cmd(0D) Status = 30: 34 ==> 34: 03 01 07 04 00 00 00 00 00 00 00 00 00 00 00 00 FF 42 44 46 FF 00 00 00 00 00 00 00 00 00 FF 00 FF 00
-blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
-blogic_cmd(84) Status = 30:  1 ==>  1: 37
-blogic_cmd(8B) Status = 30:  5 ==>  5: 39 35 38 20 20
-blogic_cmd(85) Status = 30:  1 ==>  1: 42
-blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
-blogic_cmd(91) Status = 30: 64 ==> 64: 41 46 3E 20 39 35 38 20 20 00 C4 00 04 01 07 2F 07 04 35 FF FF FF FF FF FF FF FF FF FF 01 00 FE FF 08 FF FF 00 00 00 00 00 00 00 01 00 01 00 00 FF FF 00 00 00 00 00 00 00 00 00 00 00 00 00 FC
-scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-
-etc.
-
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2104201940430.44318@angie.orcam.me.uk
-Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
-Cc: stable@vger.kernel.org # v4.9+
-Acked-by: Khalid Aziz <khalid@gonehiking.org>
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/BusLogic.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/BusLogic.c
-+++ b/drivers/scsi/BusLogic.c
-@@ -3605,7 +3605,7 @@ static void blogic_msg(enum blogic_msgle
- 			if (buf[0] != '\n' || len > 1)
- 				printk("%sscsi%d: %s", blogic_msglevelmap[msglevel], adapter->host_no, buf);
- 		} else
--			printk("%s", buf);
-+			pr_cont("%s", buf);
- 	} else {
- 		if (begin) {
- 			if (adapter != NULL && adapter->adapter_initd)
-@@ -3613,7 +3613,7 @@ static void blogic_msg(enum blogic_msgle
- 			else
- 				printk("%s%s", blogic_msglevelmap[msglevel], buf);
- 		} else
--			printk("%s", buf);
-+			pr_cont("%s", buf);
- 	}
- 	begin = (buf[len - 1] == '\n');
- }
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index fb733c4e1c11..3a58fdf0c566 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -112,7 +112,7 @@ on various other factors also like;
+ 	so the device should have enough free bytes available its OOB/Spare
+ 	area to accommodate ECC for entire page. In general following expression
+ 	helps in determining if given device can accommodate ECC syndrome:
+-	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
++	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
+ 	where
+ 		OOBSIZE		number of bytes in OOB/spare area
+ 		PAGESIZE	number of bytes in main-area of device page
+-- 
+2.30.2
+
 
 
