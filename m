@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7151411EB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DC9411EA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351432AbhITRde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:33:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34834 "EHLO mail.kernel.org"
+        id S1351283AbhITRdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:33:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242229AbhITRbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:31:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2127761501;
-        Mon, 20 Sep 2021 17:04:31 +0000 (UTC)
+        id S1347583AbhITRa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:30:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C30E3614C8;
+        Mon, 20 Sep 2021 17:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157472;
-        bh=uLgFZxX+cwiet4pUq59oiyiXdrCWvxBD5wFY6RaxJxw=;
+        s=korg; t=1632157455;
+        bh=bMESw49mkS6QQcCTRAfwz9+qRU4yXyTHv10Knqpe5rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fGMxxNpYStKmDxHxnOOciZujGz6TtAxKUmGHoIc1JepktrVf76vkS1wm7vBNfd6Nb
-         07XhA8zWSG/HNEqy6cUOK4jgHPCW4maV4QCiOsaU428+GyuQUo6jtb92wjZbJGlFfe
-         38CR36o6V1U+Zfuj11m4ZJHM/SdEgadAfvA0t5G8=
+        b=D/R54l3DMD2Wbs7nQygMnLeCvAK4oOO3r437u06oauZGxNCNrGyI+E7EJUs/eV0rQ
+         j7brNgA1fQCm9Yk7m5O/6Up/Koipom43f+esqu310lxQvehhY6HV0aQYyALMgaEivO
+         JipkeaSnheDy+zj0Q9dNqM8Ep44nVgLD6sSQgAi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 216/217] qlcnic: Remove redundant unlock in qlcnic_pinit_from_rom
-Date:   Mon, 20 Sep 2021 18:43:57 +0200
-Message-Id: <20210920163931.939351696@linuxfoundation.org>
+Subject: [PATCH 4.14 217/217] net: renesas: sh_eth: Fix freeing wrong tx descriptor
+Date:   Mon, 20 Sep 2021 18:43:58 +0200
+Message-Id: <20210920163931.974871377@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -40,36 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit 9ddbc2a00d7f63fa9748f4278643193dac985f2d ]
+[ Upstream commit 0341d5e3d1ee2a36dd5a49b5bef2ce4ad1cfa6b4 ]
 
-Previous commit 68233c583ab4 removes the qlcnic_rom_lock()
-in qlcnic_pinit_from_rom(), but remains its corresponding
-unlock function, which is odd. I'm not very sure whether the
-lock is missing, or the unlock is redundant. This bug is
-suggested by a static analysis tool, please advise.
+The cur_tx counter must be incremented after TACT bit of
+txdesc->status was set. However, a CPU is possible to reorder
+instructions and/or memory accesses between cur_tx and
+txdesc->status. And then, if TX interrupt happened at such a
+timing, the sh_eth_tx_free() may free the descriptor wrongly.
+So, add wmb() before cur_tx++.
+Otherwise NETDEV WATCHDOG timeout is possible to happen.
 
-Fixes: 68233c583ab4 ("qlcnic: updated reset sequence")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Fixes: 86a74ff21a7a ("net: sh_eth: add support for Renesas SuperH Ethernet")
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/renesas/sh_eth.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-index c48a0e2d4d7e..6a009d51ec51 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-@@ -440,7 +440,6 @@ int qlcnic_pinit_from_rom(struct qlcnic_adapter *adapter)
- 	QLCWR32(adapter, QLCNIC_CRB_PEG_NET_4 + 0x3c, 1);
- 	msleep(20);
+diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
+index 36f1019809ea..0fa6403ab085 100644
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -2442,6 +2442,7 @@ static int sh_eth_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	else
+ 		txdesc->status |= cpu_to_le32(TD_TACT);
  
--	qlcnic_rom_unlock(adapter);
- 	/* big hammer don't reset CAM block on reset */
- 	QLCWR32(adapter, QLCNIC_ROMUSB_GLB_SW_RESET, 0xfeffffff);
++	wmb(); /* cur_tx must be incremented after TACT bit was set */
+ 	mdp->cur_tx++;
  
+ 	if (!(sh_eth_read(ndev, EDTRR) & sh_eth_get_edtrr_trns(mdp)))
 -- 
 2.30.2
 
