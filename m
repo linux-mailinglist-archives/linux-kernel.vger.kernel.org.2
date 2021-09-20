@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D066341216F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0906412161
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347416AbhITSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57654 "EHLO mail.kernel.org"
+        id S1357899AbhITSFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356430AbhITR7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:59:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 599C66321F;
-        Mon, 20 Sep 2021 17:15:36 +0000 (UTC)
+        id S1345734AbhITR7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:59:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 074E46321E;
+        Mon, 20 Sep 2021 17:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158136;
-        bh=Zhu1OoCzJaXAMICKev8cGL5rUeXBdFePCekqWLl0ZK4=;
+        s=korg; t=1632158119;
+        bh=aQ3ss94Ysz8Z2rgJ7EBicK34Av2AyGubTaj1Y/1YGx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uZwc4z++O1IeYnlHuvDbhaN7GnFkIhpFGBkY+NaDTckyWglj+DLcQzFcK/ZWNRkSR
-         XlL39yzygFyF8MfA6gA87AwI2zGZlDzCDIUC5icXkUGGKwSpLKVyXaMMPoAmLmT3yg
-         YxVL9BzmAnY390QCXGHlZL9l7Q794uXXXt9xOlpM=
+        b=ft5abr21jPaYvV5GQvwoZdJei4RGAGNIIHyM7llhVgpNoWILG6kTkWQJioslN6sYJ
+         4SGa2dk1slRylfKCcIuPnOMQI5jQU4IhWakeN52I8s807lAZW0Ed9JKh5Vyqx6JyNr
+         epXFpH1x8NOGY+FnjqODDMkXEo5NU0VV7ENAPop0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 009/260] include/linux/list.h: add a macro to test if entry is pointing to the head
-Date:   Mon, 20 Sep 2021 18:40:27 +0200
-Message-Id: <20210920163931.446107503@linuxfoundation.org>
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 5.4 010/260] 9p/xen: Fix end of loop tests for list_for_each_entry
+Date:   Mon, 20 Sep 2021 18:40:28 +0200
+Message-Id: <20210920163931.478272759@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -42,142 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Harshvardhan Jha <harshvardhan.jha@oracle.com>
 
-commit e130816164e244b692921de49771eeb28205152d upstream.
+commit 732b33d0dbf17e9483f0b50385bf606f724f50a2 upstream.
 
-Add a macro to test if entry is pointing to the head of the list which is
-useful in cases like:
+This patch addresses the following problems:
+ - priv can never be NULL, so this part of the check is useless
+ - if the loop ran through the whole list, priv->client is invalid and
+it is more appropriate and sufficient to check for the end of
+list_for_each_entry loop condition.
 
-  list_for_each_entry(pos, &head, member) {
-    if (cond)
-      break;
-  }
-  if (list_entry_is_head(pos, &head, member))
-    return -ERRNO;
-
-that allows to avoid additional variable to be added to track if loop has
-not been stopped in the middle.
-
-While here, convert list_for_each_entry*() family of macros to use a new one.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lkml.kernel.org/r/20200929134342.51489-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: http://lkml.kernel.org/r/20210727000709.225032-1-harshvardhan.jha@oracle.com
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/list.h |   29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ net/9p/trans_xen.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/linux/list.h
-+++ b/include/linux/list.h
-@@ -568,6 +568,15 @@ static inline void list_splice_tail_init
- 	     pos = n, n = pos->prev)
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen
  
- /**
-+ * list_entry_is_head - test if the entry points to the head of the list
-+ * @pos:	the type * to cursor
-+ * @head:	the head for your list.
-+ * @member:	the name of the list_head within the struct.
-+ */
-+#define list_entry_is_head(pos, head, member)				\
-+	(&pos->member == (head))
-+
-+/**
-  * list_for_each_entry	-	iterate over list of given type
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
-@@ -575,7 +584,7 @@ static inline void list_splice_tail_init
-  */
- #define list_for_each_entry(pos, head, member)				\
- 	for (pos = list_first_entry(head, typeof(*pos), member);	\
--	     &pos->member != (head);					\
-+	     !list_entry_is_head(pos, head, member);			\
- 	     pos = list_next_entry(pos, member))
+ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+ {
+-	struct xen_9pfs_front_priv *priv = NULL;
++	struct xen_9pfs_front_priv *priv;
+ 	RING_IDX cons, prod, masked_cons, masked_prod;
+ 	unsigned long flags;
+ 	u32 size = p9_req->tc.size;
+@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_clie
+ 			break;
+ 	}
+ 	read_unlock(&xen_9pfs_lock);
+-	if (!priv || priv->client != client)
++	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
+ 		return -EINVAL;
  
- /**
-@@ -586,7 +595,7 @@ static inline void list_splice_tail_init
-  */
- #define list_for_each_entry_reverse(pos, head, member)			\
- 	for (pos = list_last_entry(head, typeof(*pos), member);		\
--	     &pos->member != (head); 					\
-+	     !list_entry_is_head(pos, head, member); 			\
- 	     pos = list_prev_entry(pos, member))
- 
- /**
-@@ -611,7 +620,7 @@ static inline void list_splice_tail_init
-  */
- #define list_for_each_entry_continue(pos, head, member) 		\
- 	for (pos = list_next_entry(pos, member);			\
--	     &pos->member != (head);					\
-+	     !list_entry_is_head(pos, head, member);			\
- 	     pos = list_next_entry(pos, member))
- 
- /**
-@@ -625,7 +634,7 @@ static inline void list_splice_tail_init
-  */
- #define list_for_each_entry_continue_reverse(pos, head, member)		\
- 	for (pos = list_prev_entry(pos, member);			\
--	     &pos->member != (head);					\
-+	     !list_entry_is_head(pos, head, member);			\
- 	     pos = list_prev_entry(pos, member))
- 
- /**
-@@ -637,7 +646,7 @@ static inline void list_splice_tail_init
-  * Iterate over list of given type, continuing from current position.
-  */
- #define list_for_each_entry_from(pos, head, member) 			\
--	for (; &pos->member != (head);					\
-+	for (; !list_entry_is_head(pos, head, member);			\
- 	     pos = list_next_entry(pos, member))
- 
- /**
-@@ -650,7 +659,7 @@ static inline void list_splice_tail_init
-  * Iterate backwards over list of given type, continuing from current position.
-  */
- #define list_for_each_entry_from_reverse(pos, head, member)		\
--	for (; &pos->member != (head);					\
-+	for (; !list_entry_is_head(pos, head, member);			\
- 	     pos = list_prev_entry(pos, member))
- 
- /**
-@@ -663,7 +672,7 @@ static inline void list_splice_tail_init
- #define list_for_each_entry_safe(pos, n, head, member)			\
- 	for (pos = list_first_entry(head, typeof(*pos), member),	\
- 		n = list_next_entry(pos, member);			\
--	     &pos->member != (head); 					\
-+	     !list_entry_is_head(pos, head, member); 			\
- 	     pos = n, n = list_next_entry(n, member))
- 
- /**
-@@ -679,7 +688,7 @@ static inline void list_splice_tail_init
- #define list_for_each_entry_safe_continue(pos, n, head, member) 		\
- 	for (pos = list_next_entry(pos, member), 				\
- 		n = list_next_entry(pos, member);				\
--	     &pos->member != (head);						\
-+	     !list_entry_is_head(pos, head, member);				\
- 	     pos = n, n = list_next_entry(n, member))
- 
- /**
-@@ -694,7 +703,7 @@ static inline void list_splice_tail_init
-  */
- #define list_for_each_entry_safe_from(pos, n, head, member) 			\
- 	for (n = list_next_entry(pos, member);					\
--	     &pos->member != (head);						\
-+	     !list_entry_is_head(pos, head, member);				\
- 	     pos = n, n = list_next_entry(n, member))
- 
- /**
-@@ -710,7 +719,7 @@ static inline void list_splice_tail_init
- #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
- 	for (pos = list_last_entry(head, typeof(*pos), member),		\
- 		n = list_prev_entry(pos, member);			\
--	     &pos->member != (head); 					\
-+	     !list_entry_is_head(pos, head, member); 			\
- 	     pos = n, n = list_prev_entry(n, member))
- 
- /**
+ 	num = p9_req->tc.tag % priv->num_rings;
 
 
