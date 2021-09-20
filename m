@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D911B411C93
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11AE411E81
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346002AbhITRLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:11:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
+        id S1344552AbhITRbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346772AbhITRJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:09:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE7A615E1;
-        Mon, 20 Sep 2021 16:56:05 +0000 (UTC)
+        id S1345291AbhITR21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C437061ABC;
+        Mon, 20 Sep 2021 17:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156965;
-        bh=VwBTH3akZ0cGtn7HBMp2OIKwuqXbg4ly2AvoUdLDUgE=;
+        s=korg; t=1632157411;
+        bh=cdIMnGOF4CkU42daacZN2R1isEuvbkTI+FGt9W79hLE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d/nHYRez7CkMK3vU0uB3R7LHrlqEujuzM2HbxmOi2X0SiFa4I37ye2ZiWSWp2OJdI
-         LwmgDR1FeDB24V1cvcgUIzm1hUiqehRiqGRUkWSKpkYrdgiwYgBFBgyTekc9h1NyyW
-         /VdGI+ZuTa2RtJHs6UqN5Nk5zsh5vt978mqCNKlM=
+        b=Qzy6ic9EeEY8mjtF33PInzJzndzMIkc2ABe1fQ6KfFLCXCQJN6QYV43NkevNHAtG3
+         j/VawFY62Dq2uFGbJL7oo5YJRtaCba6CyzPMqWgAkI3jrz4RwocaPpfmAd1WZQU0p6
+         lGqaSydFvqgEvIY2EGVeZSacuQWqEM/HYWFgXsoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 167/175] mfd: Dont use irq_create_mapping() to resolve a mapping
-Date:   Mon, 20 Sep 2021 18:43:36 +0200
-Message-Id: <20210920163923.526990240@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Cochran <richard.cochran@omicron.at>,
+        John Stultz <john.stultz@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 196/217] ptp: dp83640: dont define PAGE0
+Date:   Mon, 20 Sep 2021 18:43:37 +0200
+Message-Id: <20210920163931.278767024@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,95 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 9ff80e2de36d0554e3a6da18a171719fe8663c17 ]
+commit 7366c23ff492ad260776a3ee1aaabba9fc773a8b upstream.
 
-Although irq_create_mapping() is able to deal with duplicate
-mappings, it really isn't supposed to be a substitute for
-irq_find_mapping(), and can result in allocations that take place
-in atomic context if the mapping didn't exist.
+Building dp83640.c on arch/parisc/ produces a build warning for
+PAGE0 being redefined. Since the macro is not used in the dp83640
+driver, just make it a comment for documentation purposes.
 
-Fix the handful of MFD drivers that use irq_create_mapping() in
-interrupt context by using irq_find_mapping() instead.
+In file included from ../drivers/net/phy/dp83640.c:23:
+../drivers/net/phy/dp83640_reg.h:8: warning: "PAGE0" redefined
+    8 | #define PAGE0                     0x0000
+                 from ../drivers/net/phy/dp83640.c:11:
+../arch/parisc/include/asm/page.h:187: note: this is the location of the previous definition
+  187 | #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Cochran <richard.cochran@omicron.at>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20210913220605.19682-1-rdunlap@infradead.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/ab8500-core.c | 2 +-
- drivers/mfd/stmpe.c       | 4 ++--
- drivers/mfd/tc3589x.c     | 2 +-
- drivers/mfd/wm8994-irq.c  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/phy/dp83640_reg.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
-index 2f212bdc187a..83484c43b1dc 100644
---- a/drivers/mfd/ab8500-core.c
-+++ b/drivers/mfd/ab8500-core.c
-@@ -489,7 +489,7 @@ static int ab8500_handle_hierarchical_line(struct ab8500 *ab8500,
- 		if (line == AB8540_INT_GPIO43F || line == AB8540_INT_GPIO44F)
- 			line += 1;
+--- a/drivers/net/phy/dp83640_reg.h
++++ b/drivers/net/phy/dp83640_reg.h
+@@ -5,7 +5,7 @@
+ #ifndef HAVE_DP83640_REGISTERS
+ #define HAVE_DP83640_REGISTERS
  
--		handle_nested_irq(irq_create_mapping(ab8500->domain, line));
-+		handle_nested_irq(irq_find_mapping(ab8500->domain, line));
- 	}
+-#define PAGE0                     0x0000
++/* #define PAGE0                  0x0000 */
+ #define PHYCR2                    0x001c /* PHY Control Register 2 */
  
- 	return 0;
-diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
-index b0c7bcdaf5df..61fb4873c061 100644
---- a/drivers/mfd/stmpe.c
-+++ b/drivers/mfd/stmpe.c
-@@ -1033,7 +1033,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
- 
- 	if (variant->id_val == STMPE801_ID ||
- 	    variant->id_val == STMPE1600_ID) {
--		int base = irq_create_mapping(stmpe->domain, 0);
-+		int base = irq_find_mapping(stmpe->domain, 0);
- 
- 		handle_nested_irq(base);
- 		return IRQ_HANDLED;
-@@ -1061,7 +1061,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
- 		while (status) {
- 			int bit = __ffs(status);
- 			int line = bank * 8 + bit;
--			int nestedirq = irq_create_mapping(stmpe->domain, line);
-+			int nestedirq = irq_find_mapping(stmpe->domain, line);
- 
- 			handle_nested_irq(nestedirq);
- 			status &= ~(1 << bit);
-diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
-index 274bf39968aa..96187c1e5f8f 100644
---- a/drivers/mfd/tc3589x.c
-+++ b/drivers/mfd/tc3589x.c
-@@ -187,7 +187,7 @@ again:
- 
- 	while (status) {
- 		int bit = __ffs(status);
--		int virq = irq_create_mapping(tc3589x->domain, bit);
-+		int virq = irq_find_mapping(tc3589x->domain, bit);
- 
- 		handle_nested_irq(virq);
- 		status &= ~(1 << bit);
-diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
-index 18710f3b5c53..2c58d9b99a39 100644
---- a/drivers/mfd/wm8994-irq.c
-+++ b/drivers/mfd/wm8994-irq.c
-@@ -159,7 +159,7 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
- 	struct wm8994 *wm8994 = data;
- 
- 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
--		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
-+		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
- 
- 	return IRQ_HANDLED;
- }
--- 
-2.30.2
-
+ #define PAGE4                     0x0004
 
 
