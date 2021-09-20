@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AA24111D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781A34111D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236190AbhITJSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S236294AbhITJTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbhITJSV (ORCPT
+        with ESMTP id S230049AbhITJT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:18:21 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136D8C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 02:16:54 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id k23-20020a17090a591700b001976d2db364so12162601pji.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 02:16:54 -0700 (PDT)
+        Mon, 20 Sep 2021 05:19:26 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B21BC061574;
+        Mon, 20 Sep 2021 02:17:59 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id b15so46575673lfe.7;
+        Mon, 20 Sep 2021 02:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Wbc3Zmo5GIb9tDLFhXIckh5fijk1uzMZpJmzD8Arsds=;
-        b=HPs3d/f7BQhbNwPPGYOziP13Ojx87lUr1OPvrIeM7KatPRlMjxkyZThboMnPOqfjQ7
-         c6aWMvbkA4A/QQinMgQT8DsSWqJHk267bMEr2qHO0afGLDOeDgplupibVhTOvjvgtAZG
-         5SyUa3bmINK/LdHf/pjzsuts7dO+7Vw3X3qSFlB4jxarDj4YEHwOC6f/4CAOKyLFKYKr
-         bQ6Sz5AjPJkISfY/pxNrtNkOuxgNl4fYwdERnv20gFfWTfWBPFOaGo1VtFnKgvaor1SU
-         WmIP6fwvGp7oLx6lEdh2IZDRmpjSGdkmQyhNoEF0hoAHwlVNLuxlErqjZ3DAZap1VlpC
-         fFYA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9MJUyrdjtL92fDVKRhBW6cihvti+fX42bYpBsWMvv+E=;
+        b=NSEXhIOt00QDtxSI+izwhuCtvzp95rPJVKrC6aoKUqAF15wMlMZd0t5HNFHYK7aR+A
+         TDWt77yv+ysif3eiz58aZ3O8NUfNoxCxB2vwddMZpLDGH1j2KnCs1RmmpkgBwNR7LLnW
+         WxMJa2Mcm7QL1oShXaJqf34MuYtIb7iB6e4p1OZlsuIB0Jlr+nYhiIoTSqeS/FslaIQI
+         kz8MzEaZbc1C3YePXdn4gJQFmy4faw8YlIVbXFXzxVrs7miJhPxv4kImnfwDiO0fGsFr
+         CbJEkKCJESKCT29EHNceurQ5LoyKzHe1PtnHYAkRH/1Xv0J6zl+ZxJ9h9vGDJtQK0p/L
+         iTVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Wbc3Zmo5GIb9tDLFhXIckh5fijk1uzMZpJmzD8Arsds=;
-        b=zywJSniiC6iwaY75QB95Yd7JW4XdBV45ooQB7Uyw+3FX/JglE8shVvm+grzCgVSKyy
-         Bx1wEHzIx8P0fh/SyzH8+gPX5hBcMYWxUbf4CpxzrsDEJasoG131fOqkZu5QscOe/m5u
-         D6TgYtUW4xE9aViHp+0f1mVGnua1jHTpC52G9VBPqauF1C9WAdcx+G1TVs9T9h0pw7Eq
-         TwrZ+Bf/0f12Xf+EtSEHBxAUJE84otgvhF/gIQj8awFneRRIFAbLKNL/IJ4G8k1XsZvG
-         yliDsQdOShHKT4xLHCXkXRkJXcFTtRHVyC0kuO1RQoBt05KK6v2awjQBLyImBiW6Yz9l
-         xCfw==
-X-Gm-Message-State: AOAM530GJzce1qGCKPsZnwVzaY9iXMjlFOtmM+QRn6ScLrsn0hl6yEHU
-        Jur+rotRVN3ZsVZAc9+trvOcA/7vs93+rCZk
-X-Google-Smtp-Source: ABdhPJw7nqDCi95G5lXn/pYixX+X1ZmQCo/nPOIWn3qSz6jYiD0XB/LmgHm6BRXp/sU9HPFjzHogpg==
-X-Received: by 2002:a17:90b:1089:: with SMTP id gj9mr28433015pjb.228.1632129413439;
-        Mon, 20 Sep 2021 02:16:53 -0700 (PDT)
-Received: from owniadeMacBook-Pro.local ([103.97.201.31])
-        by smtp.gmail.com with ESMTPSA id 130sm13754532pfy.175.2021.09.20.02.16.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 02:16:53 -0700 (PDT)
-Subject: Re: [PATCH] mm/debug: sync up latest migrate_reason to
- migrate_reason_names
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210917061432.323777-1-o451686892@gmail.com>
- <20210919163511.9f82c3634cf48d3769ccab42@linux-foundation.org>
-From:   Weizhao Ouyang <o451686892@gmail.com>
-Message-ID: <e889b501-3b15-0ce6-afc7-58a9666688e2@gmail.com>
-Date:   Mon, 20 Sep 2021 17:16:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9MJUyrdjtL92fDVKRhBW6cihvti+fX42bYpBsWMvv+E=;
+        b=Jo4EuIkqcw9Yfj+FhOWbBUxvYAIcU+gLlLZqhEqbo1fY4lSRYD4VQnl+TliksBo5xf
+         XPPzOwq/mq1j2A5rtiZasz6yPYghLXqAUP8JPIE1Y1Fi/dEJcfst3GIUv9yXnppTHfXH
+         pybZdDrUfjvF8xhTYiFpR2eYyBHAUXTAqARrg3Ybt5xSVDVncBfJH0Wh+1EMDE+7zJ+R
+         Jq6dZ+0/bJXyxq9i8qI6lHxvryVePr7wJvIFGCPwpjxGeKG5GO/lon1kmRgTsR6ULMC5
+         F2bwJRWB+7YpKZMH20OdGreAAnTnDmpDjfeLXlxO6zZNXjB3spTuXjC4hdOBHJbf06fz
+         DwmA==
+X-Gm-Message-State: AOAM53027hNjKdu4ciYT4nDtug7TB22J4SsqiL8LF6G55hq1BfEp2etl
+        4UlAp7PCU/uN5E6tI2NQdtl4Onc3axque0OPSiA=
+X-Google-Smtp-Source: ABdhPJwoIpasqIx1T1N6K13hYk8GvZnLEHX+DkL4uyx0oKv0iMaCX06Xngtlq+rf/FDN4TVMwoWiSNmp3XoGaE11zZI=
+X-Received: by 2002:ac2:504a:: with SMTP id a10mr17619938lfm.470.1632129478015;
+ Mon, 20 Sep 2021 02:17:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210919163511.9f82c3634cf48d3769ccab42@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAEyMn7YqrRttqvJzJLA+yVo6WtBZww6QcXT12MMCi+bhjP4pTg@mail.gmail.com>
+ <CAEyMn7ZhBfG7703YMr=EDQyf5mHDkLyET5iNqdXDOpJy9ti+rQ@mail.gmail.com>
+ <CAOMZO5CZKdc=AmG1eds9Oy_uwqXDWLwPXk74phCDWdjrzkRC4A@mail.gmail.com>
+ <CAEyMn7YaQbLoVy_5Rb+hiwhEj-kbnmCwb0B_soa+Kf0D6iH6oA@mail.gmail.com> <CAOMZO5CGuKQ0yVyoD86G3KnxoBd2fq+uCTTLoqVR-13Y5a-36Q@mail.gmail.com>
+In-Reply-To: <CAOMZO5CGuKQ0yVyoD86G3KnxoBd2fq+uCTTLoqVR-13Y5a-36Q@mail.gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Mon, 20 Sep 2021 11:17:46 +0200
+Message-ID: <CAEyMn7bN247-J=Qz-k3LZMVYb8pdYSP3BSCsNE9yyvfDfmdK0g@mail.gmail.com>
+Subject: Re: imx8mm board crash in drivers/usb/chipidea/ci_hdrc_imx.c
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Peter Chen <peter.chen@nxp.com>, Jun Li <jun.li@nxp.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Fabio,
 
-On 2021/9/20 07:35, Andrew Morton wrote:
-> On Fri, 17 Sep 2021 14:14:32 +0800 Weizhao Ouyang <o451686892@gmail.com> wrote:
+Am So., 19. Sept. 2021 um 23:44 Uhr schrieb Fabio Estevam <festevam@gmail.com>:
 >
->> After related migrate page updates, sync up latest migrate_reason to
->> migrate_reason_names, page_owner use it to parse the page migrate
->> reason.
-> A slight problem.
+> Hi Heiko,
 >
->> Fixes: d1e153fea2a8 ("mm/gup: migrate pinned pages out of movable zone")
->> Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
-> d1e153fea2a8 is from May 2021, so a -stable backport would be appropriate.
+> On Sun, Sep 19, 2021 at 4:33 PM Heiko Thiery <heiko.thiery@gmail.com> wrote:
 >
-> But 26aa2d199d6f is only in 5.15-rc1, so no cc:stable.
+> > > Does this patch help?
+> > > https://pastebin.com/raw/yZKz1huL
+> >
+> > I can confirm that on the next-20210915 (that includes commit
+> > 78e80c4b4238c1f5642b975859664fced4f9c69e) your provided patch solves
+> > the problem.
 >
-> So can you please prepare this as a two-patch series with the first
-> patch (which fixes d1e153fea2a8) marked cc:stable?
+> Thanks for testing it.
+>
+> > But is it explainable that in the version before the commit
+> > 78e80c4b4238c1f5642b975859664fced4f9c69e the problem occurs in the
+> > form I reported?
+>
+> I don't understand this problem either. I would suggest bisecting it.
 
-Okay I will send v2 patch soon.
+Now it is clear to me. I used the dtb for my board that had already
+changed the phy node and tried to boot the "old" kernel 5.14. Thus no
+phy could be found. Nevertheless the kernel should not crash in case
+no phy was found.
 
-Thanks,
-Weizhao
+So I made a beginner's mistake here. But this also means that you can
+no longer start an old kernel with the changed dtb. This comes into
+play when you e.g. a standard distribution where the embedded dtb is
+passed from the uboot via EFI boot.
+
+-- 
+Heiko
