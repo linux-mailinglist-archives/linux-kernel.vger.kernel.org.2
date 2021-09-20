@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B991412680
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302034124FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355145AbhITS7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33192 "EHLO mail.kernel.org"
+        id S1382190AbhITSkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:40:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384540AbhITSsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:48:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C476336D;
-        Mon, 20 Sep 2021 17:33:52 +0000 (UTC)
+        id S1380890AbhITSfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:35:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BC956330E;
+        Mon, 20 Sep 2021 17:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159233;
-        bh=9CdTvvhUJ6fs+lcYEoDJc3pDm6ZWgqub8UHDzlaahfA=;
+        s=korg; t=1632158935;
+        bh=AVCNB5sSVmhO8DO69mlWlj47HuOO9tuZqx2KnPT7AZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E75AM/uoddO5tBXo7RaHy2s/4NdxokNJPrVetH1wOMPZcQ71E8jWTlIE9Udy26vcF
-         axotCiePTzAKkWZrFHoxKSwA7gwQNL1VY1NKII/mFAUl77/vegDXGgvnMtHvgNNSfy
-         40EjM8UhpL4lo5f37LS97qTwTJD3hOuxV/zkDdCM=
+        b=d6aJlXDZ85AhV6cWngp68xeKSlqIBw3qsEi5HZsg6XfRvUgg5R8YeeO3v9Nf2IwN6
+         M/T5x7oNerOFwhT/FUQbr3TrnUpZtEcn7mUAluB5XWsL+vx9ZOhs1ivD2Pqxu5oRIi
+         BZDnlgrZCYUdxTKK9kgdx5W9JXU51oFnaLnTEcJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Li Huafei <lihuafei1@huawei.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        He Kuang <hekuang@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Zhang Jinhao <zhangjinhao2@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 130/168] tracing/boot: Fix a hist trigger dependency for boot time tracing
-Date:   Mon, 20 Sep 2021 18:44:28 +0200
-Message-Id: <20210920163925.940856792@linuxfoundation.org>
+Subject: [PATCH 5.10 097/122] perf unwind: Do not overwrite FEATURE_CHECK_LDFLAGS-libunwind-{x86,aarch64}
+Date:   Mon, 20 Sep 2021 18:44:29 +0200
+Message-Id: <20210920163918.971686835@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +46,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Li Huafei <lihuafei1@huawei.com>
 
-[ Upstream commit 6fe7c745f2acb73e4cc961d7f91125eef5a8861f ]
+[ Upstream commit cdf32b44678c382a31dc183d9a767306915cda7b ]
 
-Fixes a build error when CONFIG_HIST_TRIGGERS=n with boot-time
-tracing. Since the trigger_process_regex() is defined only
-when CONFIG_HIST_TRIGGERS=y, if it is disabled, the 'actions'
-event option also must be disabled.
+When setting LIBUNWIND_DIR, we first set
 
-Link: https://lkml.kernel.org/r/162856123376.203126.582144262622247352.stgit@devnote2
+ FEATURE_CHECK_LDFLAGS-libunwind-{aarch64,x86} = -L$(LIBUNWIND_DIR)/lib.
 
-Fixes: 81a59555ff15 ("tracing/boot: Add per-event settings")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+<committer note>
+This happens a bit before, the overwritting, in:
+
+  libunwind_arch_set_flags = $(eval $(libunwind_arch_set_flags_code))
+  define libunwind_arch_set_flags_code
+    FEATURE_CHECK_CFLAGS-libunwind-$(1)  = -I$(LIBUNWIND_DIR)/include
+    FEATURE_CHECK_LDFLAGS-libunwind-$(1) = -L$(LIBUNWIND_DIR)/lib
+  endef
+
+  ifdef LIBUNWIND_DIR
+    LIBUNWIND_CFLAGS  = -I$(LIBUNWIND_DIR)/include
+    LIBUNWIND_LDFLAGS = -L$(LIBUNWIND_DIR)/lib
+    LIBUNWIND_ARCHS = x86 x86_64 arm aarch64 debug-frame-arm debug-frame-aarch64
+    $(foreach libunwind_arch,$(LIBUNWIND_ARCHS),$(call libunwind_arch_set_flags,$(libunwind_arch)))
+  endif
+
+Look at that 'foreach' on all the LIBUNWIND_ARCHS.
+</>
+
+After commit 5c4d7c82c0dc ("perf unwind: Do not put libunwind-{x86,aarch64}
+in FEATURE_TESTS_BASIC"), FEATURE_CHECK_LDFLAGS-libunwind-{x86,aarch64} is
+overwritten. As a result, the remote libunwind libraries cannot be searched
+from $(LIBUNWIND_DIR)/lib directory during feature check tests. Fix it with
+variable appending.
+
+Before this patch:
+
+  perf$ make VF=1 LIBUNWIND_DIR=/opt/libunwind_aarch64
+   BUILD:   Doing 'make -j16' parallel build
+  <SNIP>
+  ...
+  ...                    libopencsd: [ OFF ]
+  ...                 libunwind-x86: [ OFF ]
+  ...              libunwind-x86_64: [ OFF ]
+  ...                 libunwind-arm: [ OFF ]
+  ...             libunwind-aarch64: [ OFF ]
+  ...         libunwind-debug-frame: [ OFF ]
+  ...     libunwind-debug-frame-arm: [ OFF ]
+  ... libunwind-debug-frame-aarch64: [ OFF ]
+  ...                           cxx: [ OFF ]
+  <SNIP>
+
+  perf$ cat ../build/feature/test-libunwind-aarch64.make.output
+  /usr/bin/ld: cannot find -lunwind-aarch64
+  /usr/bin/ld: cannot find -lunwind-aarch64
+  collect2: error: ld returned 1 exit status
+
+After this patch:
+
+  perf$ make VF=1 LIBUNWIND_DIR=/opt/libunwind_aarch64
+   BUILD:   Doing 'make -j16' parallel build
+  <SNIP>
+  ...                    libopencsd: [ OFF ]
+  ...                 libunwind-x86: [ OFF ]
+  ...              libunwind-x86_64: [ OFF ]
+  ...                 libunwind-arm: [ OFF ]
+  ...             libunwind-aarch64: [ on  ]
+  ...         libunwind-debug-frame: [ OFF ]
+  ...     libunwind-debug-frame-arm: [ OFF ]
+  ... libunwind-debug-frame-aarch64: [ OFF ]
+  ...                           cxx: [ OFF ]
+  <SNIP>
+
+  perf$ cat ../build/feature/test-libunwind-aarch64.make.output
+
+  perf$ ldd ./perf
+        linux-vdso.so.1 (0x00007ffdf07da000)
+        libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f30953dc000)
+        librt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x00007f30951d4000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3094e36000)
+        libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f3094c32000)
+        libelf.so.1 => /usr/lib/x86_64-linux-gnu/libelf.so.1 (0x00007f3094a18000)
+        libdw.so.1 => /usr/lib/x86_64-linux-gnu/libdw.so.1 (0x00007f30947cc000)
+        libunwind-x86_64.so.8 => /usr/lib/x86_64-linux-gnu/libunwind-x86_64.so.8 (0x00007f30945ad000)
+        libunwind.so.8 => /usr/lib/x86_64-linux-gnu/libunwind.so.8 (0x00007f3094392000)
+        liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f309416c000)
+        libunwind-aarch64.so.8 => not found
+        libslang.so.2 => /lib/x86_64-linux-gnu/libslang.so.2 (0x00007f3093c8a000)
+        libpython2.7.so.1.0 => /usr/local/lib/libpython2.7.so.1.0 (0x00007f309386b000)
+        libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f309364e000)
+        libnuma.so.1 => /usr/lib/x86_64-linux-gnu/libnuma.so.1 (0x00007f3093443000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3093052000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f3096097000)
+        libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007f3092e42000)
+        libutil.so.1 => /lib/x86_64-linux-gnu/libutil.so.1 (0x00007f3092c3f000)
+
+Fixes: 5c4d7c82c0dceccf ("perf unwind: Do not put libunwind-{x86,aarch64} in FEATURE_TESTS_BASIC")
+Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: He Kuang <hekuang@huawei.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Zhang Jinhao <zhangjinhao2@huawei.com>
+Link: http://lore.kernel.org/lkml/20210823134340.60955-1-lihuafei1@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_boot.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ tools/perf/Makefile.config | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 94ef2d099e32..d713714cba67 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -205,12 +205,15 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
- 			pr_err("Failed to apply filter: %s\n", buf);
- 	}
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 2abbd75fbf2e..014b959575ca 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -127,10 +127,10 @@ FEATURE_CHECK_LDFLAGS-libunwind = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
+ FEATURE_CHECK_CFLAGS-libunwind-debug-frame = $(LIBUNWIND_CFLAGS)
+ FEATURE_CHECK_LDFLAGS-libunwind-debug-frame = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
  
--	xbc_node_for_each_array_value(enode, "actions", anode, p) {
--		if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
--			pr_err("action string is too long: %s\n", p);
--		else if (trigger_process_regex(file, buf) < 0)
--			pr_err("Failed to apply an action: %s\n", buf);
--	}
-+	if (IS_ENABLED(CONFIG_HIST_TRIGGERS)) {
-+		xbc_node_for_each_array_value(enode, "actions", anode, p) {
-+			if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
-+				pr_err("action string is too long: %s\n", p);
-+			else if (trigger_process_regex(file, buf) < 0)
-+				pr_err("Failed to apply an action: %s\n", buf);
-+		}
-+	} else if (xbc_node_find_value(enode, "actions", NULL))
-+		pr_err("Failed to apply event actions because CONFIG_HIST_TRIGGERS is not set.\n");
+-FEATURE_CHECK_LDFLAGS-libunwind-arm = -lunwind -lunwind-arm
+-FEATURE_CHECK_LDFLAGS-libunwind-aarch64 = -lunwind -lunwind-aarch64
+-FEATURE_CHECK_LDFLAGS-libunwind-x86 = -lunwind -llzma -lunwind-x86
+-FEATURE_CHECK_LDFLAGS-libunwind-x86_64 = -lunwind -llzma -lunwind-x86_64
++FEATURE_CHECK_LDFLAGS-libunwind-arm += -lunwind -lunwind-arm
++FEATURE_CHECK_LDFLAGS-libunwind-aarch64 += -lunwind -lunwind-aarch64
++FEATURE_CHECK_LDFLAGS-libunwind-x86 += -lunwind -llzma -lunwind-x86
++FEATURE_CHECK_LDFLAGS-libunwind-x86_64 += -lunwind -llzma -lunwind-x86_64
  
- 	if (xbc_node_find_value(enode, "enable", NULL)) {
- 		if (trace_event_enable_disable(file, 1, 0) < 0)
+ FEATURE_CHECK_LDFLAGS-libcrypto = -lcrypto
+ 
 -- 
 2.30.2
 
