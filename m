@@ -2,214 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D13411808
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D413F41181C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241452AbhITPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:21:18 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43236 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241431AbhITPU5 (ORCPT
+        id S241442AbhITPXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:23:32 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:56166 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235268AbhITPX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:20:57 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C454F2200F;
-        Mon, 20 Sep 2021 15:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632151164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oF4uywDoz1MkcVWOc8nMivEHhs75yAhfHJf39oCzPgg=;
-        b=h+7nGk35C41c38kU0AMOgFsTfkG/WZCVvvFHco8ZJTLTpoitOBr2WhMSSB79c+evGNvnUZ
-        ncDUp120VVXWaKi0gaDsKiQxxY4MYa/ydCtcgwf2bQy1F5IuFLKOypIENiPE7VgjRyLUQf
-        Tk2YwQA1Jr8/ODwSTkFrM/kfsRBRXMk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D56013A61;
-        Mon, 20 Sep 2021 15:19:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0Vw/IXymSGElHwAAMHmgww
-        (envelope-from <jgross@suse.com>); Mon, 20 Sep 2021 15:19:24 +0000
-Subject: Re: [PATCH v2 0/4] swiotlb-xen: remaining fixes and adjustments
-To:     Jan Beulich <jbeulich@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "hch@lst.de" <hch@lst.de>, Konrad Wilk <konrad.wilk@oracle.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-References: <164e58ff-2edd-2c99-ac3d-e18eb06ff731@suse.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <c4e260c9-6129-1916-5eb2-3e060dbe47d5@suse.com>
-Date:   Mon, 20 Sep 2021 17:19:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 20 Sep 2021 11:23:27 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KE21hV025229;
+        Mon, 20 Sep 2021 17:21:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=selector1;
+ bh=11mbfnVg9/gdbNXUsMJb7eKBhQNTVHlQkqg8fvwjfGU=;
+ b=WJ6oDJofyU26m/VP/7VK39oole1/vl5zzLvZM/wizVK31tVqajFFYRA0EdAnBNACRVmM
+ IBU5bGEgskY8R6L4Gc0q0dQ6tsB4dEd0dzUuojIa/8/Qbpw5TEEAaaj2WqXV/l65N3ei
+ TQ5Hvo/qlAT0wS0Wq0ntoBghhxhUHucS4wsobYdZQg6DmGc3OnSoTGbuqGl1DnI6UA9q
+ lWHaz081LgxJdzZB4yYT2sQFnrQ1rxbkBhf6PDQ8L+iqFzGQhJEuGBAGn3DAWJS+4O2J
+ MDQHdPUvJdDlf/FSES0GU+TJxChlbt3ZldhJEJs3PKU/99FbMTotJ2S72mJnZ+Dt06w5 DQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b6uq3rbag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 17:21:46 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A896F10002A;
+        Mon, 20 Sep 2021 17:21:45 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9AF4722F7B7;
+        Mon, 20 Sep 2021 17:21:45 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 20 Sep 2021 17:21:45
+ +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     <wsa@kernel.org>, <pierre-yves.mordret@foss.st.com>
+CC:     <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <amelie.delaunay@foss.st.com>, <alain.volmat@foss.st.com>
+Subject: [PATCH 0/4] i2c: stm32: various fixes & dmaengine updates
+Date:   Mon, 20 Sep 2021 17:21:28 +0200
+Message-ID: <1632151292-18503-1-git-send-email-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <164e58ff-2edd-2c99-ac3d-e18eb06ff731@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="EvbroSQDJKtThYMCIXWpHh3Qch2odPsZ9"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---EvbroSQDJKtThYMCIXWpHh3Qch2odPsZ9
-Content-Type: multipart/mixed; boundary="xxxRpcm2fCnpW4erSmvy2q75E96nioyOj";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Jan Beulich <jbeulich@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- lkml <linux-kernel@vger.kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "hch@lst.de" <hch@lst.de>, Konrad Wilk <konrad.wilk@oracle.com>,
- "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Message-ID: <c4e260c9-6129-1916-5eb2-3e060dbe47d5@suse.com>
-Subject: Re: [PATCH v2 0/4] swiotlb-xen: remaining fixes and adjustments
-References: <164e58ff-2edd-2c99-ac3d-e18eb06ff731@suse.com>
-In-Reply-To: <164e58ff-2edd-2c99-ac3d-e18eb06ff731@suse.com>
+This serie contains 3 fixes for I²C error handling cases.
+It also includes a patch to get rid of the deprecated
+dmaengine_terminate_all calls.
 
---xxxRpcm2fCnpW4erSmvy2q75E96nioyOj
-Content-Type: multipart/mixed;
- boundary="------------BEF8B08AD90F049DF3049A8F"
-Content-Language: en-US
+Alain Volmat (4):
+  i2c: stm32f7: flush TX FIFO upon transfer errors
+  i2c: stm32f7: recover the bus on access timeout
+  i2c: stm32f7: stop dma transfer in case of NACK
+  i2c: stm32f7: use proper DMAENGINE API for termination
 
-This is a multi-part message in MIME format.
---------------BEF8B08AD90F049DF3049A8F
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+ drivers/i2c/busses/i2c-stm32f7.c | 45 +++++++++++++++++++++++++++-----
+ 1 file changed, 38 insertions(+), 7 deletions(-)
 
-On 17.09.21 12:43, Jan Beulich wrote:
-> The primary intention really was the last patch, there you go (on top
-> of what is already in xen/tip.git for-linus-5.15) ...
->=20
-> 1: swiotlb-xen: ensure to issue well-formed XENMEM_exchange requests
-> 2: PCI: only build xen-pcifront in PV-enabled environments
-> 3: xen/pci-swiotlb: reduce visibility of symbols
-> 4: swiotlb-xen: this is PV-only on x86
+-- 
+2.25.1
 
-All 4 patches pushed to xen/tip.git for-linus-5.15b
-
-
-Juergen
-
---------------BEF8B08AD90F049DF3049A8F
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------BEF8B08AD90F049DF3049A8F--
-
---xxxRpcm2fCnpW4erSmvy2q75E96nioyOj--
-
---EvbroSQDJKtThYMCIXWpHh3Qch2odPsZ9
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFIpnsFAwAAAAAACgkQsN6d1ii/Ey+r
-pgf/e1d5GEut8n++UJYE9qfcdKF2V8/ZF0N6fYIV2xpPMWFjEBIz7lQkzO/DhseFmOVqqYeqLSS0
-9dXsvCpZVtAR7Q/9h0Z0yHMbNTi81y4wuGY1/69J2nRQiw0NLFjk2v4NDHTMP8itwQlzoU4A4Czu
-vZtnDiTBewfpf68WM2cELYGMYzNc+2U1ZQoRg+pnrS6jWmdMO79rvCbvPUy3bPSRgDUtotDBXWVk
-hXSFHjsXcNi2uYTNNlBn5eAOsJaavXsXHv3NxLl7df+baOvkIIO7O3O0UbjZ/CqtXoKSvRemNNhD
-OMA+NEtvh92B1t2voCWVYDPHHpyomhiIHbIb9LHmfQ==
-=ek21
------END PGP SIGNATURE-----
-
---EvbroSQDJKtThYMCIXWpHh3Qch2odPsZ9--
