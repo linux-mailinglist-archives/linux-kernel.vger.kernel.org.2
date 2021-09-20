@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E754411FC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F46411FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345423AbhITRpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
+        id S1345932AbhITRqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352853AbhITRmU (ORCPT
+        with ESMTP id S1353214AbhITRoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:42:20 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FB2C0363F0;
-        Mon, 20 Sep 2021 09:54:14 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id l6so6704934plh.9;
-        Mon, 20 Sep 2021 09:54:13 -0700 (PDT)
+        Mon, 20 Sep 2021 13:44:11 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0840EC03548E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:54:35 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id dw14so12427284pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BVUQwCPVABzZfjfA1MSF2RPyACpP6SrhyHePd1BxqFg=;
-        b=g9WffIev9n4JE+zerOPcdBgNXleWbDeoTCeVmLdadn3pey8Bwg8/boq87gclfAlkLB
-         3J80pTkp6GGPTLA9xMks6McvHizR8cvufA1imk++YXgynql9GBMF9CQsqsM7EoHpBP3K
-         2CtFG9AcI5WenoNglbB+5VvWa1mRDU/id8PJIs88bI+9Bd/NJcyVfjh4qD1oXCWKVlcZ
-         eOsTjx8ITIBo2YPoQoXjh2jBXXz1XgGG+bkc5Fsd+hxU5qZ07b1poV+/c+Kzk+tjWNR8
-         jemoApnW7UHvlHZqCCf0QDUhzCumHbJGinZdxAYUiobmKsmqmkDmJfgovN465XqwHzuG
-         6Bww==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b1cKu3Nph8t59JJWmO+P4WE6PaxVOKxFgbrtZrwyjIs=;
+        b=OX7HFhon8z/Bhl4fx7mpXvk/luDQH0eo6eLGUEz3SCw0vsB69Y9PrPyV5PbT94tDM4
+         gruIx5Le+8O6rHlFYS72YjVziB3hmt3YDaSvMHsOsMBp8WEhoORolMqIxo1CFrVhZ7M+
+         +HKqFNmu1L9Hd+yW2wpXDtjKvClXATWmdGfPkA7uYGVQVflbR6hfDnXnLBdkKAMtOG/s
+         kexvngFS/cQPjcfURTJ0X23sspxjYAckLlAR0jNA8g6mVV0ycUItRuy4SmUtv8WUEPgw
+         lB4/9i2x99/8tEIR+lvo2qIqSA+XAdwjMqy+pwu3TbPA5V4wU5t0kC6NdsZu9fXgF3Rp
+         85wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BVUQwCPVABzZfjfA1MSF2RPyACpP6SrhyHePd1BxqFg=;
-        b=QHgL6bXEmaSqLYv4D++2oJet2EvDY52YBgqA5sOCjWLaYBEnE4ZduLhC0HVx8z/Pbc
-         VfiwYhcDT3FK3DtoiyERCAyd6moooD4TnO8IDFZWBPnKadURmt4M0EjOzlkrrAsgUjtz
-         IrVCyKwhlHbCDkld0PvwpozGancrKiLq2Qno5jBmQSbYdhw7s4MQrTPy0/KvvXiCkqVG
-         t5LQ6ZFIyPuDqpblTdU9fei4ISTx4IEqTMXmI9Xb4bx4Fc3bi/yfNClvBoSBrcC0bWqB
-         Knv3C3TRf6FTPhqlLeVSpWPeUdK2RMOxAeBLWT7VvEbii+94IeUYaCAfVTO2v3BQQD2f
-         3u5g==
-X-Gm-Message-State: AOAM532jxRyyms7qkP18oGIgi7c8NUUUfB3KvreLuKOZB6BhsrMf1YUJ
-        xaU8a7nURY9DlgxS9o9ROXSiSQb6v7ebtV/eImQ=
-X-Google-Smtp-Source: ABdhPJxLx8xoYZEjROx0BTL0qNPlPGU3HiAjqyY/ohecPOSt6GBiEqNYGVLDCEmO6TyeIq3WPvuhiAqtjFVZ00U0z+U=
-X-Received: by 2002:a17:903:32cd:b0:13d:9b0e:7897 with SMTP id
- i13-20020a17090332cd00b0013d9b0e7897mr12692999plr.30.1632156853516; Mon, 20
- Sep 2021 09:54:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b1cKu3Nph8t59JJWmO+P4WE6PaxVOKxFgbrtZrwyjIs=;
+        b=f/I1AP7vHybPe7u/3+OHRiFkHG/PrKod3dD2u/G/NITRmNV4QXUgGizzdBWw+NOl+X
+         a3V2jlX9xZLuLPa1F2jSRY7hkWcDApmrD50t6usm9sjjm3Zj5xtC8mg0lOcxbez8X/en
+         x/GC993ufBiiK7C/UYu5NqPACTjelooVa9w8acOWc+8dP4wDSiE9ZUXdHVFfS4i8/hCu
+         AKTMPRlzuaV7wnRHse3HYmSwX9MKIWB/KpPlt945ingT0ZSJUSAG+Ef7zDxR0KrCQKco
+         VqLP1Lh2iEKm7OTxPHZTAoqZRPHwJPYCJdRfSUWvGq/gh1IiY1noUMxotp62oJFhMIWX
+         o9NA==
+X-Gm-Message-State: AOAM532eC/xnZKletdVJEsjpAr0NAycNJO4WyPd1LSsIsu+vvd+uu2gE
+        Up4xwM+PYPNopanDEY5ntrixhw==
+X-Google-Smtp-Source: ABdhPJzYXwdiiFLuVBZ7pvs2bzvn8uiipZT51pcFWw4B5EsdoMDx0Fns8VveY8yCrUxHmakXzDILrw==
+X-Received: by 2002:a17:903:1103:b0:12c:59b:dc44 with SMTP id n3-20020a170903110300b0012c059bdc44mr5527307plh.47.1632156874413;
+        Mon, 20 Sep 2021 09:54:34 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id cl16sm35563pjb.23.2021.09.20.09.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 09:54:33 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 10:54:31 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 2/6] remoteproc: fix the wrong default value of
+ is_iomem
+Message-ID: <20210920165431.GB2023964@p14s>
+References: <20210910090621.3073540-1-peng.fan@oss.nxp.com>
+ <20210910090621.3073540-3-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-References: <20210914143515.106394-1-yan2228598786@gmail.com>
-In-Reply-To: <20210914143515.106394-1-yan2228598786@gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 20 Sep 2021 09:54:02 -0700
-Message-ID: <CAM_iQpWLPvSmZD4CTmzSoor04xfdkvZuDhF=_CCaumT7XiaN7g@mail.gmail.com>
-Subject: Re: [PATCH] tcp: tcp_drop adds `SNMP` and `reason` parameter for tracing
-To:     Zhongya Yan <yan2228598786@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        dsahern@kernel.org, Yonghong Song <yhs@fb.com>, 2228598786@qq.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910090621.3073540-3-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 7:38 AM Zhongya Yan <yan2228598786@gmail.com> wrote=
-:
->
-> When we wanted to trace the use of the `tcp_drop(struct sock *sk, struct =
-sk_buff *skb)` function, we didn't know why `tcp` was deleting `skb'. To so=
-lve this problem, I updated the function `tcp_drop(struct sock *sk, struct =
-sk_buff *skb, int field, const char *reason)`.
-> This way you can understand the reason for the deletion based on the prom=
-pt message.
-> `field`: represents the SNMP-related value
-> `reason`: represents the reason why `tcp` deleted the current `skb`, and =
-contains some hints.
-> Of course, if you want to know more about the reason for updating the cur=
-rent function, you can check: https://www.brendangregg.com/blog/2018-05-31/=
-linux-tcpdrop.html
+On Fri, Sep 10, 2021 at 05:06:17PM +0800, Peng Fan (OSS) wrote:
+> From: Dong Aisheng <aisheng.dong@nxp.com>
+> 
+> Currently the is_iomem is a random value in the stack which may
+> be default to true even on those platforms that not use iomem to
+> store firmware.
+> 
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Fixes: 40df0a91b2a5 ("remoteproc: add is_iomem to da_to_va")
+> Reviewed-and-tested-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/remoteproc_coredump.c   | 2 +-
+>  drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
 
-I think you fail to explain why only TCP needs it? This should
-be useful for all kinds of drops, not just TCP, therefore you should
-consider extending net/core/drop_monitor.c instead of just tcp_drop().
+Applied
 
-Also, kernel does not have to explain it in strings, those SNMP
-counters are already available for user-space, so kernel could
-just use SNMP enums and let user-space interpret them. In many
-cases, you are just adding strings for those SNMP enums.
-
-Thanks.
+> diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
+> index aee657cc08c6a..c892f433a323e 100644
+> --- a/drivers/remoteproc/remoteproc_coredump.c
+> +++ b/drivers/remoteproc/remoteproc_coredump.c
+> @@ -152,8 +152,8 @@ static void rproc_copy_segment(struct rproc *rproc, void *dest,
+>  			       struct rproc_dump_segment *segment,
+>  			       size_t offset, size_t size)
+>  {
+> +	bool is_iomem = false;
+>  	void *ptr;
+> -	bool is_iomem;
+>  
+>  	if (segment->dump) {
+>  		segment->dump(rproc, segment, dest, offset, size);
+> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+> index 44e7f9308f4bc..d635d19a5aa8a 100644
+> --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> @@ -178,8 +178,8 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  		u64 filesz = elf_phdr_get_p_filesz(class, phdr);
+>  		u64 offset = elf_phdr_get_p_offset(class, phdr);
+>  		u32 type = elf_phdr_get_p_type(class, phdr);
+> +		bool is_iomem = false;
+>  		void *ptr;
+> -		bool is_iomem;
+>  
+>  		if (type != PT_LOAD)
+>  			continue;
+> -- 
+> 2.25.1
+> 
