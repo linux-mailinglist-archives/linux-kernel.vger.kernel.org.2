@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFBF4126A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958574126AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347531AbhITTR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 15:17:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48566 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243382AbhITTPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 15:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 277DF60FC1;
-        Mon, 20 Sep 2021 19:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632165265;
-        bh=0g8QTHavk1g8jErThgF8Kwdgu3c5ORY2nZ9iZPtiABA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xb1d8KAlERK0ejLDz2t1CulG4RHyauoH7X35DNDDYLPdUzuR9oUWYQfVDItv76Wus
-         lRfs+/lJvBDZifXUFQ4pNgSu9BCaeg0R1Z6yRF0hanOkZ+rSlqVjSg+gQboN7vXVCj
-         e5xz4B1xMXyqzLkLz1VWPocTg10fwVPYdYQUjjwnJ0tLIe42oPKHWiIWgGW4dVtTIs
-         M6eVJIdcojX6SvoUfuYNU3wbbesNiNZZ0JA8zF2WTZuWIBlzg8lBEwFd4yAw14ZPNo
-         rQYOMana294NcpG59hUS5P1xCt5p/BrA27tABKZZritX7JCZQfc5CL9SxWAapX1yoq
-         vV2brQN3tMvog==
-Date:   Mon, 20 Sep 2021 12:14:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>
-Subject: Re: [PATCH net v2 2/2] ptp: idt82p33: implement double dco time
- correction
-Message-ID: <20210920121424.212c7df8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <OS3PR01MB65935EC20F350036340F3348BAA09@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-References: <1631889589-26941-1-git-send-email-min.li.xe@renesas.com>
-        <1631889589-26941-2-git-send-email-min.li.xe@renesas.com>
-        <20210917125401.6e22ae13@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <OS3PR01MB65936ADCEF63D966B44C5FEFBADD9@OS3PR01MB6593.jpnprd01.prod.outlook.com>
-        <20210917140631.696aadc9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <OS3PR01MB65935EC20F350036340F3348BAA09@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+        id S1347383AbhITTUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 15:20:12 -0400
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:33391 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347482AbhITTSK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 15:18:10 -0400
+Received: by mail-pl1-f181.google.com with SMTP id t4so11779146plo.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:16:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0W/o5ZoyGa1oJqJxxVEWjBlKAnqr2zruLqjAEVsS5cI=;
+        b=QniF894uWJHaqwIiXCrvpvpQNTs0KM+4AwfMUNKJFBBldF4NJK4cc30PYrTMDQUgdW
+         FLD7qJYajmvPu8oLfCylG4QcEAQqqV51meIs+Ieco3C9N6gfmqtKTVwpDPaCrmh+/gou
+         PKpbysK9qanAmSsoMy1JpAF7gZsW4Rl9x06ZOmU/HvDjIgKbu8WpOeOUYMBet59wiv0R
+         LZfhkcw7wtrY0McG5qWPsUfd7jKrpb0GawzewYwQwjOEHwP47Xd4EbcAV48gM9pMPzmb
+         wD/kRbA4/L8GpWHbjh8C9ETKATo6XFIi1+IaETSj0tgz0NkB9aQqtMGBiddoEYZNQsdx
+         EUWA==
+X-Gm-Message-State: AOAM533cDGiPuWmu/rYJToN7yEZQY9wDLtjjFQm/k1rp1j6205r+CVmM
+        x8/awrP2wQXQqhkkfqFjPEo=
+X-Google-Smtp-Source: ABdhPJzh6O/KZmA+yP3dCC4Uf8vMmPP9LJ3Xin0kTc/V2+ANxrN37cnlw3Pa2FYalADPNsJhKkDvHw==
+X-Received: by 2002:a17:90b:1291:: with SMTP id fw17mr631393pjb.135.1632165402859;
+        Mon, 20 Sep 2021 12:16:42 -0700 (PDT)
+Received: from sultan-box.localdomain ([204.152.215.247])
+        by smtp.gmail.com with ESMTPSA id c9sm123389pfi.212.2021.09.20.12.16.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 12:16:42 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 12:16:39 -0700
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
+Message-ID: <YUjeF6YsHKljSFis@sultan-box.localdomain>
+References: <20210918233920.9174-1-sultan@kerneltoast.com>
+ <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
+ <YUiu42krQjSTVPnc@sultan-box.localdomain>
+ <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 14:08:37 +0000 Min Li wrote:
-> > > We use this parameter to specify firmware so that module can be
-> > > autoloaded /etc/modprobe.d/modname.conf  
-> > 
-> > Sorry, I don't understand. The firmware is in /lib/firmware.
-> > Previously you used a card coded name (whatever FW_FILENAME is,
-> > "idt82p33xxx.bin"?). This patch adds the ability to change the firmware file
-> > name by a module param.
-> > 
-> > Now let me repeat the question - what's the point of user changing the
-> > requested firmware name if they can simply rename the file?  
-> 
-> We have different firmware named after different 1588 profiles. If we
-> rename firmware, it would make every profile  look same and
-> confusing.
+On Mon, Sep 20, 2021 at 07:34:26PM +0200, Michal Hocko wrote:
+> The intention and the scope of the patch should be in the changelog.
+> Your Fixes tag suggests there is a problem to fixed.
 
-You can use symlinks to "choose" which FW will be loaded by the kernel:
+I guess References would be more appropriate here? I'm not familiar with every
+subsystem's way of doing things, so I just rolled with Fixes to leave a
+breadcrumb trail to the original commit implicated in my change. What would you
+suggest in a case like this for mm patches?
 
-ls -sn $real_fw_filename $FW_FILENAME
+> My memory has faded but I suspect it was to make sure that the oom
+> reaper is not blocking the system wide freezing. The operation mode of
+> the thread is to wait for oom victims and then do the unmapping without
+> any blocking. While it can be frozen during the operation I do not
+> remember that causing any problems and the waiting is exactly the point
+> when that is obviously safe - hence wait_event_freezable which I believe
+> is the proper API to use.
 
-> On the other hand, with this module parameter, we can have
-> phc module auto start with correct firmware.
+This isn't clear to me. Kthreads come with PF_NOFREEZE set by default, so the
+system-wide freezing will already ignore the reaper thread as-is, although it
+will make that determination from inside freeze_task() and thus
+freezing_slow_path(), which involves acquiring a lock. You could set
+PF_FREEZER_SKIP to skip the slowpath evaluation entirely.
+
+Furthermore, the use of wait_event_freezable() will make the reaper thread enter
+try_to_freeze() every time it's woken up. This seems wasteful considering that
+the reaper thread will never actually freeze.
+
+Sultan
