@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350B1411113
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB163411115
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhITIiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:38:23 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:38975 "EHLO pegase2.c-s.fr"
+        id S232692AbhITIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:38:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233496AbhITIiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:38:21 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HCdFx6BFMz9sVK;
-        Mon, 20 Sep 2021 10:36:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id V_9QalPWqNnZ; Mon, 20 Sep 2021 10:36:53 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HCdFx5DLxz9sVJ;
-        Mon, 20 Sep 2021 10:36:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9E55C8B76E;
-        Mon, 20 Sep 2021 10:36:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 9mQA2CH--3lc; Mon, 20 Sep 2021 10:36:53 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 601ED8B764;
-        Mon, 20 Sep 2021 10:36:53 +0200 (CEST)
-Subject: Re: [PATCH v2] lib/zlib_inflate/inffast: Check config in C to avoid
- unused function warning
-To:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20210920074633.13089-1-pmenzel@molgen.mpg.de>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <00f8d7d7-cb13-203e-5a37-aee34a3258ff@csgroup.eu>
-Date:   Mon, 20 Sep 2021 10:36:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210920074633.13089-1-pmenzel@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+        id S235527AbhITIia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 04:38:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB5FA61077;
+        Mon, 20 Sep 2021 08:37:03 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mSEnN-00BikW-Cm; Mon, 20 Sep 2021 09:37:01 +0100
+Date:   Mon, 20 Sep 2021 09:37:01 +0100
+Message-ID: <874kafwslu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <lokeshvutla@ti.com>
+Subject: Re: [PATCH 2/3] PCI: Export find_pci_root_bus()
+In-Reply-To: <20210920064133.14115-3-kishon@ti.com>
+References: <20210920064133.14115-1-kishon@ti.com>
+        <20210920064133.14115-3-kishon@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kishon@ti.com, tglx@linutronix.de, bhelgaas@google.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com, lokeshvutla@ti.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 20/09/2021 à 09:46, Paul Menzel a écrit :
-> Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
-> shows the warning below.
+On Mon, 20 Sep 2021 07:41:32 +0100,
+Kishon Vijay Abraham I <kishon@ti.com> wrote:
 > 
->      arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
->      get_unaligned16(const unsigned short *p)
->      ^
->      1 warning generated.
+> Export find_pci_root_bus() in order for other subsystems (like
+> IRQCHIP) to find the root bus of a particual PCIe device.
 > 
-> Fix it, by moving the check from the preprocessor to C, so the compiler
-> sees the use.
+> This is done in preparation for GIC ITS to walk the PCIe bus for
+> calculating the total number of interrupt vectors that has to be
+> supported by a specific GIC ITS device ID, specifically when
+> "msi-map-mask" is populated in device tree.
 > 
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 > ---
->   lib/zlib_inflate/inffast.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
+>  drivers/pci/host-bridge.c | 3 ++-
+>  include/linux/pci.h       | 1 +
+>  2 files changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-> index f19c4fbe1be7..fb87a3120f0f 100644
-> --- a/lib/zlib_inflate/inffast.c
-> +++ b/lib/zlib_inflate/inffast.c
-> @@ -254,11 +254,8 @@ void inflate_fast(z_streamp strm, unsigned start)
->   			sfrom = (unsigned short *)(from);
->   			loops = len >> 1;
->   			do
-> -#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -			    *sout++ = *sfrom++;
-> -#else
-> -			    *sout++ = get_unaligned16(sfrom++);
-> -#endif
-> +			    *sout++ = IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ?
-> +				*sfrom++ : get_unaligned16(sfrom++);
+> diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+> index afa50b446567..4ec34d040c02 100644
+> --- a/drivers/pci/host-bridge.c
+> +++ b/drivers/pci/host-bridge.c
+> @@ -9,13 +9,14 @@
+>  
+>  #include "pci.h"
+>  
+> -static struct pci_bus *find_pci_root_bus(struct pci_bus *bus)
+> +struct pci_bus *find_pci_root_bus(struct pci_bus *bus)
+>  {
+>  	while (bus->parent)
+>  		bus = bus->parent;
+>  
+>  	return bus;
+>  }
+> +EXPORT_SYMBOL_GPL(find_pci_root_bus);
 
-I think it would be more readable as
+There is no need for this export as the ITS cannot be made modular.
 
-do {
-         if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
-                 *sout++ = *sfrom++;
-         else
-                 *sout++ = get_unaligned16(sfrom++);
-} while (--loops);
+	M.
 
-
-
->   			while (--loops);
->   			out = (unsigned char *)sout;
->   			from = (unsigned char *)sfrom;
-> 
+-- 
+Without deviation from the norm, progress is not possible.
