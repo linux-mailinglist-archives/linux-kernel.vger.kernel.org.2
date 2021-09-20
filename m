@@ -2,120 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2EF410E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 02:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CB7410E03
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 02:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhITAVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 20:21:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:55781 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhITAVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 20:21:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632097190;
-        bh=n6Y6mJwPd87qzTAfHIij558bqPiM0Z4YLCOxd/dfKZI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KbdrCOUQ0yiXFEVjxseO4Cd0di5qpNQSygTN/0yJ0ol+bv6cC33j/kCuYg8dErqUs
-         duCIM4c6jPaDXbKlqLZU/55oTRt8bJAhDYWy/Ac7Hg2uMkPqN6vez/7K6PFe4DrU6z
-         FymJSxym+2HnqKauTlR5Kqx/1xQcsZeBv7sklxYsy8ShA1zF6QGEquEDVMIGq/Dnqd
-         z+xiRgMZbR66eof1NTGu2Vr19XrfUgBuTuHcZGiP1Dzy9pufOYysPsijleMb5NGa4F
-         lCwdbqhVjadqyekReEtyY4s0Yh6uItYxuAuLPwInQ3tVMENtMmyOzoh2m3CYOwSeUL
-         b034eMKdiVT6g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCQDP4StWz9sX3;
-        Mon, 20 Sep 2021 10:19:49 +1000 (AEST)
-Date:   Mon, 20 Sep 2021 10:19:48 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Sean Young <sean@mess.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the v4l-dvb-next tree
-Message-ID: <20210920101948.34a93713@canb.auug.org.au>
+        id S231307AbhITAYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 20:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhITAYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 20:24:15 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A24C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 17:22:49 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id r26so22489846oij.2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 17:22:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JA2O0tqf7sL9eIuWtE+kSmSgHrEDnom7oC3gmz/7Xyk=;
+        b=CJWxhZzIgbfuNcH22lzV1pX6+nRj7JkMlNggF+YKgTkCueUdH79pDLMurmh0xCpEst
+         RwQzyuRRMlh7iQ4GLy5ODiSGH75G5MzWIBzGZMjEBMXIhapkBHccy3HEl7Fyqw/PeCou
+         4AXTb7TFZRCQrlBcL9sMIx8+9WXjcMNmypZrLm/Tc1oVLv3qZEoI5k7hcA9pi1k7Aw6d
+         I6Bj3axtU9d4+CDWGsoHIsrq8un32WHhRdcKNoSXAgAYGVoMZSaHPZKdq9Vy52t4v+r2
+         jrHTCC5VVFlTPcrHbHmF+4APkOfb0K/a8vlIV2X/3MeqtIAxICFfjpoKCiBz7GIk1ENI
+         C+Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JA2O0tqf7sL9eIuWtE+kSmSgHrEDnom7oC3gmz/7Xyk=;
+        b=Z6dpe4zOY5QEI5btxaaZBlS+GSGldLR+0TU7RWKtazlrrlZXP7ebLExF4CFdtsrzMO
+         +7PQGEou+g31+0m7bD/azxgWBxmTXaRrH6lp/vuv8/6LO5/pRfnR6LHSsMiQ9AIbTKaF
+         uCCrZsQBDur0sGyZyfUbkxM1tyOfmbCvkBh6SXc1Qfm6k4wnMrIUsy852MYKVZUce2JJ
+         KFUrM+7OhSpuMUaRWU4HuMp4W4cq6Dik3Mj6qeyOtH93tsrvsef06CYpY9qvSBhaiSZw
+         uyHauynE7+lpNZSz0hUbIREsegYQkReN6FP2qkKIiIROMcPSRWVe6oplmQvJyZUfTZlu
+         hNMg==
+X-Gm-Message-State: AOAM532sTNimPJKU8AeXbPMUGlcdkYWcgKQOgIGfJBvXaCFS0qkAO1/I
+        pBS3LvJYOdRuwhePQvEc3Mm0WQ==
+X-Google-Smtp-Source: ABdhPJzQedi3f92lIYBEL8kfICVGlImMKFL2gHXZze+USeuXgcJtLMo3OkGfKdV4KGSYx0BVN4j3Ug==
+X-Received: by 2002:aca:7c5:: with SMTP id 188mr11630121oih.60.1632097368754;
+        Sun, 19 Sep 2021 17:22:48 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id y18sm3227048ooy.7.2021.09.19.17.22.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 17:22:48 -0700 (PDT)
+Date:   Sun, 19 Sep 2021 17:23:33 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Alex Elder <elder@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sdm850-yoga: Reshuffle IPA memory
+ mappings
+Message-ID: <YUfUhSypxpq1PbA1@ripper>
+References: <20210916200554.2434439-1-amit.pundir@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gdCjGjDERhYfAqrx4wkOt2+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210916200554.2434439-1-amit.pundir@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gdCjGjDERhYfAqrx4wkOt2+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu 16 Sep 13:05 PDT 2021, Amit Pundir wrote:
 
-Hi all,
+> Upstream commit 2e01e0c21459 ("arm64: dts: qcom: sdm850-yoga:
+> Enable IPA") shuffled reserved memory regions in sdm845.dtsi
+> to make firmware loading succeed and enable the ipa device on
+> sdm845-yoga but it broke the other common users of those
+> memory regions like Xiaomi Pocophone F1.
+> 
+> So this patch effectively revert those upstream commit changes
+> and move all the relevant changes to sdm850-lenovo-yoga-c630.dts
+> instead.
+> 
+> Fixes: 2e01e0c21459 ("arm64: dts: qcom: sdm850-yoga: Enable IPA")
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 
-After merging the v4l-dvb-next tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Thanks for the report and fix Amit, I verified that this works fine on
+my Yoga as well.
 
-drivers/media/rc/ir_toy.c: In function 'irtoy_tx':
-drivers/media/rc/ir_toy.c:332:36: error: 'STATE_RESET' undeclared (first us=
-e in this function)
-  332 |        sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
-      |                                    ^~~~~~~~~~~
-drivers/media/rc/ir_toy.c:332:36: note: each undeclared identifier is repor=
-ted only once for each function it appears in
+Tested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Caused by commit
+Regards,
+Bjorn
 
-  6a014f20734d ("media: ir_toy: allow tx carrier to be set")
-
-interacting with commit
-
-  f0c15b360fb6 ("media: ir_toy: prevent device from hanging during transmit=
-")
-
-from the v4l-vdb-fixes tree.
-
-I have applied the following merge fix patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 20 Sep 2021 10:14:37 +1000
-Subject: [PATCH] fix for "media: ir_toy: allow tx carrier to be set"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/media/rc/ir_toy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/rc/ir_toy.c b/drivers/media/rc/ir_toy.c
-index 9ea91d418635..71aced52248f 100644
---- a/drivers/media/rc/ir_toy.c
-+++ b/drivers/media/rc/ir_toy.c
-@@ -329,7 +329,7 @@ static int irtoy_tx(struct rc_dev *rc, uint *txbuf, uin=
-t count)
- 	// with its led on. It does not respond to any command when this
- 	// happens. To work around this, re-enter sample mode.
- 	err =3D irtoy_command(irtoy, COMMAND_SMODE_EXIT,
--			    sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
-+			    sizeof(COMMAND_SMODE_EXIT), STATE_COMMAND_NO_RESP);
- 	if (err) {
- 		dev_err(irtoy->dev, "exit sample mode: %d\n", err);
- 		return err;
---=20
-2.32.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gdCjGjDERhYfAqrx4wkOt2+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFH06QACgkQAVBC80lX
-0GzfPAf+PMwV6x5eNTNKhUAiOJsBhppdJLhjLLqapACfHWaHOSJRl5YSHiRwH3q/
-BaTlSEnwAldjUUpCRPxWwI2RuXsu7kRb+Ef9lMHKLfwrqyDe6m5VbSzZlPENMcXO
-V68PIcH8KH9R/xNhwns06YqXIOlcIdQG2Ifc4W2AN79D1Nzl/Zi7IYuArX66dI14
-XVGhxvOvxXAggjEfUpKzktXIk5xe26VVYTnPqyggPYMxYr5sESSrEEOwqi/6Xj6y
-ot9YgOETQIdNmJjJHYBWiHQu9qu0+tiSYaYpl2C9xDblDb7Mryp8PLlIs4eCVTBz
-eGA93Z3KULfyLuQBI4SEtjQvUd5RNw==
-=7HlU
------END PGP SIGNATURE-----
-
---Sig_/gdCjGjDERhYfAqrx4wkOt2+--
+> ---
+> Smoke tested on PocoF1 and not on Yoga-C630.
+> 
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi          | 21 +++++++-----
+>  .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 34 +++++++++++++++++++
+>  2 files changed, 47 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 6d7172e6f4c3..b3b911926184 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -128,23 +128,28 @@ camera_mem: memory@8bf00000 {
+>  			no-map;
+>  		};
+>  
+> -		wlan_msa_mem: memory@8c400000 {
+> -			reg = <0 0x8c400000 0 0x100000>;
+> +		ipa_fw_mem: memory@8c400000 {
+> +			reg = <0 0x8c400000 0 0x10000>;
+>  			no-map;
+>  		};
+>  
+> -		gpu_mem: memory@8c515000 {
+> -			reg = <0 0x8c515000 0 0x2000>;
+> +		ipa_gsi_mem: memory@8c410000 {
+> +			reg = <0 0x8c410000 0 0x5000>;
+>  			no-map;
+>  		};
+>  
+> -		ipa_fw_mem: memory@8c517000 {
+> -			reg = <0 0x8c517000 0 0x5a000>;
+> +		gpu_mem: memory@8c415000 {
+> +			reg = <0 0x8c415000 0 0x2000>;
+>  			no-map;
+>  		};
+>  
+> -		adsp_mem: memory@8c600000 {
+> -			reg = <0 0x8c600000 0 0x1a00000>;
+> +		adsp_mem: memory@8c500000 {
+> +			reg = <0 0x8c500000 0 0x1a00000>;
+> +			no-map;
+> +		};
+> +
+> +		wlan_msa_mem: memory@8df00000 {
+> +			reg = <0 0x8df00000 0 0x100000>;
+>  			no-map;
+>  		};
+>  
+> diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> index 385e5029437d..2ba23aa582a1 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+> @@ -16,6 +16,17 @@
+>  #include "sdm850.dtsi"
+>  #include "pm8998.dtsi"
+>  
+> +/*
+> + * Update following upstream (sdm845.dtsi) reserved
+> + * memory mappings for firmware loading to succeed
+> + * and enable the IPA device.
+> + */
+> +/delete-node/ &ipa_fw_mem;
+> +/delete-node/ &ipa_gsi_mem;
+> +/delete-node/ &gpu_mem;
+> +/delete-node/ &adsp_mem;
+> +/delete-node/ &wlan_msa_mem;
+> +
+>  / {
+>  	model = "Lenovo Yoga C630";
+>  	compatible = "lenovo,yoga-c630", "qcom,sdm845";
+> @@ -58,6 +69,29 @@ panel_in_edp: endpoint {
+>  		};
+>  	};
+>  
+> +	/* Reserved memory changes for IPA */
+> +	reserved-memory {
+> +		wlan_msa_mem: memory@8c400000 {
+> +			reg = <0 0x8c400000 0 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		gpu_mem: memory@8c515000 {
+> +			reg = <0 0x8c515000 0 0x2000>;
+> +			no-map;
+> +		};
+> +
+> +		ipa_fw_mem: memory@8c517000 {
+> +			reg = <0 0x8c517000 0 0x5a000>;
+> +			no-map;
+> +		};
+> +
+> +		adsp_mem: memory@8c600000 {
+> +			reg = <0 0x8c600000 0 0x1a00000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+>  	sn65dsi86_refclk: sn65dsi86-refclk {
+>  		compatible = "fixed-clock";
+>  		#clock-cells = <0>;
+> -- 
+> 2.25.1
+> 
