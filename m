@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB4E4124FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7E74123FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382404AbhITSkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
+        id S1379361AbhITS3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:29:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379711AbhITSgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:36:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 095BF63312;
-        Mon, 20 Sep 2021 17:29:07 +0000 (UTC)
+        id S1378127AbhITSW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:22:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A018632C3;
+        Mon, 20 Sep 2021 17:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158948;
-        bh=6Ta2N8n3Fgd+Rq1jJt28IfFGML1jBiYnkTE+JV4HOss=;
+        s=korg; t=1632158673;
+        bh=SV9zXCgKsv+iv5dFw8krsfs3XKhw9f1DukgRVWuG7Nk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PCSxcUoEW8+eskW7WRFOsU1kTsltZ/sHwFmJB9iNIy6SL76pI0fASX5PORGO+OR3e
-         ZxvKUpqOwbZcZZjiEikDpRh+YCm3Kai6PHPArL2DD06xskUmPVt3MW1tVqiaD5Fk19
-         d+jaIExkbiu5eERuQzUqWRa9Yaxftzf5Q0H5ujYo=
+        b=kPZU1j/uNToFNyp4ojf8ts59+h3xdjTcmd+zG4IBbToAe36Zq41lcqMiyn5V38Txs
+         rT4xGi/Yf93daQjlRXU9R32t1hBb+hiNgdgP76UerbH/53/LAhKvay6gV9z2DuaQUL
+         NSaDJONhm13WU2VRvEQUCw9FfV2EL3TBjbxKJwSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 103/122] selftests: mptcp: clean tmp files in simult_flows
+Subject: [PATCH 5.4 257/260] fq_codel: reject silly quantum parameters
 Date:   Mon, 20 Sep 2021 18:44:35 +0200
-Message-Id: <20210920163919.171097841@linuxfoundation.org>
+Message-Id: <20210920163939.844396388@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthieu Baerts <matthieu.baerts@tessares.net>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit bfd862a7e9318dd906844807a713d27cdd1a72b1 ]
+[ Upstream commit c7c5e6ff533fe1f9afef7d2fa46678987a1335a7 ]
 
-'$cin' and '$sin' variables are local to a function: they are then not
-available from the cleanup trap.
+syzbot found that forcing a big quantum attribute would crash hosts fast,
+essentially using this:
 
-Instead, we need to use '$large' and '$small' that are not local and
-defined just before setting the trap.
+tc qd replace dev eth0 root fq_codel quantum 4294967295
 
-Without this patch, running this script in a loop might cause a:
+This is because fq_codel_dequeue() would have to loop
+~2^31 times in :
 
-  write: No space left on device
+	if (flow->deficit <= 0) {
+		flow->deficit += q->quantum;
+		list_move_tail(&flow->flowchain, &q->old_flows);
+		goto begin;
+	}
 
-issue.
+SFQ max quantum is 2^19 (half a megabyte)
+Lets adopt a max quantum of one megabyte for FQ_CODEL.
 
-Fixes: 1a418cb8e888 ("mptcp: simult flow self-tests")
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 4b549a2ef4be ("fq_codel: Fair Queue Codel AQM")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/mptcp/simult_flows.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/uapi/linux/pkt_sched.h |  2 ++
+ net/sched/sch_fq_codel.c       | 12 ++++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/mptcp/simult_flows.sh b/tools/testing/selftests/net/mptcp/simult_flows.sh
-index 2f649b431456..8fcb28927818 100755
---- a/tools/testing/selftests/net/mptcp/simult_flows.sh
-+++ b/tools/testing/selftests/net/mptcp/simult_flows.sh
-@@ -21,8 +21,8 @@ usage() {
+diff --git a/include/uapi/linux/pkt_sched.h b/include/uapi/linux/pkt_sched.h
+index edbbf4bfdd9e..4a245d7a5c8d 100644
+--- a/include/uapi/linux/pkt_sched.h
++++ b/include/uapi/linux/pkt_sched.h
+@@ -807,6 +807,8 @@ struct tc_codel_xstats {
  
- cleanup()
+ /* FQ_CODEL */
+ 
++#define FQ_CODEL_QUANTUM_MAX (1 << 20)
++
+ enum {
+ 	TCA_FQ_CODEL_UNSPEC,
+ 	TCA_FQ_CODEL_TARGET,
+diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
+index 76d72c3f52ed..86fb2f953bd5 100644
+--- a/net/sched/sch_fq_codel.c
++++ b/net/sched/sch_fq_codel.c
+@@ -370,6 +370,7 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
  {
--	rm -f "$cin" "$cout"
--	rm -f "$sin" "$sout"
-+	rm -f "$cout" "$sout"
-+	rm -f "$large" "$small"
- 	rm -f "$capout"
+ 	struct fq_codel_sched_data *q = qdisc_priv(sch);
+ 	struct nlattr *tb[TCA_FQ_CODEL_MAX + 1];
++	u32 quantum = 0;
+ 	int err;
  
- 	local netns
+ 	if (!opt)
+@@ -387,6 +388,13 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
+ 		    q->flows_cnt > 65536)
+ 			return -EINVAL;
+ 	}
++	if (tb[TCA_FQ_CODEL_QUANTUM]) {
++		quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
++		if (quantum > FQ_CODEL_QUANTUM_MAX) {
++			NL_SET_ERR_MSG(extack, "Invalid quantum");
++			return -EINVAL;
++		}
++	}
+ 	sch_tree_lock(sch);
+ 
+ 	if (tb[TCA_FQ_CODEL_TARGET]) {
+@@ -413,8 +421,8 @@ static int fq_codel_change(struct Qdisc *sch, struct nlattr *opt,
+ 	if (tb[TCA_FQ_CODEL_ECN])
+ 		q->cparams.ecn = !!nla_get_u32(tb[TCA_FQ_CODEL_ECN]);
+ 
+-	if (tb[TCA_FQ_CODEL_QUANTUM])
+-		q->quantum = max(256U, nla_get_u32(tb[TCA_FQ_CODEL_QUANTUM]));
++	if (quantum)
++		q->quantum = quantum;
+ 
+ 	if (tb[TCA_FQ_CODEL_DROP_BATCH_SIZE])
+ 		q->drop_batch_size = max(1U, nla_get_u32(tb[TCA_FQ_CODEL_DROP_BATCH_SIZE]));
 -- 
 2.30.2
 
