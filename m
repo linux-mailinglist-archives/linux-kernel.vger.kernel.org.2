@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65514114E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4654F4114E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237664AbhITMw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:52:29 -0400
-Received: from outbound-smtp37.blacknight.com ([46.22.139.220]:47437 "EHLO
-        outbound-smtp37.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233587AbhITMw2 (ORCPT
+        id S238636AbhITMxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236088AbhITMxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:52:28 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp37.blacknight.com (Postfix) with ESMTPS id AAF85287A
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:51:00 +0100 (IST)
-Received: (qmail 24957 invoked from network); 20 Sep 2021 12:51:00 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 20 Sep 2021 12:51:00 -0000
-Date:   Mon, 20 Sep 2021 13:50:58 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/5] Remove dependency on congestion_wait in mm/
-Message-ID: <20210920125058.GI3959@techsingularity.net>
-References: <20210920085436.20939-1-mgorman@techsingularity.net>
- <YUhztA8TmplTluyQ@casper.infradead.org>
+        Mon, 20 Sep 2021 08:53:03 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF015C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:51:36 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id on12-20020a17090b1d0c00b001997c60aa29so11918544pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ExRmR708x/gyL/JtajS5zbwIskm76NdRx84z5ASeZDk=;
+        b=QCOrlTCN3Ql3iFrKeHtmbKFIDp3wKRBAHxoIJyRqVnat2HF8Z3kdXV02i6J/isNhby
+         eYjjIqiMGci7D3iTKvfIzqmdvIHPm6dast0/xMRaIR0Veg6DnjyFozlzxWHBFsf9gaoz
+         KQI7kdvUiI/o9c3z9ozJzsNpCvDWdp7cztBQobAuA5CBkMRUGe33qkg6xJ5NRyS3lqYD
+         R1kxqQ8701g/Rr6+5o2FSqDVssdlfAv4lNuA43T56MpY1DJfZLcppcpGPIqwYVJ7ZNDC
+         aqkTbG1iiE5trsBH5oEsFeLzsQFC6Ihr8axVKtkjvQlJUxdqBdpT6zT6pR90LAW6jgqH
+         1/tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ExRmR708x/gyL/JtajS5zbwIskm76NdRx84z5ASeZDk=;
+        b=iNgZ5/3zsgzRfx8bRal4hPKiVfVhbY++2fmLzwlio25+eQbYmWXwcpAVfUs3iv2n9/
+         DpgIuNTPu2JLKxNDPUmY9g6NxtovDxPq/BJIJtHijEpDdGFaZl1CeR8NpH8lDT5DgOQ4
+         nEwPFqt8FwtomOnq309Wli3VTppnaU8w9kUwwjRAhzx/+4CMjUZYnFFIrgyUuDGx2SpN
+         Pe9aLpGA4Xe/PKLul5HW1xhkOL48tBW7QJDtdQFuBkUx2kbjn/6g9aOcyXublvwDQ7iX
+         h8R3r9FtZ9rRgT997h8BSbghRnnnvqz+569xyOEkiWaBhLDAhp/xCfQvgbCx2YMc3g0V
+         GOEw==
+X-Gm-Message-State: AOAM530xFzyAf32aMwtJIDl7R+RW0v5TsqpPi8GUGc9BoDb7rpcRTXeN
+        BuXXH1p1eRbO8DI6UNqv7c1EjhUUbG7QE9qSbwGB7E6Mzg==
+X-Google-Smtp-Source: ABdhPJwgeQXle3QRlvsF8hBSgh6CJnfObZgkS9kVptmVyXFiJCTE3qW2mRqmmL6B3xIEaQsegZm8Nm8XY3EGgPtZSwo=
+X-Received: by 2002:a17:902:d892:b0:138:abfd:ec7d with SMTP id
+ b18-20020a170902d89200b00138abfdec7dmr22644691plz.15.1632142296178; Mon, 20
+ Sep 2021 05:51:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YUhztA8TmplTluyQ@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 20 Sep 2021 20:51:43 +0800
+Message-ID: <CACkBjsY3bxfFWPvijNY7RX=GfXuT5C2av0C_mX1Sxj-+vvv0bA@mail.gmail.com>
+Subject: BUG: sleeping function called from invalid context in synchronize_rcu_expedited
+To:     akpm@linux-foundation.org, Linux MM <linux-mm@kvack.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 12:42:44PM +0100, Matthew Wilcox wrote:
-> On Mon, Sep 20, 2021 at 09:54:31AM +0100, Mel Gorman wrote:
-> > This has been lightly tested only and the testing was useless as the
-> > relevant code was not executed. The workload configurations I had that
-> > used to trigger these corner cases no longer work (yey?) and I'll need
-> > to implement a new synthetic workload. If someone is aware of a realistic
-> > workload that forces reclaim activity to the point where reclaim stalls
-> > then kindly share the details.
-> 
-> The stereeotypical "stalling on I/O" problem is to plug in one of the
-> crap USB drives you were given at a trade show and simply
-> 	dd if=/dev/zero of=/dev/sdb
-> 	sync
-> 
+Hello,
 
-The test machines are 1500KM away so plugging in a USB stick but worst
-comes to the worst, I could test it on a laptop. I considered using the
-IO controller but I'm not sure that would throttle background writeback.
-I dismissed doing this for a few reasons though -- the dirtying should
-be rate limited based on the speed of the BDI so it will not necessarily
-trigger the condition. It also misses the other interesting cases --
-throttling due to excessive isolation and throttling due to failing to
-make progress.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-I've prototyped a synthetic case that uses 4..(NR_CPUS*4) workers. 1
-worker measures mmap/munmap latency. 1 worker under fio is randomly reading
-files. The remaining workers are split between fio doing random write IO
-on separate files and anonymous memory hogs reading large mappings every
-5 seconds. The aggregate WSS is approximately totalmem*2 split between 60%
-anon and 40% file-backed (40% to be 2xdirty_ratio). After a warmup period
-based on the writeback speed, it runs for 5 minutes per number of workers.
+HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1AJpdt-ENezAYZ0xo3787EvsK09-Vz404/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
 
-The primary metric of "goodness" will be the mmap latency because it's
-the smallest worker that should be able to make quick progress and I
-want to see how much it is interfered with during reclaim. I'll be
-graphing the throttling times to see what processes get throttled and
-for how long.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-I was hoping though that there was a canonical realistic case that the
-FS people use to stress the paths where the allocator fails to return
-memory.  While my synthetic workload *might* work to trigger the cases,
-I would prefer to have something that can compare this basic approach
-with anything that is more clever.
-
-Similarly, it would be nice to have a reasonable test case that phase
-changes what memory is hot while there is heavy IO in the background to
-detect whether the hot WSS is being properly protected. I used to use
-memcached and a heavy writer to simulate this but it's weak because there
-is no phase change so it's poor at evaluating vmscan.
-
-> You can also set up qemu to have extremely slow I/O performance:
-> https://serverfault.com/questions/675704/extremely-slow-qemu-storage-performance-with-qcow2-images
-> 
-
-Similar problem to the slow USB case, it's only catching one part of the
-picture except now I have to worry about differences that are related
-to the VM configuration (e.g. pinning virtual CPUs to physical CPUs
-and replicating topology). Fine for a functional test, not so fine for
-measuring if the patch is any good performance-wise.
-
--- 
-Mel Gorman
-SUSE Labs
+BUG: sleeping function called from invalid context at kernel/rcu/tree_exp.h:854
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 21, name: ksoftirqd/1
+2 locks held by ksoftirqd/1/21:
+ #0: ffffffff85a1d4a0 (rcu_callback){....}-{0:0}, at: rcu_do_batch
+kernel/rcu/tree.c:2500 [inline]
+ #0: ffffffff85a1d4a0 (rcu_callback){....}-{0:0}, at:
+rcu_core+0x283/0x9f0 kernel/rcu/tree.c:2743
+ #1: ffffffff85a1fd28 (rcu_state.exp_mutex){+.+.}-{3:3}, at:
+exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #1: ffffffff85a1fd28 (rcu_state.exp_mutex){+.+.}-{3:3}, at:
+synchronize_rcu_expedited+0x32d/0x460 kernel/rcu/tree_exp.h:837
+Preemption disabled at:
+[<ffffffff8460005c>] softirq_handle_begin kernel/softirq.c:396 [inline]
+[<ffffffff8460005c>] __do_softirq+0x5c/0x561 kernel/softirq.c:534
+CPU: 1 PID: 21 Comm: ksoftirqd/1 Not tainted 5.15.0-rc1+ #19
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+ ___might_sleep+0x1f0/0x250 kernel/sched/core.c:9538
+ synchronize_rcu_expedited+0x2db/0x460 kernel/rcu/tree_exp.h:853
+ bdi_remove_from_list mm/backing-dev.c:938 [inline]
+ bdi_unregister+0x97/0x270 mm/backing-dev.c:946
+ release_bdi+0x4a/0x70 mm/backing-dev.c:968
+ kref_put include/linux/kref.h:65 [inline]
+ bdi_put+0x47/0x70 mm/backing-dev.c:976
+ bdev_free_inode+0x59/0xc0 block/bdev.c:408
+ i_callback+0x24/0x50 fs/inode.c:224
+ rcu_do_batch kernel/rcu/tree.c:2508 [inline]
+ rcu_core+0x2d6/0x9f0 kernel/rcu/tree.c:2743
+ __do_softirq+0xe9/0x561 kernel/softirq.c:558
+ run_ksoftirqd+0x2d/0x60 kernel/softirq.c:920
+ smpboot_thread_fn+0x225/0x320 kernel/smpboot.c:164
+ kthread+0x178/0x1b0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+BUG: scheduling while atomic: ksoftirqd/1/21/0x00000101
+2 locks held by ksoftirqd/1/21:
+ #0: ffffffff85a1d4a0 (rcu_callback){....}-{0:0}, at: rcu_do_batch
+kernel/rcu/tree.c:2500 [inline]
+ #0: ffffffff85a1d4a0 (rcu_callback){....}-{0:0}, at:
+rcu_core+0x283/0x9f0 kernel/rcu/tree.c:2743
+ #1: ffffffff85a1fd28 (rcu_state.exp_mutex){+.+.}-{3:3}, at:
+exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
+ #1: ffffffff85a1fd28 (rcu_state.exp_mutex){+.+.}-{3:3}, at:
+synchronize_rcu_expedited+0x32d/0x460 kernel/rcu/tree_exp.h:837
+Modules linked in:
+Preemption disabled at:
+[<ffffffff8460005c>] softirq_handle_begin kernel/softirq.c:396 [inline]
+[<ffffffff8460005c>] __do_softirq+0x5c/0x561 kernel/softirq.c:534
