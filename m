@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C83A4123D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441164125D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348750AbhITS2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:28:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44432 "EHLO mail.kernel.org"
+        id S1384744AbhITSss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377971AbhITSWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDEFD632BF;
-        Mon, 20 Sep 2021 17:24:15 +0000 (UTC)
+        id S1383381AbhITSo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 629B263355;
+        Mon, 20 Sep 2021 17:32:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158656;
-        bh=DONT+Fc80aZDftDWzaJG+IhkUgb+ZlqTzWSgqVEpfVg=;
+        s=korg; t=1632159163;
+        bh=KZx2coV5sDm2IWpgob1FGB4ClO7nRf9NDLHt8uR2oMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJaa1BQzsys/f6oAfFF1KG1cmOQQQeUPoPamcLSeElMOcIO1K2B0Nache+xWU99bI
-         B0Yu+NFdWI7mqtVRZixbJJlYCz/vUuO3JDzvgaR44i/izMFvKiDN8UROUjbLauwyGJ
-         nMHWI7tsRMseTxUCJB9DvrIG5BUZCF7+esZ8F3Cs=
+        b=JUqhvJ6SNxfaN7u8FvRSGVGh9wysoT5wswQEwu+qrA0AAvCKcTrZw0CebvYfDWKqh
+         M+7wwQtS5ziwOl3TpB6xbpYLkD3Zeg7eaL3LmbroERz/leqcG4cUfEv7DZG7ISuEtQ
+         XPdb/FGzPMzcb9rLMOhQeQAnOIY0SKOqfiY6J9Yc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.4 225/260] dt-bindings: arm: Fix Toradex compatible typo
-Date:   Mon, 20 Sep 2021 18:44:03 +0200
-Message-Id: <20210920163938.762608956@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 106/168] PCI: j721e: Add PCIe support for AM64
+Date:   Mon, 20 Sep 2021 18:44:04 +0200
+Message-Id: <20210920163925.121932739@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-commit 55c21d57eafb7b379bb7b3e93baf9ca2695895b0 upstream.
+[ Upstream commit c8a375a8e15ac31293d7fda08008d6da8f5df3db ]
 
-Fix board compatible typo reported by dtbs_check.
+AM64 has the same PCIe IP as in J7200 with certain erratas not
+applicable (quirk_detect_quiet_flag). Add support for "ti,am64-pcie-host"
+compatible and "ti,am64-pcie-ep" compatible that is specific to AM64.
 
-Fixes: f4d1577e9bc6 ("dt-bindings: arm: Convert Tegra board/soc bindings to json-schema")
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210912165120.188490-1-david@ixit.cz
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210811123336.31357-5-kishon@ti.com
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/arm/tegra.yaml |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/cadence/pci-j721e.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
---- a/Documentation/devicetree/bindings/arm/tegra.yaml
-+++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -49,7 +49,7 @@ properties:
-           - const: toradex,apalis_t30
-           - const: nvidia,tegra30
-       - items:
--          - const: toradex,apalis_t30-eval-v1.1
-+          - const: toradex,apalis_t30-v1.1-eval
-           - const: toradex,apalis_t30-eval
-           - const: toradex,apalis_t30-v1.1
-           - const: toradex,apalis_t30
+diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+index 10b13b728284..ffb176d288cd 100644
+--- a/drivers/pci/controller/cadence/pci-j721e.c
++++ b/drivers/pci/controller/cadence/pci-j721e.c
+@@ -310,6 +310,17 @@ static const struct j721e_pcie_data j7200_pcie_ep_data = {
+ 	.quirk_detect_quiet_flag = true,
+ };
+ 
++static const struct j721e_pcie_data am64_pcie_rc_data = {
++	.mode = PCI_MODE_RC,
++	.linkdown_irq_regfield = J7200_LINK_DOWN,
++	.byte_access_allowed = true,
++};
++
++static const struct j721e_pcie_data am64_pcie_ep_data = {
++	.mode = PCI_MODE_EP,
++	.linkdown_irq_regfield = J7200_LINK_DOWN,
++};
++
+ static const struct of_device_id of_j721e_pcie_match[] = {
+ 	{
+ 		.compatible = "ti,j721e-pcie-host",
+@@ -327,6 +338,14 @@ static const struct of_device_id of_j721e_pcie_match[] = {
+ 		.compatible = "ti,j7200-pcie-ep",
+ 		.data = &j7200_pcie_ep_data,
+ 	},
++	{
++		.compatible = "ti,am64-pcie-host",
++		.data = &am64_pcie_rc_data,
++	},
++	{
++		.compatible = "ti,am64-pcie-ep",
++		.data = &am64_pcie_ep_data,
++	},
+ 	{},
+ };
+ 
+-- 
+2.30.2
+
 
 
