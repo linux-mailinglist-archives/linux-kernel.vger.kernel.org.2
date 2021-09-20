@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1A4412A75
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4532A412A77
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhIUBl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        id S233616AbhIUBmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbhIUBjF (ORCPT
+        with ESMTP id S232048AbhIUBjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:39:05 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0A0C01AE48
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:37:04 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso13047019otc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Zsrlsd+FYG22wak0fSNc9tYLdNOZQjnNOfw0BjN2gWI=;
-        b=C6jBCxJuR5p9hjcAyOzJ10X1JxfuXVcVcIed41n30NVMz+CAEF+amueSIPWlVngxOl
-         9/H0nsuAY/V1ne5wLyLYeM07rRsBvbMSjAHlZ2BlAsRXm5Sh+lyqKow+wvoAi6mdKfPA
-         nqdkWbDDeVskdzARIrLtJOy+96E7DZdp2V570=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Zsrlsd+FYG22wak0fSNc9tYLdNOZQjnNOfw0BjN2gWI=;
-        b=z/6OwYwj56BjM/7e7EEUViV/nQue3fdBNx0FxgxHGWx9LWLe4Poo5XW6BVMTXSpMY0
-         gg+RE3+691v0lNEMSOl5vPuaApvWaVB2qkLhztw9n2WdRyHjgQeS0yn24/GUo0qjTnJv
-         NmdNL0inyaicysyWketakSSvBsjShmYZsJZ3K4oR09Qrd67dAcZxzDIwF2E+7Z8A2NIg
-         gxGJgEN7IYYtSwZHOjnEz75A3A3c5wMxEYdwn5lUNbeHUpRkSoVPMJA5FNqv2lS2JXo4
-         dU0KZB8W3iZPlIhYSU2ux6KPQmHExKdw456E294HHK2dUSLMQc4rEYV+bRBVcNBiKe2e
-         YYuQ==
-X-Gm-Message-State: AOAM531Hznbmu1L809VAzj5wwHqEnT0E1Ge5+gNWkBg4caWao8Wxb4eL
-        5EZCh1f9ZbxzDfy15JVJPWZjVCxklr90U/OxlG6ZWQ==
-X-Google-Smtp-Source: ABdhPJwnFR6SOnH84wihZZfbfEvXF/mSh/RHHBaMrdPVwNokuSmK/intbopTA06gDnMPTgyHG0pm8TCjSRegHDJP+l0=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr21352018otp.159.1632166623978;
- Mon, 20 Sep 2021 12:37:03 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 20 Sep 2021 12:37:03 -0700
+        Mon, 20 Sep 2021 21:39:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC88C125F90;
+        Mon, 20 Sep 2021 12:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qVmGn1sB2+Ujqg7/u2BgWKG/M74nLAjBwZQeoBTm6k4=; b=n2OSSolklt7gOYko3iITzFkPyC
+        0CFZmnl1pIhaRTm5YGVOzTbvRlCC/5cbJo6Ol5dXncFos6LOkeVEHLM2n+RzZEn05VnTKrq3zRWzU
+        XDWlcRZQv+COitTH6USEtWmqcFGeK1vFJZ3+qDzVy3ZT5JivVC2bgCRk+JDE2V/ndiijQRC9gq9TM
+        wAdJ6bsCsa+zWJT6BzVz7DVLWlV3w9BDPq9VkZFJbjaXUJupVY1vq3XYUHtOJ2Zie/nuGNE/RNHOI
+        I95WQELiKoXkadSIaUtm+tDhfcClRPWgG9P9yXMv0rjhNcG8v2yzd/k9dv1zwPaZV0rcYjNrJrQTT
+        wax8de8w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSP77-002wrK-SH; Mon, 20 Sep 2021 19:38:05 +0000
+Date:   Mon, 20 Sep 2021 12:38:05 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        rdunlap@infradead.org, rafael@kernel.org, masahiroy@kernel.org,
+        ndesaulniers@google.com, yzaikin@google.com, nathan@kernel.org,
+        ojeda@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
+        vitor@massaru.org, elver@google.com, jarkko@kernel.org,
+        glider@google.com, rf@opensource.cirrus.com,
+        stephen@networkplumber.org, David.Laight@aculab.com,
+        bvanassche@acm.org, jolsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, trishalfonso@google.com,
+        andreyknvl@gmail.com, jikos@kernel.org, mbenes@suse.com,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        reinette.chatre@intel.com, fenghua.yu@intel.com, bp@alien8.de,
+        x86@kernel.org, hpa@zytor.com, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, daniel.vetter@ffwll.ch, bhelgaas@google.com,
+        kw@linux.com, dan.j.williams@intel.com, senozhatsky@chromium.org,
+        hch@lst.de, joe@perches.com, hkallweit1@gmail.com, axboe@kernel.dk,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YUjjHRHWCso1tjeX@bombadil.infradead.org>
+References: <20210918050430.3671227-1-mcgrof@kernel.org>
+ <20210918050430.3671227-10-mcgrof@kernel.org>
+ <YUjKjLzqpcxjRyit@slm.duckdns.org>
+ <YUjdytEDkCughtSz@bombadil.infradead.org>
+ <YUjfeGuSVVq84iHc@mtj.duckdns.org>
 MIME-Version: 1.0
-In-Reply-To: <1631875538-22473-5-git-send-email-skakit@codeaurora.org>
-References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org> <1631875538-22473-5-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 20 Sep 2021 12:37:03 -0700
-Message-ID: <CAE-0n53rto=_+9qtc0RL0tkDwBkd9HJL26TQV-m6Q8myiNSCVA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sc7280: Add pm8008 regulators
- support for sc7280-idp
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Satya Priya <skakit@codeaurora.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, mka@chromium.org,
-        Das Srinagesh <gurus@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUjfeGuSVVq84iHc@mtj.duckdns.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Satya Priya (2021-09-17 03:45:38)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> index 52638e2..3b3af49 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> @@ -207,6 +207,97 @@
->         };
->  };
->
-> +&i2c1 {
-> +       #address-cells = <1>;
-> +       #size-cells = <0>;
-> +       status = "okay";
-> +
-> +       pm8008_chip: pm8008@8 {
-> +               compatible = "qcom,pm8008";
-> +               reg = <0x8>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&pm8008_active>;
-> +       };
-> +
-> +       pm8008_ldo: pm8008@9 {
-[...]
-> +
-> +                       pm8008_l7: regulator@4600 {
-> +                               reg = <0x4600>;
-> +                               regulator-name = "pm8008_l7";
-> +                               regulator-min-microvolt = <3000000>;
-> +                               regulator-max-microvolt = <3544000>;
-> +                               qcom,min-dropout-voltage = <96000>;
+On Mon, Sep 20, 2021 at 09:22:32AM -1000, Tejun Heo wrote:
+> On Mon, Sep 20, 2021 at 12:15:22PM -0700, Luis Chamberlain wrote:
+> 
+> > Right, the reason I mention the alternative is that we technically don't
+> > need to use try in this case since during a kernfs op it is implied the
+> > module will be pinned, but we have further motivations to use a try
+> 
+> I'm confused. If the module is already pinned, why are we getting an
+> extra reference? 
 
-Is this headroom? Is it actually configurable or is it merely a property
-of the hardware? If it's the latter then it should be in the driver and
-not in the DTS.
+Sorry, I meant its pinned implicitly not through an actual refcount. A module
+exit can happen then in that case, it just that the sysfs removal will
+have to wait until the active reference for the kernfs ops go down.
 
-> +                       };
-> +               };
-> +       };
-> +};
-> +
->  &qfprom {
->         vcc-supply = <&vreg_l1c_1p8>;
->  };
-> @@ -313,6 +404,18 @@
->
->  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
->
-> +&pm8350c_gpios {
-> +       pm8008_reset {
+> Also, I don't understand how this has that much to do
+> with preventing ddoses. I mean, it does cut down the duration of one
+> operation but the eventual gating is through whoever acquiring the
+> initial reference through try_module_get(), which again is the *only*
+> way to acquire a fresh reference.
 
-Is this a pinctrl node?
+True. I can just leave that out from the commit log. But it is perhaps
+an implicit gain here that using try alows module exit to trump use
+of an kernfs op. Maybe's that's sufficient to mention.
 
-> +               pm8008_active: pm8008_active {
-
-Please use dashes in node names wherever an underscore goes.
-
-> +                       pins = "gpio4";
-> +                       function = "normal";
-> +                       bias-disable;
-> +                       output-high;
-> +                       power-source = <0>;
-> +               };
-> +       };
-> +};
+  Luis
