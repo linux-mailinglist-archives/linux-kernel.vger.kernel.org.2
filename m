@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1D2411D87
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BFC411BD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343694AbhITRVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:21:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49382 "EHLO mail.kernel.org"
+        id S244881AbhITRCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346752AbhITRTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:19:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A2BB61268;
-        Mon, 20 Sep 2021 16:59:59 +0000 (UTC)
+        id S1345056AbhITQ77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F7506137E;
+        Mon, 20 Sep 2021 16:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157200;
-        bh=i18Bpb7iEllwoi8u1EQgC4wkqQFXMJzUlPXx8tuuouU=;
+        s=korg; t=1632156766;
+        bh=3Mmiju3sdqsKuvmqlxTn/k9pgMEyNG4h1nHPX3kcYFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M2LKk7aI6zRgQwQfx7gFa+3XWe1zia8ECKqVdiMfZc7vEEOzj9SB3ouEjak/taBDQ
-         XGjRiYwr3vJtuzzjdzFwSw9Smq+azeVBLxGWHayD8RbcXRf3tG5/dIA76NGAenbxWM
-         pgzDo3KUDLZFqmiiJes3Xd0LIsLGuqbX6v4kXFqw=
+        b=SCLDyxnkH5A8vX69wQSLViWa2JKOYmHXlrtesiTwFEBADnCu2EADXO55jamPXOCAu
+         NLwLzliH0q+7aYl6bv9jWH7ihZ1bVXpHTb6fYuogb3neOW+1EfSVeXaaFplgwudxhI
+         7da4EraqKDjnB2xycB8MEFWb8BkobKcRf1F2bI7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        stable@vger.kernel.org,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 072/217] usb: phy: tahvo: add IRQ check
+Subject: [PATCH 4.9 044/175] crypto: qat - fix reuse of completion variable
 Date:   Mon, 20 Sep 2021 18:41:33 +0200
-Message-Id: <20210920163927.065278452@linuxfoundation.org>
+Message-Id: <20210920163919.499779736@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Marco Chiappero <marco.chiappero@intel.com>
 
-[ Upstream commit 0d45a1373e669880b8beaecc8765f44cb0241e47 ]
+[ Upstream commit 3d655732b0199562267a05c7ff69ecdd11632939 ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to request_threaded_irq() (which
-takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding an
-original error code.  Stop calling request_threaded_irq() with the invalid
-IRQ #s.
+Use reinit_completion() to set to a clean state a completion variable,
+used to coordinate the VF to PF request-response flow, before every
+new VF request.
 
-Fixes: 9ba96ae5074c ("usb: omap1: Tahvo USB transceiver driver")
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/8280d6a4-8e9a-7cfe-1aa9-db586dc9afdf@omp.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
+Co-developed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-tahvo.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/usb/phy/phy-tahvo.c b/drivers/usb/phy/phy-tahvo.c
-index 1ec00eae339a..e4fc73bf6ee9 100644
---- a/drivers/usb/phy/phy-tahvo.c
-+++ b/drivers/usb/phy/phy-tahvo.c
-@@ -404,7 +404,9 @@ static int tahvo_usb_probe(struct platform_device *pdev)
+diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+index b3875fdf6cd7..9dab2cc11fdf 100644
+--- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+@@ -361,6 +361,8 @@ static int adf_vf2pf_request_version(struct adf_accel_dev *accel_dev)
+ 	msg |= ADF_PFVF_COMPATIBILITY_VERSION << ADF_VF2PF_COMPAT_VER_REQ_SHIFT;
+ 	BUILD_BUG_ON(ADF_PFVF_COMPATIBILITY_VERSION > 255);
  
- 	dev_set_drvdata(&pdev->dev, tu);
- 
--	tu->irq = platform_get_irq(pdev, 0);
-+	tu->irq = ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
- 	ret = request_threaded_irq(tu->irq, NULL, tahvo_usb_vbus_interrupt,
- 				   IRQF_ONESHOT,
- 				   "tahvo-vbus", tu);
++	reinit_completion(&accel_dev->vf.iov_msg_completion);
++
+ 	/* Send request from VF to PF */
+ 	ret = adf_iov_putmsg(accel_dev, msg, 0);
+ 	if (ret) {
 -- 
 2.30.2
 
