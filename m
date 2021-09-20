@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F20412098
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3680411C02
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355730AbhITR4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
+        id S245656AbhITRF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:05:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354589AbhITRui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:50:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B4D161884;
-        Mon, 20 Sep 2021 17:11:57 +0000 (UTC)
+        id S1345253AbhITRBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B780861262;
+        Mon, 20 Sep 2021 16:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157918;
-        bh=EEHQ1d8gR7F3f2HKF5MPibPuc1dcWw0bigEbiiBw87s=;
+        s=korg; t=1632156805;
+        bh=8QKuY6kXQV1Ep9N2ulBadl8jnyF5P4M7QR1fSYbtl1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmsHFVf183+fyT7TMwo62iHEPpWmENEnrNJwAYWK8wm5fzdC7lmem8nGCE6j7Z7bQ
-         +UrH0Jo8aGCfMaX0hkoasQlSeTbZn0WQrhz3ywLHEm+pS3G/5ilu9GmWd0+Tg7Uocr
-         tNlhiGn3AVPIRgv0kFxS4KtWuLcAhbKWuQOaclDI=
+        b=E3OiWwqiihAJc1NzWfwsqR+rTYtyw2urtddI6lTOCtrUjzAh7WQ+YaC+H7+/2ZSXT
+         lwH8ottvhvkGe56yySci2PviPAEbl8qOWW+OpjdZ7o15kl/cyUpW7vBEVB38cywyA6
+         R0O9sVduqZYTCYOxPUp2nlgT+AQnow/eXOF7zPLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 180/293] Smack: Fix wrong semantics in smk_access_entry()
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH 4.9 093/175] power: supply: max17042: handle fails of reading status register
 Date:   Mon, 20 Sep 2021 18:42:22 +0200
-Message-Id: <20210920163939.437634258@linuxfoundation.org>
+Message-Id: <20210920163921.122240709@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 6d14f5c7028eea70760df284057fe198ce7778dd ]
+commit 54784ffa5b267f57161eb8fbb811499f22a0a0bf upstream.
 
-In the smk_access_entry() function, if no matching rule is found
-in the rust_list, a negative error code will be used to perform bit
-operations with the MAY_ enumeration value. This is semantically
-wrong. This patch fixes this issue.
+Reading status register can fail in the interrupt handler.  In such
+case, the regmap_read() will not store anything useful under passed
+'val' variable and random stack value will be used to determine type of
+interrupt.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Handle the regmap_read() failure to avoid handling interrupt type and
+triggering changed power supply event based on random stack value.
+
+Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device's registers")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/smack/smack_access.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/power/supply/max17042_battery.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
-index a7855c61c05c..07d23b4f76f3 100644
---- a/security/smack/smack_access.c
-+++ b/security/smack/smack_access.c
-@@ -85,23 +85,22 @@ int log_policy = SMACK_AUDIT_DENIED;
- int smk_access_entry(char *subject_label, char *object_label,
- 			struct list_head *rule_list)
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -760,8 +760,12 @@ static irqreturn_t max17042_thread_handl
  {
--	int may = -ENOENT;
- 	struct smack_rule *srp;
+ 	struct max17042_chip *chip = dev;
+ 	u32 val;
++	int ret;
++
++	ret = regmap_read(chip->regmap, MAX17042_STATUS, &val);
++	if (ret)
++		return IRQ_HANDLED;
  
- 	list_for_each_entry_rcu(srp, rule_list, list) {
- 		if (srp->smk_object->smk_known == object_label &&
- 		    srp->smk_subject->smk_known == subject_label) {
--			may = srp->smk_access;
--			break;
-+			int may = srp->smk_access;
-+			/*
-+			 * MAY_WRITE implies MAY_LOCK.
-+			 */
-+			if ((may & MAY_WRITE) == MAY_WRITE)
-+				may |= MAY_LOCK;
-+			return may;
- 		}
- 	}
- 
--	/*
--	 * MAY_WRITE implies MAY_LOCK.
--	 */
--	if ((may & MAY_WRITE) == MAY_WRITE)
--		may |= MAY_LOCK;
--	return may;
-+	return -ENOENT;
- }
- 
- /**
--- 
-2.30.2
-
+-	regmap_read(chip->regmap, MAX17042_STATUS, &val);
+ 	if ((val & STATUS_INTR_SOCMIN_BIT) ||
+ 		(val & STATUS_INTR_SOCMAX_BIT)) {
+ 		dev_info(&chip->client->dev, "SOC threshold INTR\n");
 
 
