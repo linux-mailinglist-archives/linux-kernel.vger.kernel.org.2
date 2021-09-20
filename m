@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D415341255E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F17412328
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383404AbhITSoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56242 "EHLO mail.kernel.org"
+        id S1376695AbhITSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:21:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382167AbhITSkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:40:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 803F36332E;
-        Mon, 20 Sep 2021 17:30:50 +0000 (UTC)
+        id S1376707AbhITSOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:14:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 241F161409;
+        Mon, 20 Sep 2021 17:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159051;
-        bh=hFI/7AfJCi5Ml5UZfwx+rD+CPD2pvi8VRpvMohgdMfg=;
+        s=korg; t=1632158475;
+        bh=QF6wCS71/GyPFqKLTaD984ITltx47FzIXEJWlJH2qzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C80JKjOvGcnRq4kSzLvWNUesuzzE5CgJb911gDQ4cpoQ2wkENlJz801LJkuCHBSPy
-         dM2vKc4f+lpXd8CWiJrCxOA3j0UTCcGdA7qnCjlH6pOyvbkSXr/imE3puT/ebFdV4E
-         27JnguLwgOID6Ug2u0hDLqVFT2lOQp4yRzXM1DPk=
+        b=LivFbVr2S8SbZ31IrsNZk9yqaulEAhFfoeTNq6wGY+OtxehytKNUfpFBIbNg5RHbq
+         HGYm9vzU12akgTaqb7a7YryQIhtVL0btcBSDWT6uXMvhQidchsaPznHoOTJOBJcL2j
+         aqDNscP0ce/uScM4Z0rwgp4lqYC5yHV8DAnEeOHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 053/168] net: stmmac: fix system hang caused by eee_ctrl_timer during suspend/resume
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 173/260] net: w5100: check return value after calling platform_get_resource()
 Date:   Mon, 20 Sep 2021 18:43:11 +0200
-Message-Id: <20210920163923.376402684@linuxfoundation.org>
+Message-Id: <20210920163936.965175070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,148 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit 276aae377206d60b9b7b7df4586cd9f2a813f5d0 upstream.
+[ Upstream commit a39ff4a47f3e1da3b036817ef436b1a9be10783a ]
 
-commit 5f58591323bf ("net: stmmac: delete the eee_ctrl_timer after
-napi disabled"), this patch tries to fix system hang caused by eee_ctrl_timer,
-unfortunately, it only can resolve it for system reboot stress test. System
-hang also can be reproduced easily during system suspend/resume stess test
-when mount NFS on i.MX8MP EVK board.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-In stmmac driver, eee feature is combined to phylink framework. When do
-system suspend, phylink_stop() would queue delayed work, it invokes
-stmmac_mac_link_down(), where to deactivate eee_ctrl_timer synchronizly.
-In above commit, try to fix issue by deactivating eee_ctrl_timer obviously,
-but it is not enough. Looking into eee_ctrl_timer expire callback
-stmmac_eee_ctrl_timer(), it could enable hareware eee mode again. What is
-unexpected is that LPI interrupt (MAC_Interrupt_Enable.LPIEN bit) is always
-asserted. This interrupt has chance to be issued when LPI state entry/exit
-from the MAC, and at that time, clock could have been already disabled.
-The result is that system hang when driver try to touch register from
-interrupt handler.
-
-The reason why above commit can fix system hang issue in stmmac_release()
-is that, deactivate eee_ctrl_timer not just after napi disabled, further
-after irq freed.
-
-In conclusion, hardware would generate LPI interrupt when clock has been
-disabled during suspend or resume, since hardware is in eee mode and LPI
-interrupt enabled.
-
-Interrupts from MAC, MTL and DMA level are enabled and never been disabled
-when system suspend, so postpone clocks management from suspend stage to
-noirq suspend stage should be more safe.
-
-Fixes: 5f58591323bf ("net: stmmac: delete the eee_ctrl_timer after napi disabled")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c     |   14 -----
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c |   44 ++++++++++++++++++
- 2 files changed, 44 insertions(+), 14 deletions(-)
+ drivers/net/ethernet/wiznet/w5100.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -7113,7 +7113,6 @@ int stmmac_suspend(struct device *dev)
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct stmmac_priv *priv = netdev_priv(ndev);
- 	u32 chan;
--	int ret;
+diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
+index bede1ff289c5..a65b7291e12a 100644
+--- a/drivers/net/ethernet/wiznet/w5100.c
++++ b/drivers/net/ethernet/wiznet/w5100.c
+@@ -1052,6 +1052,8 @@ static int w5100_mmio_probe(struct platform_device *pdev)
+ 		mac_addr = data->mac_addr;
  
- 	if (!ndev || !netif_running(ndev))
- 		return 0;
-@@ -7155,13 +7154,6 @@ int stmmac_suspend(struct device *dev)
- 
- 		stmmac_mac_set(priv, priv->ioaddr, false);
- 		pinctrl_pm_select_sleep_state(priv->device);
--		/* Disable clock in case of PWM is off */
--		clk_disable_unprepare(priv->plat->clk_ptp_ref);
--		ret = pm_runtime_force_suspend(dev);
--		if (ret) {
--			mutex_unlock(&priv->lock);
--			return ret;
--		}
- 	}
- 
- 	mutex_unlock(&priv->lock);
-@@ -7237,12 +7229,6 @@ int stmmac_resume(struct device *dev)
- 		priv->irq_wake = 0;
- 	} else {
- 		pinctrl_pm_select_default_state(priv->device);
--		/* enable the clk previously disabled */
--		ret = pm_runtime_force_resume(dev);
--		if (ret)
--			return ret;
--		if (priv->plat->clk_ptp_ref)
--			clk_prepare_enable(priv->plat->clk_ptp_ref);
- 		/* reset the phy so that it's ready */
- 		if (priv->mii)
- 			stmmac_mdio_reset(priv->mii);
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -9,6 +9,7 @@
- *******************************************************************************/
- 
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -771,9 +772,52 @@ static int __maybe_unused stmmac_runtime
- 	return stmmac_bus_clks_config(priv, true);
- }
- 
-+static int stmmac_pltfr_noirq_suspend(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	int ret;
-+
-+	if (!netif_running(ndev))
-+		return 0;
-+
-+	if (!device_may_wakeup(priv->device) || !priv->plat->pmt) {
-+		/* Disable clock in case of PWM is off */
-+		clk_disable_unprepare(priv->plat->clk_ptp_ref);
-+
-+		ret = pm_runtime_force_suspend(dev);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int stmmac_pltfr_noirq_resume(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	int ret;
-+
-+	if (!netif_running(ndev))
-+		return 0;
-+
-+	if (!device_may_wakeup(priv->device) || !priv->plat->pmt) {
-+		/* enable the clk previously disabled */
-+		ret = pm_runtime_force_resume(dev);
-+		if (ret)
-+			return ret;
-+
-+		clk_prepare_enable(priv->plat->clk_ptp_ref);
-+	}
-+
-+	return 0;
-+}
-+
- const struct dev_pm_ops stmmac_pltfr_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(stmmac_pltfr_suspend, stmmac_pltfr_resume)
- 	SET_RUNTIME_PM_OPS(stmmac_runtime_suspend, stmmac_runtime_resume, NULL)
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(stmmac_pltfr_noirq_suspend, stmmac_pltfr_noirq_resume)
- };
- EXPORT_SYMBOL_GPL(stmmac_pltfr_pm_ops);
- 
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem)
++		return -EINVAL;
+ 	if (resource_size(mem) < W5100_BUS_DIRECT_SIZE)
+ 		ops = &w5100_mmio_indirect_ops;
+ 	else
+-- 
+2.30.2
+
 
 
