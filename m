@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EB841126A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D208411265
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbhITJ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:59:28 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:56407 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235312AbhITJ7L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:59:11 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id D8CF232025CE;
-        Mon, 20 Sep 2021 05:57:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 20 Sep 2021 05:57:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canishe.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=gZ88mz0rW7L9h
-        2hm6YlM1b+UyvR0muQml9/fmkII5yI=; b=a0CWsQ1fs9Tfzhi2KKrT4c7TfO2Nn
-        mu0866qyaweF3e8rHiGIJ4DOJWL3UdegrdrwEjkjXePMtZGiuGUqrHCTXyi5C1um
-        Mq1NKp63aRqyC4yrVkMo6/tazKCG8OUNs/sc4CkaRSLUti0iVbU417WON2viy8Y1
-        rn3Vjwtnp2qevleQvLmNEV+Z6VdeAsuharbJzsDF5cRgFWD5a7DSWDH6fBCECcAd
-        UtzslhY/RgZJ8PJl3W7aC2eUHoNNJd7rhWpiAufdKjsRfDOWkQWlkW43MlXXNVDS
-        +AejGCBLjWX0x36K4BezBpHk1oR7vGNn5n3iJ87DMSHhQjVk+ySSk1/9w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=gZ88mz0rW7L9h2hm6YlM1b+UyvR0muQml9/fmkII5yI=; b=s6XSY8wM
-        nLFqb8CVtEpVYEpXnp7zlBhtpB9lXgmYVmCkBEM81GGHUQeyAt4NQGKnY0jB7ay6
-        0EiDIpbzC4CaG/rMaZ/N9UdZ/iXqjvDUNt2L4rQAIBJ1MbkLYEJDSJzT0Uhc7Tb4
-        nd5m+unopTE0k8bW87R7UTQmqlbrHr+Bm19mY+WP6Vsk8xJciVufV1iFDBxu0N3s
-        U/gHfUmebmIvBy5MhqLUyEW5tNICtLXpulq2uXkBpj3QKlnxYMjPdCLHPxRQM2A4
-        Nt2kUwLY2PdzsZ/gITWsHYooCgSLxLWOEP7oArcA5CDaFCGKDRg0RxbGfkXmg4yn
-        NRS7Bz9O5VVxxA==
-X-ME-Sender: <xms:GFtIYTi6caTFEQrOj_F8LxLWbFHnmg_Gd-pKjOXP1Vx5r1yynOEqPw>
-    <xme:GFtIYQC2ULXnFX6zPck6D_hkIONzsDUiwKTULB_r03pc1gd4sbSTBvGvCF9TFaJl9
-    Dd41RNHPQB-1KXw1w>
-X-ME-Received: <xmr:GFtIYTHWQXa_7a1xtk4PCV5yX2s2eiCGjtxGjIUbkjUqU6u3HTKcIFDk_SD13pukPXvUbfeaKk8U51i4mwRa5jCyyUBsHxw75A-zWrxRJiZCrbE0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefirggvlhgr
-    nhcuufhtvggvlhgvuceoghgsshestggrnhhishhhvgdrtghomheqnecuggftrfgrthhtvg
-    hrnhepuefhleeuffdulefhteehheffieekuddvleejieeliefhieeujefgudeujeehkedv
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgssh
-    estggrnhhishhhvgdrtghomh
-X-ME-Proxy: <xmx:GFtIYQSlh7iQm9W7SrJ5dGVksKpOGoZnihKDDYhUMvkrk3-zh75eWg>
-    <xmx:GFtIYQyf9kMacgIuU5IYxjb4N1O5fBIeVZrXHRhkHt-G4MLwG2ngfg>
-    <xmx:GFtIYW4c3Qq9XHNBq4pzjuUwd2OhYCavzUONsL_UzHZ5iiprZe3D4g>
-    <xmx:GFtIYas-XItMMzo1CpAwCy1O68XOA9jFoXUOfQkUpyUIg_7mDpx1WA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Sep 2021 05:57:43 -0400 (EDT)
-From:   Gaelan Steele <gbs@canishe.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-man@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Gaelan Steele <gbs@canishe.com>
-Subject: [PATCH 2/2] fs: move dirent.h into uapi
-Date:   Mon, 20 Sep 2021 10:56:49 +0100
-Message-Id: <20210920095649.28600-2-gbs@canishe.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20210920095649.28600-1-gbs@canishe.com>
-References: <20210920095649.28600-1-gbs@canishe.com>
+        id S235094AbhITJ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:59:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230053AbhITJ7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:59:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CFBC60F6D;
+        Mon, 20 Sep 2021 09:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632131854;
+        bh=S1TgMzumtgJoMruZRuNxmPEZg1rvV96gDTGUyuMF9+0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kEnf6lYcxfvOC0bnBT4VNdOoN91CeIMWuGmVkrxNlk3e3bISWBUGQYDghYjXuD9gr
+         oZ88zgZuqdBWNJDEQmYdhQQPCUBVOFDPt9JMBjz3/BfdIHG22J71JoWO6Txs376ZHo
+         EtzXM3YyurTIFzeTUxpIwK6ZEeZB95GS8+ltTcDJRSaPRA8SWNH7m0yxI3x+5JQInI
+         X6ybRkLCBAbakqtvOfMFquNpaJabj+RwKBHntlNNXVqKw5s4nLrnK8M8Xp/vZ8svlm
+         Bc6XaUTN9u8LeufKmlA5VcBWCjxA8qG2GxQOZ+YEs0xtosRc/eC+ulgCPdt1ptXtyU
+         nReFCC3BfA61A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: rcar: add COMMON_CLK dependency
+Date:   Mon, 20 Sep 2021 11:57:10 +0200
+Message-Id: <20210920095730.1216692-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The structures defined in dirent.h are part of Linux's uAPI, but
-it was previously necessary for user code to duplicate the struct
-definitions themselves. Let's make them public.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Gaelan Steele <gbs@canishe.com>
+The __clk_is_enabled() interface is only available when building for
+platforms using CONFIG_COMMON_CLK:
+
+arm-linux-gnueabi-ld: drivers/pci/controller/pcie-rcar-host.o: in function `rcar_pcie_aarch32_abort_handler':
+pcie-rcar-host.c:(.text+0x8fc): undefined reference to `__clk_is_enabled'
+
+Add the necessary dependency to the COMPILE_TEST path.
+
+Fixes: a115b1bd3af0 ("PCI: rcar: Add L1 link state fix into data abort hook")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/{ => uapi}/linux/dirent.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
- rename include/{ => uapi}/linux/dirent.h (66%)
+ drivers/pci/controller/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/dirent.h b/include/uapi/linux/dirent.h
-similarity index 66%
-rename from include/linux/dirent.h
-rename to include/uapi/linux/dirent.h
-index 48e119dd3694..99293c651612 100644
---- a/include/linux/dirent.h
-+++ b/include/uapi/linux/dirent.h
-@@ -1,6 +1,6 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _LINUX_DIRENT_H
--#define _LINUX_DIRENT_H
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+#ifndef _UAPI_LINUX_DIRENT_H
-+#define _UAPI_LINUX_DIRENT_H
+diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+index 326f7d13024f..53e3648fe872 100644
+--- a/drivers/pci/controller/Kconfig
++++ b/drivers/pci/controller/Kconfig
+@@ -65,7 +65,7 @@ config PCI_RCAR_GEN2
  
- struct linux_dirent {
- 	unsigned long	d_ino;
+ config PCIE_RCAR_HOST
+ 	bool "Renesas R-Car PCIe host controller"
+-	depends on ARCH_RENESAS || COMPILE_TEST
++	depends on ARCH_RENESAS || (COMMON_CLK && COMPILE_TEST)
+ 	depends on PCI_MSI_IRQ_DOMAIN
+ 	help
+ 	  Say Y here if you want PCIe controller support on R-Car SoCs in host
 -- 
-2.30.1 (Apple Git-130)
+2.29.2
 
