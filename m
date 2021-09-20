@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691D441251A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551E0412510
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380608AbhITSl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53086 "EHLO mail.kernel.org"
+        id S1353588AbhITSlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380310AbhITSgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:36:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8149661ABF;
-        Mon, 20 Sep 2021 17:29:25 +0000 (UTC)
+        id S1379743AbhITSg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:36:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A84F863317;
+        Mon, 20 Sep 2021 17:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158966;
-        bh=dJnGI+Fwo3WcJ1J/hbpXq6jVSQ53sXUs1BAejSqkMDI=;
+        s=korg; t=1632158968;
+        bh=r8FTPvJxXE+wC6Tv736YV3bi0zSs/+qRb6U3teRNAdo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sM0Hst99L0g2glQ5SD2YqXgAkk8ZKapr8Tw23wqUkJwtIAPk6SS3hUAYVt13CJYnk
-         MQqP2PIMKqbg9wsFmJgP06nxme2IeQJ0Va0h+lFJ3gDIRwZntmlz/GkyFBCx2yBHMa
-         Bpsb9M8F/rDWdQKriHzQFl5cojx7rjBk/3/q+/Cw=
+        b=ZOjyNkmzgxqn6j4PcmtNGxiAZI2OA8p5z6shTUhtOLkENN8BSSuQbhJy5oIQToj16
+         4pyd3jv2vXDGjCw2IhvNIHYj7c6v8O0BsbDIOMA1EWGmh53x+Zf/ReILhZNAiMnEsT
+         UYxaTqxgRlSQRw02za/y+0sxVBEZDuExydPs+T9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
+        stable@vger.kernel.org,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shashank Sharma <shashank.sharma@amd.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.14 015/168] drm/amdgpu: use IS_ERR for debugfs APIs
-Date:   Mon, 20 Sep 2021 18:42:33 +0200
-Message-Id: <20210920163922.149344220@linuxfoundation.org>
+Subject: [PATCH 5.14 016/168] drm/amdgpu: fix use after free during BO move
+Date:   Mon, 20 Sep 2021 18:42:34 +0200
+Message-Id: <20210920163922.180392385@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -41,65 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nirmoy Das <nirmoy.das@amd.com>
+From: Christian König <christian.koenig@amd.com>
 
-commit b04ce53eac2fc326290817a6f64a440b5bffd2e3 upstream.
+commit c92db8d64f9e0313e7ecdc9500db93a5040c9370 upstream.
 
-debugfs APIs returns encoded error so use
-IS_ERR for checking return value.
+The memory backing old_mem is already freed at that point, move the
+check a bit more up.
 
-v2: return PTR_ERR(ent)
-
-Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Reviewed-By: Shashank Sharma <shashank.sharma@amd.com>
+Signed-off-by: Christian König <christian.koenig@amd.com>
+Fixes: bfa3357ef9ab ("drm/ttm: allocate resource object instead of embedding it v2")
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1699
+Acked-by: Nirmoy Das <nirmoy.das@amd.com>
+Reviewed-by: Michel Dänzer <mdaenzer@redhat.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c |   10 ++++------
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c    |    4 ++--
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -1544,20 +1544,18 @@ int amdgpu_debugfs_init(struct amdgpu_de
- 	struct dentry *ent;
- 	int r, i;
- 
--
--
- 	ent = debugfs_create_file("amdgpu_preempt_ib", 0600, root, adev,
- 				  &fops_ib_preempt);
--	if (!ent) {
-+	if (IS_ERR(ent)) {
- 		DRM_ERROR("unable to create amdgpu_preempt_ib debugsfs file\n");
--		return -EIO;
-+		return PTR_ERR(ent);
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -513,6 +513,15 @@ static int amdgpu_bo_move(struct ttm_buf
+ 		goto out;
  	}
  
- 	ent = debugfs_create_file("amdgpu_force_sclk", 0200, root, adev,
- 				  &fops_sclk_set);
--	if (!ent) {
-+	if (IS_ERR(ent)) {
- 		DRM_ERROR("unable to create amdgpu_set_sclk debugsfs file\n");
--		return -EIO;
-+		return PTR_ERR(ent);
++	if (bo->type == ttm_bo_type_device &&
++	    new_mem->mem_type == TTM_PL_VRAM &&
++	    old_mem->mem_type != TTM_PL_VRAM) {
++		/* amdgpu_bo_fault_reserve_notify will re-set this if the CPU
++		 * accesses the BO after it's moved.
++		 */
++		abo->flags &= ~AMDGPU_GEM_CREATE_CPU_ACCESS_REQUIRED;
++	}
++
+ 	if (adev->mman.buffer_funcs_enabled) {
+ 		if (((old_mem->mem_type == TTM_PL_SYSTEM &&
+ 		      new_mem->mem_type == TTM_PL_VRAM) ||
+@@ -543,15 +552,6 @@ static int amdgpu_bo_move(struct ttm_buf
+ 			return r;
  	}
  
- 	/* Register debugfs entries for amdgpu_ttm */
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-@@ -428,8 +428,8 @@ int amdgpu_debugfs_ring_init(struct amdg
- 	ent = debugfs_create_file(name,
- 				  S_IFREG | S_IRUGO, root,
- 				  ring, &amdgpu_debugfs_ring_fops);
--	if (!ent)
--		return -ENOMEM;
-+	if (IS_ERR(ent))
-+		return PTR_ERR(ent);
- 
- 	i_size_write(ent->d_inode, ring->ring_size + 12);
- 	ring->ent = ent;
+-	if (bo->type == ttm_bo_type_device &&
+-	    new_mem->mem_type == TTM_PL_VRAM &&
+-	    old_mem->mem_type != TTM_PL_VRAM) {
+-		/* amdgpu_bo_fault_reserve_notify will re-set this if the CPU
+-		 * accesses the BO after it's moved.
+-		 */
+-		abo->flags &= ~AMDGPU_GEM_CREATE_CPU_ACCESS_REQUIRED;
+-	}
+-
+ out:
+ 	/* update statistics */
+ 	atomic64_add(bo->base.size, &adev->num_bytes_moved);
 
 
