@@ -2,192 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EBE4110FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BE84111AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhITIdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:33:06 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:39921 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235887AbhITIdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:33:04 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HCd7p2KXzz9sVG;
-        Mon, 20 Sep 2021 10:31:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Wsna4bXcDDSO; Mon, 20 Sep 2021 10:31:34 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HCd7m04GDz9sVJ;
-        Mon, 20 Sep 2021 10:31:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DC8098B773;
-        Mon, 20 Sep 2021 10:31:31 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3-4l3W3wcjw0; Mon, 20 Sep 2021 10:31:31 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AC5E08B76E;
-        Mon, 20 Sep 2021 10:31:31 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18K8VNIV989764
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 10:31:23 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18K8VNC6989763;
-        Mon, 20 Sep 2021 10:31:23 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v4 3/3] powerpc/atomics: Remove atomic_inc()/atomic_dec() and friends
-Date:   Mon, 20 Sep 2021 10:31:19 +0200
-Message-Id: <ecff64191598573c530c5bc062dfe8200eb82869.1632126669.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <db9d01d5c543c5add4b2beadb03d39e99c7ada2c.1632126669.git.christophe.leroy@csgroup.eu>
-References: <db9d01d5c543c5add4b2beadb03d39e99c7ada2c.1632126669.git.christophe.leroy@csgroup.eu>
+        id S236735AbhITJK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:10:57 -0400
+Received: from fanzine.igalia.com ([178.60.130.6]:45072 "EHLO
+        fanzine.igalia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235382AbhITJHT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:07:19 -0400
+X-Greylist: delayed 2033 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Sep 2021 05:07:18 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com; s=20170329;
+        h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date; bh=s9XB5r3b82eKLamMQyimO3gFwevTCVoV+jr6i6T/3Zc=;
+        b=nOmcYtvWU1m9HjRA5/CS0MpnUHRaS2JSEMSxRaPy9+xdZxa+DlIgAetyixGCDV8u2vLjn5NpnnnE18AqGa4d6/9zT+dMpHD3JuHBG/1C5M8vOPbk1bunx7+ImFfy5NVNEuCem37FbSfx9vR3sTgKOKnKFuScq9ophPIZ2sviPVp8yAXsbnZuSfspOdKG+DZhTj/JWv6JHEwjurIP97R9L2v8uwykg3upA8ITZzQjqW2QBx8oRLL3Ty36PjeaIMxw0Rt2FeNu6qwfl5aH+45+X0HbmO6lS2XUjmW1UbGD/sfH2PqnrtmAK4eEjQfYqM8AQshy1XRuHJo27sqr+WI9+Q==;
+Received: from a95-92-181-29.cpe.netcabo.pt ([95.92.181.29] helo=mail.igalia.com)
+        by fanzine.igalia.com with esmtpsa 
+        (Cipher TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim)
+        id 1mSEiK-0002Ei-EK; Mon, 20 Sep 2021 10:31:48 +0200
+Date:   Mon, 20 Sep 2021 09:31:34 +0100
+From:   Melissa Wen <mwen@igalia.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/v3d: Make use of the helper function
+ devm_platform_ioremap_resource_byname()
+Message-ID: <20210920083134.hajvw6kpvfg3qitn@mail.igalia.com>
+References: <20210901112941.31320-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fg5trcv37os37ajy"
+Content-Disposition: inline
+In-Reply-To: <20210901112941.31320-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that atomic_add() and atomic_sub() handle immediate operands,
-atomic_inc() and atomic_dec() have no added value compared to the
-generic fallback which calls atomic_add(1) and atomic_sub(1).
 
-Also remove atomic_inc_not_zero() which fallsback to
-atomic_add_unless() which itself fallsback to
-atomic_fetch_add_unless() which now handles immediate operands.
+--fg5trcv37os37ajy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v4: rebased
+On 09/01, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately
+>=20
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/gpu/drm/v3d/v3d_drv.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/v3d/v3d_drv.c b/drivers/gpu/drm/v3d/v3d_drv.c
+> index 9403c3b36aca..c1deab2cf38d 100644
+> --- a/drivers/gpu/drm/v3d/v3d_drv.c
+> +++ b/drivers/gpu/drm/v3d/v3d_drv.c
+> @@ -206,10 +206,7 @@ MODULE_DEVICE_TABLE(of, v3d_of_match);
+>  static int
+>  map_regs(struct v3d_dev *v3d, void __iomem **regs, const char *name)
+>  {
+> -	struct resource *res =3D
+> -		platform_get_resource_byname(v3d_to_pdev(v3d), IORESOURCE_MEM, name);
+> -
+> -	*regs =3D devm_ioremap_resource(v3d->drm.dev, res);
+> +	*regs =3D devm_platform_ioremap_resource_byname(v3d_to_pdev(v3d), name);
+>  	return PTR_ERR_OR_ZERO(*regs);
+>  }
+lgtm.
 
-v2: New
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/atomic.h | 95 -------------------------------
- 1 file changed, 95 deletions(-)
+Reviewed-by: Melissa Wen <mwen@igalia.com>
+> =20
+> --=20
+> 2.25.1
+>=20
 
-diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
-index ce0d5a013c58..395d1feb5790 100644
---- a/arch/powerpc/include/asm/atomic.h
-+++ b/arch/powerpc/include/asm/atomic.h
-@@ -118,71 +118,6 @@ ATOMIC_OPS(xor, xor, "", K)
- #undef ATOMIC_OP_RETURN_RELAXED
- #undef ATOMIC_OP
- 
--static __inline__ void arch_atomic_inc(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_inc\n\
--	addic	%0,%0,1\n"
--"	stwcx.	%0,0,%2 \n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define arch_atomic_inc arch_atomic_inc
--
--static __inline__ int arch_atomic_inc_return_relaxed(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_inc_return_relaxed\n"
--"	addic	%0,%0,1\n"
--"	stwcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--static __inline__ void arch_atomic_dec(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_dec\n\
--	addic	%0,%0,-1\n"
--"	stwcx.	%0,0,%2\n\
--	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--}
--#define arch_atomic_dec arch_atomic_dec
--
--static __inline__ int arch_atomic_dec_return_relaxed(atomic_t *v)
--{
--	int t;
--
--	__asm__ __volatile__(
--"1:	lwarx	%0,0,%2		# atomic_dec_return_relaxed\n"
--"	addic	%0,%0,-1\n"
--"	stwcx.	%0,0,%2\n"
--"	bne-	1b"
--	: "=&r" (t), "+m" (v->counter)
--	: "r" (&v->counter)
--	: "cc", "xer");
--
--	return t;
--}
--
--#define arch_atomic_inc_return_relaxed arch_atomic_inc_return_relaxed
--#define arch_atomic_dec_return_relaxed arch_atomic_dec_return_relaxed
--
- #define arch_atomic_cmpxchg(v, o, n) \
- 	(arch_cmpxchg(&((v)->counter), (o), (n)))
- #define arch_atomic_cmpxchg_relaxed(v, o, n) \
-@@ -255,36 +190,6 @@ static __inline__ int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
- }
- #define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
- 
--/**
-- * atomic_inc_not_zero - increment unless the number is zero
-- * @v: pointer of type atomic_t
-- *
-- * Atomically increments @v by 1, so long as @v is non-zero.
-- * Returns non-zero if @v was non-zero, and zero otherwise.
-- */
--static __inline__ int arch_atomic_inc_not_zero(atomic_t *v)
--{
--	int t1, t2;
--
--	__asm__ __volatile__ (
--	PPC_ATOMIC_ENTRY_BARRIER
--"1:	lwarx	%0,0,%2		# atomic_inc_not_zero\n\
--	cmpwi	0,%0,0\n\
--	beq-	2f\n\
--	addic	%1,%0,1\n"
--"	stwcx.	%1,0,%2\n\
--	bne-	1b\n"
--	PPC_ATOMIC_EXIT_BARRIER
--	"\n\
--2:"
--	: "=&r" (t1), "=&r" (t2)
--	: "r" (&v->counter)
--	: "cc", "xer", "memory");
--
--	return t1;
--}
--#define arch_atomic_inc_not_zero(v) arch_atomic_inc_not_zero((v))
--
- /*
-  * Atomically test *v and decrement if it is greater than 0.
-  * The function returns the old value of *v minus 1, even if
--- 
-2.31.1
+--fg5trcv37os37ajy
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEd8WOo/JViG+Tu+XIwqF3j0dLehwFAmFIRuEACgkQwqF3j0dL
+ehwFSQ//Q93Ccx+Thy4bGmUslKbPr5ioKli9qBRNNMjK/9lPxrU3kewaKlH9SDEv
+9YbLXcl4ejUBZi8TW0q/vOSp+PpeLIvG8xPdR7QSSXSBorMJ24x2WvjZcrXOu24M
+B6ZRo0+IsZqyJqRhfTG1PXBiIygG/kf+LZd1QDEMfqQK9ErvBGpuvym0qaQKwq8I
+kltEy/LInB2BXIXhAL/Bedh38dXspsHmAigbbd855YuLDAeYvWraQwlVV6x2jjbl
+KJcD5OxF8r/OiA21+vGQiGHToIts5gAwIza4UlhK8XzdJNAQQLDJ5K0uATiDXqto
+f0okb/2rUFoClL/UrzDLzPoGMSHNHBFgJKNsBKkGl80M5+h0EFLhzkG2fZadoEHp
+z5lpJz5JwxxF1e+JuyAVkaSr2Sp+YiT0me4zphNX7L7kjTWEh1M9WZN5OY334hzB
+TemrkzB1oQ7IyO2N3Z085klfsM+cy+hDj8V1v8oIlC8y/zaLH/hEyu43oGq64Yai
+ZR7SU0ODAdbKm1+m8yHcHHvQBMBL2CifdRtYpyQS5b4QUYGRW+KMfelyLtASqJO/
+lYejUsKetJi1uxddbJNtyQQVY+6CME0SEQISaAxBjj9zLCQu4mY1949t/nDeFNZb
+7EfIiGDpQaX90sHTjf81JpsuFnk2VIKChMQ8rLm+VUrQ8CeEEJI=
+=g7qr
+-----END PGP SIGNATURE-----
+
+--fg5trcv37os37ajy--
