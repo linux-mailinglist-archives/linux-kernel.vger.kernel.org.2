@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296F3412123
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747D6412127
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350228AbhITSC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:02:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56114 "EHLO mail.kernel.org"
+        id S1350274AbhITSCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:02:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352222AbhITRzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1354097AbhITRzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 13:55:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F188630EC;
-        Mon, 20 Sep 2021 17:14:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 967D6619E5;
+        Mon, 20 Sep 2021 17:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158044;
-        bh=17ftx4uVgqG1NS8pk2ldyh0ajowusvB4X5b5hsFECRg=;
+        s=korg; t=1632158047;
+        bh=U4AX/ml/flG1WptvB3W+R34y7qfvFf6e8Q43XXtlqdM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sn+G4BXvoxZlHyGrCWJw9wyaHgNa0OcgXF2K6YTSjqhuMzPBSrjXbgJRyT9ZIcvoO
-         NrlqBDCVsaoHiOlItZraxqw8t5j/IP8pegK3Ba/WKMOIwZkmAop4DMVGDDsETYZOJP
-         6Fv5gaSICMGrXo2BUb2/I3/BL7KdaqhLbt0d7ci4=
+        b=WnzmzBrFZYy9asw2CyXK4l0M1lCHNxB793OFMhm45OxG3uxXGIJUwmlUliWATaFoi
+         uLa/6lGjXQxlfBVkVSi2VQWuJJ906jtiaSn8zPxQa1hw/nLkLv+v7qd7E2uCvFGKUO
+         bB1tV89NTnV1hqTvh/JVFeqT4p1xFu0V4+KSJ+6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhenggy <zhenggy@chinatelecom.cn>,
-        Eric Dumazet <edumazet@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
+        stable@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 269/293] tcp: fix tp->undo_retrans accounting in tcp_sacktag_one()
-Date:   Mon, 20 Sep 2021 18:43:51 +0200
-Message-Id: <20210920163942.620045050@linuxfoundation.org>
+Subject: [PATCH 4.19 270/293] qed: Handle management FW error
+Date:   Mon, 20 Sep 2021 18:43:52 +0200
+Message-Id: <20210920163942.652587172@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -42,42 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhenggy <zhenggy@chinatelecom.cn>
+From: Shai Malin <smalin@marvell.com>
 
-commit 4f884f3962767877d7aabbc1ec124d2c307a4257 upstream.
+commit 20e100f52730cd0db609e559799c1712b5f27582 upstream.
 
-Commit 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit
-time") may directly retrans a multiple segments TSO/GSO packet without
-split, Since this commit, we can no longer assume that a retransmitted
-packet is a single segment.
+Handle MFW (management FW) error response in order to avoid a crash
+during recovery flows.
 
-This patch fixes the tp->undo_retrans accounting in tcp_sacktag_one()
-that use the actual segments(pcount) of the retransmitted packet.
+Changes from v1:
+- Add "Fixes tag".
 
-Before that commit (10d3be569243), the assumption underlying the
-tp->undo_retrans-- seems correct.
-
-Fixes: 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit time")
-Signed-off-by: zhenggy <zhenggy@chinatelecom.cn>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Acked-by: Neal Cardwell <ncardwell@google.com>
+Fixes: tag 5e7ba042fd05 ("qed: Fix reading stale configuration information")
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -1195,7 +1195,7 @@ static u8 tcp_sacktag_one(struct sock *s
- 	if (dup_sack && (sacked & TCPCB_RETRANS)) {
- 		if (tp->undo_marker && tp->undo_retrans > 0 &&
- 		    after(end_seq, tp->undo_marker))
--			tp->undo_retrans--;
-+			tp->undo_retrans = max_t(int, 0, tp->undo_retrans - pcount);
- 		if ((sacked & TCPCB_SACKED_ACKED) &&
- 		    before(start_seq, state->reord))
- 				state->reord = start_seq;
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+@@ -2841,6 +2841,7 @@ qed_mcp_get_nvm_image_att(struct qed_hwf
+ 			  struct qed_nvm_image_att *p_image_att)
+ {
+ 	enum nvm_image_type type;
++	int rc;
+ 	u32 i;
+ 
+ 	/* Translate image_id into MFW definitions */
+@@ -2866,7 +2867,10 @@ qed_mcp_get_nvm_image_att(struct qed_hwf
+ 		return -EINVAL;
+ 	}
+ 
+-	qed_mcp_nvm_info_populate(p_hwfn);
++	rc = qed_mcp_nvm_info_populate(p_hwfn);
++	if (rc)
++		return rc;
++
+ 	for (i = 0; i < p_hwfn->nvm_info.num_images; i++)
+ 		if (type == p_hwfn->nvm_info.image_att[i].image_type)
+ 			break;
 
 
