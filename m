@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68FF4112EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B564D4112EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbhITKfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:35:16 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:49726 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230510AbhITKfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:35:15 -0400
-Received: from BJHW-Mail-Ex01.internal.baidu.com (unknown [10.127.64.11])
-        by Forcepoint Email with ESMTPS id A9EEF47EE74ED1F4780D;
-        Mon, 20 Sep 2021 18:33:42 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex01.internal.baidu.com (10.127.64.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Mon, 20 Sep 2021 18:33:42 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Mon, 20 Sep 2021 18:33:42 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] Input: cyttsp - Make use of the helper function dev_err_probe()
-Date:   Mon, 20 Sep 2021 18:33:33 +0800
-Message-ID: <20210920103335.243-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S233978AbhITKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:35:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230510AbhITKfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 06:35:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6386360F3A;
+        Mon, 20 Sep 2021 10:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632134063;
+        bh=LfZYAn6EQhZA6F2F/DFBpPbHtCyDTeRyH9Is5A/P9Ro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GgMNk+1Q7noIVbEQGXW7gR93/rCIauY6JM0bpbshZiTFTjnIg0qjVISa+60Dia0PX
+         LZgtMb6s89Q9CTeZhwQSLyzR1BHpF9CcZqi9ACeiR3FQsonML7scma0RcWsuxWWnkE
+         hTLTaH+Qs3eXEU+LZS5brHhR4KppwTPJgByIA16Q=
+Date:   Mon, 20 Sep 2021 12:34:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Michael Straube <straube.linux@gmail.com>,
+        Larry.Finger@lwfinger.net, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] staging: r8188eu: remove unused functions from
+ rtw_ap.c
+Message-ID: <YUhjrW2dJxMhbqZO@kroah.com>
+References: <20210919153659.20826-1-straube.linux@gmail.com>
+ <YUedLaAAp1jZiUvL@equinox>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex22.internal.baidu.com (172.31.51.16) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUedLaAAp1jZiUvL@equinox>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When possible use dev_err_probe help to properly deal with the
-PROBE_DEFER error, the benefit is that DEFER issue will be logged
-in the devices_deferred debugfs file.
-Using dev_err_probe() can reduce code size, and the error value
-gets printed.
+On Sun, Sep 19, 2021 at 09:27:25PM +0100, Phillip Potter wrote:
+> On Sun, Sep 19, 2021 at 05:36:53PM +0200, Michael Straube wrote:
+> > This series removes all unused functions from rtw_ap.c.
+> > 
+> > Michael Straube (6):
+> >   staging: r8188eu: remove ap_sta_info_defer_update()
+> >   staging: r8188eu: remove rtw_acl_add_sta()
+> >   staging: r8188eu: remove rtw_acl_remove_sta()
+> >   staging: r8188eu: remove rtw_ap_inform_ch_switch()
+> >   staging: r8188eu: remove rtw_check_beacon_data()
+> >   staging: r8188eu: remove rtw_set_macaddr_acl()
+> > 
+> >  drivers/staging/r8188eu/core/rtw_ap.c    | 584 -----------------------
+> >  drivers/staging/r8188eu/include/rtw_ap.h |   6 -
+> >  2 files changed, 590 deletions(-)
+> > 
+> > -- 
+> > 2.33.0
+> > 
+> 
+> Dear Michael,
+> 
+> Looks good to me, built and tested here with no warnings and driver
+> working fine still. Many thanks.
+> 
+> For all six patches:
+> Acked-by: Phillip Potter
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/input/touchscreen/cyttsp_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Nit, in the future, I need an email after that to have the tools pick it
+up automatically.  It should have looked like:
+	Acked-by: name <email@address>
 
-diff --git a/drivers/input/touchscreen/cyttsp_core.c b/drivers/input/touchscreen/cyttsp_core.c
-index 01646910c9db..661b9eb4c6a0 100644
---- a/drivers/input/touchscreen/cyttsp_core.c
-+++ b/drivers/input/touchscreen/cyttsp_core.c
-@@ -673,8 +673,7 @@ struct cyttsp *cyttsp_probe(const struct cyttsp_bus_ops *bus_ops,
- 	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
- 	if (IS_ERR(ts->reset_gpio)) {
- 		error = PTR_ERR(ts->reset_gpio);
--		dev_err_probe(dev, error, "Failed to request reset gpio\n");
--		return ERR_PTR(error);
-+		return ERR_PTR(dev_err_probe(dev, error, "Failed to request reset gpio\n"));
- 	}
- 
- 	error = cyttsp_parse_properties(ts);
--- 
-2.25.1
+thanks,
 
+greg k-h
