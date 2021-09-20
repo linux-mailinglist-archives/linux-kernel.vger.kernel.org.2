@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B794123DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2ACF4124F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347241AbhITS2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
+        id S1382097AbhITSj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:39:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351954AbhITSWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A93632B5;
-        Mon, 20 Sep 2021 17:24:06 +0000 (UTC)
+        id S1380891AbhITSfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:35:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32B5E63310;
+        Mon, 20 Sep 2021 17:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158647;
-        bh=L6WM1aTLdwLszvmaKezF1OmMbD/Ou2uHCn3ZmDl21rc=;
+        s=korg; t=1632158937;
+        bh=qQ7ssa6Xpm4dQiqcjOkijvkCiwWeXZmz+j/SQ5HIY6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MW4GKhJadIUNxQUmJOol/whn3PMqcb0HijCsv30TGgbwQP55Z3D8Wo/FEbuv5jBHi
-         14Wjt0a2nm8AcUHsOM2FjKSap8jv7/xV28DJHl7lkJfk49Z92e+dol2KsOaisubCqT
-         CyYJlTjWRbbWJScN0UkfCB3Xou+YxPomyZ/2xvKk=
+        b=Np8zzCDGOJUxgr5o60Qs6AXC5MnHK+t84P7JKMe/b118g9+y9YgEZYkkTV3ATMm79
+         HOPzxKYvZU9878Qb//tl727dMu2LuDTcgBa/35b0D7ZabISgMvdmOQqMZjHGG+qtql
+         vlu97cf2vQrhT5sZtOnyFvn49cMmavBCt1sn90+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 251/260] PCI: Sync __pci_register_driver() stub for CONFIG_PCI=n
-Date:   Mon, 20 Sep 2021 18:44:29 +0200
-Message-Id: <20210920163939.639844872@linuxfoundation.org>
+Subject: [PATCH 5.10 098/122] perf bench inject-buildid: Handle writen() errors
+Date:   Mon, 20 Sep 2021 18:44:30 +0200
+Message-Id: <20210920163919.001822226@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-[ Upstream commit 817f9916a6e96ae43acdd4e75459ef4f92d96eb1 ]
+[ Upstream commit edf7b4a2d85e37a1ee77156bddaed4aa6af9c5e1 ]
 
-The CONFIG_PCI=y case got a new parameter long time ago.  Sync the stub as
-well.
+The build on fedora:35 and fedora:rawhide with clang is failing with:
 
-[bhelgaas: add parameter names]
-Fixes: 725522b5453d ("PCI: add the sysfs driver name to all modules")
-Link: https://lore.kernel.org/r/20210813153619.89574-1-andriy.shevchenko@linux.intel.com
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+  49    41.00 fedora:35                     : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
+    bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
+            u64 len = 0;
+                ^
+    1 error generated.
+    make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
+  50    41.11 fedora:rawhide                : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
+    bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
+            u64 len = 0;
+                ^
+    1 error generated.
+    make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
+
+That 'len' variable is not used at all, so just make sure all the
+synthesize_RECORD() routines return ssize_t to propagate the writen()
+return, as it may fail, ditch the 'ret' var and bail out if those
+routines fail.
+
+Fixes: 0bf02a0d80427f26 ("perf bench: Add build-id injection benchmark")
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Link: http://lore.kernel.org/lkml/CAM9d7cgEZNSor+B+7Y2C+QYGme_v5aH0Zn0RLfxoQ+Fy83EHrg@mail.gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pci.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/perf/bench/inject-buildid.c | 52 ++++++++++++++++++-------------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 6a6a819c5b49..9a937f8b2783 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1688,8 +1688,9 @@ static inline int pci_enable_device(struct pci_dev *dev) { return -EIO; }
- static inline void pci_disable_device(struct pci_dev *dev) { }
- static inline int pci_assign_resource(struct pci_dev *dev, int i)
- { return -EBUSY; }
--static inline int __pci_register_driver(struct pci_driver *drv,
--					struct module *owner)
-+static inline int __must_check __pci_register_driver(struct pci_driver *drv,
-+						     struct module *owner,
-+						     const char *mod_name)
- { return 0; }
- static inline int pci_register_driver(struct pci_driver *drv)
- { return 0; }
+diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
+index 280227e3ffd7..f4ec01da8da6 100644
+--- a/tools/perf/bench/inject-buildid.c
++++ b/tools/perf/bench/inject-buildid.c
+@@ -133,7 +133,7 @@ static u64 dso_map_addr(struct bench_dso *dso)
+ 	return 0x400000ULL + dso->ino * 8192ULL;
+ }
+ 
+-static u32 synthesize_attr(struct bench_data *data)
++static ssize_t synthesize_attr(struct bench_data *data)
+ {
+ 	union perf_event event;
+ 
+@@ -151,7 +151,7 @@ static u32 synthesize_attr(struct bench_data *data)
+ 	return writen(data->input_pipe[1], &event, event.header.size);
+ }
+ 
+-static u32 synthesize_fork(struct bench_data *data)
++static ssize_t synthesize_fork(struct bench_data *data)
+ {
+ 	union perf_event event;
+ 
+@@ -169,8 +169,7 @@ static u32 synthesize_fork(struct bench_data *data)
+ 	return writen(data->input_pipe[1], &event, event.header.size);
+ }
+ 
+-static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
+-			   u64 timestamp)
++static ssize_t synthesize_mmap(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
+ {
+ 	union perf_event event;
+ 	size_t len = offsetof(struct perf_record_mmap2, filename);
+@@ -198,23 +197,25 @@ static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
+ 
+ 	if (len > sizeof(event.mmap2)) {
+ 		/* write mmap2 event first */
+-		writen(data->input_pipe[1], &event, len - bench_id_hdr_size);
++		if (writen(data->input_pipe[1], &event, len - bench_id_hdr_size) < 0)
++			return -1;
+ 		/* zero-fill sample id header */
+ 		memset(id_hdr_ptr, 0, bench_id_hdr_size);
+ 		/* put timestamp in the right position */
+ 		ts_idx = (bench_id_hdr_size / sizeof(u64)) - 2;
+ 		id_hdr_ptr[ts_idx] = timestamp;
+-		writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size);
+-	} else {
+-		ts_idx = (len / sizeof(u64)) - 2;
+-		id_hdr_ptr[ts_idx] = timestamp;
+-		writen(data->input_pipe[1], &event, len);
++		if (writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size) < 0)
++			return -1;
++
++		return len;
+ 	}
+-	return len;
++
++	ts_idx = (len / sizeof(u64)) - 2;
++	id_hdr_ptr[ts_idx] = timestamp;
++	return writen(data->input_pipe[1], &event, len);
+ }
+ 
+-static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
+-			     u64 timestamp)
++static ssize_t synthesize_sample(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
+ {
+ 	union perf_event event;
+ 	struct perf_sample sample = {
+@@ -233,7 +234,7 @@ static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
+ 	return writen(data->input_pipe[1], &event, event.header.size);
+ }
+ 
+-static u32 synthesize_flush(struct bench_data *data)
++static ssize_t synthesize_flush(struct bench_data *data)
+ {
+ 	struct perf_event_header header = {
+ 		.size = sizeof(header),
+@@ -348,14 +349,16 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
+ 	int status;
+ 	unsigned int i, k;
+ 	struct rusage rusage;
+-	u64 len = 0;
+ 
+ 	/* this makes the child to run */
+ 	if (perf_header__write_pipe(data->input_pipe[1]) < 0)
+ 		return -1;
+ 
+-	len += synthesize_attr(data);
+-	len += synthesize_fork(data);
++	if (synthesize_attr(data) < 0)
++		return -1;
++
++	if (synthesize_fork(data) < 0)
++		return -1;
+ 
+ 	for (i = 0; i < nr_mmaps; i++) {
+ 		int idx = rand() % (nr_dsos - 1);
+@@ -363,13 +366,18 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
+ 		u64 timestamp = rand() % 1000000;
+ 
+ 		pr_debug2("   [%d] injecting: %s\n", i+1, dso->name);
+-		len += synthesize_mmap(data, dso, timestamp);
++		if (synthesize_mmap(data, dso, timestamp) < 0)
++			return -1;
+ 
+-		for (k = 0; k < nr_samples; k++)
+-			len += synthesize_sample(data, dso, timestamp + k * 1000);
++		for (k = 0; k < nr_samples; k++) {
++			if (synthesize_sample(data, dso, timestamp + k * 1000) < 0)
++				return -1;
++		}
+ 
+-		if ((i + 1) % 10 == 0)
+-			len += synthesize_flush(data);
++		if ((i + 1) % 10 == 0) {
++			if (synthesize_flush(data) < 0)
++				return -1;
++		}
+ 	}
+ 
+ 	/* tihs makes the child to finish */
 -- 
 2.30.2
 
