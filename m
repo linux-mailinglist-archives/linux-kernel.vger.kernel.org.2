@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A09411D79
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E912A411BC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346974AbhITRUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45924 "EHLO mail.kernel.org"
+        id S1345321AbhITRCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346683AbhITRSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:18:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B581D613D2;
-        Mon, 20 Sep 2021 16:59:42 +0000 (UTC)
+        id S1344365AbhITQ6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:58:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 772C2613C8;
+        Mon, 20 Sep 2021 16:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157183;
-        bh=+u2gdY82twVzZc/+FP/9XeCbDZTaNroa7jCYQ0Oh/lM=;
+        s=korg; t=1632156739;
+        bh=oWmUnwB54V9xmo4lBR2uwq/ghFRr5DqVv9OMlWcppZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sJ0U11GO7XPTcyYPUG1n453ML23Lv/KrZ1LmDP/2DHp72sexpeRoU8W2OWqEOyXc1
-         DQNK3lL0Y8eh5KeKUIFzs9kTV1m8kslPRmzaGJ3VRnD1/8Xp1nNvZWK1q1pDlWfII+
-         hGHRaAwvZoOmDCd0zrdUDjUeGiF/m+V8ih+TEqHw=
+        b=kGwLqJsdqDqZxQzu+ZPQPHC7/glUBPUEJvSSo0/XRUjO+hZCcIec4yUuTU9eCU9SD
+         w24ShU4mT3KfhmAQiHBupZzVkWZ7kMJff0lgVf04CJojcEzTJjGV2ScRQtJnr74P4o
+         QcR1ndDjvJY7Lo+h5OW1CTDamRJ/2ye0/FipibkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nguyen Dinh Phi <phind.uet@gmail.com>
-Subject: [PATCH 4.14 091/217] tty: Fix data race between tiocsti() and flush_to_ldisc()
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 063/175] Bluetooth: fix repeated calls to sco_sock_kill
 Date:   Mon, 20 Sep 2021 18:41:52 +0200
-Message-Id: <20210920163927.721004034@linuxfoundation.org>
+Message-Id: <20210920163920.114067093@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 
-commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
+[ Upstream commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59 ]
 
-The ops->receive_buf() may be accessed concurrently from these two
-functions.  If the driver flushes data to the line discipline
-receive_buf() method while tiocsti() is waiting for the
-ops->receive_buf() to finish its work, the data race will happen.
+In commit 4e1a720d0312 ("Bluetooth: avoid killing an already killed
+socket"), a check was added to sco_sock_kill to skip killing a socket
+if the SOCK_DEAD flag was set.
 
-For example:
-tty_ioctl			|tty_ldisc_receive_buf
- ->tioctsi			| ->tty_port_default_receive_buf
-				|  ->tty_ldisc_receive_buf
-   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
-    ->h4_recv                   |    ->h4_recv
+This was done after a trace for a use-after-free bug showed that the
+same sock pointer was being killed twice.
 
-In this case, the h4 receive buffer will be overwritten by the
-latecomer, and we will lost the data.
+Unfortunately, this check prevents sco_sock_kill from running on any
+socket. sco_sock_kill kills a socket only if it's zapped and orphaned,
+however sock_orphan announces that the socket is dead before detaching
+it. i.e., orphaned sockets have the SOCK_DEAD flag set.
 
-Hence, change tioctsi() function to use the exclusive lock interface
-from tty_buffer to avoid the data race.
+To fix this, we remove the check for SOCK_DEAD, and avoid repeated
+calls to sco_sock_kill by removing incorrect calls in:
 
-Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+1. sco_sock_timeout. The socket should not be killed on timeout as
+further processing is expected to be done. For example,
+sco_sock_connect sets the timer then waits for the socket to be
+connected or for an error to be returned.
+
+2. sco_conn_del. This function should clean up resources for the
+connection, but the socket itself should be cleaned up in
+sco_sock_release.
+
+3. sco_sock_close. Calls to sco_sock_close in sco_sock_cleanup_listen
+and sco_sock_release are followed by sco_sock_kill. Hence the
+duplicated call should be removed.
+
+Fixes: 4e1a720d0312 ("Bluetooth: avoid killing an already killed socket")
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_io.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bluetooth/sco.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -2165,8 +2165,6 @@ static int tty_fasync(int fd, struct fil
-  *	Locking:
-  *		Called functions take tty_ldiscs_lock
-  *		current->signal->tty check is safe without locks
-- *
-- *	FIXME: may race normal receive processing
-  */
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 3174eab6eafc..70eb28df20d3 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -83,7 +83,6 @@ static void sco_sock_timeout(unsigned long arg)
+ 	sk->sk_state_change(sk);
+ 	bh_unlock_sock(sk);
  
- static int tiocsti(struct tty_struct *tty, char __user *p)
-@@ -2182,8 +2180,10 @@ static int tiocsti(struct tty_struct *tt
- 	ld = tty_ldisc_ref_wait(tty);
- 	if (!ld)
- 		return -EIO;
-+	tty_buffer_lock_exclusive(tty->port);
- 	if (ld->ops->receive_buf)
- 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
-+	tty_buffer_unlock_exclusive(tty->port);
- 	tty_ldisc_deref(ld);
- 	return 0;
+-	sco_sock_kill(sk);
+ 	sock_put(sk);
  }
+ 
+@@ -175,7 +174,6 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+ 		sco_sock_clear_timer(sk);
+ 		sco_chan_del(sk, err);
+ 		bh_unlock_sock(sk);
+-		sco_sock_kill(sk);
+ 		sock_put(sk);
+ 	}
+ 
+@@ -392,8 +390,7 @@ static void sco_sock_cleanup_listen(struct sock *parent)
+  */
+ static void sco_sock_kill(struct sock *sk)
+ {
+-	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket ||
+-	    sock_flag(sk, SOCK_DEAD))
++	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
+ 		return;
+ 
+ 	BT_DBG("sk %p state %d", sk, sk->sk_state);
+@@ -445,7 +442,6 @@ static void sco_sock_close(struct sock *sk)
+ 	lock_sock(sk);
+ 	__sco_sock_close(sk);
+ 	release_sock(sk);
+-	sco_sock_kill(sk);
+ }
+ 
+ static void sco_sock_init(struct sock *sk, struct sock *parent)
+-- 
+2.30.2
+
 
 
