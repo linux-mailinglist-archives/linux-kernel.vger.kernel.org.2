@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AE941110D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BC441110E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235965AbhITIgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:36:04 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:51698
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235899AbhITIgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:36:00 -0400
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S236012AbhITIgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:36:25 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49898 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235968AbhITIgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 04:36:13 -0400
+Received: from zn.tnic (p200300ec2f0a2a0063d0dab944a9c04a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2a00:63d0:dab9:44a9:c04a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E54343F331
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:34:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632126872;
-        bh=GlnCPL/n2TbFZ5lKXBBdaGTEcyYQg+Xe+TKmdfu9J3o=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=k3NQkMTJCzpxEaXtrsQYxD1tozAA27mjEdZTmW8rk2xphZA2q53u+aisx5jCsSlnV
-         32HtqlBG3ASoJMNCJav+Ga7Oat1H/j0aC9XJysVHR/YgqT0TCpC1jvne0VDdfZlhHe
-         zSX344WdjePs97xnJ6rMZZe8z/sWyK7gM9ZMpHYYDKH5VYAaasTQZCmLNGSN9de+es
-         4V0tJuS884SmGNfKFVTTxbIgowIM6ff6vJ4vhyj3nc90A+ndZYUoAYm3I1dFclVwDX
-         qFswYj2TCAb6C0ZmkusmkbXm/Rgg29DLJttiZHTPCbYKfx122UJvBJ1rsDfFh6oyhx
-         G+l0mueS42WBw==
-Received: by mail-wm1-f69.google.com with SMTP id z194-20020a1c7ecb000000b0030b7ccea080so537005wmc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:34:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GlnCPL/n2TbFZ5lKXBBdaGTEcyYQg+Xe+TKmdfu9J3o=;
-        b=7CH0fiR/+uXUU6DJMdD0vzKKJd9CzhBZuvA9f0ycLr9mb8BNZRBZsGxlF4+f5EdFne
-         OsiFGW+dxp+SpgMebnd8UAZErSWXJF8uvYMAMbxv7WaV/Gwjm27zoulS78UcIjzyy47q
-         J5CZM2hcjcVYb/npk0d+zka1qc+HLScoGJl/cOf4GMZKnK1d+c6LwYit4Jwm4sDG+sP/
-         XcvZG9TZDVLJbNjShNxSyeBsz4osip8TApZqD1Tbg4strBp+kiUbO7fqGXNHGK/OIO5k
-         XTh+8Ut/nkIRSCsJlWAz5eUMp9szWSl/pQNKi0qhe3nLPqu4aIsN7OzRwcXhmrPOvhbc
-         sxwg==
-X-Gm-Message-State: AOAM5322iAq3kg9KBz+VEZ94z8fgsxibi/mW7RWFjJSU0TRShUNO9pKn
-        V2t1A0+861UQRpNNlmy48vv2D6ITJJwLN5a9EOX7dTgQa3P+OtNqkjVAYLX45wxnlEBWGFpz0bJ
-        N+gHOsLWaP8gakQBnXHL6f7soElSMG6PLTYd1SDue1g==
-X-Received: by 2002:a1c:2056:: with SMTP id g83mr27578671wmg.27.1632126872641;
-        Mon, 20 Sep 2021 01:34:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZ9ERCT7KUv6zwsHvcBjFyA/Y/awEBukLBanBzL4Ra5L9b9at0dRM9wxlTaF4DW/RU0R/XQw==
-X-Received: by 2002:a1c:2056:: with SMTP id g83mr27578645wmg.27.1632126872454;
-        Mon, 20 Sep 2021 01:34:32 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id v188sm4658891wme.38.2021.09.20.01.34.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 01:34:31 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     p.zabel@pengutronix.de, viresh.kumar@linaro.org, robh@kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>, amitk@kernel.org,
-        kw@linux.com, rafael@kernel.org, thierry.reding@gmail.com,
-        lorenzo.pieralisi@arm.com, daniel.lezcano@linaro.org,
-        rui.zhang@intel.com, jonathanh@nvidia.com
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 3/5] memory: tegra186-emc: Handle errors in BPMP response
-Date:   Mon, 20 Sep 2021 10:34:27 +0200
-Message-Id: <163212685894.112070.7948621267940223581.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210915085517.1669675-3-mperttunen@nvidia.com>
-References: <20210915085517.1669675-1-mperttunen@nvidia.com> <20210915085517.1669675-3-mperttunen@nvidia.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E76461EC03D5;
+        Mon, 20 Sep 2021 10:34:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632126882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=OQ7yHNBqt/MgszI5LWX0FzlV6DqyOJAMJIRfVjQOy/E=;
+        b=mzEAAbND23XoA9ZL90qqlF9uUs3Du/MHFsGXCechu4wopZBD8Yk57RBXJElPEfF2dKJDnC
+        DIVlXWi6CYhhCK8C29m9pvcfaybaTIOg+29Vv35c4VuehQYo5Art7aJJF5Ig1N7BuN3/QQ
+        llzzNrEQBCh+OODifkZWTpaRKNLB2B8=
+Date:   Mon, 20 Sep 2021 10:34:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] x86/mce: Get rid of the ->quirk_no_way_out()
+ indirect call
+Message-ID: <YUhHoclcgh/qBNG9@zn.tnic>
+References: <20210917105355.2368-1-bp@alien8.de>
+ <20210917105355.2368-5-bp@alien8.de>
+ <YUgWu14GqmjJ36+R@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YUgWu14GqmjJ36+R@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 11:55:15 +0300, Mikko Perttunen wrote:
-> The return value from tegra_bpmp_transfer indicates the success or
-> failure of the IPC transaction with BPMP. If the transaction
-> succeeded, we also need to check the actual command's result code.
-> Add code to do this.
-> 
-> 
+On Sun, Sep 19, 2021 at 10:06:03PM -0700, Luck, Tony wrote:
+> Someday all these tests for random vendor/family/model/stepping could be
+> refactored into a x86_match_cpu() lookup table (now that x86_match_cpu
+> can handle steppings). But that's a topic for a different patch series.
 
-Applied, thanks!
+If it remains somewhat readable, sure. If it turns into my favourite
+code in severity.c then probably not so much.
 
-[3/5] memory: tegra186-emc: Handle errors in BPMP response
-      commit: 13324edbe9269e6fbca4d0f5146b18ef8478c958
+:-)
 
-Best regards,
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
