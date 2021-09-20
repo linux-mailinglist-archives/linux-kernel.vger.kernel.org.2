@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707B6411F5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD215411F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348816AbhITRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:40:25 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48390 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346366AbhITRh6 (ORCPT
+        id S1348222AbhITRlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:41:31 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49968
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352312AbhITRjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:37:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KHaIG1046675;
-        Mon, 20 Sep 2021 12:36:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632159378;
-        bh=JehA/AdZ62AVPkLLoqCPDg/CoSo8j/lugoyiuCZiRnQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=elLuM0fsfzsZXoNfsPZJ0028D7v8svy0M1v3N4mDFayb5MTLhASXfrWpE2DcT/yoD
-         WGlkPW2v5JXRjlJ+8vSgrXy46vPhiVWP+gdmAj98X9HdZ/gy750TskcPWB4z95ngrz
-         xwvhFeKniuXdJWpfkPtVNklXp2F7FHxn83oJw1Vo=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KHaIA1042167
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Sep 2021 12:36:18 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
- Sep 2021 12:36:17 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 20 Sep 2021 12:36:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KHaGp4011525;
-        Mon, 20 Sep 2021 12:36:17 -0500
-Date:   Mon, 20 Sep 2021 23:06:15 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-CC:     Apurva Nandan <a-nandan@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <michael@walle.cc>
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema
- format
-Message-ID: <20210920173613.oqk6lnmipabkt25s@ti.com>
-References: <20210920142713.129295-1-a-nandan@ti.com>
- <20210920142713.129295-2-a-nandan@ti.com>
- <20210920150651.vvdhennblwhdi3jw@mobilestation>
+        Mon, 20 Sep 2021 13:39:12 -0400
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0DCDB3F31B
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:37:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632159463;
+        bh=CQtfdbe1O3s9BEshGw98z5OXNdM0i7hCrZwLtn3F8cg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=tj3H3NE27M5xnNRzk0LyQCsuGt+xD7dfDu1fAHiOJJSFvg2V21K2IXCy9ZC6DQWxW
+         K8b1Mb0huZF4qZJqRawpEpDAYI8ulB4yvnnFFqST4gfEL1T+Vm1a3v9kWtv78xUZlU
+         59WHWSIXHvae9jTAIgNQ6KvU7i6+LCnU/c7ncWE4lAqxBsLnmxk6jX7TcDUqY0EVml
+         cvBBuT3Wc+g5TOwv2KpSUzDbFab8u1y4z8DorlS84jxsxD8Ny2IttxAei/hNJuP//b
+         dufG1MgRzePSgKqjsbowsxdnZnOvRQlPBdXgaqahR21/pcxXKhxEdpxoUakVcKqtWv
+         27eTBVrFk+wCA==
+Received: by mail-pj1-f72.google.com with SMTP id v10-20020a17090ac90a00b0019936bc24c7so356209pjt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 10:37:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CQtfdbe1O3s9BEshGw98z5OXNdM0i7hCrZwLtn3F8cg=;
+        b=KhvJuze5WEP/O0zIVD83aPLmVn4wccxNGjPpV5pYzS5Vs6ZS9M2ijT7J0jsjFJCjIP
+         pzIAa6qW6om423gGt2Ids8yDArzqBIvwjCIcdbZTdwVIea9rBIlZryvCRp81r876Igel
+         tJukNjoWTl5GL58zCDpt/fLwy6mEuej1m/vWmS/Q629d5gdVTHrz80cPiI+TUg+0jl2j
+         4/s6pDtRrrRkWnDDaapnFoOJ+GHI/aYNMGPeRLhksLGYAN6g7wuSTe1JlTQ4h1Wxfzen
+         7S0UaNro6Aag/p1H2HkvjUVv/EQV0jbOLyFCI9+7YmxWoH+8zOTQqarteb/fXR1SheRw
+         RxQA==
+X-Gm-Message-State: AOAM532d+UGAQLSGlMmDCQzPrdZugFoXcXVUWZfjfCk6knc/dp86uu9A
+        LIn/omhglDC3wazf1QaVdhbk5OxKRbHSpOM374hNgar3VOe6go14hAJrvwXCNK2Hjg0juJ5Jk7C
+        ASp4EIApJ7isYm0m4iLxVMDKnM943Yylx42AfsbbrDw==
+X-Received: by 2002:a65:5845:: with SMTP id s5mr24080729pgr.227.1632159461666;
+        Mon, 20 Sep 2021 10:37:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCnJ9SLA7DSqx8gP32eeM3/WHlWuJYoH5BlFMtXi3QlDixSt/zezxCCbHLKKlROcKaXGFBKQ==
+X-Received: by 2002:a65:5845:: with SMTP id s5mr24080711pgr.227.1632159461484;
+        Mon, 20 Sep 2021 10:37:41 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id o12sm9763848pgn.33.2021.09.20.10.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 10:37:41 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     linux-iio@vger.kernel.org
+Cc:     tim.gardner@canonical.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2][next] counter: Add default statement to switch() in quad8_function_read()
+Date:   Mon, 20 Sep 2021 11:37:37 -0600
+Message-Id: <20210920173737.21445-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210920150651.vvdhennblwhdi3jw@mobilestation>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/21 06:06PM, Serge Semin wrote:
-> Hello Apurva
-> 
-> On Mon, Sep 20, 2021 at 07:57:12PM +0530, Apurva Nandan wrote:
-> > Convert spi-nand.txt binding to YAML format with an added example.
-> > 
-> > Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> > ---
-> >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
-> >  .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
-> >  2 files changed, 62 insertions(+), 5 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
-[...]
-> 
-> > +  spi-max-frequency: true
-> > +  spi-rx-bus-width: true
-> > +  spi-tx-bus-width: true
-> > +  rx-sample-delay-ns: true
-> 
-> Since it's an SPI-client device there are more than these properties
-> could be set for it. See the SPI-controller bindings schema:
-> Documentation/devicetree/bindings/spi/spi-controller.yaml
-> So there is two possible ways to make it more generic:
-> 1) Detach the spi-client part from the spi-controller.yaml bindings
-> into a dedicated DT-schema file and refer to that new scheme from
-> here.
-> 2) Forget about these controller-specific properties and let the
-> parental SPI-controller bindings parsing them. Of course there must be
-> at least one of the next properties declared for it to work:
-> {unevaluatedProperties, additionalProperties}.
+v2: Add the correct Cc's
 
-I proposed a patch series [0] to fix this for SPI NOR, which can be used 
-here as well. A re-roll is long overdue though. Let me see when I can 
-find time to get to it. In the meantime, this should be fine IMO.
+Coverity complains of a possible use of an uninitialized variable
+in quad8_action_read().
 
-[0] https://patchwork.kernel.org/project/spi-devel-general/list/?series=497129&state=%2A&archive=both
+CID 119643 (#1 of 1): Uninitialized scalar variable (UNINIT)
+4. uninit_use: Using uninitialized value function.
+346        switch (function) {
 
+The call to quad8_function_read() could theoretically return without
+assigning a value to '*function', thus causing the use of an
+ininitialized variable 'function' in quad8_action_read().
 
+Fix this by adding a default statement to the switch in
+quad8_function_read() and returning an error.
+
+Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+Cc: linux-iio@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ drivers/counter/104-quad-8.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+index c587f295d720..3a69d35b82ea 100644
+--- a/drivers/counter/104-quad-8.c
++++ b/drivers/counter/104-quad-8.c
+@@ -215,6 +215,8 @@ static int quad8_function_read(struct counter_device *counter,
+ 		case 2:
+ 			*function = COUNTER_FUNCTION_QUADRATURE_X4;
+ 			break;
++		default:
++			return -1;
+ 		}
+ 	else
+ 		*function = COUNTER_FUNCTION_PULSE_DIRECTION;
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.33.0
+
