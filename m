@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0747E411E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C07F411C75
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351215AbhITRch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35418 "EHLO mail.kernel.org"
+        id S245229AbhITRKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350846AbhITRaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:30:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB92C6127A;
-        Mon, 20 Sep 2021 17:04:03 +0000 (UTC)
+        id S1344992AbhITRHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:07:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78CE96138D;
+        Mon, 20 Sep 2021 16:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157444;
-        bh=T/rhwYZkhyW9upUip2c7nRlGEMpA7f+b+5qETvMIk5Y=;
+        s=korg; t=1632156930;
+        bh=Iu3Qyc44vj0VnMintyRrj0uhXpi3bJ46oo5MFD+sjbk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1D+KBc7ZPgtYtcvj+f2dgHYlqTNRHBOMdxwmkjVKU1V29GiWpZvQ+4YIVF/7CgMDn
-         d0ieg1QSPf6TuIVSmZzvHKdwspwDK9VyQCqNVIK6Bo4fvDreazUffzW4XKIuDvQ9Ga
-         Voi4NaejFGRRALiuI0xsJ1F+0HKTqrHwoDOYBZIo=
+        b=RZJEEZaSMbUgcElmKfNH3BMtbC23zAIIICpNKTEB8aOLzDqTMt2zZpfPNVSHH7e7W
+         0RPjGoHzvjBKHSU8t5Ss+Yp6aE/hvkdKdfULgjT9d0wyUosI/Vnm4ApomPAkp0zpyB
+         k9x/21W/r5WgbVImPPSgf1G7a4rMzUrPGb51N87Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zekun Shen <bruceshenzk@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 180/217] ath9k: fix OOB read ar9300_eeprom_restore_internal
+        stable@vger.kernel.org, Patryk Duda <pdk@semihalf.com>,
+        Benson Leung <bleung@chromium.org>
+Subject: [PATCH 4.9 152/175] platform/chrome: cros_ec_proto: Send command again when timeout occurs
 Date:   Mon, 20 Sep 2021 18:43:21 +0200
-Message-Id: <20210920163930.726680427@linuxfoundation.org>
+Message-Id: <20210920163923.040458464@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zekun Shen <bruceshenzk@gmail.com>
+From: Patryk Duda <pdk@semihalf.com>
 
-[ Upstream commit 23151b9ae79e3bc4f6a0c4cd3a7f355f68dad128 ]
+commit 3abc16af57c9939724df92fcbda296b25cc95168 upstream.
 
-Bad header can have large length field which can cause OOB.
-cptr is the last bytes for read, and the eeprom is parsed
-from high to low address. The OOB, triggered by the condition
-length > cptr could cause memory error with a read on
-negative index.
+Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
+hasn't initialized SPI yet. This can happen because FPMCU is restarted
+during system boot and kernel can send message in short window
+eg. between sysjump to RW and SPI initialization.
 
-There are some sanity check around length, but it is not
-compared with cptr (the remaining bytes). Here, the
-corrupted/bad EEPROM can cause panic.
-
-I was able to reproduce the crash, but I cannot find the
-log and the reproducer now. After I applied the patch, the
-bug is no longer reproducible.
-
-Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/YM3xKsQJ0Hw2hjrc@Zekuns-MBP-16.fios-router.home
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Patryk Duda <pdk@semihalf.com>
+Link: https://lore.kernel.org/r/20210518140758.29318-1-pdk@semihalf.com
+Signed-off-by: Benson Leung <bleung@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath9k/ar9003_eeprom.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/platform/chrome/cros_ec_proto.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
-index 76385834a7de..694a58b1e995 100644
---- a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
-+++ b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
-@@ -3346,7 +3346,8 @@ static int ar9300_eeprom_restore_internal(struct ath_hw *ah,
- 			"Found block at %x: code=%d ref=%d length=%d major=%d minor=%d\n",
- 			cptr, code, reference, length, major, minor);
- 		if ((!AR_SREV_9485(ah) && length >= 1024) ||
--		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485)) {
-+		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485) ||
-+		    (length > cptr)) {
- 			ath_dbg(common, EEPROM, "Skipping bad header\n");
- 			cptr -= COMP_HDR_LEN;
- 			continue;
--- 
-2.30.2
-
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -183,6 +183,15 @@ static int cros_ec_host_command_proto_qu
+ 	msg->insize = sizeof(struct ec_response_get_protocol_info);
+ 
+ 	ret = send_command(ec_dev, msg);
++	/*
++	 * Send command once again when timeout occurred.
++	 * Fingerprint MCU (FPMCU) is restarted during system boot which
++	 * introduces small window in which FPMCU won't respond for any
++	 * messages sent by kernel. There is no need to wait before next
++	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
++	 */
++	if (ret == -ETIMEDOUT)
++		ret = send_command(ec_dev, msg);
+ 
+ 	if (ret < 0) {
+ 		dev_dbg(ec_dev->dev,
 
 
