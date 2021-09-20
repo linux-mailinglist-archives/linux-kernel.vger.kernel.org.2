@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C1F411E03
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8711E411AB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347653AbhITR0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
+        id S244316AbhITQvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:51:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349371AbhITRW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:22:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6302761A81;
-        Mon, 20 Sep 2021 17:01:29 +0000 (UTC)
+        id S243348AbhITQsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 981736127A;
+        Mon, 20 Sep 2021 16:47:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157289;
-        bh=TNnIlN/FipTnrX/m7pCV4oGypbQ800FZkJL/lFe+UeI=;
+        s=korg; t=1632156426;
+        bh=aLabv6Op8VuUT0oGrhKsfH/ZuAca9Fk0IWafQY9cbGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dv6XDML2HekNwJWqVEUhxJ5/IaiQrL/iQy+YgC+FitpjL0cM+bLbDBUn/4YLicXdQ
-         dgvfTB5aQgCLd1cw670fWmVPoyi8ytKKIIvR3qb7j84zrGKaHRS75YVvJIOOsD2JeX
-         rxmgobHvo8drYECZgLwt6wfyXsILRUbec5iksx3Q=
+        b=s5y53aG3RHLH259vm2H2pp+CtZHknQwqc8LRKVj3ntMq/OtS9kdiHGsF9teQIWc71
+         F+ls3NBsaefv7j4ohhaPuvTA/4SdW/hlmbQZhWDwWZ/gsNXxXVThHXYwZkOQ9aGnnZ
+         uf36h+QqwBooWYD21QIBg20kMz0sFfxui2YJs49Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.14 108/217] block: bfq: fix bfq_set_next_ioprio_data()
-Date:   Mon, 20 Sep 2021 18:42:09 +0200
-Message-Id: <20210920163928.297882002@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 052/133] usb: phy: twl6030: add IRQ checks
+Date:   Mon, 20 Sep 2021 18:42:10 +0200
+Message-Id: <20210920163914.348688178@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit a680dd72ec336b81511e3bff48efac6dbfa563e7 upstream.
+[ Upstream commit 0881e22c06e66af0b64773c91c8868ead3d01aa1 ]
 
-For a request that has a priority level equal to or larger than
-IOPRIO_BE_NR, bfq_set_next_ioprio_data() prints a critical warning but
-defaults to setting the request new_ioprio field to IOPRIO_BE_NR. This
-is not consistent with the warning and the allowed values for priority
-levels. Fix this by setting the request new_ioprio field to
-IOPRIO_BE_NR - 1, the lowest priority level allowed.
+The driver neglects to check the result of platform_get_irq()'s calls and
+blithely passes the negative error codes to request_threaded_irq() (which
+takes *unsigned* IRQ #), causing them both to fail with -EINVAL, overriding
+an original error code.  Stop calling request_threaded_irq() with the
+invalid IRQ #s.
 
-Cc: <stable@vger.kernel.org>
-Fixes: aee69d78dec0 ("block, bfq: introduce the BFQ-v0 I/O scheduler as an extra scheduler")
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Link: https://lore.kernel.org/r/20210811033702.368488-2-damien.lemoal@wdc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: c33fad0c3748 ("usb: otg: Adding twl6030-usb transceiver driver for OMAP4430")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/9507f50b-50f1-6dc4-f57c-3ed4e53a1c25@omp.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/phy/phy-twl6030-usb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -3825,7 +3825,7 @@ bfq_set_next_ioprio_data(struct bfq_queu
- 	if (bfqq->new_ioprio >= IOPRIO_BE_NR) {
- 		pr_crit("bfq_set_next_ioprio_data: new_ioprio %d\n",
- 			bfqq->new_ioprio);
--		bfqq->new_ioprio = IOPRIO_BE_NR;
-+		bfqq->new_ioprio = IOPRIO_BE_NR - 1;
- 	}
+diff --git a/drivers/usb/phy/phy-twl6030-usb.c b/drivers/usb/phy/phy-twl6030-usb.c
+index 12741856a75c..220e1a59a871 100644
+--- a/drivers/usb/phy/phy-twl6030-usb.c
++++ b/drivers/usb/phy/phy-twl6030-usb.c
+@@ -336,6 +336,11 @@ static int twl6030_usb_probe(struct platform_device *pdev)
+ 	twl->irq2		= platform_get_irq(pdev, 1);
+ 	twl->linkstat		= OMAP_MUSB_UNKNOWN;
  
- 	bfqq->entity.new_weight = bfq_ioprio_to_weight(bfqq->new_ioprio);
++	if (twl->irq1 < 0)
++		return twl->irq1;
++	if (twl->irq2 < 0)
++		return twl->irq2;
++
+ 	twl->comparator.set_vbus	= twl6030_set_vbus;
+ 	twl->comparator.start_srp	= twl6030_start_srp;
+ 
+-- 
+2.30.2
+
 
 
