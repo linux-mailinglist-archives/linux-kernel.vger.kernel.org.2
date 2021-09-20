@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648CC4122E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4311041241F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377308AbhITSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36230 "EHLO mail.kernel.org"
+        id S243470AbhITSao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:30:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44429 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376523AbhITSMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:12:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7550263282;
-        Mon, 20 Sep 2021 17:20:55 +0000 (UTC)
+        id S1378270AbhITSYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:24:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A18496140B;
+        Mon, 20 Sep 2021 17:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158455;
-        bh=oJpfI5W9ctG0X9pE+OiIxGDJtoXkPq5cScPWvxtw7w4=;
+        s=korg; t=1632158691;
+        bh=eAJfSoPUmGcbBrfoMQCdLBzHWEflbt8dhav77gTZedI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XwNThZZi2xkdzQSus7JpNcA3uiIRWXf6DH5TOeNm3TPymhh3wdfuXGN0LR2sxfuGw
-         fBI9sCMAWR7APMuX7WcnJ7tJ8wE5HYZzXspbWaID5G3tpAKFwPAsXfLQ3yCNEIefNE
-         NS5j1jqtyD4KUDSYaoyv2qorafmq3Zj7rkp2wkus=
+        b=VtxtKRLCpak4ZDwYdr2PKdrJv2cXv9A6Dglch1i+rdiH5SbyZw2oAqnlAneQxGsp7
+         wmDrdqYbhYSmPBKRxdndLZj8pmWC5/ZPDn/g39U3ncAlw/EfBG0ntBoG9u2xBQ2OeY
+         fjqrVHGHtIhoF2zJrSlB/YmY/zLXYxXMyFAtzMU0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 165/260] iwlwifi: mvm: avoid static queue number aliasing
-Date:   Mon, 20 Sep 2021 18:43:03 +0200
-Message-Id: <20210920163936.696277674@linuxfoundation.org>
+        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Michael Walle <michael@walle.cc>, Marek Vasut <marex@denx.de>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: [PATCH 5.10 012/122] drm/etnaviv: stop abusing mmu_context as FE running marker
+Date:   Mon, 20 Sep 2021 18:43:04 +0200
+Message-Id: <20210920163916.172113518@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,235 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-[ Upstream commit c6ce1c74ef2923b8ffd85f7f8b486f804f343b39 ]
+commit 23e0f5a57d0ecec86e1fc82194acd94aede21a46 upstream.
 
-When TVQM is enabled (iwl_mvm_has_new_tx_api() is true), then
-queue numbers are just sequentially assigned 0, 1, 2, ...
-Prior to TVQM, in DQA, there were some statically allocated
-queue numbers:
- * IWL_MVM_DQA_AUX_QUEUE == 1,
- * both IWL_MVM_DQA_INJECT_MONITOR_QUEUE and
-   IWL_MVM_DQA_P2P_DEVICE_QUEUE == 2, and
- * IWL_MVM_DQA_AP_PROBE_RESP_QUEUE == 9.
+While the DMA frontend can only be active when the MMU context is set, the
+reverse isn't necessarily true, as the frontend can be stopped while the
+MMU state is kept. Stop treating mmu_context being set as a indication that
+the frontend is running and instead add a explicit property.
 
-Now, these values are assigned to the members mvm->aux_queue,
-mvm->snif_queue, mvm->probe_queue and mvm->p2p_dev_queue by
-default. Normally, this doesn't really matter, and if TVQM is
-in fact available we override them to the real values after
-allocating a queue for use there.
-
-However, this allocation doesn't always happen. For example,
-for mvm->p2p_dev_queue (== 2) it only happens when the P2P
-Device interface is started, if any. If it's not started, the
-value in mvm->p2p_dev_queue remains 2. This wouldn't really
-matter all that much if it weren't for iwl_mvm_is_static_queue()
-which checks a queue number against one of those four static
-numbers.
-
-Now, if no P2P Device or monitor interface is added then queue
-2 may be dynamically allocated, yet alias mvm->p2p_dev_queue or
-mvm->snif_queue, and thus iwl_mvm_is_static_queue() erroneously
-returns true for it. If it then gets full, all interface queues
-are stopped, instead of just backpressuring against the one TXQ
-that's really the only affected one.
-
-This clearly can lead to issues, as everything is stopped even
-if just a single TXQ filled its corresponding HW queue, if it
-happens to have an appropriate number (2 or 9, AUX is always
-reassigned.) Due to a mac80211 bug, this also led to a situation
-in which the queues remained stopped across a deauthentication
-and then attempts to connect to a new AP started failing, but
-that's fixed separately.
-
-Fix all of this by simply initializing the queue numbers to
-the invalid value until they're used, if TVQM is enabled, and
-also setting them back to that value when the queues are later
-freed again.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210802172232.2e47e623f9e2.I9b0830dafbb68ef35b7b8f0f46160abec02ac7d0@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org # 5.4
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Tested-by: Michael Walle <michael@walle.cc>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/ops.c | 24 +++++++++++++---
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c | 30 ++++++++++++--------
- 2 files changed, 38 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c |   10 ++++++++--
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h |    1 +
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
-index 8b0576cde797..a9aab6c690e8 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
-@@ -687,10 +687,26 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -561,6 +561,8 @@ static int etnaviv_hw_reset(struct etnav
+ 	/* We rely on the GPU running, so program the clock */
+ 	etnaviv_gpu_update_clock(gpu);
  
- 	mvm->fw_restart = iwlwifi_mod_params.fw_restart ? -1 : 0;
- 
--	mvm->aux_queue = IWL_MVM_DQA_AUX_QUEUE;
--	mvm->snif_queue = IWL_MVM_DQA_INJECT_MONITOR_QUEUE;
--	mvm->probe_queue = IWL_MVM_DQA_AP_PROBE_RESP_QUEUE;
--	mvm->p2p_dev_queue = IWL_MVM_DQA_P2P_DEVICE_QUEUE;
-+	if (iwl_mvm_has_new_tx_api(mvm)) {
-+		/*
-+		 * If we have the new TX/queue allocation API initialize them
-+		 * all to invalid numbers. We'll rewrite the ones that we need
-+		 * later, but that doesn't happen for all of them all of the
-+		 * time (e.g. P2P Device is optional), and if a dynamic queue
-+		 * ends up getting number 2 (IWL_MVM_DQA_P2P_DEVICE_QUEUE) then
-+		 * iwl_mvm_is_static_queue() erroneously returns true, and we
-+		 * might have things getting stuck.
-+		 */
-+		mvm->aux_queue = IWL_MVM_INVALID_QUEUE;
-+		mvm->snif_queue = IWL_MVM_INVALID_QUEUE;
-+		mvm->probe_queue = IWL_MVM_INVALID_QUEUE;
-+		mvm->p2p_dev_queue = IWL_MVM_INVALID_QUEUE;
-+	} else {
-+		mvm->aux_queue = IWL_MVM_DQA_AUX_QUEUE;
-+		mvm->snif_queue = IWL_MVM_DQA_INJECT_MONITOR_QUEUE;
-+		mvm->probe_queue = IWL_MVM_DQA_AP_PROBE_RESP_QUEUE;
-+		mvm->p2p_dev_queue = IWL_MVM_DQA_P2P_DEVICE_QUEUE;
-+	}
- 
- 	mvm->sf_state = SF_UNINIT;
- 	if (iwl_mvm_has_unified_ucode(mvm))
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-index 40cafcf40ccf..5df4bbb6c6de 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-@@ -346,8 +346,9 @@ static int iwl_mvm_invalidate_sta_queue(struct iwl_mvm *mvm, int queue,
- }
- 
- static int iwl_mvm_disable_txq(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
--			       int queue, u8 tid, u8 flags)
-+			       u16 *queueptr, u8 tid, u8 flags)
- {
-+	int queue = *queueptr;
- 	struct iwl_scd_txq_cfg_cmd cmd = {
- 		.scd_queue = queue,
- 		.action = SCD_CFG_DISABLE_QUEUE,
-@@ -356,6 +357,7 @@ static int iwl_mvm_disable_txq(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
- 
- 	if (iwl_mvm_has_new_tx_api(mvm)) {
- 		iwl_trans_txq_free(mvm->trans, queue);
-+		*queueptr = IWL_MVM_INVALID_QUEUE;
- 
- 		return 0;
- 	}
-@@ -517,6 +519,7 @@ static int iwl_mvm_free_inactive_queue(struct iwl_mvm *mvm, int queue,
- 	u8 sta_id, tid;
- 	unsigned long disable_agg_tids = 0;
- 	bool same_sta;
-+	u16 queue_tmp = queue;
- 	int ret;
- 
- 	lockdep_assert_held(&mvm->mutex);
-@@ -539,7 +542,7 @@ static int iwl_mvm_free_inactive_queue(struct iwl_mvm *mvm, int queue,
- 		iwl_mvm_invalidate_sta_queue(mvm, queue,
- 					     disable_agg_tids, false);
- 
--	ret = iwl_mvm_disable_txq(mvm, old_sta, queue, tid, 0);
-+	ret = iwl_mvm_disable_txq(mvm, old_sta, &queue_tmp, tid, 0);
- 	if (ret) {
- 		IWL_ERR(mvm,
- 			"Failed to free inactive queue %d (ret=%d)\n",
-@@ -1209,6 +1212,7 @@ static int iwl_mvm_sta_alloc_queue(struct iwl_mvm *mvm,
- 	unsigned int wdg_timeout =
- 		iwl_mvm_get_wd_timeout(mvm, mvmsta->vif, false, false);
- 	int queue = -1;
-+	u16 queue_tmp;
- 	unsigned long disable_agg_tids = 0;
- 	enum iwl_mvm_agg_state queue_state;
- 	bool shared_queue = false, inc_ssn;
-@@ -1357,7 +1361,8 @@ static int iwl_mvm_sta_alloc_queue(struct iwl_mvm *mvm,
++	gpu->fe_running = false;
++
  	return 0;
- 
- out_err:
--	iwl_mvm_disable_txq(mvm, sta, queue, tid, 0);
-+	queue_tmp = queue;
-+	iwl_mvm_disable_txq(mvm, sta, &queue_tmp, tid, 0);
- 
- 	return ret;
  }
-@@ -1795,7 +1800,7 @@ static void iwl_mvm_disable_sta_queues(struct iwl_mvm *mvm,
- 		if (mvm_sta->tid_data[i].txq_id == IWL_MVM_INVALID_QUEUE)
- 			continue;
  
--		iwl_mvm_disable_txq(mvm, sta, mvm_sta->tid_data[i].txq_id, i,
-+		iwl_mvm_disable_txq(mvm, sta, &mvm_sta->tid_data[i].txq_id, i,
- 				    0);
- 		mvm_sta->tid_data[i].txq_id = IWL_MVM_INVALID_QUEUE;
+@@ -623,6 +625,8 @@ void etnaviv_gpu_start_fe(struct etnaviv
+ 			  VIVS_MMUv2_SEC_COMMAND_CONTROL_ENABLE |
+ 			  VIVS_MMUv2_SEC_COMMAND_CONTROL_PREFETCH(prefetch));
  	}
-@@ -2005,7 +2010,7 @@ static int iwl_mvm_add_int_sta_with_queue(struct iwl_mvm *mvm, int macidx,
- 	ret = iwl_mvm_add_int_sta_common(mvm, sta, NULL, macidx, maccolor);
- 	if (ret) {
- 		if (!iwl_mvm_has_new_tx_api(mvm))
--			iwl_mvm_disable_txq(mvm, NULL, *queue,
-+			iwl_mvm_disable_txq(mvm, NULL, queue,
- 					    IWL_MAX_TID_COUNT, 0);
- 		return ret;
++
++	gpu->fe_running = true;
+ }
+ 
+ static void etnaviv_gpu_start_fe_idleloop(struct etnaviv_gpu *gpu)
+@@ -1352,7 +1356,7 @@ struct dma_fence *etnaviv_gpu_submit(str
+ 		goto out_unlock;
  	}
-@@ -2073,7 +2078,7 @@ int iwl_mvm_rm_snif_sta(struct iwl_mvm *mvm, struct ieee80211_vif *vif)
- 	if (WARN_ON_ONCE(mvm->snif_sta.sta_id == IWL_MVM_INVALID_STA))
- 		return -EINVAL;
  
--	iwl_mvm_disable_txq(mvm, NULL, mvm->snif_queue, IWL_MAX_TID_COUNT, 0);
-+	iwl_mvm_disable_txq(mvm, NULL, &mvm->snif_queue, IWL_MAX_TID_COUNT, 0);
- 	ret = iwl_mvm_rm_sta_common(mvm, mvm->snif_sta.sta_id);
- 	if (ret)
- 		IWL_WARN(mvm, "Failed sending remove station\n");
-@@ -2090,7 +2095,7 @@ int iwl_mvm_rm_aux_sta(struct iwl_mvm *mvm)
- 	if (WARN_ON_ONCE(mvm->aux_sta.sta_id == IWL_MVM_INVALID_STA))
- 		return -EINVAL;
+-	if (!gpu->mmu_context) {
++	if (!gpu->fe_running) {
+ 		gpu->mmu_context = etnaviv_iommu_context_get(submit->mmu_context);
+ 		etnaviv_gpu_start_fe_idleloop(gpu);
+ 	} else {
+@@ -1561,7 +1565,7 @@ int etnaviv_gpu_wait_idle(struct etnaviv
  
--	iwl_mvm_disable_txq(mvm, NULL, mvm->aux_queue, IWL_MAX_TID_COUNT, 0);
-+	iwl_mvm_disable_txq(mvm, NULL, &mvm->aux_queue, IWL_MAX_TID_COUNT, 0);
- 	ret = iwl_mvm_rm_sta_common(mvm, mvm->aux_sta.sta_id);
- 	if (ret)
- 		IWL_WARN(mvm, "Failed sending remove station\n");
-@@ -2186,7 +2191,7 @@ static void iwl_mvm_free_bcast_sta_queues(struct iwl_mvm *mvm,
- 					  struct ieee80211_vif *vif)
+ static int etnaviv_gpu_hw_suspend(struct etnaviv_gpu *gpu)
  {
- 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
--	int queue;
-+	u16 *queueptr, queue;
+-	if (gpu->initialized && gpu->mmu_context) {
++	if (gpu->initialized && gpu->fe_running) {
+ 		/* Replace the last WAIT with END */
+ 		mutex_lock(&gpu->lock);
+ 		etnaviv_buffer_end(gpu);
+@@ -1576,6 +1580,8 @@ static int etnaviv_gpu_hw_suspend(struct
  
- 	lockdep_assert_held(&mvm->mutex);
- 
-@@ -2195,10 +2200,10 @@ static void iwl_mvm_free_bcast_sta_queues(struct iwl_mvm *mvm,
- 	switch (vif->type) {
- 	case NL80211_IFTYPE_AP:
- 	case NL80211_IFTYPE_ADHOC:
--		queue = mvm->probe_queue;
-+		queueptr = &mvm->probe_queue;
- 		break;
- 	case NL80211_IFTYPE_P2P_DEVICE:
--		queue = mvm->p2p_dev_queue;
-+		queueptr = &mvm->p2p_dev_queue;
- 		break;
- 	default:
- 		WARN(1, "Can't free bcast queue on vif type %d\n",
-@@ -2206,7 +2211,8 @@ static void iwl_mvm_free_bcast_sta_queues(struct iwl_mvm *mvm,
- 		return;
+ 		etnaviv_iommu_context_put(gpu->mmu_context);
+ 		gpu->mmu_context = NULL;
++
++		gpu->fe_running = false;
  	}
  
--	iwl_mvm_disable_txq(mvm, NULL, queue, IWL_MAX_TID_COUNT, 0);
-+	queue = *queueptr;
-+	iwl_mvm_disable_txq(mvm, NULL, queueptr, IWL_MAX_TID_COUNT, 0);
- 	if (iwl_mvm_has_new_tx_api(mvm))
- 		return;
+ 	gpu->exec_state = -1;
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
+@@ -101,6 +101,7 @@ struct etnaviv_gpu {
+ 	struct workqueue_struct *wq;
+ 	struct drm_gpu_scheduler sched;
+ 	bool initialized;
++	bool fe_running;
  
-@@ -2441,7 +2447,7 @@ int iwl_mvm_rm_mcast_sta(struct iwl_mvm *mvm, struct ieee80211_vif *vif)
- 
- 	iwl_mvm_flush_sta(mvm, &mvmvif->mcast_sta, true, 0);
- 
--	iwl_mvm_disable_txq(mvm, NULL, mvmvif->cab_queue, 0, 0);
-+	iwl_mvm_disable_txq(mvm, NULL, &mvmvif->cab_queue, 0, 0);
- 
- 	ret = iwl_mvm_rm_sta_common(mvm, mvmvif->mcast_sta.sta_id);
- 	if (ret)
--- 
-2.30.2
-
+ 	/* 'ring'-buffer: */
+ 	struct etnaviv_cmdbuf buffer;
 
 
