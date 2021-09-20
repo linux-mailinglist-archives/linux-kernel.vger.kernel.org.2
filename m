@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27998412386
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62135412147
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244134AbhITSZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:25:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40570 "EHLO mail.kernel.org"
+        id S1357263AbhITSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:03:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377348AbhITSSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:18:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9583361A62;
-        Mon, 20 Sep 2021 17:22:59 +0000 (UTC)
+        id S1355883AbhITR47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:56:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D6D6320F;
+        Mon, 20 Sep 2021 17:14:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158580;
-        bh=ikfZ892KD0SNUlbUzD2rhuzPSMKNp0bILxoF/E3DFCw=;
+        s=korg; t=1632158077;
+        bh=3DvMnxOJwNlDwQm0Ehk0Wu9nPg2w9XgqSll7I2O3/5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tjt+sKbs7eeKoeDuIdxMW+yazBXAXgCHL/lp3S0oRE3Tc2WVUrAeQVTsfxmoLeGMc
-         BplR8Ff/qT3be9mMRF3Zsi7wHLTo1J8TObA4ZU34iTP2ze6bjsYSste1QBhlCWgT8C
-         CTYpMxKi1vxRyExbAKLF+a+y1HjC0tsb9C4xPoQs=
+        b=tQwlbKsxeIo/cckC5PVJUZcEPQZCd65/dpiNldmi9WURTIMhfIlcm9lQkSWZCmpjc
+         NM8GPC5SpEuqbDtJFWgQ4R+D0koGl4HNhD4/aUPxBGKiBFLC2M/3XTI1dskkseP+41
+         BbyIRpbaAwP89KZ0FDhqDxzXSuGG1qnCXy1M4qiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 220/260] vhost_net: fix OoB on sendmsg() failure.
-Date:   Mon, 20 Sep 2021 18:43:58 +0200
-Message-Id: <20210920163938.586875942@linuxfoundation.org>
+        stable@vger.kernel.org,
+        George Cherian <george.cherian@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 277/293] PCI: Add ACS quirks for Cavium multi-function devices
+Date:   Mon, 20 Sep 2021 18:43:59 +0200
+Message-Id: <20210920163942.899934332@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: George Cherian <george.cherian@marvell.com>
 
-commit 3c4cea8fa7f71f00c5279547043a84bc2a4d8b8c upstream.
+[ Upstream commit 32837d8a8f63eb95dcb9cd005524a27f06478832 ]
 
-If the sendmsg() call in vhost_tx_batch() fails, both the 'batched_xdp'
-and 'done_idx' indexes are left unchanged. If such failure happens
-when batched_xdp == VHOST_NET_BATCH, the next call to
-vhost_net_build_xdp() will access and write memory outside the xdp
-buffers area.
+Some Cavium endpoints are implemented as multi-function devices without ACS
+capability, but they actually don't support peer-to-peer transactions.
 
-Since sendmsg() can only error with EBADFD, this change addresses the
-issue explicitly freeing the XDP buffers batch on error.
+Add ACS quirks to declare DMA isolation for the following devices:
 
-Fixes: 0a0be13b8fe2 ("vhost_net: batch submitting XDP buffers to underlayer sockets")
-Suggested-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  - BGX device found on Octeon-TX (8xxx)
+  - CGX device found on Octeon-TX2 (9xxx)
+  - RPM device found on Octeon-TX3 (10xxx)
+
+Link: https://lore.kernel.org/r/20210810122425.1115156-1-george.cherian@marvell.com
+Signed-off-by: George Cherian <george.cherian@marvell.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/net.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/pci/quirks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -466,7 +466,7 @@ static void vhost_tx_batch(struct vhost_
- 		.num = nvq->batched_xdp,
- 		.ptr = nvq->xdp,
- 	};
--	int err;
-+	int i, err;
- 
- 	if (nvq->batched_xdp == 0)
- 		goto signal_used;
-@@ -475,6 +475,15 @@ static void vhost_tx_batch(struct vhost_
- 	err = sock->ops->sendmsg(sock, msghdr, 0);
- 	if (unlikely(err < 0)) {
- 		vq_err(&nvq->vq, "Fail to batch sending packets\n");
-+
-+		/* free pages owned by XDP; since this is an unlikely error path,
-+		 * keep it simple and avoid more complex bulk update for the
-+		 * used pages
-+		 */
-+		for (i = 0; i < nvq->batched_xdp; ++i)
-+			put_page(virt_to_head_page(nvq->xdp[i].data));
-+		nvq->batched_xdp = 0;
-+		nvq->done_idx = 0;
- 		return;
- 	}
- 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 48c1fbb17e40..4eb8900b9a5c 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4778,6 +4778,10 @@ static const struct pci_dev_acs_enabled {
+ 	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
+ 	/* Cavium ThunderX */
+ 	{ PCI_VENDOR_ID_CAVIUM, PCI_ANY_ID, pci_quirk_cavium_acs },
++	/* Cavium multi-function devices */
++	{ PCI_VENDOR_ID_CAVIUM, 0xA026, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_CAVIUM, 0xA059, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_CAVIUM, 0xA060, pci_quirk_mf_endpoint_acs },
+ 	/* APM X-Gene */
+ 	{ PCI_VENDOR_ID_AMCC, 0xE004, pci_quirk_xgene_acs },
+ 	/* Ampere Computing */
+-- 
+2.30.2
+
 
 
