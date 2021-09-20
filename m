@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475D94115E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCE54115E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236472AbhITNfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:35:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:47756 "EHLO foss.arm.com"
+        id S234342AbhITNip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:38:45 -0400
+Received: from muru.com ([72.249.23.125]:34984 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232938AbhITNfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:35:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4306612FC;
-        Mon, 20 Sep 2021 06:33:53 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECCC83F882;
-        Mon, 20 Sep 2021 06:33:51 -0700 (PDT)
-Subject: Re: [PATCH 5/9] drm/panfrost: simplify getting .driver_data
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
- <20210920090522.23784-6-wsa+renesas@sang-engineering.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <e2e46b06-b013-cbea-6e48-71633d056813@arm.com>
-Date:   Mon, 20 Sep 2021 14:33:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230159AbhITNio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:38:44 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 86EB98102;
+        Mon, 20 Sep 2021 13:37:44 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 16:37:15 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Gowtham Tammana <g-tammana@ti.com>,
+        Jyri Sarha <jsarha@ti.com>
+Subject: Re: [PATCH 1/4] ARM: dts: dra7: add entry for bb2d module
+Message-ID: <YUiOixF5/op1hXLf@atomide.com>
+References: <20210920125306.12347-1-narmstrong@baylibre.com>
+ <20210920125306.12347-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20210920090522.23784-6-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920125306.12347-2-narmstrong@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 10:05, Wolfram Sang wrote:
-> We should get 'driver_data' from 'struct device' directly. Going via
-> platform_device is an unneeded step back and forth.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
+Hi,
 
-Reviewed-by: Steven Price <steven.price@arm.com>
-
-I'll push this to drm-misc-next.
-
-Thanks,
-
-Steve
-
-> 
-> Build tested only. buildbot is happy.
-> 
->  drivers/gpu/drm/panfrost/panfrost_device.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index bd9b7be63b0f..fd4309209088 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -400,8 +400,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
->  #ifdef CONFIG_PM
->  int panfrost_device_resume(struct device *dev)
->  {
-> -	struct platform_device *pdev = to_platform_device(dev);
-> -	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+* Neil Armstrong <narmstrong@baylibre.com> [210920 12:53]:
+> --- a/arch/arm/boot/dts/dra7.dtsi
+> +++ b/arch/arm/boot/dts/dra7.dtsi
+> @@ -965,6 +965,26 @@ hdmi: encoder@0 {
+>  			};
+>  		};
 >  
->  	panfrost_device_reset(pfdev);
->  	panfrost_devfreq_resume(pfdev);
-> @@ -411,8 +410,7 @@ int panfrost_device_resume(struct device *dev)
->  
->  int panfrost_device_suspend(struct device *dev)
->  {
-> -	struct platform_device *pdev = to_platform_device(dev);
-> -	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->  
->  	if (!panfrost_job_is_idle(pfdev))
->  		return -EBUSY;
-> 
+> +		target-module@59000000 {
+> +			compatible = "ti,sysc-omap4", "ti,sysc";
+> +			reg = <0x59000020 0x4>;
+> +			reg-names = "rev";
+> +			clocks = <&dss_clkctrl DRA7_DSS_BB2D_CLKCTRL 0>;
+> +			clock-names = "fck";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges = <0x0 0x59000000 0x1000>;
+> +
+> +			bb2d: gpu@0 {
+> +				compatible = "vivante,gc";
+> +				reg = <0x0 0x0700>;
+> +				interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+> +				clocks = <&dss_clkctrl DRA7_BB2D_CLKCTRL 0>;
+> +				clock-names = "core";
+> +				status = "disabled";
+> +			};
+> +		};
+> +
+>  		aes1_target: target-module@4b500000 {
+>  			compatible = "ti,sysc-omap2", "ti,sysc";
+>  			reg = <0x4b500080 0x4>,
 
+How about just use the default for the bb2d node with is "okay"?
+That way there's no need set status = "okay" for each board file.
+
+If there is no driver loaded, we idle the target-module anyways.
+
+Regards,
+
+Tony
