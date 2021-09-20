@@ -2,170 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DA3412AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529C5412AA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhIUBpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
+        id S234968AbhIUBpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbhIUBlJ (ORCPT
+        with ESMTP id S233592AbhIUBlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:41:09 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FC6C06EAB6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:52:33 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id w11so2357498plz.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:52:33 -0700 (PDT)
+        Mon, 20 Sep 2021 21:41:50 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789BCC059340
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:59:10 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 17so18629452pgp.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:59:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CqRJNowvS30DA449VJOT4nm+AVZU/Om+Rqqdzurt050=;
-        b=iNAgLEI2/KhgFVKx72MAqTdpftvJ0aSwNn3Ejh2yEcwAEjl6yoUfTnx7YEE5xxLLuP
-         1vGxRNVkPSZajZSlr8Z++4xK6MAUHC1hmL5Id1qonAbXlE3/B+ITv3TcdqeZXgF72TRn
-         4mGdKsRJPPWvKJHSRyo74FHrclds73dk7pRuX3CP2b8e/4WSGZ1Bq4cr1ZIziuehan85
-         Ibn/f5om/hzTPFJ53Rr+YajWSeJ7r/pZP6MkvHev6u5k9zJZtMW+MjXYotZIebVMDL9X
-         pWqDSK819z2UFpUUjUM2uNFjNrF6D0bjnx9OQJsvR13XORAUQ5lu6dSGmtpqaJqXNUyn
-         bwYA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QHfHQauHmNVTH62EJRiOmjlj8cX06wogXZw+8cv7rQg=;
+        b=F2y/PbWWRmGPLANOqYDLwkRslKqHvbMOz6xCmciWK0JcFAYbgxJQvFruLLPHkwcGPd
+         CsQhvwvqLPfx9gRE+oKdu8Og8QosCPGuY5x21MEZGQ1Mn+I5432vn51s7ybIhJ6Jl88U
+         bHNx+UDyyv/BJ2MJ1Pt9Xfpc1bYdkPeLgq7F0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CqRJNowvS30DA449VJOT4nm+AVZU/Om+Rqqdzurt050=;
-        b=K3ywBAyK+T7nCkVJxuiNj7AsfYuv9JVNSsFOH1H4tb9z9+F5+FbyLs7CfA4Q6KPh/U
-         ZD8g7Gg82Vpwklj+PiQQMQn8T3lMzbIlCga9B0WAs0W+AWqBTZ5UfOUR4bRe4Akas2jC
-         aqnEuFHCGbIq9IEEX228w4cYr4G6iUQECL7QpgWH8S1pAFy9+06eVArFLss1ek8Io8HO
-         eT282WR8/z6O6kLMJGKr9PNW9P4tazwuSwPa811ofXJNNcZek+UlkmMZzcCmA4W6W7T2
-         J4LgL0llnROiJKTPOVPi43Rne/O/fS4e4Kn7RZDLD5hWgLRr+tvdNG3m6Co1sWCaAl9q
-         ptiw==
-X-Gm-Message-State: AOAM53183MWbAVfjUMIWwEJuwpQi8ACbrIUBRDpq4uYVWqoTICE9Eh15
-        985bq+hMR4GVv7RrCgpDYqJ+yPwMwJ+FcrvN9nKtbA==
-X-Google-Smtp-Source: ABdhPJwlOxFidW4+VBTQpNvruOpSKqqJGpGW/zs/xSMhXjo23UCn9pLxSfuB7PpqCI2xw1rI4wP5aIJglQCCa+lha/0=
-X-Received: by 2002:a17:902:bd8d:b0:13a:8c8:a2b2 with SMTP id
- q13-20020a170902bd8d00b0013a08c8a2b2mr24412734pls.89.1632171152630; Mon, 20
- Sep 2021 13:52:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QHfHQauHmNVTH62EJRiOmjlj8cX06wogXZw+8cv7rQg=;
+        b=LoLIL8Sq/PNphyQZfBDlityZ4uiUhklVxfuPITyIlNyUg3lrV2LkLWc0f7cR3pEFNO
+         tkIMs5kM2dOxgQ6s7Cj5bTEKf2abipN8PXWV2q+iHqmSii5pmc0TXjiSwx+aItTFpGdG
+         4uh89fmbdNxpRdptnm7o6JFSStjxVRGhVj+hJC1gfT1iuxzhE/hzY6ZVbO2/Iiv3sOdc
+         cYvjFBaCRyXBfDxv24Nks1ChJ1xi5vURYPqbn4bUG+NAYKtLiKvWPUUabnhnrrjzL31K
+         bF+bq2g9ScpU0/NNQ/8F7LxTUGCZzNk1xqFYQ/N4QQ6yLEdR/299Nba8ENXIz8jrTk/6
+         idNA==
+X-Gm-Message-State: AOAM533EyZFjLI4Xpa2MF3ujldl+EyVlewJ4pxhOiQU64KmeJLy4G8pa
+        ZXiTjm7+RWIXBBeSeRJdCmAJ3g==
+X-Google-Smtp-Source: ABdhPJxwgcLOZ50RgUkbPfDY5ZgF9CU1Szt8qa6OPO3RE1dcYXlfwbnyUkN3LfzykiXMFc6fazZQIg==
+X-Received: by 2002:aa7:9255:0:b0:415:ba53:e6f5 with SMTP id 21-20020aa79255000000b00415ba53e6f5mr27145251pfp.78.1632171550049;
+        Mon, 20 Sep 2021 13:59:10 -0700 (PDT)
+Received: from bleung.mtv.corp.google.com ([2620:15c:202:201:3cc6:73d2:6230:9d05])
+        by smtp.gmail.com with ESMTPSA id q18sm2208417pfh.170.2021.09.20.13.59.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 13:59:09 -0700 (PDT)
+From:   Benson Leung <bleung@chromium.org>
+To:     enric.balletbo@collabora.com
+Cc:     linux-kernel@vger.kernel.org, groeck@chromium.org,
+        bleung@google.com, bleung@chromium.org, mricon@kernel.org,
+        pmalani@chromium.org
+Subject: [PATCH] MAINTAINERS: Add Prashant's maintainership of cros_ec drivers
+Date:   Mon, 20 Sep 2021 13:54:02 -0700
+Message-Id: <20210920205402.3818320-1-bleung@chromium.org>
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
 MIME-Version: 1.0
-References: <20210918050430.3671227-1-mcgrof@kernel.org> <20210918050430.3671227-10-mcgrof@kernel.org>
-In-Reply-To: <20210918050430.3671227-10-mcgrof@kernel.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 20 Sep 2021 13:52:21 -0700
-Message-ID: <CAPcyv4i0xEwMQ5kSK-xGroV7aZr3j1YNrGMVLiLMr3U8nFCMKA@mail.gmail.com>
-Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, jeyu@kernel.org,
-        shuah <shuah@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>, yzaikin@google.com,
-        Nathan Chancellor <nathan@kernel.org>, ojeda@kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        vitor@massaru.org, elver@google.com,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        rf@opensource.cirrus.com,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        David Laight <David.Laight@aculab.com>, bvanassche@acm.org,
-        jolsa@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        trishalfonso@google.com, andreyknvl@gmail.com,
-        Jiri Kosina <jikos@kernel.org>, mbenes@suse.com,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, lizefan.x@bytedance.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        senozhatsky@chromium.org, Christoph Hellwig <hch@lst.de>,
-        Joe Perches <joe@perches.com>, hkallweit1@gmail.com,
-        Jens Axboe <axboe@kernel.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-spdx@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        copyleft-next@lists.fedorahosted.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 10:05 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> When sysfs attributes use a lock also used on module removal we can
-> race to deadlock. This happens when for instance a sysfs file on
-> a driver is used, then at the same time we have module removal call
-> trigger. The module removal call code holds a lock, and then the sysfs
-> file entry waits for the same lock. While holding the lock the module
-> removal tries to remove the sysfs entries, but these cannot be removed
-> yet as one is waiting for a lock. This won't complete as the lock is
-> already held. Likewise module removal cannot complete, and so we deadlock.
->
-> This can now be easily reproducible with our sysfs selftest as follows:
->
-> ./tools/testing/selftests/sysfs/sysfs.sh -t 0027
->
-> To fix this we extend the struct kernfs_node with a module reference and
-> use the try_module_get() after kernfs_get_active() is called which
-> protects integrity and the existence of the kernfs node during the
-> operation.
->
-> So long as the kernfs node is protected with kernfs_get_active() we know
-> we can rely on its contents. And, as now just documented in the previous
-> patch, we also now know that once kernfs_get_active() is called the module
-> is also guarded to exist and cannot be removed.
->
-> If try_module_get() fails we fail the operation on the kernfs node.
->
-> We use a try method as a full lock means we'd then make our sysfs
-> attributes busy us out from possible module removal, and so userspace
-> could force denying module removal, a silly form of "DOS" against module
-> removal. A try lock on the module removal ensures we give priority to
-> module removal and interacting with sysfs attributes only comes second.
-> Using a full lock could mean for instance that if you don't stop poking
-> at sysfs files you cannot remove a module.
->
-> Races between removal of sysfs files and the module are not possible
-> given sysfs files are created by the same module, and when a sysfs file
-> is being used kernfs prevents removal of the sysfs file. So if module
-> removal is actually happening the removal would have to wait until
-> the sysfs file operation is complete.
->
-> This deadlock was first reported with the zram driver, however the live
-> patching folks have acknowledged they have observed this as well with
-> live patching, when a live patch is removed. I was then able to
-> reproduce easily by creating a dedicated selftests.
->
-> A sketch of how this can happen follows:
->
-> CPU A                              CPU B
->                                    whatever_store()
-> module_unload
->   mutex_lock(foo)
->                                    mutex_lock(foo)
->    del_gendisk(zram->disk);
->      device_del()
->        device_remove_groups()
+Prashant maintains the cros_usbpd_notify driver as well as
+the cros_ec_type_c driver.
 
-This flow seems possible to trigger with:
+Signed-off-by: Benson Leung <bleung@chromium.org>
+---
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-   echo $dev > /sys/bus/$bus/drivers/$driver/unbind
+diff --git a/MAINTAINERS b/MAINTAINERS
+index eeb4c70b3d5b..16573a2d2fe3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4429,6 +4429,17 @@ F:	drivers/power/supply/cros_usbpd-charger.c
+ N:	cros_ec
+ N:	cros-ec
+ 
++CHROMEOS EC USB TYPE-C DRIVER
++M:	Prashant Malani <pmalani@chromium.org>
++S:	Maintained
++F:	drivers/platform/chrome/cros_ec_typec.c
++
++CHROMEOS EC USB PD NOTIFY DRIVER
++M:	Prashant Malani <pmalani@chromium.org>
++S:	Maintained
++F:	drivers/platform/chrome/cros_usbpd_notify.c
++F:	include/linux/platform_data/cros_usbpd_notify.h
++
+ CHRONTEL CH7322 CEC DRIVER
+ M:	Jeff Chase <jnchase@google.com>
+ L:	linux-media@vger.kernel.org
+-- 
+2.33.0.464.g1972c5931b-goog
 
-I am missing why module pinning is part of the solution when it's the
-device_del() path that is racing? Module removal is just a more coarse
-grained way to trigger unbind => device_del(). Isn't the above a bug
-in the driver, not missing synchronization in kernfs? Forgive me if
-the unbind question was asked and answered elsewhere, this is my first
-time taking a look at this series.
