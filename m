@@ -2,183 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFEB411370
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38544411374
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbhITLWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:22:41 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34158
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236664AbhITLWj (ORCPT
+        id S236640AbhITLY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:24:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50693 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229654AbhITLYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:22:39 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 20 Sep 2021 07:24:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632136978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nzo29WVELwFXSzSZxET6WtnbnWMTHaqh76DxFA6qv/w=;
+        b=Ear7/p3KjOiwBrfBskSocblbDhslgfpvgdMD5dg/cZ8i/dYY1AqQDVWV3o0QP+mk8hz61V
+        q2DbH+Tgig2hkbh2HlNFFdPY//xAQCy4jxLVwfMIfHZdR6TEp6qYrdspzp1ar3X/oFT5Ud
+        9BzS0Tt5mO4idiu8mDtCU01xEBx5wkI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-jEl9AW8xMPCoGJLkS7f4NQ-1; Mon, 20 Sep 2021 07:22:55 -0400
+X-MC-Unique: jEl9AW8xMPCoGJLkS7f4NQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DC7CE3F31E
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632136870;
-        bh=I2Bl07vONbEfi9yEVzej1wYQPepaUboDztwjIRW5t6c=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=lk5VAaJPKUVU/saksmecmXNTBzXFLxfgVm6qVmu89g6oAX8RRvj9lrKleSlBtK6MJ
-         9eA2zFs4GGwxY9aLP/2QoeRe5/NlTOu29WueIl4aC2ZaztRT6RtoRwSKcKVkJPcVpX
-         ZXDtwPx6FLmSCAFT1fLLocFh3wEOOzX9ipdhTeKSPcPnF+Cft46t8Q8PqK98rLemKS
-         U+yeosYxnG9ADuRwSpGnG19FU0DIUNanuiRbSD6BGuw65Wtn12PalJpGaEihF9BUu6
-         httj/NXiLmRokInL7m443UsV4ASMZJX6/mxvAzMpdrzqQp3fxydUrAtQLIk52R/Dyc
-         N/9l1heIhilkw==
-Received: by mail-wr1-f71.google.com with SMTP id r7-20020a5d6947000000b0015e0f68a63bso5811983wrw.22
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 04:21:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I2Bl07vONbEfi9yEVzej1wYQPepaUboDztwjIRW5t6c=;
-        b=7v0SW8s1j+vW7JaVy5hDpe+NxpaDKT5nTkq+E//aHc/3shdbKTMe7S/+2z42HQAN8L
-         +Y785y2bpgYUMlwYDAKH0s5Z12NdFmLrqAVNIw1paSZfUid6gI5/X35wOvrCfKrHIxBP
-         P2ENMfWj+cl+Qw3SnrXIOHYfJ7dM+KCVCmxmHMAKMXI6l0ovYw0B7k3tq/q01z70dRma
-         X4nswfFHj35WRycAZrAHW5jxvRNTuuWipSBmhg0Sol4xXawHr3lLYvrXtB+85/bpEd7Y
-         ZIL30ZumJMcmhkyGlqdZKjR0QlNvHzQnRPJ1eV0aaUon/7Ln4CLU6hSAWDeKz6BeZXck
-         6JJQ==
-X-Gm-Message-State: AOAM531ECYQuLWPqg8TN3w5rLDdbxyT1xk7rjohpQqYTHurx85W+zgbQ
-        d13yHTH3aW5Kb3w8zN+4LjyZDQJnfJc8tEuwXs15tb5caVwEO8t1pwcNdn/ojvYJb1E0zwaj/M5
-        gTqeSD0Q+xmOvwQqkOymmutJD27B6L0EBF1pgDc+l6Q==
-X-Received: by 2002:a7b:c848:: with SMTP id c8mr20697846wml.187.1632136870504;
-        Mon, 20 Sep 2021 04:21:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKn0jNRJmIN+QLyVPFE4JlcLmEfhs0lY57DrjExIxaCNsxu3GXc7ms5w5ZEe76lcszwT1Ntw==
-X-Received: by 2002:a7b:c848:: with SMTP id c8mr20697831wml.187.1632136870345;
-        Mon, 20 Sep 2021 04:21:10 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id u25sm17199453wmm.5.2021.09.20.04.21.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 04:21:09 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Derek Fang <derek.fang@realtek.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH] ASoC: dt-bindings: rt5682s: correct several errors
-Date:   Mon, 20 Sep 2021 13:21:06 +0200
-Message-Id: <20210920112106.140918-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E52B49126D;
+        Mon, 20 Sep 2021 11:22:53 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 30D171001281;
+        Mon, 20 Sep 2021 11:22:47 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        gregkh@linuxfoundation.org, David Hildenbrand <david@redhat.com>,
+        Pankaj Gupta <pankaj.gupta@ionos.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH 4.14 STABLE] mm/memory_hotplug: use "unsigned long" for PFN in zone_for_pfn_range()
+Date:   Mon, 20 Sep 2021 13:22:46 +0200
+Message-Id: <20210920112246.7109-1-david@redhat.com>
+In-Reply-To: <1631796969176240@kroah.com>
+References: <1631796969176240@kroah.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct several errors in rt5682s dtschema:
-1. The examples should be under "examples":
-    'example' is not one of ['$id', '$schema', 'title', 'description', 'examples', ...
+commit 7cf209ba8a86410939a24cb1aeb279479a7e0ca6 upstream.
 
-2. Missing type for vendor properties
+Patch series "mm/memory_hotplug: preparatory patches for new online policy and memory"
 
-3. clock-names should be an array:
-    properties:clock-names:items: {'const': 'mclk'} is not of type 'array'
+These are all cleanups and one fix previously sent as part of [1]:
+[PATCH v1 00/12] mm/memory_hotplug: "auto-movable" online policy and memory
+groups.
 
-4. Example DTS should include headers:
-    [scripts/Makefile.lib:386: Documentation/devicetree/bindings/sound/realtek,rt5682s.example.dt.yaml] Error 1
+These patches make sense even without the other series, therefore I pulled
+them out to make the other series easier to digest.
 
-5. Node name in example DTS misses unit address and does not match DT
-   convention (generic name):
-    Warning (reg_format): /example-0/rt5682s:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+[1] https://lkml.kernel.org/r/20210607195430.48228-1-david@redhat.com
 
-6. Node address should be in size-cells:0 block in example DTS:
-    Warning (reg_format): /example-0/codec@1a:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
+This patch (of 4):
 
-Fixes: 50159fdb144b ("ASoC: dt-bindings: rt5682s: add bindings for rt5682s")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Checkpatch complained on a follow-up patch that we are using "unsigned"
+here, which defaults to "unsigned int" and checkpatch is correct.
+
+As we will search for a fitting zone using the wrong pfn, we might end
+up onlining memory to one of the special kernel zones, such as ZONE_DMA,
+which can end badly as the onlined memory does not satisfy properties of
+these zones.
+
+Use "unsigned long" instead, just as we do in other places when handling
+PFNs.  This can bite us once we have physical addresses in the range of
+multiple TB.
+
+Link: https://lkml.kernel.org/r/20210712124052.26491-2-david@redhat.com
+Fixes: e5e689302633 ("mm, memory_hotplug: display allowed zones in the preferred ordering")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Pankaj Gupta <pankaj.gupta@ionos.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: virtualization@lists.linux-foundation.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc: Anton Blanchard <anton@ozlabs.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jia He <justin.he@arm.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Laurent Dufour <ldufour@linux.ibm.com>
+Cc: Michel Lespinasse <michel@lespinasse.org>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Pierre Morel <pmorel@linux.ibm.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Scott Cheloha <cheloha@linux.ibm.com>
+Cc: Sergei Trofimovich <slyfox@gentoo.org>
+Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- .../bindings/sound/realtek,rt5682s.yaml       | 47 ++++++++++++-------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ include/linux/memory_hotplug.h | 4 ++--
+ mm/memory_hotplug.c            | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
-index fbf23696f1a7..7a5f1d0fd3e2 100644
---- a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
-+++ b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
-@@ -24,18 +24,21 @@ properties:
-     description: The CODEC's interrupt output.
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+index d36a02935391..8c48d9e0ca22 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -332,6 +332,6 @@ extern struct page *sparse_decode_mem_map(unsigned long coded_mem_map,
+ 					  unsigned long pnum);
+ extern bool allow_online_pfn_range(int nid, unsigned long pfn, unsigned long nr_pages,
+ 		int online_type);
+-extern struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+-		unsigned long nr_pages);
++extern struct zone *zone_for_pfn_range(int online_type, int nid,
++		unsigned long start_pfn, unsigned long nr_pages);
+ #endif /* __LINUX_MEMORY_HOTPLUG_H */
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 2d6626ab29d1..c2878d48b8b1 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -842,8 +842,8 @@ static inline struct zone *default_zone_for_pfn(int nid, unsigned long start_pfn
+ 	return movable_node_enabled ? movable_zone : kernel_zone;
+ }
  
-   realtek,dmic1-data-pin:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-     enum:
-       - 0 # dmic1 data is not used
-       - 1 # using GPIO2 pin as dmic1 data pin
-       - 2 # using GPIO5 pin as dmic1 data pin
- 
-   realtek,dmic1-clk-pin:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-     enum:
-       - 0 # dmic1 clk is not used
-       - 1 # using GPIO1 pin as dmic1 clock pin
-       - 2 # using GPIO3 pin as dmic1 clock pin
- 
-   realtek,jd-src:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-     enum:
-       - 0 # No JD is used
-       - 1 # using JD1 as JD source
-@@ -63,7 +66,7 @@ properties:
- 
-   clock-names:
-     items:
--      const: mclk
-+      - const: mclk
- 
-   "#clock-cells":
-     const: 1
-@@ -79,22 +82,30 @@ required:
-   - compatible
-   - reg
- 
--example:
-+examples:
-   - |
--    rt5682s {
--        compatible = "realtek,rt5682s";
--        reg = <0x1a>;
--        interrupt-parent = <&gpio>;
--        interrupts = <TEGRA_GPIO(U, 6) IRQ_TYPE_LEVEL_HIGH>;
--        realtek,ldo1-en-gpios =
--            <&gpio TEGRA_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
--        realtek,dmic1-data-pin = <1>;
--        realtek,dmic1-clk-pin = <1>;
--        realtek,jd-src = <1>;
--
--        #clock-cells = <1>;
--        clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
--
--        clocks = <&osc>;
--        clock-names = "mclk";
-+    #include <dt-bindings/gpio/tegra-gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        codec@1a {
-+            compatible = "realtek,rt5682s";
-+            reg = <0x1a>;
-+            interrupt-parent = <&gpio>;
-+            interrupts = <TEGRA_GPIO(U, 6) IRQ_TYPE_LEVEL_HIGH>;
-+            realtek,ldo1-en-gpios =
-+                <&gpio TEGRA_GPIO(R, 2) GPIO_ACTIVE_HIGH>;
-+            realtek,dmic1-data-pin = <1>;
-+            realtek,dmic1-clk-pin = <1>;
-+            realtek,jd-src = <1>;
-+
-+            #clock-cells = <1>;
-+            clock-output-names = "rt5682-dai-wclk", "rt5682-dai-bclk";
-+
-+            clocks = <&osc>;
-+            clock-names = "mclk";
-+        };
-     };
+-struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+-		unsigned long nr_pages)
++struct zone *zone_for_pfn_range(int online_type, int nid,
++		unsigned long start_pfn, unsigned long nr_pages)
+ {
+ 	if (online_type == MMOP_ONLINE_KERNEL)
+ 		return default_kernel_zone_for_pfn(nid, start_pfn, nr_pages);
 -- 
-2.30.2
+2.31.1
 
