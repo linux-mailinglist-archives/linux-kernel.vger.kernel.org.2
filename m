@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F149F411E58
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D91A411C82
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346090AbhITRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
+        id S1345230AbhITRKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:10:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345911AbhITR1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:27:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 801AE61AA5;
-        Mon, 20 Sep 2021 17:03:02 +0000 (UTC)
+        id S1346518AbhITRHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:07:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28CDB615A2;
+        Mon, 20 Sep 2021 16:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157383;
-        bh=Q0cQCk3RegAqSM6Iok9iBLC48m97x124h4IDoj8wG9Q=;
+        s=korg; t=1632156939;
+        bh=vn5V48WHea7ZI1gUMJLNHFexHBmcof4BOoIcF9NdWyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PUTre/GWsX0uzCEk9Ac2PE8lNBqYEnUmBRKU2E2UnfYrp0wikZoNcqned8NTSfsV/
-         fMCE9F81TXPyX4bTky7M98LqtXdMMpByCYNS5257MJSPLxXXD59lb/nMRmsB0JBTN7
-         tIbZU5ZsadD2FH+ac6dKbEFVCEtwmDbHFrFfUD78=
+        b=f7QCuNvuf8M3OYoZEOM01SGQ7kjqXtu3b/oZzV7CMnu2xK57FBUObLed1piSCemFK
+         qKVjL/jPNjYPNSN1KrxtPGqpBRJhmlkOJCxCSNXrBwgjwx0aGLGfzXk3gw44YBk2PI
+         Eiqwofl4VbzsWJvReaps0pSAMnIXboCrkK1S0u3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 4.14 184/217] parisc: fix crash with signals and alloca
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Cochran <richard.cochran@omicron.at>,
+        John Stultz <john.stultz@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 156/175] ptp: dp83640: dont define PAGE0
 Date:   Mon, 20 Sep 2021 18:43:25 +0200
-Message-Id: <20210920163930.860476541@linuxfoundation.org>
+Message-Id: <20210920163923.174115160@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,84 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 030f653078316a9cc9ca6bd1b0234dcf858be35d upstream.
+commit 7366c23ff492ad260776a3ee1aaabba9fc773a8b upstream.
 
-I was debugging some crashes on parisc and I found out that there is a
-crash possibility if a function using alloca is interrupted by a signal.
-The reason for the crash is that the gcc alloca implementation leaves
-garbage in the upper 32 bits of the sp register. This normally doesn't
-matter (the upper bits are ignored because the PSW W-bit is clear),
-however the signal delivery routine in the kernel uses full 64 bits of sp
-and it fails with -EFAULT if the upper 32 bits are not zero.
+Building dp83640.c on arch/parisc/ produces a build warning for
+PAGE0 being redefined. Since the macro is not used in the dp83640
+driver, just make it a comment for documentation purposes.
 
-I created this program that demonstrates the problem:
+In file included from ../drivers/net/phy/dp83640.c:23:
+../drivers/net/phy/dp83640_reg.h:8: warning: "PAGE0" redefined
+    8 | #define PAGE0                     0x0000
+                 from ../drivers/net/phy/dp83640.c:11:
+../arch/parisc/include/asm/page.h:187: note: this is the location of the previous definition
+  187 | #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <alloca.h>
-
-static __attribute__((noinline,noclone)) void aa(int *size)
-{
-	void * volatile p = alloca(-*size);
-	while (1) ;
-}
-
-static void handler(int sig)
-{
-	write(1, "signal delivered\n", 17);
-	_exit(0);
-}
-
-int main(void)
-{
-	int size = -0x100;
-	signal(SIGALRM, handler);
-	alarm(1);
-	aa(&size);
-}
-
-If you compile it with optimizations, it will crash.
-The "aa" function has this disassembly:
-
-000106a0 <aa>:
-   106a0:       08 03 02 41     copy r3,r1
-   106a4:       08 1e 02 43     copy sp,r3
-   106a8:       6f c1 00 80     stw,ma r1,40(sp)
-   106ac:       37 dc 3f c1     ldo -20(sp),ret0
-   106b0:       0c 7c 12 90     stw ret0,8(r3)
-   106b4:       0f 40 10 9c     ldw 0(r26),ret0		; ret0 = 0x00000000FFFFFF00
-   106b8:       97 9c 00 7e     subi 3f,ret0,ret0	; ret0 = 0xFFFFFFFF0000013F
-   106bc:       d7 80 1c 1a     depwi 0,31,6,ret0	; ret0 = 0xFFFFFFFF00000100
-   106c0:       0b 9e 0a 1e     add,l sp,ret0,sp	;   sp = 0xFFFFFFFFxxxxxxxx
-   106c4:       e8 1f 1f f7     b,l,n 106c4 <aa+0x24>,r0
-
-This patch fixes the bug by truncating the "usp" variable to 32 bits.
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Cochran <richard.cochran@omicron.at>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20210913220605.19682-1-rdunlap@infradead.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/parisc/kernel/signal.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/phy/dp83640_reg.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/parisc/kernel/signal.c
-+++ b/arch/parisc/kernel/signal.c
-@@ -242,6 +242,12 @@ setup_rt_frame(struct ksignal *ksig, sig
- #endif
- 	
- 	usp = (regs->gr[30] & ~(0x01UL));
-+#ifdef CONFIG_64BIT
-+	if (is_compat_task()) {
-+		/* The gcc alloca implementation leaves garbage in the upper 32 bits of sp */
-+		usp = (compat_uint_t)usp;
-+	}
-+#endif
- 	/*FIXME: frame_size parameter is unused, remove it. */
- 	frame = get_sigframe(&ksig->ka, usp, sizeof(*frame));
+--- a/drivers/net/phy/dp83640_reg.h
++++ b/drivers/net/phy/dp83640_reg.h
+@@ -4,7 +4,7 @@
+ #ifndef HAVE_DP83640_REGISTERS
+ #define HAVE_DP83640_REGISTERS
  
+-#define PAGE0                     0x0000
++/* #define PAGE0                  0x0000 */
+ #define PHYCR2                    0x001c /* PHY Control Register 2 */
+ 
+ #define PAGE4                     0x0004
 
 
