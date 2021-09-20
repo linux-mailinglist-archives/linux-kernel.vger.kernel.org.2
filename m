@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75DE411CA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4856B4120D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347207AbhITRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34922 "EHLO mail.kernel.org"
+        id S1356184AbhITR6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:58:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346971AbhITRJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE84561355;
-        Mon, 20 Sep 2021 16:56:26 +0000 (UTC)
+        id S1354996AbhITRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:52:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B367D61BF6;
+        Mon, 20 Sep 2021 17:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156987;
-        bh=JpbPBK8nIVHG+mB7ddxJFkNNZQ60kds76dQsgpu/pWg=;
+        s=korg; t=1632157966;
+        bh=FngqzABBT8TusKp7m4MIHwTsRByJmIkVCnlVsYw/pL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XXlLSukPZO+XHfq347iV6nkEEKqJ+kf3cf8co/7UUds395mxCyKVMFidEmljAy6pK
-         M8CwXIgM3nkCAMRI/b2aQSUblczzgwM/bNd/Heqni/abTQj0d2VyPnoF5uEpMLr6aG
-         VFhd3s2vG4AE2eGEl8qGVnQks/Ul/81mfkUYDO+g=
+        b=z2O46enNvWvrNJEl1cJ9Lh6d/3WY+CJK9sUFjW4pCG0+5j8qbS0On5V95vDmHK8d1
+         3YQi/Y4Y9gHsgaPbLVv+fT84GsQG2om9STr+ILY+PAOQN6o0vEfJabKLZ63tTXyscN
+         9N+2xYStTDPGfr8WSw98N52/Vc1oDu59SY+7th8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Michael Wang <yun.wang@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Michael <msbroadf@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 146/175] net: fix NULL pointer reference in cipso_v4_doi_free
+Subject: [PATCH 4.19 233/293] usbip:vhci_hcd USB port can get stuck in the disabled state
 Date:   Mon, 20 Sep 2021 18:43:15 +0200
-Message-Id: <20210920163922.845914092@linuxfoundation.org>
+Message-Id: <20210920163941.372934125@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: 王贇 <yun.wang@linux.alibaba.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-[ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
+[ Upstream commit 66cce9e73ec61967ed1f97f30cee79bd9a2bb7ee ]
 
-In netlbl_cipsov4_add_std() when 'doi_def->map.std' alloc
-failed, we sometime observe panic:
+When a remote usb device is attached to the local Virtual USB
+Host Controller Root Hub port, the bound device driver may send
+a port reset command.
 
-  BUG: kernel NULL pointer dereference, address:
-  ...
-  RIP: 0010:cipso_v4_doi_free+0x3a/0x80
-  ...
-  Call Trace:
-   netlbl_cipsov4_add_std+0xf4/0x8c0
-   netlbl_cipsov4_add+0x13f/0x1b0
-   genl_family_rcv_msg_doit.isra.15+0x132/0x170
-   genl_rcv_msg+0x125/0x240
+vhci_hcd accepts port resets only when the device doesn't have
+port address assigned to it. When reset happens device is in
+assigned/used state and vhci_hcd rejects it leaving the port in
+a stuck state.
 
-This is because in cipso_v4_doi_free() there is no check
-on 'doi_def->map.std' when 'doi_def->type' equal 1, which
-is possibe, since netlbl_cipsov4_add_std() haven't initialize
-it before alloc 'doi_def->map.std'.
+This problem was found when a blue-tooth or xbox wireless dongle
+was passed through using usbip.
 
-This patch just add the check to prevent panic happen for similar
-cases.
+A few drivers reset the port during probe including mt76 driver
+specific to this bug report. Fix the problem with a change to
+honor reset requests when device is in used state (VDEV_ST_USED).
 
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-and-tested-by: Michael <msbroadf@gmail.com>
+Suggested-by: Michael <msbroadf@gmail.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210819225937.41037-1-skhan@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netlabel/netlabel_cipso_v4.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/net/netlabel/netlabel_cipso_v4.c b/net/netlabel/netlabel_cipso_v4.c
-index d31cd4d509ca..422fac2a4a3c 100644
---- a/net/netlabel/netlabel_cipso_v4.c
-+++ b/net/netlabel/netlabel_cipso_v4.c
-@@ -163,8 +163,8 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
- 		return -ENOMEM;
- 	doi_def->map.std = kzalloc(sizeof(*doi_def->map.std), GFP_KERNEL);
- 	if (doi_def->map.std == NULL) {
--		ret_val = -ENOMEM;
--		goto add_std_failure;
-+		kfree(doi_def);
-+		return -ENOMEM;
- 	}
- 	doi_def->type = CIPSO_V4_MAP_TRANS;
+diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+index a4ead4099869..202dc76f7beb 100644
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -455,8 +455,14 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+ 			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
+ 			vhci_hcd->re_timeout = 0;
  
++			/*
++			 * A few drivers do usb reset during probe when
++			 * the device could be in VDEV_ST_USED state
++			 */
+ 			if (vhci_hcd->vdev[rhport].ud.status ==
+-			    VDEV_ST_NOTASSIGNED) {
++				VDEV_ST_NOTASSIGNED ||
++			    vhci_hcd->vdev[rhport].ud.status ==
++				VDEV_ST_USED) {
+ 				usbip_dbg_vhci_rh(
+ 					" enable rhport %d (status %u)\n",
+ 					rhport,
 -- 
 2.30.2
 
