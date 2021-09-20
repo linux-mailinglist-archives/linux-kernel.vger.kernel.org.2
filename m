@@ -2,125 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6841541294A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1830441294D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbhITXPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 19:15:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:5452 "EHLO mga07.intel.com"
+        id S239762AbhITXTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 19:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235163AbhITXNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 19:13:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="286927255"
-X-IronPort-AV: E=Sophos;i="5.85,309,1624345200"; 
-   d="scan'208";a="286927255"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 16:09:35 -0700
-X-IronPort-AV: E=Sophos;i="5.85,309,1624345200"; 
-   d="scan'208";a="511568490"
-Received: from jkeelapa-mobl.amr.corp.intel.com (HELO [10.251.20.76]) ([10.251.20.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 16:09:35 -0700
-Subject: Re: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL
- ioctl
-To:     Kai Huang <kai.huang@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-References: <20210920125401.2389105-1-pbonzini@redhat.com>
- <20210920125401.2389105-3-pbonzini@redhat.com>
- <20210921101702.8672a0f1e356289e21864a76@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4db02f44-fec0-b78e-b9ae-0aa41ac7819f@intel.com>
-Date:   Mon, 20 Sep 2021 16:09:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239487AbhITXRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 19:17:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D2961211;
+        Mon, 20 Sep 2021 23:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632179774;
+        bh=lWL8fnGNKTXM4Bi+yAVp1+gpNMDcF8Ek0Z+rLqzdBB8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=YEnp5FBXjtQsJausdghHKuLJItlSCUlpC2G+ai9iRGx9pGdDBniFNbpSBrobhC0Cz
+         udviL2kOafQidCQaV1xpH53ha4GYfV8xaqKhTHHg3aM/g28kQEiFmht2+HiBCq5nFB
+         GgqQa2vfu0+UORnW/8LvucewzMCrF3iKcRVzst9Jn+OHtBs8+6XhhDJtYnupvsaYhP
+         CveIWnFLn9iU64Jv8J+Z3MLhIpBwWNSgNH2rkTgxkZYjz0PtV91H2V2cvyvvQoWGEm
+         XBA5u+LZ0fERDYZguxuCh5HEbxpt2axAUFxdc7bj27chIwpKeS7uCQCUqleJgSI1CS
+         dNpWHWgV3/m6g==
+Date:   Mon, 20 Sep 2021 16:16:06 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+In-Reply-To: <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+Message-ID: <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+References: <20210917130123.1764493-1-andr2000@gmail.com> <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s> <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com> <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
+ <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210921101702.8672a0f1e356289e21864a76@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; BOUNDARY="8323329-1040504615-1632174404=:17979"
+Content-ID: <alpine.DEB.2.21.2109201454550.17979@sstabellini-ThinkPad-T480s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 3:17 PM, Kai Huang wrote:
->> +The ioctl will often not able to remove SECS pages, in case their child
->> +pages have not gone through ``EREMOVE`` yet; therefore, the ioctl returns the
->> +number of pages that failed to be removed.  ``SGX_IOC_VEPC_REMOVE_ALL`` should
->> +first be invoked on all the ``/dev/sgx_vepc`` file descriptors mapped
->> +into the guest; a second call to the ioctl will be able to remove all
->> +leftover pages and will return 0.  Any other return value on the second call
->> +would be a symptom of a bug in either Linux or the userspace client.
-> Maybe also worth to mention userspace should guarantee there's no vcpu running
-> inside guest enclave when resetting guest's virtual EPC.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Why, specifically?
+--8323329-1040504615-1632174404=:17979
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <alpine.DEB.2.21.2109201454551.17979@sstabellini-ThinkPad-T480s>
 
-Is it because EREMOVE will also fail if there is a CPU running in the
-enclave?
+On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
+> On 20.09.21 14:30, Juergen Gross wrote:
+> > On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
+> >> Hello, Stefano!
+> >>
+> >> On 18.09.21 00:45, Stefano Stabellini wrote:
+> >>> Hi Oleksandr,
+> >>>
+> >>> Why do you want to enable pciback on ARM? Is it only to "disable" a PCI
+> >>> device in Dom0 so that it can be safely assigned to a DomU?
+> >> Not only that
+> >>>
+> >>> I am asking because actually I don't think we want to enable the PV PCI
+> >>> backend feature of pciback on ARM, right? That would clash with the PCI
+> >>> assignment work you have been doing in Xen. They couldn't both work at
+> >>> the same time.
+> >> Correct, it is not used
+> >>>
+> >>> If we only need pciback to "park" a device in Dom0, wouldn't it be
+> >>> possible and better to use pci-stub instead?
+> >>
+> >> Not only that, so pci-stub is not enough
+> >>
+> >> The functionality which is implemented by the pciback and the toolstack
+> >> and which is relevant/missing/needed for ARM:
+> >>
+> >> 1. pciback is used as a database for assignable PCI devices, e.g. xl
+> >>      pci-assignable-{add|remove|list} manipulates that list. So, whenever the
+> >>      toolstack needs to know which PCI devices can be passed through it reads
+> >>      that from the relevant sysfs entries of the pciback.
+> >>
+> >> 2. pciback is used to hold the unbound PCI devices, e.g. when passing through
+> >>      a PCI device it needs to be unbound from the relevant device driver and bound
+> >>      to pciback (strictly speaking it is not required that the device is bound to
+> >>      pciback, but pciback is again used as a database of the passed through PCI
+> >>      devices, so we can re-bind the devices back to their original drivers when
+> >>      guest domain shuts down)
+> >>
+> >> 3. Device reset
+> >>
+> >> We have previously discussed on xen-devel ML possible solutions to that as from the
+> >> above we see that pciback functionality is going to be only partially used on Arm.
+> >>
+> >> Please see [1] and [2]:
+> >>
+> >> 1. It is not acceptable to manage the assignable list in Xen itself
+> >>
+> >> 2. pciback can be split into two parts: PCI assignable/bind/reset handling and
+> >> the rest like vPCI etc.
+> >>
+> >> 3. pcifront is not used on Arm
+> >
+> > It is neither in x86 PVH/HVM guests.
+> Didn't know that, thank you for pointing
+> >
+> >> So, limited use of the pciback is one of the bricks used to enable PCI passthrough
+> >> on Arm. It was enough to just re-structure the driver and have it run on Arm to achieve
+> >> all the goals above.
+> >>
+> >> If we still think it is desirable to break the pciback driver into "common" and "pcifront specific"
+> >> parts then it can be done, yet the patch is going to be the very first brick in that building.
+> >
+> > Doing this split should be done, as the pcifront specific part could be
+> > omitted on x86, too, in case no PV guests using PCI passthrough have to
+> > be supported.
+> Agree, that the final solution should have the driver split
+> >
+> >> So, I think this patch is still going to be needed besides which direction we take.
+> >
+> > Some kind of this patch, yes. It might look different in case the split
+> > is done first.
+> >
+> > I don't mind doing it in either sequence.
+> >
+> With this patch we have Arm on the same page as the above mentioned x86 guests,
+> 
+> e.g. the driver has unused code, but yet allows Arm to function now.
+> 
+> At this stage of PCI passthrough on Arm it is yet enough. Long term, when
+> 
+> the driver gets split, Arm will benefit from that split too, but unfortunately I do not
+> 
+> have enough bandwidth for that piece of work at the moment.
 
-Maybe we should say something like:
+That's fair and I don't want to scope-creep this simple patch asking for
+an enormous rework. At the same time I don't think we should enable the
+whole of pciback on ARM because it would be erroneous and confusing.
 
-The ioctl() returns the number of pages where removal failed.  Callers
-of the ioctl() need to handle two sources of failure:
+I am wonder if there is a simple:
 
-1) Page removal will always fail when any thread is running in the
-   enclave to which the page belongs.  ioctl() users can avoid these
-   failures by preventing execution of any vcpu which maps the virtual
-   EPC.
+if (!xen_pv_domain())
+    return;
 
-2) Page removal will also fail for SGX "SECS" metadata pages which still
-   have child pages.  SECS pages can be removed by executing
-   ``SGX_IOC_VEPC_REMOVE_ALL`` on all ``/dev/sgx_vepc`` file descriptors
-   mapped into the guest.  Yhis means that the ioctl() must be called
-   twice: an initial set of calls to remove child pages and a subsequent
-   set of calls to remove SECS pages.
+That we could add in a couple of places in pciback to stop it from
+initializing the parts we don't care about. Something along these lines
+(untested and probably incomplete).
 
-   It indicates a bug in the kernel or the userspace client if any of
-   the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls fails (has a
-   return code other than 0).
+What do you guys think?
 
+
+diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
+index da34ce85dc88..991ba0a9b359 100644
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -15,6 +15,7 @@
+ #include <xen/xenbus.h>
+ #include <xen/events.h>
+ #include <xen/pci.h>
++#include <xen/xen.h>
+ #include "pciback.h"
+ 
+ #define INVALID_EVTCHN_IRQ  (-1)
+@@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_device *dev,
+ 				const struct xenbus_device_id *id)
+ {
+ 	int err = 0;
+-	struct xen_pcibk_device *pdev = alloc_pdev(dev);
++	struct xen_pcibk_device *pdev;
++
++	if (!xen_pv_domain())
++		return 0;
+ 
++	pdev = alloc_pdev(dev);
+ 	if (pdev == NULL) {
+ 		err = -ENOMEM;
+ 		xenbus_dev_fatal(dev, err,
+@@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
+ 
+ int __init xen_pcibk_xenbus_register(void)
+ {
++	if (!xen_pv_domain())
++		return 0;
++
+ 	xen_pcibk_backend = &xen_pcibk_vpci_backend;
+ 	if (passthrough)
+ 		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
+@@ -752,5 +760,7 @@ int __init xen_pcibk_xenbus_register(void)
+ 
+ void __exit xen_pcibk_xenbus_unregister(void)
+ {
++	if (!xen_pv_domain())
++		return;
+ 	xenbus_unregister_driver(&xen_pcibk_driver);
+ }
+--8323329-1040504615-1632174404=:17979--
