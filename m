@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB70C4123B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A971412489
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378828AbhITS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:26:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40370 "EHLO mail.kernel.org"
+        id S1352956AbhITSfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:35:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377667AbhITSUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:20:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1288632AE;
-        Mon, 20 Sep 2021 17:23:23 +0000 (UTC)
+        id S1379768AbhITSa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:30:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF3A63306;
+        Mon, 20 Sep 2021 17:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158604;
-        bh=hjns1O5VBB1oEQxpCGhtIp+uuv+3hKCDt4L6L2WPSCw=;
+        s=korg; t=1632158841;
+        bh=xqUCy2wEVPZvUXtjmkGDblgtfrUTuZshliEXW4STmvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yPS2mWs0XrirznLcLmz9hcsMXhV0657Fr0ho9Ii+BiQUs67NGvrm0Oojw3ypJRKLY
-         +vUW+y0ZaUgrHAvWdL4jGH4mkZf9N1GtLkp+t3XMsFPJzXUF4h8VPaSVDoVAdHDDkA
-         qdr8v+D2FB6pV23YDcIgrZkpFm+JWFLdB0rJ28Ek=
+        b=IhKQBtCRYB7T+ebKWgpaCnH+oh96d7GRNxHtq9Wz77zA+aSKiZWS5NCM+GfPN4X1u
+         mkkQs5Og+9mgJctYYAQZxqoeO+IEhZwhoIjFuQjpC0Xy4bPI9UB+dXIOqALW8RyCQ2
+         sOuDZPTRRqzVKuF7q5cEYgv7k53WDGQhiv3ll70E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Ryan J. Barnett" <ryan.barnett@collins.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 233/260] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
-Date:   Mon, 20 Sep 2021 18:44:11 +0200
-Message-Id: <20210920163939.036554715@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, Clamshell <clamfly@163.com>
+Subject: [PATCH 5.10 080/122] mfd: axp20x: Update AXP288 volatile ranges
+Date:   Mon, 20 Sep 2021 18:44:12 +0200
+Message-Id: <20210920163918.407457058@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
+[ Upstream commit f949a9ebce7a18005266b859a17f10c891bb13d7 ]
 
-"PAGESIZE / 512" is the number of ECC chunks.
-"ECC_BYTES" is the number of bytes needed to store a single ECC code.
-"2" is the space reserved by the bad block marker.
+On Cherry Trail devices with an AXP288 PMIC the external SD-card slot
+used the AXP's DLDO2 as card-voltage and either DLDO3 or GPIO1LDO
+(GPIO1 pin in low noise LDO mode) as signal-voltage.
 
-"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
-than the total number of OOB bytes, otherwise it won't fit.
+These regulators are turned on/off and in case of the signal-voltage
+also have their output-voltage changed by the _PS0 and _PS3 power-
+management ACPI methods on the MMC-controllers ACPI fwnode as well as
+by the _DSM ACPI method for changing the signal voltage.
 
-Fix the equation by substituting s/>=/<=/.
+The AML code implementing these methods is directly accessing the
+PMIC through ACPI I2C OpRegion accesses, instead of using the special
+PMIC OpRegion handled by drivers/acpi/pmic/intel_pmic_xpower.c .
 
-Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
+This means that the contents of the involved PMIC registers can change
+without the change being made through the regmap interface, so regmap
+should not cache the contents of these registers.
+
+Mark the regulator power on/off, the regulator voltage control and the
+GPIO1 control registers as volatile, to avoid regmap caching them.
+
+Specifically this fixes an issue on some models where the i915 driver
+toggles another LDO using the same on/off register on/off through
+MIPI sequences (through intel_soc_pmic_exec_mipi_pmic_seq_element())
+which then writes back a cached on/off register-value where the
+card-voltage is off causing the external sdcard slot to stop working
+when the screen goes blank, or comes back on again.
+
+The regulator register-range now marked volatile also includes the
+buck regulator control registers. This is done on purpose these are
+normally not touched by the AML code, but they are updated directly
+by the SoC's PUNIT which means that they may also change without going
+through regmap.
+
+Note the AXP288 PMIC is only used on Bay- and Cherry-Trail platforms,
+so even though this is an ACPI specific problem there is no need to
+make the new volatile ranges conditional since these platforms always
+use ACPI.
+
+Fixes: dc91c3b6fe66 ("mfd: axp20x: Mark AXP20X_VBUS_IPSOUT_MGMT as volatile")
+Fixes: cd53216625a0 ("mfd: axp20x: Fix axp288 volatile ranges")
+Reported-and-tested-by: Clamshell <clamfly@163.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/axp20x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index 44919d48d241..c459f169a904 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -122,7 +122,7 @@ on various other factors also like;
- 	so the device should have enough free bytes available its OOB/Spare
- 	area to accommodate ECC for entire page. In general following expression
- 	helps in determining if given device can accommodate ECC syndrome:
--	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
-+	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
- 	where
- 		OOBSIZE		number of bytes in OOB/spare area
- 		PAGESIZE	number of bytes in main-area of device page
+diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
+index aa59496e4376..9db1000944c3 100644
+--- a/drivers/mfd/axp20x.c
++++ b/drivers/mfd/axp20x.c
+@@ -125,12 +125,13 @@ static const struct regmap_range axp288_writeable_ranges[] = {
+ 
+ static const struct regmap_range axp288_volatile_ranges[] = {
+ 	regmap_reg_range(AXP20X_PWR_INPUT_STATUS, AXP288_POWER_REASON),
++	regmap_reg_range(AXP22X_PWR_OUT_CTRL1, AXP22X_ALDO3_V_OUT),
+ 	regmap_reg_range(AXP288_BC_GLOBAL, AXP288_BC_GLOBAL),
+ 	regmap_reg_range(AXP288_BC_DET_STAT, AXP20X_VBUS_IPSOUT_MGMT),
+ 	regmap_reg_range(AXP20X_CHRG_BAK_CTRL, AXP20X_CHRG_BAK_CTRL),
+ 	regmap_reg_range(AXP20X_IRQ1_EN, AXP20X_IPSOUT_V_HIGH_L),
+ 	regmap_reg_range(AXP20X_TIMER_CTRL, AXP20X_TIMER_CTRL),
+-	regmap_reg_range(AXP22X_GPIO_STATE, AXP22X_GPIO_STATE),
++	regmap_reg_range(AXP20X_GPIO1_CTRL, AXP22X_GPIO_STATE),
+ 	regmap_reg_range(AXP288_RT_BATT_V_H, AXP288_RT_BATT_V_L),
+ 	regmap_reg_range(AXP20X_FG_RES, AXP288_FG_CC_CAP_REG),
+ };
 -- 
 2.30.2
 
