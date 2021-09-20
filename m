@@ -2,138 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554BE41150C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55547411512
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbhITM4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:56:16 -0400
-Received: from mga06.intel.com ([134.134.136.31]:9505 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238815AbhITM4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:56:09 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10112"; a="284136030"
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="284136030"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 05:54:39 -0700
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="548698090"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.77]) ([10.249.227.77])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 05:54:36 -0700
-Subject: Re: [PATCH v11 09/24] perf record: Introduce bytes written stats to
- support --max-size option
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
- <c5c886094b1657328c7ec030da140b329282ebb7.1629186429.git.alexey.v.bayduraev@linux.intel.com>
- <YT5nKWqAhUVFiaEn@krava>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <88975265-4e15-3a49-547b-c2f7dd067ac2@linux.intel.com>
-Date:   Mon, 20 Sep 2021 15:54:33 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S238815AbhITM5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:57:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47377 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237006AbhITM5F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:57:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632142534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2pfCQSUTEHtxvGUE7L+msEadtTL5UoS3j8kSdpaAr2M=;
+        b=O2B5G1kr+d860mSLzxlNOSKoR6jyNQwdJRl4aMKW3seW+CN08TJdpib03rF3qSSiPYQqxr
+        KtAIwlwSaxSwHHmpY5EAeyCAwlxAtt02GesSdf3p370vNuhqiUJNPn+rArczHsifOEbWZa
+        Gr0idIlv78hX4CqOTlIqBUZEqR31qZo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-v1rVU0w9NpaHDyZ3yHkXTQ-1; Mon, 20 Sep 2021 08:55:33 -0400
+X-MC-Unique: v1rVU0w9NpaHDyZ3yHkXTQ-1
+Received: by mail-ed1-f71.google.com with SMTP id l29-20020a50d6dd000000b003d80214566cso11169873edj.21
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:55:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2pfCQSUTEHtxvGUE7L+msEadtTL5UoS3j8kSdpaAr2M=;
+        b=iZmrjQZh7w/YlM9MNg/iH3A556O8mhJASMAvNvKc7oOuIOI92nvIp2Vg5+fKZeyQ4P
+         hWav/hQ+ppcdZJrVO9kxXIR9Smsgtq+0HASoS0nSKQ0rkWHajEOxNF7Zl7O+2Qnjg3nc
+         Ij1s35d6301K68zfYMJ6mxqcoIHQ4H0+Pwit924Q5Jrsf0heQYpFaqW1AXQFVYu4kUL8
+         wjaiLPVJILpTmaGakXcuj7XRvlum7028tlm4mHcV0E8ZFhJA+htaxMvkVgLHgslbVIMc
+         d3qtTNx4tsiqe7gY+K5k/tJ/fsbO5wdRm8XOwabcK1Y+LDAUV4uA3T8RPQRQyOKNc1QE
+         a6ng==
+X-Gm-Message-State: AOAM532mWDJtezr4yS/hVKQRm/RqqsbogYaOXbhMZXLSR9lUy3emPuiM
+        wFpxA48pQDpukNDfS9UD+8l/vRVcT7uEfZWOrCUhIC/YcX1/BlxzOv4AzYv+QiiRB6j0vD2s9pN
+        LH1zmBATXZvXsKvtu01wAFIVYEjEtUf+gTsk0Mrd7
+X-Received: by 2002:a05:6402:897:: with SMTP id e23mr29275318edy.366.1632142532341;
+        Mon, 20 Sep 2021 05:55:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlDFvRn78rkRZA594LdXUAWQmcz2jxyF/fehBHkaHwnv53x2WQ0in/WyUSP9JJllei7jnYtq334xLMF93TdIE=
+X-Received: by 2002:a05:6402:897:: with SMTP id e23mr29275298edy.366.1632142532147;
+ Mon, 20 Sep 2021 05:55:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YT5nKWqAhUVFiaEn@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <163162767601.438332.9017034724960075707.stgit@warthog.procyon.org.uk>
+ <CALF+zO=VHPzcp0A0KxpYW-0WnyxvM5gW5HmorzrMJ_arxxBchA@mail.gmail.com>
+In-Reply-To: <CALF+zO=VHPzcp0A0KxpYW-0WnyxvM5gW5HmorzrMJ_arxxBchA@mail.gmail.com>
+From:   David Wysochanski <dwysocha@redhat.com>
+Date:   Mon, 20 Sep 2021 08:54:56 -0400
+Message-ID: <CALF+zOkz8M_uwJRK_q=TVANrF=0=W2WAbL2Y-JBDrq2ZuRpcDg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/8] fscache: Replace and remove old I/O API
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        linux-cachefs <linux-cachefs@redhat.com>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        Shyam Prasad N <nspmangalore@gmail.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 14, 2021 at 11:30 AM David Wysochanski <dwysocha@redhat.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 9:55 AM David Howells <dhowells@redhat.com> wrote:
+> >
+> >
+> > Here's a set of patches that removes the old fscache I/O API by the following
+> > means:
+> >
+> >  (1) A simple fallback API is added that can read or write a single page
+> >      synchronously.  The functions for this have "deprecated" in their names
+> >      as they have to be removed at some point.
+> >
+> >  (2) An implementation of this is provided in cachefiles.  It creates a kiocb
+> >      to use DIO to the backing file rather than calling readpage on the
+> >      backing filesystem page and then snooping the page wait queue.
+> >
+> >  (3) NFS is switched to use the fallback API.
+> >
+> >  (4) CIFS is switched to use the fallback API also for the moment.
+> >
+> >  (5) 9P is switched to using netfslib.
+> >
+> >  (6) The old I/O API is removed from fscache and the page snooping
+> >      implementation is removed from cachefiles.
+> >
+> > The reasons for doing this are:
+> >
+> >  (A) Using a kiocb to do asynchronous DIO from/to the pages of the backing
+> >      file is now a possibility that didn't exist when cachefiles was created.
+> >      This is much simpler than the snooping mechanism with a proper callback
+> >      path and it also requires fewer copies and less memory.
+> >
+> >  (B) We have to stop using bmap() or SEEK_DATA/SEEK_HOLE to work out what
+> >      blocks are present in the backing file is dangerous and can lead to data
+> >      corruption if the backing filesystem can insert or remove blocks of zeros
+> >      arbitrarily in order to optimise its extent list[1].
+> >
+> >      Whilst this patchset doesn't fix that yet, it does simplify the code and
+> >      the fix for that can be made in a subsequent patchset.
+> >
+> >  (C) In order to fix (B), the cache will need to keep track itself of what
+> >      data is present.  To make this easier to manage, the intention is to
+> >      increase the cache block granularity to, say, 256KiB - importantly, a
+> >      size that will span multiple pages - which means the single-page
+> >      interface will have to go away.  netfslib is designed to deal with
+> >      that on behalf of a filesystem, though a filesystem could use raw
+> >      cache calls instead and manage things itself.
+> >
+> > These patches can be found also on:
+> >
+> >         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter-3
+> >
+> > David
+> >
+> > Link: https://lore.kernel.org/r/YO17ZNOcq+9PajfQ@mit.edu [1]
+> > ---
+> > David Howells (8):
+> >       fscache: Generalise the ->begin_read_operation method
+> >       fscache: Implement an alternate I/O interface to replace the old API
+> >       nfs: Move to using the alternate (deprecated) fscache I/O API
+> >       9p: (untested) Convert to using the netfs helper lib to do reads and caching
+> >       cifs: (untested) Move to using the alternate (deprecated) fscache I/O API
+> >       fscache: Remove the old I/O API
+> >       fscache: Remove stats that are no longer used
+> >       fscache: Update the documentation to reflect I/O API changes
+> >
+> >
+> >  .../filesystems/caching/backend-api.rst       |  138 +--
+> >  .../filesystems/caching/netfs-api.rst         |  386 +-----
+> >  fs/9p/Kconfig                                 |    1 +
+> >  fs/9p/cache.c                                 |  137 ---
+> >  fs/9p/cache.h                                 |   98 +-
+> >  fs/9p/v9fs.h                                  |    9 +
+> >  fs/9p/vfs_addr.c                              |  174 ++-
+> >  fs/9p/vfs_file.c                              |   21 +-
+> >  fs/cachefiles/Makefile                        |    1 -
+> >  fs/cachefiles/interface.c                     |   15 -
+> >  fs/cachefiles/internal.h                      |   38 -
+> >  fs/cachefiles/io.c                            |   28 +-
+> >  fs/cachefiles/main.c                          |    1 -
+> >  fs/cachefiles/rdwr.c                          |  972 ---------------
+> >  fs/cifs/file.c                                |   64 +-
+> >  fs/cifs/fscache.c                             |  105 +-
+> >  fs/cifs/fscache.h                             |   74 +-
+> >  fs/fscache/cache.c                            |    6 -
+> >  fs/fscache/cookie.c                           |   10 -
+> >  fs/fscache/internal.h                         |   58 +-
+> >  fs/fscache/io.c                               |  140 ++-
+> >  fs/fscache/object.c                           |    2 -
+> >  fs/fscache/page.c                             | 1066 -----------------
+> >  fs/fscache/stats.c                            |   73 +-
+> >  fs/nfs/file.c                                 |   14 +-
+> >  fs/nfs/fscache-index.c                        |   26 -
+> >  fs/nfs/fscache.c                              |  161 +--
+> >  fs/nfs/fscache.h                              |   84 +-
+> >  fs/nfs/read.c                                 |   25 +-
+> >  fs/nfs/write.c                                |    7 +-
+> >  include/linux/fscache-cache.h                 |  131 --
+> >  include/linux/fscache.h                       |  418 ++-----
+> >  include/linux/netfs.h                         |   17 +-
+> >  33 files changed, 508 insertions(+), 3992 deletions(-)
+> >  delete mode 100644 fs/cachefiles/rdwr.c
+> >
+> >
+>
+> I tested an earlier version of these with NFS, which identified a
+> couple issues which you fixed.  Last I checked my unit tests and
+> xfstests were looking good. I'll do some testing on this latest branch
+> / patches and report back.
 
-On 12.09.2021 23:46, Jiri Olsa wrote:
-> On Tue, Aug 17, 2021 at 11:23:12AM +0300, Alexey Bayduraev wrote:
+For the series, you can add
+Tested-by: Dave Wysochanski <dwysocha@redhat.com>
 
-<SNIP>
+Testing was limited to NFS enabled code paths.  I ran custom unit
+tests, as well as a series of xfstest generic runs with various NFS
+versions, both fscache enabled and not enabled, as well as various NFS
+servers, comparing 5.15.0-rc1 runs vs runs with these patches.  I did
+not see any failures with these new patches that were not already
+present with 5.15.0-rc1.
 
->>  static bool record__output_max_size_exceeded(struct record *rec)
->>  {
->>  	return rec->output_max_size &&
->> -	       (rec->bytes_written >= rec->output_max_size);
->> +	       (record__bytes_written(rec) >= rec->output_max_size);
->>  }
->>  
->>  static int record__write(struct record *rec, struct mmap *map __maybe_unused,
->> @@ -205,15 +223,21 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
->>  		return -1;
->>  	}
->>  
->> -	rec->bytes_written += size;
->> +	if (map && map->file)
->> +		map->bytes_written += size;
-> 
-> could we instead have bytes_written in thread data? so we don't
-> need to iterate all the maps?
+Here are the list of xfstest generic runs:
+1. Hammerspace (pNFS flexfiles) version 4.6.3-166: vers=4.1,fsc
+2. Hammerspace (pNFS flexfiles) version 4.6.3-166: vers=4.2
+3. Netapp (pNFS filelayout) version 9.5RC1: vers=4.1
+4. Netapp (pNFS filelayout) version 9.5RC1: vers=4.1,fsc
+5. Red Hat version 8.2 (kernel-4.18.0-193.el8): vers=4.2,fsc
+6. Red Hat version 8.2 (kernel-4.18.0-193.el8): vers=4.0,fsc
+7. Red Hat version 8.2 (kernel-4.18.0-193.el8): vers=3,fsc
 
-Hi,
-
-As I remember the main issue is that bytes_written should be atomic64_t.
-Unfortunately we don't have atomic64 framework in tools/lib (even 
-atomic32_add is missing). Thus I decided to calculate total size on each 
-iteration. But I think your suggestion to move record__output_max_size_exceeded 
-to trigger framework is better.
-
-> 
->> +	else
->> +		rec->bytes_written += size;
->>  
->>  	if (record__output_max_size_exceeded(rec) && !done) {
->>  		fprintf(stderr, "[ perf record: perf size limit reached (%" PRIu64 " KB),"
->>  				" stopping session ]\n",
->> -				rec->bytes_written >> 10);
->> +				record__bytes_written(rec) >> 10);
-> 
-> you're calling record__bytes_written twice.. could we just save the
-> bytes_written from the first call and use it in the printf?
-> 
->>  		done = 1;
->>  	}
->>  
->> +	if (map && map->file)
->> +		return 0;
-> 
-> please make comment why quit in here, we don't support switch-output for
-> threads?
-
-Yes, parallel streaming mode doesn't support switch-output and there is 
-a special warning in [PATCH v11 14/24]
-
-Thanks,
-Alexey
-
-
-> 
-> jirka
-> 
->> +
->>  	if (switch_output_size(rec))
->>  		trigger_hit(&switch_output_trigger);
->>  
->> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
->> index c4aed6e89549..67d41003d82e 100644
->> --- a/tools/perf/util/mmap.h
->> +++ b/tools/perf/util/mmap.h
->> @@ -46,6 +46,7 @@ struct mmap {
->>  	int		comp_level;
->>  	struct perf_data_file *file;
->>  	struct zstd_data      zstd_data;
->> +	u64		      bytes_written;
->>  };
->>  
->>  struct mmap_params {
->> -- 
->> 2.19.0
->>
-> 
