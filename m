@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B164110C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A281B4110C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhITIRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235528AbhITIQz (ORCPT
+        id S235548AbhITIRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:17:14 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:30134 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235596AbhITIRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:16:55 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3611AC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:15:29 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q11so27308898wrr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+rAC+Q6AqzJzfyLVXoyYFqfJ8hUxXts9NbI3n+0AxLg=;
-        b=PftVprmG/wF26COcGMgafDTUlF0lTwAFcgK53eT5HSwwzguizH78HblG+t6wzmFAD5
-         1QC7swOOdkbtPW8s4yPgOQYvfCE4oLQz9DxMe2RxkdweZyQPRAN+HUJ+4/TUaXYuhUJU
-         mo1BqF/Wv+YeSkQ/3b0vlimXPxlKZcZyTxdSXY4woMRtwHdRdEkEkJdKmeEFoR1Gd5KI
-         teHYOHAQrnrtBvmuvsW5ncxudDVA/emvBF41OZlHET/Fn2C9sjTQ+YtvIioeUj3652vb
-         hcSDwFJPmKX+M1bLpU0Uap/tyejzvN/973/1wP8dZgGwcpgLpdFTEc/YY7FkzQ3HAW3r
-         BijQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+rAC+Q6AqzJzfyLVXoyYFqfJ8hUxXts9NbI3n+0AxLg=;
-        b=bAIE7tVOjITYErARFgZbDnXTKWG9VqFeGv7fDOyIsRNHKqa1M+wxDKnGrNw+u3KIhw
-         G6Fb1b6o1IAVA9gQ8tgD2Lnm3XF6ysn5rCjhnR1TD4gQD7HERzUIgUi/AfUuqhFL0RhR
-         7c4KspfJQd+HS6NRybWEZDRGoYRqXxU4fxtwzHPPweOwUOthz/EGESIN8SIEBp0g3+ih
-         0Db54mT4ivqDHe1+bIQReolOkCWB18HUwdWvp4yOrXVzqfmv1SYwAgWEn2dyboaXP2uc
-         8GMvwwkagwV9ESgpEmAGUSZDDS8E/o1iICFSFgPSeA8rnhrJ/xp45UZWKV2Gi3athDme
-         wEJw==
-X-Gm-Message-State: AOAM533C/iQxPIPY9xEatVxzeMi4x2IsZ0EI0Foc7nXbLyHsnxGdZd5h
-        SJ1jOxJCH0fVsKRylGlmHUlq9Q==
-X-Google-Smtp-Source: ABdhPJy2MkCojZZSfE9HDYc63mIYBG1xGuZpS2i3+76mq/r4UpGSWQbYvDYkwkxd182m22VaoDHRkA==
-X-Received: by 2002:a05:6000:1809:: with SMTP id m9mr27685091wrh.396.1632125727748;
-        Mon, 20 Sep 2021 01:15:27 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id f1sm6086140wrc.66.2021.09.20.01.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 01:15:27 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 09:15:27 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     min.li.xe@renesas.com
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        derek.kiernan@xilinx.com, dragan.cvetic@xilinx.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH misc v2 1/2] mfd: rsmu: Resolve naming conflict between
- idt8a340_reg.h and idt82p33_reg.h
-Message-ID: <YUhDH7ci8jjT2tob@google.com>
-References: <1631808697-25229-1-git-send-email-min.li.xe@renesas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1631808697-25229-1-git-send-email-min.li.xe@renesas.com>
+        Mon, 20 Sep 2021 04:17:13 -0400
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 20 Sep 2021 01:15:46 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 20 Sep 2021 01:15:45 -0700
+X-QCInternal: smtphost
+Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 20 Sep 2021 13:45:34 +0530
+Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
+        id B23A642C4; Mon, 20 Sep 2021 13:45:33 +0530 (IST)
+From:   Jeya R <jeyr@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: [PATCH] misc: fastrpc: fix improper packet size calculation
+Date:   Mon, 20 Sep 2021 13:45:31 +0530
+Message-Id: <1632125731-18768-1-git-send-email-jeyr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021, min.li.xe@renesas.com wrote:
+The buffer list is sorted and this is not being
+considered while calculating packet size. This
+would lead to improper copy length calculation
+for non-dmaheap buffers which would eventually
+cause sending improper buffers to DSP.
 
-> From: Min Li <min.li.xe@renesas.com>
+Signed-off-by: Jeya R <jeyr@codeaurora.org>
+---
+ drivers/misc/fastrpc.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-Why have you sent at least 3 v2 submissions?
-
-> Resolve name conflicts so that rsmu misc driver can be simplified to
-> one c file suggested by Greg KH
-
-That is not a correctly formatted Suggested-by tag.
-
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
-> Change log
-> -resolve name conflicts so that rsmu misc driver can be in one c file suggested by Greg
-
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index beda610..a7e550f 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -719,16 +719,21 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
+ static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, int metalen)
+ {
+ 	u64 size = 0;
+-	int i;
++	int oix = 0;
+ 
+ 	size = ALIGN(metalen, FASTRPC_ALIGN);
+-	for (i = 0; i < ctx->nscalars; i++) {
++	for (oix = 0; oix < ctx->nbufs; oix++) {
++		int i = ctx->olaps[oix].raix;
++
++		if (ctx->args[i].length == 0)
++			continue;
++
+ 		if (ctx->args[i].fd == 0 || ctx->args[i].fd == -1) {
+ 
+-			if (ctx->olaps[i].offset == 0)
++			if (ctx->olaps[oix].offset == 0)
+ 				size = ALIGN(size, FASTRPC_ALIGN);
+ 
+-			size += (ctx->olaps[i].mend - ctx->olaps[i].mstart);
++			size += (ctx->olaps[oix].mend - ctx->olaps[oix].mstart);
+ 		}
+ 	}
+ 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.7.4
+
