@@ -2,146 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1D5410E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 04:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFA1410E90
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 05:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbhITCzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 22:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
+        id S230315AbhITDKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 23:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbhITCzk (ORCPT
+        with ESMTP id S229626AbhITDKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 22:55:40 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFC3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 19:54:14 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n2so7474065plk.12
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 19:54:14 -0700 (PDT)
+        Sun, 19 Sep 2021 23:10:00 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6FDC061574;
+        Sun, 19 Sep 2021 20:08:34 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id c13-20020a17090a558d00b00198e6497a4fso14143959pji.4;
+        Sun, 19 Sep 2021 20:08:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mBw05sV24CGbBPxa3HJ1K125rdehCVx17LjyHhUTWT8=;
-        b=KlM0TLYvKHq3hYTlt9aFuUlIEAPoGkvzMugqBOMKWuLHbiIHnW0qWbNX0XxNdXEMXO
-         beoxuhxJ3sf6V92HHU2Iq+x/pP4SjAa5UoFeZgO5JgNZnE7TK1tX+tfjS8XzZpDtKId0
-         k0gDfiBwMJFf8DzKpu62qDga7z0QFHRk/R161Cc9/bdCgnppk4DpzWLSTAFRSdmz1a1O
-         zlbJA8xjiQQ63cFQwa6MDgsZuaoNEF7L8aZxPlw2XOFtTRlbv6sviO7Krx1bKPd/rh7G
-         p3Y2z57w93mLSt7VZQs82h0Ixy49m/mM9gJLC5oA2R9Hz+vHFr7kZjSK/g8IW4RB9DS8
-         epOA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rO+ZOlTwEBd/AcnBDdDoiaM1CRFNKUyFZNyT5m5yUgE=;
+        b=IBUb1XKhsWtsS6Y9qBHqFe2dBA9Uhbob5oSNQ1TAwxq41t+TqnSVy9dZHFfms18ErD
+         PmpQIIVjbySYtuPFsZyx8SLs+BnwGwJsdGqE57HeMrk8M23QcBytOBjdspJZJm65BLc9
+         TE632PJ3YGo3Gf3goXNshs0vowJPiIQDlTgfZ4ToMuqAopN161Op5RFbyJp71yhg4Yhl
+         pS5RtaFiD4UmY0QjQzD5coXO8FM1Jk9u5qEoiogm4W3HNmXOD8sE6uxEgVGsr1kavYcF
+         50poIY4ADhslFLrLpZApZP2uFgZhOEa3dRueHlJC27e4Gu+k7NddlBfqd+ZdxNwARDAA
+         OxDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mBw05sV24CGbBPxa3HJ1K125rdehCVx17LjyHhUTWT8=;
-        b=JDeGSyiGCJa+IToi6cOOT5oUlbwxFORgBWWHi68gJwzN15+RmhVYBY+F2KcdhVWink
-         LJDJDr1NBiLwa5BjjbSAK1SC+mYDuNtipfGGbWsfIZ3CidPkd79/89lVoqQ+gmzPEwAF
-         MYH0U4l3WltPWhOJsRObEmaR0YYh98amzWcv3950fahyazvZUTDeiGHguazgsIGwTY9g
-         qIq/Mcf6gp1NtOrX6zXqUzdWiKuWGLDzYDz52XlxMypF//PtnWPyZ7yJ+uW8fZ7h5adc
-         MBw+SJFwuFwSrMp+w1ezesKrW0oErQG6v0BbxVtur52qJEDOq8J4jUxDCtvV8o3joiY9
-         y7qQ==
-X-Gm-Message-State: AOAM530rNNwY4Q1FP8jIW3oJ2CS/ryYZQ6sofrrx7ouPMtpfuXivp4zZ
-        D4AAP3Nol3vhYPeJXy4n95uKAZz3OGM=
-X-Google-Smtp-Source: ABdhPJzBo+Nn1cOKj3Hk8PWmMve4xNxaTOIfPMYC3c8Uig13mfjJu6jwazq8Hutl8ObH3D0jfUawPg==
-X-Received: by 2002:a17:903:310c:b0:13c:91b2:2ada with SMTP id w12-20020a170903310c00b0013c91b22adamr20518888plc.69.1632106454348;
-        Sun, 19 Sep 2021 19:54:14 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
-        by smtp.gmail.com with ESMTPSA id k190sm12597937pfd.211.2021.09.19.19.54.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rO+ZOlTwEBd/AcnBDdDoiaM1CRFNKUyFZNyT5m5yUgE=;
+        b=Hq2SdFGRv+hA34OzTsjC0rhAXrs7myIXFMY7KqQpTKvbD6pKbiOVqh4dGgdfm9U8Tv
+         zvWwPxTD7nra+3JjAV6iq9xGMNWq6tLCIbb9u/x9r5/voTCoUYjnfiHIgJIBoLXoQKGR
+         ElvCEVGuItjtfT8YQ7Qt4MpQaeHm8DGZY5ZQy/qZiSPLBQlM3ADMYwQsPKAsHFXcDU8f
+         eFyg6b9XNFlxEr6VAE70S92bvP/m9NxrdyhcND6p3JZRUSXp/SbFMSIdmwPWgHNga3JH
+         n7RvK3L6gpgMy6qbNSbBSn5evAZp9Tp48+r3TvpvahPe7XKkzGC+2yxZJsu0YqInuyDW
+         yJ9Q==
+X-Gm-Message-State: AOAM531bP09u8A/IoZzQGLgnzsCVxUMNc46uoGTjcGzwzHEYivbcr+PM
+        BjmMGuUtaQGFqhWxZSQbqhAeZErC6DOY+7OE
+X-Google-Smtp-Source: ABdhPJyiXoJbPvsEsClfPBzFv2uhMkZZbBlp3eYS6N+Xjyv3hVOj4rPW5tNkA9Sscdob1ekxriN62w==
+X-Received: by 2002:a17:90b:150:: with SMTP id em16mr34893167pjb.63.1632107313461;
+        Sun, 19 Sep 2021 20:08:33 -0700 (PDT)
+Received: from skynet-linux.local ([106.201.127.154])
+        by smtp.googlemail.com with ESMTPSA id l11sm16295065pjg.22.2021.09.19.20.08.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 19:54:13 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 02:54:08 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [RFC PATCH] Introducing lockless cache built on top of slab
- allocator
-Message-ID: <20210920025408.GA3028@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20210919164239.49905-1-42.hyeyoo@gmail.com>
- <YUeM2J7X/i0CHjrz@casper.infradead.org>
- <20210920010938.GA3108@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
- <YUfpniK6ZVeNhaX2@casper.infradead.org>
+        Sun, 19 Sep 2021 20:08:33 -0700 (PDT)
+From:   Sireesh Kodali <sireeshkodali1@gmail.com>
+To:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, elder@kernel.org
+Cc:     Sireesh Kodali <sireeshkodali1@gmail.com>
+Subject: [RFC PATCH 00/17] net: ipa: Add support for IPA v2.x
+Date:   Mon, 20 Sep 2021 08:37:54 +0530
+Message-Id: <20210920030811.57273-1-sireeshkodali1@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUfpniK6ZVeNhaX2@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:53:34AM +0100, Matthew Wilcox wrote:
-> On Mon, Sep 20, 2021 at 01:09:38AM +0000, Hyeonggon Yoo wrote:
-> > Hello Matthew, Thanks to give me a comment! I appreciate it.
-> > 
-> > On Sun, Sep 19, 2021 at 08:17:44PM +0100, Matthew Wilcox wrote:
-> > > On Sun, Sep 19, 2021 at 04:42:39PM +0000, Hyeonggon Yoo wrote:
-> > > > It is just simple proof of concept, and not ready for submission yet.
-> > > > There can be wrong code (like wrong gfp flags, or wrong error handling,
-> > > > etc) it is just simple proof of concept. I want comment from you.
-> > > 
-> > > Have you read:
-> > > 
-> > > https://www.usenix.org/legacy/event/usenix01/full_papers/bonwick/bonwick_html/
-> > > The relevant part of that paper is section 3, magazines.  We should have
-> > > low and high water marks for number of objects
-> > 
-> > I haven't read that before, but after reading it seems not different from
-> > SLAB's percpu queuing.
-> >  
-> > > and we should allocate
-> > > from / free to the slab allocator in batches.  Slab has bulk alloc/free
-> > > APIs already.
-> > > 
-> > 
-> > There's kmem_cache_alloc_{bulk,free} functions for bulk
-> > allocation. But it's designed for large number of allocation
-> > to reduce locking cost, not for percpu lockless allocation.
-> 
-> What I'm saying is that rather than a linked list of objects, we should
-> have an array of, say, 15 pointers per CPU (and a count of how many
-> allocations we have).  If we are trying to allocate and have no objects,
-> call kmem_cache_alloc_bulk() for 8 objects.  If we are trying to free
-> and have 15 objects already, call kmem_cache_free_bulk() for the last
-> 8 objects and set the number of allocated objects to 7.
-> 
-> (maybe 8 and 15 are the wrong numbers.  this is just an example)
->
+Hi,
 
-Ah, Okay. it seems better to use array. Using cache for list is
-unnecessary cost. array is simpler.
+This RFC patch series adds support for IPA v2, v2.5 and v2.6L
+(collectively referred to as IPA v2.x).
 
-> > Yeah, we can implement lockless cache using kmem_cache_alloc_{bulk, free}
-> > but kmem_cache_alloc_{free,bulk} is not enough.
-> > 
-> > > I'd rather see this be part of the slab allocator than a separate API.
-> > 
-> > And I disagree on this. for because most of situation, we cannot
-> > allocate without lock, it is special case for IO polling.
-> > 
-> > To make it as part of slab allocator, we need to modify existing data
-> > structure. But making it part of slab allocator will be waste of memory
-> > because most of them are not using this.
-> 
-> Oh, it would have to be an option.  Maybe as a new slab_flags_t flag.
-> Or maybe a kmem_cache_alloc_percpu_lockless().
+Basic description:
+IPA v2.x is the older version of the IPA hardware found on Qualcomm
+SoCs. The biggest differences between v2.x and later versions are:
+- 32 bit hardware (the IPA microcontroler is 32 bit)
+- BAM (as opposed to GSI as a DMA transport)
+- Changes to the QMI init sequence (described in the commit message)
 
-Oh, Now I got what you mean. That is a good improvement!
+The fact that IPA v2.x are 32 bit only affects us directly in the table
+init code. However, its impact is felt in other parts of the code, as it
+changes the size of fields of various structs (e.g. in the commands that
+can be sent).
 
-For example,
-there is a slab_flags_t flag like SLAB_LOCKLESS.
-and a cache created with SLAB_LOCKLESS flag can allocate 
-using both kmem_cache_alloc, or kmem_cache_alloc_percpu_lockless
-depending on situation? (I suggest kmem_cache_alloc_lockless is better name)
+BAM support is already present in the mainline kernel, however it lacks
+two things:
+- Support for DMA metadata, to pass the size of the transaction from the
+  hardware to the dma client
+- Support for immediate commands, which are needed to pass commands from
+  the driver to the microcontroller
 
-it seems MUCH better. (because it prevents duplicating a cache)
+Separate patch series have been created to deal with these (linked in
+the end)
 
-I'll send RFC v2 soon.
-Thank you so much Matthew.
+This patch series adds support for BAM as a transport by refactoring the
+current GSI code to create an abstract uniform API on top. This API
+allows the rest of the driver to handle DMA without worrying about the
+IPA version.
 
-If there's misunderstanding from me, please let me know.
+The final thing that hasn't been touched by this patch series is the IPA
+resource manager. On the downstream CAF kernel, the driver seems to
+share the resource code between IPA v2.x and IPA v3.x, which should mean
+all it would take to add support for resources on IPA v2.x would be to
+add the definitions in the ipa_data.
 
-Thanks,
-Hyeonggon Yoo
+Testing:
+This patch series was tested on kernel version 5.13 on a phone with
+SDM625 (IPA v2.6L), and a phone with MSM8996 (IPA v2.5). The phone with
+IPA v2.5 was able to get an IP address using modem-manager, although
+sending/receiving packets was not tested. The phone with IPA v2.6L was
+able to get an IP, but was unable to send/receive packets. Its modem
+also relies on IPA v2.6l's compression/decompression support, and
+without this patch series, the modem simply crashes and restarts,
+waiting for the IPA block to come up.
+
+This patch series is based on code from the downstream CAF kernel v4.9
+
+There are some things in this patch series that would obviously not get
+accepted in their current form:
+- All IPA 2.x data is in a single file
+- Some stray printks might still be around
+- Some values have been hardcoded (e.g. the filter_map)
+Please excuse these
+
+Lastly, this patch series depends upon the following patches for BAM:
+[0]: https://lkml.org/lkml/2021/9/19/126
+[1]: https://lkml.org/lkml/2021/9/19/135
+
+Regards,
+Sireesh Kodali
+
+Sireesh Kodali (10):
+  net: ipa: Add IPA v2.x register definitions
+  net: ipa: Add support for using BAM as a DMA transport
+  net: ipa: Add support for IPA v2.x commands and table init
+  net: ipa: Add support for IPA v2.x endpoints
+  net: ipa: Add support for IPA v2.x memory map
+  net: ipa: Add support for IPA v2.x in the driver's QMI interface
+  net: ipa: Add support for IPA v2 microcontroller
+  net: ipa: Add IPA v2.6L initialization sequence support
+  net: ipa: Add hw config describing IPA v2.x hardware
+  dt-bindings: net: qcom,ipa: Add support for MSM8953 and MSM8996 IPA
+
+Vladimir Lypak (7):
+  net: ipa: Correct ipa_status_opcode enumeration
+  net: ipa: revert to IPA_TABLE_ENTRY_SIZE for 32-bit IPA support
+  net: ipa: Refactor GSI code
+  net: ipa: Establish ipa_dma interface
+  net: ipa: Check interrupts for availability
+  net: ipa: Add timeout for ipa_cmd_pipeline_clear_wait
+  net: ipa: Add support for IPA v2.x interrupts
+
+ .../devicetree/bindings/net/qcom,ipa.yaml     |   2 +
+ drivers/net/ipa/Makefile                      |  11 +-
+ drivers/net/ipa/bam.c                         | 525 ++++++++++++++++++
+ drivers/net/ipa/gsi.c                         | 322 ++++++-----
+ drivers/net/ipa/ipa.h                         |   8 +-
+ drivers/net/ipa/ipa_cmd.c                     | 244 +++++---
+ drivers/net/ipa/ipa_cmd.h                     |  20 +-
+ drivers/net/ipa/ipa_data-v2.c                 | 369 ++++++++++++
+ drivers/net/ipa/ipa_data-v3.1.c               |   2 +-
+ drivers/net/ipa/ipa_data-v3.5.1.c             |   2 +-
+ drivers/net/ipa/ipa_data-v4.11.c              |   2 +-
+ drivers/net/ipa/ipa_data-v4.2.c               |   2 +-
+ drivers/net/ipa/ipa_data-v4.5.c               |   2 +-
+ drivers/net/ipa/ipa_data-v4.9.c               |   2 +-
+ drivers/net/ipa/ipa_data.h                    |   4 +
+ drivers/net/ipa/{gsi.h => ipa_dma.h}          | 179 +++---
+ .../ipa/{gsi_private.h => ipa_dma_private.h}  |  46 +-
+ drivers/net/ipa/ipa_endpoint.c                | 188 ++++---
+ drivers/net/ipa/ipa_endpoint.h                |   6 +-
+ drivers/net/ipa/ipa_gsi.c                     |  18 +-
+ drivers/net/ipa/ipa_gsi.h                     |  12 +-
+ drivers/net/ipa/ipa_interrupt.c               |  36 +-
+ drivers/net/ipa/ipa_main.c                    |  82 ++-
+ drivers/net/ipa/ipa_mem.c                     |  55 +-
+ drivers/net/ipa/ipa_mem.h                     |   5 +-
+ drivers/net/ipa/ipa_power.c                   |   4 +-
+ drivers/net/ipa/ipa_qmi.c                     |  37 +-
+ drivers/net/ipa/ipa_qmi.h                     |  10 +
+ drivers/net/ipa/ipa_reg.h                     | 184 +++++-
+ drivers/net/ipa/ipa_resource.c                |   3 +
+ drivers/net/ipa/ipa_smp2p.c                   |  11 +-
+ drivers/net/ipa/ipa_sysfs.c                   |   6 +
+ drivers/net/ipa/ipa_table.c                   |  86 +--
+ drivers/net/ipa/ipa_table.h                   |   6 +-
+ drivers/net/ipa/{gsi_trans.c => ipa_trans.c}  | 182 +++---
+ drivers/net/ipa/{gsi_trans.h => ipa_trans.h}  |  78 +--
+ drivers/net/ipa/ipa_uc.c                      |  96 ++--
+ drivers/net/ipa/ipa_version.h                 |  12 +
+ 38 files changed, 2133 insertions(+), 726 deletions(-)
+ create mode 100644 drivers/net/ipa/bam.c
+ create mode 100644 drivers/net/ipa/ipa_data-v2.c
+ rename drivers/net/ipa/{gsi.h => ipa_dma.h} (57%)
+ rename drivers/net/ipa/{gsi_private.h => ipa_dma_private.h} (66%)
+ rename drivers/net/ipa/{gsi_trans.c => ipa_trans.c} (80%)
+ rename drivers/net/ipa/{gsi_trans.h => ipa_trans.h} (71%)
+
+-- 
+2.33.0
+
