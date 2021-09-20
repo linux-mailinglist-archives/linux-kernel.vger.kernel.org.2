@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381A1410E5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 04:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5514E410E65
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 04:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhITCi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 22:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhITCiZ (ORCPT
+        id S234250AbhITCkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 22:40:42 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:40065 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhITCkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 22:38:25 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55166C061574;
-        Sun, 19 Sep 2021 19:36:59 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id u8so15156889vsp.1;
-        Sun, 19 Sep 2021 19:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KW0eAJoHEHsfgRpsIaeEBIptj7sPIMm58XFi25mu5Ww=;
-        b=NImqRjRNDePB0tFmRl7BwxTTNnsE5u7K0cfoAMu1FrPmn/G/eb8aOA5z+twRIfC5fH
-         3lZRWzf3zHTbP7AU5kZrQpGx3gy7bGCYHx513Y+qu3iUlG51WPb0iYiUMkodwwh7HcC1
-         nCyDHq8GfPhL8aQqHZMD8lesYK3ZJvOd24wpwLvqTI3ZXtoOluZb3Y9AHMJCCaQlwlRO
-         Bcrqn+Q/WhuCqBcvX0GJPITrR2xDFJmiGt7ILxafLH7yfImANuTmJAgIw8lNElijSJR/
-         dLmF28F/YX7+Tc19Vrq5al/3ZxewL8F9TiMrZwAMsWqKhZ9vSyo5RE2GrCXcF3OCg0Zc
-         6dnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KW0eAJoHEHsfgRpsIaeEBIptj7sPIMm58XFi25mu5Ww=;
-        b=kn+UDBEsWM3CVVx12L4+AFNvOqpZkvS7ULMSItrXNzruHSaEa6BSQ3FMuScGufMgG8
-         yCK2cJ8i5KDbIpQh/530GDoot/8LCCQQ7f0gyFpkpg3mqO/Dif9YsqqTl9Bf+tqe6b+Q
-         uF7gQsJ1EpKFFt2fqClgkM8YYhkI/vnx37YsKfkf7ITdu4bY/1y0GOFakA6bwpMT2SNB
-         Yf3A1EI9Sef6AKc6bMijOO9zRzxxse06CucVUYzJHbsRTFxxXPd6q0Wp9oTad+DzvoOu
-         O+CXWM3gKlRWX42VFJgypE4sJ5qGeVsd8kdcU6RSlgA5ALkIsGCHatEcwhG6dSspBCrU
-         7ZEQ==
-X-Gm-Message-State: AOAM532DljgGYyT0xiqrf+QSCA8yYnQowhGrzNZcdNYtm9g/EAXBAJCK
-        0FzlbE++uxI4TuiZrHa+XCcFmyGB88MX6Cp+38eH0MnI
-X-Google-Smtp-Source: ABdhPJwi/ObtWsm3iFluXwDHMGTKcvOZILhFCp0kPgBogbTHcslWK0e4+F/IjPuwahZtF3vW3XV7G1d/Pa7fHmfb2FM=
-X-Received: by 2002:a67:441:: with SMTP id 62mr14681934vse.54.1632105418321;
- Sun, 19 Sep 2021 19:36:58 -0700 (PDT)
+        Sun, 19 Sep 2021 22:40:39 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 36C9483651;
+        Mon, 20 Sep 2021 14:39:10 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1632105550;
+        bh=2tBCxU7JOtj953QJ0/jqjqh9rtygww4o1cyb5ZL3qK0=;
+        h=From:To:Cc:Subject:Date;
+        b=xa6kqeMrDkEo1xW71Q9MTnfBJDKuHzMwIwd2eEuwr5G0SK9jgFqJs1cr/vUAEfaC4
+         vwMOsEfM7Cxyi7Sddh8tFhEiLvmYfkpXOnYsgcVtttxnHktEY3tMiUL4EMs5bGfjdm
+         EG5gg7hqDA/UE2939XW+nqmZ10J4VweNNx+HhQxoAZJrmNfMf2ZAq181Lnk1MXilHc
+         7ePEbt9XqfXkhy4x2vY4TH8WTvO1LvxxLUTCJ67an+3rXAjxDkOqdRygB4I9pBM6oj
+         s89B5nRMRc10pEhVjRmOqAIqAMLJjQaK4UhdIkYUI6cDRo4TQwuYYab+OunNN8JoD0
+         AFHjTSCdA0UCg==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6147f44e0000>; Mon, 20 Sep 2021 14:39:10 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id DB2E613EE3F;
+        Mon, 20 Sep 2021 14:39:09 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id D3C1D24285E; Mon, 20 Sep 2021 14:39:09 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Subject: [RESEND PATCH net-next v7 0/3] Add RFC-7597 Section 5.1 PSID support
+Date:   Mon, 20 Sep 2021 14:38:03 +1200
+Message-Id: <20210920023806.19954-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210917035736.3934017-1-chenhuacai@loongson.cn>
- <20210917035736.3934017-15-chenhuacai@loongson.cn> <87tuii52o2.fsf@disp2133>
- <CAAhV-H5MZ9uYyEnVoHXBXkrux1HdcPsKQ66zvB2oeMfq_AP7_A@mail.gmail.com> <CAK8P3a0xghZKNBWbZ-qUWQVKyus4xqJMhSV_baQO7zKDoTtGQg@mail.gmail.com>
-In-Reply-To: <CAK8P3a0xghZKNBWbZ-qUWQVKyus4xqJMhSV_baQO7zKDoTtGQg@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Mon, 20 Sep 2021 10:36:46 +0800
-Message-ID: <CAAhV-H7A=C3Tujt2YNv1np9pEP_Hxc-chGnOdmDCzx5tUt7F5g@mail.gmail.com>
-Subject: Re: [PATCH V3 14/22] LoongArch: Add signal handling support
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=FtN7AFjq c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=7QKq2e-ADPsA:10 a=iXia_AmJyaINQBOU7VYA:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Arnd,
+Resend to add v7 to subject to detect cover letter in patchwork.
 
-On Sun, Sep 19, 2021 at 5:59 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Sat, Sep 18, 2021 at 9:12 AM Huacai Chen <chenhuacai@gmail.com> wrote:
-> > On Sat, Sep 18, 2021 at 5:10 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > > For example does LoongArch have a version without built in floating
-> > > point support?
-> >
-> > Some of these structures seems need rethinking, But we really have
-> > LoongArch-based MCUs now (no FP, no SMP, and even no MMU).
->
-> NOMMU Linux is kind-of on the way out as interest is fading, so I hope you
-> don't plan on supporting this in the future.
->
-> Do you expect to see future products with MMU but no FP or no SMP?
-OK, we will not care no-MMU hardware in Linux, but no-FP and no-SMP
-hardware will be supported.
+Cole Dishington (3):
+  net: netfilter: Add RFC-7597 Section 5.1 PSID support xtables API
+  net: netfilter: Add RFC-7597 Section 5.1 PSID support
+  selftests: netfilter: Add RFC-7597 Section 5.1 PSID selftests
 
-Huacai
->
->         Arnd
+ include/uapi/linux/netfilter/nf_nat.h         |   3 +-
+ net/netfilter/nf_nat_core.c                   |  39 +++-
+ net/netfilter/nf_nat_masquerade.c             |  27 ++-
+ net/netfilter/xt_MASQUERADE.c                 |  44 ++++-
+ .../netfilter/nat_masquerade_psid.sh          | 182 ++++++++++++++++++
+ 5 files changed, 283 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/netfilter/nat_masquerade_psid=
+.sh
+
+--=20
+2.33.0
+
