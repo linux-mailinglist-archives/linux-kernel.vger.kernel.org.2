@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44495411E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09ACB4120EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347850AbhITR1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:27:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56306 "EHLO mail.kernel.org"
+        id S1356381AbhITR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349685AbhITRYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:24:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 611B36140B;
-        Mon, 20 Sep 2021 17:01:55 +0000 (UTC)
+        id S1349811AbhITRxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:53:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C59AF6197A;
+        Mon, 20 Sep 2021 17:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157315;
-        bh=r446m8pgCDqDqqBFIcnPB6QgyEjhIR50RJe63O/wUZ0=;
+        s=korg; t=1632157990;
+        bh=h08e8F4P8w/l1YEy/TuFnEdjIweC5EMttMZkLs3tubM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fY8oatAzGT445BkwtG6fD9Xrm7Ae9Pank2FMiPTGE7opvrrL7e2YwxsuV5MMjYbEn
-         gRohOugqxvVmF9eQtJZKB/7bgEk/YetqO0hn1OJjCVkWhvBYKHtkrpBXi0HJ9WV89p
-         ibR7c5wtOSTMZLab2UuuXIXZHEJrqqAoQO9RpgDo=
+        b=jzwUHdHMQsFY0Yuo5pYMFN0isgFHOw0Dh34Vms1yFfOEGHLYbV7HfvOJDCRQYddhF
+         h6gJyRJ6FYMecnFmPPhACa0z5Zf5DPNGvupVohPiByTeqpuJijD1+C1OfHgcf0Hx4x
+         7pddpldk6bnCkgAlcRBcXHztdR2fe2dhGhzAn35s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Jiri Slaby <jslaby@suse.cz>,
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 153/217] xtensa: ISS: dont panic in rs_init
+Subject: [PATCH 4.19 212/293] arm64: dts: qcom: sdm660: use reg value for memory node
 Date:   Mon, 20 Sep 2021 18:42:54 +0200
-Message-Id: <20210920163929.823146859@linuxfoundation.org>
+Message-Id: <20210920163940.526016230@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 23411c720052ad860b3e579ee4873511e367130a ]
+[ Upstream commit c81210e38966cfa1c784364e4035081c3227cf5b ]
 
-While alloc_tty_driver failure in rs_init would mean we have much bigger
-problem, there is no reason to panic when tty_register_driver fails
-there. It can fail for various reasons.
+memory node like other node should be node@reg, which is missing in this
+case, so fix it up
 
-So handle the failure gracefully. Actually handle them both while at it.
-This will make at least the console functional as it was enabled earlier
-by console_initcall in iss_console_init. Instead of shooting down the
-whole system.
+arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 1073741824, 0, 536870912]]}
 
-We move tty_port_init() after alloc_tty_driver(), so that we don't need
-to destroy the port in case the latter function fails.
-
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210723074317.32690-2-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20210308060826.3074234-18-vkoul@kernel.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/platforms/iss/console.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/ipq8074-hk01.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
-index 0140a22551c8..63d6d043af16 100644
---- a/arch/xtensa/platforms/iss/console.c
-+++ b/arch/xtensa/platforms/iss/console.c
-@@ -182,9 +182,13 @@ static const struct tty_operations serial_ops = {
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
+index c13ddee8262b..58acf21d8d33 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
++++ b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
+@@ -28,7 +28,7 @@ chosen {
+ 		stdout-path = "serial0";
+ 	};
  
- int __init rs_init(void)
- {
--	tty_port_init(&serial_port);
-+	int ret;
- 
- 	serial_driver = alloc_tty_driver(SERIAL_MAX_NUM_LINES);
-+	if (!serial_driver)
-+		return -ENOMEM;
-+
-+	tty_port_init(&serial_port);
- 
- 	printk ("%s %s\n", serial_name, serial_version);
- 
-@@ -204,8 +208,15 @@ int __init rs_init(void)
- 	tty_set_operations(serial_driver, &serial_ops);
- 	tty_port_link_device(&serial_port, serial_driver, 0);
- 
--	if (tty_register_driver(serial_driver))
--		panic("Couldn't register serial driver\n");
-+	ret = tty_register_driver(serial_driver);
-+	if (ret) {
-+		pr_err("Couldn't register serial driver\n");
-+		tty_driver_kref_put(serial_driver);
-+		tty_port_destroy(&serial_port);
-+
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
+-	memory {
++	memory@40000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x40000000 0x0 0x20000000>;
+ 	};
 -- 
 2.30.2
 
