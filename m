@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF174125F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDB5412156
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhITSu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:50:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33186 "EHLO mail.kernel.org"
+        id S1357452AbhITSET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383983AbhITSqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:46:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31E8861AEE;
-        Mon, 20 Sep 2021 17:33:05 +0000 (UTC)
+        id S1355969AbhITR5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75ED2619F7;
+        Mon, 20 Sep 2021 17:14:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159185;
-        bh=m/Bk7HZX7zyTCLdy7hcOQnAdREYjogUITzdStRkJTqw=;
+        s=korg; t=1632158092;
+        bh=ys3biWQe7I6RSUYd68KwBvrTpC36mPZIbuMdI6/sCm0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mDJGchINfDb0zCm+o+o019O2UC23caKpDU1CO93SNCi/uC5hg8oL08BD+rrvX7AFE
-         HaFwXnDgD7e/6W2Co8P/BeAUuj37VgqUYRUtikTh2lAtEVP1FwMumaY2tkLWxLtqe9
-         Xaz3Zr457bOaHHOJXsAHjHjfXUUdleEXVIgoDw68=
+        b=fZiqzvNjewzeGRjHHpxcxq5ry6O4HhUtBbuKFrhSQ4npKwoAYsSekUGjVosvorHbo
+         /1d2zi6HEXhxlYf3SwDYnOLh6KwAmzgWH92xCCG4w+rrBFFaUjMVwaJ1lqH8bh+zUr
+         RGfmY/36VdGaFyCPKZ9JQaYrS7Sm1zIPLDt11MNA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+f61766d5763f9e7a118f@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@idosch.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 115/168] loop: reduce the loop_ctl_mutex scope
-Date:   Mon, 20 Sep 2021 18:44:13 +0200
-Message-Id: <20210920163925.417328067@linuxfoundation.org>
+Subject: [PATCH 4.19 292/293] ip_gre: validate csum_start only on pull
+Date:   Mon, 20 Sep 2021 18:44:14 +0200
+Message-Id: <20210920163943.422689841@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,228 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit 1c500ad706383f1a6609e63d0b5d1723fd84dab9 ]
+[ Upstream commit 8a0ed250f911da31a2aef52101bc707846a800ff ]
 
-syzbot is reporting circular locking problem at __loop_clr_fd() [1], for
-commit a160c6159d4a0cf8 ("block: add an optional probe callback to
-major_names") is calling the module's probe function with major_names_lock
-held.
+The GRE tunnel device can pull existing outer headers in ipge_xmit.
+This is a rare path, apparently unique to this device. The below
+commit ensured that pulling does not move skb->data beyond csum_start.
 
-Fortunately, since commit 990e78116d38059c ("block: loop: fix deadlock
-between open and remove") stopped holding loop_ctl_mutex in lo_open(),
-current role of loop_ctl_mutex is to serialize access to loop_index_idr
-and loop_add()/loop_remove(); in other words, management of id for IDR.
-To avoid holding loop_ctl_mutex during whole add/remove operation, use
-a bool flag to indicate whether the loop device is ready for use.
+But it has a false positive if ip_summed is not CHECKSUM_PARTIAL and
+thus csum_start is irrelevant.
 
-loop_unregister_transfer() which is called from cleanup_cryptoloop()
-currently has possibility of use-after-free problem due to lack of
-serialization between kfree() from loop_remove() from loop_control_remove()
-and mutex_lock() from unregister_transfer_cb(). But since lo->lo_encryption
-should be already NULL when this function is called due to module unload,
-and commit 222013f9ac30b9ce ("cryptoloop: add a deprecation warning")
-indicates that we will remove this function shortly, this patch updates
-this function to emit warning instead of checking lo->lo_encryption.
+Refine to exclude this. At the same time simplify and strengthen the
+test.
 
-Holding loop_ctl_mutex in loop_exit() is pointless, for all users must
-close /dev/loop-control and /dev/loop$num (in order to drop module's
-refcount to 0) before loop_exit() starts, and nobody can open
-/dev/loop-control or /dev/loop$num afterwards.
+Simplify, by moving the check next to the offending pull, making it
+more self documenting and removing an unnecessary branch from other
+code paths.
 
-Link: https://syzkaller.appspot.com/bug?id=7bb10e8b62f83e4d445cdf4c13d69e407e629558 [1]
-Reported-by: syzbot <syzbot+f61766d5763f9e7a118f@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/adb1e792-fc0e-ee81-7ea0-0906fc36419d@i-love.sakura.ne.jp
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Strengthen, by also ensuring that the transport header is correct and
+therefore the inner headers will be after skb_reset_inner_headers.
+The transport header is set to csum_start in skb_partial_csum_set.
+
+Link: https://lore.kernel.org/netdev/YS+h%2FtqCJJiQei+W@shredder/
+Fixes: 1d011c4803c7 ("ip_gre: add validation for csum_start")
+Reported-by: Ido Schimmel <idosch@idosch.org>
+Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/loop.c | 75 +++++++++++++++++++++++++++++---------------
- drivers/block/loop.h |  1 +
- 2 files changed, 50 insertions(+), 26 deletions(-)
+ net/ipv4/ip_gre.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index f0cdff0c5fbf..1f91bd41a29b 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -2113,18 +2113,6 @@ int loop_register_transfer(struct loop_func_table *funcs)
- 	return 0;
- }
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index a8a37d112820..0c431fd4b120 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -449,8 +449,6 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
  
--static int unregister_transfer_cb(int id, void *ptr, void *data)
--{
--	struct loop_device *lo = ptr;
--	struct loop_func_table *xfer = data;
--
--	mutex_lock(&lo->lo_mutex);
--	if (lo->lo_encryption == xfer)
--		loop_release_xfer(lo);
--	mutex_unlock(&lo->lo_mutex);
--	return 0;
--}
--
- int loop_unregister_transfer(int number)
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
  {
- 	unsigned int n = number;
-@@ -2132,9 +2120,20 @@ int loop_unregister_transfer(int number)
- 
- 	if (n == 0 || n >= MAX_LO_CRYPT || (xfer = xfer_funcs[n]) == NULL)
- 		return -EINVAL;
-+	/*
-+	 * This function is called from only cleanup_cryptoloop().
-+	 * Given that each loop device that has a transfer enabled holds a
-+	 * reference to the module implementing it we should never get here
-+	 * with a transfer that is set (unless forced module unloading is
-+	 * requested). Thus, check module's refcount and warn if this is
-+	 * not a clean unloading.
-+	 */
-+#ifdef CONFIG_MODULE_UNLOAD
-+	if (xfer->owner && module_refcount(xfer->owner) != -1)
-+		pr_err("Danger! Unregistering an in use transfer function.\n");
-+#endif
- 
- 	xfer_funcs[n] = NULL;
--	idr_for_each(&loop_index_idr, &unregister_transfer_cb, xfer);
- 	return 0;
+-	if (csum && skb_checksum_start(skb) < skb->data)
+-		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
  }
  
-@@ -2325,8 +2324,9 @@ static int loop_add(int i)
- 	} else {
- 		err = idr_alloc(&loop_index_idr, lo, 0, 0, GFP_KERNEL);
+@@ -682,15 +680,20 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
  	}
-+	mutex_unlock(&loop_ctl_mutex);
- 	if (err < 0)
--		goto out_unlock;
-+		goto out_free_dev;
- 	i = err;
  
- 	err = -ENOMEM;
-@@ -2392,15 +2392,19 @@ static int loop_add(int i)
- 	disk->private_data	= lo;
- 	disk->queue		= lo->lo_queue;
- 	sprintf(disk->disk_name, "loop%d", i);
-+	/* Make this loop device reachable from pathname. */
- 	add_disk(disk);
-+	/* Show this loop device. */
-+	mutex_lock(&loop_ctl_mutex);
-+	lo->idr_visible = true;
- 	mutex_unlock(&loop_ctl_mutex);
- 	return i;
- 
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&lo->tag_set);
- out_free_idr:
-+	mutex_lock(&loop_ctl_mutex);
- 	idr_remove(&loop_index_idr, i);
--out_unlock:
- 	mutex_unlock(&loop_ctl_mutex);
- out_free_dev:
- 	kfree(lo);
-@@ -2410,9 +2414,14 @@ out:
- 
- static void loop_remove(struct loop_device *lo)
- {
-+	/* Make this loop device unreachable from pathname. */
- 	del_gendisk(lo->lo_disk);
- 	blk_cleanup_disk(lo->lo_disk);
- 	blk_mq_free_tag_set(&lo->tag_set);
-+	mutex_lock(&loop_ctl_mutex);
-+	idr_remove(&loop_index_idr, lo->lo_number);
-+	mutex_unlock(&loop_ctl_mutex);
-+	/* There is no route which can find this loop device. */
- 	mutex_destroy(&lo->lo_mutex);
- 	kfree(lo);
- }
-@@ -2436,31 +2445,40 @@ static int loop_control_remove(int idx)
- 		return -EINVAL;
- 	}
- 		
-+	/* Hide this loop device for serialization. */
- 	ret = mutex_lock_killable(&loop_ctl_mutex);
- 	if (ret)
- 		return ret;
--
- 	lo = idr_find(&loop_index_idr, idx);
--	if (!lo) {
-+	if (!lo || !lo->idr_visible)
- 		ret = -ENODEV;
--		goto out_unlock_ctrl;
--	}
-+	else
-+		lo->idr_visible = false;
-+	mutex_unlock(&loop_ctl_mutex);
-+	if (ret)
-+		return ret;
- 
-+	/* Check whether this loop device can be removed. */
- 	ret = mutex_lock_killable(&lo->lo_mutex);
- 	if (ret)
--		goto out_unlock_ctrl;
-+		goto mark_visible;
- 	if (lo->lo_state != Lo_unbound ||
- 	    atomic_read(&lo->lo_refcnt) > 0) {
- 		mutex_unlock(&lo->lo_mutex);
- 		ret = -EBUSY;
--		goto out_unlock_ctrl;
-+		goto mark_visible;
- 	}
-+	/* Mark this loop device no longer open()-able. */
- 	lo->lo_state = Lo_deleting;
- 	mutex_unlock(&lo->lo_mutex);
- 
--	idr_remove(&loop_index_idr, lo->lo_number);
- 	loop_remove(lo);
--out_unlock_ctrl:
-+	return 0;
+ 	if (dev->header_ops) {
++		const int pull_len = tunnel->hlen + sizeof(struct iphdr);
 +
-+mark_visible:
-+	/* Show this loop device again. */
-+	mutex_lock(&loop_ctl_mutex);
-+	lo->idr_visible = true;
- 	mutex_unlock(&loop_ctl_mutex);
- 	return ret;
- }
-@@ -2474,7 +2492,8 @@ static int loop_control_get_free(int idx)
- 	if (ret)
- 		return ret;
- 	idr_for_each_entry(&loop_index_idr, lo, id) {
--		if (lo->lo_state == Lo_unbound)
-+		/* Hitting a race results in creating a new loop device which is harmless. */
-+		if (lo->idr_visible && data_race(lo->lo_state) == Lo_unbound)
- 			goto found;
- 	}
- 	mutex_unlock(&loop_ctl_mutex);
-@@ -2590,10 +2609,14 @@ static void __exit loop_exit(void)
- 	unregister_blkdev(LOOP_MAJOR, "loop");
- 	misc_deregister(&loop_misc);
+ 		if (skb_cow_head(skb, 0))
+ 			goto free_skb;
  
--	mutex_lock(&loop_ctl_mutex);
-+	/*
-+	 * There is no need to use loop_ctl_mutex here, for nobody else can
-+	 * access loop_index_idr when this module is unloading (unless forced
-+	 * module unloading is requested). If this is not a clean unloading,
-+	 * we have no means to avoid kernel crash.
-+	 */
- 	idr_for_each_entry(&loop_index_idr, lo, id)
- 		loop_remove(lo);
--	mutex_unlock(&loop_ctl_mutex);
+ 		tnl_params = (const struct iphdr *)skb->data;
  
- 	idr_destroy(&loop_index_idr);
- }
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index 1988899db63a..04c88dd6eabd 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -68,6 +68,7 @@ struct loop_device {
- 	struct blk_mq_tag_set	tag_set;
- 	struct gendisk		*lo_disk;
- 	struct mutex		lo_mutex;
-+	bool			idr_visible;
- };
- 
- struct loop_cmd {
++		if (pull_len > skb_transport_offset(skb))
++			goto free_skb;
++
+ 		/* Pull skb since ip_tunnel_xmit() needs skb->data pointing
+ 		 * to gre header.
+ 		 */
+-		skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
++		skb_pull(skb, pull_len);
+ 		skb_reset_mac_header(skb);
+ 	} else {
+ 		if (skb_cow_head(skb, dev->needed_headroom))
 -- 
 2.30.2
 
