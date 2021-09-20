@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC1A4118D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6729F4118D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242309AbhITQFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:05:30 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:37485 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242287AbhITQF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:05:29 -0400
-Received: by mail-vs1-f41.google.com with SMTP id q66so11707054vsa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:04:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3dMifcbnkfSRVe/bi5rOjd4ROjtJjArQaEcU6dV9IRM=;
-        b=aptUPUcr400c/8oUAfyBwb+N74h6PJN9sKyXwxGiz1HSpSXts9FIhA7DGVivsYUsdj
-         eKzxCAhSZo5e3ypd0P1SpHnZqL5HJE9gqMcqpVcwmfA9dFQLM7tfeQzXeE8PQux21Aw3
-         t9t1GZko5S6k9c1+m+0M3McOjaYZB+BHF/aFovWwMasLmF2ddEC7j0Br/5lB5UaIYhp2
-         E5TqQ5HrQmeqbCX6POZMBiW2qYV2m+daWqzcauHreoW/KjV7N4DGqDR3MKvMFk9Q6xab
-         rmHZeMmvWejnKDUqlO/3zmIBrVXvK9EOotwkMzvI8AkVx9tPIn46mWN1PGLeez1hh4yv
-         v6fw==
-X-Gm-Message-State: AOAM533FE/uxO4OhErIdFoi3YF5bn3mJ3/U/3BQlz9DQCkLqjIDWgBpr
-        gPRUNnb9PvfKN+oL/W6MqQACg+Vp5+4Op7bmGKE=
-X-Google-Smtp-Source: ABdhPJx2uraiUOErFyJzXCe29wH/9CtnJzCdNfo89F3RZy1TJcNLDQmozi8h7VqjlVlyhgUEQ3q1hFky3vmS0tcBgY0=
-X-Received: by 2002:a67:cc1c:: with SMTP id q28mr15980655vsl.37.1632153842016;
- Mon, 20 Sep 2021 09:04:02 -0700 (PDT)
+        id S238300AbhITQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:06:11 -0400
+Received: from mga09.intel.com ([134.134.136.24]:58493 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238046AbhITQGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:06:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="223200297"
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="223200297"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 09:04:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="612592589"
+Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
+  by fmsmga001.fm.intel.com with ESMTP; 20 Sep 2021 09:04:36 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 20 Sep 2021 09:04:36 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 20 Sep 2021 09:04:35 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
+ Mon, 20 Sep 2021 09:04:35 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+CC:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
+Thread-Topic: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
+Thread-Index: AQHXq7JZqQ9bryoS2UW7jIyiI+uv+ausYIyAgACsBICAAAwU4A==
+Date:   Mon, 20 Sep 2021 16:04:35 +0000
+Message-ID: <d090a19ce8f74b0ea557f180d185df3e@intel.com>
+References: <20210917105355.2368-1-bp@alien8.de>
+ <20210917105355.2368-3-bp@alien8.de>
+ <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com> <YUhCg/dQLEeaYM+T@zn.tnic>
+In-Reply-To: <YUhCg/dQLEeaYM+T@zn.tnic>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <44ee2bfe-e4bc-b918-b908-7352ea012524@oxidecomputer.com>
- <dfa20866-0d00-9bd3-6078-5544cfa5b633@sr71.net> <CAMuHMdUUfm6u_Pz3qzA0V7tLZd7jhcwdyxU7L0SyC_EdyzwQxw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUUfm6u_Pz3qzA0V7tLZd7jhcwdyxU7L0SyC_EdyzwQxw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Sep 2021 18:03:50 +0200
-Message-ID: <CAMuHMdVtHDQ2f0VKAdQFQV9dZJ5uFGD9yHvNviQ_k7AEfhN77w@mail.gmail.com>
-Subject: Re: IMPORTANT: CIVS opt-in for Technical Advisory Board voting
-To:     Dave Hansen <dave@sr71.net>
-Cc:     Laura Abbott <laura@oxidecomputer.com>, ksummit@lists.linux.dev,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        "tab-elections@lists.linuxfoundation.org" 
-        <tab-elections@lists.linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 5:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Sep 20, 2021 at 5:37 PM Dave Hansen <dave@sr71.net> wrote:
-> > My @linux.intel.com account is the most common one from the git logs.  I
-> > have only received one TAB-related email there:
-> >
-> >         Subject: Upcoming Technical Advisory Board election -- look for
-> >                  your ballot
-> >
-> > However, I never actually received a ballot at that email, presumably
-> > because of this CIVS opt-in issue.
-> >
-> > Was this just me?  Or would it be appropriate to send these opt-in
-> > instructions to all of those that should have received a ballot instead
-> > of just sending to the mailing lists?
->
-> I did the CIVS opt-in, and entered the confirmation number.
-> Still, unlike Vlastimil, I saw no way to vote?
-> Just retried the opt-in, "already opted-in".
-
-If you use multiple email addresses, make sure to opt-in using the exact
-same one on which you received the original email from Laura.
-Then there will be a link to the actual poll after entering the confirmation
-code.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+PiBJdCBpcyB0aGVyZSB0byB0ZWxsIHlvdSBob3cgbWFueSBiaXRzIHlvdSBoYXZlIGxlZnQgc28g
+dGhhdCB5b3UgZG9uJ3QNCj4gaGF2ZSB0byBjb3VudCBlYWNoIHRpbWUuIEFuZCB1cGRhdGluZyBp
+dCBlYWNoIHRpbWUgaXMgc2ltcGx5IEN0cmwteCBpbg0KPiB2aW0uDQoNCllvdSB3YW50IHRvIGtu
+b3cgaG93IG1hbnkgYml0IGFyZSBsZWZ0IGZvciBzb21lIHJlYXNvbj8gIElzIHRoZXJlIHNvbWUN
+CnVzZXIgQVBJIHRoYXQgd2lsbCBicmVhayBpZiB3ZSBvdmVyZmxvdyBhbmQgc3RhcnQgYWxsb2Nh
+dGluZyBiaXRzIGZyb20gdGhlIG5leHQNCjY0LWJpdCB3b3JkPyBPciBpcyB0aGlzIGp1c3QgdGhl
+IGNvdW50ZG93biBmb3Igd2hlbiB5b3UgYW5kIEkgYm90aCBoYXZlIGEgbmVydm91cw0KYnJlYWtk
+b3duIHRyeWluZyB0byBrZWVwIHRyYWNrIG9mIHRoYXQgbWFueSBkaWZmZXJlbnQgb3B0aW9uIHBh
+dGhzIHRocm91Z2ggdGhlDQptYWNoaW5lIGNoZWNrIGNvZGUgOi0pDQoNClRoYW5rcyBmb3IgdGhl
+IHRpcCBhYm91dCBDdHJsLXggdG8gZGVjcmVtZW50IGEgbnVtYmVyIGluIHZpbSAoR29vZ2xlDQp0
+ZWxsIG1lIEN0cmwtYSBpbmNyZW1lbnRzKS4gTGVhcm5lZCBzb21ldGhpbmcgbmV3IHRvZGF5IDot
+KQ0KDQotVG9ueQ0K
