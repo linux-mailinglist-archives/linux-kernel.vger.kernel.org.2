@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FCF411B69
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43013411D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343595AbhITQ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        id S1345996AbhITRQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41571 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244140AbhITQzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:55:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04A2D6139E;
-        Mon, 20 Sep 2021 16:50:55 +0000 (UTC)
+        id S1347712AbhITROf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:14:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D51661252;
+        Mon, 20 Sep 2021 16:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156656;
-        bh=sAj9XCu0LPl0fCzYsXX4deIdhAbtwFtZSsxZRuuHYMI=;
+        s=korg; t=1632157103;
+        bh=FUVgSAJ5K5SRh/aieYK5iXse8prfOpHH+RuRx+jPoZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J1jAQy0MuweSzseI4MJ8gXgKPopZCgTeIypyyVgw6ubNpwoarCjPfQ8Agn6PVQik4
-         wwHsSFRibBfWXVDHsFqbJKOy9ucbm3aBuDlJlpxQ5G/xczbGYvHoa9X+6AiEcC2jwR
-         l9iBYWIgNykLCoMJVWzmxicsiOmkAZmEhM+MTLbg=
+        b=cx80q1goimLt7wUfI3NvGmoECW+paGno3Mzz5iTBr16qngvGutGaytvtdGYSDhYLR
+         1BoUSPh6ICfpbK+yca6tOEXu3VGQyaHRSQm/KGQEOCzpG1rJKfl6v3J/vatMu2aTWt
+         i55aPzVqtxVNuSLPbh//FIt9v/fSchxAq+GnE/HQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Gorbik <gor@linux.vnet.ibm.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>
-Subject: [PATCH 4.9 025/175] s390/disassembler: correct disassembly lines alignment
-Date:   Mon, 20 Sep 2021 18:41:14 +0200
-Message-Id: <20210920163918.893136782@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 054/217] media: go7007: remove redundant initialization
+Date:   Mon, 20 Sep 2021 18:41:15 +0200
+Message-Id: <20210920163926.456242598@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.vnet.ibm.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 26f4e759ef9b8a2bab1823d692ed6d56d40b66e3 upstream.
+[ Upstream commit 6f5885a7750545973bf1a942d2f0f129aef0aa06 ]
 
-176.718956 Krnl Code: 00000000004d38b0: a54c0018        llihh   %r4,24
-176.718956 	   00000000004d38b4: b9080014        agr     %r1,%r4
-           ^
-Using a tab to align disassembly lines which follow the first line with
-"Krnl Code: " doesn't always work, e.g. if there is a prefix (timestamp
-or syslog prefix) which is not 8 chars aligned. Go back to alignment
-with spaces.
+In go7007_alloc() kzalloc() is used for struct go7007
+allocation. It means that there is no need in zeroing
+any members, because kzalloc will take care of it.
 
-Fixes: b192571d1ae3 ("s390/disassembler: increase show_code buffer size")
-Signed-off-by: Vasily Gorbik <gor@linux.vnet.ibm.com>
-Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Removing these reduntant initialization steps increases
+execution speed a lot:
+
+	Before:
+		+ 86.802 us   |    go7007_alloc();
+	After:
+		+ 29.595 us   |    go7007_alloc();
+
+Fixes: 866b8695d67e8 ("Staging: add the go7007 video driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/dis.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/go7007/go7007-driver.c | 26 ------------------------
+ 1 file changed, 26 deletions(-)
 
---- a/arch/s390/kernel/dis.c
-+++ b/arch/s390/kernel/dis.c
-@@ -2018,7 +2018,7 @@ void show_code(struct pt_regs *regs)
- 		start += opsize;
- 		pr_cont("%s", buffer);
- 		ptr = buffer;
--		ptr += sprintf(ptr, "\n\t  ");
-+		ptr += sprintf(ptr, "\n          ");
- 		hops++;
- 	}
- 	pr_cont("\n");
+diff --git a/drivers/media/usb/go7007/go7007-driver.c b/drivers/media/usb/go7007/go7007-driver.c
+index 05b1126f263e..d861d7225f49 100644
+--- a/drivers/media/usb/go7007/go7007-driver.c
++++ b/drivers/media/usb/go7007/go7007-driver.c
+@@ -698,49 +698,23 @@ struct go7007 *go7007_alloc(const struct go7007_board_info *board,
+ 						struct device *dev)
+ {
+ 	struct go7007 *go;
+-	int i;
+ 
+ 	go = kzalloc(sizeof(struct go7007), GFP_KERNEL);
+ 	if (go == NULL)
+ 		return NULL;
+ 	go->dev = dev;
+ 	go->board_info = board;
+-	go->board_id = 0;
+ 	go->tuner_type = -1;
+-	go->channel_number = 0;
+-	go->name[0] = 0;
+ 	mutex_init(&go->hw_lock);
+ 	init_waitqueue_head(&go->frame_waitq);
+ 	spin_lock_init(&go->spinlock);
+ 	go->status = STATUS_INIT;
+-	memset(&go->i2c_adapter, 0, sizeof(go->i2c_adapter));
+-	go->i2c_adapter_online = 0;
+-	go->interrupt_available = 0;
+ 	init_waitqueue_head(&go->interrupt_waitq);
+-	go->input = 0;
+ 	go7007_update_board(go);
+-	go->encoder_h_halve = 0;
+-	go->encoder_v_halve = 0;
+-	go->encoder_subsample = 0;
+ 	go->format = V4L2_PIX_FMT_MJPEG;
+ 	go->bitrate = 1500000;
+ 	go->fps_scale = 1;
+-	go->pali = 0;
+ 	go->aspect_ratio = GO7007_RATIO_1_1;
+-	go->gop_size = 0;
+-	go->ipb = 0;
+-	go->closed_gop = 0;
+-	go->repeat_seqhead = 0;
+-	go->seq_header_enable = 0;
+-	go->gop_header_enable = 0;
+-	go->dvd_mode = 0;
+-	go->interlace_coding = 0;
+-	for (i = 0; i < 4; ++i)
+-		go->modet[i].enable = 0;
+-	for (i = 0; i < 1624; ++i)
+-		go->modet_map[i] = 0;
+-	go->audio_deliver = NULL;
+-	go->audio_enabled = 0;
+ 
+ 	return go;
+ }
+-- 
+2.30.2
+
 
 
