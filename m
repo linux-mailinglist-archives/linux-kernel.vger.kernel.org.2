@@ -2,114 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E584122F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DAE412341
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377483AbhITSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
+        id S1348158AbhITSWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346019AbhITSNY (ORCPT
+        with ESMTP id S1376689AbhITSOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:13:24 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892DDC06119C;
-        Mon, 20 Sep 2021 09:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=rPf4aIjt28J9Hb/Zj4X/fJW+KULaG2Xw2AIXFCgCE+o=; b=NQfJV104PpHXxMpeZ80pOZx2sl
-        PBipLdBg+fnggnwOis6OidrVtOoxklYVwV8bV2YLNBp2xB+ukUhTCtez48Ako1NJoXI+cmzMmgBUI
-        sNLa6w1YwIijD40CFX6rT4Uh2FSufCfadBhVkYHt0xAEVnlUCjeCJuSZMxnJFYDE463z35lziNLfu
-        eeqDn3SoNzWEDtgLnuHVlmPmM6YBAKG0sqPcy4ZffEwwT+bcDdDbaYjSfFB7hjOzXXttI8Ce20KPO
-        22/f+h2fuw+XFz0iFF3XE4kkS98u7t9/dyiq7HoXOVY51ChB06t3jvTx3FZ6bPWFO/cm0Rc1LM/E4
-        8fDL8XRw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSMdS-002Vfu-8Q; Mon, 20 Sep 2021 16:59:18 +0000
-Date:   Mon, 20 Sep 2021 09:59:18 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [RFC] Expose request_module via syscall
-Message-ID: <YUi95tFDWS7oceYP@bombadil.infradead.org>
-References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
- <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
- <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
- <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
- <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
- <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
- <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
+        Mon, 20 Sep 2021 14:14:15 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344F5C08EC02
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:59:24 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id t1so18026656pgv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Znx150GeQHqCUDq1R5d3pbprQ1CNmBnhDQEfjRdzInA=;
+        b=pLmoJql/uGd9y5YWMAaw23mJ/vvCcu2k97DZKvIRYqbFMrYUm4dT4kQ4Q/XPnZvNC+
+         oOxZBB/3kgNwkvpjvXgXm+QwBLSStHjRTqnRkp8ZZfgsuCGqwjUPVMZaG+iKm/Kb5qlR
+         0SaSi98FfWbkAWnKUagCCoqsQASzkdigyscJfhv3hy32ZIy/g2QTMISwJIuPxPlPqdRO
+         nMEQDXZzD6hM6bjCSbyVXTUD1XHKnbU96X5PfWR3h5b8/rjdqqbSa1nKZ5rwbbYGz2gp
+         bu9qaDDjmkiOXJx4LNxm1JOGQ9ZZ0WRGz+i02B8nuhAbIEoGhDCH+w0XHwBR90Ac9jZj
+         L9rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Znx150GeQHqCUDq1R5d3pbprQ1CNmBnhDQEfjRdzInA=;
+        b=TA6TLVZrE51WH5FBy8oheug8WWOG4h+pN/pqlFqt3YD61xhQIrd83woxJpYXIEzXRI
+         8dPRk4WxzFS9VeFUHHMZf73zdENofU3GE7E1TOrJ6zjaC5ufgglcY3Gdlk/N5SAPKksD
+         dn2lHGTlJMQiCT1JIquAjDz6k/IWBdxIOCqxIkTewPjVADUSW0HEcmkNC3OsggkLQkzB
+         EqEVxHfy/tmBwW6qyVXL5s9feoCAF6OGNcxcWm0R0zxk5qI2GJHQAG5OXCAkdGAM04qO
+         8ECgi3IGa52dyStf5d7fcbXU+ihbwLqe82Ygc442InlxWiO6HkOiunZeDCTPDSEdIxYi
+         hbOw==
+X-Gm-Message-State: AOAM5336F1XQGcaPr7dFvFCizVcOZ2gornOZs6UcZhyvtHLq5B/lVlg7
+        vpR1dZ/1zkZYwFJB3aT4PXA93A==
+X-Google-Smtp-Source: ABdhPJy+qOdkSC9jNqC3UEqmCXYsNkb5VXxTMgrzHv1FNEw0Rc2NO4A+eMxQtG3Q0T82v9bvnKTcuQ==
+X-Received: by 2002:a05:6a00:22d5:b0:440:3750:f5f4 with SMTP id f21-20020a056a0022d500b004403750f5f4mr26496924pfj.64.1632157163696;
+        Mon, 20 Sep 2021 09:59:23 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id k127sm15590110pfd.1.2021.09.20.09.59.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 09:59:22 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 10:59:20 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 3/6] remoteproc: imx_rproc: fix TCM io memory type
+Message-ID: <20210920165920.GC2023964@p14s>
+References: <20210910090621.3073540-1-peng.fan@oss.nxp.com>
+ <20210910090621.3073540-4-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210910090621.3073540-4-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 04:51:19PM +0200, Thomas Weißschuh wrote:
-> On 2021-09-19T07:37-0700, Andy Lutomirski wrote:
-> > On Sun, Sep 19, 2021 at 12:56 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
-> > >
-> > > On 2021-09-18T11:47-0700, Andy Lutomirski wrote:
-> > > > On Thu, Sep 16, 2021, at 2:27 AM, Christian Brauner wrote:
-> > > > > On Wed, Sep 15, 2021 at 09:47:25AM -0700, Andy Lutomirski wrote:
-> > > > > > On Wed, Sep 15, 2021 at 8:50 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
-> > > > > > >
-> > > > > > > Hi,
-> > > > > > >
-> > > > > > > I would like to propose a new syscall that exposes the functionality of
-> > > > > > > request_module() to userspace.
-> > > > > > >
-> > > > > > > Propsed signature: request_module(char *module_name, char **args, int flags);
-> > > > > > > Where args and flags have to be NULL and 0 for the time being.
-> > > > > > >
-> > > > > > > Rationale:
-> > > > > > >
-> > > > > > > We are using nested, privileged containers which are loading kernel modules.
-> > > > > > > Currently we have to always pass around the contents of /lib/modules from the
-> > > > > > > root namespace which contains the modules.
-> > > > > > > (Also the containers need to have userspace components for moduleloading
-> > > > > > > installed)
-> > > > > > >
-> > > > > > > The syscall would remove the need for this bookkeeping work.
-> > > > > >
-> > > > > > I feel like I'm missing something, and I don't understand the purpose
-> > > > > > of this syscall.  Wouldn't the right solution be for the container to
-> > > > > > have a stub module loader (maybe doable with a special /sbin/modprobe
-> > > > > > or maybe a kernel patch would be needed, depending on the exact use
-> > > > > > case) and have the stub call out to the container manager to request
-> > > > > > the module?  The container manager would check its security policy and
-> > > > > > load the module or not load it as appropriate.
-> > > > >
-> > > > > I don't see the need for a syscall like this yet either.
-> > > > >
-> > > > > This should be the job of the container manager. modprobe just calls the
-> > > > > init_module() syscall, right?
-> > > >
-> > > > Not quite so simple. modprobe parses things in /lib/modules and maybe /etc to decide what init_module() calls to do.
-> > > >
-> > > > But I admit I’m a bit confused.  What exactly is the container doing that causes the container’s copy of modprobe to be called?
-> > >
-> > > The container is running an instance of the docker daemon in swarm mode.
-> > > That needs the "ip_vs" module (amongst others) and explicitly tries to load it
-> > > via modprobe.
-> > >
-> > 
-> > Do you mean it literally invokes /sbin/modprobe?  If so, hooking this
-> > at /sbin/modprobe and calling out to the container manager seems like
-> > a decent solution.
+On Fri, Sep 10, 2021 at 05:06:18PM +0800, Peng Fan (OSS) wrote:
+> From: Dong Aisheng <aisheng.dong@nxp.com>
 > 
-> Yes it does. Thanks for the idea, I'll see how this works out.
+> is_iomem was introduced in the commit 40df0a91b2a5 ("remoteproc: add
+> is_iomem to da_to_va"), but the driver seemed missed to provide the io
+> type correctly.
+> This patch updates remoteproc driver to indicate the TCM on IMX are io
+> memories. Without the change, remoteproc kick will fail.
 
-Would documentation guiding you in that way have helped? If so
-I welcome a patch that does just that.
+If the kick fails on all these platforms, why was patch 40df0a91b2a5 ever
+submitted at all?  To me this is a serious problem that should have been caught
+before it got sent to the mailing list.
 
-  Luis
+I have applied this patch but based on the blatant problems this patchset
+underscores, how can I trust future patches coming from NXP?
+
+> 
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Peng Fan <peng.fan@nxp.com>
+> Reviewed-and-tested-by: Peng Fan <peng.fan@nxp.com>
+> Fixes: 79806d32d5aa ("remoteproc: imx_rproc: support i.MX8MN/P")
+> Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 35 ++++++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index d88f76f5305eb..71dcc6dd32e40 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -71,6 +71,7 @@ struct imx_rproc_mem {
+>  /* att flags */
+>  /* M4 own area. Can be mapped at probe */
+>  #define ATT_OWN		BIT(1)
+> +#define ATT_IOMEM	BIT(2)
+>  
+>  /* address translation table */
+>  struct imx_rproc_att {
+> @@ -117,7 +118,7 @@ struct imx_rproc {
+>  static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+>  	/* dev addr , sys addr  , size	    , flags */
+>  	/* ITCM   */
+> -	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN },
+> +	{ 0x00000000, 0x007E0000, 0x00020000, ATT_OWN | ATT_IOMEM },
+>  	/* OCRAM_S */
+>  	{ 0x00180000, 0x00180000, 0x00009000, 0 },
+>  	/* OCRAM */
+> @@ -131,7 +132,7 @@ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+>  	/* DDR (Code) - alias */
+>  	{ 0x10000000, 0x40000000, 0x0FFE0000, 0 },
+>  	/* DTCM */
+> -	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
+> +	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN | ATT_IOMEM },
+>  	/* OCRAM_S - alias */
+>  	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+>  	/* OCRAM */
+> @@ -147,7 +148,7 @@ static const struct imx_rproc_att imx_rproc_att_imx8mn[] = {
+>  static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+>  	/* dev addr , sys addr  , size	    , flags */
+>  	/* TCML - alias */
+> -	{ 0x00000000, 0x007e0000, 0x00020000, 0 },
+> +	{ 0x00000000, 0x007e0000, 0x00020000, ATT_IOMEM},
+>  	/* OCRAM_S */
+>  	{ 0x00180000, 0x00180000, 0x00008000, 0 },
+>  	/* OCRAM */
+> @@ -159,9 +160,9 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+>  	/* DDR (Code) - alias */
+>  	{ 0x10000000, 0x80000000, 0x0FFE0000, 0 },
+>  	/* TCML */
+> -	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN },
+> +	{ 0x1FFE0000, 0x007E0000, 0x00020000, ATT_OWN  | ATT_IOMEM},
+>  	/* TCMU */
+> -	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN },
+> +	{ 0x20000000, 0x00800000, 0x00020000, ATT_OWN  | ATT_IOMEM},
+>  	/* OCRAM_S */
+>  	{ 0x20180000, 0x00180000, 0x00008000, ATT_OWN },
+>  	/* OCRAM */
+> @@ -199,12 +200,12 @@ static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+>  	/* OCRAM_PXP (Code) - alias */
+>  	{ 0x00940000, 0x00940000, 0x00008000, 0 },
+>  	/* TCML (Code) */
+> -	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN },
+> +	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN | ATT_IOMEM },
+>  	/* DDR (Code) - alias, first part of DDR (Data) */
+>  	{ 0x10000000, 0x80000000, 0x0FFF0000, 0 },
+>  
+>  	/* TCMU (Data) */
+> -	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN },
+> +	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN | ATT_IOMEM },
+>  	/* OCRAM (Data) */
+>  	{ 0x20200000, 0x00900000, 0x00020000, 0 },
+>  	/* OCRAM_EPDC (Data) */
+> @@ -218,18 +219,18 @@ static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+>  static const struct imx_rproc_att imx_rproc_att_imx6sx[] = {
+>  	/* dev addr , sys addr  , size	    , flags */
+>  	/* TCML (M4 Boot Code) - alias */
+> -	{ 0x00000000, 0x007F8000, 0x00008000, 0 },
+> +	{ 0x00000000, 0x007F8000, 0x00008000, ATT_IOMEM },
+>  	/* OCRAM_S (Code) */
+>  	{ 0x00180000, 0x008F8000, 0x00004000, 0 },
+>  	/* OCRAM_S (Code) - alias */
+>  	{ 0x00180000, 0x008FC000, 0x00004000, 0 },
+>  	/* TCML (Code) */
+> -	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN },
+> +	{ 0x1FFF8000, 0x007F8000, 0x00008000, ATT_OWN | ATT_IOMEM },
+>  	/* DDR (Code) - alias, first part of DDR (Data) */
+>  	{ 0x10000000, 0x80000000, 0x0FFF8000, 0 },
+>  
+>  	/* TCMU (Data) */
+> -	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN },
+> +	{ 0x20000000, 0x00800000, 0x00008000, ATT_OWN | ATT_IOMEM },
+>  	/* OCRAM_S (Data) - alias? */
+>  	{ 0x208F8000, 0x008F8000, 0x00004000, 0 },
+>  	/* DDR (Data) */
+> @@ -341,7 +342,7 @@ static int imx_rproc_stop(struct rproc *rproc)
+>  }
+>  
+>  static int imx_rproc_da_to_sys(struct imx_rproc *priv, u64 da,
+> -			       size_t len, u64 *sys)
+> +			       size_t len, u64 *sys, bool *is_iomem)
+>  {
+>  	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
+>  	int i;
+> @@ -354,6 +355,8 @@ static int imx_rproc_da_to_sys(struct imx_rproc *priv, u64 da,
+>  			unsigned int offset = da - att->da;
+>  
+>  			*sys = att->sa + offset;
+> +			if (is_iomem)
+> +				*is_iomem = att->flags & ATT_IOMEM;
+>  			return 0;
+>  		}
+>  	}
+> @@ -377,7 +380,7 @@ static void *imx_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *i
+>  	 * On device side we have many aliases, so we need to convert device
+>  	 * address (M4) to system bus address first.
+>  	 */
+> -	if (imx_rproc_da_to_sys(priv, da, len, &sys))
+> +	if (imx_rproc_da_to_sys(priv, da, len, &sys, is_iomem))
+>  		return NULL;
+>  
+>  	for (i = 0; i < IMX_RPROC_MEM_MAX; i++) {
+> @@ -553,8 +556,12 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+>  		if (b >= IMX_RPROC_MEM_MAX)
+>  			break;
+>  
+> -		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
+> -						     att->sa, att->size);
+> +		if (att->flags & ATT_IOMEM)
+> +			priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
+> +							     att->sa, att->size);
+> +		else
+> +			priv->mem[b].cpu_addr = devm_ioremap_wc(&pdev->dev,
+> +								att->sa, att->size);
+>  		if (!priv->mem[b].cpu_addr) {
+>  			dev_err(dev, "failed to remap %#x bytes from %#x\n", att->size, att->sa);
+>  			return -ENOMEM;
+> -- 
+> 2.25.1
+> 
