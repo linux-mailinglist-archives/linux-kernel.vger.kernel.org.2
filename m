@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE26411895
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D53411897
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242102AbhITPql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242035AbhITPqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:46:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A27E761159;
-        Mon, 20 Sep 2021 15:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632152713;
-        bh=EC+9dyajYM2OPNtBQsJoiGoRd9MZ5dbX2yOO9/Uoq6U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NQfTBETIlpVtKbA/+UDc+h1Ycdfi45SAPzATlwtFJTjYsBq6Mc3UvwPR2UUgVqSPq
-         xMXRQo1l8idyhR9VJ30vQYai5gQlAlgRocso5YwY4Vcp9vzACHWjMQ3DDxSY762Zoa
-         AIaqdF8h2C2XItW7pFDb/SjOj+f6fgKw7Ox/Nw/YJW/i6ZyOdiGkbruY6Ls6Z6VNBx
-         g/AaCCjaTcD21MCKHy4OQH0nDr6o23qJlVRtwvqrcV7uNhudKLLt5z9KImL0KiPZJa
-         APYEnZkJhTzK2mQVdHruVNHCkizkjfvMiP9HQ/PR1iX6fW3O1Z2fvNouaPyCv3RXJo
-         8YN/X+jF8hiuw==
-Date:   Mon, 20 Sep 2021 08:45:08 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v3] lib/zlib_inflate/inffast: Check config in C to avoid
- unused function warning
-Message-ID: <YUishGbHeaDMJDj+@archlinux-ax161>
-References: <20210920084332.5752-1-pmenzel@molgen.mpg.de>
+        id S237875AbhITPtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:49:47 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:35745 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhITPtq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 11:49:46 -0400
+Received: by mail-vs1-f51.google.com with SMTP id f18so17129834vsp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:48:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XIrinN7AxFNslMU/oL1dAz4eVX1XxUFtIGJluVZ79A=;
+        b=fMZHLgZnYqfCNVKBXpUPz0vVlIpHdBG1NDHUmvWf6jorzDrdFCCXNNU0EZEgmQOdT6
+         eCPcAAnpsgLQh2wTmKJVkUFS9Ro61Et/hc6bO1+b1ZRLU6zxIBlqZVfpn0Gx/JB8WFoV
+         8ggW4W5kK5x9IoTSiOGklDzMNPFkzV1jO58VKLGjN2JSmRGYFzQNDa1ylnM+C5si6OWp
+         /K0G+iWEBYov6KZBlDRRHcV6vxRx1cFT5cMlTDmenQ+cmETsYxKZZv3QqCqx60HJqtN7
+         4xccFwFNsi1NXFyCxpE7ssHhMW6JgOx8na0eSPgBrrmI+2gzm+2mOseN4eVM9+pKwY0V
+         lthg==
+X-Gm-Message-State: AOAM530u3sz7iNORR7yCDpGdp4/fxr2Z9VngCgnIJuCDIQ2ZKLGXcXvD
+        6kB55lbB/7dh33gIVH4b8vcpYJf7Vboq8aXIbtw=
+X-Google-Smtp-Source: ABdhPJxjZKoTyAkMmmNlQd+SNmg4qFylQBCJHa8rcDR2Qu/ASVHuJgmD1OIQrevb6XFIQfkZEifsvrqMyWyq2m7atlM=
+X-Received: by 2002:a05:6102:2417:: with SMTP id j23mr16612983vsi.35.1632152899468;
+ Mon, 20 Sep 2021 08:48:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920084332.5752-1-pmenzel@molgen.mpg.de>
+References: <44ee2bfe-e4bc-b918-b908-7352ea012524@oxidecomputer.com> <dfa20866-0d00-9bd3-6078-5544cfa5b633@sr71.net>
+In-Reply-To: <dfa20866-0d00-9bd3-6078-5544cfa5b633@sr71.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Sep 2021 17:48:08 +0200
+Message-ID: <CAMuHMdUUfm6u_Pz3qzA0V7tLZd7jhcwdyxU7L0SyC_EdyzwQxw@mail.gmail.com>
+Subject: Re: IMPORTANT: CIVS opt-in for Technical Advisory Board voting
+To:     Dave Hansen <dave@sr71.net>
+Cc:     Laura Abbott <laura@oxidecomputer.com>, ksummit@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        "tab-elections@lists.linuxfoundation.org" 
+        <tab-elections@lists.linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:43:33AM +0200, Paul Menzel wrote:
-> Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
-> shows the warning below.
-> 
->     arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
->     get_unaligned16(const unsigned short *p)
->     ^
->     1 warning generated.
-> 
-> Fix it, by moving the check from the preprocessor to C, so the compiler
-> sees the use.
-> 
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+On Mon, Sep 20, 2021 at 5:37 PM Dave Hansen <dave@sr71.net> wrote:
+> My @linux.intel.com account is the most common one from the git logs.  I
+> have only received one TAB-related email there:
+>
+>         Subject: Upcoming Technical Advisory Board election -- look for
+>                  your ballot
+>
+> However, I never actually received a ballot at that email, presumably
+> because of this CIVS opt-in issue.
+>
+> Was this just me?  Or would it be appropriate to send these opt-in
+> instructions to all of those that should have received a ballot instead
+> of just sending to the mailing lists?
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+I did the CIVS opt-in, and entered the confirmation number.
+Still, unlike Vlastimil, I saw no way to vote?
+Just retried the opt-in, "already opted-in".
 
-> ---
-> v2: Use IS_ENABLED
-> v3: Use if statement over ternary operator as requested by Christophe
-> 
->  lib/zlib_inflate/inffast.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-> index f19c4fbe1be7..2843f9bb42ac 100644
-> --- a/lib/zlib_inflate/inffast.c
-> +++ b/lib/zlib_inflate/inffast.c
-> @@ -253,13 +253,12 @@ void inflate_fast(z_streamp strm, unsigned start)
->  
->  			sfrom = (unsigned short *)(from);
->  			loops = len >> 1;
-> -			do
-> -#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> -			    *sout++ = *sfrom++;
-> -#else
-> -			    *sout++ = get_unaligned16(sfrom++);
-> -#endif
-> -			while (--loops);
-> +			do {
-> +			    if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
-> +				*sout++ = *sfrom++;
-> +			    else
-> +				*sout++ = get_unaligned16(sfrom++);
-> +			} while (--loops);
->  			out = (unsigned char *)sout;
->  			from = (unsigned char *)sfrom;
->  		    } else { /* dist == 1 or dist == 2 */
-> -- 
-> 2.33.0
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
