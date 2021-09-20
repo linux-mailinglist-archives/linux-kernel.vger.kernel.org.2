@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFD8412B03
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABDD412B05
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242571AbhIUCFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S242594AbhIUCFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235873AbhIUBsM (ORCPT
+        with ESMTP id S235952AbhIUBsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:48:12 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525A9C065F01
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:29:58 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id m11so24129599ioo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:29:58 -0700 (PDT)
+        Mon, 20 Sep 2021 21:48:24 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D52C0612E4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:38:05 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id 194so22747649qkj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Vs5Sa4Qkum2hykw4ZyahHqvL6vQpnvGsWXcltm8dEl8=;
-        b=AlZLXTBjCAdlj42aHO5FGqsg3ZPxEeZm718Xti98solHQMUU4S78VjkfVgaFqv3h+A
-         Rupy1sx5wrK87J3EENc9C9kr0N/P+SzqttjfrYNpbYVMuQOJZcVnjv/JAaV7Yr0Y4yOt
-         ZvGFxG9t9ymTnfW1FB/g43VmSoO6YV0w+cXabr8Qn/Achp2IWBYozL7+yDA1WYYyEA7c
-         0+COCe4fuoaZufpYP6xOy9ii6Zr45uEDI4uvJE9YuMq4bNsz7fh3sw55D6Rp7rgV9kJj
-         iQa4vCw+ZB/oPXelGobE+gR7wdwDm9iQLg4G7jKX2aexQMGWAsqwIHMDXZ09Tezqh1JJ
-         NpLw==
+        bh=Z0sMXVJD/qM1ZuMvbaI6gTOYJ9VpknbVlhhM0u7mejc=;
+        b=dqxJA24uvAfZPUBpFHKmJEIZgdzPyGPS0Sq6uvZjU0gc6erEbkuQ4zhpwP4QD8z72u
+         sw1LryOdbgCoGAlU671GWf8D56poCdkftvi5n9UVH0kydllWBUbg1UpLhPhtIlsWyTEf
+         1ut3yazIIgePgREspkn/NXAfNWrUlqhMj1SEs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Vs5Sa4Qkum2hykw4ZyahHqvL6vQpnvGsWXcltm8dEl8=;
-        b=v9fJgY0qhhOMYhWXUm18tDPQlMDYc9YXR7Fb7as1mv9j6axFTU8nlg2WqXMDw0r29J
-         azajDpgGTcZ27aThfW3BTYtZt79xkvnMaE77pqdnnp2PYl1FLABVIGKwQTGwCeoxll9F
-         0BanjPpwUrcvca3P7RPUCLzOcI0mxs0Z8IJ9F0GppKgO3BxoE7OfdSbA7DadkPirvRxd
-         BOwI/h4ed2bcIBqD8zdQXIHpGXb56iXZFKABxicYDby4EGDpSaZqwSFBch4du1lNpErF
-         8jN8XI2mRP4oC7r33dzbKkEsuSropE17zPOeQYwvHJEihtcmvU24pyic+EBkX0GIq2Xl
-         wSjg==
-X-Gm-Message-State: AOAM533SuYzAeIsxhxs3wYdghyZ0ClZiHTCk8TXFbUqKfU66q19NalKJ
-        RPlZRx4mDFsfr+oLQPMJZ8/WiEJJJ8LIVgSne8B6Wzr+SBc=
-X-Google-Smtp-Source: ABdhPJxATtCsf1ixsXOcZz5DejVi9Y6CKr1aISL0Un9ka4UpQYTF+S71mBRCSjAhy/WR5tHFkiYHFIufXLMc+Nr9CNg=
-X-Received: by 2002:a6b:6918:: with SMTP id e24mr20177518ioc.71.1632173397612;
- Mon, 20 Sep 2021 14:29:57 -0700 (PDT)
+        bh=Z0sMXVJD/qM1ZuMvbaI6gTOYJ9VpknbVlhhM0u7mejc=;
+        b=FdKy5PZwU4mqh9CMk4/kL4MRHV5qxpD5TnookNnsvC79IO2fSDPtMWiUz5q7o0PMou
+         mtl6KbjIqOk/ZqHSP2SYYU4VH9/Uvm51U9LjiJL5JjRTYEwV7JIhvKI7FHUwywwPqCTg
+         1HpMqgCQtI4bnkChKeNU2kcs3Y0LFcBIBsEESJTtoL4fScgC0ZRokAwaQ4KMAxR2Pr1B
+         PazFgHU1x4EsxvsUV4w4A55CdTnAHgnFU8B0YeL/OcIe/H5xqOu6cJt9o8tA+ShdEKLG
+         JZijVVMrp1wWoZeYoySAQ7E1b8gqxsBFe9FVIwWq3DxYuPf6oDmXuuuHfVAW0NuquUm+
+         Bq6A==
+X-Gm-Message-State: AOAM531ee/Dwl0FhCShVTvqTNOk9cClo1yQwIVP/J8reP0jNtecorvZY
+        VFzBYbdBjrA7kzdQz5zPBC1DWBq4zokvkUQf2AuaTA==
+X-Google-Smtp-Source: ABdhPJyQjSb2H6udbpCD2GbTsqMT8sJOFWWkAqxky55HqdLzQrvRxx7S/aqKxyKWBV2AQNiIWArMAu4QAzyNU6Trgt8=
+X-Received: by 2002:a25:2f42:: with SMTP id v63mr34378682ybv.388.1632173884292;
+ Mon, 20 Sep 2021 14:38:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210913081424.48613-1-vincenzo.frascino@arm.com>
-In-Reply-To: <20210913081424.48613-1-vincenzo.frascino@arm.com>
-From:   Peter Collingbourne <pcc@google.com>
-Date:   Mon, 20 Sep 2021 14:29:46 -0700
-Message-ID: <CAMn1gO5sUhDkx4w-Kk8hw0xLbXmr129xeJa6YhxOeJ-v83hp6w@mail.gmail.com>
-Subject: Re: [PATCH 0/5] arm64: ARMv8.7-A: MTE: Add asymm mode support
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+References: <20210918102058.v5.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
+ <20210918102058.v5.2.Ifcb5df5de5b1cead7c99e0f37b044ef5cfc69eda@changeid> <YUZMNIYbT7KL3qJR@ravnborg.org>
+In-Reply-To: <YUZMNIYbT7KL3qJR@ravnborg.org>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Mon, 20 Sep 2021 14:37:53 -0700
+Message-ID: <CA+cxXh=OixYPzE_ui=22seumFpKigTcK3hvNtrfN4oa0SFdtOw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 1:21 AM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
+Hi Sam,
+
+On Sat, Sep 18, 2021 at 1:29 PM Sam Ravnborg <sam@ravnborg.org> wrote:
 >
-> This series implements the asymmetric mode support for ARMv8.7-A Memory
-> Tagging Extension (MTE), which is a debugging feature that allows to
-> detect with the help of the architecture the C and C++ programmatic
-> memory errors like buffer overflow, use-after-free, use-after-return, etc.
+> Hi Philip,
+> On Sat, Sep 18, 2021 at 10:21:17AM -0700, Philip Chen wrote:
+> > Implement the first version of AUX support, which will be useful as
+> > we expand the driver to support varied use cases.
+> >
+> > Signed-off-by: Philip Chen <philipchen@chromium.org>
+>
+> Patch is:
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+>
+> please consider a few follow-up patches:
+> 1) Replace deprecated drm_bridge_funcs with the _atomic_ variants.
+> 2) Replace the deprecated drm_bridge_chain_pre_enable() with the atomic
+>    variant.
+> 3) Use pr_() and dev_() logging in favour of DRM_ logging.
+>    DRM_ logging is deprecated these days and do not belong in bridge
+>    drivers anyway.
+>
+> Maxime has a few patches pending for this driver - it would be great if
+> you could look them up and review them.
+> Maybe you can get some review in feedback.
 
-Unless I'm missing something, it looks like this only includes KASAN
-support and not userspace support. Is userspace support coming in a
-separate patch?
+Yes, I'll do.
+Thanks for reviewing.
 
-The fact that this only includes KASAN support should probably be in
-the commit messages as well.
-
-Peter
+>
+>         Sam
+>
