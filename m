@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A21D411D7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5632C411BC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348924AbhITRUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:20:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48640 "EHLO mail.kernel.org"
+        id S1345358AbhITRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348244AbhITRSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:18:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC12361A50;
-        Mon, 20 Sep 2021 16:59:44 +0000 (UTC)
+        id S1344445AbhITQ7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D098613D2;
+        Mon, 20 Sep 2021 16:52:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157185;
-        bh=aGg5JDs8P/OzYUyzWhsHIwOhdg5PVjqNojD/CQ1CZvs=;
+        s=korg; t=1632156742;
+        bh=Q3st4ewzJ592xQsPtIgfX2VAu2ti4iX4rnFtz2rPuwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dqTd7SenWs1to/UvAL8FmALvmP3zG4qpmTkE2H/ZuyqXLBcAEWJvFdzuCfvWNUOcj
-         5uP72koKFcL03IKlfRJ+p8eWQPbhDb/qjW07CPJ7uZe5Mar1oQuoiG1PcWPMbyd2Ay
-         bcUSlT3woQfVyegyZC+0dOABtvVodvzelEeGwiXk=
+        b=NemYPkadJj+LTznDwG0P1YKPbGS8y3MyOqkV0EFSNLdmqgkdcAbDUNvfHnKYdBPs9
+         AroVtbJ4fvw2yw/xBV8tv7E7721+Dm4nn6f1qcp7Hy4k7yYbAGZf9Elqw891vPz2A5
+         i24W/O37bgi3H1KLa8CSZ2AvoZ8XvQpzvNoIZrgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Terry Bowman <Terry.Bowman@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: [PATCH 4.14 092/217] x86/resctrl: Fix a maybe-uninitialized build warning treated as error
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 064/175] drm/msm/dsi: Fix some reference counted resource leaks
 Date:   Mon, 20 Sep 2021 18:41:53 +0200
-Message-Id: <20210920163927.752230686@linuxfoundation.org>
+Message-Id: <20210920163920.147763457@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Babu Moger <babu.moger@amd.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 527f721478bce3f49b513a733bacd19d6f34b08c upstream.
+[ Upstream commit 6977cc89c87506ff17e6c05f0e37f46752256e82 ]
 
-The recent commit
+'of_find_device_by_node()' takes a reference that must be released when
+not needed anymore.
+This is expected to be done in 'dsi_destroy()'.
 
-  064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+However, there are 2 issues in 'dsi_get_phy()'.
 
-caused a RHEL build failure with an uninitialized variable warning
-treated as an error because it removed the default case snippet.
+First, if 'of_find_device_by_node()' succeeds but 'platform_get_drvdata()'
+returns NULL, 'msm_dsi->phy_dev' will still be NULL, and the reference
+won't be released in 'dsi_destroy()'.
 
-The RHEL Makefile uses '-Werror=maybe-uninitialized' to force possibly
-uninitialized variable warnings to be treated as errors. This is also
-reported by smatch via the 0day robot.
+Secondly, as 'of_find_device_by_node()' already takes a reference, there is
+no need for an additional 'get_device()'.
 
-The error from the RHEL build is:
+Move the assignment to 'msm_dsi->phy_dev' a few lines above and remove the
+unneeded 'get_device()' to solve both issues.
 
-  arch/x86/kernel/cpu/resctrl/monitor.c: In function ‘__mon_event_count’:
-  arch/x86/kernel/cpu/resctrl/monitor.c:261:12: error: ‘m’ may be used
-  uninitialized in this function [-Werror=maybe-uninitialized]
-    m->chunks += chunks;
-              ^~
-
-The upstream Makefile does not build using '-Werror=maybe-uninitialized'.
-So, the problem is not seen there. Fix the problem by putting back the
-default case snippet.
-
- [ bp: note that there's nothing wrong with the code and other compilers
-   do not trigger this warning - this is being done just so the RHEL compiler
-   is happy. ]
-
-Fixes: 064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
-Reported-by: Terry Bowman <Terry.Bowman@amd.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ec31abf6684e ("drm/msm/dsi: Separate PHY to another platform device")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/f15bc57648a00e7c99f943903468a04639d50596.1628241097.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/intel_rdt_monitor.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/msm/dsi/dsi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kernel/cpu/intel_rdt_monitor.c
-+++ b/arch/x86/kernel/cpu/intel_rdt_monitor.c
-@@ -244,6 +244,12 @@ static u64 __mon_event_count(u32 rmid, s
- 	case QOS_L3_MBM_LOCAL_EVENT_ID:
- 		m = &rr->d->mbm_local[rmid];
- 		break;
-+	default:
-+		/*
-+		 * Code would never reach here because an invalid
-+		 * event id would fail the __rmid_read.
-+		 */
-+		return RMID_VAL_ERROR;
+diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+index ec572f8389ed..3a75586c1989 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi.c
++++ b/drivers/gpu/drm/msm/dsi/dsi.c
+@@ -36,8 +36,10 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
  	}
  
- 	if (rr->first) {
+ 	phy_pdev = of_find_device_by_node(phy_node);
+-	if (phy_pdev)
++	if (phy_pdev) {
+ 		msm_dsi->phy = platform_get_drvdata(phy_pdev);
++		msm_dsi->phy_dev = &phy_pdev->dev;
++	}
+ 
+ 	of_node_put(phy_node);
+ 
+@@ -46,8 +48,6 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
+ 		return -EPROBE_DEFER;
+ 	}
+ 
+-	msm_dsi->phy_dev = get_device(&phy_pdev->dev);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.30.2
+
 
 
