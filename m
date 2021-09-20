@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB22412B9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B602F412B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347412AbhIUCUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
+        id S239329AbhIUCUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344291AbhIUCNG (ORCPT
+        with ESMTP id S1343753AbhIUCMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:13:06 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DEDC09CCC2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:28:52 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id j6so17085092pfa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:28:52 -0700 (PDT)
+        Mon, 20 Sep 2021 22:12:10 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD01C08EE15;
+        Mon, 20 Sep 2021 11:27:32 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id u18so30610634wrg.5;
+        Mon, 20 Sep 2021 11:27:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=thLxpg55L9L13LgTK3I+f/Vrx/go018u31qP2p6Akx0=;
-        b=WHXDWtWcwFGk7LtXnSZ+PjQsT2VIAEZhKXrYUYCUqx275UrjId3tNEFrVrFval+6VY
-         ASne1xFDtcgrVAHM0ho6Jz0an8+X7rpaMwNgpvvoptvSiH7Nh4vjF4vM8+OwOEh54BVO
-         he7wqilNLX8KmGWIidRONIwihDDVpXGrUbUOc=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y9zwU5sYqKQSmloO/YdgRLqeETN2yQaV2Mq9YoCcAeI=;
+        b=SyirlfFaRyUdz9gloQTpR5LDjfVwEkVbGAKz3rA4+raBnbaIk7GgLE3cRNSVmNsJ2T
+         JkAkx5J15BZqvGTnXpSAtMhcW8GIpbkKYz2o/fjKqnI7nvBKVq2Jtz7IbC8Fxfend/aT
+         cCRjbtW6tlCL62XP7oma8j5FxslfQyutluSRo3uL68wvPMjUlYshaafTq0nWn7rc+/K0
+         X23Cy/6Zd2aJ/yV5Bd1gNBmWM7UE1ZhKunrY3CvgiHOnnJEeBbf3dekuSIuwb6Q/2klJ
+         ROAo5Rgkac0ZG3z2/sAy1GbRbPopzBsEH3+I1VBUbmtoYuVc/qLJlZm084MYYLGUrKoK
+         +CPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=thLxpg55L9L13LgTK3I+f/Vrx/go018u31qP2p6Akx0=;
-        b=RtBw6JlBs+AN0LLSkNA8WjPLshDcZh4aHOX/nlQVWA9fYIsjUDCUjseDPvWYIHvl+I
-         TLgiqX25BSebiEMe+UUD79pi3PuO+eGE+vfu33qDGyDSYubrdusgDg0zb0/J+q1Rro9f
-         1mEw9CwOPHy4d1jLJ7q44PJ5ckj+LWOlA2KDUuO6tzSub5zzdu20nOLv61DV1FOrqX1h
-         d7TS10FrsgmRG9BTrG7rb6Ow13FOcamWeJE/trwHQMGjm643ZXYLDoOmWs6gn9DtfluE
-         UwUIe8PmN81E8fE+bMdeY+Oj8KpxxOab2Ah0hgXe0iQJ8VhvMhXhvwCtw8Pr7a+AwYZo
-         gysQ==
-X-Gm-Message-State: AOAM531CHXzahPBz8pla6R0fs4fPm3TQRgKUUpv/11HZJGjUmdGPuND+
-        ioFWNUA4ZHQw7LomOeE0y1X2Mw==
-X-Google-Smtp-Source: ABdhPJwhFVKdYlCToObhylE8KnrZUUrTqmif27AzPVOfkfhLdgmla4KXX1yzLyQmcd3Kf9O4pHq1Dg==
-X-Received: by 2002:a62:7c01:0:b0:447:cd36:c9a7 with SMTP id x1-20020a627c01000000b00447cd36c9a7mr3827780pfc.2.1632162532349;
-        Mon, 20 Sep 2021 11:28:52 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u6sm1965997pgc.68.2021.09.20.11.28.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 11:28:51 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 11:28:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug
- is enabled
-Message-ID: <202109201126.E9902480D9@keescook>
-References: <20210601182202.3011020-1-swboyd@chromium.org>
- <20210601182202.3011020-5-swboyd@chromium.org>
- <202109200726.2EFEDC5@keescook>
- <CAE-0n50v6Wm2OBsy5-Q3B9VrNhH+_uyDDa8Ps3MeXsCLZczW3w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y9zwU5sYqKQSmloO/YdgRLqeETN2yQaV2Mq9YoCcAeI=;
+        b=hpEndldJR5rQZssKX9SmBbm9fU/ZNXnn1LU92u9L9nMxXXl4XyAEi6ld3/st/KtdLH
+         +SnIXcuda0raa1ikpvM6XfrYf6B6jq7ZOeJbC+7gSclCXgbZkVLHXt0Ln1usngmp6RWx
+         gS/+dyvdNHAFVrRZN/AvQ9FHj3fwoe99C9RUmugPP1KYiqGitCapHve0qrDtsXXIdqpJ
+         gSemyPERbkEwOmnFTZZNin68iGRt4eA1Ct5b3TRRg/1gnTm/5xXerN2Sem9nanVu+sYL
+         jWyGfpRVCLT2AjGr6YSu1uIkuqof/HScR7n5Hhq7WoIW94o11FfE5hP5c50XBh29yg2v
+         hgIw==
+X-Gm-Message-State: AOAM533jqDbm9dBXAYMHQ7Wsyhxwj/ehGUs8lz7SRpxP/Oo3OBWvWBmS
+        ZoX4czQW1PrGAP1UsGdLCCVKrfb4MFzJtJYEXuA=
+X-Google-Smtp-Source: ABdhPJw/EQD0n+XxVEqlN0NQvPPWtr7hnSNfLxBFHmeACTGd4fEURr8HGGl7QADWcofo1LfgcxwBHTMNCADEDP4umVY=
+X-Received: by 2002:adf:e5c2:: with SMTP id a2mr29789784wrn.251.1632162450723;
+ Mon, 20 Sep 2021 11:27:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n50v6Wm2OBsy5-Q3B9VrNhH+_uyDDa8Ps3MeXsCLZczW3w@mail.gmail.com>
+References: <20210811235253.924867-1-robdclark@gmail.com> <20210811235253.924867-5-robdclark@gmail.com>
+ <YRV10ew/Lr8GPzEv@pendragon.ideasonboard.com> <CAD=FV=Xd9fizYdxfXYOkpJ_1fZcHp3-ROJ7k4iPg0g0RQ_+A3Q@mail.gmail.com>
+In-Reply-To: <CAD=FV=Xd9fizYdxfXYOkpJ_1fZcHp3-ROJ7k4iPg0g0RQ_+A3Q@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 20 Sep 2021 11:32:02 -0700
+Message-ID: <CAF6AEGt8K=iy8=dn+GJxt7ybfPtGDPy9w3StqWDwyOv_CKLNVg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:23:01AM -0700, Stephen Boyd wrote:
-> Quoting Kees Cook (2021-09-20 07:29:54)
-> > On Tue, Jun 01, 2021 at 11:22:02AM -0700, Stephen Boyd wrote:
-> > > Obscuring the pointers that slub shows when debugging makes for some
-> > > confusing slub debug messages:
-> > >
-> > >  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
-> > >
-> > > Those addresses are hashed for kernel security reasons. If we're trying
-> > > to be secure with slub_debug on the commandline we have some big
-> > > problems given that we dump whole chunks of kernel memory to the kernel
-> > > logs. Let's force on the no_hash_pointers commandline flag when
-> > > slub_debug is on the commandline. This makes slub debug messages more
-> > > meaningful and if by chance a kernel address is in some slub debug
-> > > object dump we will have a better chance of figuring out what went
-> > > wrong.
-> > >
-> > > Note that we don't use %px in the slub code because we want to reduce
-> > > the number of places that %px is used in the kernel. This also nicely
-> > > prints a big fat warning at kernel boot if slub_debug is on the
-> > > commandline so that we know that this kernel shouldn't be used on
-> > > production systems.
+On Thu, Aug 12, 2021 at 1:08 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Laurent,
+>
+> On Thu, Aug 12, 2021 at 12:26 PM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
 > >
-> > Eeeek. I missed this patch. NAK NAK. People use slub_debug for
-> > production systems to gain redzoning, etc, as a layer of defense, and
-> > they absolutely do not want %p-hashing disabled. %p hashing is
-> > controlled by the no_hash_pointers boot param (since v5.12), and needs to stay
-> > separate from slub_debug.
+> > Hi Rob,
 > >
-> > Can we please revert this in Linus's tree and in v5.14?
+> > Thank you for the patch.
 > >
-> 
-> This is fine with me as long as debugging with slub_debug on the
-> commandline is possible. Would you prefer v1 of this patch series[1]
-> that uses the printk format to print unhashed pointers in slub debugging
-> messages?
-> 
-> [1] https://lore.kernel.org/r/20210520013539.3733631-1-swboyd@chromium.org
+> > On Wed, Aug 11, 2021 at 04:52:50PM -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Slightly awkward to fish out the display_info when we aren't creating
+> > > own connector.  But I don't see an obvious better way.
+> >
+> > We need a bit more than this, to support the NO_CONNECTOR case, the
+> > bridge has to implement a few extra operations, and set the bridge .ops
+> > field. I've submitted two patches to do so a while ago:
+> >
+> > - [RFC PATCH 08/11] drm/bridge: ti-sn65dsi86: Implement bridge connector operations ([1])
+>
+> Rob asked me about this over IRC, so if he left it out and it's needed
+> then it's my fault. However, I don't believe it's needed until your
+> series making this bridge chip support full DP. For the the eDP case
+> the bridge chip driver in ToT no longer queries the EDID itself. It
+> simply provides an AUX bus to the panel driver and the panel driver
+> queries the EDID. I think that means we don't need to add
+> DRM_BRIDGE_OP_EDID, right?
+>
+> I was also wondering if in the full DP case we should actually model
+> the physical DP jack as a drm_bridge and have it work the same way. It
+> would get probed via the DP AUX bus just like a panel. I seem to
+> remember Stephen Boyd was talking about modeling the DP connector as a
+> drm_bridge because it would allow us to handle the fact that some TCPC
+> chips could only support HBR2 whereas others could support HBR3. Maybe
+> it would end up being a fairly elegant solution?
+>
+> > - [RFC PATCH 09/11] drm/bridge: ti-sn65dsi86: Make connector creation optional ([2])
+> >
+> > The second patch is similar to the first half of this patch, but misses
+> > the cleanup code. I'll try to rebase this and resubmit, but it may take
+> > a bit of time.
+>
+> Whoops! You're right that Rob's patch won't work at all because we'll
+> just hit the "Fix bridge driver to make connector optional!" case. I
+> should have noticed that. :(
 
-I'd like to keep %px use in the kernel minimized. Seeing full pointers (%p
-hashing disabled) can be done with the no_hash_pointers boot param, and
-that's used in other debug cases as well. I'd rather keep it a global
-knob.
+Yes, indeed.. once I fix that, I get no display..
 
-Thanks!
+Not sure if Laurent is still working on his series, otherwise I can
+try to figure out what bridge ops are missing
 
--Kees
-
--- 
-Kees Cook
+BR,
+-R
