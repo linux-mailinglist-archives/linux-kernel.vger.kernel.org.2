@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C68412551
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745E8412338
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353721AbhITSna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:43:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53124 "EHLO mail.kernel.org"
+        id S1347031AbhITSW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:22:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381965AbhITSjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 323856333A;
-        Mon, 20 Sep 2021 17:30:46 +0000 (UTC)
+        id S1376692AbhITSOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:14:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F17936328B;
+        Mon, 20 Sep 2021 17:21:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159046;
-        bh=CXCzy7tiYTN6nZ2fvrhXM7SroQ9LCi5oAHSmqNIicIM=;
+        s=korg; t=1632158473;
+        bh=wnKwA/60iuYLeWzRlkpXSybYhrzrUEEMFGcIe5dL5PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d0R/+S5xM8gv6Sq02mraBTHIkS891XrLmY9HG+SVOMVUOOJKY/9uz5UKl95G/QUzc
-         FHIES8Gnek4Mj8Ri/2tk0pXyrc6lLvT0MlOHPeJ7QDukmht/UGFp4ND5YmWuW3l86S
-         4OmamJMlHoS2nWPqE09Y+9lq+K6B+a4vEB3L6J0g=
+        b=n6awdn+PC2adp7qhwqF1ICebSujYNqPhCQM8tJvkMgZ3CvSIsL+141zlNAjiIJmgX
+         aOxQxL6QQKa+BcW7xNE+k8JvxtK/p7Fd4y7w4sG14U2M/+69j55FpK9zIUYsNu8qXN
+         NH3xIAlmx8nGo+FM+WwszlMZxa2gJyDjqm3Qvx7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>
-Subject: [PATCH 5.14 051/168] net/mlx5: FWTrace, cancel work on alloc pd error flow
-Date:   Mon, 20 Sep 2021 18:43:09 +0200
-Message-Id: <20210920163923.313557941@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com,
+        Haimin Zhang <tcs_kernel@tencent.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 172/260] fix array-index-out-of-bounds in taprio_change
+Date:   Mon, 20 Sep 2021 18:43:10 +0200
+Message-Id: <20210920163936.929306054@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saeed Mahameed <saeedm@nvidia.com>
+From: Haimin Zhang <tcs_kernel@tencent.com>
 
-commit dfe6fd72b5f1878b16aa2c8603e031bbcd66b96d upstream.
+[ Upstream commit efe487fce3061d94222c6501d7be3aa549b3dc78 ]
 
-Handle error flow on mlx5_core_alloc_pd() failure,
-read_fw_strings_work must be canceled.
+syzbot report an array-index-out-of-bounds in taprio_change
+index 16 is out of range for type '__u16 [16]'
+that's because mqprio->num_tc is lager than TC_MAX_QUEUE,so we check
+the return value of netdev_set_num_tc.
 
-Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
-Reported-by: Pavel Machek (CIP) <pavel@denx.de>
-Suggested-by: Pavel Machek (CIP) <pavel@denx.de>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Reviewed-by: Aya Levin <ayal@nvidia.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+2b3e5fb6c7ef285a94f6@syzkaller.appspotmail.com
+Signed-off-by: Haimin Zhang <tcs_kernel@tencent.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/sched/sch_taprio.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -1007,7 +1007,7 @@ int mlx5_fw_tracer_init(struct mlx5_fw_t
- 	err = mlx5_core_alloc_pd(dev, &tracer->buff.pdn);
- 	if (err) {
- 		mlx5_core_warn(dev, "FWTracer: Failed to allocate PD %d\n", err);
--		return err;
-+		goto err_cancel_work;
- 	}
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index a4de4853c79d..da9ed0613eb7 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -1503,7 +1503,9 @@ static int taprio_change(struct Qdisc *sch, struct nlattr *opt,
+ 	taprio_set_picos_per_byte(dev, q);
  
- 	err = mlx5_fw_tracer_create_mkey(tracer);
-@@ -1031,6 +1031,7 @@ err_notifier_unregister:
- 	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
- err_dealloc_pd:
- 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
-+err_cancel_work:
- 	cancel_work_sync(&tracer->read_fw_strings_work);
- 	return err;
- }
+ 	if (mqprio) {
+-		netdev_set_num_tc(dev, mqprio->num_tc);
++		err = netdev_set_num_tc(dev, mqprio->num_tc);
++		if (err)
++			goto free_sched;
+ 		for (i = 0; i < mqprio->num_tc; i++)
+ 			netdev_set_tc_queue(dev, i,
+ 					    mqprio->count[i],
+-- 
+2.30.2
+
 
 
