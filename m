@@ -2,37 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2095E412154
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EEB412470
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357414AbhITSEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
+        id S1380895AbhITSfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:35:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355971AbhITR5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:57:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A142B63214;
-        Mon, 20 Sep 2021 17:14:54 +0000 (UTC)
+        id S1379869AbhITSbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:31:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3839761AA3;
+        Mon, 20 Sep 2021 17:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158095;
-        bh=T0huKLx2YIFPLNRcYJVg4RttCwPBqOFg78IquoDDn/M=;
+        s=korg; t=1632158847;
+        bh=12eTKTrgXoNsliTpBIj9AqdcGCF3gdeRnknu9J4fK+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vZKh71a5CtrTy0QvvkmvKiPqUfzpA19iAUb5+h6mXGwCUbAw6D4cSp7NFJPgNgs7A
-         cef1GuOuQZY/c1zq49rNgcVRzl8Qz3KtlaKR/fZV3AGlP2kIoFucZX+IUv/7wiZyYB
-         zVzX490RuOie6xb1ihH/X+MdNXunR/EwViO2Tdl4=
+        b=d0+dJ3nCCM/kC8UNxzArfd32OIufVYAm1ocwe3LhzHVP48KYmIO1CPH91na/ijbO9
+         RWfXs4tC/LWtdkZ881aG9lcpWx09FRo8k0uJfZk+jXKm90hSxPwAFqY0fCgUfU0T0g
+         Xw8O/z2yyOYN6NFgsrqYcr9l/y0myEb8nyn9t5n4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>,
+        Roman Bacik <roman.bacik@broadcom.com>,
+        Bharat Gooty <bharat.gooty@broadcom.com>,
+        Abhishek Shah <abhishek.shah@broadcom.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 293/293] net: renesas: sh_eth: Fix freeing wrong tx descriptor
+Subject: [PATCH 5.10 083/122] PCI: iproc: Fix BCMA probe resource handling
 Date:   Mon, 20 Sep 2021 18:44:15 +0200
-Message-Id: <20210920163943.453592826@linuxfoundation.org>
+Message-Id: <20210920163918.512725820@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +54,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Rob Herring <robh@kernel.org>
 
-[ Upstream commit 0341d5e3d1ee2a36dd5a49b5bef2ce4ad1cfa6b4 ]
+[ Upstream commit aeaea8969b402e0081210cc9144404d13996efed ]
 
-The cur_tx counter must be incremented after TACT bit of
-txdesc->status was set. However, a CPU is possible to reorder
-instructions and/or memory accesses between cur_tx and
-txdesc->status. And then, if TX interrupt happened at such a
-timing, the sh_eth_tx_free() may free the descriptor wrongly.
-So, add wmb() before cur_tx++.
-Otherwise NETDEV WATCHDOG timeout is possible to happen.
+In commit 7ef1c871da16 ("PCI: iproc: Use
+pci_parse_request_of_pci_ranges()"), calling
+devm_request_pci_bus_resources() was dropped from the common iProc
+probe code, but is still needed for BCMA bus probing. Without it, there
+will be lots of warnings like this:
 
-Fixes: 86a74ff21a7a ("net: sh_eth: add support for Renesas SuperH Ethernet")
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+pci 0000:00:00.0: BAR 8: no space for [mem size 0x00c00000]
+pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x00c00000]
+
+Add back calling devm_request_pci_bus_resources() and adding the
+resources to pci_host_bridge.windows for BCMA bus probe.
+
+Link: https://lore.kernel.org/r/20210803215656.3803204-2-robh@kernel.org
+Fixes: 7ef1c871da16 ("PCI: iproc: Use pci_parse_request_of_pci_ranges()")
+Reported-by: Rafał Miłecki <zajec5@gmail.com>
+Tested-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Srinath Mannam <srinath.mannam@broadcom.com>
+Cc: Roman Bacik <roman.bacik@broadcom.com>
+Cc: Bharat Gooty <bharat.gooty@broadcom.com>
+Cc: Abhishek Shah <abhishek.shah@broadcom.com>
+Cc: Jitendra Bhivare <jitendra.bhivare@broadcom.com>
+Cc: Ray Jui <ray.jui@broadcom.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: "Krzysztof Wilczyński" <kw@linux.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/renesas/sh_eth.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/controller/pcie-iproc-bcma.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
-index 394ab9cdfe2c..c44aea47c120 100644
---- a/drivers/net/ethernet/renesas/sh_eth.c
-+++ b/drivers/net/ethernet/renesas/sh_eth.c
-@@ -2547,6 +2547,7 @@ static int sh_eth_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	else
- 		txdesc->status |= cpu_to_le32(TD_TACT);
+diff --git a/drivers/pci/controller/pcie-iproc-bcma.c b/drivers/pci/controller/pcie-iproc-bcma.c
+index 56b8ee7bf330..f918c713afb0 100644
+--- a/drivers/pci/controller/pcie-iproc-bcma.c
++++ b/drivers/pci/controller/pcie-iproc-bcma.c
+@@ -35,7 +35,6 @@ static int iproc_pcie_bcma_probe(struct bcma_device *bdev)
+ {
+ 	struct device *dev = &bdev->dev;
+ 	struct iproc_pcie *pcie;
+-	LIST_HEAD(resources);
+ 	struct pci_host_bridge *bridge;
+ 	int ret;
  
-+	wmb(); /* cur_tx must be incremented after TACT bit was set */
- 	mdp->cur_tx++;
+@@ -60,19 +59,16 @@ static int iproc_pcie_bcma_probe(struct bcma_device *bdev)
+ 	pcie->mem.end = bdev->addr_s[0] + SZ_128M - 1;
+ 	pcie->mem.name = "PCIe MEM space";
+ 	pcie->mem.flags = IORESOURCE_MEM;
+-	pci_add_resource(&resources, &pcie->mem);
++	pci_add_resource(&bridge->windows, &pcie->mem);
++	ret = devm_request_pci_bus_resources(dev, &bridge->windows);
++	if (ret)
++		return ret;
  
- 	if (!(sh_eth_read(ndev, EDTRR) & mdp->cd->edtrr_trns))
+ 	pcie->map_irq = iproc_pcie_bcma_map_irq;
+ 
+-	ret = iproc_pcie_setup(pcie, &resources);
+-	if (ret) {
+-		dev_err(dev, "PCIe controller setup failed\n");
+-		pci_free_resource_list(&resources);
+-		return ret;
+-	}
+-
+ 	bcma_set_drvdata(bdev, pcie);
+-	return 0;
++
++	return iproc_pcie_setup(pcie, &bridge->windows);
+ }
+ 
+ static void iproc_pcie_bcma_remove(struct bcma_device *bdev)
 -- 
 2.30.2
 
