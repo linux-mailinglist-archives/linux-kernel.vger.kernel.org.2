@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817FE410E20
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 03:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0930410E21
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 03:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhITBGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 21:06:19 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:33268 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229755AbhITBGS (ORCPT
+        id S231657AbhITBLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 21:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhITBLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 21:06:18 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id AE8CB98D5;
-        Mon, 20 Sep 2021 11:04:48 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mS7jj-00ETf4-GT; Mon, 20 Sep 2021 11:04:47 +1000
-Date:   Mon, 20 Sep 2021 11:04:47 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Sun, 19 Sep 2021 21:11:09 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DAAC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 18:09:43 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id n2so7351205plk.12
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 18:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pto4r+NbIB2rnclkYpaJHKBf9z4eQ68+/d/Hn5CuMBM=;
+        b=EDS4Ktlpjn0khBpFQWZa/rcf7pzIIKRv/QRTX3LAYGpLHEy8BWTmL1WUiB+dBDo7kH
+         6A5zpQrik3Nz5IcjaeL2UT+7MdFTGWC3WDFIfhrz6fhc8Isb8W189/CZEI4QzwIG76ya
+         YDYVx+WP5io3uGzICcpVHnaajVvoblOuH4FifrGsdX2IrfS62v5tBw99nhJZJ19qUw3o
+         d+FZGjJMvW+PmeeyagDA9+FzudvBmiwRlP/TDL2xU4Feu3pjRf1bMHqmmwDWeMyHS6or
+         fQaAvkCi6642D1U84Ert+T6rmhqAQPpN1sHC0X/IL2dMiNPzr4y8k2eMImQCheacRwTU
+         pZ8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pto4r+NbIB2rnclkYpaJHKBf9z4eQ68+/d/Hn5CuMBM=;
+        b=aNI4WcO+IuXKBxfgYE3SNXA3ugs4ccK2dMQP3nAbp9iKWRFRobqRA6Tf2EpK/CDsMq
+         8ewYbM6IGV3nfpg9pL+y4vsL5kBc6LQ61bZ9Bci4WUSZPWUSOQlkx1yErEkelysJ8/8v
+         28Jc2MB5r0fcfKAWO0MVmwcbtedvfdZsNnYHzMcVNbCWxdrmQLZazkM5wleGg7pGQX2o
+         Z8UNG+FzH5DQeCnrLjDPOekMNArUkWUk0trc12uz3VhTQRegFP9FWDm0pJ/bKvY9ibwj
+         I35mBhz2zgXLjPmhNv6mrv8N32TobaIbj2GEilAzHasPzG8Uorwof73pR2kxmo/wvvc3
+         jTTw==
+X-Gm-Message-State: AOAM531K6PyYWQkygEsznLRhLcUuEo5inmpZmcCtj0rGvknHswZlnUbO
+        9DX+5FXHzvTsK87rRg4aeJ4=
+X-Google-Smtp-Source: ABdhPJwVQA8v1LRupQwomar4+CUInn43EDZhqifgbRroovZmFoQ5wZbLOQFeGGJ5iMJzycSGu4j0jA==
+X-Received: by 2002:a17:90a:b907:: with SMTP id p7mr26438253pjr.142.1632100183524;
+        Sun, 19 Sep 2021 18:09:43 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id x19sm12485814pfa.104.2021.09.19.18.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Sep 2021 18:09:43 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 01:09:38 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <20210920010447.GU2361455@dread.disaster.area>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUIT2/xXwvZ4IErc@cmpxchg.org>
- <20210916025854.GE34899@magnolia>
- <YUN2vokEM8wgASk8@cmpxchg.org>
- <20210917052440.GJ1756565@dread.disaster.area>
- <YUTC6O0w3j7i8iDm@cmpxchg.org>
- <20210918010440.GK1756565@dread.disaster.area>
- <YUVwZpTEuqhITGaJ@moria.home.lan>
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [RFC PATCH] Introducing lockless cache built on top of slab
+ allocator
+Message-ID: <20210920010938.GA3108@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210919164239.49905-1-42.hyeyoo@gmail.com>
+ <YUeM2J7X/i0CHjrz@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUVwZpTEuqhITGaJ@moria.home.lan>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=St-ALpV-QOArFpp15CwA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <YUeM2J7X/i0CHjrz@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 12:51:50AM -0400, Kent Overstreet wrote:
-> On Sat, Sep 18, 2021 at 11:04:40AM +1000, Dave Chinner wrote:
-> > As for long term, everything in the page cache API needs to
-> > transition to byte offsets and byte counts instead of units of
-> > PAGE_SIZE and page->index. That's a more complex transition, but
-> > AFAIA that's part of the future work Willy is intended to do with
-> > folios and the folio API. Once we get away from accounting and
-> > tracking everything as units of struct page, all the public facing
-> > APIs that use those units can go away.
+Hello Matthew, Thanks to give me a comment! I appreciate it.
+
+On Sun, Sep 19, 2021 at 08:17:44PM +0100, Matthew Wilcox wrote:
+> On Sun, Sep 19, 2021 at 04:42:39PM +0000, Hyeonggon Yoo wrote:
+> > It is just simple proof of concept, and not ready for submission yet.
+> > There can be wrong code (like wrong gfp flags, or wrong error handling,
+> > etc) it is just simple proof of concept. I want comment from you.
 > 
-> Probably 95% of the places we use page->index and page->mapping aren't necessary
-> because we've already got that information from the context we're in and
-> removing them would be a useful cleanup
+> Have you read:
+> 
+> https://www.usenix.org/legacy/event/usenix01/full_papers/bonwick/bonwick_html/
+> The relevant part of that paper is section 3, magazines.  We should have
+> low and high water marks for number of objects
 
-*nod*
+I haven't read that before, but after reading it seems not different from
+SLAB's percpu queuing.
+ 
+> and we should allocate
+> from / free to the slab allocator in batches.  Slab has bulk alloc/free
+> APIs already.
+> 
 
-> - if we've already got that from context
-> (e.g. we're looking up the page in the page cache, via i_pageS) eliminating the
-> page->index or page->mapping use means we're getting rid of a data dependency so
-> it's good for performance - but more importantly, those (much fewer) places in
-> the code where we actually _do_ need page->index and page->mapping are really
-> important places to be able to find because they're interesting boundaries
-> between different components in the VM.
+There's kmem_cache_alloc_{bulk,free} functions for bulk
+allocation. But it's designed for large number of allocation
+to reduce locking cost, not for percpu lockless allocation.
 
-*nod*
+Yeah, we can implement lockless cache using kmem_cache_alloc_{bulk, free}
+but kmem_cache_alloc_{free,bulk} is not enough.
 
-This is where infrastructure like like write_cache_pages() is
-problematic.  It's not actually a component of the VM - it's core
-page cache/filesystem API functionality - but the implementation is
-determined by the fact there is no clear abstraction between the
-page cache and the VM and so while the filesysetm side of the API is
-byte-ranged based, the VM side is struct page based and so the
-impedence mismatch has to be handled in the page cache
-implementation.
+> I'd rather see this be part of the slab allocator than a separate API.
 
-Folios are definitely pointing out issues like this whilst, IMO,
-demonstrating that an abstraction like folios are also a necessary
-first step to address the problems they make obvious...
+And I disagree on this. for because most of situation, we cannot
+allocate without lock, it is special case for IO polling.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+To make it as part of slab allocator, we need to modify existing data
+structure. But making it part of slab allocator will be waste of memory
+because most of them are not using this.
