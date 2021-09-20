@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCEA412572
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E8941243F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349166AbhITSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
+        id S1380059AbhITScL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:32:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382502AbhITSkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:40:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 854146333C;
-        Mon, 20 Sep 2021 17:31:29 +0000 (UTC)
+        id S1378790AbhITS00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:26:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0669C632ED;
+        Mon, 20 Sep 2021 17:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159090;
-        bh=oCcN4ZY5S+aUwN0NRWHzeKfycl/SB8RjIQ71p8yVtug=;
+        s=korg; t=1632158747;
+        bh=ikfZ892KD0SNUlbUzD2rhuzPSMKNp0bILxoF/E3DFCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=06cAdFQqZr5bf6IRDjbuIbr+yUWW5M/1zRPQvBqGXPPOjdh0Z7P2DzXA7VyQFI4+m
-         R+8v0wpl3wEY9+Ja3BHIeOI9ADaFwIychTX2zNSoPvIdmQZCdnVKTnhxGnuvC2nKBn
-         NMsjSUkwvNQI+QcQZnPoLqv+06Nh13mBG4QtzazM=
+        b=kfTxMkZZ27qVDqXKh2IYj7Nz2fVKhucwHHzNOuwAIDgocT+og5/AA/hUuXpPtwROL
+         72gC9bYz9tW0Ew50KO+pP9XWArVmcHgjnW1bU2z7q4Dwst3BvQ4Z6ARtijFHK3ghuB
+         1kScPedGFbZg4TkGUh9hXSfwTYcYhwxEbaqUWjBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ganesh Goudar <ganeshgr@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.14 072/168] powerpc/mce: Fix access error in mce handler
+        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 038/122] vhost_net: fix OoB on sendmsg() failure.
 Date:   Mon, 20 Sep 2021 18:43:30 +0200
-Message-Id: <20210920163924.010676718@linuxfoundation.org>
+Message-Id: <20210920163917.042155863@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,84 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ganesh Goudar <ganeshgr@linux.ibm.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-commit 3a1e92d0896e928ac2a5b58962d05a39afef2e23 upstream.
+commit 3c4cea8fa7f71f00c5279547043a84bc2a4d8b8c upstream.
 
-We queue an irq work for deferred processing of mce event in realmode
-mce handler, where translation is disabled. Queuing of the work may
-result in accessing memory outside RMO region, such access needs the
-translation to be enabled for an LPAR running with hash mmu else the
-kernel crashes.
+If the sendmsg() call in vhost_tx_batch() fails, both the 'batched_xdp'
+and 'done_idx' indexes are left unchanged. If such failure happens
+when batched_xdp == VHOST_NET_BATCH, the next call to
+vhost_net_build_xdp() will access and write memory outside the xdp
+buffers area.
 
-After enabling translation in mce_handle_error() we used to leave it
-enabled to avoid crashing here, but now with the commit
-74c3354bc1d89 ("powerpc/pseries/mce: restore msr before returning from
-handler") we are restoring the MSR to disable translation.
+Since sendmsg() can only error with EBADFD, this change addresses the
+issue explicitly freeing the XDP buffers batch on error.
 
-Hence to fix this enable the translation before queuing the work.
-
-Without this change following trace is seen on injecting SLB multihit in
-an LPAR running with hash mmu.
-
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-  CPU: 5 PID: 1883 Comm: insmod Tainted: G        OE     5.14.0-mce+ #137
-  NIP:  c000000000735d60 LR: c000000000318640 CTR: 0000000000000000
-  REGS: c00000001ebff9a0 TRAP: 0300   Tainted: G       OE      (5.14.0-mce+)
-  MSR:  8000000000001003 <SF,ME,RI,LE>  CR: 28008228  XER: 00000001
-  CFAR: c00000000031863c DAR: c00000027fa8fe08 DSISR: 40000000 IRQMASK: 0
-  ...
-  NIP llist_add_batch+0x0/0x40
-  LR  __irq_work_queue_local+0x70/0xc0
-  Call Trace:
-    0xc00000001ebffc0c (unreliable)
-    irq_work_queue+0x40/0x70
-    machine_check_queue_event+0xbc/0xd0
-    machine_check_early_common+0x16c/0x1f4
-
-Fixes: 74c3354bc1d89 ("powerpc/pseries/mce: restore msr before returning from handler")
-Signed-off-by: Ganesh Goudar <ganeshgr@linux.ibm.com>
-[mpe: Fix comment formatting, trim oops in change log for readability]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210909064330.312432-1-ganeshgr@linux.ibm.com
+Fixes: 0a0be13b8fe2 ("vhost_net: batch submitting XDP buffers to underlayer sockets")
+Suggested-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/mce.c |   17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/vhost/net.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/mce.c
-+++ b/arch/powerpc/kernel/mce.c
-@@ -249,6 +249,7 @@ void machine_check_queue_event(void)
- {
- 	int index;
- 	struct machine_check_event evt;
-+	unsigned long msr;
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -466,7 +466,7 @@ static void vhost_tx_batch(struct vhost_
+ 		.num = nvq->batched_xdp,
+ 		.ptr = nvq->xdp,
+ 	};
+-	int err;
++	int i, err;
  
- 	if (!get_mce_event(&evt, MCE_EVENT_RELEASE))
+ 	if (nvq->batched_xdp == 0)
+ 		goto signal_used;
+@@ -475,6 +475,15 @@ static void vhost_tx_batch(struct vhost_
+ 	err = sock->ops->sendmsg(sock, msghdr, 0);
+ 	if (unlikely(err < 0)) {
+ 		vq_err(&nvq->vq, "Fail to batch sending packets\n");
++
++		/* free pages owned by XDP; since this is an unlikely error path,
++		 * keep it simple and avoid more complex bulk update for the
++		 * used pages
++		 */
++		for (i = 0; i < nvq->batched_xdp; ++i)
++			put_page(virt_to_head_page(nvq->xdp[i].data));
++		nvq->batched_xdp = 0;
++		nvq->done_idx = 0;
  		return;
-@@ -262,8 +263,20 @@ void machine_check_queue_event(void)
- 	memcpy(&local_paca->mce_info->mce_event_queue[index],
- 	       &evt, sizeof(evt));
+ 	}
  
--	/* Queue irq work to process this event later. */
--	irq_work_queue(&mce_event_process_work);
-+	/*
-+	 * Queue irq work to process this event later. Before
-+	 * queuing the work enable translation for non radix LPAR,
-+	 * as irq_work_queue may try to access memory outside RMO
-+	 * region.
-+	 */
-+	if (!radix_enabled() && firmware_has_feature(FW_FEATURE_LPAR)) {
-+		msr = mfmsr();
-+		mtmsr(msr | MSR_IR | MSR_DR);
-+		irq_work_queue(&mce_event_process_work);
-+		mtmsr(msr);
-+	} else {
-+		irq_work_queue(&mce_event_process_work);
-+	}
- }
- 
- void mce_common_process_ue(struct pt_regs *regs,
 
 
