@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC233412184
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4AE412183
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358345AbhITSGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56862 "EHLO mail.kernel.org"
+        id S1358312AbhITSGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350726AbhITSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350727AbhITSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:00:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A49B463223;
-        Mon, 20 Sep 2021 17:15:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3DE263227;
+        Mon, 20 Sep 2021 17:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158152;
-        bh=6YvKqsPIQwe4JWDksOW/bfbv51cHkYaGvOZJOpAzwGo=;
+        s=korg; t=1632158154;
+        bh=nZa1LrpL0x/o1GYvWiwkzvbZzI6NCmZVHmx29e7yE/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ARGi/iEgNRfXkAvhCHDMpFATBBSd7WKAnKw5yo+OqIxp1Lq62sWD2DxGu1EZxVc1J
-         G9rc7sM9xS1XL9EKYNCj58jAuDjvRhISSiLN3I85UQd6hPG+VkvAmd6P1wve1AY/Id
-         /pn6yD+5F2jWAWu2hDmSWTapSBO4aod6sszW6p2k=
+        b=qlgcKDyQM2pH/MgShaJEqBfMnOn+9l+0LOamj2ZcJeB8U3GYItOPVTe6mR0jsvNKb
+         KvrEutDniIyBjp6CgHKfQrEAESCGfAfMOud6QTPL+EK4A5McmyP96guL/YgIG4hUCH
+         mB9GSS7kwuYDejQ5jktNyEP6hIfjIl4XmR+pCu68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+        Vinod Koul <vkoul@kernel.org>,
         Richard Leitner <richard.leitner@skidata.com>,
         Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.4 025/260] Revert "dmaengine: imx-sdma: refine to load context only once"
-Date:   Mon, 20 Sep 2021 18:40:43 +0200
-Message-Id: <20210920163931.983199204@linuxfoundation.org>
+Subject: [PATCH 5.4 026/260] dmaengine: imx-sdma: remove duplicated sdma_load_context
+Date:   Mon, 20 Sep 2021 18:40:44 +0200
+Message-Id: <20210920163932.014958342@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -43,66 +43,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Robin Gong <yibin.gong@nxp.com>
 
-commit 8592f02464d52776c5cfae4627c6413b0ae7602d upstream.
+commit e555a03b112838883fdd8185d613c35d043732f2 upstream.
 
-This reverts commit ad0d92d7ba6aecbe2705907c38ff8d8be4da1e9c, because
-in spi-imx case, burst length may be changed dynamically.
+Since sdma_transfer_init() will do sdma_load_context before any
+sdma transfer, no need once more in sdma_config_channel().
 
 Fixes: ad0d92d7ba6a ("dmaengine: imx-sdma: refine to load context only once")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 Tested-by: Richard Leitner <richard.leitner@skidata.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/imx-sdma.c |    8 --------
- 1 file changed, 8 deletions(-)
+ drivers/dma/imx-sdma.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 --- a/drivers/dma/imx-sdma.c
 +++ b/drivers/dma/imx-sdma.c
-@@ -377,7 +377,6 @@ struct sdma_channel {
- 	unsigned long			watermark_level;
- 	u32				shp_addr, per_addr;
- 	enum dma_status			status;
--	bool				context_loaded;
- 	struct imx_dma_data		data;
- 	struct work_struct		terminate_worker;
- };
-@@ -988,9 +987,6 @@ static int sdma_load_context(struct sdma
- 	int ret;
- 	unsigned long flags;
+@@ -1134,7 +1134,6 @@ static void sdma_set_watermarklevel_for_
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
+-	int ret;
  
--	if (sdmac->context_loaded)
--		return 0;
+ 	sdma_disable_channel(chan);
+ 
+@@ -1174,9 +1173,7 @@ static int sdma_config_channel(struct dm
+ 		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
+ 	}
+ 
+-	ret = sdma_load_context(sdmac);
 -
- 	if (sdmac->direction == DMA_DEV_TO_MEM)
- 		load_address = sdmac->pc_from_device;
- 	else if (sdmac->direction == DMA_DEV_TO_DEV)
-@@ -1033,8 +1029,6 @@ static int sdma_load_context(struct sdma
- 
- 	spin_unlock_irqrestore(&sdma->channel_0_lock, flags);
- 
--	sdmac->context_loaded = true;
--
- 	return ret;
+-	return ret;
++	return 0;
  }
  
-@@ -1074,7 +1068,6 @@ static void sdma_channel_terminate_work(
- 	sdmac->desc = NULL;
- 	spin_unlock_irqrestore(&sdmac->vc.lock, flags);
- 	vchan_dma_desc_free_list(&sdmac->vc, &head);
--	sdmac->context_loaded = false;
- }
- 
- static int sdma_disable_channel_async(struct dma_chan *chan)
-@@ -1335,7 +1328,6 @@ static void sdma_free_chan_resources(str
- 
- 	sdmac->event_id0 = 0;
- 	sdmac->event_id1 = 0;
--	sdmac->context_loaded = false;
- 
- 	sdma_set_channel_priority(sdmac, 0);
- 
+ static int sdma_set_channel_priority(struct sdma_channel *sdmac,
 
 
