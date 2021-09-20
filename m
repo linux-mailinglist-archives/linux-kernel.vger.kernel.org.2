@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0374411D03
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CFE411D09
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345859AbhITRPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39510 "EHLO mail.kernel.org"
+        id S1345074AbhITRPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:15:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346069AbhITRNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:13:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 695FA619E8;
-        Mon, 20 Sep 2021 16:57:47 +0000 (UTC)
+        id S1344025AbhITRNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BD48619EA;
+        Mon, 20 Sep 2021 16:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157067;
-        bh=JQGF92WIBj9tvjPoOjzECkBMVVr00cJOwyadSGrXDKw=;
+        s=korg; t=1632157070;
+        bh=2yxhDNo2r6BFNcZIstUafih3qJBNAhv7EDmPBauYkXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mylA4Kr37o6icBJOCTRs9zFFrY7i7hN5fyHzddUC1JwFacle5LDSmMUISiCNvnzJ0
-         PfhaPa7uN05HCdBw5+COX5q01C6tk7WG8hUbKs6Ct+ydk79t/Pr9CwWOORgOApRRfI
-         /VUH8YtTzWhD/T7H39mDAtbZry/rP4831Cn1fEAA=
+        b=GFPvyK+kkLT3PrO1NJ0I0S9TrsJEo1TzBTl/TY9gEUFq3qMHvKJiZA1BkfiPFFTys
+         KLT8NY6aIbNSwzma6aA9ZoEnvvVot+norc//iU92iKftDZLZDHjMQn8Tx+SHKVmXYQ
+         TJp+F7PojBHcB5aRAhD/bYb+ab02m+wpd2OoGHyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 007/217] perf/x86/amd/ibs: Work around erratum #1197
-Date:   Mon, 20 Sep 2021 18:40:28 +0200
-Message-Id: <20210920163924.853848195@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 008/217] cryptoloop: add a deprecation warning
+Date:   Mon, 20 Sep 2021 18:40:29 +0200
+Message-Id: <20210920163924.888730881@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -40,62 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 26db2e0c51fe83e1dd852c1321407835b481806e ]
+[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
 
-Erratum #1197 "IBS (Instruction Based Sampling) Register State May be
-Incorrect After Restore From CC6" is published in a document:
+Support for cryptoloop has been officially marked broken and deprecated
+in favor of dm-crypt (which supports the same broken algorithms if
+needed) in Linux 2.6.4 (released in March 2004), and support for it has
+been entirely removed from losetup in util-linux 2.23 (released in April
+2013).  Add a warning and a deprecation schedule.
 
-  "Revision Guide for AMD Family 19h Models 00h-0Fh Processors" 56683 Rev. 1.04 July 2021
-
-  https://bugzilla.kernel.org/show_bug.cgi?id=206537
-
-Implement the erratum's suggested workaround and ignore IBS samples if
-MSRC001_1031 == 0.
-
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210817221048.88063-3-kim.phillips@amd.com
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/amd/ibs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/block/Kconfig      | 4 ++--
+ drivers/block/cryptoloop.c | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-index 3fe68f7f9d5e..5043425ced6b 100644
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -90,6 +90,7 @@ struct perf_ibs {
- 	unsigned long			offset_mask[1];
- 	int				offset_max;
- 	unsigned int			fetch_count_reset_broken : 1;
-+	unsigned int			fetch_ignore_if_zero_rip : 1;
- 	struct cpu_perf_ibs __percpu	*pcpu;
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 01091c08e999..ef702fdb2f92 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -234,7 +234,7 @@ config BLK_DEV_LOOP_MIN_COUNT
+ 	  dynamically allocated with the /dev/loop-control interface.
  
- 	struct attribute		**format_attrs;
-@@ -674,6 +675,10 @@ fail:
- 	if (check_rip && (ibs_data.regs[2] & IBS_RIP_INVALID)) {
- 		regs.flags &= ~PERF_EFLAGS_EXACT;
- 	} else {
-+		/* Workaround for erratum #1197 */
-+		if (perf_ibs->fetch_ignore_if_zero_rip && !(ibs_data.regs[1]))
-+			goto out;
-+
- 		set_linear_ip(&regs, ibs_data.regs[1]);
- 		regs.flags |= PERF_EFLAGS_EXACT;
- 	}
-@@ -767,6 +772,9 @@ static __init void perf_event_ibs_init(void)
- 	if (boot_cpu_data.x86 >= 0x16 && boot_cpu_data.x86 <= 0x18)
- 		perf_ibs_fetch.fetch_count_reset_broken = 1;
+ config BLK_DEV_CRYPTOLOOP
+-	tristate "Cryptoloop Support"
++	tristate "Cryptoloop Support (DEPRECATED)"
+ 	select CRYPTO
+ 	select CRYPTO_CBC
+ 	depends on BLK_DEV_LOOP
+@@ -246,7 +246,7 @@ config BLK_DEV_CRYPTOLOOP
+ 	  WARNING: This device is not safe for journaled file systems like
+ 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
+ 	  instead, which can be configured to be on-disk compatible with the
+-	  cryptoloop device.
++	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
  
-+	if (boot_cpu_data.x86 == 0x19 && boot_cpu_data.x86_model < 0x10)
-+		perf_ibs_fetch.fetch_ignore_if_zero_rip = 1;
-+
- 	perf_ibs_pmu_init(&perf_ibs_fetch, "ibs_fetch");
+ source "drivers/block/drbd/Kconfig"
  
- 	if (ibs_caps & IBS_CAPS_OPCNT) {
+diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
+index 74e03aa537ad..32363816cb04 100644
+--- a/drivers/block/cryptoloop.c
++++ b/drivers/block/cryptoloop.c
+@@ -203,6 +203,8 @@ init_cryptoloop(void)
+ 
+ 	if (rc)
+ 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
++	else
++		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
+ 	return rc;
+ }
+ 
 -- 
 2.30.2
 
