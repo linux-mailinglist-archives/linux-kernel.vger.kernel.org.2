@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F614123EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF834125CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348621AbhITS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:28:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44474 "EHLO mail.kernel.org"
+        id S1354353AbhITSsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377999AbhITSW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:22:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32AEE632BE;
-        Mon, 20 Sep 2021 17:24:20 +0000 (UTC)
+        id S1383438AbhITSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91F7B61AF8;
+        Mon, 20 Sep 2021 17:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158660;
-        bh=LeNpSld68FcxVZZOiC+BDt3NlGwhmw3SSmR5uHHuvrE=;
+        s=korg; t=1632159166;
+        bh=35EQIKN/9h25gcgOYWiXfQA+AyYb4dfm3rZV5sJttjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bbB/EdFsU4ayfwnWHPEVlcM6/gOniK60HLUZM08T542lPOZIKFcVUt81e4QqZawub
-         GVs15eR3fpZ+0M9iLqRCCCtSePqtlSupJMn4484swWKNRLhLVctE6PvtiP9g3oiZ5e
-         fSbyEUG168dd64jBzrbzd0FmUz10oqc1anBhCkVA=
+        b=PnjGer2WEciVBY+mw91eUsvqZbbgqT/cp+A8IZMN7KFd9BblOtvHmLS/JcXntcY0K
+         J3Etz+Ilh1wFmWRTA7v1A6dtwKHuUxhuXtiOp6Ukr4KRNTnCLTyAvZswcGbECtlDj8
+         9TgRAl7HKqiJvNpAmaZ+Ej+e1q4lcwDN+08frgb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 227/260] KVM: PPC: Book3S HV: Tolerate treclaim. in fake-suspend mode changing registers
+        stable@vger.kernel.org,
+        George Cherian <george.cherian@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 107/168] PCI: Add ACS quirks for Cavium multi-function devices
 Date:   Mon, 20 Sep 2021 18:44:05 +0200
-Message-Id: <20210920163938.832566915@linuxfoundation.org>
+Message-Id: <20210920163925.154715931@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: George Cherian <george.cherian@marvell.com>
 
-commit 267cdfa21385d78c794768233678756e32b39ead upstream.
+[ Upstream commit 32837d8a8f63eb95dcb9cd005524a27f06478832 ]
 
-POWER9 DD2.2 and 2.3 hardware implements a "fake-suspend" mode where
-certain TM instructions executed in HV=0 mode cause softpatch interrupts
-so the hypervisor can emulate them and prevent problematic processor
-conditions. In this fake-suspend mode, the treclaim. instruction does
-not modify registers.
+Some Cavium endpoints are implemented as multi-function devices without ACS
+capability, but they actually don't support peer-to-peer transactions.
 
-Unfortunately the rfscv instruction executed by the guest do not
-generate softpatch interrupts, which can cause the hypervisor to lose
-track of the fake-suspend mode, and it can execute this treclaim. while
-not in fake-suspend mode. This modifies GPRs and crashes the hypervisor.
+Add ACS quirks to declare DMA isolation for the following devices:
 
-It's not trivial to disable scv in the guest with HFSCR now, because
-they assume a POWER9 has scv available. So this fix saves and restores
-checkpointed registers across the treclaim.
+  - BGX device found on Octeon-TX (8xxx)
+  - CGX device found on Octeon-TX2 (9xxx)
+  - RPM device found on Octeon-TX3 (10xxx)
 
-Fixes: 7854f7545bff ("KVM: PPC: Book3S: Rework TM save/restore code and make it C-callable")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210908101718.118522-2-npiggin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210810122425.1115156-1-george.cherian@marvell.com
+Signed-off-by: George Cherian <george.cherian@marvell.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S |   36 ++++++++++++++++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+ drivers/pci/quirks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -3137,7 +3137,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_P9_TM_HV_A
- 	/* The following code handles the fake_suspend = 1 case */
- 	mflr	r0
- 	std	r0, PPC_LR_STKOFF(r1)
--	stdu	r1, -PPC_MIN_STKFRM(r1)
-+	stdu	r1, -TM_FRAME_SIZE(r1)
- 
- 	/* Turn on TM. */
- 	mfmsr	r8
-@@ -3152,10 +3152,42 @@ BEGIN_FTR_SECTION
- END_FTR_SECTION_IFSET(CPU_FTR_P9_TM_XER_SO_BUG)
- 	nop
- 
-+	/*
-+	 * It's possible that treclaim. may modify registers, if we have lost
-+	 * track of fake-suspend state in the guest due to it using rfscv.
-+	 * Save and restore registers in case this occurs.
-+	 */
-+	mfspr	r3, SPRN_DSCR
-+	mfspr	r4, SPRN_XER
-+	mfspr	r5, SPRN_AMR
-+	/* SPRN_TAR would need to be saved here if the kernel ever used it */
-+	mfcr	r12
-+	SAVE_NVGPRS(r1)
-+	SAVE_GPR(2, r1)
-+	SAVE_GPR(3, r1)
-+	SAVE_GPR(4, r1)
-+	SAVE_GPR(5, r1)
-+	stw	r12, 8(r1)
-+	std	r1, HSTATE_HOST_R1(r13)
-+
- 	/* We have to treclaim here because that's the only way to do S->N */
- 	li	r3, TM_CAUSE_KVM_RESCHED
- 	TRECLAIM(R3)
- 
-+	GET_PACA(r13)
-+	ld	r1, HSTATE_HOST_R1(r13)
-+	REST_GPR(2, r1)
-+	REST_GPR(3, r1)
-+	REST_GPR(4, r1)
-+	REST_GPR(5, r1)
-+	lwz	r12, 8(r1)
-+	REST_NVGPRS(r1)
-+	mtspr	SPRN_DSCR, r3
-+	mtspr	SPRN_XER, r4
-+	mtspr	SPRN_AMR, r5
-+	mtcr	r12
-+	HMT_MEDIUM
-+
- 	/*
- 	 * We were in fake suspend, so we are not going to save the
- 	 * register state as the guest checkpointed state (since
-@@ -3183,7 +3215,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_P9_TM_XER_
- 	std	r5, VCPU_TFHAR(r9)
- 	std	r6, VCPU_TFIAR(r9)
- 
--	addi	r1, r1, PPC_MIN_STKFRM
-+	addi	r1, r1, TM_FRAME_SIZE
- 	ld	r0, PPC_LR_STKOFF(r1)
- 	mtlr	r0
- 	blr
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 950290d8cafc..8c3c1ef92171 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4854,6 +4854,10 @@ static const struct pci_dev_acs_enabled {
+ 	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
+ 	/* Cavium ThunderX */
+ 	{ PCI_VENDOR_ID_CAVIUM, PCI_ANY_ID, pci_quirk_cavium_acs },
++	/* Cavium multi-function devices */
++	{ PCI_VENDOR_ID_CAVIUM, 0xA026, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_CAVIUM, 0xA059, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_CAVIUM, 0xA060, pci_quirk_mf_endpoint_acs },
+ 	/* APM X-Gene */
+ 	{ PCI_VENDOR_ID_AMCC, 0xE004, pci_quirk_xgene_acs },
+ 	/* Ampere Computing */
+-- 
+2.30.2
+
 
 
