@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC70411AE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540E5411E23
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244276AbhITQx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:53:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39398 "EHLO mail.kernel.org"
+        id S1350166AbhITR1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:27:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244201AbhITQuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A76216135D;
-        Mon, 20 Sep 2021 16:48:45 +0000 (UTC)
+        id S1349774AbhITRY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:24:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 133C5613A2;
+        Mon, 20 Sep 2021 17:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156526;
-        bh=26DpxREAUW4RnhxRwr/LD/ekH0ARh3OLBDizhE3yZ2o=;
+        s=korg; t=1632157324;
+        bh=eXULAlZ7qapbLcZqOTCZhks1KXeuN+HBLgGlB1Ea9fA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FIuOUPE+dVrqSd4MN6f/mpcGdHCCbRyBewc3e4sPKHLf87qSkojreMkqz17ND0Bc+
-         +MPnlzOIlmUX4MjfL6Lp4brEWuFlE95Kg17uyXiTQxb8nxLkzM3tCEOjkTlLLV7Hph
-         w3C+z/Wt1T1Q+tnm9F+ma7bMlALwWlt/mGKqPulU=
+        b=HIEBxP01HV2dIXyXMo1UGyjE6lft+Pxng695tXDUAeznHdW+70U6aWKyNGlQZCJ/d
+         daB8c2jFMG445dN7Pmf21MnxTxUJXR5S/tSBcSeOLbedLrVAh4D+g2ENqEEwpOvxhT
+         ExvkXfmAE4GMizDGZ/h81d7zr8w9R9/nw8QdC4cc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 100/133] s390/jump_label: print real address in a case of a jump label bug
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 157/217] ata: sata_dwc_460ex: No need to call phy_exit() befre phy_init()
 Date:   Mon, 20 Sep 2021 18:42:58 +0200
-Message-Id: <20210920163915.901816529@linuxfoundation.org>
+Message-Id: <20210920163929.960974193@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 5492886c14744d239e87f1b0b774b5a341e755cc ]
+[ Upstream commit 3ad4a31620355358316fa08fcfab37b9d6c33347 ]
 
-In case of a jump label print the real address of the piece of code
-where a mismatch was detected. This is right before the system panics,
-so there is nothing revealed.
+Last change to device managed APIs cleaned up error path to simple phy_exit()
+call, which in some cases has been executed with NULL parameter. This per se
+is not a problem, but rather logical misconception: no need to free resource
+when it's for sure has not been allocated yet. Fix the driver accordingly.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210727125130.19977-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/jump_label.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/sata_dwc_460ex.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
-index 083b05f5f5ab..cbc187706648 100644
---- a/arch/s390/kernel/jump_label.c
-+++ b/arch/s390/kernel/jump_label.c
-@@ -43,7 +43,7 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
- 	unsigned char *ipe = (unsigned char *)expected;
- 	unsigned char *ipn = (unsigned char *)new;
+diff --git a/drivers/ata/sata_dwc_460ex.c b/drivers/ata/sata_dwc_460ex.c
+index ce128d5a6ded..ed301dee200d 100644
+--- a/drivers/ata/sata_dwc_460ex.c
++++ b/drivers/ata/sata_dwc_460ex.c
+@@ -1253,24 +1253,20 @@ static int sata_dwc_probe(struct platform_device *ofdev)
+ 	irq = irq_of_parse_and_map(np, 0);
+ 	if (irq == NO_IRQ) {
+ 		dev_err(&ofdev->dev, "no SATA DMA irq\n");
+-		err = -ENODEV;
+-		goto error_out;
++		return -ENODEV;
+ 	}
  
--	pr_emerg("Jump label code mismatch at %pS [%p]\n", ipc, ipc);
-+	pr_emerg("Jump label code mismatch at %pS [%px]\n", ipc, ipc);
- 	pr_emerg("Found:    %6ph\n", ipc);
- 	pr_emerg("Expected: %6ph\n", ipe);
- 	pr_emerg("New:      %6ph\n", ipn);
+ #ifdef CONFIG_SATA_DWC_OLD_DMA
+ 	if (!of_find_property(np, "dmas", NULL)) {
+ 		err = sata_dwc_dma_init_old(ofdev, hsdev);
+ 		if (err)
+-			goto error_out;
++			return err;
+ 	}
+ #endif
+ 
+ 	hsdev->phy = devm_phy_optional_get(hsdev->dev, "sata-phy");
+-	if (IS_ERR(hsdev->phy)) {
+-		err = PTR_ERR(hsdev->phy);
+-		hsdev->phy = NULL;
+-		goto error_out;
+-	}
++	if (IS_ERR(hsdev->phy))
++		return PTR_ERR(hsdev->phy);
+ 
+ 	err = phy_init(hsdev->phy);
+ 	if (err)
 -- 
 2.30.2
 
