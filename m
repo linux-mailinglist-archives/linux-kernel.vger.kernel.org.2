@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30978411A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E2F411C19
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243233AbhITQtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:49:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37068 "EHLO mail.kernel.org"
+        id S1345760AbhITRGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:06:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243283AbhITQsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC9EB61283;
-        Mon, 20 Sep 2021 16:46:56 +0000 (UTC)
+        id S1345567AbhITRDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99BBB61411;
+        Mon, 20 Sep 2021 16:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156417;
-        bh=IaFdkkG7QvRgyFW3Tit9ebtaDeSUrj35HUvwlTcdsP8=;
+        s=korg; t=1632156842;
+        bh=3hp6WVbtrtT+x+od6o2HFjHrb7+RKz1NUPAZrJ0F9Xc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ItekIsntg9Fl/xusW+5TqbAxTt3ifgJbzwmrR88rd2o1yazgjTRtz2SfluHkgCI5T
-         ivKg0yK9pcLbhSVkD8Oaz8ekBsWBifqDbnlI7Uac1nurObzNecDVPgXgMraSRhOOxk
-         M5Gf1NzBwuFzZ6TobqpXCvB5tNoiGJq97VnGjxfI=
+        b=MQPKnvVmDuZuMmXH985pKYvNU4gVi5oEtcYTKNXdx1g8sAXHqKEvbKtsoyi/zXzf5
+         uyBO5pA3h7sgxCLPCIxISJgXXf+8kvE2HbiNok5beFj5Jqlhzi/Yde0zBP5N1h0RZE
+         /Zu2F2rmmcfEN4qzYPj1Y2XDpd8fDEU6vyYe0HQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 049/133] drm/msm/dsi: Fix some reference counted resource leaks
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 078/175] i2c: mt65xx: fix IRQ check
 Date:   Mon, 20 Sep 2021 18:42:07 +0200
-Message-Id: <20210920163914.249233914@linuxfoundation.org>
+Message-Id: <20210920163920.614999100@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 6977cc89c87506ff17e6c05f0e37f46752256e82 ]
+[ Upstream commit 58fb7c643d346e2364404554f531cfa6a1a3917c ]
 
-'of_find_device_by_node()' takes a reference that must be released when
-not needed anymore.
-This is expected to be done in 'dsi_destroy()'.
+Iff platform_get_irq() returns 0, the driver's probe() method will return 0
+early (as if the method's call was successful).  Let's consider IRQ0 valid
+for simplicity -- devm_request_irq() can always override that decision...
 
-However, there are 2 issues in 'dsi_get_phy()'.
-
-First, if 'of_find_device_by_node()' succeeds but 'platform_get_drvdata()'
-returns NULL, 'msm_dsi->phy_dev' will still be NULL, and the reference
-won't be released in 'dsi_destroy()'.
-
-Secondly, as 'of_find_device_by_node()' already takes a reference, there is
-no need for an additional 'get_device()'.
-
-Move the assignment to 'msm_dsi->phy_dev' a few lines above and remove the
-unneeded 'get_device()' to solve both issues.
-
-Fixes: ec31abf6684e ("drm/msm/dsi: Separate PHY to another platform device")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/f15bc57648a00e7c99f943903468a04639d50596.1628241097.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: ce38815d39ea ("I2C: mediatek: Add driver for MediaTek I2C controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Reviewed-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/dsi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
-index 6edcd6f57e70..817661462676 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -36,8 +36,10 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
- 	}
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 4a7d9bc2142b..0f905f8387f2 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -708,7 +708,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2c->pdmabase);
  
- 	phy_pdev = of_find_device_by_node(phy_node);
--	if (phy_pdev)
-+	if (phy_pdev) {
- 		msm_dsi->phy = platform_get_drvdata(phy_pdev);
-+		msm_dsi->phy_dev = &phy_pdev->dev;
-+	}
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
++	if (irq < 0)
+ 		return irq;
  
- 	of_node_put(phy_node);
- 
-@@ -46,8 +48,6 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
- 		return -EPROBE_DEFER;
- 	}
- 
--	msm_dsi->phy_dev = get_device(&phy_pdev->dev);
--
- 	return 0;
- }
- 
+ 	init_completion(&i2c->msg_complete);
 -- 
 2.30.2
 
