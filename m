@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1023F411DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD52411C29
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345441AbhITR0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49982 "EHLO mail.kernel.org"
+        id S1344609AbhITRGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:06:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349521AbhITRXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:23:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91F8B61A6C;
-        Mon, 20 Sep 2021 17:01:44 +0000 (UTC)
+        id S1345691AbhITREL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:04:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1A261507;
+        Mon, 20 Sep 2021 16:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157305;
-        bh=oCuclDFQR/TWrSxh1Tg1IKmN6apKshahn0yGbqtvOmY=;
+        s=korg; t=1632156863;
+        bh=fszcVQ54+MRHL1zDTWIOZl6b4IzBfRpD5N0vgFm23/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1dUDXAZqnzzVDvIydY+N1wSY8gxYIGRkbACoN4p/7BcmW950YhfxfRdis2zQZcBlR
-         5mqf0B8lz1XZrHmlcRsc9vTQRV8lJyxj6ozx13Z+jM367jBuPk64TYKmsfZ4xDTabL
-         H+9oT/JxZ5La6DiTtlRxdb1jHOwYd+HBBnBaCzDA=
+        b=wAEQSRaVUNxc/U/jA9ck4b7Ziql9S/7a8KKIgJrDhUqCbOJ4nE0m4+M2iJodneNXR
+         z2gkucQLt6O8iXdGQgx+02TgU9uErFWTLrulJtbetrSeWgAP0Kv07ZJdp2PLfN8iR7
+         z+7ExUJAWTSx9QbNUiUDv6i/FXj3KEiawdd9Fsfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
         Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 148/217] video: fbdev: riva: Error out if pixclock equals zero
-Date:   Mon, 20 Sep 2021 18:42:49 +0200
-Message-Id: <20210920163929.654144032@linuxfoundation.org>
+Subject: [PATCH 4.9 121/175] video: fbdev: riva: Error out if pixclock equals zero
+Date:   Mon, 20 Sep 2021 18:42:50 +0200
+Message-Id: <20210920163922.032803305@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -90,7 +90,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/drivers/video/fbdev/riva/fbdev.c b/drivers/video/fbdev/riva/fbdev.c
-index 1ea78bb911fb..c080d14f9d2a 100644
+index 2ef26ad99341..69f3acd405c5 100644
 --- a/drivers/video/fbdev/riva/fbdev.c
 +++ b/drivers/video/fbdev/riva/fbdev.c
 @@ -1088,6 +1088,9 @@ static int rivafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
