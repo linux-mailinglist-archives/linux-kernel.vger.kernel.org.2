@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B445141144E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CFC41144C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237775AbhITMYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:24:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233511AbhITMYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:24:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3D66109D;
-        Mon, 20 Sep 2021 12:23:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632140604;
-        bh=JW+A23gvYk0vPFs8X+JHXBSX96yX7HgLc0qfq9D4l20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fu3fIefUDmmha1RG+K6BxpZShjeTQGbq4fWedlc2Lk/wmdVozPyMoi5QYTcdjxwTm
-         APBArDTtz2/ik7IAZ4b/lxYD9oJZPFZ3jjEbNnDLgVXYDzaMBsQA1aA33XYTVQca49
-         a+rtgVneir6mIZoVqInZqOSjkZ+qSkOZQUXTYWon/13uMI8vNzeNBeU/hEonOQtT3f
-         LBsUt0ZrX83f6p2wNZtdjZGqsm/4wHoEoTGMsFufa7+wdcYARmt6jAidwXm7YWtMfp
-         EakYLiLXuZXPNOZ4qX0CJhEX0EXRhJJCsUg5Ot88NFd+r+b14HEkJ8oGYofZWA12hQ
-         97FBFl+Pt/thA==
-Date:   Mon, 20 Sep 2021 13:22:40 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH] kselftest/arm64: signal: Skip tests if required features
- are missing
-Message-ID: <20210920122240.GE4192@sirena.org.uk>
-References: <20210920121228.35368-1-cristian.marussi@arm.com>
+        id S237732AbhITMYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233511AbhITMYK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:24:10 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521DDC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:22:43 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id q11so29102270wrr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tCMyAI4JO6VKkU7AmoNIAzglb9xaZgl9kmlNL3VEvL4=;
+        b=JZQ2+zI+W0SL7cwiKWYbsuiuWplyCzFrYondKJhbn30f0ST4w3KQPKCOEdfN2X7qL/
+         e4Hf5Vp6LoppSpnYVor+/hGghyQHmG3ZsUR/ZkmnRXReGgnd/kbYeYCMGt1miVcU5f3G
+         eNrhTmqpmBt7jczLwm/DagTdp961iGwu1mGwr07e26mO2nxiv9gSoHKsqNmjtJHR0HcX
+         hI7cPlwBB2bo6KeAzNOUNVycXeEL2/Q1YCKti0uiy/CKnOWe/u0dsztQYYvqJgGdIRbD
+         CvhkmLu1/MZ9EDXANpLWWBXiXKRFLqRL7fo7MybclREbWmfjsU5fKJc/MxS7ek7iq0wc
+         7WCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=tCMyAI4JO6VKkU7AmoNIAzglb9xaZgl9kmlNL3VEvL4=;
+        b=QtS/Cfm5A3el8HeHpvbKVFOt2aoXW+y/j6buRZMaf2xF3O8Srg0FMdgH3AOUxDZ5lK
+         0k1BiB8pzZhbwT7f+5f/mQjacqjH5xAKpKBLK38w9++Lpf4Zrqe8ieYnUQaW8vOa46AO
+         S6pSPva3vY4twy2s5gPb00rggDlWOb0GB0gyEoU/SOKUFoYJToOIiuquHvWwe0chR4WE
+         GhSr6cu+DOWp6t0sISICjg2+cx8+9vc2DkGdtFSSp86K/8OpY8nlmu7v22he31/tNvbl
+         kVMVLQvoD4IH0+iWnfx6gizmkczbh7YtpBA8ZKhJUHqVb1+OdWgkFP3E493rcM8MjooG
+         IE2g==
+X-Gm-Message-State: AOAM533T3nOlVb1E6uQgZ9P05htHkdDw0QjNy/uS5bFn8Lz3acI8e3lT
+        7psQ4zmxwxnV0Jiu3nn7LamngZQycDJaD4oX
+X-Google-Smtp-Source: ABdhPJwghoiUF31ZcV1Our+qvNK3DzJ3CUzQX74ij+vo4OEmaDXRO6ym4AzRjtnXIVr8AS5Bn9Zzhw==
+X-Received: by 2002:a05:600c:17d1:: with SMTP id y17mr29272700wmo.135.1632140561722;
+        Mon, 20 Sep 2021 05:22:41 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:aa8a:ef22:59c5:1bf3? ([2001:861:44c0:66c0:aa8a:ef22:59c5:1bf3])
+        by smtp.gmail.com with ESMTPSA id a72sm19889422wme.5.2021.09.20.05.22.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 05:22:41 -0700 (PDT)
+Subject: Re: [PATCH 2/9] firmware: meson: simplify getting .driver_data
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
+ <20210920090522.23784-3-wsa+renesas@sang-engineering.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <ad855cb8-0ed4-4e42-7434-2073855249fa@baylibre.com>
+Date:   Mon, 20 Sep 2021 14:22:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xB0nW4MQa6jZONgY"
-Content-Disposition: inline
-In-Reply-To: <20210920121228.35368-1-cristian.marussi@arm.com>
-X-Cookie: diplomacy, n:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210920090522.23784-3-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20/09/2021 11:05, Wolfram Sang wrote:
+> We should get 'driver_data' from 'struct device' directly. Going via
+> platform_device is an unneeded step back and forth.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+> 
+> Build tested only. buildbot is happy.
+> 
+>  drivers/firmware/meson/meson_sm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/firmware/meson/meson_sm.c b/drivers/firmware/meson/meson_sm.c
+> index 77aa5c6398aa..714016e3aab3 100644
+> --- a/drivers/firmware/meson/meson_sm.c
+> +++ b/drivers/firmware/meson/meson_sm.c
+> @@ -240,12 +240,11 @@ EXPORT_SYMBOL_GPL(meson_sm_get);
+>  static ssize_t serial_show(struct device *dev, struct device_attribute *attr,
+>  			 char *buf)
+>  {
+> -	struct platform_device *pdev = to_platform_device(dev);
+>  	struct meson_sm_firmware *fw;
+>  	uint8_t *id_buf;
+>  	int ret;
+>  
+> -	fw = platform_get_drvdata(pdev);
+> +	fw = dev_get_drvdata(dev);
+>  
+>  	id_buf = kmalloc(SM_CHIP_ID_LENGTH, GFP_KERNEL);
+>  	if (!id_buf)
+> 
 
---xB0nW4MQa6jZONgY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Sep 20, 2021 at 01:12:28PM +0100, Cristian Marussi wrote:
-> During initialization of a signal testcase, features declared as required
-> are properly checked against the running system but no action is then taken
-> to effectively skip such a testcase.
-
-Reviwed-by: Mark Brown <broonie@kernel.org>
-
-I have a version of this locally which I thought I'd sent out already
-among all the in flight patches I've got for kseltest but it looks like
-it didn't make it.
-
---xB0nW4MQa6jZONgY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFIfQ8ACgkQJNaLcl1U
-h9CkBgf/a1gYE9Xf+Z+0pTm73eRYWoKWjdSie4OlAlCC6Zi3CdiDoofY3UgrLnKk
-+8L7Ma5+b9yHTi5Ex0ocw61Y0wTp830SJhZc3yUzGiJwVDGK6NeGoQrw4NUvDkSy
-8tu6iNFNifB/2CLN+yS7XpUQ0rjUAGKF7VtVf5rJlQ3RIOxGF/p3Hg8Y85k/CqtK
-5cPzHpfUX1bSUZe2AOITgue1VI2EkxByBdfjAzDumw+9Llzf86DNz1BsfR8+zV9E
-aNLzYJ1xE5sbLhWPjzGB4Hs7nhr0By4/upNIKI7YV0cfu/ZkzGOEKoEAu7xQWrUm
-6ae57EbVQPyCslc+BHD41nuD5Bu9hw==
-=+gxi
------END PGP SIGNATURE-----
-
---xB0nW4MQa6jZONgY--
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
