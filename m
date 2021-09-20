@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEC4412441
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7F9412448
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379721AbhITSc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:32:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47618 "EHLO mail.kernel.org"
+        id S1378179AbhITSdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:33:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352073AbhITS00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1378787AbhITS00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:26:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34F1C632D4;
-        Mon, 20 Sep 2021 17:25:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6056561244;
+        Mon, 20 Sep 2021 17:25:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158749;
-        bh=OOiEn7Bt1AS7qARfbgULgOErx8F4ZiCkpfWGyHUgS4s=;
+        s=korg; t=1632158751;
+        bh=aHzs2Pypu+HwoFsHuPJXCeG8sMuoKR+6muI/CLd3l2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yf9p4/7ZTzxFVqg7Q7r95K6VoJmNOapvMcPrzvmDpRcV/mkxwGosAv2VhH+bi3rXC
-         QtQEZFHU1ifYYI8Ys6BVB5UGU8p6RCvGhWu5QWFQzy5G7vWF9nGrLJXNJY7fZ20w0w
-         c829TRT1cFFaplv7MBTY/uNJZobUBnzphEfM3Dfs=
+        b=GZnmUKQmidXegRZBvRDZ1Q8XiqJT/a42HlUj2SueX5KG7turx7C2oWFI+v8WlhddU
+         uYYls0HFu6K4bo2AdFQ7Uea/CsWAM+C39+hSyZXiu8ixX7bEC1wd5KpHbAoi1MX1vu
+         thfI2/zjzluYrmGvtkzwMlq2C/e8wUC70xZgLJKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 039/122] net/af_unix: fix a data-race in unix_dgram_poll
-Date:   Mon, 20 Sep 2021 18:43:31 +0200
-Message-Id: <20210920163917.073976512@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 040/122] net: dsa: destroy the phylink instance on any error in dsa_slave_phy_setup
+Date:   Mon, 20 Sep 2021 18:43:32 +0200
+Message-Id: <20210920163917.103844544@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -40,97 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-commit 04f08eb44b5011493d77b602fdec29ff0f5c6cd5 upstream.
+commit 6a52e73368038f47f6618623d75061dc263b26ae upstream.
 
-syzbot reported another data-race in af_unix [1]
+DSA supports connecting to a phy-handle, and has a fallback to a non-OF
+based method of connecting to an internal PHY on the switch's own MDIO
+bus, if no phy-handle and no fixed-link nodes were present.
 
-Lets change __skb_insert() to use WRITE_ONCE() when changing
-skb head qlen.
+The -ENODEV error code from the first attempt (phylink_of_phy_connect)
+is what triggers the second attempt (phylink_connect_phy).
 
-Also, change unix_dgram_poll() to use lockless version
-of unix_recvq_full()
+However, when the first attempt returns a different error code than
+-ENODEV, this results in an unbalance of calls to phylink_create and
+phylink_destroy by the time we exit the function. The phylink instance
+has leaked.
 
-It is verry possible we can switch all/most unix_recvq_full()
-to the lockless version, this will be done in a future kernel version.
+There are many other error codes that can be returned by
+phylink_of_phy_connect. For example, phylink_validate returns -EINVAL.
+So this is a practical issue too.
 
-[1] HEAD commit: 8596e589b787732c8346f0482919e83cc9362db1
-
-BUG: KCSAN: data-race in skb_queue_tail / unix_dgram_poll
-
-write to 0xffff88814eeb24e0 of 4 bytes by task 25815 on cpu 0:
- __skb_insert include/linux/skbuff.h:1938 [inline]
- __skb_queue_before include/linux/skbuff.h:2043 [inline]
- __skb_queue_tail include/linux/skbuff.h:2076 [inline]
- skb_queue_tail+0x80/0xa0 net/core/skbuff.c:3264
- unix_dgram_sendmsg+0xff2/0x1600 net/unix/af_unix.c:1850
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg net/socket.c:723 [inline]
- ____sys_sendmsg+0x360/0x4d0 net/socket.c:2392
- ___sys_sendmsg net/socket.c:2446 [inline]
- __sys_sendmmsg+0x315/0x4b0 net/socket.c:2532
- __do_sys_sendmmsg net/socket.c:2561 [inline]
- __se_sys_sendmmsg net/socket.c:2558 [inline]
- __x64_sys_sendmmsg+0x53/0x60 net/socket.c:2558
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-read to 0xffff88814eeb24e0 of 4 bytes by task 25834 on cpu 1:
- skb_queue_len include/linux/skbuff.h:1869 [inline]
- unix_recvq_full net/unix/af_unix.c:194 [inline]
- unix_dgram_poll+0x2bc/0x3e0 net/unix/af_unix.c:2777
- sock_poll+0x23e/0x260 net/socket.c:1288
- vfs_poll include/linux/poll.h:90 [inline]
- ep_item_poll fs/eventpoll.c:846 [inline]
- ep_send_events fs/eventpoll.c:1683 [inline]
- ep_poll fs/eventpoll.c:1798 [inline]
- do_epoll_wait+0x6ad/0xf00 fs/eventpoll.c:2226
- __do_sys_epoll_wait fs/eventpoll.c:2238 [inline]
- __se_sys_epoll_wait fs/eventpoll.c:2233 [inline]
- __x64_sys_epoll_wait+0xf6/0x120 fs/eventpoll.c:2233
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x0000001b -> 0x00000001
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 25834 Comm: syz-executor.1 Tainted: G        W         5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-
-Fixes: 86b18aaa2b5b ("skbuff: fix a data race in skb_queue_len()")
-Cc: Qian Cai <cai@lca.pw>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: aab9c4067d23 ("net: dsa: Plug in PHYLINK support")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Link: https://lore.kernel.org/r/20210914134331.2303380-1-vladimir.oltean@nxp.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/skbuff.h |    2 +-
- net/unix/af_unix.c     |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/dsa/slave.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1908,7 +1908,7 @@ static inline void __skb_insert(struct s
- 	WRITE_ONCE(newsk->prev, prev);
- 	WRITE_ONCE(next->prev, newsk);
- 	WRITE_ONCE(prev->next, newsk);
--	list->qlen++;
-+	WRITE_ONCE(list->qlen, list->qlen + 1);
- }
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -1728,13 +1728,11 @@ static int dsa_slave_phy_setup(struct ne
+ 		 * use the switch internal MDIO bus instead
+ 		 */
+ 		ret = dsa_slave_phy_connect(slave_dev, dp->index);
+-		if (ret) {
+-			netdev_err(slave_dev,
+-				   "failed to connect to port %d: %d\n",
+-				   dp->index, ret);
+-			phylink_destroy(dp->pl);
+-			return ret;
+-		}
++	}
++	if (ret) {
++		netdev_err(slave_dev, "failed to connect to PHY: %pe\n",
++			   ERR_PTR(ret));
++		phylink_destroy(dp->pl);
+ 	}
  
- static inline void __skb_queue_splice(const struct sk_buff_head *list,
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2769,7 +2769,7 @@ static __poll_t unix_dgram_poll(struct f
- 
- 		other = unix_peer(sk);
- 		if (other && unix_peer(other) != sk &&
--		    unix_recvq_full(other) &&
-+		    unix_recvq_full_lockless(other) &&
- 		    unix_dgram_peer_wake_me(sk, other))
- 			writable = 0;
- 
+ 	return ret;
 
 
