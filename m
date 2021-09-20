@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E568411D23
+	by mail.lfdr.de (Postfix) with ESMTP id 568C0411D24
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345096AbhITRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:16:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
+        id S1348051AbhITRQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347510AbhITROR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:14:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC83619F7;
-        Mon, 20 Sep 2021 16:58:07 +0000 (UTC)
+        id S1347610AbhITRO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:14:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A67619F9;
+        Mon, 20 Sep 2021 16:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157087;
-        bh=n3lyOd2sjt6O5FYm8v++9uN5IidoxoTMiNxZYE5Wf4I=;
+        s=korg; t=1632157090;
+        bh=89w5O5mvEhMy/uHuvN0tJIllL74mrZOos3Otfw4qbzw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S3tf6Fzxg08ljml6hvlnlQOTNXwWN64G7/fr3/jfcqBT8+g/jTpq9ISbWOq7BOZFy
-         KrESgT7lXiZQdhAFyigaRiw38Hk7o0Plzip4KodG0pJQHvM7AKNVcMJ7sbp6RkQyVL
-         WWJfIM5lWZdOjsmwfk8REHwwzLjb9ucpuo4//fVo=
+        b=Gy0dm4S4+IAsp/D1QPCxGSHhqfd1cMgMXDwG3XIelco3w4rV51czZJkWFyD7YyZMh
+         w/IHSShIic7HKtouhcSJq7qlika7/43cLNTUVQuDl3Mm+QR/DGv09Pv5GFhLpUg7+1
+         /Dg9V5cxE3tgp2dC9H8DEwNTr49YezLs2/+Q4eEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phong Hoang <phong.hoang.wz@renesas.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 048/217] clocksource/drivers/sh_cmt: Fix wrong setting if dont request IRQ for clock source channel
-Date:   Mon, 20 Sep 2021 18:41:09 +0200
-Message-Id: <20210920163926.251694261@linuxfoundation.org>
+Subject: [PATCH 4.14 049/217] crypto: qat - use proper type for vf_mask
+Date:   Mon, 20 Sep 2021 18:41:10 +0200
+Message-Id: <20210920163926.286272039@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -42,96 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phong Hoang <phong.hoang.wz@renesas.com>
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-[ Upstream commit be83c3b6e7b8ff22f72827a613bf6f3aa5afadbb ]
+[ Upstream commit 462354d986b6a89c6449b85f17aaacf44e455216 ]
 
-If CMT instance has at least two channels, one channel will be used
-as a clock source and another one used as a clock event device.
-In that case, IRQ is not requested for clock source channel so
-sh_cmt_clock_event_program_verify() might work incorrectly.
-Besides, when a channel is only used for clock source, don't need to
-re-set the next match_value since it should be maximum timeout as
-it still is.
+Replace vf_mask type with unsigned long to avoid a stack-out-of-bound.
 
-On the other hand, due to no IRQ, total_cycles is not counted up
-when reaches compare match time (timer counter resets to zero),
-so sh_cmt_clocksource_read() returns unexpected value.
-Therefore, use 64-bit clocksoure's mask for 32-bit or 16-bit variants
-will also lead to wrong delta calculation. Hence, this mask should
-correspond to timer counter width, and above function just returns
-the raw value of timer counter register.
+This is to fix the following warning reported by KASAN the first time
+adf_msix_isr_ae() gets called.
 
-Fixes: bfa76bb12f23 ("clocksource: sh_cmt: Request IRQ for clock event device only")
-Fixes: 37e7742c55ba ("clocksource/drivers/sh_cmt: Fix clocksource width for 32-bit machines")
-Signed-off-by: Phong Hoang <phong.hoang.wz@renesas.com>
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210422123443.73334-1-niklas.soderlund+renesas@ragnatech.se
+    [  692.091987] BUG: KASAN: stack-out-of-bounds in find_first_bit+0x28/0x50
+    [  692.092017] Read of size 8 at addr ffff88afdf789e60 by task swapper/32/0
+    [  692.092076] Call Trace:
+    [  692.092089]  <IRQ>
+    [  692.092101]  dump_stack+0x9c/0xcf
+    [  692.092132]  print_address_description.constprop.0+0x18/0x130
+    [  692.092164]  ? find_first_bit+0x28/0x50
+    [  692.092185]  kasan_report.cold+0x7f/0x111
+    [  692.092213]  ? static_obj+0x10/0x80
+    [  692.092234]  ? find_first_bit+0x28/0x50
+    [  692.092262]  find_first_bit+0x28/0x50
+    [  692.092288]  adf_msix_isr_ae+0x16e/0x230 [intel_qat]
+
+Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/sh_cmt.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ drivers/crypto/qat/qat_common/adf_isr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-index 3cd62f7c33e3..48eeee53a586 100644
---- a/drivers/clocksource/sh_cmt.c
-+++ b/drivers/clocksource/sh_cmt.c
-@@ -570,7 +570,8 @@ static int sh_cmt_start(struct sh_cmt_channel *ch, unsigned long flag)
- 	ch->flags |= flag;
+diff --git a/drivers/crypto/qat/qat_common/adf_isr.c b/drivers/crypto/qat/qat_common/adf_isr.c
+index 2c0be14309cf..7877ba677220 100644
+--- a/drivers/crypto/qat/qat_common/adf_isr.c
++++ b/drivers/crypto/qat/qat_common/adf_isr.c
+@@ -59,6 +59,8 @@
+ #include "adf_transport_access_macros.h"
+ #include "adf_transport_internal.h"
  
- 	/* setup timeout if no clockevent */
--	if ((flag == FLAG_CLOCKSOURCE) && (!(ch->flags & FLAG_CLOCKEVENT)))
-+	if (ch->cmt->num_channels == 1 &&
-+	    flag == FLAG_CLOCKSOURCE && (!(ch->flags & FLAG_CLOCKEVENT)))
- 		__sh_cmt_set_next(ch, ch->max_match_value);
-  out:
- 	raw_spin_unlock_irqrestore(&ch->lock, flags);
-@@ -606,20 +607,25 @@ static struct sh_cmt_channel *cs_to_sh_cmt(struct clocksource *cs)
- static u64 sh_cmt_clocksource_read(struct clocksource *cs)
++#define ADF_MAX_NUM_VFS	32
++
+ static int adf_enable_msix(struct adf_accel_dev *accel_dev)
  {
- 	struct sh_cmt_channel *ch = cs_to_sh_cmt(cs);
--	unsigned long flags;
- 	u32 has_wrapped;
--	u64 value;
--	u32 raw;
+ 	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
+@@ -111,7 +113,7 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
+ 		struct adf_bar *pmisc =
+ 			&GET_BARS(accel_dev)[hw_data->get_misc_bar_id(hw_data)];
+ 		void __iomem *pmisc_bar_addr = pmisc->virt_addr;
+-		u32 vf_mask;
++		unsigned long vf_mask;
  
--	raw_spin_lock_irqsave(&ch->lock, flags);
--	value = ch->total_cycles;
--	raw = sh_cmt_get_counter(ch, &has_wrapped);
-+	if (ch->cmt->num_channels == 1) {
-+		unsigned long flags;
-+		u64 value;
-+		u32 raw;
+ 		/* Get the interrupt sources triggered by VFs */
+ 		vf_mask = ((ADF_CSR_RD(pmisc_bar_addr, ADF_ERRSOU5) &
+@@ -132,8 +134,7 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
+ 			 * unless the VF is malicious and is attempting to
+ 			 * flood the host OS with VF2PF interrupts.
+ 			 */
+-			for_each_set_bit(i, (const unsigned long *)&vf_mask,
+-					 (sizeof(vf_mask) * BITS_PER_BYTE)) {
++			for_each_set_bit(i, &vf_mask, ADF_MAX_NUM_VFS) {
+ 				vf_info = accel_dev->pf.vf_info + i;
  
--	if (unlikely(has_wrapped))
--		raw += ch->match_value + 1;
--	raw_spin_unlock_irqrestore(&ch->lock, flags);
-+		raw_spin_lock_irqsave(&ch->lock, flags);
-+		value = ch->total_cycles;
-+		raw = sh_cmt_get_counter(ch, &has_wrapped);
-+
-+		if (unlikely(has_wrapped))
-+			raw += ch->match_value + 1;
-+		raw_spin_unlock_irqrestore(&ch->lock, flags);
-+
-+		return value + raw;
-+	}
- 
--	return value + raw;
-+	return sh_cmt_get_counter(ch, &has_wrapped);
- }
- 
- static int sh_cmt_clocksource_enable(struct clocksource *cs)
-@@ -682,7 +688,7 @@ static int sh_cmt_register_clocksource(struct sh_cmt_channel *ch,
- 	cs->disable = sh_cmt_clocksource_disable;
- 	cs->suspend = sh_cmt_clocksource_suspend;
- 	cs->resume = sh_cmt_clocksource_resume;
--	cs->mask = CLOCKSOURCE_MASK(sizeof(u64) * 8);
-+	cs->mask = CLOCKSOURCE_MASK(ch->cmt->info->width);
- 	cs->flags = CLOCK_SOURCE_IS_CONTINUOUS;
- 
- 	dev_info(&ch->cmt->pdev->dev, "ch%u: used as clock source\n",
+ 				if (!__ratelimit(&vf_info->vf2pf_ratelimit)) {
 -- 
 2.30.2
 
