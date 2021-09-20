@@ -2,172 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DF2411508
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD9F41150B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbhITMzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:55:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33227 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238755AbhITMze (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:55:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632142447;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l6mk+n34sfL1pXWuYCuaJUnLQS89NC9xSQSnu2eYuTo=;
-        b=gnOEZkH0g/Q5rGoG6BMQ2uHp8+5k8np2bKofIIKWfYmwQE1PfWUPgGytKq970PE1zhcxlc
-        ThWac5/AVh2fich8Uv25kxd0ylK7Q+x25iOGLA1qlStvYhhxxG5OLqe9bwsbYlwE9BoXyi
-        al8JsWc08pWziIgfGX4s0dsleqQDNCE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-C1VAFJgPPvGGr1GnEqwMwA-1; Mon, 20 Sep 2021 08:54:06 -0400
-X-MC-Unique: C1VAFJgPPvGGr1GnEqwMwA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 495221084688;
-        Mon, 20 Sep 2021 12:54:04 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B21151346F;
-        Mon, 20 Sep 2021 12:54:03 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org, jarkko@kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Subject: [PATCH 2/2] x86: sgx_vepc: implement SGX_IOC_VEPC_REMOVE_ALL ioctl
-Date:   Mon, 20 Sep 2021 08:54:01 -0400
-Message-Id: <20210920125401.2389105-3-pbonzini@redhat.com>
-In-Reply-To: <20210920125401.2389105-1-pbonzini@redhat.com>
-References: <20210920125401.2389105-1-pbonzini@redhat.com>
+        id S239111AbhITM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239027AbhITMzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 982B360F6B;
+        Mon, 20 Sep 2021 12:54:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632142464;
+        bh=+E3USFlAlQ9wVdWsGzy+HHEZMYE6FYf6ghB1RYfKU30=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pnDSG/pHGMwB3kz5Insco1jTpQtb5uI2YUktumhZxYdKycl/gcUIXss6SiMfMPh3V
+         a0fZFIxIMUW6jLSRbPmN6fkBRd38LPbdeWmcB67BOG/n+q92FiLtpfqYGqsBEkIl0s
+         aoPcP9DqSPK1qP5I/P/1pAmV5gW8y9VnGcoak8bTlOdolypa2WL94JxcrqUURHJN4J
+         BvSHXP3kgIcts029UoWcyLN0X/g1u3frVClgWNW7Kf3bvm+QuJWNWuwOWFnYI13a2B
+         HDN/hAh53/ApveUuGLWQFVNODoZkqmVDbuc4FY8ZpTb+cqi65sicgPFfHiY+qVNSwn
+         YmwX2LLIf41cA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6304F5C07FE; Mon, 20 Sep 2021 05:54:24 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 05:54:24 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com, Waiman Long <llong@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [syzbot] WARNING in __init_work
+Message-ID: <20210920125424.GG880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000423e0a05cc0ba2c4@google.com>
+ <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
+ <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
+ <87sfy07n69.ffs@tglx>
+ <20210920040336.GV2361455@dread.disaster.area>
+ <20210920122846.GA16661@lst.de>
+ <20210920123859.GE880162@paulmck-ThinkPad-P17-Gen-1>
+ <20210920124557.GA18317@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920124557.GA18317@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For bare-metal SGX on real hardware, the hardware provides guarantees
-SGX state at reboot.  For instance, all pages start out uninitialized.
-The vepc driver provides a similar guarantee today for freshly-opened
-vepc instances, but guests such as Windows expect all pages to be in
-uninitialized state on startup, including after every guest reboot.
+On Mon, Sep 20, 2021 at 02:45:57PM +0200, Christoph Hellwig wrote:
+> On Mon, Sep 20, 2021 at 05:38:59AM -0700, Paul E. McKenney wrote:
+> > > Well, the block code already does a bdi_unregister in del_gendisk.
+> > > So if we end up freeing the whole device bdev with a registered bdi
+> > > something is badly going wrong.  Unfortunately the log in this report
+> > > isn't much help on how we got there.  IIRC syzbot will eventually spew
+> > > out a reproducer, so it might be worth to wait for that.
+> > 
+> > If it does turn out that you need to block in an RCU callback,
+> > queue_rcu_work() can be helpful.  This schedules a workqueue from the RCU
+> > callback, allowing the function passed to the preceding INIT_RCU_WORK()
+> > to block.
+> 
+> In this case we really should not block here.  The problem is that
+> we are hitting the strange bdi auto-unregister misfeature due to a bug
+> elsewhere.  Which reminds that I have a patch series to remove this
+> auto unregistration which I need to bring bag once this is fixed.
+> 
+> That being said queue_rcu_work would have been really useful in a few
+> places I touched in that past.
 
-Some userspace implementations of virtual SGX would rather avoid having
-to close and reopen the /dev/sgx_vepc file descriptor and re-mmap the
-virtual EPC.  For example, they could be sandboxing themselves before the
-guest starts in order to mitigate exploits from untrusted guests,
-forbidding further calls to open().
+Glad it helped elsewhere and apologies for the noise here!
 
-Therefore, add a ioctl that does this with EREMOVE.  Userspace can
-invoke the ioctl to bring its vEPC pages back to uninitialized state.
-There is a possibility that some pages fail to be removed if they are
-SECS pages, so the ioctl returns the number of EREMOVE failures.  The
-correct usage is documented in sgx.rst.
-
-Tested-by: Yang Zhong <yang.zhong@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- Documentation/x86/sgx.rst       | 14 +++++++++++++
- arch/x86/include/uapi/asm/sgx.h |  2 ++
- arch/x86/kernel/cpu/sgx/virt.c  | 36 +++++++++++++++++++++++++++++++++
- 3 files changed, 52 insertions(+)
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..b855db96c6c6 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -250,3 +250,17 @@ user wants to deploy SGX applications both on the host and in guests
- on the same machine, the user should reserve enough EPC (by taking out
- total virtual EPC size of all SGX VMs from the physical EPC size) for
- host SGX applications so they can run with acceptable performance.
-+
-+Some guests, such as Windows, require that all pages are uninitialized
-+at startup or after a guest reboot.  Because this state can be reached
-+only through the privileged ``ENCLS[EREMOVE]`` instruction, ``/dev/sgx_vepc``
-+provides the ``SGX_IOC_VEPC_REMOVE_ALL`` ioctl to execute the instruction on
-+all pages in the virtual EPC.
-+
-+The ioctl will often not able to remove SECS pages, in case their child
-+pages have not gone through ``EREMOVE`` yet; therefore, the ioctl returns the
-+number of pages that failed to be removed.  ``SGX_IOC_VEPC_REMOVE_ALL`` should
-+first be invoked on all the ``/dev/sgx_vepc`` file descriptors mapped
-+into the guest; a second call to the ioctl will be able to remove all
-+leftover pages and will return 0.  Any other return value on the second call
-+would be a symptom of a bug in either Linux or the userspace client.
-diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
-index 9690d6899ad9..f79d84ce8033 100644
---- a/arch/x86/include/uapi/asm/sgx.h
-+++ b/arch/x86/include/uapi/asm/sgx.h
-@@ -27,6 +27,8 @@ enum sgx_page_flags {
- 	_IOW(SGX_MAGIC, 0x02, struct sgx_enclave_init)
- #define SGX_IOC_ENCLAVE_PROVISION \
- 	_IOW(SGX_MAGIC, 0x03, struct sgx_enclave_provision)
-+#define SGX_IOC_VEPC_REMOVE_ALL \
-+	_IO(SGX_MAGIC, 0x04)
- 
- /**
-  * struct sgx_enclave_create - parameter structure for the
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 59b9c13121cd..81dc186fda2e 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -154,6 +154,24 @@ static int sgx_vepc_free_page(struct sgx_epc_page *epc_page)
- 	return 0;
- }
- 
-+static long sgx_vepc_remove_all(struct sgx_vepc *vepc)
-+{
-+	struct sgx_epc_page *entry;
-+	unsigned long index;
-+	long failures = 0;
-+
-+	xa_for_each(&vepc->page_array, index, entry)
-+		if (sgx_vepc_remove_page(entry))
-+			failures++;
-+
-+	/*
-+	 * Return the number of pages that failed to be removed, so
-+	 * userspace knows that there are still SECS pages lying
-+	 * around.
-+	 */
-+	return failures;
-+}
-+
- static int sgx_vepc_release(struct inode *inode, struct file *file)
- {
- 	struct sgx_vepc *vepc = file->private_data;
-@@ -239,9 +257,27 @@ static int sgx_vepc_open(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
-+static long sgx_vepc_ioctl(struct file *file,
-+			   unsigned int cmd, unsigned long arg)
-+{
-+	struct sgx_vepc *vepc = file->private_data;
-+
-+	switch (cmd) {
-+	case SGX_IOC_VEPC_REMOVE_ALL:
-+		if (arg)
-+			return -EINVAL;
-+		return sgx_vepc_remove_all(vepc);
-+
-+	default:
-+		return -ENOTTY;
-+	}
-+}
-+
- static const struct file_operations sgx_vepc_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= sgx_vepc_open,
-+	.unlocked_ioctl	= sgx_vepc_ioctl,
-+	.compat_ioctl	= sgx_vepc_ioctl,
- 	.release	= sgx_vepc_release,
- 	.mmap		= sgx_vepc_mmap,
- };
--- 
-2.27.0
-
+							Thanx, Paul
