@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1919441238B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F9C412456
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346699AbhITSZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:25:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40990 "EHLO mail.kernel.org"
+        id S1380377AbhITSdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344009AbhITSS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:18:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6DF9632AB;
-        Mon, 20 Sep 2021 17:23:12 +0000 (UTC)
+        id S1378882AbhITS0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:26:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B61DD632D9;
+        Mon, 20 Sep 2021 17:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158593;
-        bh=nFgCtX4TUZ4Is7S8X4Jxx5TU8pPnTOTTKO3PHLhqnzU=;
+        s=korg; t=1632158756;
+        bh=KgqqFPEDo4wF7is/0aM+fQH4uN8YsFXo/LPDc+m1Sb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RklfHSS0yBz1QEEi3ZNwrA9Lh9/qWxkf0TOOJjLMee1nR5ai/yxYzNpIwC2/sZw5t
-         u7Z1bozKHIv9YIgoIqKS+rXhVRrpMUUzGzfyAk8hTWFEyP7vRG50ko/xSCGhaPLTL+
-         kbE+nQVZnXb8fkcC6p4aBiFRnOi3hCGfjHz1i3yo=
+        b=hw9kHuf1hAMI/ZKpIPLWRVasWJRe6xWuYEzglUDGuwWY752v+HqDg8anLVd5If3og
+         KpT7o9a7vioB2ZS2LPEHxU7pbvYuJH/4vf98NUsAAkeeuwG4AoT1zOp2P8PrRpCBIx
+         tJLDMW0MNIxCZCfxANtVnK5Rqw9+1sQ5MF6d+uxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.4 195/260] arm64/sve: Use correct size when reinitialising SVE state
-Date:   Mon, 20 Sep 2021 18:43:33 +0200
-Message-Id: <20210920163937.737954530@linuxfoundation.org>
+        stable@vger.kernel.org, zhenggy <zhenggy@chinatelecom.cn>,
+        Eric Dumazet <edumazet@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 042/122] tcp: fix tp->undo_retrans accounting in tcp_sacktag_one()
+Date:   Mon, 20 Sep 2021 18:43:34 +0200
+Message-Id: <20210920163917.166697668@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
+From: zhenggy <zhenggy@chinatelecom.cn>
 
-commit e35ac9d0b56e9efefaeeb84b635ea26c2839ea86 upstream.
+commit 4f884f3962767877d7aabbc1ec124d2c307a4257 upstream.
 
-When we need a buffer for SVE register state we call sve_alloc() to make
-sure that one is there. In order to avoid repeated allocations and frees
-we keep the buffer around unless we change vector length and just memset()
-it to ensure a clean register state. The function that deals with this
-takes the task to operate on as an argument, however in the case where we
-do a memset() we initialise using the SVE state size for the current task
-rather than the task passed as an argument.
+Commit 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit
+time") may directly retrans a multiple segments TSO/GSO packet without
+split, Since this commit, we can no longer assume that a retransmitted
+packet is a single segment.
 
-This is only an issue in the case where we are setting the register state
-for a task via ptrace and the task being configured has a different vector
-length to the task tracing it. In the case where the buffer is larger in
-the traced process we will leak old state from the traced process to
-itself, in the case where the buffer is smaller in the traced process we
-will overflow the buffer and corrupt memory.
+This patch fixes the tp->undo_retrans accounting in tcp_sacktag_one()
+that use the actual segments(pcount) of the retransmitted packet.
 
-Fixes: bc0ee4760364 ("arm64/sve: Core task context handling")
-Cc: <stable@vger.kernel.org> # 4.15.x
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210909165356.10675-1-broonie@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Before that commit (10d3be569243), the assumption underlying the
+tp->undo_retrans-- seems correct.
+
+Fixes: 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit time")
+Signed-off-by: zhenggy <zhenggy@chinatelecom.cn>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+Acked-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/fpsimd.c |    2 +-
+ net/ipv4/tcp_input.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -498,7 +498,7 @@ size_t sve_state_size(struct task_struct
- void sve_alloc(struct task_struct *task)
- {
- 	if (task->thread.sve_state) {
--		memset(task->thread.sve_state, 0, sve_state_size(current));
-+		memset(task->thread.sve_state, 0, sve_state_size(task));
- 		return;
- 	}
- 
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -1314,7 +1314,7 @@ static u8 tcp_sacktag_one(struct sock *s
+ 	if (dup_sack && (sacked & TCPCB_RETRANS)) {
+ 		if (tp->undo_marker && tp->undo_retrans > 0 &&
+ 		    after(end_seq, tp->undo_marker))
+-			tp->undo_retrans--;
++			tp->undo_retrans = max_t(int, 0, tp->undo_retrans - pcount);
+ 		if ((sacked & TCPCB_SACKED_ACKED) &&
+ 		    before(start_seq, state->reord))
+ 				state->reord = start_seq;
 
 
