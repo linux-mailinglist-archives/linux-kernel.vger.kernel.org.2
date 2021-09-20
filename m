@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DFE411ABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E5411D65
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244913AbhITQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37516 "EHLO mail.kernel.org"
+        id S230368AbhITRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:20:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243890AbhITQso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8976461211;
-        Mon, 20 Sep 2021 16:47:16 +0000 (UTC)
+        id S1347045AbhITRRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:17:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E9DA61A0B;
+        Mon, 20 Sep 2021 16:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156437;
-        bh=mQG8IH/HJSkH6P8c5RlulqNS25ErDLDkcMn184/RKjo=;
+        s=korg; t=1632157163;
+        bh=pBIjgQLHeQD6MTuP7M1n6ho9bKq42x79T3f0jQJGQOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWCQH+LSqMaptYpjCFotb2m8XvvJgxuJ2l/I/X+OhuPiZdeplYKUnKx90byaMFhOG
-         WC4zi6ZkJfacU10pAyzS9PkWg+H3KrwXWliAasW0UiR+Vbw6uf7rAsE1XklAzAFYkK
-         pFqkJz2n+36w0e3tyTADd9+87dQuZzs1gXswNuSs=
+        b=VuUsXBEe7Nhyxs8yiTImCJg5Yak92n2E06iVr+/cABzyacYoqWgcJi5neVGSqjjyk
+         ZhKgNH7wNuA6TZhkYjeo87AQmdekNcMisL8LRlciJOA2l1P+rv0HCe42Keh41LlAcM
+         +2oolDzTy08FDIWA8f5tL8Il1ugzSZCXrHvWXVg0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.4 026/133] Revert "btrfs: compression: dont try to compress if we dont have enough pages"
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 083/217] usb: bdc: Fix an error handling path in bdc_probe() when no suitable DMA config is available
 Date:   Mon, 20 Sep 2021 18:41:44 +0200
-Message-Id: <20210920163913.469248773@linuxfoundation.org>
+Message-Id: <20210920163927.446308660@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 4e9655763b82a91e4c341835bb504a2b1590f984 upstream.
+[ Upstream commit d2f42e09393c774ab79088d8e3afcc62b3328fc9 ]
 
-This reverts commit f2165627319ffd33a6217275e5690b1ab5c45763.
+If no suitable DMA configuration is available, a previous 'bdc_phy_init()'
+call must be undone by a corresponding 'bdc_phy_exit()' call.
 
-[BUG]
-It's no longer possible to create compressed inline extent after commit
-f2165627319f ("btrfs: compression: don't try to compress if we don't
-have enough pages").
+Branch to the existing error handling path instead of returning
+directly.
 
-[CAUSE]
-For compression code, there are several possible reasons we have a range
-that needs to be compressed while it's no more than one page.
-
-- Compressed inline write
-  The data is always smaller than one sector and the test lacks the
-  condition to properly recognize a non-inline extent.
-
-- Compressed subpage write
-  For the incoming subpage compressed write support, we require page
-  alignment of the delalloc range.
-  And for 64K page size, we can compress just one page into smaller
-  sectors.
-
-For those reasons, the requirement for the data to be more than one page
-is not correct, and is already causing regression for compressed inline
-data writeback.  The idea of skipping one page to avoid wasting CPU time
-could be revisited in the future.
-
-[FIX]
-Fix it by reverting the offending commit.
-
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Link: https://lore.kernel.org/linux-btrfs/afa2742.c084f5d6.17b6b08dffc@tnonline.net
-Fixes: f2165627319f ("btrfs: compression: don't try to compress if we don't have enough pages")
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: cc29d4f67757 ("usb: bdc: Add support for USB phy")
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/udc/bdc/bdc_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -476,7 +476,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (nr_pages > 1 && inode_need_compress(inode)) {
-+	if (inode_need_compress(inode)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+index 58ba04d858ba..23a27eb33c42 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_core.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+@@ -573,7 +573,8 @@ static int bdc_probe(struct platform_device *pdev)
+ 		if (ret) {
+ 			dev_err(dev,
+ 				"No suitable DMA config available, abort\n");
+-			return -ENOTSUPP;
++			ret = -ENOTSUPP;
++			goto phycleanup;
+ 		}
+ 		dev_dbg(dev, "Using 32-bit address\n");
+ 	}
+-- 
+2.30.2
+
 
 
