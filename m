@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D28411DBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3E7411DC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346380AbhITRXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:23:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
+        id S1345287AbhITRXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347122AbhITRU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:20:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D83761A61;
-        Mon, 20 Sep 2021 17:00:45 +0000 (UTC)
+        id S1348972AbhITRVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:21:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47AC6613E8;
+        Mon, 20 Sep 2021 17:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157246;
-        bh=6jRHIV4Zis04KDtLVnpYg/lDv5pWhNekpe8VIykgC+E=;
+        s=korg; t=1632157248;
+        bh=VW15CReD1dEtFTCbNstJ6kTm42MK8dwWR9SVXVZpG7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xTHos39kvV7f6lh9CvJ3+JQnP2TMmW3711nbFHe2h0oLjaY0/G/qZ263u3jU/o26X
-         ecinakm8uhXlxszGznhDc7QyuNK627j+wCcw2qnFe4B7+YNyhr+RbKgC7bynthA+4T
-         h3IBBQ+Ukd/PY9QtgYWiJiRLEGL1Qord5NDKk6hI=
+        b=ZiPFLGRxcSWQ9CBRQ1xSa34bCQItOLVAoIUm2Tf6jpZKSQLqIT2zt2KtmWaQXa98M
+         q8pIE2IhuMIr+YjFVKgYVVEJSXVjZQhjI06QrWyCXziXYEXKTf+/W+7HcLgmE7EmyJ
+         uKickdV78u7YBZTOLfKdiaccBhg62B4BbmVu3wjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kenneth Albanowski <kenalba@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 121/217] HID: input: do not report stylus battery state as "full"
-Date:   Mon, 20 Sep 2021 18:42:22 +0200
-Message-Id: <20210920163928.760467060@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 122/217] RDMA/iwcm: Release resources if iw_cm module initialization fails
+Date:   Mon, 20 Sep 2021 18:42:23 +0200
+Message-Id: <20210920163928.793310670@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -40,44 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit f4abaa9eebde334045ed6ac4e564d050f1df3013 ]
+[ Upstream commit e677b72a0647249370f2635862bf0241c86f66ad ]
 
-The power supply states of discharging, charging, full, etc, represent
-state of charging, not the capacity level of the battery (for which
-we have a separate property). Current HID usage tables to not allow
-for expressing charging state of the batteries found in generic
-styli, so we should simply assume that the battery is discharging
-even if current capacity is at 100% when battery strength reporting
-is done via HID interface. In fact, we were doing just that before
-commit 581c4484769e.
+The failure during iw_cm module initialization partially left the system
+with unreleased memory and other resources. Rewrite the module init/exit
+routines in such way that netlink commands will be opened only after
+successful initialization.
 
-This change helps UIs to not mis-represent fully charged batteries in
-styli as being charging/topping-off.
-
-Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
-Reported-by: Kenneth Albanowski <kenalba@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: b493d91d333e ("iwcm: common code for port mapper")
+Link: https://lore.kernel.org/r/b01239f99cb1a3e6d2b0694c242d89e6410bcd93.1627048781.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-input.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/infiniband/core/iwcm.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 0e63cedcc3b5..96bf221ba572 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -425,8 +425,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index 16b0c10348e8..66204e08ce5a 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -1176,29 +1176,34 @@ static int __init iw_cm_init(void)
  
- 		if (dev->battery_status == HID_BATTERY_UNKNOWN)
- 			val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
--		else if (dev->battery_capacity == 100)
--			val->intval = POWER_SUPPLY_STATUS_FULL;
- 		else
- 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
- 		break;
+ 	ret = iwpm_init(RDMA_NL_IWCM);
+ 	if (ret)
+-		pr_err("iw_cm: couldn't init iwpm\n");
+-	else
+-		rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
++		return ret;
++
+ 	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
+ 	if (!iwcm_wq)
+-		return -ENOMEM;
++		goto err_alloc;
+ 
+ 	iwcm_ctl_table_hdr = register_net_sysctl(&init_net, "net/iw_cm",
+ 						 iwcm_ctl_table);
+ 	if (!iwcm_ctl_table_hdr) {
+ 		pr_err("iw_cm: couldn't register sysctl paths\n");
+-		destroy_workqueue(iwcm_wq);
+-		return -ENOMEM;
++		goto err_sysctl;
+ 	}
+ 
++	rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
+ 	return 0;
++
++err_sysctl:
++	destroy_workqueue(iwcm_wq);
++err_alloc:
++	iwpm_exit(RDMA_NL_IWCM);
++	return -ENOMEM;
+ }
+ 
+ static void __exit iw_cm_cleanup(void)
+ {
++	rdma_nl_unregister(RDMA_NL_IWCM);
+ 	unregister_net_sysctl_table(iwcm_ctl_table_hdr);
+ 	destroy_workqueue(iwcm_wq);
+-	rdma_nl_unregister(RDMA_NL_IWCM);
+ 	iwpm_exit(RDMA_NL_IWCM);
+ }
+ 
 -- 
 2.30.2
 
