@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104BC412469
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7363412439
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380680AbhITSek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49716 "EHLO mail.kernel.org"
+        id S1352809AbhITSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379311AbhITS26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:28:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 592DA632E9;
-        Mon, 20 Sep 2021 17:26:48 +0000 (UTC)
+        id S1378760AbhITS0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:26:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AEC632D3;
+        Mon, 20 Sep 2021 17:25:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158808;
-        bh=CDVPspepKHB71DLlPw/dpNjhXYCTvV8R0Lyv5FQGvb0=;
+        s=korg; t=1632158734;
+        bh=TyTS7BaXHRXGolYyVok694h9iNm09OUmMoET4gnWMsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IsLrqQ5CbPUj9BnIBrZxbDzuNkJ16q6Q6BBpR3Fhs6Om2JJkgAsdwWagwCalLZyG1
-         NKP/umKj+n9ZqFMygnON1+6zhrbUi5Q5z1HwP/GtfEO/Tq64iFzeziRNS+WXPUJueg
-         mVpQXWl2zqpliqdpbcwJ3CQkLsYU164PDm92W9JA=
+        b=yZkCGSUc4Y45oL+dORN3zVTK4fgPcOojvt6ghrXGDvcvHvLhlk3SLhTMe6M6G7jN9
+         3NmsI/tTBgA/5Ts87TV/OmSfUr6NJKOY2q3tkjx7JEdcz7h6kBCcd9pDQ9oEbGfBHG
+         +Q8lrUya7inkHsVVe1aEn+knoGnvVJ/Fo7OB2v0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 023/122] net/{mlx5|nfp|bnxt}: Remove unnecessary RTNL lock assert
-Date:   Mon, 20 Sep 2021 18:43:15 +0200
-Message-Id: <20210920163916.553678121@linuxfoundation.org>
+Subject: [PATCH 5.10 024/122] net-caif: avoid user-triggerable WARN_ON(1)
+Date:   Mon, 20 Sep 2021 18:43:16 +0200
+Message-Id: <20210920163916.590425851@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -39,64 +39,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 7c3a0a018e672a9723a79b128227272562300055 upstream.
+commit 550ac9c1aaaaf51fd42e20d461f0b1cdbd55b3d2 upstream.
 
-Remove the assert from the callback priv lookup function since it does
-not require RTNL lock and is already protected by flow_indr_block_lock.
+syszbot triggers this warning, which looks something
+we can easily prevent.
 
-This will avoid warnings from being emitted to dmesg if the driver
-registers its callback after an ingress qdisc was created for a
-netdevice.
+If we initialize priv->list_field in chnl_net_init(),
+then always use list_del_init(), we can remove robust_list_del()
+completely.
 
-The warnings started after the following patch was merged:
-commit 74fc4f828769 ("net: Fix offloading indirect devices dependency on qdisc order creation")
+WARNING: CPU: 0 PID: 3233 at net/caif/chnl_net.c:67 robust_list_del net/caif/chnl_net.c:67 [inline]
+WARNING: CPU: 0 PID: 3233 at net/caif/chnl_net.c:67 chnl_net_uninit+0xc9/0x2e0 net/caif/chnl_net.c:375
+Modules linked in:
+CPU: 0 PID: 3233 Comm: syz-executor.3 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:robust_list_del net/caif/chnl_net.c:67 [inline]
+RIP: 0010:chnl_net_uninit+0xc9/0x2e0 net/caif/chnl_net.c:375
+Code: 89 eb e8 3a a3 ba f8 48 89 d8 48 c1 e8 03 42 80 3c 28 00 0f 85 bf 01 00 00 48 81 fb 00 14 4e 8d 48 8b 2b 75 d0 e8 17 a3 ba f8 <0f> 0b 5b 5d 41 5c 41 5d e9 0a a3 ba f8 4c 89 e3 e8 02 a3 ba f8 4c
+RSP: 0018:ffffc90009067248 EFLAGS: 00010202
+RAX: 0000000000008780 RBX: ffffffff8d4e1400 RCX: ffffc9000fd34000
+RDX: 0000000000040000 RSI: ffffffff88bb6e49 RDI: 0000000000000003
+RBP: ffff88802cd9ee08 R08: 0000000000000000 R09: ffffffff8d0e6647
+R10: ffffffff88bb6dc2 R11: 0000000000000000 R12: ffff88803791ae08
+R13: dffffc0000000000 R14: 00000000e600ffce R15: ffff888073ed3480
+FS:  00007fed10fa0700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2c322000 CR3: 00000000164a6000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ register_netdevice+0xadf/0x1500 net/core/dev.c:10347
+ ipcaif_newlink+0x4c/0x260 net/caif/chnl_net.c:468
+ __rtnl_newlink+0x106d/0x1750 net/core/rtnetlink.c:3458
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ __sys_sendto+0x21c/0x320 net/socket.c:2036
+ __do_sys_sendto net/socket.c:2048 [inline]
+ __se_sys_sendto net/socket.c:2044 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2044
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Signed-off-by: Eli Cohen <elic@nvidia.com>
+Fixes: cc36a070b590 ("net-caif: add CAIF netdevice")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c        |    3 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c |    3 ---
- drivers/net/ethernet/netronome/nfp/flower/offload.c |    3 ---
- 3 files changed, 9 deletions(-)
+ net/caif/chnl_net.c |   19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-@@ -1870,9 +1870,6 @@ bnxt_tc_indr_block_cb_lookup(struct bnxt
+--- a/net/caif/chnl_net.c
++++ b/net/caif/chnl_net.c
+@@ -53,20 +53,6 @@ struct chnl_net {
+ 	enum caif_states state;
+ };
+ 
+-static void robust_list_del(struct list_head *delete_node)
+-{
+-	struct list_head *list_node;
+-	struct list_head *n;
+-	ASSERT_RTNL();
+-	list_for_each_safe(list_node, n, &chnl_net_list) {
+-		if (list_node == delete_node) {
+-			list_del(list_node);
+-			return;
+-		}
+-	}
+-	WARN_ON(1);
+-}
+-
+ static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
  {
- 	struct bnxt_flower_indr_block_cb_priv *cb_priv;
+ 	struct sk_buff *skb;
+@@ -369,6 +355,7 @@ static int chnl_net_init(struct net_devi
+ 	ASSERT_RTNL();
+ 	priv = netdev_priv(dev);
+ 	strncpy(priv->name, dev->name, sizeof(priv->name));
++	INIT_LIST_HEAD(&priv->list_field);
+ 	return 0;
+ }
  
--	/* All callback list access should be protected by RTNL. */
--	ASSERT_RTNL();
--
- 	list_for_each_entry(cb_priv, &bp->tc_indr_block_list, list)
- 		if (cb_priv->tunnel_netdev == netdev)
- 			return cb_priv;
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c
-@@ -298,9 +298,6 @@ mlx5e_rep_indr_block_priv_lookup(struct
- {
- 	struct mlx5e_rep_indr_block_priv *cb_priv;
+@@ -377,7 +364,7 @@ static void chnl_net_uninit(struct net_d
+ 	struct chnl_net *priv;
+ 	ASSERT_RTNL();
+ 	priv = netdev_priv(dev);
+-	robust_list_del(&priv->list_field);
++	list_del_init(&priv->list_field);
+ }
  
--	/* All callback list access should be protected by RTNL. */
--	ASSERT_RTNL();
--
- 	list_for_each_entry(cb_priv,
- 			    &rpriv->uplink_priv.tc_indr_block_priv_list,
- 			    list)
---- a/drivers/net/ethernet/netronome/nfp/flower/offload.c
-+++ b/drivers/net/ethernet/netronome/nfp/flower/offload.c
-@@ -1732,9 +1732,6 @@ nfp_flower_indr_block_cb_priv_lookup(str
- 	struct nfp_flower_indr_block_cb_priv *cb_priv;
- 	struct nfp_flower_priv *priv = app->priv;
- 
--	/* All callback list access should be protected by RTNL. */
--	ASSERT_RTNL();
--
- 	list_for_each_entry(cb_priv, &priv->indr_block_cb_priv, list)
- 		if (cb_priv->netdev == netdev)
- 			return cb_priv;
+ static const struct net_device_ops netdev_ops = {
+@@ -542,7 +529,7 @@ static void __exit chnl_exit_module(void
+ 	rtnl_lock();
+ 	list_for_each_safe(list_node, _tmp, &chnl_net_list) {
+ 		dev = list_entry(list_node, struct chnl_net, list_field);
+-		list_del(list_node);
++		list_del_init(list_node);
+ 		delete_device(dev);
+ 	}
+ 	rtnl_unlock();
 
 
