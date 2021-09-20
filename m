@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7F7412064
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859C4411DE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355363AbhITRyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:54:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
+        id S243075AbhITRZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:25:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354104AbhITRsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:48:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAEBE61BBD;
-        Mon, 20 Sep 2021 17:11:18 +0000 (UTC)
+        id S1349276AbhITRWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:22:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB00861A7B;
+        Mon, 20 Sep 2021 17:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157879;
-        bh=nByLFaMD35WwgCE/IAJRNJFyrTtfUCWRwfD8GuXB5zw=;
+        s=korg; t=1632157281;
+        bh=9sqIlj1TMlzStrSfKyBBB4xXAtrh/JOARt+Z0euvc/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gwNT+CkK1PNFxRagpFadAeAzHL9onFnqCa8NJ/MI3zlCW1HgaFVw4e6rmEL8ECKAe
-         t4q1Zw/yavaRUonYPjAxGIkCMkQU31bBkqDlPKQIGSC8XTSlS3jySzAmImLRCNFGNg
-         q1Eze0EDwl+R2brm4/8+f7mWQnCvqUTb7YONppCo=
+        b=qdtLMxN/OPz4fSq/d0NZ+oLnNh8LMuuM3WPhFDmrYohStSz1hW1RZA/lT+gzhabug
+         ODvmiwTr1El/LLD5s1w5J0L6sFVhgM56y/4ehhX0FjWuPK5jlr6gKmmyeKTvY86CCe
+         SzHDXGL7lzqU612BRpE4qnOws70ge4gIUyaMGh1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 193/293] ipv4: ip_output.c: Fix out-of-bounds warning in ip_copy_addrs()
-Date:   Mon, 20 Sep 2021 18:42:35 +0200
-Message-Id: <20210920163939.876990340@linuxfoundation.org>
+Subject: [PATCH 4.14 135/217] video: fbdev: kyro: fix a DoS bug by restricting user input
+Date:   Mon, 20 Sep 2021 18:42:36 +0200
+Message-Id: <20210920163929.229514847@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 6321c7acb82872ef6576c520b0e178eaad3a25c0 ]
+[ Upstream commit 98a65439172dc69cb16834e62e852afc2adb83ed ]
 
-Fix the following out-of-bounds warning:
+The user can pass in any value to the driver through the 'ioctl'
+interface. The driver dost not check, which may cause DoS bugs.
 
-    In function 'ip_copy_addrs',
-        inlined from '__ip_queue_xmit' at net/ipv4/ip_output.c:517:2:
-net/ipv4/ip_output.c:449:2: warning: 'memcpy' offset [40, 43] from the object at 'fl' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 36 [-Warray-bounds]
-      449 |  memcpy(&iph->saddr, &fl4->saddr,
-          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      450 |         sizeof(fl4->saddr) + sizeof(fl4->daddr));
-          |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The following log reveals it:
 
-The problem is that the original code is trying to copy data into a
-couple of struct members adjacent to each other in a single call to
-memcpy(). This causes a legitimate compiler warning because memcpy()
-overruns the length of &iph->saddr and &fl4->saddr. As these are just
-a couple of struct members, fix this by using direct assignments,
-instead of memcpy().
+divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
+Call Trace:
+ kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
+ kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
+ do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
+ fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
+ do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1626235762-2590-1-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/ip_output.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/video/fbdev/kyro/fbdev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index e63905f7f6f9..25beecee8949 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -419,8 +419,9 @@ static void ip_copy_addrs(struct iphdr *iph, const struct flowi4 *fl4)
- {
- 	BUILD_BUG_ON(offsetof(typeof(*fl4), daddr) !=
- 		     offsetof(typeof(*fl4), saddr) + sizeof(fl4->saddr));
--	memcpy(&iph->saddr, &fl4->saddr,
--	       sizeof(fl4->saddr) + sizeof(fl4->daddr));
-+
-+	iph->saddr = fl4->saddr;
-+	iph->daddr = fl4->daddr;
- }
+diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
+index a7bd9f25911b..d7aa431e6846 100644
+--- a/drivers/video/fbdev/kyro/fbdev.c
++++ b/drivers/video/fbdev/kyro/fbdev.c
+@@ -372,6 +372,11 @@ static int kyro_dev_overlay_viewport_set(u32 x, u32 y, u32 ulWidth, u32 ulHeight
+ 		/* probably haven't called CreateOverlay yet */
+ 		return -EINVAL;
  
- /* Note: skb->sk can be different from sk, in case of tunnels */
++	if (ulWidth == 0 || ulWidth == 0xffffffff ||
++	    ulHeight == 0 || ulHeight == 0xffffffff ||
++	    (x < 2 && ulWidth + 2 == 0))
++		return -EINVAL;
++
+ 	/* Stop Ramdac Output */
+ 	DisableRamdacOutput(deviceInfo.pSTGReg);
+ 
 -- 
 2.30.2
 
