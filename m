@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579134119C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EA64119C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234347AbhITQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:28:32 -0400
-Received: from mail-ua1-f52.google.com ([209.85.222.52]:39439 "EHLO
-        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhITQ21 (ORCPT
+        id S235381AbhITQaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234801AbhITQaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:28:27 -0400
-Received: by mail-ua1-f52.google.com with SMTP id o13so11529695uat.6;
-        Mon, 20 Sep 2021 09:27:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9xo0jIRnxuOOhc30CoYi6LuiF/umxAgJKZ4MGnDGawY=;
-        b=AvbAGzmFZrVlKy02rhpai2UDe2k2fRcVQCIo8Cf5AP/tqrfdBVVqyhHDCGwVloe8GA
-         i1Y+ItCUBbpJps8OjHbxe5ce1r/TzjRnz3njhy3XP5/0Nn+SrSbCASMbhGurJ0VDf0CF
-         Sv8/55IjhgONNhrn6xLPlDoCuGn7SJUt10L/CrPRHn6eI5q9gQ1jJUWhyFLElXH9Tmt1
-         bZM5hV2y+sqxFsKDT1LN3XKQq1Kea8jnmScItGLZRqB9uXpfogHTd+S4NZrMNJtnEHDf
-         Ax9Kdr+kC2JAHEFC/HAthiHSA4jJjl2lS7V6AemPEj1MPFOa+HAFY1MecWYb+jjbu+Ly
-         HinA==
-X-Gm-Message-State: AOAM533GBVXpl2NVjfxeQGFZW/t1rw/hT6Qs6T22J0IxAyIj1r1UAELu
-        7LjRf+xMJ6wU+U3NaGNZs+uedINMh7s3YeGwjLQ=
-X-Google-Smtp-Source: ABdhPJwoB/0/VBD9Bv7XJkpjjyCTFva9x1S/l0eGg68vZoWX7Uope7tWe5j8vOPoSsjhkKDy81kIFBG7m6cIsfz+iVo=
-X-Received: by 2002:ab0:6dc7:: with SMTP id r7mr12548577uaf.14.1632155219490;
- Mon, 20 Sep 2021 09:26:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210907183843.33028-1-ndesaulniers@google.com>
- <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
- <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
- <YTfkO2PdnBXQXvsm@elver.google.com> <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
- <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org> <20210913093256.GA12225@amd>
- <YT8d5a6ZVW7JlsRl@kroah.com> <20210913100230.GB11752@amd>
-In-Reply-To: <20210913100230.GB11752@amd>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Sep 2021 18:26:48 +0200
-Message-ID: <CAMuHMdXGK165nXPJSDdB1hsAfqu3nprXtskZz4z1GcgH_vz+ow@mail.gmail.com>
-Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel builds"
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Mon, 20 Sep 2021 12:30:01 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D1FC061574;
+        Mon, 20 Sep 2021 09:28:34 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 825822F06;
+        Mon, 20 Sep 2021 18:28:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632155311;
+        bh=rT3iP0dO5pvYhS8utchpgMyakT6U9Iy8T0YzsoNSQus=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UDZgeUitXVv8n0Ag8SqWvA+699JQg38we82uzXq94Z6g+LA9b9B33PXNtOpdU/zBZ
+         dueDxH8QPImnBbYd3TfLgOMu0QY7hdsrpiGQOK58d7oZ+Frlui8kFY99laly0Nw6r7
+         iKqJz0GABmZ536ENyCDwipW8LOi0YyKGCnAwqez8=
+Date:   Mon, 20 Sep 2021 19:28:01 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, Vinod Koul <vkoul@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jianqiang Chen <jianqiang.chen@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dmaengine@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] dmaengine: remove debugfs #ifdef
+Message-ID: <YUi2kQqNVLSeA87X@pendragon.ideasonboard.com>
+References: <20210920122017.205975-1-arnd@kernel.org>
+ <YUiCy7A9cXTDGx6s@pendragon.ideasonboard.com>
+ <CAK8P3a1fcmCWsOuqF8qy4ko9MC8nCd4gyt2K6Rk5K-Zs7yCbJA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1fcmCWsOuqF8qy4ko9MC8nCd4gyt2K6Rk5K-Zs7yCbJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 12:50 PM Pavel Machek <pavel@ucw.cz> wrote:
-> > > Do we really want developers treat warnings as errors? When the code
-> > > is okay but some random version of gcc dislikes it...
-> > >
-> > > Plus, there's question of stable. We already get ton of churn there
-> > > ("this fixes random warning"). WERROR will only encourage that...
+Hi Arnd,
+
+On Mon, Sep 20, 2021 at 02:50:52PM +0200, Arnd Bergmann wrote:
+> On Mon, Sep 20, 2021 at 2:47 PM Laurent Pinchart wrote:
 > >
-> > I will not be backporting this patch to older stable kernels, but I
-> > _want_ to see stable builds build with no warnings.  When we add
-> > warnings, they are almost always things we need to fix up properly.
->
-> Well, everyone _wants_ to see clean builds... unless the price is too
-> high.
->
-> > Over time, I have worked to reduce the number of build warnings in older
-> > stable kernels.  For newer versions of gcc, sometimes that is
-> > impossible, but we are close...
->
-> You clearly can't backport this patch, but for 5.16-stable, you'll
-> have it in, and now warnings are same as errors... and I don't believe
-> that's good idea for stable.
+> > It's only a few bytes of data in struct dma_device, but a bit more in
+> > .text here. Is the simplification really required in this driver ?
+> 
+> The intention was to not change the resulting object code in this driver,
+> and I still don't see where it would grow after dead-code-elimination removes
+> all the unused static functions. What am I missing?
 
-The good thing about the config option is that there's now a single point
-to enable or disable -Werror.  In the past, maintainers sprinkled -Werror
-all over the various Makefiles in the tree, which means you have to
-edit multiple files to disable it again.
+Indeed, gcc does a fairly good job there. The .text section doesn't
+grow. Interestingly, there's an increase in size in the .data and
+.rodata sections in the xilinx-dpdma module:
 
-Background: I've been investigating an issue that involved building old
-v2.6.x kernels. Apart from having to use very old compilers, it still caused
-compiler warnings that obviously weren't seen with the slightly different
-compiler versions used by maintainers who added -Werror.
+-  8 .rodata.str1.8 0000029f  0000000000000000  0000000000000000  00003660  2**3
++  8 .rodata.str1.8 000002a7  0000000000000000  0000000000000000  00003660  2**3
 
-Gr{oetje,eeting}s,
+- 10 .rodata       00001080  0000000000000000  0000000000000000  00003960  2**5
++ 10 .rodata       000010e0  0000000000000000  0000000000000000  00003960  2**5
 
-                        Geert
+- 15 .data         00001050  0000000000000000  0000000000000000  00004e40  2**5
++ 15 .data         00001090  0000000000000000  0000000000000000  00004ea0  2**5
+
+I'm not entirely sure where it comes from, it may be related to
+instrumentation caused by debugging options.
+
+For your patch,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Regards,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Laurent Pinchart
