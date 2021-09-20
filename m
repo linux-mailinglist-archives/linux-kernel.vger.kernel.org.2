@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B38D4124F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DE2412529
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382521AbhITSkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
+        id S1353511AbhITSl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:41:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379718AbhITSgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:36:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5319963314;
-        Mon, 20 Sep 2021 17:29:12 +0000 (UTC)
+        id S1381244AbhITShB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:37:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 554EC63313;
+        Mon, 20 Sep 2021 17:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158952;
-        bh=Q8Jv1wuk8n6B8IpHdt5r5aYsoYg9wL0ZxgiNGwv7KQg=;
+        s=korg; t=1632158976;
+        bh=f6D9i/fpwHzNTa4IRWLZh6SapM96QDsmr4fwG9XetUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kHpDcvsPP9bgS1y8p+MnYnoUF/U3kHZ6ZdiaS/l9SB1kzIBabNpRzrPgUbaS3DT7l
-         lZx0OnPCYhoCIf8oX/Zx2VO4V5DxqxiV8Y4MNV2xw9NhF5HPwS29xuUJoW+qJP3WJY
-         mr3rlf5N0aIFYAenELPPUiOnhe3t9PjVR5gRcnmY=
+        b=EIWIuLeTNAX2KR+mLKA4Y2UbLB+lnDPd4oUDeW4wHRegfc7yhvzy2C+yTe8UqDwio
+         TEQvDQOHpB73T/7MUGvO0gBqpzGqUQNBFnpSZImkbd+aiYkymQ7o3/wr6yK0BYl9yi
+         7aYOKTFxQZ3VANUPpkuY3hVtDgN199AncWnnqPTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Valentina Palmiotti <vpalmiotti@gmail.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.14 001/168] io_uring: ensure symmetry in handling iter types in loop_rw_iter()
-Date:   Mon, 20 Sep 2021 18:42:19 +0200
-Message-Id: <20210920163921.686664133@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Christoph Hellwig <hch@lst.de>, Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.14 002/168] swiotlb-xen: avoid double free
+Date:   Mon, 20 Sep 2021 18:42:20 +0200
+Message-Id: <20210920163921.724284878@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,45 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit 16c8d2df7ec0eed31b7d3b61cb13206a7fb930cc upstream.
+commit ce6a80d1b2f923b1839655a1cda786293feaa085 upstream.
 
-When setting up the next segment, we check what type the iter is and
-handle it accordingly. However, when incrementing and processed amount
-we do not, and both iter advance and addr/len are adjusted, regardless
-of type. Split the increment side just like we do on the setup side.
+Of the two paths leading to the "error" label in xen_swiotlb_init() one
+didn't allocate anything, while the other did already free what was
+allocated.
 
-Fixes: 4017eb91a9e7 ("io_uring: make loop_rw_iter() use original user supplied pointers")
+Fixes: b82776005369 ("xen/swiotlb: Use the swiotlb_late_init_with_tbl to init Xen-SWIOTLB late when PV PCI is used")
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 Cc: stable@vger.kernel.org
-Reported-by: Valentina Palmiotti <vpalmiotti@gmail.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/ce9c2adb-8a52-6293-982a-0d6ece943ac6@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/xen/swiotlb-xen.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -3107,12 +3107,15 @@ static ssize_t loop_rw_iter(int rw, stru
- 				ret = nr;
- 			break;
- 		}
-+		if (!iov_iter_is_bvec(iter)) {
-+			iov_iter_advance(iter, nr);
-+		} else {
-+			req->rw.len -= nr;
-+			req->rw.addr += nr;
-+		}
- 		ret += nr;
- 		if (nr != iovec.iov_len)
- 			break;
--		req->rw.len -= nr;
--		req->rw.addr += nr;
--		iov_iter_advance(iter, nr);
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -216,7 +216,6 @@ error:
+ 		goto retry;
  	}
+ 	pr_err("%s (rc:%d)\n", xen_swiotlb_error(m_ret), rc);
+-	free_pages((unsigned long)start, order);
+ 	return rc;
+ }
  
- 	return ret;
 
 
