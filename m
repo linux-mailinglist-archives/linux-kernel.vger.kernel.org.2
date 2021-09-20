@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E84A411B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D92D4120E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244988AbhITQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:55:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
+        id S1350159AbhITR7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:59:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244428AbhITQvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:51:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5B996135A;
-        Mon, 20 Sep 2021 16:49:35 +0000 (UTC)
+        id S1349361AbhITRwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:52:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED8BC61BFA;
+        Mon, 20 Sep 2021 17:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156576;
-        bh=majAfURPlNb5whgNhDrheNAcJqNtvvCLHHE6FbT2yNc=;
+        s=korg; t=1632157979;
+        bh=Ik+gmW3s+O/Swvk0mkwqOcdh7BweWA/f2oX9j8z58RE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XttcY+Co4hZNDtECRUB51LOCdJqJosPsffXwL5WeLLi53oKuRdrb9vJoRYoETjBdR
-         UE1dbsozoaB5+E55aKvVxRFCoMtMGsAwcBmr4LA91GVIuc+xuVEkqkGxxvRfDTvBQG
-         D8rYJTVA+of5YLoTsMVAjOjUtX3RI7D8xtfW6U5M=
+        b=PtEKmgDixBdBF8VS8RnXRIIE4LG+PmKUaYzI6+6a4cndwiUdJKconO/kdEpbc9P2d
+         GXfzE3JYj6Tovw7xyGvysDkvMC6aHyrjUYRmjVK33jqFAGtiUgBkExXg2yAyQuuRAB
+         5hcUr9T3MYLvWbywdFrUb/Dbjdw78IGcgurg4Fe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenpeng Lin <zplin@psu.edu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 121/133] dccp: dont duplicate ccid when cloning dccp sock
-Date:   Mon, 20 Sep 2021 18:43:19 +0200
-Message-Id: <20210920163916.581379521@linuxfoundation.org>
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 238/293] ath9k: fix sleeping in atomic context
+Date:   Mon, 20 Sep 2021 18:43:20 +0200
+Message-Id: <20210920163941.544229283@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin, Zhenpeng <zplin@psu.edu>
+From: Miaoqing Pan <miaoqing@codeaurora.org>
 
-commit d9ea761fdd197351890418acd462c51f241014a7 upstream.
+[ Upstream commit 7c48662b9d56666219f526a71ace8c15e6e12f1f ]
 
-Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
-a UAF but reintroduced CVE-2017-6074.
+The problem is that gpio_free() can sleep and the cfg_soc() can be
+called with spinlocks held. One problematic call tree is:
 
-When the sock is cloned, two dccps_hc_tx_ccid will reference to the
-same ccid. So one can free the ccid object twice from two socks after
-cloning.
+--> ath_reset_internal() takes &sc->sc_pcu_lock spin lock
+   --> ath9k_hw_reset()
+      --> ath9k_hw_gpio_request_in()
+         --> ath9k_hw_gpio_request()
+            --> ath9k_hw_gpio_cfg_soc()
 
-This issue was found by "Hadar Manor" as well and assigned with
-CVE-2020-16119, which was fixed in Ubuntu's kernel. So here I port
-the patch from Ubuntu to fix it.
+Remove gpio_free(), use error message instead, so we should make sure
+there is no GPIO conflict.
 
-The patch prevents cloned socks from referencing the same ccid.
+Also remove ath9k_hw_gpio_free() from ath9k_hw_apply_gpio_override(),
+as gpio_mask will never be set for SOC chips.
 
-Fixes: 2677d2067731410 ("dccp: don't free ccid2_hc_tx_sock ...")
-Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1628481916-15030-1-git-send-email-miaoqing@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dccp/minisocks.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath9k/hw.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/net/dccp/minisocks.c
-+++ b/net/dccp/minisocks.c
-@@ -92,6 +92,8 @@ struct sock *dccp_create_openreq_child(c
- 		newdp->dccps_role	    = DCCP_ROLE_SERVER;
- 		newdp->dccps_hc_rx_ackvec   = NULL;
- 		newdp->dccps_service_list   = NULL;
-+		newdp->dccps_hc_rx_ccid     = NULL;
-+		newdp->dccps_hc_tx_ccid     = NULL;
- 		newdp->dccps_service	    = dreq->dreq_service;
- 		newdp->dccps_timestamp_echo = dreq->dreq_timestamp_echo;
- 		newdp->dccps_timestamp_time = dreq->dreq_timestamp_time;
+diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
+index 9f438d8e59f2..daad9e7b17cf 100644
+--- a/drivers/net/wireless/ath/ath9k/hw.c
++++ b/drivers/net/wireless/ath/ath9k/hw.c
+@@ -1622,7 +1622,6 @@ static void ath9k_hw_apply_gpio_override(struct ath_hw *ah)
+ 		ath9k_hw_gpio_request_out(ah, i, NULL,
+ 					  AR_GPIO_OUTPUT_MUX_AS_OUTPUT);
+ 		ath9k_hw_set_gpio(ah, i, !!(ah->gpio_val & BIT(i)));
+-		ath9k_hw_gpio_free(ah, i);
+ 	}
+ }
+ 
+@@ -2729,14 +2728,17 @@ static void ath9k_hw_gpio_cfg_output_mux(struct ath_hw *ah, u32 gpio, u32 type)
+ static void ath9k_hw_gpio_cfg_soc(struct ath_hw *ah, u32 gpio, bool out,
+ 				  const char *label)
+ {
++	int err;
++
+ 	if (ah->caps.gpio_requested & BIT(gpio))
+ 		return;
+ 
+-	/* may be requested by BSP, free anyway */
+-	gpio_free(gpio);
+-
+-	if (gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label))
++	err = gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label);
++	if (err) {
++		ath_err(ath9k_hw_common(ah), "request GPIO%d failed:%d\n",
++			gpio, err);
+ 		return;
++	}
+ 
+ 	ah->caps.gpio_requested |= BIT(gpio);
+ }
+-- 
+2.30.2
+
 
 
