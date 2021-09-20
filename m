@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8135C412B1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8879F412B1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242515AbhIUCHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:07:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        id S244157AbhIUCIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236811AbhIUBvb (ORCPT
+        with ESMTP id S236835AbhIUBvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:51:31 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9C5C0612A4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:46:06 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id g41so41287991lfv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CSvzruZ7yrH3cGppBMPI3R0ozg6uVIR6o4wSeRhpPb4=;
-        b=LDjsVKKmmK9IHt+0xSI4WhrZQsDZOajyP74jFpI8bn/RHKfwdF3Ntdcp/J0brBth6M
-         rTFcXjE1Q4MISd6lo+ge52o8NsB3m0d7+jizr2EyMR9RJyZIV7tZwLV46WUCc9pBPv23
-         ITXPDL/fZ/d87T0+EoSZ8Tgcw0UMBm/5jCT2s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CSvzruZ7yrH3cGppBMPI3R0ozg6uVIR6o4wSeRhpPb4=;
-        b=HGddwrPb1oyOMQxH9Uax2LxQQc49l9EV5tOfYh0ytSOeaBeoRaLq8H6Eh4EGyLPa3V
-         xR5v51G6+r/GIbFJ5ZoWvr6B4PqxbBTYXXpz6Yx20P8JdEykkHj3rTmsIUbeG+wFa7sz
-         /w5YR+Zdgh8zXCa2V6T8L+9TlifF298lmSlxybLeOlpTEWY2Dcs4NKqM3henSSUvdgvy
-         F5xH9W5595DwQJ9XZoqqNAw1hKwAKWCN/PtzhuHRO5QJAyf9lZYeL7PEoL4h0+pO7scM
-         sTEvptjtgei0twIekDlxv5oGfendCww/al06603lLPPk+p5KxbarjUXymtGziRS40Rrd
-         btAQ==
-X-Gm-Message-State: AOAM531DpsV/CNmHlbvJEHl7TDc96Eh1zxCCDqtj6DAyAOo9nOGvm07Q
-        MD49kwcvUo6IC00xvXgIVDoe3UjCl4/mkIHJM3U=
-X-Google-Smtp-Source: ABdhPJxXXxmZKEV7SMUsbZehNlbdWP2GlqLo6IamLATxI73bkrIeY+71silP+8Rt6PZm4oX9YcXVEw==
-X-Received: by 2002:a2e:858e:: with SMTP id b14mr24369792lji.508.1632177964548;
-        Mon, 20 Sep 2021 15:46:04 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id a26sm1365436lfg.193.2021.09.20.15.46.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 15:46:04 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id t10so67562666lfd.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:46:03 -0700 (PDT)
-X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr1896311lfg.280.1632177963635;
- Mon, 20 Sep 2021 15:46:03 -0700 (PDT)
+        Mon, 20 Sep 2021 21:51:33 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA34C0364A5;
+        Mon, 20 Sep 2021 15:47:55 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id A7DF31F426D9
+Message-ID: <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
+Date:   Mon, 20 Sep 2021 19:47:44 -0300
 MIME-Version: 1.0
-References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
-In-Reply-To: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 20 Sep 2021 15:45:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
-Message-ID: <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
-Subject: Re: [GIT PULL] ksmbd server security fixes
-To:     Steve French <smfrench@gmail.com>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
+ 64-bit time_t
+Content-Language: en-US
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        linux-riscv@lists.infradead.org, namhyung@kernel.org,
+        jolsa@redhat.com, linux-perf-users@vger.kernel.org,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        acme@kernel.org, dave@stgolabs.net, dvhart@infradead.org,
+        peterz@infradead.org, mingo@redhat.com, tglx@linutronix.de,
+        atish.patra@wdc.com, arnd@arndb.de,
+        Alistair Francis <alistair.francis@wdc.com>
+References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
+ <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+In-Reply-To: <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 7:22 AM Steve French <smfrench@gmail.com> wrote:
->
-> 3 ksmbd fixes: including an important security fix for path
-> processing, and a missing buffer overflow check, and a trivial fix for
-> incorrect header inclusion
->
-> There are three additional patches (and also a patch to improve
-> symlink checks) for other buffer overflow cases that are being
-> reviewed and tested.
+Hi Alistair,
 
-Note that if you are working on a path basis, you should really take a
-look at our vfs lookup_flags, and LOOKUP_BENEATH in particular.
+Às 03:10 de 17/09/21, Alistair Francis escreveu:
+> From: Alistair Francis <alistair.francis@wdc.com>
+> 
+> Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
+> time_t and as such don't have the SYS_futex syscall. This patch will
+> allow us to use the SYS_futex_time64 syscall on those platforms.
+> 
 
-The way to deal with '..' and symlinks is not to try to figure it out
-yourself. You'll get it wrong, partly because the races with rename
-are quite interesting. The VFS layer knows how to limit pathname
-lookup to the particular directory you started in these days.
+Thanks for your patch! However, I don't think that any futex operation
+at perf has timeout. Do you plan to implement a test that use it? Or the
+idea is to get this ready for it in case someone want to do so in the
+future?
 
-Of course, that is only true for the actual path lookup functions.
-Once you start doing things manually one component at a time yourself,
-you're on your own.
 
-                   Linus
+Also, I faced a similar problem with the new futex2 syscalls, that
+supports exclusively 64bit timespec. But I took a different approach: I
+called __NR_clock_gettime64 for 32bit architectures so it wouldn't
+require to convert the struct:
+
+#if defined(__i386__) || __TIMESIZE == 32
+# define NR_gettime64 __NR_clock_gettime64
+#else
+# define NR_gettime64 __NR_clock_gettime
+#endif
+
+struct timespec64 {
+	long long tv_sec;	/* seconds */
+	long long tv_nsec;	/* nanoseconds */
+};
+
+int gettime64(clock_t clockid, struct timespec64 *tv)
+{
+	return syscall(NR_gettime64, clockid, tv);
+}
+
+Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
+__NR_futex for 64bit arch.
+
+This might be a simpler solution to the problem that you are facing but
+I'm not entirely sure. Also, futex's selftests do use the timeout
+argument and I think that they also won't compile in 32-bit RISC-V, so
+maybe we can start from there so we can actually test the timeout
+argument and check if it's working.
+
+Thanks,
+	André
