@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5632C411BC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7CB411BCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbhITRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:02:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48552 "EHLO mail.kernel.org"
+        id S1345381AbhITRCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344445AbhITQ7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:59:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D098613D2;
-        Mon, 20 Sep 2021 16:52:21 +0000 (UTC)
+        id S1344651AbhITQ70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2BB861268;
+        Mon, 20 Sep 2021 16:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156742;
-        bh=Q3st4ewzJ592xQsPtIgfX2VAu2ti4iX4rnFtz2rPuwM=;
+        s=korg; t=1632156746;
+        bh=RfbUyVdgSWGh8UzBjgpM78qUWJju/apyLKq6voc5Q9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NemYPkadJj+LTznDwG0P1YKPbGS8y3MyOqkV0EFSNLdmqgkdcAbDUNvfHnKYdBPs9
-         AroVtbJ4fvw2yw/xBV8tv7E7721+Dm4nn6f1qcp7Hy4k7yYbAGZf9Elqw891vPz2A5
-         i24W/O37bgi3H1KLa8CSZ2AvoZ8XvQpzvNoIZrgQ=
+        b=WMSrJfe68nDvjyqMd6oO1CtDlY1XZppXpLwfGz1xvnobq5aAYgI2sYllNjM3HiBb9
+         ME8dGiEqBZhSfNkXrRVg7B+RcwVlkd5M8ftyWOha4wSlM5lD8iqQh9+m8RWOzrY2Go
+         aMpjS87xw8g7Scg8OpXEFdT0iE6g0o93PQAJvuKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 064/175] drm/msm/dsi: Fix some reference counted resource leaks
-Date:   Mon, 20 Sep 2021 18:41:53 +0200
-Message-Id: <20210920163920.147763457@linuxfoundation.org>
+Subject: [PATCH 4.9 065/175] usb: gadget: udc: at91: add IRQ check
+Date:   Mon, 20 Sep 2021 18:41:54 +0200
+Message-Id: <20210920163920.179409326@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
 References: <20210920163918.068823680@linuxfoundation.org>
@@ -41,60 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 6977cc89c87506ff17e6c05f0e37f46752256e82 ]
+[ Upstream commit 50855c31573b02963f0aa2aacfd4ea41c31ae0e0 ]
 
-'of_find_device_by_node()' takes a reference that must be released when
-not needed anymore.
-This is expected to be done in 'dsi_destroy()'.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to devm_request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding an original
+error code. Stop calling devm_request_irq() with the invalid IRQ #s.
 
-However, there are 2 issues in 'dsi_get_phy()'.
-
-First, if 'of_find_device_by_node()' succeeds but 'platform_get_drvdata()'
-returns NULL, 'msm_dsi->phy_dev' will still be NULL, and the reference
-won't be released in 'dsi_destroy()'.
-
-Secondly, as 'of_find_device_by_node()' already takes a reference, there is
-no need for an additional 'get_device()'.
-
-Move the assignment to 'msm_dsi->phy_dev' a few lines above and remove the
-unneeded 'get_device()' to solve both issues.
-
-Fixes: ec31abf6684e ("drm/msm/dsi: Separate PHY to another platform device")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/f15bc57648a00e7c99f943903468a04639d50596.1628241097.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 8b2e76687b39 ("USB: AT91 UDC updates, mostly power management")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Link: https://lore.kernel.org/r/6654a224-739a-1a80-12f0-76d920f87b6c@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/dsi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/udc/at91_udc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
-index ec572f8389ed..3a75586c1989 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -36,8 +36,10 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
- 	}
+diff --git a/drivers/usb/gadget/udc/at91_udc.c b/drivers/usb/gadget/udc/at91_udc.c
+index 8bc78418d40e..cd92cda03d71 100644
+--- a/drivers/usb/gadget/udc/at91_udc.c
++++ b/drivers/usb/gadget/udc/at91_udc.c
+@@ -1895,7 +1895,9 @@ static int at91udc_probe(struct platform_device *pdev)
+ 	clk_disable(udc->iclk);
  
- 	phy_pdev = of_find_device_by_node(phy_node);
--	if (phy_pdev)
-+	if (phy_pdev) {
- 		msm_dsi->phy = platform_get_drvdata(phy_pdev);
-+		msm_dsi->phy_dev = &phy_pdev->dev;
-+	}
- 
- 	of_node_put(phy_node);
- 
-@@ -46,8 +48,6 @@ static int dsi_get_phy(struct msm_dsi *msm_dsi)
- 		return -EPROBE_DEFER;
- 	}
- 
--	msm_dsi->phy_dev = get_device(&phy_pdev->dev);
--
- 	return 0;
- }
- 
+ 	/* request UDC and maybe VBUS irqs */
+-	udc->udp_irq = platform_get_irq(pdev, 0);
++	udc->udp_irq = retval = platform_get_irq(pdev, 0);
++	if (retval < 0)
++		goto err_unprepare_iclk;
+ 	retval = devm_request_irq(dev, udc->udp_irq, at91_udc_irq, 0,
+ 				  driver_name, udc);
+ 	if (retval) {
 -- 
 2.30.2
 
