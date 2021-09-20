@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C7F411A7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC22C411BFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244221AbhITQuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
+        id S1343954AbhITRFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:05:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240442AbhITQtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:49:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9336960F6E;
-        Mon, 20 Sep 2021 16:47:29 +0000 (UTC)
+        id S244797AbhITRB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11F2061362;
+        Mon, 20 Sep 2021 16:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156450;
-        bh=CIKTzQK4SW+tNg6ZnnS3KIZMCYc5yLGjNKHn83PhXFc=;
+        s=korg; t=1632156809;
+        bh=SOYtr6MhniPK/DMlUmimTh/QouDlGf1Dz8PcOyZU+gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p1DPSArfashyWq/AigEvXKy8i24SIWNSZltUCz/6+FdVtzvE1WlWgdhffUAIBlYNe
-         ci4DPDZxU44bCTUlhJuoMYP8H/RFhA9ArW8Mvp4hwFlGzTLqHAhpTRRKJ2+HKuXQ8W
-         ZEFzIwGZheTZP1o3K9YIUd5IP4iEh88CxtMzj4So=
+        b=zRduHb/Yh+7MFmR5wnMPGFg5lzKQaPpHsuWXScrFECa0Kg2uC20vs1Ha+tJ3ObiRo
+         fTeQ5yi2knV453mvNKzJYrXH2GshTep7YVOyi40YUie3g3yel/8hg58f444gdiWWj0
+         FJu4DI31V+9wkehiHKvbnJ0i8KBFcLQtZi2CaYmQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 065/133] ath6kl: wmi: fix an error code in ath6kl_wmi_sync_point()
-Date:   Mon, 20 Sep 2021 18:42:23 +0200
-Message-Id: <20210920163914.776001575@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.9 095/175] media: uvc: dont do DMA on stack
+Date:   Mon, 20 Sep 2021 18:42:24 +0200
+Message-Id: <20210920163921.184431216@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit fd6729ec534cffbbeb3917761e6d1fe6a412d3fe ]
+commit 1a10d7fdb6d0e235e9d230916244cc2769d3f170 upstream.
 
-This error path is unlikely because of it checked for NULL and
-returned -ENOMEM earlier in the function.  But it should return
-an error code here as well if we ever do hit it because of a
-race condition or something.
+As warned by smatch:
+	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
+	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
 
-Fixes: bdcd81707973 ("Add ath6kl cleaned up driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210813113438.GB30697@kili
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+those two functions call uvc_query_ctrl passing a pointer to
+a data at the DMA stack. those are used to send URBs via
+usb_control_msg(). Using DMA stack is not supported and should
+not work anymore on modern Linux versions.
+
+So, use a kmalloc'ed buffer.
+
+Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath6kl/wmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/usb/uvc/uvc_v4l2.c |   34 +++++++++++++++++++++++-----------
+ 1 file changed, 23 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath6kl/wmi.c b/drivers/net/wireless/ath/ath6kl/wmi.c
-index 7e1010475cfb..f94d2433a42f 100644
---- a/drivers/net/wireless/ath/ath6kl/wmi.c
-+++ b/drivers/net/wireless/ath/ath6kl/wmi.c
-@@ -2508,8 +2508,10 @@ static int ath6kl_wmi_sync_point(struct wmi *wmi, u8 if_idx)
- 		goto free_data_skb;
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -881,8 +881,8 @@ static int uvc_ioctl_g_input(struct file
+ {
+ 	struct uvc_fh *handle = fh;
+ 	struct uvc_video_chain *chain = handle->chain;
++	u8 *buf;
+ 	int ret;
+-	u8 i;
  
- 	for (index = 0; index < num_pri_streams; index++) {
--		if (WARN_ON(!data_sync_bufs[index].skb))
-+		if (WARN_ON(!data_sync_bufs[index].skb)) {
-+			ret = -ENOMEM;
- 			goto free_data_skb;
-+		}
+ 	if (chain->selector == NULL ||
+ 	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
+@@ -890,22 +890,27 @@ static int uvc_ioctl_g_input(struct file
+ 		return 0;
+ 	}
  
- 		ep_id = ath6kl_ac2_endpoint_id(wmi->parent_dev,
- 					       data_sync_bufs[index].
--- 
-2.30.2
-
++	buf = kmalloc(1, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
+ 	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
+ 			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
+-			     &i, 1);
+-	if (ret < 0)
+-		return ret;
++			     buf, 1);
++	if (!ret)
++		*input = *buf - 1;
+ 
+-	*input = i - 1;
+-	return 0;
++	kfree(buf);
++
++	return ret;
+ }
+ 
+ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
+ {
+ 	struct uvc_fh *handle = fh;
+ 	struct uvc_video_chain *chain = handle->chain;
++	u8 *buf;
+ 	int ret;
+-	u32 i;
+ 
+ 	ret = uvc_acquire_privileges(handle);
+ 	if (ret < 0)
+@@ -921,10 +926,17 @@ static int uvc_ioctl_s_input(struct file
+ 	if (input >= chain->selector->bNrInPins)
+ 		return -EINVAL;
+ 
+-	i = input + 1;
+-	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
+-			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
+-			      &i, 1);
++	buf = kmalloc(1, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	*buf = input + 1;
++	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
++			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
++			     buf, 1);
++	kfree(buf);
++
++	return ret;
+ }
+ 
+ static int uvc_ioctl_queryctrl(struct file *file, void *fh,
 
 
