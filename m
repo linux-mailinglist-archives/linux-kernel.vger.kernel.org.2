@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903A14124A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D76E412164
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380157AbhITSgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:36:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49244 "EHLO mail.kernel.org"
+        id S1357970AbhITSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379744AbhITSaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:30:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C4161ACD;
-        Mon, 20 Sep 2021 17:27:03 +0000 (UTC)
+        id S1356101AbhITR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:58:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 276E061213;
+        Mon, 20 Sep 2021 17:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158824;
-        bh=ukr0NSEzMx/uOpOw9SiAfR/sjNSlvcmbajk1369DDW4=;
+        s=korg; t=1632158108;
+        bh=w+22TzG0dsZ5dti7HUXohY2IB2jyPIpjtYCJNBdZnhQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJkUkrn8s3bW6/haIOWxnyWoHwBq2djLA84RSFMZLbibepvd94Q4POsf+MZYTSmUd
-         Gz6+L5Tdh3ZV+K7krMyyZNMtiENuMn6Hh4AL/oJ8RfbznP09gBEVKuTuNLNqo+NnGr
-         Y5tHjEKRIz63zYq8v8BAWDaQ4pnPAftDg/euSIpw=
+        b=hvwbh8KKrhq84nDYXUYAH6d5IMq58LY+tQdHrVHS+oRI8rp4lac1rHarCgbFcjBRK
+         zQpJaAspI1aifm3JVkWsw7sy3orluf/zp3elMTqSc/HWBCtvgfrIEhidL9xzY/Qpd7
+         EPGbQ0kg4t5BcK7/+oILwAxzzEjl7aP9ZWnDqITk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 073/122] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
+Subject: [PATCH 4.19 283/293] PCI: Fix pci_dev_str_match_path() alloc while atomic bug
 Date:   Mon, 20 Sep 2021 18:44:05 +0200
-Message-Id: <20210920163918.167899027@linuxfoundation.org>
+Message-Id: <20210920163943.112821495@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Palmas <dnlplm@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
+[ Upstream commit 7eb6ea4148579b85540a41d57bcec315b8af8ff8 ]
 
-Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
-0x1061 composition in order to avoid bind error.
+pci_dev_str_match_path() is often called with a spinlock held so the
+allocation has to be atomic.  The call tree is:
 
-Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  pci_specified_resource_alignment() <-- takes spin_lock();
+    pci_dev_str_match()
+      pci_dev_str_match_path()
+
+Fixes: 45db33709ccc ("PCI: Allow specifying devices using a base bus and path of devfns")
+Link: https://lore.kernel.org/r/20210812070004.GC31863@kili
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc_mbim.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/pci/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
-index eb100eb33de3..77ac5a721e7b 100644
---- a/drivers/net/usb/cdc_mbim.c
-+++ b/drivers/net/usb/cdc_mbim.c
-@@ -653,6 +653,11 @@ static const struct usb_device_id mbim_devs[] = {
- 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
- 	},
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 077cc0512dd2..97d69b9be1d4 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -224,7 +224,7 @@ static int pci_dev_str_match_path(struct pci_dev *dev, const char *path,
  
-+	/* Telit LN920 */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
-+	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
-+	},
-+
- 	/* default entry */
- 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
- 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
+ 	*endptr = strchrnul(path, ';');
+ 
+-	wpath = kmemdup_nul(path, *endptr - path, GFP_KERNEL);
++	wpath = kmemdup_nul(path, *endptr - path, GFP_ATOMIC);
+ 	if (!wpath)
+ 		return -ENOMEM;
+ 
 -- 
 2.30.2
 
