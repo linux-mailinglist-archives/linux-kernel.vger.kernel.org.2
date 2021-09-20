@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E1B411E21
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC70411AE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349919AbhITR1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:27:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
+        id S244276AbhITQx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:53:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349765AbhITRYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB9716140D;
-        Mon, 20 Sep 2021 17:02:01 +0000 (UTC)
+        id S244201AbhITQuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A76216135D;
+        Mon, 20 Sep 2021 16:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157322;
-        bh=Navu+9orUptoC/TIOjd8OF+vPVfJr3AYSShtGdBkDLk=;
+        s=korg; t=1632156526;
+        bh=26DpxREAUW4RnhxRwr/LD/ekH0ARh3OLBDizhE3yZ2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjMwxv9IH5fL/6kyryjEDi92d3uzyHRXdZrnAmIsb2jRM+CiWt2IxCRtLR9h1HHA2
-         6tIIZ9PMPTXkSn1i75wd4TQ9/emGOuahmZLP85XunVerqBHmcUP1P3LEFCH0bmUp9W
-         5tSLE+ZWDZ78Pn78zc+5G8e/YRBDk5hF53nDxh5E=
+        b=FIuOUPE+dVrqSd4MN6f/mpcGdHCCbRyBewc3e4sPKHLf87qSkojreMkqz17ND0Bc+
+         +MPnlzOIlmUX4MjfL6Lp4brEWuFlE95Kg17uyXiTQxb8nxLkzM3tCEOjkTlLLV7Hph
+         w3C+z/Wt1T1Q+tnm9F+ma7bMlALwWlt/mGKqPulU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 156/217] staging: ks7010: Fix the initialization of the sleep_status structure
-Date:   Mon, 20 Sep 2021 18:42:57 +0200
-Message-Id: <20210920163929.927266398@linuxfoundation.org>
+Subject: [PATCH 4.4 100/133] s390/jump_label: print real address in a case of a jump label bug
+Date:   Mon, 20 Sep 2021 18:42:58 +0200
+Message-Id: <20210920163915.901816529@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 56315e55119c0ea57e142b6efb7c31208628ad86 ]
+[ Upstream commit 5492886c14744d239e87f1b0b774b5a341e755cc ]
 
-'sleep_status' has 3 atomic_t members. Initialize the 3 of them instead of
-initializing only 2 of them and setting 0 twice to the same variable.
+In case of a jump label print the real address of the piece of code
+where a mismatch was detected. This is right before the system panics,
+so there is nothing revealed.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/d2e52a33a9beab41879551d0ae2fdfc99970adab.1626856991.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ks7010/ks7010_sdio.c | 2 +-
+ arch/s390/kernel/jump_label.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
-index 8cfdff198334..84a5b6ebfd07 100644
---- a/drivers/staging/ks7010/ks7010_sdio.c
-+++ b/drivers/staging/ks7010/ks7010_sdio.c
-@@ -904,9 +904,9 @@ static int ks7010_sdio_probe(struct sdio_func *func,
- 	memset(&priv->wstats, 0, sizeof(priv->wstats));
+diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
+index 083b05f5f5ab..cbc187706648 100644
+--- a/arch/s390/kernel/jump_label.c
++++ b/arch/s390/kernel/jump_label.c
+@@ -43,7 +43,7 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
+ 	unsigned char *ipe = (unsigned char *)expected;
+ 	unsigned char *ipn = (unsigned char *)new;
  
- 	/* sleep mode */
-+	atomic_set(&priv->sleepstatus.status, 0);
- 	atomic_set(&priv->sleepstatus.doze_request, 0);
- 	atomic_set(&priv->sleepstatus.wakeup_request, 0);
--	atomic_set(&priv->sleepstatus.wakeup_request, 0);
- 
- 	trx_device_init(priv);
- 	hostif_init(priv);
+-	pr_emerg("Jump label code mismatch at %pS [%p]\n", ipc, ipc);
++	pr_emerg("Jump label code mismatch at %pS [%px]\n", ipc, ipc);
+ 	pr_emerg("Found:    %6ph\n", ipc);
+ 	pr_emerg("Expected: %6ph\n", ipe);
+ 	pr_emerg("New:      %6ph\n", ipn);
 -- 
 2.30.2
 
