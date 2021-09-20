@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEB4411B66
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C53411D2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245674AbhITQ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:58:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45262 "EHLO mail.kernel.org"
+        id S1346478AbhITRQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343676AbhITQyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:54:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A394B61390;
-        Mon, 20 Sep 2021 16:50:51 +0000 (UTC)
+        id S1347679AbhITROb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:14:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18AFC61213;
+        Mon, 20 Sep 2021 16:58:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156652;
-        bh=qIPmLpE9GT58z5aPlmNfpCXUCDHmcqeVvg8YpMvXZTA=;
+        s=korg; t=1632157096;
+        bh=6u6Q4wSBZEdAEKGrPyCj/vcDVN5MmOsabMa/Rb3uEYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VKXOTTx67v3iiagQZATgr1OjvPxNxl7SfhgEq2aY3C3jcEckK1GSExauPk/QhBea7
-         iydQ5QCcgzxStymDJnn9CuZyU9aubbUlcRuacqKACswhhPmZ9d2jfTohoZ/k2wqggF
-         aVrHkS5Z/KF5l3H3qjcrazSDhkBVS3JFB8109hOk=
+        b=14Rd9cemSNHAUz8g1QEK45AbKqbOnwAU/LoDYctfok6bfI7Y2zYoL2Kzymm5m8HQF
+         NtnnaowAhwVbwSon91e1p4munEBfKUtwMkizHpXrgHCsJgN/bkV0hZJIB74evxglxU
+         Xur9gfiJCD7NgBSfu+iUXMUsAb5JAWjlFf1ziBR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Bob Peterson <rpeterso@redhat.com>
-Subject: [PATCH 4.9 023/175] gfs2: Dont clear SGID when inheriting ACLs
-Date:   Mon, 20 Sep 2021 18:41:12 +0200
-Message-Id: <20210920163918.829520705@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 052/217] media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
+Date:   Mon, 20 Sep 2021 18:41:13 +0200
+Message-Id: <20210920163926.387581139@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,80 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit 914cea93dd89f00b41c1d8ff93f17be47356a36a upstream.
+[ Upstream commit c5453769f77ce19a5b03f1f49946fd3f8a374009 ]
 
-When new directory 'DIR1' is created in a directory 'DIR0' with SGID bit
-set, DIR1 is expected to have SGID bit set (and owning group equal to
-the owning group of 'DIR0'). However when 'DIR0' also has some default
-ACLs that 'DIR1' inherits, setting these ACLs will result in SGID bit on
-'DIR1' to get cleared if user is not member of the owning group.
+If dibusb_read_eeprom_byte fails, the mac address is not initialized.
+And nova_t_read_mac_address does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-Fix the problem by moving posix_acl_update_mode() out of
-__gfs2_set_acl() into gfs2_set_acl(). That way the function will not be
-called when inheriting ACLs which is what we want as it prevents SGID
-bit clearing and the mode has been properly set by posix_acl_create()
-anyway.
+Fix this by handling the failure of dibusb_read_eeprom_byte.
 
-Fixes: 073931017b49d9458aa351605b43a7e34598caef
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/acl.c |   27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ drivers/media/usb/dvb-usb/nova-t-usb2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/gfs2/acl.c
-+++ b/fs/gfs2/acl.c
-@@ -86,19 +86,6 @@ int __gfs2_set_acl(struct inode *inode,
- 	char *data;
- 	const char *name = gfs2_acl_name(type);
+diff --git a/drivers/media/usb/dvb-usb/nova-t-usb2.c b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+index 1babd3341910..016a6d1ad279 100644
+--- a/drivers/media/usb/dvb-usb/nova-t-usb2.c
++++ b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+@@ -133,7 +133,7 @@ ret:
  
--	if (acl && acl->a_count > GFS2_ACL_MAX_ENTRIES(GFS2_SB(inode)))
--		return -E2BIG;
--
--	if (type == ACL_TYPE_ACCESS) {
--		umode_t mode = inode->i_mode;
--
--		error = posix_acl_update_mode(inode, &inode->i_mode, &acl);
--		if (error)
--			return error;
--		if (mode != inode->i_mode)
--			mark_inode_dirty(inode);
--	}
--
- 	if (acl) {
- 		len = posix_acl_to_xattr(&init_user_ns, acl, NULL, 0);
- 		if (len == 0)
-@@ -130,6 +117,9 @@ int gfs2_set_acl(struct inode *inode, st
- 	bool need_unlock = false;
- 	int ret;
+ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ {
+-	int i;
++	int i, ret;
+ 	u8 b;
  
-+	if (acl && acl->a_count > GFS2_ACL_MAX_ENTRIES(GFS2_SB(inode)))
-+		return -E2BIG;
-+
- 	ret = gfs2_rsqa_alloc(ip);
- 	if (ret)
- 		return ret;
-@@ -140,7 +130,18 @@ int gfs2_set_acl(struct inode *inode, st
- 			return ret;
- 		need_unlock = true;
- 	}
-+	if (type == ACL_TYPE_ACCESS && acl) {
-+		umode_t mode = inode->i_mode;
-+
-+		ret = posix_acl_update_mode(inode, &inode->i_mode, &acl);
+ 	mac[0] = 0x00;
+@@ -142,7 +142,9 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ 
+ 	/* this is a complete guess, but works for my box */
+ 	for (i = 136; i < 139; i++) {
+-		dibusb_read_eeprom_byte(d,i, &b);
++		ret = dibusb_read_eeprom_byte(d, i, &b);
 +		if (ret)
-+			goto unlock;
-+		if (mode != inode->i_mode)
-+			mark_inode_dirty(inode);
-+	}
-+
- 	ret = __gfs2_set_acl(inode, acl, type);
-+unlock:
- 	if (need_unlock)
- 		gfs2_glock_dq_uninit(&gh);
- 	return ret;
++			return ret;
+ 
+ 		mac[5 - (i - 136)] = b;
+ 	}
+-- 
+2.30.2
+
 
 
