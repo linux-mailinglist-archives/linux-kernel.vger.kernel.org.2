@@ -2,101 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28694114A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B34B4114AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238510AbhITMiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:38:14 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58674 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231849AbhITMiN (ORCPT
+        id S238557AbhITMk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237679AbhITMky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:38:13 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KCaX7h059943;
-        Mon, 20 Sep 2021 07:36:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632141393;
-        bh=VG1KVcz3GSfRISR4WxwHrhgZOlkDTvXLPDBDHCoKw1E=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=Ixpx+xOyWA/pfavocAesc4Dti/V8cdAKvs+lhDjelRI8tkJdJtGO6KgcElxRsXUzL
-         jdLhhCDiSD7cgDYr88fvV5F36LIRRaOWRjj8xkQrGhl/I3mKrgqhvlwoh5HQuhJ4kl
-         11idu5B298dm28f0oS5lkBKbD5M2x2x+Rh09Q2p4=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KCaXks015872
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Sep 2021 07:36:33 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
- Sep 2021 07:36:33 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 20 Sep 2021 07:36:33 -0500
-Received: from [10.250.232.51] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KCaTVn024063;
-        Mon, 20 Sep 2021 07:36:30 -0500
-Subject: Re: [PATCH] can: m_can: m_can_platform: Fix the base address in
- iomap_write_fifo()
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matt Kline <matt@bitbashing.io>, <linux-can@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210916112151.26494-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <2d069fd4-fc98-f1ce-7f26-c3e2569e7efa@ti.com>
-Date:   Mon, 20 Sep 2021 18:06:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 20 Sep 2021 08:40:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ABFC061574;
+        Mon, 20 Sep 2021 05:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wo+vAVxsvvL69J6kBhb2k3hYCVmdEGu6z6CieNSf45o=; b=Atewm4NOs4/l+DuGNUyY53AjHy
+        70TO3+51yjvHj0182A4vAxE9+LFDnm5Vw/mGE4zoxkJ6WR0ig7YE9ZURNu8uOV0+zY2joRoYXQm1D
+        7NyF5YMWFBsKUEMXHFTq2VB26z+A0I5DskYpuK/zRRJB+vnqEPUF0S9VtIITY8kLFVjkimCmHVcfL
+        tSb6zp1KE8n9or8xF+4hAI+G0PcKd8oRuw4JYZ05cXelw/f3YEWC2+JszJohc/QHcLCYrY2i1BZC6
+        tEdobQre2gxMelJ4E/azkUcwwoHAgk9JVNCXKkmQ2ZmKs4Lmlp9/OBGYDsYJ15Co7FV3eIcLC+Vrs
+        tksAiKmA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSIYM-002f95-A3; Mon, 20 Sep 2021 12:37:50 +0000
+Date:   Mon, 20 Sep 2021 13:37:46 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] fscache, 9p, afs, cifs, nfs: Deal with some warnings
+ from W=1
+Message-ID: <YUiAmnMV7+fprNC1@casper.infradead.org>
+References: <163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210916112151.26494-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-On 16/09/21 4:51 pm, Aswath Govindraju wrote:
-> The write into fifo must be performed with an offset from the message ram
-> base address. Therefore, fix the base address to mram_base.
-> 
-> Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
-
-This change along with some more fixes are squashed and posted in,
-
-https://patchwork.kernel.org/project/netdevbpf/patch/20210920123344.2320-1-a-govindraju@ti.com/
-
-Thanks,
-Aswath
-
->  drivers/net/can/m_can/m_can_platform.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-> index 308d4f2fff00..08eac03ebf2a 100644
-> --- a/drivers/net/can/m_can/m_can_platform.c
-> +++ b/drivers/net/can/m_can/m_can_platform.c
-> @@ -52,7 +52,7 @@ static int iomap_write_fifo(struct m_can_classdev *cdev, int offset,
->  {
->  	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
+On Mon, Sep 20, 2021 at 01:14:15PM +0100, David Howells wrote:
+> +++ b/fs/9p/vfs_addr.c
+> @@ -88,7 +88,7 @@ static const struct netfs_read_request_ops v9fs_req_ops = {
 >  
-> -	iowrite32_rep(priv->base + offset, val, val_count);
-> +	iowrite32_rep(priv->mram_base + offset, val, val_count);
->  
->  	return 0;
->  }
-> 
+>  /**
+>   * v9fs_vfs_readpage - read an entire page in from 9P
+> - * @filp: file being read
+> + * @file: file being read
+>   * @page: structure to page
+>   *
+>   */
+
+This is an example of a weird pattern in filesystems.  Several of
+them have kernel-doc for the implementation of various ->ops methods.
+I don't necessarily believe we should delete the comments (although is
+there any useful information in the above?), but I don't see the point
+in the comment being kernel-doc.
 
