@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6FE4120FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB2F411C96
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350289AbhITSAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:00:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
+        id S245528AbhITRLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355193AbhITRyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:54:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1CA161184;
-        Mon, 20 Sep 2021 17:13:31 +0000 (UTC)
+        id S245350AbhITRJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A63C61875;
+        Mon, 20 Sep 2021 16:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158012;
-        bh=nK+11VL7k6V/+67a+Uxl5QmBHaZ716hS3u4SKKpoFJk=;
+        s=korg; t=1632156967;
+        bh=+pym0QwsC8Fviq7aC3T+wd9qCQclUcQD/hEuj45WaZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ysqmTDv4GC/SXR0m3DyM9WsOTv7Vr9K3KTTXzlD6z18hqGJuXXVIemxuO1n5P5aqG
-         rGilvf9LZZX7lPoRKLo2DFfklG2H7WKo4MbkBjpnMKEHFjfMccK6ZPNDSDsNLG58vv
-         ov9d2gQlHpGEiZ4rb7LptSOL+q4FbgYT8v6G4G6o=
+        b=08zXXR4iRpTXF9Vc581rXX0/mEsDx025p1lYgMnRQwhyuxHzOTZx2tCvv6dRkr9Y0
+         hhF1K4wwi6PUFMS9Q/9WPPlb/JWEXPiFB0mBckTC3ZOmvjaFV+csMpYiFajMKxmLID
+         M7+VAgL40cryPpOGRZq/Ha7fvC5fPobPGmnl0+kk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.19 255/293] PCI: Add AMD GPU multi-function power dependencies
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 168/175] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
 Date:   Mon, 20 Sep 2021 18:43:37 +0200
-Message-Id: <20210920163942.115450144@linuxfoundation.org>
+Message-Id: <20210920163923.559185395@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit 60b78ed088ebe1a872ee1320b6c5ad6ee2c4bd9a upstream.
+[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
 
-Some AMD GPUs have built-in USB xHCI and USB Type-C UCSI controllers with
-power dependencies between the GPU and the other functions as in
-6d2e369f0d4c ("PCI: Add NVIDIA GPU multi-function power dependencies").
+Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
+0x1061 composition in order to avoid bind error.
 
-Add device link support for the AMD integrated USB xHCI and USB Type-C UCSI
-controllers.
-
-Without this, runtime power management, including GPU resume and temp and
-fan sensors don't work correctly.
-
-Reported-at: https://gitlab.freedesktop.org/drm/amd/-/issues/1704
-Link: https://lore.kernel.org/r/20210903063311.3606226-1-evan.quan@amd.com
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/usb/cdc_mbim.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5254,7 +5254,7 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR
- 			      PCI_CLASS_MULTIMEDIA_HD_AUDIO, 8, quirk_gpu_hda);
+diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
+index 4c8baba72933..d86132d41416 100644
+--- a/drivers/net/usb/cdc_mbim.c
++++ b/drivers/net/usb/cdc_mbim.c
+@@ -647,6 +647,11 @@ static const struct usb_device_id mbim_devs[] = {
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
+ 	},
  
- /*
-- * Create device link for NVIDIA GPU with integrated USB xHCI Host
-+ * Create device link for GPUs with integrated USB xHCI Host
-  * controller to VGA.
-  */
- static void quirk_gpu_usb(struct pci_dev *usb)
-@@ -5263,9 +5263,11 @@ static void quirk_gpu_usb(struct pci_dev
- }
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
- 			      PCI_CLASS_SERIAL_USB, 8, quirk_gpu_usb);
-+DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
-+			      PCI_CLASS_SERIAL_USB, 8, quirk_gpu_usb);
- 
- /*
-- * Create device link for NVIDIA GPU with integrated Type-C UCSI controller
-+ * Create device link for GPUs with integrated Type-C UCSI controller
-  * to VGA. Currently there is no class code defined for UCSI device over PCI
-  * so using UNKNOWN class for now and it will be updated when UCSI
-  * over PCI gets a class code.
-@@ -5278,6 +5280,9 @@ static void quirk_gpu_usb_typec_ucsi(str
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
- 			      PCI_CLASS_SERIAL_UNKNOWN, 8,
- 			      quirk_gpu_usb_typec_ucsi);
-+DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
-+			      PCI_CLASS_SERIAL_UNKNOWN, 8,
-+			      quirk_gpu_usb_typec_ucsi);
- 
- /*
-  * Enable the NVIDIA GPU integrated HDA controller if the BIOS left it
++	/* Telit LN920 */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
++	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
++	},
++
+ 	/* default entry */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
+-- 
+2.30.2
+
 
 
