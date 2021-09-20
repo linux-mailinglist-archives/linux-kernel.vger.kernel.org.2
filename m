@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D9B412081
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B145411AE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347290AbhITRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52106 "EHLO mail.kernel.org"
+        id S244655AbhITQxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:53:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354422AbhITRtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:49:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 580CC61BD2;
-        Mon, 20 Sep 2021 17:11:49 +0000 (UTC)
+        id S244361AbhITQuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5446761284;
+        Mon, 20 Sep 2021 16:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157909;
-        bh=1a5y8LiFONH2ffe+Lg7p+xIrgh8MKkOsFNyV/nOJ6tg=;
+        s=korg; t=1632156521;
+        bh=7wZnqVtzCaieeirAr59OTc2qWcSAp87QUfatIxHr23g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXsD8KTS2rNJf8e3/Bt2MPUg0KQmgI/GWXYjKsAbI1CZdBaPS/99uXkNMYwXvI3c0
-         /K/RxiUpDw84fDtCHgPPlIxN5ToWOKn6opliCRY50L0tPyY+9fErJfwMNJux1USF75
-         96GCL8BhTKY2ZKJDLcXCD3Tbhy0+ma+I0W2P2iBU=
+        b=qMOkNv6WDwS+tWxMawBH8OstokqekHkgrQBNj2ei9Fy1DCYRNFhFWDBO2g65/7adR
+         JaKstmTW/ot0OZiikHWtXzGCJHnCTmd6Xl9KPRdx/VhKQFU+CDUIrdxbP5wF38KRyH
+         lQesdDKobeBXQdYSbgKys7IKEdJ8s+e+qn4rVLz4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 206/293] media: imx258: Rectify mismatch of VTS value
+Subject: [PATCH 4.4 090/133] Smack: Fix wrong semantics in smk_access_entry()
 Date:   Mon, 20 Sep 2021 18:42:48 +0200
-Message-Id: <20210920163940.315279181@linuxfoundation.org>
+Message-Id: <20210920163915.589327941@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 51f93add3669f1b1f540de1cf397815afbd4c756 ]
+[ Upstream commit 6d14f5c7028eea70760df284057fe198ce7778dd ]
 
-The frame_length_lines (0x0340) registers are hard-coded as follows:
+In the smk_access_entry() function, if no matching rule is found
+in the rust_list, a negative error code will be used to perform bit
+operations with the MAY_ enumeration value. This is semantically
+wrong. This patch fixes this issue.
 
-- 4208x3118
-  frame_length_lines = 0x0c50
-
-- 2104x1560
-  frame_length_lines = 0x0638
-
-- 1048x780
-  frame_length_lines = 0x034c
-
-The driver exposes the V4L2_CID_VBLANK control in read-only mode and
-sets its value to vts_def - height, where vts_def is a mode-dependent
-value coming from the supported_modes array. It is set using one of
-the following macros defined in the driver:
-
-  #define IMX258_VTS_30FPS                0x0c98
-  #define IMX258_VTS_30FPS_2K             0x0638
-  #define IMX258_VTS_30FPS_VGA            0x034c
-
-There's a clear mismatch in the value for the full resolution mode i.e.
-IMX258_VTS_30FPS. Fix it by rectifying the macro with the value set for
-the frame_length_lines register as stated above.
-
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx258.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/smack/smack_access.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index 31a1e2294843..68ce63333744 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -22,7 +22,7 @@
- #define IMX258_CHIP_ID			0x0258
+diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
+index 0df316c62005..84f38b694242 100644
+--- a/security/smack/smack_access.c
++++ b/security/smack/smack_access.c
+@@ -90,23 +90,22 @@ int log_policy = SMACK_AUDIT_DENIED;
+ int smk_access_entry(char *subject_label, char *object_label,
+ 			struct list_head *rule_list)
+ {
+-	int may = -ENOENT;
+ 	struct smack_rule *srp;
  
- /* V_TIMING internal */
--#define IMX258_VTS_30FPS		0x0c98
-+#define IMX258_VTS_30FPS		0x0c50
- #define IMX258_VTS_30FPS_2K		0x0638
- #define IMX258_VTS_30FPS_VGA		0x034c
- #define IMX258_VTS_MAX			0xffff
+ 	list_for_each_entry_rcu(srp, rule_list, list) {
+ 		if (srp->smk_object->smk_known == object_label &&
+ 		    srp->smk_subject->smk_known == subject_label) {
+-			may = srp->smk_access;
+-			break;
++			int may = srp->smk_access;
++			/*
++			 * MAY_WRITE implies MAY_LOCK.
++			 */
++			if ((may & MAY_WRITE) == MAY_WRITE)
++				may |= MAY_LOCK;
++			return may;
+ 		}
+ 	}
+ 
+-	/*
+-	 * MAY_WRITE implies MAY_LOCK.
+-	 */
+-	if ((may & MAY_WRITE) == MAY_WRITE)
+-		may |= MAY_LOCK;
+-	return may;
++	return -ENOENT;
+ }
+ 
+ /**
 -- 
 2.30.2
 
