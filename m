@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7870D4120C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E99411C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350104AbhITR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:58:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54536 "EHLO mail.kernel.org"
+        id S1346266AbhITRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:06:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354870AbhITRvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:51:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EBC1619E4;
-        Mon, 20 Sep 2021 17:12:30 +0000 (UTC)
+        id S1345690AbhITREL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:04:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F3B6137C;
+        Mon, 20 Sep 2021 16:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157951;
-        bh=YtDaJuYubfgYpaQedDpj0+71Qp+LIXDvhC/2ZLAxtqE=;
+        s=korg; t=1632156865;
+        bh=Vf0S8urmq+am/vfe+rm2qY4lT4u4ze1R5B7DhjvV1nk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gi4wadgjWdd5XIyJ9EgpkdQst+BjBKI5r+eMtOPiJiM7+WB09Z60vv5gLOZeg3v+w
-         5iBFb9XFthl36aTlYKu60RzF67lLyQ7FG4AsUrHY/tACSLOWdq3NDtMi93u7veedMO
-         gh2oWFIPaKYFjBmx3e39REcvi6t9vcHgRwV8UEx4=
+        b=DmHsPap3TM6guXGrpfZ65BLfoakAJ1f/QAJ+QVG8D7RwlNk3eZneeAX9GXdto8dyy
+         2W8ZUaoV00VC/QbgpD0242G87QUk2muQK4jJXD0QVjYvTUOUSW82pvqGnachSYgQbX
+         ygE7KEocBS9MQxRQFKKh0YDM5TKPpzednlFn2aa0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 209/293] media: TDA1997x: fix tda1997x_query_dv_timings() return value
+Subject: [PATCH 4.9 122/175] ipv4: ip_output.c: Fix out-of-bounds warning in ip_copy_addrs()
 Date:   Mon, 20 Sep 2021 18:42:51 +0200
-Message-Id: <20210920163940.428659569@linuxfoundation.org>
+Message-Id: <20210920163922.063463733@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Hałasa <khalasa@piap.pl>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit 7dee1030871a48d4f3c5a74227a4b4188463479a ]
+[ Upstream commit 6321c7acb82872ef6576c520b0e178eaad3a25c0 ]
 
-Correctly propagate the tda1997x_detect_std error value.
+Fix the following out-of-bounds warning:
 
-Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    In function 'ip_copy_addrs',
+        inlined from '__ip_queue_xmit' at net/ipv4/ip_output.c:517:2:
+net/ipv4/ip_output.c:449:2: warning: 'memcpy' offset [40, 43] from the object at 'fl' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 36 [-Warray-bounds]
+      449 |  memcpy(&iph->saddr, &fl4->saddr,
+          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      450 |         sizeof(fl4->saddr) + sizeof(fl4->daddr));
+          |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy(). This causes a legitimate compiler warning because memcpy()
+overruns the length of &iph->saddr and &fl4->saddr. As these are just
+a couple of struct members, fix this by using direct assignments,
+instead of memcpy().
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 5 +++--
+ net/ipv4/ip_output.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index dab441bbc9f0..4f8dc3f56785 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -1695,14 +1695,15 @@ static int tda1997x_query_dv_timings(struct v4l2_subdev *sd,
- 				     struct v4l2_dv_timings *timings)
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 3164bae4024a..589fd0904e0d 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -393,8 +393,9 @@ static void ip_copy_addrs(struct iphdr *iph, const struct flowi4 *fl4)
  {
- 	struct tda1997x_state *state = to_state(sd);
-+	int ret;
- 
- 	v4l_dbg(1, debug, state->client, "%s\n", __func__);
- 	memset(timings, 0, sizeof(struct v4l2_dv_timings));
- 	mutex_lock(&state->lock);
--	tda1997x_detect_std(state, timings);
-+	ret = tda1997x_detect_std(state, timings);
- 	mutex_unlock(&state->lock);
- 
--	return 0;
-+	return ret;
+ 	BUILD_BUG_ON(offsetof(typeof(*fl4), daddr) !=
+ 		     offsetof(typeof(*fl4), saddr) + sizeof(fl4->saddr));
+-	memcpy(&iph->saddr, &fl4->saddr,
+-	       sizeof(fl4->saddr) + sizeof(fl4->daddr));
++
++	iph->saddr = fl4->saddr;
++	iph->daddr = fl4->daddr;
  }
  
- static const struct v4l2_subdev_video_ops tda1997x_video_ops = {
+ /* Note: skb->sk can be different from sk, in case of tunnels */
 -- 
 2.30.2
 
