@@ -2,163 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDEF411C06
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42317411D17
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344799AbhITRFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:05:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:50556 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345401AbhITRCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:02:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8445D113E;
-        Mon, 20 Sep 2021 10:01:02 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A17BC3F59C;
-        Mon, 20 Sep 2021 10:01:00 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 18:00:55 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>, rafael.j.wysocki@intel.com,
-        rjw@rjwysocki.net
-Cc:     Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Message-ID: <20210920170055.GA13861@lpieralisi>
-References: <20210910122820.26886-1-justin.he@arm.com>
- <20210910143223.6705-1-justin.he@arm.com>
- <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
- <20210916160827.GA4525@lpieralisi>
+        id S1346346AbhITRQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:14 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:39295 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345686AbhITRMS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:12:18 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id E426F5C01D8;
+        Mon, 20 Sep 2021 13:10:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 20 Sep 2021 13:10:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=bHVTd+HpB5uBC82N+EYIUISSuwA
+        5WGc0HaCUXBOjbp4=; b=jBHC+/CYHBrpTnJqtKJPWsZsiYeqCZTKz/mJkUBKTlO
+        i+5uNaAxlqC4DzbtaWtnEdxIlhyaHfN5Th/cdLu9+iuDPgFUZM8eZTmr8D7Wk9hQ
+        XBVKp73w9cehWwp74rswt5KxJ0F/5SUimbe24nMDTtNmOrs6ahEOtaXbFLBrWuAg
+        M1hiCl0Wvj6qZIhHv9uAjLRVE/4wNEgk+IZbJd9TkhxAWXDeWk9iiwlc4X/yw4su
+        5eqanJTwphQ8JKrmSGXi5akaFA0qZ3KKkda0U95zSnpofnEXCWVSq+fdL6XMv6L2
+        SOZUx5YsG6rnq2EQnxJEh5gTbjQBueiW0FWGPUR9Q3Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bHVTd+
+        HpB5uBC82N+EYIUISSuwA5WGc0HaCUXBOjbp4=; b=ate8iXIVwzTCETzzG2pFZ2
+        NQ+GmZG4N/Rb0NVF5UFQls9VAoWLrV2WrjgOFXql12GjXt8vd1XOpxc7sXURRNUD
+        P/1dFMuV9MKkkv4uoTcdOjhKL4iOrjpDySMu7AoDqg/2jg6seCX/od8nMCHtfEJ6
+        gkqB04yu61AC63+JjrSiiMo1kWdw0d9LXXQVFxr8qZ87rcIhuAmn7fRyTo874W9q
+        OjtXR2MkSOyx4gEtDPozSWBUcgLmOf78MH5QE+f6VKjOMR7nF75Zkr/gej8B8uvi
+        IkhjHXbinuL+xWUHSzIUfKxjPLWaZPiGP7op3U53P66PDoqJXU9hrp9XPfD6a8Sg
+        ==
+X-ME-Sender: <xms:lMBIYamYn4eQQoD2T8gt-Ze7O5d21xR9DiM2_TqodEJIf1m8PByp4g>
+    <xme:lMBIYR3y3bOUdxRZ3GL40K9LBwYhJR4G9Ma6LyjsDC0hpe7WXl31LqiFzTRkGIiRY
+    APFSquf70h9zN_h6Ok>
+X-ME-Received: <xmr:lMBIYYp8Ik0DgNXOp4AUv-mQulVXxhMO3n6kB6xqkqKuboxNsO8bDII0s10enNmUKpvvZEIriOznoIav3WTl6e4wpjz_leiEu5Jf>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddguddtlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefgtefffffhjefhveeikeekvdekteehveekveeuffeigedvtdfgtddthfeh
+    ieeffeenucffohhmrghinheptghouggvthhhihhnkhdrtghordhukhenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhn
+    ohdrthgvtghh
+X-ME-Proxy: <xmx:lMBIYelurpMmUNoeGN4NjSyvwruVLqTcjbn6V6POYTIwegu1Jkhwtw>
+    <xmx:lMBIYY1T-iFf56dpoT_AnmDroqZBmDvsJP1bPL6IPzA4KvhRGWdC7g>
+    <xmx:lMBIYVvdiCsfDmTjlHO3mCxUBUnwsHLsSi2XEDT0Ejw3OmF8yHcA0A>
+    <xmx:lcBIYSp6uOacPM39j5ZYkR_gKAy5wfZr3MByjLegBXYEYhXVGuGHCw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Sep 2021 13:10:44 -0400 (EDT)
+Date:   Mon, 20 Sep 2021 19:10:42 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Regression with mainline kernel on rpi4
+Message-ID: <20210920171042.oq3ndp3ox4xv5odh@gilmour>
+References: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
+ <20210903160302.yh42vpkuob45dbpb@gilmour>
+ <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
+ <20210904091050.g5axxctgelciihjn@gilmour>
+ <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+ <20210920144730.d7oabqfbx7pmyyfb@gilmour>
+ <20210920154333.vunyxeshdb7jt5ka@gilmour>
+ <20210920155350.h6624mt65vwg72p2@gilmour>
+ <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wpj546mrj2thtynn"
 Content-Disposition: inline
-In-Reply-To: <20210916160827.GA4525@lpieralisi>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 05:08:27PM +0100, Lorenzo Pieralisi wrote:
-> On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
-> > On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
-> > >
-> > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> > >
-> > > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > > with call trace as follows:
-> > >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> > >  Modules linked in:
-> > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
-> > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > [...snip...]
-> > >  Call trace:
-> > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> > >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> > >   acpi_ex_access_region+0x114/0x268
-> > >   acpi_ex_field_datum_io+0x128/0x1b8
-> > >   acpi_ex_extract_from_field+0x14c/0x2ac
-> > >   acpi_ex_read_data_from_field+0x190/0x1b8
-> > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> > >   acpi_ex_resolve_to_value+0x250/0x274
-> > >   acpi_ds_evaluate_name_path+0xac/0x124
-> > >   acpi_ds_exec_end_op+0x90/0x410
-> > >   acpi_ps_parse_loop+0x4ac/0x5d8
-> > >   acpi_ps_parse_aml+0xe0/0x2c8
-> > >   acpi_ps_execute_method+0x19c/0x1ac
-> > >   acpi_ns_evaluate+0x1f8/0x26c
-> > >   acpi_ns_init_one_device+0x104/0x140
-> > >   acpi_ns_walk_namespace+0x158/0x1d0
-> > >   acpi_ns_initialize_devices+0x194/0x218
-> > >   acpi_initialize_objects+0x48/0x50
-> > >   acpi_init+0xe0/0x498
-> > >
-> > > As mentioned by Lorenzo:
-> > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> > >   eMAG does not like at all and I'd need to understand why. It looks
-> > >   like the issue happen in SystemMemory Opregion handler."
-> > >
-> > > Hence just revert it before everything is clear.
-> > >
-> > 
-> > Can we try to find the root cause first? -rc1 is not even out yet, and
-> > reverting it now means we can not resubmit it until the next merge
-> > window.
-> 
-> I am waiting to debug this on an eMAG but I noticed something that
-> I wanted to bring up.
-> 
-> SystemMemory Operation region handler - ie
-> 
-> acpi_ex_system_memory_space_handler()
-> 
-> maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
-> with acpi_os_map_memory() and I believe that's what is causing this
-> bug.
-> 
-> On the other hand, acpi_os_map_generic_address(), to handle spaceid
-> ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
-> in line with my expectations.
 
-Hi Rafael,
+--wpj546mrj2thtynn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I wanted to ask please if you have any insights on why
+On Mon, Sep 20, 2021 at 05:35:00PM +0100, Sudip Mukherjee wrote:
+> On Mon, Sep 20, 2021 at 4:53 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > On Mon, Sep 20, 2021 at 05:43:33PM +0200, Maxime Ripard wrote:
+> > > On Mon, Sep 20, 2021 at 04:47:31PM +0200, Maxime Ripard wrote:
+> > > > On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee wrote:
+> > > > > Hi Maxime,
+> > > > >
+> > > > > On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cerno.tech>=
+ wrote:
+> > > > > >
+> > > > > > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherjee wrote:
+> > > > > > > Hi Maxime,
+> > > > > > >
+> > > > > > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@cerno.te=
+ch> wrote:
+> > > > > > > >
+> > > > > > > > Hi Sudip,
+> > > > > > > >
+> > > > > > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Mukherjee w=
+rote:
+> > > > > > > > > Hi All,
+> > > > > > > > >
+> > > > > > > >
+> > > > > > >
+> > > > > > > <snip>
+> > > > > > >
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > You can see the complete dmesg at
+> > > > > > > > > https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
+> > > > > > > >
+> > > > > > > > What test were you running?
+> > > > > > >
+> > > > > > > Nothing particular, its just a boot test that we do every nig=
+ht after
+> > > > > > > pulling from torvalds/linux.git
+> > > > > >
+> > > > > > What are you booting to then?
+> > > > >
+> > > > > I am not sure I understood the question.
+> > > > > Its an Ubuntu image. The desktop environment is gnome. And as
+> > > > > mentioned earlier, we use the HEAD of linus tree every night to b=
+oot
+> > > > > the rpi4 and test that we can login via desktop environment and t=
+hat
+> > > > > there is no regression in dmesg.
+> > > >
+> > > > Looking at the CI, this isn't from a RPi but from qemu?
+>=20
+> No, this is from rpi4 board (4GB), not qemu. The CI is a little
+> complicated here, lava boots the board with the new kernel and will
+> then trigger the openQA job. openQA will then connect to the board
+> using vnc to test the desktop. This is the last link that I sent to
+> Linus when he asked for it.
+> https://lava.qa.codethink.co.uk/scheduler/job/164#L1356
+>=20
+> And this is the lava job for today -
+> https://lava.qa.codethink.co.uk/scheduler/job/173
 
-(1) acpi_ex_system_memory_space_handler()
-(2) acpi_os_map_generic_address()
+Is it connected to a monitor then?
 
-Use two different calls to map memory for the _same_ address space ID
-(SystemMemory).
+> > > >
+> > > > What defconfig are you using? How did you generate the Ubuntu image?
+> > > > Through debootstrap? Any additional package?
+>=20
+> Its the default ubuntu config. I can send you the config if you want.
 
-(3) acpi_os_map_memory()
-vs
-(4) acpi_os_map_iomem()
+Yes, please.
 
-I am struggling to understand why (1) uses (3) ("memory semantics") when
-(2) uses (4) - it is actually unclear how the distinction between
-the two mapping APIs is to be drawn and on what basis one should
-choose which one to use.
+Thanks
+Maxime
 
-I am still waiting to grab some HW to debug this report but the issue
-here is that we are mapping an OpRegion SystemMemory with (3) in the
-memory space handler and given the patch we are reverting we end up
-mapping the operation region with normal non-cacheable memory attributes
-that probably the physical address range behind the OpRegion does not
-support.
+--wpj546mrj2thtynn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks a lot,
-Lorenzo
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> Question is: is the mapping in acpi_ex_system_memory_space_handler()
-> wrong (and should be patched with acpi_os_map_iomem() ?)
-> 
-> On x86 this should not change a thing, on ARM it would.
-> 
-> I don't think it is right to map SystemMemory Operation regions with
-> memory semantics but on the other hand, other than the EFI memory map,
-> there is nothing we can do to determine what a SystemMemory Operation
-> region address space actually represents.
-> 
-> Thoughts ? Before embarking on patching
-> 
-> acpi_ex_system_memory_space_handler()
-> 
-> I want to make sure my understanding of the SystemMemory space is
-> correct, comments welcome.
-> 
-> I will pinpoint the trigger for this bug shortly and before doing
-> anything else.
-> 
-> Thanks,
-> Lorenzo
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUjAkgAKCRDj7w1vZxhR
+xeBCAQCX7YZ4s1SBf/EtTcIcixPm8R9vls2uw8w+P5Qg3E4fswEA3/YrRR3STrU8
+5z+tqd9ZbXeVQOwuBMkMjpM5FgjGgAQ=
+=XjUP
+-----END PGP SIGNATURE-----
+
+--wpj546mrj2thtynn--
