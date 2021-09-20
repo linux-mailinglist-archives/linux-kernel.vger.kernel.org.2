@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AD8411695
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8DA4116AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235720AbhITORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:17:05 -0400
-Received: from verein.lst.de ([213.95.11.211]:51673 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235337AbhITORC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:17:02 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EE75367373; Mon, 20 Sep 2021 16:15:30 +0200 (CEST)
-Date:   Mon, 20 Sep 2021 16:15:30 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
-Message-ID: <20210920141530.GA25156@lst.de>
-References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl> <20210920140938.GA24424@lst.de> <CAMRc=MfTfgKxgmgEsRxcbGqadsutfFhiTkGFT1bagS7DHXHpLA@mail.gmail.com>
+        id S240039AbhITOSD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 10:18:03 -0400
+Received: from mail.shanghaitech.edu.cn ([119.78.254.11]:52965 "EHLO
+        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240291AbhITOR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:17:58 -0400
+Received: from [10.15.44.216] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 480405297546506;
+        Mon, 20 Sep 2021 22:16:10 +0800 (CST)
+Received: from DESKTOP-U066CHB.localdomain (10.15.44.220) by
+ smtp.shanghaitech.edu.cn (10.15.44.216) with Microsoft SMTP Server (TLS) id
+ 14.3.399.0; Mon, 20 Sep 2021 22:16:09 +0800
+From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
+To:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+CC:     Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Subject: [PATCH -next] net/ipv4/syncookies.c: remove superfluous header files from syncookies.c
+Date:   Mon, 20 Sep 2021 22:15:49 +0800
+Message-ID: <20210920141549.29643-1-liumh1@shanghaitech.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MfTfgKxgmgEsRxcbGqadsutfFhiTkGFT1bagS7DHXHpLA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.15.44.220]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 04:13:37PM +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
-> > > For better readability and maintenance: use the BIT() macro for flag
-> > > definitions.
-> >
-> > NAK.  BIT() is the stupidest macro in the kernel and shall not be used
-> > ever.  And I'm pretty sure we had this discussion a few times.
-> 
-> Yep and the general consensus among the kernel developers still is to
-> use the BIT() macro. Even for this patch there were three separate
-> comments from high-profile developers to use BIT().
-> 
-> Also: this really is bikeshedding at this point, given that the core
-> subject of this series is elsewhere.
+syncookies.c hasn't use any macro or function declared in slab.h and random.h,
+Thus, these files can be removed from syncookies.c safely without
+affecting the compilation of the net module.
 
-Given that we had this dicussion before I'll gladly tell you that your
-any seris with a BIT() conversion will go stright to /dev/null after
-the first warning from now on.  You had more than one warning.
+Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
+
+---
+ net/ipv4/syncookies.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index 33792cf55..8696dc343 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -7,8 +7,6 @@
+  */
+ 
+ #include <linux/tcp.h>
+-#include <linux/slab.h>
+-#include <linux/random.h>
+ #include <linux/siphash.h>
+ #include <linux/kernel.h>
+ #include <linux/export.h>
+-- 
+2.25.1
+
 
