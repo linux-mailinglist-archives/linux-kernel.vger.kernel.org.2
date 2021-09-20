@@ -2,73 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F0B4111E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742FE4111EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhITJ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhITJ3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:29:15 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09509C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 02:27:49 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id m21-20020a17090a859500b00197688449c4so12229383pjn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 02:27:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AkK83KoahY30COqnHPfu5NhmXo2Lmr5a3aIm9VHLcOE=;
-        b=daSOJbuZKfdabxXRP7RitCR98YqhVhU/7MIA6S7yHXx9yTkUt9SNuGTki+mR83qSab
-         r8Gd0n5LLChV3G2xoTrE/Xxp7DNcvtDdGSuJSZMpkk5C7TTk4LfeldllgKQw1y8sJBrz
-         G/F+1w+q62fVM0ZI2YHOmlbI1mSttQ8FNpLjFoJQyWOZH2gA1YfZhu6yGQEaM649PWiC
-         dPOuB75qvnqg1Ol4+9H/pWlT+bVOwKhgmC3LadTuo0RqXs3FWwFL65f4sf1U2kArWRRu
-         EhMZ588oVC8Ugfrez/fA9bpSYaRgSQLEEvaWU0Pyy9FTPKqg9xfiUAAI45ZyRvzlC4j5
-         Ua6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AkK83KoahY30COqnHPfu5NhmXo2Lmr5a3aIm9VHLcOE=;
-        b=ZiQ+TKziemgW6diGx6LB2GGPwwdnanyXZIJfKRIbRnBzd3C4V5lXYBvw3DzHBZi4BQ
-         C0FEMduWZvEN429B6mPeKk/wLUgnH1wlvqMJW0c6Sq2g44ePRAuE+wFrHu8Li11cEFa5
-         OsJDL5fagmtYH8/9u4ujj+QrBYMBwMoissoJLefVEewmMEsBKGcS+e132A9KDpkP/vcz
-         K+fbt/qiUwgDrqbpqjdqS/6w5WFYezdH3PCMWiSL0aMNnD7mpc9sOsXg1yX9u7Hb+0q1
-         R3IDpYfi2Azi1mMSfRnW1zLhjr78McuTQxDBjBe9bOoyLkUGyjUYGJeEWws8ZdrNoBy8
-         yEdg==
-X-Gm-Message-State: AOAM532W4gXEBwyG/JQX2nQ6+fNXSlGXy0nJL72Z/ahdRbDtn6sEweoL
-        pchznoNFDEUsKeJpAltcsHjrt3Bgp5w1v55godz89NJJtdYprQ==
-X-Google-Smtp-Source: ABdhPJy0CPwEY1Ze6w0dvv1rQvLAPIfSuDz1pmlBDkF4xo460yt13swCiLs4CtvAGWB1+2bvoSa/PzdYXHIOLRUwgKE=
-X-Received: by 2002:a17:90a:5e03:: with SMTP id w3mr28216977pjf.152.1632130068379;
- Mon, 20 Sep 2021 02:27:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210918140420.231346-1-knaerzche@gmail.com>
-In-Reply-To: <20210918140420.231346-1-knaerzche@gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 20 Sep 2021 11:27:37 +0200
-Message-ID: <CAG3jFytjvApk5SOtWQ8RZ=-LCQQncQiHMK-RWbMMY04anLiaFw@mail.gmail.com>
-Subject: Re: [PATCH] drm: bridge: it66121: Fix return value it66121_probe
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233646AbhITJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:30:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:44914 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230191AbhITJaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:30:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6644D31B;
+        Mon, 20 Sep 2021 02:28:41 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.72.13])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8AF963F59C;
+        Mon, 20 Sep 2021 02:28:38 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     mark.rutland@arm.com, suzuki.poulose@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH V2] arm64/mm: Add pud_sect_supported()
+Date:   Mon, 20 Sep 2021 14:59:31 +0530
+Message-Id: <1632130171-472-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Alex,
+Section mapping at PUD level is supported only on 4K pages and currently it
+gets verified with explicit #ifdef or IS_ENABLED() constructs. This adds a
+new helper pud_sect_supported() for this purpose, which particularly cleans
+up the HugeTLB code path. It updates relevant switch statements with checks
+for __PAGETABLE_PMD_FOLDED in order to avoid build failures caused with two
+identical switch case values in those code blocks.
 
-Thanks for submitting this.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Suggested-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v5.15-rc2
 
-Applied to drm-misc-next.
+Changes in V2:
+
+- Replaced __PAGETABLE_PUD_FOLDED with __PAGETABLE_PMD_FOLDED per Catalin
+
+Changes in V1:
+
+https://lore.kernel.org/all/1631677459-28383-1-git-send-email-anshuman.khandual@arm.com/
+
+ arch/arm64/include/asm/pgtable.h |  5 +++++
+ arch/arm64/include/asm/vmalloc.h |  4 ++--
+ arch/arm64/mm/hugetlbpage.c      | 26 +++++++++++++++-----------
+ 3 files changed, 22 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index dfa76afa0ccf..84fbb52b4224 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -1022,6 +1022,11 @@ static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
+ 	return PAGE_READONLY_EXEC;
+ }
+ 
++static inline bool pud_sect_supported(void)
++{
++	return PAGE_SIZE == SZ_4K;
++}
++
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
+index 7a22aeea9bb5..b9185503feae 100644
+--- a/arch/arm64/include/asm/vmalloc.h
++++ b/arch/arm64/include/asm/vmalloc.h
+@@ -2,6 +2,7 @@
+ #define _ASM_ARM64_VMALLOC_H
+ 
+ #include <asm/page.h>
++#include <asm/pgtable.h>
+ 
+ #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+ 
+@@ -9,10 +10,9 @@
+ static inline bool arch_vmap_pud_supported(pgprot_t prot)
+ {
+ 	/*
+-	 * Only 4k granule supports level 1 block mappings.
+ 	 * SW table walks can't handle removal of intermediate entries.
+ 	 */
+-	return IS_ENABLED(CONFIG_ARM64_4K_PAGES) &&
++	return pud_sect_supported() &&
+ 	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+ }
+ 
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 23505fc35324..029cf5e42c4c 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -40,11 +40,10 @@ void __init arm64_hugetlb_cma_reserve(void)
+ {
+ 	int order;
+ 
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	order = PUD_SHIFT - PAGE_SHIFT;
+-#else
+-	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
+-#endif
++	if (pud_sect_supported())
++		order = PUD_SHIFT - PAGE_SHIFT;
++	else
++		order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
+ 	/*
+ 	 * HugeTLB CMA reservation is required for gigantic
+ 	 * huge pages which could not be allocated via the
+@@ -62,8 +61,9 @@ bool arch_hugetlb_migration_supported(struct hstate *h)
+ 	size_t pagesize = huge_page_size(h);
+ 
+ 	switch (pagesize) {
+-#ifdef CONFIG_ARM64_4K_PAGES
++#ifndef __PAGETABLE_PMD_FOLDED
+ 	case PUD_SIZE:
++		return pud_sect_supported();
+ #endif
+ 	case PMD_SIZE:
+ 	case CONT_PMD_SIZE:
+@@ -126,8 +126,11 @@ static inline int num_contig_ptes(unsigned long size, size_t *pgsize)
+ 	*pgsize = size;
+ 
+ 	switch (size) {
+-#ifdef CONFIG_ARM64_4K_PAGES
++#ifndef __PAGETABLE_PMD_FOLDED
+ 	case PUD_SIZE:
++		if (pud_sect_supported())
++			contig_ptes = 1;
++		break;
+ #endif
+ 	case PMD_SIZE:
+ 		contig_ptes = 1;
+@@ -489,9 +492,9 @@ void huge_ptep_clear_flush(struct vm_area_struct *vma,
+ 
+ static int __init hugetlbpage_init(void)
+ {
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
+-#endif
++	if (pud_sect_supported())
++		hugetlb_add_hstate(PUD_SHIFT - PAGE_SHIFT);
++
+ 	hugetlb_add_hstate(CONT_PMD_SHIFT - PAGE_SHIFT);
+ 	hugetlb_add_hstate(PMD_SHIFT - PAGE_SHIFT);
+ 	hugetlb_add_hstate(CONT_PTE_SHIFT - PAGE_SHIFT);
+@@ -503,8 +506,9 @@ arch_initcall(hugetlbpage_init);
+ bool __init arch_hugetlb_valid_size(unsigned long size)
+ {
+ 	switch (size) {
+-#ifdef CONFIG_ARM64_4K_PAGES
++#ifndef __PAGETABLE_PMD_FOLDED
+ 	case PUD_SIZE:
++		return pud_sect_supported();
+ #endif
+ 	case CONT_PMD_SIZE:
+ 	case PMD_SIZE:
+-- 
+2.20.1
+
