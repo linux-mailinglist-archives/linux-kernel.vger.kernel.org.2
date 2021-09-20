@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823EB412191
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2613241218A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358407AbhITSGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58466 "EHLO mail.kernel.org"
+        id S1358386AbhITSGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356676AbhITSBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1356677AbhITSBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3405B6322A;
-        Mon, 20 Sep 2021 17:15:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B4F663228;
+        Mon, 20 Sep 2021 17:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158158;
-        bh=TUEd5GgCPvHCqT4uiCo//+eCmN6z45ot8WQiTPkqidw=;
+        s=korg; t=1632158160;
+        bh=TW5rtwmRc2wqjiX0cxMWR+rBc+hAXEozJAFhx8BFfR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GNtd16xGavbfs1w5fqFOZLno3mrcbu8Pygve3Ki4dqEVUogLYW1hiz9YvKO1wS01R
-         idAhn0+GLFmW2KG5Zdfws23u9N6hFE7B8fEfPojUimyh3kO4X+rHT/RV2EbcaX2xi0
-         tO9vd2AghXNWbGfz8a2B62tDdtFBSw1C1zmRo/yQ=
+        b=pnGbEWup+ncuaY1Frt1/YwDD9Afd7Dr9JdVIDI8JBZTw8a6IAqVuRRYc3ncnp8CZ+
+         j9EjvjwL1hcLT+/5LdpmCbFQFWWIJ8+g6WiN2wqf46gmTcdkq6W9YoPwR8avJdL3aW
+         am2hGsqOb+WBPJn9vmzUrZTgQxLNWOshpEPk00sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        David Heidelberg <david@ixit.cz>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 5.4 028/260] ARM: 9105/1: atags_to_fdt: dont warn about stack size
-Date:   Mon, 20 Sep 2021 18:40:46 +0200
-Message-Id: <20210920163932.079793660@linuxfoundation.org>
+        stable@vger.kernel.org, Stuart Hayes <stuart.w.hayes@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH 5.4 029/260] PCI/portdrv: Enable Bandwidth Notification only if port supports it
+Date:   Mon, 20 Sep 2021 18:40:47 +0200
+Message-Id: <20210920163932.112595011@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -41,46 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Stuart Hayes <stuart.w.hayes@gmail.com>
 
-commit b30d0289de72c62516df03fdad8d53f552c69839 upstream.
+commit 00823dcbdd415c868390feaca16f0265101efab4 upstream.
 
-The merge_fdt_bootargs() function by definition consumes more than 1024
-bytes of stack because it has a 1024 byte command line on the stack,
-meaning that we always get a warning when building this file:
+Previously we assumed that all Root Ports and Switch Downstream Ports
+supported Link Bandwidth Notification.  Per spec, this is only required
+for Ports supporting Links wider than x1 and/or multiple Link speeds
+(PCIe r5.0, sec 7.5.3.6).
 
-arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
-arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+Because we assumed all Ports supported it, we tried to set up a Bandwidth
+Notification IRQ, which failed for devices that don't support IRQs at all,
+which meant pcieport didn't attach to the Port at all.
 
-However, as this is the decompressor and we know that it has a very shallow
-call chain, and we do not actually risk overflowing the kernel stack
-at runtime here.
+Check the Link Bandwidth Notification Capability bit and enable the service
+only when the Port supports it.
 
-This just shuts up the warning by disabling the warning flag for this
-file.
-
-Tested on Nexus 7 2012 builds.
-
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+[bhelgaas: commit log]
+Fixes: e8303bb7a75c ("PCI/LINK: Report degraded links via link bandwidth notification")
+Link: https://lore.kernel.org/r/20210512213314.7778-1-stuart.w.hayes@gmail.com
+Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/compressed/Makefile |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pci/pcie/portdrv_core.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -90,6 +90,8 @@ $(addprefix $(obj)/,$(libfdt_objs) atags
- 	$(addprefix $(obj)/,$(libfdt_hdrs))
+--- a/drivers/pci/pcie/portdrv_core.c
++++ b/drivers/pci/pcie/portdrv_core.c
+@@ -255,8 +255,13 @@ static int get_port_device_capability(st
+ 		services |= PCIE_PORT_SERVICE_DPC;
  
- ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
-+CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
-+CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
- OBJS	+= $(libfdt_objs) atags_to_fdt.o
- endif
+ 	if (pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
+-	    pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT)
+-		services |= PCIE_PORT_SERVICE_BWNOTIF;
++	    pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
++		u32 linkcap;
++
++		pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &linkcap);
++		if (linkcap & PCI_EXP_LNKCAP_LBNC)
++			services |= PCIE_PORT_SERVICE_BWNOTIF;
++	}
  
+ 	return services;
+ }
 
 
