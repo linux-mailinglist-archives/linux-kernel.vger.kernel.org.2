@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BE84120C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF64F411CB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355974AbhITR5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53660 "EHLO mail.kernel.org"
+        id S1347259AbhITRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354837AbhITRvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:51:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64EAC61BD3;
-        Mon, 20 Sep 2021 17:12:28 +0000 (UTC)
+        id S1347065AbhITRJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7268F60E54;
+        Mon, 20 Sep 2021 16:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157948;
-        bh=8SDHb8hSl496jfByXxncjrG9+2gL6ZG90hdDm5d0zc8=;
+        s=korg; t=1632156993;
+        bh=DDKw6eXX6/jUoop7J/yyf2zQ+aVc75RaP/tP26YJafg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ZgnOwyq79Q+gsMouVpHPYtZs0ITM2z9/c5sMQnXoqEa4xNNSp2JGS+tHbaqMItQL
-         /yo/MgSr+nJup6CyMkrvUY/iT++ehDyrcSxT1eHy6op2YZgL2mbXH7TwqFMT6c9DN3
-         f/0w7z1baOUlp4CYKlXn1JOU21Kk51YcQegrJbe0=
+        b=mqQ29wZLVN7QAxagqtBGnWdL/L9AnwyKdpw2xlqlxmTZhRvXGs/J6HECbBRRR8wh3
+         iLDFO084qDQld86Uwl2oPW8X2frjUnniYYiEj0Jx5ua30M4OSBwM5SEU3GvYFYoeva
+         QEpB/HJFSCf9kfoA79gn9vNMEYRoM6p/p+D05nhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 226/293] mmc: rtsx_pci: Fix long reads when clock is prescaled
+Subject: [PATCH 4.9 139/175] mmc: rtsx_pci: Fix long reads when clock is prescaled
 Date:   Mon, 20 Sep 2021 18:43:08 +0200
-Message-Id: <20210920163941.119968606@linuxfoundation.org>
+Message-Id: <20210920163922.618821876@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -79,10 +79,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 23 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-index 02de6a5701d6..c1de8fa50fe8 100644
+index 3ccaa1415f33..efd995e3cb0b 100644
 --- a/drivers/mmc/host/rtsx_pci_sdmmc.c
 +++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-@@ -551,9 +551,22 @@ static int sd_write_long_data(struct realtek_pci_sdmmc *host,
+@@ -552,9 +552,22 @@ static int sd_write_long_data(struct realtek_pci_sdmmc *host,
  	return 0;
  }
  
@@ -105,7 +105,7 @@ index 02de6a5701d6..c1de8fa50fe8 100644
  
  	if (host->sg_count < 0) {
  		data->error = host->sg_count;
-@@ -562,22 +575,19 @@ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
+@@ -563,22 +576,19 @@ static int sd_rw_multi(struct realtek_pci_sdmmc *host, struct mmc_request *mrq)
  		return data->error;
  	}
  
