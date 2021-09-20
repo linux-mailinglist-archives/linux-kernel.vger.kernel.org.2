@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D76E412164
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F614123EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357970AbhITSFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
+        id S1348621AbhITS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:28:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356101AbhITR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:58:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 276E061213;
-        Mon, 20 Sep 2021 17:15:08 +0000 (UTC)
+        id S1377999AbhITSW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32AEE632BE;
+        Mon, 20 Sep 2021 17:24:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158108;
-        bh=w+22TzG0dsZ5dti7HUXohY2IB2jyPIpjtYCJNBdZnhQ=;
+        s=korg; t=1632158660;
+        bh=LeNpSld68FcxVZZOiC+BDt3NlGwhmw3SSmR5uHHuvrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hvwbh8KKrhq84nDYXUYAH6d5IMq58LY+tQdHrVHS+oRI8rp4lac1rHarCgbFcjBRK
-         zQpJaAspI1aifm3JVkWsw7sy3orluf/zp3elMTqSc/HWBCtvgfrIEhidL9xzY/Qpd7
-         EPGbQ0kg4t5BcK7/+oILwAxzzEjl7aP9ZWnDqITk=
+        b=bbB/EdFsU4ayfwnWHPEVlcM6/gOniK60HLUZM08T542lPOZIKFcVUt81e4QqZawub
+         GVs15eR3fpZ+0M9iLqRCCCtSePqtlSupJMn4484swWKNRLhLVctE6PvtiP9g3oiZ5e
+         fSbyEUG168dd64jBzrbzd0FmUz10oqc1anBhCkVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 283/293] PCI: Fix pci_dev_str_match_path() alloc while atomic bug
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 227/260] KVM: PPC: Book3S HV: Tolerate treclaim. in fake-suspend mode changing registers
 Date:   Mon, 20 Sep 2021 18:44:05 +0200
-Message-Id: <20210920163943.112821495@linuxfoundation.org>
+Message-Id: <20210920163938.832566915@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 7eb6ea4148579b85540a41d57bcec315b8af8ff8 ]
+commit 267cdfa21385d78c794768233678756e32b39ead upstream.
 
-pci_dev_str_match_path() is often called with a spinlock held so the
-allocation has to be atomic.  The call tree is:
+POWER9 DD2.2 and 2.3 hardware implements a "fake-suspend" mode where
+certain TM instructions executed in HV=0 mode cause softpatch interrupts
+so the hypervisor can emulate them and prevent problematic processor
+conditions. In this fake-suspend mode, the treclaim. instruction does
+not modify registers.
 
-  pci_specified_resource_alignment() <-- takes spin_lock();
-    pci_dev_str_match()
-      pci_dev_str_match_path()
+Unfortunately the rfscv instruction executed by the guest do not
+generate softpatch interrupts, which can cause the hypervisor to lose
+track of the fake-suspend mode, and it can execute this treclaim. while
+not in fake-suspend mode. This modifies GPRs and crashes the hypervisor.
 
-Fixes: 45db33709ccc ("PCI: Allow specifying devices using a base bus and path of devfns")
-Link: https://lore.kernel.org/r/20210812070004.GC31863@kili
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It's not trivial to disable scv in the guest with HFSCR now, because
+they assume a POWER9 has scv available. So this fix saves and restores
+checkpointed registers across the treclaim.
+
+Fixes: 7854f7545bff ("KVM: PPC: Book3S: Rework TM save/restore code and make it C-callable")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210908101718.118522-2-npiggin@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S |   36 ++++++++++++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 077cc0512dd2..97d69b9be1d4 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -224,7 +224,7 @@ static int pci_dev_str_match_path(struct pci_dev *dev, const char *path,
+--- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
++++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+@@ -3137,7 +3137,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_P9_TM_HV_A
+ 	/* The following code handles the fake_suspend = 1 case */
+ 	mflr	r0
+ 	std	r0, PPC_LR_STKOFF(r1)
+-	stdu	r1, -PPC_MIN_STKFRM(r1)
++	stdu	r1, -TM_FRAME_SIZE(r1)
  
- 	*endptr = strchrnul(path, ';');
+ 	/* Turn on TM. */
+ 	mfmsr	r8
+@@ -3152,10 +3152,42 @@ BEGIN_FTR_SECTION
+ END_FTR_SECTION_IFSET(CPU_FTR_P9_TM_XER_SO_BUG)
+ 	nop
  
--	wpath = kmemdup_nul(path, *endptr - path, GFP_KERNEL);
-+	wpath = kmemdup_nul(path, *endptr - path, GFP_ATOMIC);
- 	if (!wpath)
- 		return -ENOMEM;
++	/*
++	 * It's possible that treclaim. may modify registers, if we have lost
++	 * track of fake-suspend state in the guest due to it using rfscv.
++	 * Save and restore registers in case this occurs.
++	 */
++	mfspr	r3, SPRN_DSCR
++	mfspr	r4, SPRN_XER
++	mfspr	r5, SPRN_AMR
++	/* SPRN_TAR would need to be saved here if the kernel ever used it */
++	mfcr	r12
++	SAVE_NVGPRS(r1)
++	SAVE_GPR(2, r1)
++	SAVE_GPR(3, r1)
++	SAVE_GPR(4, r1)
++	SAVE_GPR(5, r1)
++	stw	r12, 8(r1)
++	std	r1, HSTATE_HOST_R1(r13)
++
+ 	/* We have to treclaim here because that's the only way to do S->N */
+ 	li	r3, TM_CAUSE_KVM_RESCHED
+ 	TRECLAIM(R3)
  
--- 
-2.30.2
-
++	GET_PACA(r13)
++	ld	r1, HSTATE_HOST_R1(r13)
++	REST_GPR(2, r1)
++	REST_GPR(3, r1)
++	REST_GPR(4, r1)
++	REST_GPR(5, r1)
++	lwz	r12, 8(r1)
++	REST_NVGPRS(r1)
++	mtspr	SPRN_DSCR, r3
++	mtspr	SPRN_XER, r4
++	mtspr	SPRN_AMR, r5
++	mtcr	r12
++	HMT_MEDIUM
++
+ 	/*
+ 	 * We were in fake suspend, so we are not going to save the
+ 	 * register state as the guest checkpointed state (since
+@@ -3183,7 +3215,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_P9_TM_XER_
+ 	std	r5, VCPU_TFHAR(r9)
+ 	std	r6, VCPU_TFIAR(r9)
+ 
+-	addi	r1, r1, PPC_MIN_STKFRM
++	addi	r1, r1, TM_FRAME_SIZE
+ 	ld	r0, PPC_LR_STKOFF(r1)
+ 	mtlr	r0
+ 	blr
 
 
