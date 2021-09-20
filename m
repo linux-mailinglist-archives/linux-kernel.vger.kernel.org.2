@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0757A412797
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374CD41279B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236891AbhITU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:59:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60728 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231784AbhITU5P (ORCPT
+        id S237514AbhITU7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:59:36 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:37402 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhITU52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:57:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632171348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S4VKFLtrv5F+Sqia58aIUV8mMMq0gd6yS5dG8Lafx1o=;
-        b=CGCyXxSpI5BUR0dMsspifQ7dBMja61d3L3mugVMxPnu1BeqcZ5HHf7WCmgEYBwmCJ0rvVk
-        DjSSfdQv9dUDxXsoB2Oh0bX+Af2rYyFZkY5/ZqwzU4+XWp3pi5TZCv1i5OstFI/w+GzvAv
-        9eJA+bggDho84w3OPxCLLzoa+5qjW3w=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207--lCGBGwTMNWsjDsZg1eFjg-1; Mon, 20 Sep 2021 16:55:46 -0400
-X-MC-Unique: -lCGBGwTMNWsjDsZg1eFjg-1
-Received: by mail-il1-f197.google.com with SMTP id f10-20020a92b50a000000b002412aa49d44so40449401ile.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:55:46 -0700 (PDT)
+        Mon, 20 Sep 2021 16:57:28 -0400
+Received: by mail-ot1-f48.google.com with SMTP id w64-20020a9d3646000000b0054716b40005so4354396otb.4;
+        Mon, 20 Sep 2021 13:56:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S4VKFLtrv5F+Sqia58aIUV8mMMq0gd6yS5dG8Lafx1o=;
-        b=Wa8PU5jOFlwbVv60VU+AP7OUIX4CAgmlwq3yxNC+f03UvrfiMSSA0N2gGiBJQfu/cV
-         rEpd4Zm9lvNN8YR9U0seO8nS4NTZfpn/QnPXZxS/o2My6Ng6xaj+xh/vjJhrNZkfAYzZ
-         VDwgQpdXfs7A5RArsTpeW615LaqxoLRg1mv1Fr+M4CfqGU7XHOlVnKmmnVlF2JZco/zQ
-         Es9XFCYeQY4dJjZV5Ip1oqNEFZSAO/ydx8njZGQFT/6NYKiuxNO6IjUoAPEQ367ORAfU
-         T4fFxvn3/XDatf1oiDObN271R1MKvQEjZ52um+d5TMN1pGKc3mfcZq/UeuxT4PIdv7DI
-         RVPQ==
-X-Gm-Message-State: AOAM530paHBiUWM2I7t6+kr3XBiYpHuHnGKQPZtXsIHt3hIhk5iK1ZbY
-        tQiBoz1VSmrv2R1nqIqjs81eYI58NM4nKIrQOZrEOuv+vqNBUxXqzN1xlgU8tw2o32qSCNyIwtc
-        OxwiHaOYkx0HgoAPvuL0M0sDK
-X-Received: by 2002:a6b:cd01:: with SMTP id d1mr17336334iog.88.1632171346330;
-        Mon, 20 Sep 2021 13:55:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwe95i2375dC+5VC3FwfOiZ49FuXMNgnAsnCt+5yXxUVqT8mSI59DRcKPEVF0316d9KBE3J2w==
-X-Received: by 2002:a6b:cd01:: with SMTP id d1mr17336329iog.88.1632171346122;
-        Mon, 20 Sep 2021 13:55:46 -0700 (PDT)
-Received: from halaneylaptop.redhat.com (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id v9sm9268905ilc.16.2021.09.20.13.55.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XPatjUnaHnEphbp45Tc3T1p6HiP/lC6r/ygiKd/wpQg=;
+        b=4sVdTosKadXX3KtrcrwH9j6y6JcY0LwWOWRnfV1nXsYF+fifima1D6usBz8GRq5DvR
+         l8NAjJpTuvKn74eh2FjFplzK3I8dU0Q2uVa3lan5SiVKGpOG08S1a8fmUQPtrmQvzyCb
+         oYNr+mWO5W+Mql9n3P1tIKLeTK0AycDrQtZF8iCeivausuM0S4UC0fADLEZmjNvDxrd0
+         DKwWnJhroHTsXPlTOILQYUdnMdGLPg21Wex2iDWxoXkHbsk7fRekcT/w8HfpOX0836mp
+         Y8rYQQmF9gpMKAlLVKEoYQPwCxXMrNx3ME7PiUzSwtGpDGw23n1R5zBNuqbdOMgi86a4
+         DjLQ==
+X-Gm-Message-State: AOAM531aDo8WSR8bWzNaVUwJ6KG8AalyZ2j6u9fZEsMzcGbMqEwdwgca
+        lXm4Q81HHqAqNqStvquncg==
+X-Google-Smtp-Source: ABdhPJw0Ubx9PITUcYUz1zNNca0q8nJ7I3Nn2f8OSxbuj/hwXREco2J/I6rnExb8fxBIFDz9aO3PRg==
+X-Received: by 2002:a9d:4681:: with SMTP id z1mr23005506ote.42.1632171360541;
+        Mon, 20 Sep 2021 13:56:00 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x192sm2337226oix.9.2021.09.20.13.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 13:55:45 -0700 (PDT)
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Jason Baron <jbaron@akamai.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Cromie <jim.cromie@gmail.com>
-Cc:     Andrew Halaney <ahalaney@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] Documentation: dyndbg: Improve cli param examples
-Date:   Mon, 20 Sep 2021 15:54:44 -0500
-Message-Id: <20210920205444.20068-4-ahalaney@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210920205444.20068-1-ahalaney@redhat.com>
-References: <20210920205444.20068-1-ahalaney@redhat.com>
+        Mon, 20 Sep 2021 13:55:59 -0700 (PDT)
+Received: (nullmailer pid 744183 invoked by uid 1000);
+        Mon, 20 Sep 2021 20:55:58 -0000
+Date:   Mon, 20 Sep 2021 15:55:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandre Bailon <abailon@baylibre.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, matthias.bgg@gmail.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org, khilman@baylibre.com,
+        gpain@baylibre.com
+Subject: Re: [RFC PATCH 1/4] dt-bindings: Add bidings for mtk,apu-drm
+Message-ID: <YUj1XnBbyNEqrV2g@robh.at.kernel.org>
+References: <20210917125945.620097-1-abailon@baylibre.com>
+ <20210917125945.620097-2-abailon@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917125945.620097-2-abailon@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jim pointed out that using $module.dyndbg= is always a more flexible
-choice for using dynamic debug on the command line. The $module.dyndbg
-style is checked at boot and handles if $module is a builtin. If it is
-actually a loadable module, it is handled again later when the module is
-loaded.
+On Fri, Sep 17, 2021 at 02:59:42PM +0200, Alexandre Bailon wrote:
+> This adds the device tree bindings for the APU DRM driver.
+> 
+> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+> ---
+>  .../devicetree/bindings/gpu/mtk,apu-drm.yaml  | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml b/Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml
+> new file mode 100644
+> index 0000000000000..6f432d3ea478c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpu/mtk,apu-drm.yaml
+> @@ -0,0 +1,38 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpu/mediatek,apu-drm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: AI Processor Unit DRM
 
-If you just use dyndbg="module $module +p" dynamic debug is only enabled
-when $module is a builtin.
+DRM is a linux thing, not h/w.
 
-It was recommended to illustrate wildcard usage as well.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,apu-drm
+> +
+> +  remoteproc:
 
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-Suggested-by: Jim Cromie <jim.cromie@gmail.com>
----
- Documentation/admin-guide/dynamic-debug-howto.rst | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+So is remoteproc.
 
-diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-index d0911e7cc271..ae264aab42b6 100644
---- a/Documentation/admin-guide/dynamic-debug-howto.rst
-+++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-@@ -357,7 +357,10 @@ Examples
-   Kernel command line: ...
-     // see whats going on in dyndbg=value processing
-     dynamic_debug.verbose=1
--    // enable pr_debugs in 2 builtins, #cmt is stripped
--    dyndbg="module params +p #cmt ; module sys +p"
-+    // enable pr_debugs in the btrfs module (can be builtin or loadable)
-+    btrfs.dyndbg="+p"
-+    // enable pr_debugs in all files under init/
-+    // and the function parse_one, #cmt is stripped
-+    dyndbg="file init/* +p #cmt ; func parse_one +p"
-     // enable pr_debugs in 2 functions in a module loaded later
-     pc87360.dyndbg="func pc87360_init_device +p; func pc87360_find +p"
--- 
-2.31.1
+Why don't you have the remoteproc driver create the DRM device?
 
+> +    maxItems: 2
+> +    description:
+> +      Handle to remoteproc devices controlling the APU
+> +
+> +  iova:
+> +    maxItems: 1
+> +    description:
+> +      Address and size of virtual memory that could used by the APU
+
+Why does this need to be in DT? If you need to reserve certain VAs, then 
+this discussion[1] might be of interest.
+
+Rob
+
+[1] https://lore.kernel.org/all/YUIPCxnyRutMS47%2F@orome.fritz.box/
