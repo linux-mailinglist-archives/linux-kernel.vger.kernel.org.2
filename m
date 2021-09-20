@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFFB412A78
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5D7412A79
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhIUBmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
+        id S233695AbhIUBmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbhIUBjL (ORCPT
+        with ESMTP id S232133AbhIUBjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:39:11 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528A5C01AE60
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:40:04 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id m3so69673007lfu.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:40:04 -0700 (PDT)
+        Mon, 20 Sep 2021 21:39:17 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D328C01AE76
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:42:31 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so25125339otq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0d+1u0/MGOf1Q+rRJjNzrlBMOxR6V08d5yL0PRRuFjk=;
-        b=Z27HSHOXeONBAxoy541SkWEavFdL299blXuqc2n5ujiwo7gG80cp8+qYAGh1PzTLb+
-         f1D74ClKDHTv+VFv1IgQbF9kOYYPrg8ok2OnadReIJlKhVlN5AJv1Ab9aakm5RA6DB+u
-         25Hgq7Qaj11btnrGSzWCi3PdFes+eWMGo5CWJ9rR8fnAeltDP4NffLDjv9NbnQeisFu8
-         TH7U86NaUg3q/hLUOoxnXUZfBk23sEjy9c1uaFLcQ4JY7VWeHNBD2J2VZ6UHy4WyFTmZ
-         FIru+MgsMYPAx9e7JVmxk2COcGnYkK/9RXdjoimhDOO76gKDZOLWvfQIKehOGJTPtqNo
-         t74A==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=31Y8RGDRM54GvZccxUjy7D640zCG3GJz/MsvFpq1sGk=;
+        b=T+bhdSx+fkQrx0wmoqwLXoHORCofMgMY4j64Qg0OvSOJDYdg65p1F5Aj3o/0W5TeAC
+         BAPnBINSj6sCgzjMZe7b5hQXLIL7xjheHawntxuXD55Dba1d0aNx+pcYbkKre5PD3J6o
+         ynsdKou6pRWbrpDxbdd+PbTL59RwNEwGws4aQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0d+1u0/MGOf1Q+rRJjNzrlBMOxR6V08d5yL0PRRuFjk=;
-        b=P92pocXVRUQfxM4KYSzxz95CWdIXGVPx3wdRQleFnnWF+Hrv5f0nLKgICqjfrD8nE3
-         VS8M/4z89GVj7y268iEXU9TWl2hME92kPW/WP6+jCkEstbs8Sq9/xsLT+cO3/nPsOt6V
-         1BTOKZmlRuz2OW2B9qt1oFku8mFc9T2LRwYc2o2uYMUNZ5go+1GKB25sGj0W6UpCRyzG
-         UCRQrBf6zmINAuGg/nQh7slouLR4TTC7JMJ5uHBXcEJcYoMChtEbTuQ5XI8X98POX0nP
-         xNdJSMQENdVgJlOeALypyUkCQ7fc9u4wgooUbyt1HbV9yVeTttKUweGMsM07YQES4u0x
-         oT5Q==
-X-Gm-Message-State: AOAM532mcgjGxcUfTU1NXirXWCQZcZ6VK+GJ3i5z8MKMwZajx4c4w0Q/
-        cidArNJ7SjH1j5uIQZ4f4Cc=
-X-Google-Smtp-Source: ABdhPJxkMxrniDwwp6a9hFc5k/MvdsynqXqzCzYiuyoNQHhMjqhkhBiYHRLG4GrNFJMcpZTnzrtiTw==
-X-Received: by 2002:a2e:bd8b:: with SMTP id o11mr14743218ljq.321.1632166802693;
-        Mon, 20 Sep 2021 12:40:02 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id y11sm475899lfs.135.2021.09.20.12.40.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 12:40:02 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] ASoC: fsl: Constify static snd_soc_ops
-Date:   Mon, 20 Sep 2021 21:39:47 +0200
-Message-Id: <20210920193947.10237-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=31Y8RGDRM54GvZccxUjy7D640zCG3GJz/MsvFpq1sGk=;
+        b=6w4iheUX+tv0/w3qhq6r5GsKGSWcR3fnoh/8bxbiXY15gr06CoDiatdXp4Rjbz+5hC
+         G0EZj1ec1iQUS4Zltg9mpQTgVMPXTkbA7TakeyrQYdrIBHNX5O9NcakWOBHFYkZfq1ed
+         +1TEDCkIfT/Z9dxnrxpqNPA5RhaHN55qPsdSasve68DnuFCzErGtqD0/bbZm1jTL2U6W
+         MpigKid7ItK+RuSECbwLcKuEcrXqt4u4ysjVtMkC9XzvYFOdyIYuWdmC5ep6XMdUY/FW
+         KIpohp+OcOxaVNo/lrVJLHxgVDKBA5HVwH5NdZFD9efAAjZV+GrhKlLPDrnJyb2lrnot
+         SRmQ==
+X-Gm-Message-State: AOAM531M/p0nJWbXZLFqEg3B8aamPDntBagjgfaTUFFVZ+mkcK65TpYK
+        1fxd+/j5PhE/f5NdLCiFmuh6392hb4JhXOa7V/nbcg==
+X-Google-Smtp-Source: ABdhPJz9TSeFzGkaAs4U9Kc4IDE18llt1nIpqyPgF64HULcW28wGXTY8xoaB3pB7loYYD8w8mV0h0LxJ+Q1zjGks8IY=
+X-Received: by 2002:a05:6830:708:: with SMTP id y8mr2303306ots.77.1632166950435;
+ Mon, 20 Sep 2021 12:42:30 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 20 Sep 2021 12:42:30 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1631872087-24416-5-git-send-email-rajpat@codeaurora.org>
+References: <1631872087-24416-1-git-send-email-rajpat@codeaurora.org> <1631872087-24416-5-git-send-email-rajpat@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 20 Sep 2021 12:42:30 -0700
+Message-ID: <CAE-0n51JdKDSDKhbhQSbF5w=cn5iQ_uRDG0-NMR+FPdGkuX4UA@mail.gmail.com>
+Subject: Re: [PATCH V8 4/8] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajesh Patil <rajpat@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, mka@chromium.org, dianders@chromium.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are only assigned to the ops field in the snd_soc_dai_link struct
-which is a pointer to const struct snd_soc_ops. Make them const to allow
-the compiler to put them in read-only memory.
+Quoting Rajesh Patil (2021-09-17 02:48:03)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 2fbcb0a..a2a4d7e 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -536,24 +536,444 @@
+>                 qupv3_id_0: geniqup@9c0000 {
+>                         compatible = "qcom,geni-se-qup";
+>                         reg = <0 0x009c0000 0 0x2000>;
+> -                       clock-names = "m-ahb", "s-ahb";
+>                         clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
+>                                  <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
+> +                       clock-names = "m-ahb", "s-ahb";
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> +                       iommus = <&apps_smmu 0x123 0x0>;
+>                         status = "disabled";
+>
+> +                       qup_opp_table: qup-opp-table {
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/soc/fsl/imx-audmix.c | 4 ++--
- sound/soc/fsl/imx-card.c   | 4 ++--
- sound/soc/fsl/imx-hdmi.c   | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+Sorry to mislead you. I see now why it can't be here. qeniqup has
+address cells and size cells not equal to zero, which means that every
+child node of qeniqup should have a reg property. So this OPP table
+needs to be moved to the root again (ugh).
 
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index a364e2415de0..0d637929bfef 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -132,12 +132,12 @@ static int imx_audmix_be_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static struct snd_soc_ops imx_audmix_fe_ops = {
-+static const struct snd_soc_ops imx_audmix_fe_ops = {
- 	.startup = imx_audmix_fe_startup,
- 	.hw_params = imx_audmix_fe_hw_params,
- };
- 
--static struct snd_soc_ops imx_audmix_be_ops = {
-+static const struct snd_soc_ops imx_audmix_be_ops = {
- 	.hw_params = imx_audmix_be_hw_params,
- };
- 
-diff --git a/sound/soc/fsl/imx-card.c b/sound/soc/fsl/imx-card.c
-index 58fd0639a069..05dff2dc1d19 100644
---- a/sound/soc/fsl/imx-card.c
-+++ b/sound/soc/fsl/imx-card.c
-@@ -442,12 +442,12 @@ static int imx_aif_startup(struct snd_pcm_substream *substream)
- 	return ret;
- }
- 
--static struct snd_soc_ops imx_aif_ops = {
-+static const struct snd_soc_ops imx_aif_ops = {
- 	.hw_params = imx_aif_hw_params,
- 	.startup = imx_aif_startup,
- };
- 
--static struct snd_soc_ops imx_aif_ops_be = {
-+static const struct snd_soc_ops imx_aif_ops_be = {
- 	.hw_params = imx_aif_hw_params,
- };
- 
-diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-index 34a0dceae621..2b663c39edb2 100644
---- a/sound/soc/fsl/imx-hdmi.c
-+++ b/sound/soc/fsl/imx-hdmi.c
-@@ -59,7 +59,7 @@ static int imx_hdmi_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops imx_hdmi_ops = {
-+static const struct snd_soc_ops imx_hdmi_ops = {
- 	.hw_params = imx_hdmi_hw_params,
- };
- 
--- 
-2.33.0
+> +                               compatible = "operating-points-v2";
+> +
+> +                               opp-75000000 {
+> +                                       opp-hz = /bits/ 64 <75000000>;
+> +                                       required-opps = <&rpmhpd_opp_low_svs>;
+> +                               };
+> +
+> +                               opp-100000000 {
+> +                                       opp-hz = /bits/ 64 <100000000>;
+> +                                       required-opps = <&rpmhpd_opp_svs>;
+> +                               };
+> +
+> +                               opp-128000000 {
+> +                                       opp-hz = /bits/ 64 <128000000>;
+> +                                       required-opps = <&rpmhpd_opp_nom>;
+> +                               };
+> +                       };
+> +
+> +                       i2c0: i2c@980000 {
+> +                               compatible = "qcom,geni-i2c";
+> +                               reg = <0 0x00980000 0 0x4000>;
+> +                               clocks = <&gcc GCC_QUPV3_WRAP0_S0_CLK>;
+> +                               clock-names = "se";
+> +                               pinctrl-names = "default";
+[...]
+>
+>                 cnoc2: interconnect@1500000 {
+> @@ -1574,11 +1994,311 @@
+>                                 function = "qspi_data";
+[...]
+> +
+> +                       qup_spi0_cs_gpio: qup-spi0-cs_gpio {
 
+Please make it "qup_spi0_cs_gpio: qup-spi0-cs-gpio" as node names should
+have dashes instead of underscores.
+
+> +                               pins = "gpio3";
