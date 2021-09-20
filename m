@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261CB412B2D
+	by mail.lfdr.de (Postfix) with ESMTP id 75CDF412B2E
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236819AbhIUCJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        id S245100AbhIUCJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237958AbhIUB4z (ORCPT
+        with ESMTP id S237993AbhIUB45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:56:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BB9C0612AF;
-        Mon, 20 Sep 2021 16:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=5ET8sA5Ie7MakFr5xOQmdzEW86mFesYnr96/0L8emfI=; b=HyVgL4PBjqi9zDIYOC5rOu8mWO
-        jAZ5WYihHx8ZwzALXXWCAx0HyiH3jyHzJ14t0GACIz3p7qP8b8MexFoic08vep0d83ZLonFDnMLTL
-        SdRtJzOxXzG8aBjoUVLS1yWhN1+ApRSHt9wPIIA3je09n477ZXNTblPHCYztaWuq8HqIQ/StfNzKQ
-        QNyL4eSSNnezUnd5VKarmL5F/Z+r96OJY2ZQTKnS1CSN2heKDYcrdwBT40GLeWcPNyP741VuOhH8U
-        wS+S7WlO6gM1pDdDJ2MqkmtjuKPyU3Fsvro33rXqd/jzIm4PxkyJg/KgY914PwylTZInGk+r0FsLx
-        6THpCTWg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSTAQ-003MSY-6l; Mon, 20 Sep 2021 23:57:46 +0000
-Subject: Re: [PATCH] media: rc and cec: keep all menu entries together
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-References: <20210822000450.27329-1-rdunlap@infradead.org>
- <a2367e5c-015a-3731-fcf2-0c448af83fed@xs4all.nl>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f392c329-88c6-a846-22ec-b5534e3d3bac@infradead.org>
-Date:   Mon, 20 Sep 2021 16:57:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 20 Sep 2021 21:56:57 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA8FC06124C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:59:11 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id x124so3563625oix.9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:59:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LsAcbqCOznCCesA5M1HtjmmF5lDx1DBcGXXZJMNbi5M=;
+        b=FnrIBlAqcU9RQN1qWIrzAEpI+nxH5Pvyckbh6KpZsRLiMwdmDRJyGQ9epFg6bAtj+3
+         9V1W0A6laHnsvLQL5KTMzqnmJgVr/ZS/A5wOUMs1RUjqpHofLEqyDKHWYe3uY+kpb2ak
+         7EbE2l2bPmgVLhORAFis+RMdEvKMbfqRNYdc0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LsAcbqCOznCCesA5M1HtjmmF5lDx1DBcGXXZJMNbi5M=;
+        b=xx0Kq4usanASB+x9ZwDUxnGHd1uolPI6UHTUss/EzCCAYOyY6NtHuZxeHtQuJhGwNO
+         OTIidBchJujbx1gLAzAY9L6pyTsut5lQjt18D4+DxmXtNACZQan57SHiZSiw4ag/EbOr
+         0jUkRvqOFKms7LuLa5BCOXRqB8JvdjvJwjWmNdv3DqchYiEx6jYi6Y6jARAiNX3gNidc
+         D0b2YIjuHY8Ju+OWncTWS56q2ewvrQygI8HG27lvUsULBtUEVuDRnGVga1WOH3MUdIu4
+         aP4/sUagOWG0TWHaKyBIL9GL0cBhj9TJQbFLs2U3aSMUxu8TbWzfoV+U+nhrZ7RBOLmB
+         l2cg==
+X-Gm-Message-State: AOAM531FchbzfhI2NI26uyznqdnBKq6jRDzWMqninKbJEJJsFbr5FI/e
+        9goCQjBY/XfJTWVGi0r6hDG5SQ==
+X-Google-Smtp-Source: ABdhPJxbNH/DkXzFL8muMgudxy5/Ej/ewPN6YEU26m6d3M6V788VafXJlr03Fx4xe9/EfHr+KaoA2w==
+X-Received: by 2002:a05:6808:e89:: with SMTP id k9mr1290672oil.169.1632182350663;
+        Mon, 20 Sep 2021 16:59:10 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id h12sm441479oof.7.2021.09.20.16.59.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 16:59:10 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 18:59:08 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.14 000/168] 5.14.7-rc1 review
+Message-ID: <YUkgTMRoCGo+VDR4@fedora64.linuxtx.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <a2367e5c-015a-3731-fcf2-0c448af83fed@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 4:19 AM, Hans Verkuil wrote:
-> Hi Randy,
+On Mon, Sep 20, 2021 at 06:42:18PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.7 release.
+> There are 168 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On 22/08/2021 02:04, Randy Dunlap wrote:
->> Keep all of the Remote Controller and CEC menu entries grouped
->> together. This is most relevant to 'make xconfig', where the
->> entries for "HDMI CEC RC integration" and "Enable CEC error injection
->> support" are not displayed (presented) anywhere near the other
->> Remote Controller support options.
->> By grouping all of these menu entries inside a menu/endmenu block,
->> they are forced to be kept together.
->>
->> Fixes: 46d2a3b964dd ("media: place CEC menu before MEDIA_SUPPORT")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Sean Young <sean@mess.org>
->> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->> Cc: linux-media@vger.kernel.org
->> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->> ---
->>   drivers/media/Kconfig |    2 ++
->>   1 file changed, 2 insertions(+)
->>
->> --- linux-next-20210820.orig/drivers/media/Kconfig
->> +++ linux-next-20210820/drivers/media/Kconfig
->> @@ -6,8 +6,10 @@
->>   #
->>   # NOTE: CEC and Remote Controller support should not depend on MEDIA_SUPPORT
->>   #
->> +menu "Remote Controller and CEC support"
->>   source "drivers/media/rc/Kconfig"
->>   source "drivers/media/cec/Kconfig"
->> +endmenu
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
 > 
-> Remote control and CEC really have very little to do with one another, except
-> for "HDMI CEC RC integration", which is a feature of CEC.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
-> It would make more sense IMHO to make a "CEC support" menu and move the
-> CEC drivers and "HDMI CEC RC integration" and "Enable CEC error injection
-> support" to that new menu. It's a bit odd that those two CEC options are
-> directly under the Device Drivers menu.
+> thanks,
 > 
-> Would that work for you?
+> greg k-h
 > 
 
-Hi Hans,
-I don't know, but I'll try it out.
+Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
-Thanks.
-
-> 
->>   
->>   menuconfig MEDIA_SUPPORT
->>   	tristate "Multimedia support"
->>
-> 
-
-
--- 
-~Randy
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
