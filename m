@@ -2,148 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C2341181D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E91541182B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241480AbhITPXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:23:37 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34314 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235365AbhITPX2 (ORCPT
+        id S241395AbhITP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:29:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232422AbhITP3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:23:28 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KAV2Bx031532;
-        Mon, 20 Sep 2021 17:21:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=59qcHB1kF9PMeMXhh/v3Yee2c2CN5Mky8y5HqhJtLso=;
- b=PPt0E2vuS+kU4Akd0kjN8nIC+/drHoClbzPszutOtLDBgwOe32SoxF70puZ8M6oEjUy9
- R4fHvCnd/1XLywkXrDer+egW08LXIkf3wc27iGkZlaLyI47SQuu9AbcdXht/yaNMlNba
- lJz2/eSvgqNu1OXgF4DmP7K0MTbpNE0vIXNbXLuoceSows4pLjy+OibJroqOqHi+UJ/u
- 3U01jdPlbWMaYgOIAxx6i/qMlpq/FCgVlXQkqAGugHv4xzJkF1hUMGlgvdTrqH/fHSF3
- XO5N7JV67EZVdHJ1yzizk/qvdO7X5uEbGq8XFqTGOXqsh1FNqMtpVigYsi1FapBVLo/K HA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3b6h723ajh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 17:21:47 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4BABC10002A;
-        Mon, 20 Sep 2021 17:21:47 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4383922F7B7;
-        Mon, 20 Sep 2021 17:21:47 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 20 Sep 2021 17:21:47
- +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     <wsa@kernel.org>, <pierre-yves.mordret@foss.st.com>
-CC:     <alexandre.torgue@foss.st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
-        <amelie.delaunay@foss.st.com>, <alain.volmat@foss.st.com>
-Subject: [PATCH 4/4] i2c: stm32f7: use proper DMAENGINE API for termination
-Date:   Mon, 20 Sep 2021 17:21:32 +0200
-Message-ID: <1632151292-18503-5-git-send-email-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1632151292-18503-1-git-send-email-alain.volmat@foss.st.com>
-References: <1632151292-18503-1-git-send-email-alain.volmat@foss.st.com>
+        Mon, 20 Sep 2021 11:29:00 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5632BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:27:33 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id e15so30702870lfr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KkYY5lcGFh2USQXT1hiHpvyqlBdZwGnV7QY6uFjV4/Q=;
+        b=JP/I4sNUuNpAgFWRVxvQiM1sNdFOCT4pTbqUzUoZphqHWUn8mHK4Tno+WnUirVncE2
+         b99bNRpkKfoGmgpCLAXtR+OsEduwXUm5XhTtX0N98IJPyLQrrFKY6WWUVeBYrMEF5GJP
+         +bHpBWbQWS2C/OnZOm+ZSpVfWzHlfFSGzaLp4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KkYY5lcGFh2USQXT1hiHpvyqlBdZwGnV7QY6uFjV4/Q=;
+        b=07ibsgwdoGB8985ax6b6W+XLUq+GJaE/5uZhvt/DRHy4Y74R1KWub3VaX1VrYjk0P5
+         c6yOPEUO2DR/IC6F2fdQCdAXpqV7Xpy/vdgRy/7+s7zpsxliMdKpMIqhOjkIPgc042At
+         TXQWd2Ov6oXKGL7pWKESAy9rwjPcGuhN0mjnLaFxoZhhZgNP4ZUwLwODFQPPmEVy/ll6
+         7E8c8i6vwT2wuRe8l6LPhLQ9ehIAlRZvVCRXF7gZhDlkvVvF6I0zjwpctU5MWmhpF27n
+         lGjtunbwMOhjKkBW/TO7vt6LXunLedr+hKfIWZvPbUrxA/03hpaio623hpCqWYdvHCO4
+         mvIw==
+X-Gm-Message-State: AOAM532VRo8AHe8hc3n7QY+1tesF+1zWe+8Wn6atXICn6nD0Mv35YqyG
+        9ZM/x5CqHWjmggMBF/2iDccfQ2d9FbhATIQS
+X-Google-Smtp-Source: ABdhPJyt79LxyyUiQ46vcGFDsyrn4nu91bpv0d5YeKBZbGGxxQce1uFXW5yFid66HW07ln+Enwy/iQ==
+X-Received: by 2002:a2e:801a:: with SMTP id j26mr2522096ljg.175.1632151530654;
+        Mon, 20 Sep 2021 08:25:30 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id r13sm1402155lff.10.2021.09.20.08.25.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 08:25:30 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id i25so69946526lfg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:25:29 -0700 (PDT)
+X-Received: by 2002:a2e:5815:: with SMTP id m21mr15553407ljb.95.1632151441140;
+ Mon, 20 Sep 2021 08:24:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+References: <163207602242.947088.16824174748243890514.tglx@xen13>
+ <CAHk-=wiFY6Ys0bOrUUsocp_1YHt_9aEBi9CtPt4N0bRUTY8+5Q@mail.gmail.com> <YUhwHsx8n0KJWgQP@hirez.programming.kicks-ass.net>
+In-Reply-To: <YUhwHsx8n0KJWgQP@hirez.programming.kicks-ass.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 20 Sep 2021 08:23:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgPrw6C-skHMLOR5PNfOtLm1Wyng3Z_eobJBz9BY+Q1ag@mail.gmail.com>
+Message-ID: <CAHk-=wgPrw6C-skHMLOR5PNfOtLm1Wyng3Z_eobJBz9BY+Q1ag@mail.gmail.com>
+Subject: Re: [GIT pull] locking/urgent for v5.15-rc2
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dmaengine_terminate_all() is deprecated in favor of explicitly saying if
-it should be sync or async.  Here, we use dmaengine_terminate_sync in
-i2c_xfer and i2c_smbus_xfer handlers and rely on
-dmaengine_terminate_async within interrupt handlers
-(transmission error cases).
-dmaengine_synchronize is added within i2c_xfer and i2c_smbus_xfer handler
-to finalize terminate started in interrupt handlers.
+On Mon, Sep 20, 2021 at 4:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Is that XADD really more expensive? I don't think I've ever seen that.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- drivers/i2c/busses/i2c-stm32f7.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+Hmm. Looking at newer tables from Agner Fog, it doesn't seem to be the
+big difference it used to be, so maybe not a big deal. It shows up as
+many more ups, but the lock synchronization ends up dominating.
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 50d5ae81d227..66145d2b9b55 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1521,7 +1521,7 @@ static irqreturn_t stm32f7_i2c_isr_event(int irq, void *data)
- 		writel_relaxed(STM32F7_I2C_ICR_NACKCF, base + STM32F7_I2C_ICR);
- 		if (i2c_dev->use_dma) {
- 			stm32f7_i2c_disable_dma_req(i2c_dev);
--			dmaengine_terminate_all(dma->chan_using);
-+			dmaengine_terminate_async(dma->chan_using);
- 		}
- 		f7_msg->result = -ENXIO;
- 	}
-@@ -1588,7 +1588,7 @@ static irqreturn_t stm32f7_i2c_isr_event_thread(int irq, void *data)
- 	if (!ret) {
- 		dev_dbg(i2c_dev->dev, "<%s>: Timed out\n", __func__);
- 		stm32f7_i2c_disable_dma_req(i2c_dev);
--		dmaengine_terminate_all(dma->chan_using);
-+		dmaengine_terminate_async(dma->chan_using);
- 		f7_msg->result = -ETIMEDOUT;
- 	}
- 
-@@ -1665,7 +1665,7 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
- 	/* Disable dma */
- 	if (i2c_dev->use_dma) {
- 		stm32f7_i2c_disable_dma_req(i2c_dev);
--		dmaengine_terminate_all(dma->chan_using);
-+		dmaengine_terminate_async(dma->chan_using);
- 	}
- 
- 	i2c_dev->master_mode = false;
-@@ -1702,6 +1702,9 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
- 						i2c_dev->adap.timeout);
- 	ret = f7_msg->result;
- 	if (ret) {
-+		if (i2c_dev->use_dma)
-+			dmaengine_synchronize(dma->chan_using);
-+
- 		/*
- 		 * It is possible that some unsent data have already been
- 		 * written into TXDR. To avoid sending old data in a
-@@ -1716,7 +1719,7 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
- 		dev_dbg(i2c_dev->dev, "Access to slave 0x%x timed out\n",
- 			i2c_dev->msg->addr);
- 		if (i2c_dev->use_dma)
--			dmaengine_terminate_all(dma->chan_using);
-+			dmaengine_terminate_sync(dma->chan_using);
- 		stm32f7_i2c_wait_free_bus(i2c_dev);
- 		ret = -ETIMEDOUT;
- 	}
-@@ -1761,6 +1764,9 @@ static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
- 					      i2c_dev->adap.timeout);
- 	ret = f7_msg->result;
- 	if (ret) {
-+		if (i2c_dev->use_dma)
-+			dmaengine_synchronize(dma->chan_using);
-+
- 		/*
- 		 * It is possible that some unsent data have already been
- 		 * written into TXDR. To avoid sending old data in a
-@@ -1774,7 +1780,7 @@ static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
- 	if (!timeout) {
- 		dev_dbg(dev, "Access to slave 0x%x timed out\n", f7_msg->addr);
- 		if (i2c_dev->use_dma)
--			dmaengine_terminate_all(dma->chan_using);
-+			dmaengine_terminate_sync(dma->chan_using);
- 		stm32f7_i2c_wait_free_bus(i2c_dev);
- 		ret = -ETIMEDOUT;
- 		goto pm_free;
--- 
-2.25.1
+I just remember from when xadd weas new, and it was noticeably slower.
 
+                 Linus
