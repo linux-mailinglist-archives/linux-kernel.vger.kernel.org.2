@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AC74124D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51B841215D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381548AbhITSii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
+        id S1357715AbhITSEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:04:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379745AbhITSaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:30:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE64D632F0;
-        Mon, 20 Sep 2021 17:27:05 +0000 (UTC)
+        id S1356126AbhITR6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:58:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53B2A613A8;
+        Mon, 20 Sep 2021 17:15:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158826;
-        bh=y2nuunIIMi0E1RT2BGyKCFUaFsmSdL3/puRBt2mdno0=;
+        s=korg; t=1632158110;
+        bh=8VccMSGAKrpiOrRmvxOgbr6P40fQhoiDZOYGcWLJ8q4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ba112xSaJdkQ9o/ssqd4MNtqQLiJRfjwMk3q9JBIbIRLuuIm6XJ4SoZdAieIezJO4
-         rgBO91tS/gh0Rg6J9WwJY8OLS/XBPNCyVFlVXpmq42VPgM0m0AbaN9qPv+hCx+QjaK
-         jCeDmAAQjKm0zF0qWT39SvjwTVZXytJaEfdVqnv8=
+        b=RkRR9fbWCmlALfP382F4s8VUAjX/5n4NH8lJQNPgoKRANPYJkMar2DN0Rd+0PxZKB
+         BJxk4/rAh8GoDNWKPS4NaRe5iac2S4gSEyuuJ04zdsLqoTVeL/URBkYOR6cjgI2F4k
+         jjPwLoUQcnCxNrrYRK1coqhfuQxKznEhwUIfTYhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Davide Zini <davidezini2@gmail.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 074/122] block, bfq: honor already-setup queue merges
+        stable@vger.kernel.org, Oliver Upton <oupton@google.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 284/293] KVM: arm64: Handle PSCI resets before userspace touches vCPU state
 Date:   Mon, 20 Sep 2021 18:44:06 +0200
-Message-Id: <20210920163918.200238472@linuxfoundation.org>
+Message-Id: <20210920163943.145411627@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Valente <paolo.valente@linaro.org>
+From: Oliver Upton <oupton@google.com>
 
-[ Upstream commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b ]
+[ Upstream commit 6826c6849b46aaa91300201213701eb861af4ba0 ]
 
-The function bfq_setup_merge prepares the merging between two
-bfq_queues, say bfqq and new_bfqq. To this goal, it assigns
-bfqq->new_bfqq = new_bfqq. Then, each time some I/O for bfqq arrives,
-the process that generated that I/O is disassociated from bfqq and
-associated with new_bfqq (merging is actually a redirection). In this
-respect, bfq_setup_merge increases new_bfqq->ref in advance, adding
-the number of processes that are expected to be associated with
-new_bfqq.
+The CPU_ON PSCI call takes a payload that KVM uses to configure a
+destination vCPU to run. This payload is non-architectural state and not
+exposed through any existing UAPI. Effectively, we have a race between
+CPU_ON and userspace saving/restoring a guest: if the target vCPU isn't
+ran again before the VMM saves its state, the requested PC and context
+ID are lost. When restored, the target vCPU will be runnable and start
+executing at its old PC.
 
-Unfortunately, the stable-merging mechanism interferes with this
-setup. After bfqq->new_bfqq has been set by bfq_setup_merge, and
-before all the expected processes have been associated with
-bfqq->new_bfqq, bfqq may happen to be stably merged with a different
-queue than the current bfqq->new_bfqq. In this case, bfqq->new_bfqq
-gets changed. So, some of the processes that have been already
-accounted for in the ref counter of the previous new_bfqq will not be
-associated with that queue.  This creates an unbalance, because those
-references will never be decremented.
+We can avoid this race by making sure the reset payload is serviced
+before userspace can access a vCPU's state.
 
-This commit fixes this issue by reestablishing the previous, natural
-behaviour: once bfqq->new_bfqq has been set, it will not be changed
-until all expected redirections have occurred.
-
-Signed-off-by: Davide Zini <davidezini2@gmail.com>
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
-Link: https://lore.kernel.org/r/20210802141352.74353-2-paolo.valente@linaro.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 358b28f09f0a ("arm/arm64: KVM: Allow a VCPU to fully reset itself")
+Signed-off-by: Oliver Upton <oupton@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210818202133.1106786-3-oupton@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ virt/kvm/arm/arm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index b8c2ddc01aec..65c200e0ecb5 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2526,6 +2526,15 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
- 	 * are likely to increase the throughput.
- 	 */
- 	bfqq->new_bfqq = new_bfqq;
-+	/*
-+	 * The above assignment schedules the following redirections:
-+	 * each time some I/O for bfqq arrives, the process that
-+	 * generated that I/O is disassociated from bfqq and
-+	 * associated with new_bfqq. Here we increases new_bfqq->ref
-+	 * in advance, adding the number of processes that are
-+	 * expected to be associated with new_bfqq as they happen to
-+	 * issue I/O.
-+	 */
- 	new_bfqq->ref += process_refs;
- 	return new_bfqq;
- }
-@@ -2585,6 +2594,10 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- {
- 	struct bfq_queue *in_service_bfqq, *new_bfqq;
+diff --git a/virt/kvm/arm/arm.c b/virt/kvm/arm/arm.c
+index 39706799ecdf..b943ec5345cb 100644
+--- a/virt/kvm/arm/arm.c
++++ b/virt/kvm/arm/arm.c
+@@ -1137,6 +1137,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 		if (copy_from_user(&reg, argp, sizeof(reg)))
+ 			break;
  
-+	/* if a merge has already been setup, then proceed with that first */
-+	if (bfqq->new_bfqq)
-+		return bfqq->new_bfqq;
++		/*
++		 * We could owe a reset due to PSCI. Handle the pending reset
++		 * here to ensure userspace register accesses are ordered after
++		 * the reset.
++		 */
++		if (kvm_check_request(KVM_REQ_VCPU_RESET, vcpu))
++			kvm_reset_vcpu(vcpu);
 +
- 	/*
- 	 * Do not perform queue merging if the device is non
- 	 * rotational and performs internal queueing. In fact, such a
-@@ -2639,9 +2652,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 	if (bfq_too_late_for_merging(bfqq))
- 		return NULL;
- 
--	if (bfqq->new_bfqq)
--		return bfqq->new_bfqq;
--
- 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
- 		return NULL;
- 
+ 		if (ioctl == KVM_SET_ONE_REG)
+ 			r = kvm_arm_set_reg(vcpu, &reg);
+ 		else
 -- 
 2.30.2
 
