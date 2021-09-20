@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C42E411C87
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AFC411C8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345306AbhITRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:10:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60676 "EHLO mail.kernel.org"
+        id S1345468AbhITRKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:10:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344858AbhITRIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:08:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84F6F6162E;
-        Mon, 20 Sep 2021 16:55:56 +0000 (UTC)
+        id S1345115AbhITRIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:08:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB7FC617E2;
+        Mon, 20 Sep 2021 16:55:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156957;
-        bh=wOrD6SbBlVYd0Y7Ybb2/4lFOyuZbLCmpr/M+AGuSKDc=;
+        s=korg; t=1632156959;
+        bh=NmQzoMEdQul50NFlf+7/qxfkT1Aq30lSXnWCdT6eg0s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tjk/pzrWQXnfCnlM8Pr7mGinNk+vWl7bGS8QRfp0NSlysVr/3Ou/TYdoqK7QEcFhR
-         9gD2QkFWQtkWh86q2KElw42dEf0DUR6dVHx9OGYD4Fj0DL7K7SFEASr4yjJOoHdcrL
-         vfae+NzxL/+mwzL7Sgq2tK4U1ZNvKbFFb7TmBt30=
+        b=A7doxJpIfzkAtjIpYNKYi5ZHf0oI0t+Ap5/+pXuTNV7VHrMXI1mK+nTWMjYh+1bLA
+         GvorgZlZMaDM18YEXgahYFOfTVAfWker6wo3ru8DzMPll8oOv1l4SMxghWGVKygh6r
+         gr8Hppwf9czZm6z3xwRtqRjS1YJ5uk1hAQKT5dws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhenggy <zhenggy@chinatelecom.cn>,
-        Eric Dumazet <edumazet@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
+        stable@vger.kernel.org,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 163/175] tcp: fix tp->undo_retrans accounting in tcp_sacktag_one()
-Date:   Mon, 20 Sep 2021 18:43:32 +0200
-Message-Id: <20210920163923.397180896@linuxfoundation.org>
+Subject: [PATCH 4.9 164/175] ibmvnic: check failover_pending in login response
+Date:   Mon, 20 Sep 2021 18:43:33 +0200
+Message-Id: <20210920163923.428883575@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
 References: <20210920163918.068823680@linuxfoundation.org>
@@ -42,42 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhenggy <zhenggy@chinatelecom.cn>
+From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 
-commit 4f884f3962767877d7aabbc1ec124d2c307a4257 upstream.
+commit 273c29e944bda9a20a30c26cfc34c9a3f363280b upstream.
 
-Commit 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit
-time") may directly retrans a multiple segments TSO/GSO packet without
-split, Since this commit, we can no longer assume that a retransmitted
-packet is a single segment.
+If a failover occurs before a login response is received, the login
+response buffer maybe undefined. Check that there was no failover
+before accessing the login response buffer.
 
-This patch fixes the tp->undo_retrans accounting in tcp_sacktag_one()
-that use the actual segments(pcount) of the retransmitted packet.
-
-Before that commit (10d3be569243), the assumption underlying the
-tp->undo_retrans-- seems correct.
-
-Fixes: 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit time")
-Signed-off-by: zhenggy <zhenggy@chinatelecom.cn>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Acked-by: Neal Cardwell <ncardwell@google.com>
+Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
+Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -1220,7 +1220,7 @@ static u8 tcp_sacktag_one(struct sock *s
- 	if (dup_sack && (sacked & TCPCB_RETRANS)) {
- 		if (tp->undo_marker && tp->undo_retrans > 0 &&
- 		    after(end_seq, tp->undo_marker))
--			tp->undo_retrans--;
-+			tp->undo_retrans = max_t(int, 0, tp->undo_retrans - pcount);
- 		if (sacked & TCPCB_SACKED_ACKED)
- 			state->reord = min(fack_count, state->reord);
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -2527,6 +2527,14 @@ static int handle_login_rsp(union ibmvni
+ 		return 0;
  	}
+ 
++	if (adapter->failover_pending) {
++		adapter->init_done_rc = -EAGAIN;
++		netdev_dbg(netdev, "Failover pending, ignoring login response\n");
++		complete(&adapter->init_done);
++		/* login response buffer will be released on reset */
++		return 0;
++	}
++
+ 	netdev_dbg(adapter->netdev, "Login Response Buffer:\n");
+ 	for (i = 0; i < (adapter->login_rsp_buf_sz - 1) / 8 + 1; i++) {
+ 		netdev_dbg(adapter->netdev, "%016lx\n",
 
 
