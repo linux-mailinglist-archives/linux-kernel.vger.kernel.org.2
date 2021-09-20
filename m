@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1EC411E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E802B4120E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346032AbhITR07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53212 "EHLO mail.kernel.org"
+        id S1356319AbhITR7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:59:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349634AbhITRYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:24:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38FB461A86;
-        Mon, 20 Sep 2021 17:01:53 +0000 (UTC)
+        id S1349796AbhITRxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF6E619E7;
+        Mon, 20 Sep 2021 17:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157313;
-        bh=/+41AaDHHQnuqIex9WNag+ng+jVy+bc0viirn364hZc=;
+        s=korg; t=1632157988;
+        bh=m3yJofFf0wv0x/kEmyC+s9DoQmK+92xMzaXuscuJTkI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gY9xTX+IxWANO2KVRAwBd0iz/XituVNfVw9n6HiuVShKPtKPaxktu8SKRrkSJCEVP
-         bNY+cklyFvyxD2GaW+QPfITtRLXuNiumXhjJMvCkbDW/vOZWrJeozAPB4u9hJTafHf
-         fSqyNzkgYsArJ7kdRp96idZm/TnIECEPzIkcpAYc=
+        b=H4jt0sRCUmWyLvWfju54DjhjaCQNPYZw7GrUQjyxi1mbayQj4E71AjF324y+xFe98
+         KgXkqm2YqGB0eqLqWY8Cp+5K4t2V5T30Y5TCsT4+dFXzOzRHZPuYQL8Jv5YzfDQm5L
+         yMgFfPpjRnNBAyF6lCXRA0GLUtVbp9L98hofwgRI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        stable@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 152/217] serial: 8250: Define RX trigger levels for OxSemi 950 devices
+Subject: [PATCH 4.19 211/293] ARM: dts: imx53-ppd: Fix ACHC entry
 Date:   Mon, 20 Sep 2021 18:42:53 +0200
-Message-Id: <20210920163929.787501080@linuxfoundation.org>
+Message-Id: <20210920163940.493067989@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,72 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-[ Upstream commit d7aff291d069c4418285f3c8ee27b0ff67ce5998 ]
+[ Upstream commit cd7cd5b716d594e27a933c12f026d4f2426d7bf4 ]
 
-Oxford Semiconductor 950 serial port devices have a 128-byte FIFO and in
-the enhanced (650) mode, which we select in `autoconfig_has_efr' with
-the ECB bit set in the EFR register, they support the receive interrupt
-trigger level selectable with FCR bits 7:6 from the set of 16, 32, 112,
-120.  This applies to the original OX16C950 discrete UART[1] as well as
-950 cores embedded into more complex devices.
+PPD has only one ACHC device, which effectively is a Kinetis
+microcontroller. It has one SPI interface used for normal
+communication. Additionally it's possible to flash the device
+firmware using NXP's EzPort protocol by correctly driving a
+second chip select pin and the device reset pin.
 
-For these devices we set the default to 112, which sets an excessively
-high level of 112 or 7/8 of the FIFO capacity, unlike with other port
-types where we choose at most 1/2 of their respective FIFO capacities.
-Additionally we don't make the trigger level configurable.  Consequently
-frequent input overruns happen with high bit rates where hardware flow
-control cannot be used (e.g. terminal applications) even with otherwise
-highly-performant systems.
-
-Lower the default receive interrupt trigger level to 32 then, and make
-it configurable.  Document the trigger levels along with other port
-types, including the set of 16, 32, 64, 112 for the transmit interrupt
-as well[2].
-
-
-[1] "OX16C950 rev B High Performance UART with 128 byte FIFOs", Oxford
-    Semiconductor, Inc., DS-0031, Sep 05, Table 10: "Receiver Trigger
-    Levels", p. 22
-
-[2] same, Table 9: "Transmit Interrupt Trigger Levels", p. 22
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2106260608480.37803@angie.orcam.me.uk
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20210802172309.164365-3-sebastian.reichel@collabora.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_port.c | 3 ++-
- include/uapi/linux/serial_reg.h     | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx53-ppd.dts | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index 20f58e9da2fb..7ac6bb38948f 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -136,7 +136,8 @@ static const struct serial8250_config uart_config[] = {
- 		.name		= "16C950/954",
- 		.fifo_size	= 128,
- 		.tx_loadsz	= 128,
--		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10,
-+		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01,
-+		.rxtrig_bytes	= {16, 32, 112, 120},
- 		/* UART_CAP_EFR breaks billionon CF bluetooth card. */
- 		.flags		= UART_CAP_FIFO | UART_CAP_SLEEP,
- 	},
-diff --git a/include/uapi/linux/serial_reg.h b/include/uapi/linux/serial_reg.h
-index 619fe6111dc9..a31ae32161f3 100644
---- a/include/uapi/linux/serial_reg.h
-+++ b/include/uapi/linux/serial_reg.h
-@@ -62,6 +62,7 @@
-  * ST16C654:	 8  16  56  60		 8  16  32  56	PORT_16654
-  * TI16C750:	 1  16  32  56		xx  xx  xx  xx	PORT_16750
-  * TI16C752:	 8  16  56  60		 8  16  32  56
-+ * OX16C950:	16  32 112 120		16  32  64 112	PORT_16C950
-  * Tegra:	 1   4   8  14		16   8   4   1	PORT_TEGRA
-  */
- #define UART_FCR_R_TRIG_00	0x00
+diff --git a/arch/arm/boot/dts/imx53-ppd.dts b/arch/arm/boot/dts/imx53-ppd.dts
+index f202396e3f2a..f346673d34ea 100644
+--- a/arch/arm/boot/dts/imx53-ppd.dts
++++ b/arch/arm/boot/dts/imx53-ppd.dts
+@@ -70,6 +70,12 @@ cko2_11M: sgtl-clock-cko2 {
+ 		clock-frequency = <11289600>;
+ 	};
+ 
++	achc_24M: achc-clock {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <24000000>;
++	};
++
+ 	sgtlsound: sound {
+ 		compatible = "fsl,imx53-cpuvo-sgtl5000",
+ 			     "fsl,imx-audio-sgtl5000";
+@@ -287,16 +293,13 @@ &gpio4 11 GPIO_ACTIVE_LOW
+ 		    &gpio4 12 GPIO_ACTIVE_LOW>;
+ 	status = "okay";
+ 
+-	spidev0: spi@0 {
+-		compatible = "ge,achc";
+-		reg = <0>;
+-		spi-max-frequency = <1000000>;
+-	};
+-
+-	spidev1: spi@1 {
+-		compatible = "ge,achc";
+-		reg = <1>;
+-		spi-max-frequency = <1000000>;
++	spidev0: spi@1 {
++		compatible = "ge,achc", "nxp,kinetis-k20";
++		reg = <1>, <0>;
++		vdd-supply = <&reg_3v3>;
++		vdda-supply = <&reg_3v3>;
++		clocks = <&achc_24M>;
++		reset-gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
+ 	};
+ 
+ 	gpioxra0: gpio@2 {
 -- 
 2.30.2
 
