@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A504124CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B024124D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381454AbhITSiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52160 "EHLO mail.kernel.org"
+        id S1381514AbhITSia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:38:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380248AbhITSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:33:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2617063301;
-        Mon, 20 Sep 2021 17:28:16 +0000 (UTC)
+        id S1380334AbhITSda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:33:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5050A63303;
+        Mon, 20 Sep 2021 17:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158896;
-        bh=fhAlM7tXfgfz+PJ1/No1MPOY77yCuMAL+RYKZTGWvvI=;
+        s=korg; t=1632158898;
+        bh=n8+TiQ4yNKT8/fz9Ul5M3sOI9kFv2BGLFwuALFg8MVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sLm7BXuej23reSCBoZBldkk8Sdy1/8JlYzshnSd7UdRMarz32z/RLxYpsKQ3Gyuc
-         p53Md/6VJ7mtk8aYqtAkj6fzhv1urQrOyvHzCugfu1K2oV7Waa0XbNlaOhyme3Gwbb
-         PXIa1CPz21KvpDU/mA7hlhL/gAeUUP4Bp07SfK9g=
+        b=XMNALItHOpAz39aeFTGrPv2ZFG0QTB/gBMwbWIboXnbtYG53OISfvfhMCJdhWk78y
+         xR3/GH//Yku9614cgYHu+4yX8nIbdHDhXb72z8FfPaJ+2kn6wpOMpw1IDGEmwLaNBe
+         +eWwH2Xerd9vrdPwRBP2XeWe4J+KAToivXWzlsqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        "David S. Miller" <davem@davemloft.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Benjamin Hesmans <benjamin.hesmans@tessares.net>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 106/122] net: dsa: b53: Set correct number of ports in the DSA struct
-Date:   Mon, 20 Sep 2021 18:44:38 +0200
-Message-Id: <20210920163919.273487205@linuxfoundation.org>
+Subject: [PATCH 5.10 107/122] netfilter: socket: icmp6: fix use-after-scope
+Date:   Mon, 20 Sep 2021 18:44:39 +0200
+Message-Id: <20210920163919.314979559@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -41,48 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Benjamin Hesmans <benjamin.hesmans@tessares.net>
 
-[ Upstream commit d12e1c4649883e8ca5e8ff341e1948b3b6313259 ]
+[ Upstream commit 730affed24bffcd1eebd5903171960f5ff9f1f22 ]
 
-Setting DSA_MAX_PORTS caused DSA to call b53 callbacks (e.g.
-b53_disable_port() during dsa_register_switch()) for invalid
-(non-existent) ports. That made b53 modify unrelated registers and is
-one of reasons for a broken BCM5301x support.
+Bug reported by KASAN:
 
-This problem exists for years but DSA_MAX_PORTS usage has changed few
-times. It seems the most accurate to reference commit dropping
-dsa_switch_alloc() in the Fixes tag.
+BUG: KASAN: use-after-scope in inet6_ehashfn (net/ipv6/inet6_hashtables.c:40)
+Call Trace:
+(...)
+inet6_ehashfn (net/ipv6/inet6_hashtables.c:40)
+(...)
+nf_sk_lookup_slow_v6 (net/ipv6/netfilter/nf_socket_ipv6.c:91
+net/ipv6/netfilter/nf_socket_ipv6.c:146)
 
-Fixes: 7e99e3470172 ("net: dsa: remove dsa_switch_alloc helper")
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+It seems that this bug has already been fixed by Eric Dumazet in the
+past in:
+commit 78296c97ca1f ("netfilter: xt_socket: fix a stack corruption bug")
+
+But a variant of the same issue has been introduced in
+commit d64d80a2cde9 ("netfilter: x_tables: don't extract flow keys on early demuxed sks in socket match")
+
+`daddr` and `saddr` potentially hold a reference to ipv6_var that is no
+longer in scope when the call to `nf_socket_get_sock_v6` is made.
+
+Fixes: d64d80a2cde9 ("netfilter: x_tables: don't extract flow keys on early demuxed sks in socket match")
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Benjamin Hesmans <benjamin.hesmans@tessares.net>
+Reviewed-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv6/netfilter/nf_socket_ipv6.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index a8e915dd826a..54558f47b633 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -2559,6 +2559,8 @@ static int b53_switch_init(struct b53_device *dev)
- 	dev->enabled_ports |= BIT(dev->cpu_port);
- 	dev->num_ports = fls(dev->enabled_ports);
+diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
+index 6fd54744cbc3..aa5bb8789ba0 100644
+--- a/net/ipv6/netfilter/nf_socket_ipv6.c
++++ b/net/ipv6/netfilter/nf_socket_ipv6.c
+@@ -99,7 +99,7 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
+ {
+ 	__be16 dport, sport;
+ 	const struct in6_addr *daddr = NULL, *saddr = NULL;
+-	struct ipv6hdr *iph = ipv6_hdr(skb);
++	struct ipv6hdr *iph = ipv6_hdr(skb), ipv6_var;
+ 	struct sk_buff *data_skb = NULL;
+ 	int doff = 0;
+ 	int thoff = 0, tproto;
+@@ -129,8 +129,6 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
+ 			thoff + sizeof(*hp);
  
-+	dev->ds->num_ports = min_t(unsigned int, dev->num_ports, DSA_MAX_PORTS);
-+
- 	/* Include non standard CPU port built-in PHYs to be probed */
- 	if (is539x(dev) || is531x5(dev)) {
- 		for (i = 0; i < dev->num_ports; i++) {
-@@ -2603,7 +2605,6 @@ struct b53_device *b53_switch_alloc(struct device *base,
- 		return NULL;
- 
- 	ds->dev = base;
--	ds->num_ports = DSA_MAX_PORTS;
- 
- 	dev = devm_kzalloc(base, sizeof(*dev), GFP_KERNEL);
- 	if (!dev)
+ 	} else if (tproto == IPPROTO_ICMPV6) {
+-		struct ipv6hdr ipv6_var;
+-
+ 		if (extract_icmp6_fields(skb, thoff, &tproto, &saddr, &daddr,
+ 					 &sport, &dport, &ipv6_var))
+ 			return NULL;
 -- 
 2.30.2
 
