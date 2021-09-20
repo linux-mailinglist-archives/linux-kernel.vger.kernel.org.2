@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0124114B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF844114B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233617AbhITMmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:42:13 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37686 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhITMmI (ORCPT
+        id S234491AbhITMnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234162AbhITMnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:42:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2E820200CF;
-        Mon, 20 Sep 2021 12:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632141640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D+sTsm/QQvZLDm5RCwun3FTJYNW9+vVqCamEMpO1CSY=;
-        b=DIBZ7J1XZk+XwQ4mWtTiP85s3RIiajX/B4peNtjwUwyF56rC7UA7gU+InyLC2EPqxHmKVs
-        Bvl62XzpLcAPaMWGUPCrFhq+8JjR4kMlpYXSnWGJFtqKaL0rISMVbrbPTFJot3b54k1D88
-        3adrw0hd2KqlqDxZbtwcFkCYNZrsBz8=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F40CCA3B98;
-        Mon, 20 Sep 2021 12:40:39 +0000 (UTC)
-Date:   Mon, 20 Sep 2021 14:40:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
-Message-ID: <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
-References: <20210918233920.9174-1-sultan@kerneltoast.com>
+        Mon, 20 Sep 2021 08:43:32 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79889C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:42:05 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id p29so66441597lfa.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Jyaaz7vsLz5usd/SRKYitd1GGLRRfy3n82omug9pAA=;
+        b=L/kr3gQxhCNlhY6qH1CLUHlheQzY/Uh+X/1bxbkbfOsRhN5fgPZdylx7AksknyVZx0
+         ZavNwA4iIjTf8EcdStQfTAE/CRJna1NdH2D1H7fxIYHEiQ+0MHOPC7853nFtRKP48Vb1
+         GJzyA8LSMUDfFgdLyXv74OeaA8br/7jymBKqKQKfeYRtMB2s0FkIFGGt5rTgnSKxV8mU
+         X4NlHShLxa3rlaPq+R/xlNlW86R+vVxLpXI2xSERkAr/iLu0cn1PCrZkVQlCaSVrLeQt
+         SndtPNzU3Ga5dMxXpv6OGJSxycuUZb6UBdv2g/0rC2zCOClhczAXcpdZBuLYOnmaI5kz
+         GHMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Jyaaz7vsLz5usd/SRKYitd1GGLRRfy3n82omug9pAA=;
+        b=5Nc86vk7x6qF4GBc0Iq1mi1rr+2i0+ltKbdav77U3W1kpyIcvJOu1TinuIx580ZcVK
+         Ce+mlYA5llNxrOJ2bZ+RkTACr+lOYHPOBhduisUg0DJAs6T9/j94EgK3+TEy3mQGLEP+
+         wuM7T88+68kT9F6Q/W/+Mh24v+Cp8PIUCYlILT1FYWovD1z2iMPfTvlTWz5VnfbKzMkE
+         OHydsrcYqBc/LrPz+iuXMBbxOgUgj74Yed8OSJ3o/UvTUMYZjOqTdAqC0HkRSHcQqpwk
+         adjJZyoRV/CM316QMyC8IbBEmAOghoO7IIvrY6UfOfAbt/XiZkG4y0TxgeqQNy9Al7p0
+         gjjg==
+X-Gm-Message-State: AOAM5326C/uPbMV/Du8RzDp6uq71QkKoifWO/YqD4nDYOmMmWSOjtR/f
+        v6EdvycQTx34UzIvT057dUz2fA==
+X-Google-Smtp-Source: ABdhPJwptMV9N4Ai1/dhNdrr/uDN6aHZsMXxgGcaXehA6fzWLlCPes1ne4JSuGwqmkcUqu3FgLPPGw==
+X-Received: by 2002:a2e:501a:: with SMTP id e26mr20763529ljb.57.1632141723926;
+        Mon, 20 Sep 2021 05:42:03 -0700 (PDT)
+Received: from grasshopper.googchameleon.semihalf.net ([83.142.187.85])
+        by smtp.gmail.com with ESMTPSA id v1sm630944lfo.308.2021.09.20.05.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 05:42:03 -0700 (PDT)
+From:   =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
+        dinguyen@kernel.org, p.zabel@pengutronix.de
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        tn@semihalf.com, ka@semihalf.com, jam@semihalf.com,
+        =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
+Subject: [PATCH 0/3] Add support for the Mercury+ AA1 module
+Date:   Mon, 20 Sep 2021 14:41:38 +0200
+Message-Id: <20210920124141.1166544-1-pan@semihalf.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210918233920.9174-1-sultan@kerneltoast.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 18-09-21 16:39:20, Sultan Alsawaf wrote:
-> From: Sultan Alsawaf <sultan@kerneltoast.com>
-> 
-> The OOM reaper thread uses wait_event_freezable() without actually being
-> marked as freezable. Fix it by adding a set_freezable() call.
+The following patches add support for the Mercury+ AA1 with an
+Arria 10 SoCFPGA, namely a device tree, and a fix regarding the
+Arria 10 reset manager driver.
 
-What is the actual problem you are trying to solve here. Freezer details
-are hairy and I have to re-learn them each time again and again but from
-what I remember wait_event_freezable doesn't really depend on tyask
-being freezable. It tells the freezer that the task is OK to exclude
-while it is sleeping and that should be just the case for the oom
-reaper. Or am I missing something?
- 
-> Fixes: aac453635549 ("mm, oom: introduce oom reaper")
-> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-> ---
->  mm/oom_kill.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 831340e7ad8b..46a742b57735 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -641,6 +641,8 @@ static void oom_reap_task(struct task_struct *tsk)
->  
->  static int oom_reaper(void *unused)
->  {
-> +	set_freezable();
-> +
->  	while (true) {
->  		struct task_struct *tsk = NULL;
->  
-> -- 
-> 2.33.0
+Paweł Anikiel (3):
+  dt-bindings: mtd: spi-nor: add n25q00 schema
+  dts: socfpga: Add Mercury+ AA1 devicetree
+  reset: socfpga: add empty driver allowing consumers to probe
+
+ .../bindings/mtd/jedec,spi-nor.yaml           |   2 +-
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/socfpga_arria10_mercury_aa1.dts  | 127 ++++++++++++++++++
+ drivers/reset/reset-socfpga.c                 |  26 ++++
+ 4 files changed, 155 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts
 
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
