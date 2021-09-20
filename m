@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF8041254A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEC54122FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382935AbhITSmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:42:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
+        id S1351548AbhITSTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381955AbhITSjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:39:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D254363335;
-        Mon, 20 Sep 2021 17:30:41 +0000 (UTC)
+        id S1350559AbhITSMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:12:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BFEF63284;
+        Mon, 20 Sep 2021 17:21:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159042;
-        bh=cUnrVoZkYFdeVv9AZG38BzbZO66hQK6kHGVOAECMSRU=;
+        s=korg; t=1632158464;
+        bh=Uh4gAPJjL7EvxAYvjfESQ3h7Yip6zR0rBwfOQmMswjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sQ5ic9cALE0aCCpu67srXXzGHbl1w6ukVfktpxIELN6VVCPu6/nMwUmil5dn5UT0E
-         XVUOgCam9wAMI0Ao/Ef4GhnlwrEGqAS1rE3BcsI+O9dBCB0GXfIe2IfoKQW2CLZQzP
-         5z/lPm/oyj8SecI4/Bv090hJeUH35CnchfXFt3ls=
+        b=Z03EOA3+g1Lmnn+csFwh9//Jjrl3k4os2JZN9x8kWtoKnsqvz9VtgoTghiGyPDxHx
+         UQWpVGtUJligqsFYhN/SzAsLcj8+scTLqEMmpdI6TooonTTRUmkcT/Rp+SZqRp4QWb
+         B2Np+dh91QJSjIH2/xdxAG5aSApEa4vxlJ0Omykw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ville Syrjala <ville.syrjala@linux.intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Cooper Chiou <cooper.chiou@intel.com>,
-        William Tseng <william.tseng@intel.com>,
-        Lee Shawn C <shawn.c.lee@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.14 049/168] drm/i915/dp: return proper DPRX link training result
+        stable@vger.kernel.org, Zekun Shen <bruceshenzk@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 169/260] ath9k: fix OOB read ar9300_eeprom_restore_internal
 Date:   Mon, 20 Sep 2021 18:43:07 +0200
-Message-Id: <20210920163923.250441951@linuxfoundation.org>
+Message-Id: <20210920163936.829836379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Shawn C <shawn.c.lee@intel.com>
+From: Zekun Shen <bruceshenzk@gmail.com>
 
-commit 9af4bf2171c1a9e3f2ebb21140c0e34e60b2a22a upstream.
+[ Upstream commit 23151b9ae79e3bc4f6a0c4cd3a7f355f68dad128 ]
 
-After DPRX link training, intel_dp_link_train_phy() did not
-return the training result properly. If link training failed,
-i915 driver would not run into link train fallback function.
-And no hotplug uevent would be received by user space application.
+Bad header can have large length field which can cause OOB.
+cptr is the last bytes for read, and the eeprom is parsed
+from high to low address. The OOB, triggered by the condition
+length > cptr could cause memory error with a read on
+negative index.
 
-Fixes: b30edfd8d0b4 ("drm/i915: Switch to LTTPR non-transparent mode link training")
-Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
-Cc: Imre Deak <imre.deak@intel.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Cooper Chiou <cooper.chiou@intel.com>
-Cc: William Tseng <william.tseng@intel.com>
-Signed-off-by: Lee Shawn C <shawn.c.lee@intel.com>
-Reviewed-by: Imre Deak <imre.deak@intel.com>
-Signed-off-by: Imre Deak <imre.deak@intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210706152541.25021-1-shawn.c.lee@intel.com
-(cherry picked from commit dab1b47e57e053b2a02c22ead8e7449f79961335)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+There are some sanity check around length, but it is not
+compared with cptr (the remaining bytes). Here, the
+corrupted/bad EEPROM can cause panic.
+
+I was able to reproduce the crash, but I cannot find the
+log and the reproducer now. After I applied the patch, the
+bug is no longer reproducible.
+
+Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/YM3xKsQJ0Hw2hjrc@Zekuns-MBP-16.fios-router.home
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/display/intel_dp_link_training.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/ar9003_eeprom.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-@@ -848,7 +848,7 @@ intel_dp_link_train_all_phys(struct inte
- 	}
- 
- 	if (ret)
--		intel_dp_link_train_phy(intel_dp, crtc_state, DP_PHY_DPRX);
-+		ret = intel_dp_link_train_phy(intel_dp, crtc_state, DP_PHY_DPRX);
- 
- 	if (intel_dp->set_idle_link_train)
- 		intel_dp->set_idle_link_train(intel_dp, crtc_state);
+diff --git a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
+index b4885a700296..b0a4ca3559fd 100644
+--- a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
++++ b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
+@@ -3351,7 +3351,8 @@ static int ar9300_eeprom_restore_internal(struct ath_hw *ah,
+ 			"Found block at %x: code=%d ref=%d length=%d major=%d minor=%d\n",
+ 			cptr, code, reference, length, major, minor);
+ 		if ((!AR_SREV_9485(ah) && length >= 1024) ||
+-		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485)) {
++		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485) ||
++		    (length > cptr)) {
+ 			ath_dbg(common, EEPROM, "Skipping bad header\n");
+ 			cptr -= COMP_HDR_LEN;
+ 			continue;
+-- 
+2.30.2
+
 
 
