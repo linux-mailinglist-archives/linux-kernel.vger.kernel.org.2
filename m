@@ -2,124 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C117411367
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C030241136C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhITLP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        id S234389AbhITLUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236497AbhITLP0 (ORCPT
+        with ESMTP id S229926AbhITLUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:15:26 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6157C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 04:13:59 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id g8so59936172edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 04:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=p5az8nB81DwwNgXGTxU9ukK7VAEPLsys0uqjmS5Tnv4=;
-        b=jY0gnQxKtfoHLReTbt5tv1J2b8p8UMD4UpXbJp0u5T/PV/r2z8u48dBkTvV0gO2ZUj
-         /LiRt0DewGx4DPgmtD9+lIe1x/4dwr373259WBlybTWGt3Cnak+l+YEqXN7M0zfMDVu1
-         3azCzuk3zNEQsRoI3yw4RP8eDTEvdNFSqu2fat4MGWc1AgALPC3gX24prJgVHA6pnBVT
-         0TqkiKPjyJvdwTDu82RbawjQQFASYTeToMas16awrm9Mbq0RnbIg42i8XFIyNmJlknzG
-         UBQvzrvQNW+qzeAX0yuWvDRMEU8AdfIZyNRPEHRnHzjPFYi865bxQtw6vj5DFpvj3LXo
-         a5rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p5az8nB81DwwNgXGTxU9ukK7VAEPLsys0uqjmS5Tnv4=;
-        b=Pr2FeHCfakJJj+ARdUXwSFNmuDarJRm23N1FsDa2D9y1YU9KzNswEaEL3nXY3muToI
-         qtoJMoDN7+sfRTKxpgGXB0uTiKBeCQJMUL5Z+AYcWPpqsYvcV3yqMoVj5HpKdeEbNEjd
-         99xPxF1tT4jBSi8kG4FtnHb+TO5y9YFLg7HSZ3mDOWWC3ie+xmHl2jsQbturOENPeh6K
-         t3q/y0gtdYvkIfl1ZkC+OlOZYbs1UPwwJwjfMjBQ2dCS5N1kLBLP0/1S6g2l2AtMYhOe
-         5vKGe902saAWIUw+hbd9dZOtmZPoJNDZLeyYNKaQ5MfZ2JKyaTt/hCAx5wqQl3dBZVZ1
-         0bQA==
-X-Gm-Message-State: AOAM532jt47Hgnff3l1ItXCzp2pPmRb9CTYkvpVJC7VtBeA4Vbdbq0vI
-        8GRAQyw8GPMCp+l+HvUdr3AyhGxee8U=
-X-Google-Smtp-Source: ABdhPJw69bCPeGc+pArhaAIB76bErwEstQbaX/JKGGqb00nLLe4X/r85yGsdukQFaixTebA+OUxOhg==
-X-Received: by 2002:a17:906:c2cf:: with SMTP id ch15mr27480613ejb.107.1632136438450;
-        Mon, 20 Sep 2021 04:13:58 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
-        by smtp.gmail.com with ESMTPSA id la1sm6020197ejc.48.2021.09.20.04.13.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 04:13:57 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: core: remove the function power_saving_wk_hdl
-Date:   Mon, 20 Sep 2021 13:13:54 +0200
-Message-ID: <1651026.4NJzAxWbHA@localhost.localdomain>
-In-Reply-To: <YUhkFvz4BpLv0eoN@kroah.com>
-References: <YTub30ZRG3oLbxQW@user> <45c4de06-f618-4352-91ea-885edecdf8bb@gmail.com> <YUhkFvz4BpLv0eoN@kroah.com>
+        Mon, 20 Sep 2021 07:20:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666CC061574;
+        Mon, 20 Sep 2021 04:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=wXAGirnc05fwmDCRKFxCiuOQA8x4SwguaJpy5rQKuLU=; b=NiV0DVJz7di1ZXi+Un3kCjWpCq
+        +fWvOftQyuI8z0PvT4qty/Pptb+bM4jNF7bRy7NefYC7E6zb+R5WgtElM38o/vRP5prZ3JXEAbWOd
+        KioeBI8Pi3pehUXZqT8TVhlm1QQmOE/w4YrLlB1Ej1E0SE5qj4iLDOH9HGe203JR8TxF5pdm+3Z0r
+        kt6CuGDJLWgkSNC53iYEjXMdTLdiYMIHiT3fodoRVP3nkPEl3vdXqH+eBywGE0hycCeEgZgQObK7G
+        1B+z9DLZ+ECEkkc01DSbrYXuhp5MdBU8Cb6p3R1goAoagzG1ArH6RjVRO5JHxvrTFXv7C3tPF3Vku
+        GmcXz5Ww==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSHK3-004VBH-I2; Mon, 20 Sep 2021 11:18:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E69B3001EA;
+        Mon, 20 Sep 2021 13:18:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E180D212D6916; Mon, 20 Sep 2021 13:18:53 +0200 (CEST)
+Date:   Mon, 20 Sep 2021 13:18:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <YUhuHcHeeNELK8cr@hirez.programming.kicks-ass.net>
+References: <20210920113330.29f12b99@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210920113330.29f12b99@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 20, 2021 12:36:06 PM CEST Greg KH wrote:
-> On Sat, Sep 18, 2021 at 10:52:50PM +0530, Saurav Girepunje wrote:
-> > 
-> > 
-> > On 13/09/21 9:48 pm, Greg KH wrote:
-> > > On Fri, Sep 10, 2021 at 11:24:39PM +0530, Saurav Girepunje wrote:
-> > > > Remove the function power_saving_wk_hdl() as it just calling
-> > > > the rtw_ps_processor().Instead of power_saving_wk_hdl() call directly
-> > > > rtw_ps_processor().
-> > > > 
-> > > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> > >
-> > > []
-> > > 
-> > > Also does not apply to my tree.  Please rebase against my staging-next
-> > > branch and resend.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > > 
-> > 
-> > Hi Greg,
-> > 
-> > I always do rebase against your staging-testing branch. Can you help me 
-to
-> > understand.When we need to rebase on staging-next. Do we always need to
-> > rebase against staging-next..!
-> 
-> Yes, you should.  When you are working on code that lots of other people
-> are working on, there will be conflicts like this, and you just need to
-> stay on top of it.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Sep 20, 2021 at 11:33:30AM +1000, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> After merging the tip tree, today's linux-next build (powerpc_ppc64
+> defconfig) produced this warning:
+>=20
+> kernel/sched/debug.c: In function 'print_cfs_group_stats':
+> kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused-v=
+ariable]
+>   460 |                struct sched_statistics *stats =3D  __schedstats_f=
+rom_se(se);
+>       |                                         ^~~~~
+>=20
 
-Sorry, Greg. I'm confused... :(
+So I've not seen that one *yet*, I've dont a bunch of SCHEDSTAT=3Dn
+builds. I do think GCC is being quite stupid for giving it, seeing how
+the whole thing is within if (0). The GCC people seem to disagree when I
+brought it up.
 
-As far as I know, everyone here make patches for staging-testing. You apply 
-them to staging-testing first and, about 24 hours later, you merge them into 
-staging-next. 
+Anyway, what I did in other parts was the below; that seems to 'upgrade'
+the warnings from -Wunused-variable to -Wunused-but-set-variable, and
+that latter *is* in W=3D1, and I'm arguing it should be promoted to W=3D2 or
+thereabout.
 
-In fact I receive two distinct messages, one after the other, when you apply 
-to staging-testing and then to staging-next. 
+Given that whole if(0) {} thing, I don't feel motivated to change things
+overly much and quite strongly feel this is the compiler being daft.
 
-This is the what I've always done here and you haven't ever asked me to 
-rebase against staging-next... So, why are you asking for doing that rebase 
-on staging-next to Saurav?
+---
 
-Thanks,
-
-Fabio
-
-
-
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 935dad7dffb7..ef71de01e4d7 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -457,7 +457,8 @@ static void print_cfs_group_stats(struct seq_file *m, i=
+nt cpu, struct task_group
+ 	PN(se->sum_exec_runtime);
+=20
+ 	if (schedstat_enabled()) {
+-               struct sched_statistics *stats =3D  __schedstats_from_se(se=
+);
++		struct sched_statistics *stats;
++		stats =3D __schedstats_from_se(se);
+=20
+ 		PN_SCHEDSTAT(wait_start);
+ 		PN_SCHEDSTAT(sleep_start);
