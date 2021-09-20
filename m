@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE12412438
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E134122D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380015AbhITSbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:31:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46128 "EHLO mail.kernel.org"
+        id S1347316AbhITSSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:18:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378749AbhITS0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:26:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 504D4632D2;
-        Mon, 20 Sep 2021 17:25:25 +0000 (UTC)
+        id S1376435AbhITSMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:12:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9C666327D;
+        Mon, 20 Sep 2021 17:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158725;
-        bh=XK4wX9LJSIljoTAwtcTaJD3bviCjOBnfqboBhbiu5R0=;
+        s=korg; t=1632158447;
+        bh=u2DIAJJgWUW9OXz/a22CKXR/jrEiN+pCzEW9gNXti34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4jI3FXsT849tHRZXMfa9RFhinAs2RsM2bBLHUb7DcAsOO8mea8FFFUaBS4JzFTXq
-         S5y3S4aC4imY5FED+npDF/PrmoJi/jwUFTVbA6X1lHuJW0rEIHPiRPtcOO9ch/SL8a
-         qQuouzaMif8P+7U6787cFBBzn2DMelojdgnM/29o=
+        b=MnZroCazMaUhJtwFQgzWy+E44bqUJsZ1Y8mAXhY/M6ghB/5nP4ugFx9IE/SVZfbfV
+         S9J4jprGkjD8iY8kskz7bovJCw9U16NQBTjm5ciUvVDZSrASPuPVy2BpXJxPnA8yhn
+         6FCHHGQLrWpuRoLsCXYmaJ8x6/Iss/se15OkMJOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH 5.10 007/122] PM: base: power: dont try to use non-existing RTC for storing data
+        stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 161/260] ASoC: rockchip: i2s: Fix regmap_ops hang
 Date:   Mon, 20 Sep 2021 18:42:59 +0200
-Message-Id: <20210920163916.003496347@linuxfoundation.org>
+Message-Id: <20210920163936.570715387@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-commit 0560204b360a332c321124dbc5cdfd3364533a74 upstream.
+[ Upstream commit 53ca9b9777b95cdd689181d7c547e38dc79adad0 ]
 
-If there is no legacy RTC device, don't try to use it for storing trace
-data across suspend/resume.
+API 'set_fmt' maybe called when PD is off, in the situation,
+any register access will hang the system. so, enable PD
+before r/w register.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lore.kernel.org/r/20210903084937.19392-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Link: https://lore.kernel.org/r/1629950520-14190-4-git-send-email-sugar.zhang@rock-chips.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/trace.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/rockchip/rockchip_i2s.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
---- a/drivers/base/power/trace.c
-+++ b/drivers/base/power/trace.c
-@@ -13,6 +13,7 @@
- #include <linux/export.h>
- #include <linux/rtc.h>
- #include <linux/suspend.h>
-+#include <linux/init.h>
- 
- #include <linux/mc146818rtc.h>
- 
-@@ -165,6 +166,9 @@ void generate_pm_trace(const void *trace
- 	const char *file = *(const char **)(tracedata + 2);
- 	unsigned int user_hash_value, file_hash_value;
- 
-+	if (!x86_platform.legacy.rtc)
-+		return;
-+
- 	user_hash_value = user % USERHASH;
- 	file_hash_value = hash_string(lineno, file, FILEHASH);
- 	set_magic_time(user_hash_value, file_hash_value, dev_hash_value);
-@@ -267,6 +271,9 @@ static struct notifier_block pm_trace_nb
- 
- static int __init early_resume_init(void)
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 61c984f10d8e..f48b146cd96a 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -186,7 +186,9 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
  {
-+	if (!x86_platform.legacy.rtc)
-+		return 0;
-+
- 	hash_value_early_read = read_magic_time();
- 	register_pm_notifier(&pm_trace_nb);
- 	return 0;
-@@ -277,6 +284,9 @@ static int __init late_resume_init(void)
- 	unsigned int val = hash_value_early_read;
- 	unsigned int user, file, dev;
+ 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
+ 	unsigned int mask = 0, val = 0;
++	int ret = 0;
  
-+	if (!x86_platform.legacy.rtc)
-+		return 0;
++	pm_runtime_get_sync(cpu_dai->dev);
+ 	mask = I2S_CKR_MSS_MASK;
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+@@ -199,7 +201,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		i2s->is_master_mode = false;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -213,7 +216,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_CKR_CKP_POS;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -236,7 +240,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
+@@ -259,12 +264,16 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
+ 
+-	return 0;
++err_pm_put:
++	pm_runtime_put(cpu_dai->dev);
 +
- 	user = val % USERHASH;
- 	val = val / USERHASH;
- 	file = val % FILEHASH;
++	return ret;
+ }
+ 
+ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+-- 
+2.30.2
+
 
 
