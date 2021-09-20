@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6546411B1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D2D411CAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244907AbhITQzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:55:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
+        id S1347250AbhITRLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244311AbhITQvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:51:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60F4161211;
-        Mon, 20 Sep 2021 16:49:31 +0000 (UTC)
+        id S1347057AbhITRJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B388617E3;
+        Mon, 20 Sep 2021 16:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156571;
-        bh=1SJ+3tFQpT/O7HZVK6ufF2Lb0DIzd7kKQIkRuBTS0EM=;
+        s=korg; t=1632156991;
+        bh=rSes+fkgNcdnRhQdFfMj5NVACGIdVJzrMcuJwL51u4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AUzL/juwrD9iBgE1cWQEKmSO6VLWIprSiSRLc7w2afxIBJaLz+5llgb8h3FVaIclu
-         ws6oZWdqsAeliZ2c181SvpY11WXW2LVIzSKTRd/cg7TPlSic3e9ZPSyvRDqwvKB77e
-         JCmR8O53sr+Wtp+T9KoIVJzlVUx5uuh/Dg7JAKXA=
+        b=TLAU+f2s7JZTWEAvqe3gVvxw+ZnWv5CKILk7YfvTgVL/aa74ToRjUfY2CCo8+3Mey
+         yFCWIz9CIPTcAs3BVUneh3zeLrp9OLPRcm4TcvXKKm5OK7f7MZBWJOKdTvYJX3yjEk
+         Gu0ZI8qfvGbvdf3Bq9Hq315fQ62WRuFy7xWIQrJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 119/133] net-caif: avoid user-triggerable WARN_ON(1)
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.9 148/175] parisc: fix crash with signals and alloca
 Date:   Mon, 20 Sep 2021 18:43:17 +0200
-Message-Id: <20210920163916.515472141@linuxfoundation.org>
+Message-Id: <20210920163922.913967005@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,112 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 550ac9c1aaaaf51fd42e20d461f0b1cdbd55b3d2 upstream.
+commit 030f653078316a9cc9ca6bd1b0234dcf858be35d upstream.
 
-syszbot triggers this warning, which looks something
-we can easily prevent.
+I was debugging some crashes on parisc and I found out that there is a
+crash possibility if a function using alloca is interrupted by a signal.
+The reason for the crash is that the gcc alloca implementation leaves
+garbage in the upper 32 bits of the sp register. This normally doesn't
+matter (the upper bits are ignored because the PSW W-bit is clear),
+however the signal delivery routine in the kernel uses full 64 bits of sp
+and it fails with -EFAULT if the upper 32 bits are not zero.
 
-If we initialize priv->list_field in chnl_net_init(),
-then always use list_del_init(), we can remove robust_list_del()
-completely.
+I created this program that demonstrates the problem:
 
-WARNING: CPU: 0 PID: 3233 at net/caif/chnl_net.c:67 robust_list_del net/caif/chnl_net.c:67 [inline]
-WARNING: CPU: 0 PID: 3233 at net/caif/chnl_net.c:67 chnl_net_uninit+0xc9/0x2e0 net/caif/chnl_net.c:375
-Modules linked in:
-CPU: 0 PID: 3233 Comm: syz-executor.3 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:robust_list_del net/caif/chnl_net.c:67 [inline]
-RIP: 0010:chnl_net_uninit+0xc9/0x2e0 net/caif/chnl_net.c:375
-Code: 89 eb e8 3a a3 ba f8 48 89 d8 48 c1 e8 03 42 80 3c 28 00 0f 85 bf 01 00 00 48 81 fb 00 14 4e 8d 48 8b 2b 75 d0 e8 17 a3 ba f8 <0f> 0b 5b 5d 41 5c 41 5d e9 0a a3 ba f8 4c 89 e3 e8 02 a3 ba f8 4c
-RSP: 0018:ffffc90009067248 EFLAGS: 00010202
-RAX: 0000000000008780 RBX: ffffffff8d4e1400 RCX: ffffc9000fd34000
-RDX: 0000000000040000 RSI: ffffffff88bb6e49 RDI: 0000000000000003
-RBP: ffff88802cd9ee08 R08: 0000000000000000 R09: ffffffff8d0e6647
-R10: ffffffff88bb6dc2 R11: 0000000000000000 R12: ffff88803791ae08
-R13: dffffc0000000000 R14: 00000000e600ffce R15: ffff888073ed3480
-FS:  00007fed10fa0700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2c322000 CR3: 00000000164a6000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- register_netdevice+0xadf/0x1500 net/core/dev.c:10347
- ipcaif_newlink+0x4c/0x260 net/caif/chnl_net.c:468
- __rtnl_newlink+0x106d/0x1750 net/core/rtnetlink.c:3458
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- __sys_sendto+0x21c/0x320 net/socket.c:2036
- __do_sys_sendto net/socket.c:2048 [inline]
- __se_sys_sendto net/socket.c:2044 [inline]
- __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2044
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <alloca.h>
 
-Fixes: cc36a070b590 ("net-caif: add CAIF netdevice")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+static __attribute__((noinline,noclone)) void aa(int *size)
+{
+	void * volatile p = alloca(-*size);
+	while (1) ;
+}
+
+static void handler(int sig)
+{
+	write(1, "signal delivered\n", 17);
+	_exit(0);
+}
+
+int main(void)
+{
+	int size = -0x100;
+	signal(SIGALRM, handler);
+	alarm(1);
+	aa(&size);
+}
+
+If you compile it with optimizations, it will crash.
+The "aa" function has this disassembly:
+
+000106a0 <aa>:
+   106a0:       08 03 02 41     copy r3,r1
+   106a4:       08 1e 02 43     copy sp,r3
+   106a8:       6f c1 00 80     stw,ma r1,40(sp)
+   106ac:       37 dc 3f c1     ldo -20(sp),ret0
+   106b0:       0c 7c 12 90     stw ret0,8(r3)
+   106b4:       0f 40 10 9c     ldw 0(r26),ret0		; ret0 = 0x00000000FFFFFF00
+   106b8:       97 9c 00 7e     subi 3f,ret0,ret0	; ret0 = 0xFFFFFFFF0000013F
+   106bc:       d7 80 1c 1a     depwi 0,31,6,ret0	; ret0 = 0xFFFFFFFF00000100
+   106c0:       0b 9e 0a 1e     add,l sp,ret0,sp	;   sp = 0xFFFFFFFFxxxxxxxx
+   106c4:       e8 1f 1f f7     b,l,n 106c4 <aa+0x24>,r0
+
+This patch fixes the bug by truncating the "usp" variable to 32 bits.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/caif/chnl_net.c |   19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+ arch/parisc/kernel/signal.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/net/caif/chnl_net.c
-+++ b/net/caif/chnl_net.c
-@@ -56,20 +56,6 @@ struct chnl_net {
- 	enum caif_states state;
- };
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -239,6 +239,12 @@ setup_rt_frame(struct ksignal *ksig, sig
+ #endif
+ 	
+ 	usp = (regs->gr[30] & ~(0x01UL));
++#ifdef CONFIG_64BIT
++	if (is_compat_task()) {
++		/* The gcc alloca implementation leaves garbage in the upper 32 bits of sp */
++		usp = (compat_uint_t)usp;
++	}
++#endif
+ 	/*FIXME: frame_size parameter is unused, remove it. */
+ 	frame = get_sigframe(&ksig->ka, usp, sizeof(*frame));
  
--static void robust_list_del(struct list_head *delete_node)
--{
--	struct list_head *list_node;
--	struct list_head *n;
--	ASSERT_RTNL();
--	list_for_each_safe(list_node, n, &chnl_net_list) {
--		if (list_node == delete_node) {
--			list_del(list_node);
--			return;
--		}
--	}
--	WARN_ON(1);
--}
--
- static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
- {
- 	struct sk_buff *skb;
-@@ -371,6 +357,7 @@ static int chnl_net_init(struct net_devi
- 	ASSERT_RTNL();
- 	priv = netdev_priv(dev);
- 	strncpy(priv->name, dev->name, sizeof(priv->name));
-+	INIT_LIST_HEAD(&priv->list_field);
- 	return 0;
- }
- 
-@@ -379,7 +366,7 @@ static void chnl_net_uninit(struct net_d
- 	struct chnl_net *priv;
- 	ASSERT_RTNL();
- 	priv = netdev_priv(dev);
--	robust_list_del(&priv->list_field);
-+	list_del_init(&priv->list_field);
- }
- 
- static const struct net_device_ops netdev_ops = {
-@@ -542,7 +529,7 @@ static void __exit chnl_exit_module(void
- 	rtnl_lock();
- 	list_for_each_safe(list_node, _tmp, &chnl_net_list) {
- 		dev = list_entry(list_node, struct chnl_net, list_field);
--		list_del(list_node);
-+		list_del_init(list_node);
- 		delete_device(dev);
- 	}
- 	rtnl_unlock();
 
 
