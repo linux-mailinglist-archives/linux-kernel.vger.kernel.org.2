@@ -2,110 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ACC4114FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6A54114F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238748AbhITMyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238758AbhITMyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:54:41 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30480C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:53:14 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id t8so29375762wrq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PjEbP5FJLcpWh+4b44AHLWfvKeb2DmOP9yJ8lA/X9iA=;
-        b=3XOYbCWAd6nb+N8oj01jL8MfRPdgUK/Ri4tO+xxWx5g5uh5XTt7COSZx4aYM5W5IR2
-         tI03kPBLAOgLlyxDBmvyKAkX4GjlExxkEp3k8jCaVdibCWz40UaYa7T6I7D5YzIl/6eb
-         a8kG2xKiFsGZVU9e2uFoVHa0TZJWWseb0HrvOwU1Nm2K0mDUegDN0bkiv/GdQYDBBiyZ
-         neqt6LxM+6Gbv97Tpdpa8/1fE2AGXlzPVOMFQoPd/KDPxe3M1T6RkE2A46qs/hI1GPCM
-         /PkMDlixgwwbjSU/7GiHGzcIcPOBmTdDpXV0yFQhK84Lsa3JIUnc2u3sTE8shzUC49sE
-         n5YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PjEbP5FJLcpWh+4b44AHLWfvKeb2DmOP9yJ8lA/X9iA=;
-        b=WtmfnCAntajlOYnzw+ReC9/V7JmEM84Hoap7HSNS50ttQvBI/7kSM/xUSm+mLCnw3o
-         HLvK7POJukl5n1enit4Gz9ENMyzLkgtDA3HpxR99FT/jtJZMhsK06/RiZNPfCFRIdYAy
-         DGo5yPVhFICHGH1cavwsakMt7RPFN1Cvsn31CBbdwQl2iYgXkWz3/g/zj0iYcfG8UIcd
-         d+Rjx8dztwLg22xdYWfbaBF2g1agL1YHncRdLNKE3SvwOj7levBsqSP4kFz2bR8GGMOD
-         ZH9Wlx6PtiQXKn8shRn21emAbsu+71kfOWzYSMAXXHIK19IzueapUeLOX3Bkny18iQBT
-         0QKQ==
-X-Gm-Message-State: AOAM533oTRwXF1A3w3M+dvLk/tQKP5Ck0q4xs1ehoTbwaVwJQk/EKCob
-        vqIx0qrR0xQWNo9FgJUQDw2zbQ==
-X-Google-Smtp-Source: ABdhPJxFeSU0jxjMYkUW8j+6kTjexSxZSwQl8MOiIsTkj+Pz9m2MLhUxApnqYlfA23Ad8UB5U9uJjQ==
-X-Received: by 2002:adf:f011:: with SMTP id j17mr28087183wro.320.1632142392493;
-        Mon, 20 Sep 2021 05:53:12 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:aa8a:ef22:59c5:1bf3])
-        by smtp.gmail.com with ESMTPSA id j21sm15791643wrd.48.2021.09.20.05.53.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 05:53:12 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     tony@atomide.com
-Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Gowtham Tammana <g-tammana@ti.com>,
-        Eric Ruei <e-ruei1@ti.com>, Jacob Stiffler <j-stiffler@ti.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 4/4] ARM: dts: am57xx-evm: Enable BB2D node
-Date:   Mon, 20 Sep 2021 14:53:06 +0200
-Message-Id: <20210920125306.12347-5-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210920125306.12347-1-narmstrong@baylibre.com>
-References: <20210920125306.12347-1-narmstrong@baylibre.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S238754AbhITMyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:54:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237920AbhITMyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:54:37 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D44A6109D;
+        Mon, 20 Sep 2021 12:53:11 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mSInF-00BlNP-8F; Mon, 20 Sep 2021 13:53:09 +0100
+Date:   Mon, 20 Sep 2021 13:53:08 +0100
+Message-ID: <87r1djv26j.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     <tglx@linutronix.de>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 2/2] irqchip/mchp-eic: add support
+In-Reply-To: <20210910060656.1061234-3-claudiu.beznea@microchip.com>
+References: <20210910060656.1061234-1-claudiu.beznea@microchip.com>
+        <20210910060656.1061234-3-claudiu.beznea@microchip.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: claudiu.beznea@microchip.com, tglx@linutronix.de, robh+dt@kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gowtham Tammana <g-tammana@ti.com>
+On Fri, 10 Sep 2021 07:06:56 +0100,
+Claudiu Beznea <claudiu.beznea@microchip.com> wrote:
+> 
+> Add support for Microchip External Interrupt Controller. The controller
+> supports 2 external interrupt lines. For every external input there is
+> a connection to GIC. The interrupt controllers contains only 4
+> registers:
+> - EIC_GFCS (read only): which indicates that glitch filter configuration
+>   is ready (not addressed in this implementation)
+> - EIC_SCFG0R, EIC_SCFG1R (read, write): allows per interrupt specific
+>   settings: enable, polarity/edge settings, glitch filter settings
+> - EIC_WPMR, EIC_WPSR: enables write protection mode specific settings
+>   (which are architecture specific) for the controller and are not
+>   addressed in this implementation
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  MAINTAINERS                    |   6 +
+>  drivers/irqchip/Kconfig        |   8 +
+>  drivers/irqchip/Makefile       |   1 +
+>  drivers/irqchip/irq-mchp-eic.c | 314 +++++++++++++++++++++++++++++++++
+>  4 files changed, 329 insertions(+)
+>  create mode 100644 drivers/irqchip/irq-mchp-eic.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a61f4f3b78a9..87174babb0ef 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12141,6 +12141,12 @@ L:	linux-crypto@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/crypto/atmel-ecc.*
+>  
+> +MICROCHIP EIC DRIVER
+> +M:	Claudiu Beznea <claudiu.beznea@microchip.com>
+> +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> +S:	Supported
+> +F:	drivers/irqchip/irq-mchp-eic.c
+> +
+>  MICROCHIP I2C DRIVER
+>  M:	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>  L:	linux-i2c@vger.kernel.org
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 4d5924e9f766..450c7b8ab30f 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -601,4 +601,12 @@ config APPLE_AIC
+>  	  Support for the Apple Interrupt Controller found on Apple Silicon SoCs,
+>  	  such as the M1.
+>  
+> +config MCHP_EIC
+> +	bool "Microchip External Interrupt Controller"
+> +	depends on ARCH_AT91 || COMPILE_TEST
+> +	select IRQ_DOMAIN
+> +	select IRQ_DOMAIN_HIERARCHY
+> +	help
+> +	  Support for Microchip External Interrupt Controller.
+> +
+>  endmenu
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index f88cbf36a9d2..c1f611cbfbf8 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -116,3 +116,4 @@ obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
+>  obj-$(CONFIG_WPCM450_AIC)		+= irq-wpcm450-aic.o
+>  obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
+>  obj-$(CONFIG_APPLE_AIC)			+= irq-apple-aic.o
+> +obj-$(CONFIG_MCHP_EIC)			+= irq-mchp-eic.o
+> diff --git a/drivers/irqchip/irq-mchp-eic.c b/drivers/irqchip/irq-mchp-eic.c
+> new file mode 100644
+> index 000000000000..ab24a464b929
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-mchp-eic.c
+> @@ -0,0 +1,314 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Microchip External Interrupt Controller driver
+> + *
+> + * Copyright (C) 2021 Microchip Technology Inc. and its subsidiaries
+> + *
+> + * Author: Claudiu Beznea <claudiu.beznea@microchip.com>
+> + */
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+> +
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +#define MCHP_EIC_GFCS			(0x0)
+> +#define MCHP_EIC_SCFG(x)		(0x4 + (x) * 0x4)
+> +#define MCHP_EIC_SCFG_EN		BIT(16)
+> +#define MCHP_EIC_SCFG_LVL		BIT(9)
+> +#define MCHP_EIC_SCFG_POL		BIT(8)
+> +
+> +#define MCHP_EIC_NIRQ			(2)
+> +
+> +/*
+> + * struct mchp_eic - EIC private data structure
+> + * @base: base address
+> + * @dev: eic device
+> + * @clk: peripheral clock
+> + * @domain: irq domain
+> + * @irqs: irqs b/w eic and gic
+> + * @scfg: backup for scfg registers (necessary for backup and self-refresh mode)
+> + * @wakeup_source: wakeup source mask
+> + */
+> +struct mchp_eic {
+> +	void __iomem *base;
+> +	struct device *dev;
+> +	struct clk *clk;
+> +	struct irq_domain *domain;
+> +	u32 irqs[MCHP_EIC_NIRQ];
+> +	u32 scfg[MCHP_EIC_NIRQ];
+> +	u32 wakeup_source;
+> +};
+> +
+> +static void mchp_eic_irq_mask(struct irq_data *d)
+> +{
+> +	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
+> +	unsigned int tmp;
+> +
+> +	tmp = readl_relaxed(eic->base + MCHP_EIC_SCFG(d->hwirq));
+> +	tmp &= ~MCHP_EIC_SCFG_EN;
+> +	writel_relaxed(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
+> +
+> +	irq_chip_mask_parent(d);
+> +}
+> +
+> +static void mchp_eic_irq_unmask(struct irq_data *d)
+> +{
+> +	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
+> +	unsigned int tmp;
+> +
+> +	tmp = readl_relaxed(eic->base + MCHP_EIC_SCFG(d->hwirq));
+> +	tmp |= MCHP_EIC_SCFG_EN;
+> +	writel_relaxed(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
+> +
+> +	irq_chip_unmask_parent(d);
+> +}
+> +
+> +static int mchp_eic_irq_set_type(struct irq_data *d, unsigned int type)
+> +{
+> +	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
+> +	unsigned int parent_irq_type;
+> +	unsigned int tmp;
+> +
+> +	tmp = readl_relaxed(eic->base + MCHP_EIC_SCFG(d->hwirq));
+> +	tmp &= ~(MCHP_EIC_SCFG_POL | MCHP_EIC_SCFG_LVL);
+> +	switch (type) {
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		tmp |= MCHP_EIC_SCFG_POL | MCHP_EIC_SCFG_LVL;
+> +		parent_irq_type = IRQ_TYPE_LEVEL_HIGH;
+> +		break;
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		tmp |= MCHP_EIC_SCFG_LVL;
+> +		parent_irq_type = IRQ_TYPE_LEVEL_HIGH;
+> +		break;
+> +	case IRQ_TYPE_EDGE_RISING:
+> +		parent_irq_type = IRQ_TYPE_EDGE_RISING;
+> +		break;
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +		tmp |= MCHP_EIC_SCFG_POL;
+> +		parent_irq_type = IRQ_TYPE_EDGE_RISING;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	writel_relaxed(tmp, eic->base + MCHP_EIC_SCFG(d->hwirq));
+> +
+> +	return irq_chip_set_type_parent(d, parent_irq_type);
+> +}
+> +
+> +static int mchp_eic_irq_set_wake(struct irq_data *d, unsigned int on)
+> +{
+> +	struct mchp_eic *eic = irq_data_get_irq_chip_data(d);
+> +
+> +	irq_set_irq_wake(eic->irqs[d->hwirq], on);
+> +	if (on)
+> +		eic->wakeup_source |= BIT(d->hwirq);
+> +	else
+> +		eic->wakeup_source &= ~BIT(d->hwirq);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct irq_chip mchp_eic_chip = {
+> +	.name		= "eic",
+> +	.flags		= IRQCHIP_MASK_ON_SUSPEND | IRQCHIP_SET_TYPE_MASKED,
+> +	.irq_mask	= mchp_eic_irq_mask,
+> +	.irq_unmask	= mchp_eic_irq_unmask,
+> +	.irq_set_type	= mchp_eic_irq_set_type,
+> +	.irq_ack	= irq_chip_ack_parent,
+> +	.irq_eoi	= irq_chip_eoi_parent,
+> +	.irq_retrigger	= irq_chip_retrigger_hierarchy,
+> +	.irq_set_wake	= mchp_eic_irq_set_wake,
+> +};
+> +
+> +static int mchp_eic_domain_translate(struct irq_domain *d,
+> +				     struct irq_fwspec *fwspec,
+> +				     unsigned long *hwirq,
+> +				     unsigned int *type)
+> +{
+> +	if (!is_of_node(fwspec->fwnode))
+> +		return -EINVAL;
+> +
+> +	if (fwspec->param_count != 2 || fwspec->param[0] >= MCHP_EIC_NIRQ)
+> +		return -EINVAL;
+> +
+> +	*hwirq = fwspec->param[0];
+> +	*type = fwspec->param[1];
+> +
+> +	return 0;
+> +}
 
-This enables the BB2D graphics accelerator for the AM57x based
-Beagle-X15 (GPEVM) and IDK platforms.
+Which is pretty much irq_domain_translate_twocell(). Please use that.
 
-Signed-off-by: Eric Ruei <e-ruei1@ti.com>
-Signed-off-by: Jacob Stiffler <j-stiffler@ti.com>
-Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi | 4 ++++
- arch/arm/boot/dts/am57xx-idk-common.dtsi        | 4 ++++
- 2 files changed, 8 insertions(+)
+> +
+> +static int mchp_eic_domain_alloc(struct irq_domain *domain, unsigned int virq,
+> +				 unsigned int nr_irqs, void *data)
+> +{
+> +	struct mchp_eic *eic = domain->host_data;
+> +	struct irq_fwspec *fwspec = data;
+> +	struct irq_fwspec parent_fwspec;
+> +	irq_hw_number_t hwirq;
+> +	unsigned int type;
+> +	int ret;
+> +
+> +	if (WARN_ON(nr_irqs != 1))
+> +		return -EINVAL;
+> +
+> +	ret = mchp_eic_domain_translate(domain, fwspec, &hwirq, &type);
+> +	if (ret)
+> +		return ret;
+> +
+> +	switch (type) {
+> +	case IRQ_TYPE_EDGE_RISING:
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		break;
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +		type = IRQ_TYPE_EDGE_RISING;
+> +		break;
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		type = IRQ_TYPE_LEVEL_HIGH;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	irq_domain_set_hwirq_and_chip(domain, virq, hwirq, &mchp_eic_chip, eic);
+> +
+> +	parent_fwspec.fwnode = domain->parent->fwnode;
+> +	parent_fwspec.param_count = 3;
+> +	parent_fwspec.param[0] = GIC_SPI;
+> +	parent_fwspec.param[1] = eic->irqs[hwirq];
+> +	parent_fwspec.param[2] = type;
+> +
+> +	return irq_domain_alloc_irqs_parent(domain, virq, 1, &parent_fwspec);
+> +}
+> +
+> +static const struct irq_domain_ops mchp_eic_domain_ops = {
+> +	.translate	= mchp_eic_domain_translate,
+> +	.alloc		= mchp_eic_domain_alloc,
+> +	.free		= irq_domain_free_irqs_common,
+> +};
+> +
+> +static int mchp_eic_probe(struct platform_device *pdev)
+> +{
+> +	struct irq_domain *parent_domain = NULL;
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *np = dev->of_node;
+> +	struct device_node *gic_node;
+> +	struct mchp_eic *eic;
+> +	int ret, i;
+> +
+> +	eic = devm_kzalloc(dev, sizeof(*eic), GFP_KERNEL);
+> +	if (!eic)
+> +		return -ENOMEM;
+> +
+> +	eic->base = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +	if (IS_ERR(eic->base))
+> +		return PTR_ERR(eic->base);
+> +
+> +	gic_node = of_irq_find_parent(np);
+> +	if (gic_node)
+> +		parent_domain = irq_find_host(gic_node);
+> +	of_node_put(gic_node);
+> +	if (!parent_domain)
+> +		return -ENODEV;
+> +
+> +	eic->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(eic->clk))
+> +		return PTR_ERR(eic->clk);
+> +
+> +	ret = clk_prepare_enable(eic->clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < MCHP_EIC_NIRQ; i++) {
+> +		struct of_phandle_args irq;
+> +
+> +		/* Disable it, if any. */
+> +		writel_relaxed(0UL, eic->base + MCHP_EIC_SCFG(i));
+> +
+> +		ret = of_irq_parse_one(np, i, &irq);
+> +		if (ret)
+> +			goto clk_unprepare;
+> +
+> +		if (WARN_ON(irq.args_count != 3)) {
+> +			ret = -EINVAL;
+> +			goto clk_unprepare;
+> +		}
+> +
+> +		eic->irqs[i] = irq.args[1];
+> +	}
+> +
+> +	eic->domain = irq_domain_add_hierarchy(parent_domain, 0, MCHP_EIC_NIRQ,
+> +					       np, &mchp_eic_domain_ops, eic);
+> +	if (!eic->domain) {
+> +		ret = dev_err_probe(dev, -ENOMEM, "Failed to add domain\n");
+> +		goto clk_unprepare;
+> +	}
+> +
+> +	eic->dev = dev;
+> +	platform_set_drvdata(pdev, eic);
+> +
+> +	dev_info(dev, "EIC registered, nr_irqs %u\n", MCHP_EIC_NIRQ);
+> +
+> +	return 0;
+> +
+> +clk_unprepare:
+> +	clk_disable_unprepare(eic->clk);
+> +	return ret;
+> +}
+> +
+> +static int __maybe_unused mchp_eic_suspend(struct device *dev)
+> +{
+> +	struct mchp_eic *eic = dev_get_drvdata(dev);
+> +	unsigned int hwirq;
+> +
+> +	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++)
+> +		eic->scfg[hwirq] = readl_relaxed(eic->base +
+> +						 MCHP_EIC_SCFG(hwirq));
+> +
+> +	if (!eic->wakeup_source)
+> +		clk_disable_unprepare(eic->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mchp_eic_resume(struct device *dev)
+> +{
+> +	struct mchp_eic *eic = dev_get_drvdata(dev);
+> +	unsigned int hwirq;
+> +
+> +	if (!eic->wakeup_source)
+> +		clk_prepare_enable(eic->clk);
+> +
+> +	for (hwirq = 0; hwirq < MCHP_EIC_NIRQ; hwirq++)
+> +		writel_relaxed(eic->scfg[hwirq], eic->base +
+> +			       MCHP_EIC_SCFG(hwirq));
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops mchp_eic_pm_ops = {
+> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(mchp_eic_suspend, mchp_eic_resume)
+> +};
+> +
+> +static const struct of_device_id mchp_eic_dt_ids[] = {
+> +	{ .compatible = "microchip,sama7g5-eic", },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, mchp_eic_dt_ids);
+> +
+> +static struct platform_driver mchp_eic_device_driver = {
+> +	.probe		= mchp_eic_probe,
+> +	.driver		= {
+> +		.name = "mchp-eic",
+> +		.of_match_table = of_match_ptr(mchp_eic_dt_ids),
+> +		.pm = pm_ptr(&mchp_eic_pm_ops),
+> +	},
+> +};
+> +builtin_platform_driver(mchp_eic_device_driver);
 
-diff --git a/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi b/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi
-index 994e69ab38d7..151b3d5775cc 100644
---- a/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi
-+++ b/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi
-@@ -645,3 +645,7 @@ &pruss1_mdio {
- &pruss2_mdio {
- 	status = "disabled";
- };
-+
-+&bb2d {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/am57xx-idk-common.dtsi b/arch/arm/boot/dts/am57xx-idk-common.dtsi
-index 9fcb8944aa3e..cbab72a4c8b6 100644
---- a/arch/arm/boot/dts/am57xx-idk-common.dtsi
-+++ b/arch/arm/boot/dts/am57xx-idk-common.dtsi
-@@ -606,3 +606,7 @@ dpi_out: endpoint {
- 		};
- 	};
- };
-+
-+&bb2d {
-+	status = "ok";
-+};
+Please use the
+
+IRQCHIP_PLATFORM_DRIVER_BEGIN()
+IRQCHIP_MATCH()
+IRQCHIP_PLATFORM_DRIVER_END()
+
+construct instead. See drivers/irqchip/qcom-pdc.c for an example. It
+will at the very least avoid exposing the unbind attribute that will
+lead to an explosion if touched.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
