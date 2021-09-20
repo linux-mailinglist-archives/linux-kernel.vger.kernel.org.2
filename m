@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AC8411CC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C66411F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345948AbhITRNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:13:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33876 "EHLO mail.kernel.org"
+        id S1352887AbhITRmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344052AbhITRLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:11:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F4361356;
-        Mon, 20 Sep 2021 16:56:52 +0000 (UTC)
+        id S1346614AbhITRko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:40:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DCC761391;
+        Mon, 20 Sep 2021 17:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157013;
-        bh=PZbCtAJmeIrW8WlWhTrHS10/diXLwx0G+VOXzeRS7t8=;
+        s=korg; t=1632157689;
+        bh=1Ri8XWiUpACLsKgToK+i7JTAVuF+RymjC+FPWyKMIFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q5wRv7uf1/VWrzTxjQccBxLaFJ+Zw3dAvC05NQ6Q8WcfRwBDC1f+sjh4pJMDck67v
-         B3buuNTW/l/lpBJRwhgnX+cMIz603w8zyxhwFB3MpdVsCmkzO4TRa4TjAVtZcK9Htd
-         uURh8RAIEIkt3ExzpFJbDMOly154qVp9nhqdZ75o=
+        b=fErg+3XqIrUI/OLqICQU+pdcvf8zjcv8Lr7RrpItsOpZuQIyA+Y2jFlqP13lfPyie
+         t83b1fBHKlk2ou+TxLvqis9TwzqkGLgX7FaUDASVWv/rgqQpi0l1Xwp++sWSyu1esQ
+         I9USMIB3N1T/t88o1MYvyJSkFNk+PhlzOejRKVxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 014/217] USB: serial: mos7720: improve OOM-handling in read_mos_reg()
-Date:   Mon, 20 Sep 2021 18:40:35 +0200
-Message-Id: <20210920163925.096226525@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 074/293] PCI: PM: Enable PME if it can be signaled from D3cold
+Date:   Mon, 20 Sep 2021 18:40:36 +0200
+Message-Id: <20210920163935.791817524@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 161a582bd1d8681095f158d11bc679a58f1d026b upstream.
+[ Upstream commit 0e00392a895c95c6d12d42158236c8862a2f43f2 ]
 
-clang static analysis reports this problem
+PME signaling is only enabled by __pci_enable_wake() if the target
+device can signal PME from the given target power state (to avoid
+pointless reconfiguration of the device), but if the hierarchy above
+the device goes into D3cold, the device itself will end up in D3cold
+too, so if it can signal PME from D3cold, it should be enabled to
+do so in __pci_enable_wake().
 
-mos7720.c:352:2: warning: Undefined or garbage value returned to caller
-        return d;
-        ^~~~~~~~
+[Note that if the device does not end up in D3cold and it cannot
+ signal PME from the original target power state, it will not signal
+ PME, so in that case the behavior does not change.]
 
-In the parport_mos7715_read_data()'s call to read_mos_reg(), 'd' is
-only set after the alloc block.
-
-	buf = kmalloc(1, GFP_KERNEL);
-	if (!buf)
-		return -ENOMEM;
-
-Although the problem is reported in parport_most7715_read_data(),
-none of the callee's of read_mos_reg() check the return status.
-
-Make sure to clear the return-value buffer also on allocation failures.
-
-Fixes: 0d130367abf5 ("USB: serial: mos7720: fix control-message error handling")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/20210111220904.1035957-1-trix@redhat.com
-[ johan: only clear the buffer on errors, amend commit message ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+Fixes: 5bcc2fb4e815 ("PCI PM: Simplify PCI wake-up code")
+Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Reported-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/mos7720.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/pci/pci.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -229,8 +229,10 @@ static int read_mos_reg(struct usb_seria
- 	int status;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index a9fc40458d62..1a78bf39ee9a 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2170,7 +2170,14 @@ static int __pci_enable_wake(struct pci_dev *dev, pci_power_t state, bool enable
+ 	if (enable) {
+ 		int error;
  
- 	buf = kmalloc(1, GFP_KERNEL);
--	if (!buf)
-+	if (!buf) {
-+		*data = 0;
- 		return -ENOMEM;
-+	}
- 
- 	status = usb_control_msg(usbdev, pipe, request, requesttype, value,
- 				     index, buf, 1, MOS_WDR_TIMEOUT);
+-		if (pci_pme_capable(dev, state))
++		/*
++		 * Enable PME signaling if the device can signal PME from
++		 * D3cold regardless of whether or not it can signal PME from
++		 * the current target state, because that will allow it to
++		 * signal PME when the hierarchy above it goes into D3cold and
++		 * the device itself ends up in D3cold as a result of that.
++		 */
++		if (pci_pme_capable(dev, state) || pci_pme_capable(dev, PCI_D3cold))
+ 			pci_pme_active(dev, true);
+ 		else
+ 			ret = 1;
+-- 
+2.30.2
+
 
 
