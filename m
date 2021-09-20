@@ -2,105 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDD84112DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8514112DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235917AbhITKaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:30:23 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:60348
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232132AbhITKaV (ORCPT
+        id S235958AbhITKcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:32:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54896 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232132AbhITKcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:30:21 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 20 Sep 2021 06:32:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632133856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1BLbF8fgwdSepKVHmy9R4pCc/IGNczGe4x4tKE6dFJ0=;
+        b=HxhwF8yHPlXGAd0er+WlGhL6A4yyk065mHBk72vAVuouDlLELj61A1x2y1LKmDRidJSHDa
+        xLRT7/R6A+FF83fk/+Ydu5z3XTuc73HH+qoMFpuSKNg3mSaipl2ypaHfTOD/BQwiNxczKm
+        XRve0n8gZvUC2HxVTwaCbpZ1dkg2+sw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-mdPR8X8TMxaQujtnVsMysg-1; Mon, 20 Sep 2021 06:30:52 -0400
+X-MC-Unique: mdPR8X8TMxaQujtnVsMysg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D336840192
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 10:28:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632133733;
-        bh=h1YWBhjma4M2GwmIPdG3QPXZrXZU7YAH22dk5VSYmW0=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=ilTwwVhcb7Nf6Kp7s4B+meoifEtgKXOZPE1sVizqUBM0WxzseF14SGKkqqIz4twTr
-         EgLj1sqa9gTr2Z7rtCtBC7ILXZAXSxD2gOIxT0xXJ0IXG/JL+ATjwsLst9DrePMJob
-         IYHBo5vJuEYJBO9MfTo2+xyt3K+abjUHamSk59xYF9umpv3cGm0gq0+A41Qy90X4rV
-         Td3Mw4Oh6HP03NFx9RkvvKH+pRlLHurr2T66Emsxo7Dr6QCkwS0eRtL3yPqozBuOQa
-         LOhfEaTsWVgucdJGdN0o0/PvIGMt7Yl3CUhHeiRG8gPE9czJ8jAD3k6ERnWijJEPQy
-         S63b5XyprKFZg==
-Received: by mail-wr1-f71.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so1412328wrh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 03:28:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h1YWBhjma4M2GwmIPdG3QPXZrXZU7YAH22dk5VSYmW0=;
-        b=nejKgbW5+Z//QMcKMGt5CIRY0k5DtkOTwfVhYxwPMxewa2E0iONYdPdygzvHTNeYwF
-         TjWErUAVGZeSrJRXNZxNNCTIbNcWVGU8ElD4gCnMJLG+RSEsk9api1kB+WL0WTVhSjFW
-         GN5zF7YbK+h5svWq5YohJbd0AwVrwoONK17GkCSnFLxgjOIDPB6m+lcuRIecpHqqTnIk
-         OZCj9M6QBvxktB8eFHu6mSw6YlhEB7k9Xuyf/F9iFESzVkH9pNeOVQua8dgzap0X5Zgb
-         Hm0eC0C4qtch/oBdWPUzB1S/yxvnYEDYKvS2N7QLhq+hLjA1i38MFp9d5hviKYimRc/V
-         fEeg==
-X-Gm-Message-State: AOAM531DjHpv4oFz13vh3Yz+xMX6OAGld8cU+v1m0SI8265b6V/2VUTF
-        9bXzRgfwpgb2mNBoKWzzkRbpdZQ+RrBT/X5Y7XNv1nQUwngG9ixnxB6cRxE4AqcrTquCc8PMnb4
-        p0jLndrjoh7QiCC1Kt8uF7RvEW0zsQ6rO+UsFFHWX/A==
-X-Received: by 2002:a7b:c947:: with SMTP id i7mr23403118wml.179.1632133733198;
-        Mon, 20 Sep 2021 03:28:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw8roJ7mxUuaEl5Dmc1d3O4yyBSyyeQBPXjTbcVZynN4bU2hmO4ka5BX3dZbMKlKHujyenKwQ==
-X-Received: by 2002:a7b:c947:: with SMTP id i7mr23403105wml.179.1632133733070;
-        Mon, 20 Sep 2021 03:28:53 -0700 (PDT)
-Received: from [192.168.2.20] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id c185sm14249104wma.8.2021.09.20.03.28.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 03:28:52 -0700 (PDT)
-Subject: Re: [PATCH] soc: samsung: exynos-pmu: select CONFIG_MFD_CORE
-To:     Arnd Bergmann <arnd@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Pankaj Dubey <pankaj.dubey@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210920100613.1613919-1-arnd@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ec078007-4d70-aa24-3a18-5b1cfb9cba25@canonical.com>
-Date:   Mon, 20 Sep 2021 12:28:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C4401808308;
+        Mon, 20 Sep 2021 10:30:51 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 88A61196E2;
+        Mon, 20 Sep 2021 10:30:41 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bfu@redhat.com,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
+In-Reply-To: <20210920003935.1369f9fe.pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20210915215742.1793314-1-pasic@linux.ibm.com>
+ <87pmt8hp5o.fsf@redhat.com> <20210916151835.4ab512b2.pasic@linux.ibm.com>
+ <87mtobh9xn.fsf@redhat.com> <20210920003935.1369f9fe.pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 20 Sep 2021 12:30:39 +0200
+Message-ID: <875yuvh73k.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210920100613.1613919-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 12:06, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Using devm_mfd_add_devices() fails if no driver selects the
-> MFD core code:
-> 
-> aarch64-linux-ld: drivers/soc/samsung/exynos-pmu.o: in function `exynos_pmu_probe':
-> exynos-pmu.c:(.text+0xa0): undefined reference to `devm_mfd_add_devices'
-> 
-> Add the missing select statement.
-> 
-> Fixes: 93618e344a5e ("soc: samsung: exynos-pmu: instantiate clkout driver as MFD")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/soc/samsung/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Mon, Sep 20 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-Hi Arnd,
+> On Fri, 17 Sep 2021 10:40:20 +0200
+> Cornelia Huck <cohuck@redhat.com> wrote:
+>
+>> On Thu, Sep 16 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+>> 
+>> > On Thu, 16 Sep 2021 10:59:15 +0200
+>> > Cornelia Huck <cohuck@redhat.com> wrote:
+>> >  
+>> >> > Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+>> >> > classic notifiers") we were supposed to make sure that
+>> >> > virtio_ccw_release_dev() completes before the ccw device, and the
+>> >> > attached dma pool are torn down, but unfortunately we did not.
+>> >> > Before that commit it used to be OK to delay cleaning up the memory
+>> >> > allocated by virtio-ccw indefinitely (which isn't really intuitive for
+>> >> > guys used to destruction happens in reverse construction order).
+>> >> >
+>> >> > To accomplish this let us take a reference on the ccw device before we
+>> >> > allocate the dma_area and give it up after dma_area was freed.
+>> >> >
+>> >> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+>> >> > Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+>> >> > classic notifiers")
+>> >> > Reported-by: bfu@redhat.com
+>> >> > ---
+>> >> >
+>> >> > I'm not certain this is the only hot-unplug and teardonw related problem
+>> >> > with virtio-ccw.
+>> >> >
+>> >> > Some things that are not perfectly clear to me:
+>> >> > * What would happen if we observed an hot-unplug while we are doing
+>> >> >   wait_event() in ccw_io_helper()? Do we get stuck? I don't thin we
+>> >> >   are guaranteed to receive an irq for a subchannel that is gone.    
+>> >> 
+>> >> Hm. I think we may need to do a wake_up during remove handling.  
+>> >
+>> > My guess is that the BQL is saving us from ever seeing this with QEMU
+>> > as the hypervisor-userspace. Nevertheless I don't think we should rely
+>> > on that.  
+>> 
+>> I agree. Let's do that via a separate patch.
+>> 
+>
+> I understand you would like us to finish the discussion on the alternate
+> approach before giving an r-b for this patch, right?
 
-Thanks for the patch but this was already committed few days ago from
-different author:
-https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git/commit/?h=next/drivers&id=e37ef6dcdb1f4738b01cec7fb7be46af07816af9
+Yes, exactly.
 
+(...)
 
-Best regards,
-Krzysztof
+>> >> > An alternative to this approach would be to inc and dec the refcount
+>> >> > in ccw_device_dma_zalloc() and ccw_device_dma_free() respectively.    
+>> >> 
+>> >> Yeah, I also thought about that. This would give us more get/put
+>> >> operations, but might be the safer option.  
+>> >
+>> > My understanding is, that having the ccw device go away while in a
+>> > middle of doing ccw stuff (about to submit, or waiting for a channel
+>> > program, or whatever) was bad before.  
+>> 
+>> What do you mean with "was bad before"?
+>
+> Using an already invalid pointer to the ccw device is always bad. I'm
+> not sure what prevented this from happening before commit 48720ba56891.
+> I'm aware of the fact that virtio_ccw_release_dev() didn't use to
+> deference the vcdev->cdev before that commit, so we didn't have this
+> exact problem. Can you tell me, how did we use to ensure that all
+> dereferences of vcdev->cdev are legit, i.e. happened while the
+> ccw device is still fully alive before commit 48720ba56891?
+
+I'm not sure what that commit is having to do with lifetimes, it did not
+change anything, only added the extra interaction for the dma buffer.
+
+Basically, the vcdev is supposed to be around while the ccw device is
+online (with a tail end until references have been given up, of course.)
+It embeds a virtio device that has the ccw device as a parent, which
+will give us a reference on the ccw device as long as the virtio device
+is alive. Any interactions with the ccw device (except freeing the dma
+buffer) are limited to the time where we still have a reference to it
+via the virtio device.
+
+>
+>> 
+>> > So my intuition tells me that
+>> > drivers should manage explicitly. Yes virtio_ccw happens to have dma
+>> > memory whose lifetime is more or less the lifetime of struct virtio_ccw,
+>> > but that may not be always the case.  
+>> 
+>> I'm not sure what you're getting at here. Regardless of the lifetime of
+>> the dma memory, it depends on the presence of the ccw device to which it
+>> is tied. This means that the ccw device must not be released while the
+>> dma memory is alive. We can use the approach in your patch here due to
+>> the lifetime of the dma memory that virtio-ccw allocates when we start
+>> using the device and frees when we stop using the device, or we can use
+>> get/put with every allocate/release dma memory pair, which should be
+>> safe for everyone?
+>> 
+>
+> What I mean is that ccw_device_dma_[zalloc,free]() take a pointer to the
+> ccw_device. If we get/put in those we can ensure that, provided the
+> alloc and the free calls are properly paired, the device will be still
+> alive (and the pointer valid) for the free, if it was valid for the
+> alloc. But it does not ensure that each and every call to alloc is with
+> a valid pointer, or that other uses of the pointer are OK. So I don't
+> think it is completely safe for everyone, because we could try to use
+> a pointer to a ccw device when not having any dma memory allocated from
+> its pool.
+
+But the problem is the dma memory, right? Also, it is the same issue for
+any potential caller of the ccw_device_dma_* interfaces.
+
+>
+> This patch takes reference to cdev before the pointer is published via
+> vcdev->cdev and drops the reference after *vcdev is freed. The idea is
+> that the pointee basically outlives the pointer. (Without having a full
+> understanding of how things are synchronized).
+
+I don't think we have to care about accessing ->cdev (see above.) Plus,
+as we give up the dma memory at the very last point, we would also give
+up the reference via that memory at the very last point, so I'm not sure
+what additional problems could come up.
+
