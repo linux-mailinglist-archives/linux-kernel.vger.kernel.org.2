@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485B7411E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8E1412100
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346005AbhITR04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56130 "EHLO mail.kernel.org"
+        id S1350765AbhITSBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349602AbhITRYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:24:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1169F61A85;
-        Mon, 20 Sep 2021 17:01:50 +0000 (UTC)
+        id S1355067AbhITRwj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:52:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 667DE61BF3;
+        Mon, 20 Sep 2021 17:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157311;
-        bh=7Wns3l9gX+H590DCvppk6lTmRGB+Hss0HwLW9cHwN+0=;
+        s=korg; t=1632157974;
+        bh=bbwQ7qaaek0b1eGHS5zbSzr0sQq1cumGAQxaFHr5mcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FsNw72AaER4ePj2TUnQVxdIUK+UbgGKkxQLaz90D3RTyUeRTxBQfs9NfLEk8CjjJM
-         2jkXy0gmOQisjYbIJv1FtywsYHfioxyyPMfY3hVB3I/Udr3AfWrmW8AB7wJDPfU84o
-         AGlOr+SP+N+ei7pbeZzFJGDSPfhyb0wMm7q/m4Fo=
+        b=kEbxxLUSJbCrsfZxWuek6B5y5Fqw++H+jlIZt1PXiv53vQTAEI8ry+cQ5aEiFSUqo
+         4KCvCz1QEMG8caCDfGCj8WzQbhU3sJWNnextuB7mc0ixzbJd5NE9HvBSsehsVbn1Cb
+         BUIh2SRZ4pq8udCumtIUEdUxm0HRyEIsSzxQ31m8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 151/217] s390/jump_label: print real address in a case of a jump label bug
+Subject: [PATCH 4.19 210/293] media: tegra-cec: Handle errors of clk_prepare_enable()
 Date:   Mon, 20 Sep 2021 18:42:52 +0200
-Message-Id: <20210920163929.754569869@linuxfoundation.org>
+Message-Id: <20210920163940.461021383@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 5492886c14744d239e87f1b0b774b5a341e755cc ]
+[ Upstream commit 38367073c796a37a61549b1f66a71b3adb03802d ]
 
-In case of a jump label print the real address of the piece of code
-where a mismatch was detected. This is right before the system panics,
-so there is nothing revealed.
+tegra_cec_probe() and tegra_cec_resume() ignored possible errors of
+clk_prepare_enable(). The patch fixes this.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/jump_label.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/tegra-cec/tegra_cec.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
-index 43f8430fb67d..608b363cd35b 100644
---- a/arch/s390/kernel/jump_label.c
-+++ b/arch/s390/kernel/jump_label.c
-@@ -43,7 +43,7 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
- 	unsigned char *ipe = (unsigned char *)expected;
- 	unsigned char *ipn = (unsigned char *)new;
+diff --git a/drivers/media/platform/tegra-cec/tegra_cec.c b/drivers/media/platform/tegra-cec/tegra_cec.c
+index aba488cd0e64..a2c20ca799c4 100644
+--- a/drivers/media/platform/tegra-cec/tegra_cec.c
++++ b/drivers/media/platform/tegra-cec/tegra_cec.c
+@@ -383,7 +383,11 @@ static int tegra_cec_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 	}
  
--	pr_emerg("Jump label code mismatch at %pS [%p]\n", ipc, ipc);
-+	pr_emerg("Jump label code mismatch at %pS [%px]\n", ipc, ipc);
- 	pr_emerg("Found:    %6ph\n", ipc);
- 	pr_emerg("Expected: %6ph\n", ipe);
- 	pr_emerg("New:      %6ph\n", ipn);
+-	clk_prepare_enable(cec->clk);
++	ret = clk_prepare_enable(cec->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "Unable to prepare clock for CEC\n");
++		return ret;
++	}
+ 
+ 	/* set context info. */
+ 	cec->dev = &pdev->dev;
+@@ -462,9 +466,7 @@ static int tegra_cec_resume(struct platform_device *pdev)
+ 
+ 	dev_notice(&pdev->dev, "Resuming\n");
+ 
+-	clk_prepare_enable(cec->clk);
+-
+-	return 0;
++	return clk_prepare_enable(cec->clk);
+ }
+ #endif
+ 
 -- 
 2.30.2
 
