@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26529412025
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81619411BAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhITRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
+        id S244693AbhITRBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349426AbhITRqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:46:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799A461B97;
-        Mon, 20 Sep 2021 17:10:39 +0000 (UTC)
+        id S1344214AbhITQ6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA52613B3;
+        Mon, 20 Sep 2021 16:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157839;
-        bh=HrENAoPSa9HeSp9luRI1RkJG1k5i1MbrAH/bpIgfSrI=;
+        s=korg; t=1632156724;
+        bh=fjvNMINVsoL5czfNjYkfShBf/XVUOh7Uhsp3w+L+XPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KGPhHoNrHd/9BQKbDwMDaZ2kQOAix0pwixt0P04k+Xp0a7hYI63HFuLxRrpQlzbso
-         0Jf/AwzVCa1fg8VdCWG72l3hTzG+V/KyKoBFFQ9jzcSyHzBKrzctNtVeCBF3/CKf0C
-         qk2eq9+r9OTVVrI9XECAeL5gFQ+NBMKafM2o05Kk=
+        b=NhvhwaJLj1asISmsE1Zhg5vLwXjAKO/GSu9j06UxDB4b5a7vKxhx9wf3/hbNBjhwI
+         zgBKIvSsQZ6Iu1SZoD3FlcLIiAHLg3x5tYn11E4sM02MgIWnZ/ma2vroFtbTiH1fnE
+         FA1HG7rfklh8z8XdpTA2XRxXnKU5TwUDfYnR1JSE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 4.19 142/293] arm64: head: avoid over-mapping in map_memory
-Date:   Mon, 20 Sep 2021 18:41:44 +0200
-Message-Id: <20210920163938.141111078@linuxfoundation.org>
+        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 056/175] tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
+Date:   Mon, 20 Sep 2021 18:41:45 +0200
+Message-Id: <20210920163919.887439973@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,106 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Martin KaFai Lau <kafai@fb.com>
 
-commit 90268574a3e8a6b883bd802d702a2738577e1006 upstream.
+[ Upstream commit 525e2f9fd0229eb10cb460a9e6d978257f24804e ]
 
-The `compute_indices` and `populate_entries` macros operate on inclusive
-bounds, and thus the `map_memory` macro which uses them also operates
-on inclusive bounds.
+st->bucket stores the current bucket number.
+st->offset stores the offset within this bucket that is the sk to be
+seq_show().  Thus, st->offset only makes sense within the same
+st->bucket.
 
-We pass `_end` and `_idmap_text_end` to `map_memory`, but these are
-exclusive bounds, and if one of these is sufficiently aligned (as a
-result of kernel configuration, physical placement, and KASLR), then:
+These two variables are an optimization for the common no-lseek case.
+When resuming the seq_file iteration (i.e. seq_start()),
+tcp_seek_last_pos() tries to continue from the st->offset
+at bucket st->bucket.
 
-* In `compute_indices`, the computed `iend` will be in the page/block *after*
-  the final byte of the intended mapping.
+However, it is possible that the bucket pointed by st->bucket
+has changed and st->offset may end up skipping the whole st->bucket
+without finding a sk.  In this case, tcp_seek_last_pos() currently
+continues to satisfy the offset condition in the next (and incorrect)
+bucket.  Instead, regardless of the offset value, the first sk of the
+next bucket should be returned.  Thus, "bucket == st->bucket" check is
+added to tcp_seek_last_pos().
 
-* In `populate_entries`, an unnecessary entry will be created at the end
-  of each level of table. At the leaf level, this entry will map up to
-  SWAPPER_BLOCK_SIZE bytes of physical addresses that we did not intend
-  to map.
+The chance of hitting this is small and the issue is a decade old,
+so targeting for the next tree.
 
-As we may map up to SWAPPER_BLOCK_SIZE bytes more than intended, we may
-violate the boot protocol and map physical address past the 2MiB-aligned
-end address we are permitted to map. As we map these with Normal memory
-attributes, this may result in further problems depending on what these
-physical addresses correspond to.
-
-The final entry at each level may require an additional table at that
-level. As EARLY_ENTRIES() calculates an inclusive bound, we allocate
-enough memory for this.
-
-Avoid the extraneous mapping by having map_memory convert the exclusive
-end address to an inclusive end address by subtracting one, and do
-likewise in EARLY_ENTRIES() when calculating the number of required
-tables. For clarity, comments are updated to more clearly document which
-boundaries the macros operate on.  For consistency with the other
-macros, the comments in map_memory are also updated to describe `vstart`
-and `vend` as virtual addresses.
-
-Fixes: 0370b31e4845 ("arm64: Extend early page table code to allow for larger kernels")
-Cc: <stable@vger.kernel.org> # 4.16.x
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Cc: Steve Capper <steve.capper@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20210823101253.55567-1-mark.rutland@arm.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a8b690f98baf ("tcp: Fix slowness in read /proc/net/tcp")
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210701200541.1033917-1-kafai@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/kernel-pgtable.h |    4 ++--
- arch/arm64/kernel/head.S                |   11 ++++++-----
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ net/ipv4/tcp_ipv4.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/include/asm/kernel-pgtable.h
-+++ b/arch/arm64/include/asm/kernel-pgtable.h
-@@ -76,8 +76,8 @@
- #define EARLY_KASLR	(0)
- #endif
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 10860c089fda..6f895694cca1 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2068,6 +2068,7 @@ static void *tcp_get_idx(struct seq_file *seq, loff_t pos)
+ static void *tcp_seek_last_pos(struct seq_file *seq)
+ {
+ 	struct tcp_iter_state *st = seq->private;
++	int bucket = st->bucket;
+ 	int offset = st->offset;
+ 	int orig_num = st->num;
+ 	void *rc = NULL;
+@@ -2078,7 +2079,7 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
+ 			break;
+ 		st->state = TCP_SEQ_STATE_LISTENING;
+ 		rc = listening_get_next(seq, NULL);
+-		while (offset-- && rc)
++		while (offset-- && rc && bucket == st->bucket)
+ 			rc = listening_get_next(seq, rc);
+ 		if (rc)
+ 			break;
+@@ -2089,7 +2090,7 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
+ 		if (st->bucket > tcp_hashinfo.ehash_mask)
+ 			break;
+ 		rc = established_get_first(seq);
+-		while (offset-- && rc)
++		while (offset-- && rc && bucket == st->bucket)
+ 			rc = established_get_next(seq, rc);
+ 	}
  
--#define EARLY_ENTRIES(vstart, vend, shift) (((vend) >> (shift)) \
--					- ((vstart) >> (shift)) + 1 + EARLY_KASLR)
-+#define EARLY_ENTRIES(vstart, vend, shift) \
-+	((((vend) - 1) >> (shift)) - ((vstart) >> (shift)) + 1 + EARLY_KASLR)
- 
- #define EARLY_PGDS(vstart, vend) (EARLY_ENTRIES(vstart, vend, PGDIR_SHIFT))
- 
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -202,7 +202,7 @@ ENDPROC(preserve_boot_args)
-  * to be composed of multiple pages. (This effectively scales the end index).
-  *
-  *	vstart:	virtual address of start of range
-- *	vend:	virtual address of end of range
-+ *	vend:	virtual address of end of range - we map [vstart, vend]
-  *	shift:	shift used to transform virtual address into index
-  *	ptrs:	number of entries in page table
-  *	istart:	index in table corresponding to vstart
-@@ -239,17 +239,18 @@ ENDPROC(preserve_boot_args)
-  *
-  *	tbl:	location of page table
-  *	rtbl:	address to be used for first level page table entry (typically tbl + PAGE_SIZE)
-- *	vstart:	start address to map
-- *	vend:	end address to map - we map [vstart, vend]
-+ *	vstart:	virtual address of start of range
-+ *	vend:	virtual address of end of range - we map [vstart, vend - 1]
-  *	flags:	flags to use to map last level entries
-  *	phys:	physical address corresponding to vstart - physical memory is contiguous
-  *	pgds:	the number of pgd entries
-  *
-  * Temporaries:	istart, iend, tmp, count, sv - these need to be different registers
-- * Preserves:	vstart, vend, flags
-- * Corrupts:	tbl, rtbl, istart, iend, tmp, count, sv
-+ * Preserves:	vstart, flags
-+ * Corrupts:	tbl, rtbl, vend, istart, iend, tmp, count, sv
-  */
- 	.macro map_memory, tbl, rtbl, vstart, vend, flags, phys, pgds, istart, iend, tmp, count, sv
-+	sub \vend, \vend, #1
- 	add \rtbl, \tbl, #PAGE_SIZE
- 	mov \sv, \rtbl
- 	mov \count, #0
+-- 
+2.30.2
+
 
 
