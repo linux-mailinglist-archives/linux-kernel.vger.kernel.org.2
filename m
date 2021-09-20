@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42836412405
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106C041261A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379385AbhITS3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:29:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45090 "EHLO mail.kernel.org"
+        id S1386059AbhITSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:53:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378123AbhITSW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:22:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B5D4632CA;
-        Mon, 20 Sep 2021 17:24:30 +0000 (UTC)
+        id S1385523AbhITSue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:50:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5381C6338B;
+        Mon, 20 Sep 2021 17:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158671;
-        bh=e0zTfS91sQ6P5ZCx06i6sK0TJnuasKU/tyDK1eqvzwY=;
+        s=korg; t=1632159302;
+        bh=vm7Cj2oac6VorMDPdEAf6cBcfXiPSvGL0veQ00zxkp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QCI1WeoKwahKOsnatyYFJWwoW2brzrobaFhYw7FG7dpLfWO0KU1SRErLlmS15pMv4
-         cLT1aUv1tjLFkyDVMxhKodzjB57eLj9lVqbRwZHQWqFZRVrAhh+UowtOqbo27qu2WW
-         c4OyqOPX0ZMBySKO3sTkPgjXkkgQxj2tB5vzCTlM=
+        b=evT4sw7/+ymuNaEJZ/3iOEZzQSpKIjKEOJdV0wmk55/ocYaZmIfp1LUTuILRVrJPw
+         ZeWSITPf+H3QkMtaSdlDVJhScRqdzFVDLWsjurekF16u63XjqBJeaVlN3AY7Lzmlkg
+         1wTEy9KOkKfx8L296hCHWTQS6Db6YfSFqC5/Sqf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Benjamin Hesmans <benjamin.hesmans@tessares.net>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Curtis Klein <curtis.klein@hpe.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 256/260] netfilter: socket: icmp6: fix use-after-scope
-Date:   Mon, 20 Sep 2021 18:44:34 +0200
-Message-Id: <20210920163939.811207750@linuxfoundation.org>
+Subject: [PATCH 5.14 137/168] watchdog: Fix NULL pointer dereference when releasing cdev
+Date:   Mon, 20 Sep 2021 18:44:35 +0200
+Message-Id: <20210920163926.163900838@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Hesmans <benjamin.hesmans@tessares.net>
+From: Curtis Klein <curtis.klein@hpe.com>
 
-[ Upstream commit 730affed24bffcd1eebd5903171960f5ff9f1f22 ]
+[ Upstream commit c7b178dae139f8857edc50888cfbf251cd974a38 ]
 
-Bug reported by KASAN:
+watchdog_hrtimer_pretimeout_stop needs the watchdog device to have a
+valid pointer to the watchdog core data to stop the pretimeout hrtimer.
+Therefore it needs to be called before the pointers are cleared in
+watchdog_cdev_unregister.
 
-BUG: KASAN: use-after-scope in inet6_ehashfn (net/ipv6/inet6_hashtables.c:40)
-Call Trace:
-(...)
-inet6_ehashfn (net/ipv6/inet6_hashtables.c:40)
-(...)
-nf_sk_lookup_slow_v6 (net/ipv6/netfilter/nf_socket_ipv6.c:91
-net/ipv6/netfilter/nf_socket_ipv6.c:146)
-
-It seems that this bug has already been fixed by Eric Dumazet in the
-past in:
-commit 78296c97ca1f ("netfilter: xt_socket: fix a stack corruption bug")
-
-But a variant of the same issue has been introduced in
-commit d64d80a2cde9 ("netfilter: x_tables: don't extract flow keys on early demuxed sks in socket match")
-
-`daddr` and `saddr` potentially hold a reference to ipv6_var that is no
-longer in scope when the call to `nf_socket_get_sock_v6` is made.
-
-Fixes: d64d80a2cde9 ("netfilter: x_tables: don't extract flow keys on early demuxed sks in socket match")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Benjamin Hesmans <benjamin.hesmans@tessares.net>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 7b7d2fdc8c3e ("watchdog: Add hrtimer-based pretimeout feature")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Curtis Klein <curtis.klein@hpe.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/1624429583-5720-1-git-send-email-curtis.klein@hpe.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/netfilter/nf_socket_ipv6.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/watchdog/watchdog_dev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
-index b9df879c48d3..69c021704abd 100644
---- a/net/ipv6/netfilter/nf_socket_ipv6.c
-+++ b/net/ipv6/netfilter/nf_socket_ipv6.c
-@@ -99,7 +99,7 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
- {
- 	__be16 uninitialized_var(dport), uninitialized_var(sport);
- 	const struct in6_addr *daddr = NULL, *saddr = NULL;
--	struct ipv6hdr *iph = ipv6_hdr(skb);
-+	struct ipv6hdr *iph = ipv6_hdr(skb), ipv6_var;
- 	struct sk_buff *data_skb = NULL;
- 	int doff = 0;
- 	int thoff = 0, tproto;
-@@ -129,8 +129,6 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
- 			thoff + sizeof(*hp);
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 6c73160386b9..0cc07d957b64 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -1096,6 +1096,8 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
+ 		watchdog_stop(wdd);
+ 	}
  
- 	} else if (tproto == IPPROTO_ICMPV6) {
--		struct ipv6hdr ipv6_var;
--
- 		if (extract_icmp6_fields(skb, thoff, &tproto, &saddr, &daddr,
- 					 &sport, &dport, &ipv6_var))
- 			return NULL;
++	watchdog_hrtimer_pretimeout_stop(wdd);
++
+ 	mutex_lock(&wd_data->lock);
+ 	wd_data->wdd = NULL;
+ 	wdd->wd_data = NULL;
+@@ -1103,7 +1105,6 @@ static void watchdog_cdev_unregister(struct watchdog_device *wdd)
+ 
+ 	hrtimer_cancel(&wd_data->timer);
+ 	kthread_cancel_work_sync(&wd_data->work);
+-	watchdog_hrtimer_pretimeout_stop(wdd);
+ 
+ 	put_device(&wd_data->dev);
+ }
 -- 
 2.30.2
 
