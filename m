@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8295641153D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABB0411541
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239130AbhITNF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:05:58 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33420
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239068AbhITNFp (ORCPT
+        id S239127AbhITNGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:06:45 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27381 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235421AbhITNGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:05:45 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 20 Sep 2021 09:06:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632143113; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=rYP9XQ7w+We4iygmsl6D0285+JXJr7eMTLl25yCtN+Q=; b=L8uaCSW80r0BWaQOfGe/uguZEoRUXvI/FXMqQY3QfLiccxe3vfW6Rw2bRxdzbWDaPHTUeplP
+ 2DnDY1ZvcnZSyjCjosN2qm6l9h3jPCTA17uncPpsM6gsaaIPSLjm5PyyXY6JZjrMoEcwv5HK
+ yd3x1sE+l+CEDYeXhEIoPv/y0uY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 61488708bd6681d8edfb0eb4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Sep 2021 13:05:12
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 82EB8C43616; Mon, 20 Sep 2021 13:05:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BBE973F226
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632143057;
-        bh=KyQicLYMcvTUsuouhObsDgwfTY/CvChfVjl2/JZq64I=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=hDvX46djM7ZMcjesVpGssaknlbsN/pSpc9/S3qva4wVbVWgkZob5bGjGMAnfTDwE0
-         1Q7YYQol2vEsvBlgUtvTFfSk8VxqYAMsFeWEwQ6fx1mdBXbj2C9PMzCmnNA6yf9CI5
-         fuIgzME6zhZe56eEY64iVZRkTQT9HabhCuNeQF8h61TcejRqMfnSfxbbwK49OaPewy
-         nUAD4gO29nYIYrdRiVs9QOVoCIvJGK8kDtdn4GitNp1lyN//QuYPBHkCz/PInY2USd
-         97K2PL+qLuiwHjniH/c3dkkqhiR7IB0AdZKRSn0g4Yf6ASnv13j6scpjfkMHcQaUfs
-         xnkKPNu6FklGA==
-Received: by mail-wr1-f71.google.com with SMTP id c15-20020a5d4ccf000000b0015dff622f39so6006066wrt.21
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:04:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KyQicLYMcvTUsuouhObsDgwfTY/CvChfVjl2/JZq64I=;
-        b=K9cpCkpSn9GN3RNCDPFUPNcqNIdxdT6JDH5dOpZAiKJj2lf/GVeYwypZYTfjsjVr9Q
-         wrUv1x3agz4rrTCDnl9UoM1i5Ii8QftLQV1wd9bYItFR4LZbglmXmVkQmdmbbA+QMoNh
-         jbPo/vDTjO/8agfnnE1Gp312GclvYNBysqSRD/IzURZ5HU6jHXIC+xDjjsEzFWJej/wv
-         LvcjAvodYNMgZ70HvDTeai7UZQlbXK6Q55UjR8SH4AOxHVOnNGBv4zeykGb7X9+iTK2b
-         AhOEOn+puhAjcGEbjKrYEVST4iKWGQAyhjQldpmas1n+POzS+kX3c0gFv2Lsb49NP7F3
-         hwBg==
-X-Gm-Message-State: AOAM533QbeFoWjAVDaQtBEyjwu+L7eA5+yxJ3OWbfYfDjObOdDInJme3
-        4uyUo5KDolouLvRhKy0n8yFnRD/eZgBEAKlQ+fIlWN+zBJpGFKW/ndxTkCc44SHs5A1dqe53UOX
-        o1cHAJ6+pnp7tbwjbRt5/xmlWRyH+AX5Li7KifJVBFA==
-X-Received: by 2002:a1c:28b:: with SMTP id 133mr24133069wmc.14.1632143057508;
-        Mon, 20 Sep 2021 06:04:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypg5QGxpLH5N2pakMgq9jvpjRG8kkva5Tcgev2sXz+0gx7PhG+53e0/fOPWDZYp26XzyqyLA==
-X-Received: by 2002:a1c:28b:: with SMTP id 133mr24133048wmc.14.1632143057361;
-        Mon, 20 Sep 2021 06:04:17 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id 25sm22965108wmo.9.2021.09.20.06.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 06:04:16 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2 5/5] riscv: dts: sifive: add missing compatible for plic
-Date:   Mon, 20 Sep 2021 15:04:12 +0200
-Message-Id: <20210920130412.145231-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
-References: <20210920130248.145058-1-krzysztof.kozlowski@canonical.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0B6FBC4338F;
+        Mon, 20 Sep 2021 13:05:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0B6FBC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: Re: [PATCH] [v15] wireless: Initial driver submission for pureLiFi STA devices
+References: <20210226130810.119216-1-srini.raju@purelifi.com>
+        <20210818141343.7833-1-srini.raju@purelifi.com>
+Date:   Mon, 20 Sep 2021 16:05:03 +0300
+In-Reply-To: <20210818141343.7833-1-srini.raju@purelifi.com> (Srinivasan
+        Raju's message of "Wed, 18 Aug 2021 15:13:00 +0100")
+Message-ID: <87o88nwg74.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add proper compatible for Platform-Level Interrupt Controller to silence
-dtbs_check warnings:
+(big picture comments first)
 
-  interrupt-controller@c000000: compatible: ['sifive,plic-1.0.0'] is too short
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
+> and LiFi-XL USB devices.
+>
+> This driver implementation has been based on the zd1211rw driver.
+>
+> Driver is based on 802.11 softMAC Architecture and uses
+> native 802.11 for configuration and management.
+>
+> The driver is compiled and tested in ARM, x86 architectures and
+> compiled in powerpc architecture.
 
----
+You should describe in the commit log what LiFi means, not everyone know
+the term and might mistake this as a regular Wi-Fi device (which it's
+not).
 
-Changes since v1:
-1. None
----
- arch/riscv/boot/dts/sifive/fu540-c000.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	hw->wiphy->bands[NL80211_BAND_2GHZ] = &mac->band;
 
-diff --git a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-index 7db861053483..0655b5c4201d 100644
---- a/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-+++ b/arch/riscv/boot/dts/sifive/fu540-c000.dtsi
-@@ -141,7 +141,7 @@ soc {
- 		ranges;
- 		plic0: interrupt-controller@c000000 {
- 			#interrupt-cells = <1>;
--			compatible = "sifive,plic-1.0.0";
-+			compatible = "sifive,fu540-c000-plic", "sifive,plic-1.0.0";
- 			reg = <0x0 0xc000000 0x0 0x4000000>;
- 			riscv,ndev = <53>;
- 			interrupt-controller;
+Johannes comment about piggy-backing NL80211_BAND_2GHZ is not yet addressed:
+
+https://patchwork.kernel.org/project/linux-wireless/patch/20210212115030.124490-1-srini.raju@purelifi.com/
+
+I agree with Johannes, a Li-Fi driver should not claim to be a regular
+2.4 GHz Wi-Fi device.
+
 -- 
-2.30.2
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
