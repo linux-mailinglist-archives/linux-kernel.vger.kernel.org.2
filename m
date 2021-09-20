@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984CC4120D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E4E4120CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347857AbhITR6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54552 "EHLO mail.kernel.org"
+        id S1350079AbhITR6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:58:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354994AbhITRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1354991AbhITRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 13:52:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA31361BF9;
-        Mon, 20 Sep 2021 17:12:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1072A61BF7;
+        Mon, 20 Sep 2021 17:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157968;
-        bh=AsS5IWO2I9ueUInU05sg4o6O+dRha59amT68ELM+6WQ=;
+        s=korg; t=1632157970;
+        bh=fC6QYkKb0IHwHjrnEGhMbjdLvJ8CwfArCdiSRj6BIH4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TWEFxo9r4F5ulAe9KaOLe0+KweffIADKJheC34uCkB2tM7X+0w+FKYvTHGAARg/eL
-         hnuZwp9+2owlhE4w3zXFkcycQ69+i6UZHRi6rQ9JpmRaNJ6nmvdOHObALnsllg3FEj
-         HWfwbIVWrRfjK2ntkgIatBi1QuxCJIuoX8WtGwaI=
+        b=RGn2thMjQsK1mBxw9NxMxrajZzHDMNiM0kNIZ+W1KFW0bq4CQA+X29lr2jx8xmr2K
+         IIlzec2WkppCs9ZqjQxJ0bI/r21z7dX4J1tlbM9/AAhu/NpEV9+8Jt7KhmaUavxovr
+         Yv3EHtEx65aw/I/wGIAklabCJugar0b8FIN1VptQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
+        stable@vger.kernel.org, Xiaotan Luo <lxt@rock-chips.com>,
+        Sugar Zhang <sugar.zhang@rock-chips.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 234/293] ASoC: rockchip: i2s: Fix regmap_ops hang
-Date:   Mon, 20 Sep 2021 18:43:16 +0200
-Message-Id: <20210920163941.413287748@linuxfoundation.org>
+Subject: [PATCH 4.19 235/293] ASoC: rockchip: i2s: Fixup config for DAIFMT_DSP_A/B
+Date:   Mon, 20 Sep 2021 18:43:17 +0200
+Message-Id: <20210920163941.445203565@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -40,85 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
+From: Xiaotan Luo <lxt@rock-chips.com>
 
-[ Upstream commit 53ca9b9777b95cdd689181d7c547e38dc79adad0 ]
+[ Upstream commit 1bf56843e664eef2525bdbfae6a561e98910f676 ]
 
-API 'set_fmt' maybe called when PD is off, in the situation,
-any register access will hang the system. so, enable PD
-before r/w register.
+- DSP_A: PCM delay 1 bit mode, L data MSB after FRM LRC
+- DSP_B: PCM no delay mode, L data MSB during FRM LRC
 
+Signed-off-by: Xiaotan Luo <lxt@rock-chips.com>
 Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
-Link: https://lore.kernel.org/r/1629950520-14190-4-git-send-email-sugar.zhang@rock-chips.com
+Link: https://lore.kernel.org/r/1629950562-14281-3-git-send-email-sugar.zhang@rock-chips.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index b86f76c3598c..cab381c9dea1 100644
+index cab381c9dea1..c6d11a59310f 100644
 --- a/sound/soc/rockchip/rockchip_i2s.c
 +++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -189,7 +189,9 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- {
- 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
- 	unsigned int mask = 0, val = 0;
-+	int ret = 0;
- 
-+	pm_runtime_get_sync(cpu_dai->dev);
- 	mask = I2S_CKR_MSS_MASK;
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
-@@ -202,7 +204,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		i2s->is_master_mode = false;
+@@ -236,12 +236,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_I2S:
+ 		val = I2S_TXCR_IBM_NORMAL;
  		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-@@ -216,7 +219,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		val = I2S_CKR_CKP_POS;
- 		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-@@ -239,7 +243,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+-	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
+-		val = I2S_TXCR_TFS_PCM;
+-		break;
+-	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
++	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
  		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
  		break;
++	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
++		val = I2S_TXCR_TFS_PCM;
++		break;
  	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
-@@ -262,12 +267,16 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		ret = -EINVAL;
+ 		goto err_pm_put;
+@@ -260,12 +260,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	case SND_SOC_DAIFMT_I2S:
+ 		val = I2S_RXCR_IBM_NORMAL;
+ 		break;
+-	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
+-		val = I2S_RXCR_TFS_PCM;
+-		break;
+-	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
++	case SND_SOC_DAIFMT_DSP_A: /* PCM delay 1 bit mode */
  		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
  		break;
++	case SND_SOC_DAIFMT_DSP_B: /* PCM no delay mode */
++		val = I2S_RXCR_TFS_PCM;
++		break;
  	default:
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_pm_put;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
- 
--	return 0;
-+err_pm_put:
-+	pm_runtime_put(cpu_dai->dev);
-+
-+	return ret;
- }
- 
- static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		ret = -EINVAL;
+ 		goto err_pm_put;
 -- 
 2.30.2
 
