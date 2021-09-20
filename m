@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4631E411AED
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A6C411E2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240838AbhITQxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:53:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39624 "EHLO mail.kernel.org"
+        id S1347372AbhITR1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:27:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237075AbhITQuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:50:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A04D61205;
-        Mon, 20 Sep 2021 16:48:52 +0000 (UTC)
+        id S1349912AbhITRZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:25:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E14656126A;
+        Mon, 20 Sep 2021 17:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156532;
-        bh=YHyLKLJMiC7h8clHrRdJl/BiyZcldiTsutvJw2V/3WY=;
+        s=korg; t=1632157335;
+        bh=mJMmkxwxd9M8+jmz6WOQ+szENOwFVOrm9qIV68A5zwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UzSK7e7+P5hHOzn2PKYK5HsuLVkYjQqN6o2faUM7GUvpLt3/SMY5zKorHs8QACb5m
-         1+Ay2qQB4hjjAGpub05KxfFEJoGuMbpsuF/IxeA5VHiGPLa8PUccF2B/lx7ZM9R6wC
-         P6RWhIiJU2ChsQGmaMiHIaDqIhWd+Pl/FsGSxGc0=
+        b=m687PDiRtRigsSQ7VcqNffERw/dGjqcqU9nJF8EJQSfip8G6vokn6zdf796LSELbx
+         ESULcQrieM4IZHYXe5hMiCe8WA6JNZJCI+50Lpa/usi1tI9MrZtHSQuEmz22FjZorA
+         t71nj1Ov8re541vvsbfdAnR4M2stvF9MImFHejJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Jiri Slaby <jslaby@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 103/133] hvsi: dont panic on tty_register_driver failure
-Date:   Mon, 20 Sep 2021 18:43:01 +0200
-Message-Id: <20210920163916.000566299@linuxfoundation.org>
+        stable@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 161/217] arm64: dts: qcom: sdm660: use reg value for memory node
+Date:   Mon, 20 Sep 2021 18:43:02 +0200
+Message-Id: <20210920163930.098618277@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,71 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Vinod Koul <vkoul@kernel.org>
 
-[ Upstream commit 7ccbdcc4d08a6d7041e4849219bbb12ffa45db4c ]
+[ Upstream commit c81210e38966cfa1c784364e4035081c3227cf5b ]
 
-The alloc_tty_driver failure is handled gracefully in hvsi_init. But
-tty_register_driver is not. panic is called if that one fails.
+memory node like other node should be node@reg, which is missing in this
+case, so fix it up
 
-So handle the failure of tty_register_driver gracefully too. This will
-keep at least the console functional as it was enabled earlier by
-console_initcall in hvsi_console_init. Instead of shooting down the
-whole system.
+arch/arm64/boot/dts/qcom/ipq8074-hk01.dt.yaml: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 1073741824, 0, 536870912]]}
 
-This means, we disable interrupts and restore hvsi_wait back to
-poll_for_state().
-
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210723074317.32690-3-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20210308060826.3074234-18-vkoul@kernel.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/hvc/hvsi.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/ipq8074-hk01.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/hvc/hvsi.c b/drivers/tty/hvc/hvsi.c
-index a75146f600cb..3e29f5f0d4ca 100644
---- a/drivers/tty/hvc/hvsi.c
-+++ b/drivers/tty/hvc/hvsi.c
-@@ -1051,7 +1051,7 @@ static const struct tty_operations hvsi_ops = {
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
+index 6a838b5d321e..1ab7deeb2497 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
++++ b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
+@@ -27,7 +27,7 @@ chosen {
+ 		stdout-path = "serial0";
+ 	};
  
- static int __init hvsi_init(void)
- {
--	int i;
-+	int i, ret;
- 
- 	hvsi_driver = alloc_tty_driver(hvsi_count);
- 	if (!hvsi_driver)
-@@ -1082,12 +1082,25 @@ static int __init hvsi_init(void)
- 	}
- 	hvsi_wait = wait_for_state; /* irqs active now */
- 
--	if (tty_register_driver(hvsi_driver))
--		panic("Couldn't register hvsi console driver\n");
-+	ret = tty_register_driver(hvsi_driver);
-+	if (ret) {
-+		pr_err("Couldn't register hvsi console driver\n");
-+		goto err_free_irq;
-+	}
- 
- 	printk(KERN_DEBUG "HVSI: registered %i devices\n", hvsi_count);
- 
- 	return 0;
-+err_free_irq:
-+	hvsi_wait = poll_for_state;
-+	for (i = 0; i < hvsi_count; i++) {
-+		struct hvsi_struct *hp = &hvsi_ports[i];
-+
-+		free_irq(hp->virq, hp);
-+	}
-+	tty_driver_kref_put(hvsi_driver);
-+
-+	return ret;
- }
- device_initcall(hvsi_init);
- 
+-	memory {
++	memory@40000000 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x40000000 0x0 0x20000000>;
+ 	};
 -- 
 2.30.2
 
