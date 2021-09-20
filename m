@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CBB411B76
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B24C411A26
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344409AbhITQ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:58:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
+        id S243177AbhITQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245155AbhITQ4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A841613A3;
-        Mon, 20 Sep 2021 16:51:08 +0000 (UTC)
+        id S240439AbhITQrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC8CB61177;
+        Mon, 20 Sep 2021 16:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156669;
-        bh=K5KXSD+jjQeXzcQALgpzdggOZ4F9iGSoMqVje5/6ttU=;
+        s=korg; t=1632156352;
+        bh=BRF+E+tAztRQ7+qYL71XC976u3TfPctkobGaEUP+8kg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yQIJXmsd+3Yi0KmKcFNac8JfMviMJDdhdlww6vmrMuqKwJlOMx/2EYYWKvStOqFuD
-         4chiD2/zzgnLoKjrxYaDjKPwt8ygMyEolsRweKsxg8EQesARJHKOKjKwRN65T5rbKu
-         1L5eHCAYv2NNn6uk6abOxHHz/lOM7DB3oeiaiq7g=
+        b=zk8ajVAeYiq18BppwhxUZyqBgv4mXGKQeT7v+qqdP9zGMxLlLzjmy762bF3oLM+hX
+         29Wx/I4ff3RUeq7Zty9J3tNOR5g6awdNurZY16FRg30g+oGlKUJgIT3A3FOjKcGH6J
+         EyOXIjqMVpX0HfAXV1y1D+YQF0uTgq4U4VApnVP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Esben Haabendal <esben@geanix.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 030/175] net: ll_temac: Remove left-over debug message
-Date:   Mon, 20 Sep 2021 18:41:19 +0200
-Message-Id: <20210920163919.052139534@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Chris Zankel <chris@zankel.net>, linux-xtensa@linux-xtensa.org
+Subject: [PATCH 4.4 002/133] xtensa: fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
+Date:   Mon, 20 Sep 2021 18:41:20 +0200
+Message-Id: <20210920163912.684691018@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Esben Haabendal <esben@geanix.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit ce03b94ba682a67e8233c9ee3066071656ded58f upstream.
+commit ed5aacc81cd41efc4d561e14af408d1003f7b855 upstream.
 
-Fixes: f63963411942 ("net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY")
-Signed-off-by: Esben Haabendal <esben@geanix.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+XTENSA should only select HAVE_FUTEX_CMPXCHG when FUTEX is
+set/enabled. This prevents a kconfig warning.
+
+WARNING: unmet direct dependencies detected for HAVE_FUTEX_CMPXCHG
+  Depends on [n]: FUTEX [=n]
+  Selected by [y]:
+  - XTENSA [=y] && !MMU [=n]
+
+Fixes: d951ba21b959 ("xtensa: nommu: select HAVE_FUTEX_CMPXCHG")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: linux-xtensa@linux-xtensa.org
+Message-Id: <20210526070337.28130-1-rdunlap@infradead.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/xilinx/ll_temac_main.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/xtensa/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-+++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-@@ -735,10 +735,8 @@ temac_start_xmit(struct sk_buff *skb, st
- 	/* Kick off the transfer */
- 	lp->dma_out(lp, TX_TAILDESC_PTR, tail_p); /* DMA start */
- 
--	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1)) {
--		netdev_info(ndev, "%s -> netif_stop_queue\n", __func__);
-+	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1))
- 		netif_stop_queue(ndev);
--	}
- 
- 	return NETDEV_TX_OK;
- }
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -17,7 +17,7 @@ config XTENSA
+ 	select HAVE_DMA_API_DEBUG
+ 	select HAVE_DMA_ATTRS
+ 	select HAVE_FUNCTION_TRACER
+-	select HAVE_FUTEX_CMPXCHG if !MMU
++	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_OPROFILE
+ 	select HAVE_PERF_EVENTS
 
 
