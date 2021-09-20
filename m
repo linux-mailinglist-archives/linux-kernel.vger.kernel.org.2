@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA35A412369
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0974125D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378250AbhITSYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:24:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40990 "EHLO mail.kernel.org"
+        id S1354860AbhITSsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357928AbhITSQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:16:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 816BC61A64;
-        Mon, 20 Sep 2021 17:22:24 +0000 (UTC)
+        id S1383261AbhITSoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84FF56137C;
+        Mon, 20 Sep 2021 17:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158545;
-        bh=EGHgnibzqYya6Ch+ZLle0Aa1249hycTtjyFaBntuLkU=;
+        s=korg; t=1632159153;
+        bh=2aUFvNwSxY7pwqroa4y5YaZd+XWGcKLSJTkujQSxd7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=onNr7RapfUe1nRRSP84/el/o/arf4yE92yvQoZ4XWxS3xktIy0FgIH/sd77e/br9w
-         JmcZJWNLew+HhzfpPfYUaPe40iHIuYHVEMUITeqeFrd1OTI3nZvFKTWKU+fQS0ycYn
-         zhoqBS5iMSNB5ST+Zn/1jGPBhsoIS0SRX0aYV2Zg=
+        b=oQ9St3Uq/XLCZI3iBholyhaDBc94EnMLSv4mdu/NtahiBjnraLWtn4rgTDgkSvIM5
+         AuD7E75/rmlqrOpTSyBrWaJtKfXQYoWUKvLJDgRYQps1iMClxi4fMz7QMccs8YZgrm
+         Pj6uUOIvEikitFcUrKDt5DkB1Vn3281t/FwFwF/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.4 188/260] drm/amdgpu: Fix BUG_ON assert
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 5.14 068/168] dt-bindings: arm: Fix Toradex compatible typo
 Date:   Mon, 20 Sep 2021 18:43:26 +0200
-Message-Id: <20210920163937.508232655@linuxfoundation.org>
+Message-Id: <20210920163923.881012073@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+From: David Heidelberg <david@ixit.cz>
 
-commit ea7acd7c5967542353430947f3faf699e70602e5 upstream.
+commit 55c21d57eafb7b379bb7b3e93baf9ca2695895b0 upstream.
 
-With added CPU domain to placement you can have
-now 3 placemnts at once.
+Fix board compatible typo reported by dtbs_check.
 
-CC: stable@kernel.org
-Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210622162339.761651-5-andrey.grodzovsky@amd.com
+Fixes: f4d1577e9bc6 ("dt-bindings: arm: Convert Tegra board/soc bindings to json-schema")
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210912165120.188490-1-david@ixit.cz
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |    2 +-
+ Documentation/devicetree/bindings/arm/tegra.yaml |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-@@ -200,7 +200,7 @@ void amdgpu_bo_placement_from_domain(str
- 		c++;
- 	}
- 
--	BUG_ON(c >= AMDGPU_BO_MAX_PLACEMENTS);
-+	BUG_ON(c > AMDGPU_BO_MAX_PLACEMENTS);
- 
- 	placement->num_placement = c;
- 	placement->placement = places;
+--- a/Documentation/devicetree/bindings/arm/tegra.yaml
++++ b/Documentation/devicetree/bindings/arm/tegra.yaml
+@@ -54,7 +54,7 @@ properties:
+           - const: toradex,apalis_t30
+           - const: nvidia,tegra30
+       - items:
+-          - const: toradex,apalis_t30-eval-v1.1
++          - const: toradex,apalis_t30-v1.1-eval
+           - const: toradex,apalis_t30-eval
+           - const: toradex,apalis_t30-v1.1
+           - const: toradex,apalis_t30
 
 
