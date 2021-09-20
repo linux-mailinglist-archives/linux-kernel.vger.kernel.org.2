@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBCE411B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C5E411FEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344034AbhITQ5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:57:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
+        id S1348329AbhITRqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245648AbhITQyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:54:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBE0C61381;
-        Mon, 20 Sep 2021 16:50:38 +0000 (UTC)
+        id S1353006AbhITRnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:43:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFBB161B72;
+        Mon, 20 Sep 2021 17:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156639;
-        bh=PZbCtAJmeIrW8WlWhTrHS10/diXLwx0G+VOXzeRS7t8=;
+        s=korg; t=1632157746;
+        bh=GVDe6dytpR8MZgWC71Q+k/v2IWhxvAb5Tj1GIdvifOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pNr0li/zJLScwyUyR5zaNjWtaZOQDAJEIaYgmU/jQu29Qn2/VvY5xRsua4OTqz3vN
-         IreHrriml/u4qW4i9qoAzy0X1XYBUNfPa5sxzAnOfAj6LlnlY8lkG4dz4ZFsutWt+B
-         Fk2Wh9EPOr8uCJV1Br4W2oefDFyNu0w+xZvALTNM=
+        b=Xo8dXNKe6zSASi5faISY/y2QrjScBUsXCzqvDLB9dibMkOkRC5gaI1uMkq60bXkjm
+         bEvqAOat91QKuHc98yd4IGt3dBysDvgdsKQXqWpr1uNhrKDuLZgf7Q0MNq4G5fstG2
+         CuiASYIFwsrZ8VdV0SsfHfusRU78EHvG7X6XaC3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 018/175] USB: serial: mos7720: improve OOM-handling in read_mos_reg()
+        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+Subject: [PATCH 4.19 105/293] netns: protect netns ID lookups with RCU
 Date:   Mon, 20 Sep 2021 18:41:07 +0200
-Message-Id: <20210920163918.665550129@linuxfoundation.org>
+Message-Id: <20210920163936.858871708@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-commit 161a582bd1d8681095f158d11bc679a58f1d026b upstream.
+commit 2dce224f469f060b9998a5a869151ef83c08ce77 upstream.
 
-clang static analysis reports this problem
+__peernet2id() can be protected by RCU as it only calls idr_for_each(),
+which is RCU-safe, and never modifies the nsid table.
 
-mos7720.c:352:2: warning: Undefined or garbage value returned to caller
-        return d;
-        ^~~~~~~~
+rtnl_net_dumpid() can also do lockless lookups. It does two nested
+idr_for_each() calls on nsid tables (one direct call and one indirect
+call because of rtnl_net_dumpid_one() calling __peernet2id()). The
+netnsid tables are never updated. Therefore it is safe to not take the
+nsid_lock and run within an RCU-critical section instead.
 
-In the parport_mos7715_read_data()'s call to read_mos_reg(), 'd' is
-only set after the alloc block.
-
-	buf = kmalloc(1, GFP_KERNEL);
-	if (!buf)
-		return -ENOMEM;
-
-Although the problem is reported in parport_most7715_read_data(),
-none of the callee's of read_mos_reg() check the return status.
-
-Make sure to clear the return-value buffer also on allocation failures.
-
-Fixes: 0d130367abf5 ("USB: serial: mos7720: fix control-message error handling")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/20210111220904.1035957-1-trix@redhat.com
-[ johan: only clear the buffer on errors, amend commit message ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/serial/mos7720.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
 
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -229,8 +229,10 @@ static int read_mos_reg(struct usb_seria
- 	int status;
+---
+ net/core/net_namespace.c |   18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+--- a/net/core/net_namespace.c
++++ b/net/core/net_namespace.c
+@@ -192,9 +192,9 @@ static int net_eq_idr(int id, void *net,
+ 	return 0;
+ }
  
- 	buf = kmalloc(1, GFP_KERNEL);
--	if (!buf)
-+	if (!buf) {
-+		*data = 0;
- 		return -ENOMEM;
-+	}
+-/* Should be called with nsid_lock held. If a new id is assigned, the bool alloc
+- * is set to true, thus the caller knows that the new id must be notified via
+- * rtnl.
++/* Must be called from RCU-critical section or with nsid_lock held. If
++ * a new id is assigned, the bool alloc is set to true, thus the
++ * caller knows that the new id must be notified via rtnl.
+  */
+ static int __peernet2id_alloc(struct net *net, struct net *peer, bool *alloc)
+ {
+@@ -218,7 +218,7 @@ static int __peernet2id_alloc(struct net
+ 	return NETNSA_NSID_NOT_ASSIGNED;
+ }
  
- 	status = usb_control_msg(usbdev, pipe, request, requesttype, value,
- 				     index, buf, 1, MOS_WDR_TIMEOUT);
+-/* should be called with nsid_lock held */
++/* Must be called from RCU-critical section or with nsid_lock held */
+ static int __peernet2id(struct net *net, struct net *peer)
+ {
+ 	bool no = false;
+@@ -261,9 +261,10 @@ int peernet2id(struct net *net, struct n
+ {
+ 	int id;
+ 
+-	spin_lock_bh(&net->nsid_lock);
++	rcu_read_lock();
+ 	id = __peernet2id(net, peer);
+-	spin_unlock_bh(&net->nsid_lock);
++	rcu_read_unlock();
++
+ 	return id;
+ }
+ EXPORT_SYMBOL(peernet2id);
+@@ -837,6 +838,7 @@ struct rtnl_net_dump_cb {
+ 	int s_idx;
+ };
+ 
++/* Runs in RCU-critical section. */
+ static int rtnl_net_dumpid_one(int id, void *peer, void *data)
+ {
+ 	struct rtnl_net_dump_cb *net_cb = (struct rtnl_net_dump_cb *)data;
+@@ -867,9 +869,9 @@ static int rtnl_net_dumpid(struct sk_buf
+ 		.s_idx = cb->args[0],
+ 	};
+ 
+-	spin_lock_bh(&net->nsid_lock);
++	rcu_read_lock();
+ 	idr_for_each(&net->netns_ids, rtnl_net_dumpid_one, &net_cb);
+-	spin_unlock_bh(&net->nsid_lock);
++	rcu_read_unlock();
+ 
+ 	cb->args[0] = net_cb.idx;
+ 	return skb->len;
 
 
