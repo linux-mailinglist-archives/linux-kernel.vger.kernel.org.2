@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D750C411D3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED04411FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347058AbhITRRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:17:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39912 "EHLO mail.kernel.org"
+        id S1353163AbhITRoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344921AbhITRPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:15:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C11BF619EC;
-        Mon, 20 Sep 2021 16:58:37 +0000 (UTC)
+        id S1352754AbhITRlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:41:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE2CE61B53;
+        Mon, 20 Sep 2021 17:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157118;
-        bh=TtSGabbBwDy3ZPc8OlhqDcmCQ3WXeAUztkuM4Zdzyi4=;
+        s=korg; t=1632157720;
+        bh=knsFLViaUGFtHN3cSF3raGsrZP6/CBkZCsXvBMJ+8qA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D/oMhLHP+X37l1OiwtnGE2/aDFEt7GeBARuJ2RImK1pRESVaaw2gDLmVHrLBCjfb1
-         8L72kR5qPHYfwHjns4xVQbFzrSIubeyftd84XqXNrHiOCJSDZa7VwMhNh5GxbtqYKZ
-         m1BLLpbnKjGCvmr/xkJb2l/BLECwKSbEoP7z9ecY=
+        b=qiY/K13Z1kezdKY+rnwcjvz6xHjK14stDea2P4w42FbIvHifc4Fht9YEPFXci3bro
+         yZ5l02hxpvDUyPwkwl5TPatOaqH8iTMKLDc8vrOnU9nSMxzKkD61cjlwgYdeDx1nd5
+         nieQjVaEp4z+8H/Em0W3eoFXnW4n4PuJE7K9Yifc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Koba Ko <koba.ko@canonical.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 061/217] PCI: PM: Enable PME if it can be signaled from D3cold
-Date:   Mon, 20 Sep 2021 18:41:22 +0200
-Message-Id: <20210920163926.695225092@linuxfoundation.org>
+        stable@vger.kernel.org, Niklas Cassel <niklas.cassel@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Aravind Ramesh <aravind.ramesh@wdc.com>,
+        Adam Manzanares <a.manzanares@samsung.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 121/293] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
+Date:   Mon, 20 Sep 2021 18:41:23 +0200
+Message-Id: <20210920163937.406338069@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Niklas Cassel <niklas.cassel@wdc.com>
 
-[ Upstream commit 0e00392a895c95c6d12d42158236c8862a2f43f2 ]
+commit 4d643b66089591b4769bcdb6fd1bfeff2fe301b8 upstream.
 
-PME signaling is only enabled by __pci_enable_wake() if the target
-device can signal PME from the given target power state (to avoid
-pointless reconfiguration of the device), but if the hierarchy above
-the device goes into D3cold, the device itself will end up in D3cold
-too, so if it can signal PME from D3cold, it should be enabled to
-do so in __pci_enable_wake().
+A user space process should not need the CAP_SYS_ADMIN capability set
+in order to perform a BLKREPORTZONE ioctl.
 
-[Note that if the device does not end up in D3cold and it cannot
- signal PME from the original target power state, it will not signal
- PME, so in that case the behavior does not change.]
+Getting the zone report is required in order to get the write pointer.
+Neither read() nor write() requires CAP_SYS_ADMIN, so it is reasonable
+that a user space process that can read/write from/to the device, also
+can get the write pointer. (Since e.g. writes have to be at the write
+pointer.)
 
-Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
-Fixes: 5bcc2fb4e815 ("PCI PM: Simplify PCI wake-up code")
-Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Reported-by: Koba Ko <koba.ko@canonical.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
+Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Aravind Ramesh <aravind.ramesh@wdc.com>
+Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: stable@vger.kernel.org # v4.10+
+Link: https://lore.kernel.org/r/20210811110505.29649-3-Niklas.Cassel@wdc.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pci.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ block/blk-zoned.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index ac2c9d0c02fe..1c5c0937c5da 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1950,7 +1950,14 @@ static int __pci_enable_wake(struct pci_dev *dev, pci_power_t state, bool enable
- 	if (enable) {
- 		int error;
+--- a/block/blk-zoned.c
++++ b/block/blk-zoned.c
+@@ -319,9 +319,6 @@ int blkdev_report_zones_ioctl(struct blo
+ 	if (!blk_queue_is_zoned(q))
+ 		return -ENOTTY;
  
--		if (pci_pme_capable(dev, state))
-+		/*
-+		 * Enable PME signaling if the device can signal PME from
-+		 * D3cold regardless of whether or not it can signal PME from
-+		 * the current target state, because that will allow it to
-+		 * signal PME when the hierarchy above it goes into D3cold and
-+		 * the device itself ends up in D3cold as a result of that.
-+		 */
-+		if (pci_pme_capable(dev, state) || pci_pme_capable(dev, PCI_D3cold))
- 			pci_pme_active(dev, true);
- 		else
- 			ret = 1;
--- 
-2.30.2
-
+-	if (!capable(CAP_SYS_ADMIN))
+-		return -EACCES;
+-
+ 	if (copy_from_user(&rep, argp, sizeof(struct blk_zone_report)))
+ 		return -EFAULT;
+ 
 
 
