@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278AA411C51
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110E3411AEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243988AbhITRH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:07:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58540 "EHLO mail.kernel.org"
+        id S244808AbhITQxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:53:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245545AbhITRFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:05:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9460A61528;
-        Mon, 20 Sep 2021 16:54:51 +0000 (UTC)
+        id S244458AbhITQuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63DAB60F6E;
+        Mon, 20 Sep 2021 16:48:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156892;
-        bh=7rPPy9jsMIK4OkpCSNlE5O184vhskXR45nYeIa/uT1c=;
+        s=korg; t=1632156534;
+        bh=t2DnsPgOihfcUtjeeX67dy+A84XuD9Hq03BYlV5z3uA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LsobG8z7PBkB0ZSpKg0GqZpH4WqfN10BudD93vmDlQ5w8kfcYX5YpAD1oiy80K3Iy
-         JdhDN5wYpDjp33sPcMARWTun8nmrx5QDbzXOC07VbIAxyZ19WNwNf6/kNsujUeWgjT
-         4Gui7Vjzu425LyW6m0KtCB9OaUhFp3/eLpTqqjqk=
+        b=IlIEBGs56qVesHbDQh814vjYdZTd/0LoxmHoAR+mFsBy/9mzdWKFH5cIUBp/c4iyy
+         /7nOkyy1h/vb6tDM6HEEb6h7+Qg8m5UA8RrVzJgb13qZ+hcxrCF0CXTxIC4AcUcOZg
+         9tbbzuCxVu3bM0HoCUb9S9nGnJs29ZNDTWgzXNVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Jordy Zomer <jordy@pwning.systems>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 133/175] net: ethernet: stmmac: Do not use unreachable() in ipq806x_gmac_probe()
+Subject: [PATCH 4.4 104/133] serial: 8250_pci: make setup_port() parameters explicitly unsigned
 Date:   Mon, 20 Sep 2021 18:43:02 +0200
-Message-Id: <20210920163922.427951735@linuxfoundation.org>
+Message-Id: <20210920163916.032531017@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,85 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 4367355dd90942a71641c98c40c74589c9bddf90 ]
+[ Upstream commit 3a96e97ab4e835078e6f27b7e1c0947814df3841 ]
 
-When compiling with clang in certain configurations, an objtool warning
-appears:
+The bar and offset parameters to setup_port() are used in pointer math,
+and while it would be very difficult to get them to wrap as a negative
+number, just be "safe" and make them unsigned so that static checkers do
+not trip over them unintentionally.
 
-drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.o: warning: objtool:
-ipq806x_gmac_probe() falls through to next function phy_modes()
-
-This happens because the unreachable annotation in the third switch
-statement is not eliminated. The compiler should know that the first
-default case would prevent the second and third from being reached as
-the comment notes but sanitizer options can make it harder for the
-compiler to reason this out.
-
-Help the compiler out by eliminating the unreachable() annotation and
-unifying the default case error handling so that there is no objtool
-warning, the meaning of the code stays the same, and there is less
-duplication.
-
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Reported-by: Jordy Zomer <jordy@pwning.systems>
+Link: https://lore.kernel.org/r/20210726130717.2052096-1-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/stmicro/stmmac/dwmac-ipq806x.c    | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index f4ff43a1b5ba..d8c40b68bc96 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -300,10 +300,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 		val &= ~NSS_COMMON_GMAC_CTL_PHY_IFACE_SEL;
- 		break;
- 	default:
--		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
--			phy_modes(gmac->phy_mode));
--		err = -EINVAL;
--		goto err_remove_config_dt;
-+		goto err_unsupported_phy;
- 	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_GMAC_CTL(gmac->id), val);
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 72f6cde146b5..db66e533319e 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -78,7 +78,7 @@ static void moan_device(const char *str, struct pci_dev *dev)
  
-@@ -320,10 +317,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 			NSS_COMMON_CLK_SRC_CTRL_OFFSET(gmac->id);
- 		break;
- 	default:
--		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
--			phy_modes(gmac->phy_mode));
--		err = -EINVAL;
--		goto err_remove_config_dt;
-+		goto err_unsupported_phy;
- 	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_SRC_CTRL, val);
- 
-@@ -340,8 +334,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
- 		break;
- 	default:
--		/* We don't get here; the switch above will have errored out */
--		unreachable();
-+		goto err_unsupported_phy;
- 	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
- 
-@@ -372,6 +365,11 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+err_unsupported_phy:
-+	dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
-+		phy_modes(gmac->phy_mode));
-+	err = -EINVAL;
-+
- err_remove_config_dt:
- 	stmmac_remove_config_dt(pdev, plat_dat);
+ static int
+ setup_port(struct serial_private *priv, struct uart_8250_port *port,
+-	   int bar, int offset, int regshift)
++	   u8 bar, unsigned int offset, int regshift)
+ {
+ 	struct pci_dev *dev = priv->dev;
  
 -- 
 2.30.2
