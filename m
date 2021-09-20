@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0490341219D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6A241217B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358504AbhITSGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58224 "EHLO mail.kernel.org"
+        id S1356234AbhITSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356565AbhITSAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53C34613AC;
-        Mon, 20 Sep 2021 17:15:47 +0000 (UTC)
+        id S1350717AbhITSAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:00:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7935163220;
+        Mon, 20 Sep 2021 17:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158147;
-        bh=HpVp3S4HOO5gKSY+KXYdh8KxFkfU7BKtfyGASknGA+A=;
+        s=korg; t=1632158149;
+        bh=JFIwOmiBvrlHVlUc/agg+VHNpbDgXFBJyCKiIIAbcSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0w1HWksjE/Fmi63FQ1DgfQUQI43sB6hje1CS9LZ+XI48cDbIC5IQ4trVU1dqAdtbX
-         i0iXFTm1t2OB+7sVPIP5yTQLgacZkjmuKTvUIpcR4cdGvZ2u3pBrVmHg1GMz4CbFP/
-         c+s2NLunjHyAMSbl+dtac3jh3hP9d3Qtwx42obUA=
+        b=suFytTPzc8vgr2RJGXjLsM4HXrfCyqrQRwNA45GNzUr64BK2Z+FAPMUO00EWvfL8c
+         S3ffX6YGtQ0o35azeIOUuXFrqkS/qffjHCb6fspHn1/yJrw+HICnSOOOBUOjilv94a
+         0ncuDzj2FTIBmj5mY6uJjov7gxV1PB56pMJjyeRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 023/260] media: uvc: dont do DMA on stack
-Date:   Mon, 20 Sep 2021 18:40:41 +0200
-Message-Id: <20210920163931.919227389@linuxfoundation.org>
+Subject: [PATCH 5.4 024/260] media: rc-loopback: return number of emitters rather than error
+Date:   Mon, 20 Sep 2021 18:40:42 +0200
+Message-Id: <20210920163931.951402426@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -40,96 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Sean Young <sean@mess.org>
 
-commit 1a10d7fdb6d0e235e9d230916244cc2769d3f170 upstream.
+commit 6b7f554be8c92319d7e6df92fd247ebb9beb4a45 upstream.
 
-As warned by smatch:
-	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
-	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
+The LIRC_SET_TRANSMITTER_MASK ioctl should return the number of emitters
+if an invalid list was set.
 
-those two functions call uvc_query_ctrl passing a pointer to
-a data at the DMA stack. those are used to send URBs via
-usb_control_msg(). Using DMA stack is not supported and should
-not work anymore on modern Linux versions.
-
-So, use a kmalloc'ed buffer.
-
-Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c |   34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ drivers/media/rc/rc-loopback.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -894,8 +894,8 @@ static int uvc_ioctl_g_input(struct file
- {
- 	struct uvc_fh *handle = fh;
- 	struct uvc_video_chain *chain = handle->chain;
-+	u8 *buf;
- 	int ret;
--	u8 i;
+--- a/drivers/media/rc/rc-loopback.c
++++ b/drivers/media/rc/rc-loopback.c
+@@ -42,7 +42,7 @@ static int loop_set_tx_mask(struct rc_de
  
- 	if (chain->selector == NULL ||
- 	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
-@@ -903,22 +903,27 @@ static int uvc_ioctl_g_input(struct file
- 		return 0;
+ 	if ((mask & (RXMASK_REGULAR | RXMASK_LEARNING)) != mask) {
+ 		dprintk("invalid tx mask: %u\n", mask);
+-		return -EINVAL;
++		return 2;
  	}
  
-+	buf = kmalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
- 	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
- 			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
--			     &i, 1);
--	if (ret < 0)
--		return ret;
-+			     buf, 1);
-+	if (!ret)
-+		*input = *buf - 1;
- 
--	*input = i - 1;
--	return 0;
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
- {
- 	struct uvc_fh *handle = fh;
- 	struct uvc_video_chain *chain = handle->chain;
-+	u8 *buf;
- 	int ret;
--	u32 i;
- 
- 	ret = uvc_acquire_privileges(handle);
- 	if (ret < 0)
-@@ -934,10 +939,17 @@ static int uvc_ioctl_s_input(struct file
- 	if (input >= chain->selector->bNrInPins)
- 		return -EINVAL;
- 
--	i = input + 1;
--	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
--			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
--			      &i, 1);
-+	buf = kmalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	*buf = input + 1;
-+	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
-+			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
-+			     buf, 1);
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int uvc_ioctl_queryctrl(struct file *file, void *fh,
+ 	dprintk("setting tx mask: %u\n", mask);
 
 
