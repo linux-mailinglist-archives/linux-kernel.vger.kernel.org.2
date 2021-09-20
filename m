@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E2D411CA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDA8411E44
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346852AbhITRLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:11:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58796 "EHLO mail.kernel.org"
+        id S1345701AbhITR2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:28:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346900AbhITRJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:09:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6588D6187D;
-        Mon, 20 Sep 2021 16:56:20 +0000 (UTC)
+        id S245405AbhITR0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:26:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA87B61ACD;
+        Mon, 20 Sep 2021 17:02:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156980;
-        bh=Glq6Gzw1sbpK499PuOXT0KvtqLdtmo5/ThyFSrBMhE4=;
+        s=korg; t=1632157359;
+        bh=dhMsRfuZVwhSZ56t3qLAGsartIx3boKk4d89WZH9zXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qA2PmD65Bd5e6Z08UQYrZr0EU95FpoVmFcse8fsmFQiXqBpvQvFgCkitOKb3emr7B
-         gmncgdh0UzK42O3Zv3zUuaLek8uHlHWCfnfsY8dO2eN9ix/ldm72ixwbOgIAZZAbGn
-         bXH1DQjuf3y4ppgSEJ0druOq7FQihKPEfMM/Fby0=
+        b=oByI0EzsZ5QiHChOt/bsM1HczmIkDgowpAQmABqbIrjPb4cZJgRMAhS4jezEqt1k2
+         AZVnXz+NF1dvV0RNmUR+jvVra5PGIOsp5ppueFxtaMSckscRV6d/Iiiy2uYNNgZfNv
+         VfwiBXvolVMjfIuID3UyYn7eIWhgikFGY/poVaKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 143/175] parport: remove non-zero check on count
+Subject: [PATCH 4.14 171/217] selftests/bpf: Enlarge select() timeout for test_maps
 Date:   Mon, 20 Sep 2021 18:43:12 +0200
-Message-Id: <20210920163922.749848261@linuxfoundation.org>
+Message-Id: <20210920163930.425599463@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-[ Upstream commit 0be883a0d795d9146f5325de582584147dd0dcdc ]
+[ Upstream commit 2d82d73da35b72b53fe0d96350a2b8d929d07e42 ]
 
-The check for count appears to be incorrect since a non-zero count
-check occurs a couple of statements earlier. Currently the check is
-always false and the dev->port->irq != PARPORT_IRQ_NONE part of the
-check is never tested and the if statement is dead-code. Fix this
-by removing the check on count.
+0Day robot observed that it's easily timeout on a heavy load host.
+-------------------
+ # selftests: bpf: test_maps
+ # Fork 1024 tasks to 'test_update_delete'
+ # Fork 1024 tasks to 'test_update_delete'
+ # Fork 100 tasks to 'test_hashmap'
+ # Fork 100 tasks to 'test_hashmap_percpu'
+ # Fork 100 tasks to 'test_hashmap_sizes'
+ # Fork 100 tasks to 'test_hashmap_walk'
+ # Fork 100 tasks to 'test_arraymap'
+ # Fork 100 tasks to 'test_arraymap_percpu'
+ # Failed sockmap unexpected timeout
+ not ok 3 selftests: bpf: test_maps # exit=1
+ # selftests: bpf: test_lru_map
+ # nr_cpus:8
+-------------------
+Since this test will be scheduled by 0Day to a random host that could have
+only a few cpus(2-8), enlarge the timeout to avoid a false NG report.
 
-Note that this code is pre-git history, so I can't find a sha for
-it.
+In practice, i tried to pin it to only one cpu by 'taskset 0x01 ./test_maps',
+and knew 10S is likely enough, but i still perfer to a larger value 30.
 
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Logically dead code")
-Link: https://lore.kernel.org/r/20210730100710.27405-1-colin.king@canonical.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20210820015556.23276-2-lizhijian@cn.fujitsu.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parport/ieee1284_ops.c | 2 +-
+ tools/testing/selftests/bpf/test_maps.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
-index 2e21af43d91e..b6d808037045 100644
---- a/drivers/parport/ieee1284_ops.c
-+++ b/drivers/parport/ieee1284_ops.c
-@@ -534,7 +534,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
- 				goto out;
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 96c6238a4a1f..3f503ad37a2b 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -730,7 +730,7 @@ static void test_sockmap(int tasks, void *data)
  
- 			/* Yield the port for a while. */
--			if (count && dev->port->irq != PARPORT_IRQ_NONE) {
-+			if (dev->port->irq != PARPORT_IRQ_NONE) {
- 				parport_release (dev);
- 				schedule_timeout_interruptible(msecs_to_jiffies(40));
- 				parport_claim_or_block (dev);
+ 		FD_ZERO(&w);
+ 		FD_SET(sfd[3], &w);
+-		to.tv_sec = 1;
++		to.tv_sec = 30;
+ 		to.tv_usec = 0;
+ 		s = select(sfd[3] + 1, &w, NULL, NULL, &to);
+ 		if (s == -1) {
 -- 
 2.30.2
 
