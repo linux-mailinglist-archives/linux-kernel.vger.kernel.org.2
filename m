@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4AE412183
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E6E412185
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358312AbhITSGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
+        id S1358372AbhITSGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350727AbhITSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:00:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3DE263227;
-        Mon, 20 Sep 2021 17:15:53 +0000 (UTC)
+        id S1356663AbhITSA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:00:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 072BE63225;
+        Mon, 20 Sep 2021 17:15:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158154;
-        bh=nZa1LrpL0x/o1GYvWiwkzvbZzI6NCmZVHmx29e7yE/c=;
+        s=korg; t=1632158156;
+        bh=NZBw4Ex3/5MqZZMX7Wn6xPNs+ml3TBrMxKqbfYqvCaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qlgcKDyQM2pH/MgShaJEqBfMnOn+9l+0LOamj2ZcJeB8U3GYItOPVTe6mR0jsvNKb
-         KvrEutDniIyBjp6CgHKfQrEAESCGfAfMOud6QTPL+EK4A5McmyP96guL/YgIG4hUCH
-         mB9GSS7kwuYDejQ5jktNyEP6hIfjIl4XmR+pCu68=
+        b=AfKeYbFn90mUo24xnV/udR+txDNisruU9+6k1hHS/xT8UDgZlg69XEvDYqkBpWPKa
+         zLZSK45KM19jqGVWWP//xtYHmLUBPcstU1mO/ALmsY8cPSKLekGBAcoTBUyHbptOGJ
+         7S3pASNjgsyq6PFWpQ0+caQSwBsHG1kWRBsaICBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Richard Leitner <richard.leitner@skidata.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.4 026/260] dmaengine: imx-sdma: remove duplicated sdma_load_context
-Date:   Mon, 20 Sep 2021 18:40:44 +0200
-Message-Id: <20210920163932.014958342@linuxfoundation.org>
+        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 027/260] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
+Date:   Mon, 20 Sep 2021 18:40:45 +0200
+Message-Id: <20210920163932.048375849@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -41,44 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Gong <yibin.gong@nxp.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit e555a03b112838883fdd8185d613c35d043732f2 upstream.
+commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
 
-Since sdma_transfer_init() will do sdma_load_context before any
-sdma transfer, no need once more in sdma_config_channel().
+Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
+covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
+and "Samsung SSD 850*" series based on information from Samsung.
 
-Fixes: ad0d92d7ba6a ("dmaengine: imx-sdma: refine to load context only once")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
-Tested-by: Richard Leitner <richard.leitner@skidata.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+But there is a large number of users which is still reporting issues
+with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
+Marvell SATA controllers and all reporters also report these problems
+going away when disabling queued trims.
+
+Note that with AMD SATA controllers users are reporting even worse
+issues and only completely disabling NCQ helps there, this will be
+addressed in a separate patch.
+
+Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
+Cc: stable@vger.kernel.org
+Cc: Kate Hsuan <hpa@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/imx-sdma.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/ata/libata-core.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -1134,7 +1134,6 @@ static void sdma_set_watermarklevel_for_
- static int sdma_config_channel(struct dma_chan *chan)
- {
- 	struct sdma_channel *sdmac = to_sdma_chan(chan);
--	int ret;
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -4556,6 +4556,10 @@ static const struct ata_blacklist_entry
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
  
- 	sdma_disable_channel(chan);
- 
-@@ -1174,9 +1173,7 @@ static int sdma_config_channel(struct dm
- 		sdmac->watermark_level = 0; /* FIXME: M3_BASE_ADDRESS */
- 	}
- 
--	ret = sdma_load_context(sdmac);
--
--	return ret;
-+	return 0;
- }
- 
- static int sdma_set_channel_priority(struct sdma_channel *sdmac,
 
 
