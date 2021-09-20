@@ -2,218 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635D8412A9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D9E412A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbhIUBol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        id S234473AbhIUBoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbhIUBkg (ORCPT
+        with ESMTP id S232930AbhIUBkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:40:36 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1DDC0604DD
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:44:47 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 45AA183651;
-        Tue, 21 Sep 2021 08:44:43 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1632170683;
-        bh=5Dpx2kyLtsztDA5WSZjmj6Onx7HoL/rUbWRMnRjR2r8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=DQ7bWwFyztEbSiEADX/fa93IDL+bcVRC9Txh1QN8afVAXojA6PWeltZbMCncrP6ih
-         ARFqALGJe60XmK2obiGJpNhCtKchYK5VOIwehj6Aubewn+tne1aao2lEdphb5HpXNy
-         3zKXLssiYpfiCyOoRVHUshBl02toBn4yaFPrcnrxp/2SP7vyTEIQ/p3zdJRBRH/cH4
-         j8BBKTF9cJsY+sIB6xklOdu4RCMcftMjBT7FQeIVn0ysktKqrwhibuejzL9tBm7iiw
-         bbW4J8fyH+md0jXhoIrrSV2NwTUfgoaO5XpvaeWG6jJRta1QOBkeEGAXobTJdJrC5m
-         rPAKvxhJ2Hwcg==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6148f2ba0002>; Tue, 21 Sep 2021 08:44:42 +1200
-Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
-        by pat.atlnz.lc (Postfix) with ESMTP id E240D13EEA7;
-        Tue, 21 Sep 2021 08:44:42 +1200 (NZST)
-Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
-        id DE640242827; Tue, 21 Sep 2021 08:44:42 +1200 (NZST)
-From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
-Cc:     linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: [PATCH net v6 2/2] net: netfilter: Fix port selection of FTP for NF_NAT_RANGE_PROTO_SPECIFIED
-Date:   Tue, 21 Sep 2021 08:44:39 +1200
-Message-Id: <20210920204439.13179-3-Cole.Dishington@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920204439.13179-1-Cole.Dishington@alliedtelesis.co.nz>
-References: <20210920204439.13179-1-Cole.Dishington@alliedtelesis.co.nz>
+        Mon, 20 Sep 2021 21:40:43 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B33C06EA8D
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:46:20 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id h20so20199235ilj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Na4bI2RIoAWJG++IZgxN0vC+TC/18LddBM+x8YPaYaE=;
+        b=wfHm0PS6hmpGOVVTgGEUsVEjRm8PiEraDhP3gsrJQDDsx6W05DX7o7dYOEp2Yq2iY4
+         V3w8YKxLGRsmZc0FB7WWmCjj1GsBlnKGF5l8hkkZgZ2rs26N3aEFENzE1QuF1H7btNPe
+         bCV4xPr7WdAbthGGY7k+ZUr+4b8KUtaIyW7feQTSHVmqQ9Jl73MALs/iA3wYEMaCACPd
+         m7Bh1A4N8aGgjh9oGdVbYhaI1WM3+DXCMzM4KgPM1bsUYUfhdhJ7UuK9Amt3/Ki7m0GB
+         QitSFUKMmKXAwBEUv/SjYQya9bNARsn74UYaTVKjIO6V93edqfNyRs2P7DhpQH5nRaje
+         hwgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Na4bI2RIoAWJG++IZgxN0vC+TC/18LddBM+x8YPaYaE=;
+        b=FxRLPNUnpVHHeo8uIuh76gStA/R5O7T2gWKDHxkvZ19yc6TDDILZx5bjOREjI/Ws+5
+         wI/8VbmM9WzOk/YGGKkIAslAsre+tHR0LIZ1v1E7KCwA2GUhjcgpebEAS9ZUI+nyaaN0
+         7wQ7k7Lwe8AiIBAvtUPFcy09kYMGwplfYWq17tH1O/PbbocvXfQUc7k2Z+V5MXYO5zvL
+         0FkQZI6Hi2L4nOiHgfUVVw7Nq8MVYB4OSrxgUC4NhUPGKeltCTZBzBuaH+NxeGmap2Z+
+         cPXtWe9CErvBMj3RAf45bOF8gvAYFuOmow1GN1jXOn6gIhEpog22uduriUMic0LVpCF2
+         JoaA==
+X-Gm-Message-State: AOAM5302jMKOl4ZLsm0kwPRGRTB4H8QaVp49GvjlkEcJtzeONAvJjt7c
+        kRTcOM5I7TgWVpk8YIJq8yy4L0cZiVCgMJEN0ETtRw==
+X-Google-Smtp-Source: ABdhPJzuC7qd+6LCeZTIOuuvehAPjDL8aSaBRqXjWA5WrOFBNf+Dd+Cz8sNU6WQPKhdm7LvZ088eqmzOye0I2ubwaQA=
+X-Received: by 2002:a05:6e02:1be8:: with SMTP id y8mr10312578ilv.109.1632170779498;
+ Mon, 20 Sep 2021 13:46:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=FtN7AFjq c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=7QKq2e-ADPsA:10 a=xOT0nC9th1TpZTiSAT0A:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 21 Sep 2021 02:15:43 +0530
+Message-ID: <CAMi1Hd3k2snB4-=M57pVrMVom=a9_2a0DTFk-+Hzpubwk-Pr9Q@mail.gmail.com>
+Subject: dwc3-qcom: tx-fifo-resize regression on Poco F1 (sdm845) with v5.15-rc1
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-usb@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FTP port selection ignores specified port ranges (with iptables
-masquerade --to-ports) when creating an expectation, based on
-FTP commands PORT or PASV, for the data connection.
+Hi Wesley, All,
 
-For masquerading, this issue allows an FTP client to use unassigned
-source ports for their data connection (in both the PORT and PASV
-cases). This can cause problems in setups that allocate different
-masquerade port ranges for each client.
+I see a reboot loop on Xiaomi Pocophone F1 (sdm845) with TX FIFO
+resize patches which landed in v5.15-rc1. Upstream commit cefdd52fa045
+"usb: dwc3: dwc3-qcom: Enable tx-fifo-resize property by default" to
+be specific, which switched on this feature by default.
 
-The proposed fix involves storing a port range (on nf_conn_nat) to:
-- Fix FTP PORT data connections using the stored port range to select a
-  port number in nf_conntrack_ftp.
-- Fix FTP PASV data connections using the stored port range to specify a
-  port range on source port in nf_nat_helper if the FTP PORT/PASV packet
-  comes from the client.
+At times the phone crashes into the fastboot mode after the reboot
+loop, but mostly end up booting to UI after a while. This is what it
+looks like https://people.linaro.org/~amit.pundir/beryllium-userdebug/PXL_20210920_162749483.mp4.
 
-Co-developed-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-Signed-off-by: Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>
-Co-developed-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-Signed-off-by: Scott Parlane <scott.parlane@alliedtelesis.co.nz>
-Co-developed-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
-Signed-off-by: Blair Steven <blair.steven@alliedtelesis.co.nz>
-Signed-off-by: Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Acked-by: Florian Westphal <fw@strlen.de>
----
+PocoF1 does support TX fifo resizing as I can see that in the
+downstream dts. So maybe it is the tx-fifo-max-num which need to be
+adjusted for the device? I couldn't find the tx-fifo-max-num
+equivalent in the downstream tree though
+https://github.com/MiCode/Xiaomi_Kernel_OpenSource/tree/dipper-q-oss/
 
-Notes:
-	Thanks for your time reviewing!
+Curious if you had any ideas what might be going wrong? For now I'll
+keep digging around tx-fifo-max-num, but I figured I'd ask just in
+case it's obvious to you.
 
-	Changes:
-	- Add Acked-by: Florian Westphal <fw@strlen.de>
-
- include/net/netfilter/nf_nat.h |  6 ++++++
- net/netfilter/nf_nat_core.c    |  9 +++++++++
- net/netfilter/nf_nat_ftp.c     | 22 +++++++++++++++++++---
- net/netfilter/nf_nat_helper.c  | 10 ++++++++++
- 4 files changed, 44 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_na=
-t.h
-index 0d412dd63707..231cffc16722 100644
---- a/include/net/netfilter/nf_nat.h
-+++ b/include/net/netfilter/nf_nat.h
-@@ -27,12 +27,18 @@ union nf_conntrack_nat_help {
- #endif
- };
-=20
-+struct nf_conn_nat_range_info {
-+	union nf_conntrack_man_proto    min_proto;
-+	union nf_conntrack_man_proto    max_proto;
-+};
-+
- /* The structure embedded in the conntrack structure. */
- struct nf_conn_nat {
- 	union nf_conntrack_nat_help help;
- #if IS_ENABLED(CONFIG_NF_NAT_MASQUERADE)
- 	int masq_index;
- #endif
-+	struct nf_conn_nat_range_info range_info;
- };
-=20
- /* Set up the info structure to map into this range. */
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index b7c3c902290f..2acec7fd56bd 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -623,6 +623,15 @@ nf_nat_setup_info(struct nf_conn *ct,
- 			   &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
-=20
- 	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
-+	if (range && (range->flags & NF_NAT_RANGE_PROTO_SPECIFIED)) {
-+		struct nf_conn_nat *nat =3D nf_ct_nat_ext_add(ct);
-+
-+		if (!nat)
-+			return NF_DROP;
-+
-+		nat->range_info.min_proto =3D range->min_proto;
-+		nat->range_info.max_proto =3D range->max_proto;
-+	}
-=20
- 	if (!nf_ct_tuple_equal(&new_tuple, &curr_tuple)) {
- 		struct nf_conntrack_tuple reply;
-diff --git a/net/netfilter/nf_nat_ftp.c b/net/netfilter/nf_nat_ftp.c
-index 2da29e5d4309..7af1519d7a89 100644
---- a/net/netfilter/nf_nat_ftp.c
-+++ b/net/netfilter/nf_nat_ftp.c
-@@ -72,12 +72,16 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
- 	u_int16_t port;
- 	int dir =3D CTINFO2DIR(ctinfo);
- 	struct nf_conn *ct =3D exp->master;
-+	struct nf_conn_nat *nat =3D nfct_nat(ct);
- 	unsigned int i, min, max, range_size;
- 	static const unsigned int max_attempts =3D 128;
- 	char buffer[sizeof("|1||65535|") + INET6_ADDRSTRLEN];
- 	unsigned int buflen;
- 	int ret;
-=20
-+	if (WARN_ON_ONCE(!nat))
-+		return NF_DROP;
-+
- 	pr_debug("type %i, off %u len %u\n", type, matchoff, matchlen);
-=20
- 	/* Connection will come from wherever this packet goes, hence !dir */
-@@ -89,11 +93,23 @@ static unsigned int nf_nat_ftp(struct sk_buff *skb,
- 	 * this one. */
- 	exp->expectfn =3D nf_nat_follow_master;
-=20
--	min =3D ntohs(exp->saved_proto.tcp.port);
--	max =3D 65535;
-+	/* Avoid applying nat->range to the reply direction */
-+	if (!exp->dir || !nat->range_info.min_proto.all || !nat->range_info.max=
-_proto.all) {
-+		min =3D ntohs(exp->saved_proto.tcp.port);
-+		max =3D 65535;
-+	} else {
-+		min =3D ntohs(nat->range_info.min_proto.all);
-+		max =3D ntohs(nat->range_info.max_proto.all);
-+		if (unlikely(max < min))
-+			swap(max, min);
-+	}
-=20
- 	/* Try to get same port */
--	ret =3D nf_ct_expect_related(exp, 0);
-+	ret =3D -1;
-+	port =3D ntohs(exp->saved_proto.tcp.port);
-+	if (min < port && port < max) {
-+		ret =3D nf_ct_expect_related(exp, 0);
-+	}
-=20
- 	/* if same port is not in range or available, try to change it. */
- 	if (ret !=3D 0) {
-diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.=
-c
-index a263505455fc..718fc423bc44 100644
---- a/net/netfilter/nf_nat_helper.c
-+++ b/net/netfilter/nf_nat_helper.c
-@@ -188,6 +188,16 @@ void nf_nat_follow_master(struct nf_conn *ct,
- 	range.flags =3D NF_NAT_RANGE_MAP_IPS;
- 	range.min_addr =3D range.max_addr
- 		=3D ct->master->tuplehash[!exp->dir].tuple.dst.u3;
-+	if (!exp->dir) {
-+		struct nf_conn_nat *nat =3D nfct_nat(exp->master);
-+
-+		if (nat && nat->range_info.min_proto.all &&
-+		    nat->range_info.max_proto.all) {
-+			range.min_proto =3D nat->range_info.min_proto;
-+			range.max_proto =3D nat->range_info.max_proto;
-+			range.flags |=3D NF_NAT_RANGE_PROTO_SPECIFIED;
-+		}
-+	}
- 	nf_nat_setup_info(ct, &range, NF_NAT_MANIP_SRC);
-=20
- 	/* For DST manip, map port here to where it's expected. */
---=20
-2.33.0
-
+Regards,
+Amit Pundir
