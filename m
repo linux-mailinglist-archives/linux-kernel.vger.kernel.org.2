@@ -2,166 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED85411275
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626DD41127C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234406AbhITKBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:01:52 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:53891 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbhITKBu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:01:50 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 829542000B;
-        Mon, 20 Sep 2021 10:00:19 +0000 (UTC)
-Date:   Mon, 20 Sep 2021 12:00:19 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        andrew@lunn.ch, linux@armlinux.org.uk, f.fainelli@gmail.com,
-        vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 02/12] net: phy: mchp: Add support for
- LAN8804 PHY
-Message-ID: <YUhbs4P9jHKBYpYK@piout.net>
-References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
- <20210920095218.1108151-3-horatiu.vultur@microchip.com>
+        id S234261AbhITKDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229724AbhITKDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 06:03:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C2260240;
+        Mon, 20 Sep 2021 10:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632132096;
+        bh=4gD2TQrQ9ZQPtwTDSOABdc4IqZHTrav1yleSQy9Mgsg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OlPgtVP0ASanA3SKCfhRBq5E40+FCybrysC/24NG3R047YblWuao+S4eIPN4P9GnM
+         otbP72YvfPrmvSKSTEhDpObFdm3hz8SP2mQBaZ52ZDsT+xkwD0CbvF60eueSY71SJp
+         HdBFgM926vdsfrBjvC3MKGZCSdVcGhBtmlwphfnKya1m34IqohiZlAWwwWP//ycKzR
+         P+VeQjD7FL/KSdVvRPcqqfzxQ2G3pSt/y7xe3NhlMckwtvclJBN567WSEzwEZEWOR9
+         0dFaen5gDyESmYzGtXt7sTpWkKdDumTRyLBkhXERQiK0o7pdcsGMcETyU+oC3V3c5C
+         JOsn4NYsjwFRw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     SeongJae Park <sjpark@amazon.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/damon: fix stringop-overread warning in kunit test
+Date:   Mon, 20 Sep 2021 12:01:23 +0200
+Message-Id: <20210920100132.1390409-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920095218.1108151-3-horatiu.vultur@microchip.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 20/09/2021 11:52:08+0200, Horatiu Vultur wrote:
-> The LAN8804 SKY has same features as that of LAN8804 SKY except that it
+gcc-11 points out that strnlen() with a fixed length on a constant
+input makes no sense:
 
-On of those part name should be different ;)
+In file included from mm/damon/dbgfs.c:623:
+mm/damon/dbgfs-test.h: In function 'damon_dbgfs_test_str_to_target_ids':
+mm/damon/dbgfs-test.h:23:47: error: 'strnlen' specified bound 128 exceeds source size 4 [-Werror=stringop-overread]
+   23 |         answers = str_to_target_ids(question, strnlen(question, 128),
+      |                                               ^~~~~~~~~~~~~~~~~~~~~~
+mm/damon/dbgfs-test.h:30:47: error: 'strnlen' specified bound 128 exceeds source size 7 [-Werror=stringop-overread]
+   30 |         answers = str_to_target_ids(question, strnlen(question, 128),
+      |                                               ^~~~~~~~~~~~~~~~~~~~~~
+mm/damon/dbgfs-test.h:37:47: error: 'strnlen' specified bound 128 exceeds source size 5 [-Werror=stringop-overread]
+   37 |         answers = str_to_target_ids(question, strnlen(question, 128),
+      |                                               ^~~~~~~~~~~~~~~~~~~~~~
 
-> doesn't support 1588, SyncE or Q-USGMII.
-> 
-> This PHY is found inside the LAN966X switches.
-> 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  drivers/net/phy/micrel.c   | 73 ++++++++++++++++++++++++++++++++++++++
->  include/linux/micrel_phy.h |  1 +
->  2 files changed, 74 insertions(+)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index 5c928f827173..34800b547004 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -1537,6 +1537,65 @@ static int ksz886x_cable_test_get_status(struct phy_device *phydev,
->  	return ret;
->  }
->  
-> +#define LAN_EXT_PAGE_ACCESS_CONTROL			0x16
-> +#define LAN_EXT_PAGE_ACCESS_ADDRESS_DATA		0x17
-> +#define LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC		0x4000
-> +
-> +#define LAN8804_ALIGN_SWAP				0x4a
-> +#define LAN8804_ALIGN_TX_A_B_SWAP			0x1
-> +#define LAN8804_ALIGN_TX_A_B_SWAP_MASK			GENMASK(2, 0)
-> +#define LAN8814_CLOCK_MANAGEMENT			0xd
-> +#define LAN8814_LINK_QUALITY				0x8e
-> +
-> +static int lanphy_read_page_reg(struct phy_device *phydev, int page, u32 addr)
-> +{
-> +	u32 data;
-> +
-> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, page);
-> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
-> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL,
-> +		  (page | LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC));
-> +	data = phy_read(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA);
-> +
-> +	return data;
-> +}
-> +
-> +static int lanphy_write_page_reg(struct phy_device *phydev, int page, u16 addr,
-> +				 u16 val)
-> +{
-> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, page);
-> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
-> +	phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL,
-> +		  (page | LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC));
-> +
-> +	val = phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, val);
-> +	if (val) {
-> +		phydev_err(phydev, "Error: phy_write has returned error %d\n",
-> +			   val);
-> +		return val;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int lan8804_config_init(struct phy_device *phydev)
-> +{
-> +	int val;
-> +
-> +	/* MDI-X setting for swap A,B transmit */
-> +	val = lanphy_read_page_reg(phydev, 2, LAN8804_ALIGN_SWAP);
-> +	val &= ~LAN8804_ALIGN_TX_A_B_SWAP_MASK;
-> +	val |= LAN8804_ALIGN_TX_A_B_SWAP;
-> +	lanphy_write_page_reg(phydev, 2, LAN8804_ALIGN_SWAP, val);
-> +
-> +	/* Make sure that the PHY will not stop generating the clock when the
-> +	 * link partner goes down
-> +	 */
-> +	lanphy_write_page_reg(phydev, 31, LAN8814_CLOCK_MANAGEMENT, 0x27e);
-> +	lanphy_read_page_reg(phydev, 1, LAN8814_LINK_QUALITY);
-> +
-> +	return 0;
-> +}
-> +
->  static struct phy_driver ksphy_driver[] = {
->  {
->  	.phy_id		= PHY_ID_KS8737,
-> @@ -1718,6 +1777,20 @@ static struct phy_driver ksphy_driver[] = {
->  	.get_stats	= kszphy_get_stats,
->  	.suspend	= genphy_suspend,
->  	.resume		= kszphy_resume,
-> +}, {
-> +	.phy_id		= PHY_ID_LAN8804,
-> +	.phy_id_mask	= MICREL_PHY_ID_MASK,
-> +	.name		= "Microchip LAN966X Gigabit PHY",
-> +	.config_init	= lan8804_config_init,
-> +	.driver_data	= &ksz9021_type,
-> +	.probe		= kszphy_probe,
-> +	.soft_reset	= genphy_soft_reset,
-> +	.read_status	= ksz9031_read_status,
-> +	.get_sset_count	= kszphy_get_sset_count,
-> +	.get_strings	= kszphy_get_strings,
-> +	.get_stats	= kszphy_get_stats,
-> +	.suspend	= genphy_suspend,
-> +	.resume		= kszphy_resume,
->  }, {
->  	.phy_id		= PHY_ID_KSZ9131,
->  	.phy_id_mask	= MICREL_PHY_ID_MASK,
-> diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
-> index 3d43c60b49fa..1f7c33b2f5a3 100644
-> --- a/include/linux/micrel_phy.h
-> +++ b/include/linux/micrel_phy.h
-> @@ -28,6 +28,7 @@
->  #define PHY_ID_KSZ9031		0x00221620
->  #define PHY_ID_KSZ9131		0x00221640
->  #define PHY_ID_LAN8814		0x00221660
-> +#define PHY_ID_LAN8804		0x00221670
->  
->  #define PHY_ID_KSZ886X		0x00221430
->  #define PHY_ID_KSZ8863		0x00221435
-> -- 
-> 2.31.1
-> 
+Use a plain strlen() instead.
 
+Fixes: 17ccae8bb5c9 ("mm/damon: add kunit tests")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ mm/damon/dbgfs-test.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/mm/damon/dbgfs-test.h b/mm/damon/dbgfs-test.h
+index 930e83bceef0..4eddcfa73996 100644
+--- a/mm/damon/dbgfs-test.h
++++ b/mm/damon/dbgfs-test.h
+@@ -20,27 +20,27 @@ static void damon_dbgfs_test_str_to_target_ids(struct kunit *test)
+ 	ssize_t nr_integers = 0, i;
+ 
+ 	question = "123";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)1, nr_integers);
+ 	KUNIT_EXPECT_EQ(test, 123ul, answers[0]);
+ 	kfree(answers);
+ 
+ 	question = "123abc";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)1, nr_integers);
+ 	KUNIT_EXPECT_EQ(test, 123ul, answers[0]);
+ 	kfree(answers);
+ 
+ 	question = "a123";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)0, nr_integers);
+ 	kfree(answers);
+ 
+ 	question = "12 35";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)2, nr_integers);
+ 	for (i = 0; i < nr_integers; i++)
+@@ -48,7 +48,7 @@ static void damon_dbgfs_test_str_to_target_ids(struct kunit *test)
+ 	kfree(answers);
+ 
+ 	question = "12 35 46";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)3, nr_integers);
+ 	for (i = 0; i < nr_integers; i++)
+@@ -56,7 +56,7 @@ static void damon_dbgfs_test_str_to_target_ids(struct kunit *test)
+ 	kfree(answers);
+ 
+ 	question = "12 35 abc 46";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)2, nr_integers);
+ 	for (i = 0; i < 2; i++)
+@@ -64,13 +64,13 @@ static void damon_dbgfs_test_str_to_target_ids(struct kunit *test)
+ 	kfree(answers);
+ 
+ 	question = "";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)0, nr_integers);
+ 	kfree(answers);
+ 
+ 	question = "\n";
+-	answers = str_to_target_ids(question, strnlen(question, 128),
++	answers = str_to_target_ids(question, strlen(question),
+ 			&nr_integers);
+ 	KUNIT_EXPECT_EQ(test, (ssize_t)0, nr_integers);
+ 	kfree(answers);
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.29.2
+
