@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0208412B16
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293C5412B17
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243498AbhIUCHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
+        id S243542AbhIUCHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236544AbhIUBvA (ORCPT
+        with ESMTP id S236554AbhIUBvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:51:00 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FEBC0A0E37
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:22:56 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id g8so67079431edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dQAwy4pCmDHOI3u6mGzWC09yM6AY5TZbAb+EzcINoJY=;
-        b=l1YvkaPVcmsLmCzP/adji66ECXNL6GnStXg3pZnnxLrw8wQQ0k0pT2XGIjRmhhAbJ7
-         l3XJYx6IozNpijtPCDgKp19fje2lGqqkciiR9xgjUBfn5K/umXo2o4RWKURs3/PBNN19
-         TYviLxZKVDajDpntLIoLPU5R/cTjxpe5j19dNkQSnFl1LYdy3LmdXk6NPdcP00yfJSQB
-         idqc7ZYKJZxGHP031t1JwCkx+8Va3+8J1rfXPSs/gn2Oip3WZUE/lRXx0pyZtdDksxPz
-         KDKBif9kXhnBbr3eBTDUNkP7fi8GdpqrBKv5Nt7LbeTl5abmaXpAzKvtu5S/fXwqk8GH
-         ENIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dQAwy4pCmDHOI3u6mGzWC09yM6AY5TZbAb+EzcINoJY=;
-        b=OE1qphfL0g0On+p6JLLJW0QFyzrApKcczhXsIprUC9zAcYFVr7wZE6AeHLgRLAB9qR
-         hFUuvj5vuPKfxOuGy3+v4IqpOPwn3meMsamNHlC1FQ34Bj6EKpBkrLTvchHTjtdRAWSQ
-         3DpD7jkeBFYFTT++SfJurukKuAoJW74p+gjkbSRe3pWmFmjayvHuOgdlaDzCfjOyOO7a
-         QFq1i9fFQdk9l+OTBVqWSpS5g6LS/0J50Rin7Oc162qwULBZarIEq64nigbgDsPGEljV
-         LXa5qBX/YA+aKqp3106nTxvMnf1Invia7sXe3fWnPWjiZOHE7fjcJ1m6p0C4spX5dnrc
-         7ZCA==
-X-Gm-Message-State: AOAM532vBoid1cZFkdw3NOHW9iH27Rr3oB8PfL6cTQv8cJIrrxzHENU/
-        WE7ku/T/hNQp9OD0J6a+vzwj/2NX4GDR1/SijC3smj4ljfYooA==
-X-Google-Smtp-Source: ABdhPJy9EIwxCSbxw21oV3HzHr7d5RrPONZ42z/PHJcx8ml/tRKL/7PWTp2+Supfjib5qof+CvxYpNKqurTURUgCka4=
-X-Received: by 2002:a05:6512:2294:: with SMTP id f20mr9928095lfu.489.1632176563813;
- Mon, 20 Sep 2021 15:22:43 -0700 (PDT)
+        Mon, 20 Sep 2021 21:51:01 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0572C0A0E3A;
+        Mon, 20 Sep 2021 15:24:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632176679;
+        bh=XMUqjWgyGQ2e3tTXYtDEQwx/3FIE578ukRsWrFJY3IA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fgCheR8kjiJ/ovOKEoyp0dJV2otwj7CGmx/u5tIwZT/JfuQMdL0GmNVIC18/22hBL
+         DKP3FDjTp39h8OPuks1FSJlR4NwzTmjkURdf7jgwhMDN9BLMlueUtHySXcjsgBsi3X
+         It3eZtPQsxN6t6+KDD7GzR3nCJDAYB5mz2AZUi2mTHEl6MsO+FVe7b6eMbTmgJiG6k
+         LB3R1iGfK5l0U7ol3MJF9cwjvArxinhts8XfsIaEIk1iSOzqvQUKM+/jYqklSOqYFw
+         K+l2y94pFc+16MtBacZ7OdAnA8km4+m9tsTe9m6n5UPDuVaKphiznGrup7QnIu/Y2Q
+         2zd/u9LfJkJog==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCzd33zlCz9sW5;
+        Tue, 21 Sep 2021 08:24:39 +1000 (AEST)
+Date:   Tue, 21 Sep 2021 08:24:38 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the qcom tree
+Message-ID: <20210921082438.26550938@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210920165347.164087-1-trix@redhat.com>
-In-Reply-To: <20210920165347.164087-1-trix@redhat.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 20 Sep 2021 15:22:31 -0700
-Message-ID: <CAKwvOdkSt5VymxtJ4jmOe9LM1rdy+CV7yYXhjCgOFAgbKGEPfQ@mail.gmail.com>
-Subject: Re: [PATCH] octeontx2-af: fix uninitialized variable
-To:     trix@redhat.com
-Cc:     sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
-        davem@davemloft.net, kuba@kernel.org, nathan@kernel.org,
-        schalla@marvell.com, vvelumuri@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Colin Ian King <colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/AanEt6iy8KMgYdUCkz1EGpR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 9:54 AM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> Building with clang 13 reports this error
-> rvu_nix.c:4600:7: error: variable 'val' is used uninitialized whenever
->   'if' condition is false
->                 if (!is_rvu_otx2(rvu))
->                     ^~~~~~~~~~~~~~~~~
->
-> So initialize val.
->
-> Fixes: 4b5a3ab17c6c ("octeontx2-af: Hardware configuration for inline IPsec")
-> Signed-off-by: Tom Rix <trix@redhat.com>
+--Sig_/AanEt6iy8KMgYdUCkz1EGpR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the patch, but it looks like Colin beat you to the punch.
-In linux-next, I see:
-commit d853f1d3c900 ("octeontx2-af: Fix uninitialized variable val")
+Hi all,
 
-> ---
->  drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> index ea3e03fa55d45c..70431db866b328 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-> @@ -4592,7 +4592,7 @@ static void nix_inline_ipsec_cfg(struct rvu *rvu, struct nix_inline_ipsec_cfg *r
->                                  int blkaddr)
->  {
->         u8 cpt_idx, cpt_blkaddr;
-> -       u64 val;
-> +       u64 val = 0;
->
->         cpt_idx = (blkaddr == BLKADDR_NIX0) ? 0 : 1;
->         if (req->enable) {
-> --
-> 2.26.3
->
+In commit
 
+  33c4296d99ef ("arm64: dts: qcom: sc7280: fix display port phy reg propert=
+y")
 
--- 
-Thanks,
-~Nick Desaulniers
+Fixes tag
+
+  Fixes: 9886e8fd8438 ("arm64: dts: qcom: sc7280: Add USB related nodes")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/AanEt6iy8KMgYdUCkz1EGpR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFJCiYACgkQAVBC80lX
+0GzTEgf9GMpA6/0oLEANjaTycMU/csnakl/92kqrbrZ07RKE8NSkxtemAzRZ3l1F
+W/NQicO4tH3wEqTCeiYsL62VIjTDKUc0JPkZCH6bIdy2BTi/FkHZTuN206MgJxI6
+NHDUCgDu9BA+84GxlLzLrFDLPMtf6mOCz1srvuRhkuaK/IhonBCl8HEvJ4TXlYxF
+E5AScGbHh/DQEEcoxCGY7GTqu6gJrxtylWYaaY6SK+uMYH4CTWByOBgTOAKGctuS
+Ugf7SEStl6qRvsKa60CMu6OqtObZwTVar1sVQ6CfT906wV0DHHll6L/ukpkYqCQ9
+O/p9v+CUVhM5QW3Qf/jCFyjaDAAMtg==
+=8y5T
+-----END PGP SIGNATURE-----
+
+--Sig_/AanEt6iy8KMgYdUCkz1EGpR--
