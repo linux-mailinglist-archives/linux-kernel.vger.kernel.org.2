@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22404125C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE7E41215B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354735AbhITSsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
+        id S1357596AbhITSEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:04:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383366AbhITSo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:44:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA0C61B01;
-        Mon, 20 Sep 2021 17:32:41 +0000 (UTC)
+        id S1356057AbhITR6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:58:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 937CB63219;
+        Mon, 20 Sep 2021 17:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159161;
-        bh=KfGxBqgb3mnKJOc11Ogxd2i4fFLWa3cqb+xQVzKN5Vo=;
+        s=korg; t=1632158104;
+        bh=ikK+fCwpVJ0I4ssjiaeu6ehHoLneq/XFSaeWYe3coCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L1YeZ8fKb2lq9WcTP3xbaVgR+lDwVFBl+eipsYtNQFMmpROGAD0N3L5Ywae8uoOJF
-         sWJcoqCEXzReH1v+fhqrNdmGkvymsK4MWCT8CNf9QnjFkHF5KF0lPx2selaMFOUkJu
-         kzLLOptzQooOAYyhzKRC4hMq4WGWi300D5LP6w04=
+        b=clUHBJK+yjQ2JKPioHc2ZDv+tB1GMkNjKFSJBJYLIwzjXbnwPgu4wDyVOEWDMVLLL
+         J9G+AHTh3HhRizrng4jufxaJcWFI55h8NVZHT/B2C57+tyjoHkE+lsSUM1KPbJl1rI
+         U4EFW3pLXNFcn3ur4oZSg/GfnIMzARw5jR7UbZ5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 105/168] PCI: j721e: Add PCIe support for J7200
+        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 281/293] NTB: perf: Fix an error code in perf_setup_inbuf()
 Date:   Mon, 20 Sep 2021 18:44:03 +0200
-Message-Id: <20210920163925.088506184@linuxfoundation.org>
+Message-Id: <20210920163943.045682446@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,148 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-[ Upstream commit f1de58802f0fff364cf49f5e47d1be744baa434f ]
+[ Upstream commit 0097ae5f7af5684f961a5f803ff7ad3e6f933668 ]
 
-J7200 has the same PCIe IP as in J721E with minor changes in the
-wrapper. J7200 allows byte access of bridge configuration space
-registers and the register field for LINK_DOWN interrupt is different.
-J7200 also requires "quirk_detect_quiet_flag" to be set. Configure these
-changes as part of driver data applicable only to J7200.
+When the function IS_ALIGNED() returns false, the value of ret is 0.
+So, we set ret to -EINVAL to indicate this error.
 
-Link: https://lore.kernel.org/r/20210811123336.31357-4-kishon@ti.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Clean up smatch warning:
+drivers/ntb/test/ntb_perf.c:602 perf_setup_inbuf() warn: missing error
+code 'ret'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/cadence/pci-j721e.c | 40 +++++++++++++++++++---
- 1 file changed, 36 insertions(+), 4 deletions(-)
+ drivers/ntb/test/ntb_perf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 0c5813b230b4..10b13b728284 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -27,6 +27,7 @@
- #define STATUS_REG_SYS_2	0x508
- #define STATUS_CLR_REG_SYS_2	0x708
- #define LINK_DOWN		BIT(1)
-+#define J7200_LINK_DOWN		BIT(10)
- 
- #define J721E_PCIE_USER_CMD_STATUS	0x4
- #define LINK_TRAINING_ENABLE		BIT(0)
-@@ -57,6 +58,7 @@ struct j721e_pcie {
- 	struct cdns_pcie	*cdns_pcie;
- 	void __iomem		*user_cfg_base;
- 	void __iomem		*intd_cfg_base;
-+	u32			linkdown_irq_regfield;
- };
- 
- enum j721e_pcie_mode {
-@@ -67,6 +69,9 @@ enum j721e_pcie_mode {
- struct j721e_pcie_data {
- 	enum j721e_pcie_mode	mode;
- 	unsigned int		quirk_retrain_flag:1;
-+	unsigned int		quirk_detect_quiet_flag:1;
-+	u32			linkdown_irq_regfield;
-+	unsigned int		byte_access_allowed:1;
- };
- 
- static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
-@@ -98,12 +103,12 @@ static irqreturn_t j721e_pcie_link_irq_handler(int irq, void *priv)
- 	u32 reg;
- 
- 	reg = j721e_pcie_intd_readl(pcie, STATUS_REG_SYS_2);
--	if (!(reg & LINK_DOWN))
-+	if (!(reg & pcie->linkdown_irq_regfield))
- 		return IRQ_NONE;
- 
- 	dev_err(dev, "LINK DOWN!\n");
- 
--	j721e_pcie_intd_writel(pcie, STATUS_CLR_REG_SYS_2, LINK_DOWN);
-+	j721e_pcie_intd_writel(pcie, STATUS_CLR_REG_SYS_2, pcie->linkdown_irq_regfield);
- 	return IRQ_HANDLED;
- }
- 
-@@ -112,7 +117,7 @@ static void j721e_pcie_config_link_irq(struct j721e_pcie *pcie)
- 	u32 reg;
- 
- 	reg = j721e_pcie_intd_readl(pcie, ENABLE_REG_SYS_2);
--	reg |= LINK_DOWN;
-+	reg |= pcie->linkdown_irq_regfield;
- 	j721e_pcie_intd_writel(pcie, ENABLE_REG_SYS_2, reg);
- }
- 
-@@ -284,10 +289,25 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
- static const struct j721e_pcie_data j721e_pcie_rc_data = {
- 	.mode = PCI_MODE_RC,
- 	.quirk_retrain_flag = true,
-+	.byte_access_allowed = false,
-+	.linkdown_irq_regfield = LINK_DOWN,
- };
- 
- static const struct j721e_pcie_data j721e_pcie_ep_data = {
- 	.mode = PCI_MODE_EP,
-+	.linkdown_irq_regfield = LINK_DOWN,
-+};
-+
-+static const struct j721e_pcie_data j7200_pcie_rc_data = {
-+	.mode = PCI_MODE_RC,
-+	.quirk_detect_quiet_flag = true,
-+	.linkdown_irq_regfield = J7200_LINK_DOWN,
-+	.byte_access_allowed = true,
-+};
-+
-+static const struct j721e_pcie_data j7200_pcie_ep_data = {
-+	.mode = PCI_MODE_EP,
-+	.quirk_detect_quiet_flag = true,
- };
- 
- static const struct of_device_id of_j721e_pcie_match[] = {
-@@ -299,6 +319,14 @@ static const struct of_device_id of_j721e_pcie_match[] = {
- 		.compatible = "ti,j721e-pcie-ep",
- 		.data = &j721e_pcie_ep_data,
- 	},
-+	{
-+		.compatible = "ti,j7200-pcie-host",
-+		.data = &j7200_pcie_rc_data,
-+	},
-+	{
-+		.compatible = "ti,j7200-pcie-ep",
-+		.data = &j7200_pcie_ep_data,
-+	},
- 	{},
- };
- 
-@@ -332,6 +360,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 
- 	pcie->dev = dev;
- 	pcie->mode = mode;
-+	pcie->linkdown_irq_regfield = data->linkdown_irq_regfield;
- 
- 	base = devm_platform_ioremap_resource_byname(pdev, "intd_cfg");
- 	if (IS_ERR(base))
-@@ -391,9 +420,11 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 			goto err_get_sync;
- 		}
- 
--		bridge->ops = &cdns_ti_pcie_host_ops;
-+		if (!data->byte_access_allowed)
-+			bridge->ops = &cdns_ti_pcie_host_ops;
- 		rc = pci_host_bridge_priv(bridge);
- 		rc->quirk_retrain_flag = data->quirk_retrain_flag;
-+		rc->quirk_detect_quiet_flag = data->quirk_detect_quiet_flag;
- 
- 		cdns_pcie = &rc->pcie;
- 		cdns_pcie->dev = dev;
-@@ -459,6 +490,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 			ret = -ENOMEM;
- 			goto err_get_sync;
- 		}
-+		ep->quirk_detect_quiet_flag = data->quirk_detect_quiet_flag;
- 
- 		cdns_pcie = &ep->pcie;
- 		cdns_pcie->dev = dev;
+diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
+index ad5d3919435c..87a41d0ededc 100644
+--- a/drivers/ntb/test/ntb_perf.c
++++ b/drivers/ntb/test/ntb_perf.c
+@@ -600,6 +600,7 @@ static int perf_setup_inbuf(struct perf_peer *peer)
+ 		return -ENOMEM;
+ 	}
+ 	if (!IS_ALIGNED(peer->inbuf_xlat, xlat_align)) {
++		ret = -EINVAL;
+ 		dev_err(&perf->ntb->dev, "Unaligned inbuf allocated\n");
+ 		goto err_free_inbuf;
+ 	}
 -- 
 2.30.2
 
