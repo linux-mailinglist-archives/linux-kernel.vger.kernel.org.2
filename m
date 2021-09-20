@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF052411F87
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE46411D5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348624AbhITRmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:42:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
+        id S1348105AbhITRSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:18:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352592AbhITRjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:39:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 948FF61B3F;
-        Mon, 20 Sep 2021 17:08:00 +0000 (UTC)
+        id S1346866AbhITRQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:16:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FB9661A03;
+        Mon, 20 Sep 2021 16:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157681;
-        bh=eKiF2ULYXhs/ylPWv84WbrMumQzr4u4BVZKZDQmEv0M=;
+        s=korg; t=1632157148;
+        bh=5u9PJq7N7hzxm6sNiHCCpXP6/HjC2HxHXzIWC/PSEMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r+WmPoHi/VaH6nahd3nTqwRItEmuaMVDNgA1tc5e7MBno1hd4f8S8fQFZV3NClbKR
-         scCiG16hYdWbE81FvL8JIXB4N2SQx9yOJF3PlMqjzWGwhL1oEItXlgBRgTUvQph1UB
-         6dOArp7guHBGFhFcEAJr1bCMxt2NzquNSHum+fPY=
+        b=VjZBSq/N+nlZsE2/1Oo0EyZbkm1J+QLKQl26JzFqx+F3FyMNjH48Usbk6yMns1B7g
+         aelKo+Wc0o2pjvTSMQrSRfpdX8WoD0CMHV8f3h7T4LOgyP4UVodW2uc8Yor7cbON6S
+         bU09dPVsj95ZkDi9hEDz5h3LPj3eCXk0N8iCCams=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
+        stable@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 101/293] ipv4: make exception cache less predictible
-Date:   Mon, 20 Sep 2021 18:41:03 +0200
-Message-Id: <20210920163936.720060453@linuxfoundation.org>
+Subject: [PATCH 4.14 043/217] crypto: qat - do not export adf_iov_putmsg()
+Date:   Mon, 20 Sep 2021 18:41:04 +0200
+Message-Id: <20210920163926.083815157@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,125 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-[ Upstream commit 67d6d681e15b578c1725bad8ad079e05d1c48a8e ]
+[ Upstream commit 645ae0af1840199086c33e4f841892ebee73f615 ]
 
-Even after commit 6457378fe796 ("ipv4: use siphash instead of Jenkins in
-fnhe_hashfun()"), an attacker can still use brute force to learn
-some secrets from a victim linux host.
+The function adf_iov_putmsg() is only used inside the intel_qat module
+therefore should not be exported.
+Remove EXPORT_SYMBOL for the function adf_iov_putmsg().
 
-One way to defeat these attacks is to make the max depth of the hash
-table bucket a random value.
-
-Before this patch, each bucket of the hash table used to store exceptions
-could contain 6 items under attack.
-
-After the patch, each bucket would contains a random number of items,
-between 6 and 10. The attacker can no longer infer secrets.
-
-This is slightly increasing memory size used by the hash table,
-by 50% in average, we do not expect this to be a problem.
-
-This patch is more complex than the prior one (IPv6 equivalent),
-because IPv4 was reusing the oldest entry.
-Since we need to be able to evict more than one entry per
-update_or_create_fnhe() call, I had to replace
-fnhe_oldest() with fnhe_remove_oldest().
-
-Also note that we will queue extra kfree_rcu() calls under stress,
-which hopefully wont be a too big issue.
-
-Fixes: 4895c771c7f0 ("ipv4: Add FIB nexthop exceptions.")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Willy Tarreau <w@1wt.eu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Tested-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/route.c | 46 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 16 deletions(-)
+ drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 1491d239385e..d72bffab6ffc 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -604,18 +604,25 @@ static void fnhe_flush_routes(struct fib_nh_exception *fnhe)
- 	}
- }
+diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+index 9dab2cc11fdf..c64481160b71 100644
+--- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+@@ -231,7 +231,6 @@ int adf_iov_putmsg(struct adf_accel_dev *accel_dev, u32 msg, u8 vf_nr)
  
--static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
-+static void fnhe_remove_oldest(struct fnhe_hash_bucket *hash)
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(adf_iov_putmsg);
+ 
+ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
  {
--	struct fib_nh_exception *fnhe, *oldest;
-+	struct fib_nh_exception __rcu **fnhe_p, **oldest_p;
-+	struct fib_nh_exception *fnhe, *oldest = NULL;
- 
--	oldest = rcu_dereference(hash->chain);
--	for (fnhe = rcu_dereference(oldest->fnhe_next); fnhe;
--	     fnhe = rcu_dereference(fnhe->fnhe_next)) {
--		if (time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp))
-+	for (fnhe_p = &hash->chain; ; fnhe_p = &fnhe->fnhe_next) {
-+		fnhe = rcu_dereference_protected(*fnhe_p,
-+						 lockdep_is_held(&fnhe_lock));
-+		if (!fnhe)
-+			break;
-+		if (!oldest ||
-+		    time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp)) {
- 			oldest = fnhe;
-+			oldest_p = fnhe_p;
-+		}
- 	}
- 	fnhe_flush_routes(oldest);
--	return oldest;
-+	*oldest_p = oldest->fnhe_next;
-+	kfree_rcu(oldest, rcu);
- }
- 
- static inline u32 fnhe_hashfun(__be32 daddr)
-@@ -692,16 +699,21 @@ static void update_or_create_fnhe(struct fib_nh *nh, __be32 daddr, __be32 gw,
- 		if (rt)
- 			fill_route_from_fnhe(rt, fnhe);
- 	} else {
--		if (depth > FNHE_RECLAIM_DEPTH)
--			fnhe = fnhe_oldest(hash);
--		else {
--			fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
--			if (!fnhe)
--				goto out_unlock;
--
--			fnhe->fnhe_next = hash->chain;
--			rcu_assign_pointer(hash->chain, fnhe);
-+		/* Randomize max depth to avoid some side channels attacks. */
-+		int max_depth = FNHE_RECLAIM_DEPTH +
-+				prandom_u32_max(FNHE_RECLAIM_DEPTH);
-+
-+		while (depth > max_depth) {
-+			fnhe_remove_oldest(hash);
-+			depth--;
- 		}
-+
-+		fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
-+		if (!fnhe)
-+			goto out_unlock;
-+
-+		fnhe->fnhe_next = hash->chain;
-+
- 		fnhe->fnhe_genid = genid;
- 		fnhe->fnhe_daddr = daddr;
- 		fnhe->fnhe_gw = gw;
-@@ -709,6 +721,8 @@ static void update_or_create_fnhe(struct fib_nh *nh, __be32 daddr, __be32 gw,
- 		fnhe->fnhe_mtu_locked = lock;
- 		fnhe->fnhe_expires = max(1UL, expires);
- 
-+		rcu_assign_pointer(hash->chain, fnhe);
-+
- 		/* Exception created; mark the cached routes for the nexthop
- 		 * stale, so anyone caching it rechecks if this exception
- 		 * applies to them.
 -- 
 2.30.2
 
