@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8391D411798
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC4941179A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhITOyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbhITOyB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:54:01 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AC4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:52:34 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id wEsX2500R4C55Sk01EsXsB; Mon, 20 Sep 2021 16:52:31 +0200
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mSKel-007FCD-72; Mon, 20 Sep 2021 16:52:31 +0200
-Date:   Mon, 20 Sep 2021 16:52:31 +0200 (CEST)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-X-X-Sender: geert@ramsan.of.borg
-To:     linux-kernel@vger.kernel.org
-cc:     linuxppc-dev@lists.ozlabs.org, linux-scsi@vger.kernel.org
-Subject: Re: Build regressions/improvements in v5.15-rc2
-In-Reply-To: <20210920115603.3455841-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2109201639480.1726079@ramsan.of.borg>
-References: <20210920115603.3455841-1-geert@linux-m68k.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S240935AbhITOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:54:09 -0400
+Received: from phobos.denx.de ([85.214.62.61]:50482 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235913AbhITOyH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:54:07 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 952278032E;
+        Mon, 20 Sep 2021 16:52:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1632149559;
+        bh=mWel+Ll5MqcCfFYbNd4hHyMgPVHWMoQLTKADiaroKSs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hgjsoXaW0rdyvdHPkxZz7CYCHBOVKu2+0O0Kzj6BroZbCfffsHJTcKpDgo4wILG6D
+         RMPEQ7HQrCPucikaA108bBN/IXoS+hi5e+lsGTaiCzByrqtYDEP/GdMFoXobtnYWPF
+         mJX0Ou/CvhfeX1CYaFq5g8S86/hoSe6HlYKKU+PFHUEX2s4EZ77h3We6rKyFjWmGsG
+         quk7rpy1OgkNwf4EVbf5M1cTJNDuaXtMhJhl14Pc9OvLixtzp3pm+k8zco7ILIu/UR
+         h9JymzNUg4iKYUCTauMMYaDL+enLm/W/GSVWapQ8IkzrarAY7ud1ob+M47NZuolioX
+         p66V4IbZwuPtg==
+Subject: Re: [PATCH v4 5/9] ARM: imx_v6_v7_defconfig: build imx sdma driver as
+ module
+To:     Marcel Ziswiler <marcel@ziswiler.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pascal Zimmermann <pzimmermann@dh-electronics.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
+References: <20210920144938.314588-1-marcel@ziswiler.com>
+ <20210920144938.314588-6-marcel@ziswiler.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <dc987232-8687-a3cc-cc44-9e82e94ddd52@denx.de>
+Date:   Mon, 20 Sep 2021 16:52:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <20210920144938.314588-6-marcel@ziswiler.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021, Geert Uytterhoeven wrote:
-> JFYI, when comparing v5.15-rc2[1] to v5.15-rc1[3], the summaries are:
->  - build errors: +9/-49
+On 9/20/21 4:49 PM, Marcel Ziswiler wrote:
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> Build CONFIG_IMX_SDMA as a module to avoid the following boot issue:
+> 
+> [    5.214751] imx-sdma 20ec000.sdma: Direct firmware load for
+>   imx/sdma/sdma-imx6q.bin failed with error -2
+> [    5.215762] imx-sdma 20ec000.sdma: Falling back to sysfs fallback
+>   for: imx/sdma/sdma-imx6q.bin
 
-   + /kisskb/src/arch/sparc/lib/iomap.c: error: redefinition of 'pci_iounmap':  => 22:6
-
-sparc64/sparc64-allnoconfig
-
-   + /kisskb/src/drivers/iio/test/iio-test-format.c: error: the frame size of 2128 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 98:1
-
-powerpc-gcc{5,9,11}/powerpc-allyesconfig
-
-   + /kisskb/src/drivers/scsi/lpfc/lpfc_init.c: error: 'struct lpfc_sli4_hba' has no member named 'c_stat':  => 8280:28
-   + /kisskb/src/drivers/scsi/lpfc/lpfc_scsi.c: error: 'start' undeclared (first use in this function):  => 5587:2
-
-powerpc-gcc5/skiroot_defconfig
-
-   + /kisskb/src/drivers/thunderbolt/test.c: error: the frame size of 3104 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 2207:1
-
-powerpc-gcc5/powerpc-allyesconfig
-
-   + /kisskb/src/drivers/tty/serial/cpm_uart/cpm_uart_core.c: error: 'udbg_cpm_getc' defined but not used [-Werror=unused-function]:  => 1109:12
-   + /kisskb/src/drivers/tty/serial/cpm_uart/cpm_uart_core.c: error: 'udbg_cpm_putc' defined but not used [-Werror=unused-function]:  => 1095:13
-
-powerpc-gcc5/ppc32_allmodconfig
-
-   + /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]: 1496:12, 970:13, 842:13 => 842:13, 970:13, 1496:33, 1496:12, 970:41, 842:41
-   + /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]: 1497:27, 843:28, 971:28 => 971:28, 843:56, 971:56, 843:28, 1497:27, 1497:48
-
-powerpc-gcc{5,9,11}/ppc64_book3e_allmodconfig
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e4e737bb5c170df6135a127739a9e6148ee3da82/ (90 out of 182 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f/ (all 182 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+Isn't there some ROM-side SDMA firmware baked into the MX6 which is used 
+as a fallback if loading newer one from filesystem fails ? I suspect the 
+default ROM firmware might be buggy.
