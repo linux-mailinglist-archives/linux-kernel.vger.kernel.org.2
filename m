@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE005412400
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144544124C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379441AbhITS3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:29:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43458 "EHLO mail.kernel.org"
+        id S1353288AbhITSiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:38:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377737AbhITSW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:22:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6839F632BA;
-        Mon, 20 Sep 2021 17:24:35 +0000 (UTC)
+        id S1380247AbhITSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:33:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C93E6632FE;
+        Mon, 20 Sep 2021 17:28:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158675;
-        bh=uLgFZxX+cwiet4pUq59oiyiXdrCWvxBD5wFY6RaxJxw=;
+        s=korg; t=1632158892;
+        bh=JEe4bSM/d/cMLyOdHbt4YOf5ZbCaa4HacIYRcMD/EiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=axLQRFJE8qvp4Ls4fPFZyzhzPV/NW6S5IUyPHCuVs41ROJoFFoRACnEhebuucYuEE
-         krWFHp7rhEhNYjvpfpUyDeQrnA85TBB3xPEvYsMnboZ21YgSaVqDbIpoMTDcpAJqOu
-         9UAhF8pKh4h9t41Ar8s2sKN80Wd5KyXIWzwjXHW0=
+        b=OAA86cjgwuaS9FIXDjTN+o1q1Asj0BZog4kWJu6CqgXuHcG+Rp9zd3GUBsPdTOztv
+         6DaqEaxqiCC107jcJ+PG73O5ig16yHeSohbEhEgV+QVsu5K+jkH2qNR5AP9dWkzk1P
+         zptQzEh4ZFxSG49tyzagVnr823s2PYBh7aEgwPkw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        stable@vger.kernel.org,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 258/260] qlcnic: Remove redundant unlock in qlcnic_pinit_from_rom
+Subject: [PATCH 5.10 104/122] net: hso: add failure handler for add_net_device
 Date:   Mon, 20 Sep 2021 18:44:36 +0200
-Message-Id: <20210920163939.876443314@linuxfoundation.org>
+Message-Id: <20210920163919.204390489@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-[ Upstream commit 9ddbc2a00d7f63fa9748f4278643193dac985f2d ]
+[ Upstream commit ecdc28defc46af476566fffd9e5cb4495a2f176e ]
 
-Previous commit 68233c583ab4 removes the qlcnic_rom_lock()
-in qlcnic_pinit_from_rom(), but remains its corresponding
-unlock function, which is odd. I'm not very sure whether the
-lock is missing, or the unlock is redundant. This bug is
-suggested by a static analysis tool, please advise.
+If the network devices connected to the system beyond
+HSO_MAX_NET_DEVICES. add_net_device() in hso_create_net_device()
+will be failed for the network_table is full. It will lead to
+business failure which rely on network_table, for example,
+hso_suspend() and hso_resume(). It will also lead to memory leak
+because resource release process can not search the hso_device
+object from network_table in hso_free_interface().
 
-Fixes: 68233c583ab4 ("qlcnic: updated reset sequence")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Add failure handler for add_net_device() in hso_create_net_device()
+to solve the above problems.
+
+Fixes: 72dc1c096c70 ("HSO: add option hso driver")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/usb/hso.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-index c48a0e2d4d7e..6a009d51ec51 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-@@ -440,7 +440,6 @@ int qlcnic_pinit_from_rom(struct qlcnic_adapter *adapter)
- 	QLCWR32(adapter, QLCNIC_CRB_PEG_NET_4 + 0x3c, 1);
- 	msleep(20);
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index 5b3aff2c279f..f269337c82c5 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2537,13 +2537,17 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 	if (!hso_net->mux_bulk_tx_buf)
+ 		goto err_free_tx_urb;
  
--	qlcnic_rom_unlock(adapter);
- 	/* big hammer don't reset CAM block on reset */
- 	QLCWR32(adapter, QLCNIC_ROMUSB_GLB_SW_RESET, 0xfeffffff);
+-	add_net_device(hso_dev);
++	result = add_net_device(hso_dev);
++	if (result) {
++		dev_err(&interface->dev, "Failed to add net device\n");
++		goto err_free_tx_buf;
++	}
  
+ 	/* registering our net device */
+ 	result = register_netdev(net);
+ 	if (result) {
+ 		dev_err(&interface->dev, "Failed to register device\n");
+-		goto err_free_tx_buf;
++		goto err_rmv_ndev;
+ 	}
+ 
+ 	hso_log_port(hso_dev);
+@@ -2552,8 +2556,9 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+ 
+ 	return hso_dev;
+ 
+-err_free_tx_buf:
++err_rmv_ndev:
+ 	remove_net_device(hso_dev);
++err_free_tx_buf:
+ 	kfree(hso_net->mux_bulk_tx_buf);
+ err_free_tx_urb:
+ 	usb_free_urb(hso_net->mux_bulk_tx_urb);
 -- 
 2.30.2
 
