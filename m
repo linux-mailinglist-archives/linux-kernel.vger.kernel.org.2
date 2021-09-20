@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87194411C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88022411A79
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345618AbhITRFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54300 "EHLO mail.kernel.org"
+        id S232128AbhITQtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:49:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344095AbhITRDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:03:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19EA961440;
-        Mon, 20 Sep 2021 16:53:54 +0000 (UTC)
+        id S243799AbhITQsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6243F6124C;
+        Mon, 20 Sep 2021 16:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156835;
-        bh=Q6vNTJ1K8C74ByiFgwhH/YMFugWO33c8Ms9B2BkYMEU=;
+        s=korg; t=1632156410;
+        bh=uuZMw6J5hMtC9lRbJ1wg88tUyZpGYzYRmpNXWwfNY5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YmGPYyLW6AGz/P0sH8j8NFJ9kDVJux3yrcQy5fWM5l3sjBmlNSPuAOiUDPJeItfCp
-         szh5uJFMxb5ZzrrmC6GfS5dIhqO1M3qqKFOvKNkXRfJtgZa+QF0/g0ChCxQXHPFDND
-         YMedrVojY4aCe5YYFKVcMpKCY1EWCvMqRbNKY8zw=
+        b=OYq/D/ePgJXbH07P20TrbjH14aWIsQmrTL+Ay1EEElGIrFXbhmP7IJ8TjKTzfXz5m
+         q7baDivQ4DcsHm/sHbPSNeREX4q6GYJi96ZglYsU6C6CKY5ni4pbI8MohAyDyrKm/C
+         1ueFSBP6cwjhXuT92fZhxKHPduoY1hzaaceCbSKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Lin <shawn.lin@rock-chips.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 075/175] mmc: dw_mmc: Fix issue with uninitialized dma_slave_config
+Subject: [PATCH 4.4 046/133] Bluetooth: increase BTNAMSIZ to 21 chars to fix potential buffer overflow
 Date:   Mon, 20 Sep 2021 18:42:04 +0200
-Message-Id: <20210920163920.509491740@linuxfoundation.org>
+Message-Id: <20210920163914.157258532@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit c3ff0189d3bc9c03845fe37472c140f0fefd0c79 ]
+[ Upstream commit 713baf3dae8f45dc8ada4ed2f5fdcbf94a5c274d ]
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+An earlier commit replaced using batostr to using %pMR sprintf for the
+construction of session->name. Static analysis detected that this new
+method can use a total of 21 characters (including the trailing '\0')
+so we need to increase the BTNAMSIZ from 18 to 21 to fix potential
+buffer overflows.
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
-
-For dw_mmc, this is probably not currently an issue but is still good to
-fix though.
-
-Fixes: 3fc7eaef44db ("mmc: dw_mmc: Add external dma interface support")
-Cc: Shawn Lin <shawn.lin@rock-chips.com>
-Cc: Jaehoon Chung <jh80.chung@samsung.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081644.19353-2-tony@atomide.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Addresses-Coverity: ("Out-of-bounds write")
+Fixes: fcb73338ed53 ("Bluetooth: Use %pMR in sprintf/seq_printf instead of batostr")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/dw_mmc.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/bluetooth/cmtp/cmtp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-index c6b91efaa956..209bdf0317b3 100644
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -762,6 +762,7 @@ static int dw_mci_edmac_start_dma(struct dw_mci *host,
- 	int ret = 0;
+diff --git a/net/bluetooth/cmtp/cmtp.h b/net/bluetooth/cmtp/cmtp.h
+index c32638dddbf9..f6b9dc4e408f 100644
+--- a/net/bluetooth/cmtp/cmtp.h
++++ b/net/bluetooth/cmtp/cmtp.h
+@@ -26,7 +26,7 @@
+ #include <linux/types.h>
+ #include <net/bluetooth/bluetooth.h>
  
- 	/* Set external dma config: burst size, burst width */
-+	memset(&cfg, 0, sizeof(cfg));
- 	cfg.dst_addr = host->phy_regs + fifo_offset;
- 	cfg.src_addr = cfg.dst_addr;
- 	cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-#define BTNAMSIZ 18
++#define BTNAMSIZ 21
+ 
+ /* CMTP ioctl defines */
+ #define CMTPCONNADD	_IOW('C', 200, int)
 -- 
 2.30.2
 
