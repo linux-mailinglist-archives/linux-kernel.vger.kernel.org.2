@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19E6412003
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCCE411D9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345104AbhITRrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:47:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48148 "EHLO mail.kernel.org"
+        id S230226AbhITRTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:19:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345428AbhITRpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:45:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 000246187A;
-        Mon, 20 Sep 2021 17:09:57 +0000 (UTC)
+        id S1348123AbhITRRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:17:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03A2F619F8;
+        Mon, 20 Sep 2021 16:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157798;
-        bh=4z5r85elap4wcUCbxlXdz1h3XNx2HQAuIboA/kaMCMM=;
+        s=korg; t=1632157159;
+        bh=WqAwgBkVR7Gfqe6M+0qPUQ5lsZJYBe2IY8rsNf5tUOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0JBDz6puJCiQeibOo6gKMmanjNpqJc0lb/5/SqiPGeJH9Z+iUaqksBsSl38nSH06H
-         WZ31jjSF+cPAoaCgBbPBkoFSYoFRlHTvSdOeqzuayO1kqv7ldyvMoUQNboF8RcJY3K
-         5sWtiQliheuFH8yvT6Ee5d5fTppu1VS8cx9vXvlU=
+        b=m8xDfK3cAZ7sA19u03lss6L58+tZht1Or6OHg/KBMgKKrmRoTEqXeaULp9Xs83YNn
+         3qE7x7oLP3q/6vqk3nUnCCaC9KXF1xdbmIOz5OE5Ph1ENWqtaBWUQQr/HhypLRJr2H
+         yItZSK3FE8lpGo4UbE2QLYr6mxglib0eqr01YPSU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 139/293] bpf: Fix pointer arithmetic mask tightening under state pruning
-Date:   Mon, 20 Sep 2021 18:41:41 +0200
-Message-Id: <20210920163938.042715656@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 081/217] i2c: mt65xx: fix IRQ check
+Date:   Mon, 20 Sep 2021 18:41:42 +0200
+Message-Id: <20210920163927.373552582@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,123 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit e042aa532c84d18ff13291d00620502ce7a38dda upstream.
+[ Upstream commit 58fb7c643d346e2364404554f531cfa6a1a3917c ]
 
-In 7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic mask") we
-narrowed the offset mask for unprivileged pointer arithmetic in order to
-mitigate a corner case where in the speculative domain it is possible to
-advance, for example, the map value pointer by up to value_size-1 out-of-
-bounds in order to leak kernel memory via side-channel to user space.
+Iff platform_get_irq() returns 0, the driver's probe() method will return 0
+early (as if the method's call was successful).  Let's consider IRQ0 valid
+for simplicity -- devm_request_irq() can always override that decision...
 
-The verifier's state pruning for scalars leaves one corner case open
-where in the first verification path R_x holds an unknown scalar with an
-aux->alu_limit of e.g. 7, and in a second verification path that same
-register R_x, here denoted as R_x', holds an unknown scalar which has
-tighter bounds and would thus satisfy range_within(R_x, R_x') as well as
-tnum_in(R_x, R_x') for state pruning, yielding an aux->alu_limit of 3:
-Given the second path fits the register constraints for pruning, the final
-generated mask from aux->alu_limit will remain at 7. While technically
-not wrong for the non-speculative domain, it would however be possible
-to craft similar cases where the mask would be too wide as in 7fedb63a8307.
-
-One way to fix it is to detect the presence of unknown scalar map pointer
-arithmetic and force a deeper search on unknown scalars to ensure that
-we do not run into a masking mismatch.
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-[OP: adjusted context for 4.19]
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ce38815d39ea ("I2C: mediatek: Add driver for MediaTek I2C controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Reviewed-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf_verifier.h |    1 +
- kernel/bpf/verifier.c        |   27 +++++++++++++++++----------
- 2 files changed, 18 insertions(+), 10 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -215,6 +215,7 @@ struct bpf_verifier_env {
- 	struct bpf_map *used_maps[MAX_USED_MAPS]; /* array of map's used by eBPF program */
- 	u32 used_map_cnt;		/* number of used maps */
- 	u32 id_gen;			/* used to generate unique reg IDs */
-+	bool explore_alu_limits;
- 	bool allow_ptr_leaks;
- 	bool seen_direct_write;
- 	struct bpf_insn_aux_data *insn_aux_data; /* array of per-insn state */
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2871,6 +2871,12 @@ static int sanitize_ptr_alu(struct bpf_v
- 		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
- 		alu_state |= ptr_is_dst_reg ?
- 			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
-+
-+		/* Limit pruning on unknown scalars to enable deep search for
-+		 * potential masking differences from other program paths.
-+		 */
-+		if (!off_is_imm)
-+			env->explore_alu_limits = true;
- 	}
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 09d288ce0ddb..cbcf76ea9c19 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -740,7 +740,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2c->pdmabase);
  
- 	err = update_alu_sanitation_state(aux, alu_state, alu_limit);
-@@ -4813,8 +4819,8 @@ static bool check_ids(u32 old_id, u32 cu
- }
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
++	if (irq < 0)
+ 		return irq;
  
- /* Returns true if (rold safe implies rcur safe) */
--static bool regsafe(struct bpf_reg_state *rold, struct bpf_reg_state *rcur,
--		    struct bpf_id_pair *idmap)
-+static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
-+		    struct bpf_reg_state *rcur, struct bpf_id_pair *idmap)
- {
- 	bool equal;
- 
-@@ -4840,6 +4846,8 @@ static bool regsafe(struct bpf_reg_state
- 		return false;
- 	switch (rold->type) {
- 	case SCALAR_VALUE:
-+		if (env->explore_alu_limits)
-+			return false;
- 		if (rcur->type == SCALAR_VALUE) {
- 			/* new val must satisfy old val knowledge */
- 			return range_within(rold, rcur) &&
-@@ -4916,9 +4924,8 @@ static bool regsafe(struct bpf_reg_state
- 	return false;
- }
- 
--static bool stacksafe(struct bpf_func_state *old,
--		      struct bpf_func_state *cur,
--		      struct bpf_id_pair *idmap)
-+static bool stacksafe(struct bpf_verifier_env *env, struct bpf_func_state *old,
-+		      struct bpf_func_state *cur, struct bpf_id_pair *idmap)
- {
- 	int i, spi;
- 
-@@ -4960,9 +4967,8 @@ static bool stacksafe(struct bpf_func_st
- 			continue;
- 		if (old->stack[spi].slot_type[0] != STACK_SPILL)
- 			continue;
--		if (!regsafe(&old->stack[spi].spilled_ptr,
--			     &cur->stack[spi].spilled_ptr,
--			     idmap))
-+		if (!regsafe(env, &old->stack[spi].spilled_ptr,
-+			     &cur->stack[spi].spilled_ptr, idmap))
- 			/* when explored and current stack slot are both storing
- 			 * spilled registers, check that stored pointers types
- 			 * are the same as well.
-@@ -5011,10 +5017,11 @@ static bool func_states_equal(struct bpf
- 
- 	memset(env->idmap_scratch, 0, sizeof(env->idmap_scratch));
- 	for (i = 0; i < MAX_BPF_REG; i++)
--		if (!regsafe(&old->regs[i], &cur->regs[i], env->idmap_scratch))
-+		if (!regsafe(env, &old->regs[i], &cur->regs[i],
-+			     env->idmap_scratch))
- 			return false;
- 
--	if (!stacksafe(old, cur, env->idmap_scratch))
-+	if (!stacksafe(env, old, cur, env->idmap_scratch))
- 		return false;
- 
- 	return true;
+ 	init_completion(&i2c->msg_complete);
+-- 
+2.30.2
+
 
 
