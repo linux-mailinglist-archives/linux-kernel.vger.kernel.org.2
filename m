@@ -2,149 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD60411058
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B40411060
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhITHmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:42:49 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48914 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231990AbhITHmp (ORCPT
+        id S234135AbhITHnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231614AbhITHnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:42:45 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18K4hDZ6027238;
-        Mon, 20 Sep 2021 03:41:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=QhU2fJ30Ylq89IQ5b92Q9qDJ3jDbJqw0TeGqxw6bagk=;
- b=bsODAaUAFqt5cPNm/DmLiW1PuNIvnCXFgoTyrPzgvtSQ65yF6t8HqKnoYG+EtwRtIsa5
- T4UXmqq+8sCQZvFIV9A+9qBq9AdAp2pbx9UuRtwIOek9EuyxkPSYfeuHZ0BX6PUbiZWA
- wkKylznDsRUzw5s7Um/97G2V5lGEnbdgVYRqcSaRXqTbxTxvrB+Riw9qC8vkD9DSzUI1
- zMXIpbIb1SMxoTqi2c9Get2A4ek4nz28ykZqpfqXWvxVNl/bNWFRNyV25G9mSlYLSxZI
- 9CEDQ7twVeelXQgVnSM69KYhO7PTK0EuJTiF2cHMunPgWqDfNcYq+eOR+dst1dzeLXk5 vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w693bvh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 03:41:15 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18K7KdAF011125;
-        Mon, 20 Sep 2021 03:41:14 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w693bum-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 03:41:14 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18K7VW7r028991;
-        Mon, 20 Sep 2021 07:41:12 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3b57r94hgk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 07:41:12 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18K7aPIe43516410
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Sep 2021 07:36:25 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 921874C063;
-        Mon, 20 Sep 2021 07:41:07 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 836954C059;
-        Mon, 20 Sep 2021 07:41:06 +0000 (GMT)
-Received: from li-748c07cc-28e5-11b2-a85c-e3822d7eceb3.ibm.com (unknown [9.171.5.235])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Sep 2021 07:41:06 +0000 (GMT)
-Message-ID: <88b514a4416cf72cda53a31ad2e15c13586350e4.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
-From:   Vineeth Vijayan <vneethv@linux.ibm.com>
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bfu@redhat.com
-Date:   Mon, 20 Sep 2021 09:41:06 +0200
-In-Reply-To: <20210920003935.1369f9fe.pasic@linux.ibm.com>
-References: <20210915215742.1793314-1-pasic@linux.ibm.com>
-         <87pmt8hp5o.fsf@redhat.com> <20210916151835.4ab512b2.pasic@linux.ibm.com>
-         <87mtobh9xn.fsf@redhat.com> <20210920003935.1369f9fe.pasic@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+        Mon, 20 Sep 2021 03:43:52 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7069C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:42:25 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z24so37653300lfu.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w0P3ciU7DNO/LgT6fxR07gqx6gx1yZdqF147JHefD4Y=;
+        b=OEDTd233SJIwx38XJOgHFnuo6Xcqu16j3x+ehNCfReRDbDfG4o+v+eDVmSgSuXDhqF
+         GqMNucDj1HEA/zsQMNKtDo0P23d8l2Q0C4MUxNlsTsA8TjwYWxJWAqQl4Q42ogVKS6Re
+         Ny7eEFibxtOvkfsUpSeEFjAFmJLNYyZ09JerE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w0P3ciU7DNO/LgT6fxR07gqx6gx1yZdqF147JHefD4Y=;
+        b=cprmR3tWnBFUEWOQBtYivBYxaSWZ6XOtRi3fA1+Yvf94P4LyALps9CgAQDb4bgmseT
+         SRRb/ovyMfdBhqn8pWgqySV5r7ZOf7sRzp0LTOuotoExfLrvNDlLm/ZY9FYieL+bHovJ
+         cLnd/OVSABHrMErDwbJ1hR+TRycC0tA8980asakLGlnIsyQalmh7wxZi0qlPFG3f4m3h
+         MSXa+IblXabWBJvXpSA0BhXgH4WAsWP+a7tIcna6AxiVpFzEu5b94efHC+9rrgsMfhUv
+         Noa9atyogc78J4iUNmDGlYLn3javnI2ZQI2GfV4/O0mEK/uCxMio2EskGIEAvePCGwVd
+         OF6g==
+X-Gm-Message-State: AOAM531ihc2q2q5COijGLVxpIaOja0TJSNEywNk2QFVQ1oT79J7RcH7n
+        0B+k7zJ/N8qOuiOAXMPyz3Vns0ZMHyzDCsRx
+X-Google-Smtp-Source: ABdhPJw6oYfM7AGf5zpeZWvWCF0cjlxHYKDu+xTCy4nLuAB+ERY0Pzom+1S3zKb0owZ15voFlbr5UA==
+X-Received: by 2002:a2e:1508:: with SMTP id s8mr21564383ljd.47.1632123743905;
+        Mon, 20 Sep 2021 00:42:23 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id f37sm1195187lfv.214.2021.09.20.00.42.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 00:42:23 -0700 (PDT)
+Subject: Re: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
+To:     "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210917105355.2368-1-bp@alien8.de>
+ <20210917105355.2368-3-bp@alien8.de>
+ <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <5eb3ac0a-4887-08b2-82fa-0348e04ace95@rasmusvillemoes.dk>
+Date:   Mon, 20 Sep 2021 09:42:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: O2YLebhLF1qY_dykVwHEiFcUaS00yvK1
-X-Proofpoint-ORIG-GUID: _OOu5WaZyCxFiCTJFzzcGPi_Mkn2GqpQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-20_03,2021-09-17_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- bulkscore=0 mlxlogscore=925 priorityscore=1501 phishscore=0 clxscore=1011
- malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109200044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-20 at 00:39 +0200, Halil Pasic wrote:
-> On Fri, 17 Sep 2021 10:40:20 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
+On 20/09/2021 06.57, Luck, Tony wrote:
+> On Fri, Sep 17, 2021 at 12:53:53PM +0200, Borislav Petkov wrote:
+>> @@ -126,7 +123,9 @@ struct mca_config {
+>>  	      ser			: 1,
+>>  	      recovery			: 1,
+>>  	      bios_cmci_threshold	: 1,
+>> -	      __reserved		: 59;
+>> +	      /* Proper #MC exception handler is set */
+>> +	      initialized		: 1,
+>> +	      __reserved		: 58;
 > 
-...snip...
-> > > 
-> > > Thanks, if I find time for it, I will try to understand this
-> > > better and
-> > > come back with my findings.
-> > >  
-> > > > > * Can virtio_ccw_remove() get called while !cdev->online and 
-> > > > >   virtio_ccw_online() is running on a different cpu? If yes,
-> > > > > what would
-> > > > >   happen then?    
-> > > > 
-> > > > All of the remove/online/... etc. callbacks are invoked via the
-> > > > ccw bus
-> > > > code. We have to trust that it gets it correct :) (Or have the
-> > > > common
-> > > > I/O layer maintainers double-check it.)
-> > > >   
-> > > 
-> > > Vineeth, what is your take on this? Are the struct ccw_driver
-> > > virtio_ccw_remove and the virtio_ccw_online callbacks mutually
-> > > exclusive. Please notice that we may initiate the onlining by
-> > > calling ccw_device_set_online() from a workqueue.
-> > > 
-> > > @Conny: I'm not sure what is your definition of 'it gets it
-> > > correct'...
-> > > I doubt CIO can make things 100% foolproof in this area.  
-> > 
-> > Not 100% foolproof, but "don't online a device that is in the
-> > progress
-> > of going away" seems pretty basic to me.
-> > 
-> 
-> I hope Vineeth will chime in on this.
-Considering the online/offline processing, 
-The ccw_device_set_offline function or the online/offline is handled
-inside device_lock. Also, the online_store function takes care of
-avoiding multiple online/offline processing. 
+> Does this __reserved field do anything useful? It seems to
+> just be an annoyance that must be updated each time a new
+> bit is added. Surely the compiler will see that these bitfields
+> are in a "u64" and do the math and skip to the right boundary
+> without this.
 
-Now, when we consider the unconditional remove of the device,
-I am not familiar with the virtio_ccw driver. My assumptions are based
-on how CIO/dasd drivers works. If i understand correctly, the dasd
-driver sets different flags to make sure that a device_open is getting
-prevented while the the device is in progress of offline-ing. 
+Not at all. And it also seems that the current layout is not at all what
+may have been intended (the bit fields do not start at an 8-byte boundary).
 
-> 
-> > >  
-> > > > >  
-> > > > > The main addresse of these questions is Conny ;).  
-> > > 
+$ cat a.c
+#include <string.h>
+#include <stdint.h>
+struct s1 {
+        char x;
+        uint64_t a:1,
+                 b:1,
+                 c:1,
+                 d:61;
+        char y;
+};
+struct s2 {
+        char x;
+        uint64_t a:1,
+                 b:1,
+                 c:1;
+        char y;
+};
+struct s3 {
+        uint64_t x;
+        uint64_t a:1,
+                 b:1,
+                 c:1;
+        char y;
+};
+// some dummy functions to make the structs appear used and make gcc
+// actually emit debug info
+void f1(struct s1 *s) { memset(s, 0xff, sizeof(*s)); }
+void f2(struct s2 *s) { memset(s, 0xff, sizeof(*s)); }
+void f3(struct s3 *s) { memset(s, 0xff, sizeof(*s)); }
+$ gcc -o a.o -c a.c -O2 -g
+$ pahole a.o
+struct s1 {
+    char                x;                    /*     0     1 */
 
-...snip...
+    /* Bitfield combined with previous fields */
 
+    uint64_t            a:1;                  /*     0: 8  8 */
+    uint64_t            b:1;                  /*     0: 9  8 */
+    uint64_t            c:1;                  /*     0:10  8 */
+
+    /* XXX 53 bits hole, try to pack */
+
+    /* Force alignment to the next boundary: */
+    uint64_t            :0;
+
+    uint64_t            d:61;                 /*     8: 0  8 */
+
+    /* XXX 3 bits hole, try to pack */
+
+    char                y;                    /*    16     1 */
+
+    /* size: 24, cachelines: 1, members: 6 */
+    /* sum members: 2 */
+    /* sum bitfield members: 64 bits, bit holes: 2, sum bit holes: 56
+bits */
+    /* padding: 7 */
+    /* last cacheline: 24 bytes */
+};
+struct s2 {
+    char                x;                    /*     0     1 */
+
+    /* Bitfield combined with previous fields */
+
+    uint64_t            a:1;                  /*     0: 8  8 */
+    uint64_t            b:1;                  /*     0: 9  8 */
+    uint64_t            c:1;                  /*     0:10  8 */
+
+    /* XXX 5 bits hole, try to pack */
+    /* Bitfield combined with next fields */
+
+    char                y;                    /*     2     1 */
+
+    /* size: 8, cachelines: 1, members: 5 */
+    /* sum members: 2 */
+    /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 5 bits */
+    /* padding: 5 */
+    /* last cacheline: 8 bytes */
+};
+struct s3 {
+    uint64_t            x;                    /*     0     8 */
+    uint64_t            a:1;                  /*     8: 0  8 */
+    uint64_t            b:1;                  /*     8: 1  8 */
+    uint64_t            c:1;                  /*     8: 2  8 */
+
+    /* XXX 5 bits hole, try to pack */
+    /* Bitfield combined with next fields */
+
+    char                y;                    /*     9     1 */
+
+    /* size: 16, cachelines: 1, members: 5 */
+    /* sum members: 9 */
+    /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 5 bits */
+    /* padding: 6 */
+    /* last cacheline: 16 bytes */
+};
+
+And, since in the concrete case mca_config just has four bool members
+before the bitfields, we see that the 1-bit bitfields are put within the
+first 8 bytes of the struct, while the __reserved field gets an entire
+u64 all to itself:
+
+struct mca_config {
+    _Bool               dont_log_ce;          /*     0     1 */
+    _Bool               cmci_disabled;        /*     1     1 */
+    _Bool               ignore_ce;            /*     2     1 */
+    _Bool               print_all;            /*     3     1 */
+
+    /* Bitfield combined with previous fields */
+
+    long long unsigned int     lmce_disabled:1;      /*     0:32  8 */
+    long long unsigned int     disabled:1;    /*     0:33  8 */
+    long long unsigned int     ser:1;         /*     0:34  8 */
+    long long unsigned int     recovery:1;    /*     0:35  8 */
+    long long unsigned int     bios_cmci_threshold:1; /*     0:36  8 */
+
+    /* XXX 27 bits hole, try to pack */
+
+    /* Force alignment to the next boundary: */
+    long long unsigned int     :0;
+
+    long long unsigned int     __reserved:59;        /*     8: 0  8 */
+
+    /* XXX 5 bits hole, try to pack */
+
+    signed char         bootlog;              /*    16     1 */
+
+    /* XXX 3 bytes hole, try to pack */
+
+    int                 tolerant;             /*    20     4 */
+    int                 monarch_timeout;      /*    24     4 */
+    int                 panic_timeout;        /*    28     4 */
+    unsigned int        rip_msr;              /*    32     4 */
+
+    /* size: 40, cachelines: 1, members: 15 */
+    /* sum members: 21, holes: 1, sum holes: 3 */
+    /* sum bitfield members: 64 bits, bit holes: 2, sum bit holes: 32
+bits */
+    /* padding: 4 */
+    /* last cacheline: 40 bytes */
+};
+
+But why the messy mix between 1-bit bitfields and _Bools in the first place?
+
+Rasmus
