@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29598412B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F798412B0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242861AbhIUCF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        id S235022AbhIUCFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236246AbhIUBt5 (ORCPT
+        with ESMTP id S229682AbhIUBuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:49:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E653C0A0E12;
-        Mon, 20 Sep 2021 14:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=et0MvhdhrmyngXfH1Tl0dRGqqe2AQSXkxnodtir63lE=; b=KHowFi1hYx9+25v21zaYvXfc9F
-        Ba5gKPkLatl6F/9QVuf0aG9yLx8MRLHha+g85sD1HNUMMrLzCaquMLgQaywwi3K++u0QUld4AXn1C
-        TDc5y0sUw+Tvhisa9wwA22jkxntuDLQcPux0BKJWNsATr5iNiGdOGJn89M3+l2XKBZQ0pTwy6QnUv
-        LCwQmMNVCJ3+OegsxGPjN8ItWMCd0uGq3zN+1YXtk36K7cUfKad9CRVBFBGzAyC78FSVCuLm4wqPo
-        bfch3wYh8ko6sWzghaKMKmS80jtaiGAYb9CRV31XLNDv+dLs0KYYZPUi9boqtUzlwORVHtg717a8P
-        zWTwti6A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSRBD-003Htc-8W; Mon, 20 Sep 2021 21:50:34 +0000
-Date:   Mon, 20 Sep 2021 22:50:27 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Hugh Dickins <hughd@google.com>, cfijalkovich@google.com,
-        song@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
- for invalidatepage
-Message-ID: <YUkCI2I085Sos/64@casper.infradead.org>
-References: <20210917205731.262693-1-shy828301@gmail.com>
- <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
- <YUdL3lFLFHzC80Wt@casper.infradead.org>
- <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
+        Mon, 20 Sep 2021 21:50:01 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE818C06AB01;
+        Mon, 20 Sep 2021 14:54:25 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id w11so2448267plz.13;
+        Mon, 20 Sep 2021 14:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N13BqckQH7bbiU9DGK/tP2bm1aq47bRFIOq1IepoQy4=;
+        b=aO8g3FxQPDqwl6P7L0jNCV8SSST7wg2U6wBn7/qS62DIAWN2cJeJPHSpPlDGRBl1Ug
+         F0uZ9DoayEKKem+IlekAiwUBioCbI0NND4BuIEyjEDZ4vGdSoSiifyk+R27IaqvnHdET
+         PSoNxLKBU5P+MqKFNYQyhc89J6ST25RH3R2oBZ87dvD71foaWvSF3znJqjBLHUpR5G2l
+         c2KadRJ4fnFBNv+k5q9bphgka84RPMMxrbuO9gnwXIN/vTL8l9Qcr6x/WT3Oe0+qE+Ht
+         zwCLWkkvssvgtAJYIn5u7O9S8sS8J1nOz0TUTNoxPDHzzxDefuvM7WZ1BjtMUGDI98H/
+         4/Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N13BqckQH7bbiU9DGK/tP2bm1aq47bRFIOq1IepoQy4=;
+        b=llNc/zAERUioOJFNoiKbp/AxvVRFKqUZpqjNomdu3fGesEgfRcDWCzbLvs5jT8eet1
+         eKJi0Rkbl86Swns/eKO/q52VmjFgkXwaRzRk7oj3ZvQy55jSLQv61GiQzpU9cnxJQ5St
+         DMe4WjKe96fSwcCJ0YIcTUBCzIOZL8O8ja05TWFjuhJh05jhWh4TwTHqyBPwkxQB3LAm
+         gVLjghJM9jCbSQqZzrm6xNVT9YXTcAQWrF42xf7LDyYmP29xCQE8mk3h7amvSKz/t3w3
+         tJgxNB/vszQeAsoxyezWALLXW4QHJ/QPOO6Rqw94azVYTZYCIEnLH4obToEb/0ZonXv0
+         HQkw==
+X-Gm-Message-State: AOAM530hMhCEq2GU+ABUk5z2zotag9Dr2ZVK/SdL6Ze2lbiGLRUrnvPt
+        tInA5E7vuNdue7lWWhbBwaP7wjAqq5Q=
+X-Google-Smtp-Source: ABdhPJyD6Ja7PNLHpb9Jg4KhCUR45UCy/9CROIq5VQ5fjIfyRCKw+caoTAGYPYpINrPVGbgUwv9YXA==
+X-Received: by 2002:a17:903:124d:b0:13a:36d5:44f3 with SMTP id u13-20020a170903124d00b0013a36d544f3mr24655170plh.28.1632174864917;
+        Mon, 20 Sep 2021 14:54:24 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id m28sm16224297pgl.9.2021.09.20.14.54.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 14:54:24 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 0/5] net: phy: broadcom: IDDQ-SR mode
+Date:   Mon, 20 Sep 2021 14:54:13 -0700
+Message-Id: <20210920215418.3247054-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:23:41PM -0700, Yang Shi wrote:
-> On Sun, Sep 19, 2021 at 7:41 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Fri, Sep 17, 2021 at 05:07:03PM -0700, Yang Shi wrote:
-> > > > The debugging showed the page passed to invalidatepage is a huge page
-> > > > and the length is the size of huge page instead of single page due to
-> > > > read only FS THP support.  But block_invalidatepage() would throw BUG if
-> > > > the size is greater than single page.
-> >
-> > Things have already gone wrong before we get to this point.  See
-> > do_dentry_open().  You aren't supposed to be able to get a writable file
-> > descriptor on a file which has had huge pages added to the page cache
-> > without the filesystem's knowledge.  That's the problem that needs to
-> > be fixed.
-> 
-> I don't quite understand your point here. Do you mean do_dentry_open()
-> should fail for such cases instead of truncating the page cache?
+This patch series adds support for the IDDQ with soft recovery mode
+which allows power savings of roughly 150mW compared to a simple
+BMCR.PDOWN power off (called standby power down in Broadcom datasheets).
 
-No, do_dentry_open() should have truncated the page cache when it was
-called and found that there were THPs in the cache.  Then khugepaged
-should see that someone has the file open for write and decline to create
-new THPs.  So it shouldn't be possible to get here with THPs in the cache.
+In order to leverage these modes we add a new PHY driver flags for
+drivers to opt-in for that behavior, the PHY driver is modified to do
+the appropriate programming and the PHYs on which this was tested get
+updated to have an appropriate suspend/resume set of functions.
+
+Florian Fainelli (5):
+  net: phy: broadcom: Add IDDQ-SR mode
+  net: phy: broadcom: Wire suspend/resume for BCM50610 and BCM50610M
+  net: phy: broadcom: Utilize appropriate suspend for BCM54810/11
+  net: bcmgenet: Request APD, DLL disable and IDDQ-SR
+  net: dsa: bcm_sf2: Request APD, DLL disable and IDDQ-SR
+
+ drivers/net/dsa/bcm_sf2.c                    |  4 +-
+ drivers/net/ethernet/broadcom/genet/bcmmii.c |  4 +-
+ drivers/net/phy/broadcom.c                   | 59 +++++++++++++++++++-
+ include/linux/brcmphy.h                      |  8 +++
+ 4 files changed, 71 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
+
