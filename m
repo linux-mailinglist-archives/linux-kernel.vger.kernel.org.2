@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E3C411C71
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D70411E98
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhITRJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33890 "EHLO mail.kernel.org"
+        id S1347666AbhITRcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:32:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346389AbhITRHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:07:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5152E6137B;
-        Mon, 20 Sep 2021 16:55:28 +0000 (UTC)
+        id S1350840AbhITRaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:30:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B562061AD1;
+        Mon, 20 Sep 2021 17:04:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156928;
-        bh=Pe0c4Naotru07EOpxLXGah0Sv3VqrqYzrNLckeO901M=;
+        s=korg; t=1632157442;
+        bh=QRAfYCMlD1tydVAsQqC38dv/IQY/ZID3c6hiYrYC74A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PrhOxmQWFnHtBrv4VuYuXph3zqZLx2LhHo2FPmWSrEouaQ5ewo1/aDG//+Ckr/xoN
-         lvDsdYgVYNrQj20exJfvp7SZJrJL2wWIfYnbLL0kPABr36Kk2tL1CBYKzHehYb00c2
-         bVsNQSdysngM1/IJtwCm+XAxxYIcQzgGUqbJN9GE=
+        b=YAproJEDugRKldHEc6LaooZYaxRptKqq2/3uh13pSgi9EuHo4wiPC3ioWQ20TfP90
+         y3sjU9kkTGtxk1H382Kwfl9MUNCdpoFO1f+fv0xDBqQ78FlYpgz/r73rD57iIrYWsp
+         ZELUGdvTXHke6xkseVyob+iwjlu+bxSXVUIVN4eo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 151/175] memcg: enable accounting for pids in nested pid namespaces
+        stable@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 179/217] parport: remove non-zero check on count
 Date:   Mon, 20 Sep 2021 18:43:20 +0200
-Message-Id: <20210920163923.008428498@linuxfoundation.org>
+Message-Id: <20210920163930.693121502@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit fab827dbee8c2e06ca4ba000fa6c48bcf9054aba upstream.
+[ Upstream commit 0be883a0d795d9146f5325de582584147dd0dcdc ]
 
-Commit 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
-enabled memcg accounting for pids allocated from init_pid_ns.pid_cachep,
-but forgot to adjust the setting for nested pid namespaces.  As a result,
-pid memory is not accounted exactly where it is really needed, inside
-memcg-limited containers with their own pid namespaces.
+The check for count appears to be incorrect since a non-zero count
+check occurs a couple of statements earlier. Currently the check is
+always false and the dev->port->irq != PARPORT_IRQ_NONE part of the
+check is never tested and the if statement is dead-code. Fix this
+by removing the check on count.
 
-Pid was one the first kernel objects enabled for memcg accounting.
-init_pid_ns.pid_cachep marked by SLAB_ACCOUNT and we can expect that any
-new pids in the system are memcg-accounted.
+Note that this code is pre-git history, so I can't find a sha for
+it.
 
-Though recently I've noticed that it is wrong.  nested pid namespaces
-creates own slab caches for pid objects, nested pids have increased size
-because contain id both for all parent and for own pid namespaces.  The
-problem is that these slab caches are _NOT_ marked by SLAB_ACCOUNT, as a
-result any pids allocated in nested pid namespaces are not
-memcg-accounted.
-
-Pid struct in nested pid namespace consumes up to 500 bytes memory, 100000
-such objects gives us up to ~50Mb unaccounted memory, this allow container
-to exceed assigned memcg limits.
-
-Link: https://lkml.kernel.org/r/8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com
-Fixes: 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
-Cc: stable@vger.kernel.org
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Addresses-Coverity: ("Logically dead code")
+Link: https://lore.kernel.org/r/20210730100710.27405-1-colin.king@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/pid_namespace.c |    2 +-
+ drivers/parport/ieee1284_ops.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/pid_namespace.c
-+++ b/kernel/pid_namespace.c
-@@ -52,7 +52,7 @@ static struct kmem_cache *create_pid_cac
- 	snprintf(pcache->name, sizeof(pcache->name), "pid_%d", nr_ids);
- 	cachep = kmem_cache_create(pcache->name,
- 			sizeof(struct pid) + (nr_ids - 1) * sizeof(struct upid),
--			0, SLAB_HWCACHE_ALIGN, NULL);
-+			0, SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, NULL);
- 	if (cachep == NULL)
- 		goto err_cachep;
+diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
+index 5d41dda6da4e..75daa16f38b7 100644
+--- a/drivers/parport/ieee1284_ops.c
++++ b/drivers/parport/ieee1284_ops.c
+@@ -535,7 +535,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
+ 				goto out;
  
+ 			/* Yield the port for a while. */
+-			if (count && dev->port->irq != PARPORT_IRQ_NONE) {
++			if (dev->port->irq != PARPORT_IRQ_NONE) {
+ 				parport_release (dev);
+ 				schedule_timeout_interruptible(msecs_to_jiffies(40));
+ 				parport_claim_or_block (dev);
+-- 
+2.30.2
+
 
 
