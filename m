@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8A1411F7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E50C411B8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352803AbhITRlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:41:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42454 "EHLO mail.kernel.org"
+        id S237860AbhITRA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:00:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352381AbhITRjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:39:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4563F6137B;
-        Mon, 20 Sep 2021 17:07:43 +0000 (UTC)
+        id S1343683AbhITQ4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:56:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 689CB61350;
+        Mon, 20 Sep 2021 16:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157663;
-        bh=NabYh7x3+QPX3JYtMXpqmDMct38vpFNc2vD4IRFmfnc=;
+        s=korg; t=1632156686;
+        bh=7DcOuY0O7gWl9b7yzExv33fKZSCdPDnTi+RIBRHA8Og=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KrWpL+4ytgW9Epnm6yaNuuxRbMgMSFcubYWMg7t14cuZN09SRVpqsBUK0KRog6E7F
-         m+L+GYeZaqUfNZSYj8cfaiAwDTeOEfqgWX6uAqY3ZsvupUH/KWc9qFPJ/DWf9oJ2Kp
-         D/mfJoId3laR1pvy7Y8O/FnANHi+j5LVXnpcTsmg=
+        b=p6Q7pkUMCuxlMjAucbAHQP4F7w9mpuAUgOsBkSr3pLs0x6hnEMozRCc2MqFLaKH8g
+         wPQPgeVAIXF74piIE9HUoM7tzZUHY1zAEaXAJQmRzjbIXvuhRF4082mbfo8iUKDcG1
+         0/XVuytp39uC9dTBVoRAgbTHZAu/2Sx0u877zroA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Len Baker <len.baker@gmx.com>,
-        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 094/293] CIFS: Fix a potencially linear read overflow
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 007/175] cryptoloop: add a deprecation warning
 Date:   Mon, 20 Sep 2021 18:40:56 +0200
-Message-Id: <20210920163936.485327336@linuxfoundation.org>
+Message-Id: <20210920163918.308651739@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Len Baker <len.baker@gmx.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit f980d055a0f858d73d9467bb0b570721bbfcdfb8 ]
+[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
 
-strlcpy() reads the entire source buffer first. This read may exceed the
-destination size limit. This is both inefficient and can lead to linear
-read overflows if a source string is not NUL-terminated.
+Support for cryptoloop has been officially marked broken and deprecated
+in favor of dm-crypt (which supports the same broken algorithms if
+needed) in Linux 2.6.4 (released in March 2004), and support for it has
+been entirely removed from losetup in util-linux 2.23 (released in April
+2013).  Add a warning and a deprecation schedule.
 
-Also, the strnlen() call does not avoid the read overflow in the strlcpy
-function when a not NUL-terminated string is passed.
-
-So, replace this block by a call to kstrndup() that avoids this type of
-overflow and does the same.
-
-Fixes: 066ce6899484d ("cifs: rename cifs_strlcpy_to_host and make it use new functions")
-Signed-off-by: Len Baker <len.baker@gmx.com>
-Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/cifs_unicode.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/block/Kconfig      | 4 ++--
+ drivers/block/cryptoloop.c | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/cifs/cifs_unicode.c b/fs/cifs/cifs_unicode.c
-index 9986817532b1..7932e20555d2 100644
---- a/fs/cifs/cifs_unicode.c
-+++ b/fs/cifs/cifs_unicode.c
-@@ -371,14 +371,9 @@ cifs_strndup_from_utf16(const char *src, const int maxlen,
- 		if (!dst)
- 			return NULL;
- 		cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
--			       NO_MAP_UNI_RSVD);
-+				NO_MAP_UNI_RSVD);
- 	} else {
--		len = strnlen(src, maxlen);
--		len++;
--		dst = kmalloc(len, GFP_KERNEL);
--		if (!dst)
--			return NULL;
--		strlcpy(dst, src, len);
-+		dst = kstrndup(src, maxlen, GFP_KERNEL);
- 	}
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 894102fd5a06..b701c79f07e5 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -257,7 +257,7 @@ config BLK_DEV_LOOP_MIN_COUNT
+ 	  dynamically allocated with the /dev/loop-control interface.
  
- 	return dst;
+ config BLK_DEV_CRYPTOLOOP
+-	tristate "Cryptoloop Support"
++	tristate "Cryptoloop Support (DEPRECATED)"
+ 	select CRYPTO
+ 	select CRYPTO_CBC
+ 	depends on BLK_DEV_LOOP
+@@ -269,7 +269,7 @@ config BLK_DEV_CRYPTOLOOP
+ 	  WARNING: This device is not safe for journaled file systems like
+ 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
+ 	  instead, which can be configured to be on-disk compatible with the
+-	  cryptoloop device.
++	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
+ 
+ source "drivers/block/drbd/Kconfig"
+ 
+diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
+index 3d31761c0ed0..adbfd3e2a60f 100644
+--- a/drivers/block/cryptoloop.c
++++ b/drivers/block/cryptoloop.c
+@@ -203,6 +203,8 @@ init_cryptoloop(void)
+ 
+ 	if (rc)
+ 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
++	else
++		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
+ 	return rc;
+ }
+ 
 -- 
 2.30.2
 
