@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5877E411ADB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77E0411DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243861AbhITQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:52:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
+        id S1343951AbhITRXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:23:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244081AbhITQuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:50:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 719F961245;
-        Mon, 20 Sep 2021 16:48:30 +0000 (UTC)
+        id S1347027AbhITRUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:20:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90AD06140F;
+        Mon, 20 Sep 2021 17:00:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156510;
-        bh=QM53qf0i/7e0dwga1vWh5MnbgvfUlKtIQfgN/VKBaBU=;
+        s=korg; t=1632157240;
+        bh=R8SVc7jjCFfqYbEn86cu7/h+JZSJQokXW6RfvsCjOP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YcaY6VTnVmwgfVtC53MOLgozW7RJIOLOfdVpG7yusdcQzXd1Wd93xRjt/3Ws3Pzhq
-         3RpmYtpAgLsaEe/VuWU225dLODV2Hq8NyjRTrYveU4L5MPiL19++kcQ6Pm4lgRM/8Y
-         vtZNWz2yS4e4zP1oHy5LjY6XjKxNS+Zh30ZFahH4=
+        b=YGvz5BhN+bFr9nm9qg7FTIK5gKjnT5+k4fu6HZNXFfyoIgP7fvN9lxoGMurR7K+z7
+         C5LVuZ6Cnl4aZHysevkF3bfykOFigeFpFXtTiiaNrDht3lgpF1X6I/8NIYbbBDhJdM
+         pRZ2eVDXPWKX12vQpCI5Wn8mDDqot21X1tVv5fGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonas Jensen <jonas.jensen@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 061/133] mmc: moxart: Fix issue with uninitialized dma_slave_config
+        stable@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
+        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 4.14 118/217] PCI: xilinx-nwl: Enable the clock through CCF
 Date:   Mon, 20 Sep 2021 18:42:19 +0200
-Message-Id: <20210920163914.647749159@linuxfoundation.org>
+Message-Id: <20210920163928.660419640@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Hyun Kwon <hyun.kwon@xilinx.com>
 
-[ Upstream commit ee5165354d498e5bceb0b386e480ac84c5f8c28c ]
+commit de0a01f5296651d3a539f2d23d0db8f359483696 upstream.
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+Enable PCIe reference clock. There is no remove function that's why
+this should be enough for simple operation.
+Normally this clock is enabled by default by firmware but there are
+usecases where this clock should be enabled by driver itself.
+It is also good that PCIe clock is recorded in a clock framework.
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
-
-For moxart, this is probably not currently an issue but is still good to
-fix though.
-
-Fixes: 1b66e94e6b99 ("mmc: moxart: Add MOXA ART SD/MMC driver")
-Cc: Jonas Jensen <jonas.jensen@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081644.19353-3-tony@atomide.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/ee6997a08fab582b1c6de05f8be184f3fe8d5357.1624618100.git.michal.simek@xilinx.com
+Fixes: ab597d35ef11 ("PCI: xilinx-nwl: Add support for Xilinx NWL PCIe Host Controller")
+Signed-off-by: Hyun Kwon <hyun.kwon@xilinx.com>
+Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/moxart-mmc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/host/pcie-xilinx-nwl.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index bbad309679cf..41a5493cb68d 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -633,6 +633,7 @@ static int moxart_probe(struct platform_device *pdev)
- 			 host->dma_chan_tx, host->dma_chan_rx);
- 		host->have_dma = true;
+--- a/drivers/pci/host/pcie-xilinx-nwl.c
++++ b/drivers/pci/host/pcie-xilinx-nwl.c
+@@ -10,6 +10,7 @@
+  * (at your option) any later version.
+  */
  
-+		memset(&cfg, 0, sizeof(cfg));
- 		cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 		cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+@@ -171,6 +172,7 @@ struct nwl_pcie {
+ 	u8 root_busno;
+ 	struct nwl_msi msi;
+ 	struct irq_domain *legacy_irq_domain;
++	struct clk *clk;
+ 	raw_spinlock_t leg_mask_lock;
+ };
  
--- 
-2.30.2
-
+@@ -852,6 +854,16 @@ static int nwl_pcie_probe(struct platfor
+ 		return err;
+ 	}
+ 
++	pcie->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(pcie->clk))
++		return PTR_ERR(pcie->clk);
++
++	err = clk_prepare_enable(pcie->clk);
++	if (err) {
++		dev_err(dev, "can't enable PCIe ref clock\n");
++		return err;
++	}
++
+ 	err = nwl_pcie_bridge_init(pcie);
+ 	if (err) {
+ 		dev_err(dev, "HW Initialization failed\n");
 
 
