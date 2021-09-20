@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B3241255F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CBB41232C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383448AbhITSod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:44:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56448 "EHLO mail.kernel.org"
+        id S1376958AbhITSVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:21:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382301AbhITSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8664C63331;
-        Mon, 20 Sep 2021 17:31:03 +0000 (UTC)
+        id S1376720AbhITSOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:14:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2132C63293;
+        Mon, 20 Sep 2021 17:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159064;
-        bh=aU5jjJkB3VmCgVUlzT1/mI1oGjuuEmcURWIZ7K3uIXw=;
+        s=korg; t=1632158488;
+        bh=27bvuhPo2GZAAN+2aPYFH8a9E76+tBwHdyHMjnfW0Ls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMSXFpJCFUtIsI8/2tMDZdWO8ODqISSpU9YOdEYZeovecwpOSS7CsjDVGoJVX9Fv0
-         Ed9W2WB/mFLMUNti0PnJmgB/IGu1NKTjU5zwrqOExp0FLKL4xfsKZiRhCbWnnFYOZf
-         vz/u14aQjSXbFDfhZg/M3r7gHKM2XudLPJeVONEs=
+        b=1kKUCnIdWTRAOvQyVG4JlmVU2hvj21Dhi7vhRoCsvoDXMRyOO85z0GUT//8/uiKI0
+         76jUm5lsXJLB+f7TbdS2CYUntjpkT28RNyjVIVnQBShKkJ+fzphE8KLSUH9ngoQVgD
+         I92ljhKOa5cbJ/N2yZi67ZI5xOy2m8FLtmTgzNxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 058/168] net: ipa: initialize all filter table slots
-Date:   Mon, 20 Sep 2021 18:43:16 +0200
-Message-Id: <20210920163923.548389478@linuxfoundation.org>
+        stable@vger.kernel.org, Shirisha Ganta <shirisha.ganta1@ibm.com>,
+        "Pratik R. Sampat" <psampat@linux.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 179/260] cpufreq: powernv: Fix init_chip_info initialization in numa=off
+Date:   Mon, 20 Sep 2021 18:43:17 +0200
+Message-Id: <20210920163937.178640120@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Pratik R. Sampat <psampat@linux.ibm.com>
 
-commit b5c102238cea985d8126b173d06b9e1de88037ee upstream.
+commit f34ee9cb2c5ac5af426fee6fa4591a34d187e696 upstream.
 
-There is an off-by-one problem in ipa_table_init_add(), when
-initializing filter tables.
+In the numa=off kernel command-line configuration init_chip_info() loops
+around the number of chips and attempts to copy the cpumask of that node
+which is NULL for all iterations after the first chip.
 
-In that function, the number of filter table entries is determined
-based on the number of set bits in the filter map.  However that
-count does *not* include the extra "slot" in the filter table that
-holds the filter map itself.  Meanwhile, ipa_table_addr() *does*
-include the filter map in the memory it returns, but because the
-count it's provided doesn't include it, it includes one too few
-table entries.
+Hence, store the cpu mask for each chip instead of derving cpumask from
+node while populating the "chips" struct array and copy that to the
+chips[i].mask
 
-Fix this by including the extra slot for the filter map in the count
-computed in ipa_table_init_add().
-
-Note: ipa_filter_reset_table() does not have this problem; it resets
-filter table entries one by one, but does not overwrite the filter
-bitmap.
-
-Fixes: 2b9feef2b6c2 ("soc: qcom: ipa: filter and routing tables")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
+Cc: stable@vger.kernel.org # v4.3+
+Reported-by: Shirisha Ganta <shirisha.ganta1@ibm.com>
+Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+[mpe: Rename goto label to out_free_chip_cpu_mask]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210728120500.87549-2-psampat@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ipa/ipa_table.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/cpufreq/powernv-cpufreq.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ipa/ipa_table.c
-+++ b/drivers/net/ipa/ipa_table.c
-@@ -430,7 +430,8 @@ static void ipa_table_init_add(struct gs
- 	 * table region determines the number of entries it has.
- 	 */
- 	if (filter) {
--		count = hweight32(ipa->filter_map);
-+		/* Include one extra "slot" to hold the filter map itself */
-+		count = 1 + hweight32(ipa->filter_map);
- 		hash_count = hash_mem->size ? count : 0;
- 	} else {
- 		count = mem->size / sizeof(__le64);
+--- a/drivers/cpufreq/powernv-cpufreq.c
++++ b/drivers/cpufreq/powernv-cpufreq.c
+@@ -36,6 +36,7 @@
+ #define MAX_PSTATE_SHIFT	32
+ #define LPSTATE_SHIFT		48
+ #define GPSTATE_SHIFT		56
++#define MAX_NR_CHIPS		32
+ 
+ #define MAX_RAMP_DOWN_TIME				5120
+ /*
+@@ -1050,12 +1051,20 @@ static int init_chip_info(void)
+ 	unsigned int *chip;
+ 	unsigned int cpu, i;
+ 	unsigned int prev_chip_id = UINT_MAX;
++	cpumask_t *chip_cpu_mask;
+ 	int ret = 0;
+ 
+ 	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
+ 	if (!chip)
+ 		return -ENOMEM;
+ 
++	/* Allocate a chip cpu mask large enough to fit mask for all chips */
++	chip_cpu_mask = kcalloc(MAX_NR_CHIPS, sizeof(cpumask_t), GFP_KERNEL);
++	if (!chip_cpu_mask) {
++		ret = -ENOMEM;
++		goto free_and_return;
++	}
++
+ 	for_each_possible_cpu(cpu) {
+ 		unsigned int id = cpu_to_chip_id(cpu);
+ 
+@@ -1063,22 +1072,25 @@ static int init_chip_info(void)
+ 			prev_chip_id = id;
+ 			chip[nr_chips++] = id;
+ 		}
++		cpumask_set_cpu(cpu, &chip_cpu_mask[nr_chips-1]);
+ 	}
+ 
+ 	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
+ 	if (!chips) {
+ 		ret = -ENOMEM;
+-		goto free_and_return;
++		goto out_free_chip_cpu_mask;
+ 	}
+ 
+ 	for (i = 0; i < nr_chips; i++) {
+ 		chips[i].id = chip[i];
+-		cpumask_copy(&chips[i].mask, cpumask_of_node(chip[i]));
++		cpumask_copy(&chips[i].mask, &chip_cpu_mask[i]);
+ 		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
+ 		for_each_cpu(cpu, &chips[i].mask)
+ 			per_cpu(chip_info, cpu) =  &chips[i];
+ 	}
+ 
++out_free_chip_cpu_mask:
++	kfree(chip_cpu_mask);
+ free_and_return:
+ 	kfree(chip);
+ 	return ret;
 
 
