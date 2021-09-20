@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49054411BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B30C411A3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343583AbhITRBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
+        id S237908AbhITQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344052AbhITQ5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:57:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30ABC613A5;
-        Mon, 20 Sep 2021 16:51:46 +0000 (UTC)
+        id S240451AbhITQri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F62E61213;
+        Mon, 20 Sep 2021 16:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156706;
-        bh=W8EP0npO/PB/QkoBKSMmMWj/J4zuxfY8jfMx9HjwAAM=;
+        s=korg; t=1632156371;
+        bh=lT9AcnaDFYupHCAPOGiNrpbNTJbT8jM7aaKkVAzgiuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGW2xAAI6xXPF5PzO0R4q8EIuZdUQoMcn++zDOiedQPyhDZUaoGmo5JLvIlXONWcL
-         nugnvEMvit1IWP8mijHXj72O5dLJTDxQTGF+CwMGgXI+kSVEP0z7/dHlSy9w9Js0ep
-         ddji4xrogOfnNMtSwxMZHIQuSMa0GtsZL06X2sjI=
+        b=BtlXErAynyK2OYFvjcs+dYwqsi5LUA2mEBa+f26me3ixagkoSrYHXjpAPquksA/vw
+         eysNh2eob0A0SN/n1rIgb5QrqEJ82DPC985VHGFVva1tP7F4dyZdtw3vwkaJa2WSZs
+         kv7Rey6xynnwD7sCRWHzmg3vsbt8d79DOiRJd5r0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Purna Chandra Mandal <purna.mandal@microchip.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 049/175] spi: spi-pic32: Fix issue with uninitialized dma_slave_config
-Date:   Mon, 20 Sep 2021 18:41:38 +0200
-Message-Id: <20210920163919.659583453@linuxfoundation.org>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yisheng Xie <xieyisheng1@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH 4.4 021/133] mm/kmemleak.c: make cond_resched() rate-limiting more efficient
+Date:   Mon, 20 Sep 2021 18:41:39 +0200
+Message-Id: <20210920163913.305406107@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Andrew Morton <akpm@linux-foundation.org>
 
-[ Upstream commit 976c1de1de147bb7f4e0d87482f375221c05aeaf ]
+commit 13ab183d138f607d885e995d625e58d47678bf97 upstream.
 
-Depending on the DMA driver being used, the struct dma_slave_config may
-need to be initialized to zero for the unused data.
+Commit bde5f6bc68db ("kmemleak: add scheduling point to
+kmemleak_scan()") tries to rate-limit the frequency of cond_resched()
+calls, but does it in a way which might incur an expensive division
+operation in the inner loop.  Simplify this.
 
-For example, we have three DMA drivers using src_port_window_size and
-dst_port_window_size. If these are left uninitialized, it can cause DMA
-failures.
-
-For spi-pic32, this is probably not currently an issue but is still good to
-fix though.
-
-Fixes: 1bcb9f8ceb67 ("spi: spi-pic32: Add PIC32 SPI master driver")
-Cc: Purna Chandra Mandal <purna.mandal@microchip.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210810081727.19491-2-tony@atomide.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: bde5f6bc68db5 ("kmemleak: add scheduling point to kmemleak_scan()")
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Yisheng Xie <xieyisheng1@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-pic32.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/kmemleak.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
-index 9a97ad973c41..021dddf484e5 100644
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -369,6 +369,7 @@ static int pic32_spi_dma_config(struct pic32_spi *pic32s, u32 dma_width)
- 	struct dma_slave_config cfg;
- 	int ret;
- 
-+	memset(&cfg, 0, sizeof(cfg));
- 	cfg.device_fc = true;
- 	cfg.src_addr = pic32s->dma_base + buf_offset;
- 	cfg.dst_addr = pic32s->dma_base + buf_offset;
--- 
-2.30.2
-
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -1394,7 +1394,7 @@ static void kmemleak_scan(void)
+ 			if (page_count(page) == 0)
+ 				continue;
+ 			scan_block(page, page + 1, NULL);
+-			if (!(pfn % (MAX_SCAN_SIZE / sizeof(*page))))
++			if (!(pfn & 63))
+ 				cond_resched();
+ 		}
+ 	}
 
 
