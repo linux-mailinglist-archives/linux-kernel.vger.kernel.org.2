@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE05412B23
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E2F412B24
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244475AbhIUCIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
+        id S244560AbhIUCIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236923AbhIUBvu (ORCPT
+        with ESMTP id S230446AbhIUBwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:51:50 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF67C0363DE
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:08:08 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id x2so6106324ilm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:08:08 -0700 (PDT)
+        Mon, 20 Sep 2021 21:52:33 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76760C0386F3;
+        Mon, 20 Sep 2021 16:17:03 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id p12-20020a17090adf8c00b0019c959bc795so1146369pjv.1;
+        Mon, 20 Sep 2021 16:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6nsdqj3UHDbO3giqKZCyQmFR45po2boiCmbBviozSlc=;
-        b=0p+zZCBqCGtcXQqUWVQUmzHqR7f/oLGHPoU1FnYxFuhsiysrcnEBpLeJ6qIQNhWYei
-         NJtWaLkEpPJusdafyD1/LbfWbNrdeEpNdHddhACIH+RgALgMVyfWU5OlnqY/KyWRANOT
-         xo02k58GP+Dpsbl63sVnyMPRXi8Htk3p7gM61cvNv8b4JRxI0AgSGkW+VdeC/PEvQkgq
-         sH1MIdoUkvggXCRTI77mFgKtanO27qcYtVruyYxfFH/Ywrk87W6D2O10Pisy/qD93le/
-         +8fLshkXRz93aCE7GtfU3LiiGmTue3girs11cHMR8IKMy50VO7GO7CadfMt4Fm+m5YMq
-         9l3g==
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=eNQBS9qfblRsdVqWYJD5x+d4uzCNj7MCyUPZAo2uzlo=;
+        b=Seuo7VGOqHpbCnei1QTVBP4oxvEjox/bWM+gsFCQlYiYqttK+J2G6Fi/b3PJRII6m5
+         NVtUG+wQZb6S+kdSzUaZ3MuY2MdHBNpcYKxGcmkz/oA1ZSK9BKaQtNm1YLoPVtTRAWo8
+         LfnLVpbhNmESkJkv6bbWY3HgTaWt+h24ltZUAsYNkqZ/JoDfL+LKLRiBDt5Y0CaGzjoL
+         T3vCm6Hf6xGffZ95IKgkoHAvyy+8AAKJ0x4LcJmZ+MhCfUrbaxvTHXIhebeDaAPJKpt3
+         RzR2qxj57lZCUCX727NuzJd6iCsKDCMtCY0AKgvFFvcNbURpPA0CMkQAc3hqErzDSvJ4
+         Ikiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
          :content-transfer-encoding;
-        bh=6nsdqj3UHDbO3giqKZCyQmFR45po2boiCmbBviozSlc=;
-        b=e/EiSBU/Gb2WhexKGL5RqDbPnT8jOkVvybS4b0ZM6TjxR9ugr7bzaTsaORGaU+Zz/n
-         u0vuKsdQ4HjWjKxr8Unxm9mtYvlz1/VlooYctotsVS5HYlcB867Kbz9dUqbAmV57IGR+
-         9w/RfCjPo0rjOg6QpbhULpR7DE/QcdlMCyvTt+ulMRTi37pQVsERlXi64CBadW1Av0tS
-         9/0iZdyTSyKjjNnmvMEB03CEr2OIoOdDSyA9vU4oT8dhzZ0XeoGJFcb1cQOgNHSk8QZU
-         OpX8myLdLK6gfr4lw53x+7dOw9H1MhWuyuttTnxpkJzS9cCCPZ0ICx0so/z4I8l1IBK3
-         pD4Q==
-X-Gm-Message-State: AOAM531RhYT6/zIGWDZfg089OX/yiq972fpXP6A3nu0zBddjnWcWTT6o
-        aB3Rgm7Z/SCvCiHYWKcTjCohoA/wOMSGAA==
-X-Google-Smtp-Source: ABdhPJyWJswT76DlW9F8kqRCuz6bnBO3G6KG75a2BeFNfZTl0MIwdiG0J8JUkJaQDGiIljlc2b22sQ==
-X-Received: by 2002:a05:6e02:b2d:: with SMTP id e13mr6149731ilu.154.1632179287162;
-        Mon, 20 Sep 2021 16:08:07 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id o11sm9147672ilq.12.2021.09.20.16.08.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 16:08:06 -0700 (PDT)
-Subject: Re: [PATCH] [RFC] io_uring: warning about unused-but-set parameter
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210920121352.93063-1-arnd@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5458ee0e-573c-fbc4-5cdd-5f319f78e3cb@kernel.dk>
-Date:   Mon, 20 Sep 2021 17:08:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210920121352.93063-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        bh=eNQBS9qfblRsdVqWYJD5x+d4uzCNj7MCyUPZAo2uzlo=;
+        b=5/4Wm0nRznKI2y/xJfkJtPXaG+CWzbTwYRwVAJeXKM6NCkEPqA2bWy8qCASmrUI+Vi
+         Grz8MHm8Cqlb7e3fclEisryVpoO2Q7JPHIgK0Ky3G7QUiAP/grr+1qoiNPvDlZlXkrHB
+         W6CHwRgTBMw0FGcCg9lbcqYfHysOV5NbotRJzxk6HrBU5HO3ekab3SrX0t8ETmgeOzQY
+         NjVI+GUBwD9zrRFNXZPSHBE2BiHGIz/Q8ojwFyLOViw7HKaLJWNw2mku9BEu30/gu4CB
+         RyGxKQSj8vCANGv+FPUrMJmUTi7VOXpQjO01Y3xw9RQWhRP0pMqJMlunmpN7ukEz0Gsw
+         ZOlA==
+X-Gm-Message-State: AOAM532s8lzeYa+QT7H43LaBOZOT4uyCHI3fr2yk/JR1IToDTQJW/hFw
+        /WauyoqMe5mULQcbRkREfv0VxJ7hrqx2fzCyKTg=
+X-Google-Smtp-Source: ABdhPJzx5qKUH0MnMU3pAOrJOBfIhcDYEyxGfHhUsYi/6CJJfLHjEWnnpLC/llwNP3N90KFaU/eRDA==
+X-Received: by 2002:a17:902:e80e:b0:13d:bb71:b1c0 with SMTP id u14-20020a170902e80e00b0013dbb71b1c0mr2477301plg.29.1632179822263;
+        Mon, 20 Sep 2021 16:17:02 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
+        by smtp.gmail.com with ESMTPSA id j5sm11191790pga.52.2021.09.20.16.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 16:17:01 -0700 (PDT)
+Message-ID: <6149166d.1c69fb81.9375f.8f63@mx.google.com>
+Date:   Mon, 20 Sep 2021 16:17:01 -0700 (PDT)
+X-Google-Original-Date: Mon, 20 Sep 2021 23:16:55 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+Subject: RE: [PATCH 5.14 000/168] 5.14.7-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 6:13 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, 20 Sep 2021 18:42:18 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.14.7 release.
+> There are 168 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> When enabling -Wunused warnings by building with W=1, I get an
-> instance of the -Wunused-but-set-parameter warning in the io_uring code:
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
 > 
-> fs/io_uring.c: In function 'io_queue_async_work':
-> fs/io_uring.c:1445:61: error: parameter 'locked' set but not used [-Werror=unused-but-set-parameter]
->  1445 | static void io_queue_async_work(struct io_kiocb *req, bool *locked)
->       |                                                       ~~~~~~^~~~~~
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
-> There are very few warnings of this type, so it would be nice to enable
-> this by default and fix all the existing instances. I was almost
-> done, but this was added recently as a precaution to prevent code
-> from using the parameter, which could be done by either removing
-> the initialization, or by adding a (fake) use of the variable, which
-> I do here with the cast to void.
+> thanks,
+> 
+> greg k-h
+> 
 
-I would just rename the argument here 'dont_use' or something like that,
-that should be enough of a signal for future cases that it should need
-extra consideration.
-
--- 
-Jens Axboe
+5.14.7-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
