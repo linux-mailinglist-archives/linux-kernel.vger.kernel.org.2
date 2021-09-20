@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B50412389
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE37041215E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346695AbhITSZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:25:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40568 "EHLO mail.kernel.org"
+        id S1357822AbhITSFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377344AbhITSSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:18:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F20D61A71;
-        Mon, 20 Sep 2021 17:22:57 +0000 (UTC)
+        id S1356129AbhITR6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:58:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABD62613AB;
+        Mon, 20 Sep 2021 17:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158577;
-        bh=o3UecA5NoXInC+2F7XnJOOzYfdBMDOub+0YzEM8KmZA=;
+        s=korg; t=1632158115;
+        bh=CF4znAEktDes8o/h9vI0NdXDlx+HSW6xSZRtfRzHPro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tWLSkSkEeqtRA7ZD16wM3L8kZPz+UFDzP6HWjLy/50SitS3AaKIoomJo54GCw/l+z
-         HzrrjHXNsQFmSQdL181Zq8i6vSaZh8Z4WVw60KpxdAIlfU/Vy/aJy1x7jwNefBzQJu
-         5Fhm7Pt+jTT59SSX5Itb4FU+4gkr0h3r01UDIooc=
+        b=OTRc3nAmzQoo937/+0ykNSqCepR4ZqaIJLQVNr182LZ8dUpk8rN1BQzv6qq1RU92r
+         XWGXXUu5yBkqhiuJVZhsohMDyJMITnSB0gTF6QWf9OW8w+HJz8bmknFWd/4uetzZOb
+         uK6vxktqFAzltNuwXiDIr2B3USICpQcKaK7Cjpd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.4 219/260] events: Reuse value read using READ_ONCE instead of re-reading it
-Date:   Mon, 20 Sep 2021 18:43:57 +0200
-Message-Id: <20210920163938.552568331@linuxfoundation.org>
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 276/293] mfd: Dont use irq_create_mapping() to resolve a mapping
+Date:   Mon, 20 Sep 2021 18:43:58 +0200
+Message-Id: <20210920163942.863804957@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baptiste Lepers <baptiste.lepers@gmail.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit b89a05b21f46150ac10a962aa50109250b56b03b upstream.
+[ Upstream commit 9ff80e2de36d0554e3a6da18a171719fe8663c17 ]
 
-In perf_event_addr_filters_apply, the task associated with
-the event (event->ctx->task) is read using READ_ONCE at the beginning
-of the function, checked, and then re-read from event->ctx->task,
-voiding all guarantees of the checks. Reuse the value that was read by
-READ_ONCE to ensure the consistency of the task struct throughout the
-function.
+Although irq_create_mapping() is able to deal with duplicate
+mappings, it really isn't supposed to be a substitute for
+irq_find_mapping(), and can result in allocations that take place
+in atomic context if the mapping didn't exist.
 
-Fixes: 375637bc52495 ("perf/core: Introduce address range filtering")
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210906015310.12802-1-baptiste.lepers@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the handful of MFD drivers that use irq_create_mapping() in
+interrupt context by using irq_find_mapping() instead.
+
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/ab8500-core.c | 2 +-
+ drivers/mfd/stmpe.c       | 4 ++--
+ drivers/mfd/tc3589x.c     | 2 +-
+ drivers/mfd/wm8994-irq.c  | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9259,7 +9259,7 @@ static void perf_event_addr_filters_appl
- 		return;
+diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
+index 11ab17f64c64..f0527e769867 100644
+--- a/drivers/mfd/ab8500-core.c
++++ b/drivers/mfd/ab8500-core.c
+@@ -493,7 +493,7 @@ static int ab8500_handle_hierarchical_line(struct ab8500 *ab8500,
+ 		if (line == AB8540_INT_GPIO43F || line == AB8540_INT_GPIO44F)
+ 			line += 1;
  
- 	if (ifh->nr_file_filters) {
--		mm = get_task_mm(event->ctx->task);
-+		mm = get_task_mm(task);
- 		if (!mm)
- 			goto restart;
+-		handle_nested_irq(irq_create_mapping(ab8500->domain, line));
++		handle_nested_irq(irq_find_mapping(ab8500->domain, line));
+ 	}
  
+ 	return 0;
+diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+index 566caca4efd8..722ad2c368a5 100644
+--- a/drivers/mfd/stmpe.c
++++ b/drivers/mfd/stmpe.c
+@@ -1035,7 +1035,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
+ 
+ 	if (variant->id_val == STMPE801_ID ||
+ 	    variant->id_val == STMPE1600_ID) {
+-		int base = irq_create_mapping(stmpe->domain, 0);
++		int base = irq_find_mapping(stmpe->domain, 0);
+ 
+ 		handle_nested_irq(base);
+ 		return IRQ_HANDLED;
+@@ -1063,7 +1063,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
+ 		while (status) {
+ 			int bit = __ffs(status);
+ 			int line = bank * 8 + bit;
+-			int nestedirq = irq_create_mapping(stmpe->domain, line);
++			int nestedirq = irq_find_mapping(stmpe->domain, line);
+ 
+ 			handle_nested_irq(nestedirq);
+ 			status &= ~(1 << bit);
+diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
+index cc9e563f23aa..7062baf60685 100644
+--- a/drivers/mfd/tc3589x.c
++++ b/drivers/mfd/tc3589x.c
+@@ -187,7 +187,7 @@ again:
+ 
+ 	while (status) {
+ 		int bit = __ffs(status);
+-		int virq = irq_create_mapping(tc3589x->domain, bit);
++		int virq = irq_find_mapping(tc3589x->domain, bit);
+ 
+ 		handle_nested_irq(virq);
+ 		status &= ~(1 << bit);
+diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
+index 18710f3b5c53..2c58d9b99a39 100644
+--- a/drivers/mfd/wm8994-irq.c
++++ b/drivers/mfd/wm8994-irq.c
+@@ -159,7 +159,7 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
+ 	struct wm8994 *wm8994 = data;
+ 
+ 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
+-		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
++		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.30.2
+
 
 
