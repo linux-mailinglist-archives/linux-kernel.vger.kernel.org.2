@@ -2,146 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17D9411065
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ACA411067
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbhITHo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:44:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234240AbhITHo0 (ORCPT
+        id S235107AbhITHpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:45:02 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:52861 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231657AbhITHpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:44:26 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC70C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:43:00 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id n78so10330546oig.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=49jVXnghB6poIDSvM4LgKCb9bcAvYA/ir6Ru3tRkU/8=;
-        b=fK2ik8Zisaqc+Z856BI2UOSShF5hzyv/VJz+1sK982FVD55sBfOWRXC6n2q37lYi7B
-         8rPL9WQn7h2AashaaxxCK+HzikrDy/v3+XJkJTNo3mw52KeKvy0dUWUtTGIV7cihSZQe
-         1ulSLHdXj1a2e6eHX3o4oxA1im/5DZju7GIUUGdbcvIddRMeQUyNMtRi2YxWCl/5SVEH
-         IdMJtuTzz1SDaEu/ZxcgR4oEHzpbKuJqH89i1yQRdWezIO95pipirW93FcYBI/m+Ie/p
-         lAk/zyJ5n2TAZbhErlkkE+4ckQeUDOjZz/KIUuArADemcX0/KC82OEmUlEahi9+Ert74
-         fIog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=49jVXnghB6poIDSvM4LgKCb9bcAvYA/ir6Ru3tRkU/8=;
-        b=0oBukGZuvSiOK/s0qBsEjTFpT2dcaRDSsZhFQ78cmV2Yrl+3qlvbIsJchrEErPD3Bb
-         64T6QqblUPOWjwGn6IPUBMtdPM1XTv/QSODvTfvxGhVBvcN7QiuLNJ1AeLABjIqj5IVF
-         z+QVeJ+LGA6PDGXF7SRotejLqaC9Fu6CbA7399wVYAQsagZws9pyhkahVVk51xiw6wB2
-         hpNBsVT74xCjGHGUqcTUcdBY2mT8qdUzSC/WgrBbZKIlXY+niFIb6qpBlcktT09SRgv6
-         PHCRnaAqu9SMQ51ZMW0XjbLRq+k+rs27rSNhtKmnzwVkPxhd0gDe8GJbUUbM9Z9aoTWS
-         5aqw==
-X-Gm-Message-State: AOAM5322TEA5CuOFU6kD/ZBUb8FCLUbqty50IMF14u7/BE/JuQOPgkyC
-        xZBcY1me0iz5LXqOwdLg2swxRZD24fxN9b5JMcJC3ckZ2xs=
-X-Google-Smtp-Source: ABdhPJx/OxO/zcoKfTxTeh9Zg6lY+fddmYbXlrVzs+a0ThwElWA9OrFLs5x6CdzZqU1oCcYROchxu05dfuzCJ4mZpxI=
-X-Received: by 2002:aca:3083:: with SMTP id w125mr3109358oiw.109.1632123779609;
- Mon, 20 Sep 2021 00:42:59 -0700 (PDT)
+        Mon, 20 Sep 2021 03:45:01 -0400
+Received: from [127.0.0.1] (ip-109-43-48-5.web.vodafone.de [109.43.48.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 2536522205;
+        Mon, 20 Sep 2021 09:43:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1632123810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jG+FiHLnsnQBouOgKZIw3mJf4cZfLDOlFHAh4FbgyyE=;
+        b=oTr7dekHcylXJI3ctaSGGEIpcd+KbBzAu3ARkdt7wQG/GvZJ1N5wPBBQ3Ryklgg4KoDEwg
+        eEpQwfiIIQ3AzjIPbXL4SPTFdYJmmM8/6j5oPhvHZDbR2WOYLo9Zz2qxeDFFcqYzvIelbr
+        l/4gT0v9B1c9BzYsxl9v/5AAyup2k2s=
+Date:   Mon, 20 Sep 2021 09:43:23 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>
+CC:     devicetree@vger.kernel.org,
+        =?ISO-8859-1?Q?Guido_G=FCnther?= <agx@sigxcpu.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_arm64=3A_dts=3A_imx8mm-kontron-n8?= =?US-ASCII?Q?01x-som=3A_do_not_allow_to_switch_off_buck2?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <d618c505-43e6-01a7-4d2a-847dad33b43e@kontron.de>
+References: <20210915120325.20248-1-heiko.thiery@gmail.com> <7e7ee4244ababc0a46e0875222c7e37d@walle.cc> <898fd5e0-2073-3689-89b6-2c5071773786@kontron.de> <CAEyMn7ZbJr0_2Phc2rW7sDYQu4AABWPZ1F7xDgaS5U7ha7iqzA@mail.gmail.com> <9bcf7b749dca57d42aa2e7afd88b5a26f3eeff2a.camel@pengutronix.de> <CAEyMn7aa=-UKvUz4pWOWZJbPh7TTgzmDpmNKOTYM5g0G54xU2Q@mail.gmail.com> <d618c505-43e6-01a7-4d2a-847dad33b43e@kontron.de>
+Message-ID: <447B96FA-2B75-4C72-A72B-1C1D29137B2C@walle.cc>
 MIME-Version: 1.0
-References: <00000000000020104105cc685624@google.com>
-In-Reply-To: <00000000000020104105cc685624@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 20 Sep 2021 09:42:48 +0200
-Message-ID: <CACT4Y+b+KKtY=Ok3Ha0-i2JO6v6Mpe9fE6HXM+qagf_b12wENQ@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in __free_one_page
-To:     syzbot <syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sept 2021 at 09:36, syzbot
-<syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com> wrote:
+Am 20=2E September 2021 09:31:20 MESZ schrieb Frieder Schrempf <frieder=2Es=
+chrempf@kontron=2Ede>:
+>On 17=2E09=2E21 18:10, Heiko Thiery wrote:
+>> Hi Lucas,
+>>=20
+>> Am Fr=2E, 17=2E Sept=2E 2021 um 13:44 Uhr schrieb Lucas Stach
+>> <l=2Estach@pengutronix=2Ede>:
+>>>
+>>> Am Freitag, dem 17=2E09=2E2021 um 09:28 +0200 schrieb Heiko Thiery:
+>>>> Hi Frieder,
+>>>>
+>>>> Am Mi=2E, 15=2E Sept=2E 2021 um 14:09 Uhr schrieb Frieder Schrempf
+>>>> <frieder=2Eschrempf@kontron=2Ede>:
+>>>>>
+>>>>> On 15=2E09=2E21 14:05, Michael Walle wrote:
+>>>>>> Am 2021-09-15 14:03, schrieb Heiko Thiery:
+>>>>>>> The buck2 output of the PMIC is the VDD core voltage of the cpu=2E
+>>>>>>> Switching off this will poweroff the CPU=2E Add the 'regulator-alw=
+ays-on'
+>>>>>>> property to avoid this=2E
+>>>>>>
+>>>>>> Mh, have this ever worked? Is there a commit which introduced a reg=
+ression?
+>>>>>
+>>>>> Yes, this did work before, even without 'regulator-always-on'=2E I
+>>>>> currently don't understand why this is needed=2E The regulator is
+>>>>> referenced in the CPU nodes as 'cpu-supply'=2E This should be enough=
+ to
+>>>>> not disable it as long as the CPU is up=2E
+>>>>
+>>>> I rechecked that with 5=2E11, 5=2E10 and 5=2E9 and I see on all of th=
+em the
+>>>> same issue:
+>>>>
+>>>> [ 31=2E716031] vdd-5v: disabling
+>>>> [ 31=2E719032] rst-usb-eth2: disabling
+>>>> [ 31=2E722553] buck2: disabling
+>>>>
+>>>> While on that I tried to compare with other boards and see that they
+>>>> also have the cpu-voltage marked as "regulator-always-on"=2E The only
+>>>> exception in dts/freescale is in imx8mq-librem5-devkit=2Edts [1] that
+>>>> has not set this property=2E
+>>>>
+>>>> I agree with you and don't understand why this is happening=2E Has
+>>>> anyone else an explanation?
+>>>>
+>>>> [1] https://eur04=2Esafelinks=2Eprotection=2Eoutlook=2Ecom/?url=3Dhtt=
+ps%3A%2F%2Felixir=2Ebootlin=2Ecom%2Flinux%2Flatest%2Fsource%2Farch%2Farm64%=
+2Fboot%2Fdts%2Ffreescale%2Fimx8mq-librem5-devkit=2Edts%23L319&amp;data=3D04=
+%7C01%7Cfrieder=2Eschrempf%40kontron=2Ede%7Cce9d266ad78a4d06721008d979f5aee=
+d%7C8c9d3c973fd941c8a2b1646f3942daf1%7C0%7C0%7C637674918380815550%7CUnknown=
+%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6=
+Mn0%3D%7C1000&amp;sdata=3DPsTKX4MXGwvvP6WxmQ1OWc8e32YI6Nsu%2FEkcNR4V8is%3D&=
+amp;reserved=3D0
+>>>>
+>>> Maybe your kernel config is missing the cpufreq driver, so you don't
+>>> have a consumer of the regulator?
+>>>
+>>> Marking the regulator as always-on seems like the right thing to do,
+>>> you don't want to depend on a consumer showing up to make sure that
+>>> your CPU voltage isn't cut=2E=2E=2E
+>>=20
+>> shouldn't it be that the node cpu-supply here is a consumer of the
+>> referenced voltage?
 >
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    d4d016caa4b8 alpha: move __udiv_qrnnd library function to ..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1564ae79300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
-> dashboard link: https://syzkaller.appspot.com/bug?extid=afe1d3c5ccb5940c372a
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com
+>Yes, but as Michael and Lucas noted, the consumer is only active if the
+>cpufreq driver is loaded and we don't want to depend on this=2E In my
+>config I always had this compiled into the kernel so I didn't notice
+>that the always-on property is missing=2E
 
-Looking at the page description printed before the BUG in the console
-output, I think the root cause is in +io_uring.
+Hm=2E So any cpu core voltage has to have the "always-on" property? On any=
+ SoC? Shouldn't there be some code to prevent the disabling of the voltage =
+if the cpu nodes have a cpu-supply phandle?
 
->  io_mem_free.part.0+0xf7/0x140 fs/io_uring.c:8708
->  io_mem_free fs/io_uring.c:8703 [inline]
->  io_ring_ctx_free fs/io_uring.c:9250 [inline]
->  io_ring_exit_work+0xf20/0x1980 fs/io_uring.c:9408
->  process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
->  worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
->  kthread+0x3e5/0x4d0 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> ------------[ cut here ]------------
-> kernel BUG at mm/page_alloc.c:1073!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.15.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: mm_percpu_wq vmstat_update
-> RIP: 0010:__free_one_page+0xa10/0xe30 mm/page_alloc.c:1073
-> Code: 43 34 85 c0 0f 84 79 f9 ff ff 48 c7 c6 80 1b 97 89 48 89 ef e8 61 dd f6 ff 0f 0b 48 c7 c6 60 1a 97 89 4c 89 ef e8 50 dd f6 ff <0f> 0b 0f 0b 48 c7 c6 c0 1a 97 89 4c 89 ef e8 3d dd f6 ff 0f 0b 48
-> RSP: 0018:ffffc90000ca7968 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: ffffc90000ca7a60 RCX: 0000000000000000
-> RDX: ffff888010e40000 RSI: ffffffff81b2f6b0 RDI: 0000000000000003
-> RBP: 0000000000152200 R08: 0000000000000018 R09: 00000000ffffffff
-> R10: ffffffff88f44b19 R11: 00000000ffffffff R12: 0000000000000009
-> R13: ffffea0005488000 R14: 0000000000000000 R15: ffff88823fff8e00
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000000 CR3: 0000000036db1000 CR4: 00000000001526f0
-> Call Trace:
->  free_pcppages_bulk+0x533/0x8a0 mm/page_alloc.c:1537
->  drain_zone_pages+0x173/0x440 mm/page_alloc.c:3079
->  refresh_cpu_vm_stats+0x355/0x5d0 mm/vmstat.c:874
->  vmstat_update+0xe/0xa0 mm/vmstat.c:1910
->  process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
->  worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
->  kthread+0x3e5/0x4d0 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> Modules linked in:
-> ---[ end trace e038b7c668ec2f59 ]---
-> RIP: 0010:__free_one_page+0xa10/0xe30 mm/page_alloc.c:1073
-> Code: 43 34 85 c0 0f 84 79 f9 ff ff 48 c7 c6 80 1b 97 89 48 89 ef e8 61 dd f6 ff 0f 0b 48 c7 c6 60 1a 97 89 4c 89 ef e8 50 dd f6 ff <0f> 0b 0f 0b 48 c7 c6 c0 1a 97 89 4c 89 ef e8 3d dd f6 ff 0f 0b 48
-> RSP: 0018:ffffc90000ca7968 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: ffffc90000ca7a60 RCX: 0000000000000000
-> RDX: ffff888010e40000 RSI: ffffffff81b2f6b0 RDI: 0000000000000003
-> RBP: 0000000000152200 R08: 0000000000000018 R09: 00000000ffffffff
-> R10: ffffffff88f44b19 R11: 00000000ffffffff R12: 0000000000000009
-> R13: ffffea0005488000 R14: 0000000000000000 R15: ffff88823fff8e00
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000000 CR3: 0000000036db1000 CR4: 00000000001526f0
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000020104105cc685624%40google.com.
+-michael
+
