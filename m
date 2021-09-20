@@ -2,273 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F3E41154B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05AE411551
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239149AbhITNJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbhITNJ2 (ORCPT
+        id S239190AbhITNMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:12:44 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:53654 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237614AbhITNMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:09:28 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6CBC061574;
-        Mon, 20 Sep 2021 06:08:01 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id u18so17338792pgf.0;
-        Mon, 20 Sep 2021 06:08:01 -0700 (PDT)
+        Mon, 20 Sep 2021 09:12:43 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KBOOU0000640;
+        Mon, 20 Sep 2021 13:10:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=d1076bRUThm2F7y80nxy5PxzvPy69mHuYJ6XEB7hbYM=;
+ b=c7dBWPQZDOLNiP5nsBmzP3oGKuzeG4aMyTTYgpfSw31DYWrWIg/o4GiQnzwhFnhpHW4d
+ ZNJZzuhRKfCxTXSUjPmm9wx/WKTY3lkMbrDORZm3OJ3bn8WOgrK13qM7ajdA4ftk+5vl
+ CjpPoYZ/7n7b1qIc/8PGHhIPPLBtw776dTdIoZ7JWqWRxpxqV5z1Piw4NXermq7gafl3
+ DR6pV0SfEqx9D/C9/RcWH5LWSNC1IB+TwDJFcrCiWBQuYp8p9kyB7kzXGNFLDHF3Y/jK
+ aQlCU+/m9hQvcWYIz8yJHp94xxzo7+0lnX3zDubn/QKonAYgkIE9ZqwbbEVgZdd7rrYd 9g== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=d1076bRUThm2F7y80nxy5PxzvPy69mHuYJ6XEB7hbYM=;
+ b=RxFiNsOADIPi9xFhLJ5IVoGB46MZGsnlfzOTFHUj/SbjL3WSrBAknsEKMyTvecGqpRlO
+ tlykVhDvkmkxeCsBxdCZ0IQQzo6bXhfo4xFvndGEpis1AX6c4hXEMbNB1kYHjrwu2MJH
+ Z/200XxIHtgUXGzG4/6zfg85FhoKK/ak/ejRvCnXInHDpDGh7Z7kVg7dDyUT/lGOCY29
+ MCDEjNe1sSp8sQbfs7Krl/7gcVXVyUbykotXLDRxv2XxFB2wkTOIgkhld1Jy661AI3xw
+ otUDpttGE2+pxl57768WrFt8/Gq9tJQ/4mSZPVPVoQ2d+zE3sYH0tUNa+V2qZco+3ETi zA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b6426ap67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 13:10:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18KD6jua090430;
+        Mon, 20 Sep 2021 13:10:56 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2043.outbound.protection.outlook.com [104.47.57.43])
+        by aserp3020.oracle.com with ESMTP id 3b57x40p25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 13:10:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jKZY9WSOoUXPvhqoM0TmmMLGAy57+DzupM+jfmGiY71nLk2fOwos8rY0zyoYZSL2D2u2hOFzXPwXvnITOpzAsO5Q90fzlyBpXg+RFXg1i6FkxGDUmvF4tdohpYyqrnq83kHzsq83gOrAJSSuZm1U4E2a5M4h6YV4JgbS3DJHtVI8ZiERgM+AxWh9b68aId8T18KRrPb4mnVNNRkBdBBRRKdn4vz9FV1muwyl0VJGqXdr2dlq0lxDYoEskGSW4aIBj+l2fGECKVMTwBOzOSmZvY6xuAgLrAMgD/hYcdtKc7iDnx91lMDq/7XS02eF3W1vjN60i+sYi/zI2zN5sucqvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=d1076bRUThm2F7y80nxy5PxzvPy69mHuYJ6XEB7hbYM=;
+ b=EsE0QvJwzvlRF+4bJrBOulGFP8VdXYgzEGjXhCWC/gBi5ZE9YHs1t10zHwUBSviBKAFqyNUZgTHnD3a2knjL9Znm56iprQyzLLQHSSsaDmRLdCtxPTBbBwfbd6vVdrzE3ajox5ixvZ0luKSRjsGprsbxpykiO7+ZlqWj173oKRuvDIfm+EEb3QnuBnzgHdNOzPpgp5N1TuW6XubYv5KL0SXvZdTjqgl0+eGpv+Df7L/7I+D6Xnp5h0iN8+cpt2+sYK2I8PWlZCczMHm+Q/9+BswpWFCse7bPFd1nyNBE1H9P5Swe0uncMFhVP0wVqf5GGORwIKDvKUzWN66HmR6i+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=7IAkUaEsuoXvk5AHF6ea3F2Us9UC3LmFJzi07/4mfaQ=;
-        b=Nz3E7uzD8DEZiRUwvwDIIcop2eTbcxfcShwHNYiQq9tKmJDH7423rI0yovAHrkLW5X
-         VIbE5+rQsAZJuvtlThTjuEuh/73SSY8M/IOXGM9/BqTmCtgM/u7jrNk0yWek5uZn3kz3
-         8XEMo9A6dgZUfDKM6j9JwAFtqM0NaJXYU4kBHbvg2xTjNO3IOlB8vRQM1m3Rqa/ao2Uq
-         RdN9XzpLvzIFqwoxsDdEgD3eEkOT45H3Tb2flnhc4WeBO0QKoTspu/7TMo4krby9VbUU
-         Aa8m5yaNFXTalLsWaqHYzHiWPXZtpFqjUYoIHgTLxQltiq8I241668xilRW62dL3rqqE
-         zvOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=7IAkUaEsuoXvk5AHF6ea3F2Us9UC3LmFJzi07/4mfaQ=;
-        b=jO0NVF7JJVJx4pI8TPyZxfwglXJGH1zUT7b/TeFjhYY5uRIddnNz+AKhgvfyFUCUdw
-         qVmhWOLQyS5sE6GzWriPwkDNUS/A3XAjWn7A1R8Pk5vDEZMkvH5r02QkmT2W/Aqo8FEH
-         5zJZb74ZL5I8yMtEQpXkhD3WHczlBPaIH7B00RxcWha8IKHQjUv+aLIGQ046gA5ceoOF
-         hwRLwITg9OoQHtnd12tiqnl8Bv+doK/pz9t8zgG3NN6KaEDiFru/n/69sAZCY+B/cFsF
-         x4pAHlMDs8WT8qiIvYHjtAAapn8pDSaKLflY/38nVYE04gSJsar847vU6bIXVR/HqmID
-         om9g==
-X-Gm-Message-State: AOAM530PnWkkxdWwWlUFYU8OZjCQpHUO5s1xZY3ZYOJzDyeP/E+bWrMw
-        L5NXmHYlAl5VP6auO7o00o7JVXRNF63ghKAP26sxoKBHrA==
-X-Google-Smtp-Source: ABdhPJy5e5yj2vYiuNBQ2msEMyItBUm0X4VS5/DweKBiL0MuZSG+Fpb0pWy9cXaE2Sv+lYSycrOWwgO3p7jmCQM1r/o=
-X-Received: by 2002:a63:e04a:: with SMTP id n10mr22920482pgj.381.1632143281153;
- Mon, 20 Sep 2021 06:08:01 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d1076bRUThm2F7y80nxy5PxzvPy69mHuYJ6XEB7hbYM=;
+ b=jBfgpZ6aU7DC5voY4oUTbGzVZmZy0H4DNR2Q6LPJkrIuqgivHXvrMOMm8IMHoOh+M+ZEEMN1cRHByuvKhuzjGjHDPniF6pySHUkFsVLjye9itXU1P+Jx2yj4Aga0QUs741nqSMkJXxpvTHR8By+EujRv2sf9srO+gp9ZAmQmBk8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO6PR10MB5555.namprd10.prod.outlook.com
+ (2603:10b6:303:142::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Mon, 20 Sep
+ 2021 13:10:54 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
+ 13:10:54 +0000
+Date:   Mon, 20 Sep 2021 16:10:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH v8 15/19] staging: r8188eu: change the type of a variable
+ in rtw_read16()
+Message-ID: <20210920131036.GR2088@kadam>
+References: <20210919235356.4151-1-fmdefrancesco@gmail.com>
+ <20210919235356.4151-16-fmdefrancesco@gmail.com>
+ <20210920115647.GR2116@kadam>
+ <48009934.f5uHuSIIb1@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48009934.f5uHuSIIb1@localhost.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0056.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::8)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 20 Sep 2021 21:08:08 +0800
-Message-ID: <CACkBjsbgr2326GeHimMCPhisEgt4J0BJgOEyhz3JnAR0KJ3RDw@mail.gmail.com>
-Subject: possible deadlock in __btrfs_release_delayed_node
-To:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from kadam (62.8.83.99) by JNAP275CA0056.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4f::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Mon, 20 Sep 2021 13:10:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6ae4d9c5-2248-40b5-0cfe-08d97c3813d4
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5555:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO6PR10MB55553069351CE71067EB09648EA09@CO6PR10MB5555.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +RjgBLPJMrJVALc9YLgEhou99Gd8s3GxWBnwSGyfBfwmlr8hICLc+EbgZpn829PRfajlutbGqTzsoRZ+UYl/vFnPNzufi1nhYi4okrSO2p9g1mxZBSGkbHo9FanqGd7JXMPZfZ8fHwCspk8sKpOdfZ5GclxqQSNvMjXGmrwaZ8EkmPMECIoEia9KtQLor5Als3uj4YpXy6qYiXe2BNoVzzJcKs/CoZXgyozqK2cY63Ov66HjJgFoBPswwx6EK9IWUCG8aavxLt9sQf53f/ZcmFypSfKCgcJlpDxihfFJh2Df+PRC8LpQZGsWH8oNpF7RCRsezlg44B517FWzs//ISXF5642cVhx7edpUEMUhdNPhdCuPjGuq0sChnAkV+BhRh9IWtnQQWpiiMH0imLi7Uayu7OH+KH/6Qj2/s3qkFofCt+5JT/CrsWO8F10p8FvohWmcvp7TrfhL6k5SXju2rHpZf2/eo0jq+1x741TMkoXqJ3/cBlhLnaicgQCYgB144MOAWxtvjdYZXEx7FHbTbe7gPJOm/G5x5ugvSHTy4LvnyzMzfwvRIZcGB3WbS+UvFyhZ8DuS48/OPnj6K1dbmaJOIE7UwJwto3Os1+C4L3kzG/HCZC2zdDBDctCD5GfWYKIuX15ytemRhgRc8NtRuOf1G6nkWAwcOLsmiCNry/SyzzTMLTU+BmZiaQJKxer8uBvotZDztA2WTWtvjXDQqA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(54906003)(53546011)(33716001)(316002)(38350700002)(6666004)(44832011)(55016002)(5660300002)(9686003)(33656002)(26005)(8676002)(86362001)(6496006)(52116002)(8936002)(66476007)(66946007)(956004)(9576002)(6916009)(4326008)(38100700002)(186003)(66556008)(508600001)(2906002)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wT5HJQmZqLrQABMLPLrmWQ7pl5gpZMD0JR7L9NoTaLEN88HSMDqUdwfaJITd?=
+ =?us-ascii?Q?x9OvUBu1RPmxY0Hc3fBYwSpS4c4KldjdIdD9dwtjVKfQC7eN4mnYMMQaRSMu?=
+ =?us-ascii?Q?smJ6cyB2GoFIs7vix5s9xxWuuS4W6W6iJAd8jsuNltAOzuQsck60/jbsFgDp?=
+ =?us-ascii?Q?hhxiTIpyD6EMyF7lcS8/FawGneepMr9ST9JL2iUTADPpOqQZCGjvfPvchgAi?=
+ =?us-ascii?Q?8AoOG7Jq3DJtweJlx1C5BQDVny6iCTzO8OYdJWUKpB56xhqMkMpoIECmYFdT?=
+ =?us-ascii?Q?O72OCE4uxkfZb14T18wUKRdIFOueVzz6ZEY+17nh9hqLuRCRLnKLaEaBozQu?=
+ =?us-ascii?Q?P1Mpo1fqi5uqxebqrt8CnhrbN1TWYrFVCTfct5jvDRd0vxq4ibA3TjvDiNhI?=
+ =?us-ascii?Q?Rw7O897ZR9s/Yrqlm+q4x0/AF4XikSbmQtCxWAhpcadMvTguAOVoSIrE2q2e?=
+ =?us-ascii?Q?fCa4klxuyOSRHzojzxT3VV650ZFV4dF6Y1jj7Jt7q9v+BoyZdCmO/ztm2Pn6?=
+ =?us-ascii?Q?piwh0GNK9UBfMSqQsA/SXJ5rQ6D6Au4TaNOy+bAnY75s5EK6w2ZMuvQYwbYu?=
+ =?us-ascii?Q?KYQPz1I+Kdu+gVlOmDdqC1bYOWZPEFkLnDnFeL5b8xrVI6pmKZuoMQat3J6J?=
+ =?us-ascii?Q?JKwioo4D1hDmJl9ocjrmaWi52c6Wb5TJUXEKuOAKiwtiEnZN/WY//HbnqY0D?=
+ =?us-ascii?Q?LO+fh0LYMt7s/NkxtY9QnVVtCBTS78I0EWqeOC5R+6aKSQWDsGvlPpc77z2i?=
+ =?us-ascii?Q?Z2RGlC9bMibUsRa6FYKR8CUmScElEmA8m2CinjxnE6Gg/aqYoMfZ3fMUkZyx?=
+ =?us-ascii?Q?+hWqeg1mh+Jtk6LIvLwNsTNnrukzL5FTH6sqWv90nqFou3pCvjK3a6luH6h6?=
+ =?us-ascii?Q?DbcKw1Ih2jG7PBzlmG1L/NA0edqo3CKT0/YI1xg8z5KlUDWaJhUIvBFbdh/U?=
+ =?us-ascii?Q?1IdV03QpczZKFlWTodNTW5qVhqAI8cV1USvGIVa58dlRsb6SS3Tvk/qryAva?=
+ =?us-ascii?Q?2ymQwf8epzDl61N0suZp7eZSZaYc3wA4Vz/rBcQtXsDIsfDwpRRZ4ZXzTJG0?=
+ =?us-ascii?Q?hxqP0r37YyRMo6yfVg+choG421MDkA7Ylct+bBM/CaEgWpeFtqcwqVhknnt6?=
+ =?us-ascii?Q?UP8EU0QnPfwPVKr1vZUdHdOy17PxUQCzaLUWCqzuslqn4WRm5+4tpxTTizz5?=
+ =?us-ascii?Q?MR13KFRWlyrZjgxV1258sz5usTSmZ1BdRjTQT0eLTq4yKKsZpRQ65D+NCF10?=
+ =?us-ascii?Q?OhotTYb56eZ14gL5WUCYcylFnJVlKdzzSL4u8zxNywDMfvLDoBQ6Nm3zTu0K?=
+ =?us-ascii?Q?+6l6Xng+xK/WuQaQB8e7GD2s?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ae4d9c5-2248-40b5-0cfe-08d97c3813d4
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2021 13:10:54.7399
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uW78avaBbYvo5l2+44tjM1+e6A0vj2r850Mo1QUZsISAojIXWMy1is1QWuA54u56tQBsVdQNW9GZAvNXc35QOui8N2FYAgnqMhM4lAGhO5Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5555
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10112 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109200084
+X-Proofpoint-ORIG-GUID: GZwbiC8akcheKIuqULyXZlPNeWoPeOWD
+X-Proofpoint-GUID: GZwbiC8akcheKIuqULyXZlPNeWoPeOWD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 20, 2021 at 03:03:44PM +0200, Fabio M. De Francesco wrote:
+> On Monday, September 20, 2021 1:56:47 PM CEST Dan Carpenter wrote:
+> > On Mon, Sep 20, 2021 at 01:53:52AM +0200, Fabio M. De Francesco wrote:
+> > > Change the type of "data" from __le32 to __le16.
+> > > 
+> > 
+> > You should note in the commit message that:
+> > 
+> > The last two bytes of "data" are not initialized so the le32_to_cpu(data)
+> > technically reads uninitialized data.  This can likely be detected by
+> > the KASan checker as reading uninitialized data.  But because the bytes
+> > are discarded in the end so this will not affect runtime.
+> > 
+> > regards,
+> > dan carpenter
+> > 
+> 
+> Dear Dan,
+> 
+> Thanks for your suggestion about this specific topic. 
+> 
+> We thought that, since "data" is in bitwise AND with 0xffff before being 
+> passed to the callee, it was enough to have reviewers know why we're doing 
+> that change of type with no further explanations. Actually it seems to be not 
+> enough to motivate that change.
+> 
+> We will surely use the note you provided. 
+> 
+> However, since I'm not used to blindly follow suggestions (even if I trust 
+> your words with no doubts at all) without complete understanding of what I'm 
+> doing, I will need to understand what KASan is before copy-paste your note.
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Google is your friend!
 
-HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1Is2XjAwyco_VmymNbbsMH4xZysHsgfag/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
+Either way reading uninitialized data is generally bad.  The trickier
+thing is showing that your changes don't affect runtime.  For both of
+these le32 to le16 changes.
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+regards,
+dan carpenter
 
-loop9: detected capacity change from 0 to 32768
-BTRFS info (device loop9): disk space caching is enabled
-BTRFS info (device loop9): has skinny extents
-BTRFS info (device loop9): enabling ssd optimizations
-FAULT_INJECTION: forcing a failure.
-name failslab, interval 1, probability 0, space 0, times 0
-CPU: 3 PID: 16884 Comm: syz-executor Not tainted 5.15.0-rc1+ #19
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- fail_dump lib/fault-inject.c:52 [inline]
- should_fail+0x13c/0x160 lib/fault-inject.c:146
- should_failslab+0x5/0x10 mm/slab_common.c:1328
- slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
- slab_alloc_node mm/slub.c:3120 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
- btrfs_add_delayed_tree_ref+0xc3/0x580 fs/btrfs/delayed-ref.c:917
- btrfs_alloc_tree_block+0x478/0x670 fs/btrfs/extent-tree.c:4853
- __btrfs_cow_block+0x16f/0x820 fs/btrfs/ctree.c:415
- btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
- btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
- btrfs_lookup_inode+0x50/0x110 fs/btrfs/inode-item.c:408
- __btrfs_update_delayed_inode+0x81/0x3a0 fs/btrfs/delayed-inode.c:948
- btrfs_commit_inode_delayed_inode+0x14a/0x160 fs/btrfs/delayed-inode.c:1189
- btrfs_log_inode+0x438/0x1ab0 fs/btrfs/tree-log.c:5385
- btrfs_log_inode_parent+0x272/0x1110 fs/btrfs/tree-log.c:6168
- btrfs_log_dentry_safe+0x3a/0x50 fs/btrfs/tree-log.c:6269
- btrfs_sync_file+0x2cd/0x760 fs/btrfs/file.c:2264
- vfs_fsync_range+0x48/0xa0 fs/sync.c:200
- generic_write_sync include/linux/fs.h:2955 [inline]
- btrfs_file_write_iter+0x34f/0x510 fs/btrfs/file.c:2034
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x18d/0x260 fs/read_write.c:507
- vfs_write+0x43b/0x4a0 fs/read_write.c:594
- ksys_write+0xd2/0x120 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f685738cc48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 000000000000000b RSI: 0000000020005940 RDI: 0000000000000003
-RBP: 00007f685738cc80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001e
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffc71ddb640
-BTRFS: error (device loop9) in __btrfs_update_delayed_inode:995:
-errno=-12 Out of memory
-BTRFS info (device loop9): forced readonly
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.15.0-rc1+ #19 Not tainted
-------------------------------------------------------
-syz-executor/16884 is trying to acquire lock:
-ffff88810f946ab0 (&delayed_node->mutex){+.+.}-{3:3}, at:
-__btrfs_release_delayed_node+0x4e/0x410 fs/btrfs/delayed-inode.c:262
-
-but task is already holding lock:
-ffff888016e696e8 (btrfs-tree-01/1){+.+.}-{3:3}, at:
-__btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (btrfs-tree-01/1){+.+.}-{3:3}:
-       __lock_release kernel/locking/lockdep.c:5341 [inline]
-       lock_release+0x135/0x2e0 kernel/locking/lockdep.c:5645
-       up_write+0x12/0x130 kernel/locking/rwsem.c:1569
-       __btrfs_cow_block+0x552/0x820 fs/btrfs/ctree.c:491
-       btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
-       btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
-       btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
-       btrfs_insert_delayed_item fs/btrfs/delayed-inode.c:736 [inline]
-       btrfs_insert_delayed_items fs/btrfs/delayed-inode.c:783 [inline]
-       __btrfs_commit_inode_delayed_items fs/btrfs/delayed-inode.c:1041 [inline]
-       __btrfs_run_delayed_items+0x307/0x6a0 fs/btrfs/delayed-inode.c:1083
-       btrfs_commit_transaction+0x268/0x1450 fs/btrfs/transaction.c:2170
-       btrfs_sync_fs+0x9a/0x430 fs/btrfs/super.c:1426
-       __sync_filesystem fs/sync.c:39 [inline]
-       sync_filesystem+0x9b/0xd0 fs/sync.c:67
-       generic_shutdown_super+0x30/0x170 fs/super.c:448
-       kill_anon_super+0x15/0x30 fs/super.c:1057
-       btrfs_kill_super+0x19/0x30 fs/btrfs/super.c:2348
-       deactivate_locked_super+0x43/0x80 fs/super.c:335
-       deactivate_super+0x53/0x80 fs/super.c:366
-       cleanup_mnt+0x138/0x1b0 fs/namespace.c:1137
-       task_work_run+0x86/0xd0 kernel/task_work.c:164
-       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
-       exit_to_user_mode_prepare+0x271/0x280 kernel/entry/common.c:209
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
-       syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
-       do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x161f/0x1d60 kernel/locking/lockdep.c:5015
-       lock_acquire+0x1f9/0x340 kernel/locking/lockdep.c:5625
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x98/0xa50 kernel/locking/mutex.c:729
-       __btrfs_release_delayed_node+0x4e/0x410 fs/btrfs/delayed-inode.c:262
-       btrfs_release_delayed_node fs/btrfs/delayed-inode.c:287 [inline]
-       btrfs_commit_inode_delayed_inode+0x104/0x160
-fs/btrfs/delayed-inode.c:1201
-       btrfs_log_inode+0x438/0x1ab0 fs/btrfs/tree-log.c:5385
-       btrfs_log_inode_parent+0x272/0x1110 fs/btrfs/tree-log.c:6168
-       btrfs_log_dentry_safe+0x3a/0x50 fs/btrfs/tree-log.c:6269
-       btrfs_sync_file+0x2cd/0x760 fs/btrfs/file.c:2264
-       vfs_fsync_range+0x48/0xa0 fs/sync.c:200
-       generic_write_sync include/linux/fs.h:2955 [inline]
-       btrfs_file_write_iter+0x34f/0x510 fs/btrfs/file.c:2034
-       call_write_iter include/linux/fs.h:2163 [inline]
-       new_sync_write+0x18d/0x260 fs/read_write.c:507
-       vfs_write+0x43b/0x4a0 fs/read_write.c:594
-       ksys_write+0xd2/0x120 fs/read_write.c:647
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(btrfs-tree-01/1);
-                               lock(&delayed_node->mutex);
-                               lock(btrfs-tree-01/1);
-  lock(&delayed_node->mutex);
-
- *** DEADLOCK ***
-
-6 locks held by syz-executor/16884:
- #0: ffff888104f336f0 (&f->f_pos_lock){+.+.}-{3:3}, at:
-__fdget_pos+0x55/0x60 fs/file.c:990
- #1: ffff88811394b460 (sb_writers#18){.+.+}-{0:0}, at:
-ksys_write+0xd2/0x120 fs/read_write.c:647
- #2: ffff888110cfab70 (&sb->s_type->i_mutex_key#26){++++}-{3:3}, at:
-inode_lock include/linux/fs.h:786 [inline]
- #2: ffff888110cfab70 (&sb->s_type->i_mutex_key#26){++++}-{3:3}, at:
-btrfs_inode_lock+0x65/0xb0 fs/btrfs/inode.c:126
- #3: ffff888110cfa9f8 (&ei->i_mmap_lock){+.+.}-{3:3}, at:
-btrfs_inode_lock+0x80/0xb0 fs/btrfs/inode.c:129
- #4: ffff88811394b650 (sb_internal#2){.+.+}-{0:0}, at:
-btrfs_sync_file+0x29e/0x760 fs/btrfs/file.c:2257
- #5: ffff888016e696e8 (btrfs-tree-01/1){+.+.}-{3:3}, at:
-__btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
-
-stack backtrace:
-CPU: 1 PID: 16884 Comm: syz-executor Not tainted 5.15.0-rc1+ #19
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- check_noncircular+0x105/0x120 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x161f/0x1d60 kernel/locking/lockdep.c:5015
- lock_acquire+0x1f9/0x340 kernel/locking/lockdep.c:5625
- __mutex_lock_common kernel/locking/mutex.c:596 [inline]
- __mutex_lock+0x98/0xa50 kernel/locking/mutex.c:729
- __btrfs_release_delayed_node+0x4e/0x410 fs/btrfs/delayed-inode.c:262
- btrfs_release_delayed_node fs/btrfs/delayed-inode.c:287 [inline]
- btrfs_commit_inode_delayed_inode+0x104/0x160 fs/btrfs/delayed-inode.c:1201
- btrfs_log_inode+0x438/0x1ab0 fs/btrfs/tree-log.c:5385
- btrfs_log_inode_parent+0x272/0x1110 fs/btrfs/tree-log.c:6168
- btrfs_log_dentry_safe+0x3a/0x50 fs/btrfs/tree-log.c:6269
- btrfs_sync_file+0x2cd/0x760 fs/btrfs/file.c:2264
- vfs_fsync_range+0x48/0xa0 fs/sync.c:200
- generic_write_sync include/linux/fs.h:2955 [inline]
- btrfs_file_write_iter+0x34f/0x510 fs/btrfs/file.c:2034
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x18d/0x260 fs/read_write.c:507
- vfs_write+0x43b/0x4a0 fs/read_write.c:594
- ksys_write+0xd2/0x120 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f685738cc48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 000000000000000b RSI: 0000000020005940 RDI: 0000000000000003
-RBP: 00007f685738cc80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000001e
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffc71ddb640
