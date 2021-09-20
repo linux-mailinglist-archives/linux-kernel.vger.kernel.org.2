@@ -2,194 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6627F412615
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA94412289
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385606AbhITSxL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 14:53:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385888AbhITSwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:37 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D2C5613AD;
-        Mon, 20 Sep 2021 18:00:35 +0000 (UTC)
-Date:   Mon, 20 Sep 2021 19:04:19 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     "Chindris, Mihail" <Mihail.Chindris@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        "alexandru.ardelean@analog.com" <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH v5 1/6] iio: Add output buffer support
-Message-ID: <20210920190419.04291227@jic23-huawei>
-In-Reply-To: <SJ0PR03MB6359EFF08F0830A5D0EE181199A09@SJ0PR03MB6359.namprd03.prod.outlook.com>
-References: <20210916182914.1810-1-mihail.chindris@analog.com>
-        <20210916182914.1810-2-mihail.chindris@analog.com>
-        <20210919180244.1f935bcd@jic23-huawei>
-        <SJ0PR03MB6359EFF08F0830A5D0EE181199A09@SJ0PR03MB6359.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S1376982AbhITSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:15:01 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:58230 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1358913AbhITSIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:08:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0Up4MQOX_1632161238;
+Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0Up4MQOX_1632161238)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Sep 2021 02:07:22 +0800
+Subject: Re: [PATCH] [RFC/RFT]SCS:Add gcc plugin to support Shadow Call Stack
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     masahiroy@kernel.org, michal.lkml@markovi.net,
+        keescook@chromium.org, ndesaulniers@google.com,
+        akpm@linux-foundation.org, tglx@linutronix.de,
+        peterz@infradead.org, samitolvanen@google.com, frederic@kernel.org,
+        rppt@kernel.org, yifeifz2@illinois.edu, viresh.kumar@linaro.org,
+        colin.king@canonical.com, andreyknvl@gmail.com,
+        mark.rutland@arm.com, ojeda@kernel.org, will@kernel.org,
+        ardb@kernel.org, luc.vanoostenryck@gmail.com, elver@google.com,
+        nivedita@alum.mit.edu, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <1632069436-25075-1-git-send-email-ashimida@linux.alibaba.com>
+ <YUeva0jP7P2qCr+R@archlinux-ax161>
+From:   Dan Li <ashimida@linux.alibaba.com>
+Message-ID: <1e00d088-4ced-d345-63b0-7428e9b8452a@linux.alibaba.com>
+Date:   Tue, 21 Sep 2021 02:07:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YUeva0jP7P2qCr+R@archlinux-ax161>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 08:02:29 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+Hi Nathan,
 
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Sunday, September 19, 2021 7:03 PM
-> > To: Chindris, Mihail <Mihail.Chindris@analog.com>
-> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
-> > lars@metafoo.de; Hennerich, Michael
-> > <Michael.Hennerich@analog.com>; Sa, Nuno
-> > <Nuno.Sa@analog.com>; Bogdan, Dragos
-> > <Dragos.Bogdan@analog.com>; alexandru.ardelean@analog.com
-> > Subject: Re: [PATCH v5 1/6] iio: Add output buffer support
-> > 
-> > On Thu, 16 Sep 2021 18:29:09 +0000
-> > Mihail Chindris <mihail.chindris@analog.com> wrote:
-> >   
-> > > Currently IIO only supports buffer mode for capture devices like  
-> > ADCs. Add  
-> > > support for buffered mode for output devices like DACs.
-> > >
-> > > The output buffer implementation is analogous to the input buffer
-> > > implementation. Instead of using read() to get data from the buffer  
-> > write()  
-> > > is used to copy data into the buffer.
-> > >
-> > > poll() with POLLOUT will wakeup if there is space available.
-> > >
-> > > Drivers can remove data from a buffer using iio_pop_from_buffer(),  
-> > the  
-> > > function can e.g. called from a trigger handler to write the data to
-> > > hardware.
-> > >
-> > > A buffer can only be either a output buffer or an input, but not both.  
-> > So,  
-> > > for a device that has an ADC and DAC path, this will mean 2 IIO  
-> > buffers  
-> > > (one for each direction).
-> > >
-> > > The direction of the buffer is decided by the new direction field of  
-> > the  
-> > > iio_buffer struct and should be set after allocating and before  
-> > registering  
-> > > it.
-> > >
-> > > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > > Signed-off-by: Alexandru Ardelean  
-> > <alexandru.ardelean@analog.com>  
-> > > Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>  
-> > 
-> > A few minor things inline.  I would have expected the missing check
-> > on insert_buffer to have resulted in a nasty deference of a null pointer
-> > though which does make me nervous about whether we have tested
-> > this
-> > series enough.
-> > 
-> > Jonathan
-> >   
-> > > ---
-> > >  drivers/iio/iio_core.h            |   4 +
-> > >  drivers/iio/industrialio-buffer.c | 120  
-> > +++++++++++++++++++++++++++++-  
-> > >  drivers/iio/industrialio-core.c   |   1 +
-> > >  include/linux/iio/buffer.h        |   7 ++
-> > >  include/linux/iio/buffer_impl.h   |  11 +++
-> > >  5 files changed, 141 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-> > > index 8f4a9b264962..61e318431de9 100644
-> > > --- a/drivers/iio/iio_core.h
-> > > +++ b/drivers/iio/iio_core.h
-> > > @@ -68,12 +68,15 @@ __poll_t iio_buffer_poll_wrapper(struct file  
-> > *filp,  
-> > >  				 struct poll_table_struct *wait);
-> > >  ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
-> > >  				size_t n, loff_t *f_ps);
-> > > +ssize_t iio_buffer_write_wrapper(struct file *filp, const char __user  
-> > *buf,  
-> > > +				 size_t n, loff_t *f_ps);
-> > >
-> > >  int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
-> > >  void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
-> > >
-> > >  #define iio_buffer_poll_addr (&iio_buffer_poll_wrapper)
-> > >  #define iio_buffer_read_outer_addr (&iio_buffer_read_wrapper)
-> > > +#define iio_buffer_write_outer_addr  
-> > (&iio_buffer_write_wrapper)  
-> > >
-> > >  void iio_disable_all_buffers(struct iio_dev *indio_dev);
-> > >  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
-> > > @@ -83,6 +86,7 @@ void iio_device_detach_buffers(struct iio_dev  
-> > *indio_dev);  
-> > >
-> > >  #define iio_buffer_poll_addr NULL
-> > >  #define iio_buffer_read_outer_addr NULL
-> > > +#define iio_buffer_write_outer_addr NULL
-> > >
-> > >  static inline int iio_buffers_alloc_sysfs_and_mask(struct iio_dev  
-> > *indio_dev)  
-> > >  {
-> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-  
-> > buffer.c  
-> > > index a95cc2da56be..a2a34c5652a7 100644
-> > > --- a/drivers/iio/industrialio-buffer.c
-> > > +++ b/drivers/iio/industrialio-buffer.c
-> > > @@ -161,6 +161,62 @@ static ssize_t iio_buffer_read(struct file *filp,  
-> > char __user *buf,  
-> > >  	return ret;
-> > >  }
-> > >
-> > > +static size_t iio_buffer_space_available(struct iio_buffer *buf)
-> > > +{
-> > > +	if (buf->access->space_available)
-> > > +		return buf->access->space_available(buf);
-> > > +
-> > > +	return SIZE_MAX;
-> > > +}
-> > > +
-> > > +static ssize_t iio_buffer_write(struct file *filp, const char __user  
-> > *buf,  
-> > > +				size_t n, loff_t *f_ps)
-> > > +{
-> > > +	struct iio_dev_buffer_pair *ib = filp->private_data;
-> > > +	struct iio_buffer *rb = ib->buffer;
-> > > +	struct iio_dev *indio_dev = ib->indio_dev;
-> > > +	DEFINE_WAIT_FUNC(wait, woken_wake_function);
-> > > +	int ret;
-> > > +	size_t written;
-> > > +
-> > > +	if (!indio_dev->info)
-> > > +		return -ENODEV;
-> > > +
-> > > +	if (!rb || !rb->access->write)
-> > > +		return -EINVAL;
-> > > +  
-> 
-> As the buffer implementation can support both 'read()' and 'write()', the following
-> check might make sense:
-> 
-> if (rb->direction != IIO_BUFFER_DIRECTION_OUT)
->       return -EPERM;
+Thanks for your comments.
+I rewrite the configuration as follows:
 
-Makes sense.  Whether EPERM is the right error code is a different question.
-Doesn't seem perfectly aligned with this case, but it's not too bad.
+1) Change the plugin to be enabled by default, and add this option to CC_FLAGS_SCS to keep its behavior consistent with clang
+---
+diff --git a/Makefile b/Makefile
+@@ -923,12 +923,6 @@ KBUILD_CFLAGS_KERNEL += -ffunction-sections -fdata-sections
+-ifdef CONFIG_SHADOW_CALL_STACK
+-CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
+-KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
+-export CC_FLAGS_SCS
+-endif
 
-Jonathan
+@@ -1034,6 +1028,20 @@ include-$(CONFIG_GCC_PLUGINS)	+= scripts/Makefile.gcc-plugins
+  include $(addprefix $(srctree)/, $(include-y))
++ifdef CONFIG_SHADOW_CALL_STACK
++
++ifdef CONFIG_CC_IS_CLANG
++CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
++endif
++
++ifdef CONFIG_CC_IS_GCC
++CC_FLAGS_SCS	:= $(ENABLE_SHADOW_CALL_STACK_PLUGIN)
++endif
++
++KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
++export CC_FLAGS_SCS
++endif
 
-> 
-> If going with this, we should add an extra patch to do a similar thing on the read side...
-> 
-> - Nuno Sá
-> 
+diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
+@@ -46,6 +46,13 @@ ifdef CONFIG_GCC_PLUGIN_ARM_SSP_PER_TASK
++gcc-plugin-$(CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK) += arm64_scs_plugin.so
++gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK)	\
++		+= -DSHADOW_CALL_STACK_PLUGIN
++ifdef CONFIG_GCC_PLUGIN_SHADOW_CALL_STACK
++    ENABLE_SHADOW_CALL_STACK_PLUGIN += -fplugin-arg-arm64_scs_plugin-enable
++endif
 
+2) Whether SCS is turned on or not is determined by CONFIG_SHADOW_CALL_STACK
+    * GCC_PLUGIN_SHADOW_CALL_STACK is only used to indicate whether current platform needs the support of the gcc SCS plugin
+      - It only enabled on ARM64 platform with gcc which does not support SCS(!CC_HAVE_SHADOW_CALL_STACK)
+      - If one compiler supports SCS (clang or gcc), then CC_HAVE_SHADOW_CALL_STACK should be true at this time, and the plugin is automatically closed
+    * As long as the current platform can support SCS(compiler or plugin), ARCH_SUPPORTS_SHADOW_CALL_STACK is always selected
+    * CONFIG_SHADOW_CALL_STACK no longer depends on CC_IS_CLANG
+---
+diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+@@ -19,6 +19,15 @@ menuconfig GCC_PLUGINS
++config GCC_PLUGIN_SHADOW_CALL_STACK
++	bool "GCC Shadow Call Stack plugin"
++	depends on (!CC_HAVE_SHADOW_CALL_STACK) && ARM64
++	default y
++	help	....
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+@@ -594,7 +594,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
+  
+  config SHADOW_CALL_STACK
+  	bool "Clang Shadow Call Stack"
+-	depends on CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK
++	depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
+  	depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
+  	help
+  	  This option enables Clang's Shadow Call Stack, which uses a
+	
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+@@ -81,7 +81,7 @@ config ARM64
+-	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
++	select ARCH_SUPPORTS_SHADOW_CALL_STACK if (CC_HAVE_SHADOW_CALL_STACK || GCC_PLUGIN_SHADOW_CALL_STACK)
+  	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
+@@ -1060,9 +1060,13 @@ config HW_PERF_EVENTS
+  # Supported by clang >= 7.0
+  config CC_HAVE_SHADOW_CALL_STACK
+-	def_bool $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18)
++	def_bool (CC_IS_CLANG && $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18))
+
+
+On 9/20/21 5:45 AM, Nathan Chancellor wrote:
+> Hi Dan,
+>> diff --git a/Makefile b/Makefile
+>>   ifdef CONFIG_SHADOW_CALL_STACK
+> 
+> I would rather see this become
+> 
+> ifeq ($(CONFIG_SHADOW_CALL_STACK)$(CONFIG_CC_IS_CLANG), yy)
+> ...
+> endif
+> 
+> rather than just avoiding assigning to CC_FLAGS_SCS.
+> 
+> However, how does disabling the shadow call stack plugin work for a
+> whole translation unit or directory? There are a few places where
+> CC_FLAGS_SCS are filtered out and I am not sure I see where that happens
+> here? It looks like the plugin has a disabled option but I do not see it
+> hooked in anywhere.
+   In the new code, translation unit can only enable SCS when CC_FLAGS_SCS is specified.
+   This behavior will be consistent with clang.
+   If there are other problems in the future, those two can be modified together.
+> 
+>> -CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
+>> +CC_FLAGS_SCS	:= $(if $(CONFIG_CC_IS_CLANG),-fsanitize=shadow-call-stack,)
+
+>>   KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
+>>   export CC_FLAGS_SCS
+>>   endif
+>> diff --git a/arch/Kconfig b/arch/Kconfig
+>> index 98db634..81ff127 100644
+>> --- a/arch/Kconfig
+>> +++ b/arch/Kconfig
+>> @@ -594,7 +594,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
+>>   
+>>   config SHADOW_CALL_STACK
+>>   	bool "Clang Shadow Call Stack"
+>> -	depends on CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK
+>> +	depends on (CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK) || GCC_PLUGIN_SHADOW_CALL_STACK
+> 
+> Is this logic right? SHADOW_CALL_STACK is only supported by arm64 (as
+> they set ARCH_SUPPORTS_SHADOW_CALL_STACK) but now you are enabling it
+> for any architecture, even though it seems like it still only works on
+> arm64. I think this wants to be
+> 
+> depends on (CC_IS_CLANG || GCC_PLUGIN_SHADOW_CALL_STACK) && ARCH_SUPPORTS_SHADOW_CALL_STACK
+> 
+   It's modified to rely only on ARCH_SUPPORTS_SHADOW_CALL_STACK	
+>> --- a/scripts/gcc-plugins/Kconfig
+>> +++ b/scripts/gcc-plugins/Kconfig
+>> @@ -19,6 +19,14 @@ menuconfig GCC_PLUGINS
+>>   
+>>   if GCC_PLUGINS
+>>   
+>> +config GCC_PLUGIN_SHADOW_CALL_STACK
+>> +	bool "GCC Shadow Call Stack plugin"
+> 
+> This should also have a
+> 
+> depends on ARCH_SUPPORTS_SHADOW_CALL_STACK
+> 
+> if you are selecting SHADOW_CALL_STACK, as selecting does not account
+> for dependencies.
+   Select is removed from the code above
+>> +	select SHADOW_CALL_STACK
+>> +	help
+>> +	  This plugin is used to support the kernel CONFIG_SHADOW_CALL_STACK
+>> +	  compiled by gcc. Its principle is basically the same as that of CLANG.
+>> +	  For more information, please refer to "config SHADOW_CALL_STACK"
+>> +
+>>   config GCC_PLUGIN_CYC_COMPLEXITY
+>>   	bool "Compute the cyclomatic complexity of a function" if EXPERT
+>>   	depends on !COMPILE_TEST	# too noisy
+> 
+> Cheers,
+> Nathan
+> 
