@@ -2,124 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A79441145F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528C2411461
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238031AbhITM31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:29:27 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:33806 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238014AbhITM3O (ORCPT
+        id S237574AbhITM33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:29:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43138 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238183AbhITM3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:29:14 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KCRV2w096304;
-        Mon, 20 Sep 2021 07:27:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632140851;
-        bh=Erojbu1vwKmzBzelkzrhStA2bExSaaOLLg+P/ih+xv0=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=IPxqJTWKih5LqVW2TjpybjTnwXOz28SJoWMhyaXZiNoTLz5QT5p0iNNcZgMm2ZqDx
-         CQU6s6fAye3vCYiZJ+VBaZ438pPVMlhmxOPD9FFdLLX2n7TYzabMNrM+2dTYPezIwG
-         rh/f+6jXDTPVb4MOCnhatvacdUBU6YFrHiVQWoTo=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KCRUqA116059
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Sep 2021 07:27:30 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
- Sep 2021 07:27:30 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 20 Sep 2021 07:27:30 -0500
-Received: from [10.250.232.51] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KCRQeH092456;
-        Mon, 20 Sep 2021 07:27:27 -0500
-Subject: Re: [PATCH] can: m_can: m_can_platform: Fix iomap_read_fifo() and
- iomap_write_fifo()
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matt Kline <matt@bitbashing.io>, <linux-can@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210920122610.570-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <2f34d1bf-48d1-ed6e-b789-b5930a8effaa@ti.com>
-Date:   Mon, 20 Sep 2021 17:57:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 20 Sep 2021 08:29:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632140877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ogpkesyQIobk7UfMIDXUwt8PLrLq3ty2TaxR9317jpk=;
+        b=KI9dsCl/3daDHo52a/wwBQcsRkIyD8h9U1apDMQ6JoFkIE/3ONrXRHt04rdF8XOY5V2LbL
+        SEVnmzBTNURbQZ7ADBldAPJf0ZY87J6LIlCO2pUzYco3nZV6lzKyZL+mCVj8Q7Comp2r2/
+        S3fp+fwK5lzJ4aVJ+GbB1yZhOOiWjOk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-sa8WFbHpNIK09g5mi75w8Q-1; Mon, 20 Sep 2021 08:27:56 -0400
+X-MC-Unique: sa8WFbHpNIK09g5mi75w8Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B93B2802928;
+        Mon, 20 Sep 2021 12:27:54 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D69215D9D5;
+        Mon, 20 Sep 2021 12:27:28 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        gregkh@linuxfoundation.org, David Hildenbrand <david@redhat.com>,
+        Pankaj Gupta <pankaj.gupta@ionos.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH 5.10 STABLE] mm/memory_hotplug: use "unsigned long" for PFN in zone_for_pfn_range()
+Date:   Mon, 20 Sep 2021 14:27:28 +0200
+Message-Id: <20210920122728.8241-1-david@redhat.com>
+In-Reply-To: <163179697512923@kroah.com>
+References: <163179697512923@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210920122610.570-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+commit 7cf209ba8a86410939a24cb1aeb279479a7e0ca6 upstream.
 
-On 20/09/21 5:56 pm, Aswath Govindraju wrote:
-> The read an writes from the fifo are from a buffer with various fields and
-> data at predefined offsets. So, they reads and writes should not be done to
-> the same address(or port) in case of val_count greater than 1. Therefore,
-> fix this by using iowrite32/ioread32 instead of ioread32_rep/iowrite32_rep.
-> 
-> Also, the write into fifo must be performed with an offset from the message
-> ram base address. Therefore, fix the base address to mram_base.
-> 
-> Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
+Patch series "mm/memory_hotplug: preparatory patches for new online policy and memory"
 
-Please ignore this patch sent it my mistake. Sorry for the inconvenience.
+These are all cleanups and one fix previously sent as part of [1]:
+[PATCH v1 00/12] mm/memory_hotplug: "auto-movable" online policy and memory
+groups.
 
-Thanks,
-Aswath
+These patches make sense even without the other series, therefore I pulled
+them out to make the other series easier to digest.
 
->  drivers/net/can/m_can/m_can_platform.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-> index 308d4f2fff00..eee47bad0592 100644
-> --- a/drivers/net/can/m_can/m_can_platform.c
-> +++ b/drivers/net/can/m_can/m_can_platform.c
-> @@ -32,8 +32,13 @@ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
->  static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, size_t val_count)
->  {
->  	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
-> +	void __iomem *src = priv->mram_base + offset;
->  
-> -	ioread32_rep(priv->mram_base + offset, val, val_count);
-> +	while (val_count--) {
-> +		*(unsigned int *)val = ioread32(src);
-> +		val += 4;
-> +		src += 4;
-> +	}
->  
->  	return 0;
->  }
-> @@ -51,8 +56,13 @@ static int iomap_write_fifo(struct m_can_classdev *cdev, int offset,
->  			    const void *val, size_t val_count)
->  {
->  	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
-> +	void __iomem *dst = priv->mram_base + offset;
->  
-> -	iowrite32_rep(priv->base + offset, val, val_count);
-> +	while (val_count--) {
-> +		iowrite32(*(unsigned int *)val, dst);
-> +		val += 4;
-> +		dst += 4;
-> +	}
->  
->  	return 0;
->  }
-> 
+[1] https://lkml.kernel.org/r/20210607195430.48228-1-david@redhat.com
+
+This patch (of 4):
+
+Checkpatch complained on a follow-up patch that we are using "unsigned"
+here, which defaults to "unsigned int" and checkpatch is correct.
+
+As we will search for a fitting zone using the wrong pfn, we might end
+up onlining memory to one of the special kernel zones, such as ZONE_DMA,
+which can end badly as the onlined memory does not satisfy properties of
+these zones.
+
+Use "unsigned long" instead, just as we do in other places when handling
+PFNs.  This can bite us once we have physical addresses in the range of
+multiple TB.
+
+Link: https://lkml.kernel.org/r/20210712124052.26491-2-david@redhat.com
+Fixes: e5e689302633 ("mm, memory_hotplug: display allowed zones in the preferred ordering")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Pankaj Gupta <pankaj.gupta@ionos.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: virtualization@lists.linux-foundation.org
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc: Anton Blanchard <anton@ozlabs.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jia He <justin.he@arm.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Laurent Dufour <ldufour@linux.ibm.com>
+Cc: Michel Lespinasse <michel@lespinasse.org>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Pierre Morel <pmorel@linux.ibm.com>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Scott Cheloha <cheloha@linux.ibm.com>
+Cc: Sergei Trofimovich <slyfox@gentoo.org>
+Cc: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ include/linux/memory_hotplug.h | 4 ++--
+ mm/memory_hotplug.c            | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+index 551093b74596..1dafc7c7f5cf 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -359,8 +359,8 @@ extern void sparse_remove_section(struct mem_section *ms,
+ 		unsigned long map_offset, struct vmem_altmap *altmap);
+ extern struct page *sparse_decode_mem_map(unsigned long coded_mem_map,
+ 					  unsigned long pnum);
+-extern struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+-		unsigned long nr_pages);
++extern struct zone *zone_for_pfn_range(int online_type, int nid,
++		unsigned long start_pfn, unsigned long nr_pages);
+ #endif /* CONFIG_MEMORY_HOTPLUG */
+ 
+ #endif /* __LINUX_MEMORY_HOTPLUG_H */
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index b9de2df5b835..6275b1c05f11 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -765,8 +765,8 @@ static inline struct zone *default_zone_for_pfn(int nid, unsigned long start_pfn
+ 	return movable_node_enabled ? movable_zone : kernel_zone;
+ }
+ 
+-struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
+-		unsigned long nr_pages)
++struct zone *zone_for_pfn_range(int online_type, int nid,
++		unsigned long start_pfn, unsigned long nr_pages)
+ {
+ 	if (online_type == MMOP_ONLINE_KERNEL)
+ 		return default_kernel_zone_for_pfn(nid, start_pfn, nr_pages);
+-- 
+2.31.1
 
