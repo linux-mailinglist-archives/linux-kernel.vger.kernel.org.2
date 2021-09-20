@@ -2,348 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC7041165F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251F4411643
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240223AbhITOIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240083AbhITOH5 (ORCPT
+        id S236741AbhITOG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:06:58 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:36494
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234662AbhITOG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:07:57 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED03AC0613E5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:06:27 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id w17so21923797wrv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jMwKeDx1xIluS3Y035lgALsVGvJn3c2xJ25VMV8QOGs=;
-        b=itdOp7ImclzSOZmPpsbjVYXGkoRzmJdhyNjekP6lkgJM050g2TIGodgL9KCs660Lt/
-         2kM+7ILHMvHlcjfWtO/5R7RStXyyF65yBG6Ej4+Pr5rWVvRKbFCp4vu/7rZdd+WfZX+g
-         RNPRXIZZEDa5Tt7hSR1X0bxNVhfbZ6x3kaoWCzE/P5tUMUwuc7/BdcHWpV5RrZYlq5KJ
-         XnXO4QwjVAXDgA/h3WmuFR1JhapCNhwqNbOHz96MLdOV/p6k7V1WX3DuT1XrkggTjMeM
-         YvpLi1uTkr1yA7iDIIkzdbmAXJooi5zox89t2vf0SvoY9LFuiCaGB/fQmr3G//yCMzV1
-         mzkA==
+        Mon, 20 Sep 2021 10:06:56 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E16FB3F302
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632146728;
+        bh=fdpLjVmvKsg2Nwtt/QkPoL85cbsz/uoLku3sZOIHSi0=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=RYj4ZitiQhNyuNDgqM1aeG5Ox55bn+HBpPjvLUjtLkake3u9WfBDEtJ7UDfQJjoD0
+         dwTrMrsEk0BAE5+RDVJod0QY7lPDi1uFQl6FoP8pCEKkfhvaDTx0SeZIMboZs6YqIe
+         faK4tE5f0JkObgNd7uO8/dPPSAsH2CzuDRd1OTX1hpI+yHfjfNv7h5fIg2ZxrOsewS
+         0vGQsWdBl6YdjNm9GI1vLJzMSnW+TNbLlHQHqrPWX0HZ1tnHu64K6T61pHZ0sUV7mK
+         hRv+QNSGPw4qbUZYmJCumV+Q8npKxMubhg2Fh7OHuib044NFkjvKQ/Q6tGjTc4ATv8
+         lenAiJtRnwY9A==
+Received: by mail-wr1-f69.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so6191380wrf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:05:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jMwKeDx1xIluS3Y035lgALsVGvJn3c2xJ25VMV8QOGs=;
-        b=QmM0kHk1BJKbjZHs2vbPCuU0p1ijZSZ0ZoGxpSjDBlGejn0bGPOnphXJ7cocBt+DEA
-         E8jRHJjvHBqr1wIDRnx3QYF3YtwPWu6kVbu5QxUY+LfsmcipuBaBArXBJTkGXXvC3/XR
-         n4mREDeCXAID0uqEyV4kWBU2AkKAyBN/2m2oS8hop2yurJnf5AT0kbYMnwl6cz0AY9vq
-         VBxodJaFtHGOFtMJfBUdpzYkvNOHZURJIVLn+ykGqd0ItHKsgjjSOKKGWVfEcb1Wwzbp
-         JE+MEOzaOnRVU84uHqwqPwFqPVCnqrmnL+DCK/p0Yo5x/gDOe4NNid3mal4a9Xmr7SrH
-         wj9w==
-X-Gm-Message-State: AOAM532LRLlgtHbTNb0CDZd+tFJfnG0kjwJ6OPxmC8h9NOUUKP2SPNm+
-        xlyjuoa2TzzX3jLRsdqmawOuiQ==
-X-Google-Smtp-Source: ABdhPJz1KCFM3mAuDlS4HuDxVqlHFuDYaWAT2Pz9jQN19eHutYk4MGlv7ZTjRZlSedLaK63dOi1DjA==
-X-Received: by 2002:a1c:1b4f:: with SMTP id b76mr28648222wmb.161.1632146784796;
-        Mon, 20 Sep 2021 07:06:24 -0700 (PDT)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id h18sm15801461wrb.33.2021.09.20.07.06.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fdpLjVmvKsg2Nwtt/QkPoL85cbsz/uoLku3sZOIHSi0=;
+        b=DajispYOfa/yoBw1Tw1IyCkFfS3C56RZQADub+57yCrfvN60FWDW7M6UqbSXYgaOFI
+         /sBuBRvnrDVYVU292gqm1l9hk1XxRc1uy0xJonOseppGi8EsAY8bwaLzfCKee6dlOQGg
+         Pn4F70LtdTPgPfK/gkw6DmH668xyEkzH4dUZnOx5pMtnuYsiKuBsjDUN7JIdqmrmgHrs
+         FCwEhZTe0uyXs9F0U9sIcTlIp1JMQ7iva0nCiT9byPrj1Tpb2fjiku+yZyoihGxvcccK
+         xKxUiF0/l4xoO882gs6QVnKBfxtJC3U96x7gpCu//73pUjJp+R6v5QGTVHGX9gDP3+es
+         a6Xg==
+X-Gm-Message-State: AOAM533wuzNsmgZB0KVwzDPsvsi/ZDewjnqjJtSSRCLWQUqByrrvunSo
+        a5Imtxq6xP/tgrVkX0oolO6dILwOCSZNrU4AJBq5iTPUMgP4oxm0Qxse7JY45Vqy7B3MGdEMUWE
+        0MbvMOY4P2mk9Geh/YGYmfVkrPMkL9hk33PiLfqH2AA==
+X-Received: by 2002:a1c:e915:: with SMTP id q21mr30136866wmc.180.1632146728540;
+        Mon, 20 Sep 2021 07:05:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIDtc3RXnWuKWsXmWL/7mB7dq58VPcwOfG7BYj9OFQfEk3j1DGfBpNzneREBKQdY5+2+1+uw==
+X-Received: by 2002:a1c:e915:: with SMTP id q21mr30136843wmc.180.1632146728373;
+        Mon, 20 Sep 2021 07:05:28 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id w5sm16179092wra.87.2021.09.20.07.05.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 07:06:24 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH v5 8/8] selftests: gpio: add test cases for gpio-sim
-Date:   Mon, 20 Sep 2021 16:05:09 +0200
-Message-Id: <20210920140509.5177-9-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210920140509.5177-1-brgl@bgdev.pl>
-References: <20210920140509.5177-1-brgl@bgdev.pl>
+        Mon, 20 Sep 2021 07:05:27 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH] dt-bindings: hwmon: lm90: convert to dtschema
+Date:   Mon, 20 Sep 2021 16:05:25 +0200
+Message-Id: <20210920140525.157013-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a set of tests for the new gpio-sim module. This is a pure shell
-test-suite and uses the helper programs available in the gpio selftests
-directory. These test-cases only test the functionalities exposed by the
-gpio-sim driver, not those handled by core gpiolib code.
+Convert the National LM90 hwmon sensor bindings to DT schema format.
 
-Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- tools/testing/selftests/gpio/Makefile    |   2 +-
- tools/testing/selftests/gpio/config      |   1 +
- tools/testing/selftests/gpio/gpio-sim.sh | 229 +++++++++++++++++++++++
- 3 files changed, 231 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+ .../devicetree/bindings/hwmon/lm90.txt        | 51 ------------
+ .../bindings/hwmon/national,lm90.yaml         | 79 +++++++++++++++++++
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 80 insertions(+), 52 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/lm90.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/national,lm90.yaml
 
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index d7d8f1985d99..4c6df61c76a8 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--TEST_PROGS := gpio-mockup.sh
-+TEST_PROGS := gpio-mockup.sh gpio-sim.sh
- TEST_FILES := gpio-mockup-sysfs.sh
- TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev gpio-chip-info gpio-line-name
- 
-diff --git a/tools/testing/selftests/gpio/config b/tools/testing/selftests/gpio/config
-index ce100342c20b..409a8532facc 100644
---- a/tools/testing/selftests/gpio/config
-+++ b/tools/testing/selftests/gpio/config
-@@ -1,3 +1,4 @@
- CONFIG_GPIOLIB=y
- CONFIG_GPIO_CDEV=y
- CONFIG_GPIO_MOCKUP=m
-+CONFIG_GPIO_SIM=m
-diff --git a/tools/testing/selftests/gpio/gpio-sim.sh b/tools/testing/selftests/gpio/gpio-sim.sh
-new file mode 100755
-index 000000000000..fcca6ec611f8
+diff --git a/Documentation/devicetree/bindings/hwmon/lm90.txt b/Documentation/devicetree/bindings/hwmon/lm90.txt
+deleted file mode 100644
+index 398dcb965751..000000000000
+--- a/Documentation/devicetree/bindings/hwmon/lm90.txt
++++ /dev/null
+@@ -1,51 +0,0 @@
+-* LM90 series thermometer.
+-
+-Required node properties:
+-- compatible: manufacturer and chip name, one of
+-		"adi,adm1032"
+-		"adi,adt7461"
+-		"adi,adt7461a"
+-		"gmt,g781"
+-		"national,lm90"
+-		"national,lm86"
+-		"national,lm89"
+-		"national,lm99"
+-		"dallas,max6646"
+-		"dallas,max6647"
+-		"dallas,max6649"
+-		"dallas,max6657"
+-		"dallas,max6658"
+-		"dallas,max6659"
+-		"dallas,max6680"
+-		"dallas,max6681"
+-		"dallas,max6695"
+-		"dallas,max6696"
+-		"onnn,nct1008"
+-		"winbond,w83l771"
+-		"nxp,sa56004"
+-		"ti,tmp451"
+-
+-- reg: I2C bus address of the device
+-
+-- vcc-supply: vcc regulator for the supply voltage.
+-
+-Optional properties:
+-- interrupts: Contains a single interrupt specifier which describes the
+-              LM90 "-ALERT" pin output.
+-              See interrupt-controller/interrupts.txt for the format.
+-
+-- #thermal-sensor-cells: should be set to 1. See thermal/thermal-sensor.yaml
+-	      for details. See <include/dt-bindings/thermal/lm90.h> for the
+-	      definition of the local, remote and 2nd remote sensor index
+-	      constants.
+-
+-Example LM90 node:
+-
+-temp-sensor {
+-	compatible = "onnn,nct1008";
+-	reg = <0x4c>;
+-	vcc-supply = <&palmas_ldo6_reg>;
+-	interrupt-parent = <&gpio>;
+-	interrupts = <TEGRA_GPIO(O, 4) IRQ_TYPE_LEVEL_LOW>;
+-	#thermal-sensor-cells = <1>;
+-}
+diff --git a/Documentation/devicetree/bindings/hwmon/national,lm90.yaml b/Documentation/devicetree/bindings/hwmon/national,lm90.yaml
+new file mode 100644
+index 000000000000..e712117da3df
 --- /dev/null
-+++ b/tools/testing/selftests/gpio/gpio-sim.sh
-@@ -0,0 +1,229 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Bartosz Golaszewski <bgolaszewski@baylibre.com>
++++ b/Documentation/devicetree/bindings/hwmon/national,lm90.yaml
+@@ -0,0 +1,79 @@
++# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/national,lm90.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+BASE_DIR=`dirname $0`
-+CONFIGFS_DIR="/sys/kernel/config/gpio-sim"
-+PENDING_DIR=$CONFIGFS_DIR/pending
-+LIVE_DIR=$CONFIGFS_DIR/live
-+MODULE="gpio-sim"
++title: LM90 series thermometer
 +
-+fail() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test FAIL"
-+	exit 1
-+}
++maintainers:
++  - Jean Delvare <jdelvare@suse.com>
++  - Guenter Roeck <linux@roeck-us.net>
 +
-+skip() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test SKIP"
-+	exit 4
-+}
++properties:
++  compatible:
++    enum:
++      - adi,adm1032
++      - adi,adt7461
++      - adi,adt7461a
++      - dallas,max6646
++      - dallas,max6647
++      - dallas,max6649
++      - dallas,max6657
++      - dallas,max6658
++      - dallas,max6659
++      - dallas,max6680
++      - dallas,max6681
++      - dallas,max6695
++      - dallas,max6696
++      - gmt,g781
++      - national,lm86
++      - national,lm89
++      - national,lm90
++      - national,lm99
++      - nxp,sa56004
++      - onnn,nct1008
++      - ti,tmp451
++      - winbond,w83l771
 +
-+configfs_cleanup() {
-+	for DIR in `ls $LIVE_DIR`; do
-+		mv $LIVE_DIR/$DIR $PENDING_DIR
-+	done
 +
-+	for DIR in `ls $PENDING_DIR`; do
-+		rmdir $PENDING_DIR/$DIR
-+	done
-+}
++  interrupts:
++    items:
++      - description: |
++          Single interrupt specifier which describes the LM90 "-ALERT" pin
++          output.
 +
-+create_pending_chip() {
-+	local NAME="$1"
-+	local LABEL="$2"
-+	local NUM_LINES="$3"
-+	local LINE_NAMES="$4"
-+	local CHIP_DIR="$PENDING_DIR/$NAME"
++  reg:
++    maxItems: 1
 +
-+	mkdir $CHIP_DIR
-+	test -n "$LABEL" && echo $LABEL > $CHIP_DIR/label
-+	test -n "$NUM_LINES" && echo $NUM_LINES > $CHIP_DIR/num_lines
-+	if [ -n "$LINE_NAMES" ]; then
-+		echo $LINE_NAMES 2> /dev/null > $CHIP_DIR/line_names
-+		# This one can fail
-+		if [ "$?" -ne "0" ]; then
-+			return 1
-+		fi
-+	fi
-+}
++  "#thermal-sensor-cells":
++    const: 1
 +
-+create_live_chip() {
-+	local CHIP_DIR="$PENDING_DIR/$1"
++  vcc-supply:
++    description: phandle to the regulator that provides the +VCC supply
 +
-+	create_pending_chip "$@" || fail "unable to create the chip configfs item"
-+	mv $CHIP_DIR $LIVE_DIR || fail "unable to commit the chip configfs item"
-+}
++required:
++  - compatible
++  - reg
++  - vcc-supply
 +
-+remove_pending_chip() {
-+	local NAME="$1"
++additionalProperties: false
 +
-+	rmdir $PENDING_DIR/$NAME || fail "unable to remove the chip configfs item"
-+}
++examples:
++  - |
++    #include <dt-bindings/gpio/tegra-gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
 +
-+remove_live_chip() {
-+	local NAME="$1"
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
 +
-+	mv $LIVE_DIR/$NAME $PENDING_DIR || fail "unable to uncommit the chip configfs item"
-+	remove_pending_chip "$@"
-+}
-+
-+configfs_chip_name() {
-+	local CHIP="$1"
-+
-+	cat $LIVE_DIR/$CHIP/chip_name 2> /dev/null || return 1
-+}
-+
-+configfs_dev_name() {
-+	local CHIP="$1"
-+
-+	cat $LIVE_DIR/$CHIP/dev_name 2> /dev/null || return 1
-+}
-+
-+get_chip_num_lines() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` num-lines
-+}
-+
-+get_chip_label() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` label
-+}
-+
-+get_line_name() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+
-+	$BASE_DIR/gpio-line-name /dev/`configfs_chip_name $CHIP` $OFFSET
-+}
-+
-+sysfs_set_pull() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+	local PULL="$3"
-+	local SYSFSPATH="/sys/devices/platform/`configfs_dev_name $CHIP`/line-ctrl/gpio$OFFSET"
-+
-+	echo $PULL > $SYSFSPATH
-+}
-+
-+# Load the gpio-sim module. This will pull in configfs if needed too.
-+modprobe gpio-sim || skip "unable to load the gpio-sim module"
-+# Make sure configfs is mounted at /sys/kernel/config. Wait a bit if needed.
-+for IDX in `seq 5`; do
-+	if [ "$IDX" -eq "5" ]; then
-+		skip "configfs not mounted at /sys/kernel/config"
-+	fi
-+
-+	mountpoint -q /sys/kernel/config && break
-+	sleep 0.1
-+done
-+# If the module was already loaded: remove all previous chips
-+configfs_cleanup
-+
-+trap "exit 1" SIGTERM SIGINT
-+trap configfs_cleanup EXIT
-+
-+echo "1. chip_name and dev_name attributes"
-+
-+echo "1.1. Chip name is communicated to user"
-+create_live_chip chip
-+test -n `cat $LIVE_DIR/chip/chip_name` || fail "chip_name doesn't work"
-+remove_live_chip chip
-+
-+echo "1.2. chip_name returns 'none' if the chip is still pending"
-+create_pending_chip chip
-+test "`cat $PENDING_DIR/chip/chip_name`" = "none" || fail "chip_name doesn't return 'none' for a pending chip"
-+remove_pending_chip chip
-+
-+echo "1.3. Device name is communicated to user"
-+create_live_chip chip
-+test -n `cat $LIVE_DIR/chip/dev_name` || fail "dev_name doesn't work"
-+remove_live_chip chip
-+
-+echo "1.4. dev_name returns 'none' if chip is still pending"
-+create_pending_chip chip
-+test "`cat $PENDING_DIR/chip/dev_name`" = "none" || fail "dev_name doesn't return 'none' for a pending chip"
-+remove_pending_chip chip
-+
-+echo "2. Creating simulated chips"
-+
-+echo "2.1. Default number of lines is 1"
-+create_live_chip chip
-+test "`get_chip_num_lines chip`" = "1" || fail "default number of lines is not 1"
-+remove_live_chip chip
-+
-+echo "2.2. Number of lines can be specified"
-+create_live_chip chip test-label 16
-+test "`get_chip_num_lines chip`" = "16" || fail "number of lines is not 16"
-+remove_live_chip chip
-+
-+echo "2.3. Label can be set"
-+create_live_chip chip foobar
-+test "`get_chip_label chip`" = "foobar" || fail "label is incorrect"
-+remove_live_chip chip
-+
-+echo "2.4. Label can be left empty"
-+create_live_chip chip
-+test -z "`cat $LIVE_DIR/chip/label`" || fail "label is not empty"
-+remove_live_chip chip
-+
-+echo "2.5. Line names can be configured"
-+create_live_chip chip test-label 16 '"foo", "", "bar"'
-+test "`get_line_name chip 0`" = "foo" || fail "line name is incorrect"
-+test "`get_line_name chip 2`" = "bar" || fail "line name is incorrect"
-+remove_live_chip chip
-+
-+echo "2.6. Errors in line names are detected"
-+create_pending_chip chip test-label 8 '"foo", bar' && fail "incorrect line name accepted"
-+remove_pending_chip chip
-+create_pending_chip chip test-label 8 '"foo" "bar"' && fail "incorrect line name accepted"
-+remove_pending_chip chip
-+
-+echo "2.7. Multiple chips can be created"
-+create_live_chip chip0
-+create_live_chip chip1
-+create_live_chip chip2
-+remove_live_chip chip0
-+remove_live_chip chip1
-+remove_live_chip chip2
-+
-+echo "3. Controlling simulated chips"
-+
-+echo "3.3. Pull can be set over sysfs"
-+create_live_chip chip test-label 8
-+sysfs_set_pull chip 0 1
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 0
-+test "$?" = "1" || fail "pull set incorrectly"
-+sysfs_set_pull chip 0 0
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 1
-+test "$?" = "0" || fail "pull set incorrectly"
-+remove_live_chip chip
-+
-+echo "3.4. Incorrect input in sysfs is rejected"
-+create_live_chip chip test-label 8
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/line-ctrl/gpio0"
-+echo 2 > $SYSFS_PATH 2> /dev/null && fail "invalid input not detectec"
-+remove_live_chip chip
-+
-+echo "4. Simulated GPIO chips are functional"
-+
-+echo "4.1. Values can be read from sysfs"
-+create_live_chip chip test-label 8
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/line-ctrl/gpio0"
-+test `cat $SYSFS_PATH` = "0" || fail "incorrect value read from sysfs"
-+$BASE_DIR/gpio-mockup-cdev -s 1 /dev/`configfs_chip_name chip` 0 &
-+sleep 0.1 # FIXME Any better way?
-+test `cat $SYSFS_PATH` = "1" || fail "incorrect value read from sysfs"
-+kill $!
-+remove_live_chip chip
-+
-+echo "4.2. Bias settings work correctly"
-+create_live_chip chip test-label 8
-+$BASE_DIR/gpio-mockup-cdev -b pull-up /dev/`configfs_chip_name chip` 0
-+test `cat $SYSFS_PATH` = "1" || fail "bias setting does not work"
-+remove_live_chip chip
-+
-+echo "GPIO $MODULE test PASS"
++        sensor@4c {
++            compatible = "onnn,nct1008";
++            reg = <0x4c>;
++            vcc-supply = <&palmas_ldo6_reg>;
++            interrupt-parent = <&gpio>;
++            interrupts = <TEGRA_GPIO(O, 4) IRQ_TYPE_LEVEL_LOW>;
++            #thermal-sensor-cells = <1>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2b990794ec35..b07679009af2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10928,7 +10928,7 @@ LM90 HARDWARE MONITOR DRIVER
+ M:	Jean Delvare <jdelvare@suse.com>
+ L:	linux-hwmon@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/hwmon/lm90.txt
++F:	Documentation/devicetree/bindings/hwmon/national,lm90.yaml
+ F:	Documentation/hwmon/lm90.rst
+ F:	drivers/hwmon/lm90.c
+ F:	include/dt-bindings/thermal/lm90.h
 -- 
-2.30.1
+2.30.2
 
