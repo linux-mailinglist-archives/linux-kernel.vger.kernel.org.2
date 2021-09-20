@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC3B411F35
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA11411CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348339AbhITRiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40862 "EHLO mail.kernel.org"
+        id S245174AbhITRO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347957AbhITRgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:36:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5BEE615A6;
-        Mon, 20 Sep 2021 17:06:35 +0000 (UTC)
+        id S1345448AbhITRMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:12:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09F3561359;
+        Mon, 20 Sep 2021 16:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157596;
-        bh=U4rjSsLhtKHkhPDxki2lr2YctzUD0/73TwCs51t1cw8=;
+        s=korg; t=1632157050;
+        bh=4k3ueqBC6+FyS0/IPM9yYUQy0wgR+I6vFAKdUCTtQLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FviPEMS48ckKjy0re+p1QAcz1agxSX9F1k9J6J00BG/Fe2djLXjQ4T+x7paqCH036
-         5QVxX7XXYZnseCZDDuGscS4no1dyxH0o7BxjESH2PFRMUEhqED0lTWyPumBy05+n+P
-         mgGqf8K3luWuzp/YunTyRR7yjARs1H5NLqOvbqXI=
+        b=n91/TbDyqWVFb7fSo4lkZv8l4ERXrT7zoD4oXgFPQdIUkU4FQl6qjX2aTkopj6peu
+         6nuxITlCNkqkC174snBJQRbanwXrsMBBOOaAQmDI+LtFAhvc00yxb78BNxASZjFIcZ
+         jAtSxZ6FhNU7ric4yrOZgbMBiJ5rRcbaBVXGwQoo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khalasa@piap.pl>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 062/293] media: TDA1997x: enable EDID support
+Subject: [PATCH 4.14 003/217] qed: Fix the VF msix vectors flow
 Date:   Mon, 20 Sep 2021 18:40:24 +0200
-Message-Id: <20210920163935.381055365@linuxfoundation.org>
+Message-Id: <20210920163924.714395765@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Hałasa <khalasa@piap.pl>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit ea3e1c36e38810427485f06c2becc1f29e54521d ]
+[ Upstream commit b0cd08537db8d2fbb227cdb2e5835209db295a24 ]
 
-Without this patch, the TDA19971 chip's EDID is inactive.
-EDID never worked with this driver, it was all tested with HDMI signal
-sources which don't need EDID support.
+For VFs we should return with an error in case we didn't get the exact
+number of msix vectors as we requested.
+Not doing that will lead to a crash when starting queues for this VF.
 
-Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
-Fixes: 9ac0038db9a7 ("media: i2c: Add TDA1997x HDMI receiver driver")
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/qlogic/qed/qed_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index d114ac5243ec..dab441bbc9f0 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -2229,6 +2229,7 @@ static int tda1997x_core_init(struct v4l2_subdev *sd)
- 	/* get initial HDMI status */
- 	state->hdmi_status = io_read(sd, REG_HDMI_FLAGS);
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
+index 52e747fd9c83..62d514b60e23 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -437,7 +437,12 @@ static int qed_enable_msix(struct qed_dev *cdev,
+ 			rc = cnt;
+ 	}
  
-+	io_write(sd, REG_EDID_ENABLE, EDID_ENABLE_A_EN | EDID_ENABLE_B_EN);
- 	return 0;
- }
- 
+-	if (rc > 0) {
++	/* For VFs, we should return with an error in case we didn't get the
++	 * exact number of msix vectors as we requested.
++	 * Not doing that will lead to a crash when starting queues for
++	 * this VF.
++	 */
++	if ((IS_PF(cdev) && rc > 0) || (IS_VF(cdev) && rc == cnt)) {
+ 		/* MSI-x configuration was achieved */
+ 		int_params->out.int_mode = QED_INT_MODE_MSIX;
+ 		int_params->out.num_vectors = rc;
 -- 
 2.30.2
 
