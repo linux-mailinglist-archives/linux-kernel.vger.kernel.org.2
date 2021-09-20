@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859C4411DE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8ABC412068
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243075AbhITRZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
+        id S1355453AbhITRyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349276AbhITRWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:22:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB00861A7B;
-        Mon, 20 Sep 2021 17:01:20 +0000 (UTC)
+        id S1354107AbhITRsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:48:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D1B61BBF;
+        Mon, 20 Sep 2021 17:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157281;
-        bh=9sqIlj1TMlzStrSfKyBBB4xXAtrh/JOARt+Z0euvc/E=;
+        s=korg; t=1632157881;
+        bh=EfBRpYEF1gGw8de0axT7PEX68GQOTzRSXKoy8g5RXxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qdtLMxN/OPz4fSq/d0NZ+oLnNh8LMuuM3WPhFDmrYohStSz1hW1RZA/lT+gzhabug
-         ODvmiwTr1El/LLD5s1w5J0L6sFVhgM56y/4ehhX0FjWuPK5jlr6gKmmyeKTvY86CCe
-         SzHDXGL7lzqU612BRpE4qnOws70ge4gIUyaMGh1o=
+        b=qR8NnvgtmlZjhNzp0TFNIq3POyG8UR+shjFaq6nPzKmVV7DjuJP4L9KpShPj9jDbs
+         ztER36Chu5zviSPnTm648IhC5mCdIldobIr3x1B77hsViDyM6O/8XgXEzBumqnDJGV
+         xEww2yZkj34xb2F0phvIdXwYOgYos6VGjDfEr6/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 135/217] video: fbdev: kyro: fix a DoS bug by restricting user input
+Subject: [PATCH 4.19 194/293] flow_dissector: Fix out-of-bounds warnings
 Date:   Mon, 20 Sep 2021 18:42:36 +0200
-Message-Id: <20210920163929.229514847@linuxfoundation.org>
+Message-Id: <20210920163939.910569925@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit 98a65439172dc69cb16834e62e852afc2adb83ed ]
+[ Upstream commit 323e0cb473e2a8706ff162b6b4f4fa16023c9ba7 ]
 
-The user can pass in any value to the driver through the 'ioctl'
-interface. The driver dost not check, which may cause DoS bugs.
+Fix the following out-of-bounds warnings:
 
-The following log reveals it:
+    net/core/flow_dissector.c: In function '__skb_flow_dissect':
+>> net/core/flow_dissector.c:1104:4: warning: 'memcpy' offset [24, 39] from the object at '<unknown>' is out of the bounds of referenced subobject 'saddr' with type 'struct in6_addr' at offset 8 [-Warray-bounds]
+     1104 |    memcpy(&key_addrs->v6addrs, &iph->saddr,
+          |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     1105 |           sizeof(key_addrs->v6addrs));
+          |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    In file included from include/linux/ipv6.h:5,
+                     from net/core/flow_dissector.c:6:
+    include/uapi/linux/ipv6.h:133:18: note: subobject 'saddr' declared here
+      133 |  struct in6_addr saddr;
+          |                  ^~~~~
+>> net/core/flow_dissector.c:1059:4: warning: 'memcpy' offset [16, 19] from the object at '<unknown>' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 12 [-Warray-bounds]
+     1059 |    memcpy(&key_addrs->v4addrs, &iph->saddr,
+          |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     1060 |           sizeof(key_addrs->v4addrs));
+          |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    In file included from include/linux/ip.h:17,
+                     from net/core/flow_dissector.c:5:
+    include/uapi/linux/ip.h:103:9: note: subobject 'saddr' declared here
+      103 |  __be32 saddr;
+          |         ^~~~~
 
-divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-RIP: 0010:SetOverlayViewPort+0x133/0x5f0 drivers/video/fbdev/kyro/STG4000OverlayDevice.c:476
-Call Trace:
- kyro_dev_overlay_viewport_set drivers/video/fbdev/kyro/fbdev.c:378 [inline]
- kyrofb_ioctl+0x2eb/0x330 drivers/video/fbdev/kyro/fbdev.c:603
- do_fb_ioctl+0x1f3/0x700 drivers/video/fbdev/core/fbmem.c:1171
- fb_ioctl+0xeb/0x130 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x19b/0x220 fs/ioctl.c:739
- do_syscall_64+0x32/0x80 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy().  So, the compiler legitimately complains about it. As these
+are just a couple of members, fix this by copying each one of them in
+separate calls to memcpy().
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1626235762-2590-1-git-send-email-zheyuma97@gmail.com
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/kyro/fbdev.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/core/flow_dissector.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
-index a7bd9f25911b..d7aa431e6846 100644
---- a/drivers/video/fbdev/kyro/fbdev.c
-+++ b/drivers/video/fbdev/kyro/fbdev.c
-@@ -372,6 +372,11 @@ static int kyro_dev_overlay_viewport_set(u32 x, u32 y, u32 ulWidth, u32 ulHeight
- 		/* probably haven't called CreateOverlay yet */
- 		return -EINVAL;
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 994dd1520f07..949694c70cbc 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -694,8 +694,10 @@ bool __skb_flow_dissect(const struct sk_buff *skb,
+ 							      FLOW_DISSECTOR_KEY_IPV4_ADDRS,
+ 							      target_container);
  
-+	if (ulWidth == 0 || ulWidth == 0xffffffff ||
-+	    ulHeight == 0 || ulHeight == 0xffffffff ||
-+	    (x < 2 && ulWidth + 2 == 0))
-+		return -EINVAL;
-+
- 	/* Stop Ramdac Output */
- 	DisableRamdacOutput(deviceInfo.pSTGReg);
+-			memcpy(&key_addrs->v4addrs, &iph->saddr,
+-			       sizeof(key_addrs->v4addrs));
++			memcpy(&key_addrs->v4addrs.src, &iph->saddr,
++			       sizeof(key_addrs->v4addrs.src));
++			memcpy(&key_addrs->v4addrs.dst, &iph->daddr,
++			       sizeof(key_addrs->v4addrs.dst));
+ 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
+ 		}
+ 
+@@ -744,8 +746,10 @@ bool __skb_flow_dissect(const struct sk_buff *skb,
+ 							      FLOW_DISSECTOR_KEY_IPV6_ADDRS,
+ 							      target_container);
+ 
+-			memcpy(&key_addrs->v6addrs, &iph->saddr,
+-			       sizeof(key_addrs->v6addrs));
++			memcpy(&key_addrs->v6addrs.src, &iph->saddr,
++			       sizeof(key_addrs->v6addrs.src));
++			memcpy(&key_addrs->v6addrs.dst, &iph->daddr,
++			       sizeof(key_addrs->v6addrs.dst));
+ 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
+ 		}
  
 -- 
 2.30.2
