@@ -2,169 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589B2411888
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27099411890
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241772AbhITPoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:44:05 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:34575 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234184AbhITPoD (ORCPT
+        id S241962AbhITPpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:45:23 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:36093 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237860AbhITPpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:44:03 -0400
-Received: by mail-io1-f72.google.com with SMTP id s12-20020a056602168c00b005d611510e15so1264982iow.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:42:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XNtNgu7JmjE8E630pKonga7MBsNIrdGiBGXQ+O50Gpk=;
-        b=jpSeOn/Mc5ZcnWYg/azBmXJY4B8lS9oxvd1M48YH4iRfP5D6GySWNIlzh49P3wcCBc
-         H0l9TTzaFl9bGDDIIkjcBRRFVwjjN/OZz1JkVHBeqFmgulqH/l+42t56SK5h9WBoRmnK
-         CtqKnwhd00GDsT2rnozzQXFO2nSrX3ra3u3JZzqd8XeIYU3Or6xAJwCTyaHxiJewCt3W
-         WVaFGcYnKx0tSRiCDX8wUTIKlLjP8zKtn2hAcUfhPlqP4JBaekslwnqqTgheuOMmhzp8
-         bFYouIDG2vbgVMx0miBg4TH4D+2pKjDjw9kkKZYAaeoAiVt+7eJa0fYQivtyBD9lPTc0
-         S5Cg==
-X-Gm-Message-State: AOAM532pQOSNySegGi6Kj/+dwfYRsmN2hZ+L68CCKLFPjz6pGplWjdxZ
-        hQRx/bbutoG8yTI5uwYEj9IF2lVZQMxiIZOp6VZz/29qoj6m
-X-Google-Smtp-Source: ABdhPJyPiOTM7nVCe2kUVGnVtPQ+lFP0KY7MOW8csA78jTKkU77YQNmOldzVWeNm5UaN+GLgcwJbEYXFxXZylPLEUIcrv6LCf4Jb
+        Mon, 20 Sep 2021 11:45:10 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8D49F5C0176;
+        Mon, 20 Sep 2021 11:43:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 20 Sep 2021 11:43:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=G7a5q99kUrh53YYRGCRkPtyLB3h
+        hTo8Cc+7Pm0FmqOA=; b=PvDnTqpVzaacLwFkerO19U9coZGQfvmRnMsPn6u/ZJh
+        olZz1Sj1RcXVpaPPgZVawqOW5O7XDGIDI9vbEF8GVW8VXxoqc+hLomJUKw0A6D6O
+        iOV1LEUEfFxo2t+XRNQC5QrvRmELmq4Fq7qPKGjPC0RUDJAFpHitY8UQOY1PbG4a
+        hjG4iD7eNVGmi3hEKgZwafre9lKR0uMg8V91elquykhupbYzByOKDNuDMxtxhIv5
+        1ncClBMzYuktGRq7e6SzMvhaFgNFX6viz/y1L5nEIZg6N0cEFaDEPTlZ3tvJzeFM
+        TVsjYzcq5bUlSuuiRStr6EvLpmcYaKsrvLTHaldb1/g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G7a5q9
+        9kUrh53YYRGCRkPtyLB3hhTo8Cc+7Pm0FmqOA=; b=dJX5OgOEy0kNwBhGk7EN7M
+        YZtu31ptpv8r5JSLiHTVfGz4+mVnREscqvJEnVR1M4IxjaWOzuK4tqWAF8B3FAUz
+        EzRjqqStMzzPkaZKjqDRafW+tmy9JqCTuV4FVbujo2Wtn1Q5ei+6h7lTsHoS5N8n
+        ZcAQD93o1cRxm+B0Xkdj6mOCiKWAoTFo+ejFsozjNNMafn1WmhxLN7KPeh8o/JAu
+        okPF7GoycroB38VqJPMXygwl/5S4kgnf9rDthdtjtgAuRgz2cpYMbT3gCkYAyk3l
+        dPRXSIHOMiRwFq9it9tmf64hojWfWV6mvMfk1+mVL+edFyl02n/XW9TPD17Hmvmw
+        ==
+X-ME-Sender: <xms:KKxIYUMi_gO-mZst4SYdOrSjC1w0_YNzMyQNfI7INXkgkJrSxnKF0w>
+    <xme:KKxIYa_ktv1UqvR8t-CAp7Sj3pfT7wKbE8c3Tg6BMqAMRcKir8EVaaz-3ZfKJ7arB
+    8AHSDnj5CGWRRbl4GQ>
+X-ME-Received: <xmr:KKxIYbTwCON-rEk3cbVdWHGoae9Z-67U1CsnrKk2tjHw_3UUxw4V1QmHEVJL9PfQhnzlcwt0KW1Kw5hr7ZZXTUZzrwuslrcrbI6p>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepvedvfeetffdvleeugeeukeegueekheegieevieejkefhieetgfevudekhfel
+    fffgnecuffhomhgrihhnpegtohguvghthhhinhhkrdgtohdruhhkpdhgihhthhhusgdrtg
+    homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    rgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:KKxIYcug4_XBw23reYvclDJrCFxEUF-6BS-fE3eT1gNKtDf0cR3A0w>
+    <xmx:KKxIYcecybUXDhL_nPqJcXEmBRR5gmYoeaaUEMCmLQdXLm6pBER_vQ>
+    <xmx:KKxIYQ0nDSSLixRjs5z8bzzgELyP0mBNl6ShZgwxyeL10OI2F0grLA>
+    <xmx:KaxIYUSelFEcmnajGsd38vf1QWjlMH6sJ_0QzPtUCzHIFLz3dDKOaQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Sep 2021 11:43:35 -0400 (EDT)
+Date:   Mon, 20 Sep 2021 17:43:33 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Regression with mainline kernel on rpi4
+Message-ID: <20210920154333.vunyxeshdb7jt5ka@gilmour>
+References: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
+ <20210903160302.yh42vpkuob45dbpb@gilmour>
+ <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
+ <20210904091050.g5axxctgelciihjn@gilmour>
+ <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+ <20210920144730.d7oabqfbx7pmyyfb@gilmour>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20ed:: with SMTP id q13mr3707547ilv.111.1632152556497;
- Mon, 20 Sep 2021 08:42:36 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 08:42:36 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059730805cc6f2138@google.com>
-Subject: [syzbot] memory leak in prepare_kernel_cred
-From:   syzbot <syzbot+b214edc6e43f8da65554@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, ebiederm@xmission.com,
-        legion@kernel.org, linux-kernel@vger.kernel.org,
-        linux@rasmusvillemoes.dk, syzkaller-bugs@googlegroups.com,
-        yangyingliang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="75iynnnzwnech42u"
+Content-Disposition: inline
+In-Reply-To: <20210920144730.d7oabqfbx7pmyyfb@gilmour>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--75iynnnzwnech42u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    4357f03d6611 Merge tag 'pm-5.15-rc2' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16260b9b300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=84e947373389eef5
-dashboard link: https://syzkaller.appspot.com/bug?extid=b214edc6e43f8da65554
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a7cb3b300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103f8f2d300000
+On Mon, Sep 20, 2021 at 04:47:31PM +0200, Maxime Ripard wrote:
+> On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee wrote:
+> > Hi Maxime,
+> >=20
+> > On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> > >
+> > > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherjee wrote:
+> > > > Hi Maxime,
+> > > >
+> > > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@cerno.tech> wr=
+ote:
+> > > > >
+> > > > > Hi Sudip,
+> > > > >
+> > > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Mukherjee wrote:
+> > > > > > Hi All,
+> > > > > >
+> > > > >
+> > > >
+> > > > <snip>
+> > > >
+> > > > >
+> > > > > >
+> > > > > > You can see the complete dmesg at
+> > > > > > https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
+> > > > >
+> > > > > What test were you running?
+> > > >
+> > > > Nothing particular, its just a boot test that we do every night aft=
+er
+> > > > pulling from torvalds/linux.git
+> > >
+> > > What are you booting to then?
+> >=20
+> > I am not sure I understood the question.
+> > Its an Ubuntu image. The desktop environment is gnome. And as
+> > mentioned earlier, we use the HEAD of linus tree every night to boot
+> > the rpi4 and test that we can login via desktop environment and that
+> > there is no regression in dmesg.
+>=20
+> Looking at the CI, this isn't from a RPi but from qemu?
+>=20
+> What defconfig are you using? How did you generate the Ubuntu image?
+> Through debootstrap? Any additional package?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b214edc6e43f8da65554@syzkaller.appspotmail.com
+So qemu (at least on Fedora 34) doesn't seem to have an RPI4 target, nor
+upstream:
+https://github.com/qemu/qemu/blob/079b1252e9de384385c9da910262312ec2e574c8/=
+hw/arm/raspi.c#L367
 
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-BUG: memory leak
-unreferenced object 0xffff8881046d5480 (size 176):
-  comm "kworker/u4:0", pid 6631, jiffies 4294994696 (age 35.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+I've tested an Ubuntu 21.04 arm64 build (since it seems like it's what
+you've been using), built using debootstrap + ubuntu-desktop, both with
+and without a monitor attached, and up to the desktop once logged in.
 
-BUG: memory leak
-unreferenced object 0xffff888102054040 (size 32):
-  comm "kworker/u4:0", pid 6631, jiffies 4294994696 (age 35.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 b0 12 05 40 81 88 ff ff  ...........@....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8213e79f>] lsm_cred_alloc security/security.c:537 [inline]
-    [<ffffffff8213e79f>] security_prepare_creds+0x9f/0xc0 security/security.c:1691
-    [<ffffffff81275ab5>] prepare_kernel_cred+0x1a5/0x2e0 kernel/cred.c:760
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+I don't see any crash.
 
-BUG: memory leak
-unreferenced object 0xffff8881046d50c0 (size 176):
-  comm "kworker/u4:0", pid 6633, jiffies 4294994696 (age 35.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Maxime
 
-BUG: memory leak
-unreferenced object 0xffff88810493f6c0 (size 176):
-  comm "kworker/u4:0", pid 6634, jiffies 4294994696 (age 35.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+--75iynnnzwnech42u
+Content-Type: application/pgp-signature; name="signature.asc"
 
-BUG: memory leak
-unreferenced object 0xffff888104cec5e0 (size 32):
-  comm "kworker/u4:0", pid 6634, jiffies 4294994696 (age 35.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 b0 12 05 40 81 88 ff ff  ...........@....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8213e79f>] lsm_cred_alloc security/security.c:537 [inline]
-    [<ffffffff8213e79f>] security_prepare_creds+0x9f/0xc0 security/security.c:1691
-    [<ffffffff81275ab5>] prepare_kernel_cred+0x1a5/0x2e0 kernel/cred.c:760
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+-----BEGIN PGP SIGNATURE-----
 
-BUG: memory leak
-unreferenced object 0xffff88810382b780 (size 176):
-  comm "kworker/u4:0", pid 6637, jiffies 4294994700 (age 35.710s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUisJQAKCRDj7w1vZxhR
+xa9NAP4kuM+wEd+OV/GIA51PrGSxrfLWJ5n5PbciTcg+y9yFyAD/c8dNNyHFLH4Q
+2xLjeIuRoXDdJtYbf2uTJX9+/JrCXgg=
+=rqGP
+-----END PGP SIGNATURE-----
 
-BUG: memory leak
-unreferenced object 0xffff888102054060 (size 32):
-  comm "kworker/u4:0", pid 6637, jiffies 4294994700 (age 35.710s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 b0 12 05 40 81 88 ff ff  ...........@....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8213e79f>] lsm_cred_alloc security/security.c:537 [inline]
-    [<ffffffff8213e79f>] security_prepare_creds+0x9f/0xc0 security/security.c:1691
-    [<ffffffff81275ab5>] prepare_kernel_cred+0x1a5/0x2e0 kernel/cred.c:760
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-BUG: memory leak
-unreferenced object 0xffff888104c0a780 (size 176):
-  comm "kworker/u4:0", pid 6630, jiffies 4294994702 (age 35.690s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
-    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
-    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--75iynnnzwnech42u--
