@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B219C411A19
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14661411BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239993AbhITQrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:47:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35086 "EHLO mail.kernel.org"
+        id S1343891AbhITRCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236904AbhITQrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:47:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9211561177;
-        Mon, 20 Sep 2021 16:45:36 +0000 (UTC)
+        id S1344957AbhITQ7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3052961401;
+        Mon, 20 Sep 2021 16:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156337;
-        bh=+6b2Pgjx+/2WH6XF7xjweivXSPduCFRwvN5Du56Y924=;
+        s=korg; t=1632156761;
+        bh=hqK4GfwyrxKZtwjNnAU39wYf3mmtdL9Jnu9htZQlyfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=paWapvENhfJ7RkTenmpofFgqAD4J6M/IGU1qLI4/9B3mqYL00q94drJJue0Npwggd
-         TJxBvW9Jz08p7UWhVj/2fzCjhx1EN6GRnJrgoMJtt6JDu9TRX2g1zRe7/YLYAaXZzv
-         ElgCwj12WFcmM5cJDDi+FgYJju6L2If7dxD/ChEY=
+        b=V6rGfqlet/TSjqH3r0nWihVfO9S+WzBo3ZYZF99/F27PADfakyiekDr4yEhqy9pfg
+         NHaMc39a/0+GQpYn/4yNSlTpKvITSoQ9/XzfHNJp+Fc6QYtP7+LrADsmbdjJKzI3MB
+         uonsamgW9tuya4IaxeM1/e9Y+vtB36lCZaKaGFi8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.4 013/133] media: stkwebcam: fix memory leak in stk_camera_probe
+        stable@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 042/175] crypto: qat - do not ignore errors from enable_vf2pf_comms()
 Date:   Mon, 20 Sep 2021 18:41:31 +0200
-Message-Id: <20210920163913.041211033@linuxfoundation.org>
+Message-Id: <20210920163919.436552676@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-commit 514e97674400462cc09c459a1ddfb9bf39017223 upstream.
+[ Upstream commit 5147f0906d50a9d26f2b8698cd06b5680e9867ff ]
 
-My local syzbot instance hit memory leak in usb_set_configuration().
-The problem was in unputted usb interface. In case of errors after
-usb_get_intf() the reference should be putted to correclty free memory
-allocated for this interface.
+The function adf_dev_init() ignores the error code reported by
+enable_vf2pf_comms(). If the latter fails, e.g. the VF is not compatible
+with the pf, then the load of the VF driver progresses.
+This patch changes adf_dev_init() so that the error code from
+enable_vf2pf_comms() is returned to the caller.
 
-Fixes: ec16dae5453e ("V4L/DVB (7019): V4L: add support for Syntek DC1125 webcams")
-Cc: stable@vger.kernel.org
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/stkwebcam/stk-webcam.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/crypto/qat/qat_common/adf_init.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/media/usb/stkwebcam/stk-webcam.c
-+++ b/drivers/media/usb/stkwebcam/stk-webcam.c
-@@ -1353,7 +1353,7 @@ static int stk_camera_probe(struct usb_i
- 	if (!dev->isoc_ep) {
- 		STK_ERROR("Could not find isoc-in endpoint");
- 		err = -ENODEV;
--		goto error;
-+		goto error_put;
+diff --git a/drivers/crypto/qat/qat_common/adf_init.c b/drivers/crypto/qat/qat_common/adf_init.c
+index 888c6675e7e5..03856cc604b6 100644
+--- a/drivers/crypto/qat/qat_common/adf_init.c
++++ b/drivers/crypto/qat/qat_common/adf_init.c
+@@ -101,6 +101,7 @@ int adf_dev_init(struct adf_accel_dev *accel_dev)
+ 	struct service_hndl *service;
+ 	struct list_head *list_itr;
+ 	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
++	int ret;
+ 
+ 	if (!hw_data) {
+ 		dev_err(&GET_DEV(accel_dev),
+@@ -167,9 +168,9 @@ int adf_dev_init(struct adf_accel_dev *accel_dev)
  	}
- 	dev->vsettings.palette = V4L2_PIX_FMT_RGB565;
- 	dev->vsettings.mode = MODE_VGA;
-@@ -1366,10 +1366,12 @@ static int stk_camera_probe(struct usb_i
  
- 	err = stk_register_video_device(dev);
- 	if (err)
--		goto error;
-+		goto error_put;
+ 	hw_data->enable_error_correction(accel_dev);
+-	hw_data->enable_vf2pf_comms(accel_dev);
++	ret = hw_data->enable_vf2pf_comms(accel_dev);
  
- 	return 0;
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(adf_dev_init);
  
-+error_put:
-+	usb_put_intf(interface);
- error:
- 	v4l2_ctrl_handler_free(hdl);
- 	v4l2_device_unregister(&dev->v4l2_dev);
+-- 
+2.30.2
+
 
 
