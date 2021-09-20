@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392FD411D83
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35106411A4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348958AbhITRVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:21:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
+        id S243041AbhITQsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348313AbhITRSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:18:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F86B61A56;
-        Mon, 20 Sep 2021 16:59:53 +0000 (UTC)
+        id S237833AbhITQsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1E161211;
+        Mon, 20 Sep 2021 16:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157194;
-        bh=2+69YOaFMQV3IeG+2xp7JYf6jg/oriN58muh/MO/R1w=;
+        s=korg; t=1632156393;
+        bh=HHqY1ev6eyJK1MPUdupiJ7mVkEyP7VGaewKnwPOqjS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zuWjJydHLAJmuJXAAm86qeMSZKpRY3A17YvA+IAs/nhp78FlXO0xT1Wt1eK9ofMoy
-         sE/9pqVF/JsZE6ee3gPRbLay3WbVhLlGLqYJ8NxTsfvOzzi6XvGZidS8CKT3OFS6g5
-         acEqm7k2Q1fRO7iQWidFjZ80cf+E9Xa1vsAYkgrA=
+        b=112aspXFTZfGrbI88KqqHApJ4K0miWNFpLkE/Uh5NGRZvaSfTJp9wnWuWRGlIw3va
+         TGCmMXxJ7e/vA4iNQFeRbyT+USYqmHDq3Nsaz7I5a/XHfayp3Ad15oZbzgcUB0718e
+         DiUhgRW58+U8YxyC5ntDC220+m+2OZujM47oNGvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 4.14 096/217] clk: kirkwood: Fix a clocking boot regression
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 039/133] media: dvb-usb: fix uninit-value in vp702x_read_mac_addr
 Date:   Mon, 20 Sep 2021 18:41:57 +0200
-Message-Id: <20210920163927.892559131@linuxfoundation.org>
+Message-Id: <20210920163913.922367155@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-commit aaedb9e00e5400220a8871180d23a83e67f29f63 upstream.
+[ Upstream commit 797c061ad715a9a1480eb73f44b6939fbe3209ed ]
 
-Since a few kernel releases the Pogoplug 4 has crashed like this
-during boot:
+If vp702x_usb_in_op fails, the mac address is not initialized.
+And vp702x_read_mac_addr does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000002
-(...)
-[<c04116ec>] (strlen) from [<c00ead80>] (kstrdup+0x1c/0x4c)
-[<c00ead80>] (kstrdup) from [<c04591d8>] (__clk_register+0x44/0x37c)
-[<c04591d8>] (__clk_register) from [<c04595ec>] (clk_hw_register+0x20/0x44)
-[<c04595ec>] (clk_hw_register) from [<c045bfa8>] (__clk_hw_register_mux+0x198/0x1e4)
-[<c045bfa8>] (__clk_hw_register_mux) from [<c045c050>] (clk_register_mux_table+0x5c/0x6c)
-[<c045c050>] (clk_register_mux_table) from [<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0+0x13c/0x1ac)
-[<c0acf3e0>] (kirkwood_clk_muxing_setup.constprop.0) from [<c0aceae0>] (of_clk_init+0x12c/0x214)
-[<c0aceae0>] (of_clk_init) from [<c0ab576c>] (time_init+0x20/0x2c)
-[<c0ab576c>] (time_init) from [<c0ab3d18>] (start_kernel+0x3dc/0x56c)
-[<c0ab3d18>] (start_kernel) from [<00000000>] (0x0)
-Code: e3130020 1afffffb e12fff1e c08a1078 (e5d03000)
+Fix this by handling the failure of vp702x_usb_in_op.
 
-This is because the "powersave" mux clock 0 was provided in an unterminated
-array, which is required by the loop in the driver:
-
-        /* Count, allocate, and register clock muxes */
-        for (n = 0; desc[n].name;)
-                n++;
-
-Here n will go out of bounds and then call clk_register_mux() on random
-memory contents after the mux clock.
-
-Fix this by terminating the array with a blank entry.
-
-Fixes: 105299381d87 ("cpufreq: kirkwood: use the powersave multiplexer")
-Cc: stable@vger.kernel.org
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210814235514.403426-1-linus.walleij@linaro.org
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/mvebu/kirkwood.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/usb/dvb-usb/vp702x.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
---- a/drivers/clk/mvebu/kirkwood.c
-+++ b/drivers/clk/mvebu/kirkwood.c
-@@ -254,6 +254,7 @@ static const char *powersave_parents[] =
- static const struct clk_muxing_soc_desc kirkwood_mux_desc[] __initconst = {
- 	{ "powersave", powersave_parents, ARRAY_SIZE(powersave_parents),
- 		11, 1, 0 },
-+	{ }
- };
+diff --git a/drivers/media/usb/dvb-usb/vp702x.c b/drivers/media/usb/dvb-usb/vp702x.c
+index ee1e19e36445..55d515507f0e 100644
+--- a/drivers/media/usb/dvb-usb/vp702x.c
++++ b/drivers/media/usb/dvb-usb/vp702x.c
+@@ -294,16 +294,22 @@ static int vp702x_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ static int vp702x_read_mac_addr(struct dvb_usb_device *d,u8 mac[6])
+ {
+ 	u8 i, *buf;
++	int ret;
+ 	struct vp702x_device_state *st = d->priv;
  
- static struct clk *clk_muxing_get_src(
+ 	mutex_lock(&st->buf_mutex);
+ 	buf = st->buf;
+-	for (i = 6; i < 12; i++)
+-		vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1, &buf[i - 6], 1);
++	for (i = 6; i < 12; i++) {
++		ret = vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1,
++				       &buf[i - 6], 1);
++		if (ret < 0)
++			goto err;
++	}
+ 
+ 	memcpy(mac, buf, 6);
++err:
+ 	mutex_unlock(&st->buf_mutex);
+-	return 0;
++	return ret;
+ }
+ 
+ static int vp702x_frontend_attach(struct dvb_usb_adapter *adap)
+-- 
+2.30.2
+
 
 
