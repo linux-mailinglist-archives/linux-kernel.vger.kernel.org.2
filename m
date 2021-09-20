@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E4441213F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212A6412140
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357201AbhITSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54626 "EHLO mail.kernel.org"
+        id S1350410AbhITSDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355813AbhITR4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1355814AbhITR4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 13:56:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63D60619F5;
-        Mon, 20 Sep 2021 17:14:26 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3E463213;
+        Mon, 20 Sep 2021 17:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158066;
-        bh=Hc1oWslzWYnIO9BCZjI+J+/ySVm9TdvePsT4nzXvQT0=;
+        s=korg; t=1632158069;
+        bh=OMpf2Tq8oqeZg1jpXlPCZQeyvBrPcPMumc5M0Ak/rXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z620vmWBKCH4WqZRkwQAybCogQvVo+YYaB/Adn9d+8Yv1a/QYXkHLQZDEykl2bzst
-         J6NXR1Of+5VMfTDiLZ0yadvbLXW96nhN0dVq8BPI1kNIxsxj3pQMNqIr2yQQGBEjMS
-         ZczLaVPWyKFLkAroahCAvXe7YahIYRPVaUp4+AXI=
+        b=C4Z6KgMQeUWxSDwtmVBNtHQ3FV6z684vmmD02qKLN0pi9rNrmh7rMa67DJyPbnrgm
+         SoZG2Ez3GG2YcjZdS8mW1jHRS2Q856pm2a/pkDlREHJJv50IG2FdudL8TOEWrjFEt5
+         7xarBQYrb79jkS42lWc/lU2UYiXE6jw0k+CYD/gs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Patryk Duda <pdk@semihalf.com>,
-        Benson Leung <bleung@chromium.org>
-Subject: [PATCH 4.19 248/293] platform/chrome: cros_ec_proto: Send command again when timeout occurs
-Date:   Mon, 20 Sep 2021 18:43:30 +0200
-Message-Id: <20210920163941.886488053@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Subject: [PATCH 4.19 249/293] drm/amdgpu: Fix BUG_ON assert
+Date:   Mon, 20 Sep 2021 18:43:31 +0200
+Message-Id: <20210920163941.917793075@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -39,41 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patryk Duda <pdk@semihalf.com>
+From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
 
-commit 3abc16af57c9939724df92fcbda296b25cc95168 upstream.
+commit ea7acd7c5967542353430947f3faf699e70602e5 upstream.
 
-Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
-hasn't initialized SPI yet. This can happen because FPMCU is restarted
-during system boot and kernel can send message in short window
-eg. between sysjump to RW and SPI initialization.
+With added CPU domain to placement you can have
+now 3 placemnts at once.
 
-Cc: <stable@vger.kernel.org> # 4.4+
-Signed-off-by: Patryk Duda <pdk@semihalf.com>
-Link: https://lore.kernel.org/r/20210518140758.29318-1-pdk@semihalf.com
-Signed-off-by: Benson Leung <bleung@chromium.org>
+CC: stable@kernel.org
+Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210622162339.761651-5-andrey.grodzovsky@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/platform/chrome/cros_ec_proto.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -219,6 +219,15 @@ static int cros_ec_host_command_proto_qu
- 	msg->insize = sizeof(struct ec_response_get_protocol_info);
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+@@ -216,7 +216,7 @@ void amdgpu_bo_placement_from_domain(str
+ 		c++;
+ 	}
  
- 	ret = send_command(ec_dev, msg);
-+	/*
-+	 * Send command once again when timeout occurred.
-+	 * Fingerprint MCU (FPMCU) is restarted during system boot which
-+	 * introduces small window in which FPMCU won't respond for any
-+	 * messages sent by kernel. There is no need to wait before next
-+	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
-+	 */
-+	if (ret == -ETIMEDOUT)
-+		ret = send_command(ec_dev, msg);
+-	BUG_ON(c >= AMDGPU_BO_MAX_PLACEMENTS);
++	BUG_ON(c > AMDGPU_BO_MAX_PLACEMENTS);
  
- 	if (ret < 0) {
- 		dev_dbg(ec_dev->dev,
+ 	placement->num_placement = c;
+ 	placement->placement = places;
 
 
