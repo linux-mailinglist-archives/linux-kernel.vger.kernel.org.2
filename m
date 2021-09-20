@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B98411557
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0E241155B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbhITNQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:16:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38906 "EHLO mail.kernel.org"
+        id S239230AbhITNQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235540AbhITNQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:16:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E25A60FE6;
-        Mon, 20 Sep 2021 13:14:58 +0000 (UTC)
+        id S239244AbhITNQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:16:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66E9F60F26;
+        Mon, 20 Sep 2021 13:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632143698;
-        bh=tAZABOypw1IlJ2knAgYtx3xxSfYFHOPFbRsn6jg6CSE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BD8z1gsLT8T/lfDWwpR6e7/aM4AqS/OVbTzAwcaqI8lycrDj8LFKg4TDR9NIo74kc
-         n/S0hsRSWoWcbgSNfTpHK2vHnVxSZJf4CNAt5DnKuCV6hJ2xHNVv9MO3R/xcdqzVnj
-         7qICeQkp+a4HVIjPIiDtEpT1naLcbJcRRRQ2zkd6H9irPYp8ac2M/uIZ83hmN74qBM
-         13W5f8bb1T/1csPzIDDMM2VG5BJKPGUeBbkz5etc3rJ07/BAVn5JKddeEjpKEc1hf4
-         AU+sIGKFK3uW95Sfb7Oew9PHpuh/LFpLLkoz+ZBgq1EvTrrimDLQAMthCaMSNLVr9E
-         YIcA6L3KOJF2g==
-Received: by mail-wr1-f44.google.com with SMTP id x6so29541262wrv.13;
-        Mon, 20 Sep 2021 06:14:58 -0700 (PDT)
-X-Gm-Message-State: AOAM530wj0mG4YDCvBG9ZFjlYj8H6ojVI1vOxHiww7s2fZGy2/2BGE8u
-        XPx8GNHzqp8j/1OX01wxL9RJXBa4bmIdMWXN4Z8=
-X-Google-Smtp-Source: ABdhPJztJWWZTJcIQrQfR2lMH/0PSWjOyy6RRBCJn+gZMd0asiRPg8bt1UOeEDdEsQJAworhHh5pxVkf7wmrIbtE8Y0=
-X-Received: by 2002:a1c:23cb:: with SMTP id j194mr29086176wmj.1.1632143696757;
- Mon, 20 Sep 2021 06:14:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920121421.93297-1-arnd@kernel.org> <20210920123131.6kpv3ffxvm7xeqga@pali>
-In-Reply-To: <20210920123131.6kpv3ffxvm7xeqga@pali>
+        s=k20201202; t=1632143721;
+        bh=tDLzFfH6Yq/XVj4j/zz0dnMNwzyfSYQKvLBxZYD55Y4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XXWrqFQSBiRJtcifoRG22Om0R7HJS7GCokO2Zu7DEdXIyjQFmgjI/u44cAcxDYThz
+         8wCIjA4bZwkbZga//uO0BCS21gK82EFzHhr05CfE3dHz7EvuSfWrhKRI6HlAyOfh9d
+         4lKhj1ILwu9dUSCBNttF66/j4bMBr1S8qekWjyFEw5Oqz2U0SiVoHo+mMy4rFJs8xF
+         L6YHsuf7dnTRNjD/PXoPdU4OMxl888PEnNRUQqhD1GVDJdJX8HWi1kV+ChlUpi+7he
+         Gb3Fv7sL1OD9lBnNcOtFof4R0NhloEOj+n1PjE/8i5cU/X8S6mmLD6vQJipl+oT+LW
+         D5I/JnBqnnYVA==
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 20 Sep 2021 15:14:40 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a10NR5CqoTxtjyrx5g6kO-hEkhaw7psEJHSSOZM9S+JXQ@mail.gmail.com>
-Message-ID: <CAK8P3a10NR5CqoTxtjyrx5g6kO-hEkhaw7psEJHSSOZM9S+JXQ@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: dell-smm-hwmon: remove unused variable warning
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Armin Wolf <W_Armin@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        Carlos Alberto Lopez Perez <clopez@igalia.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sebastian Oechsle <setboolean@icloud.com>,
-        linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Tejun Heo <tj@kernel.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFC] blk-iocost stringop-overread warning workaround
+Date:   Mon, 20 Sep 2021 15:15:00 +0200
+Message-Id: <20210920131516.2437790-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 2:31 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
-> On Monday 20 September 2021 14:14:16 Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > When procfs is disabled
->
-> ... then the i8k_init_procfs function should not be called as the
-> purpose of I8K code / config option is to export functionality over
-> procfs. So when procfs is disabled then this i8k is noop.
->
-> Patch which do not allow compilation of I8K when procfs is not enabled
-> is pending here:
->
-> https://lore.kernel.org/linux-hwmon/20210910071921.16777-1-rdunlap@infrad=
-ead.org/
->
-> Ideally please test or review it. As you are not the first one who
-> spotted -Werror problems with i8k and tried to workaround it.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Ok, I'm now using that version in my randconfig tree, it looks sensible
-and it addresses another problem. I'll let you know if something else
-comes up with that patch applied, but I'm sure it fixes the issue
-I reported. Feel free to add
+In some randconfig builds with gcc-11, I get a warning from
+the fortified string helpers:
 
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+In function 'memcpy',
+    inlined from 'ioc_cost_model_write' at block/blk-iocost.c:3345:2:
+include/linux/fortify-string.h:20:33: error: '__builtin_memcpy' reading 48 bytes from a region of size 0 [-Werror=stringop-overread]
+   20 | #define __underlying_memcpy     __builtin_memcpy
+      |                                 ^
+include/linux/fortify-string.h:191:16: note: in expansion of macro '__underlying_memcpy'
+  191 |         return __underlying_memcpy(p, q, size);
+      |                ^~~~~~~~~~~~~~~~~~~
 
-to Randy's patch if you like.
+I don't see anything wrong in the code itself, so I suspect it's
+gcc doing something weird again. The only way I could find to make
+this warning go away is to hide the object using the RELOC_HIDE()
+macro, but this is really ugly and I hope someone has a better
+idea.
 
-> > the code produces a warning
-> > for an unused variable:
-> >
-> > drivers/hwmon/dell-smm-hwmon.c: In function 'i8k_init_procfs':
-> > drivers/hwmon/dell-smm-hwmon.c:624:31: error: unused variable 'data' [-=
-Werror=3Dunused-variable]
-> >   624 |         struct dell_smm_data *data =3D dev_get_drvdata(dev);
-> >       |                               ^~~~
->
-> I'm starting to hate this -Werror decision... but seems that we have to
-> deal with it and together cleanup code as much as possible.
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ block/blk-iocost.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Oh, I totally would have sent you my patch without the -Werror change
-as well ;-)
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index b3880e4ba22a..51f641840ed9 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -3173,6 +3173,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
+ 		ioc = q_to_ioc(bdev->bd_disk->queue);
+ 	}
+ 
++	ioc = RELOC_HIDE(ioc, 0);
+ 	spin_lock_irq(&ioc->lock);
+ 	memcpy(qos, ioc->params.qos, sizeof(qos));
+ 	enable = ioc->enabled;
+@@ -3340,6 +3341,7 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
+ 		ioc = q_to_ioc(bdev->bd_disk->queue);
+ 	}
+ 
++	ioc = RELOC_HIDE(ioc, 0);
+ 	spin_lock_irq(&ioc->lock);
+ 	memcpy(u, ioc->params.i_lcoefs, sizeof(u));
+ 	user = ioc->user_cost_model;
+-- 
+2.29.2
 
-       Arnd
