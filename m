@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0248411BAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35DE411D62
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345150AbhITRBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46900 "EHLO mail.kernel.org"
+        id S1346759AbhITRTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245489AbhITQ54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:57:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58689613A8;
-        Mon, 20 Sep 2021 16:51:48 +0000 (UTC)
+        id S1347709AbhITRRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:17:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA19C61A10;
+        Mon, 20 Sep 2021 16:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156708;
-        bh=89w5O5mvEhMy/uHuvN0tJIllL74mrZOos3Otfw4qbzw=;
+        s=korg; t=1632157155;
+        bh=eDf+Y2pKgCWX3tDOUyAt5Id4kBZZh9MhoiHT6Dkrezk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eBK4NpNbOVEGRBmlo8+I/MUxDMULov/jTF6ESm3oMff1M1SxPqWafzF3eFM1pR1EH
-         BaBHZfnpWLJb3vxLEElQfzy2C/NPUeXJ4OfxWSB+5VVdRfoLYg3OamWfbA5twHghql
-         MTlPphfywSNMsPwegEonN1XniGyTAum09Nrm1afg=
+        b=BuHssyvdp9jYI1ZL9IK6bYYU/ViZon5U9ypZFGs+vClr8p6Ac4wLDui++iPklJ0f3
+         Ib6L2O9lB1pMGO6/iCciJB9/UxyLduHzQ8gtahKAz6amDU++eYTp1DtLyCietGcZdQ
+         ZK9Sjdq1bTLdY+yMsNm0xemQdXR7egWZeG5KSvIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Jonas Jensen <jonas.jensen@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 050/175] crypto: qat - use proper type for vf_mask
-Date:   Mon, 20 Sep 2021 18:41:39 +0200
-Message-Id: <20210920163919.695384351@linuxfoundation.org>
+Subject: [PATCH 4.14 079/217] mmc: moxart: Fix issue with uninitialized dma_slave_config
+Date:   Mon, 20 Sep 2021 18:41:40 +0200
+Message-Id: <20210920163927.305807196@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 462354d986b6a89c6449b85f17aaacf44e455216 ]
+[ Upstream commit ee5165354d498e5bceb0b386e480ac84c5f8c28c ]
 
-Replace vf_mask type with unsigned long to avoid a stack-out-of-bound.
+Depending on the DMA driver being used, the struct dma_slave_config may
+need to be initialized to zero for the unused data.
 
-This is to fix the following warning reported by KASAN the first time
-adf_msix_isr_ae() gets called.
+For example, we have three DMA drivers using src_port_window_size and
+dst_port_window_size. If these are left uninitialized, it can cause DMA
+failures.
 
-    [  692.091987] BUG: KASAN: stack-out-of-bounds in find_first_bit+0x28/0x50
-    [  692.092017] Read of size 8 at addr ffff88afdf789e60 by task swapper/32/0
-    [  692.092076] Call Trace:
-    [  692.092089]  <IRQ>
-    [  692.092101]  dump_stack+0x9c/0xcf
-    [  692.092132]  print_address_description.constprop.0+0x18/0x130
-    [  692.092164]  ? find_first_bit+0x28/0x50
-    [  692.092185]  kasan_report.cold+0x7f/0x111
-    [  692.092213]  ? static_obj+0x10/0x80
-    [  692.092234]  ? find_first_bit+0x28/0x50
-    [  692.092262]  find_first_bit+0x28/0x50
-    [  692.092288]  adf_msix_isr_ae+0x16e/0x230 [intel_qat]
+For moxart, this is probably not currently an issue but is still good to
+fix though.
 
-Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
-Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 1b66e94e6b99 ("mmc: moxart: Add MOXA ART SD/MMC driver")
+Cc: Jonas Jensen <jonas.jensen@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210810081644.19353-3-tony@atomide.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_isr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/mmc/host/moxart-mmc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_isr.c b/drivers/crypto/qat/qat_common/adf_isr.c
-index 2c0be14309cf..7877ba677220 100644
---- a/drivers/crypto/qat/qat_common/adf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_isr.c
-@@ -59,6 +59,8 @@
- #include "adf_transport_access_macros.h"
- #include "adf_transport_internal.h"
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index a0670e9cd012..5553a5643f40 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -631,6 +631,7 @@ static int moxart_probe(struct platform_device *pdev)
+ 			 host->dma_chan_tx, host->dma_chan_rx);
+ 		host->have_dma = true;
  
-+#define ADF_MAX_NUM_VFS	32
-+
- static int adf_enable_msix(struct adf_accel_dev *accel_dev)
- {
- 	struct adf_accel_pci *pci_dev_info = &accel_dev->accel_pci_dev;
-@@ -111,7 +113,7 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
- 		struct adf_bar *pmisc =
- 			&GET_BARS(accel_dev)[hw_data->get_misc_bar_id(hw_data)];
- 		void __iomem *pmisc_bar_addr = pmisc->virt_addr;
--		u32 vf_mask;
-+		unsigned long vf_mask;
++		memset(&cfg, 0, sizeof(cfg));
+ 		cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 		cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
  
- 		/* Get the interrupt sources triggered by VFs */
- 		vf_mask = ((ADF_CSR_RD(pmisc_bar_addr, ADF_ERRSOU5) &
-@@ -132,8 +134,7 @@ static irqreturn_t adf_msix_isr_ae(int irq, void *dev_ptr)
- 			 * unless the VF is malicious and is attempting to
- 			 * flood the host OS with VF2PF interrupts.
- 			 */
--			for_each_set_bit(i, (const unsigned long *)&vf_mask,
--					 (sizeof(vf_mask) * BITS_PER_BYTE)) {
-+			for_each_set_bit(i, &vf_mask, ADF_MAX_NUM_VFS) {
- 				vf_info = accel_dev->pf.vf_info + i;
- 
- 				if (!__ratelimit(&vf_info->vf2pf_ratelimit)) {
 -- 
 2.30.2
 
