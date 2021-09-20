@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53194411FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC376411FAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353051AbhITRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:43:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
+        id S1349105AbhITRn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245538AbhITRlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:41:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E00615E6;
-        Mon, 20 Sep 2021 17:08:17 +0000 (UTC)
+        id S1352759AbhITRlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:41:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9E1261B63;
+        Mon, 20 Sep 2021 17:08:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157698;
-        bh=5XOdhEQSCGjFJgd0LO1xGVU/90AYG3budewRQKU3TMU=;
+        s=korg; t=1632157722;
+        bh=ZRg9tBO70UphgkvhuQCuYQVfzIBZWJPP6hkwL1qnChA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NbyedollJiZwv25eTHvA605tonYGAS1n6/AzpcGUGNTzoJCaZGysyozRVOxpwEz0p
-         BT7Qk1/5yk/Tsb20U+rSi41ViP0TEX9zXEWQnaU35LvBbtapXCmdEWGTJgqYKSD2kB
-         pW9VH+CVGKGT2fbGPEfohT9fyVFiXg3RKsL+6c+Q=
+        b=LL20G5BN5fDZZOYFh7m42RhwWUF7TccQJjKkEA5k/6AHztiI3o7+aG2u3FypBDUo7
+         zBkRRHv1WColaecxl2G4EFwg/6LAiQRx3iPlT6I+SAzoSKeZ2ytiRHiRlqq+eKNL6l
+         PcdPDJLgZjDqqHzF/cqKgjtmihkyMvlpD8SnSIY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Heimpold <michael.heimpold@in-tech.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 103/293] net: qualcomm: fix QCA7000 checksum handling
-Date:   Mon, 20 Sep 2021 18:41:05 +0200
-Message-Id: <20210920163936.785752063@linuxfoundation.org>
+Subject: [PATCH 4.19 104/293] ipv4: fix endianness issue in inet_rtm_getroute_build_skb()
+Date:   Mon, 20 Sep 2021 18:41:06 +0200
+Message-Id: <20210920163936.818194608@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -42,50 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Wahren <stefan.wahren@i2se.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 429205da6c834447a57279af128bdd56ccd5225e ]
+[ Upstream commit 92548b0ee220e000d81c27ac9a80e0ede895a881 ]
 
-Based on tests the QCA7000 doesn't support checksum offloading. So assume
-ip_summed is CHECKSUM_NONE and let the kernel take care of the checksum
-handling. This fixes data transfer issues in noisy environments.
+The UDP length field should be in network order.
+This removes the following sparse error:
 
-Reported-by: Michael Heimpold <michael.heimpold@in-tech.com>
-Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA7000")
-Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+net/ipv4/route.c:3173:27: warning: incorrect type in assignment (different base types)
+net/ipv4/route.c:3173:27:    expected restricted __be16 [usertype] len
+net/ipv4/route.c:3173:27:    got unsigned long
+
+Fixes: 404eb77ea766 ("ipv4: support sport, dport and ip_proto in RTM_GETROUTE")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Roopa Prabhu <roopa@nvidia.com>
+Cc: David Ahern <dsahern@kernel.org>
+Reviewed-by: David Ahern <dsahern@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qualcomm/qca_spi.c  | 2 +-
- drivers/net/ethernet/qualcomm/qca_uart.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/route.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
-index 9d188931bc09..afd49c7fd87f 100644
---- a/drivers/net/ethernet/qualcomm/qca_spi.c
-+++ b/drivers/net/ethernet/qualcomm/qca_spi.c
-@@ -413,7 +413,7 @@ qcaspi_receive(struct qcaspi *qca)
- 				skb_put(qca->rx_skb, retcode);
- 				qca->rx_skb->protocol = eth_type_trans(
- 					qca->rx_skb, qca->rx_skb->dev);
--				qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
-+				skb_checksum_none_assert(qca->rx_skb);
- 				netif_rx_ni(qca->rx_skb);
- 				qca->rx_skb = netdev_alloc_skb_ip_align(net_dev,
- 					net_dev->mtu + VLAN_ETH_HLEN);
-diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethernet/qualcomm/qca_uart.c
-index db6068cd7a1f..466e9d07697a 100644
---- a/drivers/net/ethernet/qualcomm/qca_uart.c
-+++ b/drivers/net/ethernet/qualcomm/qca_uart.c
-@@ -107,7 +107,7 @@ qca_tty_receive(struct serdev_device *serdev, const unsigned char *data,
- 			skb_put(qca->rx_skb, retcode);
- 			qca->rx_skb->protocol = eth_type_trans(
- 						qca->rx_skb, qca->rx_skb->dev);
--			qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
-+			skb_checksum_none_assert(qca->rx_skb);
- 			netif_rx_ni(qca->rx_skb);
- 			qca->rx_skb = netdev_alloc_skb_ip_align(netdev,
- 								netdev->mtu +
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index d72bffab6ffc..730a15fc497c 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -2815,7 +2815,7 @@ static struct sk_buff *inet_rtm_getroute_build_skb(__be32 src, __be32 dst,
+ 		udph = skb_put_zero(skb, sizeof(struct udphdr));
+ 		udph->source = sport;
+ 		udph->dest = dport;
+-		udph->len = sizeof(struct udphdr);
++		udph->len = htons(sizeof(struct udphdr));
+ 		udph->check = 0;
+ 		break;
+ 	}
 -- 
 2.30.2
 
