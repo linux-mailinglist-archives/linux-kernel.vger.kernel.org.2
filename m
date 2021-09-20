@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091E54111EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457F44111F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbhITJd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:33:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233719AbhITJdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:33:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26E3660F70;
-        Mon, 20 Sep 2021 09:32:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632130348;
-        bh=QtIbrVxChQ8x2+rrnisFBg18QvRgKQ8XOzzmsXcPUsg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vCuwAAQzWiUIOvELmqRMQN3et2Jowt6cP+0z3WYiZkN0oixigT8cALdtgb5zdkCF9
-         4uvjzPT40/gNidN45WkUI3TiE0SLo/tKhNSizbCbTUnAL3Oa41JczabuemVn/YvORT
-         FFrj0n/vqzydeoH6rN5vuaEppIPDAhgbdaiIkQadeMkENaI2eWX+up3OWhzg1O/n6Y
-         8MvutxmiIvibanviyTBoz7SWZbBhv1BbEWAUhDiZi166jLt/WYiKr2ZCLFhQk5D1mh
-         SZr7+2unLTEhSbaugkZuo+z5hDaNMiyg8jKIMmaMI6+Fqilhp5gqJ4uC8hTa2hIUBe
-         zF2DqzY0/nPxw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mSFf0-0000mn-TX; Mon, 20 Sep 2021 11:32:26 +0200
-Date:   Mon, 20 Sep 2021 11:32:26 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Slark Xiao <slark_xiao@163.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB:serial:option Add Foxconn T99W265
-Message-ID: <YUhVKrRJ8M2hKJil@hovoldconsulting.com>
-References: <20210917110106.9852-1-slark_xiao@163.com>
+        id S234529AbhITJgH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 05:36:07 -0400
+Received: from mail4.swissbit.com ([176.95.1.100]:55294 "EHLO
+        mail4.swissbit.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhITJgE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:36:04 -0400
+Received: from mail4.swissbit.com (localhost [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id E4AEA1222A6;
+        Mon, 20 Sep 2021 11:34:35 +0200 (CEST)
+Received: from mail4.swissbit.com (localhost [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id CF09B121B6E;
+        Mon, 20 Sep 2021 11:34:35 +0200 (CEST)
+X-TM-AS-ERS: 10.149.2.84-127.5.254.253
+X-TM-AS-SMTP: 1.0 ZXguc3dpc3NiaXQuY29t Y2xvZWhsZUBoeXBlcnN0b25lLmNvbQ==
+X-DDEI-TLS-USAGE: Used
+Received: from ex.swissbit.com (SBDEEX02.sbitdom.lan [10.149.2.84])
+        by mail4.swissbit.com (Postfix) with ESMTPS;
+        Mon, 20 Sep 2021 11:34:35 +0200 (CEST)
+Received: from sbdeex02.sbitdom.lan (10.149.2.84) by sbdeex02.sbitdom.lan
+ (10.149.2.84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.15; Mon, 20 Sep
+ 2021 11:34:35 +0200
+Received: from sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74]) by
+ sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74%8]) with mapi id
+ 15.02.0792.015; Mon, 20 Sep 2021 11:34:35 +0200
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Jesper Nilsson <jesper.nilsson@axis.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "marten.lindahl@axis.com" <marten.lindahl@axis.com>,
+        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
+Thread-Topic: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
+Thread-Index: AQHXq5f2H1xcZooo4kGJdi3JsFt1D6uoGrGAgASR040=
+Date:   Mon, 20 Sep 2021 09:34:34 +0000
+Message-ID: <0c002d216fa44df39fef87001079ca84@hyperstone.com>
+References: <bf19053cf6f547bcbb364975cda84c30@hyperstone.com>,<20210917134123.GL12780@axis.com>
+In-Reply-To: <20210917134123.GL12780@axis.com>
+Accept-Language: en-US, de-DE
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.154.1.4]
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917110106.9852-1-slark_xiao@163.com>
+X-TMASE-Version: DDEI-5.1-8.6.1018-26418.007
+X-TMASE-Result: 10--1.266600-10.000000
+X-TMASE-MatchedRID: F7tLedRt7ifUL3YCMmnG4vGG8F2k2BBVv5tdwacZEnrfoEW8NyvnbyaC
+        jkFKp/+ebb+wP0Qo+N6TH1CW/TkdqldXhVJKmheR52cbj4/WmPsL8TGleseLPEoMHl9co6FPw9M
+        1TrvkSYercKMJSOLvFZo4ITanr/FwE29kWrNuieBFM72aEhcbjc0b3CgaR62KEcWQUCNHW2ds5J
+        OqCt0EWWQpTLT4bj+xEXcbsy/3gdUYB2fOueQzjxM0JxSxHjFJavP8b9lJtWr6C0ePs7A07V9vM
+        TaVNFNz2tl1Zv77sopJpXzj6uHXhHXaLkIcCRk2nXkRk1EvZ8Q=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-TMASE-XGENCLOUD: f2104eb2-9cd3-4d2d-ab0d-d76412f53db1-0-0-200-0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 07:01:06PM +0800, Slark Xiao wrote:
-> Adding support for Foxconn device T99W265 for enumeration with
-> PID 0xe0db.
-> 
-> usb-devices output for 0xe0db
-> T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 19 Spd=5000 MxCh= 0
-> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
-> P:  Vendor=0489 ProdID=e0db Rev=05.04
-> S:  Manufacturer=Microsoft
-> S:  Product=Generic Mobile Broadband Adapter
-> S:  SerialNumber=6c50f452
-> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
-> I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
-> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-> I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-> I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-> 
-> if0/1: MBIM, if2:Diag, if3:GNSS, if4: Modem
-> 
-> Signed-off-by: Slark Xiao <slark_xiao@163.com>
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+Sent: Friday, September 17, 2021 3:41 PM
+To: Christian Löhle
+Cc: linux-kernel@vger.kernel.org; linux-mmc@vger.kernel.org; marten.lindahl@axis.com; jh80.chung@samsung.com; ulf.hansson@linaro.org
+Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
 
-Thanks for the patch and for including all the necessary details in the
-commit message.
+>One second could be to short, we have seen some cards take up
+>to 10s on write operations. Although that was quite a few years ago.
+>
+>TMOUT is only used for reads if I understand correctly,
+>so it should be ok anyways.
+>
+>/Jesper
 
-First, a minor style nit: Please add spaces after the ':'s in the patch
-Subject.
+Yes, apart from it only affecting reads, the calculated timeout is only that high if the register still holds the reset value.
+I've only seen and would expect this for initialization 'read' commands, like ACMD13, or ACMD51.
+I have chosen 1s to hit an expectation that I would consider normal, that a card is initialized in a couple of seconds after plugging in, or never.
 
-> ---
->  drivers/usb/serial/option.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 29c765cc8495..fde599fa2d73 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -2068,6 +2068,8 @@ static const struct usb_device_id option_ids[] = {
->  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
->  	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
->  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
-> +	{ USB_DEVICE(0x0489, 0xe0db),						/* Foxconn T99W265 MBIM extension*/
-> +	  .driver_info = RSVD(0) | RSVD(1) | RSVD(3) },
+Regards,
+Christian=
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
-If you use USB_DEVICE_INTERFACE_CLASS() instead you don't need to
-explicitly reserve the MBIM interfaces. 
-
-Also, why are you reserving the GNSS interface (e.g. unlike T77W968)?
-
->  	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
->  	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
->  	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
-
-Johan
