@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE03411FB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57390411A2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353182AbhITRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48736 "EHLO mail.kernel.org"
+        id S243008AbhITQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352758AbhITRlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:41:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22C6761B50;
-        Mon, 20 Sep 2021 17:08:43 +0000 (UTC)
+        id S243121AbhITQr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78B94611AE;
+        Mon, 20 Sep 2021 16:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157724;
-        bh=6XHjWAKNerRQDiuqKYanKdBuBCzG8ARQBBmSZljs6v4=;
+        s=korg; t=1632156360;
+        bh=QEIpEauqMVQHTTKwPThLQMQF/ItxHwVo6fas/4hyDyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vkcf4YSc8l6XU2sAIhwkJfauDTwThA1EnfUeQc77QR+yqkt05j5HyFZUhDAKaBemY
-         +Mt74J9BQnvIDwhFRnT6tFEOudDh9uEfwwFuYw+J1TLe2a34EgTHlnUzwzBox0gMvX
-         9ZcMkrtd3BXiDWbb6miOdKN7GjB6GJI7wkdbfn7k=
+        b=tZijFq0dwN0T3ags6bqx7drp0wV5j1MQ53xVOsI9d3QW6+owppXNOHaobWi4umi2F
+         apX7QopRf3mYBthzpzAFAz7d527/vLYcbv9Bau8IY3GLJNXez4iepwUfomemuHTFJt
+         SSPTGkRtzCAYGE1uqp1dP4li5li0ygadcHxCOoaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.19 122/293] PCI/MSI: Skip masking MSI-X on Xen PV
+        stable@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.4 006/133] ARM: 8918/2: only build return_address() if needed
 Date:   Mon, 20 Sep 2021 18:41:24 +0200
-Message-Id: <20210920163937.442320197@linuxfoundation.org>
+Message-Id: <20210920163912.813951997@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+From: Ben Dooks <ben-linux@fluff.org>
 
-commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
+commit fb033c95c94ca1ee3d16e04ebdb85d65fb55fff8 upstream.
 
-When running as Xen PV guest, masking MSI-X is a responsibility of the
-hypervisor. The guest has no write access to the relevant BAR at all - when
-it tries to, it results in a crash like this:
+The system currently warns if the config conditions for
+building return_address in arch/arm/kernel/return_address.c
+are not met, leaving just an EXPORT_SYMBOL_GPL(return_address)
+of a function defined to be 'static linline'.
+This is a result of aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h").
 
-    BUG: unable to handle page fault for address: ffffc9004069100c
-    #PF: supervisor write access in kernel mode
-    #PF: error_code(0x0003) - permissions violation
-    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
-     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
-     e1000_probe+0x41f/0xdb0 [e1000e]
-     local_pci_probe+0x42/0x80
-    (...)
+Since we're not going to build anything other than an exported
+symbol for something that is already being defined to be an
+inline-able return of NULL, just avoid building the code to
+remove the following warning:
 
-The recently introduced function msix_mask_all() does not check the global
-variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
-of MSI[-X] interrupts.
-
-Add the check to make this function XEN PV compatible.
-
-Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
-Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
+Fixes: aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h")
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/msi.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/kernel/Makefile         |    6 +++++-
+ arch/arm/kernel/return_address.c |    4 ----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -754,6 +754,9 @@ static void msix_mask_all(void __iomem *
- 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
- 	int i;
+--- a/arch/arm/kernel/Makefile
++++ b/arch/arm/kernel/Makefile
+@@ -16,10 +16,14 @@ CFLAGS_REMOVE_return_address.o = -pg
+ # Object file lists.
  
-+	if (pci_msi_ignore_mask)
-+		return;
+ obj-y		:= elf.o entry-common.o irq.o opcodes.o \
+-		   process.o ptrace.o reboot.o return_address.o \
++		   process.o ptrace.o reboot.o \
+ 		   setup.o signal.o sigreturn_codes.o \
+ 		   stacktrace.o sys_arm.o time.o traps.o
+ 
++ifneq ($(CONFIG_ARM_UNWIND),y)
++obj-$(CONFIG_FRAME_POINTER)	+= return_address.o
++endif
 +
- 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
- 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ obj-$(CONFIG_ATAGS)		+= atags_parse.o
+ obj-$(CONFIG_ATAGS_PROC)	+= atags_proc.o
+ obj-$(CONFIG_DEPRECATED_PARAM_STRUCT) += atags_compat.o
+--- a/arch/arm/kernel/return_address.c
++++ b/arch/arm/kernel/return_address.c
+@@ -10,8 +10,6 @@
+  */
+ #include <linux/export.h>
+ #include <linux/ftrace.h>
+-
+-#if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
+ #include <linux/sched.h>
+ 
+ #include <asm/stacktrace.h>
+@@ -56,6 +54,4 @@ void *return_address(unsigned int level)
+ 		return NULL;
  }
+ 
+-#endif /* if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND) */
+-
+ EXPORT_SYMBOL_GPL(return_address);
 
 
