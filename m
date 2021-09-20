@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF2A41253B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D5A412560
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382763AbhITSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53128 "EHLO mail.kernel.org"
+        id S1383466AbhITSof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381716AbhITSjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:39:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 064FE61AD1;
-        Mon, 20 Sep 2021 17:30:30 +0000 (UTC)
+        id S1382296AbhITSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:40:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C909863337;
+        Mon, 20 Sep 2021 17:30:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159031;
-        bh=mnOLopWbem00e/FXaoiBru+k6HvVV2yFyy7ukuUgUuM=;
+        s=korg; t=1632159055;
+        bh=9A8ZX1RVAc+j25h7pZFOtT9Q7NIQTF4XHDRkB2r3/V4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U3p7JQdwFoy7wFmBoctWER1PBj4nyPTkKxhWbc3vLgTvYXqkK4CypNbY8e0bW3OqG
-         CPhr1qX2Po9g7r+BlP1uGyMnVuBgInTPaAPzgRSetXs91un+5vsFbFAW7nYWF+U7x7
-         3dvQ2WdEHEqjtAcK/WMGICML4wjFTiUenaKw9PoY=
+        b=oRMpxHI1pAMQaIO4pGnX7arc0ySGsiM8fTN1MwKd6qIzfktDniI0Z2/dTkBNLLsqE
+         irsZCErald77L9GxL1nm7P+lrW7eM+jbGF/8SNE3EAfWTW5yr3v2b75j93O9oVWtNl
+         8WtIH32Akhth7RmcqcOrErdIQTZ8N/mr5KlAiwkY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
+        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Michael Walle <michael@walle.cc>, Marek Vasut <marex@denx.de>,
         Christian Gmeiner <christian.gmeiner@gmail.com>
-Subject: [PATCH 5.14 027/168] drm/etnaviv: keep MMU context across runtime suspend/resume
-Date:   Mon, 20 Sep 2021 18:42:45 +0200
-Message-Id: <20210920163922.541113086@linuxfoundation.org>
+Subject: [PATCH 5.14 028/168] drm/etnaviv: exec and MMU state is lost when resetting the GPU
+Date:   Mon, 20 Sep 2021 18:42:46 +0200
+Message-Id: <20210920163922.573728379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -43,48 +42,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Stach <l.stach@pengutronix.de>
 
-commit 8f3eea9d01d7b0f95b0fe04187c0059019ada85b upstream.
+commit 725cbc7884c37f3b4f1777bc1aea6432cded8ca5 upstream.
 
-The MMU state may be kept across a runtime suspend/resume cycle, as we
-avoid a full hardware reset to keep the latency of the runtime PM small.
-
-Don't pretend that the MMU state is lost in driver state. The MMU
-context is pushed out when new HW jobs with a different context are
-coming in. The only exception to this is when the GPU is unbound, in
-which case we need to make sure to also free the last active context.
+When the GPU is reset both the current exec state, as well as all MMU
+state is lost. Move the driver side state tracking into the reset function
+to keep hardware and software state from diverging.
 
 Cc: stable@vger.kernel.org # 5.4
-Reported-by: Michael Walle <michael@walle.cc>
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Tested-by: Michael Walle <michael@walle.cc>
 Tested-by: Marek Vasut <marex@denx.de>
 Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
 +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -1590,9 +1590,6 @@ static int etnaviv_gpu_hw_suspend(struct
- 		 */
- 		etnaviv_gpu_wait_idle(gpu, 100);
+@@ -570,6 +570,8 @@ static int etnaviv_hw_reset(struct etnav
+ 	etnaviv_gpu_update_clock(gpu);
  
--		etnaviv_iommu_context_put(gpu->mmu_context);
--		gpu->mmu_context = NULL;
--
- 		gpu->fe_running = false;
- 	}
+ 	gpu->fe_running = false;
++	gpu->exec_state = -1;
++	gpu->mmu_context = NULL;
  
-@@ -1741,6 +1738,9 @@ static void etnaviv_gpu_unbind(struct de
- 	etnaviv_gpu_hw_suspend(gpu);
- #endif
+ 	return 0;
+ }
+@@ -830,7 +832,6 @@ int etnaviv_gpu_init(struct etnaviv_gpu
+ 	/* Now program the hardware */
+ 	mutex_lock(&gpu->lock);
+ 	etnaviv_gpu_hw_init(gpu);
+-	gpu->exec_state = -1;
+ 	mutex_unlock(&gpu->lock);
  
-+	if (gpu->mmu_context)
-+		etnaviv_iommu_context_put(gpu->mmu_context);
-+
- 	if (gpu->initialized) {
- 		etnaviv_cmdbuf_free(&gpu->buffer);
- 		etnaviv_iommu_global_fini(gpu);
+ 	pm_runtime_mark_last_busy(gpu->dev);
+@@ -1055,8 +1056,6 @@ void etnaviv_gpu_recover_hang(struct etn
+ 	spin_unlock(&gpu->event_spinlock);
+ 
+ 	etnaviv_gpu_hw_init(gpu);
+-	gpu->exec_state = -1;
+-	gpu->mmu_context = NULL;
+ 
+ 	mutex_unlock(&gpu->lock);
+ 	pm_runtime_mark_last_busy(gpu->dev);
 
 
