@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38657411CE2
+	by mail.lfdr.de (Postfix) with ESMTP id A4F32411CE3
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347289AbhITRN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39998 "EHLO mail.kernel.org"
+        id S1347467AbhITRON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:14:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343726AbhITRLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1347073AbhITRLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 13:11:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E926619E4;
-        Mon, 20 Sep 2021 16:57:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58B6161350;
+        Mon, 20 Sep 2021 16:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157039;
-        bh=ebuzE1UCxEDOCi5+/oFZ6jUdKHF/h/xY3/MRIosohsI=;
+        s=korg; t=1632157041;
+        bh=hWhDc7dbmhAKqUO18Fm/Dsde/pOq7/pgSKo4GL1lKmg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xQ6DaTVEI+vLCoNqmCuj4Qr9kWkN0mKEjua+9KMi0JAfirSt4nOclvykNPdHgETC7
-         /5A7DiYM7WD4AP+lA8n/gOONWb6LY9z3MrWWtVLbj741de3f6Y69gQpwiIyvKRcq+v
-         /z7fcFOod38qb5uGwOBQeQXZ+xD79ev8LCRi3DfI=
+        b=1SEOs6t8CBZ4Mdw5uFjmDTpiAuozayfDzKcGOlWMArrp+59gyX6rhHTv+d/6qhFm7
+         4EBhoubAz5T2pDQwYn+r6Z9t5KOJ7RgZR7f6ZAzdPrO0s2WYKwXZBBbHVsYNKCTkjh
+         Yzo5MlAkGKpoNcSRez5C4BX67N6WRpYOv7F7ZYBc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.14 025/217] Revert "btrfs: compression: dont try to compress if we dont have enough pages"
-Date:   Mon, 20 Sep 2021 18:40:46 +0200
-Message-Id: <20210920163925.463411096@linuxfoundation.org>
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 4.14 026/217] usb: host: xhci-rcar: Dont reload firmware after the completion
+Date:   Mon, 20 Sep 2021 18:40:47 +0200
+Message-Id: <20210920163925.500043879@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -40,61 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit 4e9655763b82a91e4c341835bb504a2b1590f984 upstream.
+commit 57f3ffdc11143f56f1314972fe86fe17a0dcde85 upstream.
 
-This reverts commit f2165627319ffd33a6217275e5690b1ab5c45763.
+According to the datasheet, "Upon the completion of FW Download,
+there is no need to write or reload FW.". Otherwise, it's possible
+to cause unexpected behaviors. So, adds such a condition.
 
-[BUG]
-It's no longer possible to create compressed inline extent after commit
-f2165627319f ("btrfs: compression: don't try to compress if we don't
-have enough pages").
-
-[CAUSE]
-For compression code, there are several possible reasons we have a range
-that needs to be compressed while it's no more than one page.
-
-- Compressed inline write
-  The data is always smaller than one sector and the test lacks the
-  condition to properly recognize a non-inline extent.
-
-- Compressed subpage write
-  For the incoming subpage compressed write support, we require page
-  alignment of the delalloc range.
-  And for 64K page size, we can compress just one page into smaller
-  sectors.
-
-For those reasons, the requirement for the data to be more than one page
-is not correct, and is already causing regression for compressed inline
-data writeback.  The idea of skipping one page to avoid wasting CPU time
-could be revisited in the future.
-
-[FIX]
-Fix it by reverting the offending commit.
-
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Link: https://lore.kernel.org/linux-btrfs/afa2742.c084f5d6.17b6b08dffc@tnonline.net
-Fixes: f2165627319f ("btrfs: compression: don't try to compress if we don't have enough pages")
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 4ac8918f3a73 ("usb: host: xhci-plat: add support for the R-Car H2 and M2 xHCI controllers")
+Cc: stable@vger.kernel.org # v3.17+
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/20210827063227.81990-1-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci-rcar.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -540,7 +540,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (nr_pages > 1 && inode_need_compress(inode, start, end)) {
-+	if (inode_need_compress(inode, start, end)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+--- a/drivers/usb/host/xhci-rcar.c
++++ b/drivers/usb/host/xhci-rcar.c
+@@ -152,6 +152,13 @@ static int xhci_rcar_download_firmware(s
+ 	const struct soc_device_attribute *attr;
+ 	const char *firmware_name;
+ 
++	/*
++	 * According to the datasheet, "Upon the completion of FW Download,
++	 * there is no need to write or reload FW".
++	 */
++	if (readl(regs + RCAR_USB3_DL_CTRL) & RCAR_USB3_DL_CTRL_FW_SUCCESS)
++		return 0;
++
+ 	attr = soc_device_match(rcar_quirks_match);
+ 	if (attr)
+ 		quirks = (uintptr_t)attr->data;
 
 
