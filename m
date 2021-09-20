@@ -2,166 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3F6411574
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7189411584
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhITN0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhITN0Y (ORCPT
+        id S239499AbhITN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:26:46 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47730 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239355AbhITN0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:26:24 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C079C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:24:57 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id eg28so38601753edb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zHVonDiIKOidenYlcCsevl+U2ckQNMnx2NKq+Q4lJ+4=;
-        b=xoT5NPcx8DInitXeB0UKu0hQHUwQU4lRfCwxIULDJvq+hMnb29LVCbXVnfaV9N530M
-         l51cSknPG8z/139JGdnHTbOQjJm4hYfoy/5SspTk5SsrTLW4IheL14qbnSqZtkpxhDKU
-         JHLMpNQmBEuLzpGeHRn16DIjkv/jdKnHMozXrSMQxpe8z4L5SXgLD1sI0mxMdNnK0epn
-         Gh3G2xwHQ6HRMNoLmTUOSW8c8QnrUfJlOYmolUR2sLyX8QBNS5QSZ1aFwxhANjRooA6T
-         G8RAOLIrpxifni7FmEG1xZRJuFMX/HjobycX+m8asCEKJnUs5v5YuYSTBmjuf13v0KX5
-         Lyeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zHVonDiIKOidenYlcCsevl+U2ckQNMnx2NKq+Q4lJ+4=;
-        b=v/1ASTPJG2SdYyrgOCGrSfaG1enLi2+ONY41fFQt0RvGxSLu6iwkbmgexCyj/JLGOp
-         yl+oyGSfRvo8WKuEFVR6RBhqA92gG0vLK6gwd+853oXjrNTIbmBnREJoMLKlCNceahng
-         G8csU/ha5wGsNxViiGWIlzr0l8Kg7IdheYFkKd0d56kXWYzkDunpg+O9slnw+w7ZxnKE
-         xNxI2IFTiDeVK97Bd05VoPWu+U9nD3cGRXbVGf24aVddho5Uz2U5HNyg+XCHa5Jw6+HO
-         rkjy/TdIZ+2w6HnALqalKGzSh8WJyAQekF3YRVZotIgeJGwT3Tg9ivst7LNAsAkhTXtN
-         qCYw==
-X-Gm-Message-State: AOAM533cGkZA6pV6Xb0gsJi150smYFiHE6ASrWqbZ1XHbGt4FhSYi/iO
-        rhf4ttZA/G6J8P4TvFQvfT7OmQ==
-X-Google-Smtp-Source: ABdhPJwjGdIItEsvSqiN7t+4FGcgarp0izJCucyWEMUojF95CxEnksKLGxBDs+NwjN0Mcqwpp0YLeA==
-X-Received: by 2002:a17:906:a18f:: with SMTP id s15mr29516593ejy.269.1632144292611;
-        Mon, 20 Sep 2021 06:24:52 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id 19sm3042079ejw.31.2021.09.20.06.24.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 06:24:52 -0700 (PDT)
-Subject: Re: [PATCH 2/7] ASoC: qcom: dt-bindings: Add compatible names for
- lpass sc7280 digital codecs
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
- <1632123331-2425-3-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <7c12126d-99a8-4572-6e95-b63131cae300@linaro.org>
-Date:   Mon, 20 Sep 2021 14:24:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 20 Sep 2021 09:26:38 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD3KB025896;
+        Mon, 20 Sep 2021 09:25:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=3QcLxw9Pl3fllBrjZDMb1xG5pgYHY19y6fIGD7yExEo=;
+ b=gS4eHSv6eXB8f4EjpWDtZhHx7qvQVWhJYkTUDW8uq+zyOhyIPXbH0jKIihfZOM62DzYl
+ vLcWvy8wHz9putEBUTLdq4zEXtMwbgphAuITvXAAfz8VlCy0MtIYAWPrnAWCucEZCKYX
+ A5M3z9IezuXLoamcu/VsCp0kyLpYzeqOi9KsJ+M0wNVQvtPS2Vt7UOY5EChXqwKW5Y1F
+ YSqV6sGMXpsf6dPCsz7IIPtUDD+nBCilPMRCE5wIutWEFoay53BuySZtYV+st554VcAe
+ /LOuwv5xdkKgTZD6a+0KPRnFmQC99+SwvjvVZwR1NSfehq1PZQchCi3xjMG2F7Iey2+T HQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5wq59u03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:25:11 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18KDE9g8029338;
+        Mon, 20 Sep 2021 09:25:11 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5wq59txw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:25:11 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD8b4030978;
+        Mon, 20 Sep 2021 13:25:09 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3b57r98vta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 13:25:08 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18KDP4Jx29557070
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 13:25:04 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C13CA4057;
+        Mon, 20 Sep 2021 13:25:04 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A39BFA406E;
+        Mon, 20 Sep 2021 13:25:03 +0000 (GMT)
+Received: from p-imbrenda.ibmuc.com (unknown [9.145.9.241])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Sep 2021 13:25:03 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: [PATCH v5 02/14] KVM: s390: pv: avoid double free of sida page
+Date:   Mon, 20 Sep 2021 15:24:50 +0200
+Message-Id: <20210920132502.36111-3-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1632123331-2425-3-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 11J18oDJYFjDdqM2OmKqw9sjuLGyqFKW
+X-Proofpoint-GUID: gqj2ierpLA70BjhtZ6Wi0Jnl0oEhR4-n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=538 mlxscore=0
+ impostorscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If kvm_s390_pv_destroy_cpu is called more than once, we risk calling
+free_page on a random page, since the sidad field is aliased with the
+gbea, which is not guaranteed to be zero.
 
+This can happen, for example, if userspace calls the KVM_PV_DISABLE
+IOCTL, and it fails, and then userspace calls the same IOCTL again.
+This scenario is only possible if KVM has some serious bug or if the
+hardware is broken.
 
-On 20/09/2021 08:35, Srinivasa Rao Mandadapu wrote:
-> Update compatible names in va, wsa, rx and tx macro codes for lpass sc7280
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->   Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 4 +++-
->   Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 4 +++-
->   Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 4 +++-
->   Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml | 4 +++-
->   4 files changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-> index 443d556..a4e767e 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-rx-macro
-> +    oneOf:
-> +      - const: qcom,sm8250-lpass-rx-macro
-> +      - const: qcom,sc7280-lpass-rx-macro
->   
-Recently Rob did tree wide change to use enum instead of oneOf for below 
-reason
-"
-'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 
-'enum' is more concise and yields better error messages."
+The solution is to simply return successfully immediately if the vCPU
+was already non secure.
 
-So, can you move these to enums like:
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Fixes: 19e1227768863a1469797c13ef8fea1af7beac2c ("KVM: S390: protvirt: Introduce instruction data area bounce buffer")
+---
+ arch/s390/kvm/pv.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-enum:
-   - qcom,sm8250-lpass-rx-macro
-   - qcom,sc7280-lpass-rx-macro
+diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+index c8841f476e91..0a854115100b 100644
+--- a/arch/s390/kvm/pv.c
++++ b/arch/s390/kvm/pv.c
+@@ -16,18 +16,17 @@
+ 
+ int kvm_s390_pv_destroy_cpu(struct kvm_vcpu *vcpu, u16 *rc, u16 *rrc)
+ {
+-	int cc = 0;
++	int cc;
+ 
+-	if (kvm_s390_pv_cpu_get_handle(vcpu)) {
+-		cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu),
+-				   UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
++	if (!kvm_s390_pv_cpu_get_handle(vcpu))
++		return 0;
++
++	cc = uv_cmd_nodata(kvm_s390_pv_cpu_get_handle(vcpu), UVC_CMD_DESTROY_SEC_CPU, rc, rrc);
++
++	KVM_UV_EVENT(vcpu->kvm, 3, "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
++		     vcpu->vcpu_id, *rc, *rrc);
++	WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x", *rc, *rrc);
+ 
+-		KVM_UV_EVENT(vcpu->kvm, 3,
+-			     "PROTVIRT DESTROY VCPU %d: rc %x rrc %x",
+-			     vcpu->vcpu_id, *rc, *rrc);
+-		WARN_ONCE(cc, "protvirt destroy cpu failed rc %x rrc %x",
+-			  *rc, *rrc);
+-	}
+ 	/* Intended memory leak for something that should never happen. */
+ 	if (!cc)
+ 		free_pages(vcpu->arch.pv.stor_base,
+-- 
+2.31.1
 
---srini
-
->     reg:
->       maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-> index 6b5ca02..cdec478 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-tx-macro
-> +    oneOf:
-> +      - const: qcom,sm8250-lpass-tx-macro
-> +      - const: qcom,sc7280-lpass-tx-macro
->   
->     reg:
->       maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-> index 679b49c..e15bc05 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-va-macro
-> +    oneOf:
-> +      - const: qcom,sm8250-lpass-va-macro
-> +      - const: qcom,sc7280-lpass-va-macro
->   
->     reg:
->       maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-> index 435b019..2dcccb5 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->   
->   properties:
->     compatible:
-> -    const: qcom,sm8250-lpass-wsa-macro
-> +    oneOf:
-> +      - const: qcom,sm8250-lpass-wsa-macro
-> +      - const: qcom,sc7280-lpass-wsa-macro
->   
->     reg:
->       maxItems: 1
-> 
