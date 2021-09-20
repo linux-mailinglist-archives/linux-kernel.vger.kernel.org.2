@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DCF4125DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40713412391
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354435AbhITSsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:48:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59828 "EHLO mail.kernel.org"
+        id S1378712AbhITSZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:25:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383114AbhITSoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:44:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 526C16334A;
-        Mon, 20 Sep 2021 17:32:17 +0000 (UTC)
+        id S1377311AbhITSSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:18:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1972C6329C;
+        Mon, 20 Sep 2021 17:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159137;
-        bh=r9bKAP/Db2Ctbq5jkaSZAU9PRMN3GIB1qKROsvayfJs=;
+        s=korg; t=1632158562;
+        bh=ZFyJ3uWk95sj7MYTu0DlobhvJ4N0rAzbNqrd2OmhwLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hDCgseZOgElcyPqVrvwTKIrUyVV0LMd6m5/RKWuX0FUvSl+aZuP95klNh0yJz6HL7
-         i8IhHqSKEJMODpqA1CbWPTSM1OS1ZXEaMYyuEnCOS+acreTQud5L79iGtkq+4dQK3M
-         Pxcyefssne3Q/335WO7tmzlPwkfyF8w07BVwx8Dk=
+        b=TdQWuK1Us4o/m9yGAqbkN8brakxIelumo/NFSx8a177dEpchRPbeRa7Pt6oUsZpCk
+         L83fc0lPqm6rsOw1BER/nAuIa5ch0mFRLkVkQUFzCdTwi7oxooGNXGRVTaikkOMaT1
+         65WH9bIOYOGTvP2I765sy+KVht0mNV8t23VkXbyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, phone-devel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 092/168] mfd: db8500-prcmu: Adjust map to reality
-Date:   Mon, 20 Sep 2021 18:43:50 +0200
-Message-Id: <20210920163924.657418197@linuxfoundation.org>
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 213/260] net/l2tp: Fix reference count leak in l2tp_udp_recv_core
+Date:   Mon, 20 Sep 2021 18:43:51 +0200
+Message-Id: <20210920163938.352136995@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit ec343111c056ec3847800302f6dbc57281f833fa ]
+commit 9b6ff7eb666415e1558f1ba8a742f5db6a9954de upstream.
 
-These are the actual frequencies reported by the PLL, so let's
-report these. The roundoffs are inappropriate, we should round
-to the frequency that the clock will later report.
+The reference count leak issue may take place in an error handling
+path. If both conditions of tunnel->version == L2TP_HDR_VER_3 and the
+return value of l2tp_v3_ensure_opt_in_linear is nonzero, the function
+would directly jump to label invalid, without decrementing the reference
+count of the l2tp_session object session increased earlier by
+l2tp_tunnel_get_session(). This may result in refcount leaks.
 
-Drop some whitespace at the same time.
+Fix this issue by decrease the reference count before jumping to the
+label invalid.
 
-Cc: phone-devel@vger.kernel.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4522a70db7aa ("l2tp: fix reading optional fields of L2TPv3")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/db8500-prcmu.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ net/l2tp/l2tp_core.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/db8500-prcmu.c b/drivers/mfd/db8500-prcmu.c
-index 3bde7fda755f..dea4e4e8bed5 100644
---- a/drivers/mfd/db8500-prcmu.c
-+++ b/drivers/mfd/db8500-prcmu.c
-@@ -1622,22 +1622,20 @@ static long round_clock_rate(u8 clock, unsigned long rate)
- }
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -886,8 +886,10 @@ static int l2tp_udp_recv_core(struct l2t
+ 	}
  
- static const unsigned long db8500_armss_freqs[] = {
--	200000000,
--	400000000,
--	800000000,
-+	199680000,
-+	399360000,
-+	798720000,
- 	998400000
- };
+ 	if (tunnel->version == L2TP_HDR_VER_3 &&
+-	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
++	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
++		l2tp_session_dec_refcount(session);
+ 		goto error;
++	}
  
- /* The DB8520 has slightly higher ARMSS max frequency */
- static const unsigned long db8520_armss_freqs[] = {
--	200000000,
--	400000000,
--	800000000,
-+	199680000,
-+	399360000,
-+	798720000,
- 	1152000000
- };
- 
--
--
- static long round_armss_rate(unsigned long rate)
- {
- 	unsigned long freq = 0;
--- 
-2.30.2
-
+ 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
+ 	l2tp_session_dec_refcount(session);
 
 
