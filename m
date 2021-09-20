@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFF4411E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFA141205C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349681AbhITR00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:26:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49982 "EHLO mail.kernel.org"
+        id S1355110AbhITRyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349134AbhITRVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:21:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48D5C61A60;
-        Mon, 20 Sep 2021 17:01:01 +0000 (UTC)
+        id S1353933AbhITRsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:48:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 635C561BA8;
+        Mon, 20 Sep 2021 17:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157261;
-        bh=ogdmkl/1zREwG8055eDHUKwp8oVd2dxMKlFSQBwymz4=;
+        s=korg; t=1632157861;
+        bh=YSGUJuDHSnZzOzXmBsKZOAT80LCOSLiqvtDEwYmOCJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VlcsSKjNDokUp3fKikzVhjra4c0CEmsiSmgRizGwEExjMLr3MOslE40QDo2FgBDtY
-         UF/LUB/0iLnlxYRrtCJM80q3fVaon3VjPhsVsCLKRRuBr5Z1kE0V9NVnedeToYm7qN
-         kna/PvuDsE7RZj+cBxggThQax86fW+XfVdxePQA0=
+        b=qMNqxp7FY5JHsa+5Q30Oc6qie/bPVy2W5hDVC3+wJH0vueGrRBCKPdCAa/iBNyZTM
+         Xwe9yGVtaUrykZ4BZdbPaOHHEWoGCt3OsYSwTrz3NSxNye+/s/RfPWFv4cqa5wNGCf
+         J1Wo/vmYLd5m9TW6+1e+5vJBsmlDYY3aT5FUk9IQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 127/217] pinctrl: single: Fix error return code in pcs_parse_bits_in_pinctrl_entry()
+Subject: [PATCH 4.19 186/293] tty: serial: jsm: hold port lock when reporting modem line changes
 Date:   Mon, 20 Sep 2021 18:42:28 +0200
-Message-Id: <20210920163928.960633200@linuxfoundation.org>
+Message-Id: <20210920163939.631127529@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit d789a490d32fdf0465275e3607f8a3bc87d3f3ba ]
+[ Upstream commit 240e126c28df084222f0b661321e8e3ecb0d232e ]
 
-Fix to return -ENOTSUPP instead of 0 when PCS_HAS_PINCONF is true, which
-is the same as that returned in pcs_parse_pinconf().
+uart_handle_dcd_change() requires a port lock to be held and will emit a
+warning when lockdep is enabled.
 
-Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Link: https://lore.kernel.org/r/20210722033930.4034-2-thunder.leizhen@huawei.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Held corresponding lock to fix the following warnings.
+
+[  132.528648] WARNING: CPU: 5 PID: 11600 at drivers/tty/serial/serial_core.c:3046 uart_handle_dcd_change+0xf4/0x120
+[  132.530482] Modules linked in:
+[  132.531050] CPU: 5 PID: 11600 Comm: jsm Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7-dirty #31
+[  132.535268] RIP: 0010:uart_handle_dcd_change+0xf4/0x120
+[  132.557100] Call Trace:
+[  132.557562]  ? __free_pages+0x83/0xb0
+[  132.558213]  neo_parse_modem+0x156/0x220
+[  132.558897]  neo_param+0x399/0x840
+[  132.559495]  jsm_tty_open+0x12f/0x2d0
+[  132.560131]  uart_startup.part.18+0x153/0x340
+[  132.560888]  ? lock_is_held_type+0xe9/0x140
+[  132.561660]  uart_port_activate+0x7f/0xe0
+[  132.562351]  ? uart_startup.part.18+0x340/0x340
+[  132.563003]  tty_port_open+0x8d/0xf0
+[  132.563523]  ? uart_set_options+0x1e0/0x1e0
+[  132.564125]  uart_open+0x24/0x40
+[  132.564604]  tty_open+0x15c/0x630
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Link: https://lore.kernel.org/r/1626242003-3809-1-git-send-email-zheyuma97@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-single.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/serial/jsm/jsm_neo.c | 2 ++
+ drivers/tty/serial/jsm/jsm_tty.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index f751b5c3bf7e..e33972c3a420 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -1161,6 +1161,7 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
- 
- 	if (PCS_HAS_PINCONF) {
- 		dev_err(pcs->dev, "pinconf not supported\n");
-+		res = -ENOTSUPP;
- 		goto free_pingroups;
+diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
+index bf0e2a4cb0ce..c6f927a76c3b 100644
+--- a/drivers/tty/serial/jsm/jsm_neo.c
++++ b/drivers/tty/serial/jsm/jsm_neo.c
+@@ -815,7 +815,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
+ 		/* Parse any modem signal changes */
+ 		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
+ 			"MOD_STAT: sending to parse_modem_sigs\n");
++		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
+ 		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
++		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
  	}
+ }
  
+diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+index 689774c073ca..8438454ca653 100644
+--- a/drivers/tty/serial/jsm/jsm_tty.c
++++ b/drivers/tty/serial/jsm/jsm_tty.c
+@@ -187,6 +187,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
+ 
+ static int jsm_tty_open(struct uart_port *port)
+ {
++	unsigned long lock_flags;
+ 	struct jsm_board *brd;
+ 	struct jsm_channel *channel =
+ 		container_of(port, struct jsm_channel, uart_port);
+@@ -240,6 +241,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	channel->ch_cached_lsr = 0;
+ 	channel->ch_stops_sent = 0;
+ 
++	spin_lock_irqsave(&port->lock, lock_flags);
+ 	termios = &port->state->port.tty->termios;
+ 	channel->ch_c_cflag	= termios->c_cflag;
+ 	channel->ch_c_iflag	= termios->c_iflag;
+@@ -259,6 +261,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	jsm_carrier(channel);
+ 
+ 	channel->ch_open_count++;
++	spin_unlock_irqrestore(&port->lock, lock_flags);
+ 
+ 	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
+ 	return 0;
 -- 
 2.30.2
 
