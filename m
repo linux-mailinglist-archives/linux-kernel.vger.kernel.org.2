@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9BB411FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6DD411BCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349465AbhITRrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
+        id S1344508AbhITRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353496AbhITRow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BDA261B7B;
-        Mon, 20 Sep 2021 17:09:49 +0000 (UTC)
+        id S1344784AbhITQ7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BFC6135A;
+        Mon, 20 Sep 2021 16:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157789;
-        bh=42jQpy0bbH+YwaC6FFk1nb8v7qSXfmvXdLKUpShAfGs=;
+        s=korg; t=1632156748;
+        bh=zatE2GZab1SjxDk+v63GhnraWQW1H2qJWrJ07zY+gY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RyEbSRdMboWV5Mik6zvMaOapBDQvswhms05LjExp+0XMqxvivkyPFNLevo37I87Lp
-         YSAjFgytLY9DphWPfFg0XcnIHVke7B/8WfsUftut7Zw9f9gQF03N28d4ZxVB16ip22
-         BzTl7QPXBoeBLgv0cenBOPm3tP3da2mBvUeO8/6g=
+        b=jXNvrnze9xA+tThOCUfaW5xvpJSmVbLuGWmkYtRJgd+G2S651C8cI1YKrVPNj7EcF
+         q+zcz7NdpW9680OympA67eVvqxpJgb/o9B0/ueZGQXkeuoduu9NBAhKpZRS9h25iRi
+         XNMkHYBzNuKPLJ+7zPEh0Kqe6yN6zR3CPYQOj4kI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.19 153/293] PCI: Return ~0 data on pciconfig_read() CAP_SYS_ADMIN failure
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 066/175] usb: phy: fsl-usb: add IRQ check
 Date:   Mon, 20 Sep 2021 18:41:55 +0200
-Message-Id: <20210920163938.520372466@linuxfoundation.org>
+Message-Id: <20210920163920.220302446@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Wilczyński <kw@linux.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit a8bd29bd49c4156ea0ec5a97812333e2aeef44e7 upstream.
+[ Upstream commit ecc2f30dbb25969908115c81ec23650ed982b004 ]
 
-The pciconfig_read() syscall reads PCI configuration space using
-hardware-dependent config accessors.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding an original
+error code. Stop calling request_irq() with the invalid IRQ #s.
 
-If the read fails on PCI, most accessors don't return an error; they
-pretend the read was successful and got ~0 data from the device, so the
-syscall returns success with ~0 data in the buffer.
-
-When the accessor does return an error, pciconfig_read() normally fills the
-user's buffer with ~0 and returns an error in errno.  But after
-e4585da22ad0 ("pci syscall.c: Switch to refcounting API"), we don't fill
-the buffer with ~0 for the EPERM "user lacks CAP_SYS_ADMIN" error.
-
-Userspace may rely on the ~0 data to detect errors, but after e4585da22ad0,
-that would not detect CAP_SYS_ADMIN errors.
-
-Restore the original behaviour of filling the buffer with ~0 when the
-CAP_SYS_ADMIN check fails.
-
-[bhelgaas: commit log, fold in Nathan's fix
-https://lore.kernel.org/r/20210803200836.500658-1-nathan@kernel.org]
-Fixes: e4585da22ad0 ("pci syscall.c: Switch to refcounting API")
-Link: https://lore.kernel.org/r/20210729233755.1509616-1-kw@linux.com
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
+Fixes: 0807c500a1a6 ("USB: add Freescale USB OTG Transceiver driver")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/b0a86089-8b8b-122e-fd6d-73e8c2304964@omp.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/syscall.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/phy/phy-fsl-usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/pci/syscall.c
-+++ b/drivers/pci/syscall.c
-@@ -21,8 +21,10 @@ SYSCALL_DEFINE5(pciconfig_read, unsigned
- 	long err;
- 	int cfg_ret;
+diff --git a/drivers/usb/phy/phy-fsl-usb.c b/drivers/usb/phy/phy-fsl-usb.c
+index 85d031ce85c1..63798de8b5ae 100644
+--- a/drivers/usb/phy/phy-fsl-usb.c
++++ b/drivers/usb/phy/phy-fsl-usb.c
+@@ -891,6 +891,8 @@ int usb_otg_start(struct platform_device *pdev)
  
-+	err = -EPERM;
-+	dev = NULL;
- 	if (!capable(CAP_SYS_ADMIN))
--		return -EPERM;
-+		goto error;
- 
- 	err = -ENODEV;
- 	dev = pci_get_domain_bus_and_slot(0, bus, dfn);
+ 	/* request irq */
+ 	p_otg->irq = platform_get_irq(pdev, 0);
++	if (p_otg->irq < 0)
++		return p_otg->irq;
+ 	status = request_irq(p_otg->irq, fsl_otg_isr,
+ 				IRQF_SHARED, driver_name, p_otg);
+ 	if (status) {
+-- 
+2.30.2
+
 
 
