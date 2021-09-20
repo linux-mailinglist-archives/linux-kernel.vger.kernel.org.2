@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6D0412A3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DE4412B41
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhIUBVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:21:23 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41317 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhIUBTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:19:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632187072;
-        bh=6wyYmrb2kcZgr8Efd7F0inCq6YkAUqw/Xp0N6jTKS6M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WjswO1BN0dvBnvkNyPnJ1nplsEB+LKXCm/fUKXF8Nhk2pzx/7ow4te2N766WtZmtv
-         SoeI4l4ukFSZzIv2rWAsOa0kEBdUgaYID3i9L3m8/Nenb7CHnMSuElGw+r1pNJ0lz9
-         Pc0kQG2kzHGCfbuhB+Hjedva324V9j9jGR/L1bl02YoETkoUr6MyHU9ZvD2jBxKaVY
-         zLV+qwlqHaGaYEO5cVai26ENWK9vAZLmATI+tlxbtpLoBWqgUPW3CNQ/qBovP0Bf9A
-         ocU9t8ycK+Z9fHiT2KjZetpmggKQ3IUSP5qQPSedHUlOmZuEAZTSGKQ1Wh+R+onaby
-         N6d7of6uqbQDg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HD3Sv6BlRz9t0Z;
-        Tue, 21 Sep 2021 11:17:51 +1000 (AEST)
-Date:   Tue, 21 Sep 2021 11:17:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Eugene Syromiatnikov <esyr@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the selinux tree with Linus' tree
-Message-ID: <20210921111750.6f7bd218@canb.auug.org.au>
+        id S1343843AbhIUCMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238942AbhIUB6N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 21:58:13 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F5CC1117A0;
+        Mon, 20 Sep 2021 11:00:31 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id n2so8999333plk.12;
+        Mon, 20 Sep 2021 11:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GW86IGUcMDKzVGAN04j3id2pxwxU5rmCGoMKv3mUqk0=;
+        b=e0saxRzRZlC8Lgq4gXik9RYBQBAyVRuu5ycCyW2wxsag+Xtqrc7kSn8fOHDDs6coKG
+         pmVPv73Cfn9xw3yjS3jgFJ+xXMyJQLn4oAuOPMNCQ+2qVFqKWb0IJOlote/fUwuCsWCy
+         QBdlFRYoTauNy/EpY54H5vfAuCqm8Qp21ZCTNueWiURoMBtOWm+QADbCxaBJ4gIRq/2B
+         CU076jVa59LvxhtmIvLRiv1wyVUW6ahXMAQUP6WYMcpwJaFyqzn6qjwLkn1FcWErFyT7
+         wt3SkTgBCL7GgOo9g6Qd4N1qhbh2fmt26TISkzrX4U3dNEE4BBvP8TBm26Wu+nwywsS1
+         Bj3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GW86IGUcMDKzVGAN04j3id2pxwxU5rmCGoMKv3mUqk0=;
+        b=HUA/KmOPJ5MMWZVsNQusTD5WdQ7hUvzVHsFttZ4RftiS/4V/aAO3v+vV8DG4fyhtjw
+         yefrRo1wpmUWj4i8577Nh6nRQVSwFdaN5C33ahdPJLKNQW6Wzhh4lYh3bZcr5huoOc4N
+         mMcl4mWFtt9ZhfTLwjpTzzuRYOBDIspMZt2r3b199tDpVMT+6CXIvs4oNJudEcpdXOj6
+         TXqtKgH7SZPWBdyxm3rWlILO7sj/inuqgLeYad+z/p5PZ2eAiP7k4nJ5McbPay80Qtgi
+         2c7vFvu1vL6AQdNYt4C89P4DafAcEwog3QUYii4E/tqcuDNi1BrFXj7hpTAJrG4FuRdU
+         bjVA==
+X-Gm-Message-State: AOAM5305wr+I3AMabugLq+eSKv4m0Ltw3iJnLSMGah8dZVO2mIcuRM9g
+        sjfVUOxgmL1eutWOPbgQxJQ=
+X-Google-Smtp-Source: ABdhPJxhf47Zmb7HDBtaswZ87telUlrRy0KPi3GZv7GlqbhKvzcC6GlmeTCz/JHjOfRXR04T45h2lw==
+X-Received: by 2002:a17:90a:8505:: with SMTP id l5mr279372pjn.173.1632160830447;
+        Mon, 20 Sep 2021 11:00:30 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id e18sm10323849pfj.159.2021.09.20.11.00.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 11:00:30 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 20 Sep 2021 08:00:28 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup: Make rebind_subsystems() disable v2
+ controllers all at once
+Message-ID: <YUjMPK5IzG7V2MnB@slm.duckdns.org>
+References: <20210918225308.23822-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pp/+xWKgy9H3j7Y1el9onwW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210918225308.23822-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/pp/+xWKgy9H3j7Y1el9onwW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Sep 18, 2021 at 06:53:08PM -0400, Waiman Long wrote:
+...
+> It was caused by the fact that rebind_subsystem() disables
+> controllers to be rebound one by one. If more than one disabled
+> controllers are originally from the default hierarchy, it means that
+> cgroup_apply_control_disable() will be called multiple times for the
+> same default hierarchy. A controller may be killed by css_kill() in
+> the first round. In the second round, the killed controller may not be
+> completely dead yet leading to the warning.
+> 
+> To avoid this problem, we collect all the ssid's of controllers that
+> needed to be disabled from the default hierarchy and then disable them
+> in one go instead of one by one.
+> 
+> Fixes: 334c3679ec4b ("cgroup: reimplement rebind_subsystems() using cgroup_apply_control() and friends")
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Hi all,
+Applied to cgroup/for-5.16.
 
-Today's linux-next merge of the selinux tree got a conflict in:
+Thanks.
 
-  fs/io-wq.c
-
-between commit:
-
-  dd47c104533d ("io-wq: provide IO_WQ_* constants for IORING_REGISTER_IOWQ_=
-MAX_WORKERS arg items")
-
-from Linus' tree and commit:
-
-  5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_u=
-ring")
-
-from the selinux tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/io-wq.c
-index b5fd015268d7,dac5c5961c9d..000000000000
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@@ -14,7 -14,7 +14,8 @@@
-  #include <linux/rculist_nulls.h>
-  #include <linux/cpu.h>
-  #include <linux/tracehook.h>
-+ #include <linux/audit.h>
- +#include <uapi/linux/io_uring.h>
- =20
-  #include "io-wq.h"
- =20
-
---Sig_/pp/+xWKgy9H3j7Y1el9onwW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFJMr4ACgkQAVBC80lX
-0GxvUwf/S59kX8Ly3PbcBDa/NTtXyyAyq3A7zPP5fd/7X1vH2PUGQnzcYZWKQXrN
-XAahUOG6H0+xP8A3a/lRZp8EjCNznTIE5kIf+g5qlY10wgCQryoF9KEkwsh5PmdH
-liEvqdPKuv0I5PEwqnv4KTFOh2B9Yf+LOUkkdHI5pGRBeb5bSD28663ldR8LXkSa
-CawJwCFcV70TugiLIngz5qeSnSfeO3gIsWFO9B7l+GIjU3Sptxj+jWfA5YzCFuLN
-cpu1HenLhhdGBLE9o1MAWDn/+vuyDdX9w+ERWgt26mi64TQxy5M7Qrn28vlXLuTP
-jmdlPE7fgqNBVRbLD9VpgfvDJs8SQg==
-=lTRn
------END PGP SIGNATURE-----
-
---Sig_/pp/+xWKgy9H3j7Y1el9onwW--
+-- 
+tejun
