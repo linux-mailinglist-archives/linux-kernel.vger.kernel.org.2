@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9815841215A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D92F4124A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357571AbhITSEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:04:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58224 "EHLO mail.kernel.org"
+        id S1379140AbhITSgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:36:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356058AbhITR6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EFB613A5;
-        Mon, 20 Sep 2021 17:15:05 +0000 (UTC)
+        id S1379742AbhITSaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:30:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CC8161423;
+        Mon, 20 Sep 2021 17:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158106;
-        bh=PmIskw73cmRJJdWAdKQBIB/Uc7PMDEiOnAyqVSnUX0w=;
+        s=korg; t=1632158821;
+        bh=+6p6avsq8PVs8J5uz5VTGoUuvtah/KWh4v+utQehL1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N5QRFH5Jx0u6nqicNW5uK2fhH49DA8Gn+fnp5Yj/hplQi4TMBnITJwArcb3MwiVGy
-         39fvG96SNL48oVORxxhCHom7vNYayZVOIVzYXZhvsO27IMdA774C39y3u5XlLz6MB3
-         6DtrJuB3E5ko7n3F9KzFUXlPZb5Wy25S/6Qe0/1A=
+        b=1Sv/wPOfDILZ31F8PHoqyS29I0zfQ6c/BULyP0Y0XmtDIDzeYIDD/WbxkyxbCIyPj
+         gz44fE5PZyXxCFIEMVnzHwHmC9rY0jNmMvSC68pEz4CLUnC9picvVHiJgGQ6cNb8co
+         d+lqn9XmHyTWTxmtZg8vFYiLXcV17QJhww/X96YM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, Clamshell <clamfly@163.com>
-Subject: [PATCH 4.19 282/293] mfd: axp20x: Update AXP288 volatile ranges
+        stable@vger.kernel.org, Ryoga Saito <contact@proelbtn.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 072/122] Set fc_nlinfo in nh_create_ipv4, nh_create_ipv6
 Date:   Mon, 20 Sep 2021 18:44:04 +0200
-Message-Id: <20210920163943.079009442@linuxfoundation.org>
+Message-Id: <20210920163918.133979335@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +40,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Ryoga Saito <contact@proelbtn.com>
 
-[ Upstream commit f949a9ebce7a18005266b859a17f10c891bb13d7 ]
+[ Upstream commit 9aca491e0dccf8a9d84a5b478e5eee3c6ea7803b ]
 
-On Cherry Trail devices with an AXP288 PMIC the external SD-card slot
-used the AXP's DLDO2 as card-voltage and either DLDO3 or GPIO1LDO
-(GPIO1 pin in low noise LDO mode) as signal-voltage.
+This patch fixes kernel NULL pointer dereference when creating nexthop
+which is bound with SRv6 decapsulation. In the creation of nexthop,
+__seg6_end_dt_vrf_build is called. __seg6_end_dt_vrf_build expects
+fc_lninfo in fib6_config is set correctly, but it isn't set in
+nh_create_ipv6, which causes kernel crash.
 
-These regulators are turned on/off and in case of the signal-voltage
-also have their output-voltage changed by the _PS0 and _PS3 power-
-management ACPI methods on the MMC-controllers ACPI fwnode as well as
-by the _DSM ACPI method for changing the signal voltage.
+Here is steps to reproduce kernel crash:
 
-The AML code implementing these methods is directly accessing the
-PMIC through ACPI I2C OpRegion accesses, instead of using the special
-PMIC OpRegion handled by drivers/acpi/pmic/intel_pmic_xpower.c .
+1. modprobe vrf
+2. ip -6 nexthop add encap seg6local action End.DT4 vrftable 1 dev eth0
 
-This means that the contents of the involved PMIC registers can change
-without the change being made through the regmap interface, so regmap
-should not cache the contents of these registers.
+We got the following message:
 
-Mark the regulator power on/off, the regulator voltage control and the
-GPIO1 control registers as volatile, to avoid regmap caching them.
+[  901.370336] BUG: kernel NULL pointer dereference, address: 0000000000000ba0
+[  901.371658] #PF: supervisor read access in kernel mode
+[  901.372672] #PF: error_code(0x0000) - not-present page
+[  901.373672] PGD 0 P4D 0
+[  901.374248] Oops: 0000 [#1] SMP PTI
+[  901.374944] CPU: 0 PID: 8593 Comm: ip Not tainted 5.14-051400-generic #202108310811-Ubuntu
+[  901.376404] Hardware name: Red Hat KVM, BIOS 1.11.1-4.module_el8.2.0+320+13f867d7 04/01/2014
+[  901.377907] RIP: 0010:vrf_ifindex_lookup_by_table_id+0x19/0x90 [vrf]
+[  901.379182] Code: c1 e9 72 ff ff ff e8 96 49 01 c2 66 0f 1f 44 00 00 0f 1f 44 00 00 55 48 89 e5 41 56 41 55 41 89 f5 41 54 53 8b 05 47 4c 00 00 <48> 8b 97 a0 0b 00 00 48 8b 1c c2 e8 57 27 53 c1 4c 8d a3 88 00 00
+[  901.382652] RSP: 0018:ffffbf2d02043590 EFLAGS: 00010282
+[  901.383746] RAX: 000000000000000b RBX: ffff990808255e70 RCX: ffffbf2d02043aa8
+[  901.385436] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 0000000000000000
+[  901.386924] RBP: ffffbf2d020435b0 R08: 00000000000000c0 R09: ffff990808255e40
+[  901.388537] R10: ffffffff83b08c90 R11: 0000000000000009 R12: 0000000000000000
+[  901.389937] R13: 0000000000000001 R14: 0000000000000000 R15: 000000000000000b
+[  901.391226] FS:  00007fe49381f740(0000) GS:ffff99087dc00000(0000) knlGS:0000000000000000
+[  901.392737] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  901.393803] CR2: 0000000000000ba0 CR3: 000000000e3e8003 CR4: 0000000000770ef0
+[  901.395122] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  901.396496] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  901.397833] PKRU: 55555554
+[  901.398578] Call Trace:
+[  901.399144]  l3mdev_ifindex_lookup_by_table_id+0x3b/0x70
+[  901.400179]  __seg6_end_dt_vrf_build+0x34/0xd0
+[  901.401067]  seg6_end_dt4_build+0x16/0x20
+[  901.401904]  seg6_local_build_state+0x271/0x430
+[  901.402797]  lwtunnel_build_state+0x81/0x130
+[  901.403645]  fib_nh_common_init+0x82/0x100
+[  901.404465]  ? sock_def_readable+0x4b/0x80
+[  901.405285]  fib6_nh_init+0x115/0x7c0
+[  901.406033]  nh_create_ipv6.isra.0+0xe1/0x140
+[  901.406932]  rtm_new_nexthop+0x3b7/0xeb0
+[  901.407828]  rtnetlink_rcv_msg+0x152/0x3a0
+[  901.408663]  ? rtnl_calcit.isra.0+0x130/0x130
+[  901.409535]  netlink_rcv_skb+0x55/0x100
+[  901.410319]  rtnetlink_rcv+0x15/0x20
+[  901.411026]  netlink_unicast+0x1a8/0x250
+[  901.411813]  netlink_sendmsg+0x238/0x470
+[  901.412602]  ? _copy_from_user+0x2b/0x60
+[  901.413394]  sock_sendmsg+0x65/0x70
+[  901.414112]  ____sys_sendmsg+0x218/0x290
+[  901.414929]  ? copy_msghdr_from_user+0x5c/0x90
+[  901.415814]  ___sys_sendmsg+0x81/0xc0
+[  901.416559]  ? fsnotify_destroy_marks+0x27/0xf0
+[  901.417447]  ? call_rcu+0xa4/0x230
+[  901.418153]  ? kmem_cache_free+0x23f/0x410
+[  901.418972]  ? dentry_free+0x37/0x70
+[  901.419705]  ? mntput_no_expire+0x4c/0x260
+[  901.420574]  __sys_sendmsg+0x62/0xb0
+[  901.421297]  __x64_sys_sendmsg+0x1f/0x30
+[  901.422057]  do_syscall_64+0x5c/0xc0
+[  901.422756]  ? syscall_exit_to_user_mode+0x27/0x50
+[  901.423675]  ? __x64_sys_close+0x12/0x40
+[  901.424462]  ? do_syscall_64+0x69/0xc0
+[  901.425219]  ? irqentry_exit_to_user_mode+0x9/0x20
+[  901.426149]  ? irqentry_exit+0x19/0x30
+[  901.426901]  ? exc_page_fault+0x89/0x160
+[  901.427709]  ? asm_exc_page_fault+0x8/0x30
+[  901.428536]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  901.429514] RIP: 0033:0x7fe493945747
+[  901.430248] Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74 24 10
+[  901.433549] RSP: 002b:00007ffe9932cf68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+[  901.434981] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe493945747
+[  901.436303] RDX: 0000000000000000 RSI: 00007ffe9932cfe0 RDI: 0000000000000003
+[  901.437607] RBP: 00000000613053f7 R08: 0000000000000001 R09: 00007ffe9932d07c
+[  901.438990] R10: 000055f4a903a010 R11: 0000000000000246 R12: 0000000000000001
+[  901.440340] R13: 0000000000000001 R14: 000055f4a802b163 R15: 000055f4a8042020
+[  901.441630] Modules linked in: vrf nls_utf8 isofs nls_iso8859_1 dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua intel_rapl_msr intel_rapl_common isst_if_mbox_msr isst_if_common nfit rapl input_leds joydev serio_raw qemu_fw_cfg mac_hid sch_fq_codel drm virtio_rng ip_tables x_tables autofs4 btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel crypto_simd virtio_net net_failover cryptd psmouse virtio_blk failover i2c_piix4 pata_acpi floppy
+[  901.450808] CR2: 0000000000000ba0
+[  901.451514] ---[ end trace c27b934b99ade304 ]---
+[  901.452403] RIP: 0010:vrf_ifindex_lookup_by_table_id+0x19/0x90 [vrf]
+[  901.453626] Code: c1 e9 72 ff ff ff e8 96 49 01 c2 66 0f 1f 44 00 00 0f 1f 44 00 00 55 48 89 e5 41 56 41 55 41 89 f5 41 54 53 8b 05 47 4c 00 00 <48> 8b 97 a0 0b 00 00 48 8b 1c c2 e8 57 27 53 c1 4c 8d a3 88 00 00
+[  901.456910] RSP: 0018:ffffbf2d02043590 EFLAGS: 00010282
+[  901.457912] RAX: 000000000000000b RBX: ffff990808255e70 RCX: ffffbf2d02043aa8
+[  901.459238] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 0000000000000000
+[  901.460552] RBP: ffffbf2d020435b0 R08: 00000000000000c0 R09: ffff990808255e40
+[  901.461882] R10: ffffffff83b08c90 R11: 0000000000000009 R12: 0000000000000000
+[  901.463208] R13: 0000000000000001 R14: 0000000000000000 R15: 000000000000000b
+[  901.464529] FS:  00007fe49381f740(0000) GS:ffff99087dc00000(0000) knlGS:0000000000000000
+[  901.466058] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  901.467189] CR2: 0000000000000ba0 CR3: 000000000e3e8003 CR4: 0000000000770ef0
+[  901.468515] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  901.469858] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  901.471139] PKRU: 55555554
 
-Specifically this fixes an issue on some models where the i915 driver
-toggles another LDO using the same on/off register on/off through
-MIPI sequences (through intel_soc_pmic_exec_mipi_pmic_seq_element())
-which then writes back a cached on/off register-value where the
-card-voltage is off causing the external sdcard slot to stop working
-when the screen goes blank, or comes back on again.
-
-The regulator register-range now marked volatile also includes the
-buck regulator control registers. This is done on purpose these are
-normally not touched by the AML code, but they are updated directly
-by the SoC's PUNIT which means that they may also change without going
-through regmap.
-
-Note the AXP288 PMIC is only used on Bay- and Cherry-Trail platforms,
-so even though this is an ACPI specific problem there is no need to
-make the new volatile ranges conditional since these platforms always
-use ACPI.
-
-Fixes: dc91c3b6fe66 ("mfd: axp20x: Mark AXP20X_VBUS_IPSOUT_MGMT as volatile")
-Fixes: cd53216625a0 ("mfd: axp20x: Fix axp288 volatile ranges")
-Reported-and-tested-by: Clamshell <clamfly@163.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Ryoga Saito <contact@proelbtn.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/axp20x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv4/nexthop.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
-index aa65931142ba..dcb341d62758 100644
---- a/drivers/mfd/axp20x.c
-+++ b/drivers/mfd/axp20x.c
-@@ -127,12 +127,13 @@ static const struct regmap_range axp288_writeable_ranges[] = {
- 
- static const struct regmap_range axp288_volatile_ranges[] = {
- 	regmap_reg_range(AXP20X_PWR_INPUT_STATUS, AXP288_POWER_REASON),
-+	regmap_reg_range(AXP22X_PWR_OUT_CTRL1, AXP22X_ALDO3_V_OUT),
- 	regmap_reg_range(AXP288_BC_GLOBAL, AXP288_BC_GLOBAL),
- 	regmap_reg_range(AXP288_BC_DET_STAT, AXP20X_VBUS_IPSOUT_MGMT),
- 	regmap_reg_range(AXP20X_CHRG_BAK_CTRL, AXP20X_CHRG_BAK_CTRL),
- 	regmap_reg_range(AXP20X_IRQ1_EN, AXP20X_IPSOUT_V_HIGH_L),
- 	regmap_reg_range(AXP20X_TIMER_CTRL, AXP20X_TIMER_CTRL),
--	regmap_reg_range(AXP22X_GPIO_STATE, AXP22X_GPIO_STATE),
-+	regmap_reg_range(AXP20X_GPIO1_CTRL, AXP22X_GPIO_STATE),
- 	regmap_reg_range(AXP288_RT_BATT_V_H, AXP288_RT_BATT_V_L),
- 	regmap_reg_range(AXP20X_FG_RES, AXP288_FG_CC_CAP_REG),
- };
+diff --git a/net/ipv4/nexthop.c b/net/ipv4/nexthop.c
+index f2d313c5900d..1075cc2136ac 100644
+--- a/net/ipv4/nexthop.c
++++ b/net/ipv4/nexthop.c
+@@ -1303,6 +1303,7 @@ static int nh_create_ipv4(struct net *net, struct nexthop *nh,
+ 		.fc_gw4   = cfg->gw.ipv4,
+ 		.fc_gw_family = cfg->gw.ipv4 ? AF_INET : 0,
+ 		.fc_flags = cfg->nh_flags,
++		.fc_nlinfo = cfg->nlinfo,
+ 		.fc_encap = cfg->nh_encap,
+ 		.fc_encap_type = cfg->nh_encap_type,
+ 	};
+@@ -1341,6 +1342,7 @@ static int nh_create_ipv6(struct net *net,  struct nexthop *nh,
+ 		.fc_ifindex = cfg->nh_ifindex,
+ 		.fc_gateway = cfg->gw.ipv6,
+ 		.fc_flags = cfg->nh_flags,
++		.fc_nlinfo = cfg->nlinfo,
+ 		.fc_encap = cfg->nh_encap,
+ 		.fc_encap_type = cfg->nh_encap_type,
+ 		.fc_is_fdb = cfg->nh_fdb,
 -- 
 2.30.2
 
