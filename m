@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F774125E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828B74124DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384838AbhITStJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:49:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33338 "EHLO mail.kernel.org"
+        id S1381615AbhITSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384028AbhITSq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:46:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A330D61AFE;
-        Mon, 20 Sep 2021 17:33:22 +0000 (UTC)
+        id S1380085AbhITSc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:32:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7400461AA4;
+        Mon, 20 Sep 2021 17:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159203;
-        bh=GtAz6a0Xn/a5dVpSrAYarcdx2uWZsIINFWCN4NvS7Ds=;
+        s=korg; t=1632158862;
+        bh=uJUTMTu1vO5waaucqVJrvfx6ghghdNY2kgLhBdfGwQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dpMVjM4hUTHfCxTEgfnz57dtSqlgFisOtOnqP9jEAik14reokL/Hsc7UxW0gn3tpq
-         v7B9tXg3VwKOdus61hr4t+1SM870V5HbEp8aibTMxuqwrbWWKkDu3K7VNEXuGCPv7Q
-         CzB56dGZpbbI3iyPbbfhMRh4EWYsES2Ez23gLpNw=
+        b=Zrt+k51Gck+c3r0K892E0m1hsy9oBLX3aRspip/oishJd0e12i+am/r9wC2Flvzek
+         wXm4DgtHqOUNLz2Xxvbpdu8KPkO+WlknwcefK037jwLbGrE/CkPhC7SxHO9FehVh98
+         rzlyyPYNeiTGt1r6tWdUV2M99TBi1646yqRs+IvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 123/168] PCI: controller: PCI_IXP4XX should depend on ARCH_IXP4XX
+Subject: [PATCH 5.10 089/122] tracing/boot: Fix a hist trigger dependency for boot time tracing
 Date:   Mon, 20 Sep 2021 18:44:21 +0200
-Message-Id: <20210920163925.704051309@linuxfoundation.org>
+Message-Id: <20210920163918.710277100@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit 9f1168cf263aab0474300f7118107f8ef73e7423 ]
+[ Upstream commit 6fe7c745f2acb73e4cc961d7f91125eef5a8861f ]
 
-The Intel IXP4xx PCI controller is only present on Intel IXP4xx
-XScale-based network processor SoCs.
+Fixes a build error when CONFIG_HIST_TRIGGERS=n with boot-time
+tracing. Since the trigger_process_regex() is defined only
+when CONFIG_HIST_TRIGGERS=y, if it is disabled, the 'actions'
+event option also must be disabled.
 
-Add a dependency on ARCH_IXP4XX, to prevent asking the user about this
-driver when configuring a kernel without support for the XScale
-processor family.
+Link: https://lkml.kernel.org/r/162856123376.203126.582144262622247352.stgit@devnote2
 
-Link: https://lore.kernel.org/r/6a88e55fe58fc280f4ff1ca83c154e4895b6dcbf.1624972789.git.geert+renesas@glider.be
-Fixes: f7821b4934584824 ("PCI: ixp4xx: Add a new driver for IXP4xx")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-[lorenzo.pieralisi@arm.com: commit log]
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 81a59555ff15 ("tracing/boot: Add per-event settings")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/trace_boot.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index 5e1e3796efa4..326f7d13024f 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -40,6 +40,7 @@ config PCI_FTPCI100
- config PCI_IXP4XX
- 	bool "Intel IXP4xx PCI controller"
- 	depends on ARM && OF
-+	depends on ARCH_IXP4XX || COMPILE_TEST
- 	default ARCH_IXP4XX
- 	help
- 	  Say Y here if you want support for the PCI host controller found
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index a82f03f385f8..0996d59750ff 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -205,12 +205,15 @@ trace_boot_init_one_event(struct trace_array *tr, struct xbc_node *gnode,
+ 			pr_err("Failed to apply filter: %s\n", buf);
+ 	}
+ 
+-	xbc_node_for_each_array_value(enode, "actions", anode, p) {
+-		if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
+-			pr_err("action string is too long: %s\n", p);
+-		else if (trigger_process_regex(file, buf) < 0)
+-			pr_err("Failed to apply an action: %s\n", buf);
+-	}
++	if (IS_ENABLED(CONFIG_HIST_TRIGGERS)) {
++		xbc_node_for_each_array_value(enode, "actions", anode, p) {
++			if (strlcpy(buf, p, ARRAY_SIZE(buf)) >= ARRAY_SIZE(buf))
++				pr_err("action string is too long: %s\n", p);
++			else if (trigger_process_regex(file, buf) < 0)
++				pr_err("Failed to apply an action: %s\n", buf);
++		}
++	} else if (xbc_node_find_value(enode, "actions", NULL))
++		pr_err("Failed to apply event actions because CONFIG_HIST_TRIGGERS is not set.\n");
+ 
+ 	if (xbc_node_find_value(enode, "enable", NULL)) {
+ 		if (trace_event_enable_disable(file, 1, 0) < 0)
 -- 
 2.30.2
 
