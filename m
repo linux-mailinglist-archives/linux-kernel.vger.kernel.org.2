@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C030241136C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AE741136E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbhITLUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
+        id S236677AbhITLWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhITLUh (ORCPT
+        with ESMTP id S236497AbhITLWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:20:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B666CC061574;
-        Mon, 20 Sep 2021 04:19:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=wXAGirnc05fwmDCRKFxCiuOQA8x4SwguaJpy5rQKuLU=; b=NiV0DVJz7di1ZXi+Un3kCjWpCq
-        +fWvOftQyuI8z0PvT4qty/Pptb+bM4jNF7bRy7NefYC7E6zb+R5WgtElM38o/vRP5prZ3JXEAbWOd
-        KioeBI8Pi3pehUXZqT8TVhlm1QQmOE/w4YrLlB1Ej1E0SE5qj4iLDOH9HGe203JR8TxF5pdm+3Z0r
-        kt6CuGDJLWgkSNC53iYEjXMdTLdiYMIHiT3fodoRVP3nkPEl3vdXqH+eBywGE0hycCeEgZgQObK7G
-        1B+z9DLZ+ECEkkc01DSbrYXuhp5MdBU8Cb6p3R1goAoagzG1ArH6RjVRO5JHxvrTFXv7C3tPF3Vku
-        GmcXz5Ww==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSHK3-004VBH-I2; Mon, 20 Sep 2021 11:18:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E69B3001EA;
-        Mon, 20 Sep 2021 13:18:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E180D212D6916; Mon, 20 Sep 2021 13:18:53 +0200 (CEST)
-Date:   Mon, 20 Sep 2021 13:18:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tip tree
-Message-ID: <YUhuHcHeeNELK8cr@hirez.programming.kicks-ass.net>
-References: <20210920113330.29f12b99@canb.auug.org.au>
+        Mon, 20 Sep 2021 07:22:13 -0400
+Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F0CC061574;
+        Mon, 20 Sep 2021 04:19:52 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id SHKtmv90WcSrkSHKumAXcF; Mon, 20 Sep 2021 13:19:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1632136789; bh=HXMTp7CaoqOdcgMbLwjsoBfZrna7G+6Y5/y+9DvzrT0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=rp63vtbkq6rrVDqH/aryOXf9o74TLOEmWuv/ux+LrnA8Ii1C0cjOtSq0LBYxrkwcx
+         L5dS5l7h71mnzM5mY9iV4Ak+lceAANt02NvXZ+E8OrBmqdvjQg+KZrl1/YQBCKTpxM
+         IqRVWE/4LyiXweyttGmL3eyauutZLaeB9Uz8vvZGrq4GU4xAXJEX2IQ52X4Gz5POxA
+         HjLe6uBnMzd+Sw4qRo6aRCS3RIrV/+DXPHkGBAd2WnfHGfm++/zqL6+KgXRBgqiKyB
+         EFHiwc0OhLfYUxmhYmK/XiPMMTwAslRkPCC5uGvPWV50twzzvXF+CwnCNeD3ISlRw/
+         kxnjJrcRdubSg==
+Subject: Re: [PATCH] media: rc and cec: keep all menu entries together
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+References: <20210822000450.27329-1-rdunlap@infradead.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <a2367e5c-015a-3731-fcf2-0c448af83fed@xs4all.nl>
+Date:   Mon, 20 Sep 2021 13:19:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210920113330.29f12b99@canb.auug.org.au>
+In-Reply-To: <20210822000450.27329-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfH35zTwZa8AZtNwGL1tdd01x5+N5PMKYtMBlZ6rV/gAwdj6q15h14GrFdjhwOzLO/He5+N8A/T3tOhp/m5tHNnS94v0lRNg37mIIc95JEkPiAfnsZAgn
+ 1KOL5hsWn9LEaMlC1leJLjNv3eL9p8FtJx0NO6V2XBpcX78OSLOqtGtz0lpFp4tZoIfnHPTFLKButi1CiBp4eVoV4yTeQ84rEsy94wsWxbN78B3qcTUMy2q0
+ CAwcqDlSka0MlDsCAEhu+G/M8946eHy5TO25ZspFGN9KWCOVh9OBh1XJDPutzb5G5YzgIgpfHpy7k9/8paHUaQDmAF93SnZMm7aRcUj5zgVOXPYs4Ix1sPcz
+ bnJZ89MqlLgn2p+qRevgG2hBa4zQfwKmfNAklvoInjcFdhlRZZVgwN1XpIlyppIbO48H9DegOijC+fdFn5q99vfqHJWSsA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:33:30AM +1000, Stephen Rothwell wrote:
-> Hi all,
->=20
-> After merging the tip tree, today's linux-next build (powerpc_ppc64
-> defconfig) produced this warning:
->=20
-> kernel/sched/debug.c: In function 'print_cfs_group_stats':
-> kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused-v=
-ariable]
->   460 |                struct sched_statistics *stats =3D  __schedstats_f=
-rom_se(se);
->       |                                         ^~~~~
->=20
+Hi Randy,
 
-So I've not seen that one *yet*, I've dont a bunch of SCHEDSTAT=3Dn
-builds. I do think GCC is being quite stupid for giving it, seeing how
-the whole thing is within if (0). The GCC people seem to disagree when I
-brought it up.
+On 22/08/2021 02:04, Randy Dunlap wrote:
+> Keep all of the Remote Controller and CEC menu entries grouped
+> together. This is most relevant to 'make xconfig', where the
+> entries for "HDMI CEC RC integration" and "Enable CEC error injection
+> support" are not displayed (presented) anywhere near the other
+> Remote Controller support options.
+> By grouping all of these menu entries inside a menu/endmenu block,
+> they are forced to be kept together.
+> 
+> Fixes: 46d2a3b964dd ("media: place CEC menu before MEDIA_SUPPORT")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Sean Young <sean@mess.org>
+> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Cc: linux-media@vger.kernel.org
+> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/Kconfig |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> --- linux-next-20210820.orig/drivers/media/Kconfig
+> +++ linux-next-20210820/drivers/media/Kconfig
+> @@ -6,8 +6,10 @@
+>  #
+>  # NOTE: CEC and Remote Controller support should not depend on MEDIA_SUPPORT
+>  #
+> +menu "Remote Controller and CEC support"
+>  source "drivers/media/rc/Kconfig"
+>  source "drivers/media/cec/Kconfig"
+> +endmenu
 
-Anyway, what I did in other parts was the below; that seems to 'upgrade'
-the warnings from -Wunused-variable to -Wunused-but-set-variable, and
-that latter *is* in W=3D1, and I'm arguing it should be promoted to W=3D2 or
-thereabout.
+Remote control and CEC really have very little to do with one another, except
+for "HDMI CEC RC integration", which is a feature of CEC.
 
-Given that whole if(0) {} thing, I don't feel motivated to change things
-overly much and quite strongly feel this is the compiler being daft.
+It would make more sense IMHO to make a "CEC support" menu and move the
+CEC drivers and "HDMI CEC RC integration" and "Enable CEC error injection
+support" to that new menu. It's a bit odd that those two CEC options are
+directly under the Device Drivers menu.
 
----
+Would that work for you?
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 935dad7dffb7..ef71de01e4d7 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -457,7 +457,8 @@ static void print_cfs_group_stats(struct seq_file *m, i=
-nt cpu, struct task_group
- 	PN(se->sum_exec_runtime);
-=20
- 	if (schedstat_enabled()) {
--               struct sched_statistics *stats =3D  __schedstats_from_se(se=
-);
-+		struct sched_statistics *stats;
-+		stats =3D __schedstats_from_se(se);
-=20
- 		PN_SCHEDSTAT(wait_start);
- 		PN_SCHEDSTAT(sleep_start);
+Regards,
+
+	Hans
+
+>  
+>  menuconfig MEDIA_SUPPORT
+>  	tristate "Multimedia support"
+> 
+
