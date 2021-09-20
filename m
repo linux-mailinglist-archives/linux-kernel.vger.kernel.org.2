@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A56411C68
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7500E4120BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346780AbhITRJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33538 "EHLO mail.kernel.org"
+        id S1346051AbhITR5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345356AbhITRGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:06:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 943D2611C2;
-        Mon, 20 Sep 2021 16:55:17 +0000 (UTC)
+        id S1354254AbhITRtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:49:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B69861BBE;
+        Mon, 20 Sep 2021 17:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156918;
-        bh=w1dLWK+wKJAWn9NNIxn1pmCs0AYI824cEWgBv9Ae0k8=;
+        s=korg; t=1632157896;
+        bh=9yQVsBKhkMPV/1QFKagHMGFQ/CidzBP1nHpUmOc3MUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FUPPFt4kVb0u8HrnpoGMYqh40VpGtMKCVEp9PKOnGLZWr3dBCn8YHztAewrmQAFnj
-         4OaDTXzmWXDRtZlg2AVQdRzj7QOflkFruYV7xJry6NI1kEA5c/ESqbue7rG0JHKoft
-         LaKWU9LeAshwMkQh4z2Ph6kbSwDBR8aBDvXnCBzw=
+        b=X0ZpibEYuAZYv3J3v69G1NYtRwg6Xvl9brN8aIBDQtG9QnBe8Wi/YUiUyzVMfYPJW
+         EjqEwNIzuhad1KrsjbeIclFHMlXkvxL+LYTmSiQHRGscevWQbHoLIzIiCt0GHzjt5O
+         Q+b7s4Ltc0RrKA3L8oCmjOdFS0KRObG7+lDzfIdA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brooke Basile <brookebasile@gmail.com>,
-        "Bryan ODonoghue" <bryan.odonoghue@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 113/175] usb: gadget: u_ether: fix a potential null pointer dereference
-Date:   Mon, 20 Sep 2021 18:42:42 +0200
-Message-Id: <20210920163921.764686180@linuxfoundation.org>
+        stable@vger.kernel.org, Juhee Kang <claudiajkang@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 201/293] samples: bpf: Fix tracex7 error raised on the missing argument
+Date:   Mon, 20 Sep 2021 18:42:43 +0200
+Message-Id: <20210920163940.146513292@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Juhee Kang <claudiajkang@gmail.com>
 
-[ Upstream commit 8ae01239609b29ec2eff55967c8e0fe3650cfa09 ]
+[ Upstream commit 7d07006f05922b95518be403f08ef8437b67aa32 ]
 
-f_ncm tx timeout can call us with null skb to flush
-a pending frame.  In this case skb is NULL to begin
-with but ceases to be null after dev->wrap() completes.
+The current behavior of 'tracex7' doesn't consist with other bpf samples
+tracex{1..6}. Other samples do not require any argument to run with, but
+tracex7 should be run with btrfs device argument. (it should be executed
+with test_override_return.sh)
 
-In such a case in->maxpacket will be read, even though
-we've failed to check that 'in' is not NULL.
+Currently, tracex7 doesn't have any description about how to run this
+program and raises an unexpected error. And this result might be
+confusing since users might not have a hunch about how to run this
+program.
 
-Though I've never observed this fail in practice,
-however the 'flush operation' simply does not make sense with
-a null usb IN endpoint - there's nowhere to flush to...
-(note that we're the gadget/device, and IN is from the point
- of view of the host, so here IN actually means outbound...)
+    // Current behavior
+    # ./tracex7
+    sh: 1: Syntax error: word unexpected (expecting ")")
+    // Fixed behavior
+    # ./tracex7
+    ERROR: Run with the btrfs device argument!
 
-Cc: Brooke Basile <brookebasile@gmail.com>
-Cc: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Link: https://lore.kernel.org/r/20210701114834.884597-6-zenczykowski@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In order to fix this error, this commit adds logic to report a message
+and exit when running this program with a missing argument.
+
+Additionally in test_override_return.sh, there is a problem with
+multiple directory(tmpmnt) creation. So in this commit adds a line with
+removing the directory with every execution.
+
+Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210727041056.23455-1-claudiajkang@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/u_ether.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ samples/bpf/test_override_return.sh | 1 +
+ samples/bpf/tracex7_user.c          | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
-index 589d1f5fb575..5d72872310e7 100644
---- a/drivers/usb/gadget/function/u_ether.c
-+++ b/drivers/usb/gadget/function/u_ether.c
-@@ -499,8 +499,9 @@ static netdev_tx_t eth_start_xmit(struct sk_buff *skb,
- 	}
- 	spin_unlock_irqrestore(&dev->lock, flags);
+diff --git a/samples/bpf/test_override_return.sh b/samples/bpf/test_override_return.sh
+index e68b9ee6814b..35db26f736b9 100755
+--- a/samples/bpf/test_override_return.sh
++++ b/samples/bpf/test_override_return.sh
+@@ -1,5 +1,6 @@
+ #!/bin/bash
  
--	if (skb && !in) {
--		dev_kfree_skb_any(skb);
-+	if (!in) {
-+		if (skb)
-+			dev_kfree_skb_any(skb);
- 		return NETDEV_TX_OK;
- 	}
++rm -r tmpmnt
+ rm -f testfile.img
+ dd if=/dev/zero of=testfile.img bs=1M seek=1000 count=1
+ DEVICE=$(losetup --show -f testfile.img)
+diff --git a/samples/bpf/tracex7_user.c b/samples/bpf/tracex7_user.c
+index ea6dae78f0df..2ed13e9f3fcb 100644
+--- a/samples/bpf/tracex7_user.c
++++ b/samples/bpf/tracex7_user.c
+@@ -13,6 +13,11 @@ int main(int argc, char **argv)
+ 	char command[256];
+ 	int ret;
  
++	if (!argv[1]) {
++		fprintf(stderr, "ERROR: Run with the btrfs device argument!\n");
++		return 0;
++	}
++
+ 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
+ 
+ 	if (load_bpf_file(filename)) {
 -- 
 2.30.2
 
