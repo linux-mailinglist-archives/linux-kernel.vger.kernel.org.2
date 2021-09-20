@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA02411DB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5877E411ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345933AbhITRW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
+        id S243861AbhITQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:52:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346955AbhITRUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A51F61A65;
-        Mon, 20 Sep 2021 17:00:37 +0000 (UTC)
+        id S244081AbhITQuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 719F961245;
+        Mon, 20 Sep 2021 16:48:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157237;
-        bh=GXHmBsdc6S65PqFtoCkcvHIqyFyqePfjlNVLQAIJQk8=;
+        s=korg; t=1632156510;
+        bh=QM53qf0i/7e0dwga1vWh5MnbgvfUlKtIQfgN/VKBaBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T/auiVBMfcKk683cSSVyAEgH7eToD8aKc7r7cDLoh36hQ8fu4+g9EWLB7qQ3IqFhk
-         MBuEct7BfhTHHfa3LPdPAsNrLM028eow9PHMH2wVOkxzwS3RUJ8bVdu3D98YaPiPdo
-         wIyAv91oVCNQWj+A559PYAlloYJKQ8xDWqd8hpqs=
+        b=YcaY6VTnVmwgfVtC53MOLgozW7RJIOLOfdVpG7yusdcQzXd1Wd93xRjt/3Ws3Pzhq
+         3RpmYtpAgLsaEe/VuWU225dLODV2Hq8NyjRTrYveU4L5MPiL19++kcQ6Pm4lgRM/8Y
+         vtZNWz2yS4e4zP1oHy5LjY6XjKxNS+Zh30ZFahH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.14 117/217] PCI: Return ~0 data on pciconfig_read() CAP_SYS_ADMIN failure
-Date:   Mon, 20 Sep 2021 18:42:18 +0200
-Message-Id: <20210920163928.628708420@linuxfoundation.org>
+        stable@vger.kernel.org, Jonas Jensen <jonas.jensen@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 061/133] mmc: moxart: Fix issue with uninitialized dma_slave_config
+Date:   Mon, 20 Sep 2021 18:42:19 +0200
+Message-Id: <20210920163914.647749159@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Wilczyński <kw@linux.com>
+From: Tony Lindgren <tony@atomide.com>
 
-commit a8bd29bd49c4156ea0ec5a97812333e2aeef44e7 upstream.
+[ Upstream commit ee5165354d498e5bceb0b386e480ac84c5f8c28c ]
 
-The pciconfig_read() syscall reads PCI configuration space using
-hardware-dependent config accessors.
+Depending on the DMA driver being used, the struct dma_slave_config may
+need to be initialized to zero for the unused data.
 
-If the read fails on PCI, most accessors don't return an error; they
-pretend the read was successful and got ~0 data from the device, so the
-syscall returns success with ~0 data in the buffer.
+For example, we have three DMA drivers using src_port_window_size and
+dst_port_window_size. If these are left uninitialized, it can cause DMA
+failures.
 
-When the accessor does return an error, pciconfig_read() normally fills the
-user's buffer with ~0 and returns an error in errno.  But after
-e4585da22ad0 ("pci syscall.c: Switch to refcounting API"), we don't fill
-the buffer with ~0 for the EPERM "user lacks CAP_SYS_ADMIN" error.
+For moxart, this is probably not currently an issue but is still good to
+fix though.
 
-Userspace may rely on the ~0 data to detect errors, but after e4585da22ad0,
-that would not detect CAP_SYS_ADMIN errors.
-
-Restore the original behaviour of filling the buffer with ~0 when the
-CAP_SYS_ADMIN check fails.
-
-[bhelgaas: commit log, fold in Nathan's fix
-https://lore.kernel.org/r/20210803200836.500658-1-nathan@kernel.org]
-Fixes: e4585da22ad0 ("pci syscall.c: Switch to refcounting API")
-Link: https://lore.kernel.org/r/20210729233755.1509616-1-kw@linux.com
-Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1b66e94e6b99 ("mmc: moxart: Add MOXA ART SD/MMC driver")
+Cc: Jonas Jensen <jonas.jensen@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210810081644.19353-3-tony@atomide.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/syscall.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mmc/host/moxart-mmc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/syscall.c
-+++ b/drivers/pci/syscall.c
-@@ -24,8 +24,10 @@ SYSCALL_DEFINE5(pciconfig_read, unsigned
- 	long err;
- 	int cfg_ret;
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index bbad309679cf..41a5493cb68d 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -633,6 +633,7 @@ static int moxart_probe(struct platform_device *pdev)
+ 			 host->dma_chan_tx, host->dma_chan_rx);
+ 		host->have_dma = true;
  
-+	err = -EPERM;
-+	dev = NULL;
- 	if (!capable(CAP_SYS_ADMIN))
--		return -EPERM;
-+		goto error;
++		memset(&cfg, 0, sizeof(cfg));
+ 		cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 		cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
  
- 	err = -ENODEV;
- 	dev = pci_get_bus_and_slot(bus, dfn);
+-- 
+2.30.2
+
 
 
