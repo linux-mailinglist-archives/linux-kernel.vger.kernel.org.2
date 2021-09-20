@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CD3411E7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7DD411B1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344281AbhITRbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56328 "EHLO mail.kernel.org"
+        id S244523AbhITQzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:55:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244979AbhITR2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D4EA61ABB;
-        Mon, 20 Sep 2021 17:03:21 +0000 (UTC)
+        id S244181AbhITQvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:51:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0734461213;
+        Mon, 20 Sep 2021 16:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157402;
-        bh=p4dfK9B501AN1rkSXoJzFgRNOq5iDuB7dytHk2Ts3qk=;
+        s=korg; t=1632156567;
+        bh=Yj1TZDy2FUjXAXfIjbZskgaCeCbx9tYsqXQSQSi/SP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xw2UQal4r0wsz5EayniEwKPD5TbmZ7JbmWc7gpwaHvQrXIdWZJVeBxzJF6eqDvqzC
-         BvQW9e5O/v7UhRsul78aCivCsn8ZVxAkPGIMwVpmU1fK3/jYuv2U0QTmcs/WP2hj0n
-         +qAeMj3fmwyerkoPox2w6KfUWzcmJp67h//AsR+k=
+        b=umsLqCeQSP4SDv17meNL98mFRXoFYDHktvpG8a9YYkCJWsZW1YhptBxZcHGRFq++a
+         IkGz/uDWdCr6gMND1hD3P7GsvMnJda7uVi+h8IMdrO9sEvG4Hp7QyvCjSSVVKLn4Mv
+         LnVonLjzB1zaWGc8k4LhBKc1v+CIB5FPX8DjZChU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 175/217] usbip: give back URBs for unsent unlink requests during cleanup
+        stable@vger.kernel.org, Adrian Bunk <bunk@kernel.org>,
+        YunQiang Su <wzssyqa@gmail.com>,
+        Shai Malin <smalin@marvell.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 118/133] bnx2x: Fix enabling network interfaces without VFs
 Date:   Mon, 20 Sep 2021 18:43:16 +0200
-Message-Id: <20210920163930.567063590@linuxfoundation.org>
+Message-Id: <20210920163916.484032500@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,71 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Adrian Bunk <bunk@kernel.org>
 
-[ Upstream commit 258c81b341c8025d79073ce2d6ce19dcdc7d10d2 ]
+commit 52ce14c134a003fee03d8fc57442c05a55b53715 upstream.
 
-In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
-not given back. This sometimes causes usb_kill_urb to wait indefinitely
-for that urb to be given back. syzbot has reported a hung task issue [1]
-for this.
+This function is called to enable SR-IOV when available,
+not enabling interfaces without VFs was a regression.
 
-To fix this, give back the urbs corresponding to unsent unlink requests
-(unlink_tx list) similar to how urbs corresponding to unanswered unlink
-requests (unlink_rx list) are given back.
-
-[1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
-
-Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Link: https://lore.kernel.org/r/20210820190122.16379-2-mail@anirudhrb.com
+Fixes: 65161c35554f ("bnx2x: Fix missing error code in bnx2x_iov_init_one()")
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
+Reported-by: YunQiang Su <wzssyqa@gmail.com>
+Tested-by: YunQiang Su <wzssyqa@gmail.com>
+Cc: stable@vger.kernel.org
+Acked-by: Shai Malin <smalin@marvell.com>
+Link: https://lore.kernel.org/r/20210912190523.27991-1-bunk@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/vhci_hcd.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 9833f307d70e..709214df2c18 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -971,8 +971,32 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
- 	spin_lock(&vdev->priv_lock);
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
+@@ -1246,7 +1246,7 @@ int bnx2x_iov_init_one(struct bnx2x *bp,
  
- 	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
-+		struct urb *urb;
-+
-+		/* give back urb of unsent unlink request */
- 		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
-+
-+		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
-+		if (!urb) {
-+			list_del(&unlink->list);
-+			kfree(unlink);
-+			continue;
-+		}
-+
-+		urb->status = -ENODEV;
-+
-+		usb_hcd_unlink_urb_from_ep(hcd, urb);
-+
- 		list_del(&unlink->list);
-+
-+		spin_unlock(&vdev->priv_lock);
-+		spin_unlock_irqrestore(&vhci->lock, flags);
-+
-+		usb_hcd_giveback_urb(hcd, urb, urb->status);
-+
-+		spin_lock_irqsave(&vhci->lock, flags);
-+		spin_lock(&vdev->priv_lock);
-+
- 		kfree(unlink);
+ 	/* SR-IOV capability was enabled but there are no VFs*/
+ 	if (iov->total == 0) {
+-		err = -EINVAL;
++		err = 0;
+ 		goto failed;
  	}
  
--- 
-2.30.2
-
 
 
