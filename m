@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2613241218A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA07E41219A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358386AbhITSGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58468 "EHLO mail.kernel.org"
+        id S1358474AbhITSGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356677AbhITSBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B4F663228;
-        Mon, 20 Sep 2021 17:16:00 +0000 (UTC)
+        id S1356703AbhITSBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 838CE63229;
+        Mon, 20 Sep 2021 17:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158160;
-        bh=TW5rtwmRc2wqjiX0cxMWR+rBc+hAXEozJAFhx8BFfR4=;
+        s=korg; t=1632158163;
+        bh=llqVRZepbp//01/uit09MPR+SKYoDSxTzpVAjo+o9ak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pnGbEWup+ncuaY1Frt1/YwDD9Afd7Dr9JdVIDI8JBZTw8a6IAqVuRRYc3ncnp8CZ+
-         j9EjvjwL1hcLT+/5LdpmCbFQFWWIJ8+g6WiN2wqf46gmTcdkq6W9YoPwR8avJdL3aW
-         am2hGsqOb+WBPJn9vmzUrZTgQxLNWOshpEPk00sg=
+        b=obVHflFmBd+/CbpUZ0OhUAao5Hg1vzL9a+ULx+FtnAm2TCy0EByrWYlisaLAYB0w+
+         8igR7wwWSbg4punjRQRFOwf/8EsEi1pxjqAHSRePNIeF4ROXGLcurB3gGrKR0I4BhW
+         v8p/UALpS+p2q4Xe4Al/RcGhaWp8+EAd1BAg5zEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stuart Hayes <stuart.w.hayes@gmail.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?R=C3=B6tti?= 
+        <espressobinboardarmbiantempmailaddress@posteo.de>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 5.4 029/260] PCI/portdrv: Enable Bandwidth Notification only if port supports it
-Date:   Mon, 20 Sep 2021 18:40:47 +0200
-Message-Id: <20210920163932.112595011@linuxfoundation.org>
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 5.4 030/260] PCI: Restrict ASMedia ASM1062 SATA Max Payload Size Supported
+Date:   Mon, 20 Sep 2021 18:40:48 +0200
+Message-Id: <20210920163932.145817688@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -40,51 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stuart Hayes <stuart.w.hayes@gmail.com>
+From: Marek Behún <kabel@kernel.org>
 
-commit 00823dcbdd415c868390feaca16f0265101efab4 upstream.
+commit b12d93e9958e028856cbcb061b6e64728ca07755 upstream.
 
-Previously we assumed that all Root Ports and Switch Downstream Ports
-supported Link Bandwidth Notification.  Per spec, this is only required
-for Ports supporting Links wider than x1 and/or multiple Link speeds
-(PCIe r5.0, sec 7.5.3.6).
+The ASMedia ASM1062 SATA controller advertises Max_Payload_Size_Supported
+of 512, but in fact it cannot handle incoming TLPs with payload size of
+512.
 
-Because we assumed all Ports supported it, we tried to set up a Bandwidth
-Notification IRQ, which failed for devices that don't support IRQs at all,
-which meant pcieport didn't attach to the Port at all.
+We discovered this issue on PCIe controllers capable of MPS = 512 (Aardvark
+and DesignWare), where the issue presents itself as an External Abort.
+Bjorn Helgaas says:
 
-Check the Link Bandwidth Notification Capability bit and enable the service
-only when the Port supports it.
+  Probably ASM1062 reports a Malformed TLP error when it receives a data
+  payload of 512 bytes, and Aardvark, DesignWare, etc convert this to an
+  arm64 External Abort. [1]
 
-[bhelgaas: commit log]
-Fixes: e8303bb7a75c ("PCI/LINK: Report degraded links via link bandwidth notification")
-Link: https://lore.kernel.org/r/20210512213314.7778-1-stuart.w.hayes@gmail.com
-Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
+To avoid this problem, limit the ASM1062 Max Payload Size Supported to 256
+bytes, so we set the Max Payload Size of devices that may send TLPs to the
+ASM1062 to 256 or less.
+
+[1] https://lore.kernel.org/linux-pci/20210601170907.GA1949035@bjorn-Precision-5520/
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212695
+Link: https://lore.kernel.org/r/20210624171418.27194-2-kabel@kernel.org
+Reported-by: Rötti <espressobinboardarmbiantempmailaddress@posteo.de>
+Signed-off-by: Marek Behún <kabel@kernel.org>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pcie/portdrv_core.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/pci/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -255,8 +255,13 @@ static int get_port_device_capability(st
- 		services |= PCIE_PORT_SERVICE_DPC;
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3252,6 +3252,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SO
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
+ 			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_ASMEDIA, 0x0612, fixup_mpss_256);
  
- 	if (pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
--	    pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT)
--		services |= PCIE_PORT_SERVICE_BWNOTIF;
-+	    pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
-+		u32 linkcap;
-+
-+		pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &linkcap);
-+		if (linkcap & PCI_EXP_LNKCAP_LBNC)
-+			services |= PCIE_PORT_SERVICE_BWNOTIF;
-+	}
- 
- 	return services;
- }
+ /*
+  * Intel 5000 and 5100 Memory controllers have an erratum with read completion
 
 
