@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B4A411BDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0423412005
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhITRDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:03:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47922 "EHLO mail.kernel.org"
+        id S1346147AbhITRru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:47:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345069AbhITRAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:00:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDAC161409;
-        Mon, 20 Sep 2021 16:52:49 +0000 (UTC)
+        id S1353532AbhITRpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:45:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 263FA6187D;
+        Mon, 20 Sep 2021 17:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156770;
-        bh=BEdHrqnaRumpSH1/KUdNA/axJLqGlsErWO+bLDxSrxc=;
+        s=korg; t=1632157800;
+        bh=lsZ68qhhRhGkJwDdVYPaZdXrc3xqCYIPrfP8kZoODPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZGGp2XsnzBAhVK6++bo3XB8dVs9dXoLV4soLBnfh9JakVnjao8BKo6JboFgSterH/
-         m0WjUkauiGsNwfh6vFvlzME0wY+pVXtysSVswfQ/PzySupp6vMm6g5M53uq5S3aM6E
-         qqWg6qztEFbc1jlJZ1vpPlW7SlPE31x8r1hqJKnI=
+        b=cDUJsTI6HlOOJx5kMJfrfw4wdDfopDozI9EhdDGvujBZ4rihcu+rED1ACOs1+jC8x
+         sLlNQ0GMONyOIfT4a+19KpFK1pBaBJ1MH1cOi/0tI4No/z99ZEGPLVwNne7uN9vpaH
+         nYv46MMEMQVfCIxbqdIzE0qvyf61620TUVsNVxh8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 070/175] usb: phy: tahvo: add IRQ check
+        stable@vger.kernel.org, Kenneth Albanowski <kenalba@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 157/293] HID: input: do not report stylus battery state as "full"
 Date:   Mon, 20 Sep 2021 18:41:59 +0200
-Message-Id: <20210920163920.345636124@linuxfoundation.org>
+Message-Id: <20210920163938.661995241@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 0d45a1373e669880b8beaecc8765f44cb0241e47 ]
+[ Upstream commit f4abaa9eebde334045ed6ac4e564d050f1df3013 ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to request_threaded_irq() (which
-takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding an
-original error code.  Stop calling request_threaded_irq() with the invalid
-IRQ #s.
+The power supply states of discharging, charging, full, etc, represent
+state of charging, not the capacity level of the battery (for which
+we have a separate property). Current HID usage tables to not allow
+for expressing charging state of the batteries found in generic
+styli, so we should simply assume that the battery is discharging
+even if current capacity is at 100% when battery strength reporting
+is done via HID interface. In fact, we were doing just that before
+commit 581c4484769e.
 
-Fixes: 9ba96ae5074c ("usb: omap1: Tahvo USB transceiver driver")
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/8280d6a4-8e9a-7cfe-1aa9-db586dc9afdf@omp.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This change helps UIs to not mis-represent fully charged batteries in
+styli as being charging/topping-off.
+
+Fixes: 581c4484769e ("HID: input: map digitizer battery usage")
+Reported-by: Kenneth Albanowski <kenalba@google.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-tahvo.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hid/hid-input.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/phy/phy-tahvo.c b/drivers/usb/phy/phy-tahvo.c
-index 335a1ef35224..ec86eedd789b 100644
---- a/drivers/usb/phy/phy-tahvo.c
-+++ b/drivers/usb/phy/phy-tahvo.c
-@@ -404,7 +404,9 @@ static int tahvo_usb_probe(struct platform_device *pdev)
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 4dd151b2924e..d56ef395eb69 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -427,8 +427,6 @@ static int hidinput_get_battery_property(struct power_supply *psy,
  
- 	dev_set_drvdata(&pdev->dev, tu);
- 
--	tu->irq = platform_get_irq(pdev, 0);
-+	tu->irq = ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
- 	ret = request_threaded_irq(tu->irq, NULL, tahvo_usb_vbus_interrupt,
- 				   IRQF_ONESHOT,
- 				   "tahvo-vbus", tu);
+ 		if (dev->battery_status == HID_BATTERY_UNKNOWN)
+ 			val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
+-		else if (dev->battery_capacity == 100)
+-			val->intval = POWER_SUPPLY_STATUS_FULL;
+ 		else
+ 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
+ 		break;
 -- 
 2.30.2
 
