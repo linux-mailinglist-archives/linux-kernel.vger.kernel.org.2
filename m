@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABB141137F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144B1411382
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhITL1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:27:04 -0400
-Received: from mout.gmx.net ([212.227.15.19]:33593 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230138AbhITL1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632137126;
-        bh=B9gwt7sLGXtN17LhF++FdY8VbX/w+lp9LunStPlAZXY=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=HbNAJCaO3Axz49sDiw9+qcwm0iQ8n9C/pN7aUBwl+uoE5WMz6ZYQJPwFdVCr7hvIR
-         6awzxXujC+74Wiz2ZhlPabLMX0b5ek9aXmBxbBUuPy4hHIw9Z8X8E/aTK5023RlhyW
-         Y1mY0tv+FmfnDSZmF/AfGcZ2qF9c0d98WtTi7838=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.217.45]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N1fis-1mqVIs0m0e-01242Z; Mon, 20
- Sep 2021 13:25:26 +0200
-Message-ID: <65a61ffdb4c8090320ec98fe5004e6f7808fa4b9.camel@gmx.de>
-Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        marmarek@invisiblethingslab.com, Juergen Gross <jgross@suse.com>,
-        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
-        x86@kernel.org
-Date:   Mon, 20 Sep 2021 13:25:25 +0200
-In-Reply-To: <YUhTwPhva5olB87d@linux.ibm.com>
-References: <20210914094108.22482-1-jgross@suse.com>
-         <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
-         <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
-         <YUdtm8hVH0ps18BK@linux.ibm.com>
-         <fc21617d65338078366e70704eb55789a810e45e.camel@gmx.de>
-         <YUhTwPhva5olB87d@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.0 
+        id S236819AbhITL2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:28:05 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51102 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236804AbhITL2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 07:28:04 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KBQV6e076767;
+        Mon, 20 Sep 2021 06:26:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632137191;
+        bh=jCzRi2/Q+0qdOaYQDAel4Djg+QKzuUcYOJFl8ExjccE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=gslmWWViQGtRHDvDVMQ9orNl04Bf+K8fIo2WAwv2MNojHn12S/17Cq/rgytdXB9rl
+         LKdgMA+9Nv8/1dE4uD38ghI8c8HJjHvfkrU/32YGY4UFeRkt3u0TX4BOF3+o3zS7/d
+         CDMJsgeBy1n8XKRo7AxnkMMTqZZQC3rqvWpkAfPs=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KBQUmS056486
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Sep 2021 06:26:31 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
+ Sep 2021 06:26:29 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 20 Sep 2021 06:26:29 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KBQSZ9103835;
+        Mon, 20 Sep 2021 06:26:29 -0500
+Date:   Mon, 20 Sep 2021 16:56:27 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Daniel Palmer <daniel@0x0f.com>
+CC:     <linux-mtd@lists.infradead.org>, <tudor.ambarus@microchip.com>,
+        <michael@walle.cc>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: spi-nor: Add support for ZB25VQ128
+Message-ID: <20210920112625.fnqayim5mg5iggag@ti.com>
+References: <20210918072256.3505379-1-daniel@0x0f.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iEjsRv4P4g2ovFM2mp8YyGLSbNjPNeyq9zmAqZMjWIj4gvzRgSx
- rxdywpB0+EybMYOQlSL7qeyYsN0KUzPPSOyFKSiR1/8UaKnC1i9Rvsi/DUnBJRowepgwwqJ
- lKaS3A+gfX3wM9TMD5IgkSvjc0en8MU6akzJ2ueUY4+2qEXYCZl0tnlbkKYHPMD/yx/bnM+
- BOoBQIEDrgYCepkSwp9Sg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1iQ9fo7eVS0=:CxIg8wjRkFSEpwjNEm9TOD
- uxvjEhYhzmMGeSV/uiAIC/MN2iCQnnVfzS9AuvffyGkdtNNF5qrOoXsT1pOdLJxkluQI69jZk
- sPpChKLxxhKo4gdneu1FYxfOg6TLZQxq0l7zVhLAaGT2SXl0rGZ+cAzG/YgCQBclettjZBb7e
- apunpDwxhwSBzVwTD6KzWyVKabqmziiVboXjVb45nT+6aE2W+YVI/5C6aCyAFLVY1wEn/32k+
- 2xn++RYr9SivED/OPl6XkFgH+Q7sqc+n9C3zC58DOYJ5o7AavD4XrLqLJqjXrwEZmOo0FTQij
- CmKhXWHwcC3p0jycscFptflz2+R7PR+LpdXbEdzc4ydzMTJuMrAP+Qoaxy4hbSUjRVm/i838S
- YdC/hOK5KEguw9p+lfxe9CmCT74Prf7/G+LTqexs+EoJfFUiuBywYwf9ZWRp1asVJFvfcC0ED
- 25UAkcC7X+rSRMRYuchIMtGkLhwC3LuPxOTqvYBmj4KGlk3o0h9t4nYM7oILfo6V0WaKPWVJe
- qL9diHJEHQrbRSEc9hzyfsH0s0iPR3RMIYsr7F6XZoq8XqbDB0N8bYirQSlrxPV3D8+OhPHYh
- VlM5HOtKW6qFCnigIkW3BiK4JQ54s7L5748EBzupblB36OD8Z6nMn2p6h/OTijoXXnBMJbdrQ
- GWpanUxLZ784SUE0PWZIDPy6qImMe6kARgNCzhKG46D3LTfPapMOo9Dmfi3Y2T2ikeFtsiasl
- J/vdHAM+v2j8l/2KN+2zQKaBFHiuWbvK/WxUdjSWYQawVseHXNzAQXUabrFny9o2Hsc6CN8sC
- Z4sePR01+w9DMe4InKhelpYptmNXji/NKAMe8G8s9hhCR+qRe88PABUuo/EN1zgYTN1XhM9yy
- uOeCZjjarAeunFVWmp/Kvt61YUwaUvmthFe46W+4gZxauANUK7oA57pQAqrnQltneP5yRgGDL
- rxVnCHFeQg2EXhYDK6gDxFpT1RTEzl7ofsQfkcQnPjN2xf3sB+sWMshAK6nDcecATxgT8fFim
- uVzD+3MACH6tVDNlvjF9AgGnDwXCYXlyy3cvOV1QLlmB6lQSoq0hRbTrPr4g4/rziOjMdyILk
- 9BQZyIxTrH6Whc=
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210918072256.3505379-1-daniel@0x0f.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-20 at 12:26 +0300, Mike Rapoport wrote:
->
-> Can't say anything caught my eye, except the early microcode update.
-> Just to rule that out, can you try booting without the early microcode
-> update?
-
-Nogo.
-
-> And, to check Juergen's suggestion about failure in
-> memblock_x86_reserve_range_setup_data(), can you try this patch on top o=
-f
-> the failing tip:
-
-Yup, patchlet detoxified it for both boxen.
-
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 25425edc81a4..78162d9e90cf 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -716,8 +716,6 @@ static void __init early_reserve_memory(void)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (efi_enabled(EFI_BOOT=
-))
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0efi_memblock_x86_reserve_range();
-> =C2=A0
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memblock_x86_reserve_range_se=
-tup_data();
-> -
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0reserve_ibft_region();
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0reserve_bios_regions();
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0trim_snb_memory();
-> @@ -888,6 +886,8 @@ void __init setup_arch(char **cmdline_p)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0x86_configure_nx();
-> =C2=A0
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memblock_x86_reserve_range_se=
-tup_data();
+On 18/09/21 04:22PM, Daniel Palmer wrote:
+> Add support for the ZBIT ZB25VQ128 128MBit SPI NOR
+> flash.
+> 
+> Link: http://www.cipatelje.eu/pdf/ZB25VQ128.pdf
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> ---
+>  drivers/mtd/spi-nor/Makefile |  1 +
+>  drivers/mtd/spi-nor/core.c   |  1 +
+>  drivers/mtd/spi-nor/core.h   |  1 +
+>  drivers/mtd/spi-nor/zbit.c   | 21 +++++++++++++++++++++
+>  4 files changed, 24 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/zbit.c
+> 
+> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+> index 6b904e439372..a6f3646824cb 100644
+> --- a/drivers/mtd/spi-nor/Makefile
+> +++ b/drivers/mtd/spi-nor/Makefile
+> @@ -17,6 +17,7 @@ spi-nor-objs			+= sst.o
+>  spi-nor-objs			+= winbond.o
+>  spi-nor-objs			+= xilinx.o
+>  spi-nor-objs			+= xmc.o
+> +spi-nor-objs			+= zbit.o
+>  obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+>  
+>  obj-$(CONFIG_MTD_SPI_NOR)	+= controllers/
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index cc08bd707378..75f6ac9485b9 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -1846,6 +1846,7 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
+>  	&spi_nor_winbond,
+>  	&spi_nor_xilinx,
+>  	&spi_nor_xmc,
+> +	&spi_nor_zbit,
+>  };
+>  
+>  static const struct flash_info *
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 3348e1dd1445..ad3b34a3b80f 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -489,6 +489,7 @@ extern const struct spi_nor_manufacturer spi_nor_sst;
+>  extern const struct spi_nor_manufacturer spi_nor_winbond;
+>  extern const struct spi_nor_manufacturer spi_nor_xilinx;
+>  extern const struct spi_nor_manufacturer spi_nor_xmc;
+> +extern const struct spi_nor_manufacturer spi_nor_zbit;
+>  
+>  extern const struct attribute_group *spi_nor_sysfs_groups[];
+>  
+> diff --git a/drivers/mtd/spi-nor/zbit.c b/drivers/mtd/spi-nor/zbit.c
+> new file mode 100644
+> index 000000000000..d240dd65d249
+> --- /dev/null
+> +++ b/drivers/mtd/spi-nor/zbit.c
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021, Daniel Palmer<daniel@thingy.jp>
+> + */
 > +
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0parse_early_param();
-> =C2=A0
-> =C2=A0#ifdef CONFIG_MEMORY_HOTPLUG
->
+> +#include <linux/mtd/spi-nor.h>
+> +
+> +#include "core.h"
+> +
+> +static const struct flash_info zbit_parts[] = {
+> +	/* zbit */
+> +	{ "zb25vq128", INFO(0x5e4018, 0, 64 * 1024, 256,
 
+Zbit should be in bank 10, so it should be preceeded by 9 0x7f bytes, 
+correct? I don't see any logic to handle that in SPI NOR currently so I 
+assume this manufacturer does not implement the continuation codes.
+
+In that case, it should go to the manufacturer collisions driver 
+proposed here [0].
+
+[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20210727045222.905056-6-tudor.ambarus@microchip.com/
+
+> +			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+> +};
+> +
+> +const struct spi_nor_manufacturer spi_nor_zbit = {
+> +	.name = "zbit",
+> +	.parts = zbit_parts,
+> +	.nparts = ARRAY_SIZE(zbit_parts),
+> +};
+> -- 
+> 2.33.0
+> 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
