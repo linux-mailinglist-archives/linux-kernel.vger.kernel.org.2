@@ -2,165 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8936B41151D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D48411529
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236441AbhITNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhITNAA (ORCPT
+        id S238713AbhITNDF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 09:03:05 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:46710 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhITNDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:00:00 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22691C061574;
-        Mon, 20 Sep 2021 05:58:34 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id dw14so11915671pjb.1;
-        Mon, 20 Sep 2021 05:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=hDKAE6H9/GaVI7nfqRfPd7UEvAfLXZKdhI0Zqvun8oY=;
-        b=ICHC5SaTqZV+PUi3f1ta5TH3ld/8S8iuf8+aUDAACZtHZuBg+2+xn/IHjQApmaPFGb
-         i0kzIGRO30z+ufydmQJxHrnAjejyF8z/DcRslInjSLMSa61tzq+Wa7MTYe8vZSMorbJ+
-         qLLTbW0lmqGEiH+K2r2lzsVm6iyGLykaDARnlfcC1hImjCvcT5A1LApKNI+yuPBlcxrB
-         wp+NAkB7RSUYF2Jl3t19QR09Qvet8a2GuPGpKWyq0al9HyOuaTf+ylkGS02Maj50r7or
-         g06hdk9f2v4RPPTu4dqZXY0u9F9uE5QUGPQKT89wb0MwWr+EnQYXBWk7AjUDawzVJ7Ui
-         KKcQ==
+        Mon, 20 Sep 2021 09:03:03 -0400
+Received: by mail-vs1-f50.google.com with SMTP id x74so3774700vsx.13;
+        Mon, 20 Sep 2021 06:01:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=hDKAE6H9/GaVI7nfqRfPd7UEvAfLXZKdhI0Zqvun8oY=;
-        b=AZ5/1w6HxUiJzQYvkTyoUNhQpv5T5RZCBAfdra5txA/01HsYj/HLCqXguIuUfamEGD
-         Bxbnfo+bPjIK+WNsuhkOQ3SFJMPZUFohdyfUhZ27pxwhH8qjCWyXSZw45F1EmbrUDXIQ
-         rq074dI8k0NSmXwLJoaJh4S3APY2FTgpUWX5MFyM58GX+MNus9X5thKluMmRIowUMZE5
-         5UxLm+X7YvdB351Z3fW+Edhj3a3BylbMyvp1Ir8sOu7Boz+hJqsznuKpqL1lumVuHcD7
-         6G19mfww9qQ5lyoRyTLTM5Ch+1GIB1zVx4ohm9chBH/YlapAI+eRgngS6sXqX7m+K/wF
-         e0gA==
-X-Gm-Message-State: AOAM532rFaM7JYCPYZZWOSwOXr/ICEcJPKz1opaArOWUWTiUpIeLVzIB
-        5eXOTGT17yMuqZq1wFPF+iLfDTQsDORDR5ORyih7PFlxFA==
-X-Google-Smtp-Source: ABdhPJyvAJCi1WVvN/tohwqtKRIcygTnT34AgDguJMMl5adFGdIdUVlfKKUSdfJbp+vh0LhfCjzU9U/P5fI3r5N4Du8=
-X-Received: by 2002:a17:902:f08c:b0:13d:8e59:caf5 with SMTP id
- p12-20020a170902f08c00b0013d8e59caf5mr16150094pla.38.1632142713291; Mon, 20
- Sep 2021 05:58:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=++i8xJcYeTnDgKmQgi7Yz9d+jrQSAA9oLwPVziAM1C0=;
+        b=rEqF+wnm8T1TYVJBThiUxA6vYY9jRg3YrAHaig0K4mMJC+uZ38c5LXykCyf0dh/puJ
+         EomaPVgN8/SBrjhNQxfUOh4OvVATAkPjx6GOQPFd56Cfx25azpJ8jB7oTm58DsQVWLht
+         5Uei8+lqM8KxiksnAiwA9d14FMbI0THWjikCMixPKJ+SUHx4QjxFHt71T2Df5pMm/Np+
+         GGR34Au4+eAkqqr3VlqdXhODejj6pZzuEMDgxByNYfe4p3uK+gsp47+7s3GB3w0lySlp
+         Eus3bX7rDmPaRS2ZAnh2MqiBMbB2QuwmdvU6Td4gQ4l832CWpNvZ9TWQVd34tf30el2L
+         2XXQ==
+X-Gm-Message-State: AOAM531/sBClvqxQHxs3IC0cDqc6J0p6gjLDXEYGuHRbvp36cMTGG/hN
+        zFGy/Mt4EZs80rj281uMN+k2nvYg4undu6xNvcA=
+X-Google-Smtp-Source: ABdhPJy/M/ANdDNU5+Sl8XEvkvOXVOGmOJk1+6VA+foxZnauYjFVAb9mYIdlMK+bHViTR+fefyC4gnx8Z0vR2afEtWY=
+X-Received: by 2002:a67:f147:: with SMTP id t7mr9708448vsm.41.1632142896269;
+ Mon, 20 Sep 2021 06:01:36 -0700 (PDT)
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 20 Sep 2021 20:58:40 +0800
-Message-ID: <CACkBjsaYSfxKQUUhv2BdU8JTcHL1WP_c039iJ9CvmG5vMMHR4A@mail.gmail.com>
-Subject: general protection fault in __block_write_begin_int
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+References: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20210920080635.253826-1-u.kleine-koenig@pengutronix.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Sep 2021 15:01:25 +0200
+Message-ID: <CAMuHMdVAjtF2GKXgHgbmjUnMdWxqSpusKV_EieF2wEWezdqrPQ@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Remove Matt Mackall as his identity is obsolete
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Linux Embedded <linux-embedded@vger.kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Olivia Mackall <olivia@selenic.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Uwe,
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+On Mon, Sep 20, 2021 at 11:52 AM Uwe Kleine-König
+<u.kleine-koenig@pengutronix.de> wrote:
+> The mails I sent to Matt on September 14 and 20 both were refused by the
+> MTA responsible for selenic.com (i.e. waste.org) with:
+>
+>         554 5.7.1 <mpm@selenic.com>: Recipient address rejected: This identity is obsolete
+>
+> Also the most recent commit that involved him (ignoring "Cc: Matt
+> Mackall <mpm@selenic.com>" footers) is commit 330e0a01d54c (MAINTAINERS:
+> Theodore Ts'o is taking over the random driver) where he was removed
+> from the entry for random number drivers in 2012.
+>
+> So drop him completely from the list of maintainers.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>  MAINTAINERS | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d7b4f32875a9..805630c67a1f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6812,7 +6812,6 @@ F:        drivers/media/usb/em28xx/
+>
+>  EMBEDDED LINUX
+>  M:     Paul Gortmaker <paul.gortmaker@windriver.com>
+> -M:     Matt Mackall <mpm@selenic.com>
 
-HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1r4iaWNbcFSZEw3dpTM2tbE3sPZbaXQ_Y/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/13JjyIW6yKhM9QIYvC3IfDXAtjw_2Rrmt/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/1sxTq_kx4Yw8nD06mQQ7Ah_cCEg75yalF/view?usp=sharing
+Perhaps this should be replaced by
+"Olivia Mackall <olivia@selenic.com>" instead?
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+>  M:     David Woodhouse <dwmw2@infradead.org>
+>  L:     linux-embedded@vger.kernel.org
+>  S:     Maintained
+> @@ -8157,7 +8156,6 @@ F:        include/trace/events/hwmon*.h
+>  K:     (devm_)?hwmon_device_(un)?register(|_with_groups|_with_info)
+>
+>  HARDWARE RANDOM NUMBER GENERATOR CORE
+> -M:     Matt Mackall <mpm@selenic.com>
+>  M:     Herbert Xu <herbert@gondor.apana.org.au>
+>  L:     linux-crypto@vger.kernel.org
+>  S:     Odd fixes
 
-general protection fault, probably for non-canonical address
-0xdead000000000200: 0000 [#1] PREEMPT SMP
-CPU: 2 PID: 11649 Comm: syz-executor Not tainted 5.15.0-rc1+ #19
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:__block_write_begin_int+0xde/0xae0 fs/buffer.c:1973
-Code: 00 00 0f 87 65 06 00 00 e8 df bd d6 ff 45 85 e4 0f 85 5e 06 00
-00 e8 d1 bd d6 ff 48 8b 45 18 31 d2 48 89 ef 41 bc 0c 00 00 00 <48> 8b
-00 48 89 c6 48 89 44 24 20 e8 02 a4 ff ff 4c 8b 7d 20 48 8b
-RSP: 0018:ffffc9000ab13980 EFLAGS: 00010246
-RAX: dead000000000200 RBX: ffffea0004568000 RCX: ffffc900025b9000
-RDX: 0000000000000000 RSI: ffffffff8160d34f RDI: ffffea0004568040
-RBP: ffffea0004568040 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000000c
-R13: ffffc9000ab13aa0 R14: ffffffff821f8f70 R15: 0000000000000000
-FS:  00007f39bbe26700(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000100000001 CR3: 000000010b767000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- __block_write_begin fs/buffer.c:2056 [inline]
- block_write_begin+0x58/0x150 fs/buffer.c:2116
- generic_perform_write+0xce/0x220 mm/filemap.c:3770
- __generic_file_write_iter+0x20d/0x240 mm/filemap.c:3897
- blkdev_write_iter+0xed/0x1d0 block/fops.c:518
- call_write_iter include/linux/fs.h:2163 [inline]
- do_iter_readv_writev+0x1e8/0x2b0 fs/read_write.c:729
- do_iter_write+0xaf/0x250 fs/read_write.c:855
- vfs_iter_write+0x38/0x60 fs/read_write.c:896
- iter_file_splice_write+0x2d8/0x450 fs/splice.c:689
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x4a/0x80 fs/splice.c:936
- splice_direct_to_actor+0x123/0x2d0 fs/splice.c:891
- do_splice_direct+0xc3/0x110 fs/splice.c:979
- do_sendfile+0x338/0x740 fs/read_write.c:1249
- __do_sys_sendfile64 fs/read_write.c:1314 [inline]
- __se_sys_sendfile64 fs/read_write.c:1300 [inline]
- __x64_sys_sendfile64+0xc7/0xe0 fs/read_write.c:1300
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f39bbe25c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
-RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000006
-RBP: 00000000004e4809 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000464e681a R11: 0000000000000246 R12: 000000000078c158
-R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffeddcbc7a0
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 39bb45a4a4cd76d5 ]---
-RIP: 0010:__block_write_begin_int+0xde/0xae0 fs/buffer.c:1973
-Code: 00 00 0f 87 65 06 00 00 e8 df bd d6 ff 45 85 e4 0f 85 5e 06 00
-00 e8 d1 bd d6 ff 48 8b 45 18 31 d2 48 89 ef 41 bc 0c 00 00 00 <48> 8b
-00 48 89 c6 48 89 44 24 20 e8 02 a4 ff ff 4c 8b 7d 20 48 8b
-RSP: 0018:ffffc9000ab13980 EFLAGS: 00010246
-RAX: dead000000000200 RBX: ffffea0004568000 RCX: ffffc900025b9000
-RDX: 0000000000000000 RSI: ffffffff8160d34f RDI: ffffea0004568040
-RBP: ffffea0004568040 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000000c
-R13: ffffc9000ab13aa0 R14: ffffffff821f8f70 R15: 0000000000000000
-FS:  00007f39bbe26700(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f81b40af020 CR3: 000000010b767000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-----------------
-Code disassembly (best guess):
-   0:   00 00                   add    %al,(%rax)
-   2:   0f 87 65 06 00 00       ja     0x66d
-   8:   e8 df bd d6 ff          callq  0xffd6bdec
-   d:   45 85 e4                test   %r12d,%r12d
-  10:   0f 85 5e 06 00 00       jne    0x674
-  16:   e8 d1 bd d6 ff          callq  0xffd6bdec
-  1b:   48 8b 45 18             mov    0x18(%rbp),%rax
-  1f:   31 d2                   xor    %edx,%edx
-  21:   48 89 ef                mov    %rbp,%rdi
-  24:   41 bc 0c 00 00 00       mov    $0xc,%r12d
-* 2a:   48 8b 00                mov    (%rax),%rax <-- trapping instruction
-  2d:   48 89 c6                mov    %rax,%rsi
-  30:   48 89 44 24 20          mov    %rax,0x20(%rsp)
-  35:   e8 02 a4 ff ff          callq  0xffffa43c
-  3a:   4c 8b 7d 20             mov    0x20(%rbp),%r15
-  3e:   48                      rex.W
-  3f:   8b                      .byte 0x8b
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
