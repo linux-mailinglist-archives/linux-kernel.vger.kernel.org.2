@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E91541182B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A658411832
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241395AbhITP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        id S241427AbhITPb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhITP3A (ORCPT
+        with ESMTP id S241436AbhITPb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:29:00 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5632BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:27:33 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id e15so30702870lfr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:27:33 -0700 (PDT)
+        Mon, 20 Sep 2021 11:31:56 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98D3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:30:29 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id x9so3347153qtv.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KkYY5lcGFh2USQXT1hiHpvyqlBdZwGnV7QY6uFjV4/Q=;
-        b=JP/I4sNUuNpAgFWRVxvQiM1sNdFOCT4pTbqUzUoZphqHWUn8mHK4Tno+WnUirVncE2
-         b99bNRpkKfoGmgpCLAXtR+OsEduwXUm5XhTtX0N98IJPyLQrrFKY6WWUVeBYrMEF5GJP
-         +bHpBWbQWS2C/OnZOm+ZSpVfWzHlfFSGzaLp4=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rQ99H87nx71zTeZnm1PBaqgtUrgnKGZgxB0njW1Zu98=;
+        b=qIlxa1d1fM85RtMxf1hyFljZ/Ht4E0RjTSVdscTBBXzFq5D8OQugMpk++T8QIx71Ix
+         n9VrYAhnxJbnmo2/RaTW4XUeya7hORyQHYF7e/rmwy/+gDpz7zgHr7mLSn75ysmZVKgR
+         tTjUuax7VyLsO3nkE46T5cjyUa/OySGIeyS6zqh+n/2T+cJmQ9l9G9dMiM07HE/h70L4
+         oOy4mfosauZUth0NpnZCHFo6whv3JkbEdgOW9zWC3IoQ5DX6p2stN0oIM6T6RvudOTUW
+         hudWaJU3gnJFEceDkTBEKK5blm/aayJlwwQ2GBwdhPZX+fANYWS20DSvTFLtHRB16COP
+         CoEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KkYY5lcGFh2USQXT1hiHpvyqlBdZwGnV7QY6uFjV4/Q=;
-        b=07ibsgwdoGB8985ax6b6W+XLUq+GJaE/5uZhvt/DRHy4Y74R1KWub3VaX1VrYjk0P5
-         c6yOPEUO2DR/IC6F2fdQCdAXpqV7Xpy/vdgRy/7+s7zpsxliMdKpMIqhOjkIPgc042At
-         TXQWd2Ov6oXKGL7pWKESAy9rwjPcGuhN0mjnLaFxoZhhZgNP4ZUwLwODFQPPmEVy/ll6
-         7E8c8i6vwT2wuRe8l6LPhLQ9ehIAlRZvVCRXF7gZhDlkvVvF6I0zjwpctU5MWmhpF27n
-         lGjtunbwMOhjKkBW/TO7vt6LXunLedr+hKfIWZvPbUrxA/03hpaio623hpCqWYdvHCO4
-         mvIw==
-X-Gm-Message-State: AOAM532VRo8AHe8hc3n7QY+1tesF+1zWe+8Wn6atXICn6nD0Mv35YqyG
-        9ZM/x5CqHWjmggMBF/2iDccfQ2d9FbhATIQS
-X-Google-Smtp-Source: ABdhPJyt79LxyyUiQ46vcGFDsyrn4nu91bpv0d5YeKBZbGGxxQce1uFXW5yFid66HW07ln+Enwy/iQ==
-X-Received: by 2002:a2e:801a:: with SMTP id j26mr2522096ljg.175.1632151530654;
-        Mon, 20 Sep 2021 08:25:30 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id r13sm1402155lff.10.2021.09.20.08.25.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 08:25:30 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id i25so69946526lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:25:29 -0700 (PDT)
-X-Received: by 2002:a2e:5815:: with SMTP id m21mr15553407ljb.95.1632151441140;
- Mon, 20 Sep 2021 08:24:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rQ99H87nx71zTeZnm1PBaqgtUrgnKGZgxB0njW1Zu98=;
+        b=hyTdyfSV3Eylz5zN/ELXKU0jq95JuglE3y7nmdsvI3qLow5q3o/RFtZjS9id+bk0Ez
+         rENvLofuwR13WJBrJfjYBYIF91t2hTfG5VWDmRf0Ls5EjokE6SjmlaXOX/kYIX2jj8OA
+         f5pg6uHaI8gXTqGq+n0P4X0sjURkD5EKtu2H1uU8DFKWqrzqd/EfoA8cijJ1xGXOyafT
+         9mVPrK61bmhdSInYcYDKIweHxnEtrUO/e0gVwlfGHnWGASApMSK1idriqn3LkXvCaVsl
+         8WYwEq9OYBbmXW7oUkzEABtUeeouxS6qjxu6iapcinqKptjFF7g3k256rLWY3I6rFXa3
+         FDDA==
+X-Gm-Message-State: AOAM531NrWpGEMIVKMNl0ArrhQt8D5ZewTXcfRuMDIWNT7+E+Zz5DQ/K
+        2KkFetLPZi4vdIQb7wQqBoVwAta5l+ffIQe/
+X-Google-Smtp-Source: ABdhPJyqhK1V1TSoxa5piMCubgiZqrVbP9IuW+Qr/Hw1ALcUG/YAFw6MNFTYOHdrFlq6ng/x7saQ0Q==
+X-Received: by 2002:ac8:5c4c:: with SMTP id j12mr24140831qtj.127.1632151828458;
+        Mon, 20 Sep 2021 08:30:28 -0700 (PDT)
+Received: from Zachary-Arch ([128.211.185.212])
+        by smtp.gmail.com with ESMTPSA id y12sm8962055qtj.3.2021.09.20.08.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 08:30:27 -0700 (PDT)
+From:   Zachary Mayhew <zacklukem.kernel@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Zachary Mayhew <zacklukem.kernel@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@lists.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: fbtft: add docs for fbtft_write_spi()
+Date:   Mon, 20 Sep 2021 08:26:03 -0700
+Message-Id: <20210920152601.170453-1-zacklukem.kernel@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <163207602242.947088.16824174748243890514.tglx@xen13>
- <CAHk-=wiFY6Ys0bOrUUsocp_1YHt_9aEBi9CtPt4N0bRUTY8+5Q@mail.gmail.com> <YUhwHsx8n0KJWgQP@hirez.programming.kicks-ass.net>
-In-Reply-To: <YUhwHsx8n0KJWgQP@hirez.programming.kicks-ass.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 20 Sep 2021 08:23:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgPrw6C-skHMLOR5PNfOtLm1Wyng3Z_eobJBz9BY+Q1ag@mail.gmail.com>
-Message-ID: <CAHk-=wgPrw6C-skHMLOR5PNfOtLm1Wyng3Z_eobJBz9BY+Q1ag@mail.gmail.com>
-Subject: Re: [GIT pull] locking/urgent for v5.15-rc2
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 4:27 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Is that XADD really more expensive? I don't think I've ever seen that.
+Subject: [PATCH] staging: fbtft: add docs for fbtft_write_spi()
 
-Hmm. Looking at newer tables from Agner Fog, it doesn't seem to be the
-big difference it used to be, so maybe not a big deal. It shows up as
-many more ups, but the lock synchronization ends up dominating.
+This patch adds documentation for fbtft_write_spi() to make its
+calling context clear and explain what it does.
 
-I just remember from when xadd weas new, and it was noticeably slower.
+Signed-off-by: Zachary Mayhew <zacklukem.kernel@gmail.com>
+---
+ drivers/staging/fbtft/fbtft-io.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-                 Linus
+diff --git a/drivers/staging/fbtft/fbtft-io.c b/drivers/staging/fbtft/fbtft-io.c
+index de1904a443c2..985d7cf8c774 100644
+--- a/drivers/staging/fbtft/fbtft-io.c
++++ b/drivers/staging/fbtft/fbtft-io.c
+@@ -5,6 +5,19 @@
+ #include <linux/spi/spi.h>
+ #include "fbtft.h"
+ 
++/**
++ * fbtft_write_spi() - write data to current spi
++ * @par: Driver data including driver &struct spi_device
++ * @buf: Buffer to write to spi
++ * @len: Length of the buffer
++ * Context: can sleep
++ *
++ * Builds an &struct spi_transfer and &struct spi_message object based on the
++ * given @buf and @len.  These are then used in a call to spi_sync() which will
++ * write to the spi.
++ *
++ * Return: zero on success or else a negative error code
++ */
+ int fbtft_write_spi(struct fbtft_par *par, void *buf, size_t len)
+ {
+ 	struct spi_transfer t = {
+-- 
+2.33.0
+
