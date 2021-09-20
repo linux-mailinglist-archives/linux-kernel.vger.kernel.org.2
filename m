@@ -2,131 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7AB4127D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958A34127D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237990AbhITVSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:18:05 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39088 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbhITVQE (ORCPT
+        id S232439AbhITVUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:20:25 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:34308 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231784AbhITVSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:16:04 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KLEU91124230;
-        Mon, 20 Sep 2021 16:14:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632172470;
-        bh=dc0vdpYZrdrZqs1wDGFW6RFX3Ev+Zts4gHAzBSwfteM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=siUsHRn/GNMLY/0e/qLscVmhS2R9lieNZ1K3Y6GsC81fa/mDxo6pijb9VTuZAUEZl
-         oWNtsQWG4pcz0k3+ritwFjxD2qKkyC02nyC63ALzk79y/zsIs1EfHRTZCuEM2f1Jha
-         U/saZZ9PNk7GkCpGCZbj8a/x456nAiIwydY3xOAU=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KLEUsL066541
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Sep 2021 16:14:30 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
- Sep 2021 16:14:29 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 20 Sep 2021 16:14:29 -0500
-Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KLETRd051683;
-        Mon, 20 Sep 2021 16:14:29 -0500
-Subject: Re: [PATCH] dt-bindings: hwlock: omap: Remove board-specific
- compatible from DT example
-To:     Nishanth Menon <nm@ti.com>,
-        Sinthu Raja <sinthu.raja@mistralsolutions.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sinthu Raja <sinthu.raja@ti.com>
-References: <20210917094740.18891-1-sinthu.raja@ti.com>
- <20210917144455.nj6bc2enytlgqmzn@studied>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <ba7e9eff-6cd1-2705-4c27-f3a700345ed2@ti.com>
-Date:   Mon, 20 Sep 2021 16:14:28 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 20 Sep 2021 17:18:23 -0400
+Received: by mail-ot1-f41.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso25500499otp.1;
+        Mon, 20 Sep 2021 14:16:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pDoO1eNc1NTHogLdYUD9nVb5nV1LrqSfsmfysobQaT4=;
+        b=Iv428HhpJDMmj3LfSp/1fS2CPygLPuJkNRE19p7Sgmbey5XgcjevwnXnQ47F0i9dS4
+         bjOtpVJI6LsCg6fUm1AhiZT2wUqhs+TahuWsiOlV3HdDKJ1USSLLc27UrhxKuOqQZBcM
+         /tyz2WbTjo6SkM6pDBjEjCvmU2859+U8IqR7bYFs4nzy9mZwrpND7NhfuG+AFefqux5r
+         Iu2ypeyrG9dZisYmmozw3LffDfkPhcmD8SZPeOdwZMxdoZ+mqPMw8cxf2T8ZuMDL3CDn
+         dPYYIpUMrezbkQYo0Mx0eEkLsHxyYDFJq58QCi2Jt1ka2OLIiXOPSAehz0QGT6tswhba
+         X7sw==
+X-Gm-Message-State: AOAM533pE+XU57WUGWg35Xo2H5AMtMSv7Lqzj11Mnhh/Z/xSZcUZDDiJ
+        oYGLygxQ7UK3KyRrRjyCRg==
+X-Google-Smtp-Source: ABdhPJwgM1Zno5vb1ov2P0RomgoqPf3fWk0ZwdFXPRmp8uvBGNSDGDoqkdBmCWe15JjdW2tDaLW4zA==
+X-Received: by 2002:a9d:719e:: with SMTP id o30mr22262620otj.20.1632172615469;
+        Mon, 20 Sep 2021 14:16:55 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c37sm3611930otu.60.2021.09.20.14.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 14:16:54 -0700 (PDT)
+Received: (nullmailer pid 781168 invoked by uid 1000);
+        Mon, 20 Sep 2021 21:16:53 -0000
+Date:   Mon, 20 Sep 2021 16:16:53 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Apurva Nandan <a-nandan@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, michael@walle.cc
+Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema
+ format
+Message-ID: <YUj6RUNYDoWA30Ln@robh.at.kernel.org>
+References: <20210920142713.129295-1-a-nandan@ti.com>
+ <20210920142713.129295-2-a-nandan@ti.com>
+ <20210920150651.vvdhennblwhdi3jw@mobilestation>
 MIME-Version: 1.0
-In-Reply-To: <20210917144455.nj6bc2enytlgqmzn@studied>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920150651.vvdhennblwhdi3jw@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/17/21 9:44 AM, Nishanth Menon wrote:
-> On 15:17-20210917, Sinthu Raja wrote:
->> From: Sinthu Raja <sinthu.raja@ti.com>
->>
->> The example includes a board-specific compatible property, this is
->> wrong as the example should be board agnostic. Replace the same with a
->> generic soc node.
->>
->> Fixes: d8db9dc34871 ("dt-bindings: hwlock: omap: Convert binding to YAML")
->> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
->> ---
->>
->> This patch was triggered by discussions in [1].
->>
->> When applying the patch, if you could provide an immutable tag for the
->> bindings, it would help line things up for new platforms to be added for
->> us. See [2] for the context
+On Mon, Sep 20, 2021 at 06:06:51PM +0300, Serge Semin wrote:
+> Hello Apurva
 > 
+> On Mon, Sep 20, 2021 at 07:57:12PM +0530, Apurva Nandan wrote:
+> > Convert spi-nand.txt binding to YAML format with an added example.
+> > 
+> > Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> > ---
+> >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
+> >  .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
+> >  2 files changed, 62 insertions(+), 5 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
 > 
-> Aah yes, thanks.. Bjorn.. once Rob acks ofcourse (since this is
-> bindings).
+> Thanks for the bindings conversion patch. There are several comments
+> below. But before addressing them it would be better to also get a
+> response from Rob.
+> 
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> > deleted file mode 100644
+> > index 8b51f3b6d55c..000000000000
+> > --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> > +++ /dev/null
+> > @@ -1,5 +0,0 @@
+> > -SPI NAND flash
+> > -
+> > -Required properties:
+> > -- compatible: should be "spi-nand"
+> > -- reg: should encode the chip-select line used to access the NAND chip
+> > diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> > new file mode 100644
+> > index 000000000000..601beba8d971
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> > @@ -0,0 +1,62 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: SPI NAND flash
+> > +
+> > +maintainers:
+> > +  - Apurva Nandan <a-nandan@ti.com>
+> > +
+> > +allOf:
+> > +  - $ref: "mtd.yaml#"
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: spi-nand
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> 
+> > +  spi-max-frequency: true
+> > +  spi-rx-bus-width: true
+> > +  spi-tx-bus-width: true
+> > +  rx-sample-delay-ns: true
+> 
+> Since it's an SPI-client device there are more than these properties
+> could be set for it. See the SPI-controller bindings schema:
+> Documentation/devicetree/bindings/spi/spi-controller.yaml
+> So there is two possible ways to make it more generic:
+> 1) Detach the spi-client part from the spi-controller.yaml bindings
+> into a dedicated DT-schema file and refer to that new scheme from
+> here.
 
-Hmm, I don't think an immutable tag is needed for this patch. This is just
-cleanup, what is your exact dependency here?
+Yes, as mentioned there's patches doing this. But the above is fine. 
+There's some value in defining here which properties are valid.
 
-The relevant HwSpinlock dts nodes are all upstream on all applicable platforms
-already.
+> 2) Forget about these controller-specific properties and let the
+> parental SPI-controller bindings parsing them. Of course there must be
+> at least one of the next properties declared for it to work:
+> {unevaluatedProperties, additionalProperties}.
+> 
+> It's up to Rob to decided which approach is better though...
+> 
+> > +
+> > +  '#address-cells': true
+> > +  '#size-cells': true
+> 
+> Aren't they always equal to 1?
 
-regards
-Suman
-
+No SPI nand devices >4GB?
 
 > 
-> Reviewed-by: Nishanth Menon <nm@ti.com>
+> > +
+> > +additionalProperties:
+> > +  type: object
 > 
-> 
->>
->> [1] https://lore.kernel.org/all/20210818074030.1877-1-sinthu.raja@ti.com/
->> [2] https://lore.kernel.org/linux-arm-kernel/20210125141642.4yybjnklk3qsqjdy@steersman/
->>
->>  .../devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml        | 4 +---
->>  1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
->> index ae1b37dbee75..d56dc1bebdc6 100644
->> --- a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
->> +++ b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
->> @@ -47,10 +47,8 @@ examples:
->>      };
->>  
->>    - |
->> -    / {
->> +    soc {
->>          /* K3 AM65x SoCs */
->> -        model = "Texas Instruments K3 AM654 SoC";
->> -        compatible = "ti,am654-evm", "ti,am654";
->>          #address-cells = <2>;
->>          #size-cells = <2>;
->>  
->> -- 
->> 2.32.0
->>
-> 
+> I'd suggest to elaborate the way the partition sub-nodes looks
+> like, for instance, the node names, supported compatible names,
+> labels, etc.
 
+That should probably all be in mtd.yaml. The question here is whether 
+partitions are always under a 'partitions' node. Maybe this is new 
+enough that only the new way has to be supported. Though if mtd.yaml 
+supported both forms, allowing both all the time is okay IMO.
+
+Rob
