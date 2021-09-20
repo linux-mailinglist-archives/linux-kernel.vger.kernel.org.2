@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE50412106
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F7C411C9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350310AbhITSBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
+        id S1346096AbhITRLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355250AbhITRyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:54:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0954E61C15;
-        Mon, 20 Sep 2021 17:13:33 +0000 (UTC)
+        id S1346794AbhITRJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D087E613A0;
+        Mon, 20 Sep 2021 16:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158014;
-        bh=4WbXF1d8ub7pXmU8y7NF8/9PcTH5M8TNBAvrbVJH1Cs=;
+        s=korg; t=1632156974;
+        bh=J68Kg05DkhrC6Gk7pgrDHMKfH6aF/9ZyoHTu9yzNPVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VLo8qmhrnSGOAQ5/dUP3TKlKTA6hGW+kbe5wp9gDQljifQMBXHWzSSavyLZb3sBZ5
-         YJMDZPp5gR7nSCH/t4DCWJgZHinL+Ue+VEauitCT5++lQwJrWyRx8vbbwv8jyczS57
-         XRujRSxEWspfXv7Q8MoNkPnESpl/EHye7Q3CCs5k=
+        b=mdiHN0MInJz4bG9T3eblwphf9z1lbU96TClSTV6XsJ/K+pd/25CPOMOAgIkZ2BZ08
+         p/ZX8qG02hmNSKVRhL3gKlC5y5R9bGyJD2S6KATupIcM2lAGmBbKYjF/td+sFrrT8I
+         jErFPmnAm1N+1GI3Gg9jU+cq3mY2MfPeOKgb+UfY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Borislav Petkov <bp@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: [PATCH 4.19 256/293] x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
-Date:   Mon, 20 Sep 2021 18:43:38 +0200
-Message-Id: <20210920163942.154554746@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 170/175] PCI: Sync __pci_register_driver() stub for CONFIG_PCI=n
+Date:   Mon, 20 Sep 2021 18:43:39 +0200
+Message-Id: <20210920163923.630295896@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,115 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 34b1999da935a33be6239226bfa6cd4f704c5c88 upstream.
+[ Upstream commit 817f9916a6e96ae43acdd4e75459ef4f92d96eb1 ]
 
-Jiri Olsa reported a fault when running:
+The CONFIG_PCI=y case got a new parameter long time ago.  Sync the stub as
+well.
 
-  # cat /proc/kallsyms | grep ksys_read
-  ffffffff8136d580 T ksys_read
-  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
-
-  /proc/kcore:     file format elf64-x86-64
-
-  Segmentation fault
-
-  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
-  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
-  RIP: 0010:kern_addr_valid
-  Call Trace:
-   read_kcore
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? trace_hardirqs_on
-   ? rcu_read_lock_sched_held
-   ? lock_acquire
-   ? lock_acquire
-   ? rcu_read_lock_sched_held
-   ? lock_acquire
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? rcu_read_lock_sched_held
-   ? lock_release
-   ? _raw_spin_unlock
-   ? __handle_mm_fault
-   ? rcu_read_lock_sched_held
-   ? lock_acquire
-   ? rcu_read_lock_sched_held
-   ? lock_release
-   proc_reg_read
-   ? vfs_read
-   vfs_read
-   ksys_read
-   do_syscall_64
-   entry_SYSCALL_64_after_hwframe
-
-The fault happens because kern_addr_valid() dereferences existent but not
-present PMD in the high kernel mappings.
-
-Such PMDs are created when free_kernel_image_pages() frees regions larger
-than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
-the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
-mark the PMD as not present rather than wipe it completely.
-
-Have kern_addr_valid() check whether higher level page table entries are
-present before trying to dereference them to fix this issue and to avoid
-similar issues in the future.
-
-Stable backporting note:
-------------------------
-
-Note that the stable marking is for all active stable branches because
-there could be cases where pagetable entries exist but are not valid -
-see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
-sure to be on the safe side here and use pXY_present() accessors rather
-than pXY_none() which could #GP when accessing pages in the direct map.
-
-Also see:
-
-  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
-
-for more info.
-
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Tested-by: Jiri Olsa <jolsa@redhat.com>
-Cc: <stable@vger.kernel.org>	# 4.4+
-Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[bhelgaas: add parameter names]
+Fixes: 725522b5453d ("PCI: add the sysfs driver name to all modules")
+Link: https://lore.kernel.org/r/20210813153619.89574-1-andriy.shevchenko@linux.intel.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/init_64.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/pci.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -1289,18 +1289,18 @@ int kern_addr_valid(unsigned long addr)
- 		return 0;
- 
- 	p4d = p4d_offset(pgd, addr);
--	if (p4d_none(*p4d))
-+	if (!p4d_present(*p4d))
- 		return 0;
- 
- 	pud = pud_offset(p4d, addr);
--	if (pud_none(*pud))
-+	if (!pud_present(*pud))
- 		return 0;
- 
- 	if (pud_large(*pud))
- 		return pfn_valid(pud_pfn(*pud));
- 
- 	pmd = pmd_offset(pud, addr);
--	if (pmd_none(*pmd))
-+	if (!pmd_present(*pmd))
- 		return 0;
- 
- 	if (pmd_large(*pmd))
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index b9ac0ba81221..7563261bed88 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1552,8 +1552,9 @@ static inline int pci_enable_device(struct pci_dev *dev) { return -EIO; }
+ static inline void pci_disable_device(struct pci_dev *dev) { }
+ static inline int pci_assign_resource(struct pci_dev *dev, int i)
+ { return -EBUSY; }
+-static inline int __pci_register_driver(struct pci_driver *drv,
+-					struct module *owner)
++static inline int __must_check __pci_register_driver(struct pci_driver *drv,
++						     struct module *owner,
++						     const char *mod_name)
+ { return 0; }
+ static inline int pci_register_driver(struct pci_driver *drv)
+ { return 0; }
+-- 
+2.30.2
+
 
 
