@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC3C4124B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB7241238A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381234AbhITSg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:36:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49244 "EHLO mail.kernel.org"
+        id S1352544AbhITSZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:25:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380083AbhITSc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59DB961AA5;
-        Mon, 20 Sep 2021 17:27:53 +0000 (UTC)
+        id S1377341AbhITSSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:18:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 116D161A6F;
+        Mon, 20 Sep 2021 17:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158873;
-        bh=CH9Nbf7n2DnQceiv7MVDEHrJ+jxKEoZBVIFIgkoLyzs=;
+        s=korg; t=1632158573;
+        bh=Zl3UAUHhmRbiO9MSj11q5jblicwy5qGwMD9N3wSa1YA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2u3Ti7cYDRqBbBDZQcjTfbxhFT44VZGYGbzIbpgKTzO7V4GAoF/9g9fh97FEoWAZk
-         LxQGgWQqVQGYquPMv8MAsr6Fac0vG7U3KNePaMvIJLQY8KV1w62nkX0mB3833kcQDI
-         xKTZJLnJzuh11RFxmkmJvtKgT9guaz6Q3Tom0diQ=
+        b=N9xol0q6Wt9lpem2xG4t0B7u8IzxORMjfhgjcdjFrqdZD6d6Rz/w0U9zkaO4PtGr3
+         /mT71RysHnlTx3zDnAczMQDns1e0KUurNGkxymjnzeiofXUu/81RNjertz3/TFJJMb
+         TEwq0BjepodNGBKxBhNrYxLE37UY52YU9Bl8OuTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 062/122] mfd: Dont use irq_create_mapping() to resolve a mapping
-Date:   Mon, 20 Sep 2021 18:43:54 +0200
-Message-Id: <20210920163917.812770983@linuxfoundation.org>
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>
+Subject: [PATCH 5.4 217/260] net/mlx5: FWTrace, cancel work on alloc pd error flow
+Date:   Mon, 20 Sep 2021 18:43:55 +0200
+Message-Id: <20210920163938.482653434@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,95 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-[ Upstream commit 9ff80e2de36d0554e3a6da18a171719fe8663c17 ]
+commit dfe6fd72b5f1878b16aa2c8603e031bbcd66b96d upstream.
 
-Although irq_create_mapping() is able to deal with duplicate
-mappings, it really isn't supposed to be a substitute for
-irq_find_mapping(), and can result in allocations that take place
-in atomic context if the mapping didn't exist.
+Handle error flow on mlx5_core_alloc_pd() failure,
+read_fw_strings_work must be canceled.
 
-Fix the handful of MFD drivers that use irq_create_mapping() in
-interrupt context by using irq_find_mapping() instead.
-
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
+Reported-by: Pavel Machek (CIP) <pavel@denx.de>
+Suggested-by: Pavel Machek (CIP) <pavel@denx.de>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Reviewed-by: Aya Levin <ayal@nvidia.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/ab8500-core.c | 2 +-
- drivers/mfd/stmpe.c       | 4 ++--
- drivers/mfd/tc3589x.c     | 2 +-
- drivers/mfd/wm8994-irq.c  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
-index a3bac9da8cbb..4cea63a4cab7 100644
---- a/drivers/mfd/ab8500-core.c
-+++ b/drivers/mfd/ab8500-core.c
-@@ -493,7 +493,7 @@ static int ab8500_handle_hierarchical_line(struct ab8500 *ab8500,
- 		if (line == AB8540_INT_GPIO43F || line == AB8540_INT_GPIO44F)
- 			line += 1;
- 
--		handle_nested_irq(irq_create_mapping(ab8500->domain, line));
-+		handle_nested_irq(irq_find_mapping(ab8500->domain, line));
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -1005,7 +1005,7 @@ int mlx5_fw_tracer_init(struct mlx5_fw_t
+ 	err = mlx5_core_alloc_pd(dev, &tracer->buff.pdn);
+ 	if (err) {
+ 		mlx5_core_warn(dev, "FWTracer: Failed to allocate PD %d\n", err);
+-		return err;
++		goto err_cancel_work;
  	}
  
- 	return 0;
-diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
-index 1aee3b3253fc..508349399f8a 100644
---- a/drivers/mfd/stmpe.c
-+++ b/drivers/mfd/stmpe.c
-@@ -1091,7 +1091,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
- 
- 	if (variant->id_val == STMPE801_ID ||
- 	    variant->id_val == STMPE1600_ID) {
--		int base = irq_create_mapping(stmpe->domain, 0);
-+		int base = irq_find_mapping(stmpe->domain, 0);
- 
- 		handle_nested_irq(base);
- 		return IRQ_HANDLED;
-@@ -1119,7 +1119,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
- 		while (status) {
- 			int bit = __ffs(status);
- 			int line = bank * 8 + bit;
--			int nestedirq = irq_create_mapping(stmpe->domain, line);
-+			int nestedirq = irq_find_mapping(stmpe->domain, line);
- 
- 			handle_nested_irq(nestedirq);
- 			status &= ~(1 << bit);
-diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
-index 7882a37ffc35..5c2d5a6a6da9 100644
---- a/drivers/mfd/tc3589x.c
-+++ b/drivers/mfd/tc3589x.c
-@@ -187,7 +187,7 @@ again:
- 
- 	while (status) {
- 		int bit = __ffs(status);
--		int virq = irq_create_mapping(tc3589x->domain, bit);
-+		int virq = irq_find_mapping(tc3589x->domain, bit);
- 
- 		handle_nested_irq(virq);
- 		status &= ~(1 << bit);
-diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
-index 6c3a619e2628..651a028bc519 100644
---- a/drivers/mfd/wm8994-irq.c
-+++ b/drivers/mfd/wm8994-irq.c
-@@ -154,7 +154,7 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
- 	struct wm8994 *wm8994 = data;
- 
- 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
--		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
-+		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
- 
- 	return IRQ_HANDLED;
+ 	err = mlx5_fw_tracer_create_mkey(tracer);
+@@ -1029,6 +1029,7 @@ err_notifier_unregister:
+ 	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
+ err_dealloc_pd:
+ 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
++err_cancel_work:
+ 	cancel_work_sync(&tracer->read_fw_strings_work);
+ 	return err;
  }
--- 
-2.30.2
-
 
 
