@@ -2,165 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958A34127D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C4C4127E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhITVUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:20:25 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:34308 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhITVSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:18:23 -0400
-Received: by mail-ot1-f41.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso25500499otp.1;
-        Mon, 20 Sep 2021 14:16:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pDoO1eNc1NTHogLdYUD9nVb5nV1LrqSfsmfysobQaT4=;
-        b=Iv428HhpJDMmj3LfSp/1fS2CPygLPuJkNRE19p7Sgmbey5XgcjevwnXnQ47F0i9dS4
-         bjOtpVJI6LsCg6fUm1AhiZT2wUqhs+TahuWsiOlV3HdDKJ1USSLLc27UrhxKuOqQZBcM
-         /tyz2WbTjo6SkM6pDBjEjCvmU2859+U8IqR7bYFs4nzy9mZwrpND7NhfuG+AFefqux5r
-         Iu2ypeyrG9dZisYmmozw3LffDfkPhcmD8SZPeOdwZMxdoZ+mqPMw8cxf2T8ZuMDL3CDn
-         dPYYIpUMrezbkQYo0Mx0eEkLsHxyYDFJq58QCi2Jt1ka2OLIiXOPSAehz0QGT6tswhba
-         X7sw==
-X-Gm-Message-State: AOAM533pE+XU57WUGWg35Xo2H5AMtMSv7Lqzj11Mnhh/Z/xSZcUZDDiJ
-        oYGLygxQ7UK3KyRrRjyCRg==
-X-Google-Smtp-Source: ABdhPJwgM1Zno5vb1ov2P0RomgoqPf3fWk0ZwdFXPRmp8uvBGNSDGDoqkdBmCWe15JjdW2tDaLW4zA==
-X-Received: by 2002:a9d:719e:: with SMTP id o30mr22262620otj.20.1632172615469;
-        Mon, 20 Sep 2021 14:16:55 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c37sm3611930otu.60.2021.09.20.14.16.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 14:16:54 -0700 (PDT)
-Received: (nullmailer pid 781168 invoked by uid 1000);
-        Mon, 20 Sep 2021 21:16:53 -0000
-Date:   Mon, 20 Sep 2021 16:16:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Apurva Nandan <a-nandan@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, michael@walle.cc
-Subject: Re: [PATCH v2 1/2] dt-bindings: mtd: spi-nand: Convert to DT schema
- format
-Message-ID: <YUj6RUNYDoWA30Ln@robh.at.kernel.org>
-References: <20210920142713.129295-1-a-nandan@ti.com>
- <20210920142713.129295-2-a-nandan@ti.com>
- <20210920150651.vvdhennblwhdi3jw@mobilestation>
+        id S237613AbhITVWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:22:36 -0400
+Received: from mail-mw2nam10on2046.outbound.protection.outlook.com ([40.107.94.46]:19137
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232569AbhITVUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 17:20:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SO/WK+1z2zYq8m1TjAc/+TW6M10IFsWfyAsRZQpK5G8auhRVV9UOQ8jgjZZwc+kp+3hv6InqaqL+ydmmboNRpaR6w9ZR0bgikBHjnBa3jOcew0FSVeVmz+iXObj4d7kuE6z8Rbon2VxRA9C7fNBpiNfJOMAQ+FDMvMMpNEA4k4RBzWfg6RzI+cUFjeCZ491AnqlYhB2Yy5RTQQ7u5tXp67qPfbCJLxzKS4cgD8RGWzmyftExYFttGdextwkszGnI6jixfIi0uahiDvvMpy9kMxQ4kviGXrCeWaEioepkI/CuFErR1eXWoBUht6cQp4lH3tCf+CO2+YXOb1fzIflrNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=1ks9t6HOjzZ3IRNnLnbwHCylxrHynQJg7I6i6WNCV5w=;
+ b=H0Hg2wYegW1atZKL1dnTXGSO943oH8sU0nWWnuihQ2OufeZOaJrMzfnb5ieMZUoSggUYMUu3wJJy3j3j9K7mdLaUkq45HmGFsnqzIcQBVjwr9Kjz/pwBn2sXy1r3+kh+r0VmpTsP8djJkEkBUWKxWxOTr08A+swrxh524HmBb1VY3DQB/wlfJgEI5LDw4ONtEaKHQUbMcBJmu3Id1Ls8ay1rGNCAvJJXHgWp13x+X0LizKWHKs1YnE5PtPkGOo0qGDO2ZJU7vMQXf0bbvVQPm4tlOVsZwIj4oJhGSpm/VaQMX4J860yYweLUF2Ss/t56/BeAEGZD1DLUfTPlsNyCGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1ks9t6HOjzZ3IRNnLnbwHCylxrHynQJg7I6i6WNCV5w=;
+ b=SLNPjGs7OyQ6g2vE9vMgjHljfJCu9/Z72DIEPPVa3pJV4fmvCR53xEpRIOWdx89k6vw+MzwdHz3PEbLo/rZ9LVedoiZSzkmDmh2Ml6uBRvXmp07oUxEG45HmAMl9WhBpevzGcfRuWsEBXXsbzsrcY2UpAv15vW4WQQAJRfy0TySd3+1ZYb/QiH7cmVqv73n3XixoRv3xdcJE+9LpfAB9eSftiUTnveMxjh66F4c5cJD0l1auTIGYMcX2OZUmEOR5BCD58zhUSmkrvj713L/q9gJv8PYXVUBlZu2qNT+mzuy9C3NBVCOKNxoyBWMxSCk42pZi+qktv/1tCHoXFqzYOQ==
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by BYAPR12MB3591.namprd12.prod.outlook.com (2603:10b6:a03:dd::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.17; Mon, 20 Sep
+ 2021 21:19:05 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b5ca:e39d:6e8:3bf8]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::b5ca:e39d:6e8:3bf8%6]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
+ 21:19:05 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     "len.baker@gmx.com" <len.baker@gmx.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Erez Shitrit <erezsh@nvidia.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alex Vesker <valex@nvidia.com>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jianbo Liu <jianbol@nvidia.com>
+Subject: Re: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Thread-Topic: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Thread-Index: AQHXoiqmZBMlkoofKEWjGQlrNc717quthfEA
+Date:   Mon, 20 Sep 2021 21:19:05 +0000
+Message-ID: <24604c4ac90323a1f39e3f7bffb7c79fc56cd874.camel@nvidia.com>
+References: <20210905074936.15723-1-len.baker@gmx.com>
+In-Reply-To: <20210905074936.15723-1-len.baker@gmx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+authentication-results: gmx.com; dkim=none (message not signed)
+ header.d=none;gmx.com; dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 157a8af2-0f56-4af8-3f9f-08d97c7c46d2
+x-ms-traffictypediagnostic: BYAPR12MB3591:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR12MB35914430CBF01CDCBB35568BB3A09@BYAPR12MB3591.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Fm11kd7xqIR6gthGYeHN0OG7BcxKbUHWts6uxJLcE9tLXBgogIsuvu0hshymbkTG8K70qCq4Lc8BsC5EEqHZFiYe4pPaRAbh6b+hQQyQzGQGCg/h9EJKDz+RbsrzdIFYjDTtNj+L5pUEnpDndbLel7gZfSH5CH0o/T9Uxn9MUGPxL9784QaqjLscsBrz/t93KDAThRwhvCvl/qPGWcPRZjX+uCWqxuH+mIhKhv7eJehGm5hfJ0PU1duTqiw5udUxNaU32vCrfmUVa4C8xssISfRzQQrJ9EnNuesfSkdqGVtQgQn12yY3EFcZ6d/vzpvOweSC7Hnd45jeDBeeZDsmMZmqKFx0qnQfjhWwCk/KU9qX2rjLr2fgINbL3mgUOf9iKxhHKcDQqGrLvwsPAtjuu1xJ8lkO3xXSwVaJkYO+UA+g4deR6fadvP//KeyaSeYgy64pjzIIQfyOBZZiY8hjKW9xXwlHIAgrKDBQua9Vs4sSas1zKKxFFDR25w9Ndy2jMxGQXmxlPaGmrQUl+ieYOJkhxJ5Un6MVKOgczORwaly6qSNknAQNFoj6v3xwnRt1BNe62qu7+c8s5s9h9cAJmHNP1qz7Hbgw174XYIK/vrjFl+PmXtskfmpmztq9X6R0+e7GFzjrVG2ruNY7MhG5kuVBipovZRVMBHm5yzX1F4iE7ziYllM7mDnUt+0FvbRgn6ertaiHEJdaXDWHovpn9Ch6lnWb7BctSkHVjLtIqgtdjw3xv17EEkOM0x9sKTvTD4u8UQFNUdXb1uIOOXJGYasHVX8xvGSNfcdNxt8vilQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(376002)(396003)(39860400002)(966005)(66556008)(6506007)(66476007)(66446008)(316002)(64756008)(6512007)(86362001)(66946007)(38070700005)(36756003)(71200400001)(54906003)(2616005)(478600001)(110136005)(4326008)(8676002)(38100700002)(5660300002)(76116006)(6486002)(107886003)(83380400001)(26005)(186003)(122000001)(2906002)(8936002)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bFc4N3A1b2grWXRraDNNWUZrVGRzU3hQZSt5b0ErSktZSHZUVkZ6V3Fvd0Zx?=
+ =?utf-8?B?R2pCWGFUSURnKzg3OWhoRDM0UzZybEVxWEROSWJnN3dESytjNVB4NFdXWnhX?=
+ =?utf-8?B?TmlmVHBHY2VxMHgrQzV4N1lFSFNNWDJSU0swTUFPMjZJZ1pncjB5M1F1My90?=
+ =?utf-8?B?ejVJMzJiUVZIVzdvY2FuM1JwZTZ3K3ZjZ2pxYlJHWWlGNzFlaXIwejRBbS96?=
+ =?utf-8?B?OHlOYXJzUHFGMzFLV3I3UXZjcW1VK2YxbjhsK2g4aVZ3VXJBSG5IR1hDL0x6?=
+ =?utf-8?B?N3NSdE5LS01zRFNZSEVHY1VxWDdlTStrUi8vMVNFNTV6Sy9TNnd2c245NEJs?=
+ =?utf-8?B?Yk5oSzFUb24rTTd6K3F6Rjd4NCtBWTZSUXdMaXJDa1pzbjBtU01UMXRscmVQ?=
+ =?utf-8?B?NDgzWlVaV1cvSGlCVVh1aU9hYzhVcmI0NUlNOUVueC9Ydm9DZVoxYUtNVlcw?=
+ =?utf-8?B?cEFTQUlYRy9Ta291YnBTRGNvUXZtNWVZclhXNE9mazBUdkdPdnVXbUpjd29R?=
+ =?utf-8?B?bVNSSmpvRWtuNC9RRURaekRCaGQ3VUl6bXZ2eDJVOTI0YXNlU3pvMXlUbGtS?=
+ =?utf-8?B?b0twdEV2c0Vxak4va1RpalVCOTBaTXhQNmlIZnljczZKazdRYzFCUVc0MGpt?=
+ =?utf-8?B?UW1mS2c3MFJqVStDMlNhUkgvY0krbDJlbWh3ZjVrWThPNzM2SjI5Mm1RMnJx?=
+ =?utf-8?B?VGNpMmRIcmFORS9nVU5UNElISHpPMktCUGJ0MlZQa0JIeFJtd0NMamlIRHNK?=
+ =?utf-8?B?cHdkVDZNNHpaZUpDWVVnYnNWa0NybnBvZzE1TzhaQ3paNDNoVzUrN1oyRWRy?=
+ =?utf-8?B?dXJXcU1sbitVd3Z0ZVVKekVCTmI1ZmpqYjByQncrVEhOa0hlZjdUYkQ3bm5Q?=
+ =?utf-8?B?ejFiNytPYU1KN2xNY3hPMHhvRmdqVlk5QjZ6dE0xU2tHYklhVEgvaU9qdGsz?=
+ =?utf-8?B?YjZzajFTSWpGckZyRVhWc2REYnNGMkRvU0tYUWhnam85b0Yxa29yenFvUFht?=
+ =?utf-8?B?blRqcHMrUkZybmVjRi9lTHMvUDZhRmZaNlJPMUx4SmExTDFKSkc2UnNNZTFQ?=
+ =?utf-8?B?Y0M1cmpUTGhua3N6cnRTTE0ydnFyeWRib0RWUWRoKzk4ZzRKVm9KMktUd3d0?=
+ =?utf-8?B?ZGh5RnlXOWZGRkxZU3NiSEtxR2d4Sk1FZERnODBueis4YUwxVWRjd01UNHdL?=
+ =?utf-8?B?cCtXMzRHd0RmelA4RXhLMGJ0elBTZmVhTEgvTDY3YXNsZERHOThFZzl5UENV?=
+ =?utf-8?B?WDNLZ3d6b1V2b1U4MkRPdElBY3dDM1lDbEV2OWFxL1ZNQW5WMkdReXJadU4z?=
+ =?utf-8?B?MDNPdU1DdjR1SW9VM2FyR25HU3JIeStkQXg2WnNOY0pTdEhrRHd1bXNhbHpt?=
+ =?utf-8?B?endXemVtS2t0NUV6d3Q5T2wwVlRyWlFPTGdVSGFVNlp2eTB2MUh1amR1ZzdN?=
+ =?utf-8?B?MTExU3doSUQrZWFib3A4dUZ1aXNYY252Qm9pa2tGMDZEYkRaS0NwaUdqQlFJ?=
+ =?utf-8?B?M3ZmaDZJWjF5VlY2NEg3K2JET01jYldEdHBVdEdVKy9WRC9VbVJlYkxEL29O?=
+ =?utf-8?B?RWppVnpKWno2VGxmeXBPZ2Z1ODYyWEw2MUJ5aFFvd2V3RDNXZUgwTmVNMmE0?=
+ =?utf-8?B?UXd4ZnpTTHgzQ2ZRZk0zbzNObFlFNjFUZHVBOG5uMHQ1RmJwY1RyT3B3STdm?=
+ =?utf-8?B?d1R1YTBMSXdwZ3NMZGhyUndJNExOeTFUY0pxOXcrMHVaeU9yc2JONzQ4YURM?=
+ =?utf-8?B?Qko2bUd5SEFkMXNQNHFrcVJGUmNhcVhvUk9BRklBUUIrYXJqMWoyMTNaUEVJ?=
+ =?utf-8?B?NzlUb3pNNUlCeTVZOEdwZz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B7A476B3275D44499D3D08C1A4807EF3@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920150651.vvdhennblwhdi3jw@mobilestation>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 157a8af2-0f56-4af8-3f9f-08d97c7c46d2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2021 21:19:05.4921
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GYo3kPlq/6/k9oq0puZuO2+JAzQPq4dEA02Z5OSRZkN6AgnQ/lPJ7x8EV+yArtiV2+SsWz4sSo+tQw/elg9/3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3591
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 06:06:51PM +0300, Serge Semin wrote:
-> Hello Apurva
-> 
-> On Mon, Sep 20, 2021 at 07:57:12PM +0530, Apurva Nandan wrote:
-> > Convert spi-nand.txt binding to YAML format with an added example.
-> > 
-> > Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> > ---
-> >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 --
-> >  .../devicetree/bindings/mtd/spi-nand.yaml     | 62 +++++++++++++++++++
-> >  2 files changed, 62 insertions(+), 5 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> 
-> Thanks for the bindings conversion patch. There are several comments
-> below. But before addressing them it would be better to also get a
-> response from Rob.
-> 
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> > deleted file mode 100644
-> > index 8b51f3b6d55c..000000000000
-> > --- a/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> > +++ /dev/null
-> > @@ -1,5 +0,0 @@
-> > -SPI NAND flash
-> > -
-> > -Required properties:
-> > -- compatible: should be "spi-nand"
-> > -- reg: should encode the chip-select line used to access the NAND chip
-> > diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.yaml b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> > new file mode 100644
-> > index 000000000000..601beba8d971
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/spi-nand.yaml
-> > @@ -0,0 +1,62 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/mtd/spi-nand.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: SPI NAND flash
-> > +
-> > +maintainers:
-> > +  - Apurva Nandan <a-nandan@ti.com>
-> > +
-> > +allOf:
-> > +  - $ref: "mtd.yaml#"
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: spi-nand
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> 
-> > +  spi-max-frequency: true
-> > +  spi-rx-bus-width: true
-> > +  spi-tx-bus-width: true
-> > +  rx-sample-delay-ns: true
-> 
-> Since it's an SPI-client device there are more than these properties
-> could be set for it. See the SPI-controller bindings schema:
-> Documentation/devicetree/bindings/spi/spi-controller.yaml
-> So there is two possible ways to make it more generic:
-> 1) Detach the spi-client part from the spi-controller.yaml bindings
-> into a dedicated DT-schema file and refer to that new scheme from
-> here.
-
-Yes, as mentioned there's patches doing this. But the above is fine. 
-There's some value in defining here which properties are valid.
-
-> 2) Forget about these controller-specific properties and let the
-> parental SPI-controller bindings parsing them. Of course there must be
-> at least one of the next properties declared for it to work:
-> {unevaluatedProperties, additionalProperties}.
-> 
-> It's up to Rob to decided which approach is better though...
-> 
-> > +
-> > +  '#address-cells': true
-> > +  '#size-cells': true
-> 
-> Aren't they always equal to 1?
-
-No SPI nand devices >4GB?
-
-> 
-> > +
-> > +additionalProperties:
-> > +  type: object
-> 
-> I'd suggest to elaborate the way the partition sub-nodes looks
-> like, for instance, the node names, supported compatible names,
-> labels, etc.
-
-That should probably all be in mtd.yaml. The question here is whether 
-partitions are always under a 'partitions' node. Maybe this is new 
-enough that only the new way has to be supported. Though if mtd.yaml 
-supported both forms, allowing both all the time is okay IMO.
-
-Rob
+T24gU3VuLCAyMDIxLTA5LTA1IGF0IDA5OjQ5ICswMjAwLCBMZW4gQmFrZXIgd3JvdGU6DQo+IEFz
+IG5vdGVkIGluIHRoZSAiRGVwcmVjYXRlZCBJbnRlcmZhY2VzLCBMYW5ndWFnZSBGZWF0dXJlcywN
+Cj4gQXR0cmlidXRlcywNCj4gYW5kIENvbnZlbnRpb25zIiBkb2N1bWVudGF0aW9uIFsxXSwgc2l6
+ZSBjYWxjdWxhdGlvbnMgKGVzcGVjaWFsbHkNCj4gbXVsdGlwbGljYXRpb24pIHNob3VsZCBub3Qg
+YmUgcGVyZm9ybWVkIGluIG1lbW9yeSBhbGxvY2F0b3IgKG9yDQo+IHNpbWlsYXIpDQo+IGZ1bmN0
+aW9uIGFyZ3VtZW50cyBkdWUgdG8gdGhlIHJpc2sgb2YgdGhlbSBvdmVyZmxvd2luZy4gVGhpcyBj
+b3VsZA0KPiBsZWFkDQo+IHRvIHZhbHVlcyB3cmFwcGluZyBhcm91bmQgYW5kIGEgc21hbGxlciBh
+bGxvY2F0aW9uIGJlaW5nIG1hZGUgdGhhbg0KPiB0aGUNCj4gY2FsbGVyIHdhcyBleHBlY3Rpbmcu
+IFVzaW5nIHRob3NlIGFsbG9jYXRpb25zIGNvdWxkIGxlYWQgdG8gbGluZWFyDQo+IG92ZXJmbG93
+cyBvZiBoZWFwIG1lbW9yeSBhbmQgb3RoZXIgbWlzYmVoYXZpb3JzLg0KPiANCj4gU28sIHJlZmFj
+dG9yIHRoZSBjb2RlIGEgYml0IHRvIHVzZSB0aGUgcHVycG9zZSBzcGVjaWZpYyBrY2FsbG9jKCkN
+Cj4gZnVuY3Rpb24gaW5zdGVhZCBvZiB0aGUgYXJndW1lbnQgc2l6ZSAqIGNvdW50IGluIHRoZSBr
+emFsbG9jKCkNCj4gZnVuY3Rpb24uDQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly93d3cua2VybmVsLm9y
+Zy9kb2MvaHRtbC92NS4xNC9wcm9jZXNzL2RlcHJlY2F0ZWQuaHRtbCNvcGVuLWNvZGVkLWFyaXRo
+bWV0aWMtaW4tYWxsb2NhdG9yLWFyZ3VtZW50cw0KPiANCj4gU2lnbmVkLW9mZi1ieTogTGVuIEJh
+a2VyIDxsZW4uYmFrZXJAZ214LmNvbT4NCg0KYXBwbGllZCB0byBuZXQtbmV4dC1tbHg1LA0KDQpU
+aGFua3MuDQo=
