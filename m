@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4828F4124E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20018412675
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347132AbhITSi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
+        id S1354332AbhITS6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:58:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380563AbhITSe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:34:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2708863309;
-        Mon, 20 Sep 2021 17:28:29 +0000 (UTC)
+        id S1383438AbhITSsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:48:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 685E96337A;
+        Mon, 20 Sep 2021 17:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158909;
-        bh=IBLKpr5bvv3nLHOKxEPI9htXDRz2JbuZiJEOsuYo0rA=;
+        s=korg; t=1632159252;
+        bh=wxfST2Fog1zgK7JmnzSoNEyc7dj48I3zfUBseGYCqaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cmvj0zwAF3LvQytpti9Y1Qh+HBGkLQXs6FNl1ZucJV1dwIBKVHveE68SwR92YTUbG
-         x1aQmdGpLipPNaiFhtqQSE+5uMVqeofIwxNIoJPhYc/U3lAurh2fDWQTFEm9QC5AWw
-         5xcCGzN+xbKM+SiMFdEhzR0sUdvsxk0JDLTnzh44=
+        b=sJIqLvf3F4+dbwzivJ/Iwp8uqQwqdIvF93YcmI3i//2FsJjwsmpZ3uFdsxgsqLW1P
+         GX7Nxr/Hl5NDjbT+WU6S5MjP+EkvrIh2QdA5AlOAYMcMEu8U5/GTZJQoPy+Ku3HWLV
+         T7mqpkkWZIKRZmgMMF8mI4HuDUGzeUmife1wgmCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
+        stable@vger.kernel.org, DENG Qingfang <dqfext@gmail.com>,
+        Mauri Sandberg <sandberg@mailfence.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 112/122] bnxt_en: fix stored FW_PSID version masks
-Date:   Mon, 20 Sep 2021 18:44:44 +0200
-Message-Id: <20210920163919.488311124@linuxfoundation.org>
+Subject: [PATCH 5.14 147/168] net: dsa: tag_rtl4_a: Fix egress tags
+Date:   Mon, 20 Sep 2021 18:44:45 +0200
+Message-Id: <20210920163926.489089758@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edwin Peer <edwin.peer@broadcom.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 1656db67233e4259281d2ac35b25f712edbbc20b ]
+[ Upstream commit 0e90dfa7a8d817db755c7b5d89d77b9c485e4180 ]
 
-The FW_PSID version components are 8 bits wide, not 4.
+I noticed that only port 0 worked on the RTL8366RB since we
+started to use custom tags.
 
-Fixes: db28b6c77f40 ("bnxt_en: Fix devlink info's stored fw.psid version format.")
-Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+It turns out that the format of egress custom tags is actually
+different from ingress custom tags. While the lower bits just
+contain the port number in ingress tags, egress tags need to
+indicate destination port by setting the bit for the
+corresponding port.
+
+It was working on port 0 because port 0 added 0x00 as port
+number in the lower bits, and if you do this the packet appears
+at all ports, including the intended port. Ooops.
+
+Fix this and all ports work again. Use the define for shifting
+the "type A" into place while we're at it.
+
+Tested on the D-Link DIR-685 by sending traffic to each of
+the ports in turn. It works.
+
+Fixes: 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tags")
+Cc: DENG Qingfang <dqfext@gmail.com>
+Cc: Mauri Sandberg <sandberg@mailfence.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/dsa/tag_rtl4_a.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-index 8b0e916afe6b..2bd476a501bd 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-@@ -474,8 +474,8 @@ static int bnxt_dl_info_get(struct devlink *dl, struct devlink_info_req *req,
- 	if (BNXT_PF(bp) && !bnxt_hwrm_get_nvm_cfg_ver(bp, &nvm_cfg_ver)) {
- 		u32 ver = nvm_cfg_ver.vu32;
+diff --git a/net/dsa/tag_rtl4_a.c b/net/dsa/tag_rtl4_a.c
+index 57c46b4ab2b3..e34b80fa52e1 100644
+--- a/net/dsa/tag_rtl4_a.c
++++ b/net/dsa/tag_rtl4_a.c
+@@ -54,9 +54,10 @@ static struct sk_buff *rtl4a_tag_xmit(struct sk_buff *skb,
+ 	p = (__be16 *)tag;
+ 	*p = htons(RTL4_A_ETHERTYPE);
  
--		sprintf(buf, "%d.%d.%d", (ver >> 16) & 0xf, (ver >> 8) & 0xf,
--			ver & 0xf);
-+		sprintf(buf, "%d.%d.%d", (ver >> 16) & 0xff, (ver >> 8) & 0xff,
-+			ver & 0xff);
- 		rc = bnxt_dl_info_put(bp, req, BNXT_VERSION_STORED,
- 				      DEVLINK_INFO_VERSION_GENERIC_FW_PSID,
- 				      buf);
+-	out = (RTL4_A_PROTOCOL_RTL8366RB << 12) | (2 << 8);
+-	/* The lower bits is the port number */
+-	out |= (u8)dp->index;
++	out = (RTL4_A_PROTOCOL_RTL8366RB << RTL4_A_PROTOCOL_SHIFT) | (2 << 8);
++	/* The lower bits indicate the port number */
++	out |= BIT(dp->index);
++
+ 	p = (__be16 *)(tag + 2);
+ 	*p = htons(out);
+ 
 -- 
 2.30.2
 
