@@ -2,233 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B40411060
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17D9411065
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbhITHnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42692 "EHLO
+        id S235070AbhITHo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhITHnw (ORCPT
+        with ESMTP id S234240AbhITHo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:43:52 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7069C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:42:25 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id z24so37653300lfu.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:42:25 -0700 (PDT)
+        Mon, 20 Sep 2021 03:44:26 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC70C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:43:00 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id n78so10330546oig.6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:43:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=w0P3ciU7DNO/LgT6fxR07gqx6gx1yZdqF147JHefD4Y=;
-        b=OEDTd233SJIwx38XJOgHFnuo6Xcqu16j3x+ehNCfReRDbDfG4o+v+eDVmSgSuXDhqF
-         GqMNucDj1HEA/zsQMNKtDo0P23d8l2Q0C4MUxNlsTsA8TjwYWxJWAqQl4Q42ogVKS6Re
-         Ny7eEFibxtOvkfsUpSeEFjAFmJLNYyZ09JerE=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=49jVXnghB6poIDSvM4LgKCb9bcAvYA/ir6Ru3tRkU/8=;
+        b=fK2ik8Zisaqc+Z856BI2UOSShF5hzyv/VJz+1sK982FVD55sBfOWRXC6n2q37lYi7B
+         8rPL9WQn7h2AashaaxxCK+HzikrDy/v3+XJkJTNo3mw52KeKvy0dUWUtTGIV7cihSZQe
+         1ulSLHdXj1a2e6eHX3o4oxA1im/5DZju7GIUUGdbcvIddRMeQUyNMtRi2YxWCl/5SVEH
+         IdMJtuTzz1SDaEu/ZxcgR4oEHzpbKuJqH89i1yQRdWezIO95pipirW93FcYBI/m+Ie/p
+         lAk/zyJ5n2TAZbhErlkkE+4ckQeUDOjZz/KIUuArADemcX0/KC82OEmUlEahi9+Ert74
+         fIog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=w0P3ciU7DNO/LgT6fxR07gqx6gx1yZdqF147JHefD4Y=;
-        b=cprmR3tWnBFUEWOQBtYivBYxaSWZ6XOtRi3fA1+Yvf94P4LyALps9CgAQDb4bgmseT
-         SRRb/ovyMfdBhqn8pWgqySV5r7ZOf7sRzp0LTOuotoExfLrvNDlLm/ZY9FYieL+bHovJ
-         cLnd/OVSABHrMErDwbJ1hR+TRycC0tA8980asakLGlnIsyQalmh7wxZi0qlPFG3f4m3h
-         MSXa+IblXabWBJvXpSA0BhXgH4WAsWP+a7tIcna6AxiVpFzEu5b94efHC+9rrgsMfhUv
-         Noa9atyogc78J4iUNmDGlYLn3javnI2ZQI2GfV4/O0mEK/uCxMio2EskGIEAvePCGwVd
-         OF6g==
-X-Gm-Message-State: AOAM531ihc2q2q5COijGLVxpIaOja0TJSNEywNk2QFVQ1oT79J7RcH7n
-        0B+k7zJ/N8qOuiOAXMPyz3Vns0ZMHyzDCsRx
-X-Google-Smtp-Source: ABdhPJw6oYfM7AGf5zpeZWvWCF0cjlxHYKDu+xTCy4nLuAB+ERY0Pzom+1S3zKb0owZ15voFlbr5UA==
-X-Received: by 2002:a2e:1508:: with SMTP id s8mr21564383ljd.47.1632123743905;
-        Mon, 20 Sep 2021 00:42:23 -0700 (PDT)
-Received: from [172.16.11.1] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id f37sm1195187lfv.214.2021.09.20.00.42.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 00:42:23 -0700 (PDT)
-Subject: Re: [PATCH 2/4] x86/mce: Get rid of machine_check_vector
-To:     "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210917105355.2368-1-bp@alien8.de>
- <20210917105355.2368-3-bp@alien8.de>
- <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <5eb3ac0a-4887-08b2-82fa-0348e04ace95@rasmusvillemoes.dk>
-Date:   Mon, 20 Sep 2021 09:42:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=49jVXnghB6poIDSvM4LgKCb9bcAvYA/ir6Ru3tRkU/8=;
+        b=0oBukGZuvSiOK/s0qBsEjTFpT2dcaRDSsZhFQ78cmV2Yrl+3qlvbIsJchrEErPD3Bb
+         64T6QqblUPOWjwGn6IPUBMtdPM1XTv/QSODvTfvxGhVBvcN7QiuLNJ1AeLABjIqj5IVF
+         z+QVeJ+LGA6PDGXF7SRotejLqaC9Fu6CbA7399wVYAQsagZws9pyhkahVVk51xiw6wB2
+         hpNBsVT74xCjGHGUqcTUcdBY2mT8qdUzSC/WgrBbZKIlXY+niFIb6qpBlcktT09SRgv6
+         PHCRnaAqu9SMQ51ZMW0XjbLRq+k+rs27rSNhtKmnzwVkPxhd0gDe8GJbUUbM9Z9aoTWS
+         5aqw==
+X-Gm-Message-State: AOAM5322TEA5CuOFU6kD/ZBUb8FCLUbqty50IMF14u7/BE/JuQOPgkyC
+        xZBcY1me0iz5LXqOwdLg2swxRZD24fxN9b5JMcJC3ckZ2xs=
+X-Google-Smtp-Source: ABdhPJx/OxO/zcoKfTxTeh9Zg6lY+fddmYbXlrVzs+a0ThwElWA9OrFLs5x6CdzZqU1oCcYROchxu05dfuzCJ4mZpxI=
+X-Received: by 2002:aca:3083:: with SMTP id w125mr3109358oiw.109.1632123779609;
+ Mon, 20 Sep 2021 00:42:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YUgUpXHciLMn4X20@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <00000000000020104105cc685624@google.com>
+In-Reply-To: <00000000000020104105cc685624@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 20 Sep 2021 09:42:48 +0200
+Message-ID: <CACT4Y+b+KKtY=Ok3Ha0-i2JO6v6Mpe9fE6HXM+qagf_b12wENQ@mail.gmail.com>
+Subject: Re: [syzbot] kernel BUG in __free_one_page
+To:     syzbot <syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 06.57, Luck, Tony wrote:
-> On Fri, Sep 17, 2021 at 12:53:53PM +0200, Borislav Petkov wrote:
->> @@ -126,7 +123,9 @@ struct mca_config {
->>  	      ser			: 1,
->>  	      recovery			: 1,
->>  	      bios_cmci_threshold	: 1,
->> -	      __reserved		: 59;
->> +	      /* Proper #MC exception handler is set */
->> +	      initialized		: 1,
->> +	      __reserved		: 58;
-> 
-> Does this __reserved field do anything useful? It seems to
-> just be an annoyance that must be updated each time a new
-> bit is added. Surely the compiler will see that these bitfields
-> are in a "u64" and do the math and skip to the right boundary
-> without this.
+On Mon, 20 Sept 2021 at 09:36, syzbot
+<syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    d4d016caa4b8 alpha: move __udiv_qrnnd library function to ..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1564ae79300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
+> dashboard link: https://syzkaller.appspot.com/bug?extid=afe1d3c5ccb5940c372a
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com
 
-Not at all. And it also seems that the current layout is not at all what
-may have been intended (the bit fields do not start at an 8-byte boundary).
+Looking at the page description printed before the BUG in the console
+output, I think the root cause is in +io_uring.
 
-$ cat a.c
-#include <string.h>
-#include <stdint.h>
-struct s1 {
-        char x;
-        uint64_t a:1,
-                 b:1,
-                 c:1,
-                 d:61;
-        char y;
-};
-struct s2 {
-        char x;
-        uint64_t a:1,
-                 b:1,
-                 c:1;
-        char y;
-};
-struct s3 {
-        uint64_t x;
-        uint64_t a:1,
-                 b:1,
-                 c:1;
-        char y;
-};
-// some dummy functions to make the structs appear used and make gcc
-// actually emit debug info
-void f1(struct s1 *s) { memset(s, 0xff, sizeof(*s)); }
-void f2(struct s2 *s) { memset(s, 0xff, sizeof(*s)); }
-void f3(struct s3 *s) { memset(s, 0xff, sizeof(*s)); }
-$ gcc -o a.o -c a.c -O2 -g
-$ pahole a.o
-struct s1 {
-    char                x;                    /*     0     1 */
-
-    /* Bitfield combined with previous fields */
-
-    uint64_t            a:1;                  /*     0: 8  8 */
-    uint64_t            b:1;                  /*     0: 9  8 */
-    uint64_t            c:1;                  /*     0:10  8 */
-
-    /* XXX 53 bits hole, try to pack */
-
-    /* Force alignment to the next boundary: */
-    uint64_t            :0;
-
-    uint64_t            d:61;                 /*     8: 0  8 */
-
-    /* XXX 3 bits hole, try to pack */
-
-    char                y;                    /*    16     1 */
-
-    /* size: 24, cachelines: 1, members: 6 */
-    /* sum members: 2 */
-    /* sum bitfield members: 64 bits, bit holes: 2, sum bit holes: 56
-bits */
-    /* padding: 7 */
-    /* last cacheline: 24 bytes */
-};
-struct s2 {
-    char                x;                    /*     0     1 */
-
-    /* Bitfield combined with previous fields */
-
-    uint64_t            a:1;                  /*     0: 8  8 */
-    uint64_t            b:1;                  /*     0: 9  8 */
-    uint64_t            c:1;                  /*     0:10  8 */
-
-    /* XXX 5 bits hole, try to pack */
-    /* Bitfield combined with next fields */
-
-    char                y;                    /*     2     1 */
-
-    /* size: 8, cachelines: 1, members: 5 */
-    /* sum members: 2 */
-    /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 5 bits */
-    /* padding: 5 */
-    /* last cacheline: 8 bytes */
-};
-struct s3 {
-    uint64_t            x;                    /*     0     8 */
-    uint64_t            a:1;                  /*     8: 0  8 */
-    uint64_t            b:1;                  /*     8: 1  8 */
-    uint64_t            c:1;                  /*     8: 2  8 */
-
-    /* XXX 5 bits hole, try to pack */
-    /* Bitfield combined with next fields */
-
-    char                y;                    /*     9     1 */
-
-    /* size: 16, cachelines: 1, members: 5 */
-    /* sum members: 9 */
-    /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 5 bits */
-    /* padding: 6 */
-    /* last cacheline: 16 bytes */
-};
-
-And, since in the concrete case mca_config just has four bool members
-before the bitfields, we see that the 1-bit bitfields are put within the
-first 8 bytes of the struct, while the __reserved field gets an entire
-u64 all to itself:
-
-struct mca_config {
-    _Bool               dont_log_ce;          /*     0     1 */
-    _Bool               cmci_disabled;        /*     1     1 */
-    _Bool               ignore_ce;            /*     2     1 */
-    _Bool               print_all;            /*     3     1 */
-
-    /* Bitfield combined with previous fields */
-
-    long long unsigned int     lmce_disabled:1;      /*     0:32  8 */
-    long long unsigned int     disabled:1;    /*     0:33  8 */
-    long long unsigned int     ser:1;         /*     0:34  8 */
-    long long unsigned int     recovery:1;    /*     0:35  8 */
-    long long unsigned int     bios_cmci_threshold:1; /*     0:36  8 */
-
-    /* XXX 27 bits hole, try to pack */
-
-    /* Force alignment to the next boundary: */
-    long long unsigned int     :0;
-
-    long long unsigned int     __reserved:59;        /*     8: 0  8 */
-
-    /* XXX 5 bits hole, try to pack */
-
-    signed char         bootlog;              /*    16     1 */
-
-    /* XXX 3 bytes hole, try to pack */
-
-    int                 tolerant;             /*    20     4 */
-    int                 monarch_timeout;      /*    24     4 */
-    int                 panic_timeout;        /*    28     4 */
-    unsigned int        rip_msr;              /*    32     4 */
-
-    /* size: 40, cachelines: 1, members: 15 */
-    /* sum members: 21, holes: 1, sum holes: 3 */
-    /* sum bitfield members: 64 bits, bit holes: 2, sum bit holes: 32
-bits */
-    /* padding: 4 */
-    /* last cacheline: 40 bytes */
-};
-
-But why the messy mix between 1-bit bitfields and _Bools in the first place?
-
-Rasmus
+>  io_mem_free.part.0+0xf7/0x140 fs/io_uring.c:8708
+>  io_mem_free fs/io_uring.c:8703 [inline]
+>  io_ring_ctx_free fs/io_uring.c:9250 [inline]
+>  io_ring_exit_work+0xf20/0x1980 fs/io_uring.c:9408
+>  process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+>  worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+>  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> ------------[ cut here ]------------
+> kernel BUG at mm/page_alloc.c:1073!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.15.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: mm_percpu_wq vmstat_update
+> RIP: 0010:__free_one_page+0xa10/0xe30 mm/page_alloc.c:1073
+> Code: 43 34 85 c0 0f 84 79 f9 ff ff 48 c7 c6 80 1b 97 89 48 89 ef e8 61 dd f6 ff 0f 0b 48 c7 c6 60 1a 97 89 4c 89 ef e8 50 dd f6 ff <0f> 0b 0f 0b 48 c7 c6 c0 1a 97 89 4c 89 ef e8 3d dd f6 ff 0f 0b 48
+> RSP: 0018:ffffc90000ca7968 EFLAGS: 00010093
+> RAX: 0000000000000000 RBX: ffffc90000ca7a60 RCX: 0000000000000000
+> RDX: ffff888010e40000 RSI: ffffffff81b2f6b0 RDI: 0000000000000003
+> RBP: 0000000000152200 R08: 0000000000000018 R09: 00000000ffffffff
+> R10: ffffffff88f44b19 R11: 00000000ffffffff R12: 0000000000000009
+> R13: ffffea0005488000 R14: 0000000000000000 R15: ffff88823fff8e00
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000000 CR3: 0000000036db1000 CR4: 00000000001526f0
+> Call Trace:
+>  free_pcppages_bulk+0x533/0x8a0 mm/page_alloc.c:1537
+>  drain_zone_pages+0x173/0x440 mm/page_alloc.c:3079
+>  refresh_cpu_vm_stats+0x355/0x5d0 mm/vmstat.c:874
+>  vmstat_update+0xe/0xa0 mm/vmstat.c:1910
+>  process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+>  worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+>  kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Modules linked in:
+> ---[ end trace e038b7c668ec2f59 ]---
+> RIP: 0010:__free_one_page+0xa10/0xe30 mm/page_alloc.c:1073
+> Code: 43 34 85 c0 0f 84 79 f9 ff ff 48 c7 c6 80 1b 97 89 48 89 ef e8 61 dd f6 ff 0f 0b 48 c7 c6 60 1a 97 89 4c 89 ef e8 50 dd f6 ff <0f> 0b 0f 0b 48 c7 c6 c0 1a 97 89 4c 89 ef e8 3d dd f6 ff 0f 0b 48
+> RSP: 0018:ffffc90000ca7968 EFLAGS: 00010093
+> RAX: 0000000000000000 RBX: ffffc90000ca7a60 RCX: 0000000000000000
+> RDX: ffff888010e40000 RSI: ffffffff81b2f6b0 RDI: 0000000000000003
+> RBP: 0000000000152200 R08: 0000000000000018 R09: 00000000ffffffff
+> R10: ffffffff88f44b19 R11: 00000000ffffffff R12: 0000000000000009
+> R13: ffffea0005488000 R14: 0000000000000000 R15: ffff88823fff8e00
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000000 CR3: 0000000036db1000 CR4: 00000000001526f0
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000020104105cc685624%40google.com.
