@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F7541246D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917F3412349
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380820AbhITSey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
+        id S1378095AbhITSWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36231 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379310AbhITS26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:28:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A55A61A8D;
-        Mon, 20 Sep 2021 17:26:39 +0000 (UTC)
+        id S1376852AbhITSOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:14:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1FB960EE4;
+        Mon, 20 Sep 2021 17:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158800;
-        bh=rEXlf+Py4vmllCdNF/5X3KV29nh4U+by0RB3XUuZgu0=;
+        s=korg; t=1632158499;
+        bh=v20QQcURcpcNS3G1sFZ/ZLQ59gjDrOIr9tYfVPep7To=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K8ZAQPG8KmuNPWwSRNubLNkuh/X99RxEuUpWzr+QkwoVEAu9IhTrhOnSSeyi74S6c
-         175rRe0Xyq+2eqZTPU8niICbOGdrUD1200qxRXcb2KKSNvf9h3An9WWqMxdjdw74EP
-         4vMTU5I72YgRqcRspatOWu4N32FdZRPDsVij4qUU=
+        b=AmZYnor3rouoBKcwyj4Q9HIODcj3lahtER24pIvLelDG3RHaNsyzZiHWQbnJs5Zhv
+         N5DtGcNdHEOKsTuDyYvqdHg1V2bij5YQbKvPDGs67b+aXUUNJbgGhpPFQCKtdjsXsa
+         oBl0if1FfFCY6ieHjwlgxTZCSradkUn0QC0rVuJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 029/122] tipc: increase timeout in tipc_sk_enqueue()
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 183/260] memcg: enable accounting for pids in nested pid namespaces
 Date:   Mon, 20 Sep 2021 18:43:21 +0200
-Message-Id: <20210920163916.753648453@linuxfoundation.org>
+Message-Id: <20210920163937.334911953@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit f4bb62e64c88c93060c051195d3bbba804e56945 upstream.
+commit fab827dbee8c2e06ca4ba000fa6c48bcf9054aba upstream.
 
-In tipc_sk_enqueue() we use hardcoded 2 jiffies to extract
-socket buffer from generic queue to particular socket.
-The 2 jiffies is too short in case there are other high priority
-tasks get CPU cycles for multiple jiffies update. As result, no
-buffer could be enqueued to particular socket.
+Commit 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
+enabled memcg accounting for pids allocated from init_pid_ns.pid_cachep,
+but forgot to adjust the setting for nested pid namespaces.  As a result,
+pid memory is not accounted exactly where it is really needed, inside
+memcg-limited containers with their own pid namespaces.
 
-To solve this, we switch to use constant timeout 20msecs.
-Then, the function will be expired between 2 jiffies (CONFIG_100HZ)
-and 20 jiffies (CONFIG_1000HZ).
+Pid was one the first kernel objects enabled for memcg accounting.
+init_pid_ns.pid_cachep marked by SLAB_ACCOUNT and we can expect that any
+new pids in the system are memcg-accounted.
 
-Fixes: c637c1035534 ("tipc: resolve race problem at unicast message reception")
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Though recently I've noticed that it is wrong.  nested pid namespaces
+creates own slab caches for pid objects, nested pids have increased size
+because contain id both for all parent and for own pid namespaces.  The
+problem is that these slab caches are _NOT_ marked by SLAB_ACCOUNT, as a
+result any pids allocated in nested pid namespaces are not
+memcg-accounted.
+
+Pid struct in nested pid namespace consumes up to 500 bytes memory, 100000
+such objects gives us up to ~50Mb unaccounted memory, this allow container
+to exceed assigned memcg limits.
+
+Link: https://lkml.kernel.org/r/8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com
+Fixes: 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
+Cc: stable@vger.kernel.org
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/pid_namespace.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2422,7 +2422,7 @@ static int tipc_sk_backlog_rcv(struct so
- static void tipc_sk_enqueue(struct sk_buff_head *inputq, struct sock *sk,
- 			    u32 dport, struct sk_buff_head *xmitq)
- {
--	unsigned long time_limit = jiffies + 2;
-+	unsigned long time_limit = jiffies + usecs_to_jiffies(20000);
- 	struct sk_buff *skb;
- 	unsigned int lim;
- 	atomic_t *dcnt;
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -53,7 +53,8 @@ static struct kmem_cache *create_pid_cac
+ 	mutex_lock(&pid_caches_mutex);
+ 	/* Name collision forces to do allocation under mutex. */
+ 	if (!*pkc)
+-		*pkc = kmem_cache_create(name, len, 0, SLAB_HWCACHE_ALIGN, 0);
++		*pkc = kmem_cache_create(name, len, 0,
++					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
+ 	mutex_unlock(&pid_caches_mutex);
+ 	/* current can fail, but someone else can succeed. */
+ 	return READ_ONCE(*pkc);
 
 
