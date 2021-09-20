@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6381B411C9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64241411E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347165AbhITRLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:11:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33890 "EHLO mail.kernel.org"
+        id S1351015AbhITRbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:31:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346791AbhITRJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:09:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AABD76128A;
-        Mon, 20 Sep 2021 16:56:11 +0000 (UTC)
+        id S1347798AbhITR2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:28:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECEF861462;
+        Mon, 20 Sep 2021 17:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156972;
-        bh=Hk6/lm38Mo/E7s7d+TYfx7X+xQAAR/8dc+MEWNECQQA=;
+        s=korg; t=1632157413;
+        bh=Mdf+Xl0GHfADmY1M5BhOFaJG7sBmJPf506QHXx1dJts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PmWDSIk7ADJqcUxVx1sI53SCkfxcGtL5tx1PNieg0jISVe0uZmMdNTFYaugDJibfQ
-         gH5vg81ieCz6e8piJAdoKjEG8+FIs1Egts/ZsqgA30JVow+m1TKRgc8uomNo1u5hSB
-         a85QPHP7zEKqMnKeUbLqyVSfPP+0zec1b1b+ElBU=
+        b=DzRUM+g0IJvb4XBOwKA1r5e+gN+iF0PpWHxARFcx1pN6+7cF2UH5+nNdGbuW3fMwF
+         /x/9visMNTnT+KnFOg3FSkv0TAnLhrj0oAX3jEjNJdmtGSaUmbu/3s/iwQSK1b+mZQ
+         LaU4FkC45e3iTkKhh6/2rRHAxO/0YeIkc/ETviyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 169/175] ethtool: Fix an error code in cxgb2.c
+        stable@vger.kernel.org, Zhenpeng Lin <zplin@psu.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 197/217] dccp: dont duplicate ccid when cloning dccp sock
 Date:   Mon, 20 Sep 2021 18:43:38 +0200
-Message-Id: <20210920163923.599410900@linuxfoundation.org>
+Message-Id: <20210920163931.313601249@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Lin, Zhenpeng <zplin@psu.edu>
 
-[ Upstream commit 7db8263a12155c7ae4ad97e850f1e499c73765fc ]
+commit d9ea761fdd197351890418acd462c51f241014a7 upstream.
 
-When adapter->registered_device_map is NULL, the value of err is
-uncertain, we set err to -EINVAL to avoid ambiguity.
+Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
+a UAF but reintroduced CVE-2017-6074.
 
-Clean up smatch warning:
-drivers/net/ethernet/chelsio/cxgb/cxgb2.c:1114 init_one() warn: missing
-error code 'err'
+When the sock is cloned, two dccps_hc_tx_ccid will reference to the
+same ccid. So one can free the ccid object twice from two socks after
+cloning.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+This issue was found by "Hadar Manor" as well and assigned with
+CVE-2020-16119, which was fixed in Ubuntu's kernel. So here I port
+the patch from Ubuntu to fix it.
+
+The patch prevents cloned socks from referencing the same ccid.
+
+Fixes: 2677d2067731410 ("dccp: don't free ccid2_hc_tx_sock ...")
+Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/dccp/minisocks.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-index f5f1b0b51ebd..79eb2257a30e 100644
---- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-@@ -1133,6 +1133,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (!adapter->registered_device_map) {
- 		pr_err("%s: could not register any net devices\n",
- 		       pci_name(pdev));
-+		err = -EINVAL;
- 		goto out_release_adapter_res;
- 	}
- 
--- 
-2.30.2
-
+--- a/net/dccp/minisocks.c
++++ b/net/dccp/minisocks.c
+@@ -98,6 +98,8 @@ struct sock *dccp_create_openreq_child(c
+ 		newdp->dccps_role	    = DCCP_ROLE_SERVER;
+ 		newdp->dccps_hc_rx_ackvec   = NULL;
+ 		newdp->dccps_service_list   = NULL;
++		newdp->dccps_hc_rx_ccid     = NULL;
++		newdp->dccps_hc_tx_ccid     = NULL;
+ 		newdp->dccps_service	    = dreq->dreq_service;
+ 		newdp->dccps_timestamp_echo = dreq->dreq_timestamp_echo;
+ 		newdp->dccps_timestamp_time = dreq->dreq_timestamp_time;
 
 
