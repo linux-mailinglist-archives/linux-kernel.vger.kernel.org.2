@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326F5411B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79A4411D2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245604AbhITQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
+        id S1346878AbhITRQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343557AbhITQyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:54:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1F76138F;
-        Mon, 20 Sep 2021 16:50:49 +0000 (UTC)
+        id S1347676AbhITROb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:14:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E634F613A8;
+        Mon, 20 Sep 2021 16:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156649;
-        bh=X73W8+lecl+2gQJjUWNNpqFRg2L8jX9VBx6ncKnREhg=;
+        s=korg; t=1632157094;
+        bh=O1nAtc5H8tqphi8+ShnCcVHnUuzNQRMglPA63P1HohY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cYjPAFKVL+c/SQ3Glr8cuCMs2LTkiTh9hW6I2OYzE7JT/hhaEmi49vNo1Pe96dc9c
-         SIYE4fE0m74A/4yPMDNhdbjvYqVJ7Gc9Sw2KvDlq1Ek/vXty0cFLIRWzWcX7csTRBv
-         UKBLULpswROmKZ1GsC0EbbOledtTE/8uEsRS0x9k=
+        b=eeeiO/iiEj4hcNLtMHwggog5BQzszRln9d8gzFIV8GR/uN9XDfLlhyVoZ+8xKXA0k
+         kTDaT7Ri/e509hrG9nazb1foZmLjEV3A6498tBxYMqE3ldN5pfj1z+Bs4ocZ0bCSJb
+         Jp0RRIl4Xk8t4kZn2hphtwYaxwicf8Q9OVp7trGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Keith Busch <keith.busch@intel.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.9 022/175] nvme-pci: Fix an error handling path in nvme_probe()
-Date:   Mon, 20 Sep 2021 18:41:11 +0200
-Message-Id: <20210920163918.799178405@linuxfoundation.org>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 051/217] soc: rockchip: ROCKCHIP_GRF should not default to y, unconditionally
+Date:   Mon, 20 Sep 2021 18:41:12 +0200
+Message-Id: <20210920163926.355107116@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit b00c9b7aa06786fc5469783965ff3e2a705a1dec upstream.
+[ Upstream commit 2a1c55d4762dd34a8b0f2e36fb01b7b16b60735b ]
 
-Release resources in the correct order in order not to miss a
-'put_device()' if 'nvme_dev_map()' fails.
+Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
+To fix this, restrict the automatic enabling of ROCKCHIP_GRF to
+ARCH_ROCKCHIP, and ask the user in case of compile-testing.
 
-Fixes: b00a726a9fd8 ("NVMe: Don't unmap controller registers on reset")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Keith Busch <keith.busch@intel.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4c58063d4258f6be ("soc: rockchip: add driver handling grf setup")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210208143855.418374-1-geert+renesas@glider.be
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/soc/rockchip/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -1927,7 +1927,7 @@ static int nvme_probe(struct pci_dev *pd
+diff --git a/drivers/soc/rockchip/Kconfig b/drivers/soc/rockchip/Kconfig
+index 20da55d9cbb1..d483b0e29b81 100644
+--- a/drivers/soc/rockchip/Kconfig
++++ b/drivers/soc/rockchip/Kconfig
+@@ -5,8 +5,8 @@ if ARCH_ROCKCHIP || COMPILE_TEST
+ #
  
- 	result = nvme_dev_map(dev);
- 	if (result)
--		goto free;
-+		goto put_pci;
- 
- 	INIT_WORK(&dev->reset_work, nvme_reset_work);
- 	INIT_WORK(&dev->remove_work, nvme_remove_dead_ctrl_work);
-@@ -1938,7 +1938,7 @@ static int nvme_probe(struct pci_dev *pd
- 
- 	result = nvme_setup_prp_pools(dev);
- 	if (result)
--		goto put_pci;
-+		goto unmap;
- 
- 	result = nvme_init_ctrl(&dev->ctrl, &pdev->dev, &nvme_pci_ctrl_ops,
- 			id->driver_data);
-@@ -1953,9 +1953,10 @@ static int nvme_probe(struct pci_dev *pd
- 
-  release_pools:
- 	nvme_release_prp_pools(dev);
-+ unmap:
-+	nvme_dev_unmap(dev);
-  put_pci:
- 	put_device(dev->dev);
--	nvme_dev_unmap(dev);
-  free:
- 	kfree(dev->queues);
- 	kfree(dev);
+ config ROCKCHIP_GRF
+-	bool
+-	default y
++	bool "Rockchip General Register Files support" if COMPILE_TEST
++	default y if ARCH_ROCKCHIP
+ 	help
+ 	  The General Register Files are a central component providing
+ 	  special additional settings registers for a lot of soc-components.
+-- 
+2.30.2
+
 
 
