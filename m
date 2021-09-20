@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468CD4111BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38484111B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237182AbhITJNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:13:31 -0400
-Received: from www.zeus03.de ([194.117.254.33]:55216 "EHLO mail.zeus03.de"
+        id S236597AbhITJN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236640AbhITJLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:11:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=5mI78+BHgh6VFMMJG0mi9Ba98u2z
-        ND/SaUOq/k4m3XM=; b=vDJtvlbSiFggG/CNrIvGnH48Tgl6J96K0ikk6pbNF38t
-        ZKPnp1GQKEySwIsmwnkt/jH2TiUTZTfzUz187USxvTsunEX161iKtqONYXH1dRxR
-        4RrQk+N3diiXPcv+1FTwQlrWDDN+KpOoXqIW8qd5lGzqp4UibQIQQpknBhXfEA0=
-Received: (qmail 2413987 invoked from network); 20 Sep 2021 11:08:52 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Sep 2021 11:08:52 +0200
-X-UD-Smtp-Session: l3s3148p1@JLM9oWnMGosgAwDPXwlxANIWpbLKE1Uh
-Date:   Mon, 20 Sep 2021 11:08:52 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Duc Nguyen <duc.nguyen.ub@renesas.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH 1/2] pwm: renesas-tpu: better errno for impossible rates
-Message-ID: <YUhPpJc3ZjM8IYH4@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-pwm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Duc Nguyen <duc.nguyen.ub@renesas.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-References: <20210915065542.1897-1-wsa+renesas@sang-engineering.com>
- <20210915065542.1897-2-wsa+renesas@sang-engineering.com>
- <20210917082543.2f5wum23nkvmzbdi@pengutronix.de>
+        id S236859AbhITJLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:11:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8A5B96117A;
+        Mon, 20 Sep 2021 09:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632129011;
+        bh=1JSW2s29l6X75dtKF+WwVkVPlY7FiFaQq+sEwm2lX0Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iDUzHsXZYOJ7Pm5WHFmtIUMxd/C5xjcbJFNJmS/yWy+DYK+DkyCeUMjAOHx38kmAi
+         47MGhpJY5fCpo0ODtXIy5CHU45x4L2nZdhlyNRd2o4dwzMkRqAtVZIKc3EdCYZ2JYE
+         KCuDp0FLSacuWGGe7pkJrmORNuZok/8tbX27T+s7sesJSU+TjNTXBZLIzM1g3mV384
+         H7SAlRmySRM7ODUR2+xDYikFDixfd6ZsfQOCj14Wpp97sH5znjLamt4HQL/m/nHith
+         N8Y6uls2IlzeOkl9/D7OOnjZSoKOp/UzU9+dwpRqcEpsjFL0Dvu+5zdUHNEnfObuS2
+         sxiGab99pepYQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 825F560A2A;
+        Mon, 20 Sep 2021 09:10:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EQCBVrWDu+yYdQK4"
-Content-Disposition: inline
-In-Reply-To: <20210917082543.2f5wum23nkvmzbdi@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next] net: lantiq: add support for jumbo frames
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163212901152.27858.11382739032716027414.git-patchwork-notify@kernel.org>
+Date:   Mon, 20 Sep 2021 09:10:11 +0000
+References: <20210919182428.1075113-1-olek2@wp.pl>
+In-Reply-To: <20210919182428.1075113-1-olek2@wp.pl>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     hauke@hauke-m.de, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
---EQCBVrWDu+yYdQK4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Hi Uwe,
+On Sun, 19 Sep 2021 20:24:28 +0200 you wrote:
+> Add support for jumbo frames. Full support for jumbo frames requires
+> changes in the DSA switch driver (lantiq_gswip.c).
+> 
+> Tested on BT Hone Hub 5A.
+> 
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+> 
+> [...]
 
-thank you for your detailed review, much appreciated! I will look into
-your suggestions. However, it will probably not be before October
-because it seems some more work and internal discussion is needed
-beforehand. I'll get back to you.
+Here is the summary with links:
+  - [net-next] net: lantiq: add support for jumbo frames
+    https://git.kernel.org/netdev/net-next/c/998ac358019e
 
-Thanks again and happy hacking,
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-   Wolfram
 
-
---EQCBVrWDu+yYdQK4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFIT6AACgkQFA3kzBSg
-Kbb1XQ//YCRJeljcXqNSSAbQp9iylk+Eua3xMivTzm13sde5a2A+oKzD/gQNqQF+
-O6bmoV9sqDXwDr7ChbPGzcmj3sf9vdDq9yKoavIt6+7Kw+szape7xcAUmVS53o7H
-iKEl2mt0J28Y11Sy0KM+mXHRQ1MpzX0yO0Ey1IU6Iubi1SVTj+NcgZxDQ2AK5UhU
-tYuW1YSKNHHoNkx4/bjr//HSa/bLLk1W7U82Ly34i6wI9Dpxo2Qg2eJpNo/hrB40
-3Rj6U9CcgG07UhkcqAiYvwTyQCeQvn8ldjPfAFaZOReia4ek5UGnsr3Rn2922xiP
-IdB+2NR09w1Lx53Mc7ilDr94l1ejvpA+FKOBHsLCflmD1ls/ejo2vTCKiUhIk+F3
-7aWIGXPrxacV1iAAqB2pTNrv++gxInAkUmMywJN3gpxmeRDZ1ANFh7YbtM3bPiw2
-XgF51HB9ZlbjkzGpIMB9kcgqmSZT357pRYiWGuys4kfxuGyg9gmMvagWmrxjQecG
-/IlsChY1AlAStE9xcl+6/EbICbgov3xfNJ4I5AkJ96te9ktPvfcRDxnEJmp29nA0
-C3RTPU2KuYIbgwvy9LG146Ftrz6PqwOBb9MzyQhW+WKi1BZG4U255IuPjOs8utkT
-9aXo3k3Nx6vzc6MWX3eWAMWWh3YBZQfaOvrYqzqBvIGdtnr6IS0=
-=zT9M
------END PGP SIGNATURE-----
-
---EQCBVrWDu+yYdQK4--
