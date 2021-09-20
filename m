@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16B041195E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8DB411992
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238506AbhITQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:16:05 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:59239 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242762AbhITQOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:14:25 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 4AF94821F6;
-        Mon, 20 Sep 2021 19:12:57 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1632154377;
-        bh=wuDdTyPetTEzRQ4y4eTAWgHy8+xrc7SOdwkMIA0RNpc=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=KkfmucBWdo47N89nCE+N2ZIQxvFYljf3UyWsP00tn5R0ZkpJlTHXxn764UBtfm5J2
-         XkPkukSzsgQEquKzAgerIswmFGs+4lstadNtgkYK1ZmjdfeCITjP7ejhHggPRhcrG4
-         tB+t2RzKsHfaV2rG0LgOu0xZ5g8HFWcXpa/P6hY8=
-Received: from [192.168.211.150] (192.168.211.150) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 20 Sep 2021 19:12:56 +0300
-Message-ID: <2692afd4-f263-838a-a80e-e6f740d44f36@paragon-software.com>
-Date:   Mon, 20 Sep 2021 19:12:56 +0300
+        id S242726AbhITQST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:18:19 -0400
+Received: from phobos.denx.de ([85.214.62.61]:54364 "EHLO phobos.denx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242910AbhITQQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:16:24 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 918D080EEA;
+        Mon, 20 Sep 2021 18:14:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1632154496;
+        bh=yS7en13J7rnW4XQUJmNyAzrBQGHNd4sbRM9BKk+8/RQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=0Usi7mEBrbAF92TAqjuUGCtU+1XQG2HXo0deDO7YIQiCqI+kuDmP2ro1lWIRqGm/b
+         5lZ68/WOSVpFnkjXQ6jWvoNZd0nYBwAkDVkDb7lBz4PzleNNmnS+Pk5T7JUXJisbCT
+         JD+aqUPdiSVBdbeNN1yzHyHvD0O46N19UJWqBBC926MfphR3li+vReIXuyQMNVGGKz
+         mA7IgKlLk5zYU/SNin00Wnm7vENzT9N2eS+/7zwE6G11EuFYyjGyv++7/nhUI/RgLF
+         JfnIGhwYBLV6Z7ese3U96jBbLmlklms13sjVCz778wKbyl3JlPSeUEVXb1vTguw5DT
+         0xlmz0lRyVvrQ==
+Subject: Re: [PATCH v4 5/9] ARM: imx_v6_v7_defconfig: build imx sdma driver as
+ module
+To:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Cc:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "andreas@kemnade.info" <andreas@kemnade.info>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "linux-imx@nxp.com" <linux-imx@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "pzimmermann@dh-electronics.com" <pzimmermann@dh-electronics.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210920144938.314588-1-marcel@ziswiler.com>
+ <20210920144938.314588-6-marcel@ziswiler.com>
+ <dc987232-8687-a3cc-cc44-9e82e94ddd52@denx.de>
+ <b399f461991b3dc6ba3d3332a054e7feea1d37f1.camel@toradex.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <f4d57f8e-2c84-0abb-7031-1f878eb28c08@denx.de>
+Date:   Mon, 20 Sep 2021 18:14:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH][next] fs/ntfs3: Fix a memory leak on object opts
+In-Reply-To: <b399f461991b3dc6ba3d3332a054e7feea1d37f1.camel@toradex.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Kari Argillander <kari.argillander@gmail.com>,
-        Colin King <colin.king@canonical.com>
-CC:     <ntfs3@lists.linux.dev>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210910100202.29254-1-colin.king@canonical.com>
- <20210910105018.asvmzihjdqeqm25v@kari-VirtualBox>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <20210910105018.asvmzihjdqeqm25v@kari-VirtualBox>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.150]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10.09.2021 13:50, Kari Argillander wrote:
-> On Fri, Sep 10, 2021 at 11:02:02AM +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
+On 9/20/21 5:55 PM, Marcel Ziswiler wrote:
+> On Mon, 2021-09-20 at 16:52 +0200, Marek Vasut wrote:
+>> On 9/20/21 4:49 PM, Marcel Ziswiler wrote:
+>>> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+>>>
+>>> Build CONFIG_IMX_SDMA as a module to avoid the following boot issue:
+>>>
+>>> [    5.214751] imx-sdma 20ec000.sdma: Direct firmware load for
+>>>    imx/sdma/sdma-imx6q.bin failed with error -2
+>>> [    5.215762] imx-sdma 20ec000.sdma: Falling back to sysfs fallback
+>>>    for: imx/sdma/sdma-imx6q.bin
 >>
->> Currently a failed allocation on sbi->upcase will cause an exit via
->> the label free_sbi causing a memory leak on object opts. Fix this by
->> re-ordering the exit paths free_opts and free_sbi so that kfree's occur
->> in the reverse allocation order.
->>
->> Addresses-Coverity: ("Resource leak")
->> Fixes: 27fac77707a1 ("fs/ntfs3: Init spi more in init_fs_context than fill_super")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
+>> Isn't there some ROM-side SDMA firmware baked into the MX6 which is used
+>> as a fallback if loading newer one from filesystem fails ? I suspect the
+>> default ROM firmware might be buggy.
 > 
-> Thanks Colin.
-> 
-> Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
-> 
->>  fs/ntfs3/super.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
->> index 3cba0b5e7ac7..69f23db0d727 100644
->> --- a/fs/ntfs3/super.c
->> +++ b/fs/ntfs3/super.c
->> @@ -1450,10 +1450,10 @@ static int ntfs_init_fs_context(struct fs_context *fc)
->>  	fc->ops = &ntfs_context_ops;
->>  
->>  	return 0;
->> -free_opts:
->> -	kfree(opts);
->>  free_sbi:
->>  	kfree(sbi);
->> +free_opts:
->> +	kfree(opts);
->>  	return -ENOMEM;
->>  }
->>  
->> -- 
->> 2.32.0
->>
+> I'm not so sure about this. At least it seems to fail if no external firmware can be loaded.
 
-Hi, Colin, Kari!
-
-Thanks for work - applied!
+See e.g. SDMA chapter in MX6SDLRM or similar, it does talk about 4k boot 
+ROM, which contains scripts and utilities later referenced by scripts in 
+RAM. It might be worth looking into that a bit further, but that seems 
+like a separate topic from this patch.
