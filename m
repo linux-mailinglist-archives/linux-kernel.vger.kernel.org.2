@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3894118AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BAB4118AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242102AbhITP4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:56:45 -0400
-Received: from mail-pg1-f179.google.com ([209.85.215.179]:45786 "EHLO
-        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbhITP4o (ORCPT
+        id S242173AbhITP4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242159AbhITP4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:56:44 -0400
-Received: by mail-pg1-f179.google.com with SMTP id n18so17785901pgm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:55:17 -0700 (PDT)
+        Mon, 20 Sep 2021 11:56:50 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D08BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:55:24 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id q23so14556684pfs.9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ypt/RRITG4KeHBKpsPFjVXvxZMnO9UA0tX+4neKhUYk=;
+        b=cHKUZm01QvVJRxXVV0vcJwU6DZ/MTRk5nd0viSm00OhVyIQb9DA/qdfBHBxwzzWaYB
+         L+qFOWw/O4BaRLGCTouZ/8t8HfcFw3KaegxM0X/nwZF7Pqnw7eXwtsOEOURfipfKncn6
+         gMkTKWUwpa4NWfM+j8OUCQawKwI0PfrEkzqxrnE4LEvf0MRk+WdW5bNS7ESnYUZZ6K+i
+         ZyTNFmgaU+dMWM6rWZTtIo/BbGp+jTZGs/absYSAfK3uPRwZttddMe649+AYVVqiY9xe
+         hnyPB3tHmdY165xb3hGQ70+JemxRTop04YWCK4KX6xSfpWNSVmQdZCA1TWoIUhdUAeBk
+         /2EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=J6jFxJJuT4Dtwqmcu5yYwgUvY5yux5mAiO+wx0G598Y=;
-        b=goRMTi2Hjxg30SVQFKfq9+a5rq7fuY+/ayRWgPdRm5I22PvOZ682oqZw5wScH+vYma
-         2v4ILMQZgm7VZz5pSTz33VBncEu6FJtmYMRWM9V3H4hqDYNtVA+Rdmr/fxGAskzifzER
-         7A3uFWNc2ImUDKNqiFK9OqAy/Of0atyO7hL3pm9RtuQ5z2hpe/B/hKUulIxBd56mOtPy
-         rErhkaSexcwSTsVacduoaPZtxcUPKGm/3OTxawLxIbwzR0tPUmLA9EzGgC/hKEa//6vu
-         mtviv3ePZJwdn/Rr25frWd2Pq5I3QVQRzZcE7CAbQKZuhSRzpy1mt0LfmBH1lu5ErkWF
-         Jvwg==
-X-Gm-Message-State: AOAM5300gDURTwUX/6DtLt9Df9SDon8GaWahCgvTaMoI6CYhJLl6D6UG
-        FOCS5uU3ZxxffhukhWdUrfk=
-X-Google-Smtp-Source: ABdhPJwPGOxfJ+V57SFYoxgpHJJ4/CVeutyP823krqlMz/AVcwyszW+yNR8Dwmj9/u/By+QOPChRJg==
-X-Received: by 2002:aa7:94a2:0:b0:447:ce69:7601 with SMTP id a2-20020aa794a2000000b00447ce697601mr2838614pfl.46.1632153317073;
-        Mon, 20 Sep 2021 08:55:17 -0700 (PDT)
-Received: from sultan-box.localdomain ([204.152.215.247])
-        by smtp.gmail.com with ESMTPSA id t13sm13790293pjg.25.2021.09.20.08.55.15
+        bh=ypt/RRITG4KeHBKpsPFjVXvxZMnO9UA0tX+4neKhUYk=;
+        b=QeMTN/refoDytfWuKEsCrR+4SHaKzf4N6mbYA1FydZEZPf/ZGAfT9Rp87ODB9s2pAY
+         6v05l8YkrAN41Twsj6EaTBokYVTf8T7PdhFiPESaW2ndmtc5nAmudb0g9FyYjCYFHlCT
+         wLKV9Y/aPJUCJ3Fy3tw4r2mXJCMHg73+85B7DFKHI87sJ3ho2uqjdgThweJkCuePAg88
+         Nn6XMy/Tu9xUK5aj6ShpfrsDSWTZmr114ZuEnWRF+zVQdXkGqN8cVVdMbzUWM7nVLrWn
+         MncFBkkDJTXu1lLvhn4BbtzAI9VVCwK6WjNl+hXbB/MENfaRYY14BBYolpObymihVP5u
+         YsIQ==
+X-Gm-Message-State: AOAM5329MPAr7a45MeIxxdcMUikoRRWOjw6pgD54UnbvVk2mVS6aAnGP
+        yW2lsiBZ1/vucp7LS79WbeU=
+X-Google-Smtp-Source: ABdhPJwrFb5fwvBnS2V1qYm6wmBmNdmeuOIP+kS0q8gOtH0/J260495VhNHYtPBCFKMmF8I0EC/IAg==
+X-Received: by 2002:a63:ea58:: with SMTP id l24mr24254590pgk.334.1632153323650;
+        Mon, 20 Sep 2021 08:55:23 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id v7sm13687153pjk.37.2021.09.20.08.55.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 08:55:16 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 08:55:15 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mon, 20 Sep 2021 08:55:23 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 15:55:18 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>,
         David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
-Message-ID: <YUiu42krQjSTVPnc@sultan-box.localdomain>
-References: <20210918233920.9174-1-sultan@kerneltoast.com>
- <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [RFC PATCH] Introducing lockless cache built on top of slab
+ allocator
+Message-ID: <20210920155518.GB31923@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210919164239.49905-1-42.hyeyoo@gmail.com>
+ <YUeM2J7X/i0CHjrz@casper.infradead.org>
+ <20210920010938.GA3108@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <YUfpniK6ZVeNhaX2@casper.infradead.org>
+ <432da236-4d8c-1013-cd57-42c352281862@suse.cz>
+ <20210920115536.GA3117@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <a9f9ae14-7805-68f7-cf19-e9e03c87152f@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
+In-Reply-To: <a9f9ae14-7805-68f7-cf19-e9e03c87152f@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:40:37PM +0200, Michal Hocko wrote:
-> What is the actual problem you are trying to solve here.
+On Mon, Sep 20, 2021 at 02:02:19PM +0200, Vlastimil Babka wrote:
+> On 9/20/21 13:55, Hyeonggon Yoo wrote:
+> > On Mon, Sep 20, 2021 at 11:07:36AM +0200, Vlastimil Babka wrote:
+> >> I guess making it opt-in only for caches where performance improvement was
+> >> measured would make it easier to add, as for some caches it would mean no
+> >> improvement, but increased memory usage. But of course it makes the API more
+> >> harder to use.
+> > 
+> > Do you mean "lockless cache" it should be separate from slab because some caches
+> > doesn't benefit at all?
+> 
+> I meant it seems to be a valid approach to have a special kmem_cache flag
+> and allocation function variants, as you discussed. That covers the "some
+> caches don't benefit at all" while being an integral part of the allocator,
+> so others don't have to build ad-hoc solutions on top of it, and possibly it
+> can be also more optimized given access to the SLUB internals.
 
-There isn't any specific problem I'm trying to solve here; simply that, it
-appeared as though you intended for the reaper thread to be freezable when it
-actually isn't. The OOM killer is disabled after processes are frozen though so
-I guess it could be considered a matter of consistency to freeze the reaper
-thread too.
+Okay! I sent RFC v2. please check if how does look like to you:
+	https://lore.kernel.org/linux-mm/20210920154816.31832-1-42.hyeyoo@gmail.com/T/#u
 
-Do you remember why you used wait_event_freezable()?
+> >> I'd be careful about the name "lockless", as that's ambiguous. Is it "mostly
+> >> lockless" therefore fast, but if the cache is empty, it will still take
+> >> locks as part of refill?
+> > 
+> > It is actually "mostly lockless" so it is ambiguous.
+> > Can you suggest a name? like try_lockless or anything?
+> 
+> "cached" instead of "lockless" ?
+>
 
-> Freezer details are hairy and I have to re-learn them each time again and
-> again but from what I remember wait_event_freezable doesn't really depend on
-> tyask being freezable. It tells the freezer that the task is OK to exclude
-> while it is sleeping and that should be just the case for the oom reaper. Or
-> am I missing something?
+added kmem_cache_alloc_cached, kmem_cache_free_cached in v2.
 
-The task indeed doesn't need to be freezable, but the rest of what you remember
-isn't quite true. It tells the freezer to exclude the task only because the task
-will handle entering the freezer on its own. When a task sleeps on
-wait_event_freezable(), it will be woken up when system-wide freezing starts,
-and then it will try to freeze itself (see freezable_schedule() and
-freezer_count()).
+Thanks for your opinion Vlastimil,
+Hyeonggon.
 
-If the freezer bits here are undesired then I think wait_event_interruptible()
-should be used instead.
-
-Sultan
+> >> Or is it lockless always, therefore useful in
+> >> contexts that can take no locks, but then the caller has to have fallbacks
+> >> in case the cache is empty and nothing is allocated?
+> >> 
+> >> [1] https://lore.kernel.org/linux-mm/20100804024531.914852850@linux.com/T/#u
+> > 
