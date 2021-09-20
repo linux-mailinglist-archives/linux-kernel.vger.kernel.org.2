@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C2C412356
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B94E412583
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348525AbhITSXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40370 "EHLO mail.kernel.org"
+        id S1353910AbhITSpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:45:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1359778AbhITSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:16:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDE336328A;
-        Mon, 20 Sep 2021 17:22:02 +0000 (UTC)
+        id S1382711AbhITSmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:42:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C0C160ED7;
+        Mon, 20 Sep 2021 17:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158523;
-        bh=vXym0z8rkwDyhcaJR/0HICyezC3xbzZ1DpzjPZCOdgw=;
+        s=korg; t=1632159098;
+        bh=nahmwN+1vmBJpkw0w1mb+Bp/zccUUYudua2x62yBPBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=beOIJaTedxoHrZ6O+ghMUQGm5czwkjFEN3cGt9AfHeBjav/hC8TqPHetGu+R4cNhV
-         DWMUXubFy8ZVT80yfxY9fR9tVLrWouHA6gpOkxeuEWYRBF2AiJtXyg/9JGpFvzdN52
-         lr6/WgEppl1MgZVjY0FexIf7MoHdTH9XkJRiLH+c=
+        b=BAC1vT/OWIwzBh0FBIIStvEQ6R4mEOUl9cwLl89nseYGE8MmtSfIcAP19bssVofaP
+         xHtXW8hbV3mzq2iv8fQSmpXlVbVsWTbLCX50egtSPn7X/JBH15pw0N9sexI+eckF4F
+         UwhLPGhGOSzjb34CAsFdhNbZdk6ljGc6AFgMjBxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH 5.4 196/260] PM: base: power: dont try to use non-existing RTC for storing data
+        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 076/168] net: hns3: change affinity_mask to numa node range
 Date:   Mon, 20 Sep 2021 18:43:34 +0200
-Message-Id: <20210920163937.772504069@linuxfoundation.org>
+Message-Id: <20210920163924.139379470@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Yufeng Mo <moyufeng@huawei.com>
 
-commit 0560204b360a332c321124dbc5cdfd3364533a74 upstream.
+commit 1dc839ec09d3ab2a4156dc98328b8bc3586f2b70 upstream.
 
-If there is no legacy RTC device, don't try to use it for storing trace
-data across suspend/resume.
+Currently, affinity_mask is set to a single cpu. As a result,
+irqbalance becomes invalid in SUBSET or EXACT mode. To solve
+this problem, change affinity_mask to numa node range. In this
+way, irqbalance can be performed on the cpu of the numa node.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lore.kernel.org/r/20210903084937.19392-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: 0812545487ec ("net: hns3: add interrupt affinity support for misc interrupt")
+Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/power/trace.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |   14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
---- a/drivers/base/power/trace.c
-+++ b/drivers/base/power/trace.c
-@@ -13,6 +13,7 @@
- #include <linux/export.h>
- #include <linux/rtc.h>
- #include <linux/suspend.h>
-+#include <linux/init.h>
- 
- #include <linux/mc146818rtc.h>
- 
-@@ -165,6 +166,9 @@ void generate_pm_trace(const void *trace
- 	const char *file = *(const char **)(tracedata + 2);
- 	unsigned int user_hash_value, file_hash_value;
- 
-+	if (!x86_platform.legacy.rtc)
-+		return;
-+
- 	user_hash_value = user % USERHASH;
- 	file_hash_value = hash_string(lineno, file, FILEHASH);
- 	set_magic_time(user_hash_value, file_hash_value, dev_hash_value);
-@@ -267,6 +271,9 @@ static struct notifier_block pm_trace_nb
- 
- static int early_resume_init(void)
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -1528,9 +1528,10 @@ static void hclge_init_kdump_kernel_conf
+ static int hclge_configure(struct hclge_dev *hdev)
  {
-+	if (!x86_platform.legacy.rtc)
-+		return 0;
-+
- 	hash_value_early_read = read_magic_time();
- 	register_pm_notifier(&pm_trace_nb);
- 	return 0;
-@@ -277,6 +284,9 @@ static int late_resume_init(void)
- 	unsigned int val = hash_value_early_read;
- 	unsigned int user, file, dev;
+ 	struct hnae3_ae_dev *ae_dev = pci_get_drvdata(hdev->pdev);
++	const struct cpumask *cpumask = cpu_online_mask;
+ 	struct hclge_cfg cfg;
+ 	unsigned int i;
+-	int ret;
++	int node, ret;
  
-+	if (!x86_platform.legacy.rtc)
-+		return 0;
+ 	ret = hclge_get_cfg(hdev, &cfg);
+ 	if (ret)
+@@ -1595,11 +1596,12 @@ static int hclge_configure(struct hclge_
+ 
+ 	hclge_init_kdump_kernel_config(hdev);
+ 
+-	/* Set the init affinity based on pci func number */
+-	i = cpumask_weight(cpumask_of_node(dev_to_node(&hdev->pdev->dev)));
+-	i = i ? PCI_FUNC(hdev->pdev->devfn) % i : 0;
+-	cpumask_set_cpu(cpumask_local_spread(i, dev_to_node(&hdev->pdev->dev)),
+-			&hdev->affinity_mask);
++	/* Set the affinity based on numa node */
++	node = dev_to_node(&hdev->pdev->dev);
++	if (node != NUMA_NO_NODE)
++		cpumask = cpumask_of_node(node);
 +
- 	user = val % USERHASH;
- 	val = val / USERHASH;
- 	file = val % FILEHASH;
++	cpumask_copy(&hdev->affinity_mask, cpumask);
+ 
+ 	return ret;
+ }
 
 
