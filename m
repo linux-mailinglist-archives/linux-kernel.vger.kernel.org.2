@@ -2,78 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A5C41160C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2213411610
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239772AbhITNro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:47:44 -0400
-Received: from mga09.intel.com ([134.134.136.24]:45174 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236385AbhITNrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:47:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10112"; a="223166976"
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="223166976"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 06:46:16 -0700
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="701062486"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.252.131.200]) ([10.252.131.200])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 06:46:15 -0700
-Subject: Re: [PATCH v8 0/8] Don't compute events that won't be used in a
- metric.
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Sandeep Dasgupta <sdasgup@google.com>
-References: <20210918063513.2356923-1-irogers@google.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <7307f6f3-74a8-ef3e-428b-fc294454e463@linux.intel.com>
-Date:   Mon, 20 Sep 2021 06:46:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239903AbhITNsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236385AbhITNsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:48:03 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9ADC061574;
+        Mon, 20 Sep 2021 06:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=nQzyMh+urw6WUq63Kn0aHKa2iC8R1rXkh2yrDjrMkFU=; b=ZtekXSxH/omWRqKFHxlbKlQMOW
+        brX242NaJfTMBSEoVKrT7YY/LTCjbmCsTctOcpy8dC7VsR0dakTf7n+gLDPf2Uu3oZH6SZAGdVvUB
+        FeW6lssjgs/H6RAc1VNYlP0mfVpntOVBs92+JlJo4T8J28uWtDxMDiRYBZxCSKp1Y5rguDhtn001+
+        7eX35WKbNrPhMNed9vElTPaxpY/By8aFMra1A2UPptlsZ0lW+IdhI6f0bJsNYioksIuHNK8UU0F9e
+        P5z/p+10BzTk+fa2JkEX2kgm+FG6wHpgT97fhwYMlseC44DlltJ0P7CnOGBCfl6QcflGJNy8BZCVS
+        MszGurwA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54672)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mSJcs-0001fR-P1; Mon, 20 Sep 2021 14:46:30 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mSJcs-0002LG-31; Mon, 20 Sep 2021 14:46:30 +0100
+Date:   Mon, 20 Sep 2021 14:46:30 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, f.fainelli@gmail.com,
+        alexandre.belloni@bootlin.com, vladimir.oltean@nxp.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 09/12] net: lan966x: add the basic lan966x
+ driver
+Message-ID: <YUiQtrIodmyAZ476@shell.armlinux.org.uk>
+References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
+ <20210920095218.1108151-10-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210918063513.2356923-1-irogers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920095218.1108151-10-horatiu.vultur@microchip.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 20, 2021 at 11:52:15AM +0200, Horatiu Vultur wrote:
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+> new file mode 100644
+> index 000000000000..2984f510ae27
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+> @@ -0,0 +1,350 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +
+> +#include <asm/memory.h>
+> +#include <linux/module.h>
+> +#include <linux/if_bridge.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/of_net.h>
+> +#include <linux/reset.h>
+> +
+> +#include "lan966x_main.h"
+> +
+> +#define READL_SLEEP_US			10
+> +#define READL_TIMEOUT_US		100000000
+> +
+> +#define IO_RANGES 2
+> +
+> +static const struct of_device_id lan966x_match[] = {
+> +	{ .compatible = "microchip,lan966x-switch" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, mchp_lan966x_match);
+> +
+> +struct lan966x_main_io_resource {
+> +	enum lan966x_target id;
+> +	phys_addr_t offset;
+> +	int range;
+> +};
+> +
+> +static const struct lan966x_main_io_resource lan966x_main_iomap[] =  {
+> +	{ TARGET_CPU,                   0xc0000, 0 }, /* 0xe00c0000 */
+> +	{ TARGET_ORG,                         0, 1 }, /* 0xe2000000 */
+> +	{ TARGET_GCB,                    0x4000, 1 }, /* 0xe2004000 */
+> +	{ TARGET_QS,                     0x8000, 1 }, /* 0xe2008000 */
+> +	{ TARGET_CHIP_TOP,              0x10000, 1 }, /* 0xe2010000 */
+> +	{ TARGET_REW,                   0x14000, 1 }, /* 0xe2014000 */
+> +	{ TARGET_SYS,                   0x28000, 1 }, /* 0xe2028000 */
+> +	{ TARGET_HSIO,                  0x2c000, 1 }, /* 0xe202c000 */
+> +	{ TARGET_DEV,                   0x34000, 1 }, /* 0xe2034000 */
+> +	{ TARGET_DEV +  1,              0x38000, 1 }, /* 0xe2038000 */
+> +	{ TARGET_DEV +  2,              0x3c000, 1 }, /* 0xe203c000 */
+> +	{ TARGET_DEV +  3,              0x40000, 1 }, /* 0xe2040000 */
+> +	{ TARGET_DEV +  4,              0x44000, 1 }, /* 0xe2044000 */
+> +	{ TARGET_DEV +  5,              0x48000, 1 }, /* 0xe2048000 */
+> +	{ TARGET_DEV +  6,              0x4c000, 1 }, /* 0xe204c000 */
+> +	{ TARGET_DEV +  7,              0x50000, 1 }, /* 0xe2050000 */
+> +	{ TARGET_QSYS,                 0x100000, 1 }, /* 0xe2100000 */
+> +	{ TARGET_AFI,                  0x120000, 1 }, /* 0xe2120000 */
+> +	{ TARGET_ANA,                  0x140000, 1 }, /* 0xe2140000 */
+> +};
+> +
+> +static int lan966x_create_targets(struct platform_device *pdev,
+> +				  struct lan966x *lan966x)
+> +{
+> +	struct resource *iores[IO_RANGES];
+> +	void __iomem *iomem[IO_RANGES];
+> +	void __iomem *begin[IO_RANGES];
+> +	int idx;
+> +
+> +	for (idx = 0; idx < IO_RANGES; idx++) {
+> +		iores[idx] = platform_get_resource(pdev, IORESOURCE_MEM,
+> +						   idx);
+> +		iomem[idx] = devm_ioremap(&pdev->dev,
+> +					  iores[idx]->start,
+> +					  resource_size(iores[idx]));
 
-On 9/17/2021 11:35 PM, Ian Rogers wrote:
->      
-> For a metric like:
->    EVENT1 if #smt_on else EVENT2
->      
-> currently EVENT1 and EVENT2 will be measured and then when the metric
-> is reported EVENT1 or EVENT2 will be printed depending on the value
-> from smt_on() during the expr parsing. Computing both events is
-> unnecessary and can lead to multiplexing as discussed in this thread:
-> https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
->
-> This change modifies expression parsing so that constants are
-> considered when building the set of ids (events) and only events not
-> contributing to a constant value are measured.
+This is buggy. If platform_get_resource() returns NULL, you will oops
+the kernel.
 
+In any case, this code will be ripe for janitor patching. Please
+consider using devm_platform_ioremap_resource() now, before someone
+converts your code to use this function.
 
-The series looks good to me.
-
-
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-
-
--Andi
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
