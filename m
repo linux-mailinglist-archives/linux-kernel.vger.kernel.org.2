@@ -2,63 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327EF411002
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363FE41100F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbhITHYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        id S234927AbhITHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233436AbhITHYf (ORCPT
+        with ESMTP id S234200AbhITHaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:24:35 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0DBC061574;
-        Mon, 20 Sep 2021 00:23:09 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1mSDdp-0005mR-Mn; Mon, 20 Sep 2021 09:23:05 +0200
-Date:   Mon, 20 Sep 2021 09:23:05 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        Anthony Lineham <anthony.lineham@alliedtelesis.co.nz>,
-        Scott Parlane <scott.parlane@alliedtelesis.co.nz>,
-        Blair Steven <blair.steven@alliedtelesis.co.nz>
-Subject: Re: [PATCH net v5 2/2] net: netfilter: Fix port selection of FTP for
- NF_NAT_RANGE_PROTO_SPECIFIED
-Message-ID: <20210920072305.GI15906@breakpoint.cc>
-References: <20210920005905.9583-1-Cole.Dishington@alliedtelesis.co.nz>
- <20210920005905.9583-3-Cole.Dishington@alliedtelesis.co.nz>
+        Mon, 20 Sep 2021 03:30:21 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6604C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:28:54 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id a194-20020a1c98cb000000b0030b41ac389fso6624537wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lm1u5VFcAv+kZGi61xSeEM3XrIuze+ikLV/huDZ5nPk=;
+        b=cPRknCu1fWRa2KdqOEcSz2KVX3wuY8GyVZMMdR4rNScmpwlpgbp+zPHzSzP9rP6veF
+         9Mq/l5+SRKbYkVemannXZHenU5bgiphO1kKAB7QqGX310tG8U+q2BmwFNfeeoJCI80W/
+         4bvuebBK42sn/7HSigDPcV4KDwVAxLRehfOu9E6MUZXRM9E5902vRv4+0rIohVMjVaut
+         Ino4pbv9CpzAKQa2DDudBExur3BOl/g/2ZC5zT0/HqeY1ObDWvu0JGtSIUksY7BX7DWQ
+         mA4B0sgbv1261vGxm5fG4q4EYyRzTXlAKvMCQklMC8f/ikb2ApZtyjlTwFGr7WYfnQxO
+         MoDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lm1u5VFcAv+kZGi61xSeEM3XrIuze+ikLV/huDZ5nPk=;
+        b=nxVqKfV/y5GGqXNCwl8YHBq/9W5Xpg7AHBabQSNR4tzhdjJc/Jsic9+bsgWsq1ZCRW
+         XJGKAJQE73lyxgr2BiwAFc7xJNnBpy1O1M67INJZDxt6853GfcPJ3SuBgMC2NzEVypTu
+         TpWuWKbcn3GLkIY8tfAKvmrZ79kO506zptGZi8j4OaCUE/DofyVysuDUkW0C3tKL/Xcz
+         yRymEn8F1b7+8ufNWhsy8pJpna9GP69Jmn5sFZ6oVZjqZJYeTF8qSsh9tloKXRYINdmu
+         aOHKVEbSXzDDO2C1hbug/BusjuphrBofJYWdMNl4THTky5jCWy+rSj6eKjdS3MotteaO
+         UAJw==
+X-Gm-Message-State: AOAM5331JfpVRy7jSZb3frBcAYM7NBrX5yXrD/f4jVm6DxV2GGvectN0
+        7nl9eieEcGgxtBTIAK9MewBvoYA9jxZP7A==
+X-Google-Smtp-Source: ABdhPJxV/gLmGHCgSUKL7t/uOQUzPRMyr29oogObGYa6JpIIbuJljvBbV4S43xd0ANbicw3roYZJKw==
+X-Received: by 2002:a05:600c:21d9:: with SMTP id x25mr26992888wmj.7.1632122933146;
+        Mon, 20 Sep 2021 00:28:53 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id j7sm18527225wrr.27.2021.09.20.00.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 00:28:52 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa@the-dreams.de>, Sekhar Nori <nsekhar@ti.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH] MAINTAINERS: update my email address
+Date:   Mon, 20 Sep 2021 09:28:42 +0200
+Message-Id: <20210920072842.30889-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920005905.9583-3-Cole.Dishington@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cole Dishington <Cole.Dishington@alliedtelesis.co.nz> wrote:
-> FTP port selection ignores specified port ranges (with iptables
-> masquerade --to-ports) when creating an expectation, based on
-> FTP commands PORT or PASV, for the data connection.
-> 
-> For masquerading, this issue allows an FTP client to use unassigned
-> source ports for their data connection (in both the PORT and PASV
-> cases). This can cause problems in setups that allocate different
-> masquerade port ranges for each client.
-> 
-> The proposed fix involves storing a port range (on nf_conn_nat) to:
-> - Fix FTP PORT data connections using the stored port range to select a
->   port number in nf_conntrack_ftp.
-> - Fix FTP PASV data connections using the stored port range to specify a
->   port range on source port in nf_nat_helper if the FTP PORT/PASV packet
->   comes from the client.
+My professional situation changes soon. Update my email address.
 
-Looks much simpler now, thanks.
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+---
+ MAINTAINERS | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Acked-by: Florian Westphal <fw@strlen.de>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index eeb4c70b3d5b..6bebe6168922 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2962,7 +2962,7 @@ F:	crypto/async_tx/
+ F:	include/linux/async_tx.h
+ 
+ AT24 EEPROM DRIVER
+-M:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
++M:	Bartosz Golaszewski <brgl@bgdev.pl>
+ L:	linux-i2c@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git
+@@ -7986,7 +7986,7 @@ F:	include/linux/gpio/regmap.h
+ 
+ GPIO SUBSYSTEM
+ M:	Linus Walleij <linus.walleij@linaro.org>
+-M:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
++M:	Bartosz Golaszewski <brgl@bgdev.pl>
+ L:	linux-gpio@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+@@ -11367,7 +11367,7 @@ F:	Documentation/devicetree/bindings/iio/proximity/maxbotix,mb1232.yaml
+ F:	drivers/iio/proximity/mb1232.c
+ 
+ MAXIM MAX77650 PMIC MFD DRIVER
+-M:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
++M:	Bartosz Golaszewski <brgl@bgdev.pl>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/*/*max77650.yaml
+@@ -18689,7 +18689,7 @@ F:	include/linux/clk/ti.h
+ 
+ TI DAVINCI MACHINE SUPPORT
+ M:	Sekhar Nori <nsekhar@ti.com>
+-R:	Bartosz Golaszewski <bgolaszewski@baylibre.com>
++R:	Bartosz Golaszewski <brgl@bgdev.pl>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/nsekhar/linux-davinci.git
+-- 
+2.30.1
+
