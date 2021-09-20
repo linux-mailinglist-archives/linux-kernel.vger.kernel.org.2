@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E786412459
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6051141235F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380414AbhITSdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
+        id S1378232AbhITSXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352389AbhITS12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:27:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9724A632E3;
-        Mon, 20 Sep 2021 17:26:06 +0000 (UTC)
+        id S1376931AbhITSQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:16:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDB163286;
+        Mon, 20 Sep 2021 17:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158767;
-        bh=2aUFvNwSxY7pwqroa4y5YaZd+XWGcKLSJTkujQSxd7Y=;
+        s=korg; t=1632158531;
+        bh=SIzIuA0C55AjIVlCGH0zvIEwF0km2CkcEQVGwNITLyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bai2wYGtWOzwtlrq87RDr8URN+MN830FuNhlkIMxByvCwTNskY1tTKWyIZCvFTyDn
-         713/X5JB3wEqhlyqJZD8rQWW/zNE7UAsvLOZuoSURDDe1rlgUMvHEQf6EjF02zJOnk
-         jJ+9kM7MD6Hwi1p0lALkFgMg7lXLmp5iVrfHyH7k=
+        b=KukjIhqtEHwkHGEaN4ZEVKtLAs4YWqOWA9nAVCNEe6zxezgfO3CB9JsROyke1dP/a
+         aM3wzMdwoWthwKFsovQmuqxxISTNgg9BimkNn+Db0Xf92bMEe5i5IiXGobnFsZwqtY
+         19KeBPQ4JBydAtJtEfCewi+KpX/iPy6i/tLCfep4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.10 046/122] dt-bindings: arm: Fix Toradex compatible typo
+        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Michael Walle <michael@walle.cc>, Marek Vasut <marex@denx.de>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: [PATCH 5.4 200/260] drm/etnaviv: put submit prev MMU context when it exists
 Date:   Mon, 20 Sep 2021 18:43:38 +0200
-Message-Id: <20210920163917.301389865@linuxfoundation.org>
+Message-Id: <20210920163937.906726519@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-commit 55c21d57eafb7b379bb7b3e93baf9ca2695895b0 upstream.
+commit cda7532916f7bc860b36a1806cb8352e6f63dacb upstream.
 
-Fix board compatible typo reported by dtbs_check.
+The prev context is the MMU context at the time of the job
+queueing in hardware. As a job might be queued multiple times
+due to recovery after a GPU hang, we need to make sure to put
+the stale prev MMU context from a prior queuing, to avoid the
+reference and thus the MMU context leaking.
 
-Fixes: f4d1577e9bc6 ("dt-bindings: arm: Convert Tegra board/soc bindings to json-schema")
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210912165120.188490-1-david@ixit.cz
-Signed-off-by: Rob Herring <robh@kernel.org>
+Cc: stable@vger.kernel.org # 5.4
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Tested-by: Michael Walle <michael@walle.cc>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/devicetree/bindings/arm/tegra.yaml |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/Documentation/devicetree/bindings/arm/tegra.yaml
-+++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -54,7 +54,7 @@ properties:
-           - const: toradex,apalis_t30
-           - const: nvidia,tegra30
-       - items:
--          - const: toradex,apalis_t30-eval-v1.1
-+          - const: toradex,apalis_t30-v1.1-eval
-           - const: toradex,apalis_t30-eval
-           - const: toradex,apalis_t30-v1.1
-           - const: toradex,apalis_t30
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -1310,6 +1310,8 @@ struct dma_fence *etnaviv_gpu_submit(str
+ 		gpu->mmu_context = etnaviv_iommu_context_get(submit->mmu_context);
+ 		etnaviv_gpu_start_fe_idleloop(gpu);
+ 	} else {
++		if (submit->prev_mmu_context)
++			etnaviv_iommu_context_put(submit->prev_mmu_context);
+ 		submit->prev_mmu_context = etnaviv_iommu_context_get(gpu->mmu_context);
+ 	}
+ 
 
 
