@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DACB411297
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314AD411299
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhITKJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:09:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229574AbhITKJB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:09:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632132454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=odkZV5dq7VYtsOMJXDg+2n8h1mYSCLrv0qFp+DsAT2Y=;
-        b=fWPVwQFNCZUhMEFMasDkkd4JGOnj5uyYR1MQe1ptU4rDHqav+s0kuy8Tf5Ewm/nq9q1gY9
-        s11N3KDbm5/FJenM7QsMaMSFfTGU3Gm/UETvmdLwIShmbbXQ3knb9tLHO/znQIZS7gt/rf
-        pE2utzpOvzQzaCaKc2Jl9UC14/X4fVc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-OvxKwz2wN0ygX4b2jsTIuQ-1; Mon, 20 Sep 2021 06:07:33 -0400
-X-MC-Unique: OvxKwz2wN0ygX4b2jsTIuQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S235379AbhITKJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:09:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229574AbhITKJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 06:09:56 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16C8B835DE4;
-        Mon, 20 Sep 2021 10:07:31 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C6CFE101E24F;
-        Mon, 20 Sep 2021 10:07:24 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bfu@redhat.com
-Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
-In-Reply-To: <88b514a4416cf72cda53a31ad2e15c13586350e4.camel@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20210915215742.1793314-1-pasic@linux.ibm.com>
- <87pmt8hp5o.fsf@redhat.com> <20210916151835.4ab512b2.pasic@linux.ibm.com>
- <87mtobh9xn.fsf@redhat.com> <20210920003935.1369f9fe.pasic@linux.ibm.com>
- <88b514a4416cf72cda53a31ad2e15c13586350e4.camel@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Mon, 20 Sep 2021 12:07:23 +0200
-Message-ID: <878rzrh86c.fsf@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 0532960F25;
+        Mon, 20 Sep 2021 10:08:30 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mSGDs-00Bjgb-1s; Mon, 20 Sep 2021 11:08:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Date:   Mon, 20 Sep 2021 11:08:27 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm: add Kbuild FORCE prerequisite for hyp-reloc
+In-Reply-To: <20210920100515.1554788-1-arnd@kernel.org>
+References: <20210920100515.1554788-1-arnd@kernel.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <1785d70bf2211832c4640763114d3f8d@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: arnd@kernel.org, catalin.marinas@arm.com, will@kernel.org, dbrazdil@google.com, arnd@arndb.de, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, qperret@google.com, keescook@chromium.org, samitolvanen@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20 2021, Vineeth Vijayan <vneethv@linux.ibm.com> wrote:
+On 2021-09-20 11:05, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Commit e1f86d7b4b2a ("kbuild: warn if FORCE is missing for
+> if_changed(_dep,_rule)
+> and filechk") added a helpful check for Kbuild, which now notices
+> that a problem with the hyp-reloc rule:
+> 
+> arch/arm64/kvm/hyp/nvhe/Makefile:58: FORCE prerequisite is missing
+> 
+> Do as suggested and add FORCE here.
+> 
+> Fixes: 8c49b5d43d4c ("KVM: arm64: Generate hyp relocation data")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/arm64/kvm/hyp/nvhe/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile 
+> b/arch/arm64/kvm/hyp/nvhe/Makefile
+> index 5df6193fc430..8d741f71377f 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
+> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+> @@ -54,7 +54,7 @@ $(obj)/kvm_nvhe.tmp.o: $(obj)/hyp.lds $(addprefix
+> $(obj)/,$(hyp-obj)) FORCE
+>  #    runtime. Because the hypervisor is part of the kernel binary, 
+> relocations
+>  #    produce a kernel VA. We enumerate relocations targeting hyp at 
+> build time
+>  #    and convert the kernel VAs at those positions to hyp VAs.
+> -$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel
+> +$(obj)/hyp-reloc.S: $(obj)/kvm_nvhe.tmp.o $(obj)/gen-hyprel FORCE
+>  	$(call if_changed,hyprel)
+> 
+>  # 5) Compile hyp-reloc.S and link it into the existing partially 
+> linked object.
 
-> On Mon, 2021-09-20 at 00:39 +0200, Halil Pasic wrote:
->> On Fri, 17 Sep 2021 10:40:20 +0200
->> Cornelia Huck <cohuck@redhat.com> wrote:
->> 
-> ...snip...
->> > > 
->> > > Thanks, if I find time for it, I will try to understand this
->> > > better and
->> > > come back with my findings.
->> > >  
->> > > > > * Can virtio_ccw_remove() get called while !cdev->online and 
->> > > > >   virtio_ccw_online() is running on a different cpu? If yes,
->> > > > > what would
->> > > > >   happen then?    
->> > > > 
->> > > > All of the remove/online/... etc. callbacks are invoked via the
->> > > > ccw bus
->> > > > code. We have to trust that it gets it correct :) (Or have the
->> > > > common
->> > > > I/O layer maintainers double-check it.)
->> > > >   
->> > > 
->> > > Vineeth, what is your take on this? Are the struct ccw_driver
->> > > virtio_ccw_remove and the virtio_ccw_online callbacks mutually
->> > > exclusive. Please notice that we may initiate the onlining by
->> > > calling ccw_device_set_online() from a workqueue.
->> > > 
->> > > @Conny: I'm not sure what is your definition of 'it gets it
->> > > correct'...
->> > > I doubt CIO can make things 100% foolproof in this area.  
->> > 
->> > Not 100% foolproof, but "don't online a device that is in the
->> > progress
->> > of going away" seems pretty basic to me.
->> > 
->> 
->> I hope Vineeth will chime in on this.
-> Considering the online/offline processing, 
-> The ccw_device_set_offline function or the online/offline is handled
-> inside device_lock. Also, the online_store function takes care of
-> avoiding multiple online/offline processing. 
->
-> Now, when we consider the unconditional remove of the device,
-> I am not familiar with the virtio_ccw driver. My assumptions are based
-> on how CIO/dasd drivers works. If i understand correctly, the dasd
-> driver sets different flags to make sure that a device_open is getting
-> prevented while the the device is in progress of offline-ing. 
+I already have queued [1], which does the same thing.
 
-Hm, if we are invoking the online/offline callbacks under the device
-lock already, how would that affect the remove callback? Shouldn't they
-be serialized under the device lock already? I think we are fine.
+Thanks,
 
-For dasd, I think they also need to deal with the block device
-lifetimes. For virtio-ccw, we are basically a transport that does not
-know about devices further down the chain (that are associated with the
-virtio device, whose lifetime is tied to online/offline processing.) I'd
-presume that the serialization above would be enough.
+         M.
 
+[1] https://lore.kernel.org/r/20210907052137.1059-1-yuzenghui@huawei.com
+-- 
+Jazz is not dead. It just smells funny...
