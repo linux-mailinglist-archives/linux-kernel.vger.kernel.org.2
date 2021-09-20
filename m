@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2403C412B00
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9EF412D1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242463AbhIUCEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235156AbhIUBqH (ORCPT
+        id S231646AbhIUCz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:55:27 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:38034 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1350655AbhIUCg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:46:07 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781BBC05BD37;
-        Mon, 20 Sep 2021 14:20:21 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x27so73159312lfu.5;
-        Mon, 20 Sep 2021 14:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b1EtS8SFEilKGxAqVcNeCV6TdhHIw4BRQAXI7jUyN0E=;
-        b=F7GvyO3PHMHAjafzsYHavQ0Fkq/aaIx9zKV7wt6gdd+ee4E0AxQAHKYI9u8Wlbxqpf
-         qyCzCtkEMgp9CSaIux4BBfHlPI1QHwu1HigeztwFwhlr5O56Rt5VdFccVVkBk/C9TCh9
-         Y8VCmCHHssd+ifeW4Xt2c3vVQtaITI/xVArhVSgJ4pUf7Ql90A5pnTsQZmiNVJc2o+qY
-         TWswccDgC49VPhxTs0/n4W7cTcnHiyZhIpgwdPFe6HVqCsV/s3gb8Wkhl3rh6qUZgV5Q
-         PJCrsejAqOH1D2tUwDTzMqrLZ0Cg+Y1wnYFypOccpV86u4PwH3iiEOcmG/6xf18tQO5l
-         ZP2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b1EtS8SFEilKGxAqVcNeCV6TdhHIw4BRQAXI7jUyN0E=;
-        b=q5xib5hbIvEaFNwM9Tz9vCtu3Y/ezsm5UvMv1gJOPXJOiLhp7il6NkzwIBc296EtNF
-         HVzhpzlYDknIpdvMwPRzWdk/PPnKEjc439Lo/eT4tfSj1YJmt9ggoBwsCTdOTjbiW/by
-         OWnceswiO+No7wB7Hg+4g7DmoPVk2P2kXW58Ibp/dETnXchCcrGuEd9IuwcUUdE6kbnD
-         cItj4+BaoDFfh//boxB54rj32877y7ctkKuhmgPU/Ha5Mftp4qZLaNRZHSAv5jGm+M5e
-         hIRPRH4/ltfaWZrg8eOF8Lq/b/9B3m5cxapn0QSAw3+vJLiI43a4jcClH7x9fP5jw02Z
-         10fA==
-X-Gm-Message-State: AOAM533jD0jgmfwpDC9bVcYgVk3pCCPNb4Fig9cMoUcjLm2ua1OUoRYv
-        wLzHNbzuVvmR1dPEzu9lRmc=
-X-Google-Smtp-Source: ABdhPJy1GY2SFpUgi0kmJ0T1bvcQNuO0PgWm2azxtOwrqDJmsBQxu3l9OcwXJtY4BVXyBDp4Z28d4A==
-X-Received: by 2002:a05:6512:3c92:: with SMTP id h18mr19866364lfv.656.1632172819899;
-        Mon, 20 Sep 2021 14:20:19 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id z5sm1887615ljz.23.2021.09.20.14.20.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 14:20:19 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] drm: msm: hdmi: Constify static structs
-Date:   Mon, 20 Sep 2021 23:20:14 +0200
-Message-Id: <20210920212014.40520-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 20 Sep 2021 22:36:58 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from asmaa@mellanox.com)
+        with SMTP; 21 Sep 2021 00:22:35 +0300
+Received: from farm-0002.mtbu.labs.mlnx (farm-0002.mtbu.labs.mlnx [10.15.2.32])
+        by mtbu-labmailer.labs.mlnx (8.14.4/8.14.4) with ESMTP id 18KLMXoW030011;
+        Mon, 20 Sep 2021 17:22:33 -0400
+Received: (from asmaa@localhost)
+        by farm-0002.mtbu.labs.mlnx (8.14.7/8.13.8/Submit) id 18KLMUk5019405;
+        Mon, 20 Sep 2021 17:22:30 -0400
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Asmaa Mnebhi <asmaa@nvidia.com>, andrew@lunn.ch, kuba@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
+Subject: [PATCH v2 0/2] gpio: mlxbf2: Introduce proper interrupt handling
+Date:   Mon, 20 Sep 2021 17:22:25 -0400
+Message-Id: <20210920212227.19358-1-asmaa@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of hdmi_8996_pll_ops is to assign its address to the ops
-field in the clk_init_data struct, and the only usage of pll_init is to
-assign its address to the init field in the clk_hw struct, both which
-are pointers to const. Make them const to allow the compiler to put them
-in read-only memory.
+This is a follow up on a discussion regarding
+proper handling of GPIO interrupts within the
+gpio-mlxbf2.c driver.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Link to discussion:
+https://lore.kernel.org/netdev/20210816115953.72533-7-andriy.shevchenko@linux.intel.com/T/
 
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c b/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
-index a8f3b2cbfdc5..99c7853353fd 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi_phy_8996.c
-@@ -682,7 +682,7 @@ static int hdmi_8996_pll_is_enabled(struct clk_hw *hw)
- 	return pll_locked;
- }
- 
--static struct clk_ops hdmi_8996_pll_ops = {
-+static const struct clk_ops hdmi_8996_pll_ops = {
- 	.set_rate = hdmi_8996_pll_set_clk_rate,
- 	.round_rate = hdmi_8996_pll_round_rate,
- 	.recalc_rate = hdmi_8996_pll_recalc_rate,
-@@ -695,7 +695,7 @@ static const char * const hdmi_pll_parents[] = {
- 	"xo",
- };
- 
--static struct clk_init_data pll_init = {
-+static const struct clk_init_data pll_init = {
- 	.name = "hdmipll",
- 	.ops = &hdmi_8996_pll_ops,
- 	.parent_names = hdmi_pll_parents,
+Patch 1 adds support to a GPIO IRQ handler in gpio-mlxbf2.c.
+Patch 2 is a follow up removal of custom GPIO IRQ handling
+from the mlxbf_gige driver and replacing it with a simple
+IRQ request. The ACPI table for the mlxbf_gige driver is
+responsible for instantiating the PHY GPIO interrupt via
+GpioInt.
+
+Andy Shevchenko, could you please review this patch series.
+
+v2 vs. v1 patch:
+All changes were made in gpio-mlxbf2.c
+- removed unnecessary comments
+- removed irq_ack as it is not needed
+- removed irq_mask/irq_unmask as they are not invoked
+- remove IRQ_TYPE_LEVEL* from mlxbf2_gpio_irq_set_type
+  since they are not supported
+
+Asmaa Mnebhi (2):
+  gpio: mlxbf2: Introduce IRQ support
+  net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
+
+ drivers/gpio/gpio-mlxbf2.c                    | 147 +++++++++++-
+ .../net/ethernet/mellanox/mlxbf_gige/Makefile |   1 -
+ .../ethernet/mellanox/mlxbf_gige/mlxbf_gige.h |  12 -
+ .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
+ .../mellanox/mlxbf_gige/mlxbf_gige_main.c     |  22 +-
+ 5 files changed, 154 insertions(+), 240 deletions(-)
+ delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
+
 -- 
-2.33.0
+2.30.1
 
