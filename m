@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF337412D06
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3511412D07
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348391AbhIUCxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
+        id S1348619AbhIUCxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349307AbhIUCZr (ORCPT
+        with ESMTP id S1346993AbhIUCZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:25:47 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00CA0C0A88E0;
-        Mon, 20 Sep 2021 11:59:19 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id eg28so42503949edb.1;
-        Mon, 20 Sep 2021 11:59:18 -0700 (PDT)
+        Mon, 20 Sep 2021 22:25:54 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95080C1E2269;
+        Mon, 20 Sep 2021 12:00:48 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id h3-20020a17090a580300b0019ce70f8243so146155pji.4;
+        Mon, 20 Sep 2021 12:00:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KgXM9Th44hJC0qez5EJQ9s1ObnIV+weJgRGKAcr82g8=;
-        b=quPDK389xaGRi271X34gczU43zPLPDabIu81jvCHn/M5IHU2FTJUIT64jiAqLjhQHn
-         83m4r4jEF8AHte22C7CtxKUBlHOHFoXZdz5gyD+rK1kw+1b+DvyS/tjnfMwOKMqRPUoh
-         sbxYmElfUJnDILvPNJa1ST03mAZz7IVC7FiSJJVIFOZIDqNVZ0MSJnrQj7y3K6VGWotd
-         625IA7oKNQEs77/DPghUg+CVwpf9DcB2nfT/0oOXC+zFEBpwgS8b5nVeEZVt/Za9NEFt
-         jvFpxVV/08Zz/C9bCmxJ8iS84h8RVamEZSYwjwvoCTVBNGZsgv8+IoUvT3PTuQWQ7KFC
-         Nhmg==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZWqo4o25WJcX6VLB9kZ3eunxoV27J+URstmd+miGkGE=;
+        b=dskCyiCJJkWRNCQmLFng+qJV7sqv5sIolcsDlHMdpAjnltxIreMF7BoiCDwGRAkBA+
+         3VlLHTFU6seQYZtfaTlTc/TbkZMiD1rlZfMUqv5dEs3RGE14G6uZ0BH9FOpo3LZfbFCe
+         kFI7UGA3sjOL1az38Ik1uw0y6RuQSWtb1srx6FT/MJ9kFC1+q0SQRcVf17tgKV1EDW0P
+         hEwFwLpQZpb3pza4WfxPAAhSTcmaQ5cL9L5KJy9W2DCgt7bkEKV2dwXmuvU/vuZB6Ive
+         SyTea+OKongBqkjf29bZTiyib0ERXeGQlBFYROIT4hoeKItqqeIXNAMZCxbWTB9AfiGQ
+         3sxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KgXM9Th44hJC0qez5EJQ9s1ObnIV+weJgRGKAcr82g8=;
-        b=ZdOztD5oeN4VcUSvdUlXAa8Yx607HWeN+o6fL/ntPue0lL3VMbNuC5JtZe7XXAYKlF
-         9Y5W1idnBQP1AjQMF+ApysKqPSVXxAVCHEiiqaaQSEHOif1p8M6ILZfvauvH1elpd0Ve
-         rGiuSehlzxJOlqeEwg9mfNlDmtQ8h+Lfb1o8/wmLTkZM6hhRZ9ZfBWNkyDlqoORvyhxg
-         GjZuC/UgWbJFdjvolrVqj5tpONyTWsycgaEkS+or31RcPdH7oLo5iOcQRyrkDqVcVRKb
-         clW07tRYPsCbppqnPxWX+jWoXvW5lOqgN6PVtN+LW0dzMPwsgTN8pCtJhQIL1l4uNjOa
-         ohqQ==
-X-Gm-Message-State: AOAM530XgBrpFQlF6z3yjuufZgp46oXOZES4vAfq12Gud7eS02if6e9F
-        ceY7HOqbcI2hOF/a0kWRuYyrM+nUBVlqUSad7JA=
-X-Google-Smtp-Source: ABdhPJw70KtDAp1z7hhGqFMPHNlalXDeT7HMcvVLZgJ0yKkl3ivDBmuevxvoLjYSp6M2ugvuD1fqDP1tuO0DvvRf7V4=
-X-Received: by 2002:a17:906:a08d:: with SMTP id q13mr29946771ejy.465.1632164357541;
- Mon, 20 Sep 2021 11:59:17 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZWqo4o25WJcX6VLB9kZ3eunxoV27J+URstmd+miGkGE=;
+        b=vMNHT+dMOlsGtBQPe6BBzXr5MhPazZ23gtD2iUeLa+WdsIGp56i5iZxOwFjyLAQLrQ
+         1JwflUbwfDNnvk00NT65+FqPYut1wkEicgwtFc15coq5jLKIIMg7fo+A4qpcm2xjosdG
+         2VWbp1IJwoCsH5LGu1raGvCjp1bneeK7Zud2qW25UPel+5fkBzwTCy8i/p3+32fH1Ffe
+         vNHOr4Pk9iE6rEGUiDwdvJ2Ey4HLmnuQ030xX9hFFpde5dU/dXnZaqJfPgPw3lmLF3dk
+         Cr3GxrExRuIBmmMkbalNsT1ID2PqD/LatSbmEIduLASlDKgyG3UqBXSBTT/gDm2i518p
+         mwGg==
+X-Gm-Message-State: AOAM531XM6mfndwiVdayGg3pjilzYHcV/z8InrzXE9bZtTtLx3Ipn5i+
+        MLBi0MK4F8cqnkfddYkFCNncwYLTqt4=
+X-Google-Smtp-Source: ABdhPJwAbTudI4WORc4tK0sVOLS51Bi66U0tPufeUQmaMUdiIhWsHWnOgaWir8BiDWPqZITAj10rNw==
+X-Received: by 2002:a17:90a:9317:: with SMTP id p23mr564534pjo.151.1632164447669;
+        Mon, 20 Sep 2021 12:00:47 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q3sm106706pfg.49.2021.09.20.12.00.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 12:00:47 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/122] 5.10.68-rc1 review
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210920163915.757887582@linuxfoundation.org>
+ <87001227-a271-e9bb-38bc-059279caaf3b@gmail.com>
+Message-ID: <513b55c6-0f1f-4a84-65b7-fd05e99c0bcb@gmail.com>
+Date:   Mon, 20 Sep 2021 12:00:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CAHk-=wh-=tMO9iCA4v+WgPSd+Gbowe5kptwo+okahihnO2fAOA@mail.gmail.com>
- <202109201825.18KIPsV4026066@valdese.nms.ulrich-teichert.org> <CAHk-=wibRWoy4-ZkSVXUoGsUw5wKovPvRhS7r6VM+_GeBYZw1A@mail.gmail.com>
-In-Reply-To: <CAHk-=wibRWoy4-ZkSVXUoGsUw5wKovPvRhS7r6VM+_GeBYZw1A@mail.gmail.com>
-From:   Matt Turner <mattst88@gmail.com>
-Date:   Mon, 20 Sep 2021 11:59:05 -0700
-Message-ID: <CAEdQ38HeUPDyiZhhriHqdA+Qeyrb3M=FoKWKgs0dZaEjbcpVUQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ulrich Teichert <krypton@ulrich-teichert.org>,
-        Michael Cree <mcree@orcon.net.nz>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87001227-a271-e9bb-38bc-059279caaf3b@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:46 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Sep 20, 2021 at 11:26 AM Ulrich Teichert
-> <krypton@ulrich-teichert.org> wrote:
-> >
-> > The main trouble is that my system has only 64MB of memory and the smallest
-> > kernel image with all drivers I need was about 105MB big.
->
-> Are you sure you aren't looking at some debug image?
->
-> I just tried building something based on your Jensen config (lots of
-> new questions, you sent your old config from 4.18.0-rc5 time), and I
-> get
->
->   [torvalds@ryzen linux]$ ll -h arch/alpha/boot/vmlinux*
->   -rwxr-xr-x. 1 torvalds torvalds 5.4M Sep 20 11:32 arch/alpha/boot/vmlinux
->   -rw-r--r--. 1 torvalds torvalds 2.3M Sep 20 11:32 arch/alpha/boot/vmlinux.gz
->
-> so yeah, it's not exactly tiny, but at 5.4MB it's certainly not 105MB.
->
-> The "vmlinux" file itself is huge, but that's due to CONFIG_DEBUG_INFO=y.
->
-> You can easily disable DEBUG_INFO entirely (or at least do
-> DEBUG_INFO_REDUCED), and get much smaller files.
->
-> With the attached config, the vmlinux file is just 7MB (but the actual
-> one you boot is that same 5.4M file because it's been stripped).
->
-> NOTE! The attached config is basically just the one you sent me, with
-> "make defconfig" done and DEBUG_INFO removed. It might have drivers
-> missing, or extraneous code that you don't need because of all the
-> changes in config variables since that very old one.
->
-> It would be very interesting to hear whether this all still boots. I
-> do think people still occasionally boot-test some other alpha
-> configurations, but maybe not.
+On 9/20/21 11:39 AM, Florian Fainelli wrote:
+> On 9/20/21 9:42 AM, Greg Kroah-Hartman wrote:
+>> This is the start of the stable review cycle for the 5.10.68 release.
+>> There are 122 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+>> Anything received after that time might be too late.
+>>
+>> The whole patch series can be found in one patch at:
+>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.68-rc1.gz
+>> or in the git tree and branch at:
+>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
+> 
+> On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+> 
+> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+> 
 
-I test on a couple of alpha configurations with some regularity:
-Marvel (AlphaServer ES47) and Nautilus (UP1500). I have more systems I
-could test but I'd need to get a lot more organized to make space.
-
-In the decade plus I've been around Linux on alpha I've don't actually
-recall hearing of anyone using Linux on a Jensen system before :)
+Sorry taking that back, the merge did not really happen so I was not
+testing 5.10.68 but 5.10.67, see my other comment about one of the
+patches causing a regression, thanks!
+-- 
+Florian
