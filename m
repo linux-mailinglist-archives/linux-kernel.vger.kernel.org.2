@@ -2,145 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DC0411770
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677BE411773
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240742AbhITOtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:49:07 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42857 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231720AbhITOtF (ORCPT
+        id S240786AbhITOuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:50:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24175 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233773AbhITOt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:49:05 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2FE4C5C00AF;
-        Mon, 20 Sep 2021 10:47:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 20 Sep 2021 10:47:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Se9ZjgXoFb23WRqzS6LZo2VfyPN
-        N9yAxCDLzhKQA1gY=; b=iM4RlWpFL5SdZDhQBNhCdNoP3SqJVTY0wgjvABwo+Cl
-        fNJTf2TyVcgFVo2yeb4s8h/5LbbZo+tY2XDSj0AIr8w/K2R9fDWc5Y0rUGjMcyKs
-        kHspZhxSohw+W/b96/fyvvkBody+qK+7c92Revp9KiJ0B9Mzc0FlYgQ5FK/fgOz+
-        wn52qIzLvjkurL72DEV+6SA12IabTXXpsC4OKE5uuCtlpXBIA5Ez0dxQahUqaxuG
-        zQbonm3dW7c3bd6Zub/PmI173HPqfgRNijKNta11MUlniyHSgIJyeu8xQqaePRka
-        UlJtZq5La4GFyrxj9EehInTuRERh8qCvXFvvlwhKUpQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Se9Zjg
-        XoFb23WRqzS6LZo2VfyPNN9yAxCDLzhKQA1gY=; b=IVLRBsPpjSa3AxAqnI8tfM
-        uFmA6CC2pMWOmGnSJ9U4Jc3a/KPHzGD86OZq4nMc0pOHhvMIr9cQkk44ZRrKtxUb
-        u1Uw2NzGhzFFjuba4iVRRB/ELHstREPVNfIsdRDL5CB+yv17sfYWekNXaybBGgLa
-        8a4PMcZC8WWL79YJmJmhlrmyomU7B+OL7U2nbX5Wjg3I4gIR47RjHslNCAZnBS9g
-        mj1ugNtNfpN5lAAXM7VzaTrnCRre4YrTF2Y0xX+aMBPsD1dQbxiHRFqfUtvGa6Yk
-        dnNsb9Hfub5BE328AJ7+Yx4gjXQpCc4cnzyOukWgeYsoZGWeiqUxlgAdXEqek+ww
-        ==
-X-ME-Sender: <xms:BZ9IYZfxJwUkTR0dwJBrqgdk92W4xZEiEIfn_flTdiJbUIWdvonYiQ>
-    <xme:BZ9IYXOjOQaY7iznb1-3WFEs3_jMv7BIM0y1S5LfNQfz9r86odK4bRHkBVwHqf3mi
-    MriPBIPJrMh6U10IS0>
-X-ME-Received: <xmr:BZ9IYShCyM6gKk5ezT37vx0HhVGQouHD5eXl6SLI20iQQ12laESCCTaAaD2_Q3BrE_ZLvcLeJZuDuYoIgfJtyuH64LB8wX3kbXFj>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepgfetffffhfejhfevieekkedvkeetheevkeevueffieegvddtgfdttdfhheei
-    feefnecuffhomhgrihhnpegtohguvghthhhinhhkrdgtohdruhhknecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhho
-    rdhtvggthh
-X-ME-Proxy: <xmx:BZ9IYS-Hd-jkDmv_dPUj9Pui8cbkKLiYdUUpsVvFURpUrxEXy-xHvw>
-    <xmx:BZ9IYVuN8PuGj1TufxWkAL31ts3gVd00ynmDIy3Alg0qq2wUoxovaw>
-    <xmx:BZ9IYRGONh_oIBfPvvtDWFqxeELSnBarLPUwuY1BCuNjtIYkAKlHnw>
-    <xmx:Bp9IYZjq4GJG05aIKX4Fnn7vpn26IsOVQfwAUtUYs3nsHNgKuWOuQA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Sep 2021 10:47:32 -0400 (EDT)
-Date:   Mon, 20 Sep 2021 16:47:30 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Regression with mainline kernel on rpi4
-Message-ID: <20210920144730.d7oabqfbx7pmyyfb@gilmour>
-References: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
- <20210903160302.yh42vpkuob45dbpb@gilmour>
- <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
- <20210904091050.g5axxctgelciihjn@gilmour>
- <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+        Mon, 20 Sep 2021 10:49:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632149312;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pC8oD9A1Eh59kCOMJw501BXguKNk8McrmeoNHs1wQCQ=;
+        b=Bi2mxkJC5puWvEx1t5pX8a9zgmjgmdlLiImCKytKWakH3AVPVJzVgtNam2QDbvTTfApzic
+        NBQtR7wU63F3uO/clzZBXWzSl6qALp5Ix2Rb7VNLpp76I9K+79VPMuJFV78K/e8C44wxzc
+        99FYMk40y6tdX+ceLZi437Im34T3GmE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-_LOCsufRO4CRSLlhFVsMvA-1; Mon, 20 Sep 2021 10:48:30 -0400
+X-MC-Unique: _LOCsufRO4CRSLlhFVsMvA-1
+Received: by mail-wr1-f72.google.com with SMTP id q14-20020a5d574e000000b00157b0978ddeso6290655wrw.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:48:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=pC8oD9A1Eh59kCOMJw501BXguKNk8McrmeoNHs1wQCQ=;
+        b=PqU97U9f6bkrzaXlRKSQPK0bgldiX2Xl6ybo5MnQ1IQTyRsiYKRKTBIgmSOmyzbOBU
+         aIV6ychCMYhsKUPsf/XBDrG8TRr9vT6e1YliO0V8YI9+kM80wshW/t6WWEb/Cl7cNCc6
+         hQQNCf3gIiLy+H8CDuT65TuH6dS8eBtAuMg5GdjOpY+7PA4/F/5bVBUTxJKa4+fllDt5
+         4qu5PzeyJcE0fzIuCdO5+TfdpMq6MvKUFvjKl/FOwfDEvChPcy8a3cOQIEwCjW4OoSxo
+         siylOXSnzXSoAbEfBZhro9LZ4BmhyliktM1J5J7/NmB5WCpGSPQ5nvXQWHcHjTmfab3N
+         RWuA==
+X-Gm-Message-State: AOAM533MaLEjyfvncqorpK/Ng6tkCi5ZCMALQMxlzO7uT84AQDEiG9cN
+        aGPKI4zh4AWyKhnvCmRaTijvYJss5ZIPuNvmTlvHmNmnktquX6evzTop9WOoYJ1G1nVZGynth5R
+        01nE0I6iYUy9EuwFJATkTaQIs
+X-Received: by 2002:a05:600c:1d0e:: with SMTP id l14mr29105854wms.16.1632149309798;
+        Mon, 20 Sep 2021 07:48:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy35kz+9NkjiYqLDc+67REwWW4vldY0n/NeldgiAEAGDzQeyqKQXi0xaZsmpC6C9sWGMlpdwA==
+X-Received: by 2002:a05:600c:1d0e:: with SMTP id l14mr29105835wms.16.1632149309557;
+        Mon, 20 Sep 2021 07:48:29 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c15sm17056582wrc.83.2021.09.20.07.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 07:48:28 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 0/8] KVM: Various fixes and improvements around
+ kicking vCPUs
+In-Reply-To: <20210903075141.403071-1-vkuznets@redhat.com>
+References: <20210903075141.403071-1-vkuznets@redhat.com>
+Date:   Mon, 20 Sep 2021 16:48:27 +0200
+Message-ID: <87h7ef9ubo.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zauteup23pojfqra"
-Content-Disposition: inline
-In-Reply-To: <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
---zauteup23pojfqra
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Patch6 fixes a real problem with ioapic_write_indirect() KVM does
+> out-of-bounds access to stack memory.
 
-On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee wrote:
-> Hi Maxime,
->=20
-> On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherjee wrote:
-> > > Hi Maxime,
-> > >
-> > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@cerno.tech> wrot=
-e:
-> > > >
-> > > > Hi Sudip,
-> > > >
-> > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Mukherjee wrote:
-> > > > > Hi All,
-> > > > >
-> > > >
-> > >
-> > > <snip>
-> > >
-> > > >
-> > > > >
-> > > > > You can see the complete dmesg at
-> > > > > https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
-> > > >
-> > > > What test were you running?
-> > >
-> > > Nothing particular, its just a boot test that we do every night after
-> > > pulling from torvalds/linux.git
-> >
-> > What are you booting to then?
->=20
-> I am not sure I understood the question.
-> Its an Ubuntu image. The desktop environment is gnome. And as
-> mentioned earlier, we use the HEAD of linus tree every night to boot
-> the rpi4 and test that we can login via desktop environment and that
-> there is no regression in dmesg.
+Paolo,
 
-Looking at the CI, this isn't from a RPi but from qemu?
+while the rest of the series is certainly not urgent, PATCH6 seems to be
+fixing a real problem introduced in 5.10. Would it be possible to send
+it for one of the upcoming 5.15 rcs (and probably to stable@)?
 
-What defconfig are you using? How did you generate the Ubuntu image?
-Through debootstrap? Any additional package?
+Thanks!
 
-Maxime
+-- 
+Vitaly
 
---zauteup23pojfqra
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUifAgAKCRDj7w1vZxhR
-xd3oAP4/bAIXXAxoA2sjlOzDAwGmXhGImmbdpnJ9gZCKVsBRSwEApUbVhBbD0zxp
-JnQ7qpCMqRhJzIWuAix+4x4V77d/3Qo=
-=v/vC
------END PGP SIGNATURE-----
-
---zauteup23pojfqra--
