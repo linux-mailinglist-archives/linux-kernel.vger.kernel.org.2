@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828DE411AA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62288411C65
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244152AbhITQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36476 "EHLO mail.kernel.org"
+        id S1345127AbhITRJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:09:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229672AbhITQtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:49:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A7AE61283;
-        Mon, 20 Sep 2021 16:47:53 +0000 (UTC)
+        id S1344970AbhITRG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:06:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C04596137D;
+        Mon, 20 Sep 2021 16:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156474;
-        bh=r1akpp0OlgBWPvRWUx9JtgJT8PLpL2XcHjM93vivU/0=;
+        s=korg; t=1632156920;
+        bh=z9Z8xzahhB/bShdXyaFQfx79MMuSCyy/encvtEXFn4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KSvWr1Z7Y6zquQeifPjfF0cVHGKw7z3QTYoxnWqshGpGQxFeDwUL4sg5MWYdxjhKS
-         nbx3VC5uml3w/EOhriPoi0UJtJi4KAZN1NHiVKXrIIT9SB1VC4LuPMv1vuyPr37MCA
-         LrG6+nA8I05IS3e/7ABI1iNaNgO1Yu42xphDNLs0=
+        b=xRM1b/6gKmvIN2RsNpEu2At2d7/bkDh6Meqq/ED6E7MtReZBX1nFp7w5kYMK7DLjr
+         wZri88h1EP/isyOotjKIqgHVvJEd7UlaaIzNGHDcXJViRCQJm8Ci/nJ9QU0ShZv/Tv
+         EJzAqD0wXxlh46bQYljAgkIT5CklDySsFV5VQyzU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.4 075/133] power: supply: max17042: handle fails of reading status register
+        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 104/175] MIPS: Malta: fix alignment of the devicetree buffer
 Date:   Mon, 20 Sep 2021 18:42:33 +0200
-Message-Id: <20210920163915.101183496@linuxfoundation.org>
+Message-Id: <20210920163921.476718337@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-commit 54784ffa5b267f57161eb8fbb811499f22a0a0bf upstream.
+[ Upstream commit bea6a94a279bcbe6b2cde348782b28baf12255a5 ]
 
-Reading status register can fail in the interrupt handler.  In such
-case, the regmap_read() will not store anything useful under passed
-'val' variable and random stack value will be used to determine type of
-interrupt.
+Starting with following patch MIPS Malta is not able to boot:
+| commit 79edff12060fe7772af08607eff50c0e2486c5ba
+| Author: Rob Herring <robh@kernel.org>
+| scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
 
-Handle the regmap_read() failure to avoid handling interrupt type and
-triggering changed power supply event based on random stack value.
+The reason is the alignment test added to the fdt_ro_probe_(). To fix
+this issue, we need to make sure that fdt_buf is aligned.
 
-Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device's registers")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Since the dtc patch was designed to uncover potential issue, I handle
+initial MIPS Malta patch as initial bug.
+
+Fixes: e81a8c7dabac ("MIPS: Malta: Setup RAM regions via DT")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/max17042_battery.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/mips/mti-malta/malta-dtshim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/power/max17042_battery.c
-+++ b/drivers/power/max17042_battery.c
-@@ -760,8 +760,12 @@ static irqreturn_t max17042_thread_handl
- {
- 	struct max17042_chip *chip = dev;
- 	u32 val;
-+	int ret;
-+
-+	ret = regmap_read(chip->regmap, MAX17042_STATUS, &val);
-+	if (ret)
-+		return IRQ_HANDLED;
+diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
+index c398582c316f..4fc73ee2ca9d 100644
+--- a/arch/mips/mti-malta/malta-dtshim.c
++++ b/arch/mips/mti-malta/malta-dtshim.c
+@@ -26,7 +26,7 @@
+ #define  ROCIT_CONFIG_GEN1_MEMMAP_SHIFT	8
+ #define  ROCIT_CONFIG_GEN1_MEMMAP_MASK	(0xf << 8)
  
--	regmap_read(chip->regmap, MAX17042_STATUS, &val);
- 	if ((val & STATUS_INTR_SOCMIN_BIT) ||
- 		(val & STATUS_INTR_SOCMAX_BIT)) {
- 		dev_info(&chip->client->dev, "SOC threshold INTR\n");
+-static unsigned char fdt_buf[16 << 10] __initdata;
++static unsigned char fdt_buf[16 << 10] __initdata __aligned(8);
+ 
+ /* determined physical memory size, not overridden by command line args	 */
+ extern unsigned long physical_memsize;
+-- 
+2.30.2
+
 
 
