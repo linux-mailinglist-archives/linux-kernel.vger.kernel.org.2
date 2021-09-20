@@ -2,136 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E7F41275D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113B341275F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhITUjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:39:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229697AbhITUhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22A1E604DC;
-        Mon, 20 Sep 2021 20:35:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632170138;
-        bh=voQEBfP9XzUDzXjG0DL0BLZOIItOzN1mK1/I5iKEvUE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=CavUB91uBNFDnMchx2C9ZotlZ2lp7cLpSEIrhMu8L5ixnwF1So13GBAG2Nh+Q5hbm
-         nXyvIb0HsQqjaLzgzCJwLzGBRa8jHrYs7i1JKhHraTi5sLA5fzrgB+ZZ5PaZvExidK
-         Dlab+C+lHdvYWm/UxZcjrP1ZCoA+cg/eB3DYLPv9RkaHlbBR0gdxan5awocdBsrhQ2
-         wcmiy6UAl8B8IwNhLuZu+CAIZonGpmKxMUIHoIdewx5w9qWgYlYW1xNrKpDL5XAU5l
-         fgqo37Am9WDcRCwVm6ujaOoZXvkuRsmRDGscGvldKxM523PV138P8D8eFnygxyGtAp
-         yuLscK4aXPOhQ==
-Date:   Mon, 20 Sep 2021 15:35:36 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] PCI/portdrv: Do not setup up IRQs if there are no
- users
-Message-ID: <20210920203536.GA37479@bhelgaas>
+        id S232033AbhITUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:40:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44288 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231901AbhITUib (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 16:38:31 -0400
+Date:   Mon, 20 Sep 2021 20:37:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632170222;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bu7ggJHjJvT9SrlVYGRy+KaXsW4d47NsE5akStQ6pn4=;
+        b=omB7cFyu51eUGbJPrPDrP1fHnyFpt41ogmKhOJ5WnklSQCTJ06R7MWj4v6/1bONuNhngQt
+        BJwoQo+g54l7ExEJuRQpp4nAMDgBGmharNpyi3qYJDU6ry69C0qY8RJFI35wpnIHfrlRpe
+        ypgab/qN+xDKviGc2Sadhki5Dy2sazB1lW9Z4oOI5sxBtFRxdOEfAT/VoXpuvkave6gA0z
+        Iiv1EgQN5PaGIvyThiZ2ckBPIm501S1G9CcLNYUCR35X89N9V0mNOGMM+euqT4PYtvXHED
+        vnSPOA/rxzwLrWse5kGdHZVVA6GXJvV9JAKbvasUh/cZ1QgTy9MSlmwPHh7cHw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632170222;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bu7ggJHjJvT9SrlVYGRy+KaXsW4d47NsE5akStQ6pn4=;
+        b=ekEJR/JrN12C+BdKCUBX3SVIBnMgY8ZN/DQZwDX8BP/IOQqyRTnb02Zljz2Mfm40p7IQWL
+        USJlsqcElTRgGOAw==
+From:   "tip-bot2 for Jiashuo Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/fault: Fix wrong signal when vsyscall fails with pkey
+Cc:     kernel test robot <lkp@intel.com>,
+        Jiashuo Liang <liangjs@pku.edu.cn>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210730030152.249106-1-liangjs@pku.edu.cn>
+References: <20210730030152.249106-1-liangjs@pku.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f9a13ac-8ab1-15ac-06cb-c131b488a36f@siemens.com>
+Message-ID: <163217022114.25758.13735985596257369906.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:08:10AM +0200, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
-> 
-> Avoid registering service IRQs if there is no service that offers them
-> or no driver to register a handler against them. This saves IRQ vectors
-> when they are limited (e.g. on x86) and also avoids that spurious events
-> could hit a missing handler. Such spurious events need to be generated
-> by the Jailhouse hypervisor for active MSI vectors when enabling or
-> disabling itself.
-> 
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+The following commit has been merged into the x86/urgent branch of tip:
 
-Applied to pci/portdrv for v5.16, thanks!
+Commit-ID:     d4ffd5df9d18031b6a53f934388726775b4452d3
+Gitweb:        https://git.kernel.org/tip/d4ffd5df9d18031b6a53f934388726775b4452d3
+Author:        Jiashuo Liang <liangjs@pku.edu.cn>
+AuthorDate:    Fri, 30 Jul 2021 11:01:52 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 20 Sep 2021 22:28:47 +02:00
 
-> ---
-> 
-> Changes in v2:
->  - move initialization of irqs to address test bot finding
-> 
->  drivers/pci/pcie/portdrv_core.c | 47 +++++++++++++++++++++------------
->  1 file changed, 30 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-> index e1fed6649c41..0e2556269429 100644
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -166,9 +166,6 @@ static int pcie_init_service_irqs(struct pci_dev *dev, int *irqs, int mask)
->  {
->  	int ret, i;
->  
-> -	for (i = 0; i < PCIE_PORT_DEVICE_MAXSERVICES; i++)
-> -		irqs[i] = -1;
-> -
->  	/*
->  	 * If we support PME but can't use MSI/MSI-X for it, we have to
->  	 * fall back to INTx or other interrupts, e.g., a system shared
-> @@ -312,8 +309,10 @@ static int pcie_device_init(struct pci_dev *pdev, int service, int irq)
->   */
->  int pcie_port_device_register(struct pci_dev *dev)
->  {
-> -	int status, capabilities, i, nr_service;
-> -	int irqs[PCIE_PORT_DEVICE_MAXSERVICES];
-> +	int status, capabilities, irq_services, i, nr_service;
-> +	int irqs[PCIE_PORT_DEVICE_MAXSERVICES] = {
-> +		[0 ... PCIE_PORT_DEVICE_MAXSERVICES-1] = -1
-> +	};
->  
->  	/* Enable PCI Express port device */
->  	status = pci_enable_device(dev);
-> @@ -326,18 +325,32 @@ int pcie_port_device_register(struct pci_dev *dev)
->  		return 0;
->  
->  	pci_set_master(dev);
-> -	/*
-> -	 * Initialize service irqs. Don't use service devices that
-> -	 * require interrupts if there is no way to generate them.
-> -	 * However, some drivers may have a polling mode (e.g. pciehp_poll_mode)
-> -	 * that can be used in the absence of irqs.  Allow them to determine
-> -	 * if that is to be used.
-> -	 */
-> -	status = pcie_init_service_irqs(dev, irqs, capabilities);
-> -	if (status) {
-> -		capabilities &= PCIE_PORT_SERVICE_HP;
-> -		if (!capabilities)
-> -			goto error_disable;
-> +
-> +	irq_services = 0;
-> +	if (IS_ENABLED(CONFIG_PCIE_PME))
-> +		irq_services |= PCIE_PORT_SERVICE_PME;
-> +	if (IS_ENABLED(CONFIG_PCIEAER))
-> +		irq_services |= PCIE_PORT_SERVICE_AER;
-> +	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
-> +		irq_services |= PCIE_PORT_SERVICE_HP;
-> +	if (IS_ENABLED(CONFIG_PCIE_DPC))
-> +		irq_services |= PCIE_PORT_SERVICE_DPC;
-> +	irq_services &= capabilities;
-> +
-> +	if (irq_services) {
-> +		/*
-> +		 * Initialize service irqs. Don't use service devices that
-> +		 * require interrupts if there is no way to generate them.
-> +		 * However, some drivers may have a polling mode (e.g.
-> +		 * pciehp_poll_mode) that can be used in the absence of irqs.
-> +		 * Allow them to determine if that is to be used.
-> +		 */
-> +		status = pcie_init_service_irqs(dev, irqs, irq_services);
-> +		if (status) {
-> +			irq_services &= PCIE_PORT_SERVICE_HP;
-> +			if (!irq_services)
-> +				goto error_disable;
-> +		}
->  	}
->  
->  	/* Allocate child services if any */
-> -- 
-> 2.31.1
+x86/fault: Fix wrong signal when vsyscall fails with pkey
+
+The function __bad_area_nosemaphore() calls kernelmode_fixup_or_oops()
+with the parameter @signal being actually @pkey, which will send a
+signal numbered with the argument in @pkey.
+
+This bug can be triggered when the kernel fails to access user-given
+memory pages that are protected by a pkey, so it can go down the
+do_user_addr_fault() path and pass the !user_mode() check in
+__bad_area_nosemaphore().
+
+Most cases will simply run the kernel fixup code to make an -EFAULT. But
+when another condition current->thread.sig_on_uaccess_err is met, which
+is only used to emulate vsyscall, the kernel will generate the wrong
+signal.
+
+Add a new parameter @pkey to kernelmode_fixup_or_oops() to fix this.
+
+ [ bp: Massage commit message, fix build error as reported by the 0day
+   bot: https://lkml.kernel.org/r/202109202245.APvuT8BX-lkp@intel.com ]
+
+Fixes: 5042d40a264c ("x86/fault: Bypass no_context() for implicit kernel faults from usermode")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lkml.kernel.org/r/20210730030152.249106-1-liangjs@pku.edu.cn
+---
+ arch/x86/include/asm/pkeys.h |  2 --
+ arch/x86/mm/fault.c          | 26 ++++++++++++++++++--------
+ include/linux/pkeys.h        |  2 ++
+ 3 files changed, 20 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/include/asm/pkeys.h b/arch/x86/include/asm/pkeys.h
+index 5c7bcaa..1d5f14a 100644
+--- a/arch/x86/include/asm/pkeys.h
++++ b/arch/x86/include/asm/pkeys.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_X86_PKEYS_H
+ #define _ASM_X86_PKEYS_H
+ 
+-#define ARCH_DEFAULT_PKEY	0
+-
+ /*
+  * If more than 16 keys are ever supported, a thorough audit
+  * will be necessary to ensure that the types that store key
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index b2eefde..84a2c8c 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -710,7 +710,8 @@ oops:
+ 
+ static noinline void
+ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+-			 unsigned long address, int signal, int si_code)
++			 unsigned long address, int signal, int si_code,
++			 u32 pkey)
+ {
+ 	WARN_ON_ONCE(user_mode(regs));
+ 
+@@ -735,8 +736,12 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+ 
+ 			set_signal_archinfo(address, error_code);
+ 
+-			/* XXX: hwpoison faults will set the wrong code. */
+-			force_sig_fault(signal, si_code, (void __user *)address);
++			if (si_code == SEGV_PKUERR) {
++				force_sig_pkuerr((void __user *)address, pkey);
++			} else {
++				/* XXX: hwpoison faults will set the wrong code. */
++				force_sig_fault(signal, si_code, (void __user *)address);
++			}
+ 		}
+ 
+ 		/*
+@@ -798,7 +803,8 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 	struct task_struct *tsk = current;
+ 
+ 	if (!user_mode(regs)) {
+-		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
++		kernelmode_fixup_or_oops(regs, error_code, address,
++					 SIGSEGV, si_code, pkey);
+ 		return;
+ 	}
+ 
+@@ -930,7 +936,8 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ {
+ 	/* Kernel mode? Handle exceptions or die: */
+ 	if (!user_mode(regs)) {
+-		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
++		kernelmode_fixup_or_oops(regs, error_code, address,
++					 SIGBUS, BUS_ADRERR, ARCH_DEFAULT_PKEY);
+ 		return;
+ 	}
+ 
+@@ -1396,7 +1403,8 @@ good_area:
+ 		 */
+ 		if (!user_mode(regs))
+ 			kernelmode_fixup_or_oops(regs, error_code, address,
+-						 SIGBUS, BUS_ADRERR);
++						 SIGBUS, BUS_ADRERR,
++						 ARCH_DEFAULT_PKEY);
+ 		return;
+ 	}
+ 
+@@ -1416,7 +1424,8 @@ good_area:
+ 		return;
+ 
+ 	if (fatal_signal_pending(current) && !user_mode(regs)) {
+-		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0);
++		kernelmode_fixup_or_oops(regs, error_code, address,
++					 0, 0, ARCH_DEFAULT_PKEY);
+ 		return;
+ 	}
+ 
+@@ -1424,7 +1433,8 @@ good_area:
+ 		/* Kernel mode? Handle exceptions or die: */
+ 		if (!user_mode(regs)) {
+ 			kernelmode_fixup_or_oops(regs, error_code, address,
+-						 SIGSEGV, SEGV_MAPERR);
++						 SIGSEGV, SEGV_MAPERR,
++						 ARCH_DEFAULT_PKEY);
+ 			return;
+ 		}
+ 
+diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
+index 6beb26b..86be8bf 100644
+--- a/include/linux/pkeys.h
++++ b/include/linux/pkeys.h
+@@ -4,6 +4,8 @@
+ 
+ #include <linux/mm.h>
+ 
++#define ARCH_DEFAULT_PKEY	0
++
+ #ifdef CONFIG_ARCH_HAS_PKEYS
+ #include <asm/pkeys.h>
+ #else /* ! CONFIG_ARCH_HAS_PKEYS */
