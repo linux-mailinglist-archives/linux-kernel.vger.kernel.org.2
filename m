@@ -2,397 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73064127F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47FE4127F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238336AbhITV0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:26:14 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:36843 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238241AbhITVYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:24:11 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from asmaa@mellanox.com)
-        with SMTP; 21 Sep 2021 00:22:39 +0300
-Received: from farm-0002.mtbu.labs.mlnx (farm-0002.mtbu.labs.mlnx [10.15.2.32])
-        by mtbu-labmailer.labs.mlnx (8.14.4/8.14.4) with ESMTP id 18KLMd2Z030017;
-        Mon, 20 Sep 2021 17:22:39 -0400
-Received: (from asmaa@localhost)
-        by farm-0002.mtbu.labs.mlnx (8.14.7/8.13.8/Submit) id 18KLMdLu019407;
-        Mon, 20 Sep 2021 17:22:39 -0400
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Asmaa Mnebhi <asmaa@nvidia.com>, andrew@lunn.ch, kuba@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
-Subject: [PATCH v2 2/2] net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
-Date:   Mon, 20 Sep 2021 17:22:27 -0400
-Message-Id: <20210920212227.19358-3-asmaa@nvidia.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210920212227.19358-1-asmaa@nvidia.com>
-References: <20210920212227.19358-1-asmaa@nvidia.com>
+        id S240211AbhITV0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232600AbhITVYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 17:24:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 394AC61222;
+        Mon, 20 Sep 2021 21:23:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632172990;
+        bh=MWKz65NbTW8fPRgrWrDN8sdBNNJndHt+cM7XOeHsa2Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nP6WVqDco09fGM+AQF6RKrku7CELlGA8/2hmlPr5jclD7SczrQVXPtWyKVCMTQ5aV
+         t1VHBjnlpw4Z5HnV0yeHDyWFPFOxzxvkgpP12JjjxL31EHpEmtM5cVllY2XVIXkIK0
+         yFawhPSZ3fVCFri/gsDuPfvpAw8MpNnpTckMWmo+NAv3oDo1SLKtmESpfQNKNbQXwV
+         yrnEMjLNQ/Lznl+Sm299PvQDtLeyzuidsugzHL5A/LBM6b9Pber0Nlp2yTj9RHYQeb
+         NwZVXSf1MaHRdyCPT0lKSFTR6QM77JIvE3Nh9mt7hLDGu5KG6kswZdhvuHMurVkb+v
+         Bl7044s/qshUw==
+Received: by mail-ot1-f52.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso25444369otv.12;
+        Mon, 20 Sep 2021 14:23:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531ujGNEwEkeSon1evbpYEGuU77oL0OMmlLkqvwhFJQpbhd4FnR7
+        EAMCfYG9qFin89SKA13Uw330waiNODR4zyYcA1s=
+X-Google-Smtp-Source: ABdhPJwe2bGLdG7shGuG06KXpjs89eaPMj0HGrSC4sTxI35rtCgnSUjuEt+gih3eZH4Ibh+qq7LI4y+s0fcwtTUi3nU=
+X-Received: by 2002:a05:6830:3189:: with SMTP id p9mr19828549ots.147.1632172989341;
+ Mon, 20 Sep 2021 14:23:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1632069436-25075-1-git-send-email-ashimida@linux.alibaba.com>
+ <CAMj1kXGQ+x243wK-8NP+kxs2dCgSa+MD5+Tv3Xzo3510Td1t3Q@mail.gmail.com> <bbe282c6-64f4-cd95-5d64-8266d52ee7a1@linux.alibaba.com>
+In-Reply-To: <bbe282c6-64f4-cd95-5d64-8266d52ee7a1@linux.alibaba.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 20 Sep 2021 23:22:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGr7ZzBmr-SrxmBsqWvn+NSPC_VKAr5gqx1WN-91i7wpg@mail.gmail.com>
+Message-ID: <CAMj1kXGr7ZzBmr-SrxmBsqWvn+NSPC_VKAr5gqx1WN-91i7wpg@mail.gmail.com>
+Subject: Re: [PATCH] [RFC/RFT]SCS:Add gcc plugin to support Shadow Call Stack
+To:     Dan Li <ashimida@linux.alibaba.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Colin King <colin.king@canonical.com>, andreyknvl@gmail.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
+        luc.vanoostenryck@gmail.com, Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the GPIO driver (gpio-mlxbf2.c) supports interrupt
-handling, replace the custom routine with simple IRQ
-request.
+On Mon, 20 Sept 2021 at 20:53, Dan Li <ashimida@linux.alibaba.com> wrote:
+>
+> Hi Ard,
+>
+> Thanks for your comment.
+>
+> I pasted a copy of the config code in my last email, could you please check it again?
+>
+> On 9/20/21 3:18 PM, Ard Biesheuvel wrote:
+> > Hi Dan,
+> >
+> > On Sun, 19 Sept 2021 at 18:37, Dan Li <ashimida@linux.alibaba.com> wrote:
+> >>
+> >> The Clang-based shadow call stack protection has been integrated into the
+> >> mainline, but kernel compiled by gcc cannot enable this feature for now.
+> >>
+> >> This Patch supports gcc-based SCS protection by adding a plugin.
+> >>
+> >
+> > Thanks for working on this. I had a stab at this myself about 2 years
+> > ago and couldn't make it work.
+> >
+> >> For each function that x30 will be pushed onto the stack during execution,
+> >> this plugin:
+> >> 1) insert "str x30, [x18], #8" at the entry of the function to save x30
+> >>     to current SCS
+> >> 2) insert "ldr x30, [x18, #-8]!"  before the exit of this function to
+> >>     restore x30
+> >>
+> >
+> > This logic seems sound to me, but it would be nice if someone more
+> > familiar with Clang's implementation could confirm that it is really
+> > this simple.
+> >
+> > Looking at your plugin, there is an issue with tail calls, and I don't
+> > think Clang simply disables those altogether as well, right?
+>
+> I am not familiar with clang's code, the logic comes from clang's description and the
+> disassembled binary code for now, so it may be different from the actual situation.
+>
 
-Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
----
- .../net/ethernet/mellanox/mlxbf_gige/Makefile |   1 -
- .../ethernet/mellanox/mlxbf_gige/mlxbf_gige.h |  12 -
- .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
- .../mellanox/mlxbf_gige/mlxbf_gige_main.c     |  22 +-
- 4 files changed, 9 insertions(+), 238 deletions(-)
- delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
+OK
 
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile b/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
-index e57c1375f236..a97c2bef846b 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
-@@ -3,7 +3,6 @@
- obj-$(CONFIG_MLXBF_GIGE) += mlxbf_gige.o
- 
- mlxbf_gige-y := mlxbf_gige_ethtool.o \
--		mlxbf_gige_gpio.o \
- 		mlxbf_gige_intr.o \
- 		mlxbf_gige_main.o \
- 		mlxbf_gige_mdio.o \
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
-index e3509e69ed1c..86826a70f9dd 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
-@@ -51,11 +51,6 @@
- #define MLXBF_GIGE_ERROR_INTR_IDX       0
- #define MLXBF_GIGE_RECEIVE_PKT_INTR_IDX 1
- #define MLXBF_GIGE_LLU_PLU_INTR_IDX     2
--#define MLXBF_GIGE_PHY_INT_N            3
--
--#define MLXBF_GIGE_MDIO_DEFAULT_PHY_ADDR 0x3
--
--#define MLXBF_GIGE_DEFAULT_PHY_INT_GPIO 12
- 
- struct mlxbf_gige_stats {
- 	u64 hw_access_errors;
-@@ -81,11 +76,7 @@ struct mlxbf_gige {
- 	struct platform_device *pdev;
- 	void __iomem *mdio_io;
- 	struct mii_bus *mdiobus;
--	void __iomem *gpio_io;
--	struct irq_domain *irqdomain;
--	u32 phy_int_gpio_mask;
- 	spinlock_t lock;      /* for packet processing indices */
--	spinlock_t gpio_lock; /* for GPIO bus access */
- 	u16 rx_q_entries;
- 	u16 tx_q_entries;
- 	u64 *tx_wqe_base;
-@@ -184,7 +175,4 @@ int mlxbf_gige_poll(struct napi_struct *napi, int budget);
- extern const struct ethtool_ops mlxbf_gige_ethtool_ops;
- void mlxbf_gige_update_tx_wqe_next(struct mlxbf_gige *priv);
- 
--int mlxbf_gige_gpio_init(struct platform_device *pdev, struct mlxbf_gige *priv);
--void mlxbf_gige_gpio_free(struct mlxbf_gige *priv);
--
- #endif /* !defined(__MLXBF_GIGE_H__) */
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
-deleted file mode 100644
-index a8d966db5715..000000000000
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
-+++ /dev/null
-@@ -1,212 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
--
--/* Initialize and handle GPIO interrupt triggered by INT_N PHY signal.
-- * This GPIO interrupt triggers the PHY state machine to bring the link
-- * up/down.
-- *
-- * Copyright (C) 2021 NVIDIA CORPORATION & AFFILIATES
-- */
--
--#include <linux/acpi.h>
--#include <linux/bitfield.h>
--#include <linux/device.h>
--#include <linux/err.h>
--#include <linux/gpio/driver.h>
--#include <linux/interrupt.h>
--#include <linux/io.h>
--#include <linux/irq.h>
--#include <linux/irqdomain.h>
--#include <linux/irqreturn.h>
--#include <linux/platform_device.h>
--#include <linux/property.h>
--
--#include "mlxbf_gige.h"
--#include "mlxbf_gige_regs.h"
--
--#define MLXBF_GIGE_GPIO_CAUSE_FALL_EN		0x48
--#define MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0	0x80
--#define MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0		0x94
--#define MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE	0x98
--
--static void mlxbf_gige_gpio_enable(struct mlxbf_gige *priv)
--{
--	unsigned long flags;
--	u32 val;
--
--	spin_lock_irqsave(&priv->gpio_lock, flags);
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--
--	/* The INT_N interrupt level is active low.
--	 * So enable cause fall bit to detect when GPIO
--	 * state goes low.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
--
--	/* Enable PHY interrupt by setting the priority level */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	spin_unlock_irqrestore(&priv->gpio_lock, flags);
--}
--
--static void mlxbf_gige_gpio_disable(struct mlxbf_gige *priv)
--{
--	unsigned long flags;
--	u32 val;
--
--	spin_lock_irqsave(&priv->gpio_lock, flags);
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	val &= ~priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
--	spin_unlock_irqrestore(&priv->gpio_lock, flags);
--}
--
--static irqreturn_t mlxbf_gige_gpio_handler(int irq, void *ptr)
--{
--	struct mlxbf_gige *priv;
--	u32 val;
--
--	priv = ptr;
--
--	/* Check if this interrupt is from PHY device.
--	 * Return if it is not.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0);
--	if (!(val & priv->phy_int_gpio_mask))
--		return IRQ_NONE;
--
--	/* Clear interrupt when done, otherwise, no further interrupt
--	 * will be triggered.
--	 */
--	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--	val |= priv->phy_int_gpio_mask;
--	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
--
--	generic_handle_irq(priv->phy_irq);
--
--	return IRQ_HANDLED;
--}
--
--static void mlxbf_gige_gpio_mask(struct irq_data *irqd)
--{
--	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
--
--	mlxbf_gige_gpio_disable(priv);
--}
--
--static void mlxbf_gige_gpio_unmask(struct irq_data *irqd)
--{
--	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
--
--	mlxbf_gige_gpio_enable(priv);
--}
--
--static struct irq_chip mlxbf_gige_gpio_chip = {
--	.name			= "mlxbf_gige_phy",
--	.irq_mask		= mlxbf_gige_gpio_mask,
--	.irq_unmask		= mlxbf_gige_gpio_unmask,
--};
--
--static int mlxbf_gige_gpio_domain_map(struct irq_domain *d,
--				      unsigned int irq,
--				      irq_hw_number_t hwirq)
--{
--	irq_set_chip_data(irq, d->host_data);
--	irq_set_chip_and_handler(irq, &mlxbf_gige_gpio_chip, handle_simple_irq);
--	irq_set_noprobe(irq);
--
--	return 0;
--}
--
--static const struct irq_domain_ops mlxbf_gige_gpio_domain_ops = {
--	.map    = mlxbf_gige_gpio_domain_map,
--	.xlate	= irq_domain_xlate_twocell,
--};
--
--#ifdef CONFIG_ACPI
--static int mlxbf_gige_gpio_resources(struct acpi_resource *ares,
--				     void *data)
--{
--	struct acpi_resource_gpio *gpio;
--	u32 *phy_int_gpio = data;
--
--	if (ares->type == ACPI_RESOURCE_TYPE_GPIO) {
--		gpio = &ares->data.gpio;
--		*phy_int_gpio = gpio->pin_table[0];
--	}
--
--	return 1;
--}
--#endif
--
--void mlxbf_gige_gpio_free(struct mlxbf_gige *priv)
--{
--	irq_dispose_mapping(priv->phy_irq);
--	irq_domain_remove(priv->irqdomain);
--}
--
--int mlxbf_gige_gpio_init(struct platform_device *pdev,
--			 struct mlxbf_gige *priv)
--{
--	struct device *dev = &pdev->dev;
--	struct resource *res;
--	u32 phy_int_gpio = 0;
--	int ret;
--
--	LIST_HEAD(resources);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, MLXBF_GIGE_RES_GPIO0);
--	if (!res)
--		return -ENODEV;
--
--	priv->gpio_io = devm_ioremap(dev, res->start, resource_size(res));
--	if (!priv->gpio_io)
--		return -ENOMEM;
--
--#ifdef CONFIG_ACPI
--	ret = acpi_dev_get_resources(ACPI_COMPANION(dev),
--				     &resources, mlxbf_gige_gpio_resources,
--				     &phy_int_gpio);
--	acpi_dev_free_resource_list(&resources);
--	if (ret < 0 || !phy_int_gpio) {
--		dev_err(dev, "Error retrieving the gpio phy pin");
--		return -EINVAL;
--	}
--#endif
--
--	priv->phy_int_gpio_mask = BIT(phy_int_gpio);
--
--	mlxbf_gige_gpio_disable(priv);
--
--	priv->hw_phy_irq = platform_get_irq(pdev, MLXBF_GIGE_PHY_INT_N);
--
--	priv->irqdomain = irq_domain_add_simple(NULL, 1, 0,
--						&mlxbf_gige_gpio_domain_ops,
--						priv);
--	if (!priv->irqdomain) {
--		dev_err(dev, "Failed to add IRQ domain\n");
--		return -ENOMEM;
--	}
--
--	priv->phy_irq = irq_create_mapping(priv->irqdomain, 0);
--	if (!priv->phy_irq) {
--		irq_domain_remove(priv->irqdomain);
--		priv->irqdomain = NULL;
--		dev_err(dev, "Error mapping PHY IRQ\n");
--		return -EINVAL;
--	}
--
--	ret = devm_request_irq(dev, priv->hw_phy_irq, mlxbf_gige_gpio_handler,
--			       IRQF_ONESHOT | IRQF_SHARED, "mlxbf_gige_phy", priv);
--	if (ret) {
--		dev_err(dev, "Failed to request PHY IRQ");
--		mlxbf_gige_gpio_free(priv);
--		return ret;
--	}
--
--	return ret;
--}
-diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-index 3e85b17f5857..4382ec8f7d64 100644
---- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-+++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
-@@ -273,8 +273,8 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	void __iomem *llu_base;
- 	void __iomem *plu_base;
- 	void __iomem *base;
-+	int addr, phy_irq;
- 	u64 control;
--	int addr;
- 	int err;
- 
- 	base = devm_platform_ioremap_resource(pdev, MLXBF_GIGE_RES_MAC);
-@@ -309,20 +309,12 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	priv->pdev = pdev;
- 
- 	spin_lock_init(&priv->lock);
--	spin_lock_init(&priv->gpio_lock);
- 
- 	/* Attach MDIO device */
- 	err = mlxbf_gige_mdio_probe(pdev, priv);
- 	if (err)
- 		return err;
- 
--	err = mlxbf_gige_gpio_init(pdev, priv);
--	if (err) {
--		dev_err(&pdev->dev, "PHY IRQ initialization failed\n");
--		mlxbf_gige_mdio_remove(priv);
--		return -ENODEV;
--	}
--
- 	priv->base = base;
- 	priv->llu_base = llu_base;
- 	priv->plu_base = plu_base;
-@@ -343,6 +335,12 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	priv->rx_irq = platform_get_irq(pdev, MLXBF_GIGE_RECEIVE_PKT_INTR_IDX);
- 	priv->llu_plu_irq = platform_get_irq(pdev, MLXBF_GIGE_LLU_PLU_INTR_IDX);
- 
-+	phy_irq = acpi_dev_gpio_irq_get_by(ACPI_COMPANION(&pdev->dev), "phy-gpios", 0);
-+	if (phy_irq < 0) {
-+		dev_err(&pdev->dev, "Error getting PHY irq. Use polling instead");
-+		phy_irq = PHY_POLL;
-+	}
-+
- 	phydev = phy_find_first(priv->mdiobus);
- 	if (!phydev) {
- 		err = -ENODEV;
-@@ -350,8 +348,8 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	}
- 
- 	addr = phydev->mdio.addr;
--	priv->mdiobus->irq[addr] = priv->phy_irq;
--	phydev->irq = priv->phy_irq;
-+	priv->mdiobus->irq[addr] = phy_irq;
-+	phydev->irq = phy_irq;
- 
- 	err = phy_connect_direct(netdev, phydev,
- 				 mlxbf_gige_adjust_link,
-@@ -387,7 +385,6 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
- 	return 0;
- 
- out:
--	mlxbf_gige_gpio_free(priv);
- 	mlxbf_gige_mdio_remove(priv);
- 	return err;
- }
-@@ -398,7 +395,6 @@ static int mlxbf_gige_remove(struct platform_device *pdev)
- 
- 	unregister_netdev(priv->netdev);
- 	phy_disconnect(priv->netdev->phydev);
--	mlxbf_gige_gpio_free(priv);
- 	mlxbf_gige_mdio_remove(priv);
- 	platform_set_drvdata(pdev, NULL);
- 
--- 
-2.30.1
+> The tail call could be handled (theoretically), and I will try to solve the issue in
+> the next version.
+> >
+> >>   ifdef CONFIG_SHADOW_CALL_STACK
+> >> -CC_FLAGS_SCS   := -fsanitize=shadow-call-stack
+> >> +CC_FLAGS_SCS   := $(if $(CONFIG_CC_IS_CLANG),-fsanitize=shadow-call-stack,)
+> >
+> > This variable should contain whatever needs to be added to the
+> > compiler comamand line
+>    In the new code, an 'enable' option is added here to enable the plugin
+> >>   KBUILD_CFLAGS  += $(CC_FLAGS_SCS)
+> >>   export CC_FLAGS_SCS
+> >>   endif
+> >> diff --git a/arch/Kconfig b/arch/Kconfig
+> >> index 98db634..81ff127 100644
+> >> --- a/arch/Kconfig
+> >> +++ b/arch/Kconfig
+> >> @@ -594,7 +594,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
+> >>
+> >>   config SHADOW_CALL_STACK
+> >>          bool "Clang Shadow Call Stack"
+> >> -       depends on CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK
+> >> +       depends on (CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK) || GCC_PLUGIN_SHADOW_CALL_STACK
+> >
+> > This logic needs to be defined in such a way that a builtin
+> > implementation provided by GCC will take precedence once it becomes
+> > available.
+> >
+>    In new code, if gcc supports SCS in the future, the plugin will be closed due to
+>    CC_HAVE_SHADOW_CALL_STACK is true.
+> >>          depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
+> >>          help
+> >>            This option enables Clang's Shadow Call Stack, which uses a
+> >> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+> >> index ab9eb4c..2534195e 100644
+> >> --- a/scripts/gcc-plugins/Kconfig
+> >> +++ b/scripts/gcc-plugins/Kconfig
+> >> @@ -19,6 +19,14 @@ menuconfig GCC_PLUGINS
+> >>
+> >>   if GCC_PLUGINS
+> >>
+> >> +config GCC_PLUGIN_SHADOW_CALL_STACK
+> >> +       bool "GCC Shadow Call Stack plugin"
+> >> +       select SHADOW_CALL_STACK
+> >
+> > You shouldn't 'select' something like this if the symbol has its own
+> > dependencies which may be unsatisfied, as this causes a Kconfig
+> > warning. Also, en/disabling shadow call stacks for the architecture
+> > should be done from the arch's 'kernel features' menu, it shouldn't be
+> > buried in the GCC plugins menu.
+>     I removed 'select' in the new version.
+>     SCS's enable is changed to rely on CONFIG_SHADOW_CALL_STACK in arch/kernel,
+>     the GCC_PLUGIN_SHADOW_CALL_STACK config is just to add a usable platform to it.
+> >> +       help
+> >> +         This plugin is used to support the kernel CONFIG_SHADOW_CALL_STACK
+> >> +         compiled by gcc. Its principle is basically the same as that of CLANG.
+> >> +         For more information, please refer to "config SHADOW_CALL_STACK"
+> >> +
+> >> +__visible int plugin_is_GPL_compatible;
+> >> +
+> >> +static struct plugin_info arm64_scs_plugin_info = {
+> >> +       .version        = "20210926vanilla",
+> >
+> > I will respond to this obvious invitation at bikeshedding by saying
+> > that 'salted caramel' is clearly the superior flavor of ice cream.
+>    I'm sorry, as a non-native English speaker, I think I might not understand
+>    what you mean here. My intention is to say that this is the first/initial
+>    version, do I miss something?
 
+It was a joke - don't worry about it.
+
+> >> +       .help           = "disable\tdo not activate plugin\n"
+> >> +                         "verbose\tprint all debug infos\n",
+> >> +};
+> >> +static unsigned int arm64_scs_execute(void)
+> >> +{
+> >> +       rtx_insn *insn;
+> >> +       enum scs_state state = SCS_SEARCHING_FIRST_INSN;
+> >> +
+> >> +       for (insn = get_insns(); insn; insn = NEXT_INSN(insn)) {
+> >> +               rtx mark = NULL;
+> >> +
+> >> +               switch (GET_CODE(insn)) {
+> >> +               case NOTE:
+> >> +               case BARRIER:
+> >> +               case CODE_LABEL:
+> >> +               case INSN:
+> >> +               case DEBUG_INSN:
+> >> +               case JUMP_INSN:
+> >> +               case JUMP_TABLE_DATA:
+> >> +                       break;
+> >> +               case CALL_INSN:
+> >> +                       if (SIBLING_CALL_P(insn)) {
+> >> +                               error(G_("Sibling call found in func:%s, file:%s\n"),
+> >> +                                               get_name(current_function_decl),
+> >> +                                               main_input_filename);
+> >> +                               gcc_unreachable();
+> >> +                       }
+> >
+> > Sibling calls are an important optimization, not only for performance
+> > but also for stack utilization, so this needs to be fixed. Can you
+> > elaborate on the issue you are working around here?
+> >
+>    Since the ARM64 has disabled sibling calls (-fno-optimize-sibling-calls) by default,
+>    there is almost no sibling call appear in the kernel I encountered.
+
+What do you mean this is disabled by default? Is that a compiler
+setting or a Linux setting?
+
+
+
+
+>    So I did not provide support for it, and I will fix this issue in the next version.
+> >> +                       break;
+> >> +               default:
+> >> +                       error(G_("Invalid rtx_insn seqs found with type:%s in func:%s, file:%s\n"),
+> >> +                                       GET_RTX_NAME(GET_CODE(insn)),
+> >> +                                       get_name(current_function_decl), main_input_filename);
+> >> +                       gcc_unreachable();
+> >> +                       break;
+> >> +               }
+> >> +               /* A function return insn was found */
+> >> +               if (ANY_RETURN_P(PATTERN(insn))) {
+> >> +                       /* There should be an epilogue before 'RETURN' inst */
+> >> +                       if (GET_CODE(PATTERN(insn)) == RETURN) {
+> >> +                               gcc_assert(state == SCS_FOUND_ONE_EPILOGUE_NOTE);
+> >> +                               state = SCS_SEARCHING_FUNC_RETURN;
+> >> +                       }
+> >> +
+> >> +                       /* There is no epilogue before 'SIMPLE_RETURN' insn */
+> >> +                       if (GET_CODE(PATTERN(insn)) == SIMPLE_RETURN)
+> >> +                               gcc_assert(state == SCS_SEARCHING_FUNC_RETURN);
+> >
+> > These assert()s will crash the compiler if the RTL doesn't have quite
+> > the right structure, correct? Could we issue a warning instead, saying
+> > function 'x' could not be handled, and back out gracefully (i.e.,
+> > don't insert the push either)?
+> >
+>     Sure, I think I need to dynamically mark all instrumented positions here,
+>     and then confirm that the instruction sequence is correct before inserting in batches.
+
+Yes, that sounds more suitable.
+
+> >> +
+> >> +                       /* Insert scs pop instruction(s) before return insn */
+> >> +                       mark = gen_scs_pop(RESERVED_LOCATION_COUNT);
+> >> +                       emit_insn_before(mark, insn);
+> >> +               }
+> >> +       }
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static tree handle_noscs_attribute(tree *node, tree name, tree args __unused, int flags,
+> >> +               bool *no_add_attrs)
+> >> +{
+> >> +       *no_add_attrs = true;
+> >> +
+> >> +       gcc_assert(DECL_P(*node));
+> >> +       switch (TREE_CODE(*node)) {
+> >> +       default:
+> >> +               error(G_("%qE attribute can be applies to function decl only (%qE)"), name, *node);
+> >> +               gcc_unreachable();
+> >> +
+> >> +       case FUNCTION_DECL:     /* the attribute is only used for function declarations */
+> >> +               break;
+> >> +       }
+> >> +
+> >> +       *no_add_attrs = false;
+> >
+> > I'm not familiar with this idiom: what is the purpose of setting this
+> > to true initially and then to false again when the expected flow
+> > through the function is to do nothing at all?
+> >
+>     This is my mistake, at the beginning default case only return 0 directly after a warning;
+>     At that time, if *no_add_attrs is true, the corresponding attribute will not be added to 'node',
+>     and it means __noscs attribute can only be added for FUNCTION_DECL.
+>     For now, *no_add_attrs = true; is useless, it should be deleted.
+>
+>     But if, as you said, try to back out gracefully, is it better to report warning in the default case?
+
+error() just terminates the compile with an error, right? I think that is fine.
+
+
+> >> +       return NULL_TREE;
+> >> +}
+> >> +
+> >> +static void (*old_override_options_after_change)(void);
+> >> +
+> >> +static void scs_override_options_after_change(void)
+> >> +{
+> >> +       if (old_override_options_after_change)
+> >> +               old_override_options_after_change();
+> >> +
+> >> +       flag_optimize_sibling_calls = 0;
+> >> +}
+> >> +
+> >> +static void callback_before_start_unit(void *gcc_data __unused, void *user_data __unused)
+> >> +{
+> >> +       /* Turn off sibling call to avoid inserting duplicate scs pop codes */
+> >
+> > Sibling calls will restore x30 before the calk, right? So where do the
+> > duplicate pops come from?
+>     a sibling call could be like:
+>     stp     x29, x30, [sp, #-xx]!
+>     .......
+>     ldp     x29, x30, [sp], #xx
+>     ---> p1
+>     b       callee
+>     ldp     x29, x30, [sp], #xx
+>     ---> p2
+>     ret
+>
+>     What i mean here is if we need to insert, the scs pop code should be insert in both p1/p2,
+
+Yes, so you have to identify the 'b' insn as a function return so it
+is treated the same.
+
+> >
+> >> +       old_override_options_after_change = targetm.override_options_after_change;
+> >> +       targetm.override_options_after_change = scs_override_options_after_change;
+> >> +
+> >> +       flag_optimize_sibling_calls = 0;
+> >
+> > Do we need this twice?
+>    I think so, there are functions similar to push/pop in gcc (cl_optimization_restore/save)
+>    * callback_before_start_unit is used to set zero during initialization
+>    * scs_override_options_after_change is used to reset to 0 after a 'push' occurs
+
+OK
+
+> >> +}
+> >> +
+> >> +#define PASS_NAME arm64_scs
+> >> +#define TODO_FLAGS_FINISH (TODO_dump_func | TODO_verify_rtl_sharing)
+> >> +#include "gcc-generate-rtl-pass.h"
+> >> +
+> >> +__visible int plugin_init(struct plugin_name_args *plugin_info, struct plugin_gcc_version *version)
+> >> +{
+> >> +       int i;
+> >> +       const char * const plugin_name = plugin_info->base_name;
+> >> +       const int argc = plugin_info->argc;
+> >> +       const struct plugin_argument * const argv = plugin_info->argv;
+> >> +       bool enable = true;
+> >> +
+> >> +       PASS_INFO(arm64_scs, "shorten", 1, PASS_POS_INSERT_BEFORE);
+> >> +
+> >> +       if (!plugin_default_version_check(version, &gcc_version)) {
+> >> +               error(G_("Incompatible gcc/plugin versions"));
+> >> +               return 1;
+> >> +       }
+> >> +
+> >> +       if (strncmp(lang_hooks.name, "GNU C", 5) && !strncmp(lang_hooks.name, "GNU C+", 6)) {
+> >> +               inform(UNKNOWN_LOCATION, G_("%s supports C only, not %s"), plugin_name,
+> >> +                               lang_hooks.name);
+> >> +               enable = false;
+> >> +       }
+> >> +
+> >
+> > Do we need this check?
+>    This code is copied from structleak_plugin.c, I misunderstood the meaning here, and I will delete it later
+
+OK. Kees should correct me if I'm wrong, but we use GCC in the kernel
+only to compile C files, so this check should be redundant.
+
+
+> >
+> >> +       for (i = 0; i < argc; ++i) {
+> >> +               if (!strcmp(argv[i].key, "disable")) {
+> >> +                       enable = false;
+> >> +                       continue;
+> >> +               }
+> >> +               if (!strcmp(argv[i].key, "verbose")) {
+> >> +                       verbose = true;
+> >> +                       continue;
+> >> +               }
+> >> +               error(G_("unknown option '-fplugin-arg-%s-%s'"), plugin_name, argv[i].key);
+> >> +       }
+> >> +
+> >> +       register_callback(plugin_name, PLUGIN_INFO, NULL, &arm64_scs_plugin_info);
+> >> +
+> >> +       register_callback(plugin_name, PLUGIN_ATTRIBUTES, scs_register_attributes, NULL);
+> >> +
+> >> +       if (!enable) {
+> >> +               v_info("Plugin disabled for file:%s\n", main_input_filename);
+> >> +               return 0;
+> >> +       }
+> >> +
+> >> +       register_callback(plugin_name, PLUGIN_START_UNIT, callback_before_start_unit, NULL);
+> >> +
+> >> +       register_callback(plugin_name, PLUGIN_PASS_MANAGER_SETUP, NULL, &arm64_scs_pass_info);
+> >> +
+> >> +       return 0;
+> >> +}
+> >> --
+> >> 2.7.4
+> >>
