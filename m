@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E64411F5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CEB411CD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352614AbhITRkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:40:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
+        id S1346139AbhITRNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:13:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348235AbhITRiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:38:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3957961B3C;
-        Mon, 20 Sep 2021 17:07:06 +0000 (UTC)
+        id S1347178AbhITRLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:11:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4124E61980;
+        Mon, 20 Sep 2021 16:57:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157626;
-        bh=7wCbPctBaHKo+m8zmxBUtdLHHn8b5uphh6h1f+0Sh/w=;
+        s=korg; t=1632157028;
+        bh=Yi2OEh4XJmR6gsXS2GG62TRXrCo+BXYyyvtYX97RDI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ij5je5mYnqEvGbUddOXeSebCP/dn1ERpDFXgPt9LORuugX65qoCogq9N/LqLOW9B6
-         2nhTjePEsQDGcdr7rDnsf38y8vckR1v/0l3S7ORkJ54/dmafy4/aRWgonnNEOIIwWY
-         wFV5l4ZuL9B+zw7FBUGOgVrbniiQpIG7zlfNWY3s=
+        b=itm74KaI7SIK6uexNL6SOZpIV4+nNQC4YLx+FI+BYbm23FSK3teJI9lwdE42DPicG
+         aygShGSonlmPmvAgvMFnZiSvIDlBdbnH7xQ+e79jgVq/sxwE24MgGPYMMtYFGAtD48
+         tAMR+plHFpBDgVJRZoNukuW0IJwHJ3cXvh9sinRU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sam Protsenko <semen.protsenko@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 078/293] arm64: dts: exynos: correct GIC CPU interfaces address range on Exynos7
-Date:   Mon, 20 Sep 2021 18:40:40 +0200
-Message-Id: <20210920163935.941474858@linuxfoundation.org>
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.14 020/217] crypto: talitos - reduce max key size for SEC1
+Date:   Mon, 20 Sep 2021 18:40:41 +0200
+Message-Id: <20210920163925.292292856@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-[ Upstream commit 01c72cad790cb6cd3ccbe4c1402b6cb6c6bbffd0 ]
+commit b8fbdc2bc4e71b62646031d5df5f08aafe15d5ad upstream.
 
-The GIC-400 CPU interfaces address range is defined as 0x2000-0x3FFF (by
-ARM).
+SEC1 doesn't support SHA384/512, so it doesn't require
+longer keys.
 
-Reported-by: Sam Protsenko <semen.protsenko@linaro.org>
-Reported-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
-Link: https://lore.kernel.org/r/20210805072110.4730-1-krzysztof.kozlowski@canonical.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch reduces the max key size when the driver
+is built for SEC1 only.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Fixes: 03d2c5114c95 ("crypto: talitos - Extend max key length for SHA384/512-HMAC and AEAD")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/exynos/exynos7.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/talitos.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-index 5c5e57026c27..c607297922fd 100644
---- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-@@ -91,7 +91,7 @@
- 			#address-cells = <0>;
- 			interrupt-controller;
- 			reg =	<0x11001000 0x1000>,
--				<0x11002000 0x1000>,
-+				<0x11002000 0x2000>,
- 				<0x11004000 0x2000>,
- 				<0x11006000 0x2000>;
- 		};
--- 
-2.30.2
-
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -816,7 +816,11 @@ static void talitos_unregister_rng(struc
+  * HMAC_SNOOP_NO_AFEA (HSNA) instead of type IPSEC_ESP
+  */
+ #define TALITOS_CRA_PRIORITY_AEAD_HSNA	(TALITOS_CRA_PRIORITY - 1)
++#ifdef CONFIG_CRYPTO_DEV_TALITOS_SEC2
+ #define TALITOS_MAX_KEY_SIZE		(AES_MAX_KEY_SIZE + SHA512_BLOCK_SIZE)
++#else
++#define TALITOS_MAX_KEY_SIZE		(AES_MAX_KEY_SIZE + SHA256_BLOCK_SIZE)
++#endif
+ #define TALITOS_MAX_IV_LENGTH		16 /* max of AES_BLOCK_SIZE, DES3_EDE_BLOCK_SIZE */
+ 
+ struct talitos_ctx {
 
 
