@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42736411041
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD5441102D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbhITHiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:38:23 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:23550 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235274AbhITHiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:38:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632123405; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=DlZnHGCDJOpKEs7/UbxZ3jG6Fo3UEfNqEU7n/+MVkH8=; b=jliz7YLckzHNZX039G//N3IQTqf4eMVE7ue36tR26NzY/j8y0qKMgUC+e+LlAk0yaGtvwGnf
- uKvxSSIYGl2Uu8BZCHyJ0vbSJKKAn/A8oxncElxQijtNm6+3Z6ukagc19q3Z9sJlYRicqK0F
- tnXokB9O6FzyP/pUr5/Va2Um2BM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 61483a0d648642cc1c339544 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Sep 2021 07:36:45
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 316E2C43637; Mon, 20 Sep 2021 07:36:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD57AC4361A;
-        Mon, 20 Sep 2021 07:36:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CD57AC4361A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH 7/7] ASoC: codecs: lpass-va-macro: set mclk clock rate correctly
-Date:   Mon, 20 Sep 2021 13:05:31 +0530
-Message-Id: <1632123331-2425-8-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
-References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
+        id S235047AbhITHhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:37:46 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:43833 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235007AbhITHhn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 03:37:43 -0400
+Received: by mail-il1-f197.google.com with SMTP id n17-20020a922611000000b0023db5ee1cafso38367076ile.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 00:36:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=JaIDXQKCEKWvjojQXkSeD2DVMnB3ry8L5mp2UX+QrXI=;
+        b=LS78/S3K4u0Gr3rR0IfTVT99gofEk5wBCp+yHE2iX/Brljmut9bdBP4jaqZvFHO3GH
+         H7rEcwYZfXPD3ytspeRh+KoG0jmtUK/Q4ThzpBAS+A2QFDSHe1BQbiT5dVcR/beVZGAx
+         Sj/Qyjr7vm3L11GlP8Bns7cvQOruLV2VhCfvCaD1hY/yjYj0Y0GMyXvWyA0MqaeZoheH
+         wTt/kJKWSnj5uDa8nTzMff1FWX1dxJmHz/kBE+bMoP7Uwq9hrgeY3LUDnhNnh/LnCJXr
+         Cgv++SESPf8X2MJv7RmJyhyOCIFuxY27ITUYt3aMtdidwvEoBxdobLn3hyjo2Cjj1XJ3
+         iNgA==
+X-Gm-Message-State: AOAM530ElrtwAdQYwk71ak7dadoVGVC+v/0OI9Wqh+GRZXPbtlrBpHH4
+        zuag7+PkcNDHh3npxLRjPV4NdfDNypOzm43rC7qSgoomPMrx
+X-Google-Smtp-Source: ABdhPJxvmmQFPASqaGE1IcSLk0anDTaE5bMiSNLh2Z3J3XWszHM2YWH0yvvgaQtSPy7OIrWEIBqlljAAVp/k7uTP7Chl5Sl8upca
+MIME-Version: 1.0
+X-Received: by 2002:a02:a46:: with SMTP id 67mr18038303jaw.142.1632123377157;
+ Mon, 20 Sep 2021 00:36:17 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 00:36:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000020104105cc685624@google.com>
+Subject: [syzbot] kernel BUG in __free_one_page
+From:   syzbot <syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update mclk clock frequency from 9.6MHz to 19.2MHz.
+Hello,
 
-Fixes: 908e6b1df26e (ASoC: codecs: lpass-va-macro: Add support to VA Macro)
+syzbot found the following issue on:
 
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+HEAD commit:    d4d016caa4b8 alpha: move __udiv_qrnnd library function to ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1564ae79300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
+dashboard link: https://syzkaller.appspot.com/bug?extid=afe1d3c5ccb5940c372a
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+afe1d3c5ccb5940c372a@syzkaller.appspotmail.com
+
+ io_mem_free.part.0+0xf7/0x140 fs/io_uring.c:8708
+ io_mem_free fs/io_uring.c:8703 [inline]
+ io_ring_ctx_free fs/io_uring.c:9250 [inline]
+ io_ring_exit_work+0xf20/0x1980 fs/io_uring.c:9408
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+------------[ cut here ]------------
+kernel BUG at mm/page_alloc.c:1073!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.15.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: mm_percpu_wq vmstat_update
+RIP: 0010:__free_one_page+0xa10/0xe30 mm/page_alloc.c:1073
+Code: 43 34 85 c0 0f 84 79 f9 ff ff 48 c7 c6 80 1b 97 89 48 89 ef e8 61 dd f6 ff 0f 0b 48 c7 c6 60 1a 97 89 4c 89 ef e8 50 dd f6 ff <0f> 0b 0f 0b 48 c7 c6 c0 1a 97 89 4c 89 ef e8 3d dd f6 ff 0f 0b 48
+RSP: 0018:ffffc90000ca7968 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: ffffc90000ca7a60 RCX: 0000000000000000
+RDX: ffff888010e40000 RSI: ffffffff81b2f6b0 RDI: 0000000000000003
+RBP: 0000000000152200 R08: 0000000000000018 R09: 00000000ffffffff
+R10: ffffffff88f44b19 R11: 00000000ffffffff R12: 0000000000000009
+R13: ffffea0005488000 R14: 0000000000000000 R15: ffff88823fff8e00
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 0000000036db1000 CR4: 00000000001526f0
+Call Trace:
+ free_pcppages_bulk+0x533/0x8a0 mm/page_alloc.c:1537
+ drain_zone_pages+0x173/0x440 mm/page_alloc.c:3079
+ refresh_cpu_vm_stats+0x355/0x5d0 mm/vmstat.c:874
+ vmstat_update+0xe/0xa0 mm/vmstat.c:1910
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Modules linked in:
+---[ end trace e038b7c668ec2f59 ]---
+RIP: 0010:__free_one_page+0xa10/0xe30 mm/page_alloc.c:1073
+Code: 43 34 85 c0 0f 84 79 f9 ff ff 48 c7 c6 80 1b 97 89 48 89 ef e8 61 dd f6 ff 0f 0b 48 c7 c6 60 1a 97 89 4c 89 ef e8 50 dd f6 ff <0f> 0b 0f 0b 48 c7 c6 c0 1a 97 89 4c 89 ef e8 3d dd f6 ff 0f 0b 48
+RSP: 0018:ffffc90000ca7968 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: ffffc90000ca7a60 RCX: 0000000000000000
+RDX: ffff888010e40000 RSI: ffffffff81b2f6b0 RDI: 0000000000000003
+RBP: 0000000000152200 R08: 0000000000000018 R09: 00000000ffffffff
+R10: ffffffff88f44b19 R11: 00000000ffffffff R12: 0000000000000009
+R13: ffffea0005488000 R14: 0000000000000000 R15: ffff88823fff8e00
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 0000000036db1000 CR4: 00000000001526f0
+
+
 ---
- sound/soc/codecs/lpass-va-macro.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-index 0ea39ae..f2ab09b 100644
---- a/sound/soc/codecs/lpass-va-macro.c
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -1353,7 +1353,7 @@ static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
- 					      struct va_macro *va)
- {
- 	u32 div_factor;
--	u32 mclk_rate = VA_MACRO_MCLK_FREQ;
-+	u32 mclk_rate = 2 * VA_MACRO_MCLK_FREQ;
- 
- 	if (!dmic_sample_rate || mclk_rate % dmic_sample_rate != 0)
- 		goto undefined_rate;
-@@ -1432,7 +1432,7 @@ static int va_macro_probe(struct platform_device *pdev)
- 	}
- 
- 	/* mclk rate */
--	clk_set_rate(va->mclk, VA_MACRO_MCLK_FREQ);
-+	clk_set_rate(va->mclk, 2 * VA_MACRO_MCLK_FREQ);
- 
- 	clk_prepare_enable(va->mclk);
- 	clk_prepare_enable(va->macro);
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
