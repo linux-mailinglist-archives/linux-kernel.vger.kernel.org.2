@@ -2,177 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864AF4110F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD034110F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235863AbhITIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:32:08 -0400
-Received: from www.zeus03.de ([194.117.254.33]:44198 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235726AbhITIbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:31:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=V3qeqboLXKvTgpPPFp/00Iz4UpTd
-        r9XWmObz8M34siw=; b=eUUYID1QsLx886Vp+BV3KPbCF4rGhGBiXSr0mC9juqQR
-        MV5uUV0BVjlVKNZBgunxvEBsSage8axBidUT71z0zbFY7ydm5ujWzLMqnx4X9fu0
-        ArV9dUsHWki2dmLsiFUm0BOjTW0EMA6axfi/9ZQcHrL3X8bDgvr+LsXAyoPEY2c=
-Received: (qmail 2400880 invoked from network); 20 Sep 2021 10:30:08 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Sep 2021 10:30:08 +0200
-X-UD-Smtp-Session: l3s3148p1@YWy9FmnMroogAwDPXwlxANIWpbLKE1Uh
-Date:   Mon, 20 Sep 2021 10:30:08 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
-Message-ID: <YUhGkBdXJUI3XadP@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
- <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
- <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
+        id S235876AbhITIcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235812AbhITIbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 04:31:50 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD90C061574;
+        Mon, 20 Sep 2021 01:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632126620;
+        bh=5eQURRoDRABro2TOkaUezat98SAJTdaIwcERp9k+uwE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q0ZuLVGSnIawm9F6X92cEDyIBtNadvpIBisflTkwrh8wXWrlbsxpXJr2uyqYhegIx
+         hwAMrTUo+oM8H1sl4IxS9f7Xx30MnsAXkJAcYc5gKUK22dTJ44sH2edLiKIvAUrlZw
+         TC20fclkI45wCCSoeANo9P6ZFxM2AFBRkG5DyDDwPcM69qkTUbshRuTgI9QEcIoV1w
+         CjLfe6H5XfBPPaXlV8gtzfoFZkYWhNgvzsW2SxAqO2tw8q8yawBr042akm23cQPaqc
+         Bp2yn9Z9BcYQXbevQfs1qt4P18BQpPuad6QRPX+73Wwp1DOKcJI70A9wbjvo8SE5qs
+         /ycxd+yuyxbxQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCd6K5WCxz9sPT;
+        Mon, 20 Sep 2021 18:30:17 +1000 (AEST)
+Date:   Mon, 20 Sep 2021 18:30:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <20210920183016.3a4778b5@canb.auug.org.au>
+In-Reply-To: <CALOAHbDYExn1uRaHX1jNZrST80if7QjA-MuL0at1C7fHzQgV8g@mail.gmail.com>
+References: <20210920113330.29f12b99@canb.auug.org.au>
+        <CALOAHbDYExn1uRaHX1jNZrST80if7QjA-MuL0at1C7fHzQgV8g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+LAkWgDK13VhUQYg"
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/0cMlg/2xDouH=vlIzL4F=zS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---+LAkWgDK13VhUQYg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/0cMlg/2xDouH=vlIzL4F=zS
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi Andy,
+Hi Yafang,
 
-thanks for the prompt review again!
-
-> > +       /* upper limit is arbitrary */
+On Mon, 20 Sep 2021 14:55:29 +0800 Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> On Mon, Sep 20, 2021 at 9:33 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> >
+> > Hi all,
+> >
+> > After merging the tip tree, today's linux-next build (powerpc_ppc64
+> > defconfig) produced this warning:
+> >
+> > kernel/sched/debug.c: In function 'print_cfs_group_stats':
+> > kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused=
+-variable]
+> >   460 |                struct sched_statistics *stats =3D  __schedstats=
+_from_se(se);
+> >       |                                         ^~~~~
+> >
+> > Caused by commit
+> >
+> >   cb3e971c435d ("sched: Make struct sched_statistics independent of fai=
+r sched class")
+> >
+> > # CONFIG_SCHEDSTATS is not set
+> > =20
 >=20
-> Not really. I believe if the upper limit is > PAGE_SIZE, you would get
-> -ENOMEM with much higher chances. So, I think the comment should be
-> amended,
-
-? Dunno, maybe it is not arbitrary that it is < PAGE_SIZE but other than
-that the value I chose is arbitrary. There is no technical reason for
-2048.
-
+> Thanks for the report.
 >=20
-> > +       if (count > 2048 || count & 1)
-> > +               return -EINVAL;
+> We have discussed this issue before[1].
+> This warning happens when CONFIG_SCHEDSTATS is not set and
+> schedstat_enabled() is 0, so the whole scope should be not compiled.
+> It seems that we don't need to fix this warning.
 >=20
-> ...
->=20
-> > +       ret =3D device_property_read_string_array(dev, "probe-names", g=
-pio_names,
-> > +                                               priv->descs->ndescs);
-> > +       if (ret >=3D 0 && ret !=3D priv->descs->ndescs)
-> > +               ret =3D -ENODATA;
-> > +       if (ret < 0) {
->=20
-> > +               dev_err(dev, "error naming the GPIOs: %d\n", ret);
-> > +               return ret;
-> > +       }
->=20
-> Perhaps
->=20
->   return dev_err_probe() ?
+> [1]. https://lore.kernel.org/lkml/20210911082505.115758-1-laoar.shao@gmai=
+l.com/
 
-Reading strings from DT can be deferred? I don't think so.
+Clearly it will be compiled if CONFIG_SCHEDSTATS is not set as that is
+exactly what this build has ... even sections of code guarded by "if
+(0)" are compiled, they may just not produce any output in the binary.
 
-> And I think it might be split into two conditionals with
-> distinguishable error messages.
+Also, I do not have W=3D1 for this build.
 
-I think "something is wrong with the names" is helpful enough for the
-user.
+If you turned schedstat_val() into a static inline function, then this
+warning would go away.  That also means that argument types and return
+values will be better checked.
 
+So, please fix this.
+--=20
+Cheers,
+Stephen Rothwell
 
-> > +       dev_info(dev, "initialized");
->=20
-> Unneeded noise.
-
-Nope, I added it because when I was adding more instances, this proved
-useful. I'd agree if this is a regular driver. But this is a
-only-for-special-case-debugging one.
-
-> > +       [ -n "$cur_cpu" ] && fail "CPU$isol_cpu requested but CPU$cur_c=
-pu already isolated"
->=20
-> For the sake of style (handle errors on the error) I would use
->=20
-> [ -z "..." ] || fail ...
-
-I'll think about it. On first glimpse, this doesn't look more readable
-to me. "if this is true then do that" is super readable in my book. But
-yes, when calling external programs, I need '||' anyhow, true.
-
-> > +       # Move tasks away from isolated CPU
-> > +       for p in $(ps -o pid | tail -n +2); do
-> > +               mask=3D$(taskset -p "$p") || continue
-> > +               [ "${mask##*: }" !=3D "$oldmask" ] && continue
->=20
-> Perhaps
->=20
->   [ ... =3D ... ] || continue
->=20
-> to be in alignment with the rest of the similar lines here?
-
-Yes.
-
-> > +       *) fail "error parsing commandline: $*";;
->=20
-> command line
-
-OK.
-
-> > +if [ -n "$lainstance" ]; then
->=20
-> Shouldn't be rather '-d' ?
-
-Nope, this is just a string for now. '-d' comes later with $lasysfsdir.
-
-> > +[ ! -d "$lacpusetdir" ] && echo "Auto-Isolating CPU1" && init_cpu 1
->=20
-> This ! along with double && is hard to read. Simply
-
-Same as above, will think about it. But "if there is not this directory,
-then do a) and b)" is not hard to read in my book.
-
-Happy hacking,
-
-   Wolfram
-
-
---+LAkWgDK13VhUQYg
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/0cMlg/2xDouH=vlIzL4F=zS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFIRowACgkQFA3kzBSg
-KbZ1QA/8D789923P8m5eIJH+JqOLgIPKLF8efnTccUKrYUJpfiHOQZbHLoxwLEg5
-iqYi3h0Y3iN5fXoPsK7UGHgrywtlWGnXY+pplXWhEqYtH10TC+j3lK92UzaR4bHR
-+kImKQBCKnQoowA4CEHIs7/hx7B11IlS/Kyty564QOQAKwDZ7mSUOGCg12H2clEs
-bl6JysehXdfmZhNnrv8Rs/nwa14h7kRIFCoHQwPP3vctRtKhOsoeOjaK1MEGf2ov
-I9cxnb0y6VrBRHulz/sp04SD1MJn8SjPDC/UH217YJsUkWrrAEi9SfdT1iK1bMrC
-cC0ohuCRQLUgYTD8RKNFIyW8E7yKDsIudcx+1WpV+Q2kt8w6KXlOwcVuOw2mC2SO
-fx1AZr6Us2Gj2daEbLooTfxYC5q3VbjVPfmBxX5yeE1Ph3E0l/7iUFHJ9SRQePQ+
-kRIc/QLHtikqlnRJ475xFbUObkJzTkv4TahRSwO4rs5SLLZ+QlshhcAYnQQgsuUK
-9zTmg2Q6LLZVBY/wUb+cVnZVpomBa9FNX6EuEhmxzsi8XGqJDTwZXUmJE2VaEmPM
-3hj4yFhNM4tr+HrpoptiBuwonITYAOWP6w/dEf6lePbqRyuj+KZBhwueCptsValD
-htisxjWaHjw/Fm+iFUsm+uSezh4alXjaNWhi+EstoBHaarFN7+4=
-=XuoP
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFIRpkACgkQAVBC80lX
+0GydMwf+JEFic2nt1mzqF0mBC64IlIHRKT1Eth0OJ4FT/Uv6VCVPhv4BRcEwwH/O
+BE8DJkFyhvAQUzQx5EkKcFTeili9w4oHu5og14Oae3Lp3xltGTkldOkbMohiy/UN
+GB3JwM1+FHu3/fL1BcSfuBejKmGoSfyY5Py4jz+S3lH1zw4eJ6VaVOojC8FeIvV/
+HX7md9PzRbDj9Ic5jXScJK/cRh/uwEWxINzXZaTX/z3qRBwxXu8dXlGkh+TLAnqk
+oKQ56T8qitDk4F0wwDMEFay6qNSQL91KUM5fTO2MC+TISL8mBYK1Q6zybKnAlh/t
+8iZHbQkEeKINOSV7Z/jB5NxP0luPHw==
+=x15c
 -----END PGP SIGNATURE-----
 
---+LAkWgDK13VhUQYg--
+--Sig_/0cMlg/2xDouH=vlIzL4F=zS--
