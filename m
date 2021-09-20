@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677BE411773
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE248411793
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240786AbhITOuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:50:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24175 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233773AbhITOt7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:49:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632149312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pC8oD9A1Eh59kCOMJw501BXguKNk8McrmeoNHs1wQCQ=;
-        b=Bi2mxkJC5puWvEx1t5pX8a9zgmjgmdlLiImCKytKWakH3AVPVJzVgtNam2QDbvTTfApzic
-        NBQtR7wU63F3uO/clzZBXWzSl6qALp5Ix2Rb7VNLpp76I9K+79VPMuJFV78K/e8C44wxzc
-        99FYMk40y6tdX+ceLZi437Im34T3GmE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-_LOCsufRO4CRSLlhFVsMvA-1; Mon, 20 Sep 2021 10:48:30 -0400
-X-MC-Unique: _LOCsufRO4CRSLlhFVsMvA-1
-Received: by mail-wr1-f72.google.com with SMTP id q14-20020a5d574e000000b00157b0978ddeso6290655wrw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:48:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=pC8oD9A1Eh59kCOMJw501BXguKNk8McrmeoNHs1wQCQ=;
-        b=PqU97U9f6bkrzaXlRKSQPK0bgldiX2Xl6ybo5MnQ1IQTyRsiYKRKTBIgmSOmyzbOBU
-         aIV6ychCMYhsKUPsf/XBDrG8TRr9vT6e1YliO0V8YI9+kM80wshW/t6WWEb/Cl7cNCc6
-         hQQNCf3gIiLy+H8CDuT65TuH6dS8eBtAuMg5GdjOpY+7PA4/F/5bVBUTxJKa4+fllDt5
-         4qu5PzeyJcE0fzIuCdO5+TfdpMq6MvKUFvjKl/FOwfDEvChPcy8a3cOQIEwCjW4OoSxo
-         siylOXSnzXSoAbEfBZhro9LZ4BmhyliktM1J5J7/NmB5WCpGSPQ5nvXQWHcHjTmfab3N
-         RWuA==
-X-Gm-Message-State: AOAM533MaLEjyfvncqorpK/Ng6tkCi5ZCMALQMxlzO7uT84AQDEiG9cN
-        aGPKI4zh4AWyKhnvCmRaTijvYJss5ZIPuNvmTlvHmNmnktquX6evzTop9WOoYJ1G1nVZGynth5R
-        01nE0I6iYUy9EuwFJATkTaQIs
-X-Received: by 2002:a05:600c:1d0e:: with SMTP id l14mr29105854wms.16.1632149309798;
-        Mon, 20 Sep 2021 07:48:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy35kz+9NkjiYqLDc+67REwWW4vldY0n/NeldgiAEAGDzQeyqKQXi0xaZsmpC6C9sWGMlpdwA==
-X-Received: by 2002:a05:600c:1d0e:: with SMTP id l14mr29105835wms.16.1632149309557;
-        Mon, 20 Sep 2021 07:48:29 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c15sm17056582wrc.83.2021.09.20.07.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 07:48:28 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v5 0/8] KVM: Various fixes and improvements around
- kicking vCPUs
-In-Reply-To: <20210903075141.403071-1-vkuznets@redhat.com>
-References: <20210903075141.403071-1-vkuznets@redhat.com>
-Date:   Mon, 20 Sep 2021 16:48:27 +0200
-Message-ID: <87h7ef9ubo.fsf@vitty.brq.redhat.com>
+        id S241202AbhITOwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:52:34 -0400
+Received: from mout.perfora.net ([74.208.4.197]:50803 "EHLO mout.perfora.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240883AbhITOwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:52:16 -0400
+Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
+ (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1Mlebm-1nAlzH1HYg-00iiwu;
+ Mon, 20 Sep 2021 16:49:53 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Fabio Estevam <festevam@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>, Marek Vasut <marex@denx.de>,
+        Martin KaFai Lau <kafai@fb.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Olof Johansson <olof@lixom.net>,
+        Otavio Salvador <otavio@ossystems.com.br>,
+        Pascal Zimmermann <pzimmermann@dh-electronics.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Tim Harvey <tharvey@gateworks.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        soc@kernel.org
+Subject: [PATCH v4 0/9] ARM: prepare and add colibri imx6ull 1gb (emmc) support
+Date:   Mon, 20 Sep 2021 16:49:29 +0200
+Message-Id: <20210920144938.314588-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:W6WlD/PhwB5NKuiFUpbq9zYXddxkmRhEsbCoDh36Mxeat1DlEON
+ baYPgNMQaaOYRUD+sjfJeTz3qWJ01lWwfhmedyQgI81Cc9YzB8yAvWb8UxLBabvhAcu0Mkh
+ 6meI6GczvELssYAKhp0LPVMZ63JDbHWphKK8GMUEb4nYy6D/+Uiu3wv7ubFJQkwgXZB72L4
+ qHcmClI6P8P2DPy7I9raA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0npW3v9eBkk=:KYQSawvhWHVPhlqfYWAzeX
+ zOK7+7ySLA9b0HdYea0hY+vHNh2EH5t5HAf1MJu/1luyhmjsFjmA4xAq7W1zpGSr7spPmyL57
+ HQEMrZVjI2pbEGKad6Z4kCr9OQdJ7X0WMUIva9GcogKlEcnCaEg1JSRJ2rCHfwRTN7unBbXW6
+ oK8M+z06biE7Lm0mfO2E/gBl8P8cU00HOLjN71NPhkndUW5avCXaAgnYzRqi1ovBr2Iqgbfkc
+ Tg9+aY2vlvt9eqbflEKgz8yvPo+dLkMp519Mm9eNLWFT9pw2EQTKorK0njhy8za/lxXEgp9EJ
+ 8BiwRdxscZnGPWRCbxk8395r7s1bsr5PU6bLl2wT9Xat3DGPPl3iIDiZhNYlk4K3hiMvxVPcR
+ X5Fpnx8qwtQZnj7UaOs8NFTcmGYsujamupIzkDRM6Q6MwivKVHNMAHbP86EbiNmrbPNmyn/pI
+ UIjHlASeWULAcRAuAUp14PUI53qHJ1A+qL5s7SUsfTUdP+lLzwvewTeYLbnLLIIgx1TjKSaDY
+ o9t8SHTUN44B49oBPo14yg/Qlzn7EzdnJrGCsU99Bjb5xkX5XkydumMuozCrRMYR3d6xM0rpF
+ Pr80aH4hPaqKVauv892c/i4zrAs/BWmjH92wL2JqFWACLrn2p7cyTUmstlwvSHVhZLo+0d13J
+ Oldr9nLrIGuGYakMSmIucmD7LGakCZshBNhj12D191do5ou0zQ9qBCs9mZdwPxpMuP+DM4Fd5
+ gTdElzTYNgYxaMJgPn+d8OgpgiawbszJbKIkVA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-> Patch6 fixes a real problem with ioapic_write_indirect() KVM does
-> out-of-bounds access to stack memory.
 
-Paolo,
+Clean-up imx_v6_v7_defconfig and then add support for the new Colibri
+iMX6ULL 1GB (eMMC) which builds on the success of the existing Colibri
+iMX6ULL SKUs using raw NAND but replaces this with more RAM (1 GB) and
+an eMMC (4 GB).
 
-while the rest of the series is certainly not urgent, PATCH6 seems to be
-fixing a real problem introduced in 5.10. Would it be possible to send
-it for one of the upcoming 5.15 rcs (and probably to stable@)?
+Changes in v4:
+- Fix dt_binding_check line too long warnings as pointed out by Rob.
 
-Thanks!
+Changes in v3:
+- Add Fabio's reviewed-by. Thanks!
+- Added fixes tag as pointed out by Stefan and Fabio. Thanks!
+- Add Rob's ack. Thanks!
+
+Changes in v2:
+- New patch cleaning-up dt-bindings documentation.
+- Fix indentation.
+- Use latest agreed upon SPDX-License-Identifier GPL-2.0+ OR MIT.
+- Drop AG in our copyright statement as recommended by our legal.
+- New patch documenting dt-bindings.
+
+Marcel Ziswiler (8):
+  ARM: imx_v6_v7_defconfig: enable mtd physmap
+  ARM: imx_v6_v7_defconfig: enable fb
+  ARM: imx_v6_v7_defconfig: change snd soc tlv320aic3x to i2c variant
+  ARM: imx_v6_v7_defconfig: rebuild default configuration
+  ARM: imx_v6_v7_defconfig: build imx sdma driver as module
+  ARM: imx_v6_v7_defconfig: enable bpf syscall and cgroup bpf
+  dt-bindings: arm: fsl: clean-up all toradex boards/modules
+  dt-bindings: arm: fsl: add toradex,colibri-imx6ull-emmc
+
+Max Krummenacher (1):
+  ARM: dts: colibri-imx6ull-emmc: add device tree
+
+ .../devicetree/bindings/arm/fsl.yaml          |  87 ++++----
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/imx6ull-colibri-emmc-eval-v3.dts |  17 ++
+ .../dts/imx6ull-colibri-emmc-nonwifi.dtsi     | 185 ++++++++++++++++++
+ arch/arm/boot/dts/imx6ull-colibri.dtsi        |  32 ++-
+ arch/arm/configs/imx_v6_v7_defconfig          |  46 ++---
+ 6 files changed, 299 insertions(+), 69 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts
+ create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi
 
 -- 
-Vitaly
+2.26.2
 
