@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9872A411FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E568411D23
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345802AbhITRpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:45:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
+        id S1345096AbhITRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353073AbhITRnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:43:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DDFE61B66;
-        Mon, 20 Sep 2021 17:09:20 +0000 (UTC)
+        id S1347510AbhITROR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:14:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC83619F7;
+        Mon, 20 Sep 2021 16:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157761;
-        bh=OgYCzNSAmHAJIMchHWHi3CWoRBsZ0US8dQMiggFdiMU=;
+        s=korg; t=1632157087;
+        bh=n3lyOd2sjt6O5FYm8v++9uN5IidoxoTMiNxZYE5Wf4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ve23RETXPEQemvo5N6nTE5YCMZhcxk1HApQjBXywmQqfZhqxu3Jk4PKWObhrFo5S
-         FYbFaplEPPsi/KqdAB79EyJwWL+f0D2Jleu6Z9h8SG4fDsZqSt7/7d5xPZ20B0NriZ
-         esY01h8zTby20OMxInPcONUHxhED6tslcsNzw99U=
+        b=S3tf6Fzxg08ljml6hvlnlQOTNXwWN64G7/fr3/jfcqBT8+g/jTpq9ISbWOq7BOZFy
+         KrESgT7lXiZQdhAFyigaRiw38Hk7o0Plzip4KodG0pJQHvM7AKNVcMJ7sbp6RkQyVL
+         WWJfIM5lWZdOjsmwfk8REHwwzLjb9ucpuo4//fVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 4.19 107/293] ext4: report correct st_size for encrypted symlinks
+        stable@vger.kernel.org, Phong Hoang <phong.hoang.wz@renesas.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 048/217] clocksource/drivers/sh_cmt: Fix wrong setting if dont request IRQ for clock source channel
 Date:   Mon, 20 Sep 2021 18:41:09 +0200
-Message-Id: <20210920163936.927856185@linuxfoundation.org>
+Message-Id: <20210920163926.251694261@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,50 +42,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Phong Hoang <phong.hoang.wz@renesas.com>
 
-commit 8c4bca10ceafc43b1ca0a9fab5fa27e13cbce99e upstream.
+[ Upstream commit be83c3b6e7b8ff22f72827a613bf6f3aa5afadbb ]
 
-The stat() family of syscalls report the wrong size for encrypted
-symlinks, which has caused breakage in several userspace programs.
+If CMT instance has at least two channels, one channel will be used
+as a clock source and another one used as a clock event device.
+In that case, IRQ is not requested for clock source channel so
+sh_cmt_clock_event_program_verify() might work incorrectly.
+Besides, when a channel is only used for clock source, don't need to
+re-set the next match_value since it should be maximum timeout as
+it still is.
 
-Fix this by calling fscrypt_symlink_getattr() after ext4_getattr() for
-encrypted symlinks.  This function computes the correct size by reading
-and decrypting the symlink target (if it's not already cached).
+On the other hand, due to no IRQ, total_cycles is not counted up
+when reaches compare match time (timer counter resets to zero),
+so sh_cmt_clocksource_read() returns unexpected value.
+Therefore, use 64-bit clocksoure's mask for 32-bit or 16-bit variants
+will also lead to wrong delta calculation. Hence, this mask should
+correspond to timer counter width, and above function just returns
+the raw value of timer counter register.
 
-For more details, see the commit which added fscrypt_symlink_getattr().
-
-Fixes: f348c252320b ("ext4 crypto: add symlink encryption")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210702065350.209646-3-ebiggers@kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bfa76bb12f23 ("clocksource: sh_cmt: Request IRQ for clock event device only")
+Fixes: 37e7742c55ba ("clocksource/drivers/sh_cmt: Fix clocksource width for 32-bit machines")
+Signed-off-by: Phong Hoang <phong.hoang.wz@renesas.com>
+Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210422123443.73334-1-niklas.soderlund+renesas@ragnatech.se
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/symlink.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/clocksource/sh_cmt.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
---- a/fs/ext4/symlink.c
-+++ b/fs/ext4/symlink.c
-@@ -52,10 +52,19 @@ static const char *ext4_encrypted_get_li
- 	return paddr;
+diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
+index 3cd62f7c33e3..48eeee53a586 100644
+--- a/drivers/clocksource/sh_cmt.c
++++ b/drivers/clocksource/sh_cmt.c
+@@ -570,7 +570,8 @@ static int sh_cmt_start(struct sh_cmt_channel *ch, unsigned long flag)
+ 	ch->flags |= flag;
+ 
+ 	/* setup timeout if no clockevent */
+-	if ((flag == FLAG_CLOCKSOURCE) && (!(ch->flags & FLAG_CLOCKEVENT)))
++	if (ch->cmt->num_channels == 1 &&
++	    flag == FLAG_CLOCKSOURCE && (!(ch->flags & FLAG_CLOCKEVENT)))
+ 		__sh_cmt_set_next(ch, ch->max_match_value);
+  out:
+ 	raw_spin_unlock_irqrestore(&ch->lock, flags);
+@@ -606,20 +607,25 @@ static struct sh_cmt_channel *cs_to_sh_cmt(struct clocksource *cs)
+ static u64 sh_cmt_clocksource_read(struct clocksource *cs)
+ {
+ 	struct sh_cmt_channel *ch = cs_to_sh_cmt(cs);
+-	unsigned long flags;
+ 	u32 has_wrapped;
+-	u64 value;
+-	u32 raw;
+ 
+-	raw_spin_lock_irqsave(&ch->lock, flags);
+-	value = ch->total_cycles;
+-	raw = sh_cmt_get_counter(ch, &has_wrapped);
++	if (ch->cmt->num_channels == 1) {
++		unsigned long flags;
++		u64 value;
++		u32 raw;
+ 
+-	if (unlikely(has_wrapped))
+-		raw += ch->match_value + 1;
+-	raw_spin_unlock_irqrestore(&ch->lock, flags);
++		raw_spin_lock_irqsave(&ch->lock, flags);
++		value = ch->total_cycles;
++		raw = sh_cmt_get_counter(ch, &has_wrapped);
++
++		if (unlikely(has_wrapped))
++			raw += ch->match_value + 1;
++		raw_spin_unlock_irqrestore(&ch->lock, flags);
++
++		return value + raw;
++	}
+ 
+-	return value + raw;
++	return sh_cmt_get_counter(ch, &has_wrapped);
  }
  
-+static int ext4_encrypted_symlink_getattr(const struct path *path,
-+					  struct kstat *stat, u32 request_mask,
-+					  unsigned int query_flags)
-+{
-+	ext4_getattr(path, stat, request_mask, query_flags);
-+
-+	return fscrypt_symlink_getattr(path, stat);
-+}
-+
- const struct inode_operations ext4_encrypted_symlink_inode_operations = {
- 	.get_link	= ext4_encrypted_get_link,
- 	.setattr	= ext4_setattr,
--	.getattr	= ext4_getattr,
-+	.getattr	= ext4_encrypted_symlink_getattr,
- 	.listxattr	= ext4_listxattr,
- };
+ static int sh_cmt_clocksource_enable(struct clocksource *cs)
+@@ -682,7 +688,7 @@ static int sh_cmt_register_clocksource(struct sh_cmt_channel *ch,
+ 	cs->disable = sh_cmt_clocksource_disable;
+ 	cs->suspend = sh_cmt_clocksource_suspend;
+ 	cs->resume = sh_cmt_clocksource_resume;
+-	cs->mask = CLOCKSOURCE_MASK(sizeof(u64) * 8);
++	cs->mask = CLOCKSOURCE_MASK(ch->cmt->info->width);
+ 	cs->flags = CLOCK_SOURCE_IS_CONTINUOUS;
  
+ 	dev_info(&ch->cmt->pdev->dev, "ch%u: used as clock source\n",
+-- 
+2.30.2
+
 
 
