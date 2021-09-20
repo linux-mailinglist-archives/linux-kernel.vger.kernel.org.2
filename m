@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108DC411B57
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8A2411D15
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343866AbhITQ5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
+        id S1346294AbhITRQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:16:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245613AbhITQyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:54:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C0E61372;
-        Mon, 20 Sep 2021 16:50:36 +0000 (UTC)
+        id S1347365AbhITRNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:13:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 002CB619F5;
+        Mon, 20 Sep 2021 16:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156637;
-        bh=RQw5DQ89xXCXSo5Id/Pm7fMDv0gBzher2VlGUzcwsiw=;
+        s=korg; t=1632157081;
+        bh=l7385ZFdomGiFMyukTPaBhMpcELxzfHOSJdQJlm8wPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ks7XvBh1T8DtxtSkagQ9MtyIGHPBOLW/io2AZmqC8OAXd+PeCf7CtUo84lCSiHeju
-         NtIGtg7gclVJzEllaWVctsZJ8kSKLYzqp1PU6ddXf8MSZF4bxWzlYTXZpW0Ojcr6Hf
-         CVJ+zS9GQpaYU/d+O5Cv/+aqSqYx2kAGhEItKFjA=
+        b=J0Epk1RRHLZUb4Ir1gWnsZusnpto7DRaCs7som+n0FNDr6jITqNI2NEZHsj8bzahx
+         R+86GgSa1xqb2ajXOmB8N7TS12c5HEfEdSUGnR4RZ7qo5Rm1FLPA38JRTx5D7WT/2V
+         LIKg+yAhCGgI45sa2MET7PtZpWKBh3Olpzb6l7AU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Javier Martinez Canillas <javier@osg.samsung.com>
-Subject: [PATCH 4.9 017/175] usb: phy: isp1301: Fix build warning when CONFIG_OF is disabled
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 045/217] m68k: emu: Fix invalid free in nfeth_cleanup()
 Date:   Mon, 20 Sep 2021 18:41:06 +0200
-Message-Id: <20210920163918.632790429@linuxfoundation.org>
+Message-Id: <20210920163926.151994668@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javier Martinez Canillas <javier@osg.samsung.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit a7f12a21f6b32bdd8d76d3af81eef9e72ce41ec0 upstream.
+[ Upstream commit 761608f5cf70e8876c2f0e39ca54b516bdcb7c12 ]
 
-Commit fd567653bdb9 ("usb: phy: isp1301: Add OF device ID table")
-added an OF device ID table, but used the of_match_ptr() macro
-that will lead to a build warning if CONFIG_OF symbol is disabled:
+In the for loop all nfeth_dev array members should be freed, not only
+the first one.  Freeing only the first array member can cause
+double-free bugs and memory leaks.
 
-drivers/usb/phy//phy-isp1301.c:36:34: warning: ‘isp1301_of_match’ defined but not used [-Wunused-const-variable=]
- static const struct of_device_id isp1301_of_match[] = {
-                                  ^~~~~~~~~~~~~~~~
-
-Fixes: fd567653bdb9 ("usb: phy: isp1301: Add OF device ID table")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 9cd7b148312f ("m68k/atari: ARAnyM - Add support for network access")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/20210705204727.10743-1-paskripkin@gmail.com
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-isp1301.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/emu/nfeth.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/phy/phy-isp1301.c
-+++ b/drivers/usb/phy/phy-isp1301.c
-@@ -136,7 +136,7 @@ static int isp1301_remove(struct i2c_cli
- static struct i2c_driver isp1301_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
--		.of_match_table = of_match_ptr(isp1301_of_match),
-+		.of_match_table = isp1301_of_match,
- 	},
- 	.probe = isp1301_probe,
- 	.remove = isp1301_remove,
+diff --git a/arch/m68k/emu/nfeth.c b/arch/m68k/emu/nfeth.c
+index e45ce4243aaa..76262dc40e79 100644
+--- a/arch/m68k/emu/nfeth.c
++++ b/arch/m68k/emu/nfeth.c
+@@ -258,8 +258,8 @@ static void __exit nfeth_cleanup(void)
+ 
+ 	for (i = 0; i < MAX_UNIT; i++) {
+ 		if (nfeth_dev[i]) {
+-			unregister_netdev(nfeth_dev[0]);
+-			free_netdev(nfeth_dev[0]);
++			unregister_netdev(nfeth_dev[i]);
++			free_netdev(nfeth_dev[i]);
+ 		}
+ 	}
+ 	free_irq(nfEtherIRQ, nfeth_interrupt);
+-- 
+2.30.2
+
 
 
