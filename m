@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6513B411BE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26418411DEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344114AbhITRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:03:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
+        id S1350079AbhITR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:26:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhITRAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C17ED61357;
-        Mon, 20 Sep 2021 16:53:00 +0000 (UTC)
+        id S1349048AbhITRXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:23:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D908160F70;
+        Mon, 20 Sep 2021 17:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156781;
-        bh=uDeBMJuKg5Vp+Na8Ijm9wuqjWClCzECe9LJUCwg8QtY=;
+        s=korg; t=1632157296;
+        bh=ehLdMPw+GPaf9EKjm+79dpUXrMkzSGpW6nCsdFJ2f8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KFAkwvPLmTQbIu4xHhAviGSrGCKDkoEBJw1VBP8gWjx6Iy15Lx6GVkgsjMNv0e2AQ
-         ODxmjVf4nSm6e8/LF5sTG5LD2O8jz+YFQCQebEIMWgSREsJJa7eitCaYQhbNNNymzH
-         9LV52tdh4I8zIkVUoZTOGYoI7CiPGKE4vvE72UIE=
+        b=Ly4qpCOyKqDhnR/gSLyR+2xk9uLNWuoKJxQLhTGvAuY3jvZrPHBAtsnyG6HcuEG4L
+         +VDQDqglutkqw2yKcOPQ9WJZWIqM88hw3MkRjrfjhxp453O697nmNHeEBL4oqCbeKv
+         10BYFOVDpjmwU087Uh6jNpWGvyP11ogdNpCMCj0M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nguyen Dinh Phi <phind.uet@gmail.com>
-Subject: [PATCH 4.9 083/175] tty: Fix data race between tiocsti() and flush_to_ldisc()
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Wang Hai <wanghai38@huawei.com>
+Subject: [PATCH 4.14 111/217] VMCI: fix NULL pointer dereference when unmapping queue pair
 Date:   Mon, 20 Sep 2021 18:42:12 +0200
-Message-Id: <20210920163920.790326499@linuxfoundation.org>
+Message-Id: <20210920163928.394383330@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
+commit a30dc6cf0dc51419021550152e435736aaef8799 upstream.
 
-The ops->receive_buf() may be accessed concurrently from these two
-functions.  If the driver flushes data to the line discipline
-receive_buf() method while tiocsti() is waiting for the
-ops->receive_buf() to finish its work, the data race will happen.
+I got a NULL pointer dereference report when doing fuzz test:
 
-For example:
-tty_ioctl			|tty_ldisc_receive_buf
- ->tioctsi			| ->tty_port_default_receive_buf
-				|  ->tty_ldisc_receive_buf
-   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
-    ->h4_recv                   |    ->h4_recv
+Call Trace:
+  qp_release_pages+0xae/0x130
+  qp_host_unregister_user_memory.isra.25+0x2d/0x80
+  vmci_qp_broker_unmap+0x191/0x320
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  vmci_host_unlocked_ioctl+0x59f/0xd50
+  ? do_vfs_ioctl+0x14b/0xa10
+  ? tomoyo_file_ioctl+0x28/0x30
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  __x64_sys_ioctl+0xea/0x120
+  do_syscall_64+0x34/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-In this case, the h4 receive buffer will be overwritten by the
-latecomer, and we will lost the data.
+When a queue pair is created by the following call, it will not
+register the user memory if the page_store is NULL, and the
+entry->state will be set to VMCIQPB_CREATED_NO_MEM.
 
-Hence, change tioctsi() function to use the exclusive lock interface
-from tty_buffer to avoid the data race.
+vmci_host_unlocked_ioctl
+  vmci_host_do_alloc_queuepair
+    vmci_qp_broker_alloc
+      qp_broker_alloc
+        qp_broker_create // set entry->state = VMCIQPB_CREATED_NO_MEM;
 
-Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
+When unmapping this queue pair, qp_host_unregister_user_memory() will
+be called to unregister the non-existent user memory, which will
+result in a null pointer reference. It will also change
+VMCIQPB_CREATED_NO_MEM to VMCIQPB_CREATED_MEM, which should not be
+present in this operation.
+
+Only when the qp broker has mem, it can unregister the user
+memory when unmapping the qp broker.
+
+Only when the qp broker has no mem, it can register the user
+memory when mapping the qp broker.
+
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
 Cc: stable <stable@vger.kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20210818124845.488312-1-wanghai38@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/tty_io.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -2312,8 +2312,6 @@ static int tty_fasync(int fd, struct fil
-  *	Locking:
-  *		Called functions take tty_ldiscs_lock
-  *		current->signal->tty check is safe without locks
-- *
-- *	FIXME: may race normal receive processing
-  */
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -2338,7 +2338,8 @@ int vmci_qp_broker_map(struct vmci_handl
+ 	is_local = entry->qp.flags & VMCI_QPFLAG_LOCAL;
+ 	result = VMCI_SUCCESS;
  
- static int tiocsti(struct tty_struct *tty, char __user *p)
-@@ -2329,8 +2327,10 @@ static int tiocsti(struct tty_struct *tt
- 	ld = tty_ldisc_ref_wait(tty);
- 	if (!ld)
- 		return -EIO;
-+	tty_buffer_lock_exclusive(tty->port);
- 	if (ld->ops->receive_buf)
- 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
-+	tty_buffer_unlock_exclusive(tty->port);
- 	tty_ldisc_deref(ld);
- 	return 0;
- }
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    !QPBROKERSTATE_HAS_MEM(entry)) {
+ 		struct vmci_qp_page_store page_store;
+ 
+ 		page_store.pages = guest_mem;
+@@ -2448,7 +2449,8 @@ int vmci_qp_broker_unmap(struct vmci_han
+ 
+ 	is_local = entry->qp.flags & VMCI_QPFLAG_LOCAL;
+ 
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    QPBROKERSTATE_HAS_MEM(entry)) {
+ 		qp_acquire_queue_mutex(entry->produce_q);
+ 		result = qp_save_headers(entry);
+ 		if (result < VMCI_SUCCESS)
 
 
