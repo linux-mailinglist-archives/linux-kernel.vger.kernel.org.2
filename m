@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144544124C9
+	by mail.lfdr.de (Postfix) with ESMTP id F224C4124CB
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353288AbhITSiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
+        id S1353264AbhITSiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:38:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380247AbhITSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1380246AbhITSdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:33:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C93E6632FE;
-        Mon, 20 Sep 2021 17:28:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EED2C63302;
+        Mon, 20 Sep 2021 17:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158892;
-        bh=JEe4bSM/d/cMLyOdHbt4YOf5ZbCaa4HacIYRcMD/EiU=;
+        s=korg; t=1632158894;
+        bh=P1hrLYW79xzFWhURSrD3E32TZFMAZ3cLWzEPY9zz+ck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAA86cjgwuaS9FIXDjTN+o1q1Asj0BZog4kWJu6CqgXuHcG+Rp9zd3GUBsPdTOztv
-         6DaqEaxqiCC107jcJ+PG73O5ig16yHeSohbEhEgV+QVsu5K+jkH2qNR5AP9dWkzk1P
-         zptQzEh4ZFxSG49tyzagVnr823s2PYBh7aEgwPkw=
+        b=Brxv/OOxcS6NCcTMjyjLE94lwvq/PEYAYbD1mZPARdb+Le3NOKeSyqHQ+JEw3RCpB
+         jGpNhhHIR51oOWTm9wFs1lknMsX+IndMl3aFxakIl8Yhfrq56G/YvA8NjPA/sEeNlY
+         bXpcy1mY7q9di7uswwMW+ihfWTbQSQ6TZtWTq5J0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 104/122] net: hso: add failure handler for add_net_device
-Date:   Mon, 20 Sep 2021 18:44:36 +0200
-Message-Id: <20210920163919.204390489@linuxfoundation.org>
+Subject: [PATCH 5.10 105/122] net: dsa: b53: Fix calculating number of switch ports
+Date:   Mon, 20 Sep 2021 18:44:37 +0200
+Message-Id: <20210920163919.240672303@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -41,64 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit ecdc28defc46af476566fffd9e5cb4495a2f176e ]
+[ Upstream commit cdb067d31c0fe4cce98b9d15f1f2ef525acaa094 ]
 
-If the network devices connected to the system beyond
-HSO_MAX_NET_DEVICES. add_net_device() in hso_create_net_device()
-will be failed for the network_table is full. It will lead to
-business failure which rely on network_table, for example,
-hso_suspend() and hso_resume(). It will also lead to memory leak
-because resource release process can not search the hso_device
-object from network_table in hso_free_interface().
+It isn't true that CPU port is always the last one. Switches BCM5301x
+have 9 ports (port 6 being inactive) and they use port 5 as CPU by
+default (depending on design some other may be CPU ports too).
 
-Add failure handler for add_net_device() in hso_create_net_device()
-to solve the above problems.
+A more reliable way of determining number of ports is to check for the
+last set bit in the "enabled_ports" bitfield.
 
-Fixes: 72dc1c096c70 ("HSO: add option hso driver")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+This fixes b53 internal state, it will allow providing accurate info to
+the DSA and is required to fix BCM5301x support.
+
+Fixes: 967dd82ffc52 ("net: dsa: b53: Add support for Broadcom RoboSwitch")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/dsa/b53/b53_common.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
-index 5b3aff2c279f..f269337c82c5 100644
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -2537,13 +2537,17 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
- 	if (!hso_net->mux_bulk_tx_buf)
- 		goto err_free_tx_urb;
- 
--	add_net_device(hso_dev);
-+	result = add_net_device(hso_dev);
-+	if (result) {
-+		dev_err(&interface->dev, "Failed to add net device\n");
-+		goto err_free_tx_buf;
-+	}
- 
- 	/* registering our net device */
- 	result = register_netdev(net);
- 	if (result) {
- 		dev_err(&interface->dev, "Failed to register device\n");
--		goto err_free_tx_buf;
-+		goto err_rmv_ndev;
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index 52100d4fe5a2..a8e915dd826a 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -2556,9 +2556,8 @@ static int b53_switch_init(struct b53_device *dev)
+ 			dev->cpu_port = 5;
  	}
  
- 	hso_log_port(hso_dev);
-@@ -2552,8 +2556,9 @@ static struct hso_device *hso_create_net_device(struct usb_interface *interface,
+-	/* cpu port is always last */
+-	dev->num_ports = dev->cpu_port + 1;
+ 	dev->enabled_ports |= BIT(dev->cpu_port);
++	dev->num_ports = fls(dev->enabled_ports);
  
- 	return hso_dev;
- 
--err_free_tx_buf:
-+err_rmv_ndev:
- 	remove_net_device(hso_dev);
-+err_free_tx_buf:
- 	kfree(hso_net->mux_bulk_tx_buf);
- err_free_tx_urb:
- 	usb_free_urb(hso_net->mux_bulk_tx_urb);
+ 	/* Include non standard CPU port built-in PHYs to be probed */
+ 	if (is539x(dev) || is531x5(dev)) {
 -- 
 2.30.2
 
