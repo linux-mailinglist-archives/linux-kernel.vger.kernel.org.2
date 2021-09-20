@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9226411A2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3295411B83
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243377AbhITQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35714 "EHLO mail.kernel.org"
+        id S1344501AbhITQ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:59:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242991AbhITQrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52882611ED;
-        Mon, 20 Sep 2021 16:45:58 +0000 (UTC)
+        id S241958AbhITQ4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:56:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B440D61242;
+        Mon, 20 Sep 2021 16:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156358;
-        bh=iXpu1rZYqTQ8qW3DgHWk59bPPAIlagU1NrgtNKQ30MY=;
+        s=korg; t=1632156678;
+        bh=7S7TV+4fh1G+GEn4kC3KzTkyaRuZU3TmOAvgbJxXe/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0N/4GPCAIvDEDR68L7swJuPm944x7vQKy8UG+ucfaetX2eEIeYUx2KruZgcRrasAI
-         9tj25wivO0dFx5qWfilcTlF9SBKiy4cGwPbOdjTH9SbzBa6GMcLRTbiYWZh17rMG6e
-         I5itNWa/MCEtDtuNkEnoE9rZ+6OJkwOG9WGN7i7c=
+        b=R92EXsWEaL4o/02wtV8g8rcXGO3eSmcaoZq+yPrG1XGoirlUm5L2OFdHUKNfNIrDP
+         PI7J4noQeIA1lkcZDxpmBJMp+Gz5xpQ7g8bWWS+I3kNECwMerR8VpFo/rU5hWNYQ4B
+         DPIHOchYXNeNecv70aa0Vdo2v2nRmasPkbmuVQH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 005/133] cryptoloop: add a deprecation warning
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.9 034/175] PCI: Call Max Payload Size-related fixup quirks early
 Date:   Mon, 20 Sep 2021 18:41:23 +0200
-Message-Id: <20210920163912.781899310@linuxfoundation.org>
+Message-Id: <20210920163919.177532743@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
+commit b8da302e2955fe4d41eb9d48199242674d77dbe0 upstream.
 
-Support for cryptoloop has been officially marked broken and deprecated
-in favor of dm-crypt (which supports the same broken algorithms if
-needed) in Linux 2.6.4 (released in March 2004), and support for it has
-been entirely removed from losetup in util-linux 2.23 (released in April
-2013).  Add a warning and a deprecation schedule.
+pci_device_add() calls HEADER fixups after pci_configure_device(), which
+configures Max Payload Size.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Convert MPS-related fixups to EARLY fixups so pci_configure_mps() takes
+them into account.
+
+Fixes: 27d868b5e6cfa ("PCI: Set MPS to match upstream bridge")
+Link: https://lore.kernel.org/r/20210624171418.27194-1-kabel@kernel.org
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/Kconfig      | 4 ++--
- drivers/block/cryptoloop.c | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/pci/quirks.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index c794e215ea3d..324abc8d53fa 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -267,7 +267,7 @@ config BLK_DEV_LOOP_MIN_COUNT
- 	  dynamically allocated with the /dev/loop-control interface.
- 
- config BLK_DEV_CRYPTOLOOP
--	tristate "Cryptoloop Support"
-+	tristate "Cryptoloop Support (DEPRECATED)"
- 	select CRYPTO
- 	select CRYPTO_CBC
- 	depends on BLK_DEV_LOOP
-@@ -279,7 +279,7 @@ config BLK_DEV_CRYPTOLOOP
- 	  WARNING: This device is not safe for journaled file systems like
- 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
- 	  instead, which can be configured to be on-disk compatible with the
--	  cryptoloop device.
-+	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
- 
- source "drivers/block/drbd/Kconfig"
- 
-diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
-index 99e773cb70d0..d3d1f24ca7a3 100644
---- a/drivers/block/cryptoloop.c
-+++ b/drivers/block/cryptoloop.c
-@@ -201,6 +201,8 @@ init_cryptoloop(void)
- 
- 	if (rc)
- 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
-+	else
-+		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
- 	return rc;
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -2994,12 +2994,12 @@ static void fixup_mpss_256(struct pci_de
+ {
+ 	dev->pcie_mpss = 1; /* 256 bytes */
  }
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
+-			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
+-			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
+-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
+-			 PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
++			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
++			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
++			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
  
--- 
-2.30.2
-
+ /* Intel 5000 and 5100 Memory controllers have an errata with read completion
+  * coalescing (which is enabled by default on some BIOSes) and MPS of 256B.
 
 
