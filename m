@@ -2,426 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76D94113E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE214113D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237382AbhITMB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbhITMB4 (ORCPT
+        id S237382AbhITL6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:58:54 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:18330 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232033AbhITL6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:01:56 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70FAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:00:28 -0700 (PDT)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id wC0Q2500M4C55Sk01C0QKX; Mon, 20 Sep 2021 14:00:24 +0200
-Received: from rox.of.borg ([192.168.97.57] helo=rox)
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mSHtz-007DE9-VT
-        for linux-kernel@vger.kernel.org; Mon, 20 Sep 2021 13:56:03 +0200
-Received: from geert by rox with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mSHtz-00EV28-Fz
-        for linux-kernel@vger.kernel.org; Mon, 20 Sep 2021 13:56:03 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.15-rc2
-Date:   Mon, 20 Sep 2021 13:56:03 +0200
-Message-Id: <20210920115603.3455841-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Mon, 20 Sep 2021 07:58:53 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KBOS9Q012290;
+        Mon, 20 Sep 2021 11:57:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=GgU67NeXCiYHn8vaZ1N7w+r5CWTvLKj0OQAKJQgiDfM=;
+ b=07NKwacehyITpbK/4QUPXrzgtwsN+VliKki/urQS2e7QwhYIt8M7DrsHkgkoA+g61EI6
+ t02NN/BiHYzKgNuMHR+jXKC9eAfpEFyalgMrQAj8eZ7d7nUHZnxPB+tdrcRDNb8dignk
+ Eb+GXjKltdbTTXTb6wKVUHyeyQzf3f9BHHw9RlwbSM9bPE55YpeS+5i3fvPOaO7VKLt/
+ ddprkU5xRH8xS0yUvilAj1fZ8TQgAQacX5i2REtuRBIo6S6rpd/rVz+8lJHOAjrKF4CL
+ mbBdZwUYtaub9Zmi57tRZC0nLeYfMNXbj6sPy3KL64QXlm/t+APrOiLm/rwpMcXzgg8m IQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=GgU67NeXCiYHn8vaZ1N7w+r5CWTvLKj0OQAKJQgiDfM=;
+ b=vZpGyct1tfzzax9N8I5INij9J7OM1bjVi3nFsUpLAXbrHot2zAOvetdQuydFTS7w3eue
+ Ak+B0e3vjjdpIDhnmgk4Dkpd8ZJS4FcfB+fqhZ2HrdYhod3pOy2ylq/+MrcGvVMCnwGH
+ wT8oArRrBIbwsjYQL/ZUcfuGfE2X6RYuTYY6sZtl4UDklGmk9rqlvosyxOLIdrpW+Rec
+ qLYr27rNhDKxhZT/9KGxCa//MIKYZMypbFc5g6DiOCwVpp+Sl/nYKkJE7/umenpsCCBo
+ Fk36HGbn4WUYlXRiz6ieNatFIc82+WOlgOJnFAfn/9PxtbsgnS7Bd8evrRW3S0Q0W9rY VQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b66wn25pd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 11:57:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18KBuhtX046483;
+        Mon, 20 Sep 2021 11:57:08 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
+        by aserp3020.oracle.com with ESMTP id 3b57x3x4ku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 11:57:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8FD6U0OiqeCJVBRKaAzPGhFQEXq5hLNluAkyzZ/HK9WsGSfW1gSUEj+RGgIwPtdkNGh1wgt7dWyotJlKqm0uLyQhodI5HQoHZ/ys8uLwMxOnnY0s2sJTniWpgmUUAP1BJs0MyG8AuA68Ota/2kW0SJ9pC3cmtKpmHsj2nH64Dn3rNF/AGc/nb9m6vssi2ZxIdryBUp0fKcQR6fwpB/sw3+faJVkMr+anlWtFMEINzqImIfolN7gpEcy12rufwLrLbVsCnI1jEqNZDxElRJkj3708NSS+ntT1ixZvcmoXRUCujKJVnKIlL2unBqXQdBfe0ffs6HGn9ZJyHkt8DbjEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=GgU67NeXCiYHn8vaZ1N7w+r5CWTvLKj0OQAKJQgiDfM=;
+ b=bd+gUYxJ1jW/eLpb2SkL2lYBXos046Y6qlBMeRCK4tGzvGlP/Pz/C2VoaL0CNXATWCP/tHdfOmrJ1Z9JJpvkvvUttK7SC6rSrQ0yp/eiUBbhJuIGSj5WoJRbwtweLs/QpFxtk0PjhT+/6xmL3XHAFEwwRRoO6aXtszB3m7q++DdgmUoNKqqy1uQVZvVM4/aCdJBWt3VokOx1hInPHZB9PPfSv1P66T5s3lwTYxSPWl7+NSHwng3oeJMBePUX3IsiH430el3+bR1iaQtrdEgZSCRts/EIxH9TVj8YzdxSn36QN7pjtkx8rTWXq5fjn/w6ZVZTj3lANYSFKUWy8LHeTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GgU67NeXCiYHn8vaZ1N7w+r5CWTvLKj0OQAKJQgiDfM=;
+ b=riWFQiThhnh1rWZIY5fUmcWiBA+VzNd9EoBa1MCb2V6jbtOa7xROxTudGO07i9v+4w7gfJISH7J1D11PL6RMGfnElA5lL3wAgGfKouH5I5I2hXhjA4O/WLihDd2u+NDv6od6a83XWEjS74L1OlPy1601JhiSgYzfNyE/CsK7xT4=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR1001MB2093.namprd10.prod.outlook.com
+ (2603:10b6:301:36::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Mon, 20 Sep
+ 2021 11:57:06 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
+ 11:57:06 +0000
+Date:   Mon, 20 Sep 2021 14:56:47 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH v8 15/19] staging: r8188eu: change the type of a variable
+ in rtw_read16()
+Message-ID: <20210920115647.GR2116@kadam>
+References: <20210919235356.4151-1-fmdefrancesco@gmail.com>
+ <20210919235356.4151-16-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210919235356.4151-16-fmdefrancesco@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0037.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::25)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from kadam (62.8.83.99) by JN2P275CA0037.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Mon, 20 Sep 2021 11:57:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e4a331f5-c089-4cce-43fe-08d97c2dc465
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2093:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB20937D170CB42EE3C1FAB0D38EA09@MWHPR1001MB2093.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:514;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C3p4RdEJqrXOPeRfOyz99Pqbj2HrY05ztPPqbuHpZBtgkHXqeU4R7XGRgfZzjAfbzI7uNjKdK+/IBCHK3Kqrei8+FTVcmstpKq8ZcLWjxUXt7vKrXzDUaVZ37dEsDH99u2FdNcLx4BN8sH5uyoXyvWpHjXiXT7g1GXmZjLusp1qvlH1sW3shlzhPIzcUnW4OyS3YFo7dIPPcJTdvXWIpRsSK+KY/M/B+MCoE12+1rU46fnTQnSaMdhlb6qilQ4/YzQCzInAoTUl9J1BLp9+RFU8KePVaEzit7QOt5zGsiJlEjWvWWjxUW503RPcja12Ch0aFsEUXLRZEl8FE/Xd0sRSR9NWkIsqmCa/o6TW99IvhgDxF8/3lT6eem3y8KJcldTOH9XZVB9oTQmwfPq5NOHswbYdy/k5TnYovwA6McYejyvAR8nFSsHJ0476dn3KACIQZ8OklbrdcJ8lcddFJBxZIT/NubiohFv1czcxgCeTEr9k1xhVJgtCldc9wPGhWhhotqYUChADqc/Pvqrys4I94EBktJgl7Om8D0O4PsNnjC47XYPu7IyTS4k/4Ij9sElWOlKKLQvyrODCSWq4sMsT5c72+/+PQmWjCb6jjzs0EhcYw1EkyLZpbgIRHY+vMcKqr1BZ5jZ3TEUKAb1Pb7kjiOQfvf9roV20VjOQc39NlZnhCK/nhruaLCzYwD/AQghSRLplmO8kDx0nk5UpMIw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(376002)(396003)(346002)(26005)(8676002)(4326008)(316002)(4744005)(8936002)(44832011)(38350700002)(5660300002)(86362001)(478600001)(9576002)(55016002)(6666004)(54906003)(52116002)(6496006)(956004)(2906002)(186003)(66556008)(66476007)(6916009)(66946007)(33656002)(83380400001)(9686003)(38100700002)(33716001)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8dq8WVtWzRZZHQVBz4ookmR+Z7pY7F/DSzpkQa+f/0FYVODSWjONk3cQ24zr?=
+ =?us-ascii?Q?NTeCrbcx5Q7CqWcT2bco4XsrmOxXD2CJmKuTZ8TS5wZeTEfi3oez7hSCpmKH?=
+ =?us-ascii?Q?fkEo1QPYZuxD5nzFG2ffDSeW/ciX1kwUp2nCldtTxfHFqPdYJZIKNJLWUz9f?=
+ =?us-ascii?Q?I2bPlmKdAaIcRchzAc69Eth0juLiTFxJelPgQt8BRwbev3lMbpKHntOmSxfM?=
+ =?us-ascii?Q?330jJ4TaexXd9Ro+gSZedOXNk3b65GyuwTjKgWnq2k3zShmkeEA8Ypwt5kf7?=
+ =?us-ascii?Q?Cwj0vfj2S1PZ+M0+NmDW8nViDhn3NQyUjPfnIF+FTNFeDHQmaFO+juryysmI?=
+ =?us-ascii?Q?nJpSSrLVehtZfh7M4/evfkERYxNSgeHrHaDOrfh2bzTWG/fZ/nlAPnTH+kwn?=
+ =?us-ascii?Q?mnSsF4BxlVzKDixgNgYycfUOljnABiGdozu02HA279DMxHbbvVqIwpYGAQlp?=
+ =?us-ascii?Q?0SFWBdOrqMHLo2uuC3lhdOCEAa0kzBjnlcf9osR+5OTyN9xYyGi1u390Ul0/?=
+ =?us-ascii?Q?iOwFs9zKYou7/B0FVJ5ox15w9n7+CcRRJjAALTgd3tm30cyrFO0Tw5S9ZIwU?=
+ =?us-ascii?Q?xZFm7ukGHX1+Ak9um0FxMqzxP3ADH9yVKbelBeLuCJLH21430IU0c/gO2xS8?=
+ =?us-ascii?Q?duOi7gwYS50N1T3Q4zbC5cksEHlwt5C95Qp301pRbidjfyfY/PozsgQSEXsi?=
+ =?us-ascii?Q?Kq/ekll5XwSGFoPcCyDCSSlisQk7ZGRjiV1mQd05oqxniV7ka3QZtD2aT9AF?=
+ =?us-ascii?Q?0iNyjodcm+hLjyZtTqvWsazqSuHUy8nkwtf5uaH1Td7ge6cHuPOJZraTV7sO?=
+ =?us-ascii?Q?CX2JdxrU3BfPKD/G7xwTz3EaBKegIWuoqmGMpFZPHs4pFAy1dYAPevKCkO58?=
+ =?us-ascii?Q?ZIWBcBvmi5tFnBIE1VBL5WIIAfpUNRjAzZPGiTaXe0f3esvWaP3BRHR8tw9f?=
+ =?us-ascii?Q?Ddt3p2N8PBxkAYuX/obftDxMua1DLu8kIdd5o7eG39d0cUXbxu+DWCVVw02X?=
+ =?us-ascii?Q?NXppYlHC7txlzGExZBvy7NHfBNsd1WKXgtd+hTVR1Ccwe/C51IQXuUoAlRQp?=
+ =?us-ascii?Q?NFMG/hBXxRnqKI0MrIlLcd+eg1SNMkLnZFa0fEe+dV0I8F4CkVhRdRsRtT8v?=
+ =?us-ascii?Q?Hpt7ahgcA/vjJhqS0WmlavZykwt2I4KT9Kpcdkfc9MigO4J4mL+X83AFgycD?=
+ =?us-ascii?Q?Nyf9NYIc43OZVvb44q2QbxC6yWAg7tsdbHdsVG34vrtkLFd8HTmCdACaLQC5?=
+ =?us-ascii?Q?sGJLKHFEAwNxzuoRTd/qd7qXYd04bLBlGlbA05D0kQUpLECZvxK2yOPTSBg3?=
+ =?us-ascii?Q?tslgKnIhU1p8PlmXpAubd4qP?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4a331f5-c089-4cce-43fe-08d97c2dc465
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2021 11:57:06.1468
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0UyetgeGgYkz2JJ+alFH+xtTIXb5f8bhoEninyPPICZZSe1O5VIHDj7WXS114N02PjfN95LD3VUYTLRYOqZej8K4Da77bTObLfwF6A7eFHk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2093
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10112 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109200076
+X-Proofpoint-GUID: F_EwgnfPS7aQ8WRog84nGw_g5GevGO56
+X-Proofpoint-ORIG-GUID: F_EwgnfPS7aQ8WRog84nGw_g5GevGO56
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.15-rc2[1] compared to v5.14[2].
+On Mon, Sep 20, 2021 at 01:53:52AM +0200, Fabio M. De Francesco wrote:
+> Change the type of "data" from __le32 to __le16.
+> 
 
-Summarized:
-  - build errors: +20/-12
-  - build warnings: +19/-288
+You should note in the commit message that:
 
-JFYI, when comparing v5.15-rc2[1] to v5.15-rc1[3], the summaries are:
-  - build errors: +9/-49
-  - build warnings: +32/-40
+The last two bytes of "data" are not initialized so the le32_to_cpu(data)
+technically reads uninitialized data.  This can likely be detected by
+the KASan checker as reading uninitialized data.  But because the bytes
+are discarded in the end so this will not affect runtime.
 
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
+regards,
+dan carpenter
 
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e4e737bb5c170df6135a127739a9e6148ee3da82/ (90 out of 182 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7d2a07b769330c34b4deabeed939325c77a7ec2f/ (all 182 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f/ (all 182 configs)
-
-
-*** ERRORS ***
-
-20 error regressions:
-  + /kisskb/src/arch/mips/include/asm/sibyte/bcm1480_scd.h: error: "M_SPC_CFG_CLEAR" redefined [-Werror]:  => 261:0, 261
-  + /kisskb/src/arch/mips/include/asm/sibyte/bcm1480_scd.h: error: "M_SPC_CFG_ENABLE" redefined [-Werror]:  => 262, 262:0
-  + /kisskb/src/arch/sparc/lib/iomap.c: error: redefinition of 'pci_iounmap':  => 22:6
-  + /kisskb/src/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c: error: overflow in conversion from 'int' to '__s8' {aka 'signed char'} changes value from '-251' to '5' [-Werror=overflow]:  => 60:21
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: error: the frame size of 2128 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/iio/test/iio-test-format.c: error: the frame size of 2144 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 98:1
-  + /kisskb/src/drivers/scsi/lpfc/lpfc_init.c: error: 'struct lpfc_sli4_hba' has no member named 'c_stat':  => 8280:28
-  + /kisskb/src/drivers/scsi/lpfc/lpfc_scsi.c: error: 'start' undeclared (first use in this function):  => 5587:2
-  + /kisskb/src/drivers/scsi/ncr53c8xx.c: error: 'retrieve_from_waiting_list' defined but not used [-Werror=unused-function]:  => 8000:26
-  + /kisskb/src/drivers/thunderbolt/test.c: error: the frame size of 3104 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/thunderbolt/test.c: error: the frame size of 3136 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]:  => 2207:1
-  + /kisskb/src/drivers/tty/serial/cpm_uart/cpm_uart_core.c: error: 'udbg_cpm_getc' defined but not used [-Werror=unused-function]:  => 1109:12
-  + /kisskb/src/drivers/tty/serial/cpm_uart/cpm_uart_core.c: error: 'udbg_cpm_putc' defined but not used [-Werror=unused-function]:  => 1095:13
-  + /kisskb/src/drivers/tty/serial/sunzilog.c: error: 'sunzilog_putchar' defined but not used [-Werror=unused-function]:  => 1128:13
-  + /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]:  => 842:41, 1496:12, 1496:33, 970:13, 842:13, 970:41
-  + /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]:  => 1497:27, 843:56, 971:56, 971:28, 1497:48, 843:28
-  + /kisskb/src/drivers/video/fbdev/riva/fbdev.c: error: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]:  => 2062:11, 2095:11
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1859' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1866' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
-  + /kisskb/src/lib/xxhash.c: error: the frame size of 1624 bytes is larger than 1536 bytes [-Werror=frame-larger-than=]:  => 236:1
-
-12 error improvements:
-  - /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration of function 'cpu_feature_enabled' [-Werror=implicit-function-declaration]: 815:7 => 
-  - /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event' has no member named 'pmu': 24:13, 35:13 => 
-  - /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'boot_cpu_has' [-Werror=implicit-function-declaration]: 74:6 => 
-  - /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_eax' [-Werror=implicit-function-declaration]: 64:18 => 
-  - /kisskb/src/drivers/dma/ioat/dca.c: error: implicit declaration of function 'cpuid_ebx' [-Werror=implicit-function-declaration]: 17:31 => 
-  - /kisskb/src/include/linux/compiler_attributes.h: error: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Werror=undef]: 29:29 => 
-  - /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1854' declared with attribute error: FIELD_PREP: value too large for the field: 328:38 => 
-  - /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1861' declared with attribute error: FIELD_PREP: value too large for the field: 328:38 => 
-  - error: arch/sparc/kernel/head_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.init.text': (.head.text+0x5040), (.head.text+0x5100) => 
-  - error: arch/sparc/kernel/head_32.o: relocation truncated to fit: R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text section in arch/sparc/kernel/trampoline_32.o: (.init.text+0xa4) => 
-  - error: arch/sparc/kernel/process_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.text': (.fixup+0x4), (.fixup+0xc) => 
-  - error: arch/sparc/kernel/signal_32.o: relocation truncated to fit: R_SPARC_WDISP22 against `.text': (.fixup+0x10), (.fixup+0x34), (.fixup+0x1c), (.fixup+0x28), (.fixup+0x4) => 
-
-
-*** WARNINGS ***
-
-19 warning regressions:
-  + /kisskb/src/arch/m68k/include/asm/string.h: warning: '__builtin_memcpy' reading 6 bytes from a region of size 0 [-Wstringop-overread]:  => 72:25
-  + /kisskb/src/block/genhd.c: warning: the frame size of 1640 bytes is larger than 1536 bytes [-Wframe-larger-than=]:  => 1169:1
-  + /kisskb/src/block/genhd.c: warning: the frame size of 1672 bytes is larger than 1536 bytes [-Wframe-larger-than=]:  => 1169:1
-  + /kisskb/src/drivers/scsi/ncr53c8xx.c: warning: 'retrieve_from_waiting_list' defined but not used [-Wunused-function]:  => 8000:26
-  + /kisskb/src/lib/xxhash.c: warning: the frame size of 1616 bytes is larger than 1536 bytes [-Wframe-larger-than=]:  => 236:1
-  + /opt/cross/kisskb/korg/gcc-5.5.0-nolibc/powerpc64-linux/bin/../lib/gcc/powerpc64-linux/5.5.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/korg/gcc-5.5.0-nolibc/powerpc64-linux/bin/../lib/gcc/powerpc64-linux/5.5.0/plugin/include/config/rs6000/option-defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 42:20
-  + /opt/cross/kisskb/korg/gcc-5.5.0-nolibc/powerpc64-linux/bin/../lib/gcc/powerpc64-linux/5.5.0/plugin/include/config/rs6000/sysv4.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 411:24
-  + /opt/cross/kisskb/korg/gcc-5.5.0-nolibc/powerpc64-linux/bin/../lib/gcc/powerpc64-linux/5.5.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + <stdin>: warning: #warning syscall fstat64 not implemented [-Wcpp]:  => 834:2
-  + <stdin>: warning: #warning syscall fstatat64 not implemented [-Wcpp]:  => 1131:2
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x108): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x120): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x138): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x150): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x168): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x180): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x198): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000:  => N/A
-  + modpost: WARNING: modpost: lib/test_bitmap.o(.text.unlikely+0x58): Section mismatch in reference from the function bitmap_equal() to the variable .init.rodata:test_print:  => N/A
-
-288 warning improvements:
-  - .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 13081, 13094, 13076 => 13220, 13233
-  - .config: warning: override: reassigning to symbol PPC_64K_PAGES: 13449 => 
-  - .config: warning: override: reassigning to symbol SMP: 4189 => 
-  - .config: warning: override: reassigning to symbol VIRTUALIZATION: 4189 => 
-  - /kisskb/src/arch/arm/crypto/ghash-ce-glue.c: warning: passing argument 4 of 'pmull_ghash_update_p64' from incompatible pointer type: 67:44 => 
-  - /kisskb/src/arch/arm/crypto/ghash-ce-glue.c: warning: passing argument 4 of 'pmull_ghash_update_p8' from incompatible pointer type: 69:43 => 
-  - /kisskb/src/arch/m68k/include/asm/raw_io.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 20:19, 30:32 => 
-  - /kisskb/src/arch/m68k/mvme147/config.c: warning: #warning check me! [-Wcpp]: 174:2 => 
-  - /kisskb/src/arch/m68k/mvme16x/config.c: warning: #warning check me! [-Wcpp]: 439:2 => 
-  - /kisskb/src/arch/mips/include/asm/sibyte/bcm1480_scd.h: warning: "M_SPC_CFG_CLEAR" redefined: 261, 261:0 => 
-  - /kisskb/src/arch/mips/include/asm/sibyte/bcm1480_scd.h: warning: "M_SPC_CFG_ENABLE" redefined: 262:0, 262 => 
-  - /kisskb/src/arch/nds32/kernel/setup.c: warning: unused variable 'region' [-Wunused-variable]: 247:26 => 
-  - /kisskb/src/arch/parisc/math-emu/fpudispatch.c: warning: this statement may fall through [-Wimplicit-fallthrough=]: 860:5, 830:5, 815:3, 1042:8, 728:3, 777:5, 1021:5, 875:5, 744:5, 817:5, 300:3, 468:5, 438:5, 749:18, 521:7, 905:5, 483:5, 766:5, 498:5, 661:5, 345:18, 1075:5, 336:5, 1030:5, 343:18, 312:18, 320:5, 625:5, 760:18, 755:5, 738:18, 410:5, 408:3, 359:18, 314:18, 733:5, 845:5, 361:18, 423:5, 771:18, 890:5, 649:5, 305:5, 637:5, 368:5, 453:5, 327:18, 329:18, 938:7, 352:5, 574:5 => 
-  - /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation: 189:1 => 
-  - /kisskb/src/arch/s390/kernel/perf_cpum_cf.c: warning: 'cfdiag_push_sample' uses dynamic stack allocation: 651:1 => 
-  - /kisskb/src/arch/s390/kernel/perf_cpum_sf.c: warning: 'perf_push_sample' uses dynamic stack allocation: 1145:1 => 
-  - /kisskb/src/arch/s390/kernel/syscall.c: warning: '__do_syscall' uses dynamic stack allocation: 168:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1112 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1181:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1120 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1181:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1680 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1181:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1712 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1181:1 => 
-  - /kisskb/src/block/mq-deadline.c: warning: 'dd_queued' defined but not used [-Wunused-function]: 274:12 => 
-  - /kisskb/src/drivers/clk/xilinx/xlnx_vcu.c: warning: (near initialization for 'parent_data[0]') [-Wmissing-braces]: 524:9 => 
-  - /kisskb/src/drivers/clk/xilinx/xlnx_vcu.c: warning: missing braces around initializer [-Wmissing-braces]: 524:9 => 
-  - /kisskb/src/drivers/crypto/sa2ul.c: warning: (near initialization for 'ad.enc_eng') [-Wmissing-braces]: 949:9, 969:9, 987:9, 1899:9, 1660:9, 1886:9, 1628:9, 1001:9, 1644:9 => 
-  - /kisskb/src/drivers/crypto/sa2ul.c: warning: missing braces around initializer [-Wmissing-braces]: 1660:9, 1886:9, 969:9, 949:9, 987:9, 1899:9, 1001:9, 1644:9, 1628:9 => 
-  - /kisskb/src/drivers/cxl/core.c: warning: (near initialization for '(anonymous).hdm_decoder') [-Wmissing-braces]: 567:17 => 
-  - /kisskb/src/drivers/cxl/core.c: warning: (near initialization for '(anonymous).status') [-Wmissing-braces]: 831:17 => 
-  - /kisskb/src/drivers/cxl/core.c: warning: missing braces around initializer [-Wmissing-braces]: 567:17, 831:17 => 
-  - /kisskb/src/drivers/firmware/qcom_scm-legacy.c: warning: (near initialization for 'smc.args') [-Wmissing-braces]: 139:9 => 
-  - /kisskb/src/drivers/firmware/qcom_scm-legacy.c: warning: missing braces around initializer [-Wmissing-braces]: 139:9 => 
-  - /kisskb/src/drivers/firmware/qcom_scm-smc.c: warning: (near initialization for 'smc.args') [-Wmissing-braces]: 95:9 => 
-  - /kisskb/src/drivers/firmware/qcom_scm-smc.c: warning: missing braces around initializer [-Wmissing-braces]: 95:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c: warning: (near initialization for 'params.triggers') [-Wmissing-braces]: 104:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm_psr.c: warning: missing braces around initializer [-Wmissing-braces]: 104:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c: warning: (near initialization for 'dummy_record.record_header') [-Wmissing-braces]: 297:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c: warning: missing braces around initializer [-Wmissing-braces]: 297:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]: 934:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 934:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/dcn301_smu.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]: 213:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/dcn301_smu.c: warning: missing braces around initializer [-Wmissing-braces]: 213:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: (near initialization for 'dummy_wms.WatermarkRow') [-Wmissing-braces]: 707:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]: 118:11, 131:10 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 707:15, 118:11, 131:10 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: (near initialization for 'dummy_wms.WatermarkRow') [-Wmissing-braces]: 402:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]: 157:11, 179:10 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 179:10, 157:11, 402:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_smu.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]: 240:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn31/dcn31_smu.c: warning: missing braces around initializer [-Wmissing-braces]: 240:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]: 3433:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 2688:11, 2874:11 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c: warning: missing braces around initializer [-Wmissing-braces]: 3433:8, 2874:11, 2688:11 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: warning: (near initialization for 'dpcd_pattern_period[0]') [-Wmissing-braces]: 3086:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: warning: (near initialization for 'dpcd_test_mode.bits') [-Wmissing-braces]: 3084:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 4464:11, 4508:11 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c: warning: missing braces around initializer [-Wmissing-braces]: 4464:11, 4508:11, 3086:8, 3084:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: (near initialization for 'data.inbox0_cmd_common') [-Wmissing-braces]: 58:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 58:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_crtc_timing[0]') [-Wmissing-braces]: 1992:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1853:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1853:9, 1992:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 1278:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 1278:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1230:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]: 1230:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]: 451:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'ddc_init_data.id') [-Wmissing-braces]: 3725:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 3725:9, 451:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 258:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 258:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c: warning: (near initialization for 'warmup_params.start_address') [-Wmissing-braces]: 266:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]: 266:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c: warning: (near initialization for 'ddc_init_data.id') [-Wmissing-braces]: 2541:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 2541:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]: 393:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: missing braces around initializer [-Wmissing-braces]: 393:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn31.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]: 320:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn31.c: warning: missing braces around initializer [-Wmissing-braces]: 320:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: (near initialization for 'cmd.cmd_common') [-Wmissing-braces]: 54:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_srv_stat.c: warning: missing braces around initializer [-Wmissing-braces]: 54:8 => 
-  - /kisskb/src/drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c: warning: overflow in conversion from 'int' to '__s8' {aka 'signed char'} changes value from '-251' to '5' [-Woverflow]: 60:21 => 
-  - /kisskb/src/drivers/gpu/drm/rockchip/cdn-dp-core.c: warning: 'cdn_dp_resume' defined but not used [-Wunused-function]: 1126:12 => 
-  - /kisskb/src/drivers/gpu/drm/xlnx/zynqmp_dp.c: warning: (near initialization for 'opts.mipi_dphy') [-Wmissing-braces]: 667:9 => 
-  - /kisskb/src/drivers/gpu/drm/xlnx/zynqmp_dp.c: warning: missing braces around initializer [-Wmissing-braces]: 667:9 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2128 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/iio/test/iio-test-format.c: warning: the frame size of 2152 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 98:1 => 
-  - /kisskb/src/drivers/input/joystick/analog.c: warning: #warning Precise timer not defined for this architecture. [-Wcpp]: 160:2 => 
-  - /kisskb/src/drivers/media/i2c/imx334.c: warning: (near initialization for 'msgs[0]') [-Wmissing-braces]: 288:9 => 
-  - /kisskb/src/drivers/media/i2c/imx334.c: warning: missing braces around initializer [-Wmissing-braces]: 288:9 => 
-  - /kisskb/src/drivers/mtd/nand/raw/mpc5121_nfc.c: warning: unused variable 'mtd' [-Wunused-variable]: 294:19 => 
-  - /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: (near initialization for 'tx_conf_msg.nominal_bittiming') [-Wmissing-braces]: 400:9 => 
-  - /kisskb/src/drivers/net/can/usb/etas_es58x/es58x_fd.c: warning: missing braces around initializer [-Wmissing-braces]: 400:9 => 
-  - /kisskb/src/drivers/net/dsa/sja1105/sja1105_spi.c: warning: (near initialization for 'xfers[0]') [-Wmissing-braces]: 40:9 => 
-  - /kisskb/src/drivers/net/dsa/sja1105/sja1105_spi.c: warning: missing braces around initializer [-Wmissing-braces]: 40:9 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '____alloc_ei_netdev' defined but not used [-Wunused-function]: 995:27 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_close' defined but not used [-Wunused-function]: 233:12 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_get_stats' defined but not used [-Wunused-function]: 857:33 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_open' defined but not used [-Wunused-function]: 204:12 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_poll' defined but not used [-Wunused-function]: 512:13 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_set_multicast_list' defined but not used [-Wunused-function]: 957:13 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_start_xmit' defined but not used [-Wunused-function]: 303:20 => 
-  - /kisskb/src/drivers/net/ethernet/8390/lib8390.c: warning: '__ei_tx_timeout' defined but not used [-Wunused-function]: 257:13 => 
-  - /kisskb/src/drivers/net/ethernet/broadcom/bnxt/bnxt.h: warning: "writeq" redefined: 2133 => 
-  - /kisskb/src/drivers/net/ethernet/broadcom/bnxt/bnxt.h: warning: "writeq_relaxed" redefined: 2141 => 
-  - /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: (near initialization for 'buf[0]') [-Wmissing-braces]: 910:9 => 
-  - /kisskb/src/drivers/net/ethernet/chelsio/cxgb4/sge.c: warning: missing braces around initializer [-Wmissing-braces]: 910:9 => 
-  - /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 444:1 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: (near initialization for 'acl_entry.list') [-Wmissing-braces]: 2945:9 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c: warning: missing braces around initializer [-Wmissing-braces]: 2945:9 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_redirect_arr[0]') [-Wmissing-braces]: 1078:9 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: (near initialization for 'xdp_tx_arr[0]') [-Wmissing-braces]: 1245:9 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc.c: warning: missing braces around initializer [-Wmissing-braces]: 1078:9, 1245:9 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc_pf.c: warning: (near initialization for 'rfse.smac_h') [-Wmissing-braces]: 1136:9 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/enetc/enetc_pf.c: warning: missing braces around initializer [-Wmissing-braces]: 1136:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 774:9, 845:9, 631:9, 681:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 846:9, 632:9, 682:9, 775:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]: 682:9, 774:9, 846:9, 632:9, 845:9, 631:9, 681:9, 775:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'cntr_req.hdr') [-Wmissing-braces]: 888:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'cntr_rsp.hdr') [-Wmissing-braces]: 889:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'dis_req.hdr') [-Wmissing-braces]: 1238:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'dummy.packet') [-Wmissing-braces]: 996:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'free_req.hdr') [-Wmissing-braces]: 871:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'write_req.hdr') [-Wmissing-braces]: 994:9, 1303:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: missing braces around initializer [-Wmissing-braces]: 889:9, 1238:9, 994:9, 1303:9, 888:9, 871:9, 996:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'alloc_req.hdr') [-Wmissing-braces]: 144:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'alloc_rsp.hdr') [-Wmissing-braces]: 145:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'free_req.hdr') [-Wmissing-braces]: 147:9, 198:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]: 13:9, 41:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]: 14:9, 42:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: (near initialization for 'uninstall_req.hdr') [-Wmissing-braces]: 146:9, 197:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c: warning: missing braces around initializer [-Wmissing-braces]: 197:9, 145:9, 14:9, 13:9, 42:9, 146:9, 41:9, 198:9, 144:9, 147:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/prestera/prestera_flower.c: warning: (near initialization for 'm_entry.list') [-Wmissing-braces]: 52:9 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/prestera/prestera_flower.c: warning: missing braces around initializer [-Wmissing-braces]: 52:9 => 
-  - /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: (near initialization for 'etype.value') [-Wmissing-braces]: 755:11 => 
-  - /kisskb/src/drivers/net/ethernet/mscc/ocelot_vcap.c: warning: missing braces around initializer [-Wmissing-braces]: 755:11 => 
-  - /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation: 1092:1 => 
-  - /kisskb/src/drivers/net/phy/dp83640_reg.h: warning: "PAGE0" redefined: 8 => 
-  - /kisskb/src/drivers/parisc/dino.c: warning: 'pci_dev_is_behind_card_dino' defined but not used [-Wunused-function]: 160:12 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation: 317:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation: 331:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation: 590:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation: 216:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation: 282:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation: 359:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation: 303:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation: 85:1 => 
-  - /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: (near initialization for 'req.service_path') [-Wmissing-braces]: 572:9 => 
-  - /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: missing braces around initializer [-Wmissing-braces]: 572:9 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.39' uses dynamic stack allocation: 481:1 => 
-  - /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation: 2887:1 => 
-  - /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3136 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 2207:1 => 
-  - /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3168 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 2207:1 => 
-  - /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 3176 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 2207:1 => 
-  - /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7192 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 2367:1 => 
-  - /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7208 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 2367:1 => 
-  - /kisskb/src/drivers/thunderbolt/test.c: warning: the frame size of 7264 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 2367:1 => 
-  - /kisskb/src/drivers/tty/serial/sunzilog.c: warning: 'sunzilog_putchar' defined but not used [-Wunused-function]: 1128:13 => 
-  - /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]: 970:13, 1496:12, 842:13 => 
-  - /kisskb/src/drivers/usb/gadget/udc/fsl_qe_udc.c: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 843:28, 971:28, 1497:27 => 
-  - /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]: 1439:10, 1414:10 => 
-  - /kisskb/src/drivers/video/fbdev/riva/fbdev.c: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]: 2059:11, 2092:11 => 
-  - /kisskb/src/drivers/virtio/virtio_vdpa.c: warning: (near initialization for 'state.<anonymous>') [-Wmissing-braces]: 146:9 => 
-  - /kisskb/src/drivers/virtio/virtio_vdpa.c: warning: missing braces around initializer [-Wmissing-braces]: 146:9 => 
-  - /kisskb/src/fs/btrfs/tree-checker.c: warning: (near initialization for 'ri.inode') [-Wmissing-braces]: 1071:9 => 
-  - /kisskb/src/fs/btrfs/tree-checker.c: warning: missing braces around initializer [-Wmissing-braces]: 1071:9 => 
-  - /kisskb/src/fs/cifs/connect.c: warning: (near initialization for 'mount_id.b') [-Wmissing-braces]: 3466:2 => 
-  - /kisskb/src/fs/cifs/connect.c: warning: missing braces around initializer [-Wmissing-braces]: 3466:2 => 
-  - /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation: 719:1 => 
-  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2208 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/include/linux/compiler_attributes.h: warning: "__GCC4_has_attribute___no_sanitize_coverage__" is not defined [-Wundef]: 29:29 => 
-  - /kisskb/src/include/linux/err.h: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]: 22:49 => 
-  - /kisskb/src/include/linux/minmax.h: warning: comparison of distinct pointer types lacks a cast: 20:28 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.13' uses dynamic stack allocation: 238:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.28' uses dynamic stack allocation: 3750:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation: 1833:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation: 1437:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation: 1547:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation: 1578:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation: 1496:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation: 1515:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation: 1288:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation: 1478:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation: 1376:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation: 9389:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation: 8576:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation: 8872:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation: 8128:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation: 7906:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation: 8783:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation: 8284:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation: 8005:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation: 7525:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation: 8668:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation: 7812:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation: 8990:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation: 9063:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation: 8609:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation: 8738:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation: 10548:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation: 9703:1 => 
-  - /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation: 295:1 => 
-  - /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation: 313:1 => 
-  - /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation: 763:1 => 
-  - /kisskb/src/kernel/trace/trace_osnoise.c: warning: 'main' is usually a function [-Wmain]: 1515:8 => 
-  - /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation: 331:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2128 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 437:1, 530:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2144 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 530:1, 437:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2464 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 437:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2472 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 437:1, 530:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2480 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 530:1, 437:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2488 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 437:1, 530:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2512 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 530:1, 437:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2616 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2640 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2952 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 2992 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_scanf.c: warning: the frame size of 3008 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 488:1 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/xxhash.c: warning: the frame size of 1656 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 236:1 => 
-  - /kisskb/src/lib/xxhash.c: warning: the frame size of 1672 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 236:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1192 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 1393:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1384 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2051:1 => 
-  - /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1432 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2262:1 => 
-  - /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation: 2821:1 => 
-  - /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation: 3144:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.64' uses dynamic stack allocation: 2357:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.63' uses dynamic stack allocation: 2067:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.62' uses dynamic stack allocation: 2425:1 => 
-  - /kisskb/src/mm/z3fold.c: warning: 'z3fold_reclaim_page.constprop' uses dynamic stack allocation: 1475:1 => 
-  - /kisskb/src/net/bridge/br_netlink.c: warning: 'br_fill_linkxstats' uses dynamic stack allocation: 1755:1 => 
-  - /kisskb/src/net/bridge/br_vlan.c: warning: 'br_vlan_fill_vids' uses dynamic stack allocation: 1725:1 => 
-  - /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation: 1821:1 => 
-  - /kisskb/src/net/openvswitch/actions.c: warning: (near initialization for 'ovs_rt.dst') [-Wmissing-braces]: 831:10 => 
-  - /kisskb/src/net/openvswitch/actions.c: warning: missing braces around initializer [-Wmissing-braces]: 831:10 => 
-  - /kisskb/src/net/sched/sch_frag.c: warning: (near initialization for 'sch_frag_rt.dst') [-Wmissing-braces]: 93:10 => 
-  - /kisskb/src/net/sched/sch_frag.c: warning: missing braces around initializer [-Wmissing-braces]: 93:10 => 
-  - /kisskb/src/security/landlock/ruleset.c: warning: passing argument 2 of 'create_rule' from incompatible pointer type: 196:34 => 
-  - /kisskb/src/security/landlock/ruleset.c: warning: passing argument 3 of 'insert_rule' from incompatible pointer type: 330:5, 300:47, 240:38 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 170:24, 102:21 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 126:24 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 102:21, 170:24 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 2791:20 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 126:24 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 102:21, 170:24 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/s390/s390.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 836:20 => 
-  - /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]: 126:24 => 
-  - arch/powerpc/configs/mpc885_ads_defconfig: warning: override: reassigning to symbol IPV6: 79 => 
-  - modpost: WARNING: modpost: "saved_config" [vmlinux] is COMMON symbol: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ashldi3" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ashrdi3" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__ndelay" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "__udelay" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: EXPORT symbol "empty_zero_page" [vmlinux] version ...: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x140): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x158): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x170): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x188): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1a0): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1b8): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede.o(.data+0x1d0): Section mismatch in reference from the variable qede_forced_speed_maps to the variable .init.rodata:qede_forced_speed_100000: N/A => 
-  - modpost: WARNING: modpost: lib/test_bitmap.o(.text.unlikely+0x58): Section mismatch in reference from the function bitmap_equal() to the variable .init.rodata:clump_exp: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
