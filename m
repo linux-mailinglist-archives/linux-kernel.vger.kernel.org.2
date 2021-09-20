@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FD9412461
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F72241232D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380442AbhITSeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49244 "EHLO mail.kernel.org"
+        id S1377942AbhITSWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:22:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379142AbhITS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:28:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9A15632D7;
-        Mon, 20 Sep 2021 17:26:21 +0000 (UTC)
+        id S1376722AbhITSOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:14:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A76E61357;
+        Mon, 20 Sep 2021 17:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158782;
-        bh=nlLP1PcMFvreRz2bXlOXcM6f5l++eOJOjZaNDzVxO4c=;
+        s=korg; t=1632158490;
+        bh=qlg1y0Bd7rAZ6ydjMTUQqzyYTLtSOtt7u7SEugMD1KY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=elDs99+3Ggw2nXxzfi7oRpVPIfkmRlKqRDoYEra+B7nwnPmVLScHGrRM+CFNQmLgu
-         h1Bo7XotX3gw79Py++AT6f2igDLm3aG2xkitrE9RK3WUU2w55hztNVyi50hewS9zx6
-         RSgOit2SAt0z/+zzuY7UVe56cBdUSdqnK0LcpXDo=
+        b=msNog/SQc6EX3zABu9KJ9mHi3XzcDwjcWXEdC+Cz2CzHaV5QUOkwV5TzFIxVEVkVH
+         DpiW1lbBARIP6nXp1M5f6bHW7ouYObtjVlKJkIixLSJE8m2mZfefIA2x4h5sz3n8f5
+         f4zXZJcATNhA1agsBVBH51chyYwGUo14340nNKPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenpeng Lin <zplin@psu.edu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 026/122] dccp: dont duplicate ccid when cloning dccp sock
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Konrad Rzeszutek Wilk <konrad@kernel.org>
+Subject: [PATCH 5.4 180/260] s390/pv: fix the forcing of the swiotlb
 Date:   Mon, 20 Sep 2021 18:43:18 +0200
-Message-Id: <20210920163916.658634364@linuxfoundation.org>
+Message-Id: <20210920163937.211114213@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin, Zhenpeng <zplin@psu.edu>
+From: Halil Pasic <pasic@linux.ibm.com>
 
-commit d9ea761fdd197351890418acd462c51f241014a7 upstream.
+commit 93ebb6828723b8aef114415c4dc3518342f7dcad upstream.
 
-Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
-a UAF but reintroduced CVE-2017-6074.
+Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
+swiotlb data bouncing") if code sets swiotlb_force it needs to do so
+before the swiotlb is initialised. Otherwise
+io_tlb_default_mem->force_bounce will not get set to true, and devices
+that use (the default) swiotlb will not bounce despite switolb_force
+having the value of SWIOTLB_FORCE.
 
-When the sock is cloned, two dccps_hc_tx_ccid will reference to the
-same ccid. So one can free the ccid object twice from two socks after
-cloning.
+Let us restore swiotlb functionality for PV by fulfilling this new
+requirement.
 
-This issue was found by "Hadar Manor" as well and assigned with
-CVE-2020-16119, which was fixed in Ubuntu's kernel. So here I port
-the patch from Ubuntu to fix it.
+This change addresses what turned out to be a fragility in
+commit 64e1f0c531d1 ("s390/mm: force swiotlb for protected
+virtualization"), which ain't exactly broken in its original context,
+but could give us some more headache if people backport the broken
+change and forget this fix.
 
-The patch prevents cloned socks from referencing the same ccid.
-
-Fixes: 2677d2067731410 ("dccp: don't free ccid2_hc_tx_sock ...")
-Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
+Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
+Cc: stable@vger.kernel.org #5.3+
+Signed-off-by: Konrad Rzeszutek Wilk <konrad@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dccp/minisocks.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/mm/init.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/dccp/minisocks.c
-+++ b/net/dccp/minisocks.c
-@@ -94,6 +94,8 @@ struct sock *dccp_create_openreq_child(c
- 		newdp->dccps_role	    = DCCP_ROLE_SERVER;
- 		newdp->dccps_hc_rx_ackvec   = NULL;
- 		newdp->dccps_service_list   = NULL;
-+		newdp->dccps_hc_rx_ccid     = NULL;
-+		newdp->dccps_hc_tx_ccid     = NULL;
- 		newdp->dccps_service	    = dreq->dreq_service;
- 		newdp->dccps_timestamp_echo = dreq->dreq_timestamp_echo;
- 		newdp->dccps_timestamp_time = dreq->dreq_timestamp_time;
+--- a/arch/s390/mm/init.c
++++ b/arch/s390/mm/init.c
+@@ -168,9 +168,9 @@ static void pv_init(void)
+ 		return;
+ 
+ 	/* make sure bounce buffers are shared */
++	swiotlb_force = SWIOTLB_FORCE;
+ 	swiotlb_init(1);
+ 	swiotlb_update_mem_attributes();
+-	swiotlb_force = SWIOTLB_FORCE;
+ }
+ 
+ void __init mem_init(void)
 
 
