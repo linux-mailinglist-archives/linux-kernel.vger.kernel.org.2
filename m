@@ -2,75 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FC541284B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E234412857
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344318AbhITVns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:43:48 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:35350 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238989AbhITVlk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:41:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 8715D6169BCC;
-        Mon, 20 Sep 2021 23:40:11 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FrKaLuZiFFX7; Mon, 20 Sep 2021 23:40:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id A0D3E616E131;
-        Mon, 20 Sep 2021 23:40:10 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id k65h5FpABQpK; Mon, 20 Sep 2021 23:40:10 +0200 (CEST)
-Received: from blindfold.corp.sigma-star.at (213-47-184-186.cable.dynamic.surfer.at [213.47.184.186])
-        by lithops.sigma-star.at (Postfix) with ESMTPSA id 0BBF86169BC6;
-        Mon, 20 Sep 2021 23:40:09 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     masahiroy@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 2/2] kconfig: Deny command substitution in string values
-Date:   Mon, 20 Sep 2021 23:39:57 +0200
-Message-Id: <20210920213957.1064-2-richard@nod.at>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210920213957.1064-1-richard@nod.at>
-References: <20210920213957.1064-1-richard@nod.at>
+        id S241940AbhITVpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:45:12 -0400
+Received: from relay.sw.ru ([185.231.240.75]:36816 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231410AbhITVnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 17:43:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=iaWR+4csH3XbjqwDPZ9H83JOs8k0zel2izzxGA+L4jw=; b=m+3c9VtjwnBJLKpiMU5
+        Eu6KEofV2PKAsRB9yqIj6ub8pZCOW0RoxkKggiizpvxpNSw6VWbKb3DSTL4ykdokDWvvpLtweVXDZ
+        GL/4oLPYHbFo5CfzChKGqXMen5Cum9+Rnya7gyYRhWOekfWmVOhMphedM+sUy097qmkZTQKommc=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mSR2d-002eAC-5C; Tue, 21 Sep 2021 00:41:35 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH net v8] skb_expand_head() adjust skb->truesize incorrectly
+To:     Christoph Paasch <christoph.paasch@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
+References: <20210920111259.18f9cc01@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Message-ID: <be927ca4-6fd7-ce89-e472-bb1e5a0dc2a9@virtuozzo.com>
+Date:   Tue, 21 Sep 2021 00:41:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210920111259.18f9cc01@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The post processed .config file will get included in shell
-and makefiles. So make sure that a string does not contain
-symbols that allow command substitution.
-If such a malformed string is found, return empty string
-and report it.
+Christoph Paasch reports [1] about incorrect skb->truesize
+after skb_expand_head() call in ip6_xmit.
+This may happen because of two reasons:
+- skb_set_owner_w() for newly cloned skb is called too early,
+before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+- pskb_expand_head() does not adjust truesize in (skb->sk) case.
+In this case sk->sk_wmem_alloc should be adjusted too.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+[1] https://lkml.org/lkml/2021/8/20/1082
+
+Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
+Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 ---
- scripts/kconfig/symbol.c | 5 +++++
- 1 file changed, 5 insertions(+)
+v8: clone non-wmem skb
+V7 (from kuba@):
+    shift more magic into helpers,
+    follow Eric's advice and don't inherit non-wmem skbs for now
+v6: fixed delta,
+    improved comments
+v5: fixed else condition, thanks to Eric
+    reworked update of expanded skb,
+    added corresponding comments
+v4: decided to use is_skb_wmem() after pskb_expand_head() call
+    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
+v3: removed __pskb_expand_head(),
+    added is_skb_wmem() helper for skb with wmem-compatible destructors
+    there are 2 ways to use it:
+     - before pskb_expand_head(), to create skb clones
+     - after successfull pskb_expand_head() to change owner on extended skb.
+v2: based on patch version from Eric Dumazet,
+    added __pskb_expand_head() function, which can be forced
+    to adjust skb->truesize and sk->sk_wmem_alloc.
+---
+ include/net/sock.h |  1 +
+ net/core/skbuff.c  | 33 +++++++++++++++++++++------------
+ net/core/sock.c    |  8 ++++++++
+ 3 files changed, 30 insertions(+), 12 deletions(-)
 
-diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
-index 4a31bb943f79..1035ecdddc99 100644
---- a/scripts/kconfig/symbol.c
-+++ b/scripts/kconfig/symbol.c
-@@ -880,6 +880,11 @@ const char *sym_escape_string(struct symbol *sym)
-=20
- 	in =3D sym_get_string_value(sym);
-=20
-+	if (strspn(in, "`$")) {
-+		fprintf(stderr, "%s: invalid characters in string found\n", sym->name)=
-;
-+		return xstrdup("\"\"");
-+	}
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 95b2577..173d58c 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
+ 			     gfp_t priority);
+ void __sock_wfree(struct sk_buff *skb);
+ void sock_wfree(struct sk_buff *skb);
++bool is_skb_wmem(const struct sk_buff *skb);
+ struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
+ 			     gfp_t priority);
+ void skb_orphan_partial(struct sk_buff *skb);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index f931176..4b49f63 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1804,30 +1804,39 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+ {
+ 	int delta = headroom - skb_headroom(skb);
++	int osize = skb_end_offset(skb);
++	struct sock *sk = skb->sk;
+ 
+ 	if (WARN_ONCE(delta <= 0,
+ 		      "%s is expecting an increase in the headroom", __func__))
+ 		return skb;
+ 
++	delta = SKB_DATA_ALIGN(delta);
+ 	/* pskb_expand_head() might crash, if skb is shared */
+-	if (skb_shared(skb)) {
++	if (skb_shared(skb) || !is_skb_wmem(skb)) {
+ 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+ 
+-		if (likely(nskb)) {
+-			if (skb->sk)
+-				skb_set_owner_w(nskb, skb->sk);
+-			consume_skb(skb);
+-		} else {
+-			kfree_skb(skb);
+-		}
++		if (unlikely(!nskb))
++			goto fail;
 +
- 	reslen =3D strlen(in) + strlen("\"\"") + 1;
-=20
- 	p =3D in;
---=20
-2.26.2
++		if (sk)
++			skb_set_owner_w(nskb, sk);
++		consume_skb(skb);
+ 		skb = nskb;
+ 	}
+-	if (skb &&
+-	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+-		kfree_skb(skb);
+-		skb = NULL;
++	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC))
++		goto fail;
++
++	if (sk) {
++		delta = skb_end_offset(skb) - osize;
++		refcount_add(delta, &sk->sk_wmem_alloc);
++		skb->truesize += delta;
+ 	}
+ 	return skb;
++
++fail:
++	kfree_skb(skb);
++	return NULL;
+ }
+ EXPORT_SYMBOL(skb_expand_head);
+ 
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 950f1e7..6cbda43 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
+ }
+ EXPORT_SYMBOL(skb_set_owner_w);
+ 
++bool is_skb_wmem(const struct sk_buff *skb)
++{
++	return skb->destructor == sock_wfree ||
++	       skb->destructor == __sock_wfree ||
++	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
++}
++EXPORT_SYMBOL(is_skb_wmem);
++
+ static bool can_skb_orphan_partial(const struct sk_buff *skb)
+ {
+ #ifdef CONFIG_TLS_DEVICE
+-- 
+1.8.3.1
 
