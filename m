@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50DB411C4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1949411AE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244842AbhITRHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:07:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54300 "EHLO mail.kernel.org"
+        id S244693AbhITQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346124AbhITRFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:05:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A363260F6E;
-        Mon, 20 Sep 2021 16:54:40 +0000 (UTC)
+        id S243997AbhITQuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C8B561211;
+        Mon, 20 Sep 2021 16:48:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156881;
-        bh=/0NdX8uBjdpZ7jBf9ecriPIc61rzk1eloMcOr1RCPak=;
+        s=korg; t=1632156523;
+        bh=tF7XShmEXVyqw801Ua9nLMrlcjNtlhy6P0KmDLFdzOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LjbmGOaZgHNfTvn+B2azN30+HbciSEidnPLp8nl5B8gvYrJeXXGjPa8rtiqSzcksa
-         UCFHX0MgEHFAWgZCpAc8tkn0oiKCdh4Ea2mmISDf9J07G9G0pX6DyIWWe2HR45/Fx+
-         dqndxj8FRSUUS4480Bbq2LBsU2JuMM2tJgTkw3lM=
+        b=NId6IO7W3hYen4bKYC7oBKxAPaH6hVlzMKvNF0UiH+M6jLj3rH2YNJToRGVK8tG5y
+         YerbGqoyn59Dw2QR3WGmEuJ14sMf0LZUJ7uvRWZqxqg4LtfEOTp+jYP46wKbZrg0sf
+         UwEUY9ZQfG+b+UToJNnY2VSqVq7h6jiN1r9PKM8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        Jordy Zomer <jordy@pwning.systems>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 128/175] serial: 8250_pci: make setup_port() parameters explicitly unsigned
+Subject: [PATCH 4.4 099/133] ipv4: ip_output.c: Fix out-of-bounds warning in ip_copy_addrs()
 Date:   Mon, 20 Sep 2021 18:42:57 +0200
-Message-Id: <20210920163922.266098014@linuxfoundation.org>
+Message-Id: <20210920163915.868699351@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit 3a96e97ab4e835078e6f27b7e1c0947814df3841 ]
+[ Upstream commit 6321c7acb82872ef6576c520b0e178eaad3a25c0 ]
 
-The bar and offset parameters to setup_port() are used in pointer math,
-and while it would be very difficult to get them to wrap as a negative
-number, just be "safe" and make them unsigned so that static checkers do
-not trip over them unintentionally.
+Fix the following out-of-bounds warning:
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Reported-by: Jordy Zomer <jordy@pwning.systems>
-Link: https://lore.kernel.org/r/20210726130717.2052096-1-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    In function 'ip_copy_addrs',
+        inlined from '__ip_queue_xmit' at net/ipv4/ip_output.c:517:2:
+net/ipv4/ip_output.c:449:2: warning: 'memcpy' offset [40, 43] from the object at 'fl' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 36 [-Warray-bounds]
+      449 |  memcpy(&iph->saddr, &fl4->saddr,
+          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      450 |         sizeof(fl4->saddr) + sizeof(fl4->daddr));
+          |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy(). This causes a legitimate compiler warning because memcpy()
+overruns the length of &iph->saddr and &fl4->saddr. As these are just
+a couple of struct members, fix this by using direct assignments,
+instead of memcpy().
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/ip_output.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index a9c46e10d204..550f2f0523d8 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -73,7 +73,7 @@ static void moan_device(const char *str, struct pci_dev *dev)
- 
- static int
- setup_port(struct serial_private *priv, struct uart_8250_port *port,
--	   int bar, int offset, int regshift)
-+	   u8 bar, unsigned int offset, int regshift)
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index e808227c58d6..477540b3d320 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -376,8 +376,9 @@ static void ip_copy_addrs(struct iphdr *iph, const struct flowi4 *fl4)
  {
- 	struct pci_dev *dev = priv->dev;
+ 	BUILD_BUG_ON(offsetof(typeof(*fl4), daddr) !=
+ 		     offsetof(typeof(*fl4), saddr) + sizeof(fl4->saddr));
+-	memcpy(&iph->saddr, &fl4->saddr,
+-	       sizeof(fl4->saddr) + sizeof(fl4->daddr));
++
++	iph->saddr = fl4->saddr;
++	iph->daddr = fl4->daddr;
+ }
  
+ /* Note: skb->sk can be different from sk, in case of tunnels */
 -- 
 2.30.2
 
