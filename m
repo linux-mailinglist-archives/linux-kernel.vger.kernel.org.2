@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB7241238A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0844C4125F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352544AbhITSZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
+        id S1350844AbhITSvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:51:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377341AbhITSSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:18:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 116D161A6F;
-        Mon, 20 Sep 2021 17:22:52 +0000 (UTC)
+        id S1383917AbhITSqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:46:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BC5661AEC;
+        Mon, 20 Sep 2021 17:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158573;
-        bh=Zl3UAUHhmRbiO9MSj11q5jblicwy5qGwMD9N3wSa1YA=;
+        s=korg; t=1632159183;
+        bh=mv/mgaHOnkOGkztlyC9ZkuUY8ikq0GtV8Y8kFRFjK9Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N9xol0q6Wt9lpem2xG4t0B7u8IzxORMjfhgjcdjFrqdZD6d6Rz/w0U9zkaO4PtGr3
-         /mT71RysHnlTx3zDnAczMQDns1e0KUurNGkxymjnzeiofXUu/81RNjertz3/TFJJMb
-         TEwq0BjepodNGBKxBhNrYxLE37UY52YU9Bl8OuTk=
+        b=j7eVYcaqLNqlFMmdIyrtNNY2gmEZ++9AzP+YG0hnO+u1aIEXmxpTH9QmiSPhNTxL3
+         zI2WyqEKPcFiNPPVCkCpDjrutbSOOlgMw5/UV32Pmz9K2oirOrMr4k0uMtyJ4b8fcz
+         rc/Dob/epa82deLK03ezDSKz0Z1FB3XOOiKh2OMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>
-Subject: [PATCH 5.4 217/260] net/mlx5: FWTrace, cancel work on alloc pd error flow
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 097/168] PCI: tegra: Fix OF node reference leak
 Date:   Mon, 20 Sep 2021 18:43:55 +0200
-Message-Id: <20210920163938.482653434@linuxfoundation.org>
+Message-Id: <20210920163924.818553733@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saeed Mahameed <saeedm@nvidia.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit dfe6fd72b5f1878b16aa2c8603e031bbcd66b96d upstream.
+[ Upstream commit eff21f5da308265678e7e59821795e606f3e560f ]
 
-Handle error flow on mlx5_core_alloc_pd() failure,
-read_fw_strings_work must be canceled.
+Commit 9e38e690ace3 ("PCI: tegra: Fix OF node reference leak") has fixed
+some node reference leaks in this function but missed some of them.
 
-Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
-Reported-by: Pavel Machek (CIP) <pavel@denx.de>
-Suggested-by: Pavel Machek (CIP) <pavel@denx.de>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Reviewed-by: Aya Levin <ayal@nvidia.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In fact, having 'port' referenced in the 'rp' structure is not enough to
+prevent the leak, until 'rp' is actually added in the 'pcie->ports' list.
+
+Add the missing 'goto err_node_put' accordingly.
+
+Link: https://lore.kernel.org/r/55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Vidya Sagar <vidyas@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pci-tegra.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -1005,7 +1005,7 @@ int mlx5_fw_tracer_init(struct mlx5_fw_t
- 	err = mlx5_core_alloc_pd(dev, &tracer->buff.pdn);
- 	if (err) {
- 		mlx5_core_warn(dev, "FWTracer: Failed to allocate PD %d\n", err);
--		return err;
-+		goto err_cancel_work;
- 	}
+diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
+index c979229a6d0d..b358212d71ab 100644
+--- a/drivers/pci/controller/pci-tegra.c
++++ b/drivers/pci/controller/pci-tegra.c
+@@ -2193,13 +2193,15 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
+ 		rp->np = port;
  
- 	err = mlx5_fw_tracer_create_mkey(tracer);
-@@ -1029,6 +1029,7 @@ err_notifier_unregister:
- 	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
- err_dealloc_pd:
- 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
-+err_cancel_work:
- 	cancel_work_sync(&tracer->read_fw_strings_work);
- 	return err;
- }
+ 		rp->base = devm_pci_remap_cfg_resource(dev, &rp->regs);
+-		if (IS_ERR(rp->base))
+-			return PTR_ERR(rp->base);
++		if (IS_ERR(rp->base)) {
++			err = PTR_ERR(rp->base);
++			goto err_node_put;
++		}
+ 
+ 		label = devm_kasprintf(dev, GFP_KERNEL, "pex-reset-%u", index);
+ 		if (!label) {
+-			dev_err(dev, "failed to create reset GPIO label\n");
+-			return -ENOMEM;
++			err = -ENOMEM;
++			goto err_node_put;
+ 		}
+ 
+ 		/*
+@@ -2217,7 +2219,8 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
+ 			} else {
+ 				dev_err(dev, "failed to get reset GPIO: %ld\n",
+ 					PTR_ERR(rp->reset_gpio));
+-				return PTR_ERR(rp->reset_gpio);
++				err = PTR_ERR(rp->reset_gpio);
++				goto err_node_put;
+ 			}
+ 		}
+ 
+-- 
+2.30.2
+
 
 
