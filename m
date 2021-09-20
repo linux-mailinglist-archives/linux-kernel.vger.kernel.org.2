@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80AD411C4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF9C411E28
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239958AbhITRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:07:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
+        id S1344753AbhITR1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:27:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235055AbhITRFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:05:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 363F261373;
-        Mon, 20 Sep 2021 16:54:47 +0000 (UTC)
+        id S1349847AbhITRY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C3BD61A8E;
+        Mon, 20 Sep 2021 17:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156887;
-        bh=3jNSMhNgV8VpDGHADUKhdFPeiU4t88d5JG+96o8RGMk=;
+        s=korg; t=1632157331;
+        bh=TEDtftrilDPpXxhuvXoNcnLYstHwkOz/LbsLVhnJRQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SbDFI2yHIiCUY09wbhYrmQoH+bwfnhM00YIWOJoxxHAXrQF5XSXDZbibe34DqtU8m
-         ZVviqJ/+LAgdxSq4i+uX7i32N/aXEv5kJ+rmFl87E4qHS4KAUL2cbEBlbJSTlqTdvz
-         0WToPIFg9WAp3xPlTcIl9NIYpgdTVQaMwvnTpdk0=
+        b=yXnhdtEEj6btY79h1Y3M3jT0WQoGN6IpMWY6sAht471gds99j2ObCMck334U/xlgC
+         Rf38CyA4fpA/weUiugt2gE+2M953iL7IV9843FPe7OICfeY3X50Zv15Vm3ZD3Atpud
+         l+fI6jl2PEtO+ZJws+zwPrwOnWhJ8nv4mYMRAp0w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 131/175] Bluetooth: skip invalid hci_sync_conn_complete_evt
+Subject: [PATCH 4.14 159/217] ASoC: Intel: bytcr_rt5640: Move "Platform Clock" routes to the maps for the matching in-/output
 Date:   Mon, 20 Sep 2021 18:43:00 +0200
-Message-Id: <20210920163922.363374245@linuxfoundation.org>
+Message-Id: <20210920163930.031657775@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 92fe24a7db751b80925214ede43f8d2be792ea7b ]
+[ Upstream commit dccd1dfd0770bfd494b68d1135b4547b2c602c42 ]
 
-Syzbot reported a corrupted list in kobject_add_internal [1]. This
-happens when multiple HCI_EV_SYNC_CONN_COMPLETE event packets with
-status 0 are sent for the same HCI connection. This causes us to
-register the device more than once which corrupts the kset list.
+Move the "Platform Clock" routes for the "Internal Mic" and "Speaker"
+routes to the intmic_*_map[] / *_spk_map[] arrays.
 
-As this is forbidden behavior, we add a check for whether we're
-trying to process the same HCI_EV_SYNC_CONN_COMPLETE event multiple
-times for one connection. If that's the case, the event is invalid, so
-we report an error that the device is misbehaving, and ignore the
-packet.
+This ensures that these "Platform Clock" routes do not get added when the
+BYT_RT5640_NO_INTERNAL_MIC_MAP / BYT_RT5640_NO_SPEAKERS quirks are used.
 
-Link: https://syzkaller.appspot.com/bug?extid=66264bf2fd0476be7e6c [1]
-Reported-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Tested-by: syzbot+66264bf2fd0476be7e6c@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210802142501.991985-2-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 44eeb27e341a..f9484755a9ba 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -3761,6 +3761,21 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 4a76b099a508..e389ecf06e63 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -226,9 +226,6 @@ static const struct snd_soc_dapm_widget byt_rt5640_widgets[] = {
+ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ 	{"Headphone", NULL, "Platform Clock"},
+ 	{"Headset Mic", NULL, "Platform Clock"},
+-	{"Internal Mic", NULL, "Platform Clock"},
+-	{"Speaker", NULL, "Platform Clock"},
+-
+ 	{"Headset Mic", NULL, "MICBIAS1"},
+ 	{"IN2P", NULL, "Headset Mic"},
+ 	{"Headphone", NULL, "HPOL"},
+@@ -236,19 +233,23 @@ static const struct snd_soc_dapm_route byt_rt5640_audio_map[] = {
+ };
  
- 	switch (ev->status) {
- 	case 0x00:
-+		/* The synchronous connection complete event should only be
-+		 * sent once per new connection. Receiving a successful
-+		 * complete event when the connection status is already
-+		 * BT_CONNECTED means that the device is misbehaving and sent
-+		 * multiple complete event packets for the same new connection.
-+		 *
-+		 * Registering the device more than once can corrupt kernel
-+		 * memory, hence upon detecting this invalid event, we report
-+		 * an error and ignore the packet.
-+		 */
-+		if (conn->state == BT_CONNECTED) {
-+			bt_dev_err(hdev, "Ignoring connect complete event for existing connection");
-+			goto unlock;
-+		}
-+
- 		conn->handle = __le16_to_cpu(ev->handle);
- 		conn->state  = BT_CONNECTED;
- 		conn->type   = ev->link_type;
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic1_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"DMIC1", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_dmic2_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"DMIC2", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_in1_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "MICBIAS1"},
+ 	{"IN1P", NULL, "Internal Mic"},
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_intmic_in3_map[] = {
++	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "MICBIAS1"},
+ 	{"IN3P", NULL, "Internal Mic"},
+ };
+@@ -290,6 +291,7 @@ static const struct snd_soc_dapm_route byt_rt5640_ssp0_aif2_map[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
++	{"Speaker", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+ 	{"Speaker", NULL, "SPORP"},
+@@ -297,6 +299,7 @@ static const struct snd_soc_dapm_route byt_rt5640_stereo_spk_map[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5640_mono_spk_map[] = {
++	{"Speaker", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "SPOLP"},
+ 	{"Speaker", NULL, "SPOLN"},
+ };
 -- 
 2.30.2
 
