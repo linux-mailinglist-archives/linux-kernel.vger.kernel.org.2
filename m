@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681C1411B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D750C411D3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344460AbhITQ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45016 "EHLO mail.kernel.org"
+        id S1347058AbhITRRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245174AbhITQ4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 825BC61352;
-        Mon, 20 Sep 2021 16:51:15 +0000 (UTC)
+        id S1344921AbhITRPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:15:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C11BF619EC;
+        Mon, 20 Sep 2021 16:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156676;
-        bh=H0ynPtBbSY0EOYjmhTl1KSxyf+BDemiUFFPVbge6648=;
+        s=korg; t=1632157118;
+        bh=TtSGabbBwDy3ZPc8OlhqDcmCQ3WXeAUztkuM4Zdzyi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GY3iKU3b+y7a75imslkeCKgoj+bMnwrvwyQsZ3sNvND+iBbwi1P/yN62+A0qNcmJQ
-         npE8qTeSJJ3LKcC3yJludZY0fyigh+c1yrC8qmEg2UqTqViNrVI1KAycK+tuRaN6YH
-         0E01hh3y+es11t3OMqCZm/vVnUFzzVWhVXB70rQc=
+        b=D/oMhLHP+X37l1OiwtnGE2/aDFEt7GeBARuJ2RImK1pRESVaaw2gDLmVHrLBCjfb1
+         8L72kR5qPHYfwHjns4xVQbFzrSIubeyftd84XqXNrHiOCJSDZa7VwMhNh5GxbtqYKZ
+         m1BLLpbnKjGCvmr/xkJb2l/BLECwKSbEoP7z9ecY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.9 033/175] x86/reboot: Limit Dell Optiplex 990 quirk to early BIOS versions
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 061/217] PCI: PM: Enable PME if it can be signaled from D3cold
 Date:   Mon, 20 Sep 2021 18:41:22 +0200
-Message-Id: <20210920163919.146673217@linuxfoundation.org>
+Message-Id: <20210920163926.695225092@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,87 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit a729691b541f6e63043beae72e635635abe5dc09 upstream.
+[ Upstream commit 0e00392a895c95c6d12d42158236c8862a2f43f2 ]
 
-When this platform was relatively new in November 2011, with early BIOS
-revisions, a reboot quirk was added in commit 6be30bb7d750 ("x86/reboot:
-Blacklist Dell OptiPlex 990 known to require PCI reboot")
+PME signaling is only enabled by __pci_enable_wake() if the target
+device can signal PME from the given target power state (to avoid
+pointless reconfiguration of the device), but if the hierarchy above
+the device goes into D3cold, the device itself will end up in D3cold
+too, so if it can signal PME from D3cold, it should be enabled to
+do so in __pci_enable_wake().
 
-However, this quirk (and several others) are open-ended to all BIOS
-versions and left no automatic expiry if/when the system BIOS fixed the
-issue, meaning that nobody is likely to come along and re-test.
+[Note that if the device does not end up in D3cold and it cannot
+ signal PME from the original target power state, it will not signal
+ PME, so in that case the behavior does not change.]
 
-What is really problematic with using PCI reboot as this quirk does, is
-that it causes this platform to do a full power down, wait one second,
-and then power back on.  This is less than ideal if one is using it for
-boot testing and/or bisecting kernels when legacy rotating hard disks
-are installed.
-
-It was only by chance that the quirk was noticed in dmesg - and when
-disabled it turned out that it wasn't required anymore (BIOS A24), and a
-default reboot would work fine without the "harshness" of power cycling the
-machine (and disks) down and up like the PCI reboot does.
-
-Doing a bit more research, it seems that the "newest" BIOS for which the
-issue was reported[1] was version A06, however Dell[2] seemed to suggest
-only up to and including version A05, with the A06 having a large number of
-fixes[3] listed.
-
-As is typical with a new platform, the initial BIOS updates come frequently
-and then taper off (and in this case, with a revival for CPU CVEs); a
-search for O990-A<ver>.exe reveals the following dates:
-
-        A02     16 Mar 2011
-        A03     11 May 2011
-        A06     14 Sep 2011
-        A07     24 Oct 2011
-        A10     08 Dec 2011
-        A14     06 Sep 2012
-        A16     15 Oct 2012
-        A18     30 Sep 2013
-        A19     23 Sep 2015
-        A20     02 Jun 2017
-        A23     07 Mar 2018
-        A24     21 Aug 2018
-
-While it's overkill to flash and test each of the above, it would seem
-likely that the issue was contained within A0x BIOS versions, given the
-dates above and the dates of issue reports[4] from distros.  So rather than
-just throw out the quirk entirely, limit the scope to just those early BIOS
-versions, in case people are still running systems from 2011 with the
-original as-shipped early A0x BIOS versions.
-
-[1] https://lore.kernel.org/lkml/1320373471-3942-1-git-send-email-trenn@suse.de/
-[2] https://www.dell.com/support/kbdoc/en-ca/000131908/linux-based-operating-systems-stall-upon-reboot-on-optiplex-390-790-990-systems
-[3] https://www.dell.com/support/home/en-ca/drivers/driversdetails?driverid=85j10
-[4] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/768039
-
-Fixes: 6be30bb7d750 ("x86/reboot: Blacklist Dell OptiPlex 990 known to require PCI reboot")
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210530162447.996461-4-paul.gortmaker@windriver.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+Fixes: 5bcc2fb4e815 ("PCI PM: Simplify PCI wake-up code")
+Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Reported-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/reboot.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/pci.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -389,10 +389,11 @@ static struct dmi_system_id __initdata r
- 	},
- 	{	/* Handle problems with rebooting on the OptiPlex 990. */
- 		.callback = set_pci_reboot,
--		.ident = "Dell OptiPlex 990",
-+		.ident = "Dell OptiPlex 990 BIOS A0x",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
-+			DMI_MATCH(DMI_BIOS_VERSION, "A0"),
- 		},
- 	},
- 	{	/* Handle problems with rebooting on Dell 300's */
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index ac2c9d0c02fe..1c5c0937c5da 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1950,7 +1950,14 @@ static int __pci_enable_wake(struct pci_dev *dev, pci_power_t state, bool enable
+ 	if (enable) {
+ 		int error;
+ 
+-		if (pci_pme_capable(dev, state))
++		/*
++		 * Enable PME signaling if the device can signal PME from
++		 * D3cold regardless of whether or not it can signal PME from
++		 * the current target state, because that will allow it to
++		 * signal PME when the hierarchy above it goes into D3cold and
++		 * the device itself ends up in D3cold as a result of that.
++		 */
++		if (pci_pme_capable(dev, state) || pci_pme_capable(dev, PCI_D3cold))
+ 			pci_pme_active(dev, true);
+ 		else
+ 			ret = 1;
+-- 
+2.30.2
+
 
 
