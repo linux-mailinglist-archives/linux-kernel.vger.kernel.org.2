@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9882411C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3663411AEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345027AbhITRHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54484 "EHLO mail.kernel.org"
+        id S244411AbhITQxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346167AbhITRFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:05:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0484E61527;
-        Mon, 20 Sep 2021 16:54:44 +0000 (UTC)
+        id S229485AbhITQuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 157E3611ED;
+        Mon, 20 Sep 2021 16:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156885;
-        bh=jPGEr1EC2+HHaLNPtUz9CSaQdO6KEsdnSX9I3vZvuc4=;
+        s=korg; t=1632156530;
+        bh=LzuumibSxZczbRCy/9ENplua8GtJNGJLSESXArKcQ2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=chGNRIry1Em8UauyP+NjyUaw2XUP6jPEbDm/Qwch1SNg0krV1K8KQO+e4F3gLx5xH
-         WWte4Ya4k2JBQhhL845tgoy7SBBxU6XzRUkGPWNR8Z+x48GimDVUZk34xTR9/tWAVM
-         felD5QvJzIWlUD5hIO4ydoBUcEimFhYrS+D3ifZ8=
+        b=Cz0PbdNrc6+ZCax/41GYwCoVNea4In6mw16OaNLqCeXb/ZHND0gxnBxrRpD91VaIx
+         Aqd1O1FLJN1BODOFqET5Rg77cGa9SUAATFgcxW3he1bh1m3qFxSeJ416RMxZdXQbvr
+         PN+8zukVbuqdKP3RWnFKVmfb+4dGWJbVch9XyC20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 130/175] ata: sata_dwc_460ex: No need to call phy_exit() befre phy_init()
-Date:   Mon, 20 Sep 2021 18:42:59 +0200
-Message-Id: <20210920163922.330339267@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org, Jiri Slaby <jslaby@suse.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 102/133] xtensa: ISS: dont panic in rs_init
+Date:   Mon, 20 Sep 2021 18:43:00 +0200
+Message-Id: <20210920163915.968208955@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Jiri Slaby <jslaby@suse.cz>
 
-[ Upstream commit 3ad4a31620355358316fa08fcfab37b9d6c33347 ]
+[ Upstream commit 23411c720052ad860b3e579ee4873511e367130a ]
 
-Last change to device managed APIs cleaned up error path to simple phy_exit()
-call, which in some cases has been executed with NULL parameter. This per se
-is not a problem, but rather logical misconception: no need to free resource
-when it's for sure has not been allocated yet. Fix the driver accordingly.
+While alloc_tty_driver failure in rs_init would mean we have much bigger
+problem, there is no reason to panic when tty_register_driver fails
+there. It can fail for various reasons.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210727125130.19977-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+So handle the failure gracefully. Actually handle them both while at it.
+This will make at least the console functional as it was enabled earlier
+by console_initcall in iss_console_init. Instead of shooting down the
+whole system.
+
+We move tty_port_init() after alloc_tty_driver(), so that we don't need
+to destroy the port in case the latter function fails.
+
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-xtensa@linux-xtensa.org
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Link: https://lore.kernel.org/r/20210723074317.32690-2-jslaby@suse.cz
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/sata_dwc_460ex.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ arch/xtensa/platforms/iss/console.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/ata/sata_dwc_460ex.c b/drivers/ata/sata_dwc_460ex.c
-index e0939bd5ea73..6797871f8bc6 100644
---- a/drivers/ata/sata_dwc_460ex.c
-+++ b/drivers/ata/sata_dwc_460ex.c
-@@ -1253,24 +1253,20 @@ static int sata_dwc_probe(struct platform_device *ofdev)
- 	irq = irq_of_parse_and_map(np, 0);
- 	if (irq == NO_IRQ) {
- 		dev_err(&ofdev->dev, "no SATA DMA irq\n");
--		err = -ENODEV;
--		goto error_out;
-+		return -ENODEV;
- 	}
+diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
+index 92d785fefb6d..5d264ae517f5 100644
+--- a/arch/xtensa/platforms/iss/console.c
++++ b/arch/xtensa/platforms/iss/console.c
+@@ -186,9 +186,13 @@ static const struct tty_operations serial_ops = {
  
- #ifdef CONFIG_SATA_DWC_OLD_DMA
- 	if (!of_find_property(np, "dmas", NULL)) {
- 		err = sata_dwc_dma_init_old(ofdev, hsdev);
- 		if (err)
--			goto error_out;
-+			return err;
- 	}
- #endif
+ int __init rs_init(void)
+ {
+-	tty_port_init(&serial_port);
++	int ret;
  
- 	hsdev->phy = devm_phy_optional_get(hsdev->dev, "sata-phy");
--	if (IS_ERR(hsdev->phy)) {
--		err = PTR_ERR(hsdev->phy);
--		hsdev->phy = NULL;
--		goto error_out;
--	}
-+	if (IS_ERR(hsdev->phy))
-+		return PTR_ERR(hsdev->phy);
+ 	serial_driver = alloc_tty_driver(SERIAL_MAX_NUM_LINES);
++	if (!serial_driver)
++		return -ENOMEM;
++
++	tty_port_init(&serial_port);
  
- 	err = phy_init(hsdev->phy);
- 	if (err)
+ 	printk ("%s %s\n", serial_name, serial_version);
+ 
+@@ -208,8 +212,15 @@ int __init rs_init(void)
+ 	tty_set_operations(serial_driver, &serial_ops);
+ 	tty_port_link_device(&serial_port, serial_driver, 0);
+ 
+-	if (tty_register_driver(serial_driver))
+-		panic("Couldn't register serial driver\n");
++	ret = tty_register_driver(serial_driver);
++	if (ret) {
++		pr_err("Couldn't register serial driver\n");
++		tty_driver_kref_put(serial_driver);
++		tty_port_destroy(&serial_port);
++
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
