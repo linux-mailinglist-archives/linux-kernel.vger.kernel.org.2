@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4A0411E48
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDBE411ACD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346065AbhITR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:28:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
+        id S245128AbhITQw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:52:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344266AbhITR0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:26:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33031611ED;
-        Mon, 20 Sep 2021 17:02:45 +0000 (UTC)
+        id S243931AbhITQtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:49:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8818F611C2;
+        Mon, 20 Sep 2021 16:48:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157365;
-        bh=i87e17WOXkm0v1LGGjaD4mjMUEFLsZckqrJ/BER2TAY=;
+        s=korg; t=1632156500;
+        bh=YmPQRvdcUn6aW+VEsVWSB85956OEFjMlJbqwezH0VDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jrygSv6hv06bNEJsfW8ccEO7MFX7F5tPC0i3dmWGWI8MPAvVHTYjyNv8oEJYPZBP7
-         aerGZiJOFciKMbpUmIDD4FlbnLpKPEjaFUtfQ/s3LrkBAK96Gov1O3IB948sJmTm3b
-         JWGKf5z3W53rfOaa1Ji6i1syVvbo95YCQpRNPVOQ=
+        b=gCNlWH+vaaIHeZE5GJZeeCqV3JwsLOdzY5xqW7vqlue2fR54EvvfDhYeUSUZ/YEHl
+         qjU8HCI64Py2kK1owrQbrvnLmPUd6q5204+gfqAHCNVIWgF2+rKvNzZbxygTryPwsj
+         0IkGbw5MfKrqoLWrgckRmUELVcQoCrfDyM5t8NtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 143/217] tty: serial: jsm: hold port lock when reporting modem line changes
+Subject: [PATCH 4.4 086/133] PCI: Use pci_update_current_state() in pci_enable_device_flags()
 Date:   Mon, 20 Sep 2021 18:42:44 +0200
-Message-Id: <20210920163929.490314107@linuxfoundation.org>
+Message-Id: <20210920163915.461221923@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,84 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 240e126c28df084222f0b661321e8e3ecb0d232e ]
+[ Upstream commit 14858dcc3b3587f4bb5c48e130ee7d68fc2b0a29 ]
 
-uart_handle_dcd_change() requires a port lock to be held and will emit a
-warning when lockdep is enabled.
+Updating the current_state field of struct pci_dev the way it is done
+in pci_enable_device_flags() before calling do_pci_enable_device() may
+not work.  For example, if the given PCI device depends on an ACPI
+power resource whose _STA method initially returns 0 ("off"), but the
+config space of the PCI device is accessible and the power state
+retrieved from the PCI_PM_CTRL register is D0, the current_state
+field in the struct pci_dev representing that device will get out of
+sync with the power.state of its ACPI companion object and that will
+lead to power management issues going forward.
 
-Held corresponding lock to fix the following warnings.
+To avoid such issues, make pci_enable_device_flags() call
+pci_update_current_state() which takes ACPI device power management
+into account, if present, to retrieve the current power state of the
+device.
 
-[  132.528648] WARNING: CPU: 5 PID: 11600 at drivers/tty/serial/serial_core.c:3046 uart_handle_dcd_change+0xf4/0x120
-[  132.530482] Modules linked in:
-[  132.531050] CPU: 5 PID: 11600 Comm: jsm Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7-dirty #31
-[  132.535268] RIP: 0010:uart_handle_dcd_change+0xf4/0x120
-[  132.557100] Call Trace:
-[  132.557562]  ? __free_pages+0x83/0xb0
-[  132.558213]  neo_parse_modem+0x156/0x220
-[  132.558897]  neo_param+0x399/0x840
-[  132.559495]  jsm_tty_open+0x12f/0x2d0
-[  132.560131]  uart_startup.part.18+0x153/0x340
-[  132.560888]  ? lock_is_held_type+0xe9/0x140
-[  132.561660]  uart_port_activate+0x7f/0xe0
-[  132.562351]  ? uart_startup.part.18+0x340/0x340
-[  132.563003]  tty_port_open+0x8d/0xf0
-[  132.563523]  ? uart_set_options+0x1e0/0x1e0
-[  132.564125]  uart_open+0x24/0x40
-[  132.564604]  tty_open+0x15c/0x630
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Link: https://lore.kernel.org/r/1626242003-3809-1-git-send-email-zheyuma97@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/jsm/jsm_neo.c | 2 ++
- drivers/tty/serial/jsm/jsm_tty.c | 3 +++
- 2 files changed, 5 insertions(+)
+ drivers/pci/pci.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
-index c6fdd6369534..96e01bf4599c 100644
---- a/drivers/tty/serial/jsm/jsm_neo.c
-+++ b/drivers/tty/serial/jsm/jsm_neo.c
-@@ -827,7 +827,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
- 		/* Parse any modem signal changes */
- 		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
- 			"MOD_STAT: sending to parse_modem_sigs\n");
-+		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
- 		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
-+		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
- 	}
- }
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 216a1c880924..21ad9fea7878 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1334,11 +1334,7 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
+ 	 * so that things like MSI message writing will behave as expected
+ 	 * (e.g. if the device really is in D0 at enable time).
+ 	 */
+-	if (dev->pm_cap) {
+-		u16 pmcsr;
+-		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+-		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
+-	}
++	pci_update_current_state(dev, dev->current_state);
  
-diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
-index ec7d8383900f..7c790ff6b511 100644
---- a/drivers/tty/serial/jsm/jsm_tty.c
-+++ b/drivers/tty/serial/jsm/jsm_tty.c
-@@ -195,6 +195,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
- 
- static int jsm_tty_open(struct uart_port *port)
- {
-+	unsigned long lock_flags;
- 	struct jsm_board *brd;
- 	struct jsm_channel *channel =
- 		container_of(port, struct jsm_channel, uart_port);
-@@ -248,6 +249,7 @@ static int jsm_tty_open(struct uart_port *port)
- 	channel->ch_cached_lsr = 0;
- 	channel->ch_stops_sent = 0;
- 
-+	spin_lock_irqsave(&port->lock, lock_flags);
- 	termios = &port->state->port.tty->termios;
- 	channel->ch_c_cflag	= termios->c_cflag;
- 	channel->ch_c_iflag	= termios->c_iflag;
-@@ -267,6 +269,7 @@ static int jsm_tty_open(struct uart_port *port)
- 	jsm_carrier(channel);
- 
- 	channel->ch_open_count++;
-+	spin_unlock_irqrestore(&port->lock, lock_flags);
- 
- 	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
- 	return 0;
+ 	if (atomic_inc_return(&dev->enable_cnt) > 1)
+ 		return 0;		/* already enabled */
 -- 
 2.30.2
 
