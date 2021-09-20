@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F70412A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC8B412A4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhIUBeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        id S230051AbhIUBeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhIUBeD (ORCPT
+        with ESMTP id S230445AbhIUBeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:34:03 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B73BC08EB26
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:05:31 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id v24so64649932eda.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:05:31 -0700 (PDT)
+        Mon, 20 Sep 2021 21:34:13 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51066C034021
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:07:58 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id me5-20020a17090b17c500b0019af76b7bb4so55598pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZU7cvM5PEGyRcNJxXhrz4KrtRbPr7EX5WBgJywTvWKY=;
-        b=aJWKVw64oeyoRl5vGYArhl2y79yi8hMO1OwshxrjdyyZRGWk5o6rIqhC8bqga8F/uf
-         onqA7Xqi28+eIiRjjA19DE4V2yRUHpNmU1Ph/7L/P10+BY1XO2FDq0ErARsb5p1wF4NC
-         iFzwn2Byt9ASMrSF/TH2d21FsdNdzJQBneNIaVrhW0+mbcx71Cx/7XsLOTMUGOzodj/M
-         KYMm3Tja/KFAP9VgccdgJKPvlh4xeW0k/qKUzhE/JdcsYbMWG+2/lPu1FUvXSKqScK7b
-         UPWkxh7zbevO76IMjca79uSyqPYAKUUxIGmiS1vMmV2XJUhCcBeoHn1oTgaA+mh0dhPr
-         BVqA==
+        d=pathpartnertech.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IqSMwR4a24hMxIKCSGAPEfZhxYKFpQxhDLhmb/v1kic=;
+        b=lGaqqIVdZjx5cV8e5OybW+DS38hiLCzay1UiikAkJg8Cd2sT2Lj1Fteq27KWe6/pBW
+         99TU/DeuIqc8IkFHgAiHxM8ILsJsMNKMiGNfLGhDd3fghZxixuLfIyLgiHSPcyaosMph
+         8daH7/50//CxeOIf4dWveOo74yFR/ew/WBkjD6lwHaTi6aq4A1Tu0hXYvoaIYPifuw+S
+         jw1Uf6JfUuF0wXy/jh0mOeCMMiEx6MykjYYoKc5Defesnq1IxpcISxr9Z/M4+YlrPz3+
+         Slqj1u/f1EirUmxSBEV0C9LLtKbWDdqGWOnlbt8tBZOrSiCqjMCejI7TX0znftcghjB0
+         4YCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZU7cvM5PEGyRcNJxXhrz4KrtRbPr7EX5WBgJywTvWKY=;
-        b=ElB2ZLW1gIFwLWgu/4r0qUfNhrBmM6xVwDUawJDbBdAdaCukRyiVo0368jcD4eP4O4
-         DsZ+ApU4S9qiUXAXOwbDNElrjD9u/vQ0Bl5YCd/JwAnHHjRNKOMg3c6iu23eCjMh4Xkn
-         ENzCawDfx+JO8/X9gKmkZ7iLo/9XEgswzlOZpBDVbzCXTCh2JuVqjx2uwRSBn3bkSYOt
-         1q/4G9e/HUSTQajaEoZmG0AI+4KPv3cfPKNwcM/0N1viO9YUZwjqeyh9jqpCSa6DeWxt
-         ISFonXHszxOEdY6qRB57EZTxM8fjteVZXsij4azNIk6X7PsnHyvl2o5Nfsgrwkojjq6G
-         f/nQ==
-X-Gm-Message-State: AOAM532/slUrP1+Fsh3b9lNQV+NJIeaBTDEbljFSP6tjK+Tb36vPI+Wt
-        3a3aVwbk6+g/jDLaISRsfry2WxpQedkum5v9m6r/TMnyIhvluA==
-X-Google-Smtp-Source: ABdhPJxmR593/MPAQk2Xqg47pVQ+UDuYPO0btjpGJ3TcpM176eIGgymlOdP99yhb7I1zGmOOzWbUpDHD3PNYosB3ng8=
-X-Received: by 2002:aa7:df09:: with SMTP id c9mr31090749edy.243.1632161129883;
- Mon, 20 Sep 2021 11:05:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IqSMwR4a24hMxIKCSGAPEfZhxYKFpQxhDLhmb/v1kic=;
+        b=E6VqVAnMQWiglotwZh857pS5syMtj/yRMocrFEW2fQLIDOOLhue1jMirYeVsg/GHUB
+         JhGHHUaqFDtHD4/hn9Y/v4Z8y6ik5dXcsYiSVO9W7R9e4PtX3xsz1ddBEUSn2LKnjmhO
+         x3V6j0khA45OXLdymWTc7DWC1bYr1mGXC0/07PwUgdvuR+G7OpABFiTUffkA2ySj3udd
+         yzt4J1dfk8opK5jfw/h7JyCSbwCMEjorUJ13lSRUJxNuvINHF+Wj6nZRb6nGQL48JLpz
+         6dDOe/CSVkII4jRBuZpmPqCgb6OZIO4xQdDopts+R6MGcur+YlvyQ+6g7J19cDafKSN9
+         6TDg==
+X-Gm-Message-State: AOAM531gUJ2nanJl40cOxWnseCyT0oERVUcouR/v22xhuEQV1StF5xjz
+        GtS9B0kcwHsZiZZXMD3SyATVng==
+X-Google-Smtp-Source: ABdhPJwVPpE27E6o3XpzAEQHtvhWnZk0mAbE5+OIGrFfrMv1SidHQPlf67DPYKEz3QForL3HqmbO2g==
+X-Received: by 2002:a17:90b:3447:: with SMTP id lj7mr354324pjb.112.1632161277584;
+        Mon, 20 Sep 2021 11:07:57 -0700 (PDT)
+Received: from sidraya-laptopU ([49.207.203.250])
+        by smtp.gmail.com with ESMTPSA id g15sm2797784pfu.155.2021.09.20.11.07.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 20 Sep 2021 11:07:57 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 23:37:51 +0530
+From:   Sidraya Jayagond <sidraya.bj@pathpartnertech.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        prashanth.ka@pathpartnertech.com, praneeth@ti.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        praveen.ap@pathpartnertech.com
+Subject: Re: [PATCH 03/30] v4l: vxd-dec: Create vxd_dec Mem Manager helper
+ library
+Message-ID: <20210920180749.uibnx6y2ktk4l4jv@sidraya-laptopU>
+References: <20210818141037.19990-1-sidraya.bj@pathpartnertech.com>
+ <20210818141037.19990-4-sidraya.bj@pathpartnertech.com>
+ <20210824133438.GO1931@kadam>
+ <20210914034032.orctp5ov5oc33vag@sidraya-laptopU>
+ <YUAmeLYf/fvbCHo3@kroah.com>
 MIME-Version: 1.0
-References: <20210919211129.4364-1-linux.amoon@gmail.com> <7dcee097-9119-1987-9bb5-777d541cc9f7@baylibre.com>
-In-Reply-To: <7dcee097-9119-1987-9bb5-777d541cc9f7@baylibre.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Mon, 20 Sep 2021 23:35:18 +0530
-Message-ID: <CANAwSgRtChYZWogwSVggqT1491oWx-eAf8d95dGvPkLy3=1DwQ@mail.gmail.com>
-Subject: Re: [PATCH] regulator: pwm-regulator: Make use of the helper function dev_err_probe()
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUAmeLYf/fvbCHo3@kroah.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+On Tue, Sep 14, 2021 at 06:35:04AM +0200, Greg KH wrote:
+> On Tue, Sep 14, 2021 at 09:10:37AM +0530, Sidraya Jayagond wrote:
+> > This
+> > message contains confidential information and is intended only 
+> > for the
+> > individual(s) named. If you are not the intended
+> > recipient, you are 
+> > notified that disclosing, copying, distributing or taking any
+> > action in 
+> > reliance on the contents of this mail and attached file/s is strictly
+> > prohibited. Please notify the
+> > sender immediately and delete this e-mail 
+> > from your system. E-mail transmission
+> > cannot be guaranteed to be secured or 
+> > error-free as information could be
+> > intercepted, corrupted, lost, destroyed, 
+> > arrive late or incomplete, or contain
+> > viruses. The sender therefore does 
+> > not accept liability for any errors or
+> > omissions in the contents of this 
+> > message, which arise as a result of e-mail
+> > transmission.
+> > 
+> 
+> Now deleted, this is not ok for kernel development mailing lists, sorry.
 
-On Mon, 20 Sept 2021 at 13:56, Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On 19/09/2021 23:11, Anand Moon wrote:
-> > devm_regulator_register can return -EPROBE_DEFER if the
-> > regulator is not ready yet. Use dev_err_probe() for
-> > pwm regulator resources to indicate the deferral reason
-> > when waiting for the resource to come up.
-> >
-> > Fixes: 0cd71b9a43ad ("regulator: pwm: Don't warn on probe deferral")
-> >
-> > Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> > ---
-> >  drivers/regulator/pwm-regulator.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
-> > index 7629476d94ae..451e57a739f8 100644
-> > --- a/drivers/regulator/pwm-regulator.c
-> > +++ b/drivers/regulator/pwm-regulator.c
-> > @@ -382,9 +382,9 @@ static int pwm_regulator_probe(struct platform_device *pdev)
-> >                                           &drvdata->desc, &config);
-> >       if (IS_ERR(regulator)) {
-> >               ret = PTR_ERR(regulator);
-> > -             dev_err(&pdev->dev, "Failed to register regulator %s: %d\n",
-> > -                     drvdata->desc.name, ret);
-> > -             return ret;
-> > +             return dev_err_probe(&pdev->dev, ret,
-> > +                                  "Failed to register regulator %s: %d\n",
-> > +                                  drvdata->desc.name, ret);
->
-> No need to keep ret and print it since it will be printed by dev_err_probe, pass directly PTR_ERR(regulator) and drop the ": %d" from the error string.
->
-> Neil
->
-
-Thanks for the input but it's a wrong fix I meant to fix another probe
-defer with *devm_pwm_get*
-I will correct this in the next version..
-
-Thanks
--Anand
-
->
-> >       }
-> >
-> >       return 0;
-> >
->
+We are able resolve and removed confidentiality signature for my
+email-id.
+I apologize for the inconvenience.
