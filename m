@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69FB410E28
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 03:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A81410E2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 03:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhITBYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 21:24:36 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59276 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbhITBYf (ORCPT
+        id S232363AbhITBfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 21:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhITBfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 21:24:35 -0400
-Received: from fsav112.sakura.ne.jp (fsav112.sakura.ne.jp [27.133.134.239])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 18K1MlGE013813;
-        Mon, 20 Sep 2021 10:22:47 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav112.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp);
- Mon, 20 Sep 2021 10:22:47 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav112.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 18K1MlYu013810
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 20 Sep 2021 10:22:47 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is OOM-killed
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Averin <vvs@virtuozzo.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
- <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
- <20210919163126.431674722b8db218453dc18c@linux-foundation.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <bb5616b0-faa6-e12a-102b-b9c402e27ec1@i-love.sakura.ne.jp>
-Date:   Mon, 20 Sep 2021 10:22:46 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sun, 19 Sep 2021 21:35:02 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A27DC061574;
+        Sun, 19 Sep 2021 18:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632101613;
+        bh=R8bU2g0Rz9VcomcifA5ByRg2rh05ah2zUJ346CMC7Zs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YtRWHnwx7zOUazMjFLsHbEpq4PpN39TNjlyJogh2S8x3r2UNRWbZVrZXKHvl9RCsY
+         j+AlPaLgimKHYFO72ATIC6+YPSi0eG6pYT8jRivGRQ3nPwrZPZyDWU8U+cWZ2oFTIk
+         wX0MLXM0u7g6dpeT47OyZjTpUBkG4ng9PcNIG72gJi9bX07ua7ruSBRbtOIO3qLxHF
+         ehpq2GwfSSO7XXsoh1z9Ar+ApTCa9ITYp+def90mFYmQvNfBA88ZpILy/848ISwEHU
+         38xCp/uhVrufGRIajBRpFmI8zShfhDnucqJDHNm81P5+GlYwkOQ3TNnUw6LwD1Xaoy
+         3XOJ7qlMWh1zA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCRsR2SDGz9sCD;
+        Mon, 20 Sep 2021 11:33:30 +1000 (AEST)
+Date:   Mon, 20 Sep 2021 11:33:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the tip tree
+Message-ID: <20210920113330.29f12b99@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210919163126.431674722b8db218453dc18c@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/okQ9CZYaSTaj+dYywLuoR9=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/09/20 8:31, Andrew Morton wrote:
-> On Fri, 17 Sep 2021 11:06:49 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
-> 
->> Huge vmalloc allocation on heavy loaded node can lead to a global
->> memory shortage. A task called vmalloc can have the worst badness
->> and be chosen by OOM-killer, however received fatal signal and
->> oom victim mark does not interrupt allocation cycle. Vmalloc will
->> continue allocating pages over and over again, exacerbating the crisis
->> and consuming the memory freed up by another killed tasks.
->>
->> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
->> effective and avoid host panic.
->>
->> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
->> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
->> the current task is killed"") due to some vmalloc callers did not handled
->> failures properly. Found issues was resolved, however, there may
->> be other similar places.
-> 
-> Well that was lame of us.
-> 
-> I believe that at least one of the kernel testbots can utilize fault
-> injection.  If we were to wire up vmalloc (as we have done with slab
-> and pagealloc) then this will help to locate such buggy vmalloc callers.
+--Sig_/okQ9CZYaSTaj+dYywLuoR9=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-__alloc_pages_bulk() has three callers.
+Hi all,
 
-  alloc_pages_bulk_list() => No in-tree users.
+After merging the tip tree, today's linux-next build (powerpc_ppc64
+defconfig) produced this warning:
 
-  alloc_pages_bulk_array() => Used by xfs_buf_alloc_pages(), __page_pool_alloc_pages_slow(), svc_alloc_arg().
+kernel/sched/debug.c: In function 'print_cfs_group_stats':
+kernel/sched/debug.c:460:41: warning: unused variable 'stats' [-Wunused-var=
+iable]
+  460 |                struct sched_statistics *stats =3D  __schedstats_fro=
+m_se(se);
+      |                                         ^~~~~
 
-    xfs_buf_alloc_pages() => Might retry forever until all pages are allocated (i.e. effectively __GFP_NOFAIL). This patch can cause infinite loop problem.
+Caused by commit
 
-    __page_pool_alloc_pages_slow() => Will not retry if allocation failed. This patch might help.
+  cb3e971c435d ("sched: Make struct sched_statistics independent of fair sc=
+hed class")
 
-    svc_alloc_arg() => Will not retry if signal pending. This patch might help only if allocating a lot of pages.
+# CONFIG_SCHEDSTATS is not set
 
-  alloc_pages_bulk_array_node() => Used by vm_area_alloc_pages().
+--=20
+Cheers,
+Stephen Rothwell
 
-vm_area_alloc_pages() => Used by __vmalloc_area_node() from __vmalloc_node_range() from vmalloc functions. Needs !__GFP_NOFAIL check?
+--Sig_/okQ9CZYaSTaj+dYywLuoR9=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFH5OoACgkQAVBC80lX
+0GwgEgf7Br1DG14JQfEDOb9rUqtMFDsTblo2W84NMduYdq10thqlE7rjr2uXKRsR
+y+/R6iHwGJ3EFqzvGv+tIBYAuZpfHmKaNZWDOKkxurFAwxxPZ33Q7f/RyHEdHDm1
+8enmQ/mrajBVv9ptzLO5/mf5x3fw5hfd5gt79yYBUkCpd1uJWlB/tsvgWsi67tm1
+VL9TX7kX/F2tY9TTPPn+KcUDxeYFmH86bAZYjSdb5tfgPdqWgukfsY7rQ1+Xbuv+
+70/PJhEFCETNx/lpvm94FMYgqtEDiYEuP9qsQZ6/h5fxT+KeK5H4nNdYVk01SAoX
+8VuGeQ8QOS4ocHE61zS23vUWME/DIA==
+=iRbt
+-----END PGP SIGNATURE-----
+
+--Sig_/okQ9CZYaSTaj+dYywLuoR9=--
