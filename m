@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F24412301
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A11A412422
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351609AbhITST5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:19:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
+        id S1379874AbhITSbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376521AbhITSMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:12:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C6A6137E;
-        Mon, 20 Sep 2021 17:21:02 +0000 (UTC)
+        id S1378274AbhITSYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:24:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30DB7632CC;
+        Mon, 20 Sep 2021 17:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158462;
-        bh=QRAfYCMlD1tydVAsQqC38dv/IQY/ZID3c6hiYrYC74A=;
+        s=korg; t=1632158697;
+        bh=WMsX3IiJl0h+IkwgC/SBoTFdZO0CwS/kfV5k9J9w7io=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K+ixUTH1/kEOsSbbIxsgqmkjLdGluBrpVOHvERqdDXcuWAMz+VBVhNfgRI5dS9sQM
-         8JrE7PHtquy61I2myXVCEeWWxRBEAd/41i0vLUWfUG60XtyiINfz9DxqJ+bI05MOvY
-         MJfzQQIs0wIWdjbQNJi65CHvkN9JF4ckt9ZwiTlI=
+        b=sipxmxPRh4c5BtOyAMtroEOu37ZtPkBDmSe2yYBirrvrswF0WmeSEJgAoGCcScaiA
+         EpIk4mNu/L3bsvJ6h1BXbepNQLAkncXuxl5bS+WGav65KwQCEmx1rR71fURYBkhqWW
+         cji9N2HvooSOensSdY5Skwnn132+kkxlr6fh0dxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 168/260] parport: remove non-zero check on count
-Date:   Mon, 20 Sep 2021 18:43:06 +0200
-Message-Id: <20210920163936.796919469@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: [PATCH 5.10 015/122] drm/etnaviv: fix MMU context leak on GPU reset
+Date:   Mon, 20 Sep 2021 18:43:07 +0200
+Message-Id: <20210920163916.274991706@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-[ Upstream commit 0be883a0d795d9146f5325de582584147dd0dcdc ]
+commit f978a5302f5566480c58ffae64a16d34456801bd upstream.
 
-The check for count appears to be incorrect since a non-zero count
-check occurs a couple of statements earlier. Currently the check is
-always false and the dev->port->irq != PARPORT_IRQ_NONE part of the
-check is never tested and the if statement is dead-code. Fix this
-by removing the check on count.
+After a reset the GPU is no longer using the MMU context and may be
+restarted with a different context. While the mmu_state proeprly was
+cleared, the context wasn't unreferenced, leading to a memory leak.
 
-Note that this code is pre-git history, so I can't find a sha for
-it.
-
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Logically dead code")
-Link: https://lore.kernel.org/r/20210730100710.27405-1-colin.king@canonical.com
+Cc: stable@vger.kernel.org # 5.4
+Reported-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Tested-by: Michael Walle <michael@walle.cc>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/parport/ieee1284_ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
-index 5d41dda6da4e..75daa16f38b7 100644
---- a/drivers/parport/ieee1284_ops.c
-+++ b/drivers/parport/ieee1284_ops.c
-@@ -535,7 +535,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
- 				goto out;
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -563,6 +563,8 @@ static int etnaviv_hw_reset(struct etnav
  
- 			/* Yield the port for a while. */
--			if (count && dev->port->irq != PARPORT_IRQ_NONE) {
-+			if (dev->port->irq != PARPORT_IRQ_NONE) {
- 				parport_release (dev);
- 				schedule_timeout_interruptible(msecs_to_jiffies(40));
- 				parport_claim_or_block (dev);
--- 
-2.30.2
-
+ 	gpu->fe_running = false;
+ 	gpu->exec_state = -1;
++	if (gpu->mmu_context)
++		etnaviv_iommu_context_put(gpu->mmu_context);
+ 	gpu->mmu_context = NULL;
+ 
+ 	return 0;
 
 
