@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111FA411D74
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A84E411DAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348851AbhITRU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
+        id S1345842AbhITRWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244438AbhITRSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:18:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AB4D61A3D;
-        Mon, 20 Sep 2021 16:59:33 +0000 (UTC)
+        id S1343554AbhITRS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:18:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6761561A40;
+        Mon, 20 Sep 2021 16:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157174;
-        bh=uuqizSbzMpp9Wd33HAgx5Zj6eQ6QxDTAavxfbPzHC7c=;
+        s=korg; t=1632157178;
+        bh=Ia2PtgSnn92yEwFLuRVJgb+jxXK+X19uXTXTDnICBuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hiI0BeCcgjlZhFNbaBhwIkAXGVgXR86WXJRsJbUEUcrl8Spq3QZNmIauzpFitxT61
-         caXdrucHSxrniEg+AYJ0OADJltNubJ06gqTQk8TQTUmoMDSCs1kAXpy/m9ZgJ45z8N
-         Hg2eL0lYqoKQntnrN9vL12pxYgbaXMxC3mN4ELjo=
+        b=Ra8LiZmTgh04F0ayFKfC+Ep0tOR71M8JvWJkg+gmibghYCmpCDTXezf/Gadu4TWbl
+         9vcpbPprvw1oSsenn7M0lVJcWpEYwJJJNLR7wIe5Z3jDejY2etCFJYeqi2LJAHFkAe
+         3tiInMI60XeLEi+q4/U7YcGlSm24MywyQR9slMQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Michael Heimpold <michael.heimpold@in-tech.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 088/217] net: sched: Fix qdisc_rate_table refcount leak when get tcf_block failed
-Date:   Mon, 20 Sep 2021 18:41:49 +0200
-Message-Id: <20210920163927.618867709@linuxfoundation.org>
+Subject: [PATCH 4.14 089/217] net: qualcomm: fix QCA7000 checksum handling
+Date:   Mon, 20 Sep 2021 18:41:50 +0200
+Message-Id: <20210920163927.652460704@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -41,40 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Stefan Wahren <stefan.wahren@i2se.com>
 
-[ Upstream commit c66070125837900163b81a03063ddd657a7e9bfb ]
+[ Upstream commit 429205da6c834447a57279af128bdd56ccd5225e ]
 
-The reference counting issue happens in one exception handling path of
-cbq_change_class(). When failing to get tcf_block, the function forgets
-to decrease the refcount of "rtab" increased by qdisc_put_rtab(),
-causing a refcount leak.
+Based on tests the QCA7000 doesn't support checksum offloading. So assume
+ip_summed is CHECKSUM_NONE and let the kernel take care of the checksum
+handling. This fixes data transfer issues in noisy environments.
 
-Fix this issue by jumping to "failure" label when get tcf_block failed.
-
-Fixes: 6529eaba33f0 ("net: sched: introduce tcf block infractructure")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Link: https://lore.kernel.org/r/1630252681-71588-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Michael Heimpold <michael.heimpold@in-tech.com>
+Fixes: 291ab06ecf67 ("net: qualcomm: new Ethernet over SPI driver for QCA7000")
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/sch_cbq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qualcomm/qca_spi.c  | 2 +-
+ drivers/net/ethernet/qualcomm/qca_uart.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sched/sch_cbq.c b/net/sched/sch_cbq.c
-index 40fd1ee0095c..dea125d8aac7 100644
---- a/net/sched/sch_cbq.c
-+++ b/net/sched/sch_cbq.c
-@@ -1590,7 +1590,7 @@ cbq_change_class(struct Qdisc *sch, u32 classid, u32 parentid, struct nlattr **t
- 	err = tcf_block_get(&cl->block, &cl->filter_list);
- 	if (err) {
- 		kfree(cl);
--		return err;
-+		goto failure;
- 	}
- 
- 	if (tca[TCA_RATE]) {
+diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
+index 1c87178fc485..1ca1f72474ab 100644
+--- a/drivers/net/ethernet/qualcomm/qca_spi.c
++++ b/drivers/net/ethernet/qualcomm/qca_spi.c
+@@ -413,7 +413,7 @@ qcaspi_receive(struct qcaspi *qca)
+ 				skb_put(qca->rx_skb, retcode);
+ 				qca->rx_skb->protocol = eth_type_trans(
+ 					qca->rx_skb, qca->rx_skb->dev);
+-				qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
++				skb_checksum_none_assert(qca->rx_skb);
+ 				netif_rx_ni(qca->rx_skb);
+ 				qca->rx_skb = netdev_alloc_skb_ip_align(net_dev,
+ 					net_dev->mtu + VLAN_ETH_HLEN);
+diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethernet/qualcomm/qca_uart.c
+index db6068cd7a1f..466e9d07697a 100644
+--- a/drivers/net/ethernet/qualcomm/qca_uart.c
++++ b/drivers/net/ethernet/qualcomm/qca_uart.c
+@@ -107,7 +107,7 @@ qca_tty_receive(struct serdev_device *serdev, const unsigned char *data,
+ 			skb_put(qca->rx_skb, retcode);
+ 			qca->rx_skb->protocol = eth_type_trans(
+ 						qca->rx_skb, qca->rx_skb->dev);
+-			qca->rx_skb->ip_summed = CHECKSUM_UNNECESSARY;
++			skb_checksum_none_assert(qca->rx_skb);
+ 			netif_rx_ni(qca->rx_skb);
+ 			qca->rx_skb = netdev_alloc_skb_ip_align(netdev,
+ 								netdev->mtu +
 -- 
 2.30.2
 
