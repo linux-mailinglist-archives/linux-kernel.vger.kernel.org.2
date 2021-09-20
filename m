@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B041D41177D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4143D41177E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240793AbhITOvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:51:37 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38852
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240796AbhITOv2 (ORCPT
+        id S240835AbhITOvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:51:41 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:37749 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232166AbhITOve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:51:28 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 51C004019A
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632149400;
-        bh=liJ7TqCiRENzp4AeNTdqrwOrt003yN4WGkD8VAmir74=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=VtXGmrVSPU0gNXtuBRXm3WnzkGyN8XsPDN+2QgO1iqUY73aviaO6Oxb7SUjIJFkB2
-         CIwvRUNvlwWszVg6GcCaeHAXxfcJD6Plf+NX3qtdf+91LrQ88WKzGf/jKgfrN5+hBJ
-         7mcyc6Nzmn8v4DHLlljOoim6EDAcMk7hGX39dSqFmcppXsEcl87LdcGl/Aor0jQyMC
-         laXc8M9Z94jLVOcSDvZ/ic34U44SnRsJFsoN513sDEkAIXOh3CQo4QUZi5ZbbTtmDk
-         uyWdC9QL2frMFqqFpPY2cv3wvTNTg9S/iAxNbXPRf1bK3C51AAv++mqBbLoNGjYts+
-         TYqH4JsOhGOMg==
-Received: by mail-wr1-f71.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so6319571wrf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:50:00 -0700 (PDT)
+        Mon, 20 Sep 2021 10:51:34 -0400
+Received: by mail-ua1-f41.google.com with SMTP id p9so11326719uak.4;
+        Mon, 20 Sep 2021 07:50:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=liJ7TqCiRENzp4AeNTdqrwOrt003yN4WGkD8VAmir74=;
-        b=AxPyWe9a3Qs8/dgiQwlGh2wWI2eXPpVBxZ8KDnT5NlheG2nFtKDusuR7TL6G+8hc1k
-         JSh/DlI7yMhi0URdF7t4rDIwk3eUOE0DGOU4gsdVUUp+S5aJE9fKD1MK76+GGUHSdQ6d
-         WrWRuk7NxXZWV+oUnOH81jKIlJWe5TK7UrryBJ1zRi/3buVvTm7gJ/lEVkylvFd7bWD9
-         IccJNr0EbsfUKLl0+6tNxe1FKAymtoH2wFF4312DYIP7+p25yV3IiMK39BYRTOID08Lj
-         KeI33F/UqYZONaAU2Waq0KRc3ybYrn4WpKCz94gTTv0UqSN2isJo5HsKoP/pJ9DzbXXV
-         9geQ==
-X-Gm-Message-State: AOAM530rFcB6nH2HhKOb/jfeJQydsP4KwNN0OQRBIX9jfeuR8HvnZ/w8
-        8cWeuuYA94QFe7XlCfWnTQKmMO8CtdlwpQZY6/hQYRHyVYsPKmBXOzzG+wka2guNcB9m78JTNeK
-        M+LGvRaW+ZhUDTBKJICmFLpLZ33NHeki/22+IE9LM/Q==
-X-Received: by 2002:a05:6000:c3:: with SMTP id q3mr28794214wrx.361.1632149399913;
-        Mon, 20 Sep 2021 07:49:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuV1/6C76PaS4ktI3Po8CjUMuAt+4cyKsUSOnJVyV0IOE5VYTpW96BNfhMsoz/jqg1evXxzg==
-X-Received: by 2002:a05:6000:c3:: with SMTP id q3mr28794197wrx.361.1632149399765;
-        Mon, 20 Sep 2021 07:49:59 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id g131sm14752780wme.22.2021.09.20.07.49.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 07:49:59 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Zong Li <zong.li@sifive.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: clock: fu740-prci: add reset-cells
-Date:   Mon, 20 Sep 2021 16:49:44 +0200
-Message-Id: <20210920144944.162431-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wH5UncPKe50JwP+zJde5g0e4HDP42GQioU45RB2YIEY=;
+        b=4UKmu6AistRf++1IPMRgOgzZskSFqf7gHDAgRf3kxj7kTqWDAhcpo2Y8dHTRWn+97m
+         BI39sH8eZT7w5stK1FCopvahuJ02kET+7en5UXBt2TSQXfEvoplHmmcdGsHiU2UFyr1j
+         PsypvNmbOUJfwgUwvS+1tT1+IC5meUVdMcaKydN9Fe9SvNF9KQCnoCjKgOmr1vPqbliN
+         dQ35r4pv0th/0fM7d5UmEqV4peogs/6Emnr70qUiCqcPH9W3CHoh13ERy9aFR2swF9LN
+         w+Z9JYQHCIiglebSg+pWAerXMMxGlfmJKu2XdDNK4LMQIJ4lwrMMT47LXx9TXdcIVn0I
+         X6cg==
+X-Gm-Message-State: AOAM531B7EmoQ7qE9Rp95qNh5SuIIdLr/YY/yDBfB5YVc8ftdjUWpszZ
+        U3xRmTSD6vqdiRZ3l3fbQ9RiLPLXSBEvEhMFY+4=
+X-Google-Smtp-Source: ABdhPJyAkutJYCRne96YNrucgTgxe0OCzkFVzHSFb01yXQCKWuDFgnS6KokRadVNtz5w9JNPAKYiBzoi+eDjy3akNww=
+X-Received: by 2002:a9f:35aa:: with SMTP id t39mr11940672uad.89.1632149406719;
+ Mon, 20 Sep 2021 07:50:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl>
+ <20210920140938.GA24424@lst.de> <CAMuHMdXoZdhSydMpbW8B6oQJNnpYpTxmhHrV5CJNTUP7T1KsoA@mail.gmail.com>
+ <20210920143046.GA26163@lst.de> <CAMRc=McQoD=cUHLu6TMyW85fdtXOm4x38tHVnEGjkVfcfX0mfA@mail.gmail.com>
+In-Reply-To: <CAMRc=McQoD=cUHLu6TMyW85fdtXOm4x38tHVnEGjkVfcfX0mfA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Sep 2021 16:49:55 +0200
+Message-ID: <CAMuHMdXUpMvhjjgNdLgfJvaWWG9_oHa_pmx4TTy0mC1p1zUEmw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SiFive FU740 Power Reset Clock Interrupt Controller is a reset line
-provider so add respective reset-cells property to fix:
+Hi Bartosz,
 
-  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml: clock-controller@10000000:
-    '#reset-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+On Mon, Sep 20, 2021 at 4:47 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> On Mon, Sep 20, 2021 at 4:30 PM Christoph Hellwig <hch@lst.de> wrote:
+> > On Mon, Sep 20, 2021 at 04:29:30PM +0200, Geert Uytterhoeven wrote:
+> > > On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
+> > > > On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
+> > > > > For better readability and maintenance: use the BIT() macro for flag
+> > > > > definitions.
+> > > >
+> > > > NAK.  BIT() is the stupidest macro in the kernel and shall not be used
+> > > > ever.  And I'm pretty sure we had this discussion a few times.
+> > >
+> > > Care to explain why it is a stupid macro?
+> >
+> > Please look at the previous thread.  I'm tired of this discussion.
+>
+> The only previous answer from Christoph is this:
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399968.html
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- .../devicetree/bindings/clock/sifive/fu740-prci.yaml          | 4 ++++
- 1 file changed, 4 insertions(+)
+Yep, found that one, too.
 
-diff --git a/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml b/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml
-index e17143cac316..252085a0cf65 100644
---- a/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml
-+++ b/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml
-@@ -42,6 +42,9 @@ properties:
-   "#clock-cells":
-     const: 1
- 
-+  "#reset-cells":
-+    const: 1
-+
- required:
-   - compatible
-   - reg
-@@ -57,4 +60,5 @@ examples:
-       reg = <0x10000000 0x1000>;
-       clocks = <&hfclk>, <&rtcclk>;
-       #clock-cells = <1>;
-+      #reset-cells = <1>;
-     };
+Now, as these definitions do not correspond to hardware register bits,
+perhaps use an enum?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
