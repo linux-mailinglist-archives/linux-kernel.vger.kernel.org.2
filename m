@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD27E412430
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31743412368
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348178AbhITSb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:31:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45094 "EHLO mail.kernel.org"
+        id S1352420AbhITSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:24:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378570AbhITSYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:24:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0278961A8E;
-        Mon, 20 Sep 2021 17:25:20 +0000 (UTC)
+        id S1359451AbhITSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:16:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FB0861A6D;
+        Mon, 20 Sep 2021 17:21:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158721;
-        bh=iP06hy0x2U3wRGprfrHShBMxGfv7wa4GxQwfyaY4O7k=;
+        s=korg; t=1632158516;
+        bh=Pq+FWwKvLvXcJmC6zHClG84ExKNJqUV4WG9CYNPkQvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SEjH86xPTi7yVz0TXTqIwaP06WiiY54fm2g1jYbwUWLTZspDemNTiTAlDNtpETjTs
-         XacNyZjq1wg3qRZHL9wqkZZtWu8mK6Fz0fOH0w2mwEOLv18eJELjlMsrx4VC+CxWuZ
-         elgNUkbgpQbzfNTl8jm8BYwaF3+myhR9MWc/BVXY=
+        b=HGtWDwNlj63ueRvwlXlQbWMkkkSe9VRfgQsG0GxRMyfA2XqISPYYTvpHozh8qzzG2
+         bvZH1O7Z7NLxgw7IbotnnhMrNXwcJv1GoBCjeuCGNdYQcbRcz6tcSw5xMqUeH61qip
+         v14c/ymbaiEsgMGjJns3Kl2+XaQV1O9FokSGON3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Bunk <bunk@kernel.org>,
-        YunQiang Su <wzssyqa@gmail.com>,
-        Shai Malin <smalin@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 005/122] bnx2x: Fix enabling network interfaces without VFs
-Date:   Mon, 20 Sep 2021 18:42:57 +0200
-Message-Id: <20210920163915.937982105@linuxfoundation.org>
+        stable@vger.kernel.org, Michael <msbroadf@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 160/260] usbip:vhci_hcd USB port can get stuck in the disabled state
+Date:   Mon, 20 Sep 2021 18:42:58 +0200
+Message-Id: <20210920163936.539774623@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Bunk <bunk@kernel.org>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 52ce14c134a003fee03d8fc57442c05a55b53715 upstream.
+[ Upstream commit 66cce9e73ec61967ed1f97f30cee79bd9a2bb7ee ]
 
-This function is called to enable SR-IOV when available,
-not enabling interfaces without VFs was a regression.
+When a remote usb device is attached to the local Virtual USB
+Host Controller Root Hub port, the bound device driver may send
+a port reset command.
 
-Fixes: 65161c35554f ("bnx2x: Fix missing error code in bnx2x_iov_init_one()")
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
-Reported-by: YunQiang Su <wzssyqa@gmail.com>
-Tested-by: YunQiang Su <wzssyqa@gmail.com>
-Cc: stable@vger.kernel.org
-Acked-by: Shai Malin <smalin@marvell.com>
-Link: https://lore.kernel.org/r/20210912190523.27991-1-bunk@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+vhci_hcd accepts port resets only when the device doesn't have
+port address assigned to it. When reset happens device is in
+assigned/used state and vhci_hcd rejects it leaving the port in
+a stuck state.
+
+This problem was found when a blue-tooth or xbox wireless dongle
+was passed through using usbip.
+
+A few drivers reset the port during probe including mt76 driver
+specific to this bug report. Fix the problem with a change to
+honor reset requests when device is in used state (VDEV_ST_USED).
+
+Reported-and-tested-by: Michael <msbroadf@gmail.com>
+Suggested-by: Michael <msbroadf@gmail.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210819225937.41037-1-skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_sriov.c
-@@ -1225,7 +1225,7 @@ int bnx2x_iov_init_one(struct bnx2x *bp,
+diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+index 46a46cde2070..170abb06a8a4 100644
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -455,8 +455,14 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+ 			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
+ 			vhci_hcd->re_timeout = 0;
  
- 	/* SR-IOV capability was enabled but there are no VFs*/
- 	if (iov->total == 0) {
--		err = -EINVAL;
-+		err = 0;
- 		goto failed;
- 	}
- 
++			/*
++			 * A few drivers do usb reset during probe when
++			 * the device could be in VDEV_ST_USED state
++			 */
+ 			if (vhci_hcd->vdev[rhport].ud.status ==
+-			    VDEV_ST_NOTASSIGNED) {
++				VDEV_ST_NOTASSIGNED ||
++			    vhci_hcd->vdev[rhport].ud.status ==
++				VDEV_ST_USED) {
+ 				usbip_dbg_vhci_rh(
+ 					" enable rhport %d (status %u)\n",
+ 					rhport,
+-- 
+2.30.2
+
 
 
