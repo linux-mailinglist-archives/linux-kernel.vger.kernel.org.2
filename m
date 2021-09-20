@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248FB412159
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D11F412403
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357539AbhITSE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:04:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
+        id S1352204AbhITS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44429 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350141AbhITR6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:58:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34F89619F9;
-        Mon, 20 Sep 2021 17:15:01 +0000 (UTC)
+        id S1351955AbhITSWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF93E632B6;
+        Mon, 20 Sep 2021 17:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158101;
-        bh=phAjSoCyI3ewBD64UJ15KDAR0prdvYouAlArjNQJPf0=;
+        s=korg; t=1632158645;
+        bh=ZZWO4vZr8Pl/is5NkYtq7+MfXUQ7sTA1FvXaYq/j2BQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vyAli0q9L5rsYUGohWCT/UrEQEjKuicJzm7RV+N39rQtttlJOeVMk879Z45rqeiZ9
-         mlId9TO2dur78FPJ5NEGuvj/WnVg8q/BRXxrIN3MPp4ioDXsS1vDlTUyQWlH5sD96o
-         ZKFHx5tM3hQoJ+GBfCzulVFaMwBNEZLVM5UUAdEk=
+        b=XQUwYu9KdgiVUAnAx5rWFAvSlFWnTy6QuBnDSAQ/X3PBneHUogqpREXZFfcaQPI12
+         HRfUNTN93KuFlQ7dRv0yL0Ore8tZgnG/vxNswKrDAbOHyIPP+O3+HYPtP/SF/wOvL9
+         xJh94VHcnPfMm5Oa0ycBvHd/BCvR6EA2Nw3E+Xbw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 280/293] ethtool: Fix an error code in cxgb2.c
+        stable@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 224/260] qed: Handle management FW error
 Date:   Mon, 20 Sep 2021 18:44:02 +0200
-Message-Id: <20210920163943.006677991@linuxfoundation.org>
+Message-Id: <20210920163938.729284339@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit 7db8263a12155c7ae4ad97e850f1e499c73765fc ]
+commit 20e100f52730cd0db609e559799c1712b5f27582 upstream.
 
-When adapter->registered_device_map is NULL, the value of err is
-uncertain, we set err to -EINVAL to avoid ambiguity.
+Handle MFW (management FW) error response in order to avoid a crash
+during recovery flows.
 
-Clean up smatch warning:
-drivers/net/ethernet/chelsio/cxgb/cxgb2.c:1114 init_one() warn: missing
-error code 'err'
+Changes from v1:
+- Add "Fixes tag".
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Fixes: tag 5e7ba042fd05 ("qed: Fix reading stale configuration information")
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-index 0ccdde366ae1..540d99f59226 100644
---- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-@@ -1153,6 +1153,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (!adapter->registered_device_map) {
- 		pr_err("%s: could not register any net devices\n",
- 		       pci_name(pdev));
-+		err = -EINVAL;
- 		goto out_release_adapter_res;
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+@@ -3173,6 +3173,7 @@ qed_mcp_get_nvm_image_att(struct qed_hwf
+ 			  struct qed_nvm_image_att *p_image_att)
+ {
+ 	enum nvm_image_type type;
++	int rc;
+ 	u32 i;
+ 
+ 	/* Translate image_id into MFW definitions */
+@@ -3198,7 +3199,10 @@ qed_mcp_get_nvm_image_att(struct qed_hwf
+ 		return -EINVAL;
  	}
  
--- 
-2.30.2
-
+-	qed_mcp_nvm_info_populate(p_hwfn);
++	rc = qed_mcp_nvm_info_populate(p_hwfn);
++	if (rc)
++		return rc;
++
+ 	for (i = 0; i < p_hwfn->nvm_info.num_images; i++)
+ 		if (type == p_hwfn->nvm_info.image_att[i].image_type)
+ 			break;
 
 
