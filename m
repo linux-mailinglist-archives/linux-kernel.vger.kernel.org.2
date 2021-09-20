@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1AC4125E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21A34124F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384932AbhITStV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:49:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33538 "EHLO mail.kernel.org"
+        id S1382474AbhITSk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:40:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384097AbhITSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27A766335C;
-        Mon, 20 Sep 2021 17:33:33 +0000 (UTC)
+        id S1345205AbhITSgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C07B61ABC;
+        Mon, 20 Sep 2021 17:29:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159213;
-        bh=CR846wXXXHl/Ng8G88sA14qia9OWfF1CL4/79f+daRE=;
+        s=korg; t=1632158950;
+        bh=cJ3NQfE3i5NwaEgG3zavK9D/1v2g+RS6x7MbSVm/nfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sj/8i3yKeaZ3/Re7XqH4Mjpd3N1Ux+fZgKS0DP1PmUh3W7jF5KdNmVPALncZcTHxi
-         4e2R3HoO6cWU+F0z3wnFnA0o/6Mv77mu3QTb4BBEPqoyeYwvt0foxTOq5zR+eekusg
-         P204089QZ+FWIwK8lrgvTRBmIHGsAH11ZlWHz+20=
+        b=I5hT8QmJ5vLcw5TY6lAbiLRB/706QxzwyD0MQ/y6HM5wy4c/50VhhzMP8l83HAjXJ
+         mek6m1bARKNIh7j5LCNIP95uVEk5k2LcwIE8h5VmtMcGabsoiJKeck28oyhosh+nKK
+         NV+WeJFNydDMPd3RFlG8y+O0GmB/EZxtmqlT55Lg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 127/168] KVM: arm64: Restrict IPA size to maximum 48 bits on 4K and 16K page size
-Date:   Mon, 20 Sep 2021 18:44:25 +0200
-Message-Id: <20210920163925.839290093@linuxfoundation.org>
+Subject: [PATCH 5.10 094/122] PCI: Sync __pci_register_driver() stub for CONFIG_PCI=n
+Date:   Mon, 20 Sep 2021 18:44:26 +0200
+Message-Id: <20210920163918.876275560@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,57 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anshuman Khandual <anshuman.khandual@arm.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 5e5df9571c319fb107d7a523cc96fcc99961ee70 ]
+[ Upstream commit 817f9916a6e96ae43acdd4e75459ef4f92d96eb1 ]
 
-Even though ID_AA64MMFR0.PARANGE reports 52 bit PA size support, it cannot
-be enabled as guest IPA size on 4K or 16K page size configurations. Hence
-kvm_ipa_limit must be restricted to 48 bits. This change achieves required
-IPA capping.
+The CONFIG_PCI=y case got a new parameter long time ago.  Sync the stub as
+well.
 
-Before the commit c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA
-size based on host configuration"), the problem here would have been just
-latent via PHYS_MASK_SHIFT (which earlier in turn capped kvm_ipa_limit),
-which remains capped at 48 bits on 4K and 16K configs.
-
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: kvmarm@lists.cs.columbia.edu
-Cc: linux-kernel@vger.kernel.org
-Fixes: c9b69a0cf0b4 ("KVM: arm64: Don't constrain maximum IPA size based on host configuration")
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/1628680275-16578-1-git-send-email-anshuman.khandual@arm.com
+[bhelgaas: add parameter names]
+Fixes: 725522b5453d ("PCI: add the sysfs driver name to all modules")
+Link: https://lore.kernel.org/r/20210813153619.89574-1-andriy.shevchenko@linux.intel.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/reset.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/pci.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index cba7872d69a8..78d4bd897fbc 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -317,6 +317,14 @@ int kvm_set_ipa_limit(void)
- 	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
- 	parange = cpuid_feature_extract_unsigned_field(mmfr0,
- 				ID_AA64MMFR0_PARANGE_SHIFT);
-+	/*
-+	 * IPA size beyond 48 bits could not be supported
-+	 * on either 4K or 16K page size. Hence let's cap
-+	 * it to 48 bits, in case it's reported as larger
-+	 * on the system.
-+	 */
-+	if (PAGE_SIZE != SZ_64K)
-+		parange = min(parange, (unsigned int)ID_AA64MMFR0_PARANGE_48);
- 
- 	/*
- 	 * Check with ARMv8.5-GTG that our PAGE_SIZE is supported at
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 22207a79762c..a55097b4d992 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1713,8 +1713,9 @@ static inline void pci_disable_device(struct pci_dev *dev) { }
+ static inline int pcim_enable_device(struct pci_dev *pdev) { return -EIO; }
+ static inline int pci_assign_resource(struct pci_dev *dev, int i)
+ { return -EBUSY; }
+-static inline int __pci_register_driver(struct pci_driver *drv,
+-					struct module *owner)
++static inline int __must_check __pci_register_driver(struct pci_driver *drv,
++						     struct module *owner,
++						     const char *mod_name)
+ { return 0; }
+ static inline int pci_register_driver(struct pci_driver *drv)
+ { return 0; }
 -- 
 2.30.2
 
