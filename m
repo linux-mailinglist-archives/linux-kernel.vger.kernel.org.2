@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB51411E55
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCEA411B15
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346144AbhITRaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:30:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
+        id S244228AbhITQzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:55:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346090AbhITR1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:27:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FACB61AA4;
-        Mon, 20 Sep 2021 17:02:58 +0000 (UTC)
+        id S244594AbhITQu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D668E6124C;
+        Mon, 20 Sep 2021 16:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157378;
-        bh=cJuvfYSyGsgXQlB4XaacXMJyw9FoYiKpfP6CmbpT0+o=;
+        s=korg; t=1632156565;
+        bh=6oOBJ1qGDe0ntOruCDolaOWVwqicF3bNkq2aqk+9SZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m6ya9jyT6rZCwNeHlVByLJL/fkFLu9MhXx8wKLD0Luc1fO0RU9LGr6J3qFWCFYL3d
-         K2KT5PHDKsrsPbG4oyMkfOZhFZ4tIakP0xGLRcRjWWMOjbBfatosi6JJTr07fwCHFm
-         7Vb6Dr5vp0hB32yuffCjCNabX8QkL9oK8lEXxocM=
+        b=CV9q+7w2/FisUzWY3S/pGiQ9fQT3ZQYaCYtKUjXoxgIpFThq20JEMx0tkEwTj/O2b
+         TPOq40l7aLwR9O6wMYq7rTnsJLjG4SAd4wgdwwxc9eNrisqvwOpQ9lpkNQzqj/J9MI
+         abKxyunEJSv58wM2vEoI3OeL3iME2DL+SquVxFrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 174/217] usb: musb: musb_dsps: request_irq() after initializing musb
+        stable@vger.kernel.org, Patryk Duda <pdk@semihalf.com>,
+        Benson Leung <bleung@chromium.org>
+Subject: [PATCH 4.4 117/133] platform/chrome: cros_ec_proto: Send command again when timeout occurs
 Date:   Mon, 20 Sep 2021 18:43:15 +0200
-Message-Id: <20210920163930.534120119@linuxfoundation.org>
+Message-Id: <20210920163916.451142469@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadezda Lutovinova <lutovinova@ispras.ru>
+From: Patryk Duda <pdk@semihalf.com>
 
-[ Upstream commit 7c75bde329d7e2a93cf86a5c15c61f96f1446cdc ]
+commit 3abc16af57c9939724df92fcbda296b25cc95168 upstream.
 
-If IRQ occurs between calling  dsps_setup_optional_vbus_irq()
-and  dsps_create_musb_pdev(), then null pointer dereference occurs
-since glue->musb wasn't initialized yet.
+Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
+hasn't initialized SPI yet. This can happen because FPMCU is restarted
+during system boot and kernel can send message in short window
+eg. between sysjump to RW and SPI initialization.
 
-The patch puts initializing of neccesery data before registration
-of the interrupt handler.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
-Link: https://lore.kernel.org/r/20210819163323.17714-1-lutovinova@ispras.ru
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Patryk Duda <pdk@semihalf.com>
+Link: https://lore.kernel.org/r/20210518140758.29318-1-pdk@semihalf.com
+Signed-off-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/musb_dsps.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/platform/chrome/cros_ec_proto.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
-index b7d460adaa61..a582c3847dc2 100644
---- a/drivers/usb/musb/musb_dsps.c
-+++ b/drivers/usb/musb/musb_dsps.c
-@@ -930,23 +930,22 @@ static int dsps_probe(struct platform_device *pdev)
- 	if (!glue->usbss_base)
- 		return -ENXIO;
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -182,6 +182,15 @@ static int cros_ec_host_command_proto_qu
+ 	msg->insize = sizeof(struct ec_response_get_protocol_info);
  
--	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
--		ret = dsps_setup_optional_vbus_irq(pdev, glue);
--		if (ret)
--			goto err_iounmap;
--	}
--
- 	platform_set_drvdata(pdev, glue);
- 	pm_runtime_enable(&pdev->dev);
- 	ret = dsps_create_musb_pdev(glue, pdev);
- 	if (ret)
- 		goto err;
+ 	ret = send_command(ec_dev, msg);
++	/*
++	 * Send command once again when timeout occurred.
++	 * Fingerprint MCU (FPMCU) is restarted during system boot which
++	 * introduces small window in which FPMCU won't respond for any
++	 * messages sent by kernel. There is no need to wait before next
++	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
++	 */
++	if (ret == -ETIMEDOUT)
++		ret = send_command(ec_dev, msg);
  
-+	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
-+		ret = dsps_setup_optional_vbus_irq(pdev, glue);
-+		if (ret)
-+			goto err;
-+	}
-+
- 	return 0;
- 
- err:
- 	pm_runtime_disable(&pdev->dev);
--err_iounmap:
- 	iounmap(glue->usbss_base);
- 	return ret;
- }
--- 
-2.30.2
-
+ 	if (ret < 0) {
+ 		dev_dbg(ec_dev->dev,
 
 
