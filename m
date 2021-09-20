@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A80A411E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D40411C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351044AbhITRbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56974 "EHLO mail.kernel.org"
+        id S1345530AbhITRLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347407AbhITR2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BE261360;
-        Mon, 20 Sep 2021 17:03:37 +0000 (UTC)
+        id S1346857AbhITRJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B7D16187A;
+        Mon, 20 Sep 2021 16:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157417;
-        bh=KUe582VJtgGZabFDrgxZbLWdHNKJM0l/JO/BSUaJiU4=;
+        s=korg; t=1632156978;
+        bh=RQmmok5RPzgcUTiR4Kq/iPGPH2IKCdUv2OgGwi4djgk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/0mhLFX8jie6qAWBMDMdNDVfRovoOU4706TrhXX926E3GwDsazY2LgyJhXG4NsVx
-         lNujXyLqrH7zmdPQjcFeeRjUpT5AMyiN3Rht42AzKXgpLvPlg00uA2UV0ULLtkBMRQ
-         OJ8MDGAb3nJyAqln80gcOpVY/WvhMpLZ+E+Fj/EM=
+        b=cwA3um9EVCR3+rOvjelSow4a+M2Negou4pArgJ48NuyuswIUQKO9kK6l5RzFUCmSm
+         zIvDiHi0mU89yX7u9V1ka9aTj1hrLZKdufJiFeyif+bLdOmfersBYs2kmVoTN+mnKD
+         dUtIXLjPvdTFEAVsVVu9s/c4+f1prKWNVDxg7kSU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrius V <vezhlys@gmail.com>,
-        Darek Strugacz <darek.strugacz@op.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 199/217] r6040: Restore MDIO clock frequency after MAC reset
-Date:   Mon, 20 Sep 2021 18:43:40 +0200
-Message-Id: <20210920163931.376391933@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 172/175] ARC: export clear_user_page() for modules
+Date:   Mon, 20 Sep 2021 18:43:41 +0200
+Message-Id: <20210920163923.695535591@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,73 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit e3f0cc1a945fcefec0c7c9d9dfd028a51daa1846 upstream.
+[ Upstream commit 6b5ff0405e4190f23780362ea324b250bc495683 ]
 
-A number of users have reported that they were not able to get the PHY
-to successfully link up, especially after commit c36757eb9dee ("net:
-phy: consider AN_RESTART status when reading link status") where we
-stopped reading just BMSR, but we also read BMCR to determine the link
-status.
+0day bot reports a build error:
+  ERROR: modpost: "clear_user_page" [drivers/media/v4l2-core/videobuf-dma-sg.ko] undefined!
+so export it in arch/arc/ to fix the build error.
 
-Andrius at NetBSD did a wonderful job at debugging the problem
-and found out that the MDIO bus clock frequency would be incorrectly set
-back to its default value which would prevent the MDIO bus controller
-from reading PHY registers properly. Back when we only read BMSR, if we
-read all 1s, we could falsely indicate a link status, though in general
-there is a cable plugged in, so this went unnoticed. After a second read
-of BMCR was added, a wrong read will lead to the inability to determine
-a link UP condition which is when it started to be visibly broken, even
-if it was long before that.
+In most ARCHes, clear_user_page() is a macro. OTOH, in a few
+ARCHes it is a function and needs to be exported.
+PowerPC exported it in 2004. It looks like nds32 and nios2
+still need to have it exported.
 
-The fix consists in restoring the value of the MD_CSR register that was
-set prior to the MAC reset.
-
-Link: http://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=53494
-Fixes: 90f750a81a29 ("r6040: consolidate MAC reset to its own function")
-Reported-by: Andrius V <vezhlys@gmail.com>
-Reported-by: Darek Strugacz <darek.strugacz@op.pl>
-Tested-by: Darek Strugacz <darek.strugacz@op.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4102b53392d63 ("ARC: [mm] Aliasing VIPT dcache support 2/4")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-snps-arc@lists.infradead.org
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/rdc/r6040.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arc/mm/cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/rdc/r6040.c
-+++ b/drivers/net/ethernet/rdc/r6040.c
-@@ -133,6 +133,8 @@
- #define PHY_ST		0x8A	/* PHY status register */
- #define MAC_SM		0xAC	/* MAC status machine */
- #define  MAC_SM_RST	0x0002	/* MAC status machine reset */
-+#define MD_CSC		0xb6	/* MDC speed control register */
-+#define  MD_CSC_DEFAULT	0x0030
- #define MAC_ID		0xBE	/* Identifier register */
- 
- #define TX_DCNT		0x80	/* TX descriptor count */
-@@ -368,8 +370,9 @@ static void r6040_reset_mac(struct r6040
- {
- 	void __iomem *ioaddr = lp->base;
- 	int limit = MAC_DEF_TIMEOUT;
--	u16 cmd;
-+	u16 cmd, md_csc;
- 
-+	md_csc = ioread16(ioaddr + MD_CSC);
- 	iowrite16(MAC_RST, ioaddr + MCR1);
- 	while (limit--) {
- 		cmd = ioread16(ioaddr + MCR1);
-@@ -381,6 +384,10 @@ static void r6040_reset_mac(struct r6040
- 	iowrite16(MAC_SM_RST, ioaddr + MAC_SM);
- 	iowrite16(0, ioaddr + MAC_SM);
- 	mdelay(5);
-+
-+	/* Restore MDIO clock frequency */
-+	if (md_csc != MD_CSC_DEFAULT)
-+		iowrite16(md_csc, ioaddr + MD_CSC);
+diff --git a/arch/arc/mm/cache.c b/arch/arc/mm/cache.c
+index fefe357c3d31..076b5e8c8562 100644
+--- a/arch/arc/mm/cache.c
++++ b/arch/arc/mm/cache.c
+@@ -923,7 +923,7 @@ void clear_user_page(void *to, unsigned long u_vaddr, struct page *page)
+ 	clear_page(to);
+ 	clear_bit(PG_dc_clean, &page->flags);
  }
+-
++EXPORT_SYMBOL(clear_user_page);
  
- static void r6040_init_mac_regs(struct net_device *dev)
+ /**********************************************************************
+  * Explicit Cache flush request from user space via syscall
+-- 
+2.30.2
+
 
 
