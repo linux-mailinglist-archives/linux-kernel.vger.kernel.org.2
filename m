@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B1F411777
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B041D41177D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbhITOvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:51:15 -0400
-Received: from mail-eopbgr140124.outbound.protection.outlook.com ([40.107.14.124]:7955
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236444AbhITOvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:51:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P5Z08nTgPOcRDoLnWNDVUJCzXi8CLyQ7ml80O9uxTyN62tKJ3CyefGt7J59xc9NbGBIWQA2ERT3IRm5VD/S/i7Q781JJbqEpOWKCw8MJ0UNNIFxp4yfdeHYyg/ewJd0fIfU39MiujPl6u6fT9WnGsp6GXwfXoFi+9LfcRnjHCNRdPewRvRLitjFI/IwUZHsFkdKzkweUz+lt/is9NWv1lVyOSVR8zAH/NmzLtxBbqGsZZJeA95hpmEVjTEZPY1r7symcT9l+CkWhKZuvrIrinu4IU0wpKQcvl3b7c/0Uzu76dqjszM63eTz6NRHJWUVQoZzN92gaUSrLr9gqs/QIIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=0vehaNvh4dgCqP5qYIUca+GhoopBTqC6eacYd6NE5pg=;
- b=dxjHusjMeANDpLhP6zt+mMKjn8eniN5LsTC32zUkF2NOtDQlHzpsRkmod8LTDQz6zFD1UuN/H6SRQLYeHRD4x3EWXdkajrCSvQAfCCyadGSJj1cPgtW/eh/1wYG7O3UWrSUkJo3m6lgWwoRKOh0sclPFlMfS7j1+Jg+D27rSPk9gDa+O87vG8Gg1kqFcSXEty8YEGglg/CK7rdob45LOjWkOcoIYu/SuDouZB7hFntQhpspu6s2kS2S6ym9BR6rYRwU8R3//J5b+qvCEvM2HFGxahS/+2LeR+V8z7aTXwVexbqPh28+K4xNstUns/ngpIMuES6Gyd8VNfS+iyjKeBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0vehaNvh4dgCqP5qYIUca+GhoopBTqC6eacYd6NE5pg=;
- b=pQ33plq48JZERD3MwkX72J/LzS/FR13WSV6LlFNEz8tzycHHy0n/LfPd2C7IyNo58RQa/NklK1TkSt4Monse2j4Pw81jylkNOYuqSFf1Z1poAhsZGOtwgUDOx5v1E5f5plutB8m5ezyyk/oJ12w9Ezl5xFcqf8IStw5+yT4y6Yc=
-Authentication-Results: birdec.com; dkim=none (message not signed)
- header.d=none;birdec.com; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB9PR02MB6556.eurprd02.prod.outlook.com (2603:10a6:10:212::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Mon, 20 Sep
- 2021 14:49:43 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::35c9:1008:f5af:55a]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::35c9:1008:f5af:55a%4]) with mapi id 15.20.4500.019; Mon, 20 Sep 2021
- 14:49:43 +0000
-To:     "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kirill Marinushkin <kmarinushkin@birdec.com>
-From:   Peter Rosin <peda@axentia.se>
-Subject: [PATCH] ASoC: pcm512x: Mend accesses to the I2S_1 and I2S_2 registers
-Organization: Axentia Technologies AB
-Message-ID: <2d221984-7a2e-7006-0f8a-ffb5f64ee885@axentia.se>
-Date:   Mon, 20 Sep 2021 16:49:39 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1PR0101CA0006.eurprd01.prod.exchangelabs.com
- (2603:10a6:3:77::16) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S240793AbhITOvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:51:37 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38852
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240796AbhITOv2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:51:28 -0400
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 51C004019A
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 14:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632149400;
+        bh=liJ7TqCiRENzp4AeNTdqrwOrt003yN4WGkD8VAmir74=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=VtXGmrVSPU0gNXtuBRXm3WnzkGyN8XsPDN+2QgO1iqUY73aviaO6Oxb7SUjIJFkB2
+         CIwvRUNvlwWszVg6GcCaeHAXxfcJD6Plf+NX3qtdf+91LrQ88WKzGf/jKgfrN5+hBJ
+         7mcyc6Nzmn8v4DHLlljOoim6EDAcMk7hGX39dSqFmcppXsEcl87LdcGl/Aor0jQyMC
+         laXc8M9Z94jLVOcSDvZ/ic34U44SnRsJFsoN513sDEkAIXOh3CQo4QUZi5ZbbTtmDk
+         uyWdC9QL2frMFqqFpPY2cv3wvTNTg9S/iAxNbXPRf1bK3C51AAv++mqBbLoNGjYts+
+         TYqH4JsOhGOMg==
+Received: by mail-wr1-f71.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so6319571wrf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:50:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=liJ7TqCiRENzp4AeNTdqrwOrt003yN4WGkD8VAmir74=;
+        b=AxPyWe9a3Qs8/dgiQwlGh2wWI2eXPpVBxZ8KDnT5NlheG2nFtKDusuR7TL6G+8hc1k
+         JSh/DlI7yMhi0URdF7t4rDIwk3eUOE0DGOU4gsdVUUp+S5aJE9fKD1MK76+GGUHSdQ6d
+         WrWRuk7NxXZWV+oUnOH81jKIlJWe5TK7UrryBJ1zRi/3buVvTm7gJ/lEVkylvFd7bWD9
+         IccJNr0EbsfUKLl0+6tNxe1FKAymtoH2wFF4312DYIP7+p25yV3IiMK39BYRTOID08Lj
+         KeI33F/UqYZONaAU2Waq0KRc3ybYrn4WpKCz94gTTv0UqSN2isJo5HsKoP/pJ9DzbXXV
+         9geQ==
+X-Gm-Message-State: AOAM530rFcB6nH2HhKOb/jfeJQydsP4KwNN0OQRBIX9jfeuR8HvnZ/w8
+        8cWeuuYA94QFe7XlCfWnTQKmMO8CtdlwpQZY6/hQYRHyVYsPKmBXOzzG+wka2guNcB9m78JTNeK
+        M+LGvRaW+ZhUDTBKJICmFLpLZ33NHeki/22+IE9LM/Q==
+X-Received: by 2002:a05:6000:c3:: with SMTP id q3mr28794214wrx.361.1632149399913;
+        Mon, 20 Sep 2021 07:49:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwuV1/6C76PaS4ktI3Po8CjUMuAt+4cyKsUSOnJVyV0IOE5VYTpW96BNfhMsoz/jqg1evXxzg==
+X-Received: by 2002:a05:6000:c3:: with SMTP id q3mr28794197wrx.361.1632149399765;
+        Mon, 20 Sep 2021 07:49:59 -0700 (PDT)
+Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id g131sm14752780wme.22.2021.09.20.07.49.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 07:49:59 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Zong Li <zong.li@sifive.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: clock: fu740-prci: add reset-cells
+Date:   Mon, 20 Sep 2021 16:49:44 +0200
+Message-Id: <20210920144944.162431-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (185.178.140.238) by HE1PR0101CA0006.eurprd01.prod.exchangelabs.com (2603:10a6:3:77::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Mon, 20 Sep 2021 14:49:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1178a95c-2344-4df3-d534-08d97c45e1cf
-X-MS-TrafficTypeDiagnostic: DB9PR02MB6556:
-X-Microsoft-Antispam-PRVS: <DB9PR02MB65567D448BCD213F0AD5D178BCA09@DB9PR02MB6556.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dns6H0E9L4W/q16UVnlkRxhwVaAVbP2k+4GZaGeL14zNDLzmZK168OmgNeOCit4VRWrEl/2ABNiy4L7PBS6PbWFnXfZpi/mrL9c49VtJCdjfo/n1XtT5S6QCNPbGywN4COLM7Bwf+sLkMaIIsuoceNG/4nTSu2ZWtCl7EcbQGJatx0+7qTGYg1X5YqdBjhfdcGi/+8QG/MrKpUyfnjvL2S59ucrOSSRGtXY2KWlzvHdnV5Dnqo1Frke6Vkz7HLNnEpJS5pWSBh6Wf3ceqMVR/WU7HubwS4L0gyEqisssprzsPWvAUSl9+jcrx2eYyRa6+g6OzPC18aU02yZl5eRg2fhvzQJGSeXA3AyYmS9z0LtvNJR6C8qX3lNpQZ5xfc2MQAbIgWkPbjaD6cMuCuE7z4iFa904rB6FVPwGBfpMNw5iOxVxakcZyTeO1QDNnPDO1e+9dIKg5IKdiPyDa3bwz5aEwFaubrb/XkZaHJKA9ar1KRbm9w1nfbq5ssm7sGlYpsfwn2zH/CJQl7F2Acvc1ST8ZDrnDF+uYA2tep3GvmkkVTDR5Q7HCjH/ZnY9cQzh/OMKCNGBFQZl7wKXOGj3p5hF/u65eFD38lieuEDbXUMYMkMf6uFmmSI4acOOWspDXuPyvKwlZ7pB0LchpF73yeAccwZe8j10uOSlXgyOCZSQgsJK0v8C1xwwzENd2rBJTQt9xN26i5MS2IF0zC1stQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39840400004)(136003)(346002)(396003)(5660300002)(66556008)(4326008)(66476007)(66946007)(31696002)(31686004)(2616005)(36756003)(6916009)(8676002)(956004)(36916002)(26005)(186003)(6486002)(8936002)(38100700002)(83380400001)(2906002)(316002)(6666004)(86362001)(54906003)(16576012)(508600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T0w1RVFOZlZ3bU96VzlMT2ZLRncxOTBBMXhlMlBiVDk5eGR3Ly92OFZCV0xY?=
- =?utf-8?B?V29YMGdmS0lLTU5qajBINU5YK0FlVHd4MjFtc3lxS0wrSGVHR0g1ZnQ5aVBU?=
- =?utf-8?B?RmxvQmxWT0tseVRwTnhPSlpkeXlpUjlDUTVtVGdBM2ZmakdGV2lseUdoV0tR?=
- =?utf-8?B?K2ExaWtUcXBla2I4RXlZSTdldm94STZCclhFY0RCY1N6cm1NUlk1ZkQ1dVI4?=
- =?utf-8?B?bG9CbWQwK29LUmhzM2hqdWtDM2N6a2l3Qmw4ck9PWmpyWTR2N3hTdys4aUt2?=
- =?utf-8?B?R1JXWURsTlh6aFV6bVpMZW95YThTc2pyVEw1V1cyeGdYcnhvSnI4TDdTVjA3?=
- =?utf-8?B?Q21URFpZdFErTEFuK1RDUlF3OHZ6aTlEOTZaY2RSOEVmSituTUZPY1ljd2JO?=
- =?utf-8?B?M0hFK1RIaWJjSU84dFVrQWVCSzgwMThhV25FU2tCK3pRZS9ZRlR0NmM5L3hX?=
- =?utf-8?B?c0xRWVVvRnkvbENoRlRTaFBHVjc5MTVGN3RrZ01ETDdwbVF0K1RDNEV2NnZG?=
- =?utf-8?B?aEtDVkhYY0gyclovQjlrdVRZRDI0enhOblYvdXBva1V5TmUyQ20wa1B4TkNZ?=
- =?utf-8?B?b3BNVm43SW1sM2dtdkhmYm1hMWp3UkZYUkhTNjdIQURORGJwWXdrSGswUlQy?=
- =?utf-8?B?M2YxTFNSOWxxejNNci9SUkV2djhoSS8zZVB1NHdzcnB6bjRDZkUybkx2T1Vi?=
- =?utf-8?B?OENMMk5yTnlYaTZqMy9rYnNTY1lCQTdFVE4vbXZqbUp5QlNBR0xZQlB6dEpI?=
- =?utf-8?B?ekVMamNLbm1Xb2UwdjVZR21Ea1dTVFMyYndoQjFaVS9qRkhvY2d5dE9oVzIr?=
- =?utf-8?B?cWlDYjZlTHhRcGVKNnpCNk5LYy9YdUs4ejllZ0NidkZ6ZnZQZ3JnN3pndXpK?=
- =?utf-8?B?U3Y5Vm1VcnpYOFdPVVZhRWJGdURkNXo2MGg1OURuTHd4UmQxTXhVVWpjbHMw?=
- =?utf-8?B?ak9mSHc1QVNTd1FkUkYvK09Ndi9YYlovZDZZYXY3V3p6ejY4UjM3TUVIUEEr?=
- =?utf-8?B?bGozQm92QmVkYi9oYjB2SnMycGtpb1dydmdod1pPZWplSWwxMXphcHhibEdy?=
- =?utf-8?B?TElmRlV6Rk41ZXA1U0t1alY3c1dWNDQrVHR4ejRXMFNYeXhSZEV3dVp4dHN5?=
- =?utf-8?B?akRaOW91cGZ5c1BJRHZLOUNLUHBVR1ZWN2k3WnJ6ZlFqak1kV2NzMjJ1TGlY?=
- =?utf-8?B?d2lxa0FuQUJzQVpTNEFFODUyMGozcmVkT0lDNUVqK0hVNTZwbnNrTVYrOGZ6?=
- =?utf-8?B?SlRGVktoWTdMdWM2ditDOWh4WEFTNTJkVXVIcGl1TEJKQXI5dDFpcm1nbHJN?=
- =?utf-8?B?MVN4TGhvUFFoWHVjUFBmZnZDb05SNGYwTWNIbmZiVkg0dTF3blBYT1JHa2RI?=
- =?utf-8?B?L2FNeUZ3WU5aMlJvMGdHcEFQYmN5NVd6cG5Bd1FCekt1ZzZzUGZYeUFGNXgz?=
- =?utf-8?B?MVRqRTZqVE4xdS9KaVZmZlJIUVcza0o3NENKdFovbGlGZS9lUEFoWjBmQ05R?=
- =?utf-8?B?aVdNOGt1U0RHQjU5WUMwUXorc2dhT1o5SE5STFU0THFVWGovbEdoVEJHeldR?=
- =?utf-8?B?TXRGTkdHKzRlN3VJdTJ0akZOU2Q5SVVFVE94MXRPWWRMM0RDcFdvdDdSRVlN?=
- =?utf-8?B?dWFWdXVUSS8xZnBYQ3p2UnIzbHR3N3IrOFh4aFgyQ0Y1ZTQ0ZjNULzJnWm10?=
- =?utf-8?B?RVhJU3hNeFFqMnB2WDB6UHRTT0FLbUh4aDZpWkNOamloQUU4V2dpSWNSWGFw?=
- =?utf-8?Q?AniQkiW1ywx+VnClfvLfkkPDyFjB55x1CW2Pe1Z?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1178a95c-2344-4df3-d534-08d97c45e1cf
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2021 14:49:43.5066
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6OAElpbGRGpfKCFhKaNrTrILN8a0/3ge7xrIwV3tb9FB7dsgFRILElLlBgr6hIrz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB6556
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 625f858894af2b7e547cc723b97361081438b123 Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
+The SiFive FU740 Power Reset Clock Interrupt Controller is a reset line
+provider so add respective reset-cells property to fix:
 
-Commit 25d27c4f68d2 ("ASoC: pcm512x: Add support for more data formats")
-breaks the TSE-850 device, which is using a pcm5142 in I2S and
-CBM_CFS mode (maybe not relevant). Without this fix, the result
-is:
+  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml: clock-controller@10000000:
+    '#reset-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-pcm512x 0-004c: Failed to set data format: -16
-
-And after that, no sound.
-
-This fix is not 100% correct. The datasheet of at least the pcm5142
-states that four bits (0xcc) in the I2S_1 register are "RSV"
-("Reserved. Do not access.") and no hint is given as to what the
-initial values are supposed to be. So, specifying defaults for
-these bits is wrong. But perhaps better than a broken driver?
-
-Fixes: 25d27c4f68d2 ("ASoC: pcm512x: Add support for more data formats")
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Kirill Marinushkin <kmarinushkin@birdec.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- sound/soc/codecs/pcm512x.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/clock/sifive/fu740-prci.yaml          | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 4dc844f3c1fc..60dee41816dc 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -116,6 +116,8 @@ static const struct reg_default pcm512x_reg_defaults[] = {
- 	{ PCM512x_FS_SPEED_MODE,     0x00 },
- 	{ PCM512x_IDAC_1,            0x01 },
- 	{ PCM512x_IDAC_2,            0x00 },
-+	{ PCM512x_I2S_1,             0x02 },
-+	{ PCM512x_I2S_2,             0x00 },
- };
+diff --git a/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml b/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml
+index e17143cac316..252085a0cf65 100644
+--- a/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml
++++ b/Documentation/devicetree/bindings/clock/sifive/fu740-prci.yaml
+@@ -42,6 +42,9 @@ properties:
+   "#clock-cells":
+     const: 1
  
- static bool pcm512x_readable(struct device *dev, unsigned int reg)
++  "#reset-cells":
++    const: 1
++
+ required:
+   - compatible
+   - reg
+@@ -57,4 +60,5 @@ examples:
+       reg = <0x10000000 0x1000>;
+       clocks = <&hfclk>, <&rtcclk>;
+       #clock-cells = <1>;
++      #reset-cells = <1>;
+     };
 -- 
-2.20.1
+2.30.2
 
