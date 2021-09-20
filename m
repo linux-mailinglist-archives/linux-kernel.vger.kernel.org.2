@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B21F412437
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993264122DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348985AbhITSbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44380 "EHLO mail.kernel.org"
+        id S1377351AbhITSSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:18:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378748AbhITS0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:26:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC7B61A8A;
-        Mon, 20 Sep 2021 17:25:27 +0000 (UTC)
+        id S1376444AbhITSMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:12:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E4C63288;
+        Mon, 20 Sep 2021 17:20:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158727;
-        bh=fd05H0LoQ65GaBSvp+7+RMZ8oDLy3WPipdEO/gkQnMk=;
+        s=korg; t=1632158451;
+        bh=UsaLy+VS9uGznDshld/1XfrmZjQm8g1fmvtDiPhgZ/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ai0gdjwYU/SHXD3lemzmhVnpJ3Koxerd4UelO4qcUgHxxOSIaVmw0nGoH2lGJB09D
-         ZG+XHjiqN9e1ui61VNiIpxnX2IZAXHOIyo26iFS3TzK4FQHlMYhDrprZdhjp6RBOH7
-         2MxPAocqqWuBxwDpF5t1tmudyWNBmYHQdaV97G70=
+        b=u18UyKF2QGL+bqo0sbI8fQYMpxfZWObpi52nk6TXMkdZri7hG4wDSMYuPzFeSNIoR
+         RjyU80dL1GRC6oFhosXrbrdglNH+36PyM8zxXGv32SE8S6ia/bIM0+tfnH/K2fBhu1
+         TQaonJgXlWX0c8Mt+QSGP1jJuYzBXhmRgHeb76ww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.10 008/122] PCI: Add AMD GPU multi-function power dependencies
-Date:   Mon, 20 Sep 2021 18:43:00 +0200
-Message-Id: <20210920163916.037383090@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Keely <Sean.Keely@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 163/260] drm/amdkfd: Account for SH/SE count when setting up cu masks.
+Date:   Mon, 20 Sep 2021 18:43:01 +0200
+Message-Id: <20210920163936.634507194@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +41,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Sean Keely <Sean.Keely@amd.com>
 
-commit 60b78ed088ebe1a872ee1320b6c5ad6ee2c4bd9a upstream.
+[ Upstream commit 1ec06c2dee679e9f089e78ed20cb74ee90155f61 ]
 
-Some AMD GPUs have built-in USB xHCI and USB Type-C UCSI controllers with
-power dependencies between the GPU and the other functions as in
-6d2e369f0d4c ("PCI: Add NVIDIA GPU multi-function power dependencies").
+On systems with multiple SH per SE compute_static_thread_mgmt_se#
+is split into independent masks, one for each SH, in the upper and
+lower 16 bits.  We need to detect this and apply cu masking to each
+SH.  The cu mask bits are assigned first to each SE, then to
+alternate SHs, then finally to higher CU id.  This ensures that
+the maximum number of SPIs are engaged as early as possible while
+balancing CU assignment to each SH.
 
-Add device link support for the AMD integrated USB xHCI and USB Type-C UCSI
-controllers.
+v2: Use max SH/SE rather than max SH in cu_per_sh.
 
-Without this, runtime power management, including GPU resume and temp and
-fan sensors don't work correctly.
+v3: Fix comment blocks, ensure se_mask is initially zero filled,
+    and correctly assign se.sh.cu positions to unset bits in cu_mask.
 
-Reported-at: https://gitlab.freedesktop.org/drm/amd/-/issues/1704
-Link: https://lore.kernel.org/r/20210903063311.3606226-1-evan.quan@amd.com
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sean Keely <Sean.Keely@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c | 84 +++++++++++++++-----
+ drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h |  1 +
+ 2 files changed, 64 insertions(+), 21 deletions(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5346,7 +5346,7 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR
- 			      PCI_CLASS_MULTIMEDIA_HD_AUDIO, 8, quirk_gpu_hda);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c
+index 88813dad731f..c021519af810 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.c
+@@ -98,36 +98,78 @@ void mqd_symmetrically_map_cu_mask(struct mqd_manager *mm,
+ 		uint32_t *se_mask)
+ {
+ 	struct kfd_cu_info cu_info;
+-	uint32_t cu_per_se[KFD_MAX_NUM_SE] = {0};
+-	int i, se, sh, cu = 0;
+-
++	uint32_t cu_per_sh[KFD_MAX_NUM_SE][KFD_MAX_NUM_SH_PER_SE] = {0};
++	int i, se, sh, cu;
+ 	amdgpu_amdkfd_get_cu_info(mm->dev->kgd, &cu_info);
  
- /*
-- * Create device link for NVIDIA GPU with integrated USB xHCI Host
-+ * Create device link for GPUs with integrated USB xHCI Host
-  * controller to VGA.
-  */
- static void quirk_gpu_usb(struct pci_dev *usb)
-@@ -5355,9 +5355,11 @@ static void quirk_gpu_usb(struct pci_dev
+ 	if (cu_mask_count > cu_info.cu_active_number)
+ 		cu_mask_count = cu_info.cu_active_number;
+ 
++	/* Exceeding these bounds corrupts the stack and indicates a coding error.
++	 * Returning with no CU's enabled will hang the queue, which should be
++	 * attention grabbing.
++	 */
++	if (cu_info.num_shader_engines > KFD_MAX_NUM_SE) {
++		pr_err("Exceeded KFD_MAX_NUM_SE, chip reports %d\n", cu_info.num_shader_engines);
++		return;
++	}
++	if (cu_info.num_shader_arrays_per_engine > KFD_MAX_NUM_SH_PER_SE) {
++		pr_err("Exceeded KFD_MAX_NUM_SH, chip reports %d\n",
++			cu_info.num_shader_arrays_per_engine * cu_info.num_shader_engines);
++		return;
++	}
++	/* Count active CUs per SH.
++	 *
++	 * Some CUs in an SH may be disabled.	HW expects disabled CUs to be
++	 * represented in the high bits of each SH's enable mask (the upper and lower
++	 * 16 bits of se_mask) and will take care of the actual distribution of
++	 * disabled CUs within each SH automatically.
++	 * Each half of se_mask must be filled only on bits 0-cu_per_sh[se][sh]-1.
++	 *
++	 * See note on Arcturus cu_bitmap layout in gfx_v9_0_get_cu_info.
++	 */
+ 	for (se = 0; se < cu_info.num_shader_engines; se++)
+ 		for (sh = 0; sh < cu_info.num_shader_arrays_per_engine; sh++)
+-			cu_per_se[se] += hweight32(cu_info.cu_bitmap[se % 4][sh + (se / 4)]);
+-
+-	/* Symmetrically map cu_mask to all SEs:
+-	 * cu_mask[0] bit0 -> se_mask[0] bit0;
+-	 * cu_mask[0] bit1 -> se_mask[1] bit0;
+-	 * ... (if # SE is 4)
+-	 * cu_mask[0] bit4 -> se_mask[0] bit1;
++			cu_per_sh[se][sh] = hweight32(cu_info.cu_bitmap[se % 4][sh + (se / 4)]);
++
++	/* Symmetrically map cu_mask to all SEs & SHs:
++	 * se_mask programs up to 2 SH in the upper and lower 16 bits.
++	 *
++	 * Examples
++	 * Assuming 1 SH/SE, 4 SEs:
++	 * cu_mask[0] bit0 -> se_mask[0] bit0
++	 * cu_mask[0] bit1 -> se_mask[1] bit0
++	 * ...
++	 * cu_mask[0] bit4 -> se_mask[0] bit1
++	 * ...
++	 *
++	 * Assuming 2 SH/SE, 4 SEs
++	 * cu_mask[0] bit0 -> se_mask[0] bit0 (SE0,SH0,CU0)
++	 * cu_mask[0] bit1 -> se_mask[1] bit0 (SE1,SH0,CU0)
++	 * ...
++	 * cu_mask[0] bit4 -> se_mask[0] bit16 (SE0,SH1,CU0)
++	 * cu_mask[0] bit5 -> se_mask[1] bit16 (SE1,SH1,CU0)
++	 * ...
++	 * cu_mask[0] bit8 -> se_mask[0] bit1 (SE0,SH0,CU1)
+ 	 * ...
++	 *
++	 * First ensure all CUs are disabled, then enable user specified CUs.
+ 	 */
+-	se = 0;
+-	for (i = 0; i < cu_mask_count; i++) {
+-		if (cu_mask[i / 32] & (1 << (i % 32)))
+-			se_mask[se] |= 1 << cu;
+-
+-		do {
+-			se++;
+-			if (se == cu_info.num_shader_engines) {
+-				se = 0;
+-				cu++;
++	for (i = 0; i < cu_info.num_shader_engines; i++)
++		se_mask[i] = 0;
++
++	i = 0;
++	for (cu = 0; cu < 16; cu++) {
++		for (sh = 0; sh < cu_info.num_shader_arrays_per_engine; sh++) {
++			for (se = 0; se < cu_info.num_shader_engines; se++) {
++				if (cu_per_sh[se][sh] > cu) {
++					if (cu_mask[i / 32] & (1 << (i % 32)))
++						se_mask[se] |= 1 << (cu + sh * 16);
++					i++;
++					if (i == cu_mask_count)
++						return;
++				}
+ 			}
+-		} while (cu >= cu_per_se[se] && cu < 32);
++		}
+ 	}
  }
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
- 			      PCI_CLASS_SERIAL_USB, 8, quirk_gpu_usb);
-+DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
-+			      PCI_CLASS_SERIAL_USB, 8, quirk_gpu_usb);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h
+index fbdb16418847..4edc012e3138 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_mqd_manager.h
+@@ -27,6 +27,7 @@
+ #include "kfd_priv.h"
  
- /*
-- * Create device link for NVIDIA GPU with integrated Type-C UCSI controller
-+ * Create device link for GPUs with integrated Type-C UCSI controller
-  * to VGA. Currently there is no class code defined for UCSI device over PCI
-  * so using UNKNOWN class for now and it will be updated when UCSI
-  * over PCI gets a class code.
-@@ -5370,6 +5372,9 @@ static void quirk_gpu_usb_typec_ucsi(str
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
- 			      PCI_CLASS_SERIAL_UNKNOWN, 8,
- 			      quirk_gpu_usb_typec_ucsi);
-+DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
-+			      PCI_CLASS_SERIAL_UNKNOWN, 8,
-+			      quirk_gpu_usb_typec_ucsi);
+ #define KFD_MAX_NUM_SE 8
++#define KFD_MAX_NUM_SH_PER_SE 2
  
- /*
-  * Enable the NVIDIA GPU integrated HDA controller if the BIOS left it
+ /**
+  * struct mqd_manager
+-- 
+2.30.2
+
 
 
