@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7500E4120BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72FF411E47
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346051AbhITR5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51552 "EHLO mail.kernel.org"
+        id S1345789AbhITR2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:28:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354254AbhITRtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:49:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B69861BBE;
-        Mon, 20 Sep 2021 17:11:36 +0000 (UTC)
+        id S1345349AbhITR0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:26:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 121356137F;
+        Mon, 20 Sep 2021 17:02:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157896;
-        bh=9yQVsBKhkMPV/1QFKagHMGFQ/CidzBP1nHpUmOc3MUg=;
+        s=korg; t=1632157363;
+        bh=j7fEjZeqNGG1BVw4z7+o9ebWYMqAA1V0g2vnqTRhNPw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X0ZpibEYuAZYv3J3v69G1NYtRwg6Xvl9brN8aIBDQtG9QnBe8Wi/YUiUyzVMfYPJW
-         EjqEwNIzuhad1KrsjbeIclFHMlXkvxL+LYTmSiQHRGscevWQbHoLIzIiCt0GHzjt5O
-         Q+b7s4Ltc0RrKA3L8oCmjOdFS0KRObG7+lDzfIdA=
+        b=ePqDlYUpqzQmRQndemgaeG7JkQroe2DVf0wuclwFc9tR8c+lu8O/O7SdxhokkSzpq
+         QFrdm2C7tA0KHsGByzIQMQ6p2ulAK2o8djmSRPzlakMTUUrh90NzU2XuwAsHQMLjTD
+         KdVSvbuabzp8EmtOI5TGR2pRL0NewqiMTHy0UVIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juhee Kang <claudiajkang@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 201/293] samples: bpf: Fix tracex7 error raised on the missing argument
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 142/217] staging: board: Fix uninitialized spinlock when attaching genpd
 Date:   Mon, 20 Sep 2021 18:42:43 +0200
-Message-Id: <20210920163940.146513292@linuxfoundation.org>
+Message-Id: <20210920163929.457615945@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juhee Kang <claudiajkang@gmail.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 7d07006f05922b95518be403f08ef8437b67aa32 ]
+[ Upstream commit df00609821bf17f50a75a446266d19adb8339d84 ]
 
-The current behavior of 'tracex7' doesn't consist with other bpf samples
-tracex{1..6}. Other samples do not require any argument to run with, but
-tracex7 should be run with btrfs device argument. (it should be executed
-with test_override_return.sh)
+On Armadillo-800-EVA with CONFIG_DEBUG_SPINLOCK=y:
 
-Currently, tracex7 doesn't have any description about how to run this
-program and raises an unexpected error. And this result might be
-confusing since users might not have a hunch about how to run this
-program.
+    BUG: spinlock bad magic on CPU#0, swapper/1
+     lock: lcdc0_device+0x10c/0x308, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+    CPU: 0 PID: 1 Comm: swapper Not tainted 5.11.0-rc5-armadillo-00036-gbbca04be7a80-dirty #287
+    Hardware name: Generic R8A7740 (Flattened Device Tree)
+    [<c010c3c8>] (unwind_backtrace) from [<c010a49c>] (show_stack+0x10/0x14)
+    [<c010a49c>] (show_stack) from [<c0159534>] (do_raw_spin_lock+0x20/0x94)
+    [<c0159534>] (do_raw_spin_lock) from [<c040858c>] (dev_pm_get_subsys_data+0x8c/0x11c)
+    [<c040858c>] (dev_pm_get_subsys_data) from [<c05fbcac>] (genpd_add_device+0x78/0x2b8)
+    [<c05fbcac>] (genpd_add_device) from [<c0412db4>] (of_genpd_add_device+0x34/0x4c)
+    [<c0412db4>] (of_genpd_add_device) from [<c0a1ea74>] (board_staging_register_device+0x11c/0x148)
+    [<c0a1ea74>] (board_staging_register_device) from [<c0a1eac4>] (board_staging_register_devices+0x24/0x28)
 
-    // Current behavior
-    # ./tracex7
-    sh: 1: Syntax error: word unexpected (expecting ")")
-    // Fixed behavior
-    # ./tracex7
-    ERROR: Run with the btrfs device argument!
+of_genpd_add_device() is called before platform_device_register(), as it
+needs to attach the genpd before the device is probed.  But the spinlock
+is only initialized when the device is registered.
 
-In order to fix this error, this commit adds logic to report a message
-and exit when running this program with a missing argument.
+Fix this by open-coding the spinlock initialization, cfr.
+device_pm_init_common() in the internal drivers/base code, and in the
+SuperH early platform code.
 
-Additionally in test_override_return.sh, there is a problem with
-multiple directory(tmpmnt) creation. So in this commit adds a line with
-removing the directory with every execution.
-
-Signed-off-by: Juhee Kang <claudiajkang@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210727041056.23455-1-claudiajkang@gmail.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/57783ece7ddae55f2bda2f59f452180bff744ea0.1626257398.git.geert+renesas@glider.be
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/test_override_return.sh | 1 +
- samples/bpf/tracex7_user.c          | 5 +++++
- 2 files changed, 6 insertions(+)
+ drivers/staging/board/board.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/samples/bpf/test_override_return.sh b/samples/bpf/test_override_return.sh
-index e68b9ee6814b..35db26f736b9 100755
---- a/samples/bpf/test_override_return.sh
-+++ b/samples/bpf/test_override_return.sh
-@@ -1,5 +1,6 @@
- #!/bin/bash
+diff --git a/drivers/staging/board/board.c b/drivers/staging/board/board.c
+index 86dc41101610..1e2b33912a8a 100644
+--- a/drivers/staging/board/board.c
++++ b/drivers/staging/board/board.c
+@@ -139,6 +139,7 @@ int __init board_staging_register_clock(const struct board_staging_clk *bsc)
+ static int board_staging_add_dev_domain(struct platform_device *pdev,
+ 					const char *domain)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct of_phandle_args pd_args;
+ 	struct device_node *np;
  
-+rm -r tmpmnt
- rm -f testfile.img
- dd if=/dev/zero of=testfile.img bs=1M seek=1000 count=1
- DEVICE=$(losetup --show -f testfile.img)
-diff --git a/samples/bpf/tracex7_user.c b/samples/bpf/tracex7_user.c
-index ea6dae78f0df..2ed13e9f3fcb 100644
---- a/samples/bpf/tracex7_user.c
-+++ b/samples/bpf/tracex7_user.c
-@@ -13,6 +13,11 @@ int main(int argc, char **argv)
- 	char command[256];
- 	int ret;
+@@ -151,7 +152,11 @@ static int board_staging_add_dev_domain(struct platform_device *pdev,
+ 	pd_args.np = np;
+ 	pd_args.args_count = 0;
  
-+	if (!argv[1]) {
-+		fprintf(stderr, "ERROR: Run with the btrfs device argument!\n");
-+		return 0;
-+	}
+-	return of_genpd_add_device(&pd_args, &pdev->dev);
++	/* Initialization similar to device_pm_init_common() */
++	spin_lock_init(&dev->power.lock);
++	dev->power.early_init = true;
 +
- 	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
- 
- 	if (load_bpf_file(filename)) {
++	return of_genpd_add_device(&pd_args, dev);
+ }
+ #else
+ static inline int board_staging_add_dev_domain(struct platform_device *pdev,
 -- 
 2.30.2
 
