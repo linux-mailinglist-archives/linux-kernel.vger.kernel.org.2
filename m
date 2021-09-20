@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02622412B1B
+	by mail.lfdr.de (Postfix) with ESMTP id 8135C412B1C
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243960AbhIUCHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S242515AbhIUCHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236794AbhIUBv3 (ORCPT
+        with ESMTP id S236811AbhIUBvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:51:29 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0F9C0DBA98;
-        Mon, 20 Sep 2021 15:35:21 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id eg28so44386645edb.1;
-        Mon, 20 Sep 2021 15:35:21 -0700 (PDT)
+        Mon, 20 Sep 2021 21:51:31 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9C5C0612A4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:46:06 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id g41so41287991lfv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:46:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/xBEjLn8neg2tRAMyWTbvXCFNduQWyte0Fp7znCoDD4=;
-        b=prKje2XMyXXLq4tB6hSuSVp8msgpZmzcJdPnTSUaUBHBrzX5B5Tfk7YPfTa16cCn/c
-         5xIkwNGf+OzVUmwvYi2NJUy4XgXJz2SeQYVjqjB/YJx+fAhCnh2oLBWbTk7F8zZjGUA/
-         bzFLVRCdCqYoXNmp2JvKSkN4gQIkU4pvAbnAAo48DIoh2mYs9EwoRwSN8R+2a+aah5nk
-         /JvkJpqKKJN5NIPIk9OKksghWlWZ0eCegP4kLCDVsrE/sWe9nMxx6rfwmZqWtniTBPFS
-         OECNbfOTxS6a+/WDAOt8f4rUHDXRG28i1s7jI8HKRG+15RufUKBqda0IG2sRKBG4kAwI
-         gDmg==
+        bh=CSvzruZ7yrH3cGppBMPI3R0ozg6uVIR6o4wSeRhpPb4=;
+        b=LDjsVKKmmK9IHt+0xSI4WhrZQsDZOajyP74jFpI8bn/RHKfwdF3Ntdcp/J0brBth6M
+         rTFcXjE1Q4MISd6lo+ge52o8NsB3m0d7+jizr2EyMR9RJyZIV7tZwLV46WUCc9pBPv23
+         ITXPDL/fZ/d87T0+EoSZ8Tgcw0UMBm/5jCT2s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/xBEjLn8neg2tRAMyWTbvXCFNduQWyte0Fp7znCoDD4=;
-        b=A9WmbLJCvAbzr++HFX3sAfgEE3g+OW9/EjTbUzcIeli9s1XOfnI7p93PRUwWp3ZBGm
-         sI78XdDS9B/kkjOz5Zxst8qXdxDs9jFlPjkghxBDIBveCOarm3p7aAyLH16bhMrd1mqF
-         /PryOsZUkIyXuZg/ek69z/7n+W58bsR6DwrRx3I/xAJpHEizAdMRTwYWUAIA6hlV56cC
-         hlXAtzNX+36ijUA68TEmb7eflih5gGkKATKqzLO0GGOkNk+sSnb2YA9K4m0xd+Gxv3GJ
-         5ZQOzT695BNDDChNa8nQPxw88LNgAvzCMD3WTWEZlnl+zCbVoga8a9LiRcrepwYDel2V
-         dO+w==
-X-Gm-Message-State: AOAM533E+XZzyuO8Wrb6W4MWS5Pp//Z5I1GAvyWlayNNiIh0r57zwh6I
-        tFWPR5QTzZy2bJzLmb+xFxJQwwJOoyPqevG59rSmcNdh
-X-Google-Smtp-Source: ABdhPJwfhME9ZoxsDvEJDmmg14thFBosztYbmAGLOAyehoP/iCEddlasfNhUJDfWfBLW+hQHkQtFJr1dCVBL4ueII4E=
-X-Received: by 2002:a17:906:3854:: with SMTP id w20mr29819934ejc.537.1632177320456;
- Mon, 20 Sep 2021 15:35:20 -0700 (PDT)
+        bh=CSvzruZ7yrH3cGppBMPI3R0ozg6uVIR6o4wSeRhpPb4=;
+        b=HGddwrPb1oyOMQxH9Uax2LxQQc49l9EV5tOfYh0ytSOeaBeoRaLq8H6Eh4EGyLPa3V
+         xR5v51G6+r/GIbFJ5ZoWvr6B4PqxbBTYXXpz6Yx20P8JdEykkHj3rTmsIUbeG+wFa7sz
+         /w5YR+Zdgh8zXCa2V6T8L+9TlifF298lmSlxybLeOlpTEWY2Dcs4NKqM3henSSUvdgvy
+         F5xH9W5595DwQJ9XZoqqNAw1hKwAKWCN/PtzhuHRO5QJAyf9lZYeL7PEoL4h0+pO7scM
+         sTEvptjtgei0twIekDlxv5oGfendCww/al06603lLPPk+p5KxbarjUXymtGziRS40Rrd
+         btAQ==
+X-Gm-Message-State: AOAM531DpsV/CNmHlbvJEHl7TDc96Eh1zxCCDqtj6DAyAOo9nOGvm07Q
+        MD49kwcvUo6IC00xvXgIVDoe3UjCl4/mkIHJM3U=
+X-Google-Smtp-Source: ABdhPJxXXxmZKEV7SMUsbZehNlbdWP2GlqLo6IamLATxI73bkrIeY+71silP+8Rt6PZm4oX9YcXVEw==
+X-Received: by 2002:a2e:858e:: with SMTP id b14mr24369792lji.508.1632177964548;
+        Mon, 20 Sep 2021 15:46:04 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id a26sm1365436lfg.193.2021.09.20.15.46.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 15:46:04 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id t10so67562666lfd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:46:03 -0700 (PDT)
+X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr1896311lfg.280.1632177963635;
+ Mon, 20 Sep 2021 15:46:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210917205731.262693-1-shy828301@gmail.com> <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
- <YUdL3lFLFHzC80Wt@casper.infradead.org> <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
- <YUkCI2I085Sos/64@casper.infradead.org>
-In-Reply-To: <YUkCI2I085Sos/64@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 20 Sep 2021 15:35:08 -0700
-Message-ID: <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
-Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
- for invalidatepage
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>, cfijalkovich@google.com,
-        song@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+In-Reply-To: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 20 Sep 2021 15:45:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
+Message-ID: <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+To:     Steve French <smfrench@gmail.com>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 2:50 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Sun, Sep 19, 2021 at 7:22 AM Steve French <smfrench@gmail.com> wrote:
 >
-> On Mon, Sep 20, 2021 at 02:23:41PM -0700, Yang Shi wrote:
-> > On Sun, Sep 19, 2021 at 7:41 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > >
-> > > On Fri, Sep 17, 2021 at 05:07:03PM -0700, Yang Shi wrote:
-> > > > > The debugging showed the page passed to invalidatepage is a huge page
-> > > > > and the length is the size of huge page instead of single page due to
-> > > > > read only FS THP support.  But block_invalidatepage() would throw BUG if
-> > > > > the size is greater than single page.
-> > >
-> > > Things have already gone wrong before we get to this point.  See
-> > > do_dentry_open().  You aren't supposed to be able to get a writable file
-> > > descriptor on a file which has had huge pages added to the page cache
-> > > without the filesystem's knowledge.  That's the problem that needs to
-> > > be fixed.
-> >
-> > I don't quite understand your point here. Do you mean do_dentry_open()
-> > should fail for such cases instead of truncating the page cache?
+> 3 ksmbd fixes: including an important security fix for path
+> processing, and a missing buffer overflow check, and a trivial fix for
+> incorrect header inclusion
 >
-> No, do_dentry_open() should have truncated the page cache when it was
-> called and found that there were THPs in the cache.  Then khugepaged
-> should see that someone has the file open for write and decline to create
-> new THPs.  So it shouldn't be possible to get here with THPs in the cache.
+> There are three additional patches (and also a patch to improve
+> symlink checks) for other buffer overflow cases that are being
+> reviewed and tested.
 
-AFAICT, it does so.
+Note that if you are working on a path basis, you should really take a
+look at our vfs lookup_flags, and LOOKUP_BENEATH in particular.
 
-In do_dentry_open():
-/*
-         * XXX: Huge page cache doesn't support writing yet. Drop all page
-         * cache for this file before processing writes.
-         */
-        if (f->f_mode & FMODE_WRITE) {
-                /*
-                 * Paired with smp_mb() in collapse_file() to ensure nr_thps
-                 * is up to date and the update to i_writecount by
-                 * get_write_access() is visible. Ensures subsequent insertion
-                 * of THPs into the page cache will fail.
-                 */
-                smp_mb();
-                if (filemap_nr_thps(inode->i_mapping))
-                        truncate_pagecache(inode, 0);
-        }
+The way to deal with '..' and symlinks is not to try to figure it out
+yourself. You'll get it wrong, partly because the races with rename
+are quite interesting. The VFS layer knows how to limit pathname
+lookup to the particular directory you started in these days.
 
+Of course, that is only true for the actual path lookup functions.
+Once you start doing things manually one component at a time yourself,
+you're on your own.
 
-In khugepaged:
-filemap_nr_thps_inc(mapping);
-                /*
-                 * Paired with smp_mb() in do_dentry_open() to ensure
-                 * i_writecount is up to date and the update to nr_thps is
-                 * visible. Ensures the page cache will be truncated if the
-                 * file is opened writable.
-                 */
-                smp_mb();
-                if (inode_is_open_for_write(mapping->host)) {
-                        result = SCAN_FAIL;
-                        __mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
-                        filemap_nr_thps_dec(mapping);
-                        goto xa_locked;
-                }
-
-But I'm not quite sure if there is any race condition.
+                   Linus
