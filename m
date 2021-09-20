@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E17A412464
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40514125B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380491AbhITSeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
+        id S1354103AbhITSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379126AbhITS2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:28:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDDD1632DE;
-        Mon, 20 Sep 2021 17:26:10 +0000 (UTC)
+        id S1382750AbhITSmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:42:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A6C61AD2;
+        Mon, 20 Sep 2021 17:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158771;
-        bh=Ul2ipmrzT6jyyoxtvfu/ZCT55yXUgX1nazEw/Tbvg9U=;
+        s=korg; t=1632159113;
+        bh=g4eGBlnRG6fPLk2XoxMXa24CVhwkz+Ttj833hlqG8Kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=03Gy5+q/RFfb/IOdwNwhmmJz3QG5Mf7fA8G6BdlX3kIDpjKwb/JLhoEGaGkZ/wA12
-         Cn3wMunEHyGvIwv4buKd/oL4Yakbzv/zEd12lFPErYkM1Fj952hFa3UMnMSddJDyqd
-         /iyRILG3Qj5nL+4jPkg/Zpx2g6QfPuj16LlkPRB4=
+        b=RxvU5MtetcsDNJDsjI9qvUI6GecD5+hMDwbDL5btZrgqBzrXHYtqSEU+j9ID4krLG
+         63Vst7y9MFj+QSpiZgt6RDSHjO54hh8bWYMHY+4mfqr40f3Ck38ZJ1WTqkEwHjc+xI
+         IsZMpwxTaL40kefBgTDJegYW3P268KtGwGHkt2fs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 048/122] KVM: PPC: Book3S HV: Tolerate treclaim. in fake-suspend mode changing registers
+        stable@vger.kernel.org, Yongxin Liu <yongxin.liu@windriver.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 082/168] ice: Correctly deal with PFs that do not support RDMA
 Date:   Mon, 20 Sep 2021 18:43:40 +0200
-Message-Id: <20210920163917.366157483@linuxfoundation.org>
+Message-Id: <20210920163924.334287100@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,96 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Dave Ertman <david.m.ertman@intel.com>
 
-commit 267cdfa21385d78c794768233678756e32b39ead upstream.
+[ Upstream commit bfe84435090a6c85271b02a42b1d83fef9ff7cc7 ]
 
-POWER9 DD2.2 and 2.3 hardware implements a "fake-suspend" mode where
-certain TM instructions executed in HV=0 mode cause softpatch interrupts
-so the hypervisor can emulate them and prevent problematic processor
-conditions. In this fake-suspend mode, the treclaim. instruction does
-not modify registers.
+There are two cases where the current PF does not support RDMA
+functionality.  The first is if the NVM loaded on the device is set
+to not support RDMA (common_caps.rdma is false).  The second is if
+the kernel bonding driver has included the current PF in an active
+link aggregate.
 
-Unfortunately the rfscv instruction executed by the guest do not
-generate softpatch interrupts, which can cause the hypervisor to lose
-track of the fake-suspend mode, and it can execute this treclaim. while
-not in fake-suspend mode. This modifies GPRs and crashes the hypervisor.
+When the driver has determined that this PF does not support RDMA, then
+auxiliary devices should not be created on the auxiliary bus.  Without
+a device on the auxiliary bus, even if the irdma driver is present, there
+will be no RDMA activity attempted on this PF.
 
-It's not trivial to disable scv in the guest with HFSCR now, because
-they assume a POWER9 has scv available. So this fix saves and restores
-checkpointed registers across the treclaim.
+Currently, in the reset flow, an attempt to create auxiliary devices is
+performed without regard to the ability of the PF.  There needs to be a
+check in ice_aux_plug_dev (as the central point that creates auxiliary
+devices) to see if the PF is in a state to support the functionality.
 
-Fixes: 7854f7545bff ("KVM: PPC: Book3S: Rework TM save/restore code and make it C-callable")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210908101718.118522-2-npiggin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When disabling and re-enabling RDMA due to the inclusion/removal of the PF
+in a link aggregate, we also need to set/clear the bit which controls
+auxiliary device creation so that a reset recovery in a link aggregate
+situation doesn't try to create auxiliary devices when it shouldn't.
+
+Fixes: f9f5301e7e2d ("ice: Register auxiliary device to provide RDMA")
+Reported-by: Yongxin Liu <yongxin.liu@windriver.com>
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S |   36 ++++++++++++++++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h     | 2 ++
+ drivers/net/ethernet/intel/ice/ice_idc.c | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -3146,7 +3146,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_P9_TM_HV_A
- 	/* The following code handles the fake_suspend = 1 case */
- 	mflr	r0
- 	std	r0, PPC_LR_STKOFF(r1)
--	stdu	r1, -PPC_MIN_STKFRM(r1)
-+	stdu	r1, -TM_FRAME_SIZE(r1)
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index eadcb9958346..3c4f08d20414 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -695,6 +695,7 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
+ {
+ 	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
+ 		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
++		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
+ 		ice_plug_aux_dev(pf);
+ 	}
+ }
+@@ -707,5 +708,6 @@ static inline void ice_clear_rdma_cap(struct ice_pf *pf)
+ {
+ 	ice_unplug_aux_dev(pf);
+ 	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
++	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
+ }
+ #endif /* _ICE_H_ */
+diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
+index 1f2afdf6cd48..adcc9a251595 100644
+--- a/drivers/net/ethernet/intel/ice/ice_idc.c
++++ b/drivers/net/ethernet/intel/ice/ice_idc.c
+@@ -271,6 +271,12 @@ int ice_plug_aux_dev(struct ice_pf *pf)
+ 	struct auxiliary_device *adev;
+ 	int ret;
  
- 	/* Turn on TM. */
- 	mfmsr	r8
-@@ -3161,10 +3161,42 @@ BEGIN_FTR_SECTION
- END_FTR_SECTION_IFSET(CPU_FTR_P9_TM_XER_SO_BUG)
- 	nop
- 
-+	/*
-+	 * It's possible that treclaim. may modify registers, if we have lost
-+	 * track of fake-suspend state in the guest due to it using rfscv.
-+	 * Save and restore registers in case this occurs.
++	/* if this PF doesn't support a technology that requires auxiliary
++	 * devices, then gracefully exit
 +	 */
-+	mfspr	r3, SPRN_DSCR
-+	mfspr	r4, SPRN_XER
-+	mfspr	r5, SPRN_AMR
-+	/* SPRN_TAR would need to be saved here if the kernel ever used it */
-+	mfcr	r12
-+	SAVE_NVGPRS(r1)
-+	SAVE_GPR(2, r1)
-+	SAVE_GPR(3, r1)
-+	SAVE_GPR(4, r1)
-+	SAVE_GPR(5, r1)
-+	stw	r12, 8(r1)
-+	std	r1, HSTATE_HOST_R1(r13)
++	if (!ice_is_aux_ena(pf))
++		return 0;
 +
- 	/* We have to treclaim here because that's the only way to do S->N */
- 	li	r3, TM_CAUSE_KVM_RESCHED
- 	TRECLAIM(R3)
- 
-+	GET_PACA(r13)
-+	ld	r1, HSTATE_HOST_R1(r13)
-+	REST_GPR(2, r1)
-+	REST_GPR(3, r1)
-+	REST_GPR(4, r1)
-+	REST_GPR(5, r1)
-+	lwz	r12, 8(r1)
-+	REST_NVGPRS(r1)
-+	mtspr	SPRN_DSCR, r3
-+	mtspr	SPRN_XER, r4
-+	mtspr	SPRN_AMR, r5
-+	mtcr	r12
-+	HMT_MEDIUM
-+
- 	/*
- 	 * We were in fake suspend, so we are not going to save the
- 	 * register state as the guest checkpointed state (since
-@@ -3192,7 +3224,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_P9_TM_XER_
- 	std	r5, VCPU_TFHAR(r9)
- 	std	r6, VCPU_TFIAR(r9)
- 
--	addi	r1, r1, PPC_MIN_STKFRM
-+	addi	r1, r1, TM_FRAME_SIZE
- 	ld	r0, PPC_LR_STKOFF(r1)
- 	mtlr	r0
- 	blr
+ 	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
+ 	if (!iadev)
+ 		return -ENOMEM;
+-- 
+2.30.2
+
 
 
