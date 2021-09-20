@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9695B41246F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1874124D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380861AbhITSe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:58 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:37174
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352646AbhITSaH (ORCPT
+        id S1353448AbhITSie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:38:34 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58342
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352878AbhITSdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:30:07 -0400
+        Mon, 20 Sep 2021 14:33:36 -0400
 Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 54A813F328;
-        Mon, 20 Sep 2021 18:28:38 +0000 (UTC)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 230D040D43;
+        Mon, 20 Sep 2021 18:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632162518;
-        bh=RZrZe46PibOc6VV+U13ENsWARYzoTyYCxHt8wFyjnVY=;
+        s=20210705; t=1632162727;
+        bh=rzsf7Jp4zHlHmSebOdtNBwl34AtYTI7DgNFSHbuOgVM=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=HutSIyPrh96ZCXYSLHh5fbc4BXZoKkqxTxEyn0XgHY9+qdmgTxjcNgTdN1ytrlRXO
-         t/IoT45as39vaoJ7si2Sjwt++gU1RbHsGIDmgSn4SzBVGlyect26dM9p9RuQwz9rR5
-         aYMbiZaCIDoYLZeY1ct3s0gI+z+TxJ+S3vdAKL/Q/mJp0oUCMEZ1Iq1PcnQcn8Hntr
-         LzJOq9XXWI6w2IzKfr0ft4G6DbiCbSIYdL8A9DtkJbNnmns0MCSEILKWR/kLUrMdLk
-         tZgT8HHxDHAXos/RzC4Dd5fjmjFU/VyyXy13u36adcVDsN8qKbXjUaY5F0DBqgOH0T
-         l2TRfIGnJweQQ==
+        b=Qb8fYSlJ8nKGhRjg6/JFOAyLW8c2X/N7QD5K6NAHoo1fYZhPnH+yStMXyTq1detjR
+         Ta5MLirQWbq9wT72eIZGXws+njLXTjI7AnGZ2wXFziTfsa0fcmZWXBMTwZ8G0pPxq6
+         LKgTNhF0jndI0xjC2yAVmz4JQIim/Y/GzYwF4H05FbcBH7xwxe2QYq28hI06+qa8vW
+         JtB7nt6ev9izRImzmjxyv+S0R8t9enTB3OgOj3Tws1YGoucISkjncx4U0sC/c9AgiK
+         kVYa7tU+pLvKtLEdZxpi7Rgx3VtI8q0KwsGpWRueYisin86kBG9Xsc2ErM2mvntopA
+         uM4za9dDg4syw==
 From:   Colin King <colin.king@canonical.com>
-To:     Zhou Wang <wangzhou1@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: hisilicon: Fix spelling mistake "COMSUMED" -> "CONSUMED"
-Date:   Mon, 20 Sep 2021 19:28:38 +0100
-Message-Id: <20210920182838.17218-1-colin.king@canonical.com>
+Subject: [PATCH] scsi: target: Fix spelling mistake "CONFLIFT" -> "CONFLICT"
+Date:   Mon, 20 Sep 2021 19:32:06 +0100
+Message-Id: <20210920183206.17477-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -47,26 +45,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-There is a spelling mistake in a literal string. Fix it.
+There is a spelling mistake in a dev_err message. Fix it.
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/crypto/hisilicon/zip/zip_main.c | 2 +-
+ drivers/target/target_core_pr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 7148201ce76e..873971ef9aee 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -218,7 +218,7 @@ static const struct debugfs_reg32 hzip_dfx_regs[] = {
- 	{"HZIP_AVG_DELAY                 ",  0x28ull},
- 	{"HZIP_MEM_VISIBLE_DATA          ",  0x30ull},
- 	{"HZIP_MEM_VISIBLE_ADDR          ",  0x34ull},
--	{"HZIP_COMSUMED_BYTE             ",  0x38ull},
-+	{"HZIP_CONSUMED_BYTE             ",  0x38ull},
- 	{"HZIP_PRODUCED_BYTE             ",  0x40ull},
- 	{"HZIP_COMP_INF                  ",  0x70ull},
- 	{"HZIP_PRE_OUT                   ",  0x78ull},
+diff --git a/drivers/target/target_core_pr.c b/drivers/target/target_core_pr.c
+index 4b94b085625b..3829b61b56c1 100644
+--- a/drivers/target/target_core_pr.c
++++ b/drivers/target/target_core_pr.c
+@@ -269,7 +269,7 @@ target_scsi2_reservation_reserve(struct se_cmd *cmd)
+ 	spin_lock(&dev->dev_reservation_lock);
+ 	if (dev->reservation_holder &&
+ 	    dev->reservation_holder->se_node_acl != sess->se_node_acl) {
+-		pr_err("SCSI-2 RESERVATION CONFLIFT for %s fabric\n",
++		pr_err("SCSI-2 RESERVATION CONFLICT for %s fabric\n",
+ 			tpg->se_tpg_tfo->fabric_name);
+ 		pr_err("Original reserver LUN: %llu %s\n",
+ 			cmd->se_lun->unpacked_lun,
 -- 
 2.32.0
 
