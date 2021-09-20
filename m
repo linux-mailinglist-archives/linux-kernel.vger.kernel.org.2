@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784F5412153
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EDA4125C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357393AbhITSEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:04:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55426 "EHLO mail.kernel.org"
+        id S1384436AbhITSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:48:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347668AbhITR5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:57:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB71D61C57;
-        Mon, 20 Sep 2021 17:14:45 +0000 (UTC)
+        id S1383439AbhITSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B09E36335B;
+        Mon, 20 Sep 2021 17:32:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158086;
-        bh=iuEAgtJWjNiRjmjpWK8roqpyw0cgIsXkutBYX89St98=;
+        s=korg; t=1632159179;
+        bh=/ylWhQgWilVG54d1ELp7na5y0xNTpbUxviz6hlHmaiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6EkZKX3c4qaRtEyW6vlM4jAmqNbiFPtRaUsea+/DsuL9WE/NSTs5UcZHoUbTRtOX
-         au6DHjsus/LyzcOPBdkOL8hu3FNVZBmhmbNpx3HyIwtyeZYSLHPLcuo/Bfln0+7nQW
-         CgksEJwsMnuOyMVR1WKu2vDZPbAQlVF5V36gi2f4=
+        b=kmSifqKx4IVZo4AOFDFeVkXOPE23RhJdgJo3Ce5ad9MFSCNjtny2RmxYcxZLRIi/h
+         YuD+6W4NNy2zoLInjfzdoMv7+iXKGh1WtTfl4bOrERtHKxpkRxG4NAHIKCqPruii/R
+         dJ0Gpo9DD9zvtHhxj7h52Fz+b0hazfFrNKRbqp+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Benjamin Hesmans <benjamin.hesmans@tessares.net>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 289/293] netfilter: socket: icmp6: fix use-after-scope
+        stable@vger.kernel.org, Davide Zini <davidezini2@gmail.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 113/168] block, bfq: honor already-setup queue merges
 Date:   Mon, 20 Sep 2021 18:44:11 +0200
-Message-Id: <20210920163943.324387367@linuxfoundation.org>
+Message-Id: <20210920163925.352279771@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Hesmans <benjamin.hesmans@tessares.net>
+From: Paolo Valente <paolo.valente@linaro.org>
 
-[ Upstream commit 730affed24bffcd1eebd5903171960f5ff9f1f22 ]
+[ Upstream commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b ]
 
-Bug reported by KASAN:
+The function bfq_setup_merge prepares the merging between two
+bfq_queues, say bfqq and new_bfqq. To this goal, it assigns
+bfqq->new_bfqq = new_bfqq. Then, each time some I/O for bfqq arrives,
+the process that generated that I/O is disassociated from bfqq and
+associated with new_bfqq (merging is actually a redirection). In this
+respect, bfq_setup_merge increases new_bfqq->ref in advance, adding
+the number of processes that are expected to be associated with
+new_bfqq.
 
-BUG: KASAN: use-after-scope in inet6_ehashfn (net/ipv6/inet6_hashtables.c:40)
-Call Trace:
-(...)
-inet6_ehashfn (net/ipv6/inet6_hashtables.c:40)
-(...)
-nf_sk_lookup_slow_v6 (net/ipv6/netfilter/nf_socket_ipv6.c:91
-net/ipv6/netfilter/nf_socket_ipv6.c:146)
+Unfortunately, the stable-merging mechanism interferes with this
+setup. After bfqq->new_bfqq has been set by bfq_setup_merge, and
+before all the expected processes have been associated with
+bfqq->new_bfqq, bfqq may happen to be stably merged with a different
+queue than the current bfqq->new_bfqq. In this case, bfqq->new_bfqq
+gets changed. So, some of the processes that have been already
+accounted for in the ref counter of the previous new_bfqq will not be
+associated with that queue.  This creates an unbalance, because those
+references will never be decremented.
 
-It seems that this bug has already been fixed by Eric Dumazet in the
-past in:
-commit 78296c97ca1f ("netfilter: xt_socket: fix a stack corruption bug")
+This commit fixes this issue by reestablishing the previous, natural
+behaviour: once bfqq->new_bfqq has been set, it will not be changed
+until all expected redirections have occurred.
 
-But a variant of the same issue has been introduced in
-commit d64d80a2cde9 ("netfilter: x_tables: don't extract flow keys on early demuxed sks in socket match")
-
-`daddr` and `saddr` potentially hold a reference to ipv6_var that is no
-longer in scope when the call to `nf_socket_get_sock_v6` is made.
-
-Fixes: d64d80a2cde9 ("netfilter: x_tables: don't extract flow keys on early demuxed sks in socket match")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Benjamin Hesmans <benjamin.hesmans@tessares.net>
-Reviewed-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Davide Zini <davidezini2@gmail.com>
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Link: https://lore.kernel.org/r/20210802141352.74353-2-paolo.valente@linaro.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/netfilter/nf_socket_ipv6.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ block/bfq-iosched.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/net/ipv6/netfilter/nf_socket_ipv6.c b/net/ipv6/netfilter/nf_socket_ipv6.c
-index f14de4b6d639..58e839e2ce1d 100644
---- a/net/ipv6/netfilter/nf_socket_ipv6.c
-+++ b/net/ipv6/netfilter/nf_socket_ipv6.c
-@@ -104,7 +104,7 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 9360c65169ff..3a1038b6eeb3 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2662,6 +2662,15 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
+ 	 * are likely to increase the throughput.
+ 	 */
+ 	bfqq->new_bfqq = new_bfqq;
++	/*
++	 * The above assignment schedules the following redirections:
++	 * each time some I/O for bfqq arrives, the process that
++	 * generated that I/O is disassociated from bfqq and
++	 * associated with new_bfqq. Here we increases new_bfqq->ref
++	 * in advance, adding the number of processes that are
++	 * expected to be associated with new_bfqq as they happen to
++	 * issue I/O.
++	 */
+ 	new_bfqq->ref += process_refs;
+ 	return new_bfqq;
+ }
+@@ -2724,6 +2733,10 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
  {
- 	__be16 uninitialized_var(dport), uninitialized_var(sport);
- 	const struct in6_addr *daddr = NULL, *saddr = NULL;
--	struct ipv6hdr *iph = ipv6_hdr(skb);
-+	struct ipv6hdr *iph = ipv6_hdr(skb), ipv6_var;
- 	struct sk_buff *data_skb = NULL;
- 	int doff = 0;
- 	int thoff = 0, tproto;
-@@ -134,8 +134,6 @@ struct sock *nf_sk_lookup_slow_v6(struct net *net, const struct sk_buff *skb,
- 			thoff + sizeof(*hp);
+ 	struct bfq_queue *in_service_bfqq, *new_bfqq;
  
- 	} else if (tproto == IPPROTO_ICMPV6) {
--		struct ipv6hdr ipv6_var;
++	/* if a merge has already been setup, then proceed with that first */
++	if (bfqq->new_bfqq)
++		return bfqq->new_bfqq;
++
+ 	/*
+ 	 * Check delayed stable merge for rotational or non-queueing
+ 	 * devs. For this branch to be executed, bfqq must not be
+@@ -2825,9 +2838,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	if (bfq_too_late_for_merging(bfqq))
+ 		return NULL;
+ 
+-	if (bfqq->new_bfqq)
+-		return bfqq->new_bfqq;
 -
- 		if (extract_icmp6_fields(skb, thoff, &tproto, &saddr, &daddr,
- 					 &sport, &dport, &ipv6_var))
- 			return NULL;
+ 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
+ 		return NULL;
+ 
 -- 
 2.30.2
 
