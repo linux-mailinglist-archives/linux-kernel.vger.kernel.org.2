@@ -2,198 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C5E4113B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA864113B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237191AbhITLqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:46:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:61971 "EHLO mga01.intel.com"
+        id S237221AbhITLqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:46:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhITLqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:46:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10112"; a="245518746"
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="245518746"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 04:44:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="556202328"
-Received: from lkp-server01.sh.intel.com (HELO 285e7b116627) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 20 Sep 2021 04:44:34 -0700
-Received: from kbuild by 285e7b116627 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mSHir-0005ts-IP; Mon, 20 Sep 2021 11:44:33 +0000
-Date:   Mon, 20 Sep 2021 19:44:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 02770d1d456ea7c50a266862101aa6086cc4dd47
-Message-ID: <6148740b.I+Bl9ThI3Aoqgar7%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S237196AbhITLqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 07:46:23 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABBFF60F9B;
+        Mon, 20 Sep 2021 11:44:56 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mSHjC-00BkWM-Rs; Mon, 20 Sep 2021 12:44:54 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        David Brazdil <dbrazdil@google.com>, suzuki.poulose@arm.com,
+        james.morse@arm.com, alexandru.elisei@arm.com,
+        wanghaibin.wang@huawei.com
+Subject: Re: [PATCH] KVM: arm64: nvhe: Fix missing FORCE for hyp-reloc.S build rule
+Date:   Mon, 20 Sep 2021 12:44:43 +0100
+Message-Id: <163213827748.1972803.17900179981983234782.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210907052137.1059-1-yuzenghui@huawei.com>
+References: <20210907052137.1059-1-yuzenghui@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, yuzenghui@huawei.com, masahiroy@kernel.org, dbrazdil@google.com, suzuki.poulose@arm.com, james.morse@arm.com, alexandru.elisei@arm.com, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 02770d1d456ea7c50a266862101aa6086cc4dd47  Merge branch 'linus'
+On Tue, 7 Sep 2021 13:21:37 +0800, Zenghui Yu wrote:
+> Add FORCE so that if_changed can detect the command line change.
+> 
+> We'll otherwise see a compilation warning since commit e1f86d7b4b2a
+> ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and
+> filechk").
+> 
+> arch/arm64/kvm/hyp/nvhe/Makefile:58: FORCE prerequisite is missing
 
-elapsed time: 3025m
+Applied to fixes, thanks!
 
-configs tested: 138
-configs skipped: 4
+[1/1] KVM: arm64: nvhe: Fix missing FORCE for hyp-reloc.S build rule
+      commit: a49b50a3c1c3226d26e1dd11e8b763f27e477623
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Cheers,
 
-gcc tested configs:
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-i386                 randconfig-c001-20210918
-arm                     davinci_all_defconfig
-arm                       aspeed_g5_defconfig
-arm                           spitz_defconfig
-arm                          ixp4xx_defconfig
-microblaze                          defconfig
-arm                       aspeed_g4_defconfig
-m68k                             alldefconfig
-arm                          gemini_defconfig
-powerpc                   lite5200b_defconfig
-arc                            hsdk_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                      malta_kvm_defconfig
-powerpc                     taishan_defconfig
-mips                           ip32_defconfig
-arm                        neponset_defconfig
-powerpc                      pmac32_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                          rm200_defconfig
-arm                         s5pv210_defconfig
-sh                           sh2007_defconfig
-mips                        nlm_xlp_defconfig
-mips                   sb1250_swarm_defconfig
-arc                                 defconfig
-sh                          kfr2r09_defconfig
-arm                       cns3420vb_defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                     mpc83xx_defconfig
-sh                          landisk_defconfig
-arm                        realview_defconfig
-powerpc                      makalu_defconfig
-sh                        edosk7705_defconfig
-arc                          axs103_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                               alldefconfig
-powerpc                   microwatt_defconfig
-x86_64                              defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                                  defconfig
-ia64                                defconfig
-sh                        edosk7760_defconfig
-sparc64                             defconfig
-csky                                defconfig
-mips                  maltasmvp_eva_defconfig
-arc                           tb10x_defconfig
-xtensa                           alldefconfig
-powerpc                     skiroot_defconfig
-arm                         hackkit_defconfig
-sh                          rsk7203_defconfig
-sh                          rsk7269_defconfig
-powerpc                     powernv_defconfig
-sh                          rsk7201_defconfig
-x86_64               randconfig-c001-20210919
-i386                 randconfig-c001-20210919
-arm                  randconfig-c002-20210919
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210919
-x86_64               randconfig-a004-20210919
-x86_64               randconfig-a006-20210919
-x86_64               randconfig-a003-20210919
-x86_64               randconfig-a001-20210919
-x86_64               randconfig-a005-20210919
-i386                 randconfig-a004-20210919
-i386                 randconfig-a005-20210919
-i386                 randconfig-a002-20210919
-i386                 randconfig-a006-20210919
-i386                 randconfig-a001-20210919
-i386                 randconfig-a003-20210919
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-clang tested configs:
-riscv                randconfig-c006-20210919
-x86_64               randconfig-c007-20210919
-powerpc              randconfig-c003-20210919
-mips                 randconfig-c004-20210919
-i386                 randconfig-c001-20210919
-arm                  randconfig-c002-20210919
-s390                 randconfig-c005-20210919
-x86_64               randconfig-a013-20210919
-x86_64               randconfig-a016-20210919
-x86_64               randconfig-a012-20210919
-x86_64               randconfig-a011-20210919
-x86_64               randconfig-a014-20210919
-x86_64               randconfig-a015-20210919
-i386                 randconfig-a016-20210919
-i386                 randconfig-a012-20210919
-i386                 randconfig-a011-20210919
-i386                 randconfig-a015-20210919
-i386                 randconfig-a013-20210919
-i386                 randconfig-a014-20210919
-hexagon              randconfig-r045-20210918
-hexagon              randconfig-r041-20210918
-riscv                randconfig-r042-20210919
-hexagon              randconfig-r045-20210919
-s390                 randconfig-r044-20210919
-hexagon              randconfig-r041-20210919
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
