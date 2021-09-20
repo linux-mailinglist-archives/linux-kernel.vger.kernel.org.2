@@ -2,84 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F7B4122B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E584122F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351728AbhITSRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
+        id S1377483AbhITSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356720AbhITSKn (ORCPT
+        with ESMTP id S1346019AbhITSNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:10:43 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A292CC03403E;
-        Mon, 20 Sep 2021 09:59:01 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v2so11472039plp.8;
-        Mon, 20 Sep 2021 09:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IBSoeVVLnWYAGPb1SKm3z5sRdwBHeGdklFJrhwdB0Fk=;
-        b=mxpwn2lSSJ3JeF+MV9cVwjvjo2x+lsjCqILuSHO3fItLmVLbvGdWPgCfwpOhhTCVte
-         JfrJCqruUjbiRw3++8TJ5LGoAlVOjnhWEgb0/hs3VusIXpMs3gXoeInjf4R8JCVU8lVM
-         32ddI6pgI+0Jktv+nvvMPz53Yo1wCUTc9N2aDD1BgM0jsH3nMdU9Ag+EaUJ+eLvOutP2
-         tVEjdBwmFW3gqVmtlJpdocAv4DsUgW2+vdPqdAk6X1b5F/c9sJVBhBP/3q/2bnI2O2rn
-         y0UJKOmxMXSkDoDvE7U4JjWKF2BW9Cl7nJWUiY4o/T5MGOd2zLfs/ipxPIjXxPpielz3
-         Ljpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IBSoeVVLnWYAGPb1SKm3z5sRdwBHeGdklFJrhwdB0Fk=;
-        b=xbbZe+Ala7WDr14ucNu+j+RQITAWhHVZvQmMaar085FW1dDW3Ob5HIDpkgFB1kbR4n
-         CJ2o5BDgJUHFctRL86SjJvzNdbmguxAux2rub5OY1Qycpv9RPV0V6Lqms+hQEEtJGQ0m
-         uO39C9xZwTzIBWtWX3m+puGAaxpb0yl6H8FtDUdoV5EMOApyLQB2o5oxAgISshdD4Lwk
-         +wT996y+pCjJ5r2UeLQuMGLBj/zWC2dCmiayPES1Ab6VLF3el5vprt1ZxYMLGd/fUKGk
-         ItMaIdPEpTR4wXAifXGmyi46ShboTWt6G2nTcKphRS67ydHATlDKZtgGuBUV0LALu4RG
-         3XsQ==
-X-Gm-Message-State: AOAM531p14CLmUyTvY4f0NNBIkCiIA5rs44z5lWVAq5nPMBJPOyiLPtj
-        VHOLUQOZ1ju32djpzU4jxVCvVno9DOC/f1NKjPvauyS2F6k=
-X-Google-Smtp-Source: ABdhPJyE7NkKOF+WWXx0CNmVPrF3VW+8E2Z1M9gR0RHHAnTZAjdq0Exz4rP/3zC2M+V3qgTRcXldquMCoCUJruenex4=
-X-Received: by 2002:a17:90a:2945:: with SMTP id x5mr23757549pjf.225.1632157141127;
- Mon, 20 Sep 2021 09:59:01 -0700 (PDT)
+        Mon, 20 Sep 2021 14:13:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892DDC06119C;
+        Mon, 20 Sep 2021 09:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=rPf4aIjt28J9Hb/Zj4X/fJW+KULaG2Xw2AIXFCgCE+o=; b=NQfJV104PpHXxMpeZ80pOZx2sl
+        PBipLdBg+fnggnwOis6OidrVtOoxklYVwV8bV2YLNBp2xB+ukUhTCtez48Ako1NJoXI+cmzMmgBUI
+        sNLa6w1YwIijD40CFX6rT4Uh2FSufCfadBhVkYHt0xAEVnlUCjeCJuSZMxnJFYDE463z35lziNLfu
+        eeqDn3SoNzWEDtgLnuHVlmPmM6YBAKG0sqPcy4ZffEwwT+bcDdDbaYjSfFB7hjOzXXttI8Ce20KPO
+        22/f+h2fuw+XFz0iFF3XE4kkS98u7t9/dyiq7HoXOVY51ChB06t3jvTx3FZ6bPWFO/cm0Rc1LM/E4
+        8fDL8XRw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSMdS-002Vfu-8Q; Mon, 20 Sep 2021 16:59:18 +0000
+Date:   Mon, 20 Sep 2021 09:59:18 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: Re: [RFC] Expose request_module via syscall
+Message-ID: <YUi95tFDWS7oceYP@bombadil.infradead.org>
+References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
+ <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
+ <20210916092719.v4pkhhugdiq7ytcp@wittgenstein>
+ <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
+ <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de>
+ <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
+ <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
 MIME-Version: 1.0
-References: <20210904064044.125549-1-yan2228598786@gmail.com>
- <CAM_iQpWCRYXc1PAOTehgMztfbmSVF=RqudOjhZhGeP_huaKjZw@mail.gmail.com> <CALcyL7h=vS_Nmg4GfRe-SD9ZSZopCM5p6U1mojn1gncw1Nds6g@mail.gmail.com>
-In-Reply-To: <CALcyL7h=vS_Nmg4GfRe-SD9ZSZopCM5p6U1mojn1gncw1Nds6g@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 20 Sep 2021 09:58:50 -0700
-Message-ID: <CAM_iQpVB97-t+J+zEF5xzLi07+YPK6O+Ph-NyTxAHV-2=cY93Q@mail.gmail.com>
-Subject: Re: [PATCH] net: tcp_drop adds `reason` and SNMP parameters for
- tracing v4
-To:     Zhongya Yan <yan2228598786@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
-        Yonghong Song <yhs@fb.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Zhongya Yan <2228598786@qq.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 4, 2021 at 7:51 PM Zhongya Yan <yan2228598786@gmail.com> wrote:
-> Thanks for the tip!
-> See reason:https://github.com/iovisor/bcc/issues/3533
+On Mon, Sep 20, 2021 at 04:51:19PM +0200, Thomas Weißschuh wrote:
+> On 2021-09-19T07:37-0700, Andy Lutomirski wrote:
+> > On Sun, Sep 19, 2021 at 12:56 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
+> > >
+> > > On 2021-09-18T11:47-0700, Andy Lutomirski wrote:
+> > > > On Thu, Sep 16, 2021, at 2:27 AM, Christian Brauner wrote:
+> > > > > On Wed, Sep 15, 2021 at 09:47:25AM -0700, Andy Lutomirski wrote:
+> > > > > > On Wed, Sep 15, 2021 at 8:50 AM Thomas Weißschuh <thomas@t-8ch.de> wrote:
+> > > > > > >
+> > > > > > > Hi,
+> > > > > > >
+> > > > > > > I would like to propose a new syscall that exposes the functionality of
+> > > > > > > request_module() to userspace.
+> > > > > > >
+> > > > > > > Propsed signature: request_module(char *module_name, char **args, int flags);
+> > > > > > > Where args and flags have to be NULL and 0 for the time being.
+> > > > > > >
+> > > > > > > Rationale:
+> > > > > > >
+> > > > > > > We are using nested, privileged containers which are loading kernel modules.
+> > > > > > > Currently we have to always pass around the contents of /lib/modules from the
+> > > > > > > root namespace which contains the modules.
+> > > > > > > (Also the containers need to have userspace components for moduleloading
+> > > > > > > installed)
+> > > > > > >
+> > > > > > > The syscall would remove the need for this bookkeeping work.
+> > > > > >
+> > > > > > I feel like I'm missing something, and I don't understand the purpose
+> > > > > > of this syscall.  Wouldn't the right solution be for the container to
+> > > > > > have a stub module loader (maybe doable with a special /sbin/modprobe
+> > > > > > or maybe a kernel patch would be needed, depending on the exact use
+> > > > > > case) and have the stub call out to the container manager to request
+> > > > > > the module?  The container manager would check its security policy and
+> > > > > > load the module or not load it as appropriate.
+> > > > >
+> > > > > I don't see the need for a syscall like this yet either.
+> > > > >
+> > > > > This should be the job of the container manager. modprobe just calls the
+> > > > > init_module() syscall, right?
+> > > >
+> > > > Not quite so simple. modprobe parses things in /lib/modules and maybe /etc to decide what init_module() calls to do.
+> > > >
+> > > > But I admit I’m a bit confused.  What exactly is the container doing that causes the container’s copy of modprobe to be called?
+> > >
+> > > The container is running an instance of the docker daemon in swarm mode.
+> > > That needs the "ip_vs" module (amongst others) and explicitly tries to load it
+> > > via modprobe.
+> > >
+> > 
+> > Do you mean it literally invokes /sbin/modprobe?  If so, hooking this
+> > at /sbin/modprobe and calling out to the container manager seems like
+> > a decent solution.
+> 
+> Yes it does. Thanks for the idea, I'll see how this works out.
 
-This link only explains why TCP needs it, my question is why not
-do it for other protocols too, therefore neither this link nor you
-answers it.
+Would documentation guiding you in that way have helped? If so
+I welcome a patch that does just that.
 
-BTW, net/core/drop_monitor.c is based on kfree_skb() tracepoint
-too, in case you are only interested in tracepoints not other things.
-
-Thanks.
+  Luis
