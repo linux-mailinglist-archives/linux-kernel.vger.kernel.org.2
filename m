@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40207412002
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1805D411C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353848AbhITRrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:47:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48038 "EHLO mail.kernel.org"
+        id S1344408AbhITRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:06:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350999AbhITRox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:44:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAEB861B61;
-        Mon, 20 Sep 2021 17:09:55 +0000 (UTC)
+        id S1345569AbhITRDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C61816141B;
+        Mon, 20 Sep 2021 16:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157796;
-        bh=iHyxHR61XfOSJB5qDfJ1WV9b76hc0bzzgVfM6MERV9Q=;
+        s=korg; t=1632156844;
+        bh=IAJzPJm6psF2GjI1dEIJkyQ59WOL9V751RVZDVdIXwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQw6bpTkFD7T5ZCQp+FzuMRobJQ+SZdOxzF0kitBQUcB/lBKoiQLV2o3E8EIVXX0f
-         dYmZcugj3UFC7VagQAay1nrDBp6T+CDx/QiRjDozL0/qfF6noMJLOIR/78Nc58cfuj
-         PXoGkPHYm+mpozSogc7sInK1rEjySjIiL+F9qm34=
+        b=TOrrgWF4eJweZ+mb3t7BnFmlmwbU/ird52P+26OUYWLsJuPaqfTp8C/YpSZZ923i0
+         7IbuX+y5HRVyW3+41x3cf+MOEkNTLUTcpuyIXbwPC85/+fdzVC7xt29rKo58hAKHJc
+         FMJhDAMxtKj4+x06MoZ8S8PQtsSGtZhChEgqjao0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 4.19 156/293] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 069/175] usb: host: ohci-tmio: add IRQ check
 Date:   Mon, 20 Sep 2021 18:41:58 +0200
-Message-Id: <20210920163938.622396291@linuxfoundation.org>
+Message-Id: <20210920163920.316701354@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit d212dcee27c1f89517181047e5485fcbba4a25c2 upstream.
+[ Upstream commit 4ac5132e8a4300637a2da8f5d6bc7650db735b8a ]
 
-irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
-locks as masking/unmasking procedure needs atomic read-modify-write
-operation on hardware register.
+The driver neglects to check the  result of platform_get_irq()'s call and
+blithely passes the negative error codes to usb_add_hcd() (which takes
+*unsigned* IRQ #), causing request_irq() that it calls to fail with
+-EINVAL, overriding an original error code. Stop calling usb_add_hcd()
+with the invalid IRQ #s.
 
-Link: https://lore.kernel.org/r/20210820155020.3000-1-pali@kernel.org
-Reported-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
+Fixes: 78c73414f4f6 ("USB: ohci: add support for tmio-ohci cell")
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/402e1a45-a0a4-0e08-566a-7ca1331506b1@omp.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/usb/host/ohci-tmio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -181,6 +181,7 @@ struct advk_pcie {
- 	struct list_head resources;
- 	struct irq_domain *irq_domain;
- 	struct irq_chip irq_chip;
-+	raw_spinlock_t irq_lock;
- 	struct irq_domain *msi_domain;
- 	struct irq_domain *msi_inner_domain;
- 	struct irq_chip msi_bottom_irq_chip;
-@@ -603,22 +604,28 @@ static void advk_pcie_irq_mask(struct ir
- {
- 	struct advk_pcie *pcie = d->domain->host_data;
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-+	unsigned long flags;
- 	u32 mask;
+diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
+index cfcfadfc94fc..9c9e97294c18 100644
+--- a/drivers/usb/host/ohci-tmio.c
++++ b/drivers/usb/host/ohci-tmio.c
+@@ -202,6 +202,9 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+ 	if (!cell)
+ 		return -EINVAL;
  
-+	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
- 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
- 	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
- 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
-+	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
- }
- 
- static void advk_pcie_irq_unmask(struct irq_data *d)
- {
- 	struct advk_pcie *pcie = d->domain->host_data;
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-+	unsigned long flags;
- 	u32 mask;
- 
-+	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
- 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
- 	mask &= ~PCIE_ISR1_INTX_ASSERT(hwirq);
- 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
-+	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
- }
- 
- static int advk_pcie_irq_map(struct irq_domain *h,
-@@ -701,6 +708,8 @@ static int advk_pcie_init_irq_domain(str
- 	struct device_node *pcie_intc_node;
- 	struct irq_chip *irq_chip;
- 
-+	raw_spin_lock_init(&pcie->irq_lock);
++	if (irq < 0)
++		return irq;
 +
- 	pcie_intc_node =  of_get_next_child(node, NULL);
- 	if (!pcie_intc_node) {
- 		dev_err(dev, "No PCIe Intc node found\n");
+ 	hcd = usb_create_hcd(&ohci_tmio_hc_driver, &dev->dev, dev_name(&dev->dev));
+ 	if (!hcd) {
+ 		ret = -ENOMEM;
+-- 
+2.30.2
+
 
 
