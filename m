@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0B5412589
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC0D412561
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383513AbhITSoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:44:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55446 "EHLO mail.kernel.org"
+        id S1383490AbhITSoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382289AbhITSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1382294AbhITSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DAE361AE3;
-        Mon, 20 Sep 2021 17:30:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3691F61502;
+        Mon, 20 Sep 2021 17:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159057;
-        bh=GQ9Hjf8jdHUQKaUZs0FQHaJeQIsI/aTAi3HlkZztRWw=;
+        s=korg; t=1632159059;
+        bh=WaatLd0W3bb6F9P9z+w9hXiMrtEsDr9qfqz2Pcx+5sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wGEaNQ+onQQ4l75I8WNoFaOScRYJGrGamgO7k/O6fpQFtjx9GBDafldIj+MQDPc3L
-         UEUSm/WvNsCMw/i+vK5hXsi0aqmVQqMv6QX+HrcCe/MAGlfBFlvtV5G7Sc9KKCJQeU
-         aa1Mchl0s6q9eJCEEe0+BsBsk1xqVim3jjN7e0Gc=
+        b=iXgC/QgddeBTzqeh7CyZpGjFL/g866ZvBiXp52HeuWiQbtgQHv6JGZghLJDFXNCW/
+         2ldHlAeysXjPxN2OE2oA3tquAgaNzOf/M7rIlxxsLs1nFnoMENe7P8UdYhAhPKvfy4
+         GO0nw1S6k6hHoY4dk7uPysZR5S6Evo2yjfNb+WJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Samuel Jones <sjones@kalrayinc.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5.14 055/168] nvme-tcp: fix io_work priority inversion
-Date:   Mon, 20 Sep 2021 18:43:13 +0200
-Message-Id: <20210920163923.447961491@linuxfoundation.org>
+        stable@vger.kernel.org, Eirik Fuller <efuller@redhat.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.14 056/168] powerpc/64s: system call scv tabort fix for corrupt irq soft-mask state
+Date:   Mon, 20 Sep 2021 18:43:14 +0200
+Message-Id: <20210920163923.480010777@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -41,81 +40,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keith Busch <kbusch@kernel.org>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 70f437fb4395ad4d1d16fab9a1ad9fbc9fc0579b upstream.
+commit b871895b148256f1721bc565d803860242755a0b upstream.
 
-Dispatching requests inline with the .queue_rq() call may block while
-holding the send_mutex. If the tcp io_work also happens to schedule, it
-may see the req_list is non-empty, leaving "pending" true and remaining
-in TASK_RUNNING. Since io_work is of higher scheduling priority, the
-.queue_rq task may not get a chance to run, blocking forward progress
-and leading to io timeouts.
+If a system call is made with a transaction active, the kernel
+immediately aborts it and returns. scv system calls disable irqs even
+earlier in their interrupt handler, and tabort_syscall does not fix this
+up.
 
-Instead of checking for pending requests within io_work, let the queueing
-restart io_work outside the send_mutex lock if there is more work to be
-done.
+This can result in irq soft-mask state being messed up on the next
+kernel entry, and crashing at BUG_ON(arch_irq_disabled_regs(regs)) in
+the kernel exit handlers, or possibly worse.
 
-Fixes: a0fdd1418007f ("nvme-tcp: rerun io_work if req_list is not empty")
-Reported-by: Samuel Jones <sjones@kalrayinc.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+This can't easily be fixed in asm because at this point an async irq may
+have hit, which is soft-masked and marked pending. The pending interrupt
+has to be replayed before returning to userspace. The fix is to move the
+tabort_syscall code to C in the main syscall handler, and just skip the
+system call but otherwise return as usual, which will take care of the
+pending irqs. This also does a bunch of other things including possible
+signal delivery to the process, but the doomed transaction should still
+be aborted when it is eventually returned to.
+
+The sc system call path is changed to use the new C function as well to
+reduce code and path differences. This slows down how quickly system
+calls are aborted when called while a transaction is active, which could
+potentially impact TM performance. But making any system call is already
+bad for performance, and TM is on the way out, so go with simpler over
+faster.
+
+Fixes: 7fa95f9adaee7 ("powerpc/64s: system call support for scv/rfscv instructions")
+Reported-by: Eirik Fuller <efuller@redhat.com>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+[mpe: Use #ifdef rather than IS_ENABLED() to fix build error on 32-bit]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210903125707.1601269-1-npiggin@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/tcp.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/powerpc/kernel/interrupt.c    |   30 +++++++++++++++++++++++++++
+ arch/powerpc/kernel/interrupt_64.S |   41 -------------------------------------
+ 2 files changed, 30 insertions(+), 41 deletions(-)
 
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -273,6 +273,12 @@ static inline void nvme_tcp_send_all(str
- 	} while (ret > 0);
- }
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -19,6 +19,7 @@
+ #include <asm/switch_to.h>
+ #include <asm/syscall.h>
+ #include <asm/time.h>
++#include <asm/tm.h>
+ #include <asm/unistd.h>
  
-+static inline bool nvme_tcp_queue_more(struct nvme_tcp_queue *queue)
-+{
-+	return !list_empty(&queue->send_list) ||
-+		!llist_empty(&queue->req_list) || queue->more_requests;
-+}
+ #if defined(CONFIG_PPC_ADV_DEBUG_REGS) && defined(CONFIG_PPC32)
+@@ -138,6 +139,35 @@ notrace long system_call_exception(long
+ 	 */
+ 	irq_soft_mask_regs_set_state(regs, IRQS_ENABLED);
+ 
++	/*
++	 * If the system call was made with a transaction active, doom it and
++	 * return without performing the system call. Unless it was an
++	 * unsupported scv vector, in which case it's treated like an illegal
++	 * instruction.
++	 */
++#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
++	if (unlikely(MSR_TM_TRANSACTIONAL(regs->msr)) &&
++	    !trap_is_unsupported_scv(regs)) {
++		/* Enable TM in the kernel, and disable EE (for scv) */
++		hard_irq_disable();
++		mtmsr(mfmsr() | MSR_TM);
 +
- static inline void nvme_tcp_queue_request(struct nvme_tcp_request *req,
- 		bool sync, bool last)
- {
-@@ -293,9 +299,10 @@ static inline void nvme_tcp_queue_reques
- 		nvme_tcp_send_all(queue);
- 		queue->more_requests = false;
- 		mutex_unlock(&queue->send_mutex);
--	} else if (last) {
--		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
- 	}
++		/* tabort, this dooms the transaction, nothing else */
++		asm volatile(".long 0x7c00071d | ((%0) << 16)"
++				:: "r"(TM_CAUSE_SYSCALL|TM_CAUSE_PERSISTENT));
 +
-+	if (last && nvme_tcp_queue_more(queue))
-+		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
- }
++		/*
++		 * Userspace will never see the return value. Execution will
++		 * resume after the tbegin. of the aborted transaction with the
++		 * checkpointed register state. A context switch could occur
++		 * or signal delivered to the process before resuming the
++		 * doomed transaction context, but that should all be handled
++		 * as expected.
++		 */
++		return -ENOSYS;
++	}
++#endif // CONFIG_PPC_TRANSACTIONAL_MEM
++
+ 	local_irq_enable();
  
- static void nvme_tcp_process_req_list(struct nvme_tcp_queue *queue)
-@@ -893,12 +900,6 @@ done:
- 	read_unlock_bh(&sk->sk_callback_lock);
- }
+ 	if (unlikely(current_thread_info()->flags & _TIF_SYSCALL_DOTRACE)) {
+--- a/arch/powerpc/kernel/interrupt_64.S
++++ b/arch/powerpc/kernel/interrupt_64.S
+@@ -12,7 +12,6 @@
+ #include <asm/mmu.h>
+ #include <asm/ppc_asm.h>
+ #include <asm/ptrace.h>
+-#include <asm/tm.h>
  
--static inline bool nvme_tcp_queue_more(struct nvme_tcp_queue *queue)
--{
--	return !list_empty(&queue->send_list) ||
--		!llist_empty(&queue->req_list) || queue->more_requests;
--}
+ 	.section	".toc","aw"
+ SYS_CALL_TABLE:
+@@ -55,12 +54,6 @@ COMPAT_SYS_CALL_TABLE:
+ 	.globl system_call_vectored_\name
+ system_call_vectored_\name:
+ _ASM_NOKPROBE_SYMBOL(system_call_vectored_\name)
+-#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+-BEGIN_FTR_SECTION
+-	extrdi.	r10, r12, 1, (63-MSR_TS_T_LG) /* transaction active? */
+-	bne	tabort_syscall
+-END_FTR_SECTION_IFSET(CPU_FTR_TM)
+-#endif
+ 	SCV_INTERRUPT_TO_KERNEL
+ 	mr	r10,r1
+ 	ld	r1,PACAKSAVE(r13)
+@@ -247,12 +240,6 @@ _ASM_NOKPROBE_SYMBOL(system_call_common_
+ 	.globl system_call_common
+ system_call_common:
+ _ASM_NOKPROBE_SYMBOL(system_call_common)
+-#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+-BEGIN_FTR_SECTION
+-	extrdi.	r10, r12, 1, (63-MSR_TS_T_LG) /* transaction active? */
+-	bne	tabort_syscall
+-END_FTR_SECTION_IFSET(CPU_FTR_TM)
+-#endif
+ 	mr	r10,r1
+ 	ld	r1,PACAKSAVE(r13)
+ 	std	r10,0(r1)
+@@ -425,34 +412,6 @@ SOFT_MASK_TABLE(.Lsyscall_rst_start, 1b)
+ RESTART_TABLE(.Lsyscall_rst_start, .Lsyscall_rst_end, syscall_restart)
+ #endif
+ 
+-#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+-tabort_syscall:
+-_ASM_NOKPROBE_SYMBOL(tabort_syscall)
+-	/* Firstly we need to enable TM in the kernel */
+-	mfmsr	r10
+-	li	r9, 1
+-	rldimi	r10, r9, MSR_TM_LG, 63-MSR_TM_LG
+-	mtmsrd	r10, 0
 -
- static inline void nvme_tcp_done_send_req(struct nvme_tcp_queue *queue)
- {
- 	queue->request = NULL;
-@@ -1132,8 +1133,7 @@ static void nvme_tcp_io_work(struct work
- 				pending = true;
- 			else if (unlikely(result < 0))
- 				break;
--		} else
--			pending = !llist_empty(&queue->req_list);
-+		}
- 
- 		result = nvme_tcp_try_recv(queue);
- 		if (result > 0)
+-	/* tabort, this dooms the transaction, nothing else */
+-	li	r9, (TM_CAUSE_SYSCALL|TM_CAUSE_PERSISTENT)
+-	TABORT(R9)
+-
+-	/*
+-	 * Return directly to userspace. We have corrupted user register state,
+-	 * but userspace will never see that register state. Execution will
+-	 * resume after the tbegin of the aborted transaction with the
+-	 * checkpointed register state.
+-	 */
+-	li	r9, MSR_RI
+-	andc	r10, r10, r9
+-	mtmsrd	r10, 1
+-	mtspr	SPRN_SRR0, r11
+-	mtspr	SPRN_SRR1, r12
+-	RFI_TO_USER
+-	b	.	/* prevent speculative execution */
+-#endif
+-
+ 	/*
+ 	 * If MSR EE/RI was never enabled, IRQs not reconciled, NVGPRs not
+ 	 * touched, no exit work created, then this can be used.
 
 
