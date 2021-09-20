@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4B6411D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07181411FA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346509AbhITRRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:17:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41400 "EHLO mail.kernel.org"
+        id S1353112AbhITRnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:43:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347689AbhITROd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:14:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1FC613AB;
-        Mon, 20 Sep 2021 16:58:18 +0000 (UTC)
+        id S1348552AbhITRlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:41:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C32D61205;
+        Mon, 20 Sep 2021 17:08:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157098;
-        bh=V1J8g2vImMD8hB2+/OrAOmcaDISvKluNEVVVP7io990=;
+        s=korg; t=1632157700;
+        bh=pR6ydHKps1CHHFsfAgt4lhr4lBJk6of7DJKdWDaIesw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eOD1bltageop9+ACuKK1gRniReXDj2iyHl0KQZctyCsA6wPhGT0DV7ggEk62wDKTc
-         RHwGtRdZhgDviJuii0ktvs2U/2Uav3js05nXmRDp/XAJJua7ETNYjzHQeywxAdL1vD
-         ln/VKBoTn84U01AezTIMe+Yyb83c43F8nDZdcjwk=
+        b=zpHtX9/7cZyw1x+QLZhKJC7Ig82AAA9UEnu11nHWo58WkhvT4PmjETdy2rThp9iiy
+         wU34W3cODvIqOfa38+Ad6FBfqjw6PiuxibVfxCcVFjzU+6hc7JcOgYZk0b/qOVvosK
+         InlXh7e/07ItzCCOB35OzcamO+Rju/6px1rGVjwY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 053/217] media: dvb-usb: fix uninit-value in vp702x_read_mac_addr
+        stable@vger.kernel.org, Zelin Deng <zelin.deng@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.19 112/293] KVM: x86: Update vCPUs hv_clock before back to guest when tsc_offset is adjusted
 Date:   Mon, 20 Sep 2021 18:41:14 +0200
-Message-Id: <20210920163926.421631550@linuxfoundation.org>
+Message-Id: <20210920163937.092002857@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Zelin Deng <zelin.deng@linux.alibaba.com>
 
-[ Upstream commit 797c061ad715a9a1480eb73f44b6939fbe3209ed ]
+commit d9130a2dfdd4b21736c91b818f87dbc0ccd1e757 upstream.
 
-If vp702x_usb_in_op fails, the mac address is not initialized.
-And vp702x_read_mac_addr does not handle this failure, which leads to
-the uninit-value in dvb_usb_adapter_dvb_init.
+When MSR_IA32_TSC_ADJUST is written by guest due to TSC ADJUST feature
+especially there's a big tsc warp (like a new vCPU is hot-added into VM
+which has been up for a long time), tsc_offset is added by a large value
+then go back to guest. This causes system time jump as tsc_timestamp is
+not adjusted in the meantime and pvclock monotonic character.
+To fix this, just notify kvm to update vCPU's guest time before back to
+guest.
 
-Fix this by handling the failure of vp702x_usb_in_op.
-
-Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Message-Id: <1619576521-81399-2-git-send-email-zelin.deng@linux.alibaba.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/dvb-usb/vp702x.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ arch/x86/kvm/x86.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/usb/dvb-usb/vp702x.c b/drivers/media/usb/dvb-usb/vp702x.c
-index 40de33de90a7..5c3b0a7ca27e 100644
---- a/drivers/media/usb/dvb-usb/vp702x.c
-+++ b/drivers/media/usb/dvb-usb/vp702x.c
-@@ -294,16 +294,22 @@ static int vp702x_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
- static int vp702x_read_mac_addr(struct dvb_usb_device *d,u8 mac[6])
- {
- 	u8 i, *buf;
-+	int ret;
- 	struct vp702x_device_state *st = d->priv;
- 
- 	mutex_lock(&st->buf_mutex);
- 	buf = st->buf;
--	for (i = 6; i < 12; i++)
--		vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1, &buf[i - 6], 1);
-+	for (i = 6; i < 12; i++) {
-+		ret = vp702x_usb_in_op(d, READ_EEPROM_REQ, i, 1,
-+				       &buf[i - 6], 1);
-+		if (ret < 0)
-+			goto err;
-+	}
- 
- 	memcpy(mac, buf, 6);
-+err:
- 	mutex_unlock(&st->buf_mutex);
--	return 0;
-+	return ret;
- }
- 
- static int vp702x_frontend_attach(struct dvb_usb_adapter *adap)
--- 
-2.30.2
-
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2511,6 +2511,10 @@ int kvm_set_msr_common(struct kvm_vcpu *
+ 			if (!msr_info->host_initiated) {
+ 				s64 adj = data - vcpu->arch.ia32_tsc_adjust_msr;
+ 				adjust_tsc_offset_guest(vcpu, adj);
++				/* Before back to guest, tsc_timestamp must be adjusted
++				 * as well, otherwise guest's percpu pvclock time could jump.
++				 */
++				kvm_make_request(KVM_REQ_CLOCK_UPDATE, vcpu);
+ 			}
+ 			vcpu->arch.ia32_tsc_adjust_msr = data;
+ 		}
 
 
