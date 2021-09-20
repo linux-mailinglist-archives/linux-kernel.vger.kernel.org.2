@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BD2410F57
+	by mail.lfdr.de (Postfix) with ESMTP id EAE86410F59
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 07:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhITFmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 01:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S232884AbhITFqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 01:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbhITFmN (ORCPT
+        with ESMTP id S231250AbhITFqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 01:42:13 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42443C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 22:40:47 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id j18so20406270ioj.8
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 22:40:47 -0700 (PDT)
+        Mon, 20 Sep 2021 01:46:08 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDDFC061574;
+        Sun, 19 Sep 2021 22:44:42 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id i25so63235697lfg.6;
+        Sun, 19 Sep 2021 22:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1DjZAydXYzsdy9pCHIcJ/nHjYhS+wh3B+BCzHPEFxGM=;
-        b=ZSy9M462yzXAyhrDLIKaEt0Za7KeqPrfuk/ph5LD12+FSewZB/7FIoeswo83+8z52w
-         qjCKQJ4k7Y9yxcCTu8gdzPnsL3R/NYcIi1LZ7j/ZAtpKZfey+/fVVx84zrmTI4T+vvbU
-         hdN9mmQYcVh558c7+wVBosHtkoTkKOvFN6HT3IHEn+DUz36B+Q9cQJwF9gPLrzZ18Uyr
-         u65fgMEb0khMPuYMbl//p+xY8QnkxSXo0slxqzTCfJR+gNyFOKpCcG33PaytMPf5DslG
-         yyqeztn+KE5+jlq+rkmRd1GKt/HmJipePfNlXh+C1feN3BrSiKgqZ0RWu7RXGQjsDnLo
-         B0EQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ivxRxXk1jmWb3aes+tkdDqCm6jQIS0oNdYc8DLVRVcM=;
+        b=Ln4zRqSiUZgW1oFGYKnets0iGhY6tKiZCYZgPoVDqxqGBRWH8OyKfD1FzZn7KAYs9I
+         TCbKaus5OaJki58tBSNsgxCdxxfKBk5n7rDE2XIgVCHUDdxOvUZ+Hqi9OElyv+iKllw/
+         6LZzROtjVru2uepL3IoJaa8trD9zZ5wEaiLg8U5rOdCA9l9wcJqkA7YT5stqeYMV0Fby
+         RxEq3L8PkOv/lEMe7jjxT0bCt6KiwSj6zAorpbG+OFu8SHPqPp4LNAP+eRjup/nys5XE
+         cCnIfpvrsF2dpsBKR/qitqn0l+MqjYL7taezFCpj4ETkDzkuu+h0FxHLYOErVq8ak+nv
+         feMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1DjZAydXYzsdy9pCHIcJ/nHjYhS+wh3B+BCzHPEFxGM=;
-        b=Owcm7UFcB7SR40caN2SdDIsIhSCcCYW3kjNm9cb7mi9SPO2Kl5iFDu2+l13etakkNF
-         DPCFwC/9P9DUiErwH9FpC3uN/7qGbCd4mkZIR9om/M5Q1jraDMyplef/wMCl5XYjHNE3
-         +PdLUOUFlOaLYTK6CPdRRivImecm/wa8oiPB+a5DcdwqyXn+pA0Yni4BWlmTv+GxgJ4M
-         nuMqpWA76otAuUaG1THnb0sxQRX4JvW5Sy3WK30x4K1v3nKhUeTbC/55iMBvdv7mXIOG
-         eW9PjKm9OELlj/wE18vlHRqb5PYShMMw2/iiKjbZrriHy0foKUbLK+paXz9iRKp9jrbm
-         nyxQ==
-X-Gm-Message-State: AOAM530tLzaUMefaRJDQ54wKCW/9obzJPwCiy70l6knQpjLgmyRQI2p7
-        S7om4gElob95jUCIkCkZoww=
-X-Google-Smtp-Source: ABdhPJxPZ6vCimeMk7ljVuGBI7srx/4zIwRD7wymtY1wWKemnznN+vZu3cCKIstW1NsEXDixajeoEw==
-X-Received: by 2002:a05:6638:1514:: with SMTP id b20mr17887659jat.47.1632116440409;
-        Sun, 19 Sep 2021 22:40:40 -0700 (PDT)
-Received: from localhost.localdomain (node-17-161.flex.volo.net. [76.191.17.161])
-        by smtp.googlemail.com with ESMTPSA id c11sm8032398ile.22.2021.09.19.22.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Sep 2021 22:40:40 -0700 (PDT)
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     goldstein.w.n@gmail.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, luto@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] x86/fpu: Remove opmask state from avx512_timestamp check
-Date:   Mon, 20 Sep 2021 00:39:53 -0500
-Message-Id: <20210920053951.4093668-1-goldstein.w.n@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ivxRxXk1jmWb3aes+tkdDqCm6jQIS0oNdYc8DLVRVcM=;
+        b=53D0C6BLKcSz4YrxgwqFzZrQyftF9jakHsF1zHDmU4+T5fOx67+vbEvFpWqDz44EfS
+         p0rZodcwKiIJgoSrOIjZDGty+oxaJmIloWD+hXAESvhr+XLIGwe3+zEjH4oa/8/VcF5H
+         FwuoYPwUFH4H0AN2DNKC6+O9EhGdb/Ha2zD6xhbHtnAtMGBaCgb0fyV7Iun2mSSDv266
+         7/4lX3jfLlyIbn3wjs/D1gAgkgdgpniWQomeTEeUQcdrohJyMuRB/72R0/JaSo6eppZV
+         YB0x9KvaCOLa3Kl1kYWbjPSbqFYNkL7mqV9875MMlkf//GSh0lpAT94SmTCL0G2RdsOo
+         UvLQ==
+X-Gm-Message-State: AOAM530lIeSijGHYylKdUEYvKJ6otzHt2l6GxXt4bXGqhbave7pf4AJf
+        3QPTq/ICWxcrMxYFg/VMYr8qDvG9rF26wFueG/NFOFkBQE6H6A==
+X-Google-Smtp-Source: ABdhPJz2W8YCHXSZNkjWCeQaWDCVVA/VycRTXKRCEWIfLTCeSf50ohoCLe8V9nJajvQzDF2jRA9JTr4GV1QJq0imWEg=
+X-Received: by 2002:a2e:580e:: with SMTP id m14mr18457247ljb.82.1632116680413;
+ Sun, 19 Sep 2021 22:44:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210919154337.9243-1-stachecki.tyler@gmail.com> <CAM_iQpUeH7sOWRDfaAsER4HdRJQUuODB-ht0NyEZgnCXEmm2RQ@mail.gmail.com>
+In-Reply-To: <CAM_iQpUeH7sOWRDfaAsER4HdRJQUuODB-ht0NyEZgnCXEmm2RQ@mail.gmail.com>
+From:   Tyler Stachecki <stachecki.tyler@gmail.com>
+Date:   Mon, 20 Sep 2021 01:44:29 -0400
+Message-ID: <CAC6wqPVopqP=erynBazgRh2QkB7=Nh-cXxLS2ZvmTzb7E0Gvaw@mail.gmail.com>
+Subject: Re: [PATCH] ovs: Only clear tstamp when changing namespaces
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     fankaixi.li@bytedance.com, xiexiaohui.xxh@bytedance.com,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        dev@openvswitch.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit creates a new mask, XFEATURE_MASK_ZMM, to test against
-xfeatures for conditionally updating the axx512_timestamp.
+On Sun, Sep 19, 2021 at 7:33 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Sun, Sep 19, 2021 at 10:59 AM Tyler J. Stachecki
+> <stachecki.tyler@gmail.com> wrote:
+> >
+> > As of "ovs: clear skb->tstamp in forwarding path", the
+> > tstamp is now being cleared unconditionally to fix fq qdisc
+> > operation with ovs vports.
+> >
+> > While this is mostly correct and fixes forwarding for that
+> > use case, a slight adjustment is necessary to ensure that
+> > the tstamp is cleared *only when the forwarding is across
+> > namespaces*.
+>
+> Hmm? I am sure timestamp has already been cleared when
+> crossing netns:
+>
+> void skb_scrub_packet(struct sk_buff *skb, bool xnet)
+> {
+> ...
+>         if (!xnet)
+>                 return;
+>
+>         ipvs_reset(skb);
+>         skb->mark = 0;
+>         skb->tstamp = 0;
+> }
+>
+> So, what are you trying to fix?
+>
+> >
+> > Signed-off-by: Tyler J. Stachecki <stachecki.tyler@gmail.com>
+> > ---
+> >  net/openvswitch/vport.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/openvswitch/vport.c b/net/openvswitch/vport.c
+> > index cf2ce5812489..c2d32a5c3697 100644
+> > --- a/net/openvswitch/vport.c
+> > +++ b/net/openvswitch/vport.c
+> > @@ -507,7 +507,8 @@ void ovs_vport_send(struct vport *vport, struct sk_buff *skb, u8 mac_proto)
+> >         }
+> >
+> >         skb->dev = vport->dev;
+> > -       skb->tstamp = 0;
+> > +       if (dev_net(skb->dev))
+>
+> Doesn't dev_net() always return a non-NULL pointer?
+>
+> If you really want to check whether it is cross-netns, you should
+> use net_eq() to compare src netns with dst netns, something like:
+> if (!net_eq(dev_net(vport->dev), dev_net(skb->dev))).
+>
+> Thanks.
 
-Based on the comments, the avx512 state is meant to track when the
-state would cause frequencey throttling. The opmasks (k0-k7) do not
-cause frequency throttling, so they don't make sense to include.
+Sorry if this is a no-op -- I'm admittedly not familiar with this part
+of the tree.  I had added this check based on this discussion on the
+OVS mailing list:
+https://mail.openvswitch.org/pipermail/ovs-discuss/2021-February/050966.html
 
-The current implementation, as well as the old, still does have a
-false positive on ymm16-ymm31 and xmm16-31 because
-XFEATURE_MASK_Hi16_ZMM includes them.
+The motivation to add it was based on the fact that skb_scrub_packet
+is doing it conditionally as well, but you seem to indicate that
+skb_scrub_packet itself is already being done somewhere?
 
-Signed-off-by: Noah Goldstein <goldstein.w.n@gmail.com>
----
-Issue is reproducible with the following code on x86_64:
-
-```
-	.global	_start
-	.text
-_start:
-	korq	%k0, %k0, %k0
-
-loop:
-	jmp	loop
-
-
-	movl	$60, %eax
-	xorl	%edi, %edi
-	syscall
-```
-
-Pretending run as executable named "foo":
-
-$> cat /proc/$(pidof foo)/arch_status
-
-
-This should yield -1 as no frequency changing AVX512 instructions
-where used but instead tracks the process.
-
-Note there still is a false positive with ymm16-ymm31 and xmm16-xmm31
-but since there is no state to distinguish between there use and
-zmm16-31 that seems inevitable.
-
-    
- arch/x86/include/asm/fpu/types.h | 2 ++
- arch/x86/kernel/fpu/core.c       | 4 +++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index f5a38a5f3ae1..a4816fa7d541 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -141,6 +141,8 @@ enum xfeature {
- #define XFEATURE_MASK_AVX512		(XFEATURE_MASK_OPMASK \
- 					 | XFEATURE_MASK_ZMM_Hi256 \
- 					 | XFEATURE_MASK_Hi16_ZMM)
-+#define XFEATURE_MASK_ZMM		(XFEATURE_MASK_ZMM_Hi256 \
-+					 | XFEATURE_MASK_Hi16_ZMM)
- 
- #define FIRST_EXTENDED_XFEATURE	XFEATURE_YMM
- 
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 7ada7bd03a32..342620a2e8ef 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -104,8 +104,10 @@ void save_fpregs_to_fpstate(struct fpu *fpu)
- 		/*
- 		 * AVX512 state is tracked here because its use is
- 		 * known to slow the max clock speed of the core.
-+		 * Note: This has a false positive on Hi16 ymm and
-+		 * xmm registers.
- 		 */
--		if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
-+		if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_ZMM)
- 			fpu->avx512_timestamp = jiffies;
- 		return;
- 	}
--- 
-2.25.1
-
+Cheers,
+Tyler
