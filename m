@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8E441241E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C68412551
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346476AbhITSah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:30:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43192 "EHLO mail.kernel.org"
+        id S1353721AbhITSna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378347AbhITSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CA9B613A2;
-        Mon, 20 Sep 2021 17:25:01 +0000 (UTC)
+        id S1381965AbhITSjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 323856333A;
+        Mon, 20 Sep 2021 17:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158702;
-        bh=uSCus/CvVsBhDvotbxmndFrZ31G696mSG8Rf+gOHDf8=;
+        s=korg; t=1632159046;
+        bh=CXCzy7tiYTN6nZ2fvrhXM7SroQ9LCi5oAHSmqNIicIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vss0x/P/ffcPzrHY3+Tp5RXJwDKNo8btXhdyTP2Yyd/j4ZBswGXQBmaO/c9CBrxDd
-         adYAKLJUsiLC0WB74SAgNd3HMV4Y1sAUJNspCqCA+9r3yjD2wMEPT3T7GCdAl5N+k2
-         IzVZ7Q/Yzw14rSLsgadQHbKqsXl5fpjaiwamWEtQ=
+        b=d0R/+S5xM8gv6Sq02mraBTHIkS891XrLmY9HG+SVOMVUOOJKY/9uz5UKl95G/QUzc
+         FHIES8Gnek4Mj8Ri/2tk0pXyrc6lLvT0MlOHPeJ7QDukmht/UGFp4ND5YmWuW3l86S
+         4OmamJMlHoS2nWPqE09Y+9lq+K6B+a4vEB3L6J0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
-        Michael Walle <michael@walle.cc>, Marek Vasut <marex@denx.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>
-Subject: [PATCH 5.10 017/122] drm/etnaviv: add missing MMU context put when reaping MMU mapping
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Saeed Mahameed <saeedm@nvidia.com>, Aya Levin <ayal@nvidia.com>
+Subject: [PATCH 5.14 051/168] net/mlx5: FWTrace, cancel work on alloc pd error flow
 Date:   Mon, 20 Sep 2021 18:43:09 +0200
-Message-Id: <20210920163916.339109430@linuxfoundation.org>
+Message-Id: <20210920163923.313557941@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-commit f2faea8b64125852fa9acc6771c07fc0311a039b upstream.
+commit dfe6fd72b5f1878b16aa2c8603e031bbcd66b96d upstream.
 
-When we forcefully evict a mapping from the the address space and thus the
-MMU context, the MMU context is leaked, as the mapping no longer points to
-it, so it doesn't get freed when the GEM object is destroyed. Add the
-mssing context put to fix the leak.
+Handle error flow on mlx5_core_alloc_pd() failure,
+read_fw_strings_work must be canceled.
 
-Cc: stable@vger.kernel.org # 5.4
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Tested-by: Michael Walle <michael@walle.cc>
-Tested-by: Marek Vasut <marex@denx.de>
-Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+Fixes: c71ad41ccb0c ("net/mlx5: FW tracer, events handling")
+Reported-by: Pavel Machek (CIP) <pavel@denx.de>
+Suggested-by: Pavel Machek (CIP) <pavel@denx.de>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Reviewed-by: Aya Levin <ayal@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/etnaviv/etnaviv_mmu.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-@@ -197,6 +197,7 @@ static int etnaviv_iommu_find_iova(struc
- 		 */
- 		list_for_each_entry_safe(m, n, &list, scan_node) {
- 			etnaviv_iommu_remove_mapping(context, m);
-+			etnaviv_iommu_context_put(m->context);
- 			m->context = NULL;
- 			list_del_init(&m->mmu_node);
- 			list_del_init(&m->scan_node);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -1007,7 +1007,7 @@ int mlx5_fw_tracer_init(struct mlx5_fw_t
+ 	err = mlx5_core_alloc_pd(dev, &tracer->buff.pdn);
+ 	if (err) {
+ 		mlx5_core_warn(dev, "FWTracer: Failed to allocate PD %d\n", err);
+-		return err;
++		goto err_cancel_work;
+ 	}
+ 
+ 	err = mlx5_fw_tracer_create_mkey(tracer);
+@@ -1031,6 +1031,7 @@ err_notifier_unregister:
+ 	mlx5_core_destroy_mkey(dev, &tracer->buff.mkey);
+ err_dealloc_pd:
+ 	mlx5_core_dealloc_pd(dev, tracer->buff.pdn);
++err_cancel_work:
+ 	cancel_work_sync(&tracer->read_fw_strings_work);
+ 	return err;
+ }
 
 
