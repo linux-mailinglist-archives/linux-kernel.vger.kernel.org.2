@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E30412112
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4279411E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349847AbhITSBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54624 "EHLO mail.kernel.org"
+        id S1344760AbhITRbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:31:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355338AbhITRyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:54:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B3EA6124C;
-        Mon, 20 Sep 2021 17:13:40 +0000 (UTC)
+        id S1350438AbhITR2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:28:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 818EB61406;
+        Mon, 20 Sep 2021 17:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158021;
-        bh=cdIMnGOF4CkU42daacZN2R1isEuvbkTI+FGt9W79hLE=;
+        s=korg; t=1632157420;
+        bh=cEV1XptVCF814R36KtZ9hpfT1HKlmfxAhy55CveX/jY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jdx9UdFkHr8gh0Iy4wtZWR4PMt29kEnx609hREw+8/w6S3uticG9Dblfk5O5p/Sod
-         EpsjVebkRiYSs0V+NhQKH0afaxY71hEsHHEl4C3DW95H/hqDnbqC0Ke+PDRuSFUFFl
-         toERFwUd6pbNsrTnyAC9Kss/M/oBE6zaDol1pDYk=
+        b=0DpdPMUAmiNnPerGCgokRxpoChvsfv2tH0jAgBkPDyvC5Yub20cN+tgfJ1YKoRRj4
+         ubmgZP4r99NamLzFPKBsJKezmXgzQWW/yofSSp0EJc6zP74uYsMWl0eaBrhV/Ltbdb
+         925DQQJDbI/R1T8t+snhdcrjg/GEuolvb12wm4jE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Cochran <richard.cochran@omicron.at>,
-        John Stultz <john.stultz@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 259/293] ptp: dp83640: dont define PAGE0
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 200/217] tipc: increase timeout in tipc_sk_enqueue()
 Date:   Mon, 20 Sep 2021 18:43:41 +0200
-Message-Id: <20210920163942.262477526@linuxfoundation.org>
+Message-Id: <20210920163931.410748091@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-commit 7366c23ff492ad260776a3ee1aaabba9fc773a8b upstream.
+commit f4bb62e64c88c93060c051195d3bbba804e56945 upstream.
 
-Building dp83640.c on arch/parisc/ produces a build warning for
-PAGE0 being redefined. Since the macro is not used in the dp83640
-driver, just make it a comment for documentation purposes.
+In tipc_sk_enqueue() we use hardcoded 2 jiffies to extract
+socket buffer from generic queue to particular socket.
+The 2 jiffies is too short in case there are other high priority
+tasks get CPU cycles for multiple jiffies update. As result, no
+buffer could be enqueued to particular socket.
 
-In file included from ../drivers/net/phy/dp83640.c:23:
-../drivers/net/phy/dp83640_reg.h:8: warning: "PAGE0" redefined
-    8 | #define PAGE0                     0x0000
-                 from ../drivers/net/phy/dp83640.c:11:
-../arch/parisc/include/asm/page.h:187: note: this is the location of the previous definition
-  187 | #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
+To solve this, we switch to use constant timeout 20msecs.
+Then, the function will be expired between 2 jiffies (CONFIG_100HZ)
+and 20 jiffies (CONFIG_1000HZ).
 
-Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Cochran <richard.cochran@omicron.at>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20210913220605.19682-1-rdunlap@infradead.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c637c1035534 ("tipc: resolve race problem at unicast message reception")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/dp83640_reg.h |    2 +-
+ net/tipc/socket.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/phy/dp83640_reg.h
-+++ b/drivers/net/phy/dp83640_reg.h
-@@ -5,7 +5,7 @@
- #ifndef HAVE_DP83640_REGISTERS
- #define HAVE_DP83640_REGISTERS
- 
--#define PAGE0                     0x0000
-+/* #define PAGE0                  0x0000 */
- #define PHYCR2                    0x001c /* PHY Control Register 2 */
- 
- #define PAGE4                     0x0004
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1775,7 +1775,7 @@ static int tipc_backlog_rcv(struct sock
+ static void tipc_sk_enqueue(struct sk_buff_head *inputq, struct sock *sk,
+ 			    u32 dport, struct sk_buff_head *xmitq)
+ {
+-	unsigned long time_limit = jiffies + 2;
++	unsigned long time_limit = jiffies + usecs_to_jiffies(20000);
+ 	struct sk_buff *skb;
+ 	unsigned int lim;
+ 	atomic_t *dcnt;
 
 
