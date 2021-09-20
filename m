@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D546441259C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5914125BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384106AbhITSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:46:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
+        id S1384295AbhITSrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:47:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382860AbhITSmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFCEC6333D;
-        Mon, 20 Sep 2021 17:32:10 +0000 (UTC)
+        id S1383236AbhITSoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C9B63356;
+        Mon, 20 Sep 2021 17:32:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159131;
-        bh=5vfnFv5YTe1smOkZHNVJBYzX67YVWPYp3juTMNgC++Q=;
+        s=korg; t=1632159144;
+        bh=KgqqFPEDo4wF7is/0aM+fQH4uN8YsFXo/LPDc+m1Sb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3lB9WRZoTm79TPllUfmi3hesh41Rkc/RFpLqkx7JBIT4cJou+ByKF6PjphSkvBam
-         RNYl57lozwcDO3QgrmKsfV6CAsV626JlCpzwohRN9Ioq0LFmX3pFyMHzhMp03trdhw
-         V0gP8XmuHXZxFXhXdHIQpNj2xzct6PT/aZnk2C2Y=
+        b=mDAWB2r/AIw+hjd7jyFUNVtJTXbq0yW1GAtMw16Eb4hoFCILdeLmB7x5MBVIcFWpf
+         xgWouXDGwqQDODcjADl1E2GYI3mFLHm4oPSzCJzDsdoJCJgYXxFRev7E5Te79csRjS
+         +BJ1xrnPk++zLUvNnyEmt7X175A2O/as32aTNrjI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bill Wendling <morbo@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.14 063/168] x86/uaccess: Fix 32-bit __get_user_asm_u64() when CC_HAS_ASM_GOTO_OUTPUT=y
-Date:   Mon, 20 Sep 2021 18:43:21 +0200
-Message-Id: <20210920163923.708444313@linuxfoundation.org>
+        stable@vger.kernel.org, zhenggy <zhenggy@chinatelecom.cn>,
+        Eric Dumazet <edumazet@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 064/168] tcp: fix tp->undo_retrans accounting in tcp_sacktag_one()
+Date:   Mon, 20 Sep 2021 18:43:22 +0200
+Message-Id: <20210920163923.740602769@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -44,59 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: zhenggy <zhenggy@chinatelecom.cn>
 
-commit a69ae291e1cc2d08ae77c2029579c59c9bde5061 upstream.
+commit 4f884f3962767877d7aabbc1ec124d2c307a4257 upstream.
 
-Commit 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
-added an optimised version of __get_user_asm() for x86 using 'asm goto'.
+Commit 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit
+time") may directly retrans a multiple segments TSO/GSO packet without
+split, Since this commit, we can no longer assume that a retransmitted
+packet is a single segment.
 
-Like the non-optimised code, the 32-bit implementation of 64-bit
-get_user() expands to a pair of 32-bit accesses.  Unlike the
-non-optimised code, the _original_ pointer is incremented to copy the
-high word instead of loading through a new pointer explicitly
-constructed to point at a 32-bit type.  Consequently, if the pointer
-points at a 64-bit type then we end up loading the wrong data for the
-upper 32-bits.
+This patch fixes the tp->undo_retrans accounting in tcp_sacktag_one()
+that use the actual segments(pcount) of the retransmitted packet.
 
-This was observed as a mount() failure in Android targeting i686 after
-b0cfcdd9b967 ("d_path: make 'prepend()' fill up the buffer exactly on
-overflow") because the call to copy_from_kernel_nofault() from
-prepend_copy() ends up in __get_kernel_nofault() and casts the source
-pointer to a 'u64 __user *'.  An attempt to mount at "/debug_ramdisk"
-therefore ends up failing trying to mount "/debumdismdisk".
+Before that commit (10d3be569243), the assumption underlying the
+tp->undo_retrans-- seems correct.
 
-Use the existing '__gu_ptr' source pointer to unsigned int for 32-bit
-__get_user_asm_u64() instead of the original pointer.
-
-Cc: Bill Wendling <morbo@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Fixes: 865c50e1d279 ("x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT")
-Signed-off-by: Will Deacon <will@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 10d3be569243 ("tcp-tso: do not split TSO packets at retransmit time")
+Signed-off-by: zhenggy <zhenggy@chinatelecom.cn>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+Acked-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/uaccess.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/tcp_input.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -301,8 +301,8 @@ do {									\
- 	unsigned int __gu_low, __gu_high;				\
- 	const unsigned int __user *__gu_ptr;				\
- 	__gu_ptr = (const void __user *)(ptr);				\
--	__get_user_asm(__gu_low, ptr, "l", "=r", label);		\
--	__get_user_asm(__gu_high, ptr+1, "l", "=r", label);		\
-+	__get_user_asm(__gu_low, __gu_ptr, "l", "=r", label);		\
-+	__get_user_asm(__gu_high, __gu_ptr+1, "l", "=r", label);	\
- 	(x) = ((unsigned long long)__gu_high << 32) | __gu_low;		\
- } while (0)
- #else
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -1314,7 +1314,7 @@ static u8 tcp_sacktag_one(struct sock *s
+ 	if (dup_sack && (sacked & TCPCB_RETRANS)) {
+ 		if (tp->undo_marker && tp->undo_retrans > 0 &&
+ 		    after(end_seq, tp->undo_marker))
+-			tp->undo_retrans--;
++			tp->undo_retrans = max_t(int, 0, tp->undo_retrans - pcount);
+ 		if ((sacked & TCPCB_SACKED_ACKED) &&
+ 		    before(start_seq, state->reord))
+ 				state->reord = start_seq;
 
 
