@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFCA412069
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBD1412092
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355496AbhITRy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        id S1349605AbhITRzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:55:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354098AbhITRsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:48:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A640861BB6;
-        Mon, 20 Sep 2021 17:11:16 +0000 (UTC)
+        id S1354387AbhITRtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:49:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A50D361107;
+        Mon, 20 Sep 2021 17:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157877;
-        bh=yIPfydS2oP2rEmzgNeetOSsUrPJdErXC2oPguSDHeYM=;
+        s=korg; t=1632157901;
+        bh=ys93JIkJor0XQfcdfHsBQ3ju1Zsl222TxIT0neTqpJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IkMRXRtHA7tBItE2042zsoVGBGOE1nY72KvtvjNWKbDK08q05vWUNKF3+4u33n+1L
-         kjrlNTKMQhTNJTf9SpybyW9hBR6Q11wtJGg3pZR+e0fTJ/leptSB2I2Mhn3Ojt50qo
-         6OL7xRUweMQE7DHBfEE3ajFDaHphekFRLvyrwd5E=
+        b=Ad0adb00jiZKYWCMY+Tg74ThwHSfq0lhBjzXmCOdJe4hbQZufqxBg9Lc6A1FDnLYG
+         9029Ja8rK+WhvPUm2+ZuU3Bz4ldpHDBPCEzyy5Hw86rOD+tu61V+wMMUHUtAO+QKIc
+         1+Pow2Ll7kRDZEPgClvnK6tcMl3koDZGS+hrgP5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 175/293] tipc: keep the skb in rcv queue until the whole data is read
-Date:   Mon, 20 Sep 2021 18:42:17 +0200
-Message-Id: <20210920163939.271337512@linuxfoundation.org>
+Subject: [PATCH 4.19 176/293] iio: dac: ad5624r: Fix incorrect handling of an optional regulator.
+Date:   Mon, 20 Sep 2021 18:42:18 +0200
+Message-Id: <20210920163939.303771935@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
 References: <20210920163933.258815435@linuxfoundation.org>
@@ -41,106 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit f4919ff59c2828064b4156e3c3600a169909bcf4 ]
+[ Upstream commit 97683c851f9cdbd3ea55697cbe2dcb6af4287bbd ]
 
-Currently, when userspace reads a datagram with a buffer that is
-smaller than this datagram, the data will be truncated and only
-part of it can be received by users. It doesn't seem right that
-users don't know the datagram size and have to use a huge buffer
-to read it to avoid the truncation.
+The naming of the regulator is problematic.  VCC is usually a supply
+voltage whereas these devices have a separate VREF pin.
 
-This patch to fix it by keeping the skb in rcv queue until the
-whole data is read by users. Only the last msg of the datagram
-will be marked with MSG_EOR, just as TCP/SCTP does.
+Secondly, the regulator core might have provided a stub regulator if
+a real regulator wasn't provided. That would in turn have failed to
+provide a voltage when queried. So reality was that there was no way
+to use the internal reference.
 
-Note that this will work as above only when MSG_EOR is set in the
-flags parameter of recvmsg(), so that it won't break any old user
-applications.
+In order to avoid breaking any dts out in the wild, make sure to fallback
+to the original vcc naming if vref is not available.
 
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20210627163244.1090296-9-jic23@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ drivers/iio/dac/ad5624r_spi.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 6aead6deaa6c..e9acbb290d71 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1716,6 +1716,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 	bool connected = !tipc_sk_type_connectionless(sk);
- 	struct tipc_sock *tsk = tipc_sk(sk);
- 	int rc, err, hlen, dlen, copy;
-+	struct tipc_skb_cb *skb_cb;
- 	struct sk_buff_head xmitq;
- 	struct tipc_msg *hdr;
- 	struct sk_buff *skb;
-@@ -1739,6 +1740,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 		if (unlikely(rc))
- 			goto exit;
- 		skb = skb_peek(&sk->sk_receive_queue);
-+		skb_cb = TIPC_SKB_CB(skb);
- 		hdr = buf_msg(skb);
- 		dlen = msg_data_sz(hdr);
- 		hlen = msg_hdr_sz(hdr);
-@@ -1758,18 +1760,33 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+diff --git a/drivers/iio/dac/ad5624r_spi.c b/drivers/iio/dac/ad5624r_spi.c
+index 13fdb4dfe356..cc3a24c43e57 100644
+--- a/drivers/iio/dac/ad5624r_spi.c
++++ b/drivers/iio/dac/ad5624r_spi.c
+@@ -230,7 +230,7 @@ static int ad5624r_probe(struct spi_device *spi)
+ 	if (!indio_dev)
+ 		return -ENOMEM;
+ 	st = iio_priv(indio_dev);
+-	st->reg = devm_regulator_get(&spi->dev, "vcc");
++	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
+ 	if (!IS_ERR(st->reg)) {
+ 		ret = regulator_enable(st->reg);
+ 		if (ret)
+@@ -241,6 +241,22 @@ static int ad5624r_probe(struct spi_device *spi)
+ 			goto error_disable_reg;
  
- 	/* Capture data if non-error msg, otherwise just set return value */
- 	if (likely(!err)) {
--		copy = min_t(int, dlen, buflen);
--		if (unlikely(copy != dlen))
--			m->msg_flags |= MSG_TRUNC;
--		rc = skb_copy_datagram_msg(skb, hlen, m, copy);
-+		int offset = skb_cb->bytes_read;
+ 		voltage_uv = ret;
++	} else {
++		if (PTR_ERR(st->reg) != -ENODEV)
++			return PTR_ERR(st->reg);
++		/* Backwards compatibility. This naming is not correct */
++		st->reg = devm_regulator_get_optional(&spi->dev, "vcc");
++		if (!IS_ERR(st->reg)) {
++			ret = regulator_enable(st->reg);
++			if (ret)
++				return ret;
 +
-+		copy = min_t(int, dlen - offset, buflen);
-+		rc = skb_copy_datagram_msg(skb, hlen + offset, m, copy);
-+		if (unlikely(rc))
-+			goto exit;
-+		if (unlikely(offset + copy < dlen)) {
-+			if (flags & MSG_EOR) {
-+				if (!(flags & MSG_PEEK))
-+					skb_cb->bytes_read = offset + copy;
-+			} else {
-+				m->msg_flags |= MSG_TRUNC;
-+				skb_cb->bytes_read = 0;
-+			}
-+		} else {
-+			if (flags & MSG_EOR)
-+				m->msg_flags |= MSG_EOR;
-+			skb_cb->bytes_read = 0;
-+		}
- 	} else {
- 		copy = 0;
- 		rc = 0;
--		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control)
-+		if (err != TIPC_CONN_SHUTDOWN && connected && !m->msg_control) {
- 			rc = -ECONNRESET;
-+			goto exit;
++			ret = regulator_get_voltage(st->reg);
++			if (ret < 0)
++				goto error_disable_reg;
++
++			voltage_uv = ret;
 +		}
  	}
--	if (unlikely(rc))
--		goto exit;
  
- 	/* Mark message as group event if applicable */
- 	if (unlikely(grp_evt)) {
-@@ -1792,9 +1809,10 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
- 		tipc_node_distr_xmit(sock_net(sk), &xmitq);
- 	}
- 
--	tsk_advance_rx_queue(sk);
-+	if (!skb_cb->bytes_read)
-+		tsk_advance_rx_queue(sk);
- 
--	if (likely(!connected))
-+	if (likely(!connected) || skb_cb->bytes_read)
- 		goto exit;
- 
- 	/* Send connection flow control advertisement when applicable */
+ 	spi_set_drvdata(spi, indio_dev);
 -- 
 2.30.2
 
