@@ -2,95 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBCA412321
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6627F412615
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377482AbhITSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:21:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42762 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1358228AbhITSFs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:05:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632161061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gopq2BZfkhjQI2xV/FKOoo6DL77eDjWiZmjGPcNNBzk=;
-        b=TbWuNdPYobo4tMZEHf49jhXuraQ7qnb6/itxXs2lpYA4HcOc1VAoKThz2mAFt4FbSiqGvF
-        oxDDWxFMLQF/MMM2aeuiNyM4e+QxEALrVwHV/vvqUHAp65uX2R1AcufhgWjCOdK9nnlSLw
-        jj6xmNhKTHw8CRx/sLfc/yhWlpfacSQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-27fxhFY8Ncmu5WW4bDsyJg-1; Mon, 20 Sep 2021 14:04:20 -0400
-X-MC-Unique: 27fxhFY8Ncmu5WW4bDsyJg-1
-Received: by mail-wr1-f72.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so6759524wrn.12
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:04:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Gopq2BZfkhjQI2xV/FKOoo6DL77eDjWiZmjGPcNNBzk=;
-        b=yOgYLKHuRfM/mlKwDn08xdBeC64+i9gCjWg/ZLsFlbRrLmlzR34IkYibBeLf9A3Lb1
-         i0zIBNVsH6f75zBZLwO28SzDMA+WDGZ1czNqtypymd9vXE0jxS5Czqm1e9k2ygajePp9
-         ll67sSzwwOumdRmszFwKEsVn8+IciuPaImX5t+5SwyQkNBRhh505H0PaUwpleVvVQW6l
-         i3ZUHyY3MaSQog9xCEM7244nqap6jQqOwtturgYa4cshB0k/wJZizUgAlvSbleUt8N3Q
-         JwQw1UvllU0d/9+DRR1vVKovd1zHzrQV1DjTjnOEfOrpJlVwb7WRzwIs4RkwpsrW2PoM
-         Ir/w==
-X-Gm-Message-State: AOAM5321VT21GqXXGLeIyCcLIyc5BQvMNkJk1Hm/zfFlOuiAfcp7+P8Q
-        6dl22Q82ngQmdBV1MOoOEIpLbHV6Iq8M/zYxQNAXb0tuCL0AqTWBwQLBunJAe0B+SJKidYvuiCJ
-        HtryvZ2Lbn/ZkeBlXRjLucIl0
-X-Received: by 2002:a05:600c:4b87:: with SMTP id e7mr368767wmp.108.1632161058107;
-        Mon, 20 Sep 2021 11:04:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8yCyXTPQoZtRcZQsJIQbJE0GIxqbCuoyPq+LQY2WknfXjhfcSPzpz1/IggdbHc197w7rocw==
-X-Received: by 2002:a05:600c:4b87:: with SMTP id e7mr368722wmp.108.1632161057696;
-        Mon, 20 Sep 2021 11:04:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f5sm199154wmb.47.2021.09.20.11.04.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 11:04:17 -0700 (PDT)
-Subject: Re: [PATCH v5 0/8] KVM: Various fixes and improvements around kicking
- vCPUs
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210903075141.403071-1-vkuznets@redhat.com>
- <87h7ef9ubo.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <21214d34-68b6-ba8e-c12e-2fa44a430540@redhat.com>
-Date:   Mon, 20 Sep 2021 20:04:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1385606AbhITSxL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 14:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1385888AbhITSwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:52:37 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D2C5613AD;
+        Mon, 20 Sep 2021 18:00:35 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 19:04:19 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     "Chindris, Mihail" <Mihail.Chindris@analog.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "alexandru.ardelean@analog.com" <alexandru.ardelean@analog.com>
+Subject: Re: [PATCH v5 1/6] iio: Add output buffer support
+Message-ID: <20210920190419.04291227@jic23-huawei>
+In-Reply-To: <SJ0PR03MB6359EFF08F0830A5D0EE181199A09@SJ0PR03MB6359.namprd03.prod.outlook.com>
+References: <20210916182914.1810-1-mihail.chindris@analog.com>
+        <20210916182914.1810-2-mihail.chindris@analog.com>
+        <20210919180244.1f935bcd@jic23-huawei>
+        <SJ0PR03MB6359EFF08F0830A5D0EE181199A09@SJ0PR03MB6359.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <87h7ef9ubo.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/21 16:48, Vitaly Kuznetsov wrote:
-> 
->> Patch6 fixes a real problem with ioapic_write_indirect() KVM does
->> out-of-bounds access to stack memory.
-> Paolo,
-> 
-> while the rest of the series is certainly not urgent, PATCH6 seems to be
-> fixing a real problem introduced in 5.10. Would it be possible to send
-> it for one of the upcoming 5.15 rcs (and probably to stable@)?
+On Mon, 20 Sep 2021 08:02:29 +0000
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
 
-Yep, I'm back to KVM now.
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Sunday, September 19, 2021 7:03 PM
+> > To: Chindris, Mihail <Mihail.Chindris@analog.com>
+> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
+> > lars@metafoo.de; Hennerich, Michael
+> > <Michael.Hennerich@analog.com>; Sa, Nuno
+> > <Nuno.Sa@analog.com>; Bogdan, Dragos
+> > <Dragos.Bogdan@analog.com>; alexandru.ardelean@analog.com
+> > Subject: Re: [PATCH v5 1/6] iio: Add output buffer support
+> > 
+> > On Thu, 16 Sep 2021 18:29:09 +0000
+> > Mihail Chindris <mihail.chindris@analog.com> wrote:
+> >   
+> > > Currently IIO only supports buffer mode for capture devices like  
+> > ADCs. Add  
+> > > support for buffered mode for output devices like DACs.
+> > >
+> > > The output buffer implementation is analogous to the input buffer
+> > > implementation. Instead of using read() to get data from the buffer  
+> > write()  
+> > > is used to copy data into the buffer.
+> > >
+> > > poll() with POLLOUT will wakeup if there is space available.
+> > >
+> > > Drivers can remove data from a buffer using iio_pop_from_buffer(),  
+> > the  
+> > > function can e.g. called from a trigger handler to write the data to
+> > > hardware.
+> > >
+> > > A buffer can only be either a output buffer or an input, but not both.  
+> > So,  
+> > > for a device that has an ADC and DAC path, this will mean 2 IIO  
+> > buffers  
+> > > (one for each direction).
+> > >
+> > > The direction of the buffer is decided by the new direction field of  
+> > the  
+> > > iio_buffer struct and should be set after allocating and before  
+> > registering  
+> > > it.
+> > >
+> > > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > > Signed-off-by: Alexandru Ardelean  
+> > <alexandru.ardelean@analog.com>  
+> > > Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>  
+> > 
+> > A few minor things inline.  I would have expected the missing check
+> > on insert_buffer to have resulted in a nasty deference of a null pointer
+> > though which does make me nervous about whether we have tested
+> > this
+> > series enough.
+> > 
+> > Jonathan
+> >   
+> > > ---
+> > >  drivers/iio/iio_core.h            |   4 +
+> > >  drivers/iio/industrialio-buffer.c | 120  
+> > +++++++++++++++++++++++++++++-  
+> > >  drivers/iio/industrialio-core.c   |   1 +
+> > >  include/linux/iio/buffer.h        |   7 ++
+> > >  include/linux/iio/buffer_impl.h   |  11 +++
+> > >  5 files changed, 141 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> > > index 8f4a9b264962..61e318431de9 100644
+> > > --- a/drivers/iio/iio_core.h
+> > > +++ b/drivers/iio/iio_core.h
+> > > @@ -68,12 +68,15 @@ __poll_t iio_buffer_poll_wrapper(struct file  
+> > *filp,  
+> > >  				 struct poll_table_struct *wait);
+> > >  ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
+> > >  				size_t n, loff_t *f_ps);
+> > > +ssize_t iio_buffer_write_wrapper(struct file *filp, const char __user  
+> > *buf,  
+> > > +				 size_t n, loff_t *f_ps);
+> > >
+> > >  int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
+> > >  void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
+> > >
+> > >  #define iio_buffer_poll_addr (&iio_buffer_poll_wrapper)
+> > >  #define iio_buffer_read_outer_addr (&iio_buffer_read_wrapper)
+> > > +#define iio_buffer_write_outer_addr  
+> > (&iio_buffer_write_wrapper)  
+> > >
+> > >  void iio_disable_all_buffers(struct iio_dev *indio_dev);
+> > >  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
+> > > @@ -83,6 +86,7 @@ void iio_device_detach_buffers(struct iio_dev  
+> > *indio_dev);  
+> > >
+> > >  #define iio_buffer_poll_addr NULL
+> > >  #define iio_buffer_read_outer_addr NULL
+> > > +#define iio_buffer_write_outer_addr NULL
+> > >
+> > >  static inline int iio_buffers_alloc_sysfs_and_mask(struct iio_dev  
+> > *indio_dev)  
+> > >  {
+> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-  
+> > buffer.c  
+> > > index a95cc2da56be..a2a34c5652a7 100644
+> > > --- a/drivers/iio/industrialio-buffer.c
+> > > +++ b/drivers/iio/industrialio-buffer.c
+> > > @@ -161,6 +161,62 @@ static ssize_t iio_buffer_read(struct file *filp,  
+> > char __user *buf,  
+> > >  	return ret;
+> > >  }
+> > >
+> > > +static size_t iio_buffer_space_available(struct iio_buffer *buf)
+> > > +{
+> > > +	if (buf->access->space_available)
+> > > +		return buf->access->space_available(buf);
+> > > +
+> > > +	return SIZE_MAX;
+> > > +}
+> > > +
+> > > +static ssize_t iio_buffer_write(struct file *filp, const char __user  
+> > *buf,  
+> > > +				size_t n, loff_t *f_ps)
+> > > +{
+> > > +	struct iio_dev_buffer_pair *ib = filp->private_data;
+> > > +	struct iio_buffer *rb = ib->buffer;
+> > > +	struct iio_dev *indio_dev = ib->indio_dev;
+> > > +	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+> > > +	int ret;
+> > > +	size_t written;
+> > > +
+> > > +	if (!indio_dev->info)
+> > > +		return -ENODEV;
+> > > +
+> > > +	if (!rb || !rb->access->write)
+> > > +		return -EINVAL;
+> > > +  
+> 
+> As the buffer implementation can support both 'read()' and 'write()', the following
+> check might make sense:
+> 
+> if (rb->direction != IIO_BUFFER_DIRECTION_OUT)
+>       return -EPERM;
 
-Paolo
+Makes sense.  Whether EPERM is the right error code is a different question.
+Doesn't seem perfectly aligned with this case, but it's not too bad.
+
+Jonathan
+
+> 
+> If going with this, we should add an extra patch to do a similar thing on the read side...
+> 
+> - Nuno Sá
+> 
 
