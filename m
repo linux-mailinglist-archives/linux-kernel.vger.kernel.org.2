@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E84411C83
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CCC411B04
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345254AbhITRKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:10:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59176 "EHLO mail.kernel.org"
+        id S1343510AbhITQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346562AbhITRHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:07:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA936159A;
-        Mon, 20 Sep 2021 16:55:45 +0000 (UTC)
+        id S243344AbhITQus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFEE461359;
+        Mon, 20 Sep 2021 16:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156946;
-        bh=Wi2//wz/Iq2qV+FBIs5zZK9xPa4rDxsm7/BNFO7bGzE=;
+        s=korg; t=1632156554;
+        bh=NkrhRnAGso2BthwGEsErc4p9dPma96S6+l5Hj0YIvMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iw2yOPItjTUil0CtICPmfch5oWkx6UI818/KsB06JaKN8iLmqjLQf1ur/acmeHrWh
-         G1Wxqj094aU76BX2FAlxzE6YAtNLiFvQ2Qz0vJVh+Kq7Lel4N0PdMGV7QGLi/ZQhNC
-         2NlS7nDtdxoM9sfs/UtoGak2Um/hB97dt4z48b/Y=
+        b=MbPqIxPrlDk6Y8euI72S9D3YvnSq8vpqgAlLM96x6b+j4/yZTpQre7BJwgnokTJ4f
+         3QNno0xPsvebdl++H1hiuKEa5SyMQM9QN+/vYclJOTy/blNWfJAeowDIqGXIs9jCS5
+         7eOFZX4EPSH0nYXggc6EMgNLLHnucWiJ7v93B+Fc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Mathias Nyman <mathias.nyman@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 141/175] Revert "USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set"
+Subject: [PATCH 4.4 112/133] Revert "USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set"
 Date:   Mon, 20 Sep 2021 18:43:10 +0200
-Message-Id: <20210920163922.686208854@linuxfoundation.org>
+Message-Id: <20210920163916.284398874@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -72,10 +72,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index ec00eff01794..2df61fff8ae3 100644
+index b1994b03341f..bd010f8caf87 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
-@@ -4419,19 +4419,19 @@ static u16 xhci_calculate_u1_timeout(struct xhci_hcd *xhci,
+@@ -4438,19 +4438,19 @@ static u16 xhci_calculate_u1_timeout(struct xhci_hcd *xhci,
  {
  	unsigned long long timeout_ns;
  
@@ -101,7 +101,7 @@ index ec00eff01794..2df61fff8ae3 100644
  	/* The U1 timeout is encoded in 1us intervals.
  	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
  	 */
-@@ -4483,19 +4483,19 @@ static u16 xhci_calculate_u2_timeout(struct xhci_hcd *xhci,
+@@ -4502,19 +4502,19 @@ static u16 xhci_calculate_u2_timeout(struct xhci_hcd *xhci,
  {
  	unsigned long long timeout_ns;
  
