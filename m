@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865DD411D36
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B688411B72
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346953AbhITRRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:17:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41876 "EHLO mail.kernel.org"
+        id S231863AbhITQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:58:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347820AbhITROq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:14:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED7E7619A6;
-        Mon, 20 Sep 2021 16:58:26 +0000 (UTC)
+        id S243847AbhITQzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8144361355;
+        Mon, 20 Sep 2021 16:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157107;
-        bh=rz4z0FsrXC1Crr5VZrPkgFKegv1dOq9O+Z7CwbZwsCA=;
+        s=korg; t=1632156663;
+        bh=kso4RVzKqv3ub6MaNPc5X1I72zn/pVVjMm26GXuvzrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=142bc6WEEXZ+7hmmJ/3NrbJTV1ZnLR4nkLtekZEtQboLj4qN4UQKmZnEe0PlimCVf
-         ZbNn+7+DU2twEp2IKDXRn06C/0ebVOKj4CDFaPaJYZvroZZoGK9G1bnVtEieVXpMFE
-         rm9WjRsTP2UcLtGw4rMoR+vB0Vf/OsSpMTEYC4t0=
+        b=IRYU53a/MuFp/Xu4SsacRzJ9sWNxuSogDuYz54H28ymUSwHjUCG4wek6ExtbhfHYQ
+         kKe3VbzAoAp377xoVAvRtwPdBYJrQpskjHzlMMHTJhAj7qTIo7HxsbCmt6cKlZvFh6
+         x84F2+qfkvhhY2hUIbp6haltp+ufCbGReeg5BI7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 056/217] tcp: seq_file: Avoid skipping sk during tcp_seek_last_pos
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 028/175] powerpc/module64: Fix comment in R_PPC64_ENTRY handling
 Date:   Mon, 20 Sep 2021 18:41:17 +0200
-Message-Id: <20210920163926.522560274@linuxfoundation.org>
+Message-Id: <20210920163918.987685214@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +38,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin KaFai Lau <kafai@fb.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 525e2f9fd0229eb10cb460a9e6d978257f24804e ]
+commit 2fb0a2c989837c976b68233496bbaefb47cd3d6f upstream.
 
-st->bucket stores the current bucket number.
-st->offset stores the offset within this bucket that is the sk to be
-seq_show().  Thus, st->offset only makes sense within the same
-st->bucket.
+The comment here is wrong, the addi reads from r2 not r12. The code is
+correct, 0x38420000 = addi r2,r2,0.
 
-These two variables are an optimization for the common no-lseek case.
-When resuming the seq_file iteration (i.e. seq_start()),
-tcp_seek_last_pos() tries to continue from the st->offset
-at bucket st->bucket.
-
-However, it is possible that the bucket pointed by st->bucket
-has changed and st->offset may end up skipping the whole st->bucket
-without finding a sk.  In this case, tcp_seek_last_pos() currently
-continues to satisfy the offset condition in the next (and incorrect)
-bucket.  Instead, regardless of the offset value, the first sk of the
-next bucket should be returned.  Thus, "bucket == st->bucket" check is
-added to tcp_seek_last_pos().
-
-The chance of hitting this is small and the issue is a decade old,
-so targeting for the next tree.
-
-Fixes: a8b690f98baf ("tcp: Fix slowness in read /proc/net/tcp")
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210701200541.1033917-1-kafai@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a61674bdfc7c ("powerpc/module: Handle R_PPC64_ENTRY relocations")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_ipv4.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/module_64.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 146a137ee7ef..744479c8b91f 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2087,6 +2087,7 @@ static void *tcp_get_idx(struct seq_file *seq, loff_t pos)
- static void *tcp_seek_last_pos(struct seq_file *seq)
- {
- 	struct tcp_iter_state *st = seq->private;
-+	int bucket = st->bucket;
- 	int offset = st->offset;
- 	int orig_num = st->num;
- 	void *rc = NULL;
-@@ -2097,7 +2098,7 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
- 			break;
- 		st->state = TCP_SEQ_STATE_LISTENING;
- 		rc = listening_get_next(seq, NULL);
--		while (offset-- && rc)
-+		while (offset-- && rc && bucket == st->bucket)
- 			rc = listening_get_next(seq, rc);
- 		if (rc)
- 			break;
-@@ -2108,7 +2109,7 @@ static void *tcp_seek_last_pos(struct seq_file *seq)
- 		if (st->bucket > tcp_hashinfo.ehash_mask)
- 			break;
- 		rc = established_get_first(seq);
--		while (offset-- && rc)
-+		while (offset-- && rc && bucket == st->bucket)
- 			rc = established_get_next(seq, rc);
- 	}
- 
--- 
-2.30.2
-
+--- a/arch/powerpc/kernel/module_64.c
++++ b/arch/powerpc/kernel/module_64.c
+@@ -691,7 +691,7 @@ int apply_relocate_add(Elf64_Shdr *sechd
+ 			/*
+ 			 * If found, replace it with:
+ 			 *	addis r2, r12, (.TOC.-func)@ha
+-			 *	addi r2, r12, (.TOC.-func)@l
++			 *	addi  r2,  r2, (.TOC.-func)@l
+ 			 */
+ 			((uint32_t *)location)[0] = 0x3c4c0000 + PPC_HA(value);
+ 			((uint32_t *)location)[1] = 0x38420000 + PPC_LO(value);
 
 
