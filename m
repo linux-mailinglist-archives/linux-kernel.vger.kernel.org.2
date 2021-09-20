@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9675F412687
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E20A412688
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349909AbhITS75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:59:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
+        id S1387985AbhITS77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:59:59 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50810 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231421AbhITS5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:57:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 171B7606A5;
-        Mon, 20 Sep 2021 18:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632164144;
-        bh=4Upm/PuZbLIKgUC6E/6dOdweT8yq3TxrOEEOu7IIZ2I=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=NHHc9iJHui8I45UwnRuR0sopiG3P5lUJtu8Z2qnCH76ohA+wfYyIDXtMNKYHuJOuh
-         Y5qPX4CdSb2x0bH/XkRkPaoC5lFWdSlP+jmi9LEGPoRO9b30exUwm2t01jFaPYNgfB
-         Ai1wd62TPUuQHxvZf3oLqEqRrWtJSvHaNq3kuFwHYY1npfNIkcHvTHlrOo1Nw4v0VF
-         ODpYGppbh9a2H1ByS/CwplETSmEGXOAZ2S/Yyi8UcCm7Ub6KqtUn+f+XeOxrU/wCeA
-         dXOIazE9JZeggnVRu9UzyzQ/t/Y4HHCQQZ7FeXdtv768EKlRtDpWW969fvEH1zFvGD
-         Ig9N/92dLfkNA==
-Received: by envy17 (sSMTP sendmail emulation); Mon, 20 Sep 2021 11:55:42 -0700
-From:   markgross@kernel.org
-To:     linux-kernel@vger.kernel.org, hdegoede@redhat.com
-Subject: [PATCH] update email addresses. Change all email addresses for Mark Gross to use markgross@kernel.org.
-Date:   Mon, 20 Sep 2021 11:55:35 -0700
-Message-Id: <20210920185535.83416-2-markgross@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210920185535.83416-1-markgross@kernel.org>
-References: <20210920185535.83416-1-markgross@kernel.org>
+        id S1354075AbhITS5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:57:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=jcJ8+PGAESQtnEaep3beg72gC2wG3+PVTH5vzFcM5i4=; b=eRycXmW08DR9G2IcUuJDYtWoZS
+        v336b1hI4iAwdh92tguEJztRrWMnqS+zBIZwPiliqeNN39kyktDjm/XzQ9aKJVb9aralydZEb0Ys/
+        QIb3BeQzdT6hq1Wb+S0Z7Et/Mm9XVmCa+qro3tt+g+blCZAXy7crYdzTMtGJ346F+dO8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mSOSC-007X3b-MK; Mon, 20 Sep 2021 20:55:48 +0200
+Date:   Mon, 20 Sep 2021 20:55:48 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC PATCH 1/2] drivers: net: dsa: qca8k: add support
+ for led config
+Message-ID: <YUjZNA1Swo6Bv3/Q@lunn.ch>
+References: <20210920180851.30762-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920180851.30762-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Gross <markgross@kernel.org>
+On Mon, Sep 20, 2021 at 08:08:50PM +0200, Ansuel Smith wrote:
+> Add support for led control and led toggle.
+> qca8337 and qca8327 switch have various reg to control port leds.
+> The current implementation permit to toggle them on/off and to declare
+> their blink rules based on the entry in the dts.
+> They can also be declared in userspace by the "control_rule" entry in
+> the led sysfs. When hw_mode is active (set by default) the leds blink
+> based on the control_rule. There are 6 total control rule.
+> Control rule that applies to phy0-3 commonly used for lan port.
+> Control rule that applies to phy4 commonly used for wan port.
+> Each phy port (5 in total) can have a maximum of 3 different leds
+> attached. Each led can be turned off, blink at 4hz, off or set to
+> hw_mode and follow their respecitve control rule. The hw_mode can be
+> toggled using the sysfs entry and will be disabled on brightness or
+> blink set.
 
-Signed-off-by: Mark Gross<markgross@kernel.org>
----
- MAINTAINERS | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Hi Ansuel
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ca6d6fde85cf..9d9800f79b97 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6683,7 +6683,7 @@ S:	Supported
- F:	drivers/edac/dmc520_edac.c
- 
- EDAC-E752X
--M:	Mark Gross <mark.gross@intel.com>
-+M:	Mark Gross <markgross@kernel.org>
- L:	linux-edac@vger.kernel.org
- S:	Maintained
- F:	drivers/edac/e752x_edac.c
-@@ -11979,7 +11979,7 @@ F:	drivers/net/ethernet/mellanox/mlxfw/
- 
- MELLANOX HARDWARE PLATFORM SUPPORT
- M:	Hans de Goede <hdegoede@redhat.com>
--M:	Mark Gross <mgross@linux.intel.com>
-+M:	Mark Gross <markgross@kernel.org>
- M:	Vadim Pasternak <vadimp@nvidia.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Supported
-@@ -12431,7 +12431,7 @@ F:	drivers/platform/surface/surface_gpe.c
- 
- MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT
- M:	Hans de Goede <hdegoede@redhat.com>
--M:	Mark Gross <mgross@linux.intel.com>
-+M:	Mark Gross <markgross@kernel.org>
- M:	Maximilian Luz <luzmaximilian@gmail.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
-@@ -18460,7 +18460,7 @@ S:	Supported
- F:	drivers/net/ethernet/tehuti/*
- 
- TELECOM CLOCK DRIVER FOR MCPL0010
--M:	Mark Gross <mark.gross@intel.com>
-+M:	Mark Gross <markgross@kernel.org>
- S:	Supported
- F:	drivers/char/tlclk.c
- 
-@@ -20376,7 +20376,7 @@ F:	arch/x86/mm/
- 
- X86 PLATFORM DRIVERS
- M:	Hans de Goede <hdegoede@redhat.com>
--M:	Mark Gross <mgross@linux.intel.com>
-+M:	Mark Gross <markgross@kernel.org>
- L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
--- 
-2.30.2
+It is great you are using the LED subsystem for this. But we need to
+split the code up into a generic part which can shared by any
+switch/PHY and a driver specific part.
 
+There has been a lot of discussion on the list about this. Maybe you
+can help get us to a generic solution which can be used by everybody.
+
+    Andrew
