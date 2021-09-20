@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B145411AE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ACA411C2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244655AbhITQxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
+        id S1344828AbhITRGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:06:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244361AbhITQuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:50:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5446761284;
-        Mon, 20 Sep 2021 16:48:41 +0000 (UTC)
+        id S1345689AbhITREL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:04:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19ABA61501;
+        Mon, 20 Sep 2021 16:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156521;
-        bh=7wZnqVtzCaieeirAr59OTc2qWcSAp87QUfatIxHr23g=;
+        s=korg; t=1632156861;
+        bh=zybBW6TSvqCCELdVQM1foSIHVEL1vDOQgk/SaJPKxEU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qMOkNv6WDwS+tWxMawBH8OstokqekHkgrQBNj2ei9Fy1DCYRNFhFWDBO2g65/7adR
-         JaKstmTW/ot0OZiikHWtXzGCJHnCTmd6Xl9KPRdx/VhKQFU+CDUIrdxbP5wF38KRyH
-         lQesdDKobeBXQdYSbgKys7IKEdJ8s+e+qn4rVLz4=
+        b=Xg6zEOdqoZyTkBwSSkgaiefeJC36q6Rp9dku8sumHAZ57F8cOkSvc6dXpWKOmjOU2
+         nXthuT1AZUfAE8Kx2hl9YdoKaTeNcLQJzwo7tLrOIPhPHWLIujAdfrZfePyhAk1jWq
+         BNyQnA30j0UskRZgClX5DdveP5u44ZTfcZ1pX3tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 090/133] Smack: Fix wrong semantics in smk_access_entry()
-Date:   Mon, 20 Sep 2021 18:42:48 +0200
-Message-Id: <20210920163915.589327941@linuxfoundation.org>
+Subject: [PATCH 4.9 120/175] video: fbdev: kyro: Error out if pixclock equals zero
+Date:   Mon, 20 Sep 2021 18:42:49 +0200
+Message-Id: <20210920163922.002639494@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 6d14f5c7028eea70760df284057fe198ce7778dd ]
+[ Upstream commit 1520b4b7ba964f8eec2e7dd14c571d50de3e5191 ]
 
-In the smk_access_entry() function, if no matching rule is found
-in the rust_list, a negative error code will be used to perform bit
-operations with the MAY_ enumeration value. This is semantically
-wrong. This patch fixes this issue.
+The userspace program could pass any values to the driver through
+ioctl() interface. if the driver doesn't check the value of 'pixclock',
+it may cause divide error because the value of 'lineclock' and
+'frameclock' will be zero.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Fix this by checking whether 'pixclock' is zero in kyrofb_check_var().
+
+The following log reveals it:
+
+[  103.073930] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+[  103.073942] CPU: 4 PID: 12483 Comm: syz-executor Not tainted 5.14.0-rc2-00478-g2734d6c1b1a0-dirty #118
+[  103.073959] RIP: 0010:kyrofb_set_par+0x316/0xc80
+[  103.074045] Call Trace:
+[  103.074048]  ? ___might_sleep+0x1ee/0x2d0
+[  103.074060]  ? kyrofb_ioctl+0x330/0x330
+[  103.074069]  fb_set_var+0x5bf/0xeb0
+[  103.074078]  ? fb_blank+0x1a0/0x1a0
+[  103.074085]  ? lock_acquire+0x3bd/0x530
+[  103.074094]  ? lock_release+0x810/0x810
+[  103.074103]  ? ___might_sleep+0x1ee/0x2d0
+[  103.074114]  ? __mutex_lock+0x620/0x1190
+[  103.074126]  ? trace_hardirqs_on+0x6a/0x1c0
+[  103.074137]  do_fb_ioctl+0x31e/0x700
+[  103.074144]  ? fb_getput_cmap+0x280/0x280
+[  103.074152]  ? rcu_read_lock_sched_held+0x11/0x80
+[  103.074162]  ? rcu_read_lock_sched_held+0x11/0x80
+[  103.074171]  ? __sanitizer_cov_trace_switch+0x67/0xf0
+[  103.074181]  ? __sanitizer_cov_trace_const_cmp2+0x20/0x80
+[  103.074191]  ? do_vfs_ioctl+0x14b/0x16c0
+[  103.074199]  ? vfs_fileattr_set+0xb60/0xb60
+[  103.074207]  ? rcu_read_lock_sched_held+0x11/0x80
+[  103.074216]  ? lock_release+0x483/0x810
+[  103.074224]  ? __fget_files+0x217/0x3d0
+[  103.074234]  ? __fget_files+0x239/0x3d0
+[  103.074243]  ? do_fb_ioctl+0x700/0x700
+[  103.074250]  fb_ioctl+0xe6/0x130
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-3-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smack_access.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/video/fbdev/kyro/fbdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
-index 0df316c62005..84f38b694242 100644
---- a/security/smack/smack_access.c
-+++ b/security/smack/smack_access.c
-@@ -90,23 +90,22 @@ int log_policy = SMACK_AUDIT_DENIED;
- int smk_access_entry(char *subject_label, char *object_label,
- 			struct list_head *rule_list)
+diff --git a/drivers/video/fbdev/kyro/fbdev.c b/drivers/video/fbdev/kyro/fbdev.c
+index 517057a48dd4..0b844f6d8a30 100644
+--- a/drivers/video/fbdev/kyro/fbdev.c
++++ b/drivers/video/fbdev/kyro/fbdev.c
+@@ -399,6 +399,9 @@ static int kyrofb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
  {
--	int may = -ENOENT;
- 	struct smack_rule *srp;
+ 	struct kyrofb_info *par = info->par;
  
- 	list_for_each_entry_rcu(srp, rule_list, list) {
- 		if (srp->smk_object->smk_known == object_label &&
- 		    srp->smk_subject->smk_known == subject_label) {
--			may = srp->smk_access;
--			break;
-+			int may = srp->smk_access;
-+			/*
-+			 * MAY_WRITE implies MAY_LOCK.
-+			 */
-+			if ((may & MAY_WRITE) == MAY_WRITE)
-+				may |= MAY_LOCK;
-+			return may;
- 		}
- 	}
- 
--	/*
--	 * MAY_WRITE implies MAY_LOCK.
--	 */
--	if ((may & MAY_WRITE) == MAY_WRITE)
--		may |= MAY_LOCK;
--	return may;
-+	return -ENOENT;
- }
- 
- /**
++	if (!var->pixclock)
++		return -EINVAL;
++
+ 	if (var->bits_per_pixel != 16 && var->bits_per_pixel != 32) {
+ 		printk(KERN_WARNING "kyrofb: depth not supported: %u\n", var->bits_per_pixel);
+ 		return -EINVAL;
 -- 
 2.30.2
 
