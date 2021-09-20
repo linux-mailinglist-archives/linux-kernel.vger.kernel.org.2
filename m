@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CE541244A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CBF412536
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380291AbhITSdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
+        id S1382785AbhITSmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:42:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378758AbhITS0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7C14632CD;
-        Mon, 20 Sep 2021 17:25:29 +0000 (UTC)
+        id S1353443AbhITSjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:39:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB9AA6332B;
+        Mon, 20 Sep 2021 17:30:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158730;
-        bh=fbMyY/4KGBdq5dALuZ3wWpG73aHr5JeVlSKLDkNfDKM=;
+        s=korg; t=1632159027;
+        bh=nlLP1PcMFvreRz2bXlOXcM6f5l++eOJOjZaNDzVxO4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lXlfVNH0PtSLOj1fAIdyFej6qdlFzXK7h1Yd1U/P4UbCn6ngF2Rj6OwBm9rkKKHGJ
-         AVd6HFjkdIu7Shf6teFgMg5YE742Ky1P5IXfEqpFlwUEbURjX5giDYRc3rFR6BRbQh
-         Mxz2htQdUwRiixHXAh42kV855dYacyDOUMplRKIk=
+        b=qbLtwwSLEn5b3o6oVrUs/in7qQoAH3PtsrXA/ckAJSBLLkDMg7cUB53qoeI6SjJxM
+         9YpI2T2ft+8zBFFrmE0hj9jfpYMLXGDqIgwQkdjxWopPCjLJAZ5xEgfeLbxr80YkVs
+         qoUNSx1kH9e7QvxHKwglDQkDmXmHZvUyKfoBGn0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ernst=20Sj=C3=B6strand?= <ernstp@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 009/122] drm/amd/amdgpu: Increase HWIP_MAX_INSTANCE to 10
+        stable@vger.kernel.org, Zhenpeng Lin <zplin@psu.edu>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 043/168] dccp: dont duplicate ccid when cloning dccp sock
 Date:   Mon, 20 Sep 2021 18:43:01 +0200
-Message-Id: <20210920163916.071405631@linuxfoundation.org>
+Message-Id: <20210920163923.062782335@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ernst Sjöstrand <ernstp@gmail.com>
+From: Lin, Zhenpeng <zplin@psu.edu>
 
-commit 67a44e659888569a133a8f858c8230e9d7aad1d5 upstream.
+commit d9ea761fdd197351890418acd462c51f241014a7 upstream.
 
-Seems like newer cards can have even more instances now.
-Found by UBSAN: array-index-out-of-bounds in
-drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:318:29
-index 8 is out of range for type 'uint32_t *[8]'
+Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
+a UAF but reintroduced CVE-2017-6074.
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1697
-Cc: stable@vger.kernel.org
-Signed-off-by: Ernst Sjöstrand <ernstp@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+When the sock is cloned, two dccps_hc_tx_ccid will reference to the
+same ccid. So one can free the ccid object twice from two socks after
+cloning.
+
+This issue was found by "Hadar Manor" as well and assigned with
+CVE-2020-16119, which was fixed in Ubuntu's kernel. So here I port
+the patch from Ubuntu to fix it.
+
+The patch prevents cloned socks from referencing the same ccid.
+
+Fixes: 2677d2067731410 ("dccp: don't free ccid2_hc_tx_sock ...")
+Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/dccp/minisocks.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -717,7 +717,7 @@ enum amd_hw_ip_block_type {
- 	MAX_HWIP
- };
- 
--#define HWIP_MAX_INSTANCE	8
-+#define HWIP_MAX_INSTANCE	10
- 
- struct amd_powerplay {
- 	void *pp_handle;
+--- a/net/dccp/minisocks.c
++++ b/net/dccp/minisocks.c
+@@ -94,6 +94,8 @@ struct sock *dccp_create_openreq_child(c
+ 		newdp->dccps_role	    = DCCP_ROLE_SERVER;
+ 		newdp->dccps_hc_rx_ackvec   = NULL;
+ 		newdp->dccps_service_list   = NULL;
++		newdp->dccps_hc_rx_ccid     = NULL;
++		newdp->dccps_hc_tx_ccid     = NULL;
+ 		newdp->dccps_service	    = dreq->dreq_service;
+ 		newdp->dccps_timestamp_echo = dreq->dreq_timestamp_echo;
+ 		newdp->dccps_timestamp_time = dreq->dreq_timestamp_time;
 
 
