@@ -2,259 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524F8411789
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C933411787
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240931AbhITOwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:52:17 -0400
-Received: from mout.perfora.net ([74.208.4.196]:53559 "EHLO mout.perfora.net"
+        id S240936AbhITOwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:52:03 -0400
+Received: from mout.perfora.net ([74.208.4.194]:41315 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240866AbhITOwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:52:00 -0400
+        id S240831AbhITOv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:51:58 -0400
 Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
- (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1MA7vi-1mZVLr1QNu-00Bb3c;
- Mon, 20 Sep 2021 16:50:13 +0200
+ (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1M3lDb-1mT9ZL1MRf-000pQT;
+ Mon, 20 Sep 2021 16:50:16 +0200
 From:   Marcel Ziswiler <marcel@ziswiler.com>
 To:     linux-arm-kernel@lists.infradead.org
-Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Rob Herring <robh@kernel.org>,
+Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
         Fabio Estevam <festevam@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Olof Johansson <olof@lixom.net>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Tim Harvey <tharvey@gateworks.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/9] dt-bindings: arm: fsl: clean-up all toradex boards/modules
-Date:   Mon, 20 Sep 2021 16:49:36 +0200
-Message-Id: <20210920144938.314588-8-marcel@ziswiler.com>
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org
+Subject: [PATCH v4 8/9] ARM: dts: colibri-imx6ull-emmc: add device tree
+Date:   Mon, 20 Sep 2021 16:49:37 +0200
+Message-Id: <20210920144938.314588-9-marcel@ziswiler.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210920144938.314588-1-marcel@ziswiler.com>
 References: <20210920144938.314588-1-marcel@ziswiler.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:bn2ev84/0MN3nEn+XC6r3veck7BF0Q5QJLERDM3MMksTz4iFXga
- pX3qiZOv1Pc66+G7n6Y+JrOneHybZ4qn1c+698bGxEOlp+soK1gV9Iz9dvXkaJLfonI6t3s
- DL3jvMdcwbmm6GDECUChOBzbHh6DOGIGXZ+ER1mSmdD1VOCDZ9J8k8Po7ddT2Yq3obVd8pM
- HfiaiqmxiTh3OhhUN9YhQ==
+X-Provags-ID: V03:K1:n+m8xG2XZFLrbr72Ik+iiJDjj9WLEuu6Yf+FP0zlkpRsuheJQ3o
+ nPmsk1YbSlXeBYUkC5gv6FYS5DcS8e2x8aS0nKLEEmHBfC1AlPCzrTUZd1zrAMMxc+ja5Yx
+ 0Bpu08KOyEUlGzozr1MCbryCKV58oYeVoHF2TYwNkQJD9+miNgRB34lYYroEmkSA8L0C9vJ
+ o1kMMmWwImodGetY6oykw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hqmoTI9C8Fk=:N5UzZ8C2RVqcKPe0Ps2yy6
- 48+Yem9LPwpuxY3JwDITnpeW30MVvhcT4Q8I8JF8csEZeuU9kA0WQkhdQCiDUHIaJPWvsvkmT
- wEoSV1AHh9lOS37j/X72/3ZqLUwhKKgAEyJMQqhyCimKidkFyfmXsI8SiYOfQ6UNQq1V1/aM4
- vQ/3G4E4Gug2ydNixPpd6N11my+rT8Lu3ME32nEIE/2KhQbvxbQXF7YPyoVq+7DolN8GZdhLA
- 1C/5FzElg7iRx8r7vqPWPGDHj4H8Nt2pryDnjiSinRcXUSa/a6Rwxkcx87g86dPt96maZRRP6
- Tj+A1CNYlLrPSi6gcDyjS0U1x8bMJKnksaJ6po+gfOlf7OcqyQwoLkhwWITv/NWqD37eHrRMY
- TRSm579rY8cNqaELVUfjb0nKaLlQYr2Iqy5qZvW4jaCPLI1/0Gq20yd5e8hL3YQnHy/cjTEQa
- YWgQZwqBG+Zorx+QL2AhOhchM/LoK0XBYVB+AJfCwdZyv7lxBSaCdGPpCZJ8udpeW5JUn62dO
- rr5bjaXNzUPOhKozvC5D4DZPJUYzSBqaVEDccMXSi+zIEN59cj9tgWrpCtSS+UrURRvoxiZc0
- jdza9wl+EuQYLDkZ5CweIpQ7U5QBk8SO3fH8qdxj6LOoUZkGprqxqeX3BQ0RBMQDCLQbus8m3
- FwnN7HdOZNr3RsyVao3F/opTdsMI+huUuqGtLS0AmXevr2pfH01owUpv44euJFpA8nKUtDmDx
- Kn8WS3S5i3drGNhl8UMT7jJftUGAVvruo3a17w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bzh2n0EjAr4=:YiopKl1zk/PRLAiyXJ9Pz1
+ p6R/7EulTd8Vogmw+c51sVULot/DF9EfSuCw2fgAEjB0SdLes/70lrppn1p7arPvq9lWLCz6u
+ ixnCpt7ChFOC9jPrDgG+cUQSo396j/BJuuym1YkM0o/Vf3g7hHSil9RdGeGyJj3loXPhJ6J0G
+ ynXv/hhgFgIt0NN0M9VmU9KNcPhdAKEaGO8llJOzK5c7iXUrVDTjYCJT91jb5vN7W/1kjcxrb
+ OhvlmrxGtiNR+hkci17rOk5GxWy+7FGxzNul1xpOHG5g+AoAQaPQgEn5RCd1MmsEAlmn4PuFQ
+ Mkq4IrwJ5b5J1LUODN7X20b4KC2HiZdr+WuocnQ+tSibuvSnY80gHlhwQsE9SnCLroHQs8OfT
+ d9XkpJ948gGKSydMkTM0cFzXK1uXRv/S6CO2qGrfTafamUBb5YQSyVOZdW8ZlrFoUhPEO/J81
+ ndMDVB6cRkOjL8Ij2M5Gm7xBecwF4hYau2ehc2BtOut3O18XIwjgshPr7pNcXnQSP590mhLHC
+ WSwOXJ3IuvZiqGO88yq3Wu29jBgZUCc55sXBgbXWGJ9gyRjFvkYjxyEI+hmTqaLVZOHdeaz8E
+ 3XhAMUOmDJAxKDeEVsUEhi+Z8pyynjwNDizg4CiWl/8gzEnJpyb/JEO2ZEP+qpEL2Y2v1mRA1
+ 7yjA3Yx+eWmod6NCfAQ8KYCgC7jR5WgH1tDTf2K12Z/6H/95BfGLPdoClkXBXHG8eRjDfBCBj
+ mqq69tqO/n+VUQHEMTfesRVZ2qBuk5A1LV8hxQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+From: Max Krummenacher <max.krummenacher@toradex.com>
 
-Simplify and unify the distinction between modules and carrier boards.
+Add a device tree for a Colibri iMX6ULL 1GB which has a eMMC instead of
+the raw NAND used on other SKUs.
 
+Related-to: ELB-4056, ELB-4058, ELB-4070
+Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
 Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Acked-by: Rob Herring <robh@kernel.org>
 Reviewed-by: Fabio Estevam <festevam@gmail.com>
 
 ---
 
-Changes in v4:
-- Fix dt_binding_check line too long warnings as pointed out by Rob.
+(no changes since v3)
 
 Changes in v3:
 - Add Fabio's reviewed-by. Thanks!
-- Add Rob's ack. Thanks!
 
 Changes in v2:
-- New patch cleaning-up dt-bindings documentation.
+- Fix indentation.
+- Use latest agreed upon SPDX-License-Identifier GPL-2.0+ OR MIT.
+- Drop AG in our copyright statement as recommended by our legal.
 
- .../devicetree/bindings/arm/fsl.yaml          | 79 ++++++++++---------
- 1 file changed, 41 insertions(+), 38 deletions(-)
+ arch/arm/boot/dts/Makefile                    |   1 +
+ .../boot/dts/imx6ull-colibri-emmc-eval-v3.dts |  17 ++
+ .../dts/imx6ull-colibri-emmc-nonwifi.dtsi     | 185 ++++++++++++++++++
+ arch/arm/boot/dts/imx6ull-colibri.dtsi        |  32 ++-
+ 4 files changed, 233 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts
+ create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 60f4862ba15e7..f1a74f4bce245 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -235,7 +235,7 @@ properties:
-               - technexion,imx6q-pico-pi      # TechNexion i.MX6Q Pico-Pi
-               - technologic,imx6q-ts4900
-               - technologic,imx6q-ts7970
--              - toradex,apalis_imx6q      # Apalis iMX6 Module
-+              - toradex,apalis_imx6q      # Apalis iMX6 Modules
-               - udoo,imx6q-udoo           # Udoo i.MX6 Quad Board
-               - uniwest,imx6q-evi         # Uniwest Evi
-               - variscite,dt6customboard
-@@ -314,18 +314,12 @@ properties:
-           - const: phytec,imx6q-pfla02    # PHYTEC phyFLEX-i.MX6 Quad
-           - const: fsl,imx6q
- 
--      - description: i.MX6Q Boards with Toradex Apalis iMX6Q/D Module
-+      - description: i.MX6Q Boards with Toradex Apalis iMX6Q/D Modules
-         items:
-           - enum:
--              - toradex,apalis_imx6q-ixora  # Apalis iMX6Q/D Module on Ixora Carrier Board
--              - toradex,apalis_imx6q-eval   # Apalis iMX6Q/D Module on Apalis Evaluation Board
--          - const: toradex,apalis_imx6q
--          - const: fsl,imx6q
--
--      - description: i.MX6Q Toradex Apalis iMX6Q/D Module on Ixora Carrier Board V1.1
--        items:
--          - const: toradex,apalis_imx6q-ixora-v1.1
--          - const: toradex,apalis_imx6q-ixora
-+              - toradex,apalis_imx6q-ixora      # Apalis iMX6Q/D Module on Ixora Carrier Board
-+              - toradex,apalis_imx6q-ixora-v1.1 # Apalis iMX6Q/D Module on Ixora V1.1 Carrier Board
-+              - toradex,apalis_imx6q-eval       # Apalis iMX6Q/D Module on Apalis Evaluation Board
-           - const: toradex,apalis_imx6q
-           - const: fsl,imx6q
- 
-@@ -393,6 +387,8 @@ properties:
-               - technexion,imx6dl-pico-pi      # TechNexion i.MX6DL Pico-Pi
-               - technologic,imx6dl-ts4900
-               - technologic,imx6dl-ts7970
-+              - toradex,colibri_imx6dl      # Colibri iMX6 Modules
-+              - toradex,colibri_imx6dl-v1_1 # Colibri iMX6 V1.1 Modules
-               - udoo,imx6dl-udoo          # Udoo i.MX6 Dual-lite Board
-               - vdl,lanmcu                # Van der Laan LANMCU board
-               - wand,imx6dl-wandboard     # Wandboard i.MX6 Dual Lite Board
-@@ -466,20 +462,18 @@ properties:
-           - const: phytec,imx6dl-pfla02   # PHYTEC phyFLEX-i.MX6 Quad
-           - const: fsl,imx6dl
- 
--      - description: i.MX6DL Toradex Colibri iMX6 Module on Colibri
--                     Evaluation Board V3
-+      - description: i.MX6DL Boards with Toradex Colibri iMX6DL/S Modules
-         items:
--          - const: toradex,colibri_imx6dl-eval-v3
--          - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
-+          - enum:
-+              - toradex,colibri_imx6dl-eval-v3      # Colibri iMX6DL/S Module on Colibri Evaluation Board V3
-+          - const: toradex,colibri_imx6dl           # Colibri iMX6DL/S Module
-           - const: fsl,imx6dl
- 
--      - description: i.MX6DL Toradex Colibri iMX6 Module V1.1 on Colibri
--                     Evaluation Board V3
-+      - description: i.MX6DL Boards with Toradex Colibri iMX6DL/S V1.1 Modules
-         items:
--          - const: toradex,colibri_imx6dl-v1_1-eval-v3
--          - const: toradex,colibri_imx6dl-v1_1     # Colibri iMX6 Module V1.1
--          - const: toradex,colibri_imx6dl-eval-v3
--          - const: toradex,colibri_imx6dl          # Colibri iMX6 Module
-+          - enum:
-+              - toradex,colibri_imx6dl-v1_1-eval-v3 # Colibri iMX6DL/S V1.1 M. on Colibri Evaluation Board V3
-+          - const: toradex,colibri_imx6dl-v1_1      # Colibri iMX6DL/S V1.1 Module
-           - const: fsl,imx6dl
- 
-       - description: i.MX6S DHCOM DRC02 Board
-@@ -586,8 +580,8 @@ properties:
-               - fsl,imx6ull-14x14-evk     # i.MX6 UltraLiteLite 14x14 EVK Board
-               - kontron,imx6ull-n6411-som # Kontron N6411 SOM
-               - myir,imx6ull-mys-6ulx-eval # MYiR Tech iMX6ULL Evaluation Board
--              - toradex,colibri-imx6ull-eval      # Colibri iMX6ULL Module on Colibri Eval Board
--              - toradex,colibri-imx6ull-wifi-eval # Colibri iMX6ULL Wi-Fi / BT Module on Colibri Eval Board
-+              - toradex,colibri-imx6ull      # Colibri iMX6ULL Modules
-+              - toradex,colibri-imx6ull-wifi # Colibri iMX6ULL Wi-Fi / BT Modules
-           - const: fsl,imx6ull
- 
-       - description: i.MX6ULL Armadeus Systems OPOS6ULDev Board
-@@ -605,6 +599,20 @@ properties:
-           - const: phytec,imx6ull-pcl063  # PHYTEC phyCORE-i.MX 6ULL
-           - const: fsl,imx6ull
- 
-+      - description: i.MX6ULL Boards with Toradex Colibri iMX6ULL Modules
-+        items:
-+          - enum:
-+              - toradex,colibri-imx6ull-eval      # Colibri iMX6ULL Module on Colibri Evaluation Board
-+          - const: toradex,colibri-imx6ull        # Colibri iMX6ULL Module
-+          - const: fsl,imx6dl
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index d17210efe374f..8fb1429a7fb80 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -674,6 +674,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ul-tx6ul-0011.dtb \
+ 	imx6ul-tx6ul-mainboard.dtb \
+ 	imx6ull-14x14-evk.dtb \
++	imx6ull-colibri-emmc-eval-v3.dtb \
+ 	imx6ull-colibri-eval-v3.dtb \
+ 	imx6ull-colibri-wifi-eval-v3.dtb \
+ 	imx6ull-myir-mys-6ulx-eval.dtb \
+diff --git a/arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts b/arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts
+new file mode 100644
+index 0000000000000..61b93cb040c7f
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0+ OR MIT
++/*
++ * Copyright 2021 Toradex
++ */
 +
-+      - description: i.MX6ULL Boards with Toradex Colibri iMX6ULL Wi-Fi / BT Modules
-+        items:
-+          - enum:
-+              - toradex,colibri-imx6ull-wifi-eval # Colibri iMX6ULL Wi-Fi / BT M. on Colibri Evaluation Board
-+          - const: toradex,colibri-imx6ull-wifi   # Colibri iMX6ULL Wi-Fi / BT Module
-+          - const: fsl,imx6dl
++/dts-v1/;
 +
-       - description: Kontron N6411 S Board
-         items:
-           - const: kontron,imx6ull-n6411-s
-@@ -622,6 +630,7 @@ properties:
-         items:
-           - enum:
-               - element14,imx7s-warp      # Element14 Warp i.MX7 Board
-+              - toradex,colibri-imx7s     # Colibri iMX7S Module
-           - const: fsl,imx7s
++#include "imx6ull-colibri-emmc-nonwifi.dtsi"
++#include "imx6ull-colibri-eval-v3.dtsi"
++
++/ {
++	model = "Toradex Colibri iMX6ULL 1GB (eMMC) on Colibri Evaluation Board V3";
++	compatible = "toradex,colibri-imx6ull-emmc-eval",
++		     "toradex,colibri-imx6ull-emmc",
++		     "toradex,colibri-imx6ull",
++		     "fsl,imx6ull";
++};
+diff --git a/arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi b/arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi
+new file mode 100644
+index 0000000000000..a099abfdfa27c
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi
+@@ -0,0 +1,185 @@
++// SPDX-License-Identifier: GPL-2.0+ OR MIT
++/*
++ * Copyright 2021 Toradex
++ */
++
++#include "imx6ull-colibri.dtsi"
++
++/ {
++	aliases {
++		mmc0 = &usdhc2; /* eMMC */
++		mmc1 = &usdhc1; /* MMC 4bit slot */
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x10000000>;
++	};
++};
++
++&gpio1 {
++	gpio-line-names = "SODIMM_8",
++			  "SODIMM_6",
++			  "SODIMM_129",
++			  "SODIMM_89",
++			  "SODIMM_19",
++			  "SODIMM_21",
++			  "UNUSABLE_SODIMM_180",
++			  "UNUSABLE_SODIMM_184",
++			  "SODIMM_4",
++			  "SODIMM_2",
++			  "SODIMM_106",
++			  "SODIMM_71",
++			  "SODIMM_23",
++			  "SODIMM_31",
++			  "SODIMM_99",
++			  "SODIMM_102",
++			  "SODIMM_33",
++			  "SODIMM_35",
++			  "SODIMM_25",
++			  "SODIMM_27",
++			  "SODIMM_36",
++			  "SODIMM_38",
++			  "SODIMM_32",
++			  "SODIMM_34",
++			  "SODIMM_135",
++			  "SODIMM_77",
++			  "SODIMM_100",
++			  "SODIMM_186",
++			  "SODIMM_196",
++			  "SODIMM_194";
++};
++
++&gpio2 {
++	gpio-line-names = "SODIMM_55",
++			  "SODIMM_63",
++			  "SODIMM_178",
++			  "SODIMM_188",
++			  "SODIMM_73",
++			  "SODIMM_30",
++			  "SODIMM_67",
++			  "SODIMM_104",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "SODIMM_190",
++			  "SODIMM_47",
++			  "SODIMM_192",
++			  "SODIMM_49",
++			  "SODIMM_51",
++			  "SODIMM_53";
++};
++
++&gpio3 {
++	gpio-line-names = "SODIMM_56",
++			  "SODIMM_44",
++			  "SODIMM_68",
++			  "SODIMM_82",
++			  "",
++			  "SODIMM_76",
++			  "SODIMM_70",
++			  "SODIMM_60",
++			  "SODIMM_58",
++			  "SODIMM_78",
++			  "SODIMM_72",
++			  "SODIMM_80",
++			  "SODIMM_46",
++			  "SODIMM_62",
++			  "SODIMM_48",
++			  "SODIMM_74",
++			  "SODIMM_50",
++			  "SODIMM_52",
++			  "SODIMM_54",
++			  "SODIMM_66",
++			  "SODIMM_64",
++			  "SODIMM_57",
++			  "SODIMM_61",
++			  "SODIMM_29",
++			  "SODIMM_37",
++			  "SODIMM_88",
++			  "SODIMM_86",
++			  "SODIMM_92",
++			  "SODIMM_90";
++};
++
++&gpio4 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "SODIMM_140",
++			  "SODIMM_59",
++			  "SODIMM_142",
++			  "SODIMM_144",
++			  "SODIMM_133",
++			  "SODIMM_146",
++			  "SODIMM_28",
++			  "SODIMM_75",
++			  "SODIMM_96",
++			  "SODIMM_81",
++			  "SODIMM_94",
++			  "SODIMM_101",
++			  "SODIMM_103",
++			  "SODIMM_79",
++			  "SODIMM_97",
++			  "SODIMM_69",
++			  "SODIMM_98",
++			  "SODIMM_85",
++			  "SODIMM_65";
++};
++
++&gpio5 {
++	gpio-line-names = "SODIMM_43",
++			  "SODIMM_45",
++			  "SODIMM_137",
++			  "SODIMM_95",
++			  "SODIMM_107",
++			  "SODIMM_131",
++			  "SODIMM_93",
++			  "",
++			  "SODIMM_138",
++			  "",
++			  "SODIMM_105",
++			  "SODIMM_127";
++};
++
++&gpmi {
++	status = "disabled";
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gpio1 &pinctrl_gpio2 &pinctrl_gpio3
++		&pinctrl_gpio4 &pinctrl_gpio6 &pinctrl_gpio7
++		&pinctrl_gpmi_gpio>;
++};
++
++&iomuxc_snvs {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_snvs_gpio1 &pinctrl_snvs_gpio3>;
++};
++
++&usdhc2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc2emmc>;
++	assigned-clocks = <&clks IMX6UL_CLK_USDHC2_SEL>, <&clks IMX6UL_CLK_USDHC2>;
++	assigned-clock-parents = <&clks IMX6UL_CLK_PLL2_PFD2>;
++	assigned-clock-rates = <0>, <198000000>;
++	bus-width = <8>;
++	keep-power-in-suspend;
++	no-1-8-v;
++	non-removable;
++	vmmc-supply = <&reg_module_3v3>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/imx6ull-colibri.dtsi b/arch/arm/boot/dts/imx6ull-colibri.dtsi
+index 0cdbf7b6e7285..7f35a06dff95b 100644
+--- a/arch/arm/boot/dts/imx6ull-colibri.dtsi
++++ b/arch/arm/boot/dts/imx6ull-colibri.dtsi
+@@ -1,6 +1,6 @@
+-// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++// SPDX-License-Identifier: GPL-2.0+ OR MIT
+ /*
+- * Copyright 2018 Toradex AG
++ * Copyright 2018-2021 Toradex
+  */
  
-       - description: i.MX7S Boards with Toradex Colibri iMX7S Module
-@@ -653,15 +662,8 @@ properties:
-               - technexion,imx7d-pico-hobbit  # TechNexion i.MX7D Pico-Hobbit
-               - technexion,imx7d-pico-nymph   # TechNexion i.MX7D Pico-Nymph
-               - technexion,imx7d-pico-pi      # TechNexion i.MX7D Pico-Pi
--              - toradex,colibri-imx7d                   # Colibri iMX7 Dual Module
--              - toradex,colibri-imx7d-aster             # Colibri iMX7 Dual Module on Aster Carrier Board
--              - toradex,colibri-imx7d-emmc              # Colibri iMX7 Dual 1GB (eMMC) Module
--              - toradex,colibri-imx7d-emmc-aster        # Colibri iMX7 Dual 1GB (eMMC) Module on
--                                                        #  Aster Carrier Board
--              - toradex,colibri-imx7d-emmc-eval-v3      # Colibri iMX7 Dual 1GB (eMMC) Module on
--                                                        #  Colibri Evaluation Board V3
--              - toradex,colibri-imx7d-eval-v3           # Colibri iMX7 Dual Module on
--                                                        #  Colibri Evaluation Board V3
-+              - toradex,colibri-imx7d         # Colibri iMX7D Module
-+              - toradex,colibri-imx7d-emmc    # Colibri iMX7D 1GB (eMMC) Module
-               - zii,imx7d-rmu2            # ZII RMU2 Board
-               - zii,imx7d-rpu2            # ZII RPU2 Board
-           - const: fsl,imx7d
-@@ -686,12 +688,12 @@ properties:
-       - description: i.MX7D Boards with Toradex Colibri i.MX7D Module
-         items:
-           - enum:
--              - toradex,colibri-imx7d-aster   # Module on Aster Carrier Board
--              - toradex,colibri-imx7d-eval-v3 # Module on Colibri Evaluation Board V3
-+              - toradex,colibri-imx7d-aster   # Colibri iMX7D Module on Aster Carrier Board
-+              - toradex,colibri-imx7d-eval-v3 # Colibri iMX7D Module on Colibri Evaluation Board V3
-           - const: toradex,colibri-imx7d
-           - const: fsl,imx7d
+ #include "imx6ull.dtsi"
+@@ -345,6 +345,19 @@ MX6UL_PAD_ENET1_RX_DATA1__GPIO2_IO01	0xb0b0 /* SODIMM 63 */
+ 		>;
+ 	};
  
--      - description: i.MX7D Boards with Toradex Colibri i.MX7D eMMC Module
-+      - description: i.MX7D Boards with Toradex Colibri i.MX7D 1GB (eMMC) Module
-         items:
-           - enum:
-               - toradex,colibri-imx7d-emmc-aster    # Module on Aster Carrier Board
-@@ -812,10 +814,10 @@ properties:
-           - enum:
-               - einfochips,imx8qxp-ai_ml  # i.MX8QXP AI_ML Board
-               - fsl,imx8qxp-mek           # i.MX8QXP MEK Board
--              - toradex,colibri-imx8x         # Colibri iMX8X Module
-+              - toradex,colibri-imx8x     # Colibri iMX8X Modules
-           - const: fsl,imx8qxp
++	/*
++	 * With an eMMC instead of a raw NAND device the following pins
++	 * are available at SODIMM pins
++	 */
++	pinctrl_gpmi_gpio: gpmi-gpio-grp {
++		fsl,pins = <
++			MX6UL_PAD_NAND_ALE__GPIO4_IO10		0x10b0 /* SODIMM 140 */
++			MX6UL_PAD_NAND_CE0_B__GPIO4_IO13	0x10b0 /* SODIMM 144 */
++			MX6UL_PAD_NAND_CLE__GPIO4_IO15		0x10b0 /* SODIMM 146 */
++			MX6UL_PAD_NAND_READY_B__GPIO4_IO12	0x10b0 /* SODIMM 142 */
++		>;
++	};
++
+ 	pinctrl_gpmi_nand: gpmi-nand-grp {
+ 		fsl,pins = <
+ 			MX6UL_PAD_NAND_DATA00__RAWNAND_DATA00	0x100a9
+@@ -533,6 +546,21 @@ MX6UL_PAD_GPIO1_IO03__OSC32K_32K_OUT	0x10
+ 		>;
+ 	};
  
--      - description: Toradex Colibri i.MX8 Evaluation Board
-+      - description: i.MX8QXP Boards with Toradex Coilbri iMX8X Modules
-         items:
-           - enum:
-               - toradex,colibri-imx8x-eval-v3 # Colibri iMX8X Module on Colibri Evaluation Board V3
-@@ -847,9 +849,10 @@ properties:
-       - description: VF610 based Boards
-         items:
-           - enum:
-+              - fsl,vf610-twr             # VF610 Tower Board
-               - lwn,bk4                   # Liebherr BK4 controller
-               - phytec,vf610-cosmic       # PHYTEC Cosmic/Cosmic+ Board
--              - fsl,vf610-twr             # VF610 Tower Board
-+              - toradex,vf610-colibri_vf61 # Colibri VF61 Modules
-           - const: fsl,vf610
- 
-       - description: Toradex Colibri VF61 Module on Colibri Evaluation Board
++	pinctrl_usdhc2emmc: usdhc2emmcgrp {
++		fsl,pins = <
++			MX6UL_PAD_NAND_RE_B__USDHC2_CLK     0x17059
++			MX6UL_PAD_NAND_WE_B__USDHC2_CMD     0x17059
++			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0 0x17059
++			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1 0x17059
++			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2 0x17059
++			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3 0x17059
++			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4 0x17059
++			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5 0x17059
++			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6 0x17059
++			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7 0x17059
++		>;
++	};
++
+ 	pinctrl_wdog: wdog-grp {
+ 		fsl,pins = <
+ 			MX6UL_PAD_LCD_RESET__WDOG1_WDOG_ANY    0x30b0
 -- 
 2.26.2
 
