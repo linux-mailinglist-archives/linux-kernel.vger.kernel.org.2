@@ -2,84 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958574126AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35BC4126C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347383AbhITTUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 15:20:12 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:33391 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347482AbhITTSK (ORCPT
+        id S1350521AbhITTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 15:22:02 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:58140 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347807AbhITTTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 15:18:10 -0400
-Received: by mail-pl1-f181.google.com with SMTP id t4so11779146plo.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:16:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0W/o5ZoyGa1oJqJxxVEWjBlKAnqr2zruLqjAEVsS5cI=;
-        b=QniF894uWJHaqwIiXCrvpvpQNTs0KM+4AwfMUNKJFBBldF4NJK4cc30PYrTMDQUgdW
-         FLD7qJYajmvPu8oLfCylG4QcEAQqqV51meIs+Ieco3C9N6gfmqtKTVwpDPaCrmh+/gou
-         PKpbysK9qanAmSsoMy1JpAF7gZsW4Rl9x06ZOmU/HvDjIgKbu8WpOeOUYMBet59wiv0R
-         LZfhkcw7wtrY0McG5qWPsUfd7jKrpb0GawzewYwQwjOEHwP47Xd4EbcAV48gM9pMPzmb
-         wD/kRbA4/L8GpWHbjh8C9ETKATo6XFIi1+IaETSj0tgz0NkB9aQqtMGBiddoEYZNQsdx
-         EUWA==
-X-Gm-Message-State: AOAM533cDGiPuWmu/rYJToN7yEZQY9wDLtjjFQm/k1rp1j6205r+CVmM
-        x8/awrP2wQXQqhkkfqFjPEo=
-X-Google-Smtp-Source: ABdhPJzh6O/KZmA+yP3dCC4Uf8vMmPP9LJ3Xin0kTc/V2+ANxrN37cnlw3Pa2FYalADPNsJhKkDvHw==
-X-Received: by 2002:a17:90b:1291:: with SMTP id fw17mr631393pjb.135.1632165402859;
-        Mon, 20 Sep 2021 12:16:42 -0700 (PDT)
-Received: from sultan-box.localdomain ([204.152.215.247])
-        by smtp.gmail.com with ESMTPSA id c9sm123389pfi.212.2021.09.20.12.16.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 12:16:42 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 12:16:39 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
-Message-ID: <YUjeF6YsHKljSFis@sultan-box.localdomain>
-References: <20210918233920.9174-1-sultan@kerneltoast.com>
- <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
- <YUiu42krQjSTVPnc@sultan-box.localdomain>
- <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
+        Mon, 20 Sep 2021 15:19:45 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id ead8fec41815f117; Mon, 20 Sep 2021 21:18:15 +0200
+Received: from kreacher.localnet (unknown [213.134.187.25])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id DE5CF66A65F;
+        Mon, 20 Sep 2021 21:18:14 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PCI <linux-pci@vger.kernel.org>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Ferry Toth <fntoth@gmail.com>
+Subject: [PATCH v2 1/7] PCI: PM: Do not use pci_platform_pm_ops for Intel MID PM
+Date:   Mon, 20 Sep 2021 21:16:59 +0200
+Message-ID: <2555295.BddDVKsqQX@kreacher>
+In-Reply-To: <1800633.tdWV9SEqCh@kreacher>
+References: <1800633.tdWV9SEqCh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 213.134.187.25
+X-CLIENT-HOSTNAME: 213.134.187.25
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddukeejrddvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrddvhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihihrdhshhgvvhgt
+ hhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepfhhnthhothhhsehgmhgrihhlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 07:34:26PM +0200, Michal Hocko wrote:
-> The intention and the scope of the patch should be in the changelog.
-> Your Fixes tag suggests there is a problem to fixed.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I guess References would be more appropriate here? I'm not familiar with every
-subsystem's way of doing things, so I just rolled with Fixes to leave a
-breadcrumb trail to the original commit implicated in my change. What would you
-suggest in a case like this for mm patches?
+There are only two users of struct pci_platform_pm_ops in the tree,
+one of which is Intel MID PM and the other one is ACPI.  They are
+mutually exclusive and the MID PM should take precedence when they
+both are enabled, but whether or not this really is the case hinges
+on the specific ordering of arch_initcall() calls made by them.
 
-> My memory has faded but I suspect it was to make sure that the oom
-> reaper is not blocking the system wide freezing. The operation mode of
-> the thread is to wait for oom victims and then do the unmapping without
-> any blocking. While it can be frozen during the operation I do not
-> remember that causing any problems and the waiting is exactly the point
-> when that is obviously safe - hence wait_event_freezable which I believe
-> is the proper API to use.
+The struct pci_platform_pm_ops abstraction is not really necessary
+for just these two users, but it adds complexity and overhead because
+of retoplines involved in using all of the function pointers in there.
+It also makes following the code a bit more difficult than it would
+be otherwise.
 
-This isn't clear to me. Kthreads come with PF_NOFREEZE set by default, so the
-system-wide freezing will already ignore the reaper thread as-is, although it
-will make that determination from inside freeze_task() and thus
-freezing_slow_path(), which involves acquiring a lock. You could set
-PF_FREEZER_SKIP to skip the slowpath evaluation entirely.
+Moreover, Intel MID PCI PM doesn't even implement the majority of the
+function pointers in struct pci_platform_pm_ops in a meaningful way,
+so switch over the PCI core to calling the relevant MID PM routines,
+mid_pci_set_power_state() and mid_pci_set_power_state(), directly as
+needed and drop mid_pci_platform_pm.
 
-Furthermore, the use of wait_event_freezable() will make the reaper thread enter
-try_to_freeze() every time it's woken up. This seems wasteful considering that
-the reaper thread will never actually freeze.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Sultan
+v1 -> v2:
+   * Instead of dropping the MID PCI PM completely, make the PCI core
+     call a few functions from there directly instead of using struct
+     pci_platform_pm_ops (Andy and Ferry).
+
+---
+ drivers/pci/pci-mid.c |   37 ++++++++-----------------------------
+ drivers/pci/pci.c     |   23 ++++++++++++++++++++++-
+ drivers/pci/pci.h     |   19 +++++++++++++++++++
+ 3 files changed, 49 insertions(+), 30 deletions(-)
+
+Index: linux-pm/drivers/pci/pci-mid.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci-mid.c
++++ linux-pm/drivers/pci/pci-mid.c
+@@ -16,45 +16,23 @@
+ 
+ #include "pci.h"
+ 
+-static bool mid_pci_power_manageable(struct pci_dev *dev)
++static bool pci_mid_pm_enabled __read_mostly;
++
++bool pci_use_mid_pm(void)
+ {
+-	return true;
++	return pci_mid_pm_enabled;
+ }
+ 
+-static int mid_pci_set_power_state(struct pci_dev *pdev, pci_power_t state)
++int mid_pci_set_power_state(struct pci_dev *pdev, pci_power_t state)
+ {
+ 	return intel_mid_pci_set_power_state(pdev, state);
+ }
+ 
+-static pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
++pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
+ {
+ 	return intel_mid_pci_get_power_state(pdev);
+ }
+ 
+-static pci_power_t mid_pci_choose_state(struct pci_dev *pdev)
+-{
+-	return PCI_D3hot;
+-}
+-
+-static int mid_pci_wakeup(struct pci_dev *dev, bool enable)
+-{
+-	return 0;
+-}
+-
+-static bool mid_pci_need_resume(struct pci_dev *dev)
+-{
+-	return false;
+-}
+-
+-static const struct pci_platform_pm_ops mid_pci_platform_pm = {
+-	.is_manageable	= mid_pci_power_manageable,
+-	.set_state	= mid_pci_set_power_state,
+-	.get_state	= mid_pci_get_power_state,
+-	.choose_state	= mid_pci_choose_state,
+-	.set_wakeup	= mid_pci_wakeup,
+-	.need_resume	= mid_pci_need_resume,
+-};
+-
+ /*
+  * This table should be in sync with the one in
+  * arch/x86/platform/intel-mid/pwr.c.
+@@ -71,7 +49,8 @@ static int __init mid_pci_init(void)
+ 
+ 	id = x86_match_cpu(lpss_cpu_ids);
+ 	if (id)
+-		pci_set_platform_pm(&mid_pci_platform_pm);
++		pci_mid_pm_enabled = true;
++
+ 	return 0;
+ }
+ arch_initcall(mid_pci_init);
+Index: linux-pm/drivers/pci/pci.h
+===================================================================
+--- linux-pm.orig/drivers/pci/pci.h
++++ linux-pm/drivers/pci/pci.h
+@@ -744,4 +744,23 @@ extern const struct attribute_group aspm
+ 
+ extern const struct attribute_group pci_dev_reset_method_attr_group;
+ 
++#ifdef CONFIG_X86_INTEL_MID
++bool pci_use_mid_pm(void);
++int mid_pci_set_power_state(struct pci_dev *pdev, pci_power_t state);
++pci_power_t mid_pci_get_power_state(struct pci_dev *pdev);
++#else
++static inline bool pci_use_mid_pm(void)
++{
++	return false;
++}
++static inline int mid_pci_set_power_state(struct pci_dev *pdev, pci_power_t state)
++{
++	return -ENODEV;
++}
++static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
++{
++	return PCI_UNKNOWN;
++}
++#endif
++
+ #endif /* DRIVERS_PCI_H */
+Index: linux-pm/drivers/pci/pci.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci.c
++++ linux-pm/drivers/pci/pci.c
+@@ -985,45 +985,66 @@ int pci_set_platform_pm(const struct pci
+ 
+ static inline bool platform_pci_power_manageable(struct pci_dev *dev)
+ {
++	if (pci_use_mid_pm())
++		return true;
++
+ 	return pci_platform_pm ? pci_platform_pm->is_manageable(dev) : false;
+ }
+ 
+ static inline int platform_pci_set_power_state(struct pci_dev *dev,
+ 					       pci_power_t t)
+ {
++	if (pci_use_mid_pm())
++		return mid_pci_set_power_state(dev, t);
++
+ 	return pci_platform_pm ? pci_platform_pm->set_state(dev, t) : -ENOSYS;
+ }
+ 
+ static inline pci_power_t platform_pci_get_power_state(struct pci_dev *dev)
+ {
++	if (pci_use_mid_pm())
++		return mid_pci_get_power_state(dev);
++
+ 	return pci_platform_pm ? pci_platform_pm->get_state(dev) : PCI_UNKNOWN;
+ }
+ 
+ static inline void platform_pci_refresh_power_state(struct pci_dev *dev)
+ {
+-	if (pci_platform_pm && pci_platform_pm->refresh_state)
++	if (!pci_use_mid_pm() && pci_platform_pm && pci_platform_pm->refresh_state)
+ 		pci_platform_pm->refresh_state(dev);
+ }
+ 
+ static inline pci_power_t platform_pci_choose_state(struct pci_dev *dev)
+ {
++	if (pci_use_mid_pm())
++		return PCI_POWER_ERROR;
++
+ 	return pci_platform_pm ?
+ 			pci_platform_pm->choose_state(dev) : PCI_POWER_ERROR;
+ }
+ 
+ static inline int platform_pci_set_wakeup(struct pci_dev *dev, bool enable)
+ {
++	if (pci_use_mid_pm())
++		return PCI_POWER_ERROR;
++
+ 	return pci_platform_pm ?
+ 			pci_platform_pm->set_wakeup(dev, enable) : -ENODEV;
+ }
+ 
+ static inline bool platform_pci_need_resume(struct pci_dev *dev)
+ {
++	if (pci_use_mid_pm())
++		return false;
++
+ 	return pci_platform_pm ? pci_platform_pm->need_resume(dev) : false;
+ }
+ 
+ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+ {
++	if (pci_use_mid_pm())
++		return false;
++
+ 	if (pci_platform_pm && pci_platform_pm->bridge_d3)
+ 		return pci_platform_pm->bridge_d3(dev);
+ 	return false;
+
+
+
