@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89554411D3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE409411FB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346581AbhITRR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:17:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
+        id S1353198AbhITRoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:44:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344703AbhITRPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:15:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E42613B1;
-        Mon, 20 Sep 2021 16:58:35 +0000 (UTC)
+        id S1352753AbhITRlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:41:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9141761B4F;
+        Mon, 20 Sep 2021 17:08:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157116;
-        bh=wvW2C+mIwkxgh2kS/OPbgm4bEmTJXqzyB42UevjPiHw=;
+        s=korg; t=1632157718;
+        bh=jgTnWG7ziQ4HdX8OUDfsP/d5R/A9x0yiHuW/ALPsHu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H8rJ8YiUXmL3xtOdNcm7C7sHmXxYmZJNt0mtFXkro9OP1Y9oLIKa/Q0ei3XO5cyOG
-         k/qqvrdvrIoArDfNCzpDYHBlAWMQ0gY23mGpwXWyNyg4/GmOACx4wMC2U813UmX5Et
-         YPvOtDV6Yl6swPnJNR/q8KhU+J1slnv32/w8o4S4=
+        b=QEWAQB9QEZ8UIGT0XREozaVsaSyPz9ae3YjsrvOA46IHyRH+gz9ZOBcLFfl7kq/c/
+         Y3jnFsNbZpHVIEwom7k+rCtWYKyC9Iin+a6jYdU4pqU/LkdKO4Z0NXlFFCcO+3pDFk
+         7Q5WyjFt6oOtRz6X7MO7fB3Clck+ZhgGt7XhSuLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Koba Ko <koba.ko@canonical.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 060/217] PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
-Date:   Mon, 20 Sep 2021 18:41:21 +0200
-Message-Id: <20210920163926.662233474@linuxfoundation.org>
+        stable@vger.kernel.org, Niklas Cassel <niklas.cassel@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Aravind Ramesh <aravind.ramesh@wdc.com>,
+        Adam Manzanares <a.manzanares@samsung.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 120/293] blk-zoned: allow zone management send operations without CAP_SYS_ADMIN
+Date:   Mon, 20 Sep 2021 18:41:22 +0200
+Message-Id: <20210920163937.365135673@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Niklas Cassel <niklas.cassel@wdc.com>
 
-[ Upstream commit da9f2150684ea684a7ddd6d7f0e38b2bdf43dcd8 ]
+commit ead3b768bb51259e3a5f2287ff5fc9041eb6f450 upstream.
 
-It is inconsistent to return PCI_D0 from pci_target_state() instead
-of the original target state if 'wakeup' is true and the device
-cannot signal PME from D0.
+Zone management send operations (BLKRESETZONE, BLKOPENZONE, BLKCLOSEZONE
+and BLKFINISHZONE) should be allowed under the same permissions as write().
+(write() does not require CAP_SYS_ADMIN).
 
-This only happens when the device cannot signal PME from the original
-target state and any shallower power states (including D0) and that
-case is effectively equivalent to the one in which PME singaling is
-not supported at all.  Since the original target state is returned in
-the latter case, make the function do that in the former one too.
+Additionally, other ioctls like BLKSECDISCARD and BLKZEROOUT only check if
+the fd was successfully opened with FMODE_WRITE.
+(They do not require CAP_SYS_ADMIN).
 
-Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
-Fixes: 666ff6f83e1d ("PCI/PM: Avoid using device_may_wakeup() for runtime PM")
-Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Reported-by: Koba Ko <koba.ko@canonical.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Currently, zone management send operations require both CAP_SYS_ADMIN
+and that the fd was successfully opened with FMODE_WRITE.
+
+Remove the CAP_SYS_ADMIN requirement, so that zone management send
+operations match the access control requirement of write(), BLKSECDISCARD
+and BLKZEROOUT.
+
+Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
+Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Aravind Ramesh <aravind.ramesh@wdc.com>
+Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: stable@vger.kernel.org # v4.10+
+Link: https://lore.kernel.org/r/20210811110505.29649-2-Niklas.Cassel@wdc.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pci.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ block/blk-zoned.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index c847b5554db6..ac2c9d0c02fe 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -2054,17 +2054,21 @@ static pci_power_t pci_target_state(struct pci_dev *dev, bool wakeup)
- 	if (dev->current_state == PCI_D3cold)
- 		target_state = PCI_D3cold;
+--- a/block/blk-zoned.c
++++ b/block/blk-zoned.c
+@@ -380,9 +380,6 @@ int blkdev_reset_zones_ioctl(struct bloc
+ 	if (!blk_queue_is_zoned(q))
+ 		return -ENOTTY;
  
--	if (wakeup) {
-+	if (wakeup && dev->pme_support) {
-+		pci_power_t state = target_state;
-+
- 		/*
- 		 * Find the deepest state from which the device can generate
- 		 * wake-up events, make it the target state and enable device
- 		 * to generate PME#.
- 		 */
--		if (dev->pme_support) {
--			while (target_state
--			      && !(dev->pme_support & (1 << target_state)))
--				target_state--;
--		}
-+		while (state && !(dev->pme_support & (1 << state)))
-+			state--;
-+
-+		if (state)
-+			return state;
-+		else if (dev->pme_support & 1)
-+			return PCI_D0;
- 	}
+-	if (!capable(CAP_SYS_ADMIN))
+-		return -EACCES;
+-
+ 	if (!(mode & FMODE_WRITE))
+ 		return -EBADF;
  
- 	return target_state;
--- 
-2.30.2
-
 
 
