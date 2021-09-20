@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0E241155B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECB641155E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239230AbhITNQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239244AbhITNQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:16:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66E9F60F26;
-        Mon, 20 Sep 2021 13:15:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632143721;
-        bh=tDLzFfH6Yq/XVj4j/zz0dnMNwzyfSYQKvLBxZYD55Y4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XXWrqFQSBiRJtcifoRG22Om0R7HJS7GCokO2Zu7DEdXIyjQFmgjI/u44cAcxDYThz
-         8wCIjA4bZwkbZga//uO0BCS21gK82EFzHhr05CfE3dHz7EvuSfWrhKRI6HlAyOfh9d
-         4lKhj1ILwu9dUSCBNttF66/j4bMBr1S8qekWjyFEw5Oqz2U0SiVoHo+mMy4rFJs8xF
-         L6YHsuf7dnTRNjD/PXoPdU4OMxl888PEnNRUQqhD1GVDJdJX8HWi1kV+ChlUpi+7he
-         Gb3Fv7sL1OD9lBnNcOtFof4R0NhloEOj+n1PjE/8i5cU/X8S6mmLD6vQJipl+oT+LW
-         D5I/JnBqnnYVA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        Tejun Heo <tj@kernel.org>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [RFC] blk-iocost stringop-overread warning workaround
-Date:   Mon, 20 Sep 2021 15:15:00 +0200
-Message-Id: <20210920131516.2437790-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233378AbhITNTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:19:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44407 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233139AbhITNTj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:19:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632143892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p+zIUXzMKpds56tIRP6QWIXWUXjXV9iVFV3mURDbT3U=;
+        b=ELJbVe2BlmAm0zxRv+9eZ9V6aUdZ5JsERxwRlw3D/Mjzjl6eiJskh6bu1r17YT+J2wN/Ug
+        kllhDpb1s73lDBiWpGIyOY1ynM5u+/kgsf+pKA9razEvbGMmmJMZS8/i9/EIQav2xvusAv
+        2bwBuOQdlwjTh+ztDGZT8b01mVP03Sc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-uaNJ0ngKMYuoF0jUDTr32g-1; Mon, 20 Sep 2021 09:17:59 -0400
+X-MC-Unique: uaNJ0ngKMYuoF0jUDTr32g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9BD51006AA3;
+        Mon, 20 Sep 2021 13:17:57 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 44CF27A8D8;
+        Mon, 20 Sep 2021 13:17:50 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        David Hildenbrand <david@redhat.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>
+Subject: [PATCH 5.10 STABLE] s390/pci_mmio: fully validate the VMA before calling follow_pte()
+Date:   Mon, 20 Sep 2021 15:17:49 +0200
+Message-Id: <20210920131749.9360-1-david@redhat.com>
+In-Reply-To: <1632128112176198@kroah.com>
+References: <1632128112176198@kroah.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+commit a8b92b8c1eac8d655a97b1e90f4d83c25d9b9a18 upstream.
 
-In some randconfig builds with gcc-11, I get a warning from
-the fortified string helpers:
+Note: We don't have vma_lookup() in the 5.4-stable tree, so perform the VMA
+check manually.
 
-In function 'memcpy',
-    inlined from 'ioc_cost_model_write' at block/blk-iocost.c:3345:2:
-include/linux/fortify-string.h:20:33: error: '__builtin_memcpy' reading 48 bytes from a region of size 0 [-Werror=stringop-overread]
-   20 | #define __underlying_memcpy     __builtin_memcpy
-      |                                 ^
-include/linux/fortify-string.h:191:16: note: in expansion of macro '__underlying_memcpy'
-  191 |         return __underlying_memcpy(p, q, size);
-      |                ^~~~~~~~~~~~~~~~~~~
+We should not walk/touch page tables outside of VMA boundaries when
+holding only the mmap sem in read mode. Evil user space can modify the
+VMA layout just before this function runs and e.g., trigger races with
+page table removal code since commit dd2283f2605e ("mm: mmap: zap pages
+with read mmap_sem in munmap").
 
-I don't see anything wrong in the code itself, so I suspect it's
-gcc doing something weird again. The only way I could find to make
-this warning go away is to hide the object using the RELOC_HIDE()
-macro, but this is really ugly and I hope someone has a better
-idea.
+find_vma() does not check if the address is >= the VMA start address;
+use vma_lookup() instead.
 
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Fixes: dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in munmap")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- block/blk-iocost.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/pci/pci_mmio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index b3880e4ba22a..51f641840ed9 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3173,6 +3173,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 		ioc = q_to_ioc(bdev->bd_disk->queue);
- 	}
- 
-+	ioc = RELOC_HIDE(ioc, 0);
- 	spin_lock_irq(&ioc->lock);
- 	memcpy(qos, ioc->params.qos, sizeof(qos));
- 	enable = ioc->enabled;
-@@ -3340,6 +3341,7 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
- 		ioc = q_to_ioc(bdev->bd_disk->queue);
- 	}
- 
-+	ioc = RELOC_HIDE(ioc, 0);
- 	spin_lock_irq(&ioc->lock);
- 	memcpy(u, ioc->params.i_lcoefs, sizeof(u));
- 	user = ioc->user_cost_model;
+diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+index 401cf670a243..37b1bbd1a27c 100644
+--- a/arch/s390/pci/pci_mmio.c
++++ b/arch/s390/pci/pci_mmio.c
+@@ -128,7 +128,7 @@ static long get_pfn(unsigned long user_addr, unsigned long access,
+ 	mmap_read_lock(current->mm);
+ 	ret = -EINVAL;
+ 	vma = find_vma(current->mm, user_addr);
+-	if (!vma)
++	if (!vma || user_addr < vma->vm_start)
+ 		goto out;
+ 	ret = -EACCES;
+ 	if (!(vma->vm_flags & access))
 -- 
-2.29.2
+2.31.1
 
