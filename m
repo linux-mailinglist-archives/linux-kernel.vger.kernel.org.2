@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E2F411C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA76F411BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345760AbhITRGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:06:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
+        id S1345121AbhITRD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:03:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345567AbhITRDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:03:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99BBB61411;
-        Mon, 20 Sep 2021 16:54:01 +0000 (UTC)
+        id S1345098AbhITRAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:00:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 112A861407;
+        Mon, 20 Sep 2021 16:52:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156842;
-        bh=3hp6WVbtrtT+x+od6o2HFjHrb7+RKz1NUPAZrJ0F9Xc=;
+        s=korg; t=1632156772;
+        bh=e3yvkwGqp2Vy9cKkHKiS14Ci8X3/ufrLWKBheCxYQeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MQPKnvVmDuZuMmXH985pKYvNU4gVi5oEtcYTKNXdx1g8sAXHqKEvbKtsoyi/zXzf5
-         uyBO5pA3h7sgxCLPCIxISJgXXf+8kvE2HbiNok5beFj5Jqlhzi/Yde0zBP5N1h0RZE
-         /Zu2F2rmmcfEN4qzYPj1Y2XDpd8fDEU6vyYe0HQY=
+        b=OtgiGAPbdjWG+KqKMvahj2HfUqvAKies/oDUY9sNlTOruLg4/iNS+NfMLOM1x4XSz
+         P0N/WJBmzQEFUs82zQIdF+etCt/unOmCRD8BPVy0L8P8Pto6A//Yy7fgdIRfzOXbqX
+         Y36NJ12Hsa3os6qNPZr+G80IhIHJ8xf5r1UkIfbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Qii Wang <qii.wang@mediatek.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 078/175] i2c: mt65xx: fix IRQ check
-Date:   Mon, 20 Sep 2021 18:42:07 +0200
-Message-Id: <20210920163920.614999100@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Evgeny Novikov <novikov@ispras.ru>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 079/175] usb: ehci-orion: Handle errors of clk_prepare_enable() in probe
+Date:   Mon, 20 Sep 2021 18:42:08 +0200
+Message-Id: <20210920163920.646772609@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
 References: <20210920163918.068823680@linuxfoundation.org>
@@ -40,36 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 58fb7c643d346e2364404554f531cfa6a1a3917c ]
+[ Upstream commit 4720f1bf4ee4a784d9ece05420ba33c9222a3004 ]
 
-Iff platform_get_irq() returns 0, the driver's probe() method will return 0
-early (as if the method's call was successful).  Let's consider IRQ0 valid
-for simplicity -- devm_request_irq() can always override that decision...
+ehci_orion_drv_probe() did not account for possible errors of
+clk_prepare_enable() that in particular could cause invocation of
+clk_disable_unprepare() on clocks that were not prepared/enabled yet,
+e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
+there were several patches fixing different issues with clocks in this
+driver, they did not solve this problem.
 
-Fixes: ce38815d39ea ("I2C: mediatek: Add driver for MediaTek I2C controller")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Reviewed-by: Qii Wang <qii.wang@mediatek.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
+to avoid calls of clk_disable_unprepare() without previous successful
+invocation of clk_prepare_enable().
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
+Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Link: https://lore.kernel.org/r/20210825170902.11234-1-novikov@ispras.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mt65xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/ehci-orion.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index 4a7d9bc2142b..0f905f8387f2 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -708,7 +708,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 		return PTR_ERR(i2c->pdmabase);
+diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
+index ee8d5faa0194..3eecf47d4e89 100644
+--- a/drivers/usb/host/ehci-orion.c
++++ b/drivers/usb/host/ehci-orion.c
+@@ -218,8 +218,11 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
+ 	 * the clock does not exists.
+ 	 */
+ 	priv->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(priv->clk))
+-		clk_prepare_enable(priv->clk);
++	if (!IS_ERR(priv->clk)) {
++		err = clk_prepare_enable(priv->clk);
++		if (err)
++			goto err_put_hcd;
++	}
  
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0)
-+	if (irq < 0)
- 		return irq;
- 
- 	init_completion(&i2c->msg_complete);
+ 	priv->phy = devm_phy_optional_get(&pdev->dev, "usb");
+ 	if (IS_ERR(priv->phy)) {
+@@ -280,6 +283,7 @@ err_phy_init:
+ err_phy_get:
+ 	if (!IS_ERR(priv->clk))
+ 		clk_disable_unprepare(priv->clk);
++err_put_hcd:
+ 	usb_put_hcd(hcd);
+ err:
+ 	dev_err(&pdev->dev, "init %s fail, %d\n",
 -- 
 2.30.2
 
