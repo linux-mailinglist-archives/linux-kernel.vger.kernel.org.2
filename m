@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C36411E8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96BA4120D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244523AbhITRcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        id S1356215AbhITR6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:58:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350555AbhITR3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:29:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C72F61440;
-        Mon, 20 Sep 2021 17:03:45 +0000 (UTC)
+        id S1355040AbhITRwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:52:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3928F60F25;
+        Mon, 20 Sep 2021 17:12:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157426;
-        bh=T91Zgokphle+V0vjmg+UqKidMYlUGT5t5wylyld9/q4=;
+        s=korg; t=1632157972;
+        bh=QRAfYCMlD1tydVAsQqC38dv/IQY/ZID3c6hiYrYC74A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gAl86oxALS27vaa22wEcpQQXJ5cCrGEGqdq2wwk7Oo3vY3ex/OFiJd3coWBoy5/mR
-         TyqFsXdISkCfZi7qNJtoZTABrAyGn8Ix2/QvXsekyswiV/r0ER8bM/7QxwXd4+AcLX
-         1tFrRRDtzTDZaqvFrtZ2MrHj7/uneMXQqEc3rE6s=
+        b=SjRJqxJbZvwTmXbgZBsTN5ohI6GDdtPEt3n3X3p1GE3Od/eAgV6QPQwPoUt3Y6yUN
+         JXlFg2WtoohML2oeVdqM7wibHPwssQh/4+dx7tT4JzZjy3Z+XFrZVSwLNqITuLtHpZ
+         usz0WEg9kXzJMd4Nb7wSz3i2hX3KjVe5daVMggxc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael <msbroadf@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 176/217] usbip:vhci_hcd USB port can get stuck in the disabled state
-Date:   Mon, 20 Sep 2021 18:43:17 +0200
-Message-Id: <20210920163930.598982217@linuxfoundation.org>
+Subject: [PATCH 4.19 236/293] parport: remove non-zero check on count
+Date:   Mon, 20 Sep 2021 18:43:18 +0200
+Message-Id: <20210920163941.476735677@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 66cce9e73ec61967ed1f97f30cee79bd9a2bb7ee ]
+[ Upstream commit 0be883a0d795d9146f5325de582584147dd0dcdc ]
 
-When a remote usb device is attached to the local Virtual USB
-Host Controller Root Hub port, the bound device driver may send
-a port reset command.
+The check for count appears to be incorrect since a non-zero count
+check occurs a couple of statements earlier. Currently the check is
+always false and the dev->port->irq != PARPORT_IRQ_NONE part of the
+check is never tested and the if statement is dead-code. Fix this
+by removing the check on count.
 
-vhci_hcd accepts port resets only when the device doesn't have
-port address assigned to it. When reset happens device is in
-assigned/used state and vhci_hcd rejects it leaving the port in
-a stuck state.
+Note that this code is pre-git history, so I can't find a sha for
+it.
 
-This problem was found when a blue-tooth or xbox wireless dongle
-was passed through using usbip.
-
-A few drivers reset the port during probe including mt76 driver
-specific to this bug report. Fix the problem with a change to
-honor reset requests when device is in used state (VDEV_ST_USED).
-
-Reported-and-tested-by: Michael <msbroadf@gmail.com>
-Suggested-by: Michael <msbroadf@gmail.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20210819225937.41037-1-skhan@linuxfoundation.org
+Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Addresses-Coverity: ("Logically dead code")
+Link: https://lore.kernel.org/r/20210730100710.27405-1-colin.king@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/vhci_hcd.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/parport/ieee1284_ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 709214df2c18..22e8cda7a137 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -469,8 +469,14 @@ static int vhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
- 			vhci_hcd->port_status[rhport] &= ~(1 << USB_PORT_FEAT_RESET);
- 			vhci_hcd->re_timeout = 0;
+diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
+index 5d41dda6da4e..75daa16f38b7 100644
+--- a/drivers/parport/ieee1284_ops.c
++++ b/drivers/parport/ieee1284_ops.c
+@@ -535,7 +535,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
+ 				goto out;
  
-+			/*
-+			 * A few drivers do usb reset during probe when
-+			 * the device could be in VDEV_ST_USED state
-+			 */
- 			if (vhci_hcd->vdev[rhport].ud.status ==
--			    VDEV_ST_NOTASSIGNED) {
-+				VDEV_ST_NOTASSIGNED ||
-+			    vhci_hcd->vdev[rhport].ud.status ==
-+				VDEV_ST_USED) {
- 				usbip_dbg_vhci_rh(
- 					" enable rhport %d (status %u)\n",
- 					rhport,
+ 			/* Yield the port for a while. */
+-			if (count && dev->port->irq != PARPORT_IRQ_NONE) {
++			if (dev->port->irq != PARPORT_IRQ_NONE) {
+ 				parport_release (dev);
+ 				schedule_timeout_interruptible(msecs_to_jiffies(40));
+ 				parport_claim_or_block (dev);
 -- 
 2.30.2
 
