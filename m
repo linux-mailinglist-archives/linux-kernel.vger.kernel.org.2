@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58E1412457
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA556412582
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380408AbhITSdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
+        id S1383771AbhITSpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378883AbhITS0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:26:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B91F632D6;
-        Mon, 20 Sep 2021 17:26:02 +0000 (UTC)
+        id S1382713AbhITSmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:42:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86EA463340;
+        Mon, 20 Sep 2021 17:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158762;
-        bh=r2MxMQfax9AZlYGwWJanIe6mzDxRLMDqrXLsslA3azc=;
+        s=korg; t=1632159103;
+        bh=Ev9Lx901S77ZulY1/mUH+PoCSSC9LLJeb+JQYTmvljM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tpGV1iWL7xRnPUvhK9t+Q3B6/6ig0OkOz8+rQQLgh93xOP9ZPgS5xVZZVxYvD3fWP
-         iQ3mlA/b27evXTj/RWsXMNzXmGoh9xyrn+j8yph7XVFhaN3f+W1NNedLOKNqiQw0JR
-         i7EMfrYCFGUB1PeMuzZ+T4y4SgHgnwHzENi1ew8s=
+        b=tarP7GGJQ/T5m6DWBOP2ImJkSInAGUe96XrpN5uJEH0XmgKiXF1VodFHHQAzKHlc2
+         CVbNnWMV7h6YKv4HiDMwODmv5TLsK5ZJPcBXNE/b5WSpMHGmOmrvyJqBIUubY9P4MZ
+         inVkIKKe+jqt0FcLxpR/JsZL+zNpeF8bl5m+P9Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ariel Elior <aelior@marvell.com>,
-        Shai Malin <smalin@marvell.com>,
+        stable@vger.kernel.org, Jiaran Zhang <zhangjiaran@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 044/122] qed: Handle management FW error
+Subject: [PATCH 5.14 078/168] net: hns3: fix the timing issue of VF clearing interrupt sources
 Date:   Mon, 20 Sep 2021 18:43:36 +0200
-Message-Id: <20210920163917.237769778@linuxfoundation.org>
+Message-Id: <20210920163924.205981475@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shai Malin <smalin@marvell.com>
+From: Jiaran Zhang <zhangjiaran@huawei.com>
 
-commit 20e100f52730cd0db609e559799c1712b5f27582 upstream.
+commit 427900d27d86b820c559037a984bd403f910860f upstream.
 
-Handle MFW (management FW) error response in order to avoid a crash
-during recovery flows.
+Currently, the VF does not clear the interrupt source immediately after
+receiving the interrupt. As a result, if the second interrupt task is
+triggered when processing the first interrupt task, clearing the
+interrupt source before exiting will clear the interrupt sources of the
+two tasks at the same time. As a result, no interrupt is triggered for
+the second task. The VF detects the missed message only when the next
+interrupt is generated.
 
-Changes from v1:
-- Add "Fixes tag".
+Clearing it immediately after executing check_evt_cause ensures that:
+1. Even if two interrupt tasks are triggered at the same time, they can
+be processed.
+2. If the second task is triggered during the processing of the first
+task and the interrupt source is not cleared, the interrupt is reported
+after vector0 is enabled.
 
-Fixes: tag 5e7ba042fd05 ("qed: Fix reading stale configuration information")
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
+Fixes: b90fcc5bd904 ("net: hns3: add reset handling for VF when doing Core/Global/IMP reset")
+Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_mcp.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
-@@ -3376,6 +3376,7 @@ qed_mcp_get_nvm_image_att(struct qed_hwf
- 			  struct qed_nvm_image_att *p_image_att)
- {
- 	enum nvm_image_type type;
-+	int rc;
- 	u32 i;
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2463,6 +2463,8 @@ static irqreturn_t hclgevf_misc_irq_hand
  
- 	/* Translate image_id into MFW definitions */
-@@ -3404,7 +3405,10 @@ qed_mcp_get_nvm_image_att(struct qed_hwf
- 		return -EINVAL;
+ 	hclgevf_enable_vector(&hdev->misc_vector, false);
+ 	event_cause = hclgevf_check_evt_cause(hdev, &clearval);
++	if (event_cause != HCLGEVF_VECTOR0_EVENT_OTHER)
++		hclgevf_clear_event_cause(hdev, clearval);
+ 
+ 	switch (event_cause) {
+ 	case HCLGEVF_VECTOR0_EVENT_RST:
+@@ -2475,10 +2477,8 @@ static irqreturn_t hclgevf_misc_irq_hand
+ 		break;
  	}
  
--	qed_mcp_nvm_info_populate(p_hwfn);
-+	rc = qed_mcp_nvm_info_populate(p_hwfn);
-+	if (rc)
-+		return rc;
-+
- 	for (i = 0; i < p_hwfn->nvm_info.num_images; i++)
- 		if (type == p_hwfn->nvm_info.image_att[i].image_type)
- 			break;
+-	if (event_cause != HCLGEVF_VECTOR0_EVENT_OTHER) {
+-		hclgevf_clear_event_cause(hdev, clearval);
++	if (event_cause != HCLGEVF_VECTOR0_EVENT_OTHER)
+ 		hclgevf_enable_vector(&hdev->misc_vector, true);
+-	}
+ 
+ 	return IRQ_HANDLED;
+ }
 
 
