@@ -2,178 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AD9412B7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132EB412B7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346109AbhIUCRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
+        id S1346141AbhIUCRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241808AbhIUCDP (ORCPT
+        with ESMTP id S241752AbhIUCDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:03:15 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C666EC14093A;
-        Mon, 20 Sep 2021 11:12:48 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id x27so71302679lfu.5;
-        Mon, 20 Sep 2021 11:12:48 -0700 (PDT)
+        Mon, 20 Sep 2021 22:03:17 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210A1C08EBAC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:13:38 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id a13so2367121qtw.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GkvxncHOY8DvHcvIZZ5ALhHomt+6uxaaFq6TQ6h+fMg=;
-        b=p3McJnvyBc+CTcDTD8UtxLeB2ZXB1zXQiJojH/qHQI+5HqAHT37cHQz005HKHfdxVE
-         O5NPRwSrWiPereIDxUCOlhMdGlhZ1mf5cKF6a2SFkX0vxia9sRMKTSQ5gLydM1CMcS8F
-         yJw1gWENo6zp4qFCQUhO1jkWZP4JGVldQtT7fsQt24tKafP7JwYkg5/+Au7n/iwRqbfk
-         EuiFM19Q+j0iN6hsP/f4GwFJ00a22XMJbRWlCcRFuLP2I1whhD+CsjkKEKF76UnaUrDe
-         UsdKa49Zh7Pzc+Km5NQ8khTlBHR3FdVXomkQqXK8J3Ut/ULtGWLfqg/yT5JCMzG/FuTB
-         YfCg==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pvo6MEzKPqvSnqMuVSEU2j4Wc9oFmpkpJEqXAbkOyyM=;
+        b=D2Zn3m+Po3J2M65Ciea5U6ug8D3yclkghX6docLBBmmRuzBib2C6FKhJnFHTTYGrKx
+         zeJSrdylCQFeIYilxcFlb5k17oHOTp8XXX961fO0hDRCqOrMiWCe6kxlwDvxQYM81HIq
+         NKKQlzETS+kJ6YElb8n7t9FomlfrnpkC6JpM0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GkvxncHOY8DvHcvIZZ5ALhHomt+6uxaaFq6TQ6h+fMg=;
-        b=DhaJZvRjq9X49yGdue0UwJVnZSnGZ/IHHoGUglQolhdMvbtR20VYXEpZNnj+w9Zuvj
-         J9JwszJJKGbTG3sCyZxwpiKcAnOuYww3YSr1q9Yybi5DEhIuxcnPRItB9juNgoEUUSYB
-         zNdmEZ/1mnrsLlxSFSy9CVvxf0wv1EApX/CqAoIy5u8zLJjvrSIkGY9gZqetFloO7vcQ
-         P8fKU//mUoPYQAn6fuHECGMmlmcaLv3r+d0d1e4IUOKyZZyUlBwaUcTd5gCcDQmH/mLn
-         XvXdx+8S70tXPRInr0rc8OMihtS9Dpyff/vc5T5+Z4dpi+mxND5+lYd1bkfwYDaZGRDK
-         PQ2A==
-X-Gm-Message-State: AOAM532xZgwt3zGt8Cojmfcvmer1tgymaQMiCMFyue8B72dfCsMsJlhO
-        zNvrXCux2JX8aD8BowCTYHo=
-X-Google-Smtp-Source: ABdhPJwlgGKO3aMXePQ47tKK8EPh05YbuveS/dXOiz7N8s1w1kaCmMJkGRQCBT7OqTJwUfNNaaLf2w==
-X-Received: by 2002:a2e:9f4f:: with SMTP id v15mr5075723ljk.468.1632161566073;
-        Mon, 20 Sep 2021 11:12:46 -0700 (PDT)
-Received: from localhost.localdomain (46-138-151-206.dynamic.spd-mgts.ru. [46.138.151.206])
-        by smtp.gmail.com with ESMTPSA id u3sm1775677lju.107.2021.09.20.11.12.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 11:12:45 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH v12 35/35] ARM: tegra20/30: Disable unused host1x hardware
-Date:   Mon, 20 Sep 2021 21:11:45 +0300
-Message-Id: <20210920181145.19543-36-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210920181145.19543-1-digetx@gmail.com>
-References: <20210920181145.19543-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pvo6MEzKPqvSnqMuVSEU2j4Wc9oFmpkpJEqXAbkOyyM=;
+        b=WcMPeRmBtbFuMDlTy/aEhcgcDDKTCzTXx8aR8ZYxv2oi38UG41+GFV0NjUYEV6pOam
+         QRqrXnXanbf5Dbmt4JB/5BgjjS37HeeB1A2wD0X/1BrGFXMuj1lkuQ1QJp3uUD4syRqN
+         Jol40+PK26/jsduZS8IRhrGuZsFiWGhUX1aUt7wjkVCwaWKbzo3Cu8HZ5C3qFYQrX+wo
+         gJBItZu6xIQ1skj0s4j+KMHqNjWoNuECSDMMSDGcYcpi0yj8y03Qm9e1I7tQX1P1MCzm
+         cWBoK/1v9D3WfqZzlWZ7Oi5pAbzgzAn+8MI/e9zq06n6iJuLxpBIRtu6GIhmLxtwUnGg
+         LI9Q==
+X-Gm-Message-State: AOAM5324JPQrAxFaZUmTyLZ+i0Bq2x6UoK6gBVD+Z6CEOpH5cy9Hg64S
+        CZBr8SrhdMfLCuDTnYpTaPtRVSksGvkAaY93J3hloQ==
+X-Google-Smtp-Source: ABdhPJxv3M4Q3DyA/8nV9kXnhwWl4Jp/tLX6DzdAtOGhsSMaVriT0Tvl6jC6gMjFAotBRgBZ9aRtyaV6+FYHNi+U33Q=
+X-Received: by 2002:ac8:5d91:: with SMTP id d17mr3609906qtx.18.1632161615279;
+ Mon, 20 Sep 2021 11:13:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210920163921.633181900@linuxfoundation.org> <20210920163927.070105317@linuxfoundation.org>
+In-Reply-To: <20210920163927.070105317@linuxfoundation.org>
+From:   Michael Chan <michael.chan@broadcom.com>
+Date:   Mon, 20 Sep 2021 11:13:24 -0700
+Message-ID: <CACKFLin7kZFio3Tj+2M7Juq_Vxrfw4KPPkVnE0rtm-hBgQK7nA@mail.gmail.com>
+Subject: Re: [PATCH 5.14 164/168] bnxt_en: Fix possible unintended driver
+ initiated error recovery
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MPE, VI, EPP and ISP were never used and we don't have drivers for them.
-Since these modules are enabled by default in a device-tree, a device is
-created for them, blocking voltage scaling because there is no driver to
-bind, and thus, state of PMC driver is never synced. Disable them.
+On Mon, Sep 20, 2021 at 10:35 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Michael Chan <michael.chan@broadcom.com>
+>
+> [ Upstream commit 1b2b91831983aeac3adcbb469aa8b0dc71453f89 ]
+>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20.dtsi | 4 ++++
- arch/arm/boot/dts/tegra30.dtsi | 8 ++++++++
- 2 files changed, 12 insertions(+)
+Please include this patch as well:
 
-diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-index eb6e5518fb5f..05788c9cddc1 100644
---- a/arch/arm/boot/dts/tegra20.dtsi
-+++ b/arch/arm/boot/dts/tegra20.dtsi
-@@ -59,6 +59,7 @@ mpe@54040000 {
- 			reset-names = "mpe";
- 			operating-points-v2 = <&mpe_dvfs_opp_table>;
- 			power-domains = <&pd_mpe>;
-+			status = "disabled";
- 		};
- 
- 		vi@54080000 {
-@@ -70,6 +71,7 @@ vi@54080000 {
- 			reset-names = "vi";
- 			operating-points-v2 = <&vi_dvfs_opp_table>;
- 			power-domains = <&pd_venc>;
-+			status = "disabled";
- 		};
- 
- 		epp@540c0000 {
-@@ -81,6 +83,7 @@ epp@540c0000 {
- 			reset-names = "epp";
- 			operating-points-v2 = <&epp_dvfs_opp_table>;
- 			power-domains = <&pd_core>;
-+			status = "disabled";
- 		};
- 
- 		isp@54100000 {
-@@ -91,6 +94,7 @@ isp@54100000 {
- 			resets = <&tegra_car 23>;
- 			reset-names = "isp";
- 			power-domains = <&pd_venc>;
-+			status = "disabled";
- 		};
- 
- 		gr2d@54140000 {
-diff --git a/arch/arm/boot/dts/tegra30.dtsi b/arch/arm/boot/dts/tegra30.dtsi
-index 09cb1ab75312..f9613384a487 100644
---- a/arch/arm/boot/dts/tegra30.dtsi
-+++ b/arch/arm/boot/dts/tegra30.dtsi
-@@ -145,6 +145,8 @@ mpe@54040000 {
- 			power-domains = <&pd_mpe>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_MPE>;
-+
-+			status = "disabled";
- 		};
- 
- 		vi@54080000 {
-@@ -158,6 +160,8 @@ vi@54080000 {
- 			power-domains = <&pd_venc>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_VI>;
-+
-+			status = "disabled";
- 		};
- 
- 		epp@540c0000 {
-@@ -171,6 +175,8 @@ epp@540c0000 {
- 			power-domains = <&pd_heg>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_EPP>;
-+
-+			status = "disabled";
- 		};
- 
- 		isp@54100000 {
-@@ -183,6 +189,8 @@ isp@54100000 {
- 			power-domains = <&pd_venc>;
- 
- 			iommus = <&mc TEGRA_SWGROUP_ISP>;
-+
-+			status = "disabled";
- 		};
- 
- 		gr2d@54140000 {
--- 
-2.32.0
+eca4cf12acda bnxt_en: Fix error recovery regression
 
+Otherwise, it can cause a regression.  Thanks.
