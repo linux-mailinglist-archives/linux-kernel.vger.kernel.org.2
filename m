@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645BE412D0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C981F412D0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhIUCyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
+        id S243366AbhIUCyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349471AbhIUC0k (ORCPT
+        with ESMTP id S1350243AbhIUC2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:26:40 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749E9C1E3A54
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:04:42 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id f9-20020a1709028609b0290128bcba6be7so7769209plo.18
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=F6cGi29a7AfEikhLMTK8OrCpcnf5YNIMe8XqMKTgBWE=;
-        b=WaybUjqVu/zv+vIZpFhmoCtqsH0J+cSC+hsipU29HLqreSTA/oMTEV/usynjaGKZv9
-         msiqVmzTwaISJLYoVuxNtt/gOJvHGb5rzFhqx8PlX8iGzC6ckmoHCoC+/hATCx2U31/j
-         TkVCx8hqU8GF/UDHHT56XsQM+OTxqhNkZk9Y/iPCywv/zZ7F4ZAIi8ehJxEe76mkRz7m
-         hH6zzWmqGPwAO8mqf7wcq0CCIre4iWQ3SvtB3uVg9xWldB19R5ZESw1sLbOiM9W/8gnD
-         Z3arInj4gTz0ScRRtSPLos5dgfQAQrczWtK0J4PeTHKcyQw2hrt9Qdw4zYI2rIzCUBRJ
-         /bdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=F6cGi29a7AfEikhLMTK8OrCpcnf5YNIMe8XqMKTgBWE=;
-        b=ygjd/8PUqH5FSswgh54uTISyRMfSoHD+eczP2XMkHc/J0+FP58TfWaqqUQC6l7NIKU
-         mL8udDec0AQL8ZcR5WS4apfDRXd+GJ66oICFbeI8fJanvf+bssLYvvUsj/bhvQJgKrnJ
-         Q6e6E0McokSZpdAHMl4MrgYgCnH769UR56GQcMSVaWokLp1HMBFPgevVYQYwTv3E6lAI
-         x55GtsTdlwcjI9BQTEgKEq+0G4PAhMIBt7sNWYi4n15VoUxHgU0lbauKsZXz3n0nDiM2
-         tH8a20UsSgVxnP5cfbY82/+k37NcJZG3pjHtjVbNocTikW1EYJcHe13d9YWVKs4xN7zH
-         D3aQ==
-X-Gm-Message-State: AOAM5327K9SMg3zXYTybNwT0gnxSTjghLj8zntKup0nbIK3N0nr9yYns
-        pW5nleLZqlmjqun7mZFTdoHn3ME/r9N4E8yg3kY=
-X-Google-Smtp-Source: ABdhPJxzkMfeAZXRaAianGXffx1iCvr9RAwg8Omo/kfgyxb2a4u5Shp06Gkd/wq7B2gWBPNgyV3oA9U2ASPf6mLOHUo=
-X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
- (user=willmcvicker job=sendgmr) by 2002:a05:6a00:1141:b0:440:3c27:807c with
- SMTP id b1-20020a056a00114100b004403c27807cmr26237287pfm.71.1632164681943;
- Mon, 20 Sep 2021 12:04:41 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 19:03:49 +0000
-In-Reply-To: <20210920190350.3860821-1-willmcvicker@google.com>
-Message-Id: <20210920190350.3860821-5-willmcvicker@google.com>
-Mime-Version: 1.0
-References: <20210920190350.3860821-1-willmcvicker@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v1 4/4] rtc: change HAVE_S3C_RTC default config logic
-From:   Will McVicker <willmcvicker@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Will McVicker <willmcvicker@google.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 20 Sep 2021 22:28:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2FDC1E7C70;
+        Mon, 20 Sep 2021 12:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ce9uaTKd/D6QGSNbhvZvPAgEhomYs3uXfZuXWEuTyDo=; b=369USbNlI+62qdglSNQET5FERT
+        WUvD7ynkbpEFudjb0fzSZMx1jcQ0hKOHBeMIB+Pj2VdvtrEfRI3LKt0bQAnDxpHRqpv5P6niCIlsb
+        vlDnHHYc0zuAPHDcADuSeTRcnr78tG8F+7PK1OVCzWdHqzs8WbAVQXI7ZLfan7YbWZ7KDaPGTxirF
+        ZZUKGCVxE52zlioB/QkdVf6IrxxosbDb/xyQxcCB90Zl17FaLFDtLVrcFXNLdGJErM4FQk4iaUTAV
+        SaWz38ee84P1Ya6hFVMqeeHYnwzGrok3ud5aKaVEzLkEZd9ECbjJ+/ib+sgCJQAbOHqO0IwNeYwk+
+        Wfyl9zcQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSOl8-002uHl-FF; Mon, 20 Sep 2021 19:15:22 +0000
+Date:   Mon, 20 Sep 2021 12:15:22 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org,
+        rdunlap@infradead.org, rafael@kernel.org, masahiroy@kernel.org,
+        ndesaulniers@google.com, yzaikin@google.com, nathan@kernel.org,
+        ojeda@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
+        vitor@massaru.org, elver@google.com, jarkko@kernel.org,
+        glider@google.com, rf@opensource.cirrus.com,
+        stephen@networkplumber.org, David.Laight@aculab.com,
+        bvanassche@acm.org, jolsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, trishalfonso@google.com,
+        andreyknvl@gmail.com, jikos@kernel.org, mbenes@suse.com,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        reinette.chatre@intel.com, fenghua.yu@intel.com, bp@alien8.de,
+        x86@kernel.org, hpa@zytor.com, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, daniel.vetter@ffwll.ch, bhelgaas@google.com,
+        kw@linux.com, dan.j.williams@intel.com, senozhatsky@chromium.org,
+        hch@lst.de, joe@perches.com, hkallweit1@gmail.com, axboe@kernel.dk,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YUjdytEDkCughtSz@bombadil.infradead.org>
+References: <20210918050430.3671227-1-mcgrof@kernel.org>
+ <20210918050430.3671227-10-mcgrof@kernel.org>
+ <YUjKjLzqpcxjRyit@slm.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUjKjLzqpcxjRyit@slm.duckdns.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switches the default config logic of HAVE_S3C_RTC to use "default y if
-(ARCH_EXYNOS && RTC_CLASS)" versus having ARCH_EXYNOS directly select
-it. This provides vendors flexibility to disable the config if desired
-or modularize it in the presence of a generic kernel.
+On Mon, Sep 20, 2021 at 07:53:16AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Sep 17, 2021 at 10:04:27PM -0700, Luis Chamberlain wrote:
+> > If try_module_get() fails we fail the operation on the kernfs node.
+> > 
+> > We use a try method as a full lock means we'd then make our sysfs
+> > attributes busy us out from possible module removal, and so userspace
+> > could force denying module removal, a silly form of "DOS" against module
+> > removal. A try lock on the module removal ensures we give priority to
+> > module removal and interacting with sysfs attributes only comes second.
+> > Using a full lock could mean for instance that if you don't stop poking
+> > at sysfs files you cannot remove a module.
+> 
+> I find this explanation odd because there's no real equivalent to locking
+> the module (as opposed to try locking) 
 
-Verified this change doesn't impact the .config.
+Actually there is, __module_get() but I suspect some of these users are
+probably incorrect and should be be moved to try. The documentation
+about "rmmod --wait" for __module_get() is also outdated as that option
+is no longer supported. I'll send an update for that later.
 
-Signed-off-by: Will McVicker <willmcvicker@google.com>
----
- arch/arm64/Kconfig.platforms | 1 -
- drivers/rtc/Kconfig          | 1 +
- 2 files changed, 1 insertion(+), 1 deletion(-)
+> because you can't wait for the
+> removal to finish and then grant the lock, so any operation which increases
+> the reference *has* to be a try method unless the caller already holds a
+> reference to the same module and thus knows that the module is already
+> pinned.
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index a884e5da8b0f..f9f829aab511 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -91,7 +91,6 @@ config ARCH_BRCMSTB
- 
- config ARCH_EXYNOS
- 	bool "ARMv8 based Samsung Exynos SoC family"
--	select HAVE_S3C_RTC if RTC_CLASS
- 	select PINCTRL
- 	select PM_GENERIC_DOMAINS if PM
- 	help
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index e1bc5214494e..40afdb37d2a5 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1406,6 +1406,7 @@ config RTC_DRV_OMAP
- 
- config HAVE_S3C_RTC
- 	bool
-+	default y if (ARCH_EXYNOS && RTC_CLASS)
- 	help
- 	  This will include RTC support for Samsung SoCs. If
- 	  you want to include RTC support for any machine, kindly
--- 
-2.33.0.464.g1972c5931b-goog
+Right, the reason I mention the alternative is that we technically don't
+need to use try in this case since during a kernfs op it is implied the
+module will be pinned, but we have further motivations to use a try
+method here: to avoid a possible DOS from module removal by userspace
+mucking with ops.
 
+> The code isn't wrong, so maybe just drop the related paragraphs in
+> the commit message?
+
+Does it make sense to clarify the above a bit more somehow? Or do think
+its not needed?
+
+> >  static struct kernfs_node *__kernfs_new_node(struct kernfs_root *root,
+> >  					     struct kernfs_node *parent,
+> >  					     const char *name, umode_t mode,
+> > +					     struct module *owner,
+> >  					     kuid_t uid, kgid_t gid,
+> >  					     unsigned flags)
+> 
+> Is there a particular reason why @owner is added between @mode and @uid?
+> Sitting between two fs attributes seems a bit awkward. Maybe it can just be
+> the last one?
+
+No, I just picked an arbitrary place. Sure I'll move it to the end.
+
+  Luis
