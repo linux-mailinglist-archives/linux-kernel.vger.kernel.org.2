@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ADB411AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A11F4120EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbhITQyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:54:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36076 "EHLO mail.kernel.org"
+        id S1356445AbhITSAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:00:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237894AbhITQuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:50:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43A896128A;
-        Mon, 20 Sep 2021 16:49:05 +0000 (UTC)
+        id S1355153AbhITRyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:54:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A85F061BFC;
+        Mon, 20 Sep 2021 17:13:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156545;
-        bh=OegV4XZiTSm/ViS5j36yq5Ljf73puaGDEcIdEG3Azbs=;
+        s=korg; t=1632158001;
+        bh=sQw9MZjQniyUBF22K2BBv1mR9r1y/Ody4+hAHNxdgZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dtolYjukbuAg6qoOkOA6qJ3vIO9D2kngYDb74duj8zlhMA+fJbB9bve8w0P/+Sjwq
-         ZerFphDvNjMhtHUVQiTO+CX6L3xY8vCoIATeCD8UBR7aXOR2l/yVsJZf/SX+c7M5m+
-         aiAsP34Nm36d6AtKYMn/MzIAR5xBL51NyaMb98dE=
+        b=uCPgTHT6RJY/h2pYJak2yqTHlhbOCNk9Kp+NBipcE4ibXT+WRZtbEe6kgq3c17ZMS
+         DGOt7Pd/W2DLQ1Cxr+MhZ+Ls2q/yZTf1LYCsTHStFLOPS9cZS7VtJDMkRUAyZuWmpi
+         k5Pu6TebxQbhH/nZ8jwzQViHbF81yWSZbwobxJuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kelly Devilliv <kelly.devilliv@gmail.com>,
+        stable@vger.kernel.org, Umang Jain <umang.jain@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 091/133] usb: host: fotg210: fix the actual_length of an iso packet
+Subject: [PATCH 4.19 207/293] media: imx258: Limit the max analogue gain to 480
 Date:   Mon, 20 Sep 2021 18:42:49 +0200
-Message-Id: <20210920163915.620017418@linuxfoundation.org>
+Message-Id: <20210920163940.354918549@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kelly Devilliv <kelly.devilliv@gmail.com>
+From: Umang Jain <umang.jain@ideasonboard.com>
 
-[ Upstream commit 091cb2f782f32ab68c6f5f326d7868683d3d4875 ]
+[ Upstream commit f809665ee75fff3f4ea8907f406a66d380aeb184 ]
 
-We should acquire the actual_length of an iso packet
-from the iTD directly using FOTG210_ITD_LENGTH() macro.
+The range for analog gain mentioned in the datasheet is [0, 480].
+The real gain formula mentioned in the datasheet is:
 
-Signed-off-by: Kelly Devilliv <kelly.devilliv@gmail.com>
-Link: https://lore.kernel.org/r/20210627125747.127646-4-kelly.devilliv@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+	Gain = 512 / (512 – X)
+
+Hence, values larger than 511 clearly makes no sense. The gain
+register field is also documented to be of 9-bits in the datasheet.
+
+Certainly, it is enough to infer that, the kernel driver currently
+advertises an arbitrary analog gain max. Fix it by rectifying the
+value as per the data sheet i.e. 480.
+
+Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/fotg210-hcd.c | 5 ++---
- drivers/usb/host/fotg210.h     | 5 -----
- 2 files changed, 2 insertions(+), 8 deletions(-)
+ drivers/media/i2c/imx258.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index 5dacc3076efd..e081392ec830 100644
---- a/drivers/usb/host/fotg210-hcd.c
-+++ b/drivers/usb/host/fotg210-hcd.c
-@@ -4495,13 +4495,12 @@ static bool itd_complete(struct fotg210_hcd *fotg210, struct fotg210_itd *itd)
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index 68ce63333744..85395813c0f2 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -46,7 +46,7 @@
+ /* Analog gain control */
+ #define IMX258_REG_ANALOG_GAIN		0x0204
+ #define IMX258_ANA_GAIN_MIN		0
+-#define IMX258_ANA_GAIN_MAX		0x1fff
++#define IMX258_ANA_GAIN_MAX		480
+ #define IMX258_ANA_GAIN_STEP		1
+ #define IMX258_ANA_GAIN_DEFAULT		0x0
  
- 			/* HC need not update length with this error */
- 			if (!(t & FOTG210_ISOC_BABBLE)) {
--				desc->actual_length =
--					fotg210_itdlen(urb, desc, t);
-+				desc->actual_length = FOTG210_ITD_LENGTH(t);
- 				urb->actual_length += desc->actual_length;
- 			}
- 		} else if (likely((t & FOTG210_ISOC_ACTIVE) == 0)) {
- 			desc->status = 0;
--			desc->actual_length = fotg210_itdlen(urb, desc, t);
-+			desc->actual_length = FOTG210_ITD_LENGTH(t);
- 			urb->actual_length += desc->actual_length;
- 		} else {
- 			/* URB was too late */
-diff --git a/drivers/usb/host/fotg210.h b/drivers/usb/host/fotg210.h
-index b5cfa7aeb277..1a3f94123c88 100644
---- a/drivers/usb/host/fotg210.h
-+++ b/drivers/usb/host/fotg210.h
-@@ -682,11 +682,6 @@ static inline unsigned fotg210_read_frame_index(struct fotg210_hcd *fotg210)
- 	return fotg210_readl(fotg210, &fotg210->regs->frame_index);
- }
- 
--#define fotg210_itdlen(urb, desc, t) ({			\
--	usb_pipein((urb)->pipe) ?				\
--	(desc)->length - FOTG210_ITD_LENGTH(t) :			\
--	FOTG210_ITD_LENGTH(t);					\
--})
- /*-------------------------------------------------------------------------*/
- 
- #endif /* __LINUX_FOTG210_H */
 -- 
 2.30.2
 
