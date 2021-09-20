@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248424125BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EADD41243A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354192AbhITSrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
+        id S1352817AbhITScB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383238AbhITSoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:44:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FBCB63347;
-        Mon, 20 Sep 2021 17:32:30 +0000 (UTC)
+        id S1378761AbhITS0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:26:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D4C632DD;
+        Mon, 20 Sep 2021 17:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159150;
-        bh=yg4Ps3VUDzAa+n+FwBjZD7iXQmBjHkZuZ9/f/VvJoz8=;
+        s=korg; t=1632158738;
+        bh=bWFyB2GCQjZchfq8B6SsuD9LGSGlwgPReH0hiIu473g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ETZG8H2y7oDUMtyn8rgxvoMcmRUU6HWvk1liDQFM30Q4Rqx9NGsIzLv8V1a6ED6ik
-         ZdnKvdqDFZ2OJnyxIRgW8pfWh3FtIzGda6RU+7cH2MC4kGfBvYBIPvOXkpYgD/Utko
-         xYyoO0oF7kvRbUTkfxppV28reOwx252wGkhgDaWI=
+        b=gXXkIoa619v9m9UrtkSO4IrE+2PmPXfS/nu+EEEsvyXb998zbDAceLYtfpx0cPTPB
+         UmknDSr1TKn6v3IPsq3JifrS9bieHd/5UnwiguIW+m0wAyLkLHfnczyBpF/JgIAicR
+         gQW921aHHgVIwgOAG9YSmDnpuVCMBPw5uQ5QK2hM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 067/168] udp_tunnel: Fix udp_tunnel_nic work-queue type
-Date:   Mon, 20 Sep 2021 18:43:25 +0200
-Message-Id: <20210920163923.848301870@linuxfoundation.org>
+        stable@vger.kernel.org, Samuel Jones <sjones@kalrayinc.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.10 034/122] nvme-tcp: fix io_work priority inversion
+Date:   Mon, 20 Sep 2021 18:43:26 +0200
+Message-Id: <20210920163916.915224696@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Keith Busch <kbusch@kernel.org>
 
-commit e50e711351bdc656a8e6ca1022b4293cae8dcd59 upstream.
+commit 70f437fb4395ad4d1d16fab9a1ad9fbc9fc0579b upstream.
 
-Turn udp_tunnel_nic work-queue to an ordered work-queue. This queue
-holds the UDP-tunnel configuration commands of the different netdevs.
-When the netdevs are functions of the same NIC the order of
-execution may be crucial.
+Dispatching requests inline with the .queue_rq() call may block while
+holding the send_mutex. If the tcp io_work also happens to schedule, it
+may see the req_list is non-empty, leaving "pending" true and remaining
+in TASK_RUNNING. Since io_work is of higher scheduling priority, the
+.queue_rq task may not get a chance to run, blocking forward progress
+and leading to io timeouts.
 
-Problem example:
-NIC with 2 PFs, both PFs declare offload quota of up to 3 UDP-ports.
- $ifconfig eth2 1.1.1.1/16 up
+Instead of checking for pending requests within io_work, let the queueing
+restart io_work outside the send_mutex lock if there is more work to be
+done.
 
- $ip link add eth2_19503 type vxlan id 5049 remote 1.1.1.2 dev eth2 dstport 19053
- $ip link set dev eth2_19503 up
-
- $ip link add eth2_19504 type vxlan id 5049 remote 1.1.1.3 dev eth2 dstport 19054
- $ip link set dev eth2_19504 up
-
- $ip link add eth2_19505 type vxlan id 5049 remote 1.1.1.4 dev eth2 dstport 19055
- $ip link set dev eth2_19505 up
-
- $ip link add eth2_19506 type vxlan id 5049 remote 1.1.1.5 dev eth2 dstport 19056
- $ip link set dev eth2_19506 up
-
-NIC RX port offload infrastructure offloads the first 3 UDP-ports (on
-all devices which sets NETIF_F_RX_UDP_TUNNEL_PORT feature) and not
-UDP-port 19056. So both PFs gets this offload configuration.
-
- $ip link set dev eth2_19504 down
-
-This triggers udp-tunnel-core to remove the UDP-port 19504 from
-offload-ports-list and offload UDP-port 19056 instead.
-
-In this scenario it is important that the UDP-port of 19504 will be
-removed from both PFs before trying to add UDP-port 19056. The NIC can
-stop offloading a UDP-port only when all references are removed.
-Otherwise the NIC may report exceeding of the offload quota.
-
-Fixes: cc4e3835eff4 ("udp_tunnel: add central NIC RX port offload infrastructure")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: a0fdd1418007f ("nvme-tcp: rerun io_work if req_list is not empty")
+Reported-by: Samuel Jones <sjones@kalrayinc.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/udp_tunnel_nic.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/tcp.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
---- a/net/ipv4/udp_tunnel_nic.c
-+++ b/net/ipv4/udp_tunnel_nic.c
-@@ -935,7 +935,7 @@ static int __init udp_tunnel_nic_init_mo
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -273,6 +273,12 @@ static inline void nvme_tcp_send_all(str
+ 	} while (ret > 0);
+ }
+ 
++static inline bool nvme_tcp_queue_more(struct nvme_tcp_queue *queue)
++{
++	return !list_empty(&queue->send_list) ||
++		!llist_empty(&queue->req_list) || queue->more_requests;
++}
++
+ static inline void nvme_tcp_queue_request(struct nvme_tcp_request *req,
+ 		bool sync, bool last)
  {
- 	int err;
+@@ -293,9 +299,10 @@ static inline void nvme_tcp_queue_reques
+ 		nvme_tcp_send_all(queue);
+ 		queue->more_requests = false;
+ 		mutex_unlock(&queue->send_mutex);
+-	} else if (last) {
+-		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
+ 	}
++
++	if (last && nvme_tcp_queue_more(queue))
++		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
+ }
  
--	udp_tunnel_nic_workqueue = alloc_workqueue("udp_tunnel_nic", 0, 0);
-+	udp_tunnel_nic_workqueue = alloc_ordered_workqueue("udp_tunnel_nic", 0);
- 	if (!udp_tunnel_nic_workqueue)
- 		return -ENOMEM;
+ static void nvme_tcp_process_req_list(struct nvme_tcp_queue *queue)
+@@ -890,12 +897,6 @@ done:
+ 	read_unlock_bh(&sk->sk_callback_lock);
+ }
  
+-static inline bool nvme_tcp_queue_more(struct nvme_tcp_queue *queue)
+-{
+-	return !list_empty(&queue->send_list) ||
+-		!llist_empty(&queue->req_list) || queue->more_requests;
+-}
+-
+ static inline void nvme_tcp_done_send_req(struct nvme_tcp_queue *queue)
+ {
+ 	queue->request = NULL;
+@@ -1132,8 +1133,7 @@ static void nvme_tcp_io_work(struct work
+ 				pending = true;
+ 			else if (unlikely(result < 0))
+ 				break;
+-		} else
+-			pending = !llist_empty(&queue->req_list);
++		}
+ 
+ 		result = nvme_tcp_try_recv(queue);
+ 		if (result > 0)
 
 
