@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E58E412401
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2A8412622
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239454AbhITS3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:29:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
+        id S1386121AbhITSxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:53:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378179AbhITSX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:23:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED32461A7D;
-        Mon, 20 Sep 2021 17:24:41 +0000 (UTC)
+        id S1385511AbhITSue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:50:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E49E76338A;
+        Mon, 20 Sep 2021 17:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158682;
-        bh=axt4RgSMSFoQ1IYmeYZTr36aIoc0JBcAdtTEwp9SDqs=;
+        s=korg; t=1632159298;
+        bh=PANFbJcVPUudqr+Gw+EufyPkfBUZLsahUaC5/LKz4c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bcdT5SSfc0KULKuVAvo1/zjebp34bBo1QaTLrIWkDqUXAbONwJdNLf1ePiEWksdOW
-         dXurFwJEDORGlJyXXdzxVnqZOm5rNWiFi0sp4XRX/I9YYo+bmyB8a1g5aRw1/xeV/i
-         o4YCbJkBwhNad23um9zA2ZJtwIF20A8xUIj1XxZM=
+        b=G5xuQTAxb6KoQ+Sc629j9/hXYwhFr4Y8bmcfTiKulNksqJ1K07a7gUE5s0irHA43N
+         xo0xilNWlcQKUwtVjfqqEZkmGpxLePo5QGZP3eq8M8SJ0bu20S7JTVNcyod/GNzQfw
+         PRXvDEs+3b2Cy+igAY1kzWyP9sFezUoXixehkLYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 255/260] net: dsa: b53: Fix calculating number of switch ports
+Subject: [PATCH 5.14 135/168] PCI/PTM: Remove error message at boot
 Date:   Mon, 20 Sep 2021 18:44:33 +0200
-Message-Id: <20210920163939.776599103@linuxfoundation.org>
+Message-Id: <20210920163926.101528761@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit cdb067d31c0fe4cce98b9d15f1f2ef525acaa094 ]
+[ Upstream commit ff3a52ab9cab01a53b168dc667fe789f56b90aa9 ]
 
-It isn't true that CPU port is always the last one. Switches BCM5301x
-have 9 ports (port 6 being inactive) and they use port 5 as CPU by
-default (depending on design some other may be CPU ports too).
+Since 39850ed51062 ("PCI/PTM: Save/restore Precision Time Measurement
+Capability for suspend/resume"), devices that have PTM capability but
+don't enable it see this message on calls to pci_save_state():
 
-A more reliable way of determining number of ports is to check for the
-last set bit in the "enabled_ports" bitfield.
+  no suspend buffer for PTM
 
-This fixes b53 internal state, it will allow providing accurate info to
-the DSA and is required to fix BCM5301x support.
+Drop the message, it's perfectly fine not to use a capability.
 
-Fixes: 967dd82ffc52 ("net: dsa: b53: Add support for Broadcom RoboSwitch")
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 39850ed51062 ("PCI/PTM: Save/restore Precision Time Measurement Capability for suspend/resume")
+Link: https://lore.kernel.org/r/20210811185955.3112534-1-kuba@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: David E. Box <david.e.box@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/b53/b53_common.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/pci/pcie/ptm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index e78b683f7305..825d840cdb8c 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -2353,9 +2353,8 @@ static int b53_switch_init(struct b53_device *dev)
- 			dev->cpu_port = 5;
- 	}
+diff --git a/drivers/pci/pcie/ptm.c b/drivers/pci/pcie/ptm.c
+index 95d4eef2c9e8..4810faa67f52 100644
+--- a/drivers/pci/pcie/ptm.c
++++ b/drivers/pci/pcie/ptm.c
+@@ -60,10 +60,8 @@ void pci_save_ptm_state(struct pci_dev *dev)
+ 		return;
  
--	/* cpu port is always last */
--	dev->num_ports = dev->cpu_port + 1;
- 	dev->enabled_ports |= BIT(dev->cpu_port);
-+	dev->num_ports = fls(dev->enabled_ports);
+ 	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_PTM);
+-	if (!save_state) {
+-		pci_err(dev, "no suspend buffer for PTM\n");
++	if (!save_state)
+ 		return;
+-	}
  
- 	/* Include non standard CPU port built-in PHYs to be probed */
- 	if (is539x(dev) || is531x5(dev)) {
+ 	cap = (u16 *)&save_state->cap.data[0];
+ 	pci_read_config_word(dev, ptm + PCI_PTM_CTRL, cap);
 -- 
 2.30.2
 
