@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735A74120E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD02411B31
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350190AbhITR7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:59:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54992 "EHLO mail.kernel.org"
+        id S237604AbhITQ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:56:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349809AbhITRxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:53:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2CFD619E1;
-        Mon, 20 Sep 2021 17:13:11 +0000 (UTC)
+        id S245176AbhITQwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:52:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E7B261362;
+        Mon, 20 Sep 2021 16:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157992;
-        bh=CcGd3tLppzua3RpBPmsOGIVB1hJU/S8evCoxGLnypmo=;
+        s=korg; t=1632156595;
+        bh=P2dWfA3+6h1FBHe0VI/ugsM4VtXffXqmR7Mk0eeENhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GP4xmrqG07wI5IX71ZbP48AAU+t3tUmbS30u5+hygqASyAyIHkwk8+Ufv9HxUhtu9
-         xexdwc4bJwBPpdEhUonha/mVqpHgPRW99Boq//HuTFsx+ltdlVjxeMw/EmP/YEr/T1
-         e9Cz2+NdiNRfve8ir+2aQe6oleMSBdFzRMaEUSps=
+        b=PZL7UyTLJJin28gfhYTzfvLF7I3qzcnsMh9LrHLcKAMrefUbXm18ExQb0iWs33B6t
+         +aHFmWRScCz4NfIQUN6hs+m92PbkF5o/eBtIzZRk1g7Q958Ri39Zl/67SqZb2wBExE
+         CAm2tLWqfQEJIlxze7NbMPd40Rd2Vy/Ch8mEnU8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 213/293] net: ethernet: stmmac: Do not use unreachable() in ipq806x_gmac_probe()
-Date:   Mon, 20 Sep 2021 18:42:55 +0200
-Message-Id: <20210920163940.660531558@linuxfoundation.org>
+Subject: [PATCH 4.4 098/133] video: fbdev: riva: Error out if pixclock equals zero
+Date:   Mon, 20 Sep 2021 18:42:56 +0200
+Message-Id: <20210920163915.837437047@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,86 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit 4367355dd90942a71641c98c40c74589c9bddf90 ]
+[ Upstream commit f92763cb0feba247e0939ed137b495601fd072a5 ]
 
-When compiling with clang in certain configurations, an objtool warning
-appears:
+The userspace program could pass any values to the driver through
+ioctl() interface. If the driver doesn't check the value of 'pixclock',
+it may cause divide error.
 
-drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.o: warning: objtool:
-ipq806x_gmac_probe() falls through to next function phy_modes()
+Fix this by checking whether 'pixclock' is zero first.
 
-This happens because the unreachable annotation in the third switch
-statement is not eliminated. The compiler should know that the first
-default case would prevent the second and third from being reached as
-the comment notes but sanitizer options can make it harder for the
-compiler to reason this out.
+The following log reveals it:
 
-Help the compiler out by eliminating the unreachable() annotation and
-unifying the default case error handling so that there is no objtool
-warning, the meaning of the code stays the same, and there is less
-duplication.
+[   33.396850] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+[   33.396864] CPU: 5 PID: 11754 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #222
+[   33.396883] RIP: 0010:riva_load_video_mode+0x417/0xf70
+[   33.396969] Call Trace:
+[   33.396973]  ? debug_smp_processor_id+0x1c/0x20
+[   33.396984]  ? tick_nohz_tick_stopped+0x1a/0x90
+[   33.396996]  ? rivafb_copyarea+0x3c0/0x3c0
+[   33.397003]  ? wake_up_klogd.part.0+0x99/0xd0
+[   33.397014]  ? vprintk_emit+0x110/0x4b0
+[   33.397024]  ? vprintk_default+0x26/0x30
+[   33.397033]  ? vprintk+0x9c/0x1f0
+[   33.397041]  ? printk+0xba/0xed
+[   33.397054]  ? record_print_text.cold+0x16/0x16
+[   33.397063]  ? __kasan_check_read+0x11/0x20
+[   33.397074]  ? profile_tick+0xc0/0x100
+[   33.397084]  ? __sanitizer_cov_trace_const_cmp4+0x24/0x80
+[   33.397094]  ? riva_set_rop_solid+0x2a0/0x2a0
+[   33.397102]  rivafb_set_par+0xbe/0x610
+[   33.397111]  ? riva_set_rop_solid+0x2a0/0x2a0
+[   33.397119]  fb_set_var+0x5bf/0xeb0
+[   33.397127]  ? fb_blank+0x1a0/0x1a0
+[   33.397134]  ? lock_acquire+0x1ef/0x530
+[   33.397143]  ? lock_release+0x810/0x810
+[   33.397151]  ? lock_is_held_type+0x100/0x140
+[   33.397159]  ? ___might_sleep+0x1ee/0x2d0
+[   33.397170]  ? __mutex_lock+0x620/0x1190
+[   33.397180]  ? trace_hardirqs_on+0x6a/0x1c0
+[   33.397190]  do_fb_ioctl+0x31e/0x700
 
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-4-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/stmicro/stmmac/dwmac-ipq806x.c    | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ drivers/video/fbdev/riva/fbdev.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index 0f56f8e33691..03b11f191c26 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -288,10 +288,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 		val &= ~NSS_COMMON_GMAC_CTL_PHY_IFACE_SEL;
- 		break;
- 	default:
--		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
--			phy_modes(gmac->phy_mode));
--		err = -EINVAL;
--		goto err_remove_config_dt;
-+		goto err_unsupported_phy;
- 	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_GMAC_CTL(gmac->id), val);
- 
-@@ -308,10 +305,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 			NSS_COMMON_CLK_SRC_CTRL_OFFSET(gmac->id);
- 		break;
- 	default:
--		dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
--			phy_modes(gmac->phy_mode));
--		err = -EINVAL;
--		goto err_remove_config_dt;
-+		goto err_unsupported_phy;
- 	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_SRC_CTRL, val);
- 
-@@ -328,8 +322,7 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 				NSS_COMMON_CLK_GATE_GMII_TX_EN(gmac->id);
- 		break;
- 	default:
--		/* We don't get here; the switch above will have errored out */
--		unreachable();
-+		goto err_unsupported_phy;
- 	}
- 	regmap_write(gmac->nss_common, NSS_COMMON_CLK_GATE, val);
- 
-@@ -360,6 +353,11 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+err_unsupported_phy:
-+	dev_err(&pdev->dev, "Unsupported PHY mode: \"%s\"\n",
-+		phy_modes(gmac->phy_mode));
-+	err = -EINVAL;
+diff --git a/drivers/video/fbdev/riva/fbdev.c b/drivers/video/fbdev/riva/fbdev.c
+index f1ad2747064b..6e5e29fe13db 100644
+--- a/drivers/video/fbdev/riva/fbdev.c
++++ b/drivers/video/fbdev/riva/fbdev.c
+@@ -1088,6 +1088,9 @@ static int rivafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
+ 	int mode_valid = 0;
+ 	
+ 	NVTRACE_ENTER();
++	if (!var->pixclock)
++		return -EINVAL;
 +
- err_remove_config_dt:
- 	stmmac_remove_config_dt(pdev, plat_dat);
- 
+ 	switch (var->bits_per_pixel) {
+ 	case 1 ... 8:
+ 		var->red.offset = var->green.offset = var->blue.offset = 0;
 -- 
 2.30.2
 
