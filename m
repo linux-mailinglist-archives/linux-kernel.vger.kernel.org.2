@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46270412000
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30D2411BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349990AbhITRrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:47:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        id S1343839AbhITRCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353497AbhITRow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7762561B74;
-        Mon, 20 Sep 2021 17:09:51 +0000 (UTC)
+        id S1344785AbhITQ7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4A3613CE;
+        Mon, 20 Sep 2021 16:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157791;
-        bh=YsaRDIljW9ZOcQdCQWLW2YQ1Zu48oIUNl46E6yRH4Pg=;
+        s=korg; t=1632156750;
+        bh=c25asRwqYAQOjVBY8o5GjpFWgQbiQ0BNFR+/EROjpyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YC/AK/vScTn88YWTPOcXfVr2Iy5PrXZWHt3yoa9b1Wt7thquaOmu+wQT+S3sWmgL/
-         /tnYOl1sAS/VQRz1HdbfrQTEPKWHlI/3+IHsrPN7VuDe0hxhLQ3qm+yz1RpRxrtbHT
-         M7pNNUFR44XOcTAsfhsAerkIJa6IWo5ozcqCh6WE=
+        b=joyTO/KV/rd5fEw6jiMfiIVepIP9kpI+0hbzMk8EYxbmuAB2IcGdjlkKyiDo15RwS
+         n8rU2gN5iPtoAdU8goMK230f4E2hQ76ubbMtUdf0SHLEPTR+cwTsneg4LIT4kdE6z2
+         yiJS2VpRoSsOU/a3UzlOH0EzcCTC8g4+dkEbyH68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
-        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 4.19 154/293] PCI: xilinx-nwl: Enable the clock through CCF
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 067/175] usb: phy: twl6030: add IRQ checks
 Date:   Mon, 20 Sep 2021 18:41:56 +0200
-Message-Id: <20210920163938.551623329@linuxfoundation.org>
+Message-Id: <20210920163920.252015975@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hyun Kwon <hyun.kwon@xilinx.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit de0a01f5296651d3a539f2d23d0db8f359483696 upstream.
+[ Upstream commit 0881e22c06e66af0b64773c91c8868ead3d01aa1 ]
 
-Enable PCIe reference clock. There is no remove function that's why
-this should be enough for simple operation.
-Normally this clock is enabled by default by firmware but there are
-usecases where this clock should be enabled by driver itself.
-It is also good that PCIe clock is recorded in a clock framework.
+The driver neglects to check the result of platform_get_irq()'s calls and
+blithely passes the negative error codes to request_threaded_irq() (which
+takes *unsigned* IRQ #), causing them both to fail with -EINVAL, overriding
+an original error code.  Stop calling request_threaded_irq() with the
+invalid IRQ #s.
 
-Link: https://lore.kernel.org/r/ee6997a08fab582b1c6de05f8be184f3fe8d5357.1624618100.git.michal.simek@xilinx.com
-Fixes: ab597d35ef11 ("PCI: xilinx-nwl: Add support for Xilinx NWL PCIe Host Controller")
-Signed-off-by: Hyun Kwon <hyun.kwon@xilinx.com>
-Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: stable@vger.kernel.org
+Fixes: c33fad0c3748 ("usb: otg: Adding twl6030-usb transceiver driver for OMAP4430")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/9507f50b-50f1-6dc4-f57c-3ed4e53a1c25@omp.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-xilinx-nwl.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/usb/phy/phy-twl6030-usb.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/pci/controller/pcie-xilinx-nwl.c
-+++ b/drivers/pci/controller/pcie-xilinx-nwl.c
-@@ -6,6 +6,7 @@
-  * (C) Copyright 2014 - 2015, Xilinx, Inc.
-  */
+diff --git a/drivers/usb/phy/phy-twl6030-usb.c b/drivers/usb/phy/phy-twl6030-usb.c
+index cf0b67433ac9..ccb36e240953 100644
+--- a/drivers/usb/phy/phy-twl6030-usb.c
++++ b/drivers/usb/phy/phy-twl6030-usb.c
+@@ -352,6 +352,11 @@ static int twl6030_usb_probe(struct platform_device *pdev)
+ 	twl->irq2		= platform_get_irq(pdev, 1);
+ 	twl->linkstat		= MUSB_UNKNOWN;
  
-+#include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-@@ -169,6 +170,7 @@ struct nwl_pcie {
- 	u8 root_busno;
- 	struct nwl_msi msi;
- 	struct irq_domain *legacy_irq_domain;
-+	struct clk *clk;
- 	raw_spinlock_t leg_mask_lock;
- };
- 
-@@ -849,6 +851,16 @@ static int nwl_pcie_probe(struct platfor
- 		return err;
- 	}
- 
-+	pcie->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(pcie->clk))
-+		return PTR_ERR(pcie->clk);
++	if (twl->irq1 < 0)
++		return twl->irq1;
++	if (twl->irq2 < 0)
++		return twl->irq2;
 +
-+	err = clk_prepare_enable(pcie->clk);
-+	if (err) {
-+		dev_err(dev, "can't enable PCIe ref clock\n");
-+		return err;
-+	}
-+
- 	err = nwl_pcie_bridge_init(pcie);
- 	if (err) {
- 		dev_err(dev, "HW Initialization failed\n");
+ 	twl->comparator.set_vbus	= twl6030_set_vbus;
+ 	twl->comparator.start_srp	= twl6030_start_srp;
+ 
+-- 
+2.30.2
+
 
 
