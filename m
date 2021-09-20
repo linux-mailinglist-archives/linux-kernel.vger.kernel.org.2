@@ -2,177 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42317411D17
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E29C411CF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346346AbhITRQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:16:14 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:39295 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345686AbhITRMS (ORCPT
+        id S1345050AbhITRPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:15:10 -0400
+Received: from mail-ua1-f49.google.com ([209.85.222.49]:34380 "EHLO
+        mail-ua1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345779AbhITRNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:12:18 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id E426F5C01D8;
-        Mon, 20 Sep 2021 13:10:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 20 Sep 2021 13:10:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=bHVTd+HpB5uBC82N+EYIUISSuwA
-        5WGc0HaCUXBOjbp4=; b=jBHC+/CYHBrpTnJqtKJPWsZsiYeqCZTKz/mJkUBKTlO
-        i+5uNaAxlqC4DzbtaWtnEdxIlhyaHfN5Th/cdLu9+iuDPgFUZM8eZTmr8D7Wk9hQ
-        XBVKp73w9cehWwp74rswt5KxJ0F/5SUimbe24nMDTtNmOrs6ahEOtaXbFLBrWuAg
-        M1hiCl0Wvj6qZIhHv9uAjLRVE/4wNEgk+IZbJd9TkhxAWXDeWk9iiwlc4X/yw4su
-        5eqanJTwphQ8JKrmSGXi5akaFA0qZ3KKkda0U95zSnpofnEXCWVSq+fdL6XMv6L2
-        SOZUx5YsG6rnq2EQnxJEh5gTbjQBueiW0FWGPUR9Q3Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bHVTd+
-        HpB5uBC82N+EYIUISSuwA5WGc0HaCUXBOjbp4=; b=ate8iXIVwzTCETzzG2pFZ2
-        NQ+GmZG4N/Rb0NVF5UFQls9VAoWLrV2WrjgOFXql12GjXt8vd1XOpxc7sXURRNUD
-        P/1dFMuV9MKkkv4uoTcdOjhKL4iOrjpDySMu7AoDqg/2jg6seCX/od8nMCHtfEJ6
-        gkqB04yu61AC63+JjrSiiMo1kWdw0d9LXXQVFxr8qZ87rcIhuAmn7fRyTo874W9q
-        OjtXR2MkSOyx4gEtDPozSWBUcgLmOf78MH5QE+f6VKjOMR7nF75Zkr/gej8B8uvi
-        IkhjHXbinuL+xWUHSzIUfKxjPLWaZPiGP7op3U53P66PDoqJXU9hrp9XPfD6a8Sg
-        ==
-X-ME-Sender: <xms:lMBIYamYn4eQQoD2T8gt-Ze7O5d21xR9DiM2_TqodEJIf1m8PByp4g>
-    <xme:lMBIYR3y3bOUdxRZ3GL40K9LBwYhJR4G9Ma6LyjsDC0hpe7WXl31LqiFzTRkGIiRY
-    APFSquf70h9zN_h6Ok>
-X-ME-Received: <xmr:lMBIYYp8Ik0DgNXOp4AUv-mQulVXxhMO3n6kB6xqkqKuboxNsO8bDII0s10enNmUKpvvZEIriOznoIav3WTl6e4wpjz_leiEu5Jf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgtefffffhjefhveeikeekvdekteehveekveeuffeigedvtdfgtddthfeh
-    ieeffeenucffohhmrghinheptghouggvthhhihhnkhdrtghordhukhenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhn
-    ohdrthgvtghh
-X-ME-Proxy: <xmx:lMBIYelurpMmUNoeGN4NjSyvwruVLqTcjbn6V6POYTIwegu1Jkhwtw>
-    <xmx:lMBIYY1T-iFf56dpoT_AnmDroqZBmDvsJP1bPL6IPzA4KvhRGWdC7g>
-    <xmx:lMBIYVvdiCsfDmTjlHO3mCxUBUnwsHLsSi2XEDT0Ejw3OmF8yHcA0A>
-    <xmx:lcBIYSp6uOacPM39j5ZYkR_gKAy5wfZr3MByjLegBXYEYhXVGuGHCw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 Sep 2021 13:10:44 -0400 (EDT)
-Date:   Mon, 20 Sep 2021 19:10:42 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Regression with mainline kernel on rpi4
-Message-ID: <20210920171042.oq3ndp3ox4xv5odh@gilmour>
-References: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
- <20210903160302.yh42vpkuob45dbpb@gilmour>
- <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
- <20210904091050.g5axxctgelciihjn@gilmour>
- <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
- <20210920144730.d7oabqfbx7pmyyfb@gilmour>
- <20210920154333.vunyxeshdb7jt5ka@gilmour>
- <20210920155350.h6624mt65vwg72p2@gilmour>
- <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
+        Mon, 20 Sep 2021 13:13:05 -0400
+Received: by mail-ua1-f49.google.com with SMTP id 6so865601uac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 10:11:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i9wjl3VW7I76KDvYCT3HzL0qO3/KX+BihrPKQ7omPYY=;
+        b=Hv+cOcB6eOGllYT1Z1h+da/VF49bnErCZMoq1U1tlSi7yDZD+IM4mgNZyHVqIZE03H
+         vJYiqMZ9RRprRZ/Hg69pBaaxa1GmhDSXtjyuJMorMomTOKKY1U94eaa6/xnghN6FRbff
+         fxNQuqT1Kh0QSfQQbQnNBtVc5hDxqMGaZk/SLjZO8fznHvbYb6DexAWXruvb3Dt83xQZ
+         6CfDwcwFlDQqhQkHH7iskz8Ux2gHCT3hKATGtP/kIBZjAJKgCYQlFpi49Reb4MVCDUMU
+         McG9MaPi6TT9hCbR8ghiUw5yZoR+8Iech4Et1JtiHlmyGcReLRyb0O+mc0/iiAVHgtnR
+         aSXQ==
+X-Gm-Message-State: AOAM531VNziurUn7qvzLxYI93yyIRtU2KNrWueQDiiT5Cc0H6poHYD1O
+        n1SstWvYOrRxykxTJyqE4D264DnooK0UDuXGqS/2VacsohY=
+X-Google-Smtp-Source: ABdhPJxx16fBt/8fMvA5rPzV3VejL+j6VTqCq+jaPvhscrlPxci3ZuQtiJiDqSWvN/jJ/G2jOBqAKLCW50s0vrqauKY=
+X-Received: by 2002:ab0:6ec9:: with SMTP id c9mr14237488uav.114.1632157897537;
+ Mon, 20 Sep 2021 10:11:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wpj546mrj2thtynn"
-Content-Disposition: inline
-In-Reply-To: <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
+References: <44ee2bfe-e4bc-b918-b908-7352ea012524@oxidecomputer.com>
+ <dfa20866-0d00-9bd3-6078-5544cfa5b633@sr71.net> <CAMuHMdUUfm6u_Pz3qzA0V7tLZd7jhcwdyxU7L0SyC_EdyzwQxw@mail.gmail.com>
+ <CAMuHMdVtHDQ2f0VKAdQFQV9dZJ5uFGD9yHvNviQ_k7AEfhN77w@mail.gmail.com>
+ <bf22702e-01b2-214a-1650-da9e4ec3c2be@labbott.name> <20210920162329.GJ4192@sirena.org.uk>
+ <5c88ae67-df7b-60ab-d087-bd244753c98f@labbott.name> <20210920164837.GK4192@sirena.org.uk>
+ <ebcaac1d-9b97-81d9-28eb-eeb51c51673f@labbott.name> <20210920165716.GL4192@sirena.org.uk>
+In-Reply-To: <20210920165716.GL4192@sirena.org.uk>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Sep 2021 19:11:26 +0200
+Message-ID: <CAMuHMdVOEDLPRNi7YEV0foz5CRTq_7BHKiQCQY2JjkH7-=ZE9Q@mail.gmail.com>
+Subject: Re: [Tech-board-discuss] IMPORTANT: CIVS opt-in for Technical
+ Advisory Board voting
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Laura Abbott <laura@labbott.name>, Dave Hansen <dave@sr71.net>,
+        "tab-elections@lists.linuxfoundation.org" 
+        <tab-elections@lists.linuxfoundation.org>, ksummit@lists.linux.dev,
+        "tech-board-discuss@lists.linuxfoundation.org" 
+        <tech-board-discuss@lists.linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mark,
 
---wpj546mrj2thtynn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 20, 2021 at 6:58 PM Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Sep 20, 2021 at 12:53:48PM -0400, Laura Abbott wrote:
+> > On 9/20/21 12:48, Mark Brown wrote:
+> > > How can I do this?  As (IIRC) Geert reported if you've activated your
+> > > mail then attempting to activate again causes CIVS to report "This email
+> > > address is already activated" with no link to any existing polls.
+>
+> > CIVS said it should give a list of all polls but perhaps that didn't
+> > happen. I'll see if I can get it to resend.
+>
+> It gives a list of all polls on activation but it seems like it doesn't
+> get that far on reactivations, it looks like it's generating an error
+> refusing to activate again before it gets that far.
 
-On Mon, Sep 20, 2021 at 05:35:00PM +0100, Sudip Mukherjee wrote:
-> On Mon, Sep 20, 2021 at 4:53 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Mon, Sep 20, 2021 at 05:43:33PM +0200, Maxime Ripard wrote:
-> > > On Mon, Sep 20, 2021 at 04:47:31PM +0200, Maxime Ripard wrote:
-> > > > On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee wrote:
-> > > > > Hi Maxime,
-> > > > >
-> > > > > On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cerno.tech>=
- wrote:
-> > > > > >
-> > > > > > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherjee wrote:
-> > > > > > > Hi Maxime,
-> > > > > > >
-> > > > > > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@cerno.te=
-ch> wrote:
-> > > > > > > >
-> > > > > > > > Hi Sudip,
-> > > > > > > >
-> > > > > > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Mukherjee w=
-rote:
-> > > > > > > > > Hi All,
-> > > > > > > > >
-> > > > > > > >
-> > > > > > >
-> > > > > > > <snip>
-> > > > > > >
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > You can see the complete dmesg at
-> > > > > > > > > https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
-> > > > > > > >
-> > > > > > > > What test were you running?
-> > > > > > >
-> > > > > > > Nothing particular, its just a boot test that we do every nig=
-ht after
-> > > > > > > pulling from torvalds/linux.git
-> > > > > >
-> > > > > > What are you booting to then?
-> > > > >
-> > > > > I am not sure I understood the question.
-> > > > > Its an Ubuntu image. The desktop environment is gnome. And as
-> > > > > mentioned earlier, we use the HEAD of linus tree every night to b=
-oot
-> > > > > the rpi4 and test that we can login via desktop environment and t=
-hat
-> > > > > there is no regression in dmesg.
-> > > >
-> > > > Looking at the CI, this isn't from a RPi but from qemu?
->=20
-> No, this is from rpi4 board (4GB), not qemu. The CI is a little
-> complicated here, lava boots the board with the new kernel and will
-> then trigger the openQA job. openQA will then connect to the board
-> using vnc to test the desktop. This is the last link that I sent to
-> Linus when he asked for it.
-> https://lava.qa.codethink.co.uk/scheduler/job/164#L1356
->=20
-> And this is the lava job for today -
-> https://lava.qa.codethink.co.uk/scheduler/job/173
+Do you get the list when following the configuration URL at the
+bottom of the activation code email?
 
-Is it connected to a monitor then?
+BTW, just got an email "Poll: Linux Foundation Technical Advisory
+Board Elections 2021". But I've already voted before ;-)
 
-> > > >
-> > > > What defconfig are you using? How did you generate the Ubuntu image?
-> > > > Through debootstrap? Any additional package?
->=20
-> Its the default ubuntu config. I can send you the config if you want.
 
-Yes, please.
+Gr{oetje,eeting}s,
 
-Thanks
-Maxime
+                        Geert
 
---wpj546mrj2thtynn
-Content-Type: application/pgp-signature; name="signature.asc"
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUjAkgAKCRDj7w1vZxhR
-xeBCAQCX7YZ4s1SBf/EtTcIcixPm8R9vls2uw8w+P5Qg3E4fswEA3/YrRR3STrU8
-5z+tqd9ZbXeVQOwuBMkMjpM5FgjGgAQ=
-=XjUP
------END PGP SIGNATURE-----
-
---wpj546mrj2thtynn--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
