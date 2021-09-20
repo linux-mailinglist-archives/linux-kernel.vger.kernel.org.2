@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA18412145
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CEA412367
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347876AbhITSDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:03:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54994 "EHLO mail.kernel.org"
+        id S1352107AbhITSYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:24:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355882AbhITR47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:56:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CDF56320D;
-        Mon, 20 Sep 2021 17:14:34 +0000 (UTC)
+        id S1359525AbhITSQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:16:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F62161A87;
+        Mon, 20 Sep 2021 17:22:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158075;
-        bh=as9Ks3d+hMI0XKxd93OiXRcY7W40M/REjFiIk/2HxCM=;
+        s=korg; t=1632158521;
+        bh=Qs+rCZgSbeIX30we6YkEYJZERXgavSYfK3BMtfypwMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YFw8EG6BrHaWqR0lcQ3/uu/oKFutkrztRI7oocnT1Wb7TcaEWC1VCKg2Oq8odYAkn
-         4GjqNPGOGJFSzfw0Gpxsc9AiK8oRsF/YvsWf7ZzGzlfcCzRHLTsePdKLuw+3DYSS5P
-         yvTbw+m8w9T35iT8inKNMDpMo/DgtKyU4RR9JMuk=
+        b=hTWHOGdfPubqLGuCnlj12jshzGdx4IoS4xWuFpxf1ZlA+W2Wz/ofgUdTWuAc3XMcg
+         zcAB0KmqDBq3MIGONQQ7c2ZOyYSz8LqEqJEUWfKsQYpfjB0R9GjWQQgRtnw1qh1eNw
+         9bqq/llXASqrpOLvdR64yCYOuDeI0/7tU9YBygl4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, chenying <chenying.kernel@bytedance.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 242/293] ovl: fix BUG_ON() in may_delete() when called from ovl_cleanup()
-Date:   Mon, 20 Sep 2021 18:43:24 +0200
-Message-Id: <20210920163941.678434833@linuxfoundation.org>
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Rob Clark <robdclark@chromium.org>
+Subject: [PATCH 5.4 187/260] drm/msi/mdp4: populate priv->kms in mdp4_kms_init
+Date:   Mon, 20 Sep 2021 18:43:25 +0200
+Message-Id: <20210920163937.468950314@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chenying <chenying.kernel@bytedance.com>
+From: David Heidelberg <david@ixit.cz>
 
-commit 52d5a0c6bd8a89f460243ed937856354f8f253a3 upstream.
+commit cb0927ab80d224c9074f53d1a55b087d12ec5a85 upstream.
 
-If function ovl_instantiate() returns an error, ovl_cleanup will be called
-and try to remove newdentry from wdir, but the newdentry has been moved to
-udir at this time.  This will causes BUG_ON(victim->d_parent->d_inode !=
-dir) in fs/namei.c:may_delete.
+Without this fix boot throws NULL ptr exception at msm_dsi_manager_setup_encoder
+on devices like Nexus 7 2013 (MDP4 v4.4).
 
-Signed-off-by: chenying <chenying.kernel@bytedance.com>
-Fixes: 01b39dcc9568 ("ovl: use inode_insert5() to hash a newly created inode")
-Link: https://lore.kernel.org/linux-unionfs/e6496a94-a161-dc04-c38a-d2544633acb4@bytedance.com/
-Cc: <stable@vger.kernel.org> # v4.18
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Fixes: 03436e3ec69c ("drm/msm/dsi: Move setup_encoder to modeset_init")
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Link: https://lore.kernel.org/r/20210811170631.39296-1-david@ixit.cz
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/overlayfs/dir.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/overlayfs/dir.c
-+++ b/fs/overlayfs/dir.c
-@@ -517,8 +517,10 @@ static int ovl_create_over_whiteout(stru
- 			goto out_cleanup;
- 	}
- 	err = ovl_instantiate(dentry, inode, newdentry, hardlink);
--	if (err)
--		goto out_cleanup;
-+	if (err) {
-+		ovl_cleanup(udir, newdentry);
-+		dput(newdentry);
-+	}
- out_dput:
- 	dput(upper);
- out_unlock:
+--- a/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
++++ b/drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c
+@@ -405,6 +405,7 @@ struct msm_kms *mdp4_kms_init(struct drm
+ {
+ 	struct platform_device *pdev = to_platform_device(dev->dev);
+ 	struct mdp4_platform_config *config = mdp4_get_config(pdev);
++	struct msm_drm_private *priv = dev->dev_private;
+ 	struct mdp4_kms *mdp4_kms;
+ 	struct msm_kms *kms = NULL;
+ 	struct msm_gem_address_space *aspace;
+@@ -419,7 +420,8 @@ struct msm_kms *mdp4_kms_init(struct drm
+ 
+ 	mdp_kms_init(&mdp4_kms->base, &kms_funcs);
+ 
+-	kms = &mdp4_kms->base.base;
++	priv->kms = &mdp4_kms->base.base;
++	kms = priv->kms;
+ 
+ 	mdp4_kms->dev = dev;
+ 
 
 
