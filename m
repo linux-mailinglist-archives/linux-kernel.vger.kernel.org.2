@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F0B411C37
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8A2411DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346411AbhITRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54482 "EHLO mail.kernel.org"
+        id S1349424AbhITRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:23:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345195AbhITRBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:01:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B3406135D;
-        Mon, 20 Sep 2021 16:53:20 +0000 (UTC)
+        id S1347112AbhITRU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:20:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F8E61357;
+        Mon, 20 Sep 2021 17:00:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156800;
-        bh=R5RubUIDV5mJf/Ntg1nlkaygmNTmSRGtpF4N1JRkJbs=;
+        s=korg; t=1632157244;
+        bh=/thVWYMUoXkQ0lEVTbUxhcMeP9npuSU4+g/QNKMer6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pq0Xw21LkGmpVDCY+FEwHo9pJli575659lzrc/d36eXnW1VzqoSq58Q4FWC0wkCDg
-         /CAGgtCZgbtoAdWfG/12/sL4zaM9wVc+aC/w0Pd5gfZzdR/F+Xc7Xq5HYt/KsdFLrO
-         TFXBxP+JxegpRLw3V6VUh8/SW4ld5EmzX8xi9ZX4=
+        b=zvcDD50v7xhnfDGgT6Wq6ZrbAlgdN2FAWbgzV9i6gxjyV36RgLkF8KYOPzHMKJI06
+         aCkBjimiBSJ2DDsLNwQSrqT8WSOnQBbcPTynILR8IX4asvg70x9C+ecAzfOw/LSdBn
+         zd/F1Gj4XyVx5AlcPb5su4DC37P5FQzSuu/G8zQI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 4.9 091/175] xen: fix setting of max_pfn in shared_info
-Date:   Mon, 20 Sep 2021 18:42:20 +0200
-Message-Id: <20210920163921.056255280@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 4.14 120/217] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
+Date:   Mon, 20 Sep 2021 18:42:21 +0200
+Message-Id: <20210920163928.726679596@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 4b511d5bfa74b1926daefd1694205c7f1bcf677f upstream.
+commit d212dcee27c1f89517181047e5485fcbba4a25c2 upstream.
 
-Xen PV guests are specifying the highest used PFN via the max_pfn
-field in shared_info. This value is used by the Xen tools when saving
-or migrating the guest.
+irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
+locks as masking/unmasking procedure needs atomic read-modify-write
+operation on hardware register.
 
-Unfortunately this field is misnamed, as in reality it is specifying
-the number of pages (including any memory holes) of the guest, so it
-is the highest used PFN + 1. Renaming isn't possible, as this is a
-public Xen hypervisor interface which needs to be kept stable.
-
-The kernel will set the value correctly initially at boot time, but
-when adding more pages (e.g. due to memory hotplug or ballooning) a
-real PFN number is stored in max_pfn. This is done when expanding the
-p2m array, and the PFN stored there is even possibly wrong, as it
-should be the last possible PFN of the just added P2M frame, and not
-one which led to the P2M expansion.
-
-Fix that by setting shared_info->max_pfn to the last possible PFN + 1.
-
-Fixes: 98dd166ea3a3c3 ("x86/xen/p2m: hint at the last populated P2M entry")
+Link: https://lore.kernel.org/r/20210820155020.3000-1-pali@kernel.org
+Reported-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Link: https://lore.kernel.org/r/20210730092622.9973-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/xen/p2m.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/host/pci-aardvark.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -623,8 +623,8 @@ int xen_alloc_p2m_entry(unsigned long pf
- 	}
+--- a/drivers/pci/host/pci-aardvark.c
++++ b/drivers/pci/host/pci-aardvark.c
+@@ -200,6 +200,7 @@ struct advk_pcie {
+ 	struct list_head resources;
+ 	struct irq_domain *irq_domain;
+ 	struct irq_chip irq_chip;
++	raw_spinlock_t irq_lock;
+ 	struct irq_domain *msi_domain;
+ 	struct irq_domain *msi_inner_domain;
+ 	struct irq_chip msi_bottom_irq_chip;
+@@ -638,22 +639,28 @@ static void advk_pcie_irq_mask(struct ir
+ {
+ 	struct advk_pcie *pcie = d->domain->host_data;
+ 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	unsigned long flags;
+ 	u32 mask;
  
- 	/* Expanded the p2m? */
--	if (pfn > xen_p2m_last_pfn) {
--		xen_p2m_last_pfn = pfn;
-+	if (pfn >= xen_p2m_last_pfn) {
-+		xen_p2m_last_pfn = ALIGN(pfn + 1, P2M_PER_PAGE);
- 		HYPERVISOR_shared_info->arch.max_pfn = xen_p2m_last_pfn;
- 	}
++	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
+ 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
+ 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
++	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
+ }
  
+ static void advk_pcie_irq_unmask(struct irq_data *d)
+ {
+ 	struct advk_pcie *pcie = d->domain->host_data;
+ 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
++	unsigned long flags;
+ 	u32 mask;
+ 
++	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
+ 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	mask &= ~PCIE_ISR1_INTX_ASSERT(hwirq);
+ 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
++	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
+ }
+ 
+ static int advk_pcie_irq_map(struct irq_domain *h,
+@@ -736,6 +743,8 @@ static int advk_pcie_init_irq_domain(str
+ 	struct device_node *pcie_intc_node;
+ 	struct irq_chip *irq_chip;
+ 
++	raw_spin_lock_init(&pcie->irq_lock);
++
+ 	pcie_intc_node =  of_get_next_child(node, NULL);
+ 	if (!pcie_intc_node) {
+ 		dev_err(dev, "No PCIe Intc node found\n");
 
 
