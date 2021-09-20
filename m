@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC25D411AB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6513B411BE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244847AbhITQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
+        id S1344114AbhITRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243369AbhITQsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6BEB61244;
-        Mon, 20 Sep 2021 16:47:07 +0000 (UTC)
+        id S230026AbhITRAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:00:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C17ED61357;
+        Mon, 20 Sep 2021 16:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156428;
-        bh=VxJEmnn+dozpsenHvujRYCWutCoXWG37VuCpXSfThXM=;
+        s=korg; t=1632156781;
+        bh=uDeBMJuKg5Vp+Na8Ijm9wuqjWClCzECe9LJUCwg8QtY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KrZVIzEzYY40TOvFyxRjQzsYwFdN3HBxBYlKT57+hdvPVPEA5m2By/fh76cGDVlqQ
-         2o1KXVX6u+GyfPkaAKS5zqCIf5slgILmQ2zT3zVuwSTYvCKPPwJ0VqA7Uh1gT4lldD
-         MYpZlvNhOSbL4eElnXYtUdIhS2E0hsn5mrYrnTf4=
+        b=KFAkwvPLmTQbIu4xHhAviGSrGCKDkoEBJw1VBP8gWjx6Iy15Lx6GVkgsjMNv0e2AQ
+         ODxmjVf4nSm6e8/LF5sTG5LD2O8jz+YFQCQebEIMWgSREsJJa7eitCaYQhbNNNymzH
+         9LV52tdh4I8zIkVUoZTOGYoI7CiPGKE4vvE72UIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: [PATCH 4.4 053/133] Bluetooth: Move shutdown callback before flushing tx and rx queue
-Date:   Mon, 20 Sep 2021 18:42:11 +0200
-Message-Id: <20210920163914.380474897@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nguyen Dinh Phi <phind.uet@gmail.com>
+Subject: [PATCH 4.9 083/175] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Date:   Mon, 20 Sep 2021 18:42:12 +0200
+Message-Id: <20210920163920.790326499@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,64 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
+commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
 
-Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
-are flushed or cancelled") introduced a regression that makes mtkbtsdio
-driver stops working:
-[   36.593956] Bluetooth: hci0: Firmware already downloaded
-[   46.814613] Bluetooth: hci0: Execution of wmt command timed out
-[   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is waiting for the
+ops->receive_buf() to finish its work, the data race will happen.
 
-The shutdown callback depends on the result of hdev->rx_work, so we
-should call it before flushing rx_work:
--> btmtksdio_shutdown()
- -> mtk_hci_wmt_sync()
-  -> __hci_cmd_send()
-   -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
+For example:
+tty_ioctl			|tty_ldisc_receive_buf
+ ->tioctsi			| ->tty_port_default_receive_buf
+				|  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
 
--> btmtksdio_recv_event()
- -> hci_recv_frame()
-  -> queue_work(hdev->workqueue, &hdev->rx_work)
-   -> clears BTMTKSDIO_TX_WAIT_VND_EVT
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and we will lost the data.
 
-So move the shutdown callback before flushing TX/RX queue to resolve the
-issue.
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
 
-Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/hci_core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/tty/tty_io.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 304abf2af9f3..bf69bfd0b475 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -1679,6 +1679,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
- 	hci_req_cancel(hdev, ENODEV);
- 	hci_req_lock(hdev);
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2312,8 +2312,6 @@ static int tty_fasync(int fd, struct fil
+  *	Locking:
+  *		Called functions take tty_ldiscs_lock
+  *		current->signal->tty check is safe without locks
+- *
+- *	FIXME: may race normal receive processing
+  */
  
-+	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
-+	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
-+	    test_bit(HCI_UP, &hdev->flags)) {
-+		/* Execute vendor specific shutdown routine */
-+		if (hdev->shutdown)
-+			hdev->shutdown(hdev);
-+	}
-+
- 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
- 		cancel_delayed_work_sync(&hdev->cmd_timer);
- 		hci_req_unlock(hdev);
--- 
-2.30.2
-
+ static int tiocsti(struct tty_struct *tty, char __user *p)
+@@ -2329,8 +2327,10 @@ static int tiocsti(struct tty_struct *tt
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
 
 
