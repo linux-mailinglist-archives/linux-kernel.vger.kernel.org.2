@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191F64127BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390E24127C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237549AbhITVHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:07:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232859AbhITVFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:05:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB76B61159;
-        Mon, 20 Sep 2021 21:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632171850;
-        bh=PqdFM5XpCW4SO8VwVFeVL8/W3ovMxPa8/cSLHK/1cCU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=l4hTPB4s2MuadFq2p5e6Xplm6rWChHn0TAe148keYBM4PyhsT4Z0dnrIVf4x/yUrW
-         TvJNAHPIAWaiTrxwhZP6PjK5F01TpWMMxEJxSL5YmcFiv4SSbVUbrrQeuDWiUNgj6w
-         dOitjMtSyPq5FUu0W9nnZU/e1BI2V6ZFfsIn0zAowC7cN5qZaRb9YgUmUZHBtokOKA
-         Sg0JzWzyV4CyUUiAVLRJR5PotXNmfupXMRQum0qomXQ8OQvbh/E3LGEGB3qd6Zqwbt
-         sXDu5phtaLCaLXsfYXXjpW92B+QfVofmgWfVAGj9rugEoExMyHyr4E3uskHK2JwC8c
-         VEhwLWOugkKRQ==
-Date:   Mon, 20 Sep 2021 14:04:07 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
-Message-ID: <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
-        <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S237649AbhITVLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:11:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:51402 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238023AbhITVJn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 17:09:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632172096; h=References: In-Reply-To: References:
+ In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=NP2O11SZCezPDg44dTxhtmzhv4PHkwiFesMZaATy/Tc=; b=TdnQFlkjn8hwpZ9CgsZHsVlijgCx2X6K0oH3yPe5UcaFTlg2tWuYzUmL+bZd37h1P+aEKKNG
+ HR2QOMDx6wVG2Jw6b4gDVRvMcUthnaozxOLbyRwhlaDovVU5C01CFSXGK9LflzMF2sR+AAFT
+ P5g85vS+Z8rs5wSQ89COyDFn0ak=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6148f83ebd6681d8ed484d68 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Sep 2021 21:08:14
+ GMT
+Sender: nguyenb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4DDDDC4338F; Mon, 20 Sep 2021 21:08:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from stor-berry.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E381C4338F;
+        Mon, 20 Sep 2021 21:08:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6E381C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   "Bao D. Nguyen" <nguyenb@codeaurora.org>
+To:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        "Bao D . Nguyen" <nguyenb@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v1 1/2] scsi: ufs: export hibern8 entry and exit
+Date:   Mon, 20 Sep 2021 14:07:49 -0700
+Message-Id: <70c5376129f902b6b3e9940ea3b10f147bf18a10.1632171047.git.nguyenb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1632171047.git.nguyenb@codeaurora.org>
+References: <cover.1632171047.git.nguyenb@codeaurora.org>
+In-Reply-To: <cover.1632171047.git.nguyenb@codeaurora.org>
+References: <cover.1632171047.git.nguyenb@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:
-> On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > devlink_register() can't fail and always returns success, but all drivers
-> > are obligated to check returned status anyway. This adds a lot of boilerplate
-> > code to handle impossible flow.
-> > 
-> > Make devlink_register() void and simplify the drivers that use that
-> > API call.  
-> 
-> Unlike unused functions bringing back error handling may be
-> non-trivial. I'd rather you deferred such cleanups until you're 
-> ready to post your full rework and therefore give us some confidence 
-> the revert will not be needed.
+From: Asutosh Das <asutoshd@codeaurora.org>
 
-If you disagree you gotta repost, new devlink_register call got added
-in the meantime.
+Qualcomm controllers need to be in hibern8 before scaling up
+or down the clocks. Hence, export the hibern8 entry and exit
+functions.
+
+Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 4 ++--
+ drivers/scsi/ufs/ufshcd.h | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 3841ab49..f3aad32 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -227,7 +227,6 @@ static void ufshcd_hba_exit(struct ufs_hba *hba);
+ static int ufshcd_clear_ua_wluns(struct ufs_hba *hba);
+ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async);
+ static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on);
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
+ static inline void ufshcd_add_delay_before_dme_cmd(struct ufs_hba *hba);
+ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba);
+ static void ufshcd_resume_clkscaling(struct ufs_hba *hba);
+@@ -4116,7 +4115,7 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_link_recovery);
+ 
+-static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
++int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ {
+ 	int ret;
+ 	struct uic_command uic_cmd = {0};
+@@ -4138,6 +4137,7 @@ static int ufshcd_uic_hibern8_enter(struct ufs_hba *hba)
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(ufshcd_uic_hibern8_enter);
+ 
+ int ufshcd_uic_hibern8_exit(struct ufs_hba *hba)
+ {
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index 52ea6f3..0cc55a2 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -1397,4 +1397,6 @@ static inline int ufshcd_rpmb_rpm_put(struct ufs_hba *hba)
+ 	return pm_runtime_put(&hba->sdev_rpmb->sdev_gendev);
+ }
+ 
++int ufshcd_uic_hibern8_enter(struct ufs_hba *hba);
++int ufshcd_uic_hibern8_exit(struct ufs_hba *hba);
+ #endif /* End of Header */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
