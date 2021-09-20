@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DD641248D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51105412148
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353014AbhITSfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:35:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49304 "EHLO mail.kernel.org"
+        id S1357286AbhITSDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:03:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379763AbhITSa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41ABD632F1;
-        Mon, 20 Sep 2021 17:27:12 +0000 (UTC)
+        id S245202AbhITR5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:57:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FCCC63215;
+        Mon, 20 Sep 2021 17:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158832;
-        bh=W067M9YuUs/H/l/wOW2OpgBb+e2lq9U28N6uJgw6CEw=;
+        s=korg; t=1632158082;
+        bh=f7OzJME8Fw6YO8kQmZ5P941hfIMsxedvXEj0duAHYno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AeWA8+9yiBmAtoY9/DADS1aNbk0A0S1clutAmu5jUYfCDXU7uNxQDu9q84yyokzUs
-         lUbJCDSDRqx/w7ToTCyaK9/kZEL0AU+9lC3zPjbymEWDpCeCzIuIH9bO3O6hiIvwbq
-         fgHIl9o1Dg6Ivc1GjiuPW+o7w5+TSkRk3ZZ5Cr0M=
+        b=sezg8PZpnoUvXs4VHUZfsDMG1uChiKDFN7exAT5bgm7LkOURdsNU6gIb7vhUOn5pi
+         /4fq4+2Gy7LbjmkNYDQpe7LVzMNznEzXypzNv/93JMachLMU3BoJePI17CqFiNKDCs
+         UuBsJQ3naE7mHp31A/ZTWtun4Aci0bk8d/lD0EVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 077/122] NTB: Fix an error code in ntb_msit_probe()
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 287/293] ARC: export clear_user_page() for modules
 Date:   Mon, 20 Sep 2021 18:44:09 +0200
-Message-Id: <20210920163918.301855871@linuxfoundation.org>
+Message-Id: <20210920163943.259534921@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 319f83ac98d7afaabab84ce5281a819a358b9895 ]
+[ Upstream commit 6b5ff0405e4190f23780362ea324b250bc495683 ]
 
-When the value of nm->isr_ctx is false, the value of ret is 0.
-So, we set ret to -ENOMEM to indicate this error.
+0day bot reports a build error:
+  ERROR: modpost: "clear_user_page" [drivers/media/v4l2-core/videobuf-dma-sg.ko] undefined!
+so export it in arch/arc/ to fix the build error.
 
-Clean up smatch warning:
-drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing
-error code 'ret'.
+In most ARCHes, clear_user_page() is a macro. OTOH, in a few
+ARCHes it is a function and needs to be exported.
+PowerPC exported it in 2004. It looks like nds32 and nios2
+still need to have it exported.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Fixes: 4102b53392d63 ("ARC: [mm] Aliasing VIPT dcache support 2/4")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-snps-arc@lists.infradead.org
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_msi_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arc/mm/cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-index 7095ecd6223a..4e18e08776c9 100644
---- a/drivers/ntb/test/ntb_msi_test.c
-+++ b/drivers/ntb/test/ntb_msi_test.c
-@@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
- 	if (ret)
- 		goto remove_dbgfs;
+diff --git a/arch/arc/mm/cache.c b/arch/arc/mm/cache.c
+index cf9619d4efb4..c5254c5967ed 100644
+--- a/arch/arc/mm/cache.c
++++ b/arch/arc/mm/cache.c
+@@ -1112,7 +1112,7 @@ void clear_user_page(void *to, unsigned long u_vaddr, struct page *page)
+ 	clear_page(to);
+ 	clear_bit(PG_dc_clean, &page->flags);
+ }
+-
++EXPORT_SYMBOL(clear_user_page);
  
--	if (!nm->isr_ctx)
-+	if (!nm->isr_ctx) {
-+		ret = -ENOMEM;
- 		goto remove_dbgfs;
-+	}
- 
- 	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
- 
+ /**********************************************************************
+  * Explicit Cache flush request from user space via syscall
 -- 
 2.30.2
 
