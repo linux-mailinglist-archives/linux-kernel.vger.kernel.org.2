@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E354128EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 00:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37554128F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 00:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236000AbhITWet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 18:34:49 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:38813 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234393AbhITWcq (ORCPT
+        id S239352AbhITWfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 18:35:36 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:39719 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238710AbhITWdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 18:32:46 -0400
-Received: by mail-ot1-f51.google.com with SMTP id c6-20020a9d2786000000b005471981d559so4218396otb.5;
-        Mon, 20 Sep 2021 15:31:19 -0700 (PDT)
+        Mon, 20 Sep 2021 18:33:33 -0400
+Received: by mail-ot1-f43.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so9261088ota.6;
+        Mon, 20 Sep 2021 15:32:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LaYTMvroF5ySfI6QJ0ThPVlAx09ZLJgE0Mmrymh+U3Y=;
-        b=bTGEG86n34qGK+fB6Q+PBRfKXrgoOaGivEKl0xZD5YHPEB7ODXMhu6c64eePabN2t1
-         vB63LVLSKrllkzuWI34ym270MHNyZgKvSx3lZLsESZ1jiKRqMyCiy+KQgbjBCRnuwQKe
-         BUxt7VSvgmYqSP9vJZAEwDScal0br/A2mYRD4EqBEQDyzcCPcPtDA2FAuSIM5cseAEw8
-         SdY0cyQmOUhlf9aKHycmTVBnuMZsHkCoQFQS6DuB1ztbeGO3vHqdkfh556VfEyGtIgKc
-         OojyGpkpDaULHIG5YYedbYl95UJgf7d1JfRMUxSf7ampMamaVf8cLF9ABxfJ7YM5Zg/4
-         rMUA==
-X-Gm-Message-State: AOAM531QYJy3bS7gx4cRnSdYJJQPzFlEltTgffQnUs3vdYsegZOq9z2K
-        RiuiMSFQNuR40tF+De/AcA==
-X-Google-Smtp-Source: ABdhPJw87xZoHf3w+GQGKrDfl+ogomFK7KSQ9zKshQl/wynqsa6OZJSG5bZKC4CcbyqbIC/2Ld8+ug==
-X-Received: by 2002:a05:6830:454:: with SMTP id d20mr2923366otc.156.1632177078729;
-        Mon, 20 Sep 2021 15:31:18 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=lv5vCVTK+7a76eimxd7MmcrL6XcLV1HKDiYmE/lrs8A=;
+        b=kCuAClWgjXVCWMW40vKOqyJNn7svRxQBQxxkPkNHhjD0wLC1DH9Qbp3dY3hI79Qe9+
+         0zwpqgCrBFox+FsU4sm9kAlANqz/69tw5OP5wjJ7zpxGuEOQjhxQsXHc3r/zJ4tupy4c
+         atqJpCuQ2p/Rwac9MsYyiY5CQeKufZnRvMgmO5T4T5g6NrYi9vkvSkAdW9AlZhtW6PEE
+         cCCsy7Jlld72BmwrsTsAnEmvTLcbgx0PJCCp/gEQhHIpjtE6i9iEIFP6KbBdS81IkHUd
+         mrVfv/Qad29Cbl7ZYV7ltTPN3aFzHCtiOFNcBibMH9lxyZEpjj5g+ZUpA3Z8v7V4lBit
+         vZfA==
+X-Gm-Message-State: AOAM530NPssY6/qzTrOaMDIXowgBML4uTCOzLI+d/c1078B/CIKI7pU7
+        ncYELalFZkkIuaUasFqGRg==
+X-Google-Smtp-Source: ABdhPJyHo02hXm0YTIK08iLCQV4BEts76YSKzirf6elJYiGSX459iEgxxFQ6lHRpFJJZiRwGlhlXPg==
+X-Received: by 2002:a05:6830:349c:: with SMTP id c28mr23307583otu.35.1632177125682;
+        Mon, 20 Sep 2021 15:32:05 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id k23sm3846545ood.12.2021.09.20.15.31.16
+        by smtp.gmail.com with ESMTPSA id y9sm2549850ote.39.2021.09.20.15.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 15:31:17 -0700 (PDT)
-Received: (nullmailer pid 918253 invoked by uid 1000);
-        Mon, 20 Sep 2021 22:31:15 -0000
-Date:   Mon, 20 Sep 2021 17:31:15 -0500
+        Mon, 20 Sep 2021 15:32:04 -0700 (PDT)
+Received: (nullmailer pid 919767 invoked by uid 1000);
+        Mon, 20 Sep 2021 22:32:03 -0000
+Date:   Mon, 20 Sep 2021 17:32:03 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: input: sun4i-lradc-keys: Add R329 and
- D1 compatibles
-Message-ID: <YUkLs+2amM5nHEz0@robh.at.kernel.org>
-References: <20210908034016.24119-1-samuel@sholland.org>
- <20210908034016.24119-2-samuel@sholland.org>
+To:     Chester Lin <clin@suse.com>
+Cc:     devicetree@vger.kernel.org,
+        Radu Nicolae Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        ciprianmarian.costea@nxp.com, "Ivan T . Ivanov" <iivanov@suse.de>,
+        Rob Herring <robh+dt@kernel.org>, catalin-dan.udma@nxp.com,
+        bogdan.folea@nxp.com, linux-arm-kernel@lists.infradead.org,
+        ghennadi.procopciuc@nxp.com, linux-kernel@vger.kernel.org,
+        Larisa Grigore <larisa.grigore@nxp.com>,
+        Stoica Cosmin-Stefan <cosmin.stoica@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Matthias Brugger <mbrugger@suse.com>, s32@nxp.com,
+        Shawn Guo <shawnguo@kernel.org>, linux-serial@vger.kernel.org,
+        bogdan.hamciuc@nxp.com
+Subject: Re: [PATCH v2 2/8] dt-bindings: serial: fsl-linflexuart: convert to
+ json-schema format
+Message-ID: <YUkL4w+FOWOus6FA@robh.at.kernel.org>
+References: <20210908064528.922-1-clin@suse.com>
+ <20210908064528.922-3-clin@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210908034016.24119-2-samuel@sholland.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210908064528.922-3-clin@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Sep 2021 22:40:14 -0500, Samuel Holland wrote:
-> The R329 and D1 SoCs each contain an LRADC with a programming interface
-> compatible to earlier LRADCs. However, the LRADC now has its own clock
-> gate and reset line, instead of being always active.
+On Wed, 08 Sep 2021 14:45:22 +0800, Chester Lin wrote:
+> Convert the FSL LINFlexD UART binding to json-schema.
 > 
-> To support this, add clock/reset properties to the binding, and require
-> them for the variant in the new SoCs.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Signed-off-by: Chester Lin <clin@suse.com>
+> Reviewed-by: Andreas Färber <afaerber@suse.de>
 > ---
->  .../input/allwinner,sun4i-a10-lradc-keys.yaml | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
+> Changes in v2:
+> - Drop the specific description "S32V234 SoC".
+> - Fill my name in the maintainer field. I tried to contact the authors
+>   of fsl,s32-linflexuart.txt but got no response.
+> 
+>  .../bindings/serial/fsl,s32-linflexuart.txt   | 22 ---------
+>  .../bindings/serial/fsl,s32-linflexuart.yaml  | 46 +++++++++++++++++++
+>  2 files changed, 46 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.txt
+>  create mode 100644 Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
