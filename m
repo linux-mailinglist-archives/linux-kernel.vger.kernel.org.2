@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019954124F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9277841261F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382142AbhITSkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:40:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
+        id S1386084AbhITSxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:53:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380896AbhITSfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:35:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58EA063311;
-        Mon, 20 Sep 2021 17:28:59 +0000 (UTC)
+        id S1385515AbhITSue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:50:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 920C263382;
+        Mon, 20 Sep 2021 17:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158939;
-        bh=IXZIPmogRXfq9EqsOwfePQHSv7qJQzlfsXqwOOkqn7k=;
+        s=korg; t=1632159294;
+        bh=GDh1oJgfaumRs5nc3q4ACijDRerreORaEJwNHlV1E4I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Goy05qD2FGFsJmT3QLjRmS1k2yH56guKR8PHb7jR+rVtpXXT2ADwqtJTNIrcVilHt
-         x6EQEuhPyCjzny0R0eVHv4VTLTtNc1B4bseyEVi/e2OLRcg5qNaF96Z2VD/ylNIoV0
-         NerxDFJv9aA6sYltAnBnTFXdBKiReiwIn275zpUw=
+        b=fI5kZwtOIH//2LeVMlcXQguAE4k13o4c3IBoUD+bSRxf78bSzC44nGfNoWdqxyqb3
+         0sCU+3YYp64mgUzCJXwugCNx+o7XvSgbS01C0EsIEms88reETqMuYEshRbCa1KGR8g
+         nKumZ9GTmvVu6ptVdF1sfETUaogvLkP48HJsP8qU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 099/122] gpio: mpc8xxx: Fix a resources leak in the error handling path of mpc8xxx_probe()
+        stable@vger.kernel.org, Oliver Upton <oupton@google.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 133/168] KVM: arm64: Fix read-side race on updates to vcpu reset state
 Date:   Mon, 20 Sep 2021 18:44:31 +0200
-Message-Id: <20210920163919.032848290@linuxfoundation.org>
+Message-Id: <20210920163926.039345484@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Oliver Upton <oupton@google.com>
 
-[ Upstream commit 555bda42b0c1a5ffb72d3227c043e8afde778f1f ]
+[ Upstream commit 6654f9dfcb88fea3b9affc180dc3c04333d0f306 ]
 
-Commit 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
-has introduced a new 'goto err;' at the very end of the function, but has
-not updated the error handling path accordingly.
+KVM correctly serializes writes to a vCPU's reset state, however since
+we do not take the KVM lock on the read side it is entirely possible to
+read state from two different reset requests.
 
-Add the now missing 'irq_domain_remove()' call which balances a previous
-'irq_domain_create_linear() call.
+Cure the race for now by taking the KVM lock when reading the
+reset_state structure.
 
-Fixes: 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: 358b28f09f0a ("arm/arm64: KVM: Allow a VCPU to fully reset itself")
+Signed-off-by: Oliver Upton <oupton@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210818202133.1106786-2-oupton@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-mpc8xxx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/kvm/reset.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-index 3c2fa44d9279..5b2a919a6644 100644
---- a/drivers/gpio/gpio-mpc8xxx.c
-+++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -406,6 +406,8 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 78d4bd897fbc..d010778b93ff 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -210,10 +210,16 @@ static bool vcpu_allowed_register_width(struct kvm_vcpu *vcpu)
+  */
+ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ {
++	struct vcpu_reset_state reset_state;
+ 	int ret;
+ 	bool loaded;
+ 	u32 pstate;
  
- 	return 0;
- err:
-+	if (mpc8xxx_gc->irq)
-+		irq_domain_remove(mpc8xxx_gc->irq);
- 	iounmap(mpc8xxx_gc->regs);
- 	return ret;
- }
++	mutex_lock(&vcpu->kvm->lock);
++	reset_state = vcpu->arch.reset_state;
++	WRITE_ONCE(vcpu->arch.reset_state.reset, false);
++	mutex_unlock(&vcpu->kvm->lock);
++
+ 	/* Reset PMU outside of the non-preemptible section */
+ 	kvm_pmu_vcpu_reset(vcpu);
+ 
+@@ -276,8 +282,8 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 	 * Additional reset state handling that PSCI may have imposed on us.
+ 	 * Must be done after all the sys_reg reset.
+ 	 */
+-	if (vcpu->arch.reset_state.reset) {
+-		unsigned long target_pc = vcpu->arch.reset_state.pc;
++	if (reset_state.reset) {
++		unsigned long target_pc = reset_state.pc;
+ 
+ 		/* Gracefully handle Thumb2 entry point */
+ 		if (vcpu_mode_is_32bit(vcpu) && (target_pc & 1)) {
+@@ -286,13 +292,11 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 		}
+ 
+ 		/* Propagate caller endianness */
+-		if (vcpu->arch.reset_state.be)
++		if (reset_state.be)
+ 			kvm_vcpu_set_be(vcpu);
+ 
+ 		*vcpu_pc(vcpu) = target_pc;
+-		vcpu_set_reg(vcpu, 0, vcpu->arch.reset_state.r0);
+-
+-		vcpu->arch.reset_state.reset = false;
++		vcpu_set_reg(vcpu, 0, reset_state.r0);
+ 	}
+ 
+ 	/* Reset timer */
 -- 
 2.30.2
 
