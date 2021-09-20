@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438F741215F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CD9412169
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357855AbhITSFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
+        id S1358116AbhITSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356263AbhITR7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BFE1619E9;
-        Mon, 20 Sep 2021 17:15:25 +0000 (UTC)
+        id S1350191AbhITR7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:59:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A98B76321D;
+        Mon, 20 Sep 2021 17:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158125;
-        bh=GtS+MMkWgp999l+GrKKbBpEiBmli5o+aicXaKShSfpc=;
+        s=korg; t=1632158128;
+        bh=mffSr3rdLXHCmAquyg9L1oP3D8nDGf8+Zyi1VCdmh70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sB9j0+OFWbkj+FkjaPefoLUU86eyK0SQ5kSzTl8ps/P3Hb3dlAEMd7SXbYlZCyrxR
-         hDwonVt5B/gjGCjInQ1VVLlDrdZQ1loifXwdyrGUpzEai0sIwXs2Px+m3oM1nNg3wx
-         AzycfVirfctCSGCfg7yt4k3seetrh1qmYenbSSzg=
+        b=W9bguv2Og1hxpUo1H9LCFUgnXSTA9GZu4F0SLpo1P0+VeqhA1BlbHfBphwZRC9LC1
+         JfOVEwsrdnCFxHdoAzcsWMXyVHBzRHmSQgH1uLLukPSu+97L6sMyG2UVcjedZswgUI
+         Jsrx2tlXF9iEbhl6Sy9nZrBsK3Tj/nAquuowjid8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Himanshu Madhani <himanshu.madhani@oracle.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 004/260] blk-zoned: allow zone management send operations without CAP_SYS_ADMIN
-Date:   Mon, 20 Sep 2021 18:40:22 +0200
-Message-Id: <20210920163931.278620855@linuxfoundation.org>
+Subject: [PATCH 5.4 005/260] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
+Date:   Mon, 20 Sep 2021 18:40:23 +0200
+Message-Id: <20210920163931.312510017@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -46,22 +46,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Niklas Cassel <niklas.cassel@wdc.com>
 
-commit ead3b768bb51259e3a5f2287ff5fc9041eb6f450 upstream.
+commit 4d643b66089591b4769bcdb6fd1bfeff2fe301b8 upstream.
 
-Zone management send operations (BLKRESETZONE, BLKOPENZONE, BLKCLOSEZONE
-and BLKFINISHZONE) should be allowed under the same permissions as write().
-(write() does not require CAP_SYS_ADMIN).
+A user space process should not need the CAP_SYS_ADMIN capability set
+in order to perform a BLKREPORTZONE ioctl.
 
-Additionally, other ioctls like BLKSECDISCARD and BLKZEROOUT only check if
-the fd was successfully opened with FMODE_WRITE.
-(They do not require CAP_SYS_ADMIN).
-
-Currently, zone management send operations require both CAP_SYS_ADMIN
-and that the fd was successfully opened with FMODE_WRITE.
-
-Remove the CAP_SYS_ADMIN requirement, so that zone management send
-operations match the access control requirement of write(), BLKSECDISCARD
-and BLKZEROOUT.
+Getting the zone report is required in order to get the write pointer.
+Neither read() nor write() requires CAP_SYS_ADMIN, so it is reasonable
+that a user space process that can read/write from/to the device, also
+can get the write pointer. (Since e.g. writes have to be at the write
+pointer.)
 
 Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
 Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
@@ -71,7 +65,7 @@ Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>
 Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Cc: stable@vger.kernel.org # v4.10+
-Link: https://lore.kernel.org/r/20210811110505.29649-2-Niklas.Cassel@wdc.com
+Link: https://lore.kernel.org/r/20210811110505.29649-3-Niklas.Cassel@wdc.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -80,15 +74,15 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/block/blk-zoned.c
 +++ b/block/blk-zoned.c
-@@ -374,9 +374,6 @@ int blkdev_reset_zones_ioctl(struct bloc
+@@ -316,9 +316,6 @@ int blkdev_report_zones_ioctl(struct blo
  	if (!blk_queue_is_zoned(q))
  		return -ENOTTY;
  
 -	if (!capable(CAP_SYS_ADMIN))
 -		return -EACCES;
 -
- 	if (!(mode & FMODE_WRITE))
- 		return -EBADF;
+ 	if (copy_from_user(&rep, argp, sizeof(struct blk_zone_report)))
+ 		return -EFAULT;
  
 
 
