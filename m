@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C97D41174F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7B3411759
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240677AbhITOnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+        id S238158AbhITOph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234264AbhITOnQ (ORCPT
+        with ESMTP id S231668AbhITOpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:43:16 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F0AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:41:50 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso16910014ota.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8fL+AzXhgquHQUasnCamb6PGeywzRH2M/eDrRwx6fqI=;
-        b=XEMyYrjtQg84L9kMgSD8fG+DKeLblEtrbgWDIqGd69Okof7pacFePN+aXB8/srnj4S
-         mf2CNYWwhhCqZcpw/vkVwPM7xCII3cI5Jj2SEDl4ZGqvwzHWDoZajyTDEKx29qzEUzbg
-         y8gAhkGRNEULhsFI4ucL9dzazz//rcvVsd1LaR55O4yDCki2nQf8PYXy39T8eJUVszrt
-         WqE+NSJKayAgw/Bcr+CylZE4pgTx3H8cSOdX/eywxFGtEw/EGokMRnizsX/ZIBmDxCim
-         SYM6PPxpImEp0tgNxmPZqeQUsMu3DQeDYtnpq/Dd3Lu3ZV5e4WyskQXe9wF8nHPqxi5g
-         utTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=8fL+AzXhgquHQUasnCamb6PGeywzRH2M/eDrRwx6fqI=;
-        b=KE8qbXxm9MdYfCOOl4s2qTQ+z3vOwi56M4O4/jJRimiU/kHGGkpHaJa0yhAm+ASSYL
-         YpJdFpKkXAMqlF+5i/AGzzTONt0yvhe3bJh/kzpjpkFuGabiHleVPaGk15J8ninTeUPG
-         Lm9r1vR4ZcGHElNfbjQnG1gZbt/wTr8xcndwiy3G1bg16L5T9MllB9vSKpCvXOhmoK6S
-         AnWbezv2ocXyRxnM0ebUkh3xJcx2/zzsq9jZtNeOir+AKEBjRDkyj+tjmxj3gzmzHO4k
-         j/oUrKggudFoMTLFuer+4Z/GGjId86BMna2l6laFaFO/yE7nxFguWMfCsfTGVZQ6H58f
-         PTsA==
-X-Gm-Message-State: AOAM533EID30QYK/eHsOvaiH+bbe4HUDCMf2Y/34IAUdCF6/fO9Y7H42
-        t8d8V9DEDDZLSUULxKlAaA==
-X-Google-Smtp-Source: ABdhPJzeqzTCUFPHNVnz8FT1VWYkTEFb+Wl9zWx6gi1ks73px4f4Pwco1J5vRr1wzRyQ+4/1C4cPQw==
-X-Received: by 2002:a05:6830:1513:: with SMTP id k19mr5690836otp.41.1632148909302;
-        Mon, 20 Sep 2021 07:41:49 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id d7sm561053otl.19.2021.09.20.07.41.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 07:41:48 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:85f2:365c:992b:e354])
-        by serve.minyard.net (Postfix) with ESMTPSA id 95F941800EF;
-        Mon, 20 Sep 2021 14:41:47 +0000 (UTC)
-Date:   Mon, 20 Sep 2021 09:41:46 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Anton Lundin <glance@acc.umu.se>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Openipmi-developer] Issue with panic handling and ipmi
-Message-ID: <20210920144146.GD545073@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210916145300.GD108031@montezuma.acc.umu.se>
- <20210916163945.GY545073@minyard.net>
- <20210917101419.GE108031@montezuma.acc.umu.se>
- <20210917120758.GA545073@minyard.net>
- <20210917125525.GF108031@montezuma.acc.umu.se>
- <20210917131916.GB545073@minyard.net>
- <20210917132648.GG108031@montezuma.acc.umu.se>
- <20210920113802.GC545073@minyard.net>
- <20210920141231.GH108031@montezuma.acc.umu.se>
+        Mon, 20 Sep 2021 10:45:34 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097EBC061574;
+        Mon, 20 Sep 2021 07:44:07 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0a2a00e73b029b43000742.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2a00:e73b:29b:4300:742])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 62CFC1EC03D5;
+        Mon, 20 Sep 2021 16:44:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632149041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ea5xZHoUMGBwgu76M0o+Vcth/gDSBplKYX9AxVJC3IE=;
+        b=DwfxAXLVojXzp1sgzQuAARmRQKtxOVeVnDhFsr97ty4PYd5Dvc5cwSW//aIS0Q+U1Oy6f2
+        0btvEQzGZmM4btL7kMHckg1gezgYxWanDpU83SiPL3+OjYV47YNz0r7ZFx7fSA1862dj+O
+        vc7f0AqHkH7bA76BDnjh6aIGetlz2h8=
+Date:   Mon, 20 Sep 2021 16:43:55 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Jiashuo Liang <liangjs@pku.edu.cn>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Subject: Re: [tip: x86/urgent] x86/fault: Fix wrong signal when vsyscall
+ fails with pkey
+Message-ID: <YUieKy6bqcYEVVq3@zn.tnic>
+References: <20210730030152.249106-1-liangjs@pku.edu.cn>
+ <163213455900.25758.11915876484367505676.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210920141231.GH108031@montezuma.acc.umu.se>
+In-Reply-To: <163213455900.25758.11915876484367505676.tip-bot2@tip-bot2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 04:12:31PM +0200, Anton Lundin wrote:
-> On 20 September, 2021 - Corey Minyard wrote:
+On Mon, Sep 20, 2021 at 10:42:39AM -0000, tip-bot2 for Jiashuo Liang wrote:
+> The following commit has been merged into the x86/urgent branch of tip:
 > 
-> > Well, that was dumb.  Fix follows...
-> > 
-> > Thanks for working on this.  On your approval, I'll send this to Linus.
+> Commit-ID:     0829d0b6bf0fb3453608798442deaf00c4a1abec
+> Gitweb:        https://git.kernel.org/tip/0829d0b6bf0fb3453608798442deaf00c4a1abec
+> Author:        Jiashuo Liang <liangjs@pku.edu.cn>
+> AuthorDate:    Fri, 30 Jul 2021 11:01:52 +08:00
+> Committer:     Borislav Petkov <bp@suse.de>
+> CommitterDate: Mon, 20 Sep 2021 12:31:06 +02:00
 > 
-> Winner winner chicken dinner!
+> x86/fault: Fix wrong signal when vsyscall fails with pkey
 > 
-> This fixes the issue, and now panic timer works, and we get crashdumps
-> to pstore.
+> The function __bad_area_nosemaphore() calls kernelmode_fixup_or_oops()
+> with the parameter @signal being actually @pkey, which will send a
+> signal numbered with the argument in @pkey.
 > 
-> Great job, I approve!
+> This bug can be triggered when the kernel fails to access user-given
+> memory pages that are protected by a pkey, so it can go down the
+> do_user_addr_fault() path and pass the !user_mode() check in
+> __bad_area_nosemaphore().
 > 
+> Most cases will simply run the kernel fixup code to make an -EFAULT. But
+> when another condition current->thread.sig_on_uaccess_err is met, which
+> is only used to emulate vsyscall, the kernel will generate the wrong
+> signal.
 > 
-> Thanks for your help getting this fixed.
+> Add a new parameter @pkey to kernelmode_fixup_or_oops() to fix this.
+> 
+>  [ bp: Massage commit message. ]
+> 
+> Fixes: 5042d40a264c ("x86/fault: Bypass no_context() for implicit kernel faults from usermode")
+> Signed-off-by: Jiashuo Liang <liangjs@pku.edu.cn>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Link: https://lkml.kernel.org/r/20210730030152.249106-1-liangjs@pku.edu.cn
+> ---
+>  arch/x86/mm/fault.c | 26 ++++++++++++++++++--------
+>  1 file changed, 18 insertions(+), 8 deletions(-)
 
-Thanks for reporting this.  I'll get the patch in.
+Zapping it again because the 0day bot found some randconfig which fails:
 
--corey
+https://lkml.kernel.org/r/202109202245.APvuT8BX-lkp@intel.com
 
-> 
-> 
-> //Anton
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
