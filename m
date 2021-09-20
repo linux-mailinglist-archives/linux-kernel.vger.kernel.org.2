@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C7A411FF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A21D411D7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349441AbhITRrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:47:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
+        id S1348924AbhITRUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353492AbhITRow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F042161875;
-        Mon, 20 Sep 2021 17:09:44 +0000 (UTC)
+        id S1348244AbhITRSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:18:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC12361A50;
+        Mon, 20 Sep 2021 16:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157785;
-        bh=TUEd5GgCPvHCqT4uiCo//+eCmN6z45ot8WQiTPkqidw=;
+        s=korg; t=1632157185;
+        bh=aGg5JDs8P/OzYUyzWhsHIwOhdg5PVjqNojD/CQ1CZvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PcUenqJnoyMHqyHNV8p3ZehuyklZ4JTQjA9FDXr1lCh3Y1nZNow2KUvCqXgLGA7s4
-         2K9EGyanMpmid0S47zSOYLG1tO8q+rM88kmM+sZdyZ2Mhjd7oKlk5cOYUAKeWxee00
-         7vtWBc4ZcoT0ZQD+tgdl3Dqvy9phPr50w8DzHf6k=
+        b=dqTd7SenWs1to/UvAL8FmALvmP3zG4qpmTkE2H/ZuyqXLBcAEWJvFdzuCfvWNUOcj
+         5uP72koKFcL03IKlfRJ+p8eWQPbhDb/qjW07CPJ7uZe5Mar1oQuoiG1PcWPMbyd2Ay
+         bcUSlT3woQfVyegyZC+0dOABtvVodvzelEeGwiXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        David Heidelberg <david@ixit.cz>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.19 151/293] ARM: 9105/1: atags_to_fdt: dont warn about stack size
+        stable@vger.kernel.org, Terry Bowman <Terry.Bowman@amd.com>,
+        kernel test robot <lkp@intel.com>,
+        Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>
+Subject: [PATCH 4.14 092/217] x86/resctrl: Fix a maybe-uninitialized build warning treated as error
 Date:   Mon, 20 Sep 2021 18:41:53 +0200
-Message-Id: <20210920163938.449309386@linuxfoundation.org>
+Message-Id: <20210920163927.752230686@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Babu Moger <babu.moger@amd.com>
 
-commit b30d0289de72c62516df03fdad8d53f552c69839 upstream.
+commit 527f721478bce3f49b513a733bacd19d6f34b08c upstream.
 
-The merge_fdt_bootargs() function by definition consumes more than 1024
-bytes of stack because it has a 1024 byte command line on the stack,
-meaning that we always get a warning when building this file:
+The recent commit
 
-arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
-arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+  064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
 
-However, as this is the decompressor and we know that it has a very shallow
-call chain, and we do not actually risk overflowing the kernel stack
-at runtime here.
+caused a RHEL build failure with an uninitialized variable warning
+treated as an error because it removed the default case snippet.
 
-This just shuts up the warning by disabling the warning flag for this
-file.
+The RHEL Makefile uses '-Werror=maybe-uninitialized' to force possibly
+uninitialized variable warnings to be treated as errors. This is also
+reported by smatch via the 0day robot.
 
-Tested on Nexus 7 2012 builds.
+The error from the RHEL build is:
 
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+  arch/x86/kernel/cpu/resctrl/monitor.c: In function ‘__mon_event_count’:
+  arch/x86/kernel/cpu/resctrl/monitor.c:261:12: error: ‘m’ may be used
+  uninitialized in this function [-Werror=maybe-uninitialized]
+    m->chunks += chunks;
+              ^~
+
+The upstream Makefile does not build using '-Werror=maybe-uninitialized'.
+So, the problem is not seen there. Fix the problem by putting back the
+default case snippet.
+
+ [ bp: note that there's nothing wrong with the code and other compilers
+   do not trigger this warning - this is being done just so the RHEL compiler
+   is happy. ]
+
+Fixes: 064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+Reported-by: Terry Bowman <Terry.Bowman@amd.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/compressed/Makefile |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/cpu/intel_rdt_monitor.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/arch/arm/boot/compressed/Makefile
-+++ b/arch/arm/boot/compressed/Makefile
-@@ -90,6 +90,8 @@ $(addprefix $(obj)/,$(libfdt_objs) atags
- 	$(addprefix $(obj)/,$(libfdt_hdrs))
+--- a/arch/x86/kernel/cpu/intel_rdt_monitor.c
++++ b/arch/x86/kernel/cpu/intel_rdt_monitor.c
+@@ -244,6 +244,12 @@ static u64 __mon_event_count(u32 rmid, s
+ 	case QOS_L3_MBM_LOCAL_EVENT_ID:
+ 		m = &rr->d->mbm_local[rmid];
+ 		break;
++	default:
++		/*
++		 * Code would never reach here because an invalid
++		 * event id would fail the __rmid_read.
++		 */
++		return RMID_VAL_ERROR;
+ 	}
  
- ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
-+CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
-+CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
- OBJS	+= $(libfdt_objs) atags_to_fdt.o
- endif
- 
+ 	if (rr->first) {
 
 
