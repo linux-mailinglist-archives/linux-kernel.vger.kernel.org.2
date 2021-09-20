@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F4E411A11
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CBB411B76
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239551AbhITQrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34972 "EHLO mail.kernel.org"
+        id S1344409AbhITQ6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:58:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232717AbhITQqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:46:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E69F961177;
-        Mon, 20 Sep 2021 16:45:27 +0000 (UTC)
+        id S245155AbhITQ4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:56:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A841613A3;
+        Mon, 20 Sep 2021 16:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156328;
-        bh=ipIYRyz8n6bxvbQpV8LjSAX71sg2/rUpZDMUQ4mmGLo=;
+        s=korg; t=1632156669;
+        bh=K5KXSD+jjQeXzcQALgpzdggOZ4F9iGSoMqVje5/6ttU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yTMd7RdYKfejlorAchsQwPef/V03gT9//A6y7HeTEfmvOk31KYeUp+R/Du/RNso8a
-         dBq8kPnShvMYz8F0qEAHfH4LJSXl4hgrhILo3aFVBRMYYgOf5xlesgBDQvsMxuakgc
-         dVfxHoxwvxONAKXjvNtc91c0Tk5aG+BFdOcfIs5w=
+        b=yQIJXmsd+3Yi0KmKcFNac8JfMviMJDdhdlww6vmrMuqKwJlOMx/2EYYWKvStOqFuD
+         4chiD2/zzgnLoKjrxYaDjKPwt8ygMyEolsRweKsxg8EQesARJHKOKjKwRN65T5rbKu
+         1L5eHCAYv2NNn6uk6abOxHHz/lOM7DB3oeiaiq7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        syzbot+13146364637c7363a7de@syzkaller.appspotmail.com,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.4 001/133] ext4: fix race writing to an inline_data file while its xattrs are changing
+        stable@vger.kernel.org, Esben Haabendal <esben@geanix.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 030/175] net: ll_temac: Remove left-over debug message
 Date:   Mon, 20 Sep 2021 18:41:19 +0200
-Message-Id: <20210920163912.652608572@linuxfoundation.org>
+Message-Id: <20210920163919.052139534@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,42 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Esben Haabendal <esben@geanix.com>
 
-commit a54c4613dac1500b40e4ab55199f7c51f028e848 upstream.
+commit ce03b94ba682a67e8233c9ee3066071656ded58f upstream.
 
-The location of the system.data extended attribute can change whenever
-xattr_sem is not taken.  So we need to recalculate the i_inline_off
-field since it mgiht have changed between ext4_write_begin() and
-ext4_write_end().
-
-This means that caching i_inline_off is probably not helpful, so in
-the long run we should probably get rid of it and shrink the in-memory
-ext4 inode slightly, but let's fix the race the simple way for now.
-
-Cc: stable@kernel.org
-Fixes: f19d5870cbf72 ("ext4: add normal write support for inline data")
-Reported-by: syzbot+13146364637c7363a7de@syzkaller.appspotmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: f63963411942 ("net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY")
+Signed-off-by: Esben Haabendal <esben@geanix.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/inline.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/xilinx/ll_temac_main.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -746,6 +746,12 @@ int ext4_write_inline_data_end(struct in
- 	ext4_write_lock_xattr(inode, &no_expand);
- 	BUG_ON(!ext4_has_inline_data(inode));
+--- a/drivers/net/ethernet/xilinx/ll_temac_main.c
++++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
+@@ -735,10 +735,8 @@ temac_start_xmit(struct sk_buff *skb, st
+ 	/* Kick off the transfer */
+ 	lp->dma_out(lp, TX_TAILDESC_PTR, tail_p); /* DMA start */
  
-+	/*
-+	 * ei->i_inline_off may have changed since ext4_write_begin()
-+	 * called ext4_try_to_write_inline_data()
-+	 */
-+	(void) ext4_find_inline_data_nolock(inode);
-+
- 	kaddr = kmap_atomic(page);
- 	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
- 	kunmap_atomic(kaddr);
+-	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1)) {
+-		netdev_info(ndev, "%s -> netif_stop_queue\n", __func__);
++	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1))
+ 		netif_stop_queue(ndev);
+-	}
+ 
+ 	return NETDEV_TX_OK;
+ }
 
 
