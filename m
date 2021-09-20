@@ -2,198 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF8D412758
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ECD41277B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbhITUgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:36:03 -0400
-Received: from mail-dm6nam10on2072.outbound.protection.outlook.com ([40.107.93.72]:45089
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229676AbhITUeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:34:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KqKhbyFq3zAj+N/WdrrJC46nAaGkaiK2tRVz+w03ECERVNeOZ3HTNM9OEtgo9zsIadmYsftNWi+49AuvvN9aBvO4wwWaEfQOxLQW/y4xeB97Qw+TI2Z8geMx/eA9bqALocKY6A2WgO2g9OLLM+A74FVL+YWd3cps9+8UEMdU003WBy0v1e2/PGLAqCswLPS7iYcnzmuLDYRmZdU6+OjKxbLFfrTP3L4XsXPiFegLTuIkP1cXYs4jVEmlMB7F8YrbhUa9MOvmxC0ZPhAZAldKjQtJG9Xx6f/5qyQcUftMruVzLDuz79TNsKpYeO/LYxG0AJvBCDWLJvWJRNZnuAGYNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=36yHqRT378cT0gVTkFTmtgtCuYH+/lNAImNzMyqsxsw=;
- b=cUg+B64ACFMlsLA8EOrIEB6Xs+t7wzLGajk6oqNBf3+gqwTqOLu4ssEzyA/TjOztZLKQRB/vJTasrdrUZ91Wh3JONYaNe8kEWgcE1bnNgUEPZmL5lMiDH5udGFyae7kcnwNu8CaMLhTWcIemWMmSlZqVaRvAgKmflRjW1BSBjpXxKMRzRhxiFuO9icF9wqLxO5ZUYk83aZvgGNp2FWlbH/cqElTnG9J8z1qk5AeMPlr/bta+EbtSh56EWWeTrIeBlH8HiCf80b2WmEQctwqOL9aEtU6nIKHVgslsxBPrLdlfQXUgiVBT20VydvfsGqOUsmPdasRQhCjstrOWDTnevQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=36yHqRT378cT0gVTkFTmtgtCuYH+/lNAImNzMyqsxsw=;
- b=AZUO5us79jkSPsLlk5NTOUlUBcGLeTWemnuhy7smsnm4zI1c1gFkGEVVFQ1jhc39UVrUswUI3S3q9lBGV2FT3095BTj/3TAB2TIjPS1Bj0Ga7yqd6+zL16+rbKGfhY1Wxp2PiEAkD3874mBMXcyUHz2SklNlDmuEHZUiGuSnCKtx2svGJViLGaCeozDaOarPDOnkE/iJs79S9YYN67lpdEkZ/nmRW21Qv0plNB562shAw0oLrfbkAPuMRgGPnVnSmez2GTUFWmXwUu7ACAPcuyAJ9H8T7LJzesN/DPOx5+5BKLT7rv4KNMUkWy2sOh/aCQ5Y7MNvgHzBiX+BqPN5UA==
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
- by CH2PR12MB4954.namprd12.prod.outlook.com (2603:10b6:610:63::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Mon, 20 Sep
- 2021 20:32:31 +0000
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::a46b:a8b7:59d:9142]) by CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::a46b:a8b7:59d:9142%5]) with mapi id 15.20.4523.018; Mon, 20 Sep 2021
- 20:32:31 +0000
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        David Thompson <davthompson@nvidia.com>
-Subject: RE: [PATCH v1 1/2] gpio: mlxbf2: Introduce IRQ support
-Thread-Topic: [PATCH v1 1/2] gpio: mlxbf2: Introduce IRQ support
-Thread-Index: AQHXqoEVVyA+enuCGUKWJgFkwmB1oKumsuKAgAABitCAADi7AIAGX2jQ
-Date:   Mon, 20 Sep 2021 20:32:31 +0000
-Message-ID: <CH2PR12MB3895ACE512BA0471889E38BBD7A09@CH2PR12MB3895.namprd12.prod.outlook.com>
-References: <20210915222847.10239-1-asmaa@nvidia.com>
- <20210915222847.10239-2-asmaa@nvidia.com> <YUNPO9/YacBNr/yQ@lunn.ch>
- <CH2PR12MB3895D5E16EAA1D3E5796C177D7DC9@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YUOAHMmaSf2gs6ho@lunn.ch>
-In-Reply-To: <YUOAHMmaSf2gs6ho@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c5ede59f-427e-495b-9098-08d97c75c5a4
-x-ms-traffictypediagnostic: CH2PR12MB4954:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR12MB49546E00360FFE722A1CA628D7A09@CH2PR12MB4954.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5msDLayzazwxjQfYA4L9ye+SZXSk2z94aCPe2tNsTsvpVehm3MVO1RNEMrK1PFa3gGszqEeWGXYXFoCW1BcVkgVzPelnhGMwGdhhx51jFTS+UgkbEWHutxY0HcCEBHag+kg/WXDxRWGh5xJ+7QIGLFRG8rZAuTZrWPNXVXjwcviRNeiKpnhcTJa9V7rJfsyXvboYvgd6bwqse+l8KlGtj1gMKNc9xiEcKvFBJhb3if1sA1kSYdG81Xcvk2w8POgnbTRjpY4jQ1UVi8RzfGnY+3c2Lnr3A2cqi3HW4vUOieadoJOVg/fFljvhl0K52o7CKdNPcoX/BSFZXxF0RWnYk2uWxSFiBR6FkFcI9d/9y13x9JaQl+kbDvxGdQd1TCHLZluPkXZbd8F2IpyP1Qn80JLrdvt6sESQx3Owyfv8JtwOJFXIlscQXUzWvk++w7EuAlEDfcB454VZ/WVFKLjfX+6BsVWI2fRPBrl5boXv/XlvW6LIZXjP4SHxhysXpeJ6QgdFV+VgcKUisbZ39EwMmd5FdjRQARyeL6OmwQPxX1QVe44Le4Y23CQoBee/o2w+QLBGbIwYWOr+Mekl74Dv+/vVle/W99yv25ZiPkmttG4uBLqrvfsAddQWVk3mt2FJPVKa7WFZNWQZP/tqwPrnya0JhstBMd6PgX5uv7mhMF4rYRRhpzLOOYyCviXxudShcJqv7bQGfQs0s5+Eloumqw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(76116006)(2906002)(9686003)(316002)(4326008)(83380400001)(86362001)(66476007)(66946007)(8676002)(54906003)(8936002)(6506007)(45080400002)(33656002)(55016002)(38100700002)(71200400001)(66556008)(7416002)(66446008)(64756008)(5660300002)(26005)(52536014)(6916009)(107886003)(7696005)(122000001)(186003)(38070700005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tdV+RMU9ITUUMIFrKffPlhpf3pfKLAsNUYDn1SS2GgphV3wuR9Qmrgk+3buk?=
- =?us-ascii?Q?4Heg53YzNsRr0puwlAHcVGeihkj3ZJEjyw6RD8Db7obfM5jXwWU7dL5A86GV?=
- =?us-ascii?Q?TXS/jYHiAV9e/n88WWeneYGY/XKehUZlHbYzWqf9Fsnd89/+727A6ZLB3Xno?=
- =?us-ascii?Q?xKbZKZFW30vsZt3yTE0lkXIUhqOjECsT3wuz37VtMLpXm5zJMugtOAv+Y9i5?=
- =?us-ascii?Q?vLFvk+MXYstZRrcF3B/OpWdmcRDP/qP2d1slkppR2fSl3ZiAKDYzf8xHsqEO?=
- =?us-ascii?Q?puE8NfQ0y62FF4mvfOZ1h+oU99eGB//+9lbYJyqYFdi744yQB373sJVzeloA?=
- =?us-ascii?Q?MRP3mXlmbMQknglGNpcpcIg6hs+OtYaupeqweSTQ0WF2sxSPYCyFDblKLAuf?=
- =?us-ascii?Q?maY5I/0+VUnPcvUwb/XpbNexmPk08LBmbPkL93swWYuU02aPQVz5Uwyzdtvb?=
- =?us-ascii?Q?ZUxWc5CkexZS84lJubnT/ZFSxtf+RVOlLMJ61HdrR0+JIiT/yoFs9C2zZ0jY?=
- =?us-ascii?Q?oKbNX2fRkfGWUHMdMy8Z1GjuVmJe3zFpwNk0nCewTn/1DqebY/qcZUvTF/ZT?=
- =?us-ascii?Q?CPYAIUOuB+abYA8cUa2RcYzr+otdLHzdqxO7T4bj+96qEdI2XhbFasqahwFJ?=
- =?us-ascii?Q?3ib8E1FRsySP5f8IQPwe0Jg4N3s3GMOYnyVFSdYP/b/ADstq1WE5/7EgGz3e?=
- =?us-ascii?Q?/U/LcbujZHMWCBtPRi8qqsQheHAerVRcdhi0SNwdjEIR/cbooXNLcwVjtHPr?=
- =?us-ascii?Q?0sO/oZNsxosnptLh5F9P+GZ5L0bu42ciorbSJe7uFznWb7kfjuabvCSb2sKc?=
- =?us-ascii?Q?9Jbha123v6K/i9/mW3pSFgIVLEsmb8fyCKNiqWPB+RZ2DZnenD5PRW4LZPei?=
- =?us-ascii?Q?wz/aYcR+3s7Qf5/m6E1fUmH4tFHidLKaamjhmt5hOGZ5fX2+N1IHSvMiR3ZV?=
- =?us-ascii?Q?Uc5HJIwCZBjCNwXb8tN411TlxIxpqqrMa23H23kPe57ojrO6/sR4PldtbhhQ?=
- =?us-ascii?Q?qUC86txxS17GebhpVhVSn9DTvHnEGR+uOd+Qbf0ClPHuF3CDxpwEqjfPNjaA?=
- =?us-ascii?Q?h6rBjd+0ipVguUJa3NG0gZGVflpMeToCyNLEmwffb2Cj8z1vdl6fjdVWnZvD?=
- =?us-ascii?Q?Pb4nIUCUTkksSH0I4KevdIx1oKMI1rP40B1MdlJLuDvdHmxXkyxO6ed2sn3L?=
- =?us-ascii?Q?HMIJvNkcXbz8Bb4bFCc8j8UzCgDy613QoibhRRjOomoW29XoQyjBROFrC6ce?=
- =?us-ascii?Q?AASpTBo/t+o8cUeNipJz51+0G7FWZ9Ri9AMavXgZXimFEWJGOqQAeMPALyvo?=
- =?us-ascii?Q?eB+Aur8+7tpNDwoyng1WsImR?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S236865AbhITUsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:48:39 -0400
+Received: from linderud.dev ([163.172.10.146]:56146 "EHLO linderud.pw"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230356AbhITUqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 16:46:37 -0400
+X-Greylist: delayed 576 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Sep 2021 16:46:37 EDT
+Received: from linderud.pw (localhost [127.0.0.1])
+        by linderud.pw (Postfix) with ESMTP id D7453C01B4;
+        Mon, 20 Sep 2021 22:35:00 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.5-pre1 (2020-06-20) on velox
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.5-pre1
+Received: from localhost (host-37-191-241-102.lynet.no [37.191.241.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: morten)
+        by linderud.pw (Postfix) with ESMTPSA id 8BCA6C001C;
+        Mon, 20 Sep 2021 22:35:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linderud.pw;
+        s=linderud; t=1632170100;
+        bh=OwdRbJc/TbitNW2Zx/UmsifqU/l9t7XuLiHqlNN609c=;
+        h=From:To:Cc:Subject:Date;
+        b=WD0ci4ptMwbSYIcJHKMInvTa5b8ONt7V3npXO1wu5FgHIFAKvf8w0YLpyLFCUd+1t
+         1gHzIML2FPa6/7sFhkEMxNQ6uc5GnAz4gvqxK4TN4DgbANwZy6ZtLGmDfW9zTEAFQ2
+         n1eVMml+AFuexCp2wrGAI97vvng1+QfmOQ27w3GPvwD5XgnHGJ8/nrwW7C7Yzo96In
+         rXgkWHxIuCBREF6WyrsUuFe7FOJzsuURZuBOv1Fa3j4cETCRsFI0a/0tbP9GEaAuVB
+         viMs9A+mazsQzHJvXV+PjR/lBBGlh5MWAqUfKO7TGyrQd8068TFZ8+jN4hdh4/nXoq
+         3n4VM38hpTozUBzJk662t5lhZy3J34OChEjwbxl13cOXFl92LYF09FBtaLsjeWkDfj
+         +hp7O1tijTpQyJYhOx3AEvnGqWMyq3/c9lbMcE4uwREc5IzxEN4u9yMFtXs7wHwli8
+         sECyYYBppWTOuFiMmyPnLz1ujTvYW4gM8izvqMYalh3RKU6EEsq4ynt0qbANFMZ0EU
+         grWkQ6sge+ws2lTFo94A4Kyxa4AkfPHotZ7kLkt1d1mtQaR+86FS2Sxcv5Zn53qqTy
+         Q7G1kDLHoTXGxMj5OlFXVY7BHyFLCBL8AsXIhOZ7c6BU8CrfsrrmRQui4I0jeL4iWk
+         VKuBZVFOi1PfEUzRTp/CzqIA=
+From:   Morten Linderud <morten@linderud.pw>
+To:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Morten Linderud <morten@linderud.pw>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
+Subject: [PATCH] tpm/eventlog: Don't abort tpm_read_log on faulty ACPI config
+Date:   Mon, 20 Sep 2021 22:34:47 +0200
+Message-Id: <20210920203447.4124005-1-morten@linderud.pw>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5ede59f-427e-495b-9098-08d97c75c5a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Sep 2021 20:32:31.7081
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ARxQJs29NZfo6B0O8O/j5OtYG03tGhVqsDyurWtlMCw9+jDbmmpDu5kyQzDFFuZKoIJIocL9H7Mg1KrIkb19BA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4954
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +	val =3D readl(gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
-> > +	val |=3D BIT(offset);
-> > +	writel(val, gs->gpio_io + YU_GPIO_CAUSE_OR_EVTEN0);
->=20
-> What exactly does this do? It appears to clear the interrupt, if i unders=
-tand
-> mlxbf2_gpio_irq_handler(). I don't know the GPIO framework well enough to=
- know if this is
-> correct. It does mean if the interrupt signal is active but masked, and y=
-ou enable it, you appear
-> to loose the interrupt? Maybe you want the interrupt to fire as soon as i=
-t is enabled?
->=20
-> Asmaa>>
-> YU_GPIO_CAUSE_OR_CLRCAUSE - Makes sure the interrupt is initially cleared=
-. Otherwise, we
-> will not receive further interrupts.
+Some vendors report faulty values in the acpi TPM2 table. This causes
+the function to abort with EIO and essentially short circuits the
+tpm_read_log function as we never even attempt to read the EFI
+configuration table for a log.
 
-> If the interrupt status bit is set, as soon as you unmask the interrupt, =
-the hardware should fire
-> the interrupt. At least, that is how interrupt controllers usually work.
+This changes the condition to only look for a positive return value,
+else hands over the eventlog discovery to the EFI configuration table
+which should hopefully work better.
 
-> A typical pattern is that the interrupt fires. You mask it, ack it, and t=
-hen do what is needed to
-> actually handle the interrupt. While doing the handling, the hardware can=
- indicate the interrupt
-> again. But since it is masked nothing happened. This avoids your interrup=
-t handler going
-> recursive.
-> Once the handler has finished, the interrupt is unmasked. At this point i=
-t actually fires, triggering
-> the interrupt handler again.
+It's unclear to me if there is a better solution to this then just
+failing. However, I do not see any clear reason why we can't properly
+fallback to the EFI configuration table.
 
-Asmaa>> mlxbf2_gpio_irq_enable seems to be called only once when the driver=
- is loaded.
-And I will actually remove mlxbf2_gpio_irq_ack because it is not being call=
-ed at all.
-After further investigation, that function is called via chained_irq_enter =
-which is itself invoked in
-the interrupt handler. It should have looked something like this:
+The following hardware was used to test this issue on:
+    Framework Laptop (Pre-production)
+    BIOS: INSYDE Corp, Revision: 3.2
+    TPM Device: NTC, Firmware Revision: 7.2
 
-static irqreturn_t mlxbf2_gpio_irq_handler(int irq, void *ptr)
-{
-    chained_irq_enter(gc->irq->chip, desc);
-    // rest of the code here
-    chained_irq_exit(gc->irq->chip, desc);
-}
+Dump of the fault ACPI TPM2 table:
+    [000h 0000   4]                    Signature : "TPM2"    [Trusted Platform Module hardware interface Table]
+    [004h 0004   4]                 Table Length : 0000004C
+    [008h 0008   1]                     Revision : 04
+    [009h 0009   1]                     Checksum : 2B
+    [00Ah 0010   6]                       Oem ID : "INSYDE"
+    [010h 0016   8]                 Oem Table ID : "TGL-ULT"
+    [018h 0024   4]                 Oem Revision : 00000002
+    [01Ch 0028   4]              Asl Compiler ID : "ACPI"
+    [020h 0032   4]        Asl Compiler Revision : 00040000
 
-But in our case, we decided to directly request the irq  instead of passing=
- a flow-handler to
-gpiochip_set_chained_irqchip, because the irq has to be marked as shared (I=
-RQF_SHARED).
-gpio-mt7621.c does something similar.
-Moreover, whenever an interrupt is fired by HW, it is automatically disable=
-d/masked until
-it is explicitly cleared by Software. And this line takes care of it in mlx=
-bf2_gpio_irq_handler:
-writel(pending, gs->gpio_io + YU_GPIO_CAUSE_OR_CLRCAUSE);
+    [024h 0036   2]               Platform Class : 0000
+    [026h 0038   2]                     Reserved : 0000
+    [028h 0040   8]              Control Address : 0000000000000000
+    [030h 0048   4]                 Start Method : 06 [Memory Mapped I/O]
 
-After a HW reset, all gpio interrupts are disabled by default by HW. The HW=
- will not signal
-any gpio interrupt as long as all bits in YU_GPIO_CAUSE_OR_EVTEN0 are 0.
-In mlxbf2_gpio_irq_enable, we configure a specific gpio as an interrupt by =
-writing 1 to
-YU_GPIO_CAUSE_OR_EVTEN0. I just wanted to make sure there is no trash value=
- in
-YU_GPIO_CAUSE_OR_CLRCAUSE before enabling gpio interrupt support.
-So pending interrupts in YU_GPIO_CAUSE_OR_CLRCAUSE only matters if
-YU_GPIO_CAUSE_OR_EVTEN0 is set accordingly.
-Does this answer your question?
+    [034h 0052  12]            Method Parameters : 00 00 00 00 00 00 00 00 00 00 00 00
+    [040h 0064   4]           Minimum Log Length : 00010000
+    [044h 0068   8]                  Log Address : 000000004053D000
 
-> Please also get your email client fixed. I wrap my emails at around 75 ch=
-aracters. Your mailer
-> has destroyed it. Your text should also be wrapped at about 75 characters=
-.
+Signed-off-by: Morten Linderud <morten@linderud.pw>
+---
+ drivers/char/tpm/eventlog/acpi.c   | 5 +++--
+ drivers/char/tpm/eventlog/common.c | 6 +++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-Asmaa>> Sorry about that. I wrapped my outlook emails around 75 characters,=
- I hope it works.
-
-
+diff --git a/drivers/char/tpm/eventlog/acpi.c b/drivers/char/tpm/eventlog/acpi.c
+index 1b18ce5ebab1..9ce39cdb0bd8 100644
+--- a/drivers/char/tpm/eventlog/acpi.c
++++ b/drivers/char/tpm/eventlog/acpi.c
+@@ -136,8 +136,10 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
+ 
+ 	ret = -EIO;
+ 	virt = acpi_os_map_iomem(start, len);
+-	if (!virt)
++	if (!virt) {
++		dev_warn(&chip->dev, "%s: Failed to map acpi memory\n", __func__);
+ 		goto err;
++	}
+ 
+ 	memcpy_fromio(log->bios_event_log, virt, len);
+ 
+@@ -145,7 +147,6 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
+ 
+ 	if (chip->flags & TPM_CHIP_FLAG_TPM2 &&
+ 	    !tpm_is_tpm2_log(log->bios_event_log, len)) {
+-		/* try EFI log next */
+ 		ret = -ENODEV;
+ 		goto err;
+ 	}
+diff --git a/drivers/char/tpm/eventlog/common.c b/drivers/char/tpm/eventlog/common.c
+index 8512ec76d526..f64256bc2f89 100644
+--- a/drivers/char/tpm/eventlog/common.c
++++ b/drivers/char/tpm/eventlog/common.c
+@@ -83,7 +83,11 @@ static int tpm_read_log(struct tpm_chip *chip)
+ 	}
+ 
+ 	rc = tpm_read_log_acpi(chip);
+-	if (rc != -ENODEV)
++	/*
++	 * only return if we found a log else we try look for a
++	 * log in the EFI configuration table
++	 */
++	if (rc > 0)
+ 		return rc;
+ 
+ 	rc = tpm_read_log_efi(chip);
+-- 
+2.33.0
