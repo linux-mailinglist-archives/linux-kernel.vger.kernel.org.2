@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9387D411E5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB78411B32
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347587AbhITRa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        id S244485AbhITQ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347904AbhITR1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:27:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F5261A8F;
-        Mon, 20 Sep 2021 17:03:00 +0000 (UTC)
+        id S231450AbhITQwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:52:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BAD61283;
+        Mon, 20 Sep 2021 16:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157380;
-        bh=9v5KXetP0jHSalqwz0z7Olnkt5XTLcj/fwIRehqg2Og=;
+        s=korg; t=1632156600;
+        bh=45SKdGiHkmRp6wIZWsLXTn4XbutAhJ20hsO9+fLMeTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G0TlTJQenBpDMzGn6RwmSOYuApAGjyF4NCPFbpU8S3dJPW1z0CGC12HJOTxwEkMJe
-         Njgdl5bJtHCf2SnLeLjLt3xaSBZ6pP3m/fft54sYNdUZr32qSiwQMHNfQeljbjf55D
-         3806uwIdHlf3YT6pJZu71quclgFf6WIvY3E4ulB8=
+        b=HhQqJHq8VzXc3EtX0I8i9OmYU/VTHsP1S8I3cE2r9F4Tr36pP8TlDM3xr2cBZk7Io
+         GRJvyXtDAVB3qrb/e65QNggAcdcF2v206w7zwwIjbDQ/IZ1QhKhBr50V5QSRB1HkjF
+         YazHuZXxtvD9IFSO+bcsu0S6RVFigyYCTFE0bkGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 183/217] net: w5100: check return value after calling platform_get_resource()
+        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH 4.4 126/133] x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
 Date:   Mon, 20 Sep 2021 18:43:24 +0200
-Message-Id: <20210920163930.828681152@linuxfoundation.org>
+Message-Id: <20210920163916.748703240@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +42,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-[ Upstream commit a39ff4a47f3e1da3b036817ef436b1a9be10783a ]
+commit 34b1999da935a33be6239226bfa6cd4f704c5c88 upstream.
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+Jiri Olsa reported a fault when running:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  # cat /proc/kallsyms | grep ksys_read
+  ffffffff8136d580 T ksys_read
+  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
+
+  /proc/kcore:     file format elf64-x86-64
+
+  Segmentation fault
+
+  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+  RIP: 0010:kern_addr_valid
+  Call Trace:
+   read_kcore
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? trace_hardirqs_on
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   ? _raw_spin_unlock
+   ? __handle_mm_fault
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   proc_reg_read
+   ? vfs_read
+   vfs_read
+   ksys_read
+   do_syscall_64
+   entry_SYSCALL_64_after_hwframe
+
+The fault happens because kern_addr_valid() dereferences existent but not
+present PMD in the high kernel mappings.
+
+Such PMDs are created when free_kernel_image_pages() frees regions larger
+than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
+the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+mark the PMD as not present rather than wipe it completely.
+
+Have kern_addr_valid() check whether higher level page table entries are
+present before trying to dereference them to fix this issue and to avoid
+similar issues in the future.
+
+Stable backporting note:
+------------------------
+
+Note that the stable marking is for all active stable branches because
+there could be cases where pagetable entries exist but are not valid -
+see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
+sure to be on the safe side here and use pXY_present() accessors rather
+than pXY_none() which could #GP when accessing pages in the direct map.
+
+Also see:
+
+  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+
+for more info.
+
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+Cc: <stable@vger.kernel.org>	# 4.4+
+Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/wiznet/w5100.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/mm/init_64.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/wiznet/w5100.c b/drivers/net/ethernet/wiznet/w5100.c
-index 2bdfb39215e9..87610d8b3462 100644
---- a/drivers/net/ethernet/wiznet/w5100.c
-+++ b/drivers/net/ethernet/wiznet/w5100.c
-@@ -1059,6 +1059,8 @@ static int w5100_mmio_probe(struct platform_device *pdev)
- 		mac_addr = data->mac_addr;
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1182,21 +1182,21 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
  
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -EINVAL;
- 	if (resource_size(mem) < W5100_BUS_DIRECT_SIZE)
- 		ops = &w5100_mmio_indirect_ops;
- 	else
--- 
-2.30.2
-
+ 	pud = pud_offset(pgd, addr);
+-	if (pud_none(*pud))
++	if (!pud_present(*pud))
+ 		return 0;
+ 
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
+ 
+ 	pmd = pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (!pmd_present(*pmd))
+ 		return 0;
+ 
+ 	if (pmd_large(*pmd))
+ 		return pfn_valid(pmd_pfn(*pmd));
+ 
+ 	pte = pte_offset_kernel(pmd, addr);
+-	if (pte_none(*pte))
++	if (!pte_present(*pte))
+ 		return 0;
+ 
+ 	return pfn_valid(pte_pfn(*pte));
 
 
