@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25625411DC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C24411BFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349453AbhITRX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47492 "EHLO mail.kernel.org"
+        id S1344171AbhITRFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:05:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345183AbhITRVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:21:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F235861A51;
-        Mon, 20 Sep 2021 17:00:56 +0000 (UTC)
+        id S1345298AbhITRB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:01:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6344B613DA;
+        Mon, 20 Sep 2021 16:53:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157257;
-        bh=IJXmMi4lmu7gdq6d9FMZW0CwpdUgNeecZgwFTiNG7Lc=;
+        s=korg; t=1632156813;
+        bh=KSNiTAYKJX6+lqV69obGyJMyTDrmBAIkvhqmk5WEcRU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vU6yjmTttdbzEF2SW8codCVd4EScdXCIZZT+yyCLhWc4kiec8FFn0x2tZsyYlVW2o
-         hiyz7fIBnTSPg5qTW9Dn3LRSjAHNShWYh2aAnGZnTFv7TdIgJ+FNamcRo7KlV4gcpQ
-         rJlVQGprtIDK9CTjQC0C/0HDmwVUI9ofnetdgCaE=
+        b=byWREgj4kv8ljv8ARbYBbC9/l6l5AMiQa3YGf5U1yGAwjab+MIKlJbstvf/ohZkc5
+         c+JKD0BQDwmZGr9FJEcThHWGGzWMuP5ZewDfboRHKBUojYbEpTgYZlhHuOtUam1s+1
+         MAdwSpFY/du6ouHajLkgCHJ/5vRugtqoqJ5QNd/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 125/217] vfio: Use config not menuconfig for VFIO_NOIOMMU
+        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.9 097/175] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
 Date:   Mon, 20 Sep 2021 18:42:26 +0200
-Message-Id: <20210920163928.893306721@linuxfoundation.org>
+Message-Id: <20210920163921.247505488@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 26c22cfde5dd6e63f25c48458b0185dcb0fbb2fd ]
+commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
 
-VFIO_NOIOMMU is supposed to be an element in the VFIO menu, not start
-a new menu. Correct this copy-paste mistake.
+Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
+covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
+and "Samsung SSD 850*" series based on information from Samsung.
 
-Fixes: 03a76b60f8ba ("vfio: Include No-IOMMU mode")
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Link: https://lore.kernel.org/r/0-v1-3f0b685c3679+478-vfio_menuconfig_jgg@nvidia.com
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But there is a large number of users which is still reporting issues
+with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
+Marvell SATA controllers and all reporters also report these problems
+going away when disabling queued trims.
+
+Note that with AMD SATA controllers users are reporting even worse
+issues and only completely disabling NCQ helps there, this will be
+addressed in a separate patch.
+
+Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
+Cc: stable@vger.kernel.org
+Cc: Kate Hsuan <hpa@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vfio/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/libata-core.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
-index c84333eb5eb5..b7765271d0fb 100644
---- a/drivers/vfio/Kconfig
-+++ b/drivers/vfio/Kconfig
-@@ -29,7 +29,7 @@ menuconfig VFIO
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -4447,6 +4447,10 @@ static const struct ata_blacklist_entry
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
  
- 	  If you don't know what to do here, say N.
- 
--menuconfig VFIO_NOIOMMU
-+config VFIO_NOIOMMU
- 	bool "VFIO No-IOMMU support"
- 	depends on VFIO
- 	help
--- 
-2.30.2
-
 
 
