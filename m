@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C34A411FF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E8E411A44
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353803AbhITRrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:47:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50060 "EHLO mail.kernel.org"
+        id S243832AbhITQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:48:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353452AbhITRot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:44:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE6B9613A0;
-        Mon, 20 Sep 2021 17:09:42 +0000 (UTC)
+        id S243025AbhITQrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E217611AE;
+        Mon, 20 Sep 2021 16:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157783;
-        bh=RMsiZUToNVLc74XpmuxEHt/HL0uIPNKR+Ed3sW3b0j8=;
+        s=korg; t=1632156382;
+        bh=6iTU7lGJM32Aa0d+IJG1BTR+lZTC4LxxCYjNTs5nnMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jKwrsW7qjG9PyYisf0Q1QPlx+Kn7I4JcSMzT/6hj//tZGjlMVb1u7D/iihzGe5ECO
-         gO6gXAVABrF7EuH36VyAXoKfLszPjAaopJGFtnWm55grI72Uk96Ai4MP+0tsFB/4YZ
-         fWEZ2ihzLYBamSuniEWt/qp6YqK0+TrtbY+aXRgw=
+        b=0kpVvEP2LYrvc+QEiKRtP6mszpGF0wPEz59NU++ZmxKX+i1whgxnNp0foErGEIqCJ
+         pfMUKK6s6mrs0kIr41eDo/xbah6i39Q1kPebYDvwgFUlLw4g1A0wImHYN1OW8B2FfA
+         5U5lOmfdHcV6GyO3WZbLiEkpAL6uTL0YsDO/cxLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 150/293] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
+        stable@vger.kernel.org,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 034/133] crypto: qat - fix reuse of completion variable
 Date:   Mon, 20 Sep 2021 18:41:52 +0200
-Message-Id: <20210920163938.416918052@linuxfoundation.org>
+Message-Id: <20210920163913.739944789@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Marco Chiappero <marco.chiappero@intel.com>
 
-commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
+[ Upstream commit 3d655732b0199562267a05c7ff69ecdd11632939 ]
 
-Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
-covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
-and "Samsung SSD 850*" series based on information from Samsung.
+Use reinit_completion() to set to a clean state a completion variable,
+used to coordinate the VF to PF request-response flow, before every
+new VF request.
 
-But there is a large number of users which is still reporting issues
-with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
-Marvell SATA controllers and all reporters also report these problems
-going away when disabling queued trims.
-
-Note that with AMD SATA controllers users are reporting even worse
-issues and only completely disabling NCQ helps there, this will be
-addressed in a separate patch.
-
-Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
-Cc: stable@vger.kernel.org
-Cc: Kate Hsuan <hpa@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
+Co-developed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -4574,6 +4574,10 @@ static const struct ata_blacklist_entry
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+index 5fdbad809343..711706819b05 100644
+--- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+@@ -384,6 +384,8 @@ static int adf_vf2pf_request_version(struct adf_accel_dev *accel_dev)
+ 	msg |= ADF_PFVF_COMPATIBILITY_VERSION << ADF_VF2PF_COMPAT_VER_REQ_SHIFT;
+ 	BUILD_BUG_ON(ADF_PFVF_COMPATIBILITY_VERSION > 255);
  
++	reinit_completion(&accel_dev->vf.iov_msg_completion);
++
+ 	/* Send request from VF to PF */
+ 	ret = adf_iov_putmsg(accel_dev, msg, 0);
+ 	if (ret) {
+-- 
+2.30.2
+
 
 
