@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D074411356
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B568841135E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbhITLIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:08:09 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34670 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbhITLII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:08:08 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: alyssa)
-        with ESMTPSA id 713FD1F42BA9
-Date:   Mon, 20 Sep 2021 07:06:34 -0400
-From:   Alyssa Rosenzweig <alyssa@collabora.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 5/9] drm/panfrost: simplify getting .driver_data
-Message-ID: <YUhrOueF2hb8o+IA@maud>
-References: <20210920090522.23784-1-wsa+renesas@sang-engineering.com>
- <20210920090522.23784-6-wsa+renesas@sang-engineering.com>
+        id S234677AbhITLLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:11:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:45930 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229735AbhITLLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 07:11:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2914511B3;
+        Mon, 20 Sep 2021 04:09:57 -0700 (PDT)
+Received: from bogus (unknown [10.57.23.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7AEA3F719;
+        Mon, 20 Sep 2021 04:09:52 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 12:09:34 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, igor.skalkin@opensynergy.com,
+        peter.hilber@opensynergy.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com, Vasyl.Vavrychuk@opensynergy.com,
+        Tryshnivskyy@opensynergy.com, "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH 3/3] firmware: arm_scmi: Add proper barriers to scmi
+ virtio device
+Message-ID: <20210920110934.aloikpcc6uawouou@bogus>
+References: <20210916103336.7243-1-cristian.marussi@arm.com>
+ <20210916103336.7243-3-cristian.marussi@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920090522.23784-6-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210916103336.7243-3-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Hi Michael,
 
-> index bd9b7be63b0f..fd4309209088 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -400,8 +400,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
->  #ifdef CONFIG_PM
->  int panfrost_device_resume(struct device *dev)
->  {
-> -	struct platform_device *pdev = to_platform_device(dev);
-> -	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->  
->  	panfrost_device_reset(pfdev);
->  	panfrost_devfreq_resume(pfdev);
-> @@ -411,8 +410,7 @@ int panfrost_device_resume(struct device *dev)
->  
->  int panfrost_device_suspend(struct device *dev)
->  {
-> -	struct platform_device *pdev = to_platform_device(dev);
-> -	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->  
->  	if (!panfrost_job_is_idle(pfdev))
->  		return -EBUSY;
-> -- 
-> 2.30.2
+On Thu, Sep 16, 2021 at 11:33:36AM +0100, Cristian Marussi wrote:
+> Only one single SCMI Virtio device is currently supported by this driver
+> and it is referenced using a static global variable which is initialized
+> once for all during probing and nullified at virtio device removal.
 > 
+> Add proper SMP barriers to protect accesses to such device reference to
+> ensure that the initialzation state of such device is correctly observed by
+> all PEs at any time.
+> 
+> Return -EBUSY, instead of -EINVAL, and a descriptive error message if more
+> than one SCMI Virtio device is ever found and probed.
+> 
+
+I was thinking of applying this patch and probably 2/3 as fix for v5.15.
+Let me know if you have any objections.
+
+--
+Regards,
+Sudeep
