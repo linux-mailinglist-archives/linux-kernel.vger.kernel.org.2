@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AFE4123B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C262412165
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348347AbhITS0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41848 "EHLO mail.kernel.org"
+        id S1357993AbhITSFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377672AbhITSUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:20:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00950632A7;
-        Mon, 20 Sep 2021 17:23:16 +0000 (UTC)
+        id S1355975AbhITR54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:57:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C90863216;
+        Mon, 20 Sep 2021 17:14:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158597;
-        bh=zc/V4mTUSYONcVf5ckmwjTjjPBP3eUHTCEbvYXSfPys=;
+        s=korg; t=1632158099;
+        bh=ax2mhvkpee7ckuHwy+/FhcIhJe52nfgBGEDZ1nqYX9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnBQVr0Mc9HktU3gQUGRsUJob42U3DXyydvr7ezmvztjPmH9YXJ3kW6bR8tDO3fAA
-         bRtGd5olMOiJvZx1OfwgafwO4450h4KQxbd7HdUli2dwVe74IpJIBr26NC2i+6i1Z1
-         ZpzvvtEkGi8pb4kBRNYLPD5i2OGjcURVg2Lsf4oc=
+        b=eoZB5ACHcVc8hB8pXSBCX498JnHxnl8kAuSP25hEVL2h6WmxVK7oAj5bn+qQMXumm
+         K6dEPzs0P7AVZemaHTT2FsbCmvWeGKNNTUa1yuuvISmSZEjzm/eqeClz62MASt423r
+         lRs6burllrrfhxw8yz6DbMMA8GeLzCgDB8ymm0gQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 222/260] net: dsa: destroy the phylink instance on any error in dsa_slave_phy_setup
-Date:   Mon, 20 Sep 2021 18:44:00 +0200
-Message-Id: <20210920163938.650479778@linuxfoundation.org>
+        stable@vger.kernel.org, Davide Zini <davidezini2@gmail.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 279/293] block, bfq: honor already-setup queue merges
+Date:   Mon, 20 Sep 2021 18:44:01 +0200
+Message-Id: <20210920163942.966284849@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Paolo Valente <paolo.valente@linaro.org>
 
-commit 6a52e73368038f47f6618623d75061dc263b26ae upstream.
+[ Upstream commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b ]
 
-DSA supports connecting to a phy-handle, and has a fallback to a non-OF
-based method of connecting to an internal PHY on the switch's own MDIO
-bus, if no phy-handle and no fixed-link nodes were present.
+The function bfq_setup_merge prepares the merging between two
+bfq_queues, say bfqq and new_bfqq. To this goal, it assigns
+bfqq->new_bfqq = new_bfqq. Then, each time some I/O for bfqq arrives,
+the process that generated that I/O is disassociated from bfqq and
+associated with new_bfqq (merging is actually a redirection). In this
+respect, bfq_setup_merge increases new_bfqq->ref in advance, adding
+the number of processes that are expected to be associated with
+new_bfqq.
 
-The -ENODEV error code from the first attempt (phylink_of_phy_connect)
-is what triggers the second attempt (phylink_connect_phy).
+Unfortunately, the stable-merging mechanism interferes with this
+setup. After bfqq->new_bfqq has been set by bfq_setup_merge, and
+before all the expected processes have been associated with
+bfqq->new_bfqq, bfqq may happen to be stably merged with a different
+queue than the current bfqq->new_bfqq. In this case, bfqq->new_bfqq
+gets changed. So, some of the processes that have been already
+accounted for in the ref counter of the previous new_bfqq will not be
+associated with that queue.  This creates an unbalance, because those
+references will never be decremented.
 
-However, when the first attempt returns a different error code than
--ENODEV, this results in an unbalance of calls to phylink_create and
-phylink_destroy by the time we exit the function. The phylink instance
-has leaked.
+This commit fixes this issue by reestablishing the previous, natural
+behaviour: once bfqq->new_bfqq has been set, it will not be changed
+until all expected redirections have occurred.
 
-There are many other error codes that can be returned by
-phylink_of_phy_connect. For example, phylink_validate returns -EINVAL.
-So this is a practical issue too.
-
-Fixes: aab9c4067d23 ("net: dsa: Plug in PHYLINK support")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Link: https://lore.kernel.org/r/20210914134331.2303380-1-vladimir.oltean@nxp.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Davide Zini <davidezini2@gmail.com>
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Link: https://lore.kernel.org/r/20210802141352.74353-2-paolo.valente@linaro.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/slave.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ block/bfq-iosched.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -1327,13 +1327,11 @@ static int dsa_slave_phy_setup(struct ne
- 		 * use the switch internal MDIO bus instead
- 		 */
- 		ret = dsa_slave_phy_connect(slave_dev, dp->index);
--		if (ret) {
--			netdev_err(slave_dev,
--				   "failed to connect to port %d: %d\n",
--				   dp->index, ret);
--			phylink_destroy(dp->pl);
--			return ret;
--		}
-+	}
-+	if (ret) {
-+		netdev_err(slave_dev, "failed to connect to PHY: %pe\n",
-+			   ERR_PTR(ret));
-+		phylink_destroy(dp->pl);
- 	}
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index b2bad345c523..c8c94e8e0f72 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2137,6 +2137,15 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
+ 	 * are likely to increase the throughput.
+ 	 */
+ 	bfqq->new_bfqq = new_bfqq;
++	/*
++	 * The above assignment schedules the following redirections:
++	 * each time some I/O for bfqq arrives, the process that
++	 * generated that I/O is disassociated from bfqq and
++	 * associated with new_bfqq. Here we increases new_bfqq->ref
++	 * in advance, adding the number of processes that are
++	 * expected to be associated with new_bfqq as they happen to
++	 * issue I/O.
++	 */
+ 	new_bfqq->ref += process_refs;
+ 	return new_bfqq;
+ }
+@@ -2196,6 +2205,10 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ {
+ 	struct bfq_queue *in_service_bfqq, *new_bfqq;
  
- 	return ret;
++	/* if a merge has already been setup, then proceed with that first */
++	if (bfqq->new_bfqq)
++		return bfqq->new_bfqq;
++
+ 	/*
+ 	 * Prevent bfqq from being merged if it has been created too
+ 	 * long ago. The idea is that true cooperating processes, and
+@@ -2210,9 +2223,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+ 	if (bfq_too_late_for_merging(bfqq))
+ 		return NULL;
+ 
+-	if (bfqq->new_bfqq)
+-		return bfqq->new_bfqq;
+-
+ 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
+ 		return NULL;
+ 
+-- 
+2.30.2
+
 
 
