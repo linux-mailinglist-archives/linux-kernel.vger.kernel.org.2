@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A142F412121
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0425411EA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356894AbhITSCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:02:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54542 "EHLO mail.kernel.org"
+        id S1346290AbhITRdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:33:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355655AbhITRzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:55:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1574261C14;
-        Mon, 20 Sep 2021 17:13:59 +0000 (UTC)
+        id S1347747AbhITRai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:30:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA04561AE0;
+        Mon, 20 Sep 2021 17:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158040;
-        bh=RPJDfX75Egwejs6ADv5+aBjYQ29/+B/NLiXH+d+N2wI=;
+        s=korg; t=1632157457;
+        bh=hy3UwUA+8vvNry4bzehpyJHT56yOSvMuXzICl7nOmF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CGi9R7ZGubObz7gT/58abpg9pFmgyyU+ZTNz7bmsMF41v5uYXPLxwTa2bsNp9PMlG
-         NsqBiqshEGqDbt/r02YdDwKOvniueATDmee0eelm1AiXkG/crN19J7UbDLeOFi6RbB
-         qHLSbsB6B12XDu8timltcrMo+90oATAYx3YPvKBc=
+        b=veiVE7XdfeZ3NhR3zbBqFc5QtIjc/uT9w2XYVQ7JTdMpq+NMFUloFUVUQaV9hipfT
+         /PRvdEqXwDkJJTZuLZs42TupQvdoIF0Lp0Fm5XUUbAYLLBzG9mkuaHNDJxnVEz9Nt0
+         9ghryHPILY2NUT4DdzVdZTbwdo4DGUnmgt7QVsi8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 267/293] net/af_unix: fix a data-race in unix_dgram_poll
-Date:   Mon, 20 Sep 2021 18:43:49 +0200
-Message-Id: <20210920163942.548898450@linuxfoundation.org>
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 209/217] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
+Date:   Mon, 20 Sep 2021 18:43:50 +0200
+Message-Id: <20210920163931.705697091@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,97 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-commit 04f08eb44b5011493d77b602fdec29ff0f5c6cd5 upstream.
+[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
 
-syzbot reported another data-race in af_unix [1]
+Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
+0x1061 composition in order to avoid bind error.
 
-Lets change __skb_insert() to use WRITE_ONCE() when changing
-skb head qlen.
-
-Also, change unix_dgram_poll() to use lockless version
-of unix_recvq_full()
-
-It is verry possible we can switch all/most unix_recvq_full()
-to the lockless version, this will be done in a future kernel version.
-
-[1] HEAD commit: 8596e589b787732c8346f0482919e83cc9362db1
-
-BUG: KCSAN: data-race in skb_queue_tail / unix_dgram_poll
-
-write to 0xffff88814eeb24e0 of 4 bytes by task 25815 on cpu 0:
- __skb_insert include/linux/skbuff.h:1938 [inline]
- __skb_queue_before include/linux/skbuff.h:2043 [inline]
- __skb_queue_tail include/linux/skbuff.h:2076 [inline]
- skb_queue_tail+0x80/0xa0 net/core/skbuff.c:3264
- unix_dgram_sendmsg+0xff2/0x1600 net/unix/af_unix.c:1850
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg net/socket.c:723 [inline]
- ____sys_sendmsg+0x360/0x4d0 net/socket.c:2392
- ___sys_sendmsg net/socket.c:2446 [inline]
- __sys_sendmmsg+0x315/0x4b0 net/socket.c:2532
- __do_sys_sendmmsg net/socket.c:2561 [inline]
- __se_sys_sendmmsg net/socket.c:2558 [inline]
- __x64_sys_sendmmsg+0x53/0x60 net/socket.c:2558
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-read to 0xffff88814eeb24e0 of 4 bytes by task 25834 on cpu 1:
- skb_queue_len include/linux/skbuff.h:1869 [inline]
- unix_recvq_full net/unix/af_unix.c:194 [inline]
- unix_dgram_poll+0x2bc/0x3e0 net/unix/af_unix.c:2777
- sock_poll+0x23e/0x260 net/socket.c:1288
- vfs_poll include/linux/poll.h:90 [inline]
- ep_item_poll fs/eventpoll.c:846 [inline]
- ep_send_events fs/eventpoll.c:1683 [inline]
- ep_poll fs/eventpoll.c:1798 [inline]
- do_epoll_wait+0x6ad/0xf00 fs/eventpoll.c:2226
- __do_sys_epoll_wait fs/eventpoll.c:2238 [inline]
- __se_sys_epoll_wait fs/eventpoll.c:2233 [inline]
- __x64_sys_epoll_wait+0xf6/0x120 fs/eventpoll.c:2233
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x0000001b -> 0x00000001
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 PID: 25834 Comm: syz-executor.1 Tainted: G        W         5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-
-Fixes: 86b18aaa2b5b ("skbuff: fix a data race in skb_queue_len()")
-Cc: Qian Cai <cai@lca.pw>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h |    2 +-
- net/unix/af_unix.c     |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/cdc_mbim.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -1761,7 +1761,7 @@ static inline void __skb_insert(struct s
- 	WRITE_ONCE(newsk->prev, prev);
- 	WRITE_ONCE(next->prev, newsk);
- 	WRITE_ONCE(prev->next, newsk);
--	list->qlen++;
-+	WRITE_ONCE(list->qlen, list->qlen + 1);
- }
+diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
+index 0362acd5cdca..cdd1b193fd4f 100644
+--- a/drivers/net/usb/cdc_mbim.c
++++ b/drivers/net/usb/cdc_mbim.c
+@@ -655,6 +655,11 @@ static const struct usb_device_id mbim_devs[] = {
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
+ 	},
  
- static inline void __skb_queue_splice(const struct sk_buff_head *list,
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2739,7 +2739,7 @@ static __poll_t unix_dgram_poll(struct f
- 
- 		other = unix_peer(sk);
- 		if (other && unix_peer(other) != sk &&
--		    unix_recvq_full(other) &&
-+		    unix_recvq_full_lockless(other) &&
- 		    unix_dgram_peer_wake_me(sk, other))
- 			writable = 0;
- 
++	/* Telit LN920 */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
++	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
++	},
++
+ 	/* default entry */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
+-- 
+2.30.2
+
 
 
