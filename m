@@ -2,78 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7C541236E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BCA41237E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349033AbhITSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:25:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36243 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377283AbhITSRr (ORCPT
+        id S1378028AbhITSZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:25:16 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:46766
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1377384AbhITSSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:17:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632161780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=smgGeNTJKJdRB3jySjdLq/O6aIDEticWWn8WNZpB814=;
-        b=YuzYaMpkaJ4+hcmiSIGX+WLg+FrxfFxmsxQm/ktdsnP/BzzcfcBcpTS4DM7jtd3dhsYvv+
-        rAe1GcG5MJWgxqwQTaINACBqzJmBKfcmnOmA0KbogN1Gv4Z5hgvDmYC68lQWEBgVHcTS7l
-        kuoC+MOzcpDhniydyD7dcl8h7q+dKVA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-V_dpYbo3NfOmkZRcCVpp8Q-1; Mon, 20 Sep 2021 14:16:19 -0400
-X-MC-Unique: V_dpYbo3NfOmkZRcCVpp8Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 20 Sep 2021 14:18:35 -0400
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 467EE802936;
-        Mon, 20 Sep 2021 18:16:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 687BB19724;
-        Mon, 20 Sep 2021 18:16:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAH2r5murR7TbC9BtSgWyrJVC-YG5dUba2ekZTvX75gg4ukaAZw@mail.gmail.com>
-References: <CAH2r5murR7TbC9BtSgWyrJVC-YG5dUba2ekZTvX75gg4ukaAZw@mail.gmail.com> <163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk>
-To:     Steve French <smfrench@gmail.com>
-Cc:     dhowells@redhat.com, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, CIFS <linux-cifs@vger.kernel.org>,
-        linux-nfs <linux-nfs@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] fscache, 9p, afs, cifs, nfs: Deal with some warnings from W=1
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8560F3F4BE
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 18:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632161826;
+        bh=TjtorBP1QG+MBkByGdZNpa22mOVzwIsICVZSplyAbbE=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=aM+Xf4yDN35MlZk4MjNWS6NRK4aeW3VBzWN+JrX0G/iyTbSewqSn7Fw4YYr4kEqe6
+         Yvn+pQMDEXg8ZJVg1PEWk+DFPTR2t8d2RchPdUoerdit8uNWKpn/9hQKRkZTyFPzbj
+         YVdFN1HVkXLH4dHwxSuxYmUq71Iuu957dIf8KmlEKDQoA9sYsaiGJbDW83Aw+elffL
+         N2eD6VocivuPbpVHhiK3YKBhiduzbNQPaQvWec8FHz1MKWXqzJGTdh+kaSpPjqVCCE
+         U1+8V/fjuLTx1Z+7d7XkKbtwMU9ERXqSRjlciyVOP0pt4li7CQUIBJ1Q+MhlvsqPbK
+         TSNKQjGHu37ew==
+Received: by mail-pj1-f71.google.com with SMTP id h1-20020a17090adb8100b001997671e011so12594491pjv.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:17:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TjtorBP1QG+MBkByGdZNpa22mOVzwIsICVZSplyAbbE=;
+        b=yPIf83ivJHYM8THTDtYRTNMSgkyRJWuxndrf69JDPccZoex4qb/Bimd6ed4j21R6qQ
+         X2621KalwCqkoTPPzPsHof5ZQrCEAz5ERMpo7vAcupV1cQmYhl5N12+PXau6hJHiHEKs
+         NfHNkmj2CTmjZ5TebZdcbS82cek4SY+1cWiUrEJY1HmGPxnAoQIhBJugPMe8HhtW9oaA
+         NLJxh9fW5QYN7jG7mKU54XqfK621W3UolPvdUVKvIXsd8SxsDxObMNWK25O4eSjWL1si
+         x0zZwwJz77i/qARXaSmc23O5yJRWUidKGdrYWNOprJbokwcBsngq1/NVblgp8tlMPpSU
+         CDhg==
+X-Gm-Message-State: AOAM532Q3iTJu9qh+bDj8G0JykBltfVGlfW5B+X4HWagWiQZRkuYQmXk
+        v7oYqLIhKjQPef2xvryxhYwGo7AVJqh7zChvLuUU3HXNpDfFjqhwNTYOk/1RgRUWvuq00qfll+X
+        8v+C//HP2UAzWJ177KF/AKCVxM8xkzz+B5reoFG09dg==
+X-Received: by 2002:a17:90a:24c:: with SMTP id t12mr357831pje.103.1632161824738;
+        Mon, 20 Sep 2021 11:17:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDHbTX6MS7FWBtqKRkGWZ8SYTluchgpjHnl329yBqjyNyrGnU2x+2LHi5jaLReYrYUZHW5Fw==
+X-Received: by 2002:a17:90a:24c:: with SMTP id t12mr357801pje.103.1632161824463;
+        Mon, 20 Sep 2021 11:17:04 -0700 (PDT)
+Received: from localhost.localdomain ([69.163.84.166])
+        by smtp.gmail.com with ESMTPSA id m64sm16126877pga.55.2021.09.20.11.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 11:17:03 -0700 (PDT)
+From:   Tim Gardner <tim.gardner@canonical.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     tim.gardner@canonical.com, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Karol Herbst <kherbst@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau/ga102: Free resources on error in ga102_chan_new()
+Date:   Mon, 20 Sep 2021 12:16:47 -0600
+Message-Id: <20210920181647.22156-1-tim.gardner@canonical.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2976711.1632161773.1@warthog.procyon.org.uk>
-Date:   Mon, 20 Sep 2021 19:16:13 +0100
-Message-ID: <2976712.1632161773@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Steve French <smfrench@gmail.com> wrote:
+Coverity complains of a resource leak in ga102_chan_new():
 
-> For the cifs ones in connect.c (and also ioctl.c), I had submitted a
-> patch in rc1 for these (haven't heard back on that) but did not submit
-> kerneldoc fixup for fs/cifs/misc.c.  They seem trivial and safe, do
-> you want to split those out and I can put them in?
+CID 119637 (#7 of 7): Resource leak (RESOURCE_LEAK)
+13. leaked_storage: Variable chan going out of scope leaks the storage it points to.
+190                return ret;
 
-I can, though the reason I did the patch is that the warnings are always
-popping up in what I'm doing.  I can drop the patch from mine when I'm done, I
-guess.
+Fix this by freeing 'chan' in the error path.
 
-David
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Karol Herbst <kherbst@redhat.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: nouveau@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+---
+ .../gpu/drm/nouveau/nvkm/engine/fifo/ga102.c  | 20 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c
+index f897bef13acf..4dbdfb53e65f 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c
+@@ -175,19 +175,21 @@ ga102_chan_new(struct nvkm_device *device,
+ 		}
+ 	}
+ 
+-	if (!chan->ctrl.runl)
+-		return -ENODEV;
++	if (!chan->ctrl.runl) {
++		ret = -ENODEV;
++		goto free_chan;
++	}
+ 
+ 	chan->ctrl.chan = nvkm_rd32(device, chan->ctrl.runl + 0x004) & 0xfffffff0;
+ 	args->token = nvkm_rd32(device, chan->ctrl.runl + 0x008) & 0xffff0000;
+ 
+ 	ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->mthd);
+ 	if (ret)
+-		return ret;
++		goto free_chan;
+ 
+ 	ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->inst);
+ 	if (ret)
+-		return ret;
++		goto free_chan;
+ 
+ 	nvkm_kmap(chan->inst);
+ 	nvkm_wo32(chan->inst, 0x010, 0x0000face);
+@@ -209,11 +211,11 @@ ga102_chan_new(struct nvkm_device *device,
+ 
+ 	ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->user);
+ 	if (ret)
+-		return ret;
++		goto free_chan;
+ 
+ 	ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->runl);
+ 	if (ret)
+-		return ret;
++		goto free_chan;
+ 
+ 	nvkm_kmap(chan->runl);
+ 	nvkm_wo32(chan->runl, 0x00, 0x80030001);
+@@ -228,10 +230,14 @@ ga102_chan_new(struct nvkm_device *device,
+ 
+ 	ret = nvkm_vmm_join(vmm, chan->inst);
+ 	if (ret)
+-		return ret;
++		goto free_chan;
+ 
+ 	chan->vmm = nvkm_vmm_ref(vmm);
+ 	return 0;
++
++free_chan:
++	kfree(chan);
++	return ret;
+ }
+ 
+ static const struct nvkm_device_oclass
+-- 
+2.33.0
 
