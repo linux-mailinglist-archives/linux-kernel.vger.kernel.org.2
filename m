@@ -2,174 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33F4411932
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16B041195E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242875AbhITQOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:14:39 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35216 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242849AbhITQOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:14:07 -0400
-Received: from zn.tnic (p200300ec2f0a2a00274102d8249bfe43.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2a00:2741:2d8:249b:fe43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8787B1EC046C;
-        Mon, 20 Sep 2021 18:12:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632154353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=499cmMesQ66SuOqK3OAibBQwJpFfgrPccmrpjjv7fMM=;
-        b=IrcQuZuNhMC8QorBvrj0UE0ngqhUlkROH5PPYZK/Ve5dAoauyfiIVYvv7unbtORHls4wBC
-        jitzf6JX5a5BijInUeOJvqDm9/DI6p3252CFlCl9wSCzXmPyL5+jBGMbHfVfIl/YiDjINY
-        SxI1qHBKpREhpjK/wep2XAvRQssxS0U=
-Date:   Mon, 20 Sep 2021 18:12:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     hpa@zytor.com, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: BUG: unable to handle kernel paging request in
- drm_fb_helper_damage_work
-Message-ID: <YUiy6zyQ/7uccnV3@zn.tnic>
-References: <CACkBjsYVWiSa9KYETi4aT2-0C=xheWjYA9bgoMgqa3y0XzNLMw@mail.gmail.com>
+        id S238506AbhITQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:16:05 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:59239 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242762AbhITQOZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:14:25 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 4AF94821F6;
+        Mon, 20 Sep 2021 19:12:57 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1632154377;
+        bh=wuDdTyPetTEzRQ4y4eTAWgHy8+xrc7SOdwkMIA0RNpc=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=KkfmucBWdo47N89nCE+N2ZIQxvFYljf3UyWsP00tn5R0ZkpJlTHXxn764UBtfm5J2
+         XkPkukSzsgQEquKzAgerIswmFGs+4lstadNtgkYK1ZmjdfeCITjP7ejhHggPRhcrG4
+         tB+t2RzKsHfaV2rG0LgOu0xZ5g8HFWcXpa/P6hY8=
+Received: from [192.168.211.150] (192.168.211.150) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 20 Sep 2021 19:12:56 +0300
+Message-ID: <2692afd4-f263-838a-a80e-e6f740d44f36@paragon-software.com>
+Date:   Mon, 20 Sep 2021 19:12:56 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACkBjsYVWiSa9KYETi4aT2-0C=xheWjYA9bgoMgqa3y0XzNLMw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH][next] fs/ntfs3: Fix a memory leak on object opts
+Content-Language: en-US
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        Colin King <colin.king@canonical.com>
+CC:     <ntfs3@lists.linux.dev>, <kernel-janitors@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210910100202.29254-1-colin.king@canonical.com>
+ <20210910105018.asvmzihjdqeqm25v@kari-VirtualBox>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20210910105018.asvmzihjdqeqm25v@kari-VirtualBox>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.150]
+X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 08:55:28PM +0800, Hao Sun wrote:
-> Hello,
+
+
+On 10.09.2021 13:50, Kari Argillander wrote:
+> On Fri, Sep 10, 2021 at 11:02:02AM +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Currently a failed allocation on sbi->upcase will cause an exit via
+>> the label free_sbi causing a memory leak on object opts. Fix this by
+>> re-ordering the exit paths free_opts and free_sbi so that kfree's occur
+>> in the reverse allocation order.
+>>
+>> Addresses-Coverity: ("Resource leak")
+>> Fixes: 27fac77707a1 ("fs/ntfs3: Init spi more in init_fs_context than fill_super")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
 > 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-
-Your Healer thing - or whatever that next automated thing is which is
-trying to be smart - is not CCing the proper people:
-
-$ ./scripts/get_maintainer.pl -f drivers/gpu/drm/drm_fb_helper.c --no-rolestats
-Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Maxime Ripard <mripard@kernel.org>
-Thomas Zimmermann <tzimmermann@suse.de>
-David Airlie <airlied@linux.ie>
-Daniel Vetter <daniel@ffwll.ch>
-dri-devel@lists.freedesktop.org
-linux-kernel@vger.kernel.org
-
-I'll Cc them now but you should fix it.
-
-The syzcaller mails at least Cc more people and I'm sure you can figure
-out how to do that when you have the stack trace and get_maintainer.pl.
-
-> was triggered.
+> Thanks Colin.
 > 
-> HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/13NUxvBLIswpoS8NOOAaq9PjOKgTYN19K/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
+> Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
 > 
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> 
-> BUG: unable to handle page fault for address: ffffc90003d79000
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 8c00067 P4D 8c00067 PUD 8d63067 PMD 104409067 PTE 0
-> Oops: 0000 [#1] PREEMPT SMP
-> CPU: 2 PID: 3032 Comm: kworker/2:2 Not tainted 5.15.0-rc1+ #19
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> Workqueue: events drm_fb_helper_damage_work
-> RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
-> RIP: 0010:memcpy_toio+0x48/0xa0 arch/x86/lib/iomem.c:57
-> Code: 01 75 41 e8 4a 0d 04 ff 49 83 fc 01 76 0a e8 3f 0d 04 ff f6 c3
-> 02 75 44 e8 35 0d 04 ff 4c 89 e1 48 89 df 48 89 ee 48 c1 e9 02 <f3> a5
-> 41 f6 c4 02 74 02 66 a5 41 f6 c4 01 74 01 a4 5b 5d 41 5c e9
-> RSP: 0018:ffffc9000088fda8 EFLAGS: 00010206
-> RAX: 0000000000000000 RBX: ffffc90005aff000 RCX: 0000000000000100
-> RDX: ffff88800f132240 RSI: ffffc90003d79000 RDI: ffffc90005b00000
-> RBP: ffffc90003d78000 R08: 0000000000000001 R09: 0000000000000000
-> R10: ffffc9000088fdc8 R11: 0000000000000004 R12: 0000000000001400
-> R13: ffff888101fc7000 R14: 00000000000002ff R15: ffffc90003d78000
-> FS:  0000000000000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffc90003d79000 CR3: 000000010ea77000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  dma_buf_map_memcpy_to include/linux/dma-buf-map.h:245 [inline]
->  drm_fb_helper_damage_blit_real drivers/gpu/drm/drm_fb_helper.c:388 [inline]
->  drm_fb_helper_damage_blit drivers/gpu/drm/drm_fb_helper.c:419 [inline]
->  drm_fb_helper_damage_work+0x30e/0x380 drivers/gpu/drm/drm_fb_helper.c:450
->  process_one_work+0x359/0x850 kernel/workqueue.c:2297
->  worker_thread+0x41/0x4d0 kernel/workqueue.c:2444
->  kthread+0x178/0x1b0 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> Modules linked in:
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> CR2: ffffc90003d79000
-> ---[ end trace e1f0ecb0884517c4 ]---
-> RIP: 0010:rep_movs arch/x86/lib/iomem.c:12 [inline]
-> RIP: 0010:memcpy_toio+0x48/0xa0 arch/x86/lib/iomem.c:57
-> Code: 01 75 41 e8 4a 0d 04 ff 49 83 fc 01 76 0a e8 3f 0d 04 ff f6 c3
-> 02 75 44 e8 35 0d 04 ff 4c 89 e1 48 89 df 48 89 ee 48 c1 e9 02 <f3> a5
-> 41 f6 c4 02 74 02 66 a5 41 f6 c4 01 74 01 a4 5b 5d 41 5c e9
-> RSP: 0018:ffffc9000088fda8 EFLAGS: 00010206
-> RAX: 0000000000000000 RBX: ffffc90005aff000 RCX: 0000000000000100
-> RDX: ffff88800f132240 RSI: ffffc90003d79000 RDI: ffffc90005b00000
-> RBP: ffffc90003d78000 R08: 0000000000000001 R09: 0000000000000000
-> R10: ffffc9000088fdc8 R11: 0000000000000004 R12: 0000000000001400
-> R13: ffff888101fc7000 R14: 00000000000002ff R15: ffffc90003d78000
-> FS:  0000000000000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffc90003d79000 CR3: 000000010ea77000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> ----------------
-> Code disassembly (best guess):
->    0:   01 75 41                add    %esi,0x41(%rbp)
->    3:   e8 4a 0d 04 ff          callq  0xff040d52
->    8:   49 83 fc 01             cmp    $0x1,%r12
->    c:   76 0a                   jbe    0x18
->    e:   e8 3f 0d 04 ff          callq  0xff040d52
->   13:   f6 c3 02                test   $0x2,%bl
->   16:   75 44                   jne    0x5c
->   18:   e8 35 0d 04 ff          callq  0xff040d52
->   1d:   4c 89 e1                mov    %r12,%rcx
->   20:   48 89 df                mov    %rbx,%rdi
->   23:   48 89 ee                mov    %rbp,%rsi
->   26:   48 c1 e9 02             shr    $0x2,%rcx
-> * 2a:   f3 a5                   rep movsl %ds:(%rsi),%es:(%rdi) <--
-> trapping instruction
->   2c:   41 f6 c4 02             test   $0x2,%r12b
->   30:   74 02                   je     0x34
->   32:   66 a5                   movsw  %ds:(%rsi),%es:(%rdi)
->   34:   41 f6 c4 01             test   $0x1,%r12b
->   38:   74 01                   je     0x3b
->   3a:   a4                      movsb  %ds:(%rsi),%es:(%rdi)
->   3b:   5b                      pop    %rbx
->   3c:   5d                      pop    %rbp
->   3d:   41 5c                   pop    %r12
->   3f:   e9                      .byte 0xe9
+>>  fs/ntfs3/super.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+>> index 3cba0b5e7ac7..69f23db0d727 100644
+>> --- a/fs/ntfs3/super.c
+>> +++ b/fs/ntfs3/super.c
+>> @@ -1450,10 +1450,10 @@ static int ntfs_init_fs_context(struct fs_context *fc)
+>>  	fc->ops = &ntfs_context_ops;
+>>  
+>>  	return 0;
+>> -free_opts:
+>> -	kfree(opts);
+>>  free_sbi:
+>>  	kfree(sbi);
+>> +free_opts:
+>> +	kfree(opts);
+>>  	return -ENOMEM;
+>>  }
+>>  
+>> -- 
+>> 2.32.0
+>>
 
--- 
-Regards/Gruss,
-    Boris.
+Hi, Colin, Kari!
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for work - applied!
