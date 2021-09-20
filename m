@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBEB411346
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F92141134F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 13:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236382AbhITLDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 07:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232312AbhITLDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 07:03:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9585761019
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632135744;
-        bh=Qo9OH3OatSxQ6mVNwV+oYOI8e3ZP4NEIs/O92VWL8QY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Of+QBHJkJqgVW0lN0Y+CY+p0EfquB4/mU1LidHhGp+KaaO0sHEubX4oj+T9wPF+KT
-         Q+YL9g8g7ft4WJoOUAD/rN6+eUjRSul9EBMfBEJlebtlkTFLNtR9EstKLgtKwcomf4
-         PSNEpW/+sg7/2NuE7CPxSXaMGOcWnj3+KMuzoxDCPfUG+nkpoT7cfc6ThUJxsjkDB7
-         wdO6iNjeXLwZDePIIfAp0A4exH7RkytFwGGZ+Owz4RSLmNkgcV41W+ELJysthIpO70
-         5xzmXpvIBNtP4U2raClEGlU8XapdzXcXfFFbnW19lbJfoaEzDHc/wKYFWJCGB32N/D
-         gFxttdT2Dr03g==
-Received: by mail-wr1-f54.google.com with SMTP id t8so21402231wri.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 04:02:24 -0700 (PDT)
-X-Gm-Message-State: AOAM531qZXOkVaUcoA1dW7Y1rx/ExZoCShyXxy+A75JDKNjdCPhRNAni
-        RQVWSv21N2eRHadgQl1vgz4NLHId1wFdeEtRNg8=
-X-Google-Smtp-Source: ABdhPJxfkRg5shmH9v95CIjg4TUKIpUlkm75p5gAZM+RJbH7lOfNTwCOBfp3Js3eDG1d15O/1qzb4Vr9bQIOWI/eZJM=
-X-Received: by 2002:a1c:7413:: with SMTP id p19mr24126896wmc.98.1632135743242;
- Mon, 20 Sep 2021 04:02:23 -0700 (PDT)
+        id S236396AbhITLHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 07:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232312AbhITLHY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 07:07:24 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733BBC061574;
+        Mon, 20 Sep 2021 04:05:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id g1so66644909lfj.12;
+        Mon, 20 Sep 2021 04:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PjCxldfRwru44yzVW0vVIwEYDHxb2Xe5XdKPGw3FlCQ=;
+        b=HPD2lHWqG6zDhxDAGvWl4FtxoAfAyQ9UcSxpszMNZ6ZIrXxW4h/+VP52vNkJpgBsBo
+         znQhwLj6GCtY1ml54rl+bIery2uaz5VrXMu/LesvMUXTpMgL3T4tXA1lUcY+LoBGNrgO
+         7q0gvpXHoFtf1ej9pjgV0JiCrod7l9iNKpwYhH8lf2c1WjAfiKtzv0DZYqQCQi/lbtPN
+         KkJo5fYnXW6eE8qd4xFcUGLHRFa6iOkP5frs49M53RqDKFNbQt9oqV1DtrdtFanITJCt
+         PQLQedlYCTsBhB4Bkk61EO/eAxEjvX+a96p9/XSCd9sxBzqMiCEZt1rOxdVqOSf4iPqQ
+         Akng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PjCxldfRwru44yzVW0vVIwEYDHxb2Xe5XdKPGw3FlCQ=;
+        b=OixGRQBu3e32ci2xSXYHYtIBdi8e+kSRjtnyAyQFsOUFIkcvDQ1u7UCD6UvY30Tnr8
+         rGh3xdkblnoftMFJgSmZTCfunrMbSIJpTdSjljR85GwghH3nq+aeInqr5rbpPdYoL7+P
+         tXo6US7zDdFz8j2taxYkFL8kIdZk5Zop3XWcxvgI9QFZw48GC31ssPAq98srHkm2XOvb
+         XFezymJeWjl1uOA6ZIWKJCphj/a5kOR95iiDxALn/ectHs3E3OyzQHR3Ov4AvgTfsi8L
+         peOEWYyETrJdf8q5w5BEwWjfAgZAD1WxtQ4PMwkfDUDnW0DgjJBsLjBJB5NIg3N/6lyP
+         mAyQ==
+X-Gm-Message-State: AOAM530L2j6211NzY83o3SUEUDad14cgsUOzMR+mZIrpRaAGtF5AFoa6
+        whp/YJl0RToXAANJr/HgL6YV4Ys8/ei7xL70xSY=
+X-Google-Smtp-Source: ABdhPJwRO0KgsOPqJA1Vmh2XK1AkjUGHw4AWY9f2Q1131kA6mlJudsn6DIV5deXJDhz0+IkhYjZpbv4AruoQGtWytQc=
+X-Received: by 2002:a2e:6e06:: with SMTP id j6mr22228990ljc.382.1632135955758;
+ Mon, 20 Sep 2021 04:05:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <202108160330.T1EbbpCi-lkp@intel.com>
-In-Reply-To: <202108160330.T1EbbpCi-lkp@intel.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 20 Sep 2021 13:02:07 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3qhfxUC-7y-_q35-tNrs2L93htjuVzSukqZO0hDhOAuw@mail.gmail.com>
-Message-ID: <CAK8P3a3qhfxUC-7y-_q35-tNrs2L93htjuVzSukqZO0hDhOAuw@mail.gmail.com>
-Subject: Re: [linux-next:master 3857/7963] arch/x86/crypto/sm4-aesni-avx-asm_64.o:
- warning: objtool: sm4_aesni_avx_crypt8()+0x8: sibling call from callable
- instruction with modified stack frame
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAEyMn7YqrRttqvJzJLA+yVo6WtBZww6QcXT12MMCi+bhjP4pTg@mail.gmail.com>
+ <CAEyMn7ZhBfG7703YMr=EDQyf5mHDkLyET5iNqdXDOpJy9ti+rQ@mail.gmail.com>
+ <CAOMZO5CZKdc=AmG1eds9Oy_uwqXDWLwPXk74phCDWdjrzkRC4A@mail.gmail.com>
+ <CAEyMn7YaQbLoVy_5Rb+hiwhEj-kbnmCwb0B_soa+Kf0D6iH6oA@mail.gmail.com>
+ <CAOMZO5CGuKQ0yVyoD86G3KnxoBd2fq+uCTTLoqVR-13Y5a-36Q@mail.gmail.com>
+ <CAEyMn7bN247-J=Qz-k3LZMVYb8pdYSP3BSCsNE9yyvfDfmdK0g@mail.gmail.com> <CAOMZO5DEg81E23QBpsv44BxytEhNNoXy-r5BbnubUJTERzWYLQ@mail.gmail.com>
+In-Reply-To: <CAOMZO5DEg81E23QBpsv44BxytEhNNoXy-r5BbnubUJTERzWYLQ@mail.gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Mon, 20 Sep 2021 13:05:43 +0200
+Message-ID: <CAEyMn7Yvc_tck=Hd8GE1a7uO8nRsrkdJ7b_jL6EY0-U6b=TjoQ@mail.gmail.com>
+Subject: Re: imx8mm board crash in drivers/usb/chipidea/ci_hdrc_imx.c
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Peter Chen <peter.chen@nxp.com>, Jun Li <jun.li@nxp.com>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 9:41 PM kernel test robot <lkp@intel.com> wrote:
+Hi,
+
+Am Mo., 20. Sept. 2021 um 12:52 Uhr schrieb Fabio Estevam <festevam@gmail.com>:
 >
-> CC: Linux Memory Management List <linux-mm@kvack.org>
-> TO: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> CC: Herbert Xu <herbert@gondor.apana.org.au>
+> Hi Heiko,
 >
-> Hi Tianjia,
+> On Mon, Sep 20, 2021 at 6:17 AM Heiko Thiery <heiko.thiery@gmail.com> wrote:
 >
-> First bad commit (maybe != root cause):
+> > Now it is clear to me. I used the dtb for my board that had already
+> > changed the phy node and tried to boot the "old" kernel 5.14. Thus no
+> > phy could be found. Nevertheless the kernel should not crash in case
+> > no phy was found.
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> head:   4b358aabb93a2c654cd1dcab1a25a589f6e2b153
-> commit: a7ee22ee1445c7fdb00ab80116bb9710ca86a860 [3857/7963] crypto: x86/sm4 - add AES-NI/AVX/x86_64 implementation
-> config: x86_64-randconfig-r024-20210816 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 7776b19eed44906e9973bfb240b6279d6feaab41)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=a7ee22ee1445c7fdb00ab80116bb9710ca86a860
->         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->         git fetch --no-tags linux-next master
->         git checkout a7ee22ee1445c7fdb00ab80116bb9710ca86a860
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=x86_64 SHELL=/bin/bash arch/x86/
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> arch/x86/crypto/sm4-aesni-avx-asm_64.o: warning: objtool: sm4_aesni_avx_crypt8()+0x8: sibling call from callable instruction with modified stack frame
+> Agreed. The patch I proposed earlier should fix the problem, correct?
+> https://pastebin.com/raw/yZKz1huL
 
-I see the same thing in my randconfig builds using gcc. This is an
-assembler file,
-my interpretation is that objtool has found an actual code bug:
+Yes this should do it.
 
-.macro FRAME_BEGIN
-        push %_ASM_BP
-        _ASM_MOV %_ASM_SP, %_ASM_BP
-.endm
-.macro FRAME_END
-        pop %_ASM_BP
-.endm
-
-SYM_FUNC_START(sm4_aesni_avx_crypt8)
-        /* input:
-         *      %rdi: round key array, CTX
-         *      %rsi: dst (1..8 blocks)
-         *      %rdx: src (1..8 blocks)
-         *      %rcx: num blocks (1..8)
-         */
-        FRAME_BEGIN
-
-        cmpq $5, %rcx;
-        jb sm4_aesni_avx_crypt4;
-        ....
-
-SYM_FUNC_START(sm4_aesni_avx_crypt4)
-        /* input:
-         *      %rdi: round key array, CTX
-         *      %rsi: dst (1..4 blocks)
-         *      %rdx: src (1..4 blocks)
-         *      %rcx: num blocks (1..4)
-         */
-        FRAME_BEGIN
-        ...
-        FRAME_END
-        ret;
-SYM_FUNC_END(sm4_aesni_avx_crypt4)
-
-
-sm4_aesni_avx_crypt8() starts a frame and conditionally branches to
-sm4_aesni_avx_crypt4(), which starts another frame and returns from
-that without cleaning up the parent frame.
-
-        Arnd
+-- 
+Heiko
