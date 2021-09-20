@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441094113EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A31E54113EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbhITMDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237477AbhITMDQ (ORCPT
+        id S237504AbhITMDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:03:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60098 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237457AbhITMDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:03:16 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B4BC061574;
-        Mon, 20 Sep 2021 05:01:49 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id u18so27185840wrg.5;
-        Mon, 20 Sep 2021 05:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Yps8bt2FBtfainwuMRQ1I6tWL0WG1SqRqPwtRgGpER4=;
-        b=JDe7MHo0RI1UpNcpZf39X/27jmaP/aMAWtvE1/dDVxxn/oJ2gAgGx9A1qpGhMmhV79
-         YN70g/+yWW/BtVo85C+RKq51xkDfDSh4wrGzD2DWXZJja7B0G+Mc5AflUCt+aUazZ4Wl
-         a4BfwIdshkv9AImT0hPCUuaUNag85WDXUg34Sv1tXoiwCDAYAzGKnS2SbilLeu97YftR
-         MgPKzyMuDg2AzYBdTBh+rqiBlmGHcqTc6jCIxLmrxae395a3cmGGchcQ5KO87enlREHW
-         zGzfeLhkOw3M67J9yRQAuHFPBYcTJDgyimash9t0fm53QuFdQrSOev4VylpYuC67tkQK
-         NUsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Yps8bt2FBtfainwuMRQ1I6tWL0WG1SqRqPwtRgGpER4=;
-        b=mjaCo+jJoyZf3j1rdyTZWD0xBspFuDL6uv6kLgyFCGZ0AtovXbItKjWhmrN+PXjHoM
-         TcM2nOBzXKJE7+fzISJyT9bIeFbzXbrP/o53yuBoM33yvkoudyu0cKSOcha5DiqMba82
-         +HNzhTuwLReCw9+eLM7iklW2cDJ2sdFYvP2IL9PSDMeaDI1bsVCiFzOH8co9DhrjkBh8
-         DHZ2oStvbO4FsK88iHCBs8idJ+mxvkCqTsAcDjdg9FOhnK3rB7btx8Lz/qrla23oh8OI
-         mLYq6JpxP8clM/iD35jTa7vOX2FWylT37DxhZ8v/GGJGgKBs3vSlymDb3R+NiJXNTOmk
-         LX5A==
-X-Gm-Message-State: AOAM533K62YqANuExI1QlN9I+Bl0YUw+x7fE8OU1UTHayNq405/lHxJs
-        WE5DsO5IB98/ar/58IF+E9I=
-X-Google-Smtp-Source: ABdhPJyx3C28Wosr1fZfE90gYcZrE47TW0kXFU7wZa3TCVGEDUsYZ4KwRuT0cjqIUbwKpXSJGF73ow==
-X-Received: by 2002:a5d:4212:: with SMTP id n18mr28494785wrq.37.1632139306631;
-        Mon, 20 Sep 2021 05:01:46 -0700 (PDT)
-Received: from [192.168.2.177] ([206.204.146.29])
-        by smtp.gmail.com with ESMTPSA id c30sm15963916wrb.74.2021.09.20.05.01.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 05:01:46 -0700 (PDT)
-Message-ID: <a55fca55-78d3-554a-4ad0-f555beac3fa8@gmail.com>
-Date:   Mon, 20 Sep 2021 14:01:45 +0200
+        Mon, 20 Sep 2021 08:03:47 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A60BA2004D;
+        Mon, 20 Sep 2021 12:02:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632139339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E3VEwLtbeq2LahYBGf7CCRXDQTpGMp+ylgVcG2T5Nng=;
+        b=XG4tYBuFPVm0vU/Dwj0zsxON1aBIDWLl2u0hPN09bPMJxFyVbF+uo+hbaHLJa65OLy7agF
+        C/Y3Rns7dvzrrZlAYaEvm+BIUR4AyUFKKiw3dcjL5waknxCnb9KzITn2xkpsd+gYsj6vpN
+        4gY4u59sAulwAB16urgdzR1H5wq3nB0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632139339;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E3VEwLtbeq2LahYBGf7CCRXDQTpGMp+ylgVcG2T5Nng=;
+        b=CSH2GlwKpad4K4krz4Z/5HrphP1fJrQgCsdnu7URS1Jc6x++904X03Q4pdxyqaoFnuJDU/
+        +DTRIXx5MYVPRNCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7BD4E13483;
+        Mon, 20 Sep 2021 12:02:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 73yVHUt4SGE6HwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 20 Sep 2021 12:02:19 +0000
+Message-ID: <a9f9ae14-7805-68f7-cf19-e9e03c87152f@suse.cz>
+Date:   Mon, 20 Sep 2021 14:02:19 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH v2] arm: dts: mt7623: add otg nodes for bpi-r2
+ Thunderbird/91.1.0
+Subject: Re: [RFC PATCH] Introducing lockless cache built on top of slab
+ allocator
 Content-Language: en-US
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210830145958.108605-1-linux@fw-web.de>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <20210830145958.108605-1-linux@fw-web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+References: <20210919164239.49905-1-42.hyeyoo@gmail.com>
+ <YUeM2J7X/i0CHjrz@casper.infradead.org>
+ <20210920010938.GA3108@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+ <YUfpniK6ZVeNhaX2@casper.infradead.org>
+ <432da236-4d8c-1013-cd57-42c352281862@suse.cz>
+ <20210920115536.GA3117@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20210920115536.GA3117@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/20/21 13:55, Hyeonggon Yoo wrote:
+> On Mon, Sep 20, 2021 at 11:07:36AM +0200, Vlastimil Babka wrote:
+>> I guess making it opt-in only for caches where performance improvement was
+>> measured would make it easier to add, as for some caches it would mean no
+>> improvement, but increased memory usage. But of course it makes the API more
+>> harder to use.
+> 
+> Do you mean "lockless cache" it should be separate from slab because some caches
+> doesn't benefit at all?
 
+I meant it seems to be a valid approach to have a special kmem_cache flag
+and allocation function variants, as you discussed. That covers the "some
+caches don't benefit at all" while being an integral part of the allocator,
+so others don't have to build ad-hoc solutions on top of it, and possibly it
+can be also more optimized given access to the SLUB internals.
 
-On 30/08/2021 16:59, Frank Wunderlich wrote:
-> From: Frank Wunderlich <frank-w@public-files.de>
+>> I'd be careful about the name "lockless", as that's ambiguous. Is it "mostly
+>> lockless" therefore fast, but if the cache is empty, it will still take
+>> locks as part of refill?
 > 
-> Add OTG-Nodes for BananaPi-R2
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> It is actually "mostly lockless" so it is ambiguous.
+> Can you suggest a name? like try_lockless or anything?
 
-Applied to v5.15-next/dts32
+"cached" instead of "lockless" ?
 
-Thanks
+>> Or is it lockless always, therefore useful in
+>> contexts that can take no locks, but then the caller has to have fallbacks
+>> in case the cache is empty and nothing is allocated?
+>> 
+>> [1] https://lore.kernel.org/linux-mm/20100804024531.914852850@linux.com/T/#u
+> 
 
-> ---
-> patch is based on
-> 
-> "arm: dts: mt7623: add musb device nodes"
-> 
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20210822041333.5264-2-mans0n@gorani.run/
-> ---
-> v2:
-> 	rebase on plain 5.14, v1 was based on some not upstreamed work
-> ---
->   arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts | 25 +++++++++++++++++++
->   1 file changed, 25 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-> index e96aa0ed1ebd..027c1b0c6a98 100644
-> --- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-> +++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-> @@ -366,6 +366,14 @@ &pcie1_phy {
->   	status = "okay";
->   };
->   
-> +&pio {
-> +	musb_pins: musb {
-> +		pins-musb {
-> +			pinmux = <MT7623_PIN_237_EXT_SDIO2_FUNC_DRV_VBUS>;
-> +		};
-> +	};
-> +};
-> +
->   &pwm {
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&pwm_pins_a>;
-> @@ -396,6 +404,19 @@ &uart2 {
->   	status = "okay";
->   };
->   
-> +&usb0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&musb_pins>;
-> +	status = "okay";
-> +	usb-role-switch;
-> +
-> +	connector {
-> +		compatible = "gpio-usb-b-connector", "usb-b-connector";
-> +		type = "micro";
-> +		id-gpios = <&pio 44 GPIO_ACTIVE_HIGH>;
-> +	};
-> +};
-> +
->   &usb1 {
->   	vusb33-supply = <&reg_3p3v>;
->   	vbus-supply = <&reg_5v>;
-> @@ -408,6 +429,10 @@ &usb2 {
->   	status = "okay";
->   };
->   
-> +&u2phy1 {
-> +	status = "okay";
-> +};
-> +
->   &u3phy1 {
->   	status = "okay";
->   };
-> 
