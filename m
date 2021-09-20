@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934614110EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CB64110EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235742AbhITI2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235727AbhITI2A (ORCPT
+        id S235726AbhITI30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:29:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53922 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231966AbhITI3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:28:00 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40805C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:26:33 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id w17so19208629wrv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:26:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sd2zasa8jsIrDfE+uKpeLHxh1coC9+sVR27g2clwkhM=;
-        b=ckRxkYg0UKty5XJskZHyKC1uz5SKwEvg6hMxqc/s62FhCOm6PxEQHRhWcKB9WAoSJp
-         GO4n/go5FJ+TTQdsm5+lFhx3+c9s44JCpKFqB96Py8X5+8mSfZxLDql4uVACODWS03lw
-         osn3vXU5pyd4zEsoet9nqiW6CJ7lQqYzMd2AClGhOZqoA/1hYjPwwafSU9EWemy0XmgD
-         fNHCxgzxURbgJYyH1nHQvqUL/NwJg6HbHMpaEri8rjH3AZSIUVr7F7CLvLO3CIzFZpL/
-         AePngvOzTZNvxjRvw4wn+8WMUODP+GsiasazeQaiTRMy6wrFCNLZzlBKQI3u2jXhTYAN
-         EpwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Sd2zasa8jsIrDfE+uKpeLHxh1coC9+sVR27g2clwkhM=;
-        b=0bw34owZINsqZihH1Byb1a9Z+VYytKywbMFrxLGj8YIO9a3t8lA/1b6jviMDQEnzL/
-         NkEVLJt2Qmt5Qe66+1Q4bZsDvTXryHAABJwpvgsGHQu2edhy8Ci/O1fEHSwDQiUSHyDD
-         deHg1imuejk7b7dSGIROVLNM1Lf3S/0LAIFq+RpMadqUvskZayYxo7IMnmr5vRNeUaou
-         eejSYwbbOEYHLQx5AmevBEqiQmXFN+OPTM5W4kt1yEfYkgi7EVX5HWRI31VdZPLXqB9C
-         p6vWnOVHXmLqCm4X7dTdMMjcrWHoeD+xlQMO6KkZWca/2RiFQxDHNqo1YqJ3z/eaYZME
-         EeBg==
-X-Gm-Message-State: AOAM531Pn3x3+gySUHFBS24OBQvYLX5Ku7pPjek5vMLzoUqQ/nCj8nY8
-        CCoFmgFlMNzgkURsaphU6DYSbQ==
-X-Google-Smtp-Source: ABdhPJw/mT3WUCPVZ29jbrBrgnE8L+20CP0Qbr5FtszQo+bi6bIe+hZ7C0epV27RPl5aeN5zYF9n9g==
-X-Received: by 2002:a5d:6d8e:: with SMTP id l14mr27071868wrs.196.1632126391761;
-        Mon, 20 Sep 2021 01:26:31 -0700 (PDT)
-Received: from [172.20.10.7] ([37.169.24.17])
-        by smtp.gmail.com with ESMTPSA id c132sm6707022wma.22.2021.09.20.01.26.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 01:26:31 -0700 (PDT)
-Subject: Re: [PATCH] regulator: pwm-regulator: Make use of the helper function
- dev_err_probe()
-To:     Anand Moon <linux.amoon@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-References: <20210919211129.4364-1-linux.amoon@gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <7dcee097-9119-1987-9bb5-777d541cc9f7@baylibre.com>
-Date:   Mon, 20 Sep 2021 10:26:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 20 Sep 2021 04:29:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A308220041;
+        Mon, 20 Sep 2021 08:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632126477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z+DyQBE+Aw6OsR4ekUpN555NEMRZAU9u2xlWGbDULjw=;
+        b=NG+to2HtxbQTOVZ92SXq71NNm3suX62MSSCS0DG8Dzkt2SOl0aaJWr7OFRj2xRRUWCLbRx
+        qu2yQLCH3VZ8clBv4ql6+se/US9y9NQ3xKkE5B/xk0RLVYX4USkLMuy4fww6ZHUWKdcVxO
+        BhNcXBbSJUgymBT6UNyb2loDiU+5cUA=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 7F7CBA3B87;
+        Mon, 20 Sep 2021 08:27:57 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 10:27:57 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>, Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] livepatch: Fix idle cpu's tasks transition
+Message-ID: <YUhGDXzg2VhycKlR@alley>
+References: <patch.git-94c1daf66a9c.your-ad-here.call-01631714463-ext-3692@work.hours>
 MIME-Version: 1.0
-In-Reply-To: <20210919211129.4364-1-linux.amoon@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <patch.git-94c1daf66a9c.your-ad-here.call-01631714463-ext-3692@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/09/2021 23:11, Anand Moon wrote:
-> devm_regulator_register can return -EPROBE_DEFER if the
-> regulator is not ready yet. Use dev_err_probe() for
-> pwm regulator resources to indicate the deferral reason
-> when waiting for the resource to come up.
+On Wed 2021-09-15 16:18:01, Vasily Gorbik wrote:
+> On an idle system with large amount of cpus it might happen that
+> klp_update_patch_state() is not reached in do_idle() for a long periods
+> of time. With debug messages enabled log is filled with:
+> [  499.442643] livepatch: klp_try_switch_task: swapper/63:0 is running
 > 
-> Fixes: 0cd71b9a43ad ("regulator: pwm: Don't warn on probe deferral")
+> without any signs of progress. Ending up with "failed to complete
+> transition".
 > 
-> Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> On s390 LPAR with 128 cpus not a single transition is able to complete
+> and livepatch kselftests fail. Tests on idling x86 kvm instance with 128
+> cpus demonstrate similar symptoms with and without CONFIG_NO_HZ.
+> 
+> To deal with that, since runqueue is already locked in
+> klp_try_switch_task() identify idling cpus and trigger rescheduling
+> potentially waking them up and making sure idle tasks break out of
+> do_idle() inner loop and reach klp_update_patch_state(). This helps to
+> speed up transition time while avoiding unnecessary extra system load.
+> 
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Miroslav Benes <mbenes@suse.cz>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 > ---
->  drivers/regulator/pwm-regulator.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Ingo/Peter, as Josh mentioned, could you please ack if you are ok with
+> livepatch calling this private scheduler interface?
+
+Ingo, Peter, Josh, could anyone please ack that it is acceptable
+to call resched_curr(rq) from the livepatch code?
+
+Or is there a better way to make an idle task go through
+the main cycle?
+
+Best Regards,
+Petr
+
 > 
-> diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
-> index 7629476d94ae..451e57a739f8 100644
-> --- a/drivers/regulator/pwm-regulator.c
-> +++ b/drivers/regulator/pwm-regulator.c
-> @@ -382,9 +382,9 @@ static int pwm_regulator_probe(struct platform_device *pdev)
->  					    &drvdata->desc, &config);
->  	if (IS_ERR(regulator)) {
->  		ret = PTR_ERR(regulator);
-> -		dev_err(&pdev->dev, "Failed to register regulator %s: %d\n",
-> -			drvdata->desc.name, ret);
-> -		return ret;
-> +		return dev_err_probe(&pdev->dev, ret,
-> +				     "Failed to register regulator %s: %d\n",
-> +				     drvdata->desc.name, ret);
-
-No need to keep ret and print it since it will be printed by dev_err_probe, pass directly PTR_ERR(regulator) and drop the ": %d" from the error string.
-
-Neil
-
-
->  	}
+> Changes since v1:
+> - added comments suggested by Petr
+>   lkml.kernel.org/r/patch.git-a4aad6b1540d.your-ad-here.call-01631177886-ext-3083@work.hours
+> 
+> Previous discussion and RFC PATCH:
+>   lkml.kernel.org/r/patch.git-b76842ceb035.your-ad-here.call-01625661932-ext-1304@work.hours
+> 
+>  kernel/livepatch/transition.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+> index 291b857a6e20..2846a879f2dc 100644
+> --- a/kernel/livepatch/transition.c
+> +++ b/kernel/livepatch/transition.c
+> @@ -278,6 +278,8 @@ static int klp_check_stack(struct task_struct *task, char *err_buf)
+>   * Try to safely switch a task to the target patch state.  If it's currently
+>   * running, or it's sleeping on a to-be-patched or to-be-unpatched function, or
+>   * if the stack is unreliable, return false.
+> + *
+> + * Idle tasks are switched in the main loop when running.
+>   */
+>  static bool klp_try_switch_task(struct task_struct *task)
+>  {
+> @@ -308,6 +310,12 @@ static bool klp_try_switch_task(struct task_struct *task)
+>  	rq = task_rq_lock(task, &flags);
 >  
->  	return 0;
-> 
-
+>  	if (task_running(rq, task) && task != current) {
+> +		/*
+> +		 * Idle task might stay running for a long time. Switch them
+> +		 * in the main loop.
+> +		 */
+> +		if (is_idle_task(task))
+> +			resched_curr(rq);
+>  		snprintf(err_buf, STACK_ERR_BUF_SIZE,
+>  			 "%s: %s:%d is running\n", __func__, task->comm,
+>  			 task->pid);
+> -- 
+> 2.25.4
