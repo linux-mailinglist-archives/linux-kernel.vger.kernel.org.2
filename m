@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B702412298
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A9B412264
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351274AbhITSQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:16:19 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35254
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1359090AbhITSKv (ORCPT
+        id S1377072AbhITSPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:15:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38012 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347555AbhITSL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:10:51 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        Mon, 20 Sep 2021 14:11:27 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id F0B5B3F328;
-        Mon, 20 Sep 2021 18:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632161362;
-        bh=1MOw3pBn5yZn8i9TpCdyOmpabZHlCyzS2R0H6XOTRXI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=cVCLcvTM2TVoMt16SXlVJ71+YWdYtMotLXo0nRN7RYm++zX6WyllppDB/mzX4YSvv
-         iY/oW26nPG3lA2FiQMr+Rwj1GsQqw8EP+/aUWT6wFjRzVS9VRfkGCGN9/BJ373g/+n
-         mp2/uv+wQ/l3kmXH+2bKwpkt5XhNVDawgPJDzOsiPiU8aOBvBFfokch693AfrFnCxa
-         TfYwfLIMMncYel61/1CNJ9CvZwoOS5IYojZz/H+OGyO/Dc1HrHZjLTZRuL7rSRRroC
-         nnIBD7Mn6zV+Zw+ocFh5Q9mKPLUdXisCkcYa2mKxbSgSLBOO2w6h4uQZ3TrOTbfugp
-         MGyjCRNxGTQrw==
-From:   Colin King <colin.king@canonical.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        linux-hwmon@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] hwmon: (mlxreg-fan): Fix out of bounds read on array fan->pwm
-Date:   Mon, 20 Sep 2021 19:09:21 +0100
-Message-Id: <20210920180921.16246-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1108121E01;
+        Mon, 20 Sep 2021 18:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632161398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yj+rn7X7blaGJxKz6YARrP61pm4Y5j/vfBu3FSYFlDA=;
+        b=qlehDK0CFFKnSnsii0H5002strjfvg/tJ9yr9Tlkpkwdvxv9Np/26+7aQvfmjvZ/f9kgOX
+        DplAYbk5REraP/V+Ok0WeqY/SG46eO8MnmcRCksvswS4NoPhRzQ0bLuC6WvsEgRoT8RfSe
+        wtlBzJtUDVCcAZBBkbpzKVbVXDL4wMo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E09E713AE9;
+        Mon, 20 Sep 2021 18:09:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id vHXFNXXOSGHAcgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 20 Sep 2021 18:09:57 +0000
+Date:   Mon, 20 Sep 2021 20:09:56 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        lizefan.x@bytedance.com, tj@kernel.org
+Subject: Re: KCSAN: data-race in cgroup_rstat_flush_locked /
+ cgroup_rstat_updated
+Message-ID: <20210920180956.GA15043@blackbody.suse.cz>
+References: <CACkBjsbPVdkub=e-E-p1WBOLxS515ith-53SFdmFHWV_QMo40w@mail.gmail.com>
+ <20210917164123.GA13346@blackbody.suse.cz>
+ <CACkBjsZnp8Kf26tR3anbcLQNiMJ9=bqYMJ66tKBvXO6tkV3qyw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACkBjsZnp8Kf26tR3anbcLQNiMJ9=bqYMJ66tKBvXO6tkV3qyw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Sat, Sep 18, 2021 at 09:27:08AM +0800, Hao Sun <sunhao.th@gmail.com> wrote:
+> Would it be better to add a `data_race` macro to the corresponding
+> location so that the false report can be disabled?
 
-Array fan->pwm[] is MLXREG_FAN_MAX_PWM elements in size, however the
-for-loop has a off-by-one error causing index i to be out of range
-causing an out of bounds read on the array. Fix this by replacing
-the <= operator with < in the for-loop.
+Something like this
 
-Addresses-Coverity: ("Out-of-bounds read")
-Fixes: 35edbaab3bbf ("hwmon: (mlxreg-fan) Extend driver to support multiply cooling devices")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/hwmon/mlxreg-fan.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -35,7 +35,7 @@ void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
+         * instead of NULL, we can tell whether @cgrp is on the list by
+         * testing the next pointer for NULL.
+         */
+-       if (cgroup_rstat_cpu(cgrp, cpu)->updated_next)
++       if (data_race(cgroup_rstat_cpu(cgrp, cpu)->updated_next))
+                return;
 
-diff --git a/drivers/hwmon/mlxreg-fan.c b/drivers/hwmon/mlxreg-fan.c
-index 35228ed112d7..feab9ec6a6ca 100644
---- a/drivers/hwmon/mlxreg-fan.c
-+++ b/drivers/hwmon/mlxreg-fan.c
-@@ -554,7 +554,7 @@ static int mlxreg_fan_cooling_config(struct device *dev, struct mlxreg_fan *fan)
- {
- 	int i, j;
- 
--	for (i = 0; i <= MLXREG_FAN_MAX_PWM; i++) {
-+	for (i = 0; i < MLXREG_FAN_MAX_PWM; i++) {
- 		struct mlxreg_fan_pwm *pwm = &fan->pwm[i];
- 
- 		if (!pwm->connected)
--- 
-2.32.0
+        raw_spin_lock_irqsave(cpu_lock, flags);
+?
 
+Makes sense to me. Will you send a patch (if this resolves your KCSAN
+noise)?
+
+(IIUC, this becase more visible after commit aa48e47e3906 ("memcg:
+infrastructure to flush memcg stats") v5.15-rc1 but it was present since
+d8ef4b38cb69 ("Revert "cgroup: Add memory barriers to plug
+cgroup_rstat_updated() race window"") v5.7.)
+
+> See https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt#n58
+> for more details.
+
+(Interesting, learning...)
+
+Thanks,
+Michal
