@@ -2,74 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481F7411803
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BFD411809
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241427AbhITPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:20:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241390AbhITPU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:20:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7FE161077;
-        Mon, 20 Sep 2021 15:18:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632151139;
-        bh=hMqD6PGf8FCPLkuwccE6s/NEp0UTku+p7fu9eNxoeKs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=mD15+EK6ElnKTqCJSIZvB/+ThwMyeQH1d/qhx3ONsRTa4mvHnE7MlwDYOryDPYbeO
-         gWNZGw7+khxdrccdIgJzpPGZEhNfpR8DqnsqK08Z8ffENAvi37Trobs2i1RcAGBN1D
-         qeD9Sea3HNPW5C/GPQuqpeKVtud40gsihp5K2d4ijX+0nC06k6GROHXKXO0j9QzpAr
-         Sir6OFBDFBu7las8I/dHU2b6YFp9y7gUORcDmazMPy3J7cSFlNd7cQZRVyYOqBgeR5
-         wup2sATMX5WnQCxoJhZ0sH257nQALMce9l6Z8SVyKdqd/qYH6qjHeeWtZ+/UcZ5GvO
-         dzj8l6VavtoxQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     SeongJae Park <sjpark@amazon.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/damon: fix stringop-overread warning in kunit test
-Date:   Mon, 20 Sep 2021 15:18:50 +0000
-Message-Id: <20210920151850.4433-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210920100132.1390409-1-arnd@kernel.org>
+        id S241464AbhITPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241409AbhITPU5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 11:20:57 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC53AC061768;
+        Mon, 20 Sep 2021 08:19:24 -0700 (PDT)
+Received: from [IPv6:2a02:810a:880:f54:34ca:272f:b5af:bab9] (unknown [IPv6:2a02:810a:880:f54:34ca:272f:b5af:bab9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D30571F42F71;
+        Mon, 20 Sep 2021 16:19:21 +0100 (BST)
+Subject: Re: [PATCH v3] media: mtk-vpu: Ensure alignment of 8 for DTCM buffer
+To:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Alexandre Courbot <acourbot@chromium.org>, kernel@collabora.com,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        dafna3@gmail.com, mchehab@kernel.org, tfiga@chromium.org,
+        minghsiu.tsai@mediatek.com, houlong.wei@mediatek.com,
+        andrew-ct.chen@mediatek.com, tiffany.lin@mediatek.com,
+        matthias.bgg@gmail.com, courbot@chromium.org, hsinyi@chromium.org,
+        eizan@chromium.org
+References: <20210825101717.18075-1-dafna.hirschfeld@collabora.com>
+ <c1712278-8d18-2958-853b-09e5097ddce7@xs4all.nl>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <8c8336ff-57aa-dac8-d4ef-5d1dd120b2db@collabora.com>
+Date:   Mon, 20 Sep 2021 17:19:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <c1712278-8d18-2958-853b-09e5097ddce7@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 12:01:23 +0200 Arnd Bergmann <arnd@kernel.org> wrote:
 
-> From: Arnd Bergmann <arnd@arndb.de>
+
+On 01.09.21 10:50, Hans Verkuil wrote:
+> On 25/08/2021 12:17, Dafna Hirschfeld wrote:
+>> From: Alexandre Courbot <acourbot@chromium.org>
+>>
+>> When running memcpy_toio:
+>> memcpy_toio(send_obj->share_buf, buf, len);
+>> it was found that errors appear if len is not a multiple of 8:
+>>
+>> [58.350841] mtk-mdp 14001000.rdma: processing failed: -22
+>>
+>> This patch ensures the copy of a multile of 8 size by calling
 > 
-> gcc-11 points out that strnlen() with a fixed length on a constant
-> input makes no sense:
+> multile -> multiple
 > 
-> In file included from mm/damon/dbgfs.c:623:
-> mm/damon/dbgfs-test.h: In function 'damon_dbgfs_test_str_to_target_ids':
-> mm/damon/dbgfs-test.h:23:47: error: 'strnlen' specified bound 128 exceeds source size 4 [-Werror=stringop-overread]
->    23 |         answers = str_to_target_ids(question, strnlen(question, 128),
->       |                                               ^~~~~~~~~~~~~~~~~~~~~~
-> mm/damon/dbgfs-test.h:30:47: error: 'strnlen' specified bound 128 exceeds source size 7 [-Werror=stringop-overread]
->    30 |         answers = str_to_target_ids(question, strnlen(question, 128),
->       |                                               ^~~~~~~~~~~~~~~~~~~~~~
-> mm/damon/dbgfs-test.h:37:47: error: 'strnlen' specified bound 128 exceeds source size 5 [-Werror=stringop-overread]
->    37 |         answers = str_to_target_ids(question, strnlen(question, 128),
->       |                                               ^~~~~~~~~~~~~~~~~~~~~~
+>> round_up(len, 8) when copying
+>>
+>> Fixes: e6599adfad30 ("media: mtk-vpu: avoid unaligned access to DTCM buffer.")
+>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> ---
+>> changes since v2:
+>> 1. do the extra copy only if len is not multiple of 8
+>>
+>> changes since v1:
+>> 1. change sign-off-by tags
+>> 2. change values to memset
+>>
+>>   drivers/media/platform/mtk-vpu/mtk_vpu.c | 11 ++++++++++-
+>>   1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+>> index ec290dde59cf..658161ee3e4e 100644
+>> --- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
+>> +++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+>> @@ -349,7 +349,16 @@ int vpu_ipi_send(struct platform_device *pdev,
+>>   		}
+>>   	} while (vpu_cfg_readl(vpu, HOST_TO_VPU));
+>>   
+>> -	memcpy_toio(send_obj->share_buf, buf, len);
+>> +	if (len % 8 != 0) {
 > 
-> Use a plain strlen() instead.
+> You need to add a comment here explaining why this is done (basically what
+> you also say in the commit log).
 > 
-> Fixes: 17ccae8bb5c9 ("mm/damon: add kunit tests")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Otherwise people would have to dig into the git log to figure out why this
+> code is the way it is.
+> 
+> Is len often not a multiple of 8? If that's the case, then it might be easier
+> to just always do the memset/memcpy.
 
-Thank you for the patch!  However, a same change has already merged[1] in -mm.
-Sorry for that.
+I wrote a program that prints the sizes of all possible messages: http://ix.io/3zsr
+compiling it to arm64 gives:
 
-[1] https://lore.kernel.org/mm-commits/20210915033531.IdrhacHQk%25akpm@linux-foundation.org/
+sizeof(mdp_ipi_comm) is 24
+sizeof(mdp_ipi_init) is 16
 
+sizeof(venc_ap_ipi_msg_deinit) is 8
+sizeof(venc_ap_ipi_msg_enc_ext) is 164
+sizeof(venc_ap_ipi_msg_enc) is 32
+sizeof(venc_ap_ipi_msg_set_param_ext) is 144
+sizeof(venc_ap_ipi_msg_set_param) is 48
+sizeof(venc_ap_ipi_msg_init) is 16
 
-Thanks,
-SJ
+sizeof(vdec_ap_ipi_cmd) is 8
+sizeof(vdec_ap_ipi_init) is 16
+sizeof(vdec_ap_ipi_dec_start) is 24
 
-[...]
+BUT, when printing the size in the kernel I got "sizeof(mdp_ipi_comm) = 20" and found out
+that this is due to the macro #pragma pack(push, 4) in mtk_mdp_ipi.h
+
+so for mdp it makes sens to always do the memset/memcpy but for mtk-vcodec it is not necessary.
+In addition, if the message is one of 'venc_ap_ipi_msg_enc_ext' or 'venc_ap_ipi_msg_set_param_ext' then vpu_ipi_send
+will fail in the beginning of the function since in those cases we have 'len > sizeof(send_obj->share_buf)'.
+so I should send a patch that set SHARE_BUF_SIZE to e.g. 200
+
+I also found out that adding #pragma pack(push, 4) to the definitions of the mtk-vcodec messages has no influence but
+maybe this should be added since we copy those messages to hw , so might avoid future bugs.
+
+thanks,
+Dafna
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
+>> +		unsigned char data[SHARE_BUF_SIZE];
+>> +
+>> +		memset(data + len, 0, sizeof(data) - len);
+>> +		memcpy(data, buf, len);
+>> +		memcpy_toio(send_obj->share_buf, data, round_up(len, 8));
+>> +	} else {
+>> +		memcpy_toio(send_obj->share_buf, buf, len);
+>> +	}
+>> +
+>>   	writel(len, &send_obj->len);
+>>   	writel(id, &send_obj->id);
+>>   
+>>
+> 
