@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130BB411D6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7541411A71
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346827AbhITRUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47490 "EHLO mail.kernel.org"
+        id S243988AbhITQty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:49:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344921AbhITRRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:17:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE2EB61A3A;
-        Mon, 20 Sep 2021 16:59:29 +0000 (UTC)
+        id S243993AbhITQs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E20761352;
+        Mon, 20 Sep 2021 16:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157170;
-        bh=+IRgp8iJ9xtJxrBbNWlDkuTlgYynfQ71jkcBitNje1g=;
+        s=korg; t=1632156443;
+        bh=wPiuuRs1GwINMb4+sI5mglAP/2anBVTtPw4O64CAFsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fBFs70lXzDPoSgZRs/1dj+WqLQzcjQGM4SbseH9IhqltXs0SmN1KgBnTSbAeAk7Ob
-         ze5S+3XkueBolkuHQdpIvGRLRfVYvtLbUL93EJ1+V30lflHSxPxvD1bnGYyuY3pZVf
-         Mco7buzZY8S5wCdo/G/ZIXknXUKasRNhPygBO0nk=
+        b=EBYK7uAZEqeJgZFppkLhVdgfYTEwx23dvC2OZGf86dD9TmGWlUDMx50rJ+ujxqRA6
+         KbjIW98p/JptO7Ty7pseslT6zj5NC4icQ/wCcjyoq5KrZY21yvlmN703YrTDfpROlD
+         v6+rzQAGceuHsZOLxaprdOI9Pb67E4VtH0WHMRG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Sean Anderson <sean.anderson@seco.com>,
+        Richard Weinberger <richard@nod.at>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 086/217] bcma: Fix memory leak for internally-handled cores
+Subject: [PATCH 4.4 029/133] crypto: mxs-dcp - Check for DMA mapping errors
 Date:   Mon, 20 Sep 2021 18:41:47 +0200
-Message-Id: <20210920163927.551359062@linuxfoundation.org>
+Message-Id: <20210920163913.571898573@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +41,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Sean Anderson <sean.anderson@seco.com>
 
-[ Upstream commit b63aed3ff195130fef12e0af590f4838cf0201d8 ]
+[ Upstream commit df6313d707e575a679ada3313358289af24454c0 ]
 
-kmemleak reported that dev_name() of internally-handled cores were leaked
-on driver unbinding. Let's use device_initialize() to take refcounts for
-them and put_device() to properly free the related stuff.
+After calling dma_map_single(), we must also call dma_mapping_error().
+This fixes the following warning when compiling with CONFIG_DMA_API_DEBUG:
 
-While looking at it, there's another potential issue for those which should
-be *registered* into driver core. If device_register() failed, we put
-device once and freed bcma_device structures. In bcma_unregister_cores(),
-they're treated as unregistered and we hit both UAF and double-free. That
-smells not good and has also been fixed now.
+[  311.241478] WARNING: CPU: 0 PID: 428 at kernel/dma/debug.c:1027 check_unmap+0x79c/0x96c
+[  311.249547] DMA-API: mxs-dcp 2280000.crypto: device driver failed to check map error[device address=0x00000000860cb080] [size=32 bytes] [mapped as single]
 
-Fixes: ab54bc8460b5 ("bcma: fill core details for every device")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210727025232.663-2-yuzenghui@huawei.com
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bcma/main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/mxs-dcp.c | 45 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 35 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
-index e6986c7608f1..b1783f5b5cb5 100644
---- a/drivers/bcma/main.c
-+++ b/drivers/bcma/main.c
-@@ -236,6 +236,7 @@ EXPORT_SYMBOL(bcma_core_irq);
+diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
+index 1a8dc76e117e..c94db361138d 100644
+--- a/drivers/crypto/mxs-dcp.c
++++ b/drivers/crypto/mxs-dcp.c
+@@ -167,15 +167,19 @@ static struct dcp *global_sdcp;
  
- void bcma_prepare_core(struct bcma_bus *bus, struct bcma_device *core)
+ static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
  {
-+	device_initialize(&core->dev);
- 	core->dev.release = bcma_release_core_dev;
- 	core->dev.bus = &bcma_bus_type;
- 	dev_set_name(&core->dev, "bcma%d:%d", bus->num, core->core_index);
-@@ -299,11 +300,10 @@ static void bcma_register_core(struct bcma_bus *bus, struct bcma_device *core)
- {
- 	int err;
++	int dma_err;
+ 	struct dcp *sdcp = global_sdcp;
+ 	const int chan = actx->chan;
+ 	uint32_t stat;
+ 	unsigned long ret;
+ 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
+-
+ 	dma_addr_t desc_phys = dma_map_single(sdcp->dev, desc, sizeof(*desc),
+ 					      DMA_TO_DEVICE);
  
--	err = device_register(&core->dev);
-+	err = device_add(&core->dev);
- 	if (err) {
- 		bcma_err(bus, "Could not register dev for core 0x%03X\n",
- 			 core->id.id);
--		put_device(&core->dev);
- 		return;
- 	}
- 	core->dev_registered = true;
-@@ -394,7 +394,7 @@ void bcma_unregister_cores(struct bcma_bus *bus)
- 	/* Now noone uses internally-handled cores, we can free them */
- 	list_for_each_entry_safe(core, tmp, &bus->cores, list) {
- 		list_del(&core->list);
--		kfree(core);
-+		put_device(&core->dev);
- 	}
++	dma_err = dma_mapping_error(sdcp->dev, desc_phys);
++	if (dma_err)
++		return dma_err;
++
+ 	reinit_completion(&sdcp->completion[chan]);
+ 
+ 	/* Clear status register. */
+@@ -213,18 +217,29 @@ static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
+ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
+ 			   struct ablkcipher_request *req, int init)
+ {
++	dma_addr_t key_phys, src_phys, dst_phys;
+ 	struct dcp *sdcp = global_sdcp;
+ 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
+ 	struct dcp_aes_req_ctx *rctx = ablkcipher_request_ctx(req);
+ 	int ret;
+ 
+-	dma_addr_t key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
+-					     2 * AES_KEYSIZE_128,
+-					     DMA_TO_DEVICE);
+-	dma_addr_t src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
+-					     DCP_BUF_SZ, DMA_TO_DEVICE);
+-	dma_addr_t dst_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_out_buf,
+-					     DCP_BUF_SZ, DMA_FROM_DEVICE);
++	key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
++				  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
++	ret = dma_mapping_error(sdcp->dev, key_phys);
++	if (ret)
++		return ret;
++
++	src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
++				  DCP_BUF_SZ, DMA_TO_DEVICE);
++	ret = dma_mapping_error(sdcp->dev, src_phys);
++	if (ret)
++		goto err_src;
++
++	dst_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_out_buf,
++				  DCP_BUF_SZ, DMA_FROM_DEVICE);
++	ret = dma_mapping_error(sdcp->dev, dst_phys);
++	if (ret)
++		goto err_dst;
+ 
+ 	if (actx->fill % AES_BLOCK_SIZE) {
+ 		dev_err(sdcp->dev, "Invalid block size!\n");
+@@ -262,10 +277,12 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
+ 	ret = mxs_dcp_start_dma(actx);
+ 
+ aes_done_run:
++	dma_unmap_single(sdcp->dev, dst_phys, DCP_BUF_SZ, DMA_FROM_DEVICE);
++err_dst:
++	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
++err_src:
+ 	dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
+ 			 DMA_TO_DEVICE);
+-	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
+-	dma_unmap_single(sdcp->dev, dst_phys, DCP_BUF_SZ, DMA_FROM_DEVICE);
+ 
+ 	return ret;
  }
+@@ -570,6 +587,10 @@ static int mxs_dcp_run_sha(struct ahash_request *req)
+ 	dma_addr_t buf_phys = dma_map_single(sdcp->dev, sdcp->coh->sha_in_buf,
+ 					     DCP_BUF_SZ, DMA_TO_DEVICE);
  
++	ret = dma_mapping_error(sdcp->dev, buf_phys);
++	if (ret)
++		return ret;
++
+ 	/* Fill in the DMA descriptor. */
+ 	desc->control0 = MXS_DCP_CONTROL0_DECR_SEMAPHORE |
+ 		    MXS_DCP_CONTROL0_INTERRUPT |
+@@ -602,6 +623,10 @@ static int mxs_dcp_run_sha(struct ahash_request *req)
+ 	if (rctx->fini) {
+ 		digest_phys = dma_map_single(sdcp->dev, sdcp->coh->sha_out_buf,
+ 					     DCP_SHA_PAY_SZ, DMA_FROM_DEVICE);
++		ret = dma_mapping_error(sdcp->dev, digest_phys);
++		if (ret)
++			goto done_run;
++
+ 		desc->control0 |= MXS_DCP_CONTROL0_HASH_TERM;
+ 		desc->payload = digest_phys;
+ 	}
 -- 
 2.30.2
 
