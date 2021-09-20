@@ -2,127 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609744115B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7454115B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239960AbhITN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:28:42 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34624
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240062AbhITN1a (ORCPT
+        id S240030AbhITN3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:29:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35366 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236329AbhITN3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:27:30 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9E8A73F320
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632144362;
-        bh=vJToJAd3e7XitzB+9QvxgrvOdQZu/cSSC1UlIYS41NQ=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=UG4VMLXiQwYBokcSCxAmyIBJgEdC2bsVwIIsX5qzfg22GLR8K5kxjtyrre8wmpqgc
-         1L8v4/1126STgfVd4Ehqg2yp8HaPE2p9RbTUVYVqQS6nssCBAASpl2wlLikXfJmFoV
-         MUhGRuxUO2XYH/Z8sgHM/pZApd6OlnyTAoik5Yz/lLosp8TDp+xVHFxeO4eCbDMlkf
-         6SRmn1ODduxN0mtDwp6k4z/3JpUodDjxCW5I+v14Tz7tTZrB682FOwbwgxxNgbgOgo
-         oLK/deo5iL/dNVid86ahz1QPOAvj3Xau/c+jF4pAuxfrgJ7oMYheru00elFTIkxVDJ
-         TNj7Smbu7c/DA==
-Received: by mail-wr1-f70.google.com with SMTP id x2-20020a5d54c2000000b0015dfd2b4e34so6069074wrv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:26:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vJToJAd3e7XitzB+9QvxgrvOdQZu/cSSC1UlIYS41NQ=;
-        b=TLIOLAM6i71+W9IG8+H6UuCNU/wo30YdB31BM0f7uzQU/jfKkJe93pubXDtFqKfKJJ
-         oQmGaWdhSNbxU0w1HcO4/k0aIhW2vdvonwk64+Tg8H0Fof+Mr0c658/KdvOF8FGErhIv
-         V/ePy5LhuxuRHR9Wo/StBEqCYP6zrRBQLsP0qY0WABppMSuf3F0jUcmsdN5FEIjIBmLt
-         xWVafROOAzEdRPl1ahGT4aT/YGLe4n4/6aQb0oFmaP0vIVGndT42KDeiFdukdfdet8fv
-         mWV4nBEkDq2IBlrP8HNuuNC1DZDRs7PuJBPsZkF389I71euB4DL6l4tTRkeWMkeDKxx7
-         ayZg==
-X-Gm-Message-State: AOAM533iuBi+d23+9nW2ipB+fEiLQNs3CV1igj5Cb518UYPbFm8wipXu
-        kxpWJKs5ibgVRq2gcqDIe3ZDUs76IxWtKEYf5uTiO3jX5auOSQs9FhGeN7QtFmVzMG+haUxQ7wv
-        O2QRhPhKdqtiN+BQon9ElVhcPYTeqW4sQuwu8D+gKyQ==
-X-Received: by 2002:a05:6000:1287:: with SMTP id f7mr29033677wrx.221.1632144362275;
-        Mon, 20 Sep 2021 06:26:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymf7l0CKsN1xSthBcoxGq3X4DmkxIw9o+QPMTz1O6EvUcCymMCo5tuwGlI5/sIFl5hOJNaIQ==
-X-Received: by 2002:a05:6000:1287:: with SMTP id f7mr29033647wrx.221.1632144362053;
-        Mon, 20 Sep 2021 06:26:02 -0700 (PDT)
-Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id y9sm23062787wmj.36.2021.09.20.06.26.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 06:26:01 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] dt-bindings: riscv: correct e51 and u54-mc CPU bindings
-Date:   Mon, 20 Sep 2021 15:25:59 +0200
-Message-Id: <20210920132559.151678-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 20 Sep 2021 09:29:22 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD7wN024097;
+        Mon, 20 Sep 2021 09:27:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=U7cmcijDA1vNzgXHEI3npVm3DS1EdsroG6ZTmXPrYJY=;
+ b=RJ6jIXbk/+7kl5zb/i4F2MDCokka5vKNUjVo6y42PcZYg+5YVtBzr6eOwpzGk0yui8Bu
+ H6ELeQfQGXzsY1D75vELW8ufqhfBHpUfs2KXY3jIhrQYCLXeBbfHXHkN3gGrukwskch6
+ StDpJko7PCLVlS6sTQdb9iIkGXOLeK+P8vfFnOq2jQFQe+Jz7BHHQRjtfOd5y3bQMiUo
+ IAKX0KcwHfxmytkQVvQqIiXaxbzl521gk+CLAnpXg6xHYe3ivN3SZtg53Dwvnu8WqHVe
+ h5Roun6Kcvdypyj54bKqN2oiGTaf/vemDjQR3bzFpltL1/Ep2HtKzsiYtaAMEz+y0sDr Tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w69a0a5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:27:54 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18KDDKRj027950;
+        Mon, 20 Sep 2021 09:27:54 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w69a09a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:27:54 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD6nJ031008;
+        Mon, 20 Sep 2021 13:27:51 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3b57cj87jy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 13:27:51 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18KDN5d561866464
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 13:23:05 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5CB7342041;
+        Mon, 20 Sep 2021 13:27:48 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E3C24204D;
+        Mon, 20 Sep 2021 13:27:47 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.4.199])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 20 Sep 2021 13:27:47 +0000 (GMT)
+Date:   Mon, 20 Sep 2021 15:27:44 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bfu@redhat.com,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
+Message-ID: <20210920152744.55af1201.pasic@linux.ibm.com>
+In-Reply-To: <875yuvh73k.fsf@redhat.com>
+References: <20210915215742.1793314-1-pasic@linux.ibm.com>
+        <87pmt8hp5o.fsf@redhat.com>
+        <20210916151835.4ab512b2.pasic@linux.ibm.com>
+        <87mtobh9xn.fsf@redhat.com>
+        <20210920003935.1369f9fe.pasic@linux.ibm.com>
+        <875yuvh73k.fsf@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4eHUpD-siLTy7unl_x02mAm-wE0tsff9
+X-Proofpoint-ORIG-GUID: FPpECGWfhLUor-LoVx62bmLIqey1yVpV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109200084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All existing boards with sifive,e51 and sifive,u54-mc use it on top of
-sifive,rocket0 compatible:
+On Mon, 20 Sep 2021 12:30:39 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: cpu@0: compatible: 'oneOf' conditional failed, one must be fixed:
-    ['sifive,e51', 'sifive,rocket0', 'riscv'] is too long
-    Additional items are not allowed ('riscv' was unexpected)
-    Additional items are not allowed ('sifive,rocket0', 'riscv' were unexpected)
-    'riscv' was expected
+> On Mon, Sep 20 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+[..]
+> 
+> Basically, the vcdev is supposed to be around while the ccw device is
+> online (with a tail end until references have been given up, of course.)
+> It embeds a virtio device that has the ccw device as a parent, which
+> will give us a reference on the ccw device as long as the virtio device
+> is alive. Any interactions with the ccw device (except freeing the dma
+> buffer) are limited to the time where we still have a reference to it
+> via the virtio device.
+>
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+I didn't remember that device_add() takes a reference to the parent, and
+that device_del() before device_put(dev) and remove callback.
 
----
 
-Hi Rob,
+> >  
+> >>   
+> >> > So my intuition tells me that
+> >> > drivers should manage explicitly. Yes virtio_ccw happens to have dma
+> >> > memory whose lifetime is more or less the lifetime of struct virtio_ccw,
+> >> > but that may not be always the case.    
+> >> 
+> >> I'm not sure what you're getting at here. Regardless of the lifetime of
+> >> the dma memory, it depends on the presence of the ccw device to which it
+> >> is tied. This means that the ccw device must not be released while the
+> >> dma memory is alive. We can use the approach in your patch here due to
+> >> the lifetime of the dma memory that virtio-ccw allocates when we start
+> >> using the device and frees when we stop using the device, or we can use
+> >> get/put with every allocate/release dma memory pair, which should be
+> >> safe for everyone?
+> >>   
+> >
+> > What I mean is that ccw_device_dma_[zalloc,free]() take a pointer to the
+> > ccw_device. If we get/put in those we can ensure that, provided the
+> > alloc and the free calls are properly paired, the device will be still
+> > alive (and the pointer valid) for the free, if it was valid for the
+> > alloc. But it does not ensure that each and every call to alloc is with
+> > a valid pointer, or that other uses of the pointer are OK. So I don't
+> > think it is completely safe for everyone, because we could try to use
+> > a pointer to a ccw device when not having any dma memory allocated from
+> > its pool.  
+> 
+> But the problem is the dma memory, right? Also, it is the same issue for
+> any potential caller of the ccw_device_dma_* interfaces.
 
-You previously acked this patch but I think it will be easier if you
-take it directly.
+I tend to agree, my argument was based on the assumption that we did not
+use to take a reference to the ccw device in virtio_ccw_online(), but we
+do via register_virtio_device(). This reference however gets dropped
+right before virtio_ccw_release_dev() is called.
+> 
+> >
+> > This patch takes reference to cdev before the pointer is published via
+> > vcdev->cdev and drops the reference after *vcdev is freed. The idea is
+> > that the pointee basically outlives the pointer. (Without having a full
+> > understanding of how things are synchronized).  
+> 
+> I don't think we have to care about accessing ->cdev (see above.) Plus,
+> as we give up the dma memory at the very last point, we would also give
+> up the reference via that memory at the very last point, so I'm not sure
+> what additional problems could come up.
 
-Best regards,
-Krzysztof
----
- Documentation/devicetree/bindings/riscv/cpus.yaml | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+I understand now. Let me think about it some more. I'm wonderning about
+leafs. Will come back at you shortly.
 
-diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-index e534f6a7cfa1..aa5fb64d57eb 100644
---- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-+++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-@@ -31,9 +31,7 @@ properties:
-               - sifive,bullet0
-               - sifive,e5
-               - sifive,e7
--              - sifive,e51
-               - sifive,e71
--              - sifive,u54-mc
-               - sifive,u74-mc
-               - sifive,u54
-               - sifive,u74
-@@ -41,6 +39,12 @@ properties:
-               - sifive,u7
-               - canaan,k210
-           - const: riscv
-+      - items:
-+          - enum:
-+              - sifive,e51
-+              - sifive,u54-mc
-+          - const: sifive,rocket0
-+          - const: riscv
-       - const: riscv    # Simulator only
-     description:
-       Identifies that the hart uses the RISC-V instruction set
--- 
-2.30.2
-
+Regards,
+Halil
