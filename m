@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986244120AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3F9411DB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245711AbhITR4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51552 "EHLO mail.kernel.org"
+        id S1349339AbhITRWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349954AbhITRrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:47:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3AF761BF8;
-        Mon, 20 Sep 2021 17:10:52 +0000 (UTC)
+        id S1348825AbhITRU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:20:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15C46613E6;
+        Mon, 20 Sep 2021 17:00:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157853;
-        bh=9h41mFxz0626vf/nEKyIu3sMD2Lt/DduFtVl6r+vMnA=;
+        s=korg; t=1632157233;
+        bh=e7iKw00Iyzn8j8D3IFC/qqlpaK67JS53s9qBptL+f20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mznBEhZOEMY4nRCeebeDOhP+o1+ew/f3tzIgck1tn0leaAFmbYGZWGgVVqiq3PZAz
-         /szPiDb4fhRp3Swc5aPuf3vSEpwB1enmJSW5UbbuEPcn3bwt1ttKd2ugjYZXYJH6Lj
-         cCMw8LT/XgXq8AerCjLlOaDFYI+q00NwBxsTI+ZU=
+        b=2kk+fNfenfNKttyjwaU9aDfDbPIDomwYnwTdXauq2tI+sA3qCaxC4E/uMNM4/TJtN
+         XnqOcRu+AG01Xk9XagMKxjuxFIqSKyBb7cj2sQZLjOKuJbsEmHl2bkUQXOZp4Cgrxt
+         SnECONwpuHXxrELUBDtMlhQJJGKaSTyAv4CSQONk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 174/293] PCI: Use pci_update_current_state() in pci_enable_device_flags()
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        David Heidelberg <david@ixit.cz>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.14 115/217] ARM: 9105/1: atags_to_fdt: dont warn about stack size
 Date:   Mon, 20 Sep 2021 18:42:16 +0200
-Message-Id: <20210920163939.238988278@linuxfoundation.org>
+Message-Id: <20210920163928.549909568@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: David Heidelberg <david@ixit.cz>
 
-[ Upstream commit 14858dcc3b3587f4bb5c48e130ee7d68fc2b0a29 ]
+commit b30d0289de72c62516df03fdad8d53f552c69839 upstream.
 
-Updating the current_state field of struct pci_dev the way it is done
-in pci_enable_device_flags() before calling do_pci_enable_device() may
-not work.  For example, if the given PCI device depends on an ACPI
-power resource whose _STA method initially returns 0 ("off"), but the
-config space of the PCI device is accessible and the power state
-retrieved from the PCI_PM_CTRL register is D0, the current_state
-field in the struct pci_dev representing that device will get out of
-sync with the power.state of its ACPI companion object and that will
-lead to power management issues going forward.
+The merge_fdt_bootargs() function by definition consumes more than 1024
+bytes of stack because it has a 1024 byte command line on the stack,
+meaning that we always get a warning when building this file:
 
-To avoid such issues, make pci_enable_device_flags() call
-pci_update_current_state() which takes ACPI device power management
-into account, if present, to retrieve the current power state of the
-device.
+arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
+arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
-Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, as this is the decompressor and we know that it has a very shallow
+call chain, and we do not actually risk overflowing the kernel stack
+at runtime here.
+
+This just shuts up the warning by disabling the warning flag for this
+file.
+
+Tested on Nexus 7 2012 builds.
+
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pci.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ arch/arm/boot/compressed/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 1a78bf39ee9a..077cc0512dd2 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1591,11 +1591,7 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
- 	 * so that things like MSI message writing will behave as expected
- 	 * (e.g. if the device really is in D0 at enable time).
- 	 */
--	if (dev->pm_cap) {
--		u16 pmcsr;
--		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
--		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
--	}
-+	pci_update_current_state(dev, dev->current_state);
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -87,6 +87,8 @@ $(addprefix $(obj)/,$(libfdt_objs) atags
+ 	$(addprefix $(obj)/,$(libfdt_hdrs))
  
- 	if (atomic_inc_return(&dev->enable_cnt) > 1)
- 		return 0;		/* already enabled */
--- 
-2.30.2
-
+ ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
++CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
++CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
+ OBJS	+= $(libfdt_objs) atags_to_fdt.o
+ endif
+ 
 
 
