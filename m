@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EDB411074
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7437411086
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbhITHsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:48:52 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:48275 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229839AbhITHsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:48:51 -0400
-Received: from localhost.localdomain (ip5f5aef72.dynamic.kabel-deutschland.de [95.90.239.114])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 6ED0F61E5FE00;
-        Mon, 20 Sep 2021 09:47:22 +0200 (CEST)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH v2] lib/zlib_inflate/inffast: Check config in C to avoid unused function warning
-Date:   Mon, 20 Sep 2021 09:46:33 +0200
-Message-Id: <20210920074633.13089-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.33.0
+        id S235301AbhITHxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:53:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235359AbhITHwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 03:52:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66B8960FF2;
+        Mon, 20 Sep 2021 07:51:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632124280;
+        bh=zjM/MTscwltcL8YCPcuFkxfuK+EJqGaD1Adm0/N+pVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J6IrkpNH65oVZIUchWF2GQ3UYDTZyp7+n+xPusCB8Y0eMGeW+AHOgawO6RWvtOpnA
+         m31r41ki8xRawaz9hDN/L/i535w+l9mkPJlm6DLQT36M912LI+Y/vyQX6CCCakxnSa
+         fYSzB1x4uDWRM5/6AG5yUlGD7jk81iRwhAPa1hBc=
+Date:   Mon, 20 Sep 2021 09:51:18 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jeya R <jeyr@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH] misc: fastrpc: Update number of max fastrpc sessions
+Message-ID: <YUg9dmThHg9s8XAy@kroah.com>
+References: <1632123274-32054-1-git-send-email-jeyr@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1632123274-32054-1-git-send-email-jeyr@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
-shows the warning below.
+On Mon, Sep 20, 2021 at 01:04:34PM +0530, Jeya R wrote:
+> For latest chipsets, upto 13 fastrpc sessions can be
+> supported. This includes 12 compute sessions and 1 cpz
+> session. Not updating this might result to out of bounds
+> memory access issues if more than 9 context bank nodes
+> are added to the DT file.
+> 
+> Signed-off-by: Jeya R <jeyr@codeaurora.org>
+> ---
+>  drivers/misc/fastrpc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> index beda610..bd7811e 100644
+> --- a/drivers/misc/fastrpc.c
+> +++ b/drivers/misc/fastrpc.c
+> @@ -24,7 +24,7 @@
+>  #define SDSP_DOMAIN_ID (2)
+>  #define CDSP_DOMAIN_ID (3)
+>  #define FASTRPC_DEV_MAX		4 /* adsp, mdsp, slpi, cdsp*/
+> -#define FASTRPC_MAX_SESSIONS	9 /*8 compute, 1 cpz*/
+> +#define FASTRPC_MAX_SESSIONS	13 /*12 compute, 1 cpz*/
+>  #define FASTRPC_ALIGN		128
+>  #define FASTRPC_MAX_FDLIST	16
+>  #define FASTRPC_MAX_CRCLIST	64
+> -- 
+> 2.7.4
+> 
 
-    arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
-    get_unaligned16(const unsigned short *p)
-    ^
-    1 warning generated.
+What happens if you run this on "older" chipsets?
 
-Fix it, by moving the check from the preprocessor to C, so the compiler
-sees the use.
+And is this an issue now, or can this wait to 5.16-rc1?
 
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
- lib/zlib_inflate/inffast.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+thanks,
 
-diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
-index f19c4fbe1be7..fb87a3120f0f 100644
---- a/lib/zlib_inflate/inffast.c
-+++ b/lib/zlib_inflate/inffast.c
-@@ -254,11 +254,8 @@ void inflate_fast(z_streamp strm, unsigned start)
- 			sfrom = (unsigned short *)(from);
- 			loops = len >> 1;
- 			do
--#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
--			    *sout++ = *sfrom++;
--#else
--			    *sout++ = get_unaligned16(sfrom++);
--#endif
-+			    *sout++ = IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ?
-+				*sfrom++ : get_unaligned16(sfrom++);
- 			while (--loops);
- 			out = (unsigned char *)sout;
- 			from = (unsigned char *)sfrom;
--- 
-2.33.0
-
+greg k-h
