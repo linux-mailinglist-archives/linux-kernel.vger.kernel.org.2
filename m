@@ -2,185 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC64411F0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18558411F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346630AbhITRhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:37:08 -0400
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45929 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351638AbhITRef (ORCPT
+        id S244569AbhITRiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:38:12 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55442 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351892AbhITRgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:34:35 -0400
-Received: by mail-ot1-f49.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso24569598otv.12;
-        Mon, 20 Sep 2021 10:33:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/fnKawn3e+PlYXmYSKy1jDEJMKkz3oshJ3rc6YnaMw=;
-        b=uo1aYta0/my5D9xHjBDUZthBcj07VYM+k2Z5wC2RLO9SXtrQTQdNTIIL+pjXBRiUpX
-         dsO4SIZ0oJZibmxPIazgN1fNykjGh1zFN5kCOQTVChnUgLfh2YpA0DOrEE1jMX/pSwiz
-         qYdVfjte64vmO30vJLJj3t5spOiGdwpvITyu3vjdrlHdEUbBC0cRZnofadPGeQgig7Q2
-         trN6bKiIPA91MBit6k7yjULGJnzDD21kPpPk2EuFVCh24pZf9LJ6Yxm04FQGkF33/Re8
-         eI1KTfNsTFw+x1+ysdnIziwHmO7Al15k61HA1zhFnj34qFSFTBRiAtzPy4k/K+TGTGqg
-         PCYQ==
-X-Gm-Message-State: AOAM531eWmIJcwNYm46nw/IOrL5ycn9r+giz+18rKDzPsl0Fi4/h1+J7
-        2w08M6JlfYKhNNV+pjLciThobCXboIazIoi+vvg=
-X-Google-Smtp-Source: ABdhPJzJCYEFPitZMZzYluNMtLoOtNASKL6dUFfbGgBbEnA/TfjStj/Yb08kNaZPL2SgbMtzdMvOTkrcrIWJAA/2jzg=
-X-Received: by 2002:a9d:4d93:: with SMTP id u19mr22249291otk.86.1632159187086;
- Mon, 20 Sep 2021 10:33:07 -0700 (PDT)
+        Mon, 20 Sep 2021 13:36:03 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7FB6D1FD59;
+        Mon, 20 Sep 2021 17:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632159270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fcviXv9Vg3lihYydgrTXaFZRd5Ie7N10yUs37zQE7Eg=;
+        b=pLlaFHHB0xQ535CYbSGyPaRvnEGObFKDhtxRtgwiUNj74sY8IG00qnyqAQs2JpWle6hytg
+        cT+yWqJ4F1VaSel2sfWyjgJJa3B6X4Nd25ecGPly/D+YQ95m6fpJerAAfAl9xweMSNlNg6
+        C+EeTpOYjFSaT4sMPKvc6V68WLgvi+A=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4A70BA3E08;
+        Mon, 20 Sep 2021 17:34:30 +0000 (UTC)
+Date:   Mon, 20 Sep 2021 19:34:26 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
+Message-ID: <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
+References: <20210918233920.9174-1-sultan@kerneltoast.com>
+ <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
+ <YUiu42krQjSTVPnc@sultan-box.localdomain>
 MIME-Version: 1.0
-References: <20210910122820.26886-1-justin.he@arm.com> <20210910143223.6705-1-justin.he@arm.com>
- <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
- <20210916160827.GA4525@lpieralisi> <20210920170055.GA13861@lpieralisi>
-In-Reply-To: <20210920170055.GA13861@lpieralisi>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 20 Sep 2021 19:32:56 +0200
-Message-ID: <CAJZ5v0iee2j=NoPFpNstEZYJXWvFYfv22hK7QeH6+kdP6+MhLw@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to acpi_os_map_memory()"
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUiu42krQjSTVPnc@sultan-box.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 7:03 PM Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> wrote:
->
-> On Thu, Sep 16, 2021 at 05:08:27PM +0100, Lorenzo Pieralisi wrote:
-> > On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
-> > > On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
-> > > >
-> > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> > > >
-> > > > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > > > with call trace as follows:
-> > > >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> > > >  Modules linked in:
-> > > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> > > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
-> > > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > > [...snip...]
-> > > >  Call trace:
-> > > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> > > >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> > > >   acpi_ex_access_region+0x114/0x268
-> > > >   acpi_ex_field_datum_io+0x128/0x1b8
-> > > >   acpi_ex_extract_from_field+0x14c/0x2ac
-> > > >   acpi_ex_read_data_from_field+0x190/0x1b8
-> > > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> > > >   acpi_ex_resolve_to_value+0x250/0x274
-> > > >   acpi_ds_evaluate_name_path+0xac/0x124
-> > > >   acpi_ds_exec_end_op+0x90/0x410
-> > > >   acpi_ps_parse_loop+0x4ac/0x5d8
-> > > >   acpi_ps_parse_aml+0xe0/0x2c8
-> > > >   acpi_ps_execute_method+0x19c/0x1ac
-> > > >   acpi_ns_evaluate+0x1f8/0x26c
-> > > >   acpi_ns_init_one_device+0x104/0x140
-> > > >   acpi_ns_walk_namespace+0x158/0x1d0
-> > > >   acpi_ns_initialize_devices+0x194/0x218
-> > > >   acpi_initialize_objects+0x48/0x50
-> > > >   acpi_init+0xe0/0x498
-> > > >
-> > > > As mentioned by Lorenzo:
-> > > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> > > >   eMAG does not like at all and I'd need to understand why. It looks
-> > > >   like the issue happen in SystemMemory Opregion handler."
-> > > >
-> > > > Hence just revert it before everything is clear.
-> > > >
-> > >
-> > > Can we try to find the root cause first? -rc1 is not even out yet, and
-> > > reverting it now means we can not resubmit it until the next merge
-> > > window.
-> >
-> > I am waiting to debug this on an eMAG but I noticed something that
-> > I wanted to bring up.
-> >
-> > SystemMemory Operation region handler - ie
-> >
-> > acpi_ex_system_memory_space_handler()
-> >
-> > maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
-> > with acpi_os_map_memory() and I believe that's what is causing this
-> > bug.
-> >
-> > On the other hand, acpi_os_map_generic_address(), to handle spaceid
-> > ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
-> > in line with my expectations.
->
-> Hi Rafael,
->
-> I wanted to ask please if you have any insights on why
->
-> (1) acpi_ex_system_memory_space_handler()
-> (2) acpi_os_map_generic_address()
->
-> Use two different calls to map memory for the _same_ address space ID
-> (SystemMemory).
->
-> (3) acpi_os_map_memory()
-> vs
-> (4) acpi_os_map_iomem()
+On Mon 20-09-21 08:55:15, Sultan Alsawaf wrote:
+> On Mon, Sep 20, 2021 at 02:40:37PM +0200, Michal Hocko wrote:
+> > What is the actual problem you are trying to solve here.
+> 
+> There isn't any specific problem I'm trying to solve here; simply that, it
+> appeared as though you intended for the reaper thread to be freezable when it
+> actually isn't. The OOM killer is disabled after processes are frozen though so
+> I guess it could be considered a matter of consistency to freeze the reaper
+> thread too.
 
-I don't really have a good answer here.
+The intention and the scope of the patch should be in the changelog.
+Your Fixes tag suggests there is a problem to fixed.
+ 
+> Do you remember why you used wait_event_freezable()?
 
-On x86 this doesn't really matter and that's where
-acpi_ex_system_memory_space_handler() was first introduced.  It is not
-only used for IOMEM (there are SystemMemory operation regions in RAM),
-but since it may be in IOMEM, it should assume so.
+My memory has faded but I suspect it was to make sure that the oom
+reaper is not blocking the system wide freezing. The operation mode of
+the thread is to wait for oom victims and then do the unmapping without
+any blocking. While it can be frozen during the operation I do not
+remember that causing any problems and the waiting is exactly the point
+when that is obviously safe - hence wait_event_freezable which I believe
+is the proper API to use.
 
-> I am struggling to understand why (1) uses (3) ("memory semantics") when
-> (2) uses (4) - it is actually unclear how the distinction between
-> the two mapping APIs is to be drawn and on what basis one should
-> choose which one to use.
->
-> I am still waiting to grab some HW to debug this report but the issue
-> here is that we are mapping an OpRegion SystemMemory with (3) in the
-> memory space handler and given the patch we are reverting we end up
-> mapping the operation region with normal non-cacheable memory attributes
-> that probably the physical address range behind the OpRegion does not
-> support.
+> > Freezer details are hairy and I have to re-learn them each time again and
+> > again but from what I remember wait_event_freezable doesn't really depend on
+> > tyask being freezable. It tells the freezer that the task is OK to exclude
+> > while it is sleeping and that should be just the case for the oom reaper. Or
+> > am I missing something?
+> 
+> The task indeed doesn't need to be freezable, but the rest of what you remember
+> isn't quite true. It tells the freezer to exclude the task only because the task
+> will handle entering the freezer on its own. When a task sleeps on
+> wait_event_freezable(), it will be woken up when system-wide freezing starts,
+> and then it will try to freeze itself (see freezable_schedule() and
+> freezer_count()).
 
-If that is the case, there needs to be a mechanism to decide what kind
-of mapping to use for SystemMemory operation regions based on the type
-of physical memory the address range in question is located in.
+Thanks for the clarification.
 
+> If the freezer bits here are undesired then I think wait_event_interruptible()
+> should be used instead.
 
-> > Question is: is the mapping in acpi_ex_system_memory_space_handler()
-> > wrong (and should be patched with acpi_os_map_iomem() ?)
-> >
-> > On x86 this should not change a thing, on ARM it would.
-> >
-> > I don't think it is right to map SystemMemory Operation regions with
-> > memory semantics but on the other hand, other than the EFI memory map,
-> > there is nothing we can do to determine what a SystemMemory Operation
-> > region address space actually represents.
-> >
-> > Thoughts ? Before embarking on patching
-> >
-> > acpi_ex_system_memory_space_handler()
-> >
-> > I want to make sure my understanding of the SystemMemory space is
-> > correct, comments welcome.
-> >
-> > I will pinpoint the trigger for this bug shortly and before doing
-> > anything else.
-> >
-> > Thanks,
-> > Lorenzo
+I am not saying it is undesired. The crux is to be clear in the
+reasoning.
+-- 
+Michal Hocko
+SUSE Labs
