@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B7B4121CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DD341216E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359412AbhITSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:09:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33074 "EHLO mail.kernel.org"
+        id S1358230AbhITSFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357337AbhITSD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:03:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 003E663241;
-        Mon, 20 Sep 2021 17:16:56 +0000 (UTC)
+        id S1356433AbhITR7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFA82613AD;
+        Mon, 20 Sep 2021 17:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158217;
-        bh=rYpuYWuL85NPJVb7hEvBG/6OSBru/NwAp5iRIDttqi0=;
+        s=korg; t=1632158141;
+        bh=Dsw9xe01S1S97w7FMJ4EIPuomsucu92qTCqrP671lcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zaSYwz3xpM13N8XnFStpp4xSwLGUVdpRmopWPgm/OYp+sbVOuoQv5UbG4xNOvaR1s
-         bOiB2Q974/aEcZcZaMUwsYc8rK5k93SgJ0S98rVso2Bxf213rSb/Elo74/XHQMtOXf
-         iLPzQLqPd82ZvSG4o70l96flqOnqD8JV3fokFhHs=
+        b=FmngW9CEOoNQgEK3/wnyAoK9BtVCKkk5+ZEIeuM0ZxJJu3M+bcgtR1hqJgEsqI88X
+         QRwN1kis74B4W2FabSaRjvFG6WB9cIZssLnbVZ2tGKGlQv1G+mIAKhTMc0gB9q2bMX
+         phDXstoG12BYNcFWS19HGc0H2vDUU0x5zzYF+feE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 5.4 011/260] tools/thermal/tmon: Add cross compiling support
-Date:   Mon, 20 Sep 2021 18:40:29 +0200
-Message-Id: <20210920163931.509064195@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Subject: [PATCH 5.4 012/260] pinctrl: stmfx: Fix hazardous u8[] to unsigned long cast
+Date:   Mon, 20 Sep 2021 18:40:30 +0200
+Message-Id: <20210920163931.539678972@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -39,34 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit b5f7912bb604b47a0fe024560488a7556dce8ee7 upstream.
+commit 1b73e588f47397dee6e4bdfd953e0306c60b5fe5 upstream.
 
-Default to prefixed pkg-config when crosscompiling, this matches what
-other parts of the tools/ directory already do.
+Casting a small array of u8 to an unsigned long is *never* OK:
 
-[dlezcano] : Reworked description
+- it does funny thing when the array size is less than that of a long,
+  as it accesses random places in the stack
+- it makes everything even more fun with a BE kernel
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Fix this by building the unsigned long used as a bitmap byte by byte,
+in a way that works across endianess and has no undefined behaviours.
+
+An extra BUILD_BUG_ON() catches the unlikely case where the array
+would be larger than a single unsigned long.
+
+Fixes: 1490d9f841b1 ("pinctrl: Add STMFX GPIO expander Pinctrl/GPIO driver")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/31302992.qZodDJZGDc@devpool47
+Cc: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Link: https://lore.kernel.org/r/20210725180830.250218-1-maz@kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/thermal/tmon/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/pinctrl-stmfx.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/tools/thermal/tmon/Makefile
-+++ b/tools/thermal/tmon/Makefile
-@@ -10,7 +10,7 @@ override CFLAGS+= $(call cc-option,-O3,-
- # Add "-fstack-protector" only if toolchain supports it.
- override CFLAGS+= $(call cc-option,-fstack-protector-strong)
- CC?= $(CROSS_COMPILE)gcc
--PKG_CONFIG?= pkg-config
-+PKG_CONFIG?= $(CROSS_COMPILE)pkg-config
+--- a/drivers/pinctrl/pinctrl-stmfx.c
++++ b/drivers/pinctrl/pinctrl-stmfx.c
+@@ -540,7 +540,7 @@ static irqreturn_t stmfx_pinctrl_irq_thr
+ 	u8 pending[NR_GPIO_REGS];
+ 	u8 src[NR_GPIO_REGS] = {0, 0, 0};
+ 	unsigned long n, status;
+-	int ret;
++	int i, ret;
  
- override CFLAGS+=-D VERSION=\"$(VERSION)\"
- LDFLAGS+=
+ 	ret = regmap_bulk_read(pctl->stmfx->map, STMFX_REG_IRQ_GPI_PENDING,
+ 			       &pending, NR_GPIO_REGS);
+@@ -550,7 +550,9 @@ static irqreturn_t stmfx_pinctrl_irq_thr
+ 	regmap_bulk_write(pctl->stmfx->map, STMFX_REG_IRQ_GPI_SRC,
+ 			  src, NR_GPIO_REGS);
+ 
+-	status = *(unsigned long *)pending;
++	BUILD_BUG_ON(NR_GPIO_REGS > sizeof(status));
++	for (i = 0, status = 0; i < NR_GPIO_REGS; i++)
++		status |= (unsigned long)pending[i] << (i * 8);
+ 	for_each_set_bit(n, &status, gc->ngpio) {
+ 		handle_nested_irq(irq_find_mapping(gc->irq.domain, n));
+ 		stmfx_pinctrl_irq_toggle_trigger(pctl, n);
 
 
