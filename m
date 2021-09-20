@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D63C411C25
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6875B411E50
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346232AbhITRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:06:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54782 "EHLO mail.kernel.org"
+        id S1350467AbhITR2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:28:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244140AbhITRD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:03:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A062661502;
-        Mon, 20 Sep 2021 16:54:14 +0000 (UTC)
+        id S1350114AbhITR0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:26:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82D5261425;
+        Mon, 20 Sep 2021 17:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156855;
-        bh=Nx0ZaIFP3TLnzMwyfec1HeaE3b6x+KqrJO6HnXkTTww=;
+        s=korg; t=1632157370;
+        bh=sD6Zjz4XgFnTkzsdkW1tFoWkAVvIfgF0vNhuksybvbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wMWLJGpUYALd6f9jIC8oL1G2JVdNENhBe2gks1b8D6xpC3yMjRRIhay4qqPzSDTjG
-         PDn/zjYV5INRlI/PdDlQrhtZdKoNLW4mVpya38FhIPR4DbXwR0Lmg18pSJaYXFg995
-         LlpQEh4rMTCvrHBLqsdGb53TDgwqpUVxHbXVqwbE=
+        b=y/Ai9vK+0DE2OLim/AHJTpDTiSPpg1c0z02u5pntjNI5mqM3djoQFReNdrtDbcL2k
+         VrRbmpX4/h/ZwRvGsUQENI8qo8d+gBu2gnMbxBNuZFrMtlKDQ0RFzlKQheJ3p/XboO
+         2y1fCOMc4Yp6y0FVJUOWBpg1NcQDbMymqpOSUfbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Johan Almbladh <johan.almbladh@anyfinetworks.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 117/175] bpf/tests: Fix copy-and-paste error in double word test
+Subject: [PATCH 4.14 145/217] bpf/tests: Do not PASS tests without actually testing the result
 Date:   Mon, 20 Sep 2021 18:42:46 +0200
-Message-Id: <20210920163921.898411746@linuxfoundation.org>
+Message-Id: <20210920163929.553597446@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +43,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit ae7f47041d928b1a2f28717d095b4153c63cbf6a ]
+[ Upstream commit 2b7e9f25e590726cca76700ebdb10e92a7a72ca1 ]
 
-This test now operates on DW as stated instead of W, which was
-already covered by another test.
+Each test case can have a set of sub-tests, where each sub-test can
+run the cBPF/eBPF test snippet with its own data_size and expected
+result. Before, the end of the sub-test array was indicated by both
+data_size and result being zero. However, most or all of the internal
+eBPF tests has a data_size of zero already. When such a test also had
+an expected value of zero, the test was never run but reported as
+PASS anyway.
+
+Now the test runner always runs the first sub-test, regardless of the
+data_size and result values. The sub-test array zero-termination only
+applies for any additional sub-tests.
+
+There are other ways fix it of course, but this solution at least
+removes the surprise of eBPF tests with a zero result always succeeding.
 
 Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210721104058.3755254-1-johan.almbladh@anyfinetworks.com
+Link: https://lore.kernel.org/bpf/20210721103822.3755111-1-johan.almbladh@anyfinetworks.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/test_bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/test_bpf.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 960d4d627361..ed2ebf677457 100644
+index 4aa88ba8238c..9a8f957ad86e 100644
 --- a/lib/test_bpf.c
 +++ b/lib/test_bpf.c
-@@ -4295,8 +4295,8 @@ static struct bpf_test tests[] = {
- 		.u.insns_int = {
- 			BPF_LD_IMM64(R0, 0),
- 			BPF_LD_IMM64(R1, 0xffffffffffffffffLL),
--			BPF_STX_MEM(BPF_W, R10, R1, -40),
--			BPF_LDX_MEM(BPF_W, R0, R10, -40),
-+			BPF_STX_MEM(BPF_DW, R10, R1, -40),
-+			BPF_LDX_MEM(BPF_DW, R0, R10, -40),
- 			BPF_EXIT_INSN(),
- 		},
- 		INTERNAL,
+@@ -6306,7 +6306,14 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
+ 		u64 duration;
+ 		u32 ret;
+ 
+-		if (test->test[i].data_size == 0 &&
++		/*
++		 * NOTE: Several sub-tests may be present, in which case
++		 * a zero {data_size, result} tuple indicates the end of
++		 * the sub-test array. The first test is always run,
++		 * even if both data_size and result happen to be zero.
++		 */
++		if (i > 0 &&
++		    test->test[i].data_size == 0 &&
+ 		    test->test[i].result == 0)
+ 			break;
+ 
 -- 
 2.30.2
 
