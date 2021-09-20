@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF918411B95
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5DC411D44
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244846AbhITRA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45192 "EHLO mail.kernel.org"
+        id S243681AbhITRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244808AbhITQ4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C61DE610A0;
-        Mon, 20 Sep 2021 16:51:30 +0000 (UTC)
+        id S245173AbhITRPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:15:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 517A461211;
+        Mon, 20 Sep 2021 16:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156691;
-        bh=YNWLoRrqL+iKWwd00J29MTARknC6zIVmxqx30wnM0lY=;
+        s=korg; t=1632157124;
+        bh=xGwExUppbd3H53PxpNT/Y7MZXZdRKAOroOEcEFe8Yis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=efiWOEjq1crr7qyRt++CSblqpoi+OtnjjIxdZBmsYcG9zfrjWinlJMiji+WTrB3qU
-         uwNoFkApPAKBRF5Jh/zlG/T4Pe1na2S7bvclXpYBLVjiUDOZ725gPlD0eerjw71naF
-         xpW4bldLXrKdsBAX8pRG8tifaqAoG6uVI+tP4sMI=
+        b=GJLsa3WpulPQJe5+RP8n/gtj6TGYAkKFbpMVSv/xziVuX8bNPTQovOc9uY47Cnwi5
+         vQA/vjnIPppPG0SiJwti94lCnA34LBIqv4A3nDs0TTYB2uyNKNUkYM2BucVciU1k6n
+         2LH8f2AmMSH68TQX0sA51xxH0GbIzMCijBdIGoTI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zubin Mithra <zsm@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 009/175] ALSA: pcm: fix divide error in snd_pcm_lib_ioctl
+        stable@vger.kernel.org, Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 037/217] s390/cio: add dev_busid sysfs entry for each subchannel
 Date:   Mon, 20 Sep 2021 18:40:58 +0200
-Message-Id: <20210920163918.372463225@linuxfoundation.org>
+Message-Id: <20210920163925.892338560@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zubin Mithra <zsm@chromium.org>
+From: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-commit f3eef46f0518a2b32ca1244015820c35a22cfe4a upstream.
+[ Upstream commit d3683c055212bf910d4e318f7944910ce10dbee6 ]
 
-Syzkaller reported a divide error in snd_pcm_lib_ioctl. fifo_size
-is of type snd_pcm_uframes_t(unsigned long). If frame_size
-is 0x100000000, the error occurs.
+Introduce dev_busid, which exports the device-id associated with the
+io-subchannel (and message-subchannel). The dev_busid indicates that of
+the device which may be physically installed on the corrosponding
+subchannel. The dev_busid value "none" indicates that the subchannel
+is not valid, there is no I/O device currently associated with the
+subchannel.
 
-Fixes: a9960e6a293e ("ALSA: pcm: fix fifo_size frame calculation")
-Signed-off-by: Zubin Mithra <zsm@chromium.org>
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210827153735.789452-1-zsm@chromium.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The dev_busid information would be helpful to write device-specific
+udev-rules associated with the subchannel. The dev_busid interface would
+be available even when the sch is not bound to any driver or if there is
+no operational device connected on it. Hence this attribute can be used to
+write udev-rules which are specific to the device associated with the
+subchannel.
+
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/pcm_lib.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/cio/css.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1830,7 +1830,7 @@ static int snd_pcm_lib_ioctl_fifo_size(s
- 		channels = params_channels(params);
- 		frame_size = snd_pcm_format_size(format, channels);
- 		if (frame_size > 0)
--			params->fifo_size /= (unsigned)frame_size;
-+			params->fifo_size /= frame_size;
- 	}
- 	return 0;
+diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+index e2026d54dd37..435e804b6b8b 100644
+--- a/drivers/s390/cio/css.c
++++ b/drivers/s390/cio/css.c
+@@ -330,9 +330,26 @@ static ssize_t pimpampom_show(struct device *dev,
  }
+ static DEVICE_ATTR(pimpampom, 0444, pimpampom_show, NULL);
+ 
++static ssize_t dev_busid_show(struct device *dev,
++			      struct device_attribute *attr,
++			      char *buf)
++{
++	struct subchannel *sch = to_subchannel(dev);
++	struct pmcw *pmcw = &sch->schib.pmcw;
++
++	if ((pmcw->st == SUBCHANNEL_TYPE_IO ||
++	     pmcw->st == SUBCHANNEL_TYPE_MSG) && pmcw->dnv)
++		return sysfs_emit(buf, "0.%x.%04x\n", sch->schid.ssid,
++				  pmcw->dev);
++	else
++		return sysfs_emit(buf, "none\n");
++}
++static DEVICE_ATTR_RO(dev_busid);
++
+ static struct attribute *io_subchannel_type_attrs[] = {
+ 	&dev_attr_chpids.attr,
+ 	&dev_attr_pimpampom.attr,
++	&dev_attr_dev_busid.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(io_subchannel_type);
+-- 
+2.30.2
+
 
 
