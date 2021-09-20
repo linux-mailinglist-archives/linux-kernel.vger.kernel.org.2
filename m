@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A835411FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AE4411A3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353234AbhITRqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:46:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
+        id S243273AbhITQsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353283AbhITRoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:44:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B914617E1;
-        Mon, 20 Sep 2021 17:09:38 +0000 (UTC)
+        id S243296AbhITQrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4857611C2;
+        Mon, 20 Sep 2021 16:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157778;
-        bh=V1jpyBADksnNFG7AcGXy7W11iY7j4YUBEoXq+iGRPY8=;
+        s=korg; t=1632156378;
+        bh=z8Ja/ElGQ1hi6wVdgeJUHNWkMXKfTp5otZ9tFjR3EkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ACafkDWMe2KE2uGJn/8j7u+BCkbKR4LthJkPh0T6ji7avpZsCOYA3cPNKqKp7RwKL
-         ygI1zm6winQOl7fSl7OxijngUa6gKnsd4+YZihMhoLDvZ+gb2/XKdk67Y28lwkKxMH
-         HvfrhHFzXEdGQYzB7IrlWKino8UThICsnR5BfefA=
+        b=tslThNvhz6vELHHAeBcmrnss+ioMpbPw5Y/CJeQs/zE/j4LXLl1Z/hF87qM7k8dkF
+         0ctw90ohL/xA7+OVlARD0zpfcO44ulV6tgXRaZLLBW2ZsJdy/DopjSFvkroT0ozUv1
+         cx7qb6li74e6oo/KYBaiJ8wucFiF0LrB2wsbwCLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 148/293] media: uvc: dont do DMA on stack
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 032/133] libata: fix ata_host_start()
 Date:   Mon, 20 Sep 2021 18:41:50 +0200
-Message-Id: <20210920163938.342669056@linuxfoundation.org>
+Message-Id: <20210920163913.674679894@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,96 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Damien Le Moal <damien.lemoal@wdc.com>
 
-commit 1a10d7fdb6d0e235e9d230916244cc2769d3f170 upstream.
+[ Upstream commit 355a8031dc174450ccad2a61c513ad7222d87a97 ]
 
-As warned by smatch:
-	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
-	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
+The loop on entry of ata_host_start() may not initialize host->ops to a
+non NULL value. The test on the host_stop field of host->ops must then
+be preceded by a check that host->ops is not NULL.
 
-those two functions call uvc_query_ctrl passing a pointer to
-a data at the DMA stack. those are used to send URBs via
-usb_control_msg(). Using DMA stack is not supported and should
-not work anymore on modern Linux versions.
-
-So, use a kmalloc'ed buffer.
-
-Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Link: https://lore.kernel.org/r/20210816014456.2191776-3-damien.lemoal@wdc.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c |   34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ drivers/ata/libata-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -900,8 +900,8 @@ static int uvc_ioctl_g_input(struct file
- {
- 	struct uvc_fh *handle = fh;
- 	struct uvc_video_chain *chain = handle->chain;
-+	u8 *buf;
- 	int ret;
--	u8 i;
- 
- 	if (chain->selector == NULL ||
- 	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
-@@ -909,22 +909,27 @@ static int uvc_ioctl_g_input(struct file
- 		return 0;
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index 8ed3f6d75ff1..2ece0a65ccee 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -6026,7 +6026,7 @@ int ata_host_start(struct ata_host *host)
+ 			have_stop = 1;
  	}
  
-+	buf = kmalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
- 	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
- 			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
--			     &i, 1);
--	if (ret < 0)
--		return ret;
-+			     buf, 1);
-+	if (!ret)
-+		*input = *buf - 1;
+-	if (host->ops->host_stop)
++	if (host->ops && host->ops->host_stop)
+ 		have_stop = 1;
  
--	*input = i - 1;
--	return 0;
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
- {
- 	struct uvc_fh *handle = fh;
- 	struct uvc_video_chain *chain = handle->chain;
-+	u8 *buf;
- 	int ret;
--	u32 i;
- 
- 	ret = uvc_acquire_privileges(handle);
- 	if (ret < 0)
-@@ -940,10 +945,17 @@ static int uvc_ioctl_s_input(struct file
- 	if (input >= chain->selector->bNrInPins)
- 		return -EINVAL;
- 
--	i = input + 1;
--	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
--			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
--			      &i, 1);
-+	buf = kmalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	*buf = input + 1;
-+	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
-+			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
-+			     buf, 1);
-+	kfree(buf);
-+
-+	return ret;
- }
- 
- static int uvc_ioctl_queryctrl(struct file *file, void *fh,
+ 	if (have_stop) {
+-- 
+2.30.2
+
 
 
