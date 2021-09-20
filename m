@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E1A412012
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25871411ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354006AbhITRsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:48:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52106 "EHLO mail.kernel.org"
+        id S244894AbhITQvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349714AbhITRqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:46:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E636C60F4B;
-        Mon, 20 Sep 2021 17:10:21 +0000 (UTC)
+        id S243455AbhITQsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E2BE611ED;
+        Mon, 20 Sep 2021 16:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157822;
-        bh=gYcDscaYwLFu8fHV+1gkT+CnZNs5DG4/LZ/Dgqq3ohM=;
+        s=korg; t=1632156432;
+        bh=K5KXSD+jjQeXzcQALgpzdggOZ4F9iGSoMqVje5/6ttU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/u2EQk3NlfC2KxNvQzF+ptp6JJWK3mywWwc5Qc3cE9YHQ/gA48In4bCthcBW+FSY
-         zjadRc2q9TJhfRU2Ug0994zxBMsIJK3FgYoOnzI31+ujjODKz3ccNds9wgCy4Lcd6c
-         ypmHIOjKbeXrwNcqrlJUcIJHDGkw6zEepIgHBKjY=
+        b=jsW7kRa9DGRxX4hbFgEev4DClEJJR4a1PjWjwAQ1CaUEp+18r/0j68jOl5/p/i2hG
+         OEQJLExxSg6H+cHvIKKMrDZGQFOH6Nkc9FbNIsz9Tv+Z+Z+6hyk/EeLPva55McSPZj
+         mEm6j/P6U0twpDFUxYavh50KghoDivDSpy4JvUCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH 4.19 140/293] tools/thermal/tmon: Add cross compiling support
+        stable@vger.kernel.org, Esben Haabendal <esben@geanix.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 024/133] net: ll_temac: Remove left-over debug message
 Date:   Mon, 20 Sep 2021 18:41:42 +0200
-Message-Id: <20210920163938.076644637@linuxfoundation.org>
+Message-Id: <20210920163913.403413583@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Esben Haabendal <esben@geanix.com>
 
-commit b5f7912bb604b47a0fe024560488a7556dce8ee7 upstream.
+commit ce03b94ba682a67e8233c9ee3066071656ded58f upstream.
 
-Default to prefixed pkg-config when crosscompiling, this matches what
-other parts of the tools/ directory already do.
-
-[dlezcano] : Reworked description
-
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/31302992.qZodDJZGDc@devpool47
+Fixes: f63963411942 ("net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY")
+Signed-off-by: Esben Haabendal <esben@geanix.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/thermal/tmon/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/xilinx/ll_temac_main.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/tools/thermal/tmon/Makefile
-+++ b/tools/thermal/tmon/Makefile
-@@ -10,7 +10,7 @@ CFLAGS+= -O1 ${WARNFLAGS}
- # Add "-fstack-protector" only if toolchain supports it.
- CFLAGS+= $(call cc-option,-fstack-protector)
- CC?= $(CROSS_COMPILE)gcc
--PKG_CONFIG?= pkg-config
-+PKG_CONFIG?= $(CROSS_COMPILE)pkg-config
+--- a/drivers/net/ethernet/xilinx/ll_temac_main.c
++++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
+@@ -735,10 +735,8 @@ temac_start_xmit(struct sk_buff *skb, st
+ 	/* Kick off the transfer */
+ 	lp->dma_out(lp, TX_TAILDESC_PTR, tail_p); /* DMA start */
  
- CFLAGS+=-D VERSION=\"$(VERSION)\"
- LDFLAGS+=
+-	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1)) {
+-		netdev_info(ndev, "%s -> netif_stop_queue\n", __func__);
++	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1))
+ 		netif_stop_queue(ndev);
+-	}
+ 
+ 	return NETDEV_TX_OK;
+ }
 
 
