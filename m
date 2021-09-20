@@ -2,126 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6765F412D11
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08928412D16
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352669AbhIUCyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
+        id S1352687AbhIUCyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350405AbhIUC2g (ORCPT
+        with ESMTP id S238650AbhIUC3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:28:36 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A30C061151
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:23:43 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g41so39439270lfv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:23:43 -0700 (PDT)
+        Mon, 20 Sep 2021 22:29:23 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B070C0F3457;
+        Mon, 20 Sep 2021 12:26:21 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id t6so65150872edi.9;
+        Mon, 20 Sep 2021 12:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lfxmCAIn9aHEGlNTCFP6oI4sdv4GtF/cTPp74Gw1WBM=;
-        b=51peZIPp0Z/EhYUJjOrVhklffvLaouyg2C5XP2pPvI6GKpQqRTRJNH9z0riNU6JUST
-         o0XwKLmOpbRlulubaDys5ESijC7RfZDY0btoMVLhd24Wbuq4HCPaAcFG5bL/hMGrqGtL
-         7xl5z5ix8Uq+1/IFKbmMGW0qkcT6Kblu2SXf54ogQOpF0XmbXZnVwYt6ayxUDZ2i0zc5
-         ndwQC+lLTjKOM/5Nx96ULxzCt3Is+WBaiGfGuvvkAWuKo2L9VaqIf1rPaXJawFd0DZaR
-         UVhdwOrDahN59n5xgeFFwe62qLfoeS4Srs8f0W8HdLOxbwittlQusCzObDZLZ8VTA7Ay
-         5WSw==
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RJWnZekTUMSnBRk/CtZe/v9CvFL/Hwr4JrpVx75Cmtk=;
+        b=ZdiTJXLL9mgXbyU5Qnw0VxfH6+FlkVxGLpvKOkpbK2L5XLuH1ISSVM2i5YsSzv538d
+         Y3zLxEWtL52DZlUT9ehwoPZ9aMiO8iSp5Zlt9m2H9QdyEZ9GvSTTXd1gH8aT1BmtkyZF
+         bWNEyJhSpyHwgkLwM9Z0Dnh1wfi1UQCUmPhdAwR6Z0ucyryHZ/2f4IqUNl0QsnJs7jHK
+         9c30JmQqxVlas0u3kN0dg0NklDnWDz7IwkWoKBgVT4khJYCCWqwWDsgU9KF/wfCWmmZy
+         wVHzUDGDkelDhFf8NRZXfzNN3vgmCtSczIr3bJDAIfDxRWnn2FOK1sO7Xkn8AWvETb4k
+         wGtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lfxmCAIn9aHEGlNTCFP6oI4sdv4GtF/cTPp74Gw1WBM=;
-        b=aLb2b3iWxL+Y43agahBPVgxtWtc2eLBnS8h7t4fFF0UlyKY+58INa6Dhc6wS2eZ9vh
-         tBr6TGBVgSQhl0qnTgkYoyBDo7CgqnPhqbysUStB/Z6IdYnMI99aOpodU2pFEMAzh+x+
-         mHbmyfjHh9kBqOsvTEBp9OX2SiVmsBNs5piBTxH9YJNh6OsF4YW805d7JrHNg/nNBdWV
-         ID2OFS2Hebdym0ZUCvUekIVoIK+08pY7Zb2o+BQB2a588tvrjjnMFS5EGL+H4BlFocUM
-         o/niLMqbRAw7JNlRPmTlDFiMrivkIyB7QoqUxW7UwjLx3xScQaQY9Q3IAVx3EAtdpX9Q
-         PSaw==
-X-Gm-Message-State: AOAM531Hr4Cf8ICiIcwreFR3Fy8QccAQZcXQM2JoaFpXyyaRyzzQYU5y
-        lXs058qu2h1wxwyXX8GQutppyA==
-X-Google-Smtp-Source: ABdhPJzBd1RwKOZT1XWwd9VMdTBk2dtlBYL+yyroRGVVu01s956l3lUsknRhzDPFsjv00pVQxtEqOw==
-X-Received: by 2002:a05:651c:83:: with SMTP id 3mr23323003ljq.341.1632165822010;
-        Mon, 20 Sep 2021 12:23:42 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id j21sm1858858ljh.87.2021.09.20.12.23.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 12:23:41 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id B961C103053; Mon, 20 Sep 2021 22:23:41 +0300 (+03)
-Date:   Mon, 20 Sep 2021 22:23:41 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
- cc_platform_has()
-Message-ID: <20210920192341.maue7db4lcbdn46x@box.shutemov.name>
-References: <cover.1631141919.git.thomas.lendacky@amd.com>
- <367624d43d35d61d5c97a8b289d9ddae223636e9.1631141919.git.thomas.lendacky@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RJWnZekTUMSnBRk/CtZe/v9CvFL/Hwr4JrpVx75Cmtk=;
+        b=7dhAuV9BIORRaL+bH46kTwOKc053bHpSbLsNKCUc+wrCH/kIzmLtZOLUz5Qi5VbH4/
+         fgy7CPZTQcyjUre5qlOLxeGL4MXl6nSQ5fEL3phdsb8i5ew6K9oaFLCZUYJX8HgnZR//
+         9g10nu0FIC08V2loNGCz9WEvdXoxjhn/LMCNMJOpotjmcLiYpEck7j2Ck+Wp/0TGbemx
+         IU3v3HXE71490MLhP/z0X1TZLF4VNrs6yK4bWAgpYvh25YC6irn2WmSIiL5H0o08SocS
+         PV6iUh6krzdWtLpU2vFVUGv6Of6wM69jsiAsgE9648RUBayVSD2VxA5tnfdSK8qmlJeI
+         bnBA==
+X-Gm-Message-State: AOAM531V5mXQaSBzUL4EKtIlXOEMAj3uVNuTKdgZ7KFlOsuwLERm6Av1
+        rLWtJXgLlwB99SQbI8USDOwz9Cd8xm0ZeZDY0vk=
+X-Google-Smtp-Source: ABdhPJwdPfnVeY2p6IsWhgrDuynL1Mi9SZtZIeW/NWNfEuNbq4u5cqaYdIMy2elkx0SvapDlMWXEb9a6p2wF4K3n4I8=
+X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr29600783ejb.408.1632165979872;
+ Mon, 20 Sep 2021 12:26:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <367624d43d35d61d5c97a8b289d9ddae223636e9.1631141919.git.thomas.lendacky@amd.com>
+References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
+ <c7f6213b-5ddc-881c-1aea-9cc7b03e6a4f@baylibre.com> <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
+ <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com> <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
+In-Reply-To: <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 20 Sep 2021 21:26:08 +0200
+Message-ID: <CAFBinCDmNt+aXRE4xFZdegOUs8BqJiTPF3+DQ-buvWWXrQLkdw@mail.gmail.com>
+Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Matt Corallo <oc2udbzfd@mattcorallo.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Emiliano Ingrassia <ingrassia@epigenesys.com>,
+        Brian Kim <brian.kim@hardkernel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 05:58:36PM -0500, Tom Lendacky wrote:
-> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-> index 470b20208430..eff4d19f9cb4 100644
-> --- a/arch/x86/mm/mem_encrypt_identity.c
-> +++ b/arch/x86/mm/mem_encrypt_identity.c
-> @@ -30,6 +30,7 @@
->  #include <linux/kernel.h>
->  #include <linux/mm.h>
->  #include <linux/mem_encrypt.h>
-> +#include <linux/cc_platform.h>
->  
->  #include <asm/setup.h>
->  #include <asm/sections.h>
-> @@ -287,7 +288,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
->  	unsigned long pgtable_area_len;
->  	unsigned long decrypted_base;
->  
-> -	if (!sme_active())
-> +	if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
->  		return;
->  
->  	/*
+Hi Anand,
 
-This change break boot for me (in KVM on Intel host). It only reproduces
-with allyesconfig. More reasonable config works fine, but I didn't try to
-find exact cause in config.
+On Tue, Aug 31, 2021 at 10:48 PM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> After enabling CONFIG_REGULATOR_DEBUG, with this patch applied
+> I still not getting the USB regulator to enable.
+> Do you see different output at your end?
+I don't have much time for testing and debugging currently but I'll
+put it on my TODO-list
+Until either of us has found the issue I suggest not merging this patch.
 
-Convertion to cc_platform_has() in __startup_64() in 8/8 has the same
-effect.
 
-I believe it caused by sme_me_mask access from __startup_64() without
-fixup_pointer() magic. I think __startup_64() requires special treatement
-and we should avoid cc_platform_has() there (or have a special version of
-the helper). Note that only AMD requires these cc_platform_has() to return
-true.
-
--- 
- Kirill A. Shutemov
+Best regards,
+Martin
