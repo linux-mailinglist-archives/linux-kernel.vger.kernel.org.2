@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDE84129A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A994129A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240506AbhITX7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 19:59:53 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:46906 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbhITX5x (ORCPT
+        id S239671AbhIUAAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 20:00:15 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33229 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239514AbhITX6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 19:57:53 -0400
-Received: by mail-oi1-f180.google.com with SMTP id s69so19633953oie.13;
-        Mon, 20 Sep 2021 16:56:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c93NXpgi+p5XaCllWBXTLuYEA3fNOgZcX/nvr8ucDT8=;
-        b=WDbnSz6YG2N71u645N4/vExLmcrvNafF/n1RBeyQaP9VV/Q1/1b3Pm9jvwb4AAtXpP
-         0SYBSgCQIFq1k4lC7zbG5l/UZ2LD6zCrp/BP0OMP7nuAvca9R6oY5yzExM+mmy76kp0Y
-         8LRERTl7WxnVDzJPT6HFmefMhRG8GZmE+T2ckq2SjHR7ZQz+uCggEuG/rBe0WdGXqtLC
-         CCJYJufrN2OrMsWBD+5UUSdy8WxjRJWdH/95wMFEJHf36R8weA/T+Vyu1D5aQrYO9I0F
-         soQ8xL3+K+/SGvPSeqn0FDZnGLAcPMyhRm/tpOdRMd5eQ5aciqhv19rQccXlMVI54F4F
-         nqtQ==
-X-Gm-Message-State: AOAM532mwJmgG13g6ao5jFcy3EswxDHr98HPKoylBilCjNxp1N9fPsEb
-        HStZhxK6KnyezOpIB74w81TSbO4eKg==
-X-Google-Smtp-Source: ABdhPJxbShQYydLWhlk/xGNiMTT7AzAb2ftOT6Bl3SAFnSA368SVgvPwj9OmarpSNVanmN5IIk0uVA==
-X-Received: by 2002:aca:afcc:: with SMTP id y195mr1309932oie.71.1632182185308;
-        Mon, 20 Sep 2021 16:56:25 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a11sm3462634oiw.36.2021.09.20.16.56.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 16:56:24 -0700 (PDT)
-Received: (nullmailer pid 1068768 invoked by uid 1000);
-        Mon, 20 Sep 2021 23:56:23 -0000
-Date:   Mon, 20 Sep 2021 18:56:23 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Swapnil Jakhade <sjakhade@cadence.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de, lokeshvutla@ti.com, a-govindraju@ti.com,
-        kishon@ti.com, linux-phy@lists.infradead.org, robh+dt@kernel.org,
-        vkoul@kernel.org, mparab@cadence.com
-Subject: Re: [PATCH v2 03/15] dt-bindings: phy: cadence-torrent: Rename SSC
- macros to use generic names
-Message-ID: <YUkfp/sARPD3i82R@robh.at.kernel.org>
-References: <20210908122930.10224-1-sjakhade@cadence.com>
- <20210908122930.10224-4-sjakhade@cadence.com>
+        Mon, 20 Sep 2021 19:58:09 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 939B25C00DF;
+        Mon, 20 Sep 2021 19:56:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 20 Sep 2021 19:56:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=kEcYYW
+        e7Fo4F3ypOF0RisLR7B9ji3PdFfB/b9jqi6Xg=; b=B5AzkoiJg/YgLkdds0E0RT
+        jxD+1aLa8nBSN8d2vtwjlYlebFb7SYzGfHyDpuPinKAPHRF2E5bvawpTes/e5p4Q
+        TDTxfz95FNJ14Mirg8NaB/0K+Vhe7dV7uKZ54uY7pi4WAI1oMA5fxy/WGBZc42uS
+        jjIprygfFk3yBe81qlX0LJ7U5wPqMjsSryhaO6S/GUxXHDoWJd7R0SaX/dP0TbkM
+        e2VNvn0Sxu7nqVJwAcF2APLHkLK2L1x9YW28KyDjiW8M5PWooci8Gm6YZVhQbu41
+        Ju4lYzrdUZCo5HC7ccmAVsi+m2IqG05ujpiUuTqHNBTbq9w+tAFYdEVfjpymKfiQ
+        ==
+X-ME-Sender: <xms:th9JYVG3a7SjmU06wBsE1ucbszwuJglwQlh475joJELPjllKcADz0w>
+    <xme:th9JYaXvMR2axcz5CBP4Ixd5mjT8Dfmuxn6U4WCfWxPRYClTHRMh3KQ0IY0M2tQXN
+    pRW9IHD8I3QyJkemoM>
+X-ME-Received: <xmr:th9JYXKfDUWaZuVV2kXKwPtegxBUCGZWavbZyCBdjN6VaD2KE1xaB3ELxIAUK8rO21OZWzLGI8CKAMtisk4XVmSv6Wn9loY9apXhkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeifedgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
+    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
+    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:th9JYbG7CMIIdEQLoX8y_Nrjn9VDiZn4wQJyp8OHNCPSWU4e_1gh4Q>
+    <xmx:th9JYbW0yDeTaAkc3w-v7rxRUP4KTpUCqRGh9YBnpWwpg5omhKw7lQ>
+    <xmx:th9JYWMrkiAzhKHHBJByPem2p5VJL490E79yH1Nn2ektg6wdtFKRBw>
+    <xmx:uB9JYdKS6cJTI8rjy22Rq8q2-Zim6Cq0vqLc4lz0Y9DWE2zfPfTVLw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Sep 2021 19:56:36 -0400 (EDT)
+Date:   Tue, 21 Sep 2021 09:56:29 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Tong Zhang <ztong0001@gmail.com>
+cc:     Oliver Neukum <oliver@neukum.org>, Ali Akcaagac <aliakc@web.de>,
+        Jamie Lenehan <lenehan@twibble.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        dc395x@twibble.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] scsi: dc395: fix error case unwinding
+In-Reply-To: <20210907040702.1846409-1-ztong0001@gmail.com>
+Message-ID: <a68837f4-1ff7-76d5-7a68-80d2c0dbd95e@linux-m68k.org>
+References: <20210907040702.1846409-1-ztong0001@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908122930.10224-4-sjakhade@cadence.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Sep 2021 14:29:18 +0200, Swapnil Jakhade wrote:
-> Rename SSC macros to use generic names instead of PHY specific names,
-> so that they can be used to specify SSC modes for both Torrent and
-> Sierra. Renaming the macros should not affect the things as these are
-> not being used in any DTS file yet.
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  .../devicetree/bindings/phy/phy-cadence-torrent.yaml      | 4 ++--
->  include/dt-bindings/phy/phy-cadence.h                     | 8 ++++----
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+On Mon, 6 Sep 2021, Tong Zhang wrote:
+
+> dc395x_init_one()->adapter_init() might fail. In this case, the acb
+> is already clean up by adapter_init(), no need to do that in
+> adapter_uninit(acb) again.
+> 
+> [    1.252251] dc395x: adapter init failed
+> [    1.254900] RIP: 0010:adapter_uninit+0x94/0x170 [dc395x]
+> [    1.260307] Call Trace:
+> [    1.260442]  dc395x_init_one.cold+0x72a/0x9bb [dc395x]
+> 
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+
+Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+
+> ---
+>  drivers/scsi/dc395x.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+> index 24c7cefb0b78..1c79e6c27163 100644
+> --- a/drivers/scsi/dc395x.c
+> +++ b/drivers/scsi/dc395x.c
+> @@ -4618,6 +4618,7 @@ static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>  	/* initialise the adapter and everything we need */
+>   	if (adapter_init(acb, io_port_base, io_port_len, irq)) {
+>  		dprintkl(KERN_INFO, "adapter init failed\n");
+> +		acb = NULL;
+>  		goto fail;
+>  	}
+>  
+> 
