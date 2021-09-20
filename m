@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EAB411DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92756412010
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343632AbhITRZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48640 "EHLO mail.kernel.org"
+        id S1353581AbhITRsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349210AbhITRW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:22:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FA0E61A58;
-        Mon, 20 Sep 2021 17:01:14 +0000 (UTC)
+        id S1349299AbhITRqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:46:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D0A161351;
+        Mon, 20 Sep 2021 17:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157274;
-        bh=cEabV5fMd1TXj1z8m92XZ8bNMqoMnoj1nG5SbQNOcYM=;
+        s=korg; t=1632157818;
+        bh=mAhMm/WuB3DXx3pILyFdCxG6w/ejDLp/FNjRZhPNX2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ajMcK+aqPs5cZgCy0amhhvv2wJVmBv+kS8ciO8X05+s10359kD5TsxHMBoW9dTu+u
-         5sn9Q4qbEopGMughnbw0lLXgQpkwTNIUC/pcyeBu6FOAeWo3OpJzbcr14C/vBfRKgv
-         hJvQFjCsQDncHEqFsu4iAfPsSZT6MLEAUoKDSNYA=
+        b=stWISsdlQUucl2dd1xsJ0gtBla2CP14dQOXkpvQt0loN1Wn2Y2b6P4Ax+Zxm/xD+V
+         Zehctv5qTUE4ZoUUUub0nC2aGSCt6Yi0Cj25v8MCa540+8pCP3A3IP8Q8WV++PSJJs
+         W3xgykDp01DY/iXSiSyZCGEJ1y6LCdH2GrNeDYsI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Iwona Winiarska <iwona.winiarska@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>
-Subject: [PATCH 4.14 106/217] soc: aspeed: lpc-ctrl: Fix boundary check for mmap
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 165/293] scsi: qedi: Fix error codes in qedi_alloc_global_queues()
 Date:   Mon, 20 Sep 2021 18:42:07 +0200
-Message-Id: <20210920163928.230653543@linuxfoundation.org>
+Message-Id: <20210920163938.930942898@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Iwona Winiarska <iwona.winiarska@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit b49a0e69a7b1a68c8d3f64097d06dabb770fec96 upstream.
+[ Upstream commit 4dbe57d46d54a847875fa33e7d05877bb341585e ]
 
-The check mixes pages (vm_pgoff) with bytes (vm_start, vm_end) on one
-side of the comparison, and uses resource address (rather than just the
-resource size) on the other side of the comparison.
-This can allow malicious userspace to easily bypass the boundary check and
-map pages that are located outside memory-region reserved by the driver.
+This function had some left over code that returned 1 on error instead
+negative error codes.  Convert everything to use negative error codes.  The
+caller treats all non-zero returns the same so this does not affect run
+time.
 
-Fixes: 6c4e97678501 ("drivers/misc: Add Aspeed LPC control driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Tested-by: Andrew Jeffery <andrew@aj.id.au>
-Reviewed-by: Joel Stanley <joel@aj.id.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+A couple places set "rc" instead of "status" so those error paths ended up
+returning success by mistake.  Get rid of the "rc" variable and use
+"status" everywhere.
+
+Remove the bogus "status = 0" initialization, as a future proofing measure
+so the compiler will warn about uninitialized error codes.
+
+Link: https://lore.kernel.org/r/20210810084753.GD23810@kili
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Acked-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/aspeed-lpc-ctrl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/qedi/qedi_main.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
---- a/drivers/misc/aspeed-lpc-ctrl.c
-+++ b/drivers/misc/aspeed-lpc-ctrl.c
-@@ -44,7 +44,7 @@ static int aspeed_lpc_ctrl_mmap(struct f
- 	unsigned long vsize = vma->vm_end - vma->vm_start;
- 	pgprot_t prot = vma->vm_page_prot;
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 7665fd641886..ab66e1f0fdfa 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1507,7 +1507,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ {
+ 	u32 *list;
+ 	int i;
+-	int status = 0, rc;
++	int status;
+ 	u32 *pbl;
+ 	dma_addr_t page;
+ 	int num_pages;
+@@ -1518,14 +1518,14 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ 	 */
+ 	if (!qedi->num_queues) {
+ 		QEDI_ERR(&qedi->dbg_ctx, "No MSI-X vectors available!\n");
+-		return 1;
++		return -ENOMEM;
+ 	}
  
--	if (vma->vm_pgoff + vsize > lpc_ctrl->mem_base + lpc_ctrl->mem_size)
-+	if (vma->vm_pgoff + vma_pages(vma) > lpc_ctrl->mem_size >> PAGE_SHIFT)
- 		return -EINVAL;
+ 	/* Make sure we allocated the PBL that will contain the physical
+ 	 * addresses of our queues
+ 	 */
+ 	if (!qedi->p_cpuq) {
+-		status = 1;
++		status = -EINVAL;
+ 		goto mem_alloc_failure;
+ 	}
  
- 	/* ast2400/2500 AHB accesses are not cache coherent */
+@@ -1540,13 +1540,13 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ 		  "qedi->global_queues=%p.\n", qedi->global_queues);
+ 
+ 	/* Allocate DMA coherent buffers for BDQ */
+-	rc = qedi_alloc_bdq(qedi);
+-	if (rc)
++	status = qedi_alloc_bdq(qedi);
++	if (status)
+ 		goto mem_alloc_failure;
+ 
+ 	/* Allocate DMA coherent buffers for NVM_ISCSI_CFG */
+-	rc = qedi_alloc_nvm_iscsi_cfg(qedi);
+-	if (rc)
++	status = qedi_alloc_nvm_iscsi_cfg(qedi);
++	if (status)
+ 		goto mem_alloc_failure;
+ 
+ 	/* Allocate a CQ and an associated PBL for each MSI-X
+-- 
+2.30.2
+
 
 
