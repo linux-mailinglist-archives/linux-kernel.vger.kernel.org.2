@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666A241176B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DC0411770
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240505AbhITOsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbhITOsS (ORCPT
+        id S240742AbhITOtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:49:07 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42857 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231720AbhITOtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:48:18 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2562C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:46:51 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id v24so62397304eda.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7j6srl8/3xZKjxyWacXYbIEtIpxDFLQTimtSKuIoENk=;
-        b=kyGncLMMgPtE20GLkmXsc7UM/MZ+9OoYC1mCd9RZR+H+DKNUxthdAI7YIy3UULS1Ij
-         RqADjFkwY9wAsiTq4h9+xay+CQAlTOGDQtk3oRJquzoyaOnaMNFf4rix0wNw1Es8UOps
-         jhrwsRuhAWYe27amG5pRPOSVWFXCAkFAPwK8VjN5yOA8r/+DCRP8CAze6Rx4QzcAjC2B
-         QejLx5s+wgd/hLJCIv/htrVjd5sftxiyPvhvAoVU2752q4QY+L4kz3KxLnjTrN6ekXzl
-         e3yLACHESS3bKkQlGfYnxSBoI9QG0GDexBJfZUcGe7yyKb3l9vd4q5R4ly8U2I5qUsDU
-         iyPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7j6srl8/3xZKjxyWacXYbIEtIpxDFLQTimtSKuIoENk=;
-        b=URNZm2e5dTmcMUVlEHcmak3hBksSSJpNIEoJCNbxhNMKgMya1mirNjNiVoWPzmhQlI
-         J7zYiOdzmi8CJ+kH2cRr2c5dxT8g1gV3PSnc13f4J4gWDl+cE07+wmL9HT/I+tsLwic8
-         Tgkk9aPeTZyipnzQicuFe/5mheRS+DsGu/rGi2di58p3RRwlMcoqwWrZxLCJUbuhkfqL
-         0V/KZcN98f0yOmcxHTqWgkd4VjPypSVfiLlms58wl4fVX4lO8LMKohti4Ka8t7DZsp/A
-         llhz9pU35VoZUGj2Qv1GTlyWhlMBO1ENyr0+MNJUl7BBd/zYOoIXSQh5F9SuqHq0JHp5
-         3YHw==
-X-Gm-Message-State: AOAM530MiYcKWdO7yQu9dAN6juMxQQscdzf7mLs0M7zJzlIMyh+/EbTg
-        FiFJLShAcbgJ3QiGd7ljb/8wPYLnyqRTksgt/AwD1A==
-X-Google-Smtp-Source: ABdhPJyaEw/eUpjG3ulFa2EQFG6rh8w6JkYCqdetDbXc7XjD9luokV7sIfFz/prDMKhitjYaTvW0+QO2SjCHFP2FZ9E=
-X-Received: by 2002:aa7:c9cd:: with SMTP id i13mr30083192edt.178.1632149169591;
- Mon, 20 Sep 2021 07:46:09 -0700 (PDT)
+        Mon, 20 Sep 2021 10:49:05 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2FE4C5C00AF;
+        Mon, 20 Sep 2021 10:47:34 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 20 Sep 2021 10:47:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=Se9ZjgXoFb23WRqzS6LZo2VfyPN
+        N9yAxCDLzhKQA1gY=; b=iM4RlWpFL5SdZDhQBNhCdNoP3SqJVTY0wgjvABwo+Cl
+        fNJTf2TyVcgFVo2yeb4s8h/5LbbZo+tY2XDSj0AIr8w/K2R9fDWc5Y0rUGjMcyKs
+        kHspZhxSohw+W/b96/fyvvkBody+qK+7c92Revp9KiJ0B9Mzc0FlYgQ5FK/fgOz+
+        wn52qIzLvjkurL72DEV+6SA12IabTXXpsC4OKE5uuCtlpXBIA5Ez0dxQahUqaxuG
+        zQbonm3dW7c3bd6Zub/PmI173HPqfgRNijKNta11MUlniyHSgIJyeu8xQqaePRka
+        UlJtZq5La4GFyrxj9EehInTuRERh8qCvXFvvlwhKUpQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Se9Zjg
+        XoFb23WRqzS6LZo2VfyPNN9yAxCDLzhKQA1gY=; b=IVLRBsPpjSa3AxAqnI8tfM
+        uFmA6CC2pMWOmGnSJ9U4Jc3a/KPHzGD86OZq4nMc0pOHhvMIr9cQkk44ZRrKtxUb
+        u1Uw2NzGhzFFjuba4iVRRB/ELHstREPVNfIsdRDL5CB+yv17sfYWekNXaybBGgLa
+        8a4PMcZC8WWL79YJmJmhlrmyomU7B+OL7U2nbX5Wjg3I4gIR47RjHslNCAZnBS9g
+        mj1ugNtNfpN5lAAXM7VzaTrnCRre4YrTF2Y0xX+aMBPsD1dQbxiHRFqfUtvGa6Yk
+        dnNsb9Hfub5BE328AJ7+Yx4gjXQpCc4cnzyOukWgeYsoZGWeiqUxlgAdXEqek+ww
+        ==
+X-ME-Sender: <xms:BZ9IYZfxJwUkTR0dwJBrqgdk92W4xZEiEIfn_flTdiJbUIWdvonYiQ>
+    <xme:BZ9IYXOjOQaY7iznb1-3WFEs3_jMv7BIM0y1S5LfNQfz9r86odK4bRHkBVwHqf3mi
+    MriPBIPJrMh6U10IS0>
+X-ME-Received: <xmr:BZ9IYShCyM6gKk5ezT37vx0HhVGQouHD5eXl6SLI20iQQ12laESCCTaAaD2_Q3BrE_ZLvcLeJZuDuYoIgfJtyuH64LB8wX3kbXFj>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepgfetffffhfejhfevieekkedvkeetheevkeevueffieegvddtgfdttdfhheei
+    feefnecuffhomhgrihhnpegtohguvghthhhinhhkrdgtohdruhhknecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhho
+    rdhtvggthh
+X-ME-Proxy: <xmx:BZ9IYS-Hd-jkDmv_dPUj9Pui8cbkKLiYdUUpsVvFURpUrxEXy-xHvw>
+    <xmx:BZ9IYVuN8PuGj1TufxWkAL31ts3gVd00ynmDIy3Alg0qq2wUoxovaw>
+    <xmx:BZ9IYRGONh_oIBfPvvtDWFqxeELSnBarLPUwuY1BCuNjtIYkAKlHnw>
+    <xmx:Bp9IYZjq4GJG05aIKX4Fnn7vpn26IsOVQfwAUtUYs3nsHNgKuWOuQA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Sep 2021 10:47:32 -0400 (EDT)
+Date:   Mon, 20 Sep 2021 16:47:30 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Regression with mainline kernel on rpi4
+Message-ID: <20210920144730.d7oabqfbx7pmyyfb@gilmour>
+References: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
+ <20210903160302.yh42vpkuob45dbpb@gilmour>
+ <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
+ <20210904091050.g5axxctgelciihjn@gilmour>
+ <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl>
- <20210920140938.GA24424@lst.de> <CAMuHMdXoZdhSydMpbW8B6oQJNnpYpTxmhHrV5CJNTUP7T1KsoA@mail.gmail.com>
- <20210920143046.GA26163@lst.de>
-In-Reply-To: <20210920143046.GA26163@lst.de>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 20 Sep 2021 16:45:59 +0200
-Message-ID: <CAMRc=McQoD=cUHLu6TMyW85fdtXOm4x38tHVnEGjkVfcfX0mfA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zauteup23pojfqra"
+Content-Disposition: inline
+In-Reply-To: <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 4:30 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Mon, Sep 20, 2021 at 04:29:30PM +0200, Geert Uytterhoeven wrote:
-> > Hi Christoph,
+
+--zauteup23pojfqra
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee wrote:
+> Hi Maxime,
+>=20
+> On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cerno.tech> wrote:
 > >
-> > On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
-> > > > For better readability and maintenance: use the BIT() macro for flag
-> > > > definitions.
+> > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherjee wrote:
+> > > Hi Maxime,
 > > >
-> > > NAK.  BIT() is the stupidest macro in the kernel and shall not be used
-> > > ever.  And I'm pretty sure we had this discussion a few times.
+> > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@cerno.tech> wrot=
+e:
+> > > >
+> > > > Hi Sudip,
+> > > >
+> > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Mukherjee wrote:
+> > > > > Hi All,
+> > > > >
+> > > >
+> > >
+> > > <snip>
+> > >
+> > > >
+> > > > >
+> > > > > You can see the complete dmesg at
+> > > > > https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
+> > > >
+> > > > What test were you running?
+> > >
+> > > Nothing particular, its just a boot test that we do every night after
+> > > pulling from torvalds/linux.git
 > >
-> > Care to explain why it is a stupid macro?
->
-> Please look at the previous thread.  I'm tired of this discussion.
+> > What are you booting to then?
+>=20
+> I am not sure I understood the question.
+> Its an Ubuntu image. The desktop environment is gnome. And as
+> mentioned earlier, we use the HEAD of linus tree every night to boot
+> the rpi4 and test that we can login via desktop environment and that
+> there is no regression in dmesg.
 
-Hi Geert!
+Looking at the CI, this isn't from a RPi but from qemu?
 
-The only previous answer from Christoph is this:
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399968.html
+What defconfig are you using? How did you generate the Ubuntu image?
+Through debootstrap? Any additional package?
 
-Bart
+Maxime
+
+--zauteup23pojfqra
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUifAgAKCRDj7w1vZxhR
+xd3oAP4/bAIXXAxoA2sjlOzDAwGmXhGImmbdpnJ9gZCKVsBRSwEApUbVhBbD0zxp
+JnQ7qpCMqRhJzIWuAix+4x4V77d/3Qo=
+=v/vC
+-----END PGP SIGNATURE-----
+
+--zauteup23pojfqra--
