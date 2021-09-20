@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B30941266D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A22412617
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355437AbhITS5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37162 "EHLO mail.kernel.org"
+        id S1386030AbhITSxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385804AbhITSw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DA6A615E5;
-        Mon, 20 Sep 2021 17:45:04 +0000 (UTC)
+        id S1385894AbhITSwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:52:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B0361264;
+        Mon, 20 Sep 2021 17:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632159904;
-        bh=eizUbIsjMYN+/U7qxJUDeZOmJ6obtyGbGnTfTb7yHFk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=akNnW5dU4Cx5qLoSXfsKOMMVVZHBfSw64ojyQUwciY/dbVxov5yQqNih9bqJdF4sa
-         LU9LFjLIT4Q1oI+XF35+yLZ6UmeLvIzrNj4LCoWOrP6/EOgIV6QTx5JYWNDoDuEjYP
-         P5SO7qDo/YRjufnMVhVtVYEUgSdSTIHCJYFkczGFb9EWUiTgAxlSllv50sLaS6HbXw
-         Lf6MX2irdcNOS6dpDMa5uzOoBZVApoH5wvi68MRjYgnfbw1J2LKF/QG8yPm7ebFvWt
-         XlY0ir1kbMIhX5qvxdMOPvg6jsZkfKYK+d7gMwixJ/l4PwQpGkCizDzOsZmVmJM9Pi
-         vVbkpcIfjuhsg==
-Date:   Mon, 20 Sep 2021 10:45:03 -0700
-From:   Mark Gross <markgross@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Matan Ziv-Av <matan@svgalib.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: lg-laptop: Fix possible NULL pointer
- derefence
-Message-ID: <YUjInxyfnuo1tZvh@envy17>
-References: <20210920095556.1175269-1-arnd@kernel.org>
+        s=k20201202; t=1632160613;
+        bh=WosCvV1JmUK5ETxM63LC5LHc9UhJvmkbOb6SQ9HQRCY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lp3JnVDw1ie0nEvoc6RjCG3ZSX8FmUH9p/imspF1stYQX8HxyIHinKZctWOAswonx
+         YiM07jJiuAEwguX0rlonIvqyGRHPjDwOndVZZ7GA6aq3+fkEOHHieDzUOYXoUBpNEf
+         T+aujHdp+VYjuxI3pQpw/An5IEAywA9OqGsLow3R/bkqbovuQSNxSrI5FtFZXzTJpx
+         U3h8J9HwRn5dnGsmHq2ptSIbJv4zsPc73BnIvELmPDZae6+E1VQnlj/MI9940LHJ8V
+         QiHAv+gxwpM4r3bNTYUzeTaB3tSOcJwBR+CrSBLYAp5t8Vj6tHyizdMwUGE1HR52JP
+         Bw1bCeX2qSEyQ==
+Received: by wens.tw (Postfix, from userid 1000)
+        id 73B285FC6F; Tue, 21 Sep 2021 01:56:51 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: nanopi4: decrease Bluetooth UART baud rate
+Date:   Tue, 21 Sep 2021 01:56:46 +0800
+Message-Id: <20210920175647.13008-1-wens@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920095556.1175269-1-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:55:50AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_DMI is disabled, dmi_get_system_info() returns a NULL
-> pointer, which is now caught by a warning:
-> 
-> In function 'strlen',
->     inlined from 'acpi_add.part.0' at drivers/platform/x86/lg-laptop.c:658:6:
-> include/linux/fortify-string.h:25:33: error: argument 1 null where non-null expected [-Werror=nonnull]
->    25 | #define __underlying_strlen     __builtin_strlen
->       |                                 ^
-> include/linux/fortify-string.h:60:24: note: in expansion of macro '__underlying_strlen'
->    60 |                 return __underlying_strlen(p);
->       |                        ^~~~~~~~~~~~~~~~~~~
-> drivers/platform/x86/lg-laptop.c: In function 'acpi_add.part.0':
-> include/linux/fortify-string.h:25:33: note: in a call to built-in function '__builtin_strlen'
->    25 | #define __underlying_strlen     __builtin_strlen
->       |                                 ^
-> include/linux/fortify-string.h:60:24: note: in expansion of macro '__underlying_strlen'
->    60 |                 return __underlying_strlen(p);
->       |                        ^~~~~~~~~~~~~~~~~~~
-> 
-> The code in there does not appear essential, so an explicit
-> NULL check should be sufficient. The string is also printed
-> to the console, but printk() is able to handle NULL pointer
-> arguments gracefully.
-> 
-> Fixes: 8983bfd58d61 ("platform/x86: lg-laptop: Support for battery charge limit on newer models")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/platform/x86/lg-laptop.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/lg-laptop.c b/drivers/platform/x86/lg-laptop.c
-> index 3e520d5bca07..88b551caeaaf 100644
-> --- a/drivers/platform/x86/lg-laptop.c
-> +++ b/drivers/platform/x86/lg-laptop.c
-> @@ -655,7 +655,7 @@ static int acpi_add(struct acpi_device *device)
->  		goto out_platform_registered;
->  	}
->  	product = dmi_get_system_info(DMI_PRODUCT_NAME);
-> -	if (strlen(product) > 4)
-> +	if (product && strlen(product) > 4)
-seems appropriate.
+From: Chen-Yu Tsai <wens@csie.org>
 
---mark
->  		switch (product[4]) {
->  		case '5':
->  		case '6':
-> -- 
-> 2.29.2
-> 
+The RK3399 does not seem to be able to properly generate the required
+64 MHz clock for the UART to operate at 4MBd.
+
+Drop the baud rate down to 3MBd, which can be used as the clock
+controller is able to produce a 48 MHz clock.
+
+Fixes: 3e2f0bb72be3 ("arm64: dts: rockchip: Add nanopi4 bluetooth")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+ arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+index 8c0ff6c96e03..45ff053b119d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
+@@ -699,7 +699,7 @@ bluetooth {
+ 		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
+ 		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
+ 		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
+-		max-speed = <4000000>;
++		max-speed = <3000000>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
+ 		vbat-supply = <&vcc3v3_sys>;
+-- 
+2.30.2
+
