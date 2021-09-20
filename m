@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CEF411AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EF041201C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244376AbhITQvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36476 "EHLO mail.kernel.org"
+        id S1354119AbhITRsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:48:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242998AbhITQsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002A561213;
-        Mon, 20 Sep 2021 16:47:09 +0000 (UTC)
+        id S1343789AbhITRqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:46:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C155617E3;
+        Mon, 20 Sep 2021 17:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156430;
-        bh=IAJzPJm6psF2GjI1dEIJkyQ59WOL9V751RVZDVdIXwg=;
+        s=korg; t=1632157831;
+        bh=X7FP2Fj0bKKDeKQlga/svbnU86ocAnDdN+DJdKh3Y4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SyZpm8SLhTnaJB16ZUZ1xKXvK6pb/RU6iIO9Ctsr1hgTcvRulU9fRE8JdRZiabhml
-         nrz2COd4TjGhe2bdPl5Nh+t7c9rtzNIISSEDuzBgfudDfMG20Dfsz1nd3GglxwjXM0
-         INRQB0hmAgw7yF1NMAev4Hl/c3EGDtky1BMY5zhI=
+        b=Imy6g277kqaivpiZQlL92q+jzteAUf9Zx9/tmPA2v60wIsW2yhHriGVrX5Ev2C/Os
+         a+btJ78kXTvyBDFfWc3r+7wni77aIxAPxPlkcXMN6tsUiGC+OvEIBtr+rdizmPl4Yi
+         TGO+zdGc/XBWUI4nj9vpfAJST799nmXcKZ92Y7SU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 054/133] usb: host: ohci-tmio: add IRQ check
+Subject: [PATCH 4.19 170/293] MIPS: Malta: fix alignment of the devicetree buffer
 Date:   Mon, 20 Sep 2021 18:42:12 +0200
-Message-Id: <20210920163914.415924888@linuxfoundation.org>
+Message-Id: <20210920163939.105755190@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit 4ac5132e8a4300637a2da8f5d6bc7650db735b8a ]
+[ Upstream commit bea6a94a279bcbe6b2cde348782b28baf12255a5 ]
 
-The driver neglects to check the  result of platform_get_irq()'s call and
-blithely passes the negative error codes to usb_add_hcd() (which takes
-*unsigned* IRQ #), causing request_irq() that it calls to fail with
--EINVAL, overriding an original error code. Stop calling usb_add_hcd()
-with the invalid IRQ #s.
+Starting with following patch MIPS Malta is not able to boot:
+| commit 79edff12060fe7772af08607eff50c0e2486c5ba
+| Author: Rob Herring <robh@kernel.org>
+| scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
 
-Fixes: 78c73414f4f6 ("USB: ohci: add support for tmio-ohci cell")
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/402e1a45-a0a4-0e08-566a-7ca1331506b1@omp.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The reason is the alignment test added to the fdt_ro_probe_(). To fix
+this issue, we need to make sure that fdt_buf is aligned.
+
+Since the dtc patch was designed to uncover potential issue, I handle
+initial MIPS Malta patch as initial bug.
+
+Fixes: e81a8c7dabac ("MIPS: Malta: Setup RAM regions via DT")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-tmio.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/mti-malta/malta-dtshim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
-index cfcfadfc94fc..9c9e97294c18 100644
---- a/drivers/usb/host/ohci-tmio.c
-+++ b/drivers/usb/host/ohci-tmio.c
-@@ -202,6 +202,9 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
- 	if (!cell)
- 		return -EINVAL;
+diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
+index 7859b6e49863..5b5d78a7882a 100644
+--- a/arch/mips/mti-malta/malta-dtshim.c
++++ b/arch/mips/mti-malta/malta-dtshim.c
+@@ -26,7 +26,7 @@
+ #define  ROCIT_CONFIG_GEN1_MEMMAP_SHIFT	8
+ #define  ROCIT_CONFIG_GEN1_MEMMAP_MASK	(0xf << 8)
  
-+	if (irq < 0)
-+		return irq;
-+
- 	hcd = usb_create_hcd(&ohci_tmio_hc_driver, &dev->dev, dev_name(&dev->dev));
- 	if (!hcd) {
- 		ret = -ENOMEM;
+-static unsigned char fdt_buf[16 << 10] __initdata;
++static unsigned char fdt_buf[16 << 10] __initdata __aligned(8);
+ 
+ /* determined physical memory size, not overridden by command line args	 */
+ extern unsigned long physical_memsize;
 -- 
 2.30.2
 
