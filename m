@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A839C4111E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE0F4111E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhITJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhITJ1e (ORCPT
+        id S232966AbhITJ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:28:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63664 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232897AbhITJ2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:27:34 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B160FC061574;
-        Mon, 20 Sep 2021 02:26:07 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id c7so34848878qka.2;
-        Mon, 20 Sep 2021 02:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=au55GNjpfBfkdbCkHp9jPXoTXVquLSMkLM/GCREZpo0=;
-        b=ZQ6Km5pS4aZ+jKXmwtMjz5cU5HdmwC/LQMatHVfmvToefzsCxXzdC4opylr49dcEDK
-         aVTtu5upLFxpJj3pzQWu3zy+LKFvvqWRihwUWfqUzOhOD6ayi1/6EifX2xyTUeJKkelg
-         9FRFxJVr28TPZBb7fzJqB6/afv2ZRsMXRK60ZBh+GP5TupNFSNQ7vhPv8/2Vc8NNrovU
-         nn8Qc0MveyEavMN78nibOKgUwmVJ+g4lyMXCIWP3SDSbSOV8st7QcVQijzL8JINEj4XE
-         HjPIRRNLV99OUVh96tv2Niwh8X8Z8RW3vFWVIFbVxgHj73SgnyNcz07PStgJR08gixtG
-         0kFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=au55GNjpfBfkdbCkHp9jPXoTXVquLSMkLM/GCREZpo0=;
-        b=qg8977LomzU85iUL0m6hyDQIH2eKx5TNh/mrBxIS6QTgS7i6eZZSS4gC1A0O0fQYEp
-         U4k7Zi2cQEZfgY1cO2rXqd6jm0wYyscHDILdoZcjevW6Z5Zods05W37ahsijmFQvCviC
-         IouaLZb2iOHzr/xNtgAtPtDTk4vK/jRnHfeU5MhlWs9UziLzgUzbonfLY+Wz5c39CiaU
-         U9fzpINO0SgEQIv5IATrtkdUyEeEpBF4SdEEmNguDqEOLqWFUsEIO3v2WEigsJh6/ewT
-         ukj3rt3w9iv1YNwo89dFmjDBiH7wlsEvxwCvsk2Km6YYGvuePUZ2hC7dKTwyyK+4ldqH
-         PTCw==
-X-Gm-Message-State: AOAM5337mb24Pf8BKVhr4udqFR5fFGLzDEZvaMM/Gnu4BQLtdmZCMkfd
-        /4wBRcA1fAU1Wow/u7sS/GjNbzG6WWam5j6Lgsy1HgX8XVTARw==
-X-Google-Smtp-Source: ABdhPJzQhK7gME1s4V90C3jebKNsTrgkIgvpbRz5fREuKp7WJrO6DbSe9WTuRhqyXyR59mcWaEp0QhYZi33lnD8wvhM=
-X-Received: by 2002:a37:f909:: with SMTP id l9mr22993655qkj.512.1632129966520;
- Mon, 20 Sep 2021 02:26:06 -0700 (PDT)
+        Mon, 20 Sep 2021 05:28:11 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18K6LDeQ005531;
+        Mon, 20 Sep 2021 05:26:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=x9dqw3sgaIja7h8RxzrxXHI7I4FsA4/B/BOuhV8Izao=;
+ b=fPo5KV+CgQscPrL06yLAd/kgbypqLCtqJQKYH1qkkKmBh76hadslNy+NQEgdJlBIYssH
+ 51KFWt0AU6348buDlaL/nI9RmzaIfWrAL/lMGyaDbwXKTuzk5pvj7EMjwd7t5qXvfpCC
+ QVVP2I4BZsYgvOXiFd6AbsgAuEE0YSnb5E8XKLbr4GA6V/pHmx/6MpMAll8VrA9MK36Z
+ xIMdL3brIunMmmkfgXdQqQ6WLpz4ACe2DIzopK5Uk4QmzJu/9i1bLtIxD9rIS53eaDKX
+ NqnACS6Ed3wtotGcgrIlVpqLprarGrklkG75a/pfBvvATUBwaWLXRfFbKS5mNSGBt2/z /w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w785bdk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 05:26:33 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18K9HE75032199;
+        Mon, 20 Sep 2021 05:26:32 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w785bcx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 05:26:32 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18K9D8Qi016928;
+        Mon, 20 Sep 2021 09:26:30 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3b57r8e8qw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:26:29 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18K9QRHI64225546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 09:26:27 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67C5B42056;
+        Mon, 20 Sep 2021 09:26:27 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 80AC542049;
+        Mon, 20 Sep 2021 09:26:26 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.153.169])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 20 Sep 2021 09:26:26 +0000 (GMT)
+Date:   Mon, 20 Sep 2021 12:26:24 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        marmarek@invisiblethingslab.com, Juergen Gross <jgross@suse.com>,
+        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
+Message-ID: <YUhTwPhva5olB87d@linux.ibm.com>
+References: <20210914094108.22482-1-jgross@suse.com>
+ <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
+ <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
+ <YUdtm8hVH0ps18BK@linux.ibm.com>
+ <fc21617d65338078366e70704eb55789a810e45e.camel@gmx.de>
 MIME-Version: 1.0
-References: <20210902214708.1776690-1-robimarko@gmail.com> <YUf3aKn78+41Cb/G@builder.lan>
-In-Reply-To: <YUf3aKn78+41Cb/G@builder.lan>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Mon, 20 Sep 2021 11:25:55 +0200
-Message-ID: <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc21617d65338078366e70704eb55789a810e45e.camel@gmx.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zM9K5r-HBDCwr73iehWSlG2TJXATOSBZ
+X-Proofpoint-ORIG-GUID: sirwv8Acx_-XsMO1x2LP7r_pjxpKUbnv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_05,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ mlxscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999 impostorscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109200055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sept 2021 at 04:52, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Thu 02 Sep 16:47 CDT 2021, Robert Marko wrote:
->
-> > IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
-> > supported by the kernel add the required DT nodes.
-> >
-> > Signed-off-by: Robert Marko <robimarko@gmail.com>
->
-> Thanks for your patch Robert.
->
-> > ---
-> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
-> >  1 file changed, 28 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > index a620ac0d0b19..83e9243046aa 100644
-> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> > @@ -82,6 +82,29 @@ scm {
-> >               };
-> >       };
-> >
-> > +     reserved-memory {
-> > +             #address-cells = <2>;
-> > +             #size-cells = <2>;
-> > +             ranges;
-> > +
-> > +             smem_region: memory@4ab00000 {
-> > +                     no-map;
-> > +                     reg = <0x0 0x4ab00000 0x0 0x00100000>;
-> > +             };
-> > +     };
-> > +
-> > +     tcsr_mutex: hwlock {
-> > +             compatible = "qcom,tcsr-mutex";
-> > +             syscon = <&tcsr_mutex_regs 0 0x80>;
->
-> Since it's not okay to have a lone "syscon" and I didn't think it was
-> worth coming up with a binding for the TCSR mutex "syscon" I rewrote the
-> binding a while back. As such qcom,tcsr-mutex should now live in /soc
-> directly.
->
-> So can you please respin accordingly?
+Hi,
 
-Sure, can you just confirm that the:
-reg = <0x01905000 0x8000>;
-
-Is the whole TCSR range as I don't have docs?
-
-Regards,
-Robert
->
-> Thanks,
-> Bjorn
->
-> > +             #hwlock-cells = <1>;
-> > +     };
-> > +
-> > +     smem {
-> > +             compatible = "qcom,smem";
-> > +             memory-region = <&smem_region>;
-> > +             hwlocks = <&tcsr_mutex 0>;
-> > +     };
-> > +
-> >       soc: soc {
-> >               #address-cells = <0x1>;
-> >               #size-cells = <0x1>;
-> > @@ -293,6 +316,11 @@ gcc: gcc@1800000 {
-> >                       #reset-cells = <0x1>;
-> >               };
+On Mon, Sep 20, 2021 at 02:56:15AM +0200, Mike Galbraith wrote:
+> On Sun, 2021-09-19 at 20:04 +0300, Mike Rapoport wrote:
 > >
-> > +             tcsr_mutex_regs: syscon@1905000 {
-> > +                     compatible = "syscon";
-> > +                     reg = <0x01905000 0x8000>;
-> > +             };
-> > +
-> >               sdhc_1: sdhci@7824900 {
-> >                       compatible = "qcom,sdhci-msm-v4";
-> >                       reg = <0x7824900 0x500>, <0x7824000 0x800>;
-> > --
-> > 2.31.1
+> > Can you please send the boot log of a working kernel up to
 > >
+> > "Memory: %luK/%luK available"
+> >
+> > line for both of them?
+> 
+> Desktop box:
+> [    0.000000] microcode: microcode updated early to revision 0x28, date = 2019-11-12
+> [    0.000000] Linux version 5.15.0.g02770d1-tip (root@homer) (gcc (SUSE Linux) 7.5.0, GNU ld (GNU Binutils; SUSE Linux Enterprise 15) 2.35.1.20201123-7.18) #46 SMP Sun Sep 19 18:42:41 CEST 2021
+> [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.15.0.g02770d1-tip root=UUID=891c2a1f-cc1a-464b-a529-ab6add65aa21 scsi_mod.use_blk_mq=1 ftrace_dump_on_oops skew_tick=1 nortsched nodelayacct audit=0 cgroup_disable=memory cgroup_hide=all mitigations=off noresume panic=60 ignore_loglevel showopts crashkernel=204M
+
+Thanks!
+Can't say anything caught my eye, except the early microcode update.
+Just to rule that out, can you try booting without the early microcode
+update?
+
+And, to check Juergen's suggestion about failure in
+memblock_x86_reserve_range_setup_data(), can you try this patch on top of
+the failing tip:
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 25425edc81a4..78162d9e90cf 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -716,8 +716,6 @@ static void __init early_reserve_memory(void)
+ 	if (efi_enabled(EFI_BOOT))
+ 		efi_memblock_x86_reserve_range();
+ 
+-	memblock_x86_reserve_range_setup_data();
+-
+ 	reserve_ibft_region();
+ 	reserve_bios_regions();
+ 	trim_snb_memory();
+@@ -888,6 +886,8 @@ void __init setup_arch(char **cmdline_p)
+ 	 */
+ 	x86_configure_nx();
+ 
++	memblock_x86_reserve_range_setup_data();
++
+ 	parse_early_param();
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
+
+-- 
+Sincerely yours,
+Mike.
