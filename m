@@ -2,110 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B851A4117B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEAA4117BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbhITPDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbhITPDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:03:05 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF87DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:01:38 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id dj4so6700413edb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z6SXVjESwxqs4/+lmjaMikpAAHEBRQ8ZRJFrE3wi3Bw=;
-        b=UKTuZjmty+RFPaupr20A8UCZDY8504Sk+38CFMdAglqniYuLPAMBF94HWGXR5fQc+5
-         ZbPwyT9XkZQwJafvZWCO7WbtOT/V4FmTxB6Jixv1JEcauu9Fk/oGrYyWdg37cbX8N2d8
-         Nvg1lDsjOCF2jY2pSxfuMwcwyJxbfuAK44NDMdyyhGQY/wEB2IJcJv14GKfxjuARjmkV
-         +n7/euaMZT5n17Idl0UdXntBNVq70Wxpqbf2lJNhoF67H/kCP1LQeOKzE6QmJfUDWqO4
-         XPan2swbgqA9MwzQDHee04OziG4E4PRXrNuvYgcSEdn5xo1godwXuQwoVieBAiEmfebh
-         kT9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z6SXVjESwxqs4/+lmjaMikpAAHEBRQ8ZRJFrE3wi3Bw=;
-        b=NgkSCY4NgfKZNwN/d7tQq5n1aOP+hWVtzVkfrmNV4YmTqoI3/E/wfuJE6UP27EnCsI
-         HKOHmmPRZmcAIL3q9E12l1quZ6l1ZAdteHmjUZOLbZ4YtP6VfTNVubP+2M+LA8sHJ/7C
-         tBJvr3UgOLToPULIKkJne6jnaA83t6SlKDC5WNCJQrtPzS1dNH4Decu64QH7EXf008Ig
-         w5syjeea4r+5/hK+ALXcyHvAxpqXPQ8YPtt38C+CbBVDgCI4ctmlWdT8ShoPFg5B8Ilk
-         mP6NWt5B94AmByVGzopQ/H/lcx1SgjzT6nB4X0ADvzGspZ2E6UNfD/GVXYTUFxHNie+o
-         DI2A==
-X-Gm-Message-State: AOAM531oZoLqQrRMt6Bf9pgvyllCCh1wvva9ExfnRlrK7QlOhq7TyKDh
-        ed7YhZh9wTKFNmiEj9fYtpjkuiZ86BfZ5Udr6/zjmg==
-X-Google-Smtp-Source: ABdhPJzT1B90STBVxrV2Y11rYWrG6lqNbbI3X7Hc7MS7LxIhduOaEblG0K9zBWTd7NJQN4IENPBYzFOg9JqgvyaI4Gg=
-X-Received: by 2002:a05:6402:399:: with SMTP id o25mr30240808edv.118.1632150021260;
- Mon, 20 Sep 2021 08:00:21 -0700 (PDT)
+        id S237982AbhITPEK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 11:04:10 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9745 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231887AbhITPEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 11:04:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="210228951"
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="210228951"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 08:02:29 -0700
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="548820723"
+Received: from msgunjal-mobl.amr.corp.intel.com (HELO localhost) ([10.249.254.154])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 08:02:24 -0700
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl>
- <20210920140938.GA24424@lst.de> <CAMuHMdXoZdhSydMpbW8B6oQJNnpYpTxmhHrV5CJNTUP7T1KsoA@mail.gmail.com>
- <20210920143046.GA26163@lst.de> <CAMRc=McQoD=cUHLu6TMyW85fdtXOm4x38tHVnEGjkVfcfX0mfA@mail.gmail.com>
- <CAMuHMdXUpMvhjjgNdLgfJvaWWG9_oHa_pmx4TTy0mC1p1zUEmw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXUpMvhjjgNdLgfJvaWWG9_oHa_pmx4TTy0mC1p1zUEmw@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 20 Sep 2021 17:00:10 +0200
-Message-ID: <CAMRc=MdNQ+rquq6_rf-rxvoPzz9G0EzO4T=ryF6XYXh51NBL_w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jack Winch <sunt.un.morcov@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YUSUb+JP+e0f+00G@hirez.programming.kicks-ass.net>
+References: <96ab9cf1-250a-8f34-51ec-4a7f66a87b39@linux.intel.com> <a7e5d99d-39c4-6d27-3029-4689a2a1a17a@linux.intel.com> <YTtznr85mg5xXouP@hirez.programming.kicks-ass.net> <e8a7754e-23e7-0250-5718-101a56d008f0@linux.intel.com> <YUBGPdDDjKlxAuXJ@hirez.programming.kicks-ass.net> <205e1591-343b-fb77-cfca-9c16af1484bd@linux.intel.com> <YUCpfrbfPSZvD3Xl@phenom.ffwll.local> <a374d768-213e-58e7-d281-1c46d1c0c105@linux.intel.com> <YUNGaztoBrTzEuEG@hirez.programming.kicks-ass.net> <YUSUb+JP+e0f+00G@hirez.programming.kicks-ass.net>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kernel/locking: Add context to ww_mutex_trylock.
+From:   Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <163215014127.5950.11970655278841631448@jlahtine-mobl.ger.corp.intel.com>
+User-Agent: alot/0.8.1
+Date:   Mon, 20 Sep 2021 18:02:21 +0300
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 4:50 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Bartosz,
->
-> On Mon, Sep 20, 2021 at 4:47 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > On Mon, Sep 20, 2021 at 4:30 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > On Mon, Sep 20, 2021 at 04:29:30PM +0200, Geert Uytterhoeven wrote:
-> > > > On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
-> > > > > On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
-> > > > > > For better readability and maintenance: use the BIT() macro for flag
-> > > > > > definitions.
-> > > > >
-> > > > > NAK.  BIT() is the stupidest macro in the kernel and shall not be used
-> > > > > ever.  And I'm pretty sure we had this discussion a few times.
+Quoting Peter Zijlstra (2021-09-17 16:13:19)
+> On Thu, Sep 16, 2021 at 03:28:11PM +0200, Peter Zijlstra wrote:
+> > On Thu, Sep 16, 2021 at 03:00:39PM +0200, Maarten Lankhorst wrote:
+> > 
+> > > > For merge logistics, can we pls have a stable branch? I expect that the
+> > > > i915 patches will be ready for 5.16.
 > > > >
-> > > > Care to explain why it is a stupid macro?
-> > >
-> > > Please look at the previous thread.  I'm tired of this discussion.
-> >
-> > The only previous answer from Christoph is this:
-> > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399968.html
->
-> Yep, found that one, too.
->
-> Now, as these definitions do not correspond to hardware register bits,
-> perhaps use an enum?
->
+> > > > Or send it in for -rc2 so that the interface change doesn't cause needless
+> > > > conflicts, whatever you think is best.
+> > 
+> > > Yeah, some central branch drm could pull from, would make upstreaming patches that depends on it easier. :)
+> > 
+> > I think I'll make tip/locking/wwmutex and include that in
+> > tip/locking/core, let me have a poke.
+> 
+> This is now so. Enjoy!
 
-These are flags, we can set more than one to any given dirent.
+This is now merged to drm-intel-gt-next.
 
-Anyway, I'm more interested in Al's comments on the implementation of
-committable items than bikeshedding about whether to use or not to use
-BIT() so I'll wait for those before revisiting this patch.
-
-Bart
+Regards, Joonas
