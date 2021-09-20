@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEC7411788
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8396F41178E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240917AbhITOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:52:11 -0400
-Received: from mout.perfora.net ([74.208.4.196]:33591 "EHLO mout.perfora.net"
+        id S241129AbhITOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:52:30 -0400
+Received: from mout.perfora.net ([74.208.4.196]:54421 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240848AbhITOv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:51:58 -0400
+        id S241028AbhITOwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:52:12 -0400
 Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
- (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1MPXEU-1mFjRc1hi6-00MdhE;
- Mon, 20 Sep 2021 16:50:06 +0200
+ (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1Mjjrb-1n8q2D1Ot1-00lCrF;
+ Mon, 20 Sep 2021 16:50:10 +0200
 From:   Marcel Ziswiler <marcel@ziswiler.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
         Fabio Estevam <festevam@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andreas Kemnade <andreas@kemnade.info>,
-        Marek Vasut <marex@denx.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         NXP Linux Team <linux-imx@nxp.com>,
+        Otavio Salvador <otavio@ossystems.com.br>,
         Pascal Zimmermann <pzimmermann@dh-electronics.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Russell King <linux@armlinux.org.uk>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/9] ARM: imx_v6_v7_defconfig: build imx sdma driver as module
-Date:   Mon, 20 Sep 2021 16:49:34 +0200
-Message-Id: <20210920144938.314588-6-marcel@ziswiler.com>
+        Shawn Guo <shawnguo@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v4 6/9] ARM: imx_v6_v7_defconfig: enable bpf syscall and cgroup bpf
+Date:   Mon, 20 Sep 2021 16:49:35 +0200
+Message-Id: <20210920144938.314588-7-marcel@ziswiler.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210920144938.314588-1-marcel@ziswiler.com>
 References: <20210920144938.314588-1-marcel@ziswiler.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:LAiHB2tfvj4HCStczPgqT6XKBTFzelYtAi2DqRSawydwAmqKYQ9
- t9Hh+5fUYx99qFU0XMC4Jt0rhjM+Hn5+pU/JAFEeKldYhXC4zN8jkFCyNe05sKgeMkVcSCq
- zRkckn+ZgHDWgYSt2A3K+mSJEClXkxDJw1tDpVH23ZrJ2h8gm+SrmTRO35EqUGwtRm+NJN4
- mkrwG2xlg+Fzxm6WHJj0A==
+X-Provags-ID: V03:K1:2X/SNXi3Lmk1Ia0b42n9eWIMa40a0ZupsaW5tY7CHbXXHbe9eAF
+ v/DBKmFy02usMjtk/gojrg8Ca+ReMNg/FZFr03O1lJXU2Kf5U0c+mS7cdiHzErEWGuJ/izz
+ jxZEc2CWt5bTcehJamguMU+3YR4fV3L3BpPWWD1sIc+82dx4AtUc+Z1GX2BLqlFeiAxGFRs
+ Nku6I6DqsT3ArLvxAuwaw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kQCE7eyWWCY=:krvXzYauDRsTjOlCcO+yDz
- Cb4+OKA1AqHrEvR+0Ro60zc8HnwtAFFMfdSEaCmFyrQnboYYNnnJVyAqY6wTQj+hKAirlKMit
- y23/9+3HVC4ouxip0TAU8vdHE9G7lili9opkhySqnDYfTM8t8XRpmSaC8Y54+cs0xPTgPPXQg
- sd8GtxgMitKAeAz0n1YLG/ZDlkO2IApPlyk1GvBZTKw10Hg9RIooFkTc/rAdbOkVzHL05szHj
- soQHzflgCNl/1DDoXosgHptQNWr3AzPwC4QFSgfgfFOpIgCS/BfJr+C9F73GxiUV5WIKAa2MS
- 8z5fjMWSeEHYcA8uow2w/dx7D4QFLnscCnJ7AMrmpSUhtxoELUxZY0EdiDlDIoDVzZK2+QX/A
- I0AqeQsQk/ckWwZSf6fkZUfChlFU5+gWs7ciwcVllNpZDp94+gc3OHMWVigW9AnwB3MD5/dfH
- DG34y7DKJNxAfmgLwWd6+rG6UPeG3hNYX3QcB13FPMH1zfOvhSU7eov6OeNN3jMGI4CNGpJIO
- gJXIvkHsvzip745OX1Tg19hu2DKvJTLRpk9hXUKzhwobfagNq618qC752d6Z3ef3ALGPX6wCc
- ukwO0jqvmQ5TqXy/wyBQ/uQUhLRKoZxp9ix0xue8emX5R00L9r+wfJ8hWe6eAEMUqDXlDzX9D
- 7bDflVQ+t8NxXluHeLZnPAunPSXTqJU9GqEmqsL4IfajMfjArRzUZdbPu4jSzPIbcRM6NpHv/
- /Y4y3Q0S9LqLlEik4Adh6RFPnoi9qmlYheUQqA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:x+gGuuTIlMY=:8+TA1j6FYwJXvc+iFXc1fe
+ viLxkkSVK6LDO46ypj5VT+h8IeRXfAvxSKeQlQxgeSD73oeGP0uzJtH7Boe8eugdcH4W27vb3
+ 3LriU7IWTnuiYkxPPjDkda8Nh/DiTQSBr20ggclD05Vrf2Y/22QaikpiQtBnnOCpndl5V5l9V
+ j6WFA2YMaMXepfl4lNn+s4pYR1qQ0iPkli+F4pLTdMh8jYJfQJActxaD250gKAsDocvF9yfgs
+ c8Qy4mezCN1noBGjJmCJVCXxJ8O91oWHhEV8lz2vHQXnxVDpJEDDkr44ks/yD5zL73sFQHHlA
+ n9DihAV/KPgtQeihRLFhldvBbX57C6NwxKQ8mrnxNjoZhUzntlX/uI+2KITT/FpREjdK4uMyP
+ 4CklpCCMcg9p1MTQtspq/fkcN1S8plZtK/MxlzCWvKpHWEVAcRTFmU6Vytkir47ELVTJtvCBe
+ pk97U0QIFe7Um5tlq5Hd5neZ/kTNCUrFPWbuRjPGbuGZ0/69EqkNQhxzMzNPIlOgaoo/CMutO
+ 9V3Tl0+VOW3huVXMRZNIFNIrX5bwDQ8b2mly8JmnVH9hzsf1sbJyAxCXCcqfTv+ZWG+RQm/zV
+ fafscOJzZFiIBPTQAfSTznmCbOjivW+Oc1bxQaUERVNCIEaKqQTu64gcMwEGbj7Gmz6sj8vsz
+ 8GG9cj1n8OH1Wg+fC4QNlrwlAzwRDdSpBeOei2NTBUqbO7agGxIdMbxh5yyaW9bktRFqcwHHt
+ Il+Tfmic7Qd4gSXQWqQsAnAoeP7Yp4otqoyeHQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Build CONFIG_IMX_SDMA as a module to avoid the following boot issue:
+Enable CONFIG_BPF_SYSCALL and CONFIG_CGROUP_BPF to allow for systemd
+interoperability. This avoids the following failure on boot:
 
-[    5.214751] imx-sdma 20ec000.sdma: Direct firmware load for
- imx/sdma/sdma-imx6q.bin failed with error -2
-[    5.215762] imx-sdma 20ec000.sdma: Falling back to sysfs fallback
- for: imx/sdma/sdma-imx6q.bin
+[   10.615914] systemd[1]: system-getty.slice: unit configures an IP
+ firewall, but the local system does not support BPF/cgroup firewalling.
 
 Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 Reviewed-by: Fabio Estevam <festevam@gmail.com>
@@ -74,22 +81,27 @@ Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Changes in v3:
 - Add Fabio's reviewed-by. Thanks!
 
- arch/arm/configs/imx_v6_v7_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/configs/imx_v6_v7_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 21803cd2d1ba7..c0008b7faf2ce 100644
+index c0008b7faf2ce..3e58c76763563 100644
 --- a/arch/arm/configs/imx_v6_v7_defconfig
 +++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -380,7 +380,7 @@ CONFIG_RTC_DRV_MXC_V2=y
- CONFIG_RTC_DRV_SNVS=y
- CONFIG_DMADEVICES=y
- CONFIG_FSL_EDMA=y
--CONFIG_IMX_SDMA=y
-+CONFIG_IMX_SDMA=m
- CONFIG_MXS_DMA=y
- CONFIG_DMATEST=m
- CONFIG_STAGING=y
+@@ -2,11 +2,13 @@ CONFIG_KERNEL_LZO=y
+ CONFIG_SYSVIPC=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
+ CONFIG_PREEMPT_VOLUNTARY=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=18
+ CONFIG_CGROUPS=y
++CONFIG_CGROUP_BPF=y
+ CONFIG_RELAY=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_EXPERT=y
 -- 
 2.26.2
 
