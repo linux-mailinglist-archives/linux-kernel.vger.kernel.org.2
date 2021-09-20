@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61674124B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA44412166
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353059AbhITSge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:36:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
+        id S1358028AbhITSFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379726AbhITSaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:30:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C7C613DA;
-        Mon, 20 Sep 2021 17:26:52 +0000 (UTC)
+        id S1355972AbhITR5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF24363212;
+        Mon, 20 Sep 2021 17:14:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158813;
-        bh=2hwgE9jqFCih2UhY0ejZASKjRP5jzaN5qlDFLtjeRss=;
+        s=korg; t=1632158097;
+        bh=hy3UwUA+8vvNry4bzehpyJHT56yOSvMuXzICl7nOmF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HM8Nrh2ivcrW/e1Nvw2vlxuCvHSX+4iL/H/3httrmwFIKt6pLNxLB9FtcCaIRW98z
-         fQPQzo1unKRqSBuHGwBO/6R7Ux0M+2YK+YC3CRgTMeyFp6Y1vdg2duetWUE0+Sk2V4
-         8syq5HoyWKdd6mRx5UCxg6bZlVSBWKJeZkKu9eIk=
+        b=CJ6HQh0t8PolrwzOBkhMj5WheYSjt4rS8zuKohVFpcwIS6pdHzkdQ9s93wRATFwOr
+         lQG/Su5Hf2Gos33xuIvJOobTXPa3SRlw51PwarryIYV5D2fr437BkuUjBQWbBN9K+z
+         0BW4FLrwrvObKhGWJ552iHWRjVpPI/xakf3Wofxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        stable@vger.kernel.org, Daniele Palmas <dnlplm@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 068/122] PCI: j721e: Add PCIe support for AM64
+Subject: [PATCH 4.19 278/293] net: usb: cdc_mbim: avoid altsetting toggling for Telit LN920
 Date:   Mon, 20 Sep 2021 18:44:00 +0200
-Message-Id: <20210920163918.004565927@linuxfoundation.org>
+Message-Id: <20210920163942.931722571@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+From: Daniele Palmas <dnlplm@gmail.com>
 
-[ Upstream commit c8a375a8e15ac31293d7fda08008d6da8f5df3db ]
+[ Upstream commit aabbdc67f3485b5db27ab4eba01e5fbf1ffea62c ]
 
-AM64 has the same PCIe IP as in J7200 with certain erratas not
-applicable (quirk_detect_quiet_flag). Add support for "ti,am64-pcie-host"
-compatible and "ti,am64-pcie-ep" compatible that is specific to AM64.
+Add quirk CDC_MBIM_FLAG_AVOID_ALTSETTING_TOGGLE for Telit LN920
+0x1061 composition in order to avoid bind error.
 
-Link: https://lore.kernel.org/r/20210811123336.31357-5-kishon@ti.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Daniele Palmas <dnlplm@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/cadence/pci-j721e.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/net/usb/cdc_mbim.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 2f5a49c77074..8a6d68e13f30 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -298,6 +298,17 @@ static const struct j721e_pcie_data j7200_pcie_ep_data = {
- 	.quirk_detect_quiet_flag = true,
- };
- 
-+static const struct j721e_pcie_data am64_pcie_rc_data = {
-+	.mode = PCI_MODE_RC,
-+	.linkdown_irq_regfield = J7200_LINK_DOWN,
-+	.byte_access_allowed = true,
-+};
-+
-+static const struct j721e_pcie_data am64_pcie_ep_data = {
-+	.mode = PCI_MODE_EP,
-+	.linkdown_irq_regfield = J7200_LINK_DOWN,
-+};
-+
- static const struct of_device_id of_j721e_pcie_match[] = {
- 	{
- 		.compatible = "ti,j721e-pcie-host",
-@@ -315,6 +326,14 @@ static const struct of_device_id of_j721e_pcie_match[] = {
- 		.compatible = "ti,j7200-pcie-ep",
- 		.data = &j7200_pcie_ep_data,
+diff --git a/drivers/net/usb/cdc_mbim.c b/drivers/net/usb/cdc_mbim.c
+index 0362acd5cdca..cdd1b193fd4f 100644
+--- a/drivers/net/usb/cdc_mbim.c
++++ b/drivers/net/usb/cdc_mbim.c
+@@ -655,6 +655,11 @@ static const struct usb_device_id mbim_devs[] = {
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
  	},
-+	{
-+		.compatible = "ti,am64-pcie-host",
-+		.data = &am64_pcie_rc_data,
-+	},
-+	{
-+		.compatible = "ti,am64-pcie-ep",
-+		.data = &am64_pcie_ep_data,
-+	},
- 	{},
- };
  
++	/* Telit LN920 */
++	{ USB_DEVICE_AND_INTERFACE_INFO(0x1bc7, 0x1061, USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
++	  .driver_info = (unsigned long)&cdc_mbim_info_avoid_altsetting_toggle,
++	},
++
+ 	/* default entry */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_MBIM, USB_CDC_PROTO_NONE),
+ 	  .driver_info = (unsigned long)&cdc_mbim_info_zlp,
 -- 
 2.30.2
 
