@@ -2,151 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FCA4114D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0F34114DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhITMtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237095AbhITMtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:49:08 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AB0C061574;
-        Mon, 20 Sep 2021 05:47:41 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5B38BE57;
-        Mon, 20 Sep 2021 14:47:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632142057;
-        bh=sUHy5mI48lLJfk0k+EUA5Q2mX9cYsAejPY8yjVUg2ks=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=msjI+3iUrWdFQ0rNpQ9h1aEphCugLPzQGK+AvdqcX51vj4ctb8kiB26dSBp/iwEvw
-         qwEqmoZfKEXornPDuVtejK5URA38OVvGakD/wefgsjEzoSSlxEJD/E/pcDTzvekBaY
-         1pC2bixWM3bGWoPPFeQ3CJZr5Z/q1kyOunX34bTs=
-Date:   Mon, 20 Sep 2021 15:47:07 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+        id S237888AbhITMuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:50:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:60990 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237208AbhITMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:50:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632142128; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=oXH2r2YAvNR0xujgASmm26KkyFaQDUEkr4gUUo/Kmwg=; b=hM8HwFMGS85+BthQAQ51stwie8rcFasfrMNMyCSSTsinxAmENKuVy+qlvVeH0Jko+eIOfm1Y
+ 2hVvmTnkEoTwoz8hFfJz8DS0s9Xc4R/BTt/65p0o1mSwN6zFKAcCnKdFlW5cXUviJWnYs021
+ FdnSucuUtr5/BGKimqVInlOwQao=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6148831165c3cc8c639e2838 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Sep 2021 12:48:17
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2EC55C4338F; Mon, 20 Sep 2021 12:48:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 038A9C4338F;
+        Mon, 20 Sep 2021 12:48:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 038A9C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, Vinod Koul <vkoul@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Jianqiang Chen <jianqiang.chen@xilinx.com>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bob Copeland <me@bobcopeland.com>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: remove debugfs #ifdef
-Message-ID: <YUiCy7A9cXTDGx6s@pendragon.ideasonboard.com>
-References: <20210920122017.205975-1-arnd@kernel.org>
+Subject: Re: [PATCH] [v2] ath5k: fix building with LEDS=m
+References: <20210920122359.353810-1-arnd@kernel.org>
+Date:   Mon, 20 Sep 2021 15:48:10 +0300
+In-Reply-To: <20210920122359.353810-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Mon, 20 Sep 2021 14:23:44 +0200")
+Message-ID: <87sfxzwgz9.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210920122017.205975-1-arnd@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Arnd Bergmann <arnd@kernel.org> writes:
 
-Thank you for the patch.
-
-On Mon, Sep 20, 2021 at 02:20:07PM +0200, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The ptdma driver has added debugfs support, but this fails to build
-> when debugfs is disabled:
-> 
-> drivers/dma/ptdma/ptdma-debugfs.c: In function 'ptdma_debugfs_setup':
-> drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: 'struct dma_device' has no member named 'dbg_dev_root'
->    93 |         debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
->       |                                                      ^
-> drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: 'struct dma_device' has no member named 'dbg_dev_root'
->    96 |         debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
->       |                                                       ^
-> drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: 'struct dma_device' has no member named 'dbg_dev_root'
->   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
->       |                                                    ^
 >
-> Remove the #ifdef in the header, as this only saves a few bytes,
-> but would require ugly #ifdefs in each driver using it.
-> Simplify the other user while we're at it.
-> 
-> Fixes: e2fb2e2a33fa ("dmaengine: ptdma: Add debugfs entries for PTDMA")
-> Fixes: 26cf132de6f7 ("dmaengine: Create debug directories for DMA devices")
+> Randconfig builds still show a failure for the ath5k driver,
+> similar to the one that was fixed for ath9k earlier:
+>
+> WARNING: unmet direct dependencies detected for MAC80211_LEDS
+>   Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
+>   Selected by [m]:
+>   - ATH5K [=m] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && (PCI [=y] || ATH25) && MAC80211 [=y]
+> net/mac80211/led.c: In function 'ieee80211_alloc_led_names':
+> net/mac80211/led.c:34:22: error: 'struct led_trigger' has no member named 'name'
+>    34 |         local->rx_led.name = kasprintf(GFP_KERNEL, "%srx",
+>       |                      ^
+>
+> Copying the same logic from my ath9k patch makes this one work
+> as well, stubbing out the calls to the LED subsystem.
+>
+> Fixes: b64acb28da83 ("ath9k: fix build error with LEDS_CLASS=m")
+> Fixes: 72cdab808714 ("ath9k: Do not select MAC80211_LEDS by default")
+> Fixes: 3a078876caee ("ath5k: convert LED code to use mac80211 triggers")
+> Link: https://lore.kernel.org/all/20210722105501.1000781-1-arnd@kernel.org/
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/dma/xilinx/xilinx_dpdma.c | 15 +--------------
->  include/linux/dmaengine.h         |  2 --
->  2 files changed, 1 insertion(+), 16 deletions(-)
-> 
-> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
-> index b280a53e8570..ce5c66e6897d 100644
-> --- a/drivers/dma/xilinx/xilinx_dpdma.c
-> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
-> @@ -271,9 +271,6 @@ struct xilinx_dpdma_device {
->  /* -----------------------------------------------------------------------------
->   * DebugFS
->   */
-> -
-> -#ifdef CONFIG_DEBUG_FS
-> -
+> Changes in v2:
+> - avoid link failure when NEW_LEDS is disabled
 
-It's only a few bytes of data in struct dma_device, but a bit more in
-.text here. Is the simplification really required in this driver ?
-
->  #define XILINX_DPDMA_DEBUGFS_READ_MAX_SIZE	32
->  #define XILINX_DPDMA_DEBUGFS_UINT16_MAX_STR	"65535"
->  
-> @@ -299,7 +296,7 @@ struct xilinx_dpdma_debugfs_request {
->  
->  static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
->  {
-> -	if (chan->id == dpdma_debugfs.chan_id)
-> +	if (IS_ENABLED(CONFIG_DEBUG_FS) && chan->id == dpdma_debugfs.chan_id)
->  		dpdma_debugfs.xilinx_dpdma_irq_done_count++;
->  }
->  
-> @@ -462,16 +459,6 @@ static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
->  		dev_err(xdev->dev, "Failed to create debugfs testcase file\n");
->  }
->  
-> -#else
-> -static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
-> -{
-> -}
-> -
-> -static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
-> -{
-> -}
-> -#endif /* CONFIG_DEBUG_FS */
-> -
->  /* -----------------------------------------------------------------------------
->   * I/O Accessors
->   */
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index e5c2c9e71bf1..9000f3ffce8b 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -944,10 +944,8 @@ struct dma_device {
->  	void (*device_issue_pending)(struct dma_chan *chan);
->  	void (*device_release)(struct dma_device *dev);
->  	/* debugfs support */
-> -#ifdef CONFIG_DEBUG_FS
->  	void (*dbg_summary_show)(struct seq_file *s, struct dma_device *dev);
->  	struct dentry *dbg_dev_root;
-> -#endif
->  };
->  
->  static inline int dmaengine_slave_config(struct dma_chan *chan,
+I'll queue this to v5.15.
 
 -- 
-Regards,
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Laurent Pinchart
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
