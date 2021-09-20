@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D38941142C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD14411436
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236649AbhITMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhITMUu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:20:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374F7C061574;
-        Mon, 20 Sep 2021 05:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wfXs9/qwoOMAzXZ/BK5m1l64BNcgy6HZMP06a/9fWyo=; b=KEf6nwYE0AAFd9pXs8mIm7zPgb
-        8PHeG4jyD5P4I87ypOPZEJ28jd5ulMXi5EJLxviysHEuCCNkY9KAbTMt3ZFx9J+uI4II3IaMvwRWB
-        GRfKN0OuJ6Qz5O0x3OQW2Wz9H4GeLpxQJMCfcyILzaZsiAgV7HwVXB931TjBIuZ6ncr4BufWGhNS+
-        9gSszMGMTZ+81P9crYXHenanXpsk0OmZRGpWTtyyOlx4S4/REry7AzOC7znzWD+jeqa9V1BC4zdPY
-        Fs/EmjE0sMsuU+FCL9wY1p4DDrnsciq54WlYT7n4aatHZb/+WukBh9Muqk9lRqVRkEiIJKBVjUFIT
-        5JTSYCkQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSIGA-002e3G-CM; Mon, 20 Sep 2021 12:19:03 +0000
-Date:   Mon, 20 Sep 2021 13:18:58 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] io_uring: warning about unused-but-set parameter
-Message-ID: <YUh8Mj59BtyBdTRH@infradead.org>
-References: <20210920121352.93063-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920121352.93063-1-arnd@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S237732AbhITMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237696AbhITMVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:21:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 843A86109D;
+        Mon, 20 Sep 2021 12:20:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632140405;
+        bh=ZuqWbWsmJdT1zt8kIp2oxlEwOHiSglqsHFzFIv9Tc4o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ncEZNfciBAH/ZMglRRkODj+3RJJ7WvI9401mdynnX+Lt274vkaJWqiII6uVhZaOtX
+         fl4jehBpzaVTENEmP/me7ENq6RJA1Zn4Yvr3WpiXL51cOJD/+9EgkoMXbjb6nWqsRz
+         O36vu/fe8+0OopLMw/lVCkEvmoajGeM238ZfHA+IYZjsSfTpS049oSGciiG/ysXI7c
+         tvH1E24dgu3t0DyM9N8raV7k6wCX+iy7pMJ7X6veiQ194EqIfzQ2NJbp2ewqW1d5Y1
+         HQ0G+UUJpPgjHR3m9q4SwhoYQ2/zpmegQWoX+NYVUDCxWpipcEB952n0pKil21sCH1
+         Kf0ZRx40CyOJQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v5.15-rc2
+Date:   Mon, 20 Sep 2021 13:19:02 +0100
+Message-Id: <20210920122004.843A86109D@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:13:44PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When enabling -Wunused warnings by building with W=1, I get an
-> instance of the -Wunused-but-set-parameter warning in the io_uring code:
-> 
-> fs/io_uring.c: In function 'io_queue_async_work':
-> fs/io_uring.c:1445:61: error: parameter 'locked' set but not used [-Werror=unused-but-set-parameter]
->  1445 | static void io_queue_async_work(struct io_kiocb *req, bool *locked)
->       |                                                       ~~~~~~^~~~~~
-> 
-> There are very few warnings of this type, so it would be nice to enable
-> this by default and fix all the existing instances. I was almost
-> done, but this was added recently as a precaution to prevent code
-> from using the parameter, which could be done by either removing
-> the initialization, or by adding a (fake) use of the variable, which
-> I do here with the cast to void.
+The following changes since commit 26cfc0dbe43aae60dc03af27077775244f26c167:
 
-Please don't.  These warning are utterly stupid and should not be
-enabled.  For anything that is a "method" of sorts (that is assigned
-to a function pointer), unused argument are perfectly normal.
+  spi: spi-zynq-qspi: use wait_for_completion_timeout to make zynq_qspi_exec_mem_op not interruptible (2021-08-26 13:42:44 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.15-rc2
+
+for you to fetch changes up to 2bab94090b01bc593d8bc25f68df41f198721173:
+
+  spi: tegra20-slink: Declare runtime suspend and resume functions conditionally (2021-09-09 14:16:27 +0100)
+
+----------------------------------------------------------------
+spi: Fixes for v5.15
+
+This contains a couple of fixes, one fix for handling of zero length
+transfers on Rockchip devices and a warning fix which will conflict with
+a version you did but cleans up some extra unneeded forward declarations
+as well which seems a bit neater.
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      spi: tegra20-slink: Declare runtime suspend and resume functions conditionally
+
+Tobias Schramm (1):
+      spi: rockchip: handle zero length transfers without timing out
+
+ drivers/spi/spi-rockchip.c      | 6 ++++++
+ drivers/spi/spi-tegra20-slink.c | 5 ++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
