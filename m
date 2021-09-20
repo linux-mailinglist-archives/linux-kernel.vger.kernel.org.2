@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E92C54124C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3F4412157
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353220AbhITSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:38:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
+        id S1357482AbhITSEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380110AbhITSce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:32:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2F461458;
-        Mon, 20 Sep 2021 17:27:59 +0000 (UTC)
+        id S1355737AbhITR4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:56:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF9B61CA7;
+        Mon, 20 Sep 2021 17:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158880;
-        bh=3yos3JvVPLcMvFsxovYx1mLu68HlfZthsxXRfdeKGhs=;
+        s=korg; t=1632158060;
+        bh=xESobgeIkbpJA62rLjpHEFlWrZqp6AXEsmRZp0ZSGiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rp5OI6k6sY4RRKRT4kVsyS4hGo4hFDPnF+NYRzpONEa5raYHyRsQCkjPbq8BWWtZr
-         PWvh+mV8qR14koohncDasbfSPeCFd+GvHQvDvpXxIkrcI2yT2+BuLy3HqwfrM6oquH
-         J+nAOjiE/Ka/La1/kPBrBPiGZG5ZDbSBXln3QDbs=
+        b=S9zePXkdiCyWF3egT3uBieR/bTTBEGR/cm22bIsZxtq+TqwT7xH5b4VKyGNlZRP1B
+         A7i/VwGo+psop34mOVdVaEylhvP0w+51vbf2yPiB0JjebhvdvGbUlh7e2s27xAJvoi
+         uUq6LesnYHycbhKcZDRFdji65T5lQA6tvnOiCjS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 065/122] PCI: cadence: Use bitfield for *quirk_retrain_flag* instead of bool
+        stable@vger.kernel.org,
+        "Ryan J. Barnett" <ryan.barnett@collins.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 275/293] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
 Date:   Mon, 20 Sep 2021 18:43:57 +0200
-Message-Id: <20210920163917.907574413@linuxfoundation.org>
+Message-Id: <20210920163942.831129095@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit f4455748b2126a9ba2bcc9cfb2fbcaa08de29bb2 ]
+[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
 
-No functional change. As we are intending to add additional 1-bit
-members in struct j721e_pcie_data/struct cdns_pcie_rc, use bitfields
-instead of bool since it takes less space. As discussed in [1],
-the preference is to use bitfileds instead of bool inside structures.
+"PAGESIZE / 512" is the number of ECC chunks.
+"ECC_BYTES" is the number of bytes needed to store a single ECC code.
+"2" is the space reserved by the bad block marker.
 
-[1] -> https://lore.kernel.org/linux-fsdevel/CA+55aFzKQ6Pj18TB8p4Yr0M4t+S+BsiHH=BJNmn=76-NcjTj-g@mail.gmail.com/
+"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
+than the total number of OOB bytes, otherwise it won't fit.
 
-Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-Link: https://lore.kernel.org/r/20210811123336.31357-2-kishon@ti.com
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Fix the equation by substituting s/>=/<=/.
+
+Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/cadence/pci-j721e.c    | 2 +-
- drivers/pci/controller/cadence/pcie-cadence.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index d34ca0fda0f6..973b309ac9ba 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -63,7 +63,7 @@ enum j721e_pcie_mode {
- 
- struct j721e_pcie_data {
- 	enum j721e_pcie_mode	mode;
--	bool quirk_retrain_flag;
-+	unsigned int		quirk_retrain_flag:1;
- };
- 
- static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 6705a5fedfbb..60981877f65b 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -299,7 +299,7 @@ struct cdns_pcie_rc {
- 	u32			vendor_id;
- 	u32			device_id;
- 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
--	bool                    quirk_retrain_flag;
-+	unsigned int		quirk_retrain_flag:1;
- };
- 
- /**
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index c059ab74ed88..a4a75fa79524 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -122,7 +122,7 @@ on various other factors also like;
+ 	so the device should have enough free bytes available its OOB/Spare
+ 	area to accommodate ECC for entire page. In general following expression
+ 	helps in determining if given device can accommodate ECC syndrome:
+-	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
++	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
+ 	where
+ 		OOBSIZE		number of bytes in OOB/spare area
+ 		PAGESIZE	number of bytes in main-area of device page
 -- 
 2.30.2
 
