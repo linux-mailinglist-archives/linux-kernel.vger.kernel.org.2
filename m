@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9821F412819
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0770341282A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242972AbhITVdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:33:06 -0400
-Received: from heliosphere.sirena.org.uk ([172.104.155.198]:48604 "EHLO
-        heliosphere.sirena.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhITVbE (ORCPT
+        id S229913AbhITVkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:40:12 -0400
+Received: from mail-pj1-f50.google.com ([209.85.216.50]:39536 "EHLO
+        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232305AbhITViL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:31:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sirena.org.uk; s=20170815-heliosphere; h=In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OlkMXkh2s33OM0B7hD3sf+exmaErS91ze8eL+MBOpUs=; b=lLSQ/n2eZtJJQBQxqbUfL6Idza
-        pecYvfsJ9tqE95+y202bnfcSUAW7Dg49qhm4iaVwBiOXLhDG4o+zixTqUWmE4UvZSyjk+HLd26G2m
-        cvL7tJf6/jhzMStMzBl11oR20v2PacLsYomMPyW/G++TOEBKs3K9prIIzXW8z4fbYQt8=;
-Received: from cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net ([92.233.91.117] helo=fitzroy.sirena.org.uk)
-        by heliosphere.sirena.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <broonie@sirena.org.uk>)
-        id 1mSQqj-000eWz-DW; Mon, 20 Sep 2021 21:29:18 +0000
-Received: by fitzroy.sirena.org.uk (Postfix, from userid 1000)
-        id 2A43ED0E9AC; Mon, 20 Sep 2021 22:29:18 +0100 (BST)
-Date:   Mon, 20 Sep 2021 22:29:18 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Kirill Marinushkin <kmarinushkin@birdec.com>
-Subject: Re: [PATCH] ASoC: pcm512x: Mend accesses to the I2S_1 and I2S_2
- registers
-Message-ID: <YUj9LqNTH6A4CQcj@sirena.org.uk>
-References: <2d221984-7a2e-7006-0f8a-ffb5f64ee885@axentia.se>
- <ae4b25f1-2b2c-d937-e23d-0f7d23bdf0c4@gmail.com>
- <815cbba4-60d6-8d97-c483-146c2f7c3912@axentia.se>
+        Mon, 20 Sep 2021 17:38:11 -0400
+Received: by mail-pj1-f50.google.com with SMTP id h3-20020a17090a580300b0019ce70f8243so436630pji.4;
+        Mon, 20 Sep 2021 14:36:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tUvDrFJV0hIvR0FAKJySgQhotyp6SN23Xzoslz2iXJo=;
+        b=rwZ8zwlOidTutGkQxGYrOqBF81JA94pO/u/nicLbi8TPvOZ0lWpHXtFWr08RN/wTrJ
+         IiIRTTtidtb818tIxjG/sUl5qP6oemw3Jz7NH5ypuMD3jhsZtqgdq7nXaYmVlHPphAe6
+         JpmYpsu8+zYOKlgCbMae/wIw0vaIS9E8dBUCPclWhDxMbd5eZyuMAIQra8GhouB3syxw
+         OBARQGaw+56cXoXGnBWnkpDI96myiIfCgjYJZfOWdKGg0XEEZaPxNDGthq4sLqiMWIhn
+         C5u9x8Dtl1q17tfaSXB4/8frZQnBZ9LqYhC++2BEzCj6ZaLvpFProu+dyeHa57B/KSaG
+         lYuQ==
+X-Gm-Message-State: AOAM530VxUgz86UupmG9CScevh7BcKZpOOC90kodH2IHniIoGjjidd6X
+        ufdv9YGfPrYmJC0PgNlRyQ0=
+X-Google-Smtp-Source: ABdhPJyw/FT9hwIaBUlZHvWR3+Hn3uHenYuvTL7vKPHQz+qO3v2aNVYX5WaGhiZkP6ICvrNNf+Ln6Q==
+X-Received: by 2002:a17:90a:9a2:: with SMTP id 31mr1283242pjo.58.1632173803816;
+        Mon, 20 Sep 2021 14:36:43 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:6e2a:d64:7d9d:bd4a])
+        by smtp.gmail.com with ESMTPSA id i5sm328287pjk.47.2021.09.20.14.36.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 14:36:42 -0700 (PDT)
+Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
+To:     Luis Chamberlain <mcgrof@kernel.org>, tj@kernel.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+        minchan@kernel.org, jeyu@kernel.org, shuah@kernel.org
+Cc:     rdunlap@infradead.org, rafael@kernel.org, masahiroy@kernel.org,
+        ndesaulniers@google.com, yzaikin@google.com, nathan@kernel.org,
+        ojeda@kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
+        vitor@massaru.org, elver@google.com, jarkko@kernel.org,
+        glider@google.com, rf@opensource.cirrus.com,
+        stephen@networkplumber.org, David.Laight@ACULAB.COM,
+        jolsa@kernel.org, andriy.shevchenko@linux.intel.com,
+        trishalfonso@google.com, andreyknvl@gmail.com, jikos@kernel.org,
+        mbenes@suse.com, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, reinette.chatre@intel.com,
+        fenghua.yu@intel.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        daniel.vetter@ffwll.ch, bhelgaas@google.com, kw@linux.com,
+        dan.j.williams@intel.com, senozhatsky@chromium.org, hch@lst.de,
+        joe@perches.com, hkallweit1@gmail.com, axboe@kernel.dk,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
+References: <20210918050430.3671227-1-mcgrof@kernel.org>
+ <20210918050430.3671227-10-mcgrof@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <6db06c27-e3af-b0aa-6f38-9c31dd8194fa@acm.org>
+Date:   Mon, 20 Sep 2021 14:36:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Ttkamqm76OfwgUpe"
-Content-Disposition: inline
-In-Reply-To: <815cbba4-60d6-8d97-c483-146c2f7c3912@axentia.se>
-X-Cookie: lisp, v.:
+In-Reply-To: <20210918050430.3671227-10-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/17/21 10:04 PM, Luis Chamberlain wrote:
+> A sketch of how this can happen follows:
+> 
+> CPU A                              CPU B
+>                                     whatever_store()
+> module_unload
+>    mutex_lock(foo)
+>                                     mutex_lock(foo)
+>     del_gendisk(zram->disk);
+>       device_del()
+>         device_remove_groups()
+> 
+> In this situation whatever_store() is waiting for the mutex foo to
+> become unlocked, but that won't happen until module removal is complete.
+> But module removal won't complete until the sysfs file being poked
+> completes which is waiting for a lock already held.
 
---Ttkamqm76OfwgUpe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If I remember correctly I encountered the deadlock scenario described
+above for the first time about ten years ago while working on the SCST
+project. We solved this deadlock by removing the sysfs attributes from
+the module unload code before grabbing mutex_lock(foo), e.g. by calling
+sysfs_remove_file(). This works because calling sysfs_remove_file()
+multiple times in a row is safe. Is that solution good enough for the
+zram driver?
 
-On Mon, Sep 20, 2021 at 09:37:37PM +0200, Peter Rosin wrote:
+Thanks,
 
-> compare if the update was needed at all. But marking volatile wasn't
-> enough. I also tried to set both a default and mark as volatile,
-> but it seems every read fails with -16 (EBUSY). I don't get why, to me
-> it almost feels like a regmap issue of some sort (probably the regmap
-> config is bad in some way), but I'm not fluent in regmap...
-
-Having a default for a volatile register isn't really a sensible
-configuration since the whole point with volatile registers is
-that they change underneath us, I'd not be surprised if we had
-some error checking code in there that was trying to tell you
-there was a problem though it does seem like it should at least
-be more verbose about it since returning -EBUSY isn't exactly
-helpful by itself.
-
---Ttkamqm76OfwgUpe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFI/S0ACgkQJNaLcl1U
-h9ByPwf+IyJ6E5k6G/3fuo7gN/7fle2sFUihfDabf6PJ4A9Ie0udY+tJ3Uhrn3MN
-yErjkmqtG4/FHWW9peKpDZ6G5JKqzuJhhjLOENnonbTE27dPkrfqzZ7sSklocdYl
-xU6c9EHN/8JOaoe4pu0nFbYauHwlEYaRnD6B34lnHGvjJb4ruuz280qE79ddobQY
-08e8SwRYjVrWFhNUP/gc+OlHScnH3GuL9sDIuaAYvL+g6NEusF8oTPVQjYuJItdq
-DayQfrZ7M9VaZsLAPMsdm8l7Q9ab+2liGpFWDxMq+8ZaEjs/cORX/EVjxtjz1Snc
-boO8iQg8HZ4H9sCo62fIq1mvADMzcw==
-=sL7d
------END PGP SIGNATURE-----
-
---Ttkamqm76OfwgUpe--
+Bart.
