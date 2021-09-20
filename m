@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E107412D08
+	by mail.lfdr.de (Postfix) with ESMTP id A8B2D412D09
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348930AbhIUCxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        id S1349412AbhIUCxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238347AbhIUC02 (ORCPT
+        with ESMTP id S1349428AbhIUC0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:26:28 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F13C1E3251;
-        Mon, 20 Sep 2021 12:03:34 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id c22so65008126edn.12;
-        Mon, 20 Sep 2021 12:03:34 -0700 (PDT)
+        Mon, 20 Sep 2021 22:26:34 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F7F7C1E3276
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:04:34 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id a5-20020a656405000000b002692b7b6d95so16019382pgv.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:04:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o23tvqbeMHj1qDEUMi/8ydwOa2gB4JJoEnpgkeFEwlA=;
-        b=h1YrLcb5PocnjEZsPr2k3GDjzjtT5/qYhF/nssyKwKDrEda+NE/KwxYxK1x6CMTjcF
-         iQt4+gGmlwtdMKgOTZFV5DCP96ihL6Vju0rwZ5Vu/85Gj2sJVRuBiKOuhpMPBG4FNhUJ
-         adBjc3CJfr/IrHIYFo4Wgc5G86oB6CsRtt7BfU3d1fr7gJT/cixid9vLrscEvQPU45pv
-         mUSt46I/P1jyLwuedkdeP4XrkovhYPXIZSM3ATIzOG1ZSoS/0pLMcu7iTYdhmccVQjHd
-         iKeRYsqymPb3BLJF9ksKa9nx9+Dl64HwWWHy0Nv4E0fa3y08LMGak1h18bf0fc9j9+HL
-         Hdsg==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=lAZa/uDHOuRnoNyLpi7ucyhYyEvosH1TAO5N4aOwUf4=;
+        b=HJ4DeaiXQZr/enJuuumnzUVek0sze1KSs1HaUFw8WJ2QjKDgCJ+XwqlXtIKksEJTSB
+         eJPNj0/XcdBMPeuj/YrtRk5F29cSqZe1dId4FqCoGZiNPBWzdFx30W5h/xLW26+BqvfX
+         YIeVJtYvSn8/osqR/UC47hxNHlwd5CFw1g5I6G6laBbLs6IrsPItvBwZaz/M7ZiPDiGy
+         G78/3CoaXwvo4Q1SP5Yu+8dr780ohJwW8zQxL4td/6hORnL6horUxhkDSRBN3XhngzAH
+         yHZp4/yFk/1CZnhehuXJnoiXyp7lpCgiwKBWgqRESq/OukmKsnArNqqSOHl6+vmjMmvv
+         SEag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o23tvqbeMHj1qDEUMi/8ydwOa2gB4JJoEnpgkeFEwlA=;
-        b=vv0MQpJMFzlgOqzurKmRd6l97PsK8YHqiPidV/kIOQ9B9Tvbl7KG7rsZyVTivfp9Eh
-         h3qp6RaMkYl9cVbs51M5nkUhoQ3tEXsfVQ23OduDSF6esp85pQ27uGuWL2sblxYI8bfK
-         psMFzcUrz1q/arZMC+eGe7LZDh6gO/6K5byuJM3M5cZczcNw3Q8r8v2oxX+FIa2q0yYF
-         JmjPU46BptS9dpyguL/a9yv0ApXaBUfGiDUaU/6D+IuIq/72hu8guNcVbzUBDMuxwaB8
-         sGCaUW0ux8B1CcLwLpTaihJuLjVMDk4uvIXP4MCrFjpAsIVqco/eSCoRymffTW0qmLnv
-         +hRQ==
-X-Gm-Message-State: AOAM532AF5uMvXTE3+SGm1wXuvo7YD6WuL2AGw/p8crrkRKov9n3n+UD
-        4sMK9uXCC7EaQNW09pFscDc=
-X-Google-Smtp-Source: ABdhPJx6rA7X1b39sQpaJioTLCSknE8y1KtajsuCK3X7B6AUNrG5u9KjQykJuwmxDJUAyjPgrpFxQw==
-X-Received: by 2002:a50:d8ce:: with SMTP id y14mr25040166edj.92.1632164613284;
-        Mon, 20 Sep 2021 12:03:33 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-67-254.ip85.fastwebnet.it. [93.42.67.254])
-        by smtp.gmail.com with ESMTPSA id k12sm6484046ejk.63.2021.09.20.12.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 12:03:32 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 21:02:44 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH 1/2] drivers: net: dsa: qca8k: add support
- for led config
-Message-ID: <YUja1JsFJNwh8hXr@Ansuel-xps.localdomain>
-References: <20210920180851.30762-1-ansuelsmth@gmail.com>
- <YUjZNA1Swo6Bv3/Q@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUjZNA1Swo6Bv3/Q@lunn.ch>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=lAZa/uDHOuRnoNyLpi7ucyhYyEvosH1TAO5N4aOwUf4=;
+        b=SXz38Se1y22ifyQw6yukOwb49pyJRBfRA6bTaPcwD42/TxojwzinMpNQeNHwz2HhW5
+         3ur0nSlLfPV4dPq6rH9Q1HNyJIcL44oPQTW/wV8aSiHVihY8dxsdWVVEWIvFz1jTRFRV
+         TzLqXQF4EZ9YKB1bYDy5uhPD9bPEoau1bReaW6N+uIHirTlBByaol2jJVs3IOtQoQGGD
+         4R6MZP6od9UIjWIYuXGkiDpF8+BH4iGMaAYd7zmBB1PI9pTHhMOqbzr/0uE/JTtUJ/Wk
+         RQIovEOXB97RrENKJ89rVEmrgMtylSHfdFpzg0pG9rnWQ5rtY4YO8kLrwU+xQdIanvUx
+         KSZA==
+X-Gm-Message-State: AOAM531EaIxYf5yubX+x8tDd8NACm0wchyAKmWeKD7yC1aUObD++DDCj
+        2qC/S1ggdHEfjHm+mk6B6KzdGMZKSQS1ZGVUo0Y=
+X-Google-Smtp-Source: ABdhPJzUNF/PM6NP+/MIABOOlGQE6wEJIPyLI9894e884/ud4IKfYPTvMOuCyfQ8j6JThtSCqFknZPzuuWRs07ogzoQ=
+X-Received: from willmcvicker.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2dd0])
+ (user=willmcvicker job=sendgmr) by 2002:a05:6a00:1c52:b0:443:41c3:1e51 with
+ SMTP id s18-20020a056a001c5200b0044341c31e51mr23232314pfw.32.1632164673665;
+ Mon, 20 Sep 2021 12:04:33 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 19:03:45 +0000
+Message-Id: <20210920190350.3860821-1-willmcvicker@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
+From:   Will McVicker <willmcvicker@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Will McVicker <willmcvicker@google.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 08:55:48PM +0200, Andrew Lunn wrote:
-> On Mon, Sep 20, 2021 at 08:08:50PM +0200, Ansuel Smith wrote:
-> > Add support for led control and led toggle.
-> > qca8337 and qca8327 switch have various reg to control port leds.
-> > The current implementation permit to toggle them on/off and to declare
-> > their blink rules based on the entry in the dts.
-> > They can also be declared in userspace by the "control_rule" entry in
-> > the led sysfs. When hw_mode is active (set by default) the leds blink
-> > based on the control_rule. There are 6 total control rule.
-> > Control rule that applies to phy0-3 commonly used for lan port.
-> > Control rule that applies to phy4 commonly used for wan port.
-> > Each phy port (5 in total) can have a maximum of 3 different leds
-> > attached. Each led can be turned off, blink at 4hz, off or set to
-> > hw_mode and follow their respecitve control rule. The hw_mode can be
-> > toggled using the sysfs entry and will be disabled on brightness or
-> > blink set.
-> 
-> Hi Ansuel
-> 
-> It is great you are using the LED subsystem for this. But we need to
-> split the code up into a generic part which can shared by any
-> switch/PHY and a driver specific part.
-> 
-> There has been a lot of discussion on the list about this. Maybe you
-> can help get us to a generic solution which can be used by everybody.
-> 
->     Andrew
+This patch series tries to address the issue of ARCH_EXYNOS force selecting
+a handful of drivers without allowing the vendor to override any of the
+default configs. This takes away from the flexibilty of compiling a generic
+kernel with exynos kernel modules. For example, it doesn't allow vendors to
+modularize these drivers out of the core kernel in order to share a generic
+kernel image across multiple devices that require device-specific kernel
+modules.
 
-Yes, can you point me to the discussion?
-I post this as RFC for this exact reason... I read somehwere that there
-was a discussion on how to implementd leds for switch but never ever
-found it. Also i'm very confused on the node structure on how to define
-leds, I think my current implementation is very verbose and long.
-As you can see this switch have all the leds controllable with a special
-mode to apply some special rules (and actually blink by the switch)
-So yes I would like to propose some idea and describe how this switch
-works hoping other OEM does the same thing. (I'm very negative about
-this part)
+To address this without impacting the existing behavior, this series
+switches the default config logic for the offending configs to use "default
+y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
+verified that these patches do not impact the default aarch64 .config.
 
+Will McVicker (4):
+  clk: samsung: change COMMON_CLK_SAMSUNG default config logic
+  soc: samsung: change SOC_SAMSUNG default config logic
+  pinctrl: samsung: change PINCTRL_EXYNOS default config logic
+  rtc: change HAVE_S3C_RTC default config logic
+
+ arch/arm64/Kconfig.platforms    | 7 -------
+ drivers/clk/samsung/Kconfig     | 1 +
+ drivers/pinctrl/samsung/Kconfig | 1 +
+ drivers/rtc/Kconfig             | 1 +
+ drivers/soc/samsung/Kconfig     | 4 ++++
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+-- 
+2.33.0.464.g1972c5931b-goog
 
