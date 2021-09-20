@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A3E411324
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CF0411330
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234225AbhITKxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhITKxk (ORCPT
+        id S234726AbhITK7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:59:10 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:36387 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229999AbhITK7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:53:40 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6650CC061574;
-        Mon, 20 Sep 2021 03:52:13 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id b20so7266726lfv.3;
-        Mon, 20 Sep 2021 03:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RUuvxud1ILiBqpLp3iPBTO0pWqhZHIRgArAsJrtY6Ic=;
-        b=B3Q/vcGgOsL+oOrfzTKjYb96gOiRHxrcEmy/5zwK84TTtIjsN+AWJaBIJ1K7IfXDUO
-         UMEDMMaAUgePcbOauA+0wgIfPYMXSWRldAzY+p4nH9NaAEs1sLGXBbJOYs0827eL7lNt
-         UB3u3lsMEVYI31X9r1w0H3hQ+zfQQo/uyhEWoCvdV+Qp3R7Qum7rzo528s42scFrpM07
-         fCQx4A3txMdWdUanXHwTwW2QciQYmILpEflzn5wtTD2aUbmpDzuyHDBv9Xulkokj81pe
-         4Tdy4lGLXtUZH6371eKSn+rjlgaa0+NCmPKwNk/AdqWw6mOSD0ILJUNUQxRHzw+d4l49
-         GORQ==
+        Mon, 20 Sep 2021 06:59:08 -0400
+Received: by mail-oi1-f171.google.com with SMTP id y201so9433652oie.3;
+        Mon, 20 Sep 2021 03:57:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RUuvxud1ILiBqpLp3iPBTO0pWqhZHIRgArAsJrtY6Ic=;
-        b=zfSEn4h2gKhGb6KS1eHbbI7XFyEZ+pnmm2suNy0YiOL1HRgi8zEjUt9X+ku7ZaWqh/
-         bSnfk50aQzFINTM19xe5XVehyh3aDCB/J6lnKsEeLIcZcc7SmuWa8YFf37usMbVJmciH
-         ZhXvoV1FYNPlFSvbcD0DBkamYCA7viiDTRaoz394W1uFfO4CmcfDTa+97yVv6WC4w4n5
-         5y199pdhFrCJRC++qgnAo+FBqK9zxfTmnm+iHbobFoYSH91BgWDSbjIcXop//zYKA5oC
-         jpaeskpIyy87X3baelreqql9Y7Ze6p0/6ODZtB47qDROgZ15VogNheopE37wTksjBae9
-         +BFw==
-X-Gm-Message-State: AOAM531/Yw4TCkq2UFu22S45+8G26pzHQ09QqsfZJY8mb/aCl4b0upl5
-        udAQRNxzwzhE2Ji6m7gU/fh/yYmkrdfnZcnsWN8=
-X-Google-Smtp-Source: ABdhPJzPSKMyzG2tRN6z7Ncydail4FiF2coOaotkuj3SAk8aqa48dBROEKjHelpjWA+iTXVqokrfxGAvhSDO5tJ31xk=
-X-Received: by 2002:ac2:561c:: with SMTP id v28mr18747243lfd.457.1632135131743;
- Mon, 20 Sep 2021 03:52:11 -0700 (PDT)
+        bh=WnqyCun3sAWL/kGdiirlHdl/hDdczJ+E/CKgO6jqS38=;
+        b=y13OxS13paZpWBbe1U4KCYtnIbnAKe2g9EMnRb03Af4bYdd3IV9gpckGeN+KHUIdyC
+         tmKqmd+g9fNWFgsJ9llEhiPFuq1gMC9d5WNINqA7jjhuxzUr4VYdaxZ/UkzsZKhlDLMx
+         6aoZHvE3uAxt7LTiDzkstT+CNOO6wPmri/cS5u7HZVnr1EF/vpzFwFxEHNwM1guvQxsz
+         k5IUNsKDlMo6oeBc3LpCy/sidshDP3T93/k3mgBmofz686rzm61l1/m7IlgJASaJb51F
+         CQny8RlZr0t8YbSvvHjeho8SDyd+ZyZNNHiwAzNOZQQDgqML98eqHRBO9XX+o5cGJnbS
+         stlA==
+X-Gm-Message-State: AOAM531OJWDD0v30qNxX95uSgwNKnCQA+JOcFD++/4XPIgxg1S9+UPkg
+        jj4NLyRvahbQilfIkOI67/44Yfcj13VcCsSu0xM=
+X-Google-Smtp-Source: ABdhPJy0DFdqF/vT0dT9lSPmkutDMqGEzj0OeH9hqR4+zMIeJoE0khIv7pJ/76blozE0wYBPlmz98W2jw8cOaI1Au50=
+X-Received: by 2002:a05:6808:10ce:: with SMTP id s14mr22555906ois.157.1632135461660;
+ Mon, 20 Sep 2021 03:57:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEyMn7YqrRttqvJzJLA+yVo6WtBZww6QcXT12MMCi+bhjP4pTg@mail.gmail.com>
- <CAEyMn7ZhBfG7703YMr=EDQyf5mHDkLyET5iNqdXDOpJy9ti+rQ@mail.gmail.com>
- <CAOMZO5CZKdc=AmG1eds9Oy_uwqXDWLwPXk74phCDWdjrzkRC4A@mail.gmail.com>
- <CAEyMn7YaQbLoVy_5Rb+hiwhEj-kbnmCwb0B_soa+Kf0D6iH6oA@mail.gmail.com>
- <CAOMZO5CGuKQ0yVyoD86G3KnxoBd2fq+uCTTLoqVR-13Y5a-36Q@mail.gmail.com> <CAEyMn7bN247-J=Qz-k3LZMVYb8pdYSP3BSCsNE9yyvfDfmdK0g@mail.gmail.com>
-In-Reply-To: <CAEyMn7bN247-J=Qz-k3LZMVYb8pdYSP3BSCsNE9yyvfDfmdK0g@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 20 Sep 2021 07:52:00 -0300
-Message-ID: <CAOMZO5DEg81E23QBpsv44BxytEhNNoXy-r5BbnubUJTERzWYLQ@mail.gmail.com>
-Subject: Re: imx8mm board crash in drivers/usb/chipidea/ci_hdrc_imx.c
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     Peter Chen <peter.chen@nxp.com>, Jun Li <jun.li@nxp.com>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
+References: <8003272.NyiUUSuA9g@kreacher> <1798761.CQOukoFCf9@kreacher> <CAHp75VdoFwH2sQT6dwz4BCorkgJgmYEBHq-+YpT18HZx2cpmrA@mail.gmail.com>
+In-Reply-To: <CAHp75VdoFwH2sQT6dwz4BCorkgJgmYEBHq-+YpT18HZx2cpmrA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 20 Sep 2021 12:57:27 +0200
+Message-ID: <CAJZ5v0iRviZkLzRP0t2f4q5oY9y6CxRotDnyBVBt-QBt-uYReQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] PCI: PM: x86: Drop Intel MID PCI PM support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        x86 Maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Len Brown <len.brown@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Sun, Sep 19, 2021 at 10:32 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sun, Sep 19, 2021 at 9:01 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Support for Intel MID platforms has mostly gone away with the SFI
+> > support removal in commit 4590d98f5a4f ("sfi: Remove framework for
+> > deprecated firmware"), but there are some pieces of it still in the
+> > tree.  One of them is the MID PCI PM support code which gets in the
+> > way of subsequent PCI PM simplifications and trying to update it is
+> > rather pointless, so get rid of it completely along with the arch
+> > code pieces that are only used by it.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > I am going to post patches removing the rest of MID support from arch/x86/
+> > and elsewhere, but that is still quite a bit of stuff and I don't want this
+> > simple PCI PM series to depend on that work.
+>
+> This is still being used by MID with ACPI assisted (*) support.
+> Hence, not ack.
+>
+> *) ACPI layer is provided by U-Boot and can't fulfill all possible
+> features that ACPI may use in the Linux kernel.
 
-On Mon, Sep 20, 2021 at 6:17 AM Heiko Thiery <heiko.thiery@gmail.com> wrote:
+OK, good to know.
 
-> Now it is clear to me. I used the dtb for my board that had already
-> changed the phy node and tried to boot the "old" kernel 5.14. Thus no
-> phy could be found. Nevertheless the kernel should not crash in case
-> no phy was found.
-
-Agreed. The patch I proposed earlier should fix the problem, correct?
-https://pastebin.com/raw/yZKz1huL
+I'm not sure how this PCI PM stuff works with ACPI.  It looks like
+this relies on a specific ordering of arch_initcall() calls for
+correctness which is sort of fragile.
