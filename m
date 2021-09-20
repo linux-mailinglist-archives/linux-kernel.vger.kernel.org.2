@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6121641238F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E4441213F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378362AbhITSZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39244 "EHLO mail.kernel.org"
+        id S1357201AbhITSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:03:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377442AbhITSS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:18:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23F2E6329D;
-        Mon, 20 Sep 2021 17:23:06 +0000 (UTC)
+        id S1355813AbhITR4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:56:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63D60619F5;
+        Mon, 20 Sep 2021 17:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158586;
-        bh=IqffpbbI8Z+v2EuYSGjTxctiRDY233GHDPPzVMP+09I=;
+        s=korg; t=1632158066;
+        bh=Hc1oWslzWYnIO9BCZjI+J+/ySVm9TdvePsT4nzXvQT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0aYIYxmg599Stbi/KzZVqRs+BQTtJCZsdjNWeCz2FpCDL3fFDzdZ/RWOzYfniSp4
-         rh/dnvdmKcUZfeEvy6D5RrUIDHcfBCq9DOOPgpZxfiiYRGf6Oy7hLOY3n2FKlaRR2A
-         DkODtjlwC1JzJI/mBNfjbs4ETbUjqnOQIq8j8WPM=
+        b=Z620vmWBKCH4WqZRkwQAybCogQvVo+YYaB/Adn9d+8Yv1a/QYXkHLQZDEykl2bzst
+         J6NXR1Of+5VMfTDiLZ0yadvbLXW96nhN0dVq8BPI1kNIxsxj3pQMNqIr2yQQGBEjMS
+         ZczLaVPWyKFLkAroahCAvXe7YahIYRPVaUp4+AXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 192/260] btrfs: fix upper limit for max_inline for page size 64K
+        stable@vger.kernel.org, Patryk Duda <pdk@semihalf.com>,
+        Benson Leung <bleung@chromium.org>
+Subject: [PATCH 4.19 248/293] platform/chrome: cros_ec_proto: Send command again when timeout occurs
 Date:   Mon, 20 Sep 2021 18:43:30 +0200
-Message-Id: <20210920163937.639341599@linuxfoundation.org>
+Message-Id: <20210920163941.886488053@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,91 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Patryk Duda <pdk@semihalf.com>
 
-commit 6f93e834fa7c5faa0372e46828b4b2a966ac61d7 upstream.
+commit 3abc16af57c9939724df92fcbda296b25cc95168 upstream.
 
-The mount option max_inline ranges from 0 to the sectorsize (which is
-now equal to page size). But we parse the mount options too early and
-before the actual sectorsize is read from the superblock. So the upper
-limit of max_inline is unaware of the actual sectorsize and is limited
-by the temporary sectorsize 4096, even on a system where the default
-sectorsize is 64K.
+Sometimes kernel is trying to probe Fingerprint MCU (FPMCU) when it
+hasn't initialized SPI yet. This can happen because FPMCU is restarted
+during system boot and kernel can send message in short window
+eg. between sysjump to RW and SPI initialization.
 
-Fix this by reading the superblock sectorsize before the mount option
-parse.
-
-Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Patryk Duda <pdk@semihalf.com>
+Link: https://lore.kernel.org/r/20210518140758.29318-1-pdk@semihalf.com
+Signed-off-by: Benson Leung <bleung@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/disk-io.c |   45 +++++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ drivers/platform/chrome/cros_ec_proto.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2894,6 +2894,29 @@ int open_ctree(struct super_block *sb,
- 	 */
- 	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -219,6 +219,15 @@ static int cros_ec_host_command_proto_qu
+ 	msg->insize = sizeof(struct ec_response_get_protocol_info);
  
+ 	ret = send_command(ec_dev, msg);
 +	/*
-+	 * Flag our filesystem as having big metadata blocks if they are bigger
-+	 * than the page size
++	 * Send command once again when timeout occurred.
++	 * Fingerprint MCU (FPMCU) is restarted during system boot which
++	 * introduces small window in which FPMCU won't respond for any
++	 * messages sent by kernel. There is no need to wait before next
++	 * attempt because we waited at least EC_MSG_DEADLINE_MS.
 +	 */
-+	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
-+		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
-+			btrfs_info(fs_info,
-+				"flagging fs with big metadata feature");
-+		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
-+	}
-+
-+	/* Set up fs_info before parsing mount options */
-+	nodesize = btrfs_super_nodesize(disk_super);
-+	sectorsize = btrfs_super_sectorsize(disk_super);
-+	stripesize = sectorsize;
-+	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
-+	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
-+
-+	/* Cache block sizes */
-+	fs_info->nodesize = nodesize;
-+	fs_info->sectorsize = sectorsize;
-+	fs_info->stripesize = stripesize;
-+
- 	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
- 	if (ret) {
- 		err = ret;
-@@ -2921,28 +2944,6 @@ int open_ctree(struct super_block *sb,
- 		btrfs_info(fs_info, "has skinny extents");
++	if (ret == -ETIMEDOUT)
++		ret = send_command(ec_dev, msg);
  
- 	/*
--	 * flag our filesystem as having big metadata blocks if
--	 * they are bigger than the page size
--	 */
--	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
--		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
--			btrfs_info(fs_info,
--				"flagging fs with big metadata feature");
--		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
--	}
--
--	nodesize = btrfs_super_nodesize(disk_super);
--	sectorsize = btrfs_super_sectorsize(disk_super);
--	stripesize = sectorsize;
--	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
--	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
--
--	/* Cache block sizes */
--	fs_info->nodesize = nodesize;
--	fs_info->sectorsize = sectorsize;
--	fs_info->stripesize = stripesize;
--
--	/*
- 	 * mixed block groups end up with duplicate but slightly offset
- 	 * extent buffers for the same range.  It leads to corruptions
- 	 */
+ 	if (ret < 0) {
+ 		dev_dbg(ec_dev->dev,
 
 
