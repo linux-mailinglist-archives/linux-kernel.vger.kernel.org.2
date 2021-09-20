@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02344411F37
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40121411D00
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348387AbhITRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:38:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
+        id S244510AbhITRP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:15:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345083AbhITRgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:36:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE1161B29;
-        Mon, 20 Sep 2021 17:06:40 +0000 (UTC)
+        id S1344759AbhITRNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:13:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1172161184;
+        Mon, 20 Sep 2021 16:57:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157600;
-        bh=war2w7rgM7oAcaLbc1DzlYdz/A2sVd0l8Tv64Q3aLmc=;
+        s=korg; t=1632157063;
+        bh=ddNa6ZUUwvpp1+I59j76O+1Y1sXYVdpyxv7gmFqsBVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xpz3fT4V2ljW//bmOokTWtfngJCTuv694htZHDSJrVnG7rwuiW+xJeTa3ibp7nnYJ
-         qvATOf2T0VlARjNuC/DHaJamn/Dl0RH0MX4Zl1102vQPAa99Lq4xKlI4w6g87KeTYt
-         npglqBTFAD1BLfbuUixWx0u/xFNuRLP2r+GMffuo=
+        b=2YZIPCaskUH88Ml5wwO25fAbAojuYhLvO0/LoPzRRcCUk8Xvk4p2/XRo0yvwrxOAE
+         uBdql3zTqN0QPbI8UjccvaIFGV2v0YcB+yVSnzPzfBtYSPZzPen+KFBluJMAk2uvhY
+         YcHIluDPA3DwZe626otu02O0gfGIHCMb1NVihAJs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 064/293] media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
+Subject: [PATCH 4.14 005/217] qede: Fix memset corruption
 Date:   Mon, 20 Sep 2021 18:40:26 +0200
-Message-Id: <20210920163935.445322307@linuxfoundation.org>
+Message-Id: <20210920163924.784406073@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongliang Mu <mudongliangabcd@gmail.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit c5453769f77ce19a5b03f1f49946fd3f8a374009 ]
+[ Upstream commit e543468869e2532f5d7926e8f417782b48eca3dc ]
 
-If dibusb_read_eeprom_byte fails, the mac address is not initialized.
-And nova_t_read_mac_address does not handle this failure, which leads to
-the uninit-value in dvb_usb_adapter_dvb_init.
+Thanks to Kees Cook who detected the problem of memset that starting
+from not the first member, but sized for the whole struct.
+The better change will be to remove the redundant memset and to clear
+only the msix_cnt member.
 
-Fix this by handling the failure of dibusb_read_eeprom_byte.
-
-Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
-Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Reported-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/nova-t-usb2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qede/qede_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/dvb-usb/nova-t-usb2.c b/drivers/media/usb/dvb-usb/nova-t-usb2.c
-index 43e0e0fd715b..705c2901a89e 100644
---- a/drivers/media/usb/dvb-usb/nova-t-usb2.c
-+++ b/drivers/media/usb/dvb-usb/nova-t-usb2.c
-@@ -133,7 +133,7 @@ ret:
- 
- static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
- {
--	int i;
-+	int i, ret;
- 	u8 b;
- 
- 	mac[0] = 0x00;
-@@ -142,7 +142,9 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
- 
- 	/* this is a complete guess, but works for my box */
- 	for (i = 136; i < 139; i++) {
--		dibusb_read_eeprom_byte(d,i, &b);
-+		ret = dibusb_read_eeprom_byte(d, i, &b);
-+		if (ret)
-+			return ret;
- 
- 		mac[5 - (i - 136)] = b;
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
+index 8bb734486bf3..99de923728ec 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_main.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+@@ -1590,6 +1590,7 @@ static void qede_sync_free_irqs(struct qede_dev *edev)
  	}
+ 
+ 	edev->int_info.used_cnt = 0;
++	edev->int_info.msix_cnt = 0;
+ }
+ 
+ static int qede_req_msix_irqs(struct qede_dev *edev)
+@@ -2088,7 +2089,6 @@ static int qede_load(struct qede_dev *edev, enum qede_load_mode mode,
+ 	goto out;
+ err4:
+ 	qede_sync_free_irqs(edev);
+-	memset(&edev->int_info.msix_cnt, 0, sizeof(struct qed_int_info));
+ err3:
+ 	qede_napi_disable_remove(edev);
+ err2:
 -- 
 2.30.2
 
