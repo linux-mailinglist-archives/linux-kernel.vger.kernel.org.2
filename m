@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD498411780
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C3D411785
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240839AbhITOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:51:57 -0400
-Received: from mout.perfora.net ([74.208.4.194]:41219 "EHLO mout.perfora.net"
+        id S240929AbhITOwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:52:02 -0400
+Received: from mout.perfora.net ([74.208.4.197]:37121 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232166AbhITOvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:51:54 -0400
+        id S240801AbhITOvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 10:51:55 -0400
 Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
- (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1MQMJR-1mFSSe1ud7-00MMiN;
- Mon, 20 Sep 2021 16:50:01 +0200
+ (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1MsqQu-1mheXj3urg-00tDdG;
+ Mon, 20 Sep 2021 16:50:04 +0200
 From:   Marcel Ziswiler <marcel@ziswiler.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
         Fabio Estevam <festevam@gmail.com>,
         Andreas Kemnade <andreas@kemnade.info>,
+        Marek Vasut <marex@denx.de>,
         NXP Linux Team <linux-imx@nxp.com>,
         Pascal Zimmermann <pzimmermann@dh-electronics.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Russell King <linux@armlinux.org.uk>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/9] ARM: imx_v6_v7_defconfig: change snd soc tlv320aic3x to i2c variant
-Date:   Mon, 20 Sep 2021 16:49:32 +0200
-Message-Id: <20210920144938.314588-4-marcel@ziswiler.com>
+Subject: [PATCH v4 4/9] ARM: imx_v6_v7_defconfig: rebuild default configuration
+Date:   Mon, 20 Sep 2021 16:49:33 +0200
+Message-Id: <20210920144938.314588-5-marcel@ziswiler.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210920144938.314588-1-marcel@ziswiler.com>
 References: <20210920144938.314588-1-marcel@ziswiler.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:TfvZDmoo1qiCLyZsuVYscf4Vt0ciUzyB9Blmd28w7fdD6Nc5e6W
- h+tYJl8gm0bUbdNtcVz4y4p4rcvqQsgPFUW9eq/j0ZBNdn8ZP/JxsS9KoVc5CgLFHxZpsUh
- x5n0kmTW4r7Grw0LG9r6b7+6GMxmgHLPOlJMQVE4eFVP5qzyLb/WVEyVDKZ9/ma/C9efzZT
- iSKACSWEwVKvcUFVMkf0Q==
+X-Provags-ID: V03:K1:+0p0WBa8QOumhjaSV0OQq5b/eouZjck3Mce15lpYxxPHGZ+R2QM
+ NF4ut+aUoLLNF9DRVb1LNPY5zKbSe5d2Eu7RKa2lXAXQLWTqFobD08z+GTQVw+mmzkXGTeF
+ NMdXAxcdvkClRSphzfsYA9WkXROnPfcJA1kyWZVEmSSn2fblZP7YNAgNEOLJmeT1TeOcwGM
+ +Ajg3FzCkn1N0ny2OWhAg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:L2v23sQPcqs=:bmZ6z3FtTrKyGlst5SugAj
- iijVem61umlPPzoNaQHnzgBXpH/7W3Hqn6rpYmvqY92ocvqAwu/CkCyOtqatmf9u4gGu+qvpE
- i9c09Tkybj0lQVhY9gys1ZXGv3EkJWSGQoQutVjXXK3SzsAjQsnBBTnqw/HA9s03KLOD8X7WL
- nlcrFbYJuBQXzNNDb1l4rdlbhN3U4kd1capNb8Qfz022NU+wQ3jZDa9/Ud4S4MsqR+HtQUWVy
- 9iqfDw17EG/Sm1ThG76nucEFIZSiqyqFvBHN/I3VKd6yiak2Ve7dxL9wzuLWfQTdSZmpyJ5Y/
- e/rRrOKfs5FmOHSMHw/UnA635qwzh1x72a+j54+KIU7I/VgH0qE9BswcEJ4SU1MEQFJTQJ5G5
- vUXGWPjI/3xZVGHFNV2kRBiImTfWgiwWOx6d5bhjGLpAEE9koiLfr/paxEaymm4vtSYCVPT5I
- 1731eqn2DKCamNfaxAsbWm7eeNthK9T32buZqZEwfSNwjmIvb8MxGCCtsFzhDJxoj/iB5IpZc
- GhcgSdVAcms3FWF83YNDPUhMvj5nd0y7ohrOf54oZ/ZcKb6wiXA2cNiSNtHUchf+g0gqYf5Ol
- IBP6tJG3tGv7oOwSLcGitt8ygM2H38HVX2LrBlhcNqqmuc5Cygm3GWjKF0zIK73Ym5kB2E0Eq
- OcHBWfPpm4l3z7tWTLA18PjcSTbbchoOt7UPT/JZBJoxd3eSK9saUh17a1itoJOVGyJnjEHzO
- awkMDObGRKq+yCJxrOtPzXe+8nNPQEN/nDLaiQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zEKDoW40Kos=:YrkYknR8iDIL4mMc9kmxAk
+ hRGk+d+I3VCHmWn/i62fHRFsxQKaZ6eCOizEvvYGBW+Hqi1GkeUoDp+fuLFTy5UIkV/52vn2C
+ ULC1HCGsc2Zjtc3EVM1vEw7wEqnIzEXYPcyiWoAcWXdljS7TAExFCNR79MyKZLvztHhFG+Mj0
+ dPRp66TP7XG26iFtUwAvcfh4j+fjWy2PnuvuLDpItXFQn/IAhq9bPNGqt0JzdEqDqp3GayOMb
+ K+fS5T2z6kfQMy9KnqJBs+b8ynBZPMscZ7RyNB3KZS4MPp+30z5ARD9XAwRQ7eQwXN7zHHTxw
+ p+nVF0dLXTaPSaRsq16OCTzy/W0oq6dJlwHGIIq/HgTLJ4bjPswFytCbCPUgVLoxQ3eC3ObTD
+ g7gJTOOptBsy3gbschT7KRy2uzdDOkFhuzNXlVbz2A75V5yjuGFwMVNHK/bi5jha7GFdPcY1T
+ WpnpGtG81B1BRJSHVQh5gpnJ+DM6D7iSMgSDpIROO8gao/1DsVdYJcQ38uwKGLizHg2ww8XeL
+ f7IBc/B+rAsKcOCHwh1M/wuogaKQEpiZ7xoXxsaO0wYobhfcDfE4+bsYCITRKwyZuRdf+BBRI
+ z87sZDBpVxyTnAHKT67QWKAy4DR671VuJbV0M2qUCBMMG3c7jLScNcJsCJ+3kHx2FfIPDjKSk
+ GeOdoRyDgZljvoEqKnGOKhwlb2MNOzoRxf8FmUG80/824fS2AJtmqOHa2M/Mtl/RzPILoavku
+ YnAt+4GLTtTxOnJjg1q6E2chXHPAuFG20YS+aw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Change CONFIG_SND_SOC_TLV320AIC3X to CONFIG_SND_SOC_TLV320AIC3X_I2C.
-I did double check all current mainline device trees and they are all
-using the I2C rather than the SPI variant.
+Run "make imx_v6_v7_defconfig; make savedefconfig" to rebuild
+imx_v6_v7_defconfig.
+
+This dropped the following nowadays obsolete configuration options:
+
+CONFIG_MTD_M25P80=y (got integrated into MTD_SPI_NOR)
+CONFIG_CS89x0=y (selected by CS89x0_PLATFORM)
+CONFIG_SMSC_PHY=y (selected by USB_NET_SMSC95XX)
+CONFIG_GPIO_MC9S08DZ60=y (depends on MACH_MX35_3DS)
+CONFIG_REGULATOR=y (selected by various stuff)
+CONFIG_MEDIA_CAMERA_SUPPORT=y (defaults to on if MEDIA_CAMERA)
+CONFIG_MEDIA_CONTROLLER=y (selected by various stuff)
+CONFIG_VIDEO_V4L2_SUBDEV_API=y (selected by various stuff)
+CONFIG_SND_SOC_PHYCORE_AC97=y
+CONFIG_SND_SOC_IMX_MC13783=y
+CONFIG_USB_EHCI_MXC=y
+CONFIG_USB_FSL_USB2=y
 
 Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 Reviewed-by: Fabio Estevam <festevam@gmail.com>
@@ -70,22 +85,217 @@ Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Changes in v3:
 - Add Fabio's reviewed-by. Thanks!
 
- arch/arm/configs/imx_v6_v7_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/configs/imx_v6_v7_defconfig | 38 ++++++++--------------------
+ 1 file changed, 11 insertions(+), 27 deletions(-)
 
 diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 6618a009a105e..90d6a5cf254e0 100644
+index 90d6a5cf254e0..21803cd2d1ba7 100644
 --- a/arch/arm/configs/imx_v6_v7_defconfig
 +++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -317,7 +317,7 @@ CONFIG_SND_SOC_IMX_MC13783=y
+@@ -28,9 +28,6 @@ CONFIG_SOC_IMX6UL=y
+ CONFIG_SOC_IMX7D=y
+ CONFIG_SOC_IMX7ULP=y
+ CONFIG_SOC_VF610=y
+-CONFIG_PCI=y
+-CONFIG_PCI_MSI=y
+-CONFIG_PCI_IMX6=y
+ CONFIG_SMP=y
+ CONFIG_ARM_PSCI=y
+ CONFIG_HIGHMEM=y
+@@ -58,7 +55,6 @@ CONFIG_MODULES=y
+ CONFIG_MODULE_UNLOAD=y
+ CONFIG_MODVERSIONS=y
+ CONFIG_MODULE_SRCVERSION_ALL=y
+-# CONFIG_BLK_DEV_BSG is not set
+ CONFIG_BINFMT_MISC=m
+ CONFIG_NET=y
+ CONFIG_PACKET=y
+@@ -66,9 +62,6 @@ CONFIG_UNIX=y
+ CONFIG_INET=y
+ CONFIG_IP_PNP=y
+ CONFIG_IP_PNP_DHCP=y
+-# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+-# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+-# CONFIG_INET_XFRM_MODE_BEET is not set
+ CONFIG_NETFILTER=y
+ CONFIG_CAN=y
+ CONFIG_CAN_FLEXCAN=y
+@@ -81,12 +74,14 @@ CONFIG_CFG80211_WEXT=y
+ CONFIG_MAC80211=y
+ CONFIG_RFKILL=y
+ CONFIG_RFKILL_INPUT=y
++CONFIG_PCI=y
++CONFIG_PCI_MSI=y
++CONFIG_PCI_IMX6=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ CONFIG_FW_LOADER_USER_HELPER=y
+ CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+-CONFIG_CMA_SIZE_MBYTES=64
+ CONFIG_IMX_WEIM=y
+ CONFIG_CONNECTOR=y
+ CONFIG_MTD=y
+@@ -100,14 +95,12 @@ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PHYSMAP_OF=y
+ CONFIG_MTD_DATAFLASH=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_SST25L=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_GPMI_NAND=y
+ CONFIG_MTD_NAND_VF610_NFC=y
+ CONFIG_MTD_NAND_MXC=y
+ CONFIG_MTD_SPI_NOR=y
+-CONFIG_SPI_FSL_QUADSPI=y
+ CONFIG_MTD_UBI=y
+ CONFIG_MTD_UBI_FASTMAP=y
+ CONFIG_MTD_UBI_BLOCK=y
+@@ -118,6 +111,7 @@ CONFIG_EEPROM_AT24=y
+ CONFIG_EEPROM_AT25=y
+ # CONFIG_SCSI_PROC_FS is not set
+ CONFIG_BLK_DEV_SD=y
++# CONFIG_BLK_DEV_BSG is not set
+ CONFIG_SCSI_CONSTANTS=y
+ CONFIG_SCSI_LOGGING=y
+ CONFIG_SCSI_SCAN_ASYNC=y
+@@ -127,7 +121,6 @@ CONFIG_AHCI_IMX=y
+ CONFIG_PATA_IMX=y
+ CONFIG_NETDEVICES=y
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+-CONFIG_CS89x0=y
+ CONFIG_CS89x0_PLATFORM=y
+ # CONFIG_NET_VENDOR_FARADAY is not set
+ # CONFIG_NET_VENDOR_INTEL is not set
+@@ -140,9 +133,8 @@ CONFIG_SMC91X=y
+ CONFIG_SMC911X=y
+ CONFIG_SMSC911X=y
+ # CONFIG_NET_VENDOR_STMICRO is not set
+-CONFIG_AT803X_PHY=y
+ CONFIG_MICREL_PHY=y
+-CONFIG_SMSC_PHY=y
++CONFIG_AT803X_PHY=y
+ CONFIG_USB_PEGASUS=m
+ CONFIG_USB_RTL8150=m
+ CONFIG_USB_RTL8152=y
+@@ -205,6 +197,7 @@ CONFIG_I2C_ALGOPCA=m
+ CONFIG_I2C_GPIO=y
+ CONFIG_I2C_IMX=y
+ CONFIG_SPI=y
++CONFIG_SPI_FSL_QUADSPI=y
+ CONFIG_SPI_GPIO=y
+ CONFIG_SPI_IMX=y
+ CONFIG_SPI_FSL_DSPI=y
+@@ -213,14 +206,13 @@ CONFIG_PINCTRL_IMX8MN=y
+ CONFIG_PINCTRL_IMX8MP=y
+ CONFIG_PINCTRL_IMX8MQ=y
+ CONFIG_GPIO_SYSFS=y
++CONFIG_GPIO_MXC=y
+ CONFIG_GPIO_SIOX=m
+ CONFIG_GPIO_MAX732X=y
+-CONFIG_GPIO_MC9S08DZ60=y
+ CONFIG_GPIO_PCA953X=y
+ CONFIG_GPIO_PCF857X=y
+ CONFIG_GPIO_STMPE=y
+ CONFIG_GPIO_74X164=y
+-CONFIG_GPIO_MXC=y
+ CONFIG_POWER_RESET=y
+ CONFIG_POWER_RESET_SYSCON=y
+ CONFIG_POWER_RESET_SYSCON_POWEROFF=y
+@@ -234,8 +226,8 @@ CONFIG_THERMAL_WRITABLE_TRIPS=y
+ CONFIG_CPU_THERMAL=y
+ CONFIG_IMX_THERMAL=y
+ CONFIG_WATCHDOG=y
+-CONFIG_DA9062_WATCHDOG=y
+ CONFIG_DA9063_WATCHDOG=m
++CONFIG_DA9062_WATCHDOG=y
+ CONFIG_RN5T618_WATCHDOG=y
+ CONFIG_IMX2_WDT=y
+ CONFIG_IMX7ULP_WDT=y
+@@ -246,7 +238,6 @@ CONFIG_MFD_MC13XXX_SPI=y
+ CONFIG_MFD_MC13XXX_I2C=y
+ CONFIG_MFD_RN5T618=y
+ CONFIG_MFD_STMPE=y
+-CONFIG_REGULATOR=y
+ CONFIG_REGULATOR_FIXED_VOLTAGE=y
+ CONFIG_REGULATOR_ANATOP=y
+ CONFIG_REGULATOR_DA9052=y
+@@ -262,9 +253,6 @@ CONFIG_RC_CORE=y
+ CONFIG_RC_DEVICES=y
+ CONFIG_IR_GPIO_CIR=y
+ CONFIG_MEDIA_SUPPORT=y
+-CONFIG_MEDIA_CAMERA_SUPPORT=y
+-CONFIG_MEDIA_CONTROLLER=y
+-CONFIG_VIDEO_V4L2_SUBDEV_API=y
+ CONFIG_MEDIA_USB_SUPPORT=y
+ CONFIG_USB_VIDEO_CLASS=m
+ CONFIG_V4L_PLATFORM_DRIVERS=y
+@@ -272,7 +260,6 @@ CONFIG_VIDEO_MUX=y
+ CONFIG_V4L_MEM2MEM_DRIVERS=y
+ CONFIG_VIDEO_CODA=m
+ CONFIG_VIDEO_IMX_PXP=y
+-# CONFIG_MEDIA_SUBDRV_AUTOSELECT is not set
+ CONFIG_VIDEO_ADV7180=m
+ CONFIG_VIDEO_OV2680=m
+ CONFIG_VIDEO_OV5640=m
+@@ -308,12 +295,10 @@ CONFIG_SND_USB_AUDIO=m
+ CONFIG_SND_SOC=y
+ CONFIG_SND_SOC_FSL_ASRC=y
+ CONFIG_SND_IMX_SOC=y
+-CONFIG_SND_SOC_PHYCORE_AC97=y
+ CONFIG_SND_SOC_EUKREA_TLV320=y
+ CONFIG_SND_SOC_IMX_ES8328=y
+ CONFIG_SND_SOC_IMX_SGTL5000=y
+ CONFIG_SND_SOC_IMX_SPDIF=y
+-CONFIG_SND_SOC_IMX_MC13783=y
  CONFIG_SND_SOC_FSL_ASOC_CARD=y
  CONFIG_SND_SOC_AC97_CODEC=y
  CONFIG_SND_SOC_CS42XX8_I2C=y
--CONFIG_SND_SOC_TLV320AIC3X=y
-+CONFIG_SND_SOC_TLV320AIC3X_I2C=y
- CONFIG_SND_SOC_WM8960=y
- CONFIG_SND_SOC_WM8962=y
- CONFIG_SND_SIMPLE_CARD=y
+@@ -325,7 +310,6 @@ CONFIG_HID_MULTITOUCH=y
+ CONFIG_USB=y
+ CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+ CONFIG_USB_EHCI_HCD=y
+-CONFIG_USB_EHCI_MXC=y
+ CONFIG_USB_ACM=m
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_CHIPIDEA=y
+@@ -340,7 +324,6 @@ CONFIG_USB_EHSET_TEST_FIXTURE=m
+ CONFIG_NOP_USB_XCEIV=y
+ CONFIG_USB_MXS_PHY=y
+ CONFIG_USB_GADGET=y
+-CONFIG_USB_FSL_USB2=y
+ CONFIG_USB_CONFIGFS=y
+ CONFIG_USB_CONFIGFS_SERIAL=y
+ CONFIG_USB_CONFIGFS_ACM=y
+@@ -389,11 +372,11 @@ CONFIG_RTC_DRV_ISL1208=y
+ CONFIG_RTC_DRV_PCF8523=y
+ CONFIG_RTC_DRV_PCF8563=y
+ CONFIG_RTC_DRV_M41T80=y
++CONFIG_RTC_DRV_RC5T619=y
+ CONFIG_RTC_DRV_DA9063=y
+ CONFIG_RTC_DRV_MC13XXX=y
+ CONFIG_RTC_DRV_MXC=y
+ CONFIG_RTC_DRV_MXC_V2=y
+-CONFIG_RTC_DRV_RC5T619=y
+ CONFIG_RTC_DRV_SNVS=y
+ CONFIG_DMADEVICES=y
+ CONFIG_FSL_EDMA=y
+@@ -470,13 +453,14 @@ CONFIG_CRC_CCITT=m
+ CONFIG_CRC_T10DIF=y
+ CONFIG_CRC7=m
+ CONFIG_LIBCRC32C=m
++CONFIG_CMA_SIZE_MBYTES=64
+ CONFIG_FONTS=y
+ CONFIG_FONT_8x8=y
+ CONFIG_FONT_8x16=y
+ CONFIG_PRINTK_TIME=y
++# CONFIG_DEBUG_BUGVERBOSE is not set
+ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_DEBUG_FS=y
+ # CONFIG_SCHED_DEBUG is not set
+ CONFIG_PROVE_LOCKING=y
+-# CONFIG_DEBUG_BUGVERBOSE is not set
+ # CONFIG_FTRACE is not set
 -- 
 2.26.2
 
