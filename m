@@ -2,129 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B8A411577
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55CF41159E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239325AbhITN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235999AbhITN02 (ORCPT
+        id S239923AbhITN1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:27:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52510 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239415AbhITN0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:26:28 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7E9C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:25:01 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v24so61355654eda.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5Z/peYbs19scCEIFsnkY9ZT+Ng56kA6OzfkT1Vupsss=;
-        b=WpaAQKMbLMi8KUDY8D4vzykEZLpjiSzI1V9dR9E4Q6JgPva+/tb9cGXkDyncA8qetG
-         /mYUMpknYMbJ8/mj/wRyDOpDx8mrLsRM0WCZdxuH93MczwgYvHV4ia1HyMveZXxHRJIi
-         kIdYFXJFxdF4/n/VUmFwzkYDn4UVoaal8k7kJOITgxnGYleYhutubEcBzfrP5w2kowx5
-         +OW54W0unAVmY3jRlABJ/I6g/wZs4CsyniBO5CHJ5vhX+wGqR5VGF7ZeQ6o8He43bIlO
-         0ncTQQaNV7PdodS5VRqXZad+9j7UZEXAptZKVWC/MIKpcITILj1hbdpoWtO1QPQvDp8O
-         7gLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5Z/peYbs19scCEIFsnkY9ZT+Ng56kA6OzfkT1Vupsss=;
-        b=eRgI8LXNpSBZp5lEJ70X+rHchGLUZtWhYqMcFiVgbRrQKIgcBgnp2WZ5BSignY0X2o
-         89njr3Cu5k/jIfUkm3Z+joVzt0PdxIXOc9aUKjtgxTdlJuOEO41FX+AOiToR60WNIBaw
-         dYp4H7js8b1Bs6bq0YjG1+ORbX6k947XbCsOy9B1GJDZeURltzVN/SvaPqgZP2tjlkfz
-         jYOi1xbNntSKKfiyIh7cAm6VAKdAxQMkI9Q1jlIsvflJsvS/0CDh3LJf1Ybwgt7aIJD2
-         hkkgmOArVcm296Bus7xkxsxFSxX2d0OZQjooyGt/YHk6fScp/Znh2AV3Ofgp9PLjxoFp
-         QufQ==
-X-Gm-Message-State: AOAM532FO67/CI5oKU7FmRQvydizNQ/wVuFysFCzbamXC6/cjxtocQKx
-        zp3YOW3DD+E+FSqi1w7Dnw7Xiw==
-X-Google-Smtp-Source: ABdhPJzgF59K4i1R043ONbfVpeUA1ioxtRrNGTbbHkteOOznyAHryJjFhJRy7tPrvrsZ0DhF/JIFxg==
-X-Received: by 2002:a17:906:520b:: with SMTP id g11mr28539621ejm.502.1632144298580;
-        Mon, 20 Sep 2021 06:24:58 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id o7sm6960081edt.68.2021.09.20.06.24.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 06:24:58 -0700 (PDT)
-Subject: Re: [PATCH 3/7] ASoC: codecs: tx-macro: Change mic control registers
- to volatile
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
- <1632123331-2425-4-git-send-email-srivasam@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c1c7b1e8-98f5-99a3-1374-11d1d61535b4@linaro.org>
-Date:   Mon, 20 Sep 2021 14:24:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 20 Sep 2021 09:26:42 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KDD5P9022597;
+        Mon, 20 Sep 2021 09:25:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=Hw2W77z6/PD99yD1oIx6PHkg+jw33VvlI2yFLVFYYNk=;
+ b=gCcGzEZ1OHmLbzxNYcXQGxjW7i1a4XyYJt6b9WJG5jGk/2rwxV3KMSBdB1EUbUcB3dxr
+ BapyQSuElZ1/UjlMYTrdHrWh5bNtZe3YRFJW90nHGgZ6SwF0S5gVy+tDPRhnhGyqs+tt
+ esIgmGB5eDdsHsl27g5El4YHey+eNQDatyX1f8D/Svry/V/SP148gIHAuPEDIN6ntz12
+ WMMfHfeWVNo0s0d1nKqkyrx03Qkor+hTTiy1460ZoVI1LSHnzeV0PQlZoXpXskdLo8XZ
+ JtAZfe8ktzOuDI7CmOntJDeKbCucjK8mo8WBs4yp01TijYtKkQn3XBsHsjgpk/Fmdueu SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w6aj86k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:25:15 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18KDECvO025732;
+        Mon, 20 Sep 2021 09:25:14 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b5w6aj857-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 09:25:14 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18KDC7O1006188;
+        Mon, 20 Sep 2021 13:25:12 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04fra.de.ibm.com with ESMTP id 3b57r9835q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 13:25:12 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18KDP7Vm42992036
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 13:25:08 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D6661A406E;
+        Mon, 20 Sep 2021 13:25:07 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A34BA404D;
+        Mon, 20 Sep 2021 13:25:07 +0000 (GMT)
+Received: from p-imbrenda.ibmuc.com (unknown [9.145.9.241])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Sep 2021 13:25:07 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com
+Subject: [PATCH v5 08/14] KVM: s390: pv: handle secure storage exceptions for normal guests
+Date:   Mon, 20 Sep 2021 15:24:56 +0200
+Message-Id: <20210920132502.36111-9-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210920132502.36111-1-imbrenda@linux.ibm.com>
+References: <20210920132502.36111-1-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1632123331-2425-4-git-send-email-srivasam@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rOvXDodf52uB1rboPyO8bjiwz5lxlyxN
+X-Proofpoint-ORIG-GUID: UO6NLJ4B_cMJ3aCSAnqGrXUGKYG2fq6Q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 clxscore=1015 suspectscore=0 impostorscore=0 mlxlogscore=680
+ priorityscore=1501 phishscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+With upcoming patches, normal guests might touch secure pages.
 
+This patch extends the existing exception handler to convert the pages
+to non secure also when the exception is triggered by a normal guest.
 
-On 20/09/2021 08:35, Srinivasa Rao Mandadapu wrote:
-> Update amic and dmic related tx macro control registers to volatile
-> 
-> Fixes: c39667ddcfc5 (ASoC: codecs: lpass-tx-macro: add support for lpass tx macro)
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->   sound/soc/codecs/lpass-tx-macro.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-> index 9273724..e65b592 100644
-> --- a/sound/soc/codecs/lpass-tx-macro.c
-> +++ b/sound/soc/codecs/lpass-tx-macro.c
-> @@ -423,6 +423,13 @@ static bool tx_is_volatile_register(struct device *dev, unsigned int reg)
->   	case CDC_TX_TOP_CSR_SWR_DMIC1_CTL:
->   	case CDC_TX_TOP_CSR_SWR_DMIC2_CTL:
->   	case CDC_TX_TOP_CSR_SWR_DMIC3_CTL:
-> +	case CDC_TX_TOP_CSR_SWR_AMIC0_CTL:
-> +	case CDC_TX_TOP_CSR_SWR_AMIC1_CTL:
-> +	case CDC_TX_CLK_RST_CTRL_MCLK_CONTROL:
-> +	case CDC_TX_CLK_RST_CTRL_FS_CNT_CONTROL:
-> +	case CDC_TX_CLK_RST_CTRL_SWR_CONTROL:
-> +	case CDC_TX_TOP_CSR_SWR_CTRL:
-> +	case CDC_TX0_TX_PATH_SEC7:
+This can happen for example when a secure guest reboots; the first
+stage of a secure guest is non secure, and in general a secure guest
+can reboot into non-secure mode.
 
-Why are these marked as Volatile?
-Can you provide some details on the issue that you are seeing?
+If the secure memory of the previous boot has not been cleared up
+completely yet, a non-secure guest might touch secure memory, which
+will need to be handled properly.
 
---srini
+Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+---
+ arch/s390/mm/fault.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
+diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+index eb68b4f36927..74784581f42d 100644
+--- a/arch/s390/mm/fault.c
++++ b/arch/s390/mm/fault.c
+@@ -767,6 +767,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+ 	struct vm_area_struct *vma;
+ 	struct mm_struct *mm;
+ 	struct page *page;
++	struct gmap *gmap;
+ 	int rc;
+ 
+ 	/*
+@@ -796,6 +797,14 @@ void do_secure_storage_access(struct pt_regs *regs)
+ 	}
+ 
+ 	switch (get_fault_type(regs)) {
++	case GMAP_FAULT:
++		gmap = (struct gmap *)S390_lowcore.gmap;
++		addr = __gmap_translate(gmap, addr);
++		if (IS_ERR_VALUE(addr)) {
++			do_fault_error(regs, VM_ACCESS_FLAGS, VM_FAULT_BADMAP);
++			break;
++		}
++		fallthrough;
+ 	case USER_FAULT:
+ 		mm = current->mm;
+ 		mmap_read_lock(mm);
+@@ -824,7 +833,6 @@ void do_secure_storage_access(struct pt_regs *regs)
+ 		if (rc)
+ 			BUG();
+ 		break;
+-	case GMAP_FAULT:
+ 	default:
+ 		do_fault_error(regs, VM_READ | VM_WRITE, VM_FAULT_BADMAP);
+ 		WARN_ON_ONCE(1);
+-- 
+2.31.1
 
->   		return true;
->   	}
->   	return false;
-> @@ -1674,6 +1681,12 @@ static int tx_macro_component_probe(struct snd_soc_component *comp)
->   
->   	snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 0x3F,
->   				      0x0A);
-> +	snd_soc_component_update_bits(comp, CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
-> +	snd_soc_component_update_bits(comp, CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
-> +	snd_soc_component_update_bits(comp, CDC_TX_TOP_CSR_SWR_DMIC0_CTL, 0xFF, 0x00);
-> +	snd_soc_component_update_bits(comp, CDC_TX_TOP_CSR_SWR_DMIC1_CTL, 0xFF, 0x00);
-> +	snd_soc_component_update_bits(comp, CDC_TX_TOP_CSR_SWR_DMIC2_CTL, 0xFF, 0x00);
-> +	snd_soc_component_update_bits(comp, CDC_TX_TOP_CSR_SWR_DMIC3_CTL, 0xFF, 0x00);
->   
->   	return 0;
->   }
-> 
