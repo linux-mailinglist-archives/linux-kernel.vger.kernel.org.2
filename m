@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAF24120B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78472411C5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345529AbhITR5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:57:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51348 "EHLO mail.kernel.org"
+        id S1343776AbhITRIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:08:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354204AbhITRtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:49:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EBF961BD0;
-        Mon, 20 Sep 2021 17:11:27 +0000 (UTC)
+        id S1344424AbhITRF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:05:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AC266136F;
+        Mon, 20 Sep 2021 16:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157888;
-        bh=76eGioPcotaQYkVwzDjxwSd4GCkgGhVHJKyA11UTrHI=;
+        s=korg; t=1632156911;
+        bh=b8Ip5Tlfr4+O+jheC+jZU1Z375KCC7CxM8QX+LyED5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x45ohQ4K7uae1e0DueSCYtgVhTLxdn6LdATVNXami2lnfMUEr1WafROFlL0flZS6w
-         oCFaFNczkk+sv2DZfQrZDLjfoIB+iWQJDjLYc54zK8KQ5MgoYQLWHuprItj0hYRTRW
-         eIojvxRtdj39vxvnBw/WJhk2B55DYu90RPuB2ao8=
+        b=zA2j+Jkm2OqghzpM3EVcmRsyFMQ82BGU7uR7gIcQCC08wnODwaCt9Q98QOocSoVw3
+         8kWVKMlndkGyz204xOg0iM//WEv2CD6+5wn/5zgnODV6u/dEWAEZLCHU4XLcD6oC6E
+         sEAlCv0JbRF+iIfmYbh+cSjQ00s8EQhOUhhWyDzo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Jiri Slaby <jslaby@suse.cz>,
+        stable@vger.kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 197/293] xtensa: ISS: dont panic in rs_init
+Subject: [PATCH 4.9 110/175] Smack: Fix wrong semantics in smk_access_entry()
 Date:   Mon, 20 Sep 2021 18:42:39 +0200
-Message-Id: <20210920163940.010570715@linuxfoundation.org>
+Message-Id: <20210920163921.670744144@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 23411c720052ad860b3e579ee4873511e367130a ]
+[ Upstream commit 6d14f5c7028eea70760df284057fe198ce7778dd ]
 
-While alloc_tty_driver failure in rs_init would mean we have much bigger
-problem, there is no reason to panic when tty_register_driver fails
-there. It can fail for various reasons.
+In the smk_access_entry() function, if no matching rule is found
+in the rust_list, a negative error code will be used to perform bit
+operations with the MAY_ enumeration value. This is semantically
+wrong. This patch fixes this issue.
 
-So handle the failure gracefully. Actually handle them both while at it.
-This will make at least the console functional as it was enabled earlier
-by console_initcall in iss_console_init. Instead of shooting down the
-whole system.
-
-We move tty_port_init() after alloc_tty_driver(), so that we don't need
-to destroy the port in case the latter function fails.
-
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-xtensa@linux-xtensa.org
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210723074317.32690-2-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/platforms/iss/console.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ security/smack/smack_access.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
-index af81a62faba6..e7faea3d73d3 100644
---- a/arch/xtensa/platforms/iss/console.c
-+++ b/arch/xtensa/platforms/iss/console.c
-@@ -168,9 +168,13 @@ static const struct tty_operations serial_ops = {
- 
- int __init rs_init(void)
+diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
+index e5d5c7fb2dac..b25cc69ef7ba 100644
+--- a/security/smack/smack_access.c
++++ b/security/smack/smack_access.c
+@@ -90,23 +90,22 @@ int log_policy = SMACK_AUDIT_DENIED;
+ int smk_access_entry(char *subject_label, char *object_label,
+ 			struct list_head *rule_list)
  {
--	tty_port_init(&serial_port);
-+	int ret;
+-	int may = -ENOENT;
+ 	struct smack_rule *srp;
  
- 	serial_driver = alloc_tty_driver(SERIAL_MAX_NUM_LINES);
-+	if (!serial_driver)
-+		return -ENOMEM;
-+
-+	tty_port_init(&serial_port);
+ 	list_for_each_entry_rcu(srp, rule_list, list) {
+ 		if (srp->smk_object->smk_known == object_label &&
+ 		    srp->smk_subject->smk_known == subject_label) {
+-			may = srp->smk_access;
+-			break;
++			int may = srp->smk_access;
++			/*
++			 * MAY_WRITE implies MAY_LOCK.
++			 */
++			if ((may & MAY_WRITE) == MAY_WRITE)
++				may |= MAY_LOCK;
++			return may;
+ 		}
+ 	}
  
- 	pr_info("%s %s\n", serial_name, serial_version);
- 
-@@ -190,8 +194,15 @@ int __init rs_init(void)
- 	tty_set_operations(serial_driver, &serial_ops);
- 	tty_port_link_device(&serial_port, serial_driver, 0);
- 
--	if (tty_register_driver(serial_driver))
--		panic("Couldn't register serial driver\n");
-+	ret = tty_register_driver(serial_driver);
-+	if (ret) {
-+		pr_err("Couldn't register serial driver\n");
-+		tty_driver_kref_put(serial_driver);
-+		tty_port_destroy(&serial_port);
-+
-+		return ret;
-+	}
-+
- 	return 0;
+-	/*
+-	 * MAY_WRITE implies MAY_LOCK.
+-	 */
+-	if ((may & MAY_WRITE) == MAY_WRITE)
+-		may |= MAY_LOCK;
+-	return may;
++	return -ENOENT;
  }
  
+ /**
 -- 
 2.30.2
 
