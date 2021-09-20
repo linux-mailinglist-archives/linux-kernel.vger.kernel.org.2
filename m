@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2501541170E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99129411703
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236971AbhITOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:32:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48382 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234991AbhITOcM (ORCPT
+        id S240693AbhITObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:31:10 -0400
+Received: from mail-vk1-f179.google.com ([209.85.221.179]:44807 "EHLO
+        mail-vk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237796AbhITObJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:32:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632148245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u9TCtQQQDHvFRzvXMYX+z7+x7whiCvDZBWtE0o8SjRw=;
-        b=VqhcvlXI01zjumZd3g770X4X7tkiItq7nv9C74CMNeoUBwGuUNpHKJ8nHcIjcb/9xgAvOL
-        hx4Ir8cbXtUYNHFH/aLCAyB+JIwKL3smfaZqy/RpF8dIruyEwIlk21mYT5HBCQCC93Yfcq
-        W+I7OIcoSbjJRbJjIy79Uw7g9Z4SkUc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-lQdMcZHkM46HaswXCYi9-g-1; Mon, 20 Sep 2021 10:30:42 -0400
-X-MC-Unique: lQdMcZHkM46HaswXCYi9-g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53797100C670;
-        Mon, 20 Sep 2021 14:30:40 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 25EF660C17;
-        Mon, 20 Sep 2021 14:30:35 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
-Subject: [PATCH v5 3/3] virtio-mem: disallow mapping virtio-mem memory via /dev/mem
-Date:   Mon, 20 Sep 2021 16:28:56 +0200
-Message-Id: <20210920142856.17758-4-david@redhat.com>
-In-Reply-To: <20210920142856.17758-1-david@redhat.com>
-References: <20210920142856.17758-1-david@redhat.com>
+        Mon, 20 Sep 2021 10:31:09 -0400
+Received: by mail-vk1-f179.google.com with SMTP id s137so2144790vke.11;
+        Mon, 20 Sep 2021 07:29:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=21YkALx8MY4xYqXIBqwCtbg9uR4choq3iXSql033QuY=;
+        b=ncjGd+zdQglCnUZItsBwHnwXR8WWGMewgRuCbWnpbL4N0Jfg56DiaH6xnG4yZ532uz
+         EnyJLQPK+T28H/Teq0lv3HCNvkYh4lP4X+T/+IPpdI3DkmkXnjlbfrbUszStqjQJoj4c
+         8FtKHUy4WL1hMIZVDqnCOh0Ai5rZLjaZMcOHnjBLfmCtd89NzpuHgCCj1ZuBw4uz8xF/
+         BOSIDmRR7EgScC2jeYtbzUxIhGiJityfn/02HbVlWAdUJYmcvIgVcn4otX5OkAexD6AU
+         Yb4otYsIUA2NuUoi4FYr9qbfsACGMlxoK79Dm+dTH4/jvS2D2fONH5x7bDXVFC9KpkXn
+         /gdQ==
+X-Gm-Message-State: AOAM531jfwgRia0S2Jm5nqHdVOnlJgAdwI2NnuomFsMDK9IqBnQuGq7R
+        zdmidZzFaUc9i0yELZRBmrHsJBlyzRic+TQ+1RQG5o80
+X-Google-Smtp-Source: ABdhPJzYwvtLjl5QDwoV+CHITQjvFv+87GrxeChNSj2O8dfOTy5rVYi5P2u2LoaRXbU19nG7yQpelDKN8sKmTzppk8c=
+X-Received: by 2002:a1f:3a4b:: with SMTP id h72mr3803629vka.19.1632148182010;
+ Mon, 20 Sep 2021 07:29:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl>
+ <20210920140938.GA24424@lst.de>
+In-Reply-To: <20210920140938.GA24424@lst.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Sep 2021 16:29:30 +0200
+Message-ID: <CAMuHMdXoZdhSydMpbW8B6oQJNnpYpTxmhHrV5CJNTUP7T1KsoA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Joel Becker <jlbec@evilplan.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't want user space to be able to map virtio-mem device memory
-directly (e.g., via /dev/mem) in order to have guarantees that in a sane
-setup we'll never accidentially access unplugged memory within the
-device-managed region of a virtio-mem device, just as required by the
-virtio-spec.
+Hi Christoph,
 
-As soon as the virtio-mem driver is loaded, the device region is visible
-in /proc/iomem via the parent device region. From that point on user space
-is aware of the device region and we want to disallow mapping anything
-inside that region (where we will dynamically (un)plug memory) until
-the driver has been unloaded cleanly and e.g., another driver might take
-over.
+On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
+> On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
+> > For better readability and maintenance: use the BIT() macro for flag
+> > definitions.
+>
+> NAK.  BIT() is the stupidest macro in the kernel and shall not be used
+> ever.  And I'm pretty sure we had this discussion a few times.
 
-By creating our parent IORESOURCE_SYSTEM_RAM resource with
-IORESOURCE_EXCLUSIVE, we will disallow any /dev/mem access to our
-device region until the driver was unloaded cleanly and removed the
-parent region. This will work even though only some memory blocks are
-actually currently added to Linux and appear as busy in the resource tree.
+Care to explain why it is a stupid macro?
 
-So access to the region from user space is only possible
-a) if we don't load the virtio-mem driver.
-b) after unloading the virtio-mem driver cleanly.
+TIA!
 
-Don't build virtio-mem if access to /dev/mem cannot be restricticted --
-if we have CONFIG_DEVMEM=y but CONFIG_STRICT_DEVMEM is not set.
+Gr{oetje,eeting}s,
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- drivers/virtio/Kconfig      | 1 +
- drivers/virtio/virtio_mem.c | 4 +++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+                        Geert
 
-diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-index ce1b3f6ec325..0d974162899d 100644
---- a/drivers/virtio/Kconfig
-+++ b/drivers/virtio/Kconfig
-@@ -101,6 +101,7 @@ config VIRTIO_MEM
- 	depends on MEMORY_HOTPLUG_SPARSE
- 	depends on MEMORY_HOTREMOVE
- 	depends on CONTIG_ALLOC
-+	depends on EXCLUSIVE_SYSTEM_RAM
- 	help
- 	 This driver provides access to virtio-mem paravirtualized memory
- 	 devices, allowing to hotplug and hotunplug memory.
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index bef8ad6bf466..c619bc0e46a7 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -2525,8 +2525,10 @@ static int virtio_mem_create_resource(struct virtio_mem *vm)
- 	if (!name)
- 		return -ENOMEM;
- 
-+	/* Disallow mapping device memory via /dev/mem completely. */
- 	vm->parent_resource = __request_mem_region(vm->addr, vm->region_size,
--						   name, IORESOURCE_SYSTEM_RAM);
-+						   name, IORESOURCE_SYSTEM_RAM |
-+						   IORESOURCE_EXCLUSIVE);
- 	if (!vm->parent_resource) {
- 		kfree(name);
- 		dev_warn(&vm->vdev->dev, "could not reserve device region\n");
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
