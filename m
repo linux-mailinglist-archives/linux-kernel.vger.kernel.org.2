@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33005411C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4A0411E48
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344477AbhITRGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:06:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
+        id S1346065AbhITR2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345619AbhITRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:03:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CF0261526;
-        Mon, 20 Sep 2021 16:54:07 +0000 (UTC)
+        id S1344266AbhITR0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:26:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33031611ED;
+        Mon, 20 Sep 2021 17:02:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156848;
-        bh=vFB/kw2iAgdMqNOOxqUsggJ6Z+ULPjz30COSk+LVgIU=;
+        s=korg; t=1632157365;
+        bh=i87e17WOXkm0v1LGGjaD4mjMUEFLsZckqrJ/BER2TAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTjJ3h/ixxXasvTUW9wQGzYPCooFUXoL6h+50vzTbNClfASedp49d/1PWsUqrpI78
-         YKVTAtsxMAMbYtlH0IbQYYp8K0oWLDGzWIrjnZWkibQGjzxnUH51gNkRrDrOmTkT3l
-         EE5JgHpaj1iPhNV+Pa4VW8xYcazIKsSMu2x8hYPU=
+        b=jrygSv6hv06bNEJsfW8ccEO7MFX7F5tPC0i3dmWGWI8MPAvVHTYjyNv8oEJYPZBP7
+         aerGZiJOFciKMbpUmIDD4FlbnLpKPEjaFUtfQ/s3LrkBAK96Gov1O3IB948sJmTm3b
+         JWGKf5z3W53rfOaa1Ji6i1syVvbo95YCQpRNPVOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Ronak Vijay Raheja <rraheja@codeaurora.org>,
-        Jack Pham <jackp@codeaurora.org>,
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 114/175] usb: gadget: composite: Allow bMaxPower=0 if self-powered
-Date:   Mon, 20 Sep 2021 18:42:43 +0200
-Message-Id: <20210920163921.802866031@linuxfoundation.org>
+Subject: [PATCH 4.14 143/217] tty: serial: jsm: hold port lock when reporting modem line changes
+Date:   Mon, 20 Sep 2021 18:42:44 +0200
+Message-Id: <20210920163929.490314107@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-[ Upstream commit bcacbf06c891374e7fdd7b72d11cda03b0269b43 ]
+[ Upstream commit 240e126c28df084222f0b661321e8e3ecb0d232e ]
 
-Currently the composite driver encodes the MaxPower field of
-the configuration descriptor by reading the c->MaxPower of the
-usb_configuration only if it is non-zero, otherwise it falls back
-to using the value hard-coded in CONFIG_USB_GADGET_VBUS_DRAW.
-However, there are cases when a configuration must explicitly set
-bMaxPower to 0, particularly if its bmAttributes also has the
-Self-Powered bit set, which is a valid combination.
+uart_handle_dcd_change() requires a port lock to be held and will emit a
+warning when lockdep is enabled.
 
-This is specifically called out in the USB PD specification section
-9.1, in which a PDUSB device "shall report zero in the bMaxPower
-field after negotiating a mutually agreeable Contract", and also
-verified by the USB Type-C Functional Test TD.4.10.2 Sink Power
-Precedence Test.
+Held corresponding lock to fix the following warnings.
 
-The fix allows the c->MaxPower to be used for encoding the bMaxPower
-even if it is 0, if the self-powered bit is also set.  An example
-usage of this would be for a ConfigFS gadget to be dynamically
-updated by userspace when the Type-C connection is determined to be
-operating in Power Delivery mode.
+[  132.528648] WARNING: CPU: 5 PID: 11600 at drivers/tty/serial/serial_core.c:3046 uart_handle_dcd_change+0xf4/0x120
+[  132.530482] Modules linked in:
+[  132.531050] CPU: 5 PID: 11600 Comm: jsm Not tainted 5.14.0-rc1-00003-g7fef2edf7cc7-dirty #31
+[  132.535268] RIP: 0010:uart_handle_dcd_change+0xf4/0x120
+[  132.557100] Call Trace:
+[  132.557562]  ? __free_pages+0x83/0xb0
+[  132.558213]  neo_parse_modem+0x156/0x220
+[  132.558897]  neo_param+0x399/0x840
+[  132.559495]  jsm_tty_open+0x12f/0x2d0
+[  132.560131]  uart_startup.part.18+0x153/0x340
+[  132.560888]  ? lock_is_held_type+0xe9/0x140
+[  132.561660]  uart_port_activate+0x7f/0xe0
+[  132.562351]  ? uart_startup.part.18+0x340/0x340
+[  132.563003]  tty_port_open+0x8d/0xf0
+[  132.563523]  ? uart_set_options+0x1e0/0x1e0
+[  132.564125]  uart_open+0x24/0x40
+[  132.564604]  tty_open+0x15c/0x630
 
-Co-developed-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Ronak Vijay Raheja <rraheja@codeaurora.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Link: https://lore.kernel.org/r/20210720080907.30292-1-jackp@codeaurora.org
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Link: https://lore.kernel.org/r/1626242003-3809-1-git-send-email-zheyuma97@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/composite.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/tty/serial/jsm/jsm_neo.c | 2 ++
+ drivers/tty/serial/jsm/jsm_tty.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-index f33635ab967f..438efa36552c 100644
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -481,7 +481,7 @@ static u8 encode_bMaxPower(enum usb_device_speed speed,
- {
- 	unsigned val;
- 
--	if (c->MaxPower)
-+	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
- 		val = c->MaxPower;
- 	else
- 		val = CONFIG_USB_GADGET_VBUS_DRAW;
-@@ -886,7 +886,11 @@ static int set_config(struct usb_composite_dev *cdev,
+diff --git a/drivers/tty/serial/jsm/jsm_neo.c b/drivers/tty/serial/jsm/jsm_neo.c
+index c6fdd6369534..96e01bf4599c 100644
+--- a/drivers/tty/serial/jsm/jsm_neo.c
++++ b/drivers/tty/serial/jsm/jsm_neo.c
+@@ -827,7 +827,9 @@ static void neo_parse_isr(struct jsm_board *brd, u32 port)
+ 		/* Parse any modem signal changes */
+ 		jsm_dbg(INTR, &ch->ch_bd->pci_dev,
+ 			"MOD_STAT: sending to parse_modem_sigs\n");
++		spin_lock_irqsave(&ch->uart_port.lock, lock_flags);
+ 		neo_parse_modem(ch, readb(&ch->ch_neo_uart->msr));
++		spin_unlock_irqrestore(&ch->uart_port.lock, lock_flags);
  	}
+ }
  
- 	/* when we return, be sure our power usage is valid */
--	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
-+	if (c->MaxPower || (c->bmAttributes & USB_CONFIG_ATT_SELFPOWER))
-+		power = c->MaxPower;
-+	else
-+		power = CONFIG_USB_GADGET_VBUS_DRAW;
-+
- 	if (gadget->speed < USB_SPEED_SUPER)
- 		power = min(power, 500U);
- 	else
+diff --git a/drivers/tty/serial/jsm/jsm_tty.c b/drivers/tty/serial/jsm/jsm_tty.c
+index ec7d8383900f..7c790ff6b511 100644
+--- a/drivers/tty/serial/jsm/jsm_tty.c
++++ b/drivers/tty/serial/jsm/jsm_tty.c
+@@ -195,6 +195,7 @@ static void jsm_tty_break(struct uart_port *port, int break_state)
+ 
+ static int jsm_tty_open(struct uart_port *port)
+ {
++	unsigned long lock_flags;
+ 	struct jsm_board *brd;
+ 	struct jsm_channel *channel =
+ 		container_of(port, struct jsm_channel, uart_port);
+@@ -248,6 +249,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	channel->ch_cached_lsr = 0;
+ 	channel->ch_stops_sent = 0;
+ 
++	spin_lock_irqsave(&port->lock, lock_flags);
+ 	termios = &port->state->port.tty->termios;
+ 	channel->ch_c_cflag	= termios->c_cflag;
+ 	channel->ch_c_iflag	= termios->c_iflag;
+@@ -267,6 +269,7 @@ static int jsm_tty_open(struct uart_port *port)
+ 	jsm_carrier(channel);
+ 
+ 	channel->ch_open_count++;
++	spin_unlock_irqrestore(&port->lock, lock_flags);
+ 
+ 	jsm_dbg(OPEN, &channel->ch_bd->pci_dev, "finish\n");
+ 	return 0;
 -- 
 2.30.2
 
