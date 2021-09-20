@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CFC411CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AC0411F63
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347358AbhITRNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:13:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39912 "EHLO mail.kernel.org"
+        id S1352673AbhITRks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:40:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347225AbhITRLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:11:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9995761352;
-        Mon, 20 Sep 2021 16:57:12 +0000 (UTC)
+        id S1348337AbhITRic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:38:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F190061B44;
+        Mon, 20 Sep 2021 17:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157033;
-        bh=B5Yzeoee29PRAotFD0SAuZNvKzUzhZ9AqeuINJp0T8E=;
+        s=korg; t=1632157635;
+        bh=Y0lViwqGnitaYyCwa04Cy4Ncmtpux8osHfUVX/sjw3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nSYv8eLW0IjI9JkmFdLfsqHsS0iVHSnj5GF3jF5oYrY9Lga5CQpNRo4x5RheMg0OI
-         FoBINzxSP5YmJDE4txuPTm6u39FbxcypjPt9et7laxGeJbvzHEWT5pVTS8h7ZUzOAr
-         Oi/1YA4s0atnaBMA7q5xm7rMWgHgjgn4XB7sGGZg=
+        b=VmYBZ2nDhvfSUqSpCzViJVhzbtZxun3xjYE3AQXSqTE5tVfnmr1pVrWZMO+SiH994
+         O4sMhxacJMj3k6ucWN6UZlN+1KliT0eEXChYGWfqdIjYALYDLTx/+luR8AWYs3iCzw
+         GNcdhePwNRTi9IqpfqYAy0j+HhzDCgXfY6+e2RxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fangrui Song <maskray@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 022/217] powerpc/boot: Delete unneeded .globl _zimage_start
-Date:   Mon, 20 Sep 2021 18:40:43 +0200
-Message-Id: <20210920163925.367698363@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 082/293] usb: phy: fsl-usb: add IRQ check
+Date:   Mon, 20 Sep 2021 18:40:44 +0200
+Message-Id: <20210920163936.072396123@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit 968339fad422a58312f67718691b717dac45c399 upstream.
+[ Upstream commit ecc2f30dbb25969908115c81ec23650ed982b004 ]
 
-.globl sets the symbol binding to STB_GLOBAL while .weak sets the
-binding to STB_WEAK. GNU as let .weak override .globl since
-binutils-gdb 5ca547dc2399a0a5d9f20626d4bf5547c3ccfddd (1996). Clang
-integrated assembler let the last win but it may error in the future.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding an original
+error code. Stop calling request_irq() with the invalid IRQ #s.
 
-Since it is a convention that only one binding directive is used, just
-delete .globl.
-
-Fixes: ee9d21b3b358 ("powerpc/boot: Ensure _zimage_start is a weak symbol")
-Signed-off-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200325164257.170229-1-maskray@google.com
+Fixes: 0807c500a1a6 ("USB: add Freescale USB OTG Transceiver driver")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/b0a86089-8b8b-122e-fd6d-73e8c2304964@omp.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/boot/crt0.S |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/usb/phy/phy-fsl-usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/powerpc/boot/crt0.S
-+++ b/arch/powerpc/boot/crt0.S
-@@ -49,9 +49,6 @@ p_end:		.long	_end
- p_pstack:	.long	_platform_stack_top
- #endif
+diff --git a/drivers/usb/phy/phy-fsl-usb.c b/drivers/usb/phy/phy-fsl-usb.c
+index f7c96d209eda..981db219234e 100644
+--- a/drivers/usb/phy/phy-fsl-usb.c
++++ b/drivers/usb/phy/phy-fsl-usb.c
+@@ -873,6 +873,8 @@ int usb_otg_start(struct platform_device *pdev)
  
--	.globl	_zimage_start
--	/* Clang appears to require the .weak directive to be after the symbol
--	 * is defined. See https://bugs.llvm.org/show_bug.cgi?id=38921  */
- 	.weak	_zimage_start
- _zimage_start:
- 	.globl	_zimage_start_lib
+ 	/* request irq */
+ 	p_otg->irq = platform_get_irq(pdev, 0);
++	if (p_otg->irq < 0)
++		return p_otg->irq;
+ 	status = request_irq(p_otg->irq, fsl_otg_isr,
+ 				IRQF_SHARED, driver_name, p_otg);
+ 	if (status) {
+-- 
+2.30.2
+
 
 
