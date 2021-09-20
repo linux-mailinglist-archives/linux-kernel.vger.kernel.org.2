@@ -2,86 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C178411485
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD5B411481
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238385AbhITMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:33:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238218AbhITMd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:33:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 778E960F4B;
-        Mon, 20 Sep 2021 12:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632141120;
-        bh=Uux/2Cc70BUzmHbCJBRHEOFQH+Jr1wcoLMV9FMrSuPk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y/9kWfLMyj0Zzz/+7NKVDzT2gOyL10S0dNKxxwayJjpiDJfSa8PsJHMiOoHH9np/7
-         fFNRmGtNlNk31MgWVPFpmCJtab87j20z0ACPus+NL8npAYW9GlvIEW8sDC/kz3NYgW
-         D51fnwr5dPxhXu7ykHOsFFt74ATB8A+S7koDqqDsMXb9uQJW6f37/dxYrum7LB64E4
-         0IBQhmQut7QjEHc/CdB19zA1PNdNt7gqkp217bCa4IWCXvNAKQ7+r2cBJSTylSvfWJ
-         ZEvU7JSKxCnuFAFR36l4Sl+3F38tL12lDm0X9+adm/3BQfD5HNn4fcZU3wG7+nXSQ1
-         qIFKls9Zm6ANQ==
-Date:   Mon, 20 Sep 2021 13:31:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH] kselftest/arm64: signal: Skip tests if required features
- are missing
-Message-ID: <20210920123116.GF4192@sirena.org.uk>
-References: <20210920121228.35368-1-cristian.marussi@arm.com>
- <20210920122240.GE4192@sirena.org.uk>
- <20210920123014.GA6510@e120937-lin>
+        id S238332AbhITMdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237977AbhITMdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:33:00 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD76FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:31:33 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id co2so14215008edb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QF62yZU/+6ZlNBgifI+CKDXHp7smsglUxz2zwn/P9Js=;
+        b=BIQ65kDNI2MjvluQh9ZbK1D+WAgv856aLhVPB344B0zC3lOTzqT0nTur//LWsvTIql
+         Nu8G/WTmWD8+QWMoAbhvx6O+Jl+3hsBsORCHufIaxRh7QO45ywEbS+fVP684px2oq0fP
+         iwYgC01hRbt8EFXEes05Q5N//RZUqdcwCjAv+EK8WkMxq8tqQxRgLLozgQRC1SG5M/GY
+         RaklyaWH10OeXLTI97MqmFOYitTq9B+wyUmNTkuqixiGMvua0nXh0iAO9yBgtUoYdFjw
+         4QL/F69RNamvD6rdvxU51v/4TxOuXUnR2bV6Dix3/rbVIsj37xrz+Wga2zx0+TSk5Vn2
+         Q0HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QF62yZU/+6ZlNBgifI+CKDXHp7smsglUxz2zwn/P9Js=;
+        b=cSOAqM5+Lnr8rjfl/OxhzUquYC8mVT1vD0HHLqe5ZHkugpl1uxk1z+BQONkZIEmlBp
+         E/qnxB11SZRoZAWmuCy4+QYEK8p/Ko3rYAL9G1e81NHRWHbH44EODpeSe5nC7C5ERzTz
+         oMuYvefABgMaSBKHkzgdGpbfSfSdNsAlkRBpbkUQw7iPeFzV0qsyzPXYGQeRbYtjjRN2
+         UEqbkJ3bhdcCwkLyHPPyQ7CL9eSKFKY1euVNO0uRcLZN1cBqlAstp05arioMoi2xcLkR
+         3tI4aBvejgipnlsobYLwpo0FqstlUyholrrCuwyWY3HpMNWo3Mofg7vDoKwaZAj8vFLi
+         q+zQ==
+X-Gm-Message-State: AOAM5308uals822Db4VHel2rUG6fmYyrNDKpFyRDF+eRl50XfVntkNct
+        1o5IkC5ooS0weO/KcFzyAkiNA01KTDw=
+X-Google-Smtp-Source: ABdhPJx4FpoKeFR3v7F4JywM6LFdSEJqy65UotZ4K0nnuDn8lAATcflVL/UyTXsQFT+21B23hvURtw==
+X-Received: by 2002:a17:906:ccca:: with SMTP id ot10mr27637430ejb.429.1632141089969;
+        Mon, 20 Sep 2021 05:31:29 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
+        by smtp.gmail.com with ESMTPSA id dc8sm6916098edb.28.2021.09.20.05.31.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 05:31:29 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: core: remove the function power_saving_wk_hdl
+Date:   Mon, 20 Sep 2021 14:31:28 +0200
+Message-ID: <2311011.CixZWWR6MO@localhost.localdomain>
+In-Reply-To: <20210920113221.GP2088@kadam>
+References: <YTub30ZRG3oLbxQW@user> <1651026.4NJzAxWbHA@localhost.localdomain> <20210920113221.GP2088@kadam>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gMR3gsNFwZpnI/Ts"
-Content-Disposition: inline
-In-Reply-To: <20210920123014.GA6510@e120937-lin>
-X-Cookie: diplomacy, n:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday, September 20, 2021 1:32:21 PM CEST Dan Carpenter wrote:
+> On Mon, Sep 20, 2021 at 01:13:54PM +0200, Fabio M. De Francesco wrote:
+> > On Monday, September 20, 2021 12:36:06 PM CEST Greg KH wrote:
+> > > On Sat, Sep 18, 2021 at 10:52:50PM +0530, Saurav Girepunje wrote:
+> > > > 
+> > > > 
+> > > > On 13/09/21 9:48 pm, Greg KH wrote:
+> > > > > On Fri, Sep 10, 2021 at 11:24:39PM +0530, Saurav Girepunje wrote:
+> > > > > > Remove the function power_saving_wk_hdl() as it just calling
+> > > > > > the rtw_ps_processor().Instead of power_saving_wk_hdl() call 
+directly
+> > > > > > rtw_ps_processor().
+> > > > > > 
+> > > > > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> > > > >
+> > > > > []
+> > > > > 
+> > > > > Also does not apply to my tree.  Please rebase against my staging-
+next
+> > > > > branch and resend.
+> > > > > 
+> > > > > thanks,
+> > > > > 
+> > > > > greg k-h
+> > > > > 
+> > > > 
+> > > > Hi Greg,
+> > > > 
+> > > > I always do rebase against your staging-testing branch. Can you help 
+me 
+> > to
+> > > > understand.When we need to rebase on staging-next. Do we always need 
+to
+> > > > rebase against staging-next..!
+> > > 
+> > > Yes, you should.  When you are working on code that lots of other 
+people
+> > > are working on, there will be conflicts like this, and you just need to
+> > > stay on top of it.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > 
+> > 
+> > Sorry, Greg. I'm confused... :(
+> > 
+> > As far as I know, everyone here make patches for staging-testing.
+> 
+> Nope.  It's only you.
 
---gMR3gsNFwZpnI/Ts
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+And Saurav (at least) :)
 
-On Mon, Sep 20, 2021 at 01:30:14PM +0100, Cristian Marussi wrote:
-> On Mon, Sep 20, 2021 at 01:22:40PM +0100, Mark Brown wrote:
-> > On Mon, Sep 20, 2021 at 01:12:28PM +0100, Cristian Marussi wrote:
-> > > During initialization of a signal testcase, features declared as required
-> > > are properly checked against the running system but no action is then taken
-> > > to effectively skip such a testcase.
+I've been misled and in turn I misled Pavel. This is due to a guide in 
+kernelnewbies.org that explicitly says to use staging-testing:
 
-> > Reviwed-by: Mark Brown <broonie@kernel.org>
+https://kernelnewbies.org/OutreachyfirstpatchSetup
 
-> > I have a version of this locally which I thought I'd sent out already
-> > among all the in flight patches I've got for kseltest but it looks like
-> > it didn't make it.
+In that page the is a section ("Set up your Linux kernel code repository") 
+which says: "[] Then use the revision control system called git to clone Greg 
+Kroah-Hartman's staging tree repository: git clone -b staging-testing git://
+git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git".
 
-> Ah ok sorry, I did not know. Pick either as you wish.
+I assumed that those instructions must be followed also by developers that 
+are not (anymore) in the Outreachy program.
 
-No, please use this one - like I say I thought I'd sent mine out but it
-looks like I didn't.
+Obviously, I was wrong in assuming the above.
 
---gMR3gsNFwZpnI/Ts
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks for your reply, Dan.
 
------BEGIN PGP SIGNATURE-----
+Regards,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFIfxMACgkQJNaLcl1U
-h9C1wgf+NQ/8kb/cwNhHFV2OhVXQa5JedDzJWq9DtdVu2IHM5+f6F4j2xC3eWS0E
-KZ/07GGv3NxfmI1FvwmqS1miDzPZ2SH8NoIPwuPAGu/PAcfukFV7maUFZXEYzGsq
-UdJ2jf5QJ/8p9QQqPdutUeY0+E1Re4nQ5T7oMEf6p0ObXCZImHNEg0Qg1+AzyYCV
-Fq29DGGHTlUxE3jWGXGlbjHLYrMleQfsznViuvQQoBj0qBCUUgaiQVfmgKxUTsMh
-cAMTrhP7TFPwcYYli8Efm6eLrvka+eAdYS+oh+hkBgWvCXlppUJCw60uJwAviSky
-INh2idtsuqBwYIferxOOVhH6CPzEvw==
-=5o6W
------END PGP SIGNATURE-----
+Fabio
 
---gMR3gsNFwZpnI/Ts--
+> 
+> The staging-testing branch can be rebased so maybe you will write a
+> patch against something that never makes it to staging-next and everyone
+> will be puzzled.
+> 
+> That's unlikely to happen and we won't be puzzled for long because we
+> try not to invest too much time wondering why patches don't apply.
+> 
+> regards,
+> dan carpenter
+> 
+
+
+
+
