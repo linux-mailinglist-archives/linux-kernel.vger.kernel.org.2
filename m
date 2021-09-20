@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFFF411D5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF052411F87
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348373AbhITRSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:18:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41571 "EHLO mail.kernel.org"
+        id S1348624AbhITRmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:42:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348029AbhITRQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:16:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAA4861A0C;
-        Mon, 20 Sep 2021 16:59:05 +0000 (UTC)
+        id S1352592AbhITRjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:39:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 948FF61B3F;
+        Mon, 20 Sep 2021 17:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157146;
-        bh=Uxg55o13ZwWdxS5oeYXCiY2TS803Ch/Cfw1nu/N26oc=;
+        s=korg; t=1632157681;
+        bh=eKiF2ULYXhs/ylPWv84WbrMumQzr4u4BVZKZDQmEv0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aMikKOp6I4+DDWJst85MexA+Xvn+oU0VP3AMWiIW6wKQFCEaDYtNr2SKskmtlvPfn
-         qQBnxoYPeg35H7qA7T1WuuJ1BF/gROZh/uQlFvM0p97epltrvazNKp31JtjzFq+uJR
-         I18xu5PhjSfbkvoZi7i/khGPqsbXE3OqGX415YNg=
+        b=r+WmPoHi/VaH6nahd3nTqwRItEmuaMVDNgA1tc5e7MBno1hd4f8S8fQFZV3NClbKR
+         scCiG16hYdWbE81FvL8JIXB4N2SQx9yOJF3PlMqjzWGwhL1oEItXlgBRgTUvQph1UB
+         6dOArp7guHBGFhFcEAJr1bCMxt2NzquNSHum+fPY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 042/217] crypto: qat - fix naming for init/shutdown VF to PF notifications
+Subject: [PATCH 4.19 101/293] ipv4: make exception cache less predictible
 Date:   Mon, 20 Sep 2021 18:41:03 +0200
-Message-Id: <20210920163926.051218963@linuxfoundation.org>
+Message-Id: <20210920163936.720060453@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,160 +42,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Chiappero <marco.chiappero@intel.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit b90c1c4d3fa8cd90f4e8245b13564380fd0bfad1 ]
+[ Upstream commit 67d6d681e15b578c1725bad8ad079e05d1c48a8e ]
 
-At start and shutdown, VFs notify the PF about their state. These
-notifications are carried out through a message exchange using the PFVF
-protocol.
+Even after commit 6457378fe796 ("ipv4: use siphash instead of Jenkins in
+fnhe_hashfun()"), an attacker can still use brute force to learn
+some secrets from a victim linux host.
 
-Function names lead to believe they do perform init or shutdown logic.
-This is to fix the naming to better reflect their purpose.
+One way to defeat these attacks is to make the max depth of the hash
+table bucket a random value.
 
-Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Co-developed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Before this patch, each bucket of the hash table used to store exceptions
+could contain 6 items under attack.
+
+After the patch, each bucket would contains a random number of items,
+between 6 and 10. The attacker can no longer infer secrets.
+
+This is slightly increasing memory size used by the hash table,
+by 50% in average, we do not expect this to be a problem.
+
+This patch is more complex than the prior one (IPv6 equivalent),
+because IPv4 was reusing the oldest entry.
+Since we need to be able to evict more than one entry per
+update_or_create_fnhe() call, I had to replace
+fnhe_oldest() with fnhe_remove_oldest().
+
+Also note that we will queue extra kfree_rcu() calls under stress,
+which hopefully wont be a too big issue.
+
+Fixes: 4895c771c7f0 ("ipv4: Add FIB nexthop exceptions.")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Keyu Man <kman001@ucr.edu>
+Cc: Willy Tarreau <w@1wt.eu>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Tested-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c |  4 ++--
- drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c   |  4 ++--
- drivers/crypto/qat/qat_common/adf_common_drv.h       |  8 ++++----
- drivers/crypto/qat/qat_common/adf_vf2pf_msg.c        | 12 ++++++------
- .../qat/qat_dh895xccvf/adf_dh895xccvf_hw_data.c      |  4 ++--
- 5 files changed, 16 insertions(+), 16 deletions(-)
+ net/ipv4/route.c | 46 ++++++++++++++++++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c b/drivers/crypto/qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c
-index d2d0ae445fd8..7c7d49a8a403 100644
---- a/drivers/crypto/qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c
-+++ b/drivers/crypto/qat/qat_c3xxxvf/adf_c3xxxvf_hw_data.c
-@@ -123,10 +123,10 @@ void adf_init_hw_data_c3xxxiov(struct adf_hw_device_data *hw_data)
- 	hw_data->enable_error_correction = adf_vf_void_noop;
- 	hw_data->init_admin_comms = adf_vf_int_noop;
- 	hw_data->exit_admin_comms = adf_vf_void_noop;
--	hw_data->send_admin_init = adf_vf2pf_init;
-+	hw_data->send_admin_init = adf_vf2pf_notify_init;
- 	hw_data->init_arb = adf_vf_int_noop;
- 	hw_data->exit_arb = adf_vf_void_noop;
--	hw_data->disable_iov = adf_vf2pf_shutdown;
-+	hw_data->disable_iov = adf_vf2pf_notify_shutdown;
- 	hw_data->get_accel_mask = get_accel_mask;
- 	hw_data->get_ae_mask = get_ae_mask;
- 	hw_data->get_num_accels = get_num_accels;
-diff --git a/drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c b/drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c
-index 38e4bc04f407..90e8a7564756 100644
---- a/drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c
-+++ b/drivers/crypto/qat/qat_c62xvf/adf_c62xvf_hw_data.c
-@@ -123,10 +123,10 @@ void adf_init_hw_data_c62xiov(struct adf_hw_device_data *hw_data)
- 	hw_data->enable_error_correction = adf_vf_void_noop;
- 	hw_data->init_admin_comms = adf_vf_int_noop;
- 	hw_data->exit_admin_comms = adf_vf_void_noop;
--	hw_data->send_admin_init = adf_vf2pf_init;
-+	hw_data->send_admin_init = adf_vf2pf_notify_init;
- 	hw_data->init_arb = adf_vf_int_noop;
- 	hw_data->exit_arb = adf_vf_void_noop;
--	hw_data->disable_iov = adf_vf2pf_shutdown;
-+	hw_data->disable_iov = adf_vf2pf_notify_shutdown;
- 	hw_data->get_accel_mask = get_accel_mask;
- 	hw_data->get_ae_mask = get_ae_mask;
- 	hw_data->get_num_accels = get_num_accels;
-diff --git a/drivers/crypto/qat/qat_common/adf_common_drv.h b/drivers/crypto/qat/qat_common/adf_common_drv.h
-index d78f8d5c89c3..289dd7e48d4a 100644
---- a/drivers/crypto/qat/qat_common/adf_common_drv.h
-+++ b/drivers/crypto/qat/qat_common/adf_common_drv.h
-@@ -239,8 +239,8 @@ void adf_enable_vf2pf_interrupts(struct adf_accel_dev *accel_dev,
- void adf_enable_pf2vf_interrupts(struct adf_accel_dev *accel_dev);
- void adf_disable_pf2vf_interrupts(struct adf_accel_dev *accel_dev);
- 
--int adf_vf2pf_init(struct adf_accel_dev *accel_dev);
--void adf_vf2pf_shutdown(struct adf_accel_dev *accel_dev);
-+int adf_vf2pf_notify_init(struct adf_accel_dev *accel_dev);
-+void adf_vf2pf_notify_shutdown(struct adf_accel_dev *accel_dev);
- int adf_init_pf_wq(void);
- void adf_exit_pf_wq(void);
- int adf_init_vf_wq(void);
-@@ -263,12 +263,12 @@ static inline void adf_disable_pf2vf_interrupts(struct adf_accel_dev *accel_dev)
- {
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 1491d239385e..d72bffab6ffc 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -604,18 +604,25 @@ static void fnhe_flush_routes(struct fib_nh_exception *fnhe)
+ 	}
  }
  
--static inline int adf_vf2pf_init(struct adf_accel_dev *accel_dev)
-+static inline int adf_vf2pf_notify_init(struct adf_accel_dev *accel_dev)
+-static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
++static void fnhe_remove_oldest(struct fnhe_hash_bucket *hash)
  {
- 	return 0;
+-	struct fib_nh_exception *fnhe, *oldest;
++	struct fib_nh_exception __rcu **fnhe_p, **oldest_p;
++	struct fib_nh_exception *fnhe, *oldest = NULL;
+ 
+-	oldest = rcu_dereference(hash->chain);
+-	for (fnhe = rcu_dereference(oldest->fnhe_next); fnhe;
+-	     fnhe = rcu_dereference(fnhe->fnhe_next)) {
+-		if (time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp))
++	for (fnhe_p = &hash->chain; ; fnhe_p = &fnhe->fnhe_next) {
++		fnhe = rcu_dereference_protected(*fnhe_p,
++						 lockdep_is_held(&fnhe_lock));
++		if (!fnhe)
++			break;
++		if (!oldest ||
++		    time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp)) {
+ 			oldest = fnhe;
++			oldest_p = fnhe_p;
++		}
+ 	}
+ 	fnhe_flush_routes(oldest);
+-	return oldest;
++	*oldest_p = oldest->fnhe_next;
++	kfree_rcu(oldest, rcu);
  }
  
--static inline void adf_vf2pf_shutdown(struct adf_accel_dev *accel_dev)
-+static inline void adf_vf2pf_notify_shutdown(struct adf_accel_dev *accel_dev)
- {
- }
+ static inline u32 fnhe_hashfun(__be32 daddr)
+@@ -692,16 +699,21 @@ static void update_or_create_fnhe(struct fib_nh *nh, __be32 daddr, __be32 gw,
+ 		if (rt)
+ 			fill_route_from_fnhe(rt, fnhe);
+ 	} else {
+-		if (depth > FNHE_RECLAIM_DEPTH)
+-			fnhe = fnhe_oldest(hash);
+-		else {
+-			fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
+-			if (!fnhe)
+-				goto out_unlock;
+-
+-			fnhe->fnhe_next = hash->chain;
+-			rcu_assign_pointer(hash->chain, fnhe);
++		/* Randomize max depth to avoid some side channels attacks. */
++		int max_depth = FNHE_RECLAIM_DEPTH +
++				prandom_u32_max(FNHE_RECLAIM_DEPTH);
++
++		while (depth > max_depth) {
++			fnhe_remove_oldest(hash);
++			depth--;
+ 		}
++
++		fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
++		if (!fnhe)
++			goto out_unlock;
++
++		fnhe->fnhe_next = hash->chain;
++
+ 		fnhe->fnhe_genid = genid;
+ 		fnhe->fnhe_daddr = daddr;
+ 		fnhe->fnhe_gw = gw;
+@@ -709,6 +721,8 @@ static void update_or_create_fnhe(struct fib_nh *nh, __be32 daddr, __be32 gw,
+ 		fnhe->fnhe_mtu_locked = lock;
+ 		fnhe->fnhe_expires = max(1UL, expires);
  
-diff --git a/drivers/crypto/qat/qat_common/adf_vf2pf_msg.c b/drivers/crypto/qat/qat_common/adf_vf2pf_msg.c
-index cd5f37dffe8a..1830194567e8 100644
---- a/drivers/crypto/qat/qat_common/adf_vf2pf_msg.c
-+++ b/drivers/crypto/qat/qat_common/adf_vf2pf_msg.c
-@@ -49,14 +49,14 @@
- #include "adf_pf2vf_msg.h"
- 
- /**
-- * adf_vf2pf_init() - send init msg to PF
-+ * adf_vf2pf_notify_init() - send init msg to PF
-  * @accel_dev:  Pointer to acceleration VF device.
-  *
-  * Function sends an init messge from the VF to a PF
-  *
-  * Return: 0 on success, error code otherwise.
-  */
--int adf_vf2pf_init(struct adf_accel_dev *accel_dev)
-+int adf_vf2pf_notify_init(struct adf_accel_dev *accel_dev)
- {
- 	u32 msg = (ADF_VF2PF_MSGORIGIN_SYSTEM |
- 		(ADF_VF2PF_MSGTYPE_INIT << ADF_VF2PF_MSGTYPE_SHIFT));
-@@ -69,17 +69,17 @@ int adf_vf2pf_init(struct adf_accel_dev *accel_dev)
- 	set_bit(ADF_STATUS_PF_RUNNING, &accel_dev->status);
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(adf_vf2pf_init);
-+EXPORT_SYMBOL_GPL(adf_vf2pf_notify_init);
- 
- /**
-- * adf_vf2pf_shutdown() - send shutdown msg to PF
-+ * adf_vf2pf_notify_shutdown() - send shutdown msg to PF
-  * @accel_dev:  Pointer to acceleration VF device.
-  *
-  * Function sends a shutdown messge from the VF to a PF
-  *
-  * Return: void
-  */
--void adf_vf2pf_shutdown(struct adf_accel_dev *accel_dev)
-+void adf_vf2pf_notify_shutdown(struct adf_accel_dev *accel_dev)
- {
- 	u32 msg = (ADF_VF2PF_MSGORIGIN_SYSTEM |
- 	    (ADF_VF2PF_MSGTYPE_SHUTDOWN << ADF_VF2PF_MSGTYPE_SHIFT));
-@@ -89,4 +89,4 @@ void adf_vf2pf_shutdown(struct adf_accel_dev *accel_dev)
- 			dev_err(&GET_DEV(accel_dev),
- 				"Failed to send Shutdown event to PF\n");
- }
--EXPORT_SYMBOL_GPL(adf_vf2pf_shutdown);
-+EXPORT_SYMBOL_GPL(adf_vf2pf_notify_shutdown);
-diff --git a/drivers/crypto/qat/qat_dh895xccvf/adf_dh895xccvf_hw_data.c b/drivers/crypto/qat/qat_dh895xccvf/adf_dh895xccvf_hw_data.c
-index a3b4dd8099a7..3a8361c83f0b 100644
---- a/drivers/crypto/qat/qat_dh895xccvf/adf_dh895xccvf_hw_data.c
-+++ b/drivers/crypto/qat/qat_dh895xccvf/adf_dh895xccvf_hw_data.c
-@@ -123,10 +123,10 @@ void adf_init_hw_data_dh895xcciov(struct adf_hw_device_data *hw_data)
- 	hw_data->enable_error_correction = adf_vf_void_noop;
- 	hw_data->init_admin_comms = adf_vf_int_noop;
- 	hw_data->exit_admin_comms = adf_vf_void_noop;
--	hw_data->send_admin_init = adf_vf2pf_init;
-+	hw_data->send_admin_init = adf_vf2pf_notify_init;
- 	hw_data->init_arb = adf_vf_int_noop;
- 	hw_data->exit_arb = adf_vf_void_noop;
--	hw_data->disable_iov = adf_vf2pf_shutdown;
-+	hw_data->disable_iov = adf_vf2pf_notify_shutdown;
- 	hw_data->get_accel_mask = get_accel_mask;
- 	hw_data->get_ae_mask = get_ae_mask;
- 	hw_data->get_num_accels = get_num_accels;
++		rcu_assign_pointer(hash->chain, fnhe);
++
+ 		/* Exception created; mark the cached routes for the nexthop
+ 		 * stale, so anyone caching it rechecks if this exception
+ 		 * applies to them.
 -- 
 2.30.2
 
