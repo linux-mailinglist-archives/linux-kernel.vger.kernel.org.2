@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EDA4125C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB70C4123B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384436AbhITSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59876 "EHLO mail.kernel.org"
+        id S1378828AbhITS0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383439AbhITSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:44:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B09E36335B;
-        Mon, 20 Sep 2021 17:32:58 +0000 (UTC)
+        id S1377667AbhITSUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:20:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1288632AE;
+        Mon, 20 Sep 2021 17:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159179;
-        bh=/ylWhQgWilVG54d1ELp7na5y0xNTpbUxviz6hlHmaiY=;
+        s=korg; t=1632158604;
+        bh=hjns1O5VBB1oEQxpCGhtIp+uuv+3hKCDt4L6L2WPSCw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmSifqKx4IVZo4AOFDFeVkXOPE23RhJdgJo3Ce5ad9MFSCNjtny2RmxYcxZLRIi/h
-         YuD+6W4NNy2zoLInjfzdoMv7+iXKGh1WtTfl4bOrERtHKxpkRxG4NAHIKCqPruii/R
-         dJ0Gpo9DD9zvtHhxj7h52Fz+b0hazfFrNKRbqp+k=
+        b=yPS2mWs0XrirznLcLmz9hcsMXhV0657Fr0ho9Ii+BiQUs67NGvrm0Oojw3ypJRKLY
+         +vUW+y0ZaUgrHAvWdL4jGH4mkZf9N1GtLkp+t3XMsFPJzXUF4h8VPaSVDoVAdHDDkA
+         qdr8v+D2FB6pV23YDcIgrZkpFm+JWFLdB0rJ28Ek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Davide Zini <davidezini2@gmail.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 113/168] block, bfq: honor already-setup queue merges
+        stable@vger.kernel.org,
+        "Ryan J. Barnett" <ryan.barnett@collins.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 233/260] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
 Date:   Mon, 20 Sep 2021 18:44:11 +0200
-Message-Id: <20210920163925.352279771@linuxfoundation.org>
+Message-Id: <20210920163939.036554715@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,83 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Valente <paolo.valente@linaro.org>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit 2d52c58b9c9bdae0ca3df6a1eab5745ab3f7d80b ]
+[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
 
-The function bfq_setup_merge prepares the merging between two
-bfq_queues, say bfqq and new_bfqq. To this goal, it assigns
-bfqq->new_bfqq = new_bfqq. Then, each time some I/O for bfqq arrives,
-the process that generated that I/O is disassociated from bfqq and
-associated with new_bfqq (merging is actually a redirection). In this
-respect, bfq_setup_merge increases new_bfqq->ref in advance, adding
-the number of processes that are expected to be associated with
-new_bfqq.
+"PAGESIZE / 512" is the number of ECC chunks.
+"ECC_BYTES" is the number of bytes needed to store a single ECC code.
+"2" is the space reserved by the bad block marker.
 
-Unfortunately, the stable-merging mechanism interferes with this
-setup. After bfqq->new_bfqq has been set by bfq_setup_merge, and
-before all the expected processes have been associated with
-bfqq->new_bfqq, bfqq may happen to be stably merged with a different
-queue than the current bfqq->new_bfqq. In this case, bfqq->new_bfqq
-gets changed. So, some of the processes that have been already
-accounted for in the ref counter of the previous new_bfqq will not be
-associated with that queue.  This creates an unbalance, because those
-references will never be decremented.
+"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
+than the total number of OOB bytes, otherwise it won't fit.
 
-This commit fixes this issue by reestablishing the previous, natural
-behaviour: once bfqq->new_bfqq has been set, it will not be changed
-until all expected redirections have occurred.
+Fix the equation by substituting s/>=/<=/.
 
-Signed-off-by: Davide Zini <davidezini2@gmail.com>
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
-Link: https://lore.kernel.org/r/20210802141352.74353-2-paolo.valente@linaro.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 9360c65169ff..3a1038b6eeb3 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2662,6 +2662,15 @@ bfq_setup_merge(struct bfq_queue *bfqq, struct bfq_queue *new_bfqq)
- 	 * are likely to increase the throughput.
- 	 */
- 	bfqq->new_bfqq = new_bfqq;
-+	/*
-+	 * The above assignment schedules the following redirections:
-+	 * each time some I/O for bfqq arrives, the process that
-+	 * generated that I/O is disassociated from bfqq and
-+	 * associated with new_bfqq. Here we increases new_bfqq->ref
-+	 * in advance, adding the number of processes that are
-+	 * expected to be associated with new_bfqq as they happen to
-+	 * issue I/O.
-+	 */
- 	new_bfqq->ref += process_refs;
- 	return new_bfqq;
- }
-@@ -2724,6 +2733,10 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- {
- 	struct bfq_queue *in_service_bfqq, *new_bfqq;
- 
-+	/* if a merge has already been setup, then proceed with that first */
-+	if (bfqq->new_bfqq)
-+		return bfqq->new_bfqq;
-+
- 	/*
- 	 * Check delayed stable merge for rotational or non-queueing
- 	 * devs. For this branch to be executed, bfqq must not be
-@@ -2825,9 +2838,6 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 	if (bfq_too_late_for_merging(bfqq))
- 		return NULL;
- 
--	if (bfqq->new_bfqq)
--		return bfqq->new_bfqq;
--
- 	if (!io_struct || unlikely(bfqq == &bfqd->oom_bfqq))
- 		return NULL;
- 
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index 44919d48d241..c459f169a904 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -122,7 +122,7 @@ on various other factors also like;
+ 	so the device should have enough free bytes available its OOB/Spare
+ 	area to accommodate ECC for entire page. In general following expression
+ 	helps in determining if given device can accommodate ECC syndrome:
+-	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
++	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
+ 	where
+ 		OOBSIZE		number of bytes in OOB/spare area
+ 		PAGESIZE	number of bytes in main-area of device page
 -- 
 2.30.2
 
