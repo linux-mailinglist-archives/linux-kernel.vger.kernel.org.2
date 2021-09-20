@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE1641127E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57F0411277
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbhITKDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:03:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229724AbhITKDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:03:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65C8C60240;
-        Mon, 20 Sep 2021 10:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632132130;
-        bh=z0yF78RdBg7hKlSTk5BKsjKH8v+YlV3IKCN8scl8+PA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=It7WL4JobI3VYNZiMpQb3/orFfG9CEejphtd8OJuPHG2srcIB+ZJSwoIw/xnznw09
-         Bm0bk1XPN8soXvom2a8nhGwUtGCFQRiXwyxAjh5j5znRvGzInCXjI2E4b48LU7h0pt
-         m/V3Ex929pBT4rqU2LjvrccEi+vu8H3vCKf/7hMD2r76Q5fFUZFOa+BZxmjyz78S/3
-         XpCan3VqcvbftRlNYSm+Uu1eN7YKqY55ba6y+802zo2BoQrKw/dqpoH2tUBFuvabv7
-         umiTId0YNGfsHxcxYA2fQNL6BNtJvmpfvzJSW3GAHP60H0k+uZWKRRWaV34kF1FtWB
-         344zktGw3md5Q==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Trevor Wu <trevor.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] ASoC: mediatek: mt8195: force COMMON_CLK dependency
-Date:   Mon, 20 Sep 2021 12:01:58 +0200
-Message-Id: <20210920100206.1418649-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234342AbhITKCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:02:18 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3845 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhITKCQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 06:02:16 -0400
+Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HCg3h30Pjz67N8Z;
+        Mon, 20 Sep 2021 17:58:08 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 20 Sep 2021 12:00:47 +0200
+Received: from [10.47.88.85] (10.47.88.85) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 20 Sep
+ 2021 11:00:46 +0100
+Subject: Re: [PATCH v2] perf test: Workload test of metric and metricgroups
+To:     Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eranian@google.com>, Paul Clarke <pc@us.ibm.com>
+References: <20210916060525.1890638-1-irogers@google.com>
+ <f7bbc59b-794f-2675-a044-1e3a58ad1495@huawei.com>
+ <CAP-5=fUAxfHb8fNjpPKthztJhB7Q3yUZucLS-6kKZtq-iNOVoA@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <361478a4-98d0-d488-2903-2c859a2c8524@huawei.com>
+Date:   Mon, 20 Sep 2021 11:04:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fUAxfHb8fNjpPKthztJhB7Q3yUZucLS-6kKZtq-iNOVoA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.88.85]
+X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 17/09/2021 20:16, Ian Rogers wrote:
+> On Thu, Sep 16, 2021 at 12:37 AM John Garry<john.garry@huawei.com>  wrote:
+>> On 16/09/2021 07:05, Ian Rogers wrote:
+>>> Test every metric and metricgroup with 'true' as a workload.
+>>>
+>>> Signed-off-by: Ian Rogers<irogers@google.com>
+>> Reviewed-by: John Garry<john.garry@huawei.com>
+>>
+>> Note that I also had a local test for pmu events:
+>> for e in `$PERF list --raw-dump pmu`; do
+>>     echo "Testing $e"
+>>     result=$($PERF stat -v -e "$e" perf bench internals synthesize)
+>>     if [[ "$result" =~ "$e" ]]; then
+>>       echo "Event not printed: $e"
+>>       exit 1
+>>     fi
+>> done
+>>
+>> Is there any value in upstreaming this? I could not see same already
+>> there. Or else make your new script generic, so that it accepts an
+>> argument whether to test events or metrics or metricgroups
+> It is not easy to make a generic script with the current shell test
+> infrastructure. I made a variant of this test:
+> https://lore.kernel.org/linux-perf-users/20210917184240.2181186-2-irogers@google.com/T/#u
+> For skylake it ran for 1m15s and so it may be too slow. Perhaps we
+> need to add to the test infrastructure with some kind of speed flag.
 
-Without CONFIG_COMMON_CLK, this driver fails to link:
+Hi Ian,
 
-ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
+I suggested this before I realized that it would be called from "perf test".
 
-Add the proper Kconfig dependency for compile testing.
+You think that 1m15s could be considered too slow, but I think that it 
+could be much slower to now run "perf test" on some other systems. Like 
+my arm64 system - see series 
+https://lore.kernel.org/linux-perf-users/1631795665-240946-1-git-send-email-john.garry@huawei.com/T/#t 
+- where I mention that we have >700 HW PMU events (before applying that 
+series to take advantage of the event merging). And each of those events 
+would be tested individually - slow...
 
-Fixes: 6746cc858259 ("ASoC: mediatek: mt8195: add platform driver")
-Fixes: 940ffa194547 ("ASoC: mediatek: SND_SOC_MT8195 should depend on ARCH_MEDIATEK")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So firstly maybe a speed or test level flag could be added before we try 
+this. Sorry for any inconvenience caused.
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 5a2f4667d50b..268c1f74aa3e 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -187,7 +187,7 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
- 
- config SND_SOC_MT8195
- 	tristate "ASoC support for Mediatek MT8195 chip"
--	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	depends on ARCH_MEDIATEK || (COMPILE_TEST && COMMON_CLK)
- 	select SND_SOC_MEDIATEK
- 	help
- 	  This adds ASoC platform driver support for Mediatek MT8195 chip
--- 
-2.29.2
-
+Thanks,
+John
