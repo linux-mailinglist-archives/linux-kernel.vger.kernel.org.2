@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EB141264B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133D14123DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355023AbhITS4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33188 "EHLO mail.kernel.org"
+        id S1378452AbhITS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:28:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385437AbhITSu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:50:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 842646337E;
-        Mon, 20 Sep 2021 17:34:40 +0000 (UTC)
+        id S1348448AbhITSWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5490B632B9;
+        Mon, 20 Sep 2021 17:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159281;
-        bh=HzC4FEJyEmQTpbQRKNOD5mi7b2ZooCXj66Madr1v6Og=;
+        s=korg; t=1632158649;
+        bh=3fYyaJ4Xf31JXWgk6Y3IPHvm2t7r5vua+XlOfzUZYPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iv6cjLnAzSml/bhAbTRnuYEb3pnbPvm1PG00MIy59Fo8XDVX7sOkklv8VPLR2W4ax
-         w8pkuHFE2R/QY/xb3b7Rvdrv9w/2E3wRoguRE3JCwtyKyf9MLlqExvStp29u1HpPQP
-         CoMvO6kFnpGYw1bTMKuAkBMZlhmoR5Xf+jj5xZYc=
+        b=OSf4DIEUqs1BwZTkWB+zif2c/SMDR15H0zat4BbKlvy8CqGNKourcqFuF5wAL5EoU
+         ZfvL7mki5zWR5HM6XiFZ9SOUOzrpT88s+ztAbmKwb9z+SVfpkF7HG56JopFBeldPB4
+         G5DRIHR7Zi6E8l3MMztxUEO5i0Lip5qSp4iRP9aU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 132/168] mtd: mtdconcat: Check _read, _write callbacks existence before assignment
+Subject: [PATCH 5.4 252/260] mtd: rawnand: cafe: Fix a resource leak in the error handling path of cafe_nand_probe()
 Date:   Mon, 20 Sep 2021 18:44:30 +0200
-Message-Id: <20210920163926.005202402@linuxfoundation.org>
+Message-Id: <20210920163939.671365802@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit a89d69a44e282be95ae76125dddc79515541efeb ]
+[ Upstream commit 6b430c7595e4eb95fae8fb54adc3c3ce002e75ae ]
 
-Since 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() as wrappers
-around mtd_{read,write}_oob()") don't allow _write|_read and
-_write_oob|_read_oob existing at the same time, we should check the
-existence of callbacks "_read and _write" from subdev's master device
-(We can trust master device since it has been registered) before
-assigning, otherwise following warning occurs while making
-concatenated device:
+A successful 'init_rs_non_canonical()' call should be balanced by a
+corresponding 'free_rs()' call in the error handling path of the probe, as
+already done in the remove function.
 
-  WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
-  add_mtd_device+0x7f/0x7b0
+Update the error handling path accordingly.
 
-Fixes: 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() around ...")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Fixes: 8c61b7a7f4d4 ("[MTD] [NAND] Use rslib for CAFÉ ECC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210817114857.2784825-3-chengzhihao1@huawei.com
+Link: https://lore.kernel.org/linux-mtd/fd313d3fb787458bcc73189e349f481133a2cdc9.1629532640.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/mtdconcat.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/cafe_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index af51eee6b5e8..f685a581df48 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -694,6 +694,10 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 		concat->mtd._block_markbad = concat_block_markbad;
- 	if (subdev_master->_panic_write)
- 		concat->mtd._panic_write = concat_panic_write;
-+	if (subdev_master->_read)
-+		concat->mtd._read = concat_read;
-+	if (subdev_master->_write)
-+		concat->mtd._write = concat_write;
+diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+index 2d1c22dc88c1..cc5009200cc2 100644
+--- a/drivers/mtd/nand/raw/cafe_nand.c
++++ b/drivers/mtd/nand/raw/cafe_nand.c
+@@ -757,7 +757,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 			  "CAFE NAND", mtd);
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
+-		goto out_ior;
++		goto out_free_rs;
+ 	}
  
- 	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
- 
-@@ -755,8 +759,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	concat->mtd.name = name;
- 
- 	concat->mtd._erase = concat_erase;
--	concat->mtd._read = concat_read;
--	concat->mtd._write = concat_write;
- 	concat->mtd._sync = concat_sync;
- 	concat->mtd._lock = concat_lock;
- 	concat->mtd._unlock = concat_unlock;
+ 	/* Disable master reset, enable NAND clock */
+@@ -801,6 +801,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	/* Disable NAND IRQ in global IRQ mask register */
+ 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
+ 	free_irq(pdev->irq, mtd);
++ out_free_rs:
++	free_rs(cafe->rs);
+  out_ior:
+ 	pci_iounmap(pdev, cafe->mmio);
+  out_free_mtd:
 -- 
 2.30.2
 
