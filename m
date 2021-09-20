@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF7141267F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EC0412668
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384558AbhITS7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:59:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33186 "EHLO mail.kernel.org"
+        id S1353986AbhITS5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:57:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384541AbhITSsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1384542AbhITSsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:48:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01FFA6336C;
-        Mon, 20 Sep 2021 17:33:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0849F6336E;
+        Mon, 20 Sep 2021 17:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159235;
-        bh=1Ba3KhtEOml4S43b/+tqGlRyZIVlN/+Kmc1slN5ZFSw=;
+        s=korg; t=1632159237;
+        bh=x7rPBipq78G9aI//ptbkYNECguRYHYeDLrRDC8NK408=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yyltx6OCKwF+sIdIPkavVitOuNrq2KibAOo5L46VPHOAICw3EvuzIs3mpS1r5XG1O
-         NC6Csvy/7I/22ymfylJUQFLuGAAIzExXX+PGnP5si2hfFkmgk9WnjWgAZvDAE8x44f
-         SN2L3qalTBoSy6QmaY9TLkHNe2IZKubHOfZOKPwM=
+        b=0Lpt/KZk6Vp37y3oYNB2revlVP08cPpfOHxgsQ8A2Vu179mu5TVZ/PM4Jz0hU1U2L
+         ePPUysgw/s3yMPSr/wMn6G9382iow86sQbW/YD5BUKEm987mBQLXNCi42Xy++RFKc5
+         FAD/Gji0stlBzg50OHp0PupACVDUI9T3TksrYeGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-snps-arc@lists.infradead.org,
-        Vineet Gupta <vgupta@kernel.org>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 139/168] ARC: export clear_user_page() for modules
-Date:   Mon, 20 Sep 2021 18:44:37 +0200
-Message-Id: <20210920163926.225341881@linuxfoundation.org>
+Subject: [PATCH 5.14 140/168] perf config: Fix caching and memory leak in perf_home_perfconfig()
+Date:   Mon, 20 Sep 2021 18:44:38 +0200
+Message-Id: <20210920163926.257664516@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -43,43 +48,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
 
-[ Upstream commit 6b5ff0405e4190f23780362ea324b250bc495683 ]
+[ Upstream commit 261f491133aecb943ccfdc3b3794e2d775607a87 ]
 
-0day bot reports a build error:
-  ERROR: modpost: "clear_user_page" [drivers/media/v4l2-core/videobuf-dma-sg.ko] undefined!
-so export it in arch/arc/ to fix the build error.
+Acaict, perf_home_perfconfig() is supposed to cache the result of
+home_perfconfig, which returns the default location of perfconfig for
+the user, given the HOME environment variable.
 
-In most ARCHes, clear_user_page() is a macro. OTOH, in a few
-ARCHes it is a function and needs to be exported.
-PowerPC exported it in 2004. It looks like nds32 and nios2
-still need to have it exported.
+However, the current implementation calls home_perfconfig every time
+perf_home_perfconfig() is called (so no caching is actually performed),
+replacing the previous pointer, thus also causing a memory leak.
 
-Fixes: 4102b53392d63 ("ARC: [mm] Aliasing VIPT dcache support 2/4")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-snps-arc@lists.infradead.org
-Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+This patch adds a check of whether either config or failed is set and,
+in that case, directly returns config without calling home_perfconfig at
+each invocation.
+
+Fixes: f5f03e19ce14fc31 ("perf config: Add perf_home_perfconfig function")
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Song Liu <song@kernel.org>
+Link: http://lore.kernel.org/lkml/20210820130817.740536-1-rickyman7@gmail.com
+[ Removed needless double check for the 'failed' variable ]
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/mm/cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/config.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arc/mm/cache.c b/arch/arc/mm/cache.c
-index a2fbea3ee07c..102418ac5ff4 100644
---- a/arch/arc/mm/cache.c
-+++ b/arch/arc/mm/cache.c
-@@ -1123,7 +1123,7 @@ void clear_user_page(void *to, unsigned long u_vaddr, struct page *page)
- 	clear_page(to);
- 	clear_bit(PG_dc_clean, &page->flags);
- }
--
-+EXPORT_SYMBOL(clear_user_page);
+diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
+index 63d472b336de..4fb5e90d7a57 100644
+--- a/tools/perf/util/config.c
++++ b/tools/perf/util/config.c
+@@ -581,7 +581,10 @@ const char *perf_home_perfconfig(void)
+ 	static const char *config;
+ 	static bool failed;
  
- /**********************************************************************
-  * Explicit Cache flush request from user space via syscall
+-	config = failed ? NULL : home_perfconfig();
++	if (failed || config)
++		return config;
++
++	config = home_perfconfig();
+ 	if (!config)
+ 		failed = true;
+ 
 -- 
 2.30.2
 
