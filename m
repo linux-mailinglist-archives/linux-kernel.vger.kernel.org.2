@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F72241232D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9431F41257B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377942AbhITSWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
+        id S1354351AbhITSpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376722AbhITSOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:14:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A76E61357;
-        Mon, 20 Sep 2021 17:21:30 +0000 (UTC)
+        id S1382500AbhITSka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:40:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11EB063342;
+        Mon, 20 Sep 2021 17:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158490;
-        bh=qlg1y0Bd7rAZ6ydjMTUQqzyYTLtSOtt7u7SEugMD1KY=;
+        s=korg; t=1632159083;
+        bh=QNZN2wgdmXJbhhfsqRdafhZwY3McaX4xo6hFwRKVGzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msNog/SQc6EX3zABu9KJ9mHi3XzcDwjcWXEdC+Cz2CzHaV5QUOkwV5TzFIxVEVkVH
-         DpiW1lbBARIP6nXp1M5f6bHW7ouYObtjVlKJkIixLSJE8m2mZfefIA2x4h5sz3n8f5
-         f4zXZJcATNhA1agsBVBH51chyYwGUo14340nNKPM=
+        b=07ExR5RUmUitSzAC/7wdSVU31MZQSMAmctuqWsn1AEBT1UGsXRR4QoVZ9/U2Go3P+
+         Cw7GwmA2Ml5t+Fi77T6HTksyYGKS6+su6sjR7xMhPnOuockmv7LCtVdUbu+PerZ4CQ
+         WjnI112KzX6ZgxYmoT+eC3/GevZaRcy2ViUrweDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>
-Subject: [PATCH 5.4 180/260] s390/pv: fix the forcing of the swiotlb
-Date:   Mon, 20 Sep 2021 18:43:18 +0200
-Message-Id: <20210920163937.211114213@linuxfoundation.org>
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 061/168] net/af_unix: fix a data-race in unix_dgram_poll
+Date:   Mon, 20 Sep 2021 18:43:19 +0200
+Message-Id: <20210920163923.643379657@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Halil Pasic <pasic@linux.ibm.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 93ebb6828723b8aef114415c4dc3518342f7dcad upstream.
+commit 04f08eb44b5011493d77b602fdec29ff0f5c6cd5 upstream.
 
-Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-before the swiotlb is initialised. Otherwise
-io_tlb_default_mem->force_bounce will not get set to true, and devices
-that use (the default) swiotlb will not bounce despite switolb_force
-having the value of SWIOTLB_FORCE.
+syzbot reported another data-race in af_unix [1]
 
-Let us restore swiotlb functionality for PV by fulfilling this new
-requirement.
+Lets change __skb_insert() to use WRITE_ONCE() when changing
+skb head qlen.
 
-This change addresses what turned out to be a fragility in
-commit 64e1f0c531d1 ("s390/mm: force swiotlb for protected
-virtualization"), which ain't exactly broken in its original context,
-but could give us some more headache if people backport the broken
-change and forget this fix.
+Also, change unix_dgram_poll() to use lockless version
+of unix_recvq_full()
 
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
-Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
-Cc: stable@vger.kernel.org #5.3+
-Signed-off-by: Konrad Rzeszutek Wilk <konrad@kernel.org>
+It is verry possible we can switch all/most unix_recvq_full()
+to the lockless version, this will be done in a future kernel version.
+
+[1] HEAD commit: 8596e589b787732c8346f0482919e83cc9362db1
+
+BUG: KCSAN: data-race in skb_queue_tail / unix_dgram_poll
+
+write to 0xffff88814eeb24e0 of 4 bytes by task 25815 on cpu 0:
+ __skb_insert include/linux/skbuff.h:1938 [inline]
+ __skb_queue_before include/linux/skbuff.h:2043 [inline]
+ __skb_queue_tail include/linux/skbuff.h:2076 [inline]
+ skb_queue_tail+0x80/0xa0 net/core/skbuff.c:3264
+ unix_dgram_sendmsg+0xff2/0x1600 net/unix/af_unix.c:1850
+ sock_sendmsg_nosec net/socket.c:703 [inline]
+ sock_sendmsg net/socket.c:723 [inline]
+ ____sys_sendmsg+0x360/0x4d0 net/socket.c:2392
+ ___sys_sendmsg net/socket.c:2446 [inline]
+ __sys_sendmmsg+0x315/0x4b0 net/socket.c:2532
+ __do_sys_sendmmsg net/socket.c:2561 [inline]
+ __se_sys_sendmmsg net/socket.c:2558 [inline]
+ __x64_sys_sendmmsg+0x53/0x60 net/socket.c:2558
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+read to 0xffff88814eeb24e0 of 4 bytes by task 25834 on cpu 1:
+ skb_queue_len include/linux/skbuff.h:1869 [inline]
+ unix_recvq_full net/unix/af_unix.c:194 [inline]
+ unix_dgram_poll+0x2bc/0x3e0 net/unix/af_unix.c:2777
+ sock_poll+0x23e/0x260 net/socket.c:1288
+ vfs_poll include/linux/poll.h:90 [inline]
+ ep_item_poll fs/eventpoll.c:846 [inline]
+ ep_send_events fs/eventpoll.c:1683 [inline]
+ ep_poll fs/eventpoll.c:1798 [inline]
+ do_epoll_wait+0x6ad/0xf00 fs/eventpoll.c:2226
+ __do_sys_epoll_wait fs/eventpoll.c:2238 [inline]
+ __se_sys_epoll_wait fs/eventpoll.c:2233 [inline]
+ __x64_sys_epoll_wait+0xf6/0x120 fs/eventpoll.c:2233
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0x0000001b -> 0x00000001
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 25834 Comm: syz-executor.1 Tainted: G        W         5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+
+Fixes: 86b18aaa2b5b ("skbuff: fix a data race in skb_queue_len()")
+Cc: Qian Cai <cai@lca.pw>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/mm/init.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/skbuff.h |    2 +-
+ net/unix/af_unix.c     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -168,9 +168,9 @@ static void pv_init(void)
- 		return;
- 
- 	/* make sure bounce buffers are shared */
-+	swiotlb_force = SWIOTLB_FORCE;
- 	swiotlb_init(1);
- 	swiotlb_update_mem_attributes();
--	swiotlb_force = SWIOTLB_FORCE;
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1935,7 +1935,7 @@ static inline void __skb_insert(struct s
+ 	WRITE_ONCE(newsk->prev, prev);
+ 	WRITE_ONCE(next->prev, newsk);
+ 	WRITE_ONCE(prev->next, newsk);
+-	list->qlen++;
++	WRITE_ONCE(list->qlen, list->qlen + 1);
  }
  
- void __init mem_init(void)
+ static inline void __skb_queue_splice(const struct sk_buff_head *list,
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2774,7 +2774,7 @@ static __poll_t unix_dgram_poll(struct f
+ 
+ 		other = unix_peer(sk);
+ 		if (other && unix_peer(other) != sk &&
+-		    unix_recvq_full(other) &&
++		    unix_recvq_full_lockless(other) &&
+ 		    unix_dgram_peer_wake_me(sk, other))
+ 			writable = 0;
+ 
 
 
