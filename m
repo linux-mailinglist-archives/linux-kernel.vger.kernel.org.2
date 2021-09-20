@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73202412460
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F4E4125B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379762AbhITSeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47600 "EHLO mail.kernel.org"
+        id S1384253AbhITSr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:47:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379136AbhITS2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:28:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21845632E5;
-        Mon, 20 Sep 2021 17:26:12 +0000 (UTC)
+        id S1382807AbhITSm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:42:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5DBA63344;
+        Mon, 20 Sep 2021 17:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158773;
-        bh=Z9xGGIkiy9P+JuBAGNag+8punH9mjakHWhC+vrr1xJg=;
+        s=korg; t=1632159118;
+        bh=G0yWxee8sWhPe+DfRiOp12xOteHQ5FHmPimc8+eYH0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bWDiLPVgmZbnMUsD6li3PreOQfNLHHrL+Nps6FijZsC4o5jvHn9hmXTc5bK4LLocA
-         rY8XMBgmI/EMpGf53cSpijUupdWpLOWFgbeK+JEuXGf37TLb4BXnFwPArObafp4WR4
-         GT/vHlKnq+BVvHYQVaylzg6Q3nC9hv5BJPhGAPmY=
+        b=VfaxTGlfF5KKrVyYVnyQPWBr+fKpZJ6UCqE5pf+4iO3U4ari4sFYJjjahI3cuVMyD
+         sSNJ6pLZEY5tAzjTM5rE387aQKNmSVwVMTbk3eFqhyxRnqrz54jAH1H/aPuku+BGV9
+         IrPaXlCMxY/GwqT5FrixLci/ehXBchGwoQFZribE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 049/122] bnxt_en: make bnxt_free_skbs() safe to call after bnxt_free_mem()
-Date:   Mon, 20 Sep 2021 18:43:41 +0200
-Message-Id: <20210920163917.397525206@linuxfoundation.org>
+        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 084/168] net: dsa: lantiq_gswip: Add 200ms assert delay
+Date:   Mon, 20 Sep 2021 18:43:42 +0200
+Message-Id: <20210920163924.397678210@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edwin Peer <edwin.peer@broadcom.com>
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-commit 1affc01fdc6035189a5ab2a24948c9419ee0ecf2 upstream.
+[ Upstream commit 111b64e35ea03d58c882832744f571a88bb2e2e2 ]
 
-The call to bnxt_free_mem(..., false) in the bnxt_half_open_nic() error
-path will deallocate ring descriptor memory via bnxt_free_?x_rings(),
-but because irq_re_init is false, the ring info itself is not freed.
+The delay is especially needed by the xRX300 and xRX330 SoCs. Without
+this patch, some phys are sometimes not properly detected.
 
-To simplify error paths, deallocation functions have generally been
-written to be safe when called on unallocated memory. It should always
-be safe to call dev_close(), which calls bnxt_free_skbs() a second time,
-even in this semi- allocated ring state.
+The patch was tested on BT Home Hub 5A and D-Link DWR-966.
 
-Calling bnxt_free_skbs() a second time with the rings already freed will
-cause NULL pointer dereference.  Fix it by checking the rings are valid
-before proceeding in bnxt_free_tx_skbs() and
-bnxt_free_one_rx_ring_skbs().
-
-Fixes: 975bc99a4a39 ("bnxt_en: Refactor bnxt_free_rx_skbs().")
-Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Fixes: a09d042b0862 ("net: dsa: lantiq: allow to use all GPHYs on xRX300 and xRX330")
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/dsa/lantiq_gswip.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -2591,6 +2591,9 @@ static void bnxt_free_tx_skbs(struct bnx
- 		struct bnxt_tx_ring_info *txr = &bp->tx_ring[i];
- 		int j;
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index 64d6dfa83122..267324889dd6 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -1885,6 +1885,12 @@ static int gswip_gphy_fw_load(struct gswip_priv *priv, struct gswip_gphy_fw *gph
  
-+		if (!txr->tx_buf_ring)
-+			continue;
-+
- 		for (j = 0; j < max_idx;) {
- 			struct bnxt_sw_tx_bd *tx_buf = &txr->tx_buf_ring[j];
- 			struct sk_buff *skb;
-@@ -2675,6 +2678,9 @@ static void bnxt_free_one_rx_ring_skbs(s
- 	}
+ 	reset_control_assert(gphy_fw->reset);
  
- skip_rx_tpa_free:
-+	if (!rxr->rx_buf_ring)
-+		goto skip_rx_buf_free;
++	/* The vendor BSP uses a 200ms delay after asserting the reset line.
++	 * Without this some users are observing that the PHY is not coming up
++	 * on the MDIO bus.
++	 */
++	msleep(200);
 +
- 	for (i = 0; i < max_idx; i++) {
- 		struct bnxt_sw_rx_bd *rx_buf = &rxr->rx_buf_ring[i];
- 		dma_addr_t mapping = rx_buf->mapping;
-@@ -2697,6 +2703,11 @@ skip_rx_tpa_free:
- 			kfree(data);
- 		}
- 	}
-+
-+skip_rx_buf_free:
-+	if (!rxr->rx_agg_ring)
-+		goto skip_rx_agg_free;
-+
- 	for (i = 0; i < max_agg_idx; i++) {
- 		struct bnxt_sw_rx_agg_bd *rx_agg_buf = &rxr->rx_agg_ring[i];
- 		struct page *page = rx_agg_buf->page;
-@@ -2713,6 +2724,8 @@ skip_rx_tpa_free:
- 
- 		__free_page(page);
- 	}
-+
-+skip_rx_agg_free:
- 	if (rxr->rx_page) {
- 		__free_page(rxr->rx_page);
- 		rxr->rx_page = NULL;
+ 	ret = request_firmware(&fw, gphy_fw->fw_name, dev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to load firmware: %s, error: %i\n",
+-- 
+2.30.2
+
 
 
