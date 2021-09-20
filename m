@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A2C4119B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D14A64119BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhITQZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhITQZY (ORCPT
+        id S233378AbhITQ2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:28:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56024 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229914AbhITQ2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:25:24 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC77C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:23:57 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id s16so8481487pfk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bNaDFmzVv3uKPgKAqiQqJeFLc8FV9NeWINL4Lel0gO0=;
-        b=b0pO9F7KxZdfy+vW9e/AF1J2CxXgi7bTOPPwUmpqOKwsmYQu2JrK2SDKY5lnXdSN6t
-         0f+qEjn+IDksJl75FTZnuq3Vlo9rVExKtfY+L5yr+S1TDwJUA0CQnPvzeum048IbTXce
-         2ok2uAVgzxTby5Xl3toVcqQt3JJIwwSRrzmg/hLzEJP4JWIzmlP3pP/V8LIURdcsdjII
-         oKGh6My7P7DM69py7SaKWNKCUxD1qYv4g27xKHbze5PU6iL6CcpwMggveTWqGVvKzjxC
-         7TOj9aPwETWxc1mvjrxhDQ5M5sGXQd1AHLIOQvtZ0O945FhD/n9+PI5cYuLLMcCfQiYA
-         MIkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bNaDFmzVv3uKPgKAqiQqJeFLc8FV9NeWINL4Lel0gO0=;
-        b=Gy46Xqn0+g4UAubzSWaDiwUnGvW83FSpZZQ0yAPEDUqxLwqvCHW+AjG+BWjDT+JX2k
-         mjakGKrDfKG0LUyALnY2IuSSqXE9OjXa/C5M9OHUE9J1fddCmBf4sCBO2bXciW6napZt
-         LwGAuVFVKMLLl7OSZ7rHiQKRaIsgWRh2mt+2Kn9y3LVLgjLmdH7qdL+LA/rk0CidCxVF
-         RtKQT+PR4zTCwQvVEwHMddlw5aYjLm/onRgzxnZkpG0oWXjDrKJNCj3AUiqw0Nf/s89P
-         v6coMyDMhdNKI2luwibX4IARtUHTT6rZSlVplicM3aQLgfXURvQI14nCJx2IhdRErV9n
-         rQzg==
-X-Gm-Message-State: AOAM53253QLPfP/97CWXxkjezGRleg4YVOx+5cw7WizOQTcxAm5c2vJi
-        P1XKV6NAjDGT/x6eR9JBQRJ36A==
-X-Google-Smtp-Source: ABdhPJyoQVkhBTz7cZbF+5Gwl/g+ZNuJHTyIYkNbuUzIvtdIMoUaRelARr0HCZjzg9YMtLGBYupbXg==
-X-Received: by 2002:a62:1d4d:0:b0:443:eac2:8a1b with SMTP id d74-20020a621d4d000000b00443eac28a1bmr21576833pfd.2.1632155036924;
-        Mon, 20 Sep 2021 09:23:56 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p24sm14593784pfh.136.2021.09.20.09.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 09:23:55 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 10:23:53 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        aisheng.dong@nxp.com, Peng Fan <peng.fan@nxp.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH V4 1/6] remoteproc: elf_loader: fix loading segment when
- is_iomem true
-Message-ID: <20210920162353.GA2023964@p14s>
-References: <20210910090621.3073540-1-peng.fan@oss.nxp.com>
- <20210910090621.3073540-2-peng.fan@oss.nxp.com>
+        Mon, 20 Sep 2021 12:28:03 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18KEqS38015556;
+        Mon, 20 Sep 2021 12:25:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lpNrgIClxc6uLVdhpRODsqe2CwZ4gaIwdYn9KTYhxjg=;
+ b=bVV+d8fw8Nsko5z3lEo0WjfF0gGd2ah77lwsXtvHiw6F0OBC/kS4Ylbl5AZ2CCjFGXs9
+ GIb3BsRtQW90T9LkKV15pvIKLZILxG0nAwa+rRWiV3JdDWB1UR4WXhueGoQISGhBngo6
+ h/QKWVZWxGa8oaNj6yxFq9tBDVsYn1/hksAJl3gx8UV8pAujaLkKXbvpE9qgvkjJ9y4z
+ fIi/k9KWL+s8D9dmkErl0WNh9phnpdcXZXUYgBKbPGXB2fjxzi8mZD0YZGwG0VSk/WKL
+ xPyLLYmzKNfprZShUWYMmPTzk0Ir0ZrNDBVKjQzL/cIuNoKgjMbHytZHp2kDmbg9nRbI OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b5w06yf5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 12:25:21 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18KEqVOE016056;
+        Mon, 20 Sep 2021 12:25:20 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b5w06yf53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 12:25:20 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18KGD58D026265;
+        Mon, 20 Sep 2021 16:25:20 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01wdc.us.ibm.com with ESMTP id 3b57r9ukv2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 16:25:20 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18KGPJ2D26411338
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Sep 2021 16:25:19 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24B07136053;
+        Mon, 20 Sep 2021 16:25:19 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94A2F13606A;
+        Mon, 20 Sep 2021 16:25:18 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Sep 2021 16:25:18 +0000 (GMT)
+Subject: Re: [PATCH] crypto: ecc: fix CRYPTO_DEFAULT_RNG dependency
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vitaly Chikunov <vt@altlinux.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210920100551.1568868-1-arnd@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <599e065b-d4c7-957c-ed54-c88217f9a5af@linux.ibm.com>
+Date:   Mon, 20 Sep 2021 12:25:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910090621.3073540-2-peng.fan@oss.nxp.com>
+In-Reply-To: <20210920100551.1568868-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1XavsnLjDrmIQgQHz4UfxU8VvvwVcUlU
+X-Proofpoint-GUID: CUpOHnl2rtn0oJEaGWLg0fi7N-xIKen-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_07,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 clxscore=1011 suspectscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 impostorscore=0 spamscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109200100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 05:06:16PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> It seems luckliy work on i.MX platform, but it is wrong.
-> Need use memcpy_toio, not memcpy_fromio.
-> 
 
-Lucky or not I just can't understand how this worked in the first place.
+On 9/20/21 6:05 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The ecc.c file started out as part of the ECDH algorithm but got
+> moved out into a standalone module later. It does not build without
+> CRYPTO_DEFAULT_RNG, so now that other modules are using it as well we
+> can run into this link error:
+>
+> aarch64-linux-ld: ecc.c:(.text+0xfc8): undefined reference to `crypto_default_rng'
+> aarch64-linux-ld: ecc.c:(.text+0xff4): undefined reference to `crypto_put_default_rng'
+>
+> Move the 'select CRYPTO_DEFAULT_RNG' statement into the correct symbol.
+>
+> Fixes: 0d7a78643f69 ("crypto: ecrdsa - add EC-RDSA (GOST 34.10) algorithm")
+> Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> Fixes: 40df0a91b2a52 ("remoteproc: add is_iomem to da_to_va")
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-SHA tag should be 12 characters.
-
-> Tested-by: Dong Aisheng <aisheng.dong@nxp.com> (i.MX8MQ)
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dong Aisheng <aisheng.dong@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-
-I will add a CC:stable, fix the title, fix the SHA and pick this patch.
 
 > ---
->  drivers/remoteproc/remoteproc_elf_loader.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
-> index 469c52e62faff..44e7f9308f4bc 100644
-> --- a/drivers/remoteproc/remoteproc_elf_loader.c
-> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
-> @@ -220,7 +220,7 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
->  		/* put the segment where the remote processor expects it */
->  		if (filesz) {
->  			if (is_iomem)
-> -				memcpy_fromio(ptr, (void __iomem *)(elf_data + offset), filesz);
-> +				memcpy_toio((void __iomem *)ptr, elf_data + offset, filesz);
->  			else
->  				memcpy(ptr, elf_data + offset, filesz);
->  		}
-> -- 
-> 2.25.1
-> 
+>   crypto/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/crypto/Kconfig b/crypto/Kconfig
+> index 536df4b6b825..285f82647d2b 100644
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -233,12 +233,12 @@ config CRYPTO_DH
+>   
+>   config CRYPTO_ECC
+>   	tristate
+> +	select CRYPTO_RNG_DEFAULT
+>   
+>   config CRYPTO_ECDH
+>   	tristate "ECDH algorithm"
+>   	select CRYPTO_ECC
+>   	select CRYPTO_KPP
+> -	select CRYPTO_RNG_DEFAULT
+>   	help
+>   	  Generic implementation of the ECDH algorithm
+>   
