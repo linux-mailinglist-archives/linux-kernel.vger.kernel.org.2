@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3163241188A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589B2411888
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241864AbhITPoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:44:06 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:47771 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237852AbhITPoD (ORCPT
+        id S241772AbhITPoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:44:05 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:34575 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234184AbhITPoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 11:44:03 -0400
-Received: by mail-io1-f71.google.com with SMTP id t4-20020a056602140400b005d60162d0c4so7446378iov.14
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:42:37 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id s12-20020a056602168c00b005d611510e15so1264982iow.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:42:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=PSni9MjmG0vl04msQOLn/dTzzLWMRU+Ls5PPuK9wBqk=;
-        b=oG2oSDW0FLn4xwlhJtcbG6xyUz/gfEJxhBJxEeUHrQuWyCOXpLH0RoXeIrbiyny1I5
-         qYR94AhOiZ3cxkNHkM83sVDQ05B1h2GjUZO+KGwVijrUC3xz0KF6yUjFIdPCmBQw0m+O
-         owTBDe22gZt3G9YHy2k4emIRa3kQ8R1B7fEPTzVCB67+bZmMeuOhV4OYDfWBjaue4IHs
-         r4F9XDzITH9eAG4GK/4q6xOPQupZS0yqOa2TVmgIyySE3XRm82lse7VoaCJCm6DuA7Ao
-         D0mFmk/Y18xGkGExq6HVWq9ireqkQSCH2LY+cuOzHFqyrRivVKSVjo6nG87+dwXWqG6J
-         EKxg==
-X-Gm-Message-State: AOAM530HCIWKwtt7u63bhK3Pjd/BOPdGbdqLFcOLrMU1k3tNJweMk3Yd
-        NmMEpf6Mh42X7WWJtu5m8xZAhwzZrFyoZB2AM0icwzDe6D9i
-X-Google-Smtp-Source: ABdhPJzhlYKY36WBy6S+1W7EyW5d63bCMDfW3cXsptbRwJXD0oDz0GDhBZjintQhZMLuYcUK2sv5SIyZTT5aFXsdzktTSxa6mt0S
+        bh=XNtNgu7JmjE8E630pKonga7MBsNIrdGiBGXQ+O50Gpk=;
+        b=jpSeOn/Mc5ZcnWYg/azBmXJY4B8lS9oxvd1M48YH4iRfP5D6GySWNIlzh49P3wcCBc
+         H0l9TTzaFl9bGDDIIkjcBRRFVwjjN/OZz1JkVHBeqFmgulqH/l+42t56SK5h9WBoRmnK
+         CtqKnwhd00GDsT2rnozzQXFO2nSrX3ra3u3JZzqd8XeIYU3Or6xAJwCTyaHxiJewCt3W
+         WVaFGcYnKx0tSRiCDX8wUTIKlLjP8zKtn2hAcUfhPlqP4JBaekslwnqqTgheuOMmhzp8
+         bFYouIDG2vbgVMx0miBg4TH4D+2pKjDjw9kkKZYAaeoAiVt+7eJa0fYQivtyBD9lPTc0
+         S5Cg==
+X-Gm-Message-State: AOAM532pQOSNySegGi6Kj/+dwfYRsmN2hZ+L68CCKLFPjz6pGplWjdxZ
+        hQRx/bbutoG8yTI5uwYEj9IF2lVZQMxiIZOp6VZz/29qoj6m
+X-Google-Smtp-Source: ABdhPJyPiOTM7nVCe2kUVGnVtPQ+lFP0KY7MOW8csA78jTKkU77YQNmOldzVWeNm5UaN+GLgcwJbEYXFxXZylPLEUIcrv6LCf4Jb
 MIME-Version: 1.0
-X-Received: by 2002:a02:cf39:: with SMTP id s25mr7918369jar.40.1632152556732;
+X-Received: by 2002:a05:6e02:20ed:: with SMTP id q13mr3707547ilv.111.1632152556497;
  Mon, 20 Sep 2021 08:42:36 -0700 (PDT)
 Date:   Mon, 20 Sep 2021 08:42:36 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005d127e05cc6f212d@google.com>
-Subject: [syzbot] possible deadlock in team_del_slave
-From:   syzbot <syzbot+513e530ebfbfe5816cec@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jiri@resnulli.us, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000059730805cc6f2138@google.com>
+Subject: [syzbot] memory leak in prepare_kernel_cred
+From:   syzbot <syzbot+b214edc6e43f8da65554@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, ebiederm@xmission.com,
+        legion@kernel.org, linux-kernel@vger.kernel.org,
+        linux@rasmusvillemoes.dk, syzkaller-bugs@googlegroups.com,
+        yangyingliang@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,175 +49,114 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e57f52b42d1f Merge branch 'bpf: implement variadic printk ..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=143e16ab300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
-dashboard link: https://syzkaller.appspot.com/bug?extid=513e530ebfbfe5816cec
+HEAD commit:    4357f03d6611 Merge tag 'pm-5.15-rc2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16260b9b300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84e947373389eef5
+dashboard link: https://syzkaller.appspot.com/bug?extid=b214edc6e43f8da65554
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a7cb3b300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103f8f2d300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+513e530ebfbfe5816cec@syzkaller.appspotmail.com
+Reported-by: syzbot+b214edc6e43f8da65554@syzkaller.appspotmail.com
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.15.0-rc1-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.4/6377 is trying to acquire lock:
-ffff888026c82cf8 (team->team_lock_key#5){+.+.}-{3:3}, at: team_del_slave+0x29/0x140 drivers/net/team/team.c:1981
+write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
+write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
+BUG: memory leak
+unreferenced object 0xffff8881046d5480 (size 176):
+  comm "kworker/u4:0", pid 6631, jiffies 4294994696 (age 35.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-but task is already holding lock:
-ffff8880795b05e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_del_interface+0xff/0x470 net/wireless/nl80211.c:4088
+BUG: memory leak
+unreferenced object 0xffff888102054040 (size 32):
+  comm "kworker/u4:0", pid 6631, jiffies 4294994696 (age 35.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 b0 12 05 40 81 88 ff ff  ...........@....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8213e79f>] lsm_cred_alloc security/security.c:537 [inline]
+    [<ffffffff8213e79f>] security_prepare_creds+0x9f/0xc0 security/security.c:1691
+    [<ffffffff81275ab5>] prepare_kernel_cred+0x1a5/0x2e0 kernel/cred.c:760
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-which lock already depends on the new lock.
+BUG: memory leak
+unreferenced object 0xffff8881046d50c0 (size 176):
+  comm "kworker/u4:0", pid 6633, jiffies 4294994696 (age 35.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
+BUG: memory leak
+unreferenced object 0xffff88810493f6c0 (size 176):
+  comm "kworker/u4:0", pid 6634, jiffies 4294994696 (age 35.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-the existing dependency chain (in reverse order) is:
+BUG: memory leak
+unreferenced object 0xffff888104cec5e0 (size 32):
+  comm "kworker/u4:0", pid 6634, jiffies 4294994696 (age 35.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 b0 12 05 40 81 88 ff ff  ...........@....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8213e79f>] lsm_cred_alloc security/security.c:537 [inline]
+    [<ffffffff8213e79f>] security_prepare_creds+0x9f/0xc0 security/security.c:1691
+    [<ffffffff81275ab5>] prepare_kernel_cred+0x1a5/0x2e0 kernel/cred.c:760
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
--> #1 (&rdev->wiphy.mtx){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       wiphy_lock include/net/cfg80211.h:5311 [inline]
-       ieee80211_open net/mac80211/iface.c:361 [inline]
-       ieee80211_open+0x18f/0x240 net/mac80211/iface.c:348
-       __dev_open+0x2bc/0x4d0 net/core/dev.c:1484
-       dev_open net/core/dev.c:1520 [inline]
-       dev_open+0xe8/0x150 net/core/dev.c:1513
-       team_port_add drivers/net/team/team.c:1210 [inline]
-       team_add_slave+0xaa4/0x1cc0 drivers/net/team/team.c:1967
-       do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2521
-       do_setlink+0x9f3/0x3970 net/core/rtnetlink.c:2726
-       __rtnl_newlink+0xde6/0x1750 net/core/rtnetlink.c:3391
-       rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
-       rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
-       netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
-       netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
-       sock_sendmsg_nosec net/socket.c:704 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:724
-       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
-       __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+BUG: memory leak
+unreferenced object 0xffff88810382b780 (size 176):
+  comm "kworker/u4:0", pid 6637, jiffies 4294994700 (age 35.710s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
--> #0 (team->team_lock_key#5){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       team_del_slave+0x29/0x140 drivers/net/team/team.c:1981
-       team_device_event+0x7df/0xa90 drivers/net/team/team.c:3004
-       notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
-       call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
-       call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
-       call_netdevice_notifiers net/core/dev.c:2022 [inline]
-       unregister_netdevice_many+0x951/0x1790 net/core/dev.c:11041
-       unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:10975
-       unregister_netdevice include/linux/netdevice.h:2988 [inline]
-       _cfg80211_unregister_wdev+0x483/0x770 net/wireless/core.c:1125
-       ieee80211_if_remove+0x1df/0x380 net/mac80211/iface.c:2088
-       ieee80211_del_iface+0x12/0x20 net/mac80211/cfg.c:144
-       rdev_del_virtual_intf net/wireless/rdev-ops.h:57 [inline]
-       nl80211_del_interface+0x1b2/0x470 net/wireless/nl80211.c:4090
-       genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
-       genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
-       genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
-       genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
-       netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-       netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
-       netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
-       sock_sendmsg_nosec net/socket.c:704 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:724
-       ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
-       ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
-       __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
+BUG: memory leak
+unreferenced object 0xffff888102054060 (size 32):
+  comm "kworker/u4:0", pid 6637, jiffies 4294994700 (age 35.710s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 b0 12 05 40 81 88 ff ff  ...........@....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8213e79f>] lsm_cred_alloc security/security.c:537 [inline]
+    [<ffffffff8213e79f>] security_prepare_creds+0x9f/0xc0 security/security.c:1691
+    [<ffffffff81275ab5>] prepare_kernel_cred+0x1a5/0x2e0 kernel/cred.c:760
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
-other info that might help us debug this:
+BUG: memory leak
+unreferenced object 0xffff888104c0a780 (size 176):
+  comm "kworker/u4:0", pid 6630, jiffies 4294994702 (age 35.690s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81275931>] prepare_kernel_cred+0x21/0x2e0 kernel/cred.c:724
+    [<ffffffff8125fc6d>] call_usermodehelper_exec_async+0x5d/0x1c0 kernel/umh.c:91
+    [<ffffffff8100234f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&rdev->wiphy.mtx);
-                               lock(team->team_lock_key#5);
-                               lock(&rdev->wiphy.mtx);
-  lock(team->team_lock_key#5);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor.4/6377:
- #0: ffffffff8d177290 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:802
- #1: ffffffff8d0e3f28 (rtnl_mutex){+.+.}-{3:3}, at: nl80211_pre_doit+0x23/0x620 net/wireless/nl80211.c:14927
- #2: ffff8880795b05e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_del_interface+0xff/0x470 net/wireless/nl80211.c:4088
-
-stack backtrace:
-CPU: 0 PID: 6377 Comm: syz-executor.4 Not tainted 5.15.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:596 [inline]
- __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
- team_del_slave+0x29/0x140 drivers/net/team/team.c:1981
- team_device_event+0x7df/0xa90 drivers/net/team/team.c:3004
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1996
- call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
- call_netdevice_notifiers net/core/dev.c:2022 [inline]
- unregister_netdevice_many+0x951/0x1790 net/core/dev.c:11041
- unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:10975
- unregister_netdevice include/linux/netdevice.h:2988 [inline]
- _cfg80211_unregister_wdev+0x483/0x770 net/wireless/core.c:1125
- ieee80211_if_remove+0x1df/0x380 net/mac80211/iface.c:2088
- ieee80211_del_iface+0x12/0x20 net/mac80211/cfg.c:144
- rdev_del_virtual_intf net/wireless/rdev-ops.h:57 [inline]
- nl80211_del_interface+0x1b2/0x470 net/wireless/nl80211.c:4090
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7ff117663739
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff114bda188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007ff117767f80 RCX: 00007ff117663739
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00007ff1176bdcc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ff117767f80
-R13: 00007ffdd3545d8f R14: 00007ff114bda300 R15: 0000000000022000
-device wlan9 left promiscuous mode
-team0: Port device wlan9 removed
 
 
 ---
@@ -226,3 +166,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
