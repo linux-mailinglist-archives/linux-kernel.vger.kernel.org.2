@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6A241217B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC233412184
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356234AbhITSGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58232 "EHLO mail.kernel.org"
+        id S1358345AbhITSGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350717AbhITSAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:00:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7935163220;
-        Mon, 20 Sep 2021 17:15:49 +0000 (UTC)
+        id S1350726AbhITSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A49B463223;
+        Mon, 20 Sep 2021 17:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158149;
-        bh=JFIwOmiBvrlHVlUc/agg+VHNpbDgXFBJyCKiIIAbcSc=;
+        s=korg; t=1632158152;
+        bh=6YvKqsPIQwe4JWDksOW/bfbv51cHkYaGvOZJOpAzwGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=suFytTPzc8vgr2RJGXjLsM4HXrfCyqrQRwNA45GNzUr64BK2Z+FAPMUO00EWvfL8c
-         S3ffX6YGtQ0o35azeIOUuXFrqkS/qffjHCb6fspHn1/yJrw+HICnSOOOBUOjilv94a
-         0ncuDzj2FTIBmj5mY6uJjov7gxV1PB56pMJjyeRM=
+        b=ARGi/iEgNRfXkAvhCHDMpFATBBSd7WKAnKw5yo+OqIxp1Lq62sWD2DxGu1EZxVc1J
+         G9rc7sM9xS1XL9EKYNCj58jAuDjvRhISSiLN3I85UQd6hPG+VkvAmd6P1wve1AY/Id
+         /pn6yD+5F2jWAWu2hDmSWTapSBO4aod6sszW6p2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 024/260] media: rc-loopback: return number of emitters rather than error
-Date:   Mon, 20 Sep 2021 18:40:42 +0200
-Message-Id: <20210920163931.951402426@linuxfoundation.org>
+        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Leitner <richard.leitner@skidata.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.4 025/260] Revert "dmaengine: imx-sdma: refine to load context only once"
+Date:   Mon, 20 Sep 2021 18:40:43 +0200
+Message-Id: <20210920163931.983199204@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -39,31 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Robin Gong <yibin.gong@nxp.com>
 
-commit 6b7f554be8c92319d7e6df92fd247ebb9beb4a45 upstream.
+commit 8592f02464d52776c5cfae4627c6413b0ae7602d upstream.
 
-The LIRC_SET_TRANSMITTER_MASK ioctl should return the number of emitters
-if an invalid list was set.
+This reverts commit ad0d92d7ba6aecbe2705907c38ff8d8be4da1e9c, because
+in spi-imx case, burst length may be changed dynamically.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: ad0d92d7ba6a ("dmaengine: imx-sdma: refine to load context only once")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+Tested-by: Richard Leitner <richard.leitner@skidata.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/rc/rc-loopback.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/dma/imx-sdma.c |    8 --------
+ 1 file changed, 8 deletions(-)
 
---- a/drivers/media/rc/rc-loopback.c
-+++ b/drivers/media/rc/rc-loopback.c
-@@ -42,7 +42,7 @@ static int loop_set_tx_mask(struct rc_de
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -377,7 +377,6 @@ struct sdma_channel {
+ 	unsigned long			watermark_level;
+ 	u32				shp_addr, per_addr;
+ 	enum dma_status			status;
+-	bool				context_loaded;
+ 	struct imx_dma_data		data;
+ 	struct work_struct		terminate_worker;
+ };
+@@ -988,9 +987,6 @@ static int sdma_load_context(struct sdma
+ 	int ret;
+ 	unsigned long flags;
  
- 	if ((mask & (RXMASK_REGULAR | RXMASK_LEARNING)) != mask) {
- 		dprintk("invalid tx mask: %u\n", mask);
--		return -EINVAL;
-+		return 2;
- 	}
+-	if (sdmac->context_loaded)
+-		return 0;
+-
+ 	if (sdmac->direction == DMA_DEV_TO_MEM)
+ 		load_address = sdmac->pc_from_device;
+ 	else if (sdmac->direction == DMA_DEV_TO_DEV)
+@@ -1033,8 +1029,6 @@ static int sdma_load_context(struct sdma
  
- 	dprintk("setting tx mask: %u\n", mask);
+ 	spin_unlock_irqrestore(&sdma->channel_0_lock, flags);
+ 
+-	sdmac->context_loaded = true;
+-
+ 	return ret;
+ }
+ 
+@@ -1074,7 +1068,6 @@ static void sdma_channel_terminate_work(
+ 	sdmac->desc = NULL;
+ 	spin_unlock_irqrestore(&sdmac->vc.lock, flags);
+ 	vchan_dma_desc_free_list(&sdmac->vc, &head);
+-	sdmac->context_loaded = false;
+ }
+ 
+ static int sdma_disable_channel_async(struct dma_chan *chan)
+@@ -1335,7 +1328,6 @@ static void sdma_free_chan_resources(str
+ 
+ 	sdmac->event_id0 = 0;
+ 	sdmac->event_id1 = 0;
+-	sdmac->context_loaded = false;
+ 
+ 	sdma_set_channel_priority(sdmac, 0);
+ 
 
 
