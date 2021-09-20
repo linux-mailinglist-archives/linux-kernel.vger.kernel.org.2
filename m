@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27534412B2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261CB412B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244959AbhIUCJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
+        id S236819AbhIUCJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237845AbhIUB4t (ORCPT
+        with ESMTP id S237958AbhIUB4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:56:49 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D4EC0313CF
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:50:20 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id t20so13122897pju.5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 16:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vrcaCp8wAG9WhMElbt3SFMZG1ccQwS5//7td2G4tQVw=;
-        b=LbiW+vJtWL6WTaQ9//JZW46yS0oAh/MegbVt3qRem/mZh8AZkW9/CtaaV68C2JpLDq
-         HCdEdkmUj0NM+oSrHNiBCk1krYVqBi3PQQ8J0h7ZpCH4Ac26oiLjkr6fDYzW/yypRVxI
-         dIAH6YU2L4BTKvOgMUjY4umP3hCeLgZkWgkaofw2QzaVmalf7TfjuNS/tC6L9AH9SRac
-         QeG/LDCjrFoimKWuFio9+wRhYfdJo4F255JIdMSb3NSElXNXzRGesDkCUNn+PJZdsBwR
-         K/p0IX7K4Ekh23lwVSeZXVedOFnpeqYCwmPPtx545Xo9cis/N5oZ48V1MQiP2CWkTK6e
-         36Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vrcaCp8wAG9WhMElbt3SFMZG1ccQwS5//7td2G4tQVw=;
-        b=CKxets030QvC9ljH34yc2+dBlR/5tn410MtsD4wK4rNCh0Ji4xc+5ai6Ot9EvRpNmm
-         BeihIHn/ULGxEF649xQfgTHMQMCue4w583kIYat4SbtjLZqTJnmuiCvyjejIo6AqYwTk
-         aMTPkK7HE+TtJAkRa5MzxOZIANJ4HEfHQYvKKxWyHAQIbx0QzB3tvs3f0AerHxJON3oI
-         ih2MbQtjMh1eRiD75Zc7WmxvMMiuBcOfYyOaDkczlGBPlp4YPSDXOo2EtSR/zq/JoO9V
-         n/g9cl4VxghQinQqit3xP0idm9Gb8hkBUcpJzlDgIMHTjbBAfupQ8HzQ+eTpLzZMggDx
-         OUYw==
-X-Gm-Message-State: AOAM533Bdd+XTM/1Yw+p6X14GTgwXHMmSCALJDHcOOivSt6t+l8uOR4f
-        DkIpiG9Fc4J3ZN9O5w/dS1c=
-X-Google-Smtp-Source: ABdhPJyCkWnH/ODUdB0PfCikz0qGRII4E6ykCQSbknL+UxCNgxM+O1u+BheueEC6OBltMBZncJh5CA==
-X-Received: by 2002:a17:90a:f2cd:: with SMTP id gt13mr1779693pjb.153.1632181819626;
-        Mon, 20 Sep 2021 16:50:19 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:9a49:e1f0:6fe9:6fd9])
-        by smtp.gmail.com with ESMTPSA id e13sm15147485pfi.210.2021.09.20.16.50.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 16:50:19 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 20 Sep 2021 16:50:16 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        zhengjun.xing@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Oliver Sang <oliver.sang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        John Dias <joaodias@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>
-Subject: Re: [PATCH v3] mm: fs: invalidate bh_lrus for only cold path
-Message-ID: <YUkeOB3GfK6KO8KG@google.com>
-References: <20210907212347.1977686-1-minchan@kernel.org>
- <CAHk-=wh2_yEuAC5=9VWefK+0JD9pAKf8qL-vpSmS7MtLA8SZEA@mail.gmail.com>
+        Mon, 20 Sep 2021 21:56:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BB9C0612AF;
+        Mon, 20 Sep 2021 16:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=5ET8sA5Ie7MakFr5xOQmdzEW86mFesYnr96/0L8emfI=; b=HyVgL4PBjqi9zDIYOC5rOu8mWO
+        jAZ5WYihHx8ZwzALXXWCAx0HyiH3jyHzJ14t0GACIz3p7qP8b8MexFoic08vep0d83ZLonFDnMLTL
+        SdRtJzOxXzG8aBjoUVLS1yWhN1+ApRSHt9wPIIA3je09n477ZXNTblPHCYztaWuq8HqIQ/StfNzKQ
+        QNyL4eSSNnezUnd5VKarmL5F/Z+r96OJY2ZQTKnS1CSN2heKDYcrdwBT40GLeWcPNyP741VuOhH8U
+        wS+S7WlO6gM1pDdDJ2MqkmtjuKPyU3Fsvro33rXqd/jzIm4PxkyJg/KgY914PwylTZInGk+r0FsLx
+        6THpCTWg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSTAQ-003MSY-6l; Mon, 20 Sep 2021 23:57:46 +0000
+Subject: Re: [PATCH] media: rc and cec: keep all menu entries together
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+References: <20210822000450.27329-1-rdunlap@infradead.org>
+ <a2367e5c-015a-3731-fcf2-0c448af83fed@xs4all.nl>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <f392c329-88c6-a846-22ec-b5534e3d3bac@infradead.org>
+Date:   Mon, 20 Sep 2021 16:57:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh2_yEuAC5=9VWefK+0JD9pAKf8qL-vpSmS7MtLA8SZEA@mail.gmail.com>
+In-Reply-To: <a2367e5c-015a-3731-fcf2-0c448af83fed@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 04:29:52PM -0700, Linus Torvalds wrote:
-> On Tue, Sep 7, 2021 at 2:24 PM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > kernel test robot reported the regression of fio.write_iops[1]
-> > with [2].
-> >
-> > Since lru_add_drain is called frequently, invalidate bh_lrus
-> > there could increase bh_lrus cache miss ratio, which needs
-> > more IO in the end.
-> >
-> > This patch moves the bh_lrus invalidation from the hot path(
-> > e.g., zap_page_range, pagevec_release) to cold path(i.e.,
-> > lru_add_drain_all, lru_cache_disable).
+On 9/20/21 4:19 AM, Hans Verkuil wrote:
+> Hi Randy,
 > 
-> Was this confirmed to fix the regression?
+> On 22/08/2021 02:04, Randy Dunlap wrote:
+>> Keep all of the Remote Controller and CEC menu entries grouped
+>> together. This is most relevant to 'make xconfig', where the
+>> entries for "HDMI CEC RC integration" and "Enable CEC error injection
+>> support" are not displayed (presented) anywhere near the other
+>> Remote Controller support options.
+>> By grouping all of these menu entries inside a menu/endmenu block,
+>> they are forced to be kept together.
+>>
+>> Fixes: 46d2a3b964dd ("media: place CEC menu before MEDIA_SUPPORT")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Sean Young <sean@mess.org>
+>> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>> Cc: linux-media@vger.kernel.org
+>> Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>> ---
+>>   drivers/media/Kconfig |    2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> --- linux-next-20210820.orig/drivers/media/Kconfig
+>> +++ linux-next-20210820/drivers/media/Kconfig
+>> @@ -6,8 +6,10 @@
+>>   #
+>>   # NOTE: CEC and Remote Controller support should not depend on MEDIA_SUPPORT
+>>   #
+>> +menu "Remote Controller and CEC support"
+>>   source "drivers/media/rc/Kconfig"
+>>   source "drivers/media/cec/Kconfig"
+>> +endmenu
 > 
-> I only see the "tested with 5.14" that the regression was still there
+> Remote control and CEC really have very little to do with one another, except
+> for "HDMI CEC RC integration", which is a feature of CEC.
 > 
->    https://lore.kernel.org/lkml/034fc860-d0d0-0c61-09d2-3c41c4f020c6@intel.com/
+> It would make more sense IMHO to make a "CEC support" menu and move the
+> CEC drivers and "HDMI CEC RC integration" and "Enable CEC error injection
+> support" to that new menu. It's a bit odd that those two CEC options are
+> directly under the Device Drivers menu.
 > 
-> I don't see a confirmation that this patch fixed it.
+> Would that work for you?
 > 
-> It looks likely, but if you have the confirmation somewhere, it would
-> help to link that too.
+
+Hi Hans,
+I don't know, but I'll try it out.
+
+Thanks.
+
 > 
-> Or did I miss it?
+>>   
+>>   menuconfig MEDIA_SUPPORT
+>>   	tristate "Multimedia support"
+>>
+> 
 
-I have no idea why I couldn't find the reply from lore.kernel.org/lkml/
-The message id was 89e2b66b-c706-c020-bff5-b815dcd5c461@intel.com
-in the thread(https://lore.kernel.org/lkml/20210520083144.GD14190@xsang-OptiPlex-9020/)
 
-Xing, Zhengjun zhengjun.xing@intel.com confirmed 
-
-Quote -
-```
-Hi Minchan,
-
-...
-
-I test the patch, the regression reduced to -2.9%.
-```
-Since then, I modified the patch a little more and couldn't find the
-message from the public URL. Thus, do we need to confirm it again against
-latest kernel?
-
-Xing, could you confirm whether this patch fixes the regression?
+-- 
+~Randy
