@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7D84125B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401B8412377
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354618AbhITSrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:47:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56388 "EHLO mail.kernel.org"
+        id S1352455AbhITSZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382849AbhITSmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3828163349;
-        Mon, 20 Sep 2021 17:32:04 +0000 (UTC)
+        id S1358747AbhITSRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:17:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C96F6329B;
+        Mon, 20 Sep 2021 17:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159124;
-        bh=JSlWRf+J8cegpqnrLWzv525DtN5CL4GM48c1AwWkFVg=;
+        s=korg; t=1632158551;
+        bh=1y5/HgB6PeMTVT0P5yHEzsEalWNK47db5BBpt4xfi7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gRV6Q7q0Kb64TVogi19cmYmZh2OanXEVq7PTf50tr0uGjoCVKFkPKr8kV2SS6DXCy
-         ZffMMwbrT+wQJ7lL4wTXD47we2aTBnIXCAdUb4ST0JzV1zCgCdf5PNJwmwgz4LxrkQ
-         K6DSVLUQa6HhOrJ1FKavSaVPRc2jsz12gfviGoxY=
+        b=ma2vgqRZToo/wbKqwcByu6FCpNwltcA4GVMDI8WbRio0paHZERiEggackiah/GbUf
+         g64euzjU/Zz8Nie/K3CzIUa0XJXvHJQ48VmQyCp8LR+/o0dX8uzSdn6mSWbVtYxm6h
+         yZcGr6ho7NMbJNG3Vvm0crW+3ZMKgyScmVsytigc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com,
-        Yanfei Xu <yanfei.xu@windriver.com>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 087/168] blkcg: fix memory leak in blk_iolatency_init
-Date:   Mon, 20 Sep 2021 18:43:45 +0200
-Message-Id: <20210920163924.494984171@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH 5.4 208/260] x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
+Date:   Mon, 20 Sep 2021 18:43:46 +0200
+Message-Id: <20210920163938.175926843@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,80 +42,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanfei Xu <yanfei.xu@windriver.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-[ Upstream commit 6f5ddde41069fcd1f0993ec76c9dbbf9d021fd4d ]
+commit 34b1999da935a33be6239226bfa6cd4f704c5c88 upstream.
 
-BUG: memory leak
-unreferenced object 0xffff888129acdb80 (size 96):
-  comm "syz-executor.1", pid 12661, jiffies 4294962682 (age 15.220s)
-  hex dump (first 32 bytes):
-    20 47 c9 85 ff ff ff ff 20 d4 8e 29 81 88 ff ff   G...... ..)....
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff82264ec8>] kmalloc include/linux/slab.h:591 [inline]
-    [<ffffffff82264ec8>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff82264ec8>] blk_iolatency_init+0x28/0x190 block/blk-iolatency.c:724
-    [<ffffffff8225b8c4>] blkcg_init_queue+0xb4/0x1c0 block/blk-cgroup.c:1185
-    [<ffffffff822253da>] blk_alloc_queue+0x22a/0x2e0 block/blk-core.c:566
-    [<ffffffff8223b175>] blk_mq_init_queue_data block/blk-mq.c:3100 [inline]
-    [<ffffffff8223b175>] __blk_mq_alloc_disk+0x25/0xd0 block/blk-mq.c:3124
-    [<ffffffff826a9303>] loop_add+0x1c3/0x360 drivers/block/loop.c:2344
-    [<ffffffff826a966e>] loop_control_get_free drivers/block/loop.c:2501 [inline]
-    [<ffffffff826a966e>] loop_control_ioctl+0x17e/0x2e0 drivers/block/loop.c:2516
-    [<ffffffff81597eec>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff81597eec>] __do_sys_ioctl fs/ioctl.c:874 [inline]
-    [<ffffffff81597eec>] __se_sys_ioctl fs/ioctl.c:860 [inline]
-    [<ffffffff81597eec>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:860
-    [<ffffffff843fa745>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff843fa745>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84600068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Jiri Olsa reported a fault when running:
 
-Once blk_throtl_init() queue init failed, blkcg_iolatency_exit() will
-not be invoked for cleanup. That leads a memory leak. Swap the
-blk_throtl_init() and blk_iolatency_init() calls can solve this.
+  # cat /proc/kallsyms | grep ksys_read
+  ffffffff8136d580 T ksys_read
+  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
 
-Reported-by: syzbot+01321b15cc98e6bf96d6@syzkaller.appspotmail.com
-Fixes: 19688d7f9592 (block/blk-cgroup: Swap the blk_throtl_init() and blk_iolatency_init() calls)
-Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20210915072426.4022924-1-yanfei.xu@windriver.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  /proc/kcore:     file format elf64-x86-64
+
+  Segmentation fault
+
+  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+  RIP: 0010:kern_addr_valid
+  Call Trace:
+   read_kcore
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? trace_hardirqs_on
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   ? _raw_spin_unlock
+   ? __handle_mm_fault
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   proc_reg_read
+   ? vfs_read
+   vfs_read
+   ksys_read
+   do_syscall_64
+   entry_SYSCALL_64_after_hwframe
+
+The fault happens because kern_addr_valid() dereferences existent but not
+present PMD in the high kernel mappings.
+
+Such PMDs are created when free_kernel_image_pages() frees regions larger
+than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
+the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+mark the PMD as not present rather than wipe it completely.
+
+Have kern_addr_valid() check whether higher level page table entries are
+present before trying to dereference them to fix this issue and to avoid
+similar issues in the future.
+
+Stable backporting note:
+------------------------
+
+Note that the stable marking is for all active stable branches because
+there could be cases where pagetable entries exist but are not valid -
+see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
+sure to be on the safe side here and use pXY_present() accessors rather
+than pXY_none() which could #GP when accessing pages in the direct map.
+
+Also see:
+
+  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+
+for more info.
+
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+Cc: <stable@vger.kernel.org>	# 4.4+
+Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-cgroup.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/x86/mm/init_64.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 31fe9be179d9..26446f97deee 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1201,10 +1201,6 @@ int blkcg_init_queue(struct request_queue *q)
- 	if (preloaded)
- 		radix_tree_preload_end();
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1355,18 +1355,18 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
  
--	ret = blk_iolatency_init(q);
--	if (ret)
--		goto err_destroy_all;
--
- 	ret = blk_ioprio_init(q);
- 	if (ret)
- 		goto err_destroy_all;
-@@ -1213,6 +1209,12 @@ int blkcg_init_queue(struct request_queue *q)
- 	if (ret)
- 		goto err_destroy_all;
+ 	p4d = p4d_offset(pgd, addr);
+-	if (p4d_none(*p4d))
++	if (!p4d_present(*p4d))
+ 		return 0;
  
-+	ret = blk_iolatency_init(q);
-+	if (ret) {
-+		blk_throtl_exit(q);
-+		goto err_destroy_all;
-+	}
-+
- 	return 0;
+ 	pud = pud_offset(p4d, addr);
+-	if (pud_none(*pud))
++	if (!pud_present(*pud))
+ 		return 0;
  
- err_destroy_all:
--- 
-2.30.2
-
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
+ 
+ 	pmd = pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (!pmd_present(*pmd))
+ 		return 0;
+ 
+ 	if (pmd_large(*pmd))
 
 
