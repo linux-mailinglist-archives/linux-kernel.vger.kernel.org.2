@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E785C411A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96B9411DC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244288AbhITQth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35806 "EHLO mail.kernel.org"
+        id S1346489AbhITRXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243253AbhITQsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B586A61268;
-        Mon, 20 Sep 2021 16:46:54 +0000 (UTC)
+        id S1348999AbhITRVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:21:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EED3613D5;
+        Mon, 20 Sep 2021 17:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156415;
-        bh=GCwUDMsFmbVux04PeiOGhO2O80RocRZ7qLtJsgRhJEU=;
+        s=korg; t=1632157250;
+        bh=3yneySGa0hqWH1l/UOQpDfbUPiTv6oRPYHHwbtTe4P0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AUcuRplAux0Z8EC2pvHovZW/VAHq+OvIpEMnkN7s+ItCQ4H2Be0ckzkN+ntA5LKna
-         Mogj530KIupKky7oD4PdqbwGRkRL2Rv0bjo12DyUcZPFDuPJtQCJoBYt0O2wvE87rw
-         Bq1q8oGhykWP4beWpJ1Odh+UBIPO4o2Wt7SFwb34=
+        b=MLpKik8zyj5xU0DIQsm0Yuknj33dcPhNCAKA3Es6SHr3FQLaR/mJ975geNLxqFI6x
+         meKXp3rfp1SnGEY4YGE461h6Uq1mKAdmwb+9uH0SxRKx696nGyceCkG8Hijg2Rxzpt
+         GRJp0zN3IjCD9APezHDjwMgXYh1o1WoFtaY4rzu0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 048/133] Bluetooth: fix repeated calls to sco_sock_kill
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: [PATCH 4.14 105/217] 9p/xen: Fix end of loop tests for list_for_each_entry
 Date:   Mon, 20 Sep 2021 18:42:06 +0200
-Message-Id: <20210920163914.218558386@linuxfoundation.org>
+Message-Id: <20210920163928.197822302@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,86 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Harshvardhan Jha <harshvardhan.jha@oracle.com>
 
-[ Upstream commit e1dee2c1de2b4dd00eb44004a4bda6326ed07b59 ]
+commit 732b33d0dbf17e9483f0b50385bf606f724f50a2 upstream.
 
-In commit 4e1a720d0312 ("Bluetooth: avoid killing an already killed
-socket"), a check was added to sco_sock_kill to skip killing a socket
-if the SOCK_DEAD flag was set.
+This patch addresses the following problems:
+ - priv can never be NULL, so this part of the check is useless
+ - if the loop ran through the whole list, priv->client is invalid and
+it is more appropriate and sufficient to check for the end of
+list_for_each_entry loop condition.
 
-This was done after a trace for a use-after-free bug showed that the
-same sock pointer was being killed twice.
-
-Unfortunately, this check prevents sco_sock_kill from running on any
-socket. sco_sock_kill kills a socket only if it's zapped and orphaned,
-however sock_orphan announces that the socket is dead before detaching
-it. i.e., orphaned sockets have the SOCK_DEAD flag set.
-
-To fix this, we remove the check for SOCK_DEAD, and avoid repeated
-calls to sco_sock_kill by removing incorrect calls in:
-
-1. sco_sock_timeout. The socket should not be killed on timeout as
-further processing is expected to be done. For example,
-sco_sock_connect sets the timer then waits for the socket to be
-connected or for an error to be returned.
-
-2. sco_conn_del. This function should clean up resources for the
-connection, but the socket itself should be cleaned up in
-sco_sock_release.
-
-3. sco_sock_close. Calls to sco_sock_close in sco_sock_cleanup_listen
-and sco_sock_release are followed by sco_sock_kill. Hence the
-duplicated call should be removed.
-
-Fixes: 4e1a720d0312 ("Bluetooth: avoid killing an already killed socket")
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: http://lkml.kernel.org/r/20210727000709.225032-1-harshvardhan.jha@oracle.com
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Tested-by: Stefano Stabellini <sstabellini@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/sco.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ net/9p/trans_xen.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index cad0d2750735..701d230fb9cf 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -83,7 +83,6 @@ static void sco_sock_timeout(unsigned long arg)
- 	sk->sk_state_change(sk);
- 	bh_unlock_sock(sk);
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -139,7 +139,7 @@ static bool p9_xen_write_todo(struct xen
  
--	sco_sock_kill(sk);
- 	sock_put(sk);
- }
- 
-@@ -175,7 +174,6 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
- 		sco_sock_clear_timer(sk);
- 		sco_chan_del(sk, err);
- 		bh_unlock_sock(sk);
--		sco_sock_kill(sk);
- 		sock_put(sk);
- 	}
- 
-@@ -392,8 +390,7 @@ static void sco_sock_cleanup_listen(struct sock *parent)
-  */
- static void sco_sock_kill(struct sock *sk)
+ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
  {
--	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket ||
--	    sock_flag(sk, SOCK_DEAD))
-+	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
- 		return;
+-	struct xen_9pfs_front_priv *priv = NULL;
++	struct xen_9pfs_front_priv *priv;
+ 	RING_IDX cons, prod, masked_cons, masked_prod;
+ 	unsigned long flags;
+ 	u32 size = p9_req->tc->size;
+@@ -152,7 +152,7 @@ static int p9_xen_request(struct p9_clie
+ 			break;
+ 	}
+ 	read_unlock(&xen_9pfs_lock);
+-	if (!priv || priv->client != client)
++	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
+ 		return -EINVAL;
  
- 	BT_DBG("sk %p state %d", sk, sk->sk_state);
-@@ -445,7 +442,6 @@ static void sco_sock_close(struct sock *sk)
- 	lock_sock(sk);
- 	__sco_sock_close(sk);
- 	release_sock(sk);
--	sco_sock_kill(sk);
- }
- 
- static void sco_sock_init(struct sock *sk, struct sock *parent)
--- 
-2.30.2
-
+ 	num = p9_req->tc->tag % priv->num_rings;
 
 
