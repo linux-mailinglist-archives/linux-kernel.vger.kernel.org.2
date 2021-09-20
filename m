@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9EB41241B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C2D412555
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379793AbhITSab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44480 "EHLO mail.kernel.org"
+        id S1383002AbhITSnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:43:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378351AbhITSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:24:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1306E632CB;
-        Mon, 20 Sep 2021 17:25:07 +0000 (UTC)
+        id S1381508AbhITSia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:38:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EAA963323;
+        Mon, 20 Sep 2021 17:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158708;
-        bh=mLj/+yzWOxkFMwfGyT0BP/0G+Nmcz7Ta+Cu40WIDkzA=;
+        s=korg; t=1632159011;
+        bh=RuQbcAWp8KjO8TDel+qgvI82nX4UgHWdCfW8M5Fi32Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cP7aLxDNyBggG5I2DKdaOMXJqqDkAKrAdkevsjTHMaw5tgQP2Zsd3CGF8OSiUWHci
-         jW8Yf+X9gEOElOuE4GA2h9t+LyAMJk62rehiTeneyiBDWv2LOeMEHijOrCnLDi12CQ
-         tK779YmeQSTfH1o1wJW+Fl1qzkrPbsgrKjLqFvuw=
+        b=N/3nQf4gL//OtLwrjd2enqloRqJvrgrPN9vIzdUPTz5ck7iAO66VEt2HgbcG4x4xq
+         tu1PwnMBLmPaowjyWcWkkzhq1/w1XdzLDeSZ29kcgeaUY3powLg8xanzUcsTjVYHo3
+         cFRTUeEVHthV6VMC4BFblD7NjLbfQXI27wvlf30w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 002/122] btrfs: fix upper limit for max_inline for page size 64K
+        stable@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.14 036/168] x86/mce: Avoid infinite loop for copy from user recovery
 Date:   Mon, 20 Sep 2021 18:42:54 +0200
-Message-Id: <20210920163915.840707523@linuxfoundation.org>
+Message-Id: <20210920163922.834660648@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,91 +39,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Tony Luck <tony.luck@intel.com>
 
-commit 6f93e834fa7c5faa0372e46828b4b2a966ac61d7 upstream.
+commit 81065b35e2486c024c7aa86caed452e1f01a59d4 upstream.
 
-The mount option max_inline ranges from 0 to the sectorsize (which is
-now equal to page size). But we parse the mount options too early and
-before the actual sectorsize is read from the superblock. So the upper
-limit of max_inline is unaware of the actual sectorsize and is limited
-by the temporary sectorsize 4096, even on a system where the default
-sectorsize is 64K.
+There are two cases for machine check recovery:
 
-Fix this by reading the superblock sectorsize before the mount option
-parse.
+1) The machine check was triggered by ring3 (application) code.
+   This is the simpler case. The machine check handler simply queues
+   work to be executed on return to user. That code unmaps the page
+   from all users and arranges to send a SIGBUS to the task that
+   triggered the poison.
 
-Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
+2) The machine check was triggered in kernel code that is covered by
+   an exception table entry. In this case the machine check handler
+   still queues a work entry to unmap the page, etc. but this will
+   not be called right away because the #MC handler returns to the
+   fix up code address in the exception table entry.
+
+Problems occur if the kernel triggers another machine check before the
+return to user processes the first queued work item.
+
+Specifically, the work is queued using the ->mce_kill_me callback
+structure in the task struct for the current thread. Attempting to queue
+a second work item using this same callback results in a loop in the
+linked list of work functions to call. So when the kernel does return to
+user, it enters an infinite loop processing the same entry for ever.
+
+There are some legitimate scenarios where the kernel may take a second
+machine check before returning to the user.
+
+1) Some code (e.g. futex) first tries a get_user() with page faults
+   disabled. If this fails, the code retries with page faults enabled
+   expecting that this will resolve the page fault.
+
+2) Copy from user code retries a copy in byte-at-time mode to check
+   whether any additional bytes can be copied.
+
+On the other side of the fence are some bad drivers that do not check
+the return value from individual get_user() calls and may access
+multiple user addresses without noticing that some/all calls have
+failed.
+
+Fix by adding a counter (current->mce_count) to keep track of repeated
+machine checks before task_work() is called. First machine check saves
+the address information and calls task_work_add(). Subsequent machine
+checks before that task_work call back is executed check that the address
+is in the same page as the first machine check (since the callback will
+offline exactly one page).
+
+Expected worst case is four machine checks before moving on (e.g. one
+user access with page faults disabled, then a repeat to the same address
+with page faults enabled ... repeat in copy tail bytes). Just in case
+there is some code that loops forever enforce a limit of 10.
+
+ [ bp: Massage commit message, drop noinstr, fix typo, extend panic
+   messages. ]
+
+Fixes: 5567d11c21a1 ("x86/mce: Send #MC singal from task work")
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/YT/IJ9ziLqmtqEPu@agluck-desk2.amr.corp.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/disk-io.c |   45 +++++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c |   45 ++++++++++++++++++++++++++++++-----------
+ include/linux/sched.h          |    1 
+ 2 files changed, 34 insertions(+), 12 deletions(-)
 
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3019,6 +3019,29 @@ int __cold open_ctree(struct super_block
- 	 */
- 	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1253,6 +1253,9 @@ static void __mc_scan_banks(struct mce *
  
-+	/*
-+	 * Flag our filesystem as having big metadata blocks if they are bigger
-+	 * than the page size
-+	 */
-+	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
-+		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
-+			btrfs_info(fs_info,
-+				"flagging fs with big metadata feature");
-+		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
+ static void kill_me_now(struct callback_head *ch)
+ {
++	struct task_struct *p = container_of(ch, struct task_struct, mce_kill_me);
++
++	p->mce_count = 0;
+ 	force_sig(SIGBUS);
+ }
+ 
+@@ -1262,6 +1265,7 @@ static void kill_me_maybe(struct callbac
+ 	int flags = MF_ACTION_REQUIRED;
+ 	int ret;
+ 
++	p->mce_count = 0;
+ 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
+ 
+ 	if (!p->mce_ripv)
+@@ -1290,17 +1294,34 @@ static void kill_me_maybe(struct callbac
+ 	}
+ }
+ 
+-static void queue_task_work(struct mce *m, int kill_current_task)
++static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
+ {
+-	current->mce_addr = m->addr;
+-	current->mce_kflags = m->kflags;
+-	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
+-	current->mce_whole_page = whole_page(m);
+-
+-	if (kill_current_task)
+-		current->mce_kill_me.func = kill_me_now;
+-	else
+-		current->mce_kill_me.func = kill_me_maybe;
++	int count = ++current->mce_count;
++
++	/* First call, save all the details */
++	if (count == 1) {
++		current->mce_addr = m->addr;
++		current->mce_kflags = m->kflags;
++		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
++		current->mce_whole_page = whole_page(m);
++
++		if (kill_current_task)
++			current->mce_kill_me.func = kill_me_now;
++		else
++			current->mce_kill_me.func = kill_me_maybe;
 +	}
 +
-+	/* Set up fs_info before parsing mount options */
-+	nodesize = btrfs_super_nodesize(disk_super);
-+	sectorsize = btrfs_super_sectorsize(disk_super);
-+	stripesize = sectorsize;
-+	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
-+	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
++	/* Ten is likely overkill. Don't expect more than two faults before task_work() */
++	if (count > 10)
++		mce_panic("Too many consecutive machine checks while accessing user data", m, msg);
 +
-+	/* Cache block sizes */
-+	fs_info->nodesize = nodesize;
-+	fs_info->sectorsize = sectorsize;
-+	fs_info->stripesize = stripesize;
++	/* Second or later call, make sure page address matches the one from first call */
++	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
++		mce_panic("Consecutive machine checks to different user pages", m, msg);
 +
- 	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
- 	if (ret) {
- 		err = ret;
-@@ -3046,28 +3069,6 @@ int __cold open_ctree(struct super_block
- 		btrfs_info(fs_info, "has skinny extents");
++	/* Do not call task_work_add() more than once */
++	if (count > 1)
++		return;
  
- 	/*
--	 * flag our filesystem as having big metadata blocks if
--	 * they are bigger than the page size
--	 */
--	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
--		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
--			btrfs_info(fs_info,
--				"flagging fs with big metadata feature");
--		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
--	}
--
--	nodesize = btrfs_super_nodesize(disk_super);
--	sectorsize = btrfs_super_sectorsize(disk_super);
--	stripesize = sectorsize;
--	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
--	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
--
--	/* Cache block sizes */
--	fs_info->nodesize = nodesize;
--	fs_info->sectorsize = sectorsize;
--	fs_info->stripesize = stripesize;
--
--	/*
- 	 * mixed block groups end up with duplicate but slightly offset
- 	 * extent buffers for the same range.  It leads to corruptions
- 	 */
+ 	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
+ }
+@@ -1438,7 +1459,7 @@ noinstr void do_machine_check(struct pt_
+ 		/* If this triggers there is no way to recover. Die hard. */
+ 		BUG_ON(!on_thread_stack() || !user_mode(regs));
+ 
+-		queue_task_work(&m, kill_current_task);
++		queue_task_work(&m, msg, kill_current_task);
+ 
+ 	} else {
+ 		/*
+@@ -1456,7 +1477,7 @@ noinstr void do_machine_check(struct pt_
+ 		}
+ 
+ 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
+-			queue_task_work(&m, kill_current_task);
++			queue_task_work(&m, msg, kill_current_task);
+ 	}
+ out:
+ 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1394,6 +1394,7 @@ struct task_struct {
+ 					mce_whole_page : 1,
+ 					__mce_reserved : 62;
+ 	struct callback_head		mce_kill_me;
++	int				mce_count;
+ #endif
+ 
+ #ifdef CONFIG_KRETPROBES
 
 
