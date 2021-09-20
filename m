@@ -2,146 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B35411519
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8936B41151D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbhITM6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:58:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhITM6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:58:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DAE96109D;
-        Mon, 20 Sep 2021 12:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632142645;
-        bh=3Y4gQvacVMDsvloS8gj8JrRb56U+3j+/P9qgEmbnLxQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=t1/6VbpWrRN93zO/7PLoh+fho0IqhrImeOpjdU4IY33UR2RAo7KLD276fmnMAqpg8
-         jCF6414qDCbijwCEbh81qJABpbSW3o1mSNMt+CitGM2rzApfyMATlyU3QFE4BoEArv
-         R6FKYy/zO//2UHZgqUlfWafI78znpa+tbcapZu+vLR/lfXcqteI6kLj2ANMBlncaW5
-         Ui37uFBr0wFioz20MQzDVrJnIAhTN7NUMZFYBt0mWrniRdWQWCeEW2OzX9EHbyW7x7
-         TZWwQjqDLn81DMH9k4YnT/5wVaC+QtBcwDo6qwbQ7VO56O2zlqYW3UlhGkFhwOpyJn
-         S1Hl8sOxy1YNQ==
-Received: by mail-ed1-f51.google.com with SMTP id dj4so4947047edb.5;
-        Mon, 20 Sep 2021 05:57:25 -0700 (PDT)
-X-Gm-Message-State: AOAM532RAds5bAaN7qhvT36q0eww3Y2EF7DoaTxiH4KBWYoiY7Al2O+a
-        O6lD7jTFW2dPaQeBfy6Zhja6yVzJEJGq+cTSKw==
-X-Google-Smtp-Source: ABdhPJwxl4M7JwIYLhEMizLmntOnoBCcnFt6nsvNmWy/WrfKk4jbby+1tLrXqVYlYpjSu+es0W80TyrsSkRSdBrRY+s=
-X-Received: by 2002:a50:e004:: with SMTP id e4mr29223066edl.164.1632142643564;
- Mon, 20 Sep 2021 05:57:23 -0700 (PDT)
+        id S236441AbhITNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhITNAA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:00:00 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22691C061574;
+        Mon, 20 Sep 2021 05:58:34 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id dw14so11915671pjb.1;
+        Mon, 20 Sep 2021 05:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=hDKAE6H9/GaVI7nfqRfPd7UEvAfLXZKdhI0Zqvun8oY=;
+        b=ICHC5SaTqZV+PUi3f1ta5TH3ld/8S8iuf8+aUDAACZtHZuBg+2+xn/IHjQApmaPFGb
+         i0kzIGRO30z+ufydmQJxHrnAjejyF8z/DcRslInjSLMSa61tzq+Wa7MTYe8vZSMorbJ+
+         qLLTbW0lmqGEiH+K2r2lzsVm6iyGLykaDARnlfcC1hImjCvcT5A1LApKNI+yuPBlcxrB
+         wp+NAkB7RSUYF2Jl3t19QR09Qvet8a2GuPGpKWyq0al9HyOuaTf+ylkGS02Maj50r7or
+         g06hdk9f2v4RPPTu4dqZXY0u9F9uE5QUGPQKT89wb0MwWr+EnQYXBWk7AjUDawzVJ7Ui
+         KKcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=hDKAE6H9/GaVI7nfqRfPd7UEvAfLXZKdhI0Zqvun8oY=;
+        b=AZ5/1w6HxUiJzQYvkTyoUNhQpv5T5RZCBAfdra5txA/01HsYj/HLCqXguIuUfamEGD
+         Bxbnfo+bPjIK+WNsuhkOQ3SFJMPZUFohdyfUhZ27pxwhH8qjCWyXSZw45F1EmbrUDXIQ
+         rq074dI8k0NSmXwLJoaJh4S3APY2FTgpUWX5MFyM58GX+MNus9X5thKluMmRIowUMZE5
+         5UxLm+X7YvdB351Z3fW+Edhj3a3BylbMyvp1Ir8sOu7Boz+hJqsznuKpqL1lumVuHcD7
+         6G19mfww9qQ5lyoRyTLTM5Ch+1GIB1zVx4ohm9chBH/YlapAI+eRgngS6sXqX7m+K/wF
+         e0gA==
+X-Gm-Message-State: AOAM532rFaM7JYCPYZZWOSwOXr/ICEcJPKz1opaArOWUWTiUpIeLVzIB
+        5eXOTGT17yMuqZq1wFPF+iLfDTQsDORDR5ORyih7PFlxFA==
+X-Google-Smtp-Source: ABdhPJyvAJCi1WVvN/tohwqtKRIcygTnT34AgDguJMMl5adFGdIdUVlfKKUSdfJbp+vh0LhfCjzU9U/P5fI3r5N4Du8=
+X-Received: by 2002:a17:902:f08c:b0:13d:8e59:caf5 with SMTP id
+ p12-20020a170902f08c00b0013d8e59caf5mr16150094pla.38.1632142713291; Mon, 20
+ Sep 2021 05:58:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <1630686919-19495-1-git-send-email-spujar@nvidia.com> <1630686919-19495-3-git-send-email-spujar@nvidia.com>
-In-Reply-To: <1630686919-19495-3-git-send-email-spujar@nvidia.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 20 Sep 2021 07:57:12 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJbbDiOAr5-3_JwVMWxdkeGRoPYZuc_8fHp_iGEvH7AWA@mail.gmail.com>
-Message-ID: <CAL_JsqJbbDiOAr5-3_JwVMWxdkeGRoPYZuc_8fHp_iGEvH7AWA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] ASoC: Use schema reference for sound-name-prefix
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 20 Sep 2021 20:58:40 +0800
+Message-ID: <CACkBjsaYSfxKQUUhv2BdU8JTcHL1WP_c039iJ9CvmG5vMMHR4A@mail.gmail.com>
+Subject: general protection fault in __block_write_begin_int
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 11:36 AM Sameer Pujar <spujar@nvidia.com> wrote:
->
-> Use schema reference for 'sound-name-prefix' property wherever
-> necessary.
->
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> Cc: Jerome Brunet <jbrunet@baylibre.com>
-> Cc: Stephan Gerhold <stephan@gerhold.net>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
+Hello,
 
-[...]
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-> diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> index ffb8fcf..68e5ad2 100644
-> --- a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-> @@ -9,6 +9,9 @@ title: NXP/Goodix TFA989X (TFA1) Audio Amplifiers
->  maintainers:
->    - Stephan Gerhold <stephan@gerhold.net>
->
-> +allOf:
-> +  - $ref: name-prefix.yaml#
-> +
->  properties:
->    compatible:
->      enum:
-> @@ -21,12 +24,6 @@ properties:
->    '#sound-dai-cells':
->      const: 0
->
-> -  sound-name-prefix:
+HEAD commit: 4357f03d6611 Merge tag 'pm-5.15-rc2
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1r4iaWNbcFSZEw3dpTM2tbE3sPZbaXQ_Y/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1HKZtF_s3l6PL3OoQbNq_ei9CdBus-Tz0/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/13JjyIW6yKhM9QIYvC3IfDXAtjw_2Rrmt/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/1sxTq_kx4Yw8nD06mQQ7Ah_cCEg75yalF/view?usp=sharing
 
-You can't remove the property. This is now a warning in linux-next:
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-Documentation/devicetree/bindings/sound/nxp,tfa989x.example.dt.yaml:
-audio-codec@34: 'sound-name-prefix' does not match any of the regexes:
-'pinctrl-[0-9]+'
- From schema: /builds/robherring/linux-dt/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-Documentation/devicetree/bindings/sound/nxp,tfa989x.example.dt.yaml:
-audio-codec@36: 'sound-name-prefix' does not match any of the regexes:
-'pinctrl-[0-9]+'
- From schema: /builds/robherring/linux-dt/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-
-
-Just 'sound-name-prefix: true' is fine
-
-> -    $ref: /schemas/types.yaml#/definitions/string
-> -    description:
-> -      Used as prefix for sink/source names of the component. Must be a
-> -      unique string among multiple instances of the same component.
-> -
->    vddd-supply:
->      description: regulator phandle for the VDDD power supply.
->
-> diff --git a/Documentation/devicetree/bindings/sound/rt5659.txt b/Documentation/devicetree/bindings/sound/rt5659.txt
-> index c473df5..013f534 100644
-> --- a/Documentation/devicetree/bindings/sound/rt5659.txt
-> +++ b/Documentation/devicetree/bindings/sound/rt5659.txt
-> @@ -42,7 +42,7 @@ Optional properties:
->  - realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
->  - realtek,reset-gpios : The GPIO that controls the CODEC's RESET pin.
->
-> -- sound-name-prefix: Please refer to name-prefix.txt
-> +- sound-name-prefix: Please refer to name-prefix.yaml
->
->  - ports: A Codec may have a single or multiple I2S interfaces. These
->    interfaces on Codec side can be described under 'ports' or 'port'.
-> diff --git a/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml b/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml
-> index 5986d1f..c597d9d 100644
-> --- a/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml
-> +++ b/Documentation/devicetree/bindings/sound/simple-audio-mux.yaml
-> @@ -13,6 +13,9 @@ description: |
->    Simple audio multiplexers are driven using gpios, allowing to select which of
->    their input line is connected to the output line.
->
-> +allOf:
-> +  - $ref: name-prefix.yaml#
-> +
->  properties:
->    compatible:
->      const: simple-audio-mux
-> @@ -21,12 +24,6 @@ properties:
->      description: |
->        GPIOs used to select the input line.
->
-> -  sound-name-prefix:
-
-Here too, but I guess we don't have any example to throw a warning?
+general protection fault, probably for non-canonical address
+0xdead000000000200: 0000 [#1] PREEMPT SMP
+CPU: 2 PID: 11649 Comm: syz-executor Not tainted 5.15.0-rc1+ #19
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:__block_write_begin_int+0xde/0xae0 fs/buffer.c:1973
+Code: 00 00 0f 87 65 06 00 00 e8 df bd d6 ff 45 85 e4 0f 85 5e 06 00
+00 e8 d1 bd d6 ff 48 8b 45 18 31 d2 48 89 ef 41 bc 0c 00 00 00 <48> 8b
+00 48 89 c6 48 89 44 24 20 e8 02 a4 ff ff 4c 8b 7d 20 48 8b
+RSP: 0018:ffffc9000ab13980 EFLAGS: 00010246
+RAX: dead000000000200 RBX: ffffea0004568000 RCX: ffffc900025b9000
+RDX: 0000000000000000 RSI: ffffffff8160d34f RDI: ffffea0004568040
+RBP: ffffea0004568040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000000c
+R13: ffffc9000ab13aa0 R14: ffffffff821f8f70 R15: 0000000000000000
+FS:  00007f39bbe26700(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000100000001 CR3: 000000010b767000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ __block_write_begin fs/buffer.c:2056 [inline]
+ block_write_begin+0x58/0x150 fs/buffer.c:2116
+ generic_perform_write+0xce/0x220 mm/filemap.c:3770
+ __generic_file_write_iter+0x20d/0x240 mm/filemap.c:3897
+ blkdev_write_iter+0xed/0x1d0 block/fops.c:518
+ call_write_iter include/linux/fs.h:2163 [inline]
+ do_iter_readv_writev+0x1e8/0x2b0 fs/read_write.c:729
+ do_iter_write+0xaf/0x250 fs/read_write.c:855
+ vfs_iter_write+0x38/0x60 fs/read_write.c:896
+ iter_file_splice_write+0x2d8/0x450 fs/splice.c:689
+ do_splice_from fs/splice.c:767 [inline]
+ direct_splice_actor+0x4a/0x80 fs/splice.c:936
+ splice_direct_to_actor+0x123/0x2d0 fs/splice.c:891
+ do_splice_direct+0xc3/0x110 fs/splice.c:979
+ do_sendfile+0x338/0x740 fs/read_write.c:1249
+ __do_sys_sendfile64 fs/read_write.c:1314 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1300 [inline]
+ __x64_sys_sendfile64+0xc7/0xe0 fs/read_write.c:1300
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46ae99
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f39bbe25c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000000000006
+RBP: 00000000004e4809 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000464e681a R11: 0000000000000246 R12: 000000000078c158
+R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffeddcbc7a0
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 39bb45a4a4cd76d5 ]---
+RIP: 0010:__block_write_begin_int+0xde/0xae0 fs/buffer.c:1973
+Code: 00 00 0f 87 65 06 00 00 e8 df bd d6 ff 45 85 e4 0f 85 5e 06 00
+00 e8 d1 bd d6 ff 48 8b 45 18 31 d2 48 89 ef 41 bc 0c 00 00 00 <48> 8b
+00 48 89 c6 48 89 44 24 20 e8 02 a4 ff ff 4c 8b 7d 20 48 8b
+RSP: 0018:ffffc9000ab13980 EFLAGS: 00010246
+RAX: dead000000000200 RBX: ffffea0004568000 RCX: ffffc900025b9000
+RDX: 0000000000000000 RSI: ffffffff8160d34f RDI: ffffea0004568040
+RBP: ffffea0004568040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000000c
+R13: ffffc9000ab13aa0 R14: ffffffff821f8f70 R15: 0000000000000000
+FS:  00007f39bbe26700(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f81b40af020 CR3: 000000010b767000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+----------------
+Code disassembly (best guess):
+   0:   00 00                   add    %al,(%rax)
+   2:   0f 87 65 06 00 00       ja     0x66d
+   8:   e8 df bd d6 ff          callq  0xffd6bdec
+   d:   45 85 e4                test   %r12d,%r12d
+  10:   0f 85 5e 06 00 00       jne    0x674
+  16:   e8 d1 bd d6 ff          callq  0xffd6bdec
+  1b:   48 8b 45 18             mov    0x18(%rbp),%rax
+  1f:   31 d2                   xor    %edx,%edx
+  21:   48 89 ef                mov    %rbp,%rdi
+  24:   41 bc 0c 00 00 00       mov    $0xc,%r12d
+* 2a:   48 8b 00                mov    (%rax),%rax <-- trapping instruction
+  2d:   48 89 c6                mov    %rax,%rsi
+  30:   48 89 44 24 20          mov    %rax,0x20(%rsp)
+  35:   e8 02 a4 ff ff          callq  0xffffa43c
+  3a:   4c 8b 7d 20             mov    0x20(%rbp),%r15
+  3e:   48                      rex.W
+  3f:   8b                      .byte 0x8b
