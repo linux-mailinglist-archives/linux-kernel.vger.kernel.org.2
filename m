@@ -2,96 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D589F4114D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FCA4114D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238701AbhITMsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:48:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238686AbhITMso (ORCPT
+        id S235534AbhITMtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237095AbhITMtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:48:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632142037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N/2Pe4Rx8NqNClTKB4DSeOEu5W1xviKvYQ55s0CgCms=;
-        b=HD49E9YsYEIJeSwCNS3qrD+fidHrCx2Mir61AAkTqhnyIn6vi2YrC05gYRKm6F9fA+DziY
-        qEgxeraXxe3OKIVjC6DyE826Mq04MFExOk++0NL6ZSywKAoIjnyu/Y3c/D0vrWXC2aX8du
-        dEp5DXN3lt80l+BI9N24j51nrLFns0I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-602-p4w5CPeYMlu6gISbMFeP6Q-1; Mon, 20 Sep 2021 08:47:14 -0400
-X-MC-Unique: p4w5CPeYMlu6gISbMFeP6Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C1D184A5E0;
-        Mon, 20 Sep 2021 12:47:12 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E44E10027C4;
-        Mon, 20 Sep 2021 12:47:04 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YUiAmnMV7+fprNC1@casper.infradead.org>
-References: <YUiAmnMV7+fprNC1@casper.infradead.org> <163214005516.2945267.7000234432243167892.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org,
+        Mon, 20 Sep 2021 08:49:08 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AB0C061574;
+        Mon, 20 Sep 2021 05:47:41 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5B38BE57;
+        Mon, 20 Sep 2021 14:47:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632142057;
+        bh=sUHy5mI48lLJfk0k+EUA5Q2mX9cYsAejPY8yjVUg2ks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=msjI+3iUrWdFQ0rNpQ9h1aEphCugLPzQGK+AvdqcX51vj4ctb8kiB26dSBp/iwEvw
+         qwEqmoZfKEXornPDuVtejK5URA38OVvGakD/wefgsjEzoSSlxEJD/E/pcDTzvekBaY
+         1pC2bixWM3bGWoPPFeQ3CJZr5Z/q1kyOunX34bTs=
+Date:   Mon, 20 Sep 2021 15:47:07 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, Vinod Koul <vkoul@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jianqiang Chen <jianqiang.chen@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] fscache, 9p, afs, cifs, nfs: Deal with some warnings from W=1
+Subject: Re: [PATCH] dmaengine: remove debugfs #ifdef
+Message-ID: <YUiCy7A9cXTDGx6s@pendragon.ideasonboard.com>
+References: <20210920122017.205975-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2950843.1632142024.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 20 Sep 2021 13:47:04 +0100
-Message-ID: <2950844.1632142024@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210920122017.205975-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+Hi Arnd,
 
-> > +++ b/fs/9p/vfs_addr.c
-> > @@ -88,7 +88,7 @@ static const struct netfs_read_request_ops v9fs_req_=
-ops =3D {
-> >  =
+Thank you for the patch.
 
-> >  /**
-> >   * v9fs_vfs_readpage - read an entire page in from 9P
-> > - * @filp: file being read
-> > + * @file: file being read
-> >   * @page: structure to page
-> >   *
-> >   */
-> =
+On Mon, Sep 20, 2021 at 02:20:07PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The ptdma driver has added debugfs support, but this fails to build
+> when debugfs is disabled:
+> 
+> drivers/dma/ptdma/ptdma-debugfs.c: In function 'ptdma_debugfs_setup':
+> drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: 'struct dma_device' has no member named 'dbg_dev_root'
+>    93 |         debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
+>       |                                                      ^
+> drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: 'struct dma_device' has no member named 'dbg_dev_root'
+>    96 |         debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
+>       |                                                       ^
+> drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: 'struct dma_device' has no member named 'dbg_dev_root'
+>   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
+>       |                                                    ^
+>
+> Remove the #ifdef in the header, as this only saves a few bytes,
+> but would require ugly #ifdefs in each driver using it.
+> Simplify the other user while we're at it.
+> 
+> Fixes: e2fb2e2a33fa ("dmaengine: ptdma: Add debugfs entries for PTDMA")
+> Fixes: 26cf132de6f7 ("dmaengine: Create debug directories for DMA devices")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/dma/xilinx/xilinx_dpdma.c | 15 +--------------
+>  include/linux/dmaengine.h         |  2 --
+>  2 files changed, 1 insertion(+), 16 deletions(-)
+> 
+> diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
+> index b280a53e8570..ce5c66e6897d 100644
+> --- a/drivers/dma/xilinx/xilinx_dpdma.c
+> +++ b/drivers/dma/xilinx/xilinx_dpdma.c
+> @@ -271,9 +271,6 @@ struct xilinx_dpdma_device {
+>  /* -----------------------------------------------------------------------------
+>   * DebugFS
+>   */
+> -
+> -#ifdef CONFIG_DEBUG_FS
+> -
 
-> This is an example of a weird pattern in filesystems.  Several of
-> them have kernel-doc for the implementation of various ->ops methods.
-> I don't necessarily believe we should delete the comments (although is
-> there any useful information in the above?), but I don't see the point
-> in the comment being kernel-doc.
+It's only a few bytes of data in struct dma_device, but a bit more in
+.text here. Is the simplification really required in this driver ?
 
-Yeah - I would prefer to do that.  Only kdoc it if it's inter-(sub-)driver=
- API
-- and if it is, it must have a namespacing prefix so that it is obvious in
-amongst a kernel-wide general index.
+>  #define XILINX_DPDMA_DEBUGFS_READ_MAX_SIZE	32
+>  #define XILINX_DPDMA_DEBUGFS_UINT16_MAX_STR	"65535"
+>  
+> @@ -299,7 +296,7 @@ struct xilinx_dpdma_debugfs_request {
+>  
+>  static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
+>  {
+> -	if (chan->id == dpdma_debugfs.chan_id)
+> +	if (IS_ENABLED(CONFIG_DEBUG_FS) && chan->id == dpdma_debugfs.chan_id)
+>  		dpdma_debugfs.xilinx_dpdma_irq_done_count++;
+>  }
+>  
+> @@ -462,16 +459,6 @@ static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
+>  		dev_err(xdev->dev, "Failed to create debugfs testcase file\n");
+>  }
+>  
+> -#else
+> -static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
+> -{
+> -}
+> -
+> -static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
+> -{
+> -}
+> -#endif /* CONFIG_DEBUG_FS */
+> -
+>  /* -----------------------------------------------------------------------------
+>   * I/O Accessors
+>   */
+> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+> index e5c2c9e71bf1..9000f3ffce8b 100644
+> --- a/include/linux/dmaengine.h
+> +++ b/include/linux/dmaengine.h
+> @@ -944,10 +944,8 @@ struct dma_device {
+>  	void (*device_issue_pending)(struct dma_chan *chan);
+>  	void (*device_release)(struct dma_device *dev);
+>  	/* debugfs support */
+> -#ifdef CONFIG_DEBUG_FS
+>  	void (*dbg_summary_show)(struct seq_file *s, struct dma_device *dev);
+>  	struct dentry *dbg_dev_root;
+> -#endif
+>  };
+>  
+>  static inline int dmaengine_slave_config(struct dma_chan *chan,
 
-David
+-- 
+Regards,
 
+Laurent Pinchart
