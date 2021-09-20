@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23BE41171F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34A4411720
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237894AbhITOe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:34:28 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:33744 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237226AbhITOeN (ORCPT
+        id S238158AbhITOe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 10:34:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240462AbhITOeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:34:13 -0400
-Received: by mail-ua1-f45.google.com with SMTP id r8so11330459uap.0;
-        Mon, 20 Sep 2021 07:32:46 -0700 (PDT)
+        Mon, 20 Sep 2021 10:34:25 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549BDC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:32:58 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id n18so11193030plp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nL5TmwxPTvhZweAL7Y0qoF71j04RAvcJALk7EraXAg8=;
+        b=DJsXCQaYfz1mZOh4nQHkuTTUQnScERyCBlvFTYx99Oexy0Na3xjXj/EqIBEp9hMnXo
+         x+19D5CNiOgmX1Rbpf5SFs+L6BA5BodiGbHV2ABgsD0DiLpSppK411Rpru+6RyfRGFg4
+         /PWE25izSBPfVkLmgPpZ66aMoBo/exwK35d0S3yt4cPx5JE1N2Pmej2eMMOnZkLCvCLc
+         hVek83h8+ncFmAASX6gN2m2KMgpXGVDs3HXmiLPktHY500d7/3WPLsspgfxfRavboMuI
+         0mdPzzqKK89StK7DXoBCJo8627Up1M75Yt0Y08tO9N1EukgQtDYE+wHAov81bUZlj89q
+         P0TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d1fA9sD4Re6cy9QvKdyaIPvjv83NrwqIwiME67fS8gw=;
-        b=OQdELAZnWArIcYY1p17tpR8mjxmnHq2ON9CKjz56wUzQJx/Xyxjfos4tIyBhFQ3Vp+
-         +wB+CmCMRT3LxQU0uqGMmoc7OEIX8JKsv/tJsAiqnkXpoBweaAvd1fxC7LzWA6EnAQg9
-         wcPNTDpkVLXBcIHdyGrwMWhTt0CqTs3f+t+25X88D6DImScN2gbKdI2YEXYDu7nHA96d
-         21L7Z1MNUckGZgQj3RxO24jCDrLjw4bAH/gueVr+EgwwHJ7Garl6Jt+gjNFjWez/BLIE
-         cW9f2TL6nVwAdAmEvgnpYH8MV4BeSJXn3Kzqa08FWgOa4u9JEIIHhD0sG2cIMiMjdPhc
-         7usg==
-X-Gm-Message-State: AOAM530VMaq9g7ji8RpGT+NTO5z+lmglEksWMhPa+FMx+9KmakI1XNBz
-        7/7wbVoc1zULqgdeWQba/tkfDEm4Lfj2He/FGEg=
-X-Google-Smtp-Source: ABdhPJyMCIfZZUlLRlGgiTjNjprimvUPIgx9dDOJ6a13gJeOJZt/lIf4W4G47j5QN8TUNgkF0wEBIumzqn+a8381x10=
-X-Received: by 2002:ab0:311a:: with SMTP id e26mr12181930ual.122.1632148366041;
- Mon, 20 Sep 2021 07:32:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nL5TmwxPTvhZweAL7Y0qoF71j04RAvcJALk7EraXAg8=;
+        b=cqD9tpnGNJIaARJr36eTpYKQtOZ0JS1pONhGZlWyPgWlFOnu3LKHAIKjMbp30Z331Z
+         hklJpgQEozwer9hK16ZM7VRiz9KlzWs0sqybE+AM6LJQhzUYkj+o0YKMTkkLYCn7xVqR
+         gJUj6zxcb2xLoRhrvFmYM+vDp8hx2nuiDgWKJ5GoIamFQbN2oQpKG9pxrIOyxXhFxlDy
+         z2OZTBtlg3vhqEP60xN6uRbAm+t2879JcCF0hl+ZQwMql1IF0n0LZPqNsu57ol7OlIN9
+         Q1Stpy4divLNLDRdQ7XlJ0/gWPRaBLu9Ea2+Lbsegr8P2AciOjGtinHEDQcQ1Kclfmrk
+         8gEg==
+X-Gm-Message-State: AOAM532NKH7dCk050qrIUDwehyOyflJ55vNBcWA3/gb2qF7j9vyZjVNJ
+        lwW94EylcAd3B06YJEnvrWbp5A==
+X-Google-Smtp-Source: ABdhPJyYoGAPanf2H3zZRj8cGFPIuPjesscOredIZovbCkbVgkr4UMGOFG9NDNYM8w9zeMFmR1tTrA==
+X-Received: by 2002:a17:90b:1c08:: with SMTP id oc8mr16263050pjb.138.1632148377565;
+        Mon, 20 Sep 2021 07:32:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j6sm14995699pgh.17.2021.09.20.07.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 07:32:57 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 14:32:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Subject: Re: general protection fault in rcu_segcblist_enqueue
+Message-ID: <YUiblFnBdSs8CwA+@google.com>
+References: <CACkBjsbiT96KTK2Cjf0PxyOFRs8w0GPUWdR=97oVxSJMvDxNJQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210920132830.152802-1-krzysztof.kozlowski@canonical.com> <20210920132830.152802-4-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210920132830.152802-4-krzysztof.kozlowski@canonical.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Sep 2021 16:32:34 +0200
-Message-ID: <CAMuHMdX5vhihbKrXh4x_VyA2Cc=nR+53g_fZPHsuHVF56rBvMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] riscv: dts: microchip: drop unused pinctrl-names
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACkBjsbiT96KTK2Cjf0PxyOFRs8w0GPUWdR=97oVxSJMvDxNJQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Sat, Sep 18, 2021, Hao Sun wrote:
+> Hello,
+> 
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+> 
+> HEAD commit: ff1ffd71d5f0 Merge tag 'hyperv-fixes-signed-20210915
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/1I3q-rH7yJXxmr16cI418avyA_tHdoOVE/view?usp=sharing
+> kernel config: https://drive.google.com/file/d/1zXpDhs-IdE7tX17B7MhaYP0VGUfP6m9B/view?usp=sharing
+> 
+> Sorry, I don't have a reproducer for this crash, hope the symbolized
+> report can help.
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> 
+> general protection fault, probably for non-canonical address
 
-On Mon, Sep 20, 2021 at 3:28 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> pinctrl-names without pinctrl-0 does not have any sense:
->
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: sdhc@20008000: 'pinctrl-0' is a dependency of 'pinctrl-names'
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> ---
->
-> Changes since v1:
-> 1. Add review.
+...
 
-> --- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
-> @@ -33,6 +33,7 @@ properties:
->        - items:
->            - enum:
->                - issi,is25lp016d
-> +              - issi,is25wp256
->                - micron,mt25qu02g
->                - mxicy,mx25r1635f
->                - mxicy,mx25u6435f
+>  srcu_gp_start_if_needed+0x145/0xbf0 kernel/rcu/srcutree.c:823
+>  __synchronize_srcu+0x1f4/0x270 kernel/rcu/srcutree.c:929
 
-This one looks like an accidental addition?
+Duplicate of https://lkml.kernel.org/r/CACkBjsZ55MKvOBGYJyQxwHBCQOTP=Lz=yfYwJtdOzNiT59E38g@mail.gmail.com
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>  kvm_mmu_uninit_vm+0x18/0x30 arch/x86/kvm/mmu/mmu.c:5711
+>  kvm_arch_destroy_vm+0x42b/0x5b0 arch/x86/kvm/x86.c:11331
+>  kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1094 [inline]
+>  kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:4583 [inline]
+>  kvm_dev_ioctl+0x1508/0x1aa0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4638
