@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A70411430
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D38941142C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237638AbhITMVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237450AbhITMVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:21:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFBE661040;
-        Mon, 20 Sep 2021 12:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632140377;
-        bh=QxAExaGxihKcTgPo0jJzAE8GwQo2y6nXbRYW1Y75s5c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IQVrx+g/QBXjl0D3uO/uV+MMxkONBEA/M+sj8Hxt0KjRoXQ780nX0/KJTcl2XfvKJ
-         ns2qp/T3ODQkUjWmJIhnX4JpOaZCTu1izqCGYYHzHtmnhnKifTub/Y4xjzD+5ubH6U
-         he55VUrubzrSuoFTEt0qRa/8DwnQ7H6F4JBS0LDaQN1ovzEL6BaD1SNimGL+C5OTc8
-         jqP7Ldad2fsQlsFlizy7mQSQ7aE0bd51VymT1eJxmEJhw5bLXHBR2KWqctl3UkDpJZ
-         hfdQ0S/DuS/9dqL+0fpcvoPUoWMG2t2g6kmOZ8NuV2cA3zpbZE33dwOF6Vk57R9fK0
-         X1ITOEkuqc1RA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regulator fixes for v5.15-rc2
-Date:   Mon, 20 Sep 2021 13:18:43 +0100
-Message-Id: <20210920121936.DFBE661040@mail.kernel.org>
+        id S236649AbhITMUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232858AbhITMUu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:20:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374F7C061574;
+        Mon, 20 Sep 2021 05:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wfXs9/qwoOMAzXZ/BK5m1l64BNcgy6HZMP06a/9fWyo=; b=KEf6nwYE0AAFd9pXs8mIm7zPgb
+        8PHeG4jyD5P4I87ypOPZEJ28jd5ulMXi5EJLxviysHEuCCNkY9KAbTMt3ZFx9J+uI4II3IaMvwRWB
+        GRfKN0OuJ6Qz5O0x3OQW2Wz9H4GeLpxQJMCfcyILzaZsiAgV7HwVXB931TjBIuZ6ncr4BufWGhNS+
+        9gSszMGMTZ+81P9crYXHenanXpsk0OmZRGpWTtyyOlx4S4/REry7AzOC7znzWD+jeqa9V1BC4zdPY
+        Fs/EmjE0sMsuU+FCL9wY1p4DDrnsciq54WlYT7n4aatHZb/+WukBh9Muqk9lRqVRkEiIJKBVjUFIT
+        5JTSYCkQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSIGA-002e3G-CM; Mon, 20 Sep 2021 12:19:03 +0000
+Date:   Mon, 20 Sep 2021 13:18:58 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] io_uring: warning about unused-but-set parameter
+Message-ID: <YUh8Mj59BtyBdTRH@infradead.org>
+References: <20210920121352.93063-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920121352.93063-1-arnd@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 21e39809fd7c4b8ff3662f23e0168e87594c8ca8:
+On Mon, Sep 20, 2021 at 02:13:44PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When enabling -Wunused warnings by building with W=1, I get an
+> instance of the -Wunused-but-set-parameter warning in the io_uring code:
+> 
+> fs/io_uring.c: In function 'io_queue_async_work':
+> fs/io_uring.c:1445:61: error: parameter 'locked' set but not used [-Werror=unused-but-set-parameter]
+>  1445 | static void io_queue_async_work(struct io_kiocb *req, bool *locked)
+>       |                                                       ~~~~~~^~~~~~
+> 
+> There are very few warnings of this type, so it would be nice to enable
+> this by default and fix all the existing instances. I was almost
+> done, but this was added recently as a precaution to prevent code
+> from using the parameter, which could be done by either removing
+> the initialization, or by adding a (fake) use of the variable, which
+> I do here with the cast to void.
 
-  regulator: vctrl: Avoid lockdep warning in enable/disable ops (2021-08-25 14:17:53 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.15-rc2
-
-for you to fetch changes up to dc9660590d106bb58d145233fffca4efadad3655:
-
-  regulator: max14577: Revert "regulator: max14577: Add proper module aliases strings" (2021-09-17 13:16:38 +0100)
-
-----------------------------------------------------------------
-regulator: Fixes for v5.15
-
-A couple of small device specific fixes that have been sent since the
-merge window, neither of which stands out particularly.
-
-----------------------------------------------------------------
-Dmitry Baryshkov (1):
-      regulator: qcom-rpmh-regulator: fix pm8009-1 ldo7 resource name
-
-Krzysztof Kozlowski (1):
-      regulator: max14577: Revert "regulator: max14577: Add proper module aliases strings"
-
- drivers/regulator/max14577-regulator.c  | 2 --
- drivers/regulator/qcom-rpmh-regulator.c | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+Please don't.  These warning are utterly stupid and should not be
+enabled.  For anything that is a "method" of sorts (that is assigned
+to a function pointer), unused argument are perfectly normal.
