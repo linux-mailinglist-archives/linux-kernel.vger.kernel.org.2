@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E343412090
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04182411C0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355317AbhITRyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:54:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54102 "EHLO mail.kernel.org"
+        id S1345015AbhITRFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:05:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345106AbhITRsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:48:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BC2961B9F;
-        Mon, 20 Sep 2021 17:11:10 +0000 (UTC)
+        id S1345056AbhITRDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:03:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 880D56136A;
+        Mon, 20 Sep 2021 16:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157870;
-        bh=PX2xQm/C4MK4PU4j7gsqvgYGjt7b7XdaBqs4CaQJ+Bo=;
+        s=korg; t=1632156829;
+        bh=5mCazeK59FlaNGhVqSlMs7uN5DeeYpgjVyW1G8eCLa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qRboPTfjKxSPui/Ddjhb0Hc/k+OJBlcfYhmeqNPgEnROP81UqhpQv+OjLWsYM691e
-         oNpKoy1g7HetjeqnTcwCxWKU2mEy/4oqpvOMCXdJ/FajQvOB8ElbaE34b2JG367nt7
-         z4QV2k80e7f42A9yQNHOM8wEsdYB77h9tRD8aWjo=
+        b=RPhPi744MrV+iXmjFYmPyB1rdlCT0HVZ/QhxjSpLHMhTVhHmJgscGnzgSg23nPqqq
+         W14tKiCDO3Bs2QpWiyhPLQfISixo36kjwQ6wljDe14KWxkeFK+zY38vYYg4GzLZDik
+         BsWLLSfX3AwqP78Q+qW2yNIyg/IgSeO5sJ2Oko1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 190/293] video: fbdev: asiliantfb: Error out if pixclock equals zero
+Subject: [PATCH 4.9 103/175] pinctrl: single: Fix error return code in pcs_parse_bits_in_pinctrl_entry()
 Date:   Mon, 20 Sep 2021 18:42:32 +0200
-Message-Id: <20210920163939.775721639@linuxfoundation.org>
+Message-Id: <20210920163921.446132649@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-[ Upstream commit b36b242d4b8ea178f7fd038965e3cac7f30c3f09 ]
+[ Upstream commit d789a490d32fdf0465275e3607f8a3bc87d3f3ba ]
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of 'pixclock',
-it may cause divide error.
+Fix to return -ENOTSUPP instead of 0 when PCS_HAS_PINCONF is true, which
+is the same as that returned in pcs_parse_pinconf().
 
-Fix this by checking whether 'pixclock' is zero first.
-
-The following log reveals it:
-
-[   43.861711] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-[   43.861737] CPU: 2 PID: 11764 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #224
-[   43.861756] RIP: 0010:asiliantfb_check_var+0x4e/0x730
-[   43.861843] Call Trace:
-[   43.861848]  ? asiliantfb_remove+0x190/0x190
-[   43.861858]  fb_set_var+0x2e4/0xeb0
-[   43.861866]  ? fb_blank+0x1a0/0x1a0
-[   43.861873]  ? lock_acquire+0x1ef/0x530
-[   43.861884]  ? lock_release+0x810/0x810
-[   43.861892]  ? lock_is_held_type+0x100/0x140
-[   43.861903]  ? ___might_sleep+0x1ee/0x2d0
-[   43.861914]  ? __mutex_lock+0x620/0x1190
-[   43.861921]  ? do_fb_ioctl+0x313/0x700
-[   43.861929]  ? mutex_lock_io_nested+0xfa0/0xfa0
-[   43.861936]  ? __this_cpu_preempt_check+0x1d/0x30
-[   43.861944]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-[   43.861952]  ? lockdep_hardirqs_on+0x59/0x100
-[   43.861959]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-[   43.861967]  ? trace_hardirqs_on+0x6a/0x1c0
-[   43.861978]  do_fb_ioctl+0x31e/0x700
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/1627293835-17441-2-git-send-email-zheyuma97@gmail.com
+Fixes: 4e7e8017a80e ("pinctrl: pinctrl-single: enhance to configure multiple pins of different modules")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Link: https://lore.kernel.org/r/20210722033930.4034-2-thunder.leizhen@huawei.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/asiliantfb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/pinctrl/pinctrl-single.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/video/fbdev/asiliantfb.c b/drivers/video/fbdev/asiliantfb.c
-index ea31054a28ca..c1d6e6336225 100644
---- a/drivers/video/fbdev/asiliantfb.c
-+++ b/drivers/video/fbdev/asiliantfb.c
-@@ -227,6 +227,9 @@ static int asiliantfb_check_var(struct fb_var_screeninfo *var,
- {
- 	unsigned long Ftarget, ratio, remainder;
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index 8769a579ecb1..01f42090cd03 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1335,6 +1335,7 @@ static int pcs_parse_bits_in_pinctrl_entry(struct pcs_device *pcs,
  
-+	if (!var->pixclock)
-+		return -EINVAL;
-+
- 	ratio = 1000000 / var->pixclock;
- 	remainder = 1000000 % var->pixclock;
- 	Ftarget = 1000000 * ratio + (1000000 * remainder) / var->pixclock;
+ 	if (PCS_HAS_PINCONF) {
+ 		dev_err(pcs->dev, "pinconf not supported\n");
++		res = -ENOTSUPP;
+ 		goto free_pingroups;
+ 	}
+ 
 -- 
 2.30.2
 
