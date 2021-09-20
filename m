@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6DD411BCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8BB411A4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344508AbhITRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:02:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
+        id S243466AbhITQsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:48:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344784AbhITQ7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BFC6135A;
-        Mon, 20 Sep 2021 16:52:28 +0000 (UTC)
+        id S243500AbhITQr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB5E261213;
+        Mon, 20 Sep 2021 16:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156748;
-        bh=zatE2GZab1SjxDk+v63GhnraWQW1H2qJWrJ07zY+gY0=;
+        s=korg; t=1632156391;
+        bh=FRJN1kVuMA+DU2b6XUb3iI4PPD27xsc9yWkNzhhfxjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jXNvrnze9xA+tThOCUfaW5xvpJSmVbLuGWmkYtRJgd+G2S651C8cI1YKrVPNj7EcF
-         q+zcz7NdpW9680OympA67eVvqxpJgb/o9B0/ueZGQXkeuoduu9NBAhKpZRS9h25iRi
-         XNMkHYBzNuKPLJ+7zPEh0Kqe6yN6zR3CPYQOj4kI=
+        b=K9O6pbkdYk+9vuzZPtC5ZGvS/ARlPwnaU0i9q1X9nMIIHjE5ByWfrtDvR+BODlteE
+         nqRUObk3IOW9JgRXBRUNuaMBpnEky4y/IruAKe+qONu+ANHKXGe9cHXwP6888g9gvT
+         tM7puwMCY7+nK9T3hM/LxAhmEHlrOQ9zniOu6XoY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        stable@vger.kernel.org,
+        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 066/175] usb: phy: fsl-usb: add IRQ check
-Date:   Mon, 20 Sep 2021 18:41:55 +0200
-Message-Id: <20210920163920.220302446@linuxfoundation.org>
+Subject: [PATCH 4.4 038/133] media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
+Date:   Mon, 20 Sep 2021 18:41:56 +0200
+Message-Id: <20210920163913.887114722@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit ecc2f30dbb25969908115c81ec23650ed982b004 ]
+[ Upstream commit c5453769f77ce19a5b03f1f49946fd3f8a374009 ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to request_irq() (which takes
-*unsigned* IRQ #), causing it to fail with -EINVAL, overriding an original
-error code. Stop calling request_irq() with the invalid IRQ #s.
+If dibusb_read_eeprom_byte fails, the mac address is not initialized.
+And nova_t_read_mac_address does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-Fixes: 0807c500a1a6 ("USB: add Freescale USB OTG Transceiver driver")
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Link: https://lore.kernel.org/r/b0a86089-8b8b-122e-fd6d-73e8c2304964@omp.ru
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by handling the failure of dibusb_read_eeprom_byte.
+
+Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/phy/phy-fsl-usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/usb/dvb-usb/nova-t-usb2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/phy/phy-fsl-usb.c b/drivers/usb/phy/phy-fsl-usb.c
-index 85d031ce85c1..63798de8b5ae 100644
---- a/drivers/usb/phy/phy-fsl-usb.c
-+++ b/drivers/usb/phy/phy-fsl-usb.c
-@@ -891,6 +891,8 @@ int usb_otg_start(struct platform_device *pdev)
+diff --git a/drivers/media/usb/dvb-usb/nova-t-usb2.c b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+index 6c55384e2fca..c570c4af64f3 100644
+--- a/drivers/media/usb/dvb-usb/nova-t-usb2.c
++++ b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+@@ -122,7 +122,7 @@ static int nova_t_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
  
- 	/* request irq */
- 	p_otg->irq = platform_get_irq(pdev, 0);
-+	if (p_otg->irq < 0)
-+		return p_otg->irq;
- 	status = request_irq(p_otg->irq, fsl_otg_isr,
- 				IRQF_SHARED, driver_name, p_otg);
- 	if (status) {
+ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ {
+-	int i;
++	int i, ret;
+ 	u8 b;
+ 
+ 	mac[0] = 0x00;
+@@ -131,7 +131,9 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ 
+ 	/* this is a complete guess, but works for my box */
+ 	for (i = 136; i < 139; i++) {
+-		dibusb_read_eeprom_byte(d,i, &b);
++		ret = dibusb_read_eeprom_byte(d, i, &b);
++		if (ret)
++			return ret;
+ 
+ 		mac[5 - (i - 136)] = b;
+ 	}
 -- 
 2.30.2
 
