@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3295411B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B099411BD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344501AbhITQ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:59:14 -0400
+        id S1343988AbhITRDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:03:08 -0400
 Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241958AbhITQ4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B440D61242;
-        Mon, 20 Sep 2021 16:51:17 +0000 (UTC)
+        id S1345061AbhITQ77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:59:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF1E613E6;
+        Mon, 20 Sep 2021 16:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156678;
-        bh=7S7TV+4fh1G+GEn4kC3KzTkyaRuZU3TmOAvgbJxXe/s=;
+        s=korg; t=1632156768;
+        bh=a2TUNuH1+x0m23FFz5Pe4Pa0RQARuJhn2OcjxP2iapo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R92EXsWEaL4o/02wtV8g8rcXGO3eSmcaoZq+yPrG1XGoirlUm5L2OFdHUKNfNIrDP
-         PI7J4noQeIA1lkcZDxpmBJMp+Gz5xpQ7g8bWWS+I3kNECwMerR8VpFo/rU5hWNYQ4B
-         DPIHOchYXNeNecv70aa0Vdo2v2nRmasPkbmuVQH0=
+        b=awTBKmGcJ6u3es5N2jA1/AogLYOdBugSs/mYtLmJr7IWHGTirrFWM5hEwvFR1j2Bj
+         37XZO2QfuqUQW1K6D9oucPcSArwUmGGXqjpDeH9X6IPMRj3EAWF+rulAGVrqem8EVp
+         yjWM1nGTs7itEEj/9L7pBkNgYwn9IzSq5++Zb+fo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.9 034/175] PCI: Call Max Payload Size-related fixup quirks early
-Date:   Mon, 20 Sep 2021 18:41:23 +0200
-Message-Id: <20210920163919.177532743@linuxfoundation.org>
+        stable@vger.kernel.org, Jeongtae Park <jeongtae.park@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 035/175] regmap: fix the offset of register error log
+Date:   Mon, 20 Sep 2021 18:41:24 +0200
+Message-Id: <20210920163919.210495333@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
 References: <20210920163918.068823680@linuxfoundation.org>
@@ -40,46 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Jeongtae Park <jeongtae.park@gmail.com>
 
-commit b8da302e2955fe4d41eb9d48199242674d77dbe0 upstream.
+[ Upstream commit 1852f5ed358147095297a09cc3c6f160208a676d ]
 
-pci_device_add() calls HEADER fixups after pci_configure_device(), which
-configures Max Payload Size.
+This patch fixes the offset of register error log
+by using regmap_get_offset().
 
-Convert MPS-related fixups to EARLY fixups so pci_configure_mps() takes
-them into account.
-
-Fixes: 27d868b5e6cfa ("PCI: Set MPS to match upstream bridge")
-Link: https://lore.kernel.org/r/20210624171418.27194-1-kabel@kernel.org
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Jeongtae Park <jeongtae.park@gmail.com>
+Link: https://lore.kernel.org/r/20210701142630.44936-1-jeongtae.park@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/base/regmap/regmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -2994,12 +2994,12 @@ static void fixup_mpss_256(struct pci_de
- {
- 	dev->pcie_mpss = 1; /* 256 bytes */
- }
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
--DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SOLARFLARE,
--			 PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_0, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000A_1, fixup_mpss_256);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SOLARFLARE,
-+			PCI_DEVICE_ID_SOLARFLARE_SFC4000B, fixup_mpss_256);
- 
- /* Intel 5000 and 5100 Memory controllers have an errata with read completion
-  * coalescing (which is enabled by default on some BIOSes) and MPS of 256B.
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index cd984b59a8a1..40a9e5378633 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -1375,7 +1375,7 @@ int _regmap_raw_write(struct regmap *map, unsigned int reg,
+ 			if (ret) {
+ 				dev_err(map->dev,
+ 					"Error in caching of register: %x ret: %d\n",
+-					reg + i, ret);
++					reg + regmap_get_offset(map, i), ret);
+ 				return ret;
+ 			}
+ 		}
+-- 
+2.30.2
+
 
 
