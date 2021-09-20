@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513B2411BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D33F411A21
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345144AbhITRBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46428 "EHLO mail.kernel.org"
+        id S242944AbhITQrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:47:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243786AbhITQ5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:57:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9686138E;
-        Mon, 20 Sep 2021 16:51:41 +0000 (UTC)
+        id S242570AbhITQrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:47:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8050361177;
+        Mon, 20 Sep 2021 16:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156702;
-        bh=ygTgi3ZOuywsl37Y3rfKuIb8lCI6FVLBpXonPSgzYwY=;
+        s=korg; t=1632156347;
+        bh=wv6aURyAnnH/nWZotmWW8eObxb+iKMxZlbflWjJi1Ls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PnjVsizdktTdK3x4bE95pTLo1BT9hm3oSXCU5SuO/Giq0p7fFILLbsRAbMkh1uGbv
-         LEjKsFzUi/sA4zeZq31fXWTtko/6WMnekJUbC/ok12O3Cx51rFg++ZxH+b3W9aNA52
-         7McmR/Gzo29fuKb27gkaKx7qCdUSdJWp37t/GDdM=
+        b=Nc0KdLmgjwDbrHqrtI2zrHSpHsDSdy39VuzwyGLt3rv2UGn+eneoXbJXALv8LEe5A
+         vinYrsj9TEOkP8a6r8kBDsAEVyAlxRZDNj5dqxAoWLAAj/vK6Nr7clR1KokYJzY7Qq
+         e9SjynnqKTxla+Z5N2IoKLZSk92r5oDxyMRthjgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stian Skjelstad <stian.skjelstad@gmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 047/175] udf_get_extendedattr() had no boundary checks.
+        stable@vger.kernel.org, Hans Verkuil <hans.verkuil@cisco.com>,
+        Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hans Verkuil <hansverk@cisco.com>
+Subject: [PATCH 4.4 018/133] [media] tc358743: fix register i2c_rd/wr function fix
 Date:   Mon, 20 Sep 2021 18:41:36 +0200
-Message-Id: <20210920163919.594131280@linuxfoundation.org>
+Message-Id: <20210920163913.207088483@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stian Skjelstad <stian.skjelstad@gmail.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit 58bc6d1be2f3b0ceecb6027dfa17513ec6aa2abb ]
+commit 4b0755e90ae03ba40174842af6fa810355960fbc upstream.
 
-When parsing the ExtendedAttr data, malicous or corrupt attribute length
-could cause kernel hangs and buffer overruns in some special cases.
+The below mentioned fix contains a small but severe bug,
+fix it to make the driver work again.
 
-Link: https://lore.kernel.org/r/20210822093332.25234-1-stian.skjelstad@gmail.com
-Signed-off-by: Stian Skjelstad <stian.skjelstad@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3538aa6ecfb2 ("[media] tc358743: fix register i2c_rd/wr functions")
+
+Cc: Hans Verkuil <hans.verkuil@cisco.com>
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Hans Verkuil <hansverk@cisco.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/udf/misc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/media/i2c/tc358743.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/udf/misc.c b/fs/udf/misc.c
-index 71d1c25f360d..8c7f9ea251e5 100644
---- a/fs/udf/misc.c
-+++ b/fs/udf/misc.c
-@@ -175,13 +175,22 @@ struct genericFormat *udf_get_extendedattr(struct inode *inode, uint32_t type,
- 		else
- 			offset = le32_to_cpu(eahd->appAttrLocation);
+--- a/drivers/media/i2c/tc358743.c
++++ b/drivers/media/i2c/tc358743.c
+@@ -241,7 +241,7 @@ static void i2c_wr16(struct v4l2_subdev
  
--		while (offset < iinfo->i_lenEAttr) {
-+		while (offset + sizeof(*gaf) < iinfo->i_lenEAttr) {
-+			uint32_t attrLength;
-+
- 			gaf = (struct genericFormat *)&ea[offset];
-+			attrLength = le32_to_cpu(gaf->attrLength);
-+
-+			/* Detect undersized elements and buffer overflows */
-+			if ((attrLength < sizeof(*gaf)) ||
-+			    (attrLength > (iinfo->i_lenEAttr - offset)))
-+				break;
-+
- 			if (le32_to_cpu(gaf->attrType) == type &&
- 					gaf->attrSubtype == subtype)
- 				return gaf;
- 			else
--				offset += le32_to_cpu(gaf->attrLength);
-+				offset += attrLength;
- 		}
- 	}
+ static void i2c_wr16_and_or(struct v4l2_subdev *sd, u16 reg, u16 mask, u16 val)
+ {
+-	i2c_wrreg(sd, reg, (i2c_rdreg(sd, reg, 2) & mask) | val, 2);
++	i2c_wrreg(sd, reg, (i2c_rdreg(sd, reg, 1) & mask) | val, 1);
+ }
  
--- 
-2.30.2
-
+ static u32 i2c_rd32(struct v4l2_subdev *sd, u16 reg)
 
 
