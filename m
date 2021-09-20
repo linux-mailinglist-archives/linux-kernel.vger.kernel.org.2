@@ -2,82 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD9F41150B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554BE41150C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239111AbhITM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:56:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56814 "EHLO mail.kernel.org"
+        id S239068AbhITM4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:56:16 -0400
+Received: from mga06.intel.com ([134.134.136.31]:9505 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239027AbhITMzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:55:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 982B360F6B;
-        Mon, 20 Sep 2021 12:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632142464;
-        bh=+E3USFlAlQ9wVdWsGzy+HHEZMYE6FYf6ghB1RYfKU30=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pnDSG/pHGMwB3kz5Insco1jTpQtb5uI2YUktumhZxYdKycl/gcUIXss6SiMfMPh3V
-         a0fZFIxIMUW6jLSRbPmN6fkBRd38LPbdeWmcB67BOG/n+q92FiLtpfqYGqsBEkIl0s
-         aoPcP9DqSPK1qP5I/P/1pAmV5gW8y9VnGcoak8bTlOdolypa2WL94JxcrqUURHJN4J
-         BvSHXP3kgIcts029UoWcyLN0X/g1u3frVClgWNW7Kf3bvm+QuJWNWuwOWFnYI13a2B
-         HDN/hAh53/ApveUuGLWQFVNODoZkqmVDbuc4FY8ZpTb+cqi65sicgPFfHiY+qVNSwn
-         YmwX2LLIf41cA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6304F5C07FE; Mon, 20 Sep 2021 05:54:24 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 05:54:24 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, Waiman Long <llong@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [syzbot] WARNING in __init_work
-Message-ID: <20210920125424.GG880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <000000000000423e0a05cc0ba2c4@google.com>
- <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
- <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
- <87sfy07n69.ffs@tglx>
- <20210920040336.GV2361455@dread.disaster.area>
- <20210920122846.GA16661@lst.de>
- <20210920123859.GE880162@paulmck-ThinkPad-P17-Gen-1>
- <20210920124557.GA18317@lst.de>
+        id S238815AbhITM4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:56:09 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10112"; a="284136030"
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="284136030"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 05:54:39 -0700
+X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
+   d="scan'208";a="548698090"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.77]) ([10.249.227.77])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 05:54:36 -0700
+Subject: Re: [PATCH v11 09/24] perf record: Introduce bytes written stats to
+ support --max-size option
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1629186429.git.alexey.v.bayduraev@linux.intel.com>
+ <c5c886094b1657328c7ec030da140b329282ebb7.1629186429.git.alexey.v.bayduraev@linux.intel.com>
+ <YT5nKWqAhUVFiaEn@krava>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <88975265-4e15-3a49-547b-c2f7dd067ac2@linux.intel.com>
+Date:   Mon, 20 Sep 2021 15:54:33 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920124557.GA18317@lst.de>
+In-Reply-To: <YT5nKWqAhUVFiaEn@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:45:57PM +0200, Christoph Hellwig wrote:
-> On Mon, Sep 20, 2021 at 05:38:59AM -0700, Paul E. McKenney wrote:
-> > > Well, the block code already does a bdi_unregister in del_gendisk.
-> > > So if we end up freeing the whole device bdev with a registered bdi
-> > > something is badly going wrong.  Unfortunately the log in this report
-> > > isn't much help on how we got there.  IIRC syzbot will eventually spew
-> > > out a reproducer, so it might be worth to wait for that.
-> > 
-> > If it does turn out that you need to block in an RCU callback,
-> > queue_rcu_work() can be helpful.  This schedules a workqueue from the RCU
-> > callback, allowing the function passed to the preceding INIT_RCU_WORK()
-> > to block.
-> 
-> In this case we really should not block here.  The problem is that
-> we are hitting the strange bdi auto-unregister misfeature due to a bug
-> elsewhere.  Which reminds that I have a patch series to remove this
-> auto unregistration which I need to bring bag once this is fixed.
-> 
-> That being said queue_rcu_work would have been really useful in a few
-> places I touched in that past.
 
-Glad it helped elsewhere and apologies for the noise here!
+On 12.09.2021 23:46, Jiri Olsa wrote:
+> On Tue, Aug 17, 2021 at 11:23:12AM +0300, Alexey Bayduraev wrote:
 
-							Thanx, Paul
+<SNIP>
+
+>>  static bool record__output_max_size_exceeded(struct record *rec)
+>>  {
+>>  	return rec->output_max_size &&
+>> -	       (rec->bytes_written >= rec->output_max_size);
+>> +	       (record__bytes_written(rec) >= rec->output_max_size);
+>>  }
+>>  
+>>  static int record__write(struct record *rec, struct mmap *map __maybe_unused,
+>> @@ -205,15 +223,21 @@ static int record__write(struct record *rec, struct mmap *map __maybe_unused,
+>>  		return -1;
+>>  	}
+>>  
+>> -	rec->bytes_written += size;
+>> +	if (map && map->file)
+>> +		map->bytes_written += size;
+> 
+> could we instead have bytes_written in thread data? so we don't
+> need to iterate all the maps?
+
+Hi,
+
+As I remember the main issue is that bytes_written should be atomic64_t.
+Unfortunately we don't have atomic64 framework in tools/lib (even 
+atomic32_add is missing). Thus I decided to calculate total size on each 
+iteration. But I think your suggestion to move record__output_max_size_exceeded 
+to trigger framework is better.
+
+> 
+>> +	else
+>> +		rec->bytes_written += size;
+>>  
+>>  	if (record__output_max_size_exceeded(rec) && !done) {
+>>  		fprintf(stderr, "[ perf record: perf size limit reached (%" PRIu64 " KB),"
+>>  				" stopping session ]\n",
+>> -				rec->bytes_written >> 10);
+>> +				record__bytes_written(rec) >> 10);
+> 
+> you're calling record__bytes_written twice.. could we just save the
+> bytes_written from the first call and use it in the printf?
+> 
+>>  		done = 1;
+>>  	}
+>>  
+>> +	if (map && map->file)
+>> +		return 0;
+> 
+> please make comment why quit in here, we don't support switch-output for
+> threads?
+
+Yes, parallel streaming mode doesn't support switch-output and there is 
+a special warning in [PATCH v11 14/24]
+
+Thanks,
+Alexey
+
+
+> 
+> jirka
+> 
+>> +
+>>  	if (switch_output_size(rec))
+>>  		trigger_hit(&switch_output_trigger);
+>>  
+>> diff --git a/tools/perf/util/mmap.h b/tools/perf/util/mmap.h
+>> index c4aed6e89549..67d41003d82e 100644
+>> --- a/tools/perf/util/mmap.h
+>> +++ b/tools/perf/util/mmap.h
+>> @@ -46,6 +46,7 @@ struct mmap {
+>>  	int		comp_level;
+>>  	struct perf_data_file *file;
+>>  	struct zstd_data      zstd_data;
+>> +	u64		      bytes_written;
+>>  };
+>>  
+>>  struct mmap_params {
+>> -- 
+>> 2.19.0
+>>
+> 
