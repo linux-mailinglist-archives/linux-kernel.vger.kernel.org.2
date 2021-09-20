@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B00411CA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB51411E55
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345614AbhITRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:11:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
+        id S1346144AbhITRaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:30:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346968AbhITRJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B58E66187F;
-        Mon, 20 Sep 2021 16:56:24 +0000 (UTC)
+        id S1346090AbhITR1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:27:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FACB61AA4;
+        Mon, 20 Sep 2021 17:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156985;
-        bh=rxqNsyf+5zOsajsG/cLOwTR5w2JzO9s+Wk3tEDzXAFE=;
+        s=korg; t=1632157378;
+        bh=cJuvfYSyGsgXQlB4XaacXMJyw9FoYiKpfP6CmbpT0+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f9WUWbEHedTdxxb4QNOMZKa2q0SFq7utEi6rmuDN952XBdMyG20GyGgGyCepGK+A3
-         EYSKYa/CzYhsHNrAsso4bWr84ZytCAC10lK4fjXnRzl1VIEJP05UuRT+jtZpfipbG7
-         GpuybEURaAgkbyR0b95gKYkSpRfzevNpSMV4/Ex8=
+        b=m6ya9jyT6rZCwNeHlVByLJL/fkFLu9MhXx8wKLD0Luc1fO0RU9LGr6J3qFWCFYL3d
+         K2KT5PHDKsrsPbG4oyMkfOZhFZ4tIakP0xGLRcRjWWMOjbBfatosi6JJTr07fwCHFm
+         7Vb6Dr5vp0hB32yuffCjCNabX8QkL9oK8lEXxocM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 145/175] ath9k: fix sleeping in atomic context
-Date:   Mon, 20 Sep 2021 18:43:14 +0200
-Message-Id: <20210920163922.814153383@linuxfoundation.org>
+Subject: [PATCH 4.14 174/217] usb: musb: musb_dsps: request_irq() after initializing musb
+Date:   Mon, 20 Sep 2021 18:43:15 +0200
+Message-Id: <20210920163930.534120119@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaoqing Pan <miaoqing@codeaurora.org>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 7c48662b9d56666219f526a71ace8c15e6e12f1f ]
+[ Upstream commit 7c75bde329d7e2a93cf86a5c15c61f96f1446cdc ]
 
-The problem is that gpio_free() can sleep and the cfg_soc() can be
-called with spinlocks held. One problematic call tree is:
+If IRQ occurs between calling  dsps_setup_optional_vbus_irq()
+and  dsps_create_musb_pdev(), then null pointer dereference occurs
+since glue->musb wasn't initialized yet.
 
---> ath_reset_internal() takes &sc->sc_pcu_lock spin lock
-   --> ath9k_hw_reset()
-      --> ath9k_hw_gpio_request_in()
-         --> ath9k_hw_gpio_request()
-            --> ath9k_hw_gpio_cfg_soc()
+The patch puts initializing of neccesery data before registration
+of the interrupt handler.
 
-Remove gpio_free(), use error message instead, so we should make sure
-there is no GPIO conflict.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Also remove ath9k_hw_gpio_free() from ath9k_hw_apply_gpio_override(),
-as gpio_mask will never be set for SOC chips.
-
-Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1628481916-15030-1-git-send-email-miaoqing@codeaurora.org
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Link: https://lore.kernel.org/r/20210819163323.17714-1-lutovinova@ispras.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/hw.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/usb/musb/musb_dsps.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
-index 9d664398a41b..b707c14dab6f 100644
---- a/drivers/net/wireless/ath/ath9k/hw.c
-+++ b/drivers/net/wireless/ath/ath9k/hw.c
-@@ -1595,7 +1595,6 @@ static void ath9k_hw_apply_gpio_override(struct ath_hw *ah)
- 		ath9k_hw_gpio_request_out(ah, i, NULL,
- 					  AR_GPIO_OUTPUT_MUX_AS_OUTPUT);
- 		ath9k_hw_set_gpio(ah, i, !!(ah->gpio_val & BIT(i)));
--		ath9k_hw_gpio_free(ah, i);
- 	}
- }
+diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
+index b7d460adaa61..a582c3847dc2 100644
+--- a/drivers/usb/musb/musb_dsps.c
++++ b/drivers/usb/musb/musb_dsps.c
+@@ -930,23 +930,22 @@ static int dsps_probe(struct platform_device *pdev)
+ 	if (!glue->usbss_base)
+ 		return -ENXIO;
  
-@@ -2702,14 +2701,17 @@ static void ath9k_hw_gpio_cfg_output_mux(struct ath_hw *ah, u32 gpio, u32 type)
- static void ath9k_hw_gpio_cfg_soc(struct ath_hw *ah, u32 gpio, bool out,
- 				  const char *label)
- {
-+	int err;
-+
- 	if (ah->caps.gpio_requested & BIT(gpio))
- 		return;
- 
--	/* may be requested by BSP, free anyway */
--	gpio_free(gpio);
+-	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
+-		ret = dsps_setup_optional_vbus_irq(pdev, glue);
+-		if (ret)
+-			goto err_iounmap;
+-	}
 -
--	if (gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label))
-+	err = gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label);
-+	if (err) {
-+		ath_err(ath9k_hw_common(ah), "request GPIO%d failed:%d\n",
-+			gpio, err);
- 		return;
-+	}
+ 	platform_set_drvdata(pdev, glue);
+ 	pm_runtime_enable(&pdev->dev);
+ 	ret = dsps_create_musb_pdev(glue, pdev);
+ 	if (ret)
+ 		goto err;
  
- 	ah->caps.gpio_requested |= BIT(gpio);
++	if (usb_get_dr_mode(&pdev->dev) == USB_DR_MODE_PERIPHERAL) {
++		ret = dsps_setup_optional_vbus_irq(pdev, glue);
++		if (ret)
++			goto err;
++	}
++
+ 	return 0;
+ 
+ err:
+ 	pm_runtime_disable(&pdev->dev);
+-err_iounmap:
+ 	iounmap(glue->usbss_base);
+ 	return ret;
  }
 -- 
 2.30.2
