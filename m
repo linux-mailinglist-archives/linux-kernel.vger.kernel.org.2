@@ -2,157 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD5B411481
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499A1411482
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbhITMdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S238350AbhITMdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:33:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238142AbhITMdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 08:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237977AbhITMdA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:33:00 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD76FC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:31:33 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id co2so14215008edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:31:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QF62yZU/+6ZlNBgifI+CKDXHp7smsglUxz2zwn/P9Js=;
-        b=BIQ65kDNI2MjvluQh9ZbK1D+WAgv856aLhVPB344B0zC3lOTzqT0nTur//LWsvTIql
-         Nu8G/WTmWD8+QWMoAbhvx6O+Jl+3hsBsORCHufIaxRh7QO45ywEbS+fVP684px2oq0fP
-         iwYgC01hRbt8EFXEes05Q5N//RZUqdcwCjAv+EK8WkMxq8tqQxRgLLozgQRC1SG5M/GY
-         RaklyaWH10OeXLTI97MqmFOYitTq9B+wyUmNTkuqixiGMvua0nXh0iAO9yBgtUoYdFjw
-         4QL/F69RNamvD6rdvxU51v/4TxOuXUnR2bV6Dix3/rbVIsj37xrz+Wga2zx0+TSk5Vn2
-         Q0HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QF62yZU/+6ZlNBgifI+CKDXHp7smsglUxz2zwn/P9Js=;
-        b=cSOAqM5+Lnr8rjfl/OxhzUquYC8mVT1vD0HHLqe5ZHkugpl1uxk1z+BQONkZIEmlBp
-         E/qnxB11SZRoZAWmuCy4+QYEK8p/Ko3rYAL9G1e81NHRWHbH44EODpeSe5nC7C5ERzTz
-         oMuYvefABgMaSBKHkzgdGpbfSfSdNsAlkRBpbkUQw7iPeFzV0qsyzPXYGQeRbYtjjRN2
-         UEqbkJ3bhdcCwkLyHPPyQ7CL9eSKFKY1euVNO0uRcLZN1cBqlAstp05arioMoi2xcLkR
-         3tI4aBvejgipnlsobYLwpo0FqstlUyholrrCuwyWY3HpMNWo3Mofg7vDoKwaZAj8vFLi
-         q+zQ==
-X-Gm-Message-State: AOAM5308uals822Db4VHel2rUG6fmYyrNDKpFyRDF+eRl50XfVntkNct
-        1o5IkC5ooS0weO/KcFzyAkiNA01KTDw=
-X-Google-Smtp-Source: ABdhPJx4FpoKeFR3v7F4JywM6LFdSEJqy65UotZ4K0nnuDn8lAATcflVL/UyTXsQFT+21B23hvURtw==
-X-Received: by 2002:a17:906:ccca:: with SMTP id ot10mr27637430ejb.429.1632141089969;
-        Mon, 20 Sep 2021 05:31:29 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
-        by smtp.gmail.com with ESMTPSA id dc8sm6916098edb.28.2021.09.20.05.31.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 05:31:29 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: core: remove the function power_saving_wk_hdl
-Date:   Mon, 20 Sep 2021 14:31:28 +0200
-Message-ID: <2311011.CixZWWR6MO@localhost.localdomain>
-In-Reply-To: <20210920113221.GP2088@kadam>
-References: <YTub30ZRG3oLbxQW@user> <1651026.4NJzAxWbHA@localhost.localdomain> <20210920113221.GP2088@kadam>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 337C060235;
+        Mon, 20 Sep 2021 12:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632141094;
+        bh=vsZTv3R71Ln0hfEmYbHtKmLwlBEwmNvUaCnfeaLo3ls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r+tULOJ3T/W8zOlFPGdPMx1gJDFJ/WExC8em3Xx7udmZ7Ebq/2VYFaVao395j3hSs
+         DJCRdDRAsCwCKtk9LQsDnAI4yoXjSCqaHn8WHMsoJVf3Lb6lMifeo7prC5lz/5wiZF
+         tXQEZ2rO8gAnpMUz2k9nHOZxn6SKcmiLCZS2zOWnsE8h7M2pyjf82fMwikJg2zEVuT
+         ZK4SLO4yMDvtvEv/z6HI3edPqsDno3mETFqTvV6FuirJMezl0KCs3ld0CRBCmCBOgZ
+         MZADSOCp0eJ/sSEv3wj79EXzwx4B7NOMU254m0XLtLgHIg9mTDliDq7w5bGmVYTCZl
+         n6SLuBsiLdPTQ==
+Received: by pali.im (Postfix)
+        id E4597855; Mon, 20 Sep 2021 14:31:31 +0200 (CEST)
+Date:   Mon, 20 Sep 2021 14:31:31 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Armin Wolf <W_Armin@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        Carlos Alberto Lopez Perez <clopez@igalia.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sebastian Oechsle <setboolean@icloud.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: dell-smm-hwmon: remove unused variable warning
+Message-ID: <20210920123131.6kpv3ffxvm7xeqga@pali>
+References: <20210920121421.93297-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920121421.93297-1-arnd@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 20, 2021 1:32:21 PM CEST Dan Carpenter wrote:
-> On Mon, Sep 20, 2021 at 01:13:54PM +0200, Fabio M. De Francesco wrote:
-> > On Monday, September 20, 2021 12:36:06 PM CEST Greg KH wrote:
-> > > On Sat, Sep 18, 2021 at 10:52:50PM +0530, Saurav Girepunje wrote:
-> > > > 
-> > > > 
-> > > > On 13/09/21 9:48 pm, Greg KH wrote:
-> > > > > On Fri, Sep 10, 2021 at 11:24:39PM +0530, Saurav Girepunje wrote:
-> > > > > > Remove the function power_saving_wk_hdl() as it just calling
-> > > > > > the rtw_ps_processor().Instead of power_saving_wk_hdl() call 
-directly
-> > > > > > rtw_ps_processor().
-> > > > > > 
-> > > > > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> > > > >
-> > > > > []
-> > > > > 
-> > > > > Also does not apply to my tree.  Please rebase against my staging-
-next
-> > > > > branch and resend.
-> > > > > 
-> > > > > thanks,
-> > > > > 
-> > > > > greg k-h
-> > > > > 
-> > > > 
-> > > > Hi Greg,
-> > > > 
-> > > > I always do rebase against your staging-testing branch. Can you help 
-me 
-> > to
-> > > > understand.When we need to rebase on staging-next. Do we always need 
-to
-> > > > rebase against staging-next..!
-> > > 
-> > > Yes, you should.  When you are working on code that lots of other 
-people
-> > > are working on, there will be conflicts like this, and you just need to
-> > > stay on top of it.
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > > 
-> > 
-> > Sorry, Greg. I'm confused... :(
-> > 
-> > As far as I know, everyone here make patches for staging-testing.
+Hello!
+
+On Monday 20 September 2021 14:14:16 Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Nope.  It's only you.
+> When procfs is disabled
 
-And Saurav (at least) :)
+... then the i8k_init_procfs function should not be called as the
+purpose of I8K code / config option is to export functionality over
+procfs. So when procfs is disabled then this i8k is noop.
 
-I've been misled and in turn I misled Pavel. This is due to a guide in 
-kernelnewbies.org that explicitly says to use staging-testing:
+Patch which do not allow compilation of I8K when procfs is not enabled
+is pending here:
 
-https://kernelnewbies.org/OutreachyfirstpatchSetup
+https://lore.kernel.org/linux-hwmon/20210910071921.16777-1-rdunlap@infradead.org/
 
-In that page the is a section ("Set up your Linux kernel code repository") 
-which says: "[] Then use the revision control system called git to clone Greg 
-Kroah-Hartman's staging tree repository: git clone -b staging-testing git://
-git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git".
+Ideally please test or review it. As you are not the first one who
+spotted -Werror problems with i8k and tried to workaround it.
 
-I assumed that those instructions must be followed also by developers that 
-are not (anymore) in the Outreachy program.
+https://lore.kernel.org/linux-hwmon/20210915151759.cxcbzxd74weg4qw6@pali/
 
-Obviously, I was wrong in assuming the above.
+For compatibility reasons I still have I8K enabled, so I have not
+triggered this issue yet.
 
-Thanks for your reply, Dan.
+Anyway, do you know if somebody on desktop / laptop (which is the only
+option where this i8k driver makes sense to be enabled) really using
+kernel without procfs? I would like to know if this warning / error is
+just artificial configuration generated by test scripts (and cannot be
+hit by any user) or if there is a real user who will be affected by this
+issue.
 
-Regards,
-
-Fabio
-
+> the code produces a warning
+> for an unused variable:
 > 
-> The staging-testing branch can be rebased so maybe you will write a
-> patch against something that never makes it to staging-next and everyone
-> will be puzzled.
+> drivers/hwmon/dell-smm-hwmon.c: In function 'i8k_init_procfs':
+> drivers/hwmon/dell-smm-hwmon.c:624:31: error: unused variable 'data' [-Werror=unused-variable]
+>   624 |         struct dell_smm_data *data = dev_get_drvdata(dev);
+>       |                               ^~~~
+
+I'm starting to hate this -Werror decision... but seems that we have to
+deal with it and together cleanup code as much as possible.
+
+> Remove that local variable and just pass dev_get_drvdata(dev)
+> directly.
 > 
-> That's unlikely to happen and we won't be puzzled for long because we
-> try not to invest too much time wondering why patches don't apply.
+> Fixes: ba04d73c26ed ("hwmon: (dell-smm-hwmon) Move variables into a driver private data structure")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/hwmon/dell-smm-hwmon.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> regards,
-> dan carpenter
+> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> index 774c1b0715d9..0a3ce22c78e6 100644
+> --- a/drivers/hwmon/dell-smm-hwmon.c
+> +++ b/drivers/hwmon/dell-smm-hwmon.c
+> @@ -621,10 +621,8 @@ static void i8k_exit_procfs(void *param)
+>  
+>  static void __init i8k_init_procfs(struct device *dev)
+>  {
+> -	struct dell_smm_data *data = dev_get_drvdata(dev);
+> -
+>  	/* Register the proc entry */
+> -	proc_create_data("i8k", 0, NULL, &i8k_proc_ops, data);
+> +	proc_create_data("i8k", 0, NULL, &i8k_proc_ops, dev_get_drvdata(dev));
+>  
+>  	devm_add_action_or_reset(dev, i8k_exit_procfs, NULL);
+>  }
+> -- 
+> 2.29.2
 > 
-
-
-
-
