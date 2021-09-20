@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4A5411071
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EDB411074
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 09:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbhITHrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 03:47:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:43928 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230233AbhITHro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 03:47:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B4B41FB;
-        Mon, 20 Sep 2021 00:46:17 -0700 (PDT)
-Received: from [192.168.1.131] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B9283F59C;
-        Mon, 20 Sep 2021 00:46:14 -0700 (PDT)
-Subject: Re: [PATCH 5/5] kasan: Extend KASAN mode kernel parameter
-To:     Marco Elver <elver@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
+        id S235184AbhITHsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 03:48:52 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:48275 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229839AbhITHsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 03:48:51 -0400
+Received: from localhost.localdomain (ip5f5aef72.dynamic.kabel-deutschland.de [95.90.239.114])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 6ED0F61E5FE00;
+        Mon, 20 Sep 2021 09:47:22 +0200 (CEST)
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20210913081424.48613-1-vincenzo.frascino@arm.com>
- <20210913081424.48613-6-vincenzo.frascino@arm.com>
- <CANpmjNN5atO1u6+Y71EiEvr9V8+WhdOGzC_8gvviac+BDkP+sA@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <f789ede2-3fa2-8a50-3d82-8b2dc2f12386@arm.com>
-Date:   Mon, 20 Sep 2021 09:46:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH v2] lib/zlib_inflate/inffast: Check config in C to avoid unused function warning
+Date:   Mon, 20 Sep 2021 09:46:33 +0200
+Message-Id: <20210920074633.13089-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNN5atO1u6+Y71EiEvr9V8+WhdOGzC_8gvviac+BDkP+sA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
+Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
+shows the warning below.
 
-On 9/16/21 12:43 PM, Marco Elver wrote:
->> +       case KASAN_ARG_MODE_ASYMM:
->> +               /* Asymm mode enabled. */
->> +               kasan_flag_asymm = true;
->> +               break;
->>         }
->>
->>         switch (kasan_arg_stacktrace) {
->> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
->> index 3639e7c8bb98..a8be62058d32 100644
->> --- a/mm/kasan/kasan.h
->> +++ b/mm/kasan/kasan.h
-> Shouldn't kasan.h also define kasan_asymm_mode_enabled() similar to
-> kasan_async_mode_enabled()?
-> 
-> And based on that, also use it where kasan_async_mode_enabled() is
-> used in tests to ensure the tests do not fail. Otherwise, there is no
-> purpose for kasan_flag_asymm.
->
+    arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
+    get_unaligned16(const unsigned short *p)
+    ^
+    1 warning generated.
 
-I was not planning to have the tests shipped as part of this series, they will
-come in a future one.
+Fix it, by moving the check from the preprocessor to C, so the compiler
+sees the use.
 
-For what concerns kasan_flag_asymm, I agree with you it is meaningful only if
-the tests are implemented hence I will remove it in v2.
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+ lib/zlib_inflate/inffast.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Thanks for pointing this out.
-
-> Thanks,
-> -- Marco
-> 
-
+diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
+index f19c4fbe1be7..fb87a3120f0f 100644
+--- a/lib/zlib_inflate/inffast.c
++++ b/lib/zlib_inflate/inffast.c
+@@ -254,11 +254,8 @@ void inflate_fast(z_streamp strm, unsigned start)
+ 			sfrom = (unsigned short *)(from);
+ 			loops = len >> 1;
+ 			do
+-#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+-			    *sout++ = *sfrom++;
+-#else
+-			    *sout++ = get_unaligned16(sfrom++);
+-#endif
++			    *sout++ = IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) ?
++				*sfrom++ : get_unaligned16(sfrom++);
+ 			while (--loops);
+ 			out = (unsigned char *)sout;
+ 			from = (unsigned char *)sfrom;
 -- 
-Regards,
-Vincenzo
+2.33.0
+
