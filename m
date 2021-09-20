@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57390411A2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE71411FDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243008AbhITQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:47:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35746 "EHLO mail.kernel.org"
+        id S1353221AbhITRoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:44:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243121AbhITQr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:47:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78B94611AE;
-        Mon, 20 Sep 2021 16:46:00 +0000 (UTC)
+        id S1352592AbhITRmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:42:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E4C361B51;
+        Mon, 20 Sep 2021 17:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156360;
-        bh=QEIpEauqMVQHTTKwPThLQMQF/ItxHwVo6fas/4hyDyA=;
+        s=korg; t=1632157726;
+        bh=Ot/FDJFtnw+pBdIG0OnEiwayk1++YKhfnNyyQLhvyLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tZijFq0dwN0T3ags6bqx7drp0wV5j1MQ53xVOsI9d3QW6+owppXNOHaobWi4umi2F
-         apX7QopRf3mYBthzpzAFAz7d527/vLYcbv9Bau8IY3GLJNXez4iepwUfomemuHTFJt
-         SSPTGkRtzCAYGE1uqp1dP4li5li0ygadcHxCOoaA=
+        b=SQVJz92ssnJ5OZE4ySSALeK8lNmx8AIzcPLF5poXJDAgAzTJX1gOrCJO8JlTVqyCm
+         51W0XoCXsUi0AZzCdOOl+/ME2uW5MNHAJcN+GOxqA6SLdEWVPxHntZtZNsp0+fwvvK
+         I1AYanCWGG8dqrV7gFmGGOgvP3sRkuPWbnYvwMBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.4 006/133] ARM: 8918/2: only build return_address() if needed
-Date:   Mon, 20 Sep 2021 18:41:24 +0200
-Message-Id: <20210920163912.813951997@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nageswara R Sastry <rnsastry@linux.ibm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 123/293] powerpc/perf/hv-gpci: Fix counter value parsing
+Date:   Mon, 20 Sep 2021 18:41:25 +0200
+Message-Id: <20210920163937.473366191@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Dooks <ben-linux@fluff.org>
+From: Kajol Jain <kjain@linux.ibm.com>
 
-commit fb033c95c94ca1ee3d16e04ebdb85d65fb55fff8 upstream.
+commit f9addd85fbfacf0d155e83dbee8696d6df5ed0c7 upstream.
 
-The system currently warns if the config conditions for
-building return_address in arch/arm/kernel/return_address.c
-are not met, leaving just an EXPORT_SYMBOL_GPL(return_address)
-of a function defined to be 'static linline'.
-This is a result of aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h").
+H_GetPerformanceCounterInfo (0xF080) hcall returns the counter data in
+the result buffer. Result buffer has specific format defined in the PAPR
+specification. One of the fields is counter offset and width of the
+counter data returned.
 
-Since we're not going to build anything other than an exported
-symbol for something that is already being defined to be an
-inline-able return of NULL, just avoid building the code to
-remove the following warning:
+Counter data are returned in a unsigned char array in big endian byte
+order. To get the final counter data, the values must be left shifted
+byte at a time. But commit 220a0c609ad17 ("powerpc/perf: Add support for
+the hv gpci (get performance counter info) interface") made the shifting
+bitwise and also assumed little endian order. Because of that, hcall
+counters values are reported incorrectly.
 
-Fixes: aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h")
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+In particular this can lead to counters go backwards which messes up the
+counter prev vs now calculation and leads to huge counter value
+reporting:
+
+  #: perf stat -e hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+           -C 0 -I 1000
+        time             counts unit events
+     1.000078854 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     2.000213293                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     3.000320107                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     4.000428392                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     5.000537864                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     6.000649087                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     7.000760312                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     8.000865218             16,448      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+     9.000978985 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+    10.001088891             16,384      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+    11.001201435                  0      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+    12.001307937 18,446,744,073,709,535,232      hv_gpci/system_tlbie_count_and_time_tlbie_instructions_issued/
+
+Fix the shifting logic to correct match the format, ie. read bytes in
+big endian order.
+
+Fixes: e4f226b1580b ("powerpc/perf/hv-gpci: Increase request buffer size")
+Cc: stable@vger.kernel.org # v4.6+
+Reported-by: Nageswara R Sastry<rnsastry@linux.ibm.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Tested-by: Nageswara R Sastry<rnsastry@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210813082158.429023-1-kjain@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/kernel/Makefile         |    6 +++++-
- arch/arm/kernel/return_address.c |    4 ----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/powerpc/perf/hv-gpci.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/kernel/Makefile
-+++ b/arch/arm/kernel/Makefile
-@@ -16,10 +16,14 @@ CFLAGS_REMOVE_return_address.o = -pg
- # Object file lists.
+--- a/arch/powerpc/perf/hv-gpci.c
++++ b/arch/powerpc/perf/hv-gpci.c
+@@ -168,7 +168,7 @@ static unsigned long single_gpci_request
+ 	 */
+ 	count = 0;
+ 	for (i = offset; i < offset + length; i++)
+-		count |= arg->bytes[i] << (i - offset);
++		count |= (u64)(arg->bytes[i]) << ((length - 1 - (i - offset)) * 8);
  
- obj-y		:= elf.o entry-common.o irq.o opcodes.o \
--		   process.o ptrace.o reboot.o return_address.o \
-+		   process.o ptrace.o reboot.o \
- 		   setup.o signal.o sigreturn_codes.o \
- 		   stacktrace.o sys_arm.o time.o traps.o
- 
-+ifneq ($(CONFIG_ARM_UNWIND),y)
-+obj-$(CONFIG_FRAME_POINTER)	+= return_address.o
-+endif
-+
- obj-$(CONFIG_ATAGS)		+= atags_parse.o
- obj-$(CONFIG_ATAGS_PROC)	+= atags_proc.o
- obj-$(CONFIG_DEPRECATED_PARAM_STRUCT) += atags_compat.o
---- a/arch/arm/kernel/return_address.c
-+++ b/arch/arm/kernel/return_address.c
-@@ -10,8 +10,6 @@
-  */
- #include <linux/export.h>
- #include <linux/ftrace.h>
--
--#if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
- #include <linux/sched.h>
- 
- #include <asm/stacktrace.h>
-@@ -56,6 +54,4 @@ void *return_address(unsigned int level)
- 		return NULL;
- }
- 
--#endif /* if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND) */
--
- EXPORT_SYMBOL_GPL(return_address);
+ 	*value = count;
+ out:
 
 
