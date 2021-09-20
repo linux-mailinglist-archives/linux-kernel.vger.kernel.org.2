@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79A4411D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6504411FD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346878AbhITRQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41326 "EHLO mail.kernel.org"
+        id S1349699AbhITRpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:45:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347676AbhITROb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:14:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E634F613A8;
-        Mon, 20 Sep 2021 16:58:13 +0000 (UTC)
+        id S1349087AbhITRnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:43:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A24F61B93;
+        Mon, 20 Sep 2021 17:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157094;
-        bh=O1nAtc5H8tqphi8+ShnCcVHnUuzNQRMglPA63P1HohY=;
+        s=korg; t=1632157768;
+        bh=0EvU4tjBtZSWD6BkJEsyl0gwl32bFhZMxJSb1nmUdFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eeeiO/iiEj4hcNLtMHwggog5BQzszRln9d8gzFIV8GR/uN9XDfLlhyVoZ+8xKXA0k
-         kTDaT7Ri/e509hrG9nazb1foZmLjEV3A6498tBxYMqE3ldN5pfj1z+Bs4ocZ0bCSJb
-         Jp0RRIl4Xk8t4kZn2hphtwYaxwicf8Q9OVp7trGc=
+        b=ebGMR/Ov/po3O47qbCGxLYDohW2HIs/ATBjZc3fxGfn7FWS4xyoqyjp5aEE0xSFTU
+         y3D9ELjjaR6u2IMPXvM0qIVuEnKEGu+xKpiLN3s9in/DlysYI1LvKJX0T5vZote3TT
+         QSvC38JEKZDiGEV2E31sIBHBbVUU9iZENTQUK+Yk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 051/217] soc: rockchip: ROCKCHIP_GRF should not default to y, unconditionally
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nguyen Dinh Phi <phind.uet@gmail.com>
+Subject: [PATCH 4.19 110/293] tty: Fix data race between tiocsti() and flush_to_ldisc()
 Date:   Mon, 20 Sep 2021 18:41:12 +0200
-Message-Id: <20210920163926.355107116@linuxfoundation.org>
+Message-Id: <20210920163937.029188185@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit 2a1c55d4762dd34a8b0f2e36fb01b7b16b60735b ]
+commit bb2853a6a421a052268eee00fd5d3f6b3504b2b1 upstream.
 
-Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
-To fix this, restrict the automatic enabling of ROCKCHIP_GRF to
-ARCH_ROCKCHIP, and ask the user in case of compile-testing.
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is waiting for the
+ops->receive_buf() to finish its work, the data race will happen.
 
-Fixes: 4c58063d4258f6be ("soc: rockchip: add driver handling grf setup")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20210208143855.418374-1-geert+renesas@glider.be
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For example:
+tty_ioctl			|tty_ldisc_receive_buf
+ ->tioctsi			| ->tty_port_default_receive_buf
+				|  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
+
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and we will lost the data.
+
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
+
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Link: https://lore.kernel.org/r/20210823000641.2082292-1-phind.uet@gmail.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soc/rockchip/Kconfig | 4 ++--
+ drivers/tty/tty_io.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/rockchip/Kconfig b/drivers/soc/rockchip/Kconfig
-index 20da55d9cbb1..d483b0e29b81 100644
---- a/drivers/soc/rockchip/Kconfig
-+++ b/drivers/soc/rockchip/Kconfig
-@@ -5,8 +5,8 @@ if ARCH_ROCKCHIP || COMPILE_TEST
- #
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2173,8 +2173,6 @@ static int tty_fasync(int fd, struct fil
+  *	Locking:
+  *		Called functions take tty_ldiscs_lock
+  *		current->signal->tty check is safe without locks
+- *
+- *	FIXME: may race normal receive processing
+  */
  
- config ROCKCHIP_GRF
--	bool
--	default y
-+	bool "Rockchip General Register Files support" if COMPILE_TEST
-+	default y if ARCH_ROCKCHIP
- 	help
- 	  The General Register Files are a central component providing
- 	  special additional settings registers for a lot of soc-components.
--- 
-2.30.2
-
+ static int tiocsti(struct tty_struct *tty, char __user *p)
+@@ -2190,8 +2188,10 @@ static int tiocsti(struct tty_struct *tt
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
 
 
