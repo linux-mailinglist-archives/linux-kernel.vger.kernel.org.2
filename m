@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46434126AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97504126CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 21:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345954AbhITTVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 15:21:35 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:46776 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbhITTTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 15:19:34 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 148719d5bcbe4d5d; Mon, 20 Sep 2021 21:18:05 +0200
-Received: from kreacher.localnet (unknown [213.134.187.25])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 8454666A65F;
-        Mon, 20 Sep 2021 21:18:03 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PCI <linux-pci@vger.kernel.org>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH v2 7/7] PCI: PM: Simplify acpi_pci_power_manageable()
-Date:   Mon, 20 Sep 2021 21:17:39 +0200
-Message-ID: <2024035.bB369e8A3T@kreacher>
-In-Reply-To: <1800633.tdWV9SEqCh@kreacher>
-References: <1800633.tdWV9SEqCh@kreacher>
+        id S230024AbhITTWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 15:22:50 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50858 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245388AbhITTUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 15:20:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=TkN2Ia7bums+Ijew637ZfATCHcWZLf84rC4MSNogrQc=; b=zfVXbzPogWtzueEw5yX5NKNkwJ
+        ZsvdtMjs25dfU6fsCVGbwZbV4U5pTiodfR9l8f1S0AfR++CK7+y8zgi5CPDLHE/vCW2KYaNBteUSE
+        HzBIPdT6P6IA0/h1oh+MuAk1cSeR5L5uqloHR8Xw+pIr10eME5OGE1TEh7QxzJmja8c0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mSOor-007XDO-1m; Mon, 20 Sep 2021 21:19:13 +0200
+Date:   Mon, 20 Sep 2021 21:19:13 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC PATCH 1/2] drivers: net: dsa: qca8k: add support
+ for led config
+Message-ID: <YUjesc5nLItkUNxy@lunn.ch>
+References: <20210920180851.30762-1-ansuelsmth@gmail.com>
+ <YUjZNA1Swo6Bv3/Q@lunn.ch>
+ <YUja1JsFJNwh8hXr@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.187.25
-X-CLIENT-HOSTNAME: 213.134.187.25
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgudefgecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppedvudefrddufeegrddukeejrddvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddukeejrddvhedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprghnughrihihrdhshhgvvhgt
- hhgvnhhkoheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehmihhkrgdrfigvshhtvghrsggvrhhgsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUja1JsFJNwh8hXr@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Yes, can you point me to the discussion?
 
-Make acpi_pci_power_manageable() more straightforward.
+It has gone through many cycles :-(
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+The linux-led list is probably the better archive to look through, it
+is a lot lower volume than netdev.
 
-New patch in v2.
+https://www.spinics.net/lists/linux-leds/msg18652.html
 
----
- drivers/pci/pci-acpi.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-Index: linux-pm/drivers/pci/pci-acpi.c
-===================================================================
---- linux-pm.orig/drivers/pci/pci-acpi.c
-+++ linux-pm/drivers/pci/pci-acpi.c
-@@ -969,9 +969,7 @@ bool acpi_pci_power_manageable(struct pc
- {
- 	struct acpi_device *adev = ACPI_COMPANION(&dev->dev);
- 
--	if (!adev)
--		return false;
--	return acpi_device_power_manageable(adev);
-+	return adev && acpi_device_power_manageable(adev);
- }
- 
- bool acpi_pci_bridge_d3(struct pci_dev *dev)
+https://www.spinics.net/lists/linux-leds/msg18527.html
 
 
+> I post this as RFC for this exact reason... I read somehwere that there
+> was a discussion on how to implementd leds for switch but never ever
+> found it.
 
+Most of the discussion so far has been about PHY LEDs, where the PHY
+driver controls the LEDs. However some Ethernet switches also have LED
+controls, which are not part of the PHY. And then there are some MAC
+drivers which control the PHY in firmware, and have firmware calls for
+controlling the LEDs. We need a generic solution which scales across
+all this. And it needs to work without DT, or at least, not block ACPI
+being added later.
+
+But progress is slow. I hope that the PHY use case will drive things
+forward, get the ABI defined. We can then scale it out to include
+switches, maybe with a bit of code refactoring.
+
+	  Andrew
