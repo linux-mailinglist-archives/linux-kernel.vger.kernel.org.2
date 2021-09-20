@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE93F412A73
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CB3412A74
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhIUBlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:41:16 -0400
+        id S233279AbhIUBlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:41:19 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbhIUBin (ORCPT
+        with ESMTP id S231898AbhIUBir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:38:43 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC46C128ED5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:46:13 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id i25so72931099lfg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:46:13 -0700 (PDT)
+        Mon, 20 Sep 2021 21:38:47 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84955C0430CA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:52:00 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso18231103ota.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:52:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/4d6QJeGZCj2JNd8r06qB/o4KuGi6QEUdTRkNveq3w=;
-        b=Q3LhEPOHc010gdfUc6e/0+OwWkLDILQAryxm4+BRnojSGhKUZx3i2JKpwpPFiraRMu
-         E/I72DGNYfViGt4X8Hw5CpE7Nktij+mVRH+dEpKmPPQIoMBi3/lKCUfxw61t1pARyUwe
-         w3uR28CSEpRp+LIB6b1M9E+jNUiv+vNeaFNjM=
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=QR+41d2CWnF6y8POX2yCYnotLJD1rZ1O8icCQ6F8e+Y=;
+        b=XuHIYliUFLKnsbgeeINNatgMmsCdIboPP8+sAg9LU+cvRVtTq7lOTS7H4haZNHxvM9
+         p1N88SB3352wydMgXNSFCzuDo1DZcDyV0oK/h/kEhNHzNJY4QOT/B0F4P7Or8YCoOR13
+         O91X05MpZ4Ws801ghrVoeaLbpMLQaIZh4DV4Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/4d6QJeGZCj2JNd8r06qB/o4KuGi6QEUdTRkNveq3w=;
-        b=i0pt0QmspZ4fgmxk6ZifUJ5/0l6rpX62ZKHD0clv0FbeCrmH6maNr0nbGXZbvkaqkM
-         PnCz2B7KZ30S2qwAPeZLIWDOMUJs9zO6+oI+2lnajOxwXw+Te6xZbSf3UPD6zVPP3aua
-         qHfjadZYAiSP35jA9EhExjNrrQiOSnk1tXhGexzQMbjrT4a42v2Z3OY7gWGkjuHr3w5P
-         OMNLeeXjXBlU/wx61yGElzmTKauK1TLowru96kEWvQCIFSVRazy5nSrrLPVV6+SsGpUh
-         tWYVd6/D2UinUz5tHv7DJC8p/s9kYwTcQy1qRo7LLSKyIjdVdMd3W6d44vLRxKyju2B/
-         PvgQ==
-X-Gm-Message-State: AOAM531Ea7FJBvcrtEpcbotGaresc/t1riEWB0JSvPlsN5gU2w3TOWrK
-        /pBV9aHIrstpsMjeNi/jzpmCAbjKt0SfBrPn
-X-Google-Smtp-Source: ABdhPJwHS9dR9j9DHFhrmJ5g+8b9gVilxxz+S8tPhsXocnnIozt+VFiCyxg17CjmD6zRIALI6jOLnw==
-X-Received: by 2002:a2e:4c12:: with SMTP id z18mr22602893lja.364.1632167170730;
-        Mon, 20 Sep 2021 12:46:10 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id d9sm1447201ljc.28.2021.09.20.12.46.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 12:46:09 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id m3so69733178lfu.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:46:09 -0700 (PDT)
-X-Received: by 2002:a2e:3309:: with SMTP id d9mr12166105ljc.249.1632167169161;
- Mon, 20 Sep 2021 12:46:09 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=QR+41d2CWnF6y8POX2yCYnotLJD1rZ1O8icCQ6F8e+Y=;
+        b=MG0By67JINxltV/CtDtxoh/XyjfAtAifHxxlGfLWfbUnb3sBru4eyuAnINHTX9Vv+a
+         cICIOu/UQSKAamOaALwqImJxaFqek/237B7mOfGrolkOLWHbEw4B2+Nl99R3gc4Kfwl7
+         eAIKOBCcccxDinPw03N7YlgwvXZVeRGfumFIOtdHO2id18+nUK6MjaG1qjsZcfBtvXnS
+         y7LRvv2ILYHx9p4ixmnFZ1SjJcYNkgRMCh6TwoaAOqWUtPi+yLBzQoOPMGAf+UDZWLDY
+         +yB0/s5MBuJo1SkO5Ogj+8RekG+CR71dkm45LKwl2V/UgzxQkr1ngWrxLu2De8Ywn3tX
+         YONg==
+X-Gm-Message-State: AOAM532x0Zjoten7UdxKgHWibclwkKIJElFLc36KAAk+qnpPZpO478l0
+        pMqtqLLKUkfglOSUWxRPBBGClnlwumKtkSkO5JrUQA==
+X-Google-Smtp-Source: ABdhPJwtIzCWSMh71giNnyYDptJRLaxEGCqlnvwoau2/hKz6p8Jc9WJ7gdkc0BAR/4i0a9R3CQlqSIDvb9uYW+loKUw=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr21399600otp.159.1632167519891;
+ Mon, 20 Sep 2021 12:51:59 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 20 Sep 2021 12:51:59 -0700
 MIME-Version: 1.0
-References: <CAHk-=wh-=tMO9iCA4v+WgPSd+Gbowe5kptwo+okahihnO2fAOA@mail.gmail.com>
- <202109201825.18KIPsV4026066@valdese.nms.ulrich-teichert.org>
- <CAHk-=wibRWoy4-ZkSVXUoGsUw5wKovPvRhS7r6VM+_GeBYZw1A@mail.gmail.com> <CAEdQ38HeUPDyiZhhriHqdA+Qeyrb3M=FoKWKgs0dZaEjbcpVUQ@mail.gmail.com>
-In-Reply-To: <CAEdQ38HeUPDyiZhhriHqdA+Qeyrb3M=FoKWKgs0dZaEjbcpVUQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 20 Sep 2021 12:45:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj1JWZ3sCrGz16nxEj7=0O+srMg6Ah3iPTDXSPKEws_SA@mail.gmail.com>
-Message-ID: <CAHk-=wj1JWZ3sCrGz16nxEj7=0O+srMg6Ah3iPTDXSPKEws_SA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-To:     Matt Turner <mattst88@gmail.com>
-Cc:     Ulrich Teichert <krypton@ulrich-teichert.org>,
-        Michael Cree <mcree@orcon.net.nz>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+In-Reply-To: <1631898947-27433-4-git-send-email-pmaliset@codeaurora.org>
+References: <1631898947-27433-1-git-send-email-pmaliset@codeaurora.org> <1631898947-27433-4-git-send-email-pmaliset@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 20 Sep 2021 12:51:59 -0700
+Message-ID: <CAE-0n53N-7wGgGmqep6ZTAt14dYObq43cTak_BWAjy6XS0Gnig@mail.gmail.com>
+Subject: Re: [PATCH v8 3/4] arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
+        bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
+        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:59 AM Matt Turner <mattst88@gmail.com> wrote:
+Quoting Prasad Malisetty (2021-09-17 10:15:46)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> index 99f9ee5..ee00df0 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> @@ -199,6 +199,39 @@
+>         modem-init;
+>  };
 >
-> In the decade plus I've been around Linux on alpha I've don't actually
-> recall hearing of anyone using Linux on a Jensen system before :)
+> +&pcie1 {
+> +       status = "okay";
+> +
+> +       perst-gpio = <&tlmm 2 GPIO_ACTIVE_LOW>;
+> +       pinctrl-0 = <&pcie1_default_state &nvme_ldo_enable_pin>;
+> +};
+> +
+> +&pcie1_phy {
+> +       status = "okay";
+> +
+> +       vdda-phy-supply = <&vreg_l10c_0p8>;
+> +       vdda-pll-supply = <&vreg_l6b_1p2>;
+> +};
+> +
+> +&pcie1_default_state {
+> +       reset-n {
+> +               pins = "gpio2";
+> +               function = "gpio";
+> +
+> +               drive-strength = <16>;
+> +               output-low;
+> +               bias-disable;
+> +       };
+> +
+> +       wake-n {
+> +               pins = "gpio3";
+> +               function = "gpio";
+> +
+> +               drive-strength = <2>;
+> +               bias-pull-up;
+> +       };
 
-Looking around, I'm pretty sure the system I did all my initial work
-on was a Jensen.
+I think the previous round of this series Bjorn was saying that these
+should be different nodes and tacked onto the pinctrl-0 list for the
+pcie1 device instead of adding them as subnodes of the "default state".
 
-This is from the linux-.1.1.83 patch:
+> +};
+> +
+>  &pmk8350_vadc {
+>         pmk8350_die_temp {
+>                 reg = <PMK8350_ADC7_DIE_TEMP>;
+> @@ -343,3 +376,10 @@
+>                 bias-pull-up;
+>         };
+>  };
+> +
+> +&tlmm {
+> +       nvme_ldo_enable_pin: nvme_ldo_enable_pin {
 
-- * I don't have any good documentation on the EISA hardware interrupt
-- * stuff: I don't know the mapping between the interrupt vector and the
-- * EISA interrupt number.
-- *
-- * It *seems* to be 0x8X0 for EISA interrupt X, and 0x9X0 for the
-- * local motherboard interrupts..
-+ * The vector is 0x8X0 for EISA interrupt X, and 0x9X0 for the local
-+ * motherboard interrupts.. This is for the Jensen.
+Please use dashes where you use underscores in node names
 
-So yup, my initial bringup machine was that DECpc AXP 150, aka "Jensen".
+       nvme_ldo_enable_pin: nvme-ldo-enable-pin {
 
-The IO subsystem on that thing was absolutely horrendous. Largely
-because of the lack of byte/word accesses, so doing any PCI accesses
-had to be encoded on the address bus. Nasty nasty nasty.
+> +               function = "gpio";
+> +               bias-pull-up;
 
-The original design with only 32-bit and 64-bit memory accesses really
-was horribly horribly wrong, and all the arguments for it were
-garbage. Even outside of IO issues, it blew up code size enormously,
-but the IO side became truly horrendous.
+Of course with that said, the name of this node makes it sound like this
+is a gpio controlled regulator. Why not use that binding then and enable
+the regulator either by default with regulator properties like
+regulator-always-on and regulator-boot-enable and/or reference it from
+the pcie device somehow so that it can be turned off during suspend?
 
-Oh well. Water under the bridge.
-
-I did have another alpha at some point - going from the original
-150HMz EV4 to a 275MHz EV45. I forget what system that was.
-
-               Linus
+> +       };
+> +};
