@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0A3412467
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8A4412466
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380589AbhITSee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:34:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49306 "EHLO mail.kernel.org"
+        id S1380574AbhITSec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:34:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379167AbhITS21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1379166AbhITS21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:28:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EF83632E7;
-        Mon, 20 Sep 2021 17:26:35 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D73C60EE7;
+        Mon, 20 Sep 2021 17:26:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158795;
-        bh=lZIk0Lw9XeBmTJcb73cYjp6SfBF523gvjmaJFZjzQx4=;
+        s=korg; t=1632158797;
+        bh=leO96kbURlF2o9JVp1cR10FCQGvL+ciEs8fPANnyStg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLRBr72z5+oTS5+VIG1Fk9RiB7oOU2I3BjZXWKdS1kF4mbW6Y8Yhn50Hcu9GtQdSI
-         KwGF2xba7aIceM9CHsk2zYfQcFZCOWyA+HqibEn3dnDfbWP3HCSbi8YPAB6JHi3oLF
-         J66s6U05fup9iowNdz8rq0V7BeGMoLK04juPABKc=
+        b=UwQtRJTbklpsRwWroCIYoTyO5NSqdBL/J/WoWEmEffgpNtjUUiJkoaPbQIukXnq1L
+         odvr1Y01RR9PnwA9EWJzCjhQKlcNAhufiCA7/+jLxw4AuvuhjYJIu1CFC44S+eu9n8
+         7hsjouEi/QNGOhucJcH4q8I8ejxQR1vivnG/z5TE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
+        stable@vger.kernel.org, Andrius V <vezhlys@gmail.com>,
+        Darek Strugacz <darek.strugacz@op.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 027/122] net/l2tp: Fix reference count leak in l2tp_udp_recv_core
-Date:   Mon, 20 Sep 2021 18:43:19 +0200
-Message-Id: <20210920163916.690405074@linuxfoundation.org>
+Subject: [PATCH 5.10 028/122] r6040: Restore MDIO clock frequency after MAC reset
+Date:   Mon, 20 Sep 2021 18:43:20 +0200
+Message-Id: <20210920163916.722191962@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -41,43 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 9b6ff7eb666415e1558f1ba8a742f5db6a9954de upstream.
+commit e3f0cc1a945fcefec0c7c9d9dfd028a51daa1846 upstream.
 
-The reference count leak issue may take place in an error handling
-path. If both conditions of tunnel->version == L2TP_HDR_VER_3 and the
-return value of l2tp_v3_ensure_opt_in_linear is nonzero, the function
-would directly jump to label invalid, without decrementing the reference
-count of the l2tp_session object session increased earlier by
-l2tp_tunnel_get_session(). This may result in refcount leaks.
+A number of users have reported that they were not able to get the PHY
+to successfully link up, especially after commit c36757eb9dee ("net:
+phy: consider AN_RESTART status when reading link status") where we
+stopped reading just BMSR, but we also read BMCR to determine the link
+status.
 
-Fix this issue by decrease the reference count before jumping to the
-label invalid.
+Andrius at NetBSD did a wonderful job at debugging the problem
+and found out that the MDIO bus clock frequency would be incorrectly set
+back to its default value which would prevent the MDIO bus controller
+from reading PHY registers properly. Back when we only read BMSR, if we
+read all 1s, we could falsely indicate a link status, though in general
+there is a cable plugged in, so this went unnoticed. After a second read
+of BMCR was added, a wrong read will lead to the inability to determine
+a link UP condition which is when it started to be visibly broken, even
+if it was long before that.
 
-Fixes: 4522a70db7aa ("l2tp: fix reading optional fields of L2TPv3")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+The fix consists in restoring the value of the MD_CSR register that was
+set prior to the MAC reset.
+
+Link: http://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=53494
+Fixes: 90f750a81a29 ("r6040: consolidate MAC reset to its own function")
+Reported-by: Andrius V <vezhlys@gmail.com>
+Reported-by: Darek Strugacz <darek.strugacz@op.pl>
+Tested-by: Darek Strugacz <darek.strugacz@op.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/l2tp/l2tp_core.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/rdc/r6040.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -869,8 +869,10 @@ static int l2tp_udp_recv_core(struct l2t
- 	}
+--- a/drivers/net/ethernet/rdc/r6040.c
++++ b/drivers/net/ethernet/rdc/r6040.c
+@@ -119,6 +119,8 @@
+ #define PHY_ST		0x8A	/* PHY status register */
+ #define MAC_SM		0xAC	/* MAC status machine */
+ #define  MAC_SM_RST	0x0002	/* MAC status machine reset */
++#define MD_CSC		0xb6	/* MDC speed control register */
++#define  MD_CSC_DEFAULT	0x0030
+ #define MAC_ID		0xBE	/* Identifier register */
  
- 	if (tunnel->version == L2TP_HDR_VER_3 &&
--	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
-+	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
-+		l2tp_session_dec_refcount(session);
- 		goto invalid;
-+	}
+ #define TX_DCNT		0x80	/* TX descriptor count */
+@@ -355,8 +357,9 @@ static void r6040_reset_mac(struct r6040
+ {
+ 	void __iomem *ioaddr = lp->base;
+ 	int limit = MAC_DEF_TIMEOUT;
+-	u16 cmd;
++	u16 cmd, md_csc;
  
- 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
- 	l2tp_session_dec_refcount(session);
++	md_csc = ioread16(ioaddr + MD_CSC);
+ 	iowrite16(MAC_RST, ioaddr + MCR1);
+ 	while (limit--) {
+ 		cmd = ioread16(ioaddr + MCR1);
+@@ -368,6 +371,10 @@ static void r6040_reset_mac(struct r6040
+ 	iowrite16(MAC_SM_RST, ioaddr + MAC_SM);
+ 	iowrite16(0, ioaddr + MAC_SM);
+ 	mdelay(5);
++
++	/* Restore MDIO clock frequency */
++	if (md_csc != MD_CSC_DEFAULT)
++		iowrite16(md_csc, ioaddr + MD_CSC);
+ }
+ 
+ static void r6040_init_mac_regs(struct net_device *dev)
 
 
