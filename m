@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0F34114DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BC04114DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237888AbhITMuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:50:16 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:60990 "EHLO m43-7.mailgun.net"
+        id S236685AbhITMuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:50:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237208AbhITMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:50:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632142128; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=oXH2r2YAvNR0xujgASmm26KkyFaQDUEkr4gUUo/Kmwg=; b=hM8HwFMGS85+BthQAQ51stwie8rcFasfrMNMyCSSTsinxAmENKuVy+qlvVeH0Jko+eIOfm1Y
- 2hVvmTnkEoTwoz8hFfJz8DS0s9Xc4R/BTt/65p0o1mSwN6zFKAcCnKdFlW5cXUviJWnYs021
- FdnSucuUtr5/BGKimqVInlOwQao=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6148831165c3cc8c639e2838 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Sep 2021 12:48:17
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2EC55C4338F; Mon, 20 Sep 2021 12:48:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 038A9C4338F;
-        Mon, 20 Sep 2021 12:48:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 038A9C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bob Copeland <me@bobcopeland.com>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] ath5k: fix building with LEDS=m
-References: <20210920122359.353810-1-arnd@kernel.org>
-Date:   Mon, 20 Sep 2021 15:48:10 +0300
-In-Reply-To: <20210920122359.353810-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Mon, 20 Sep 2021 14:23:44 +0200")
-Message-ID: <87sfxzwgz9.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S231562AbhITMuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:50:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D7D360F58;
+        Mon, 20 Sep 2021 12:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632142120;
+        bh=uDVTxCSXE+yHYLu/iESiPaKnuDHGQfKwfG1eTxgqqGQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gVcmxjFJGE/rtnz9rkG20UGxetpgieI4SCQl+tob/UU+eqXS8BLqlYFIIFXJITeNV
+         c4QMWXTxMdtpsUJ1gecARvJregJ4egv93bNdIvvW6l6jlzLvtVG4xoIM7yGIu5bcTF
+         QHMxDqZMTXHY8TJj/tOXd706JjHcPkNWgAnM46aX3E4GnwCfvhBhK60JaFzWmY28wg
+         B/ngrIdW6+ZPDypzEU1uMjMpPHP7n5AjVb2HnRoV7OJKkocvSqMFt6mg4cPFv5nTs0
+         /PV+m1AXs5nVz0kBc7YaScjKHIDtPS4LTcv3qoXlFM3S7xMGzB7t4qbl8d7JXmlChZ
+         euAgXkWypcesQ==
+Received: by mail-wr1-f43.google.com with SMTP id w17so21189044wrv.10;
+        Mon, 20 Sep 2021 05:48:40 -0700 (PDT)
+X-Gm-Message-State: AOAM5330SESGml4IsQqkqi4praUAxeeu/T2TAdMi1q1E+mTZqCLZ8YNk
+        NfT5z9U99rB7XE1z+N79jgCkn44pAVIUmJO15F0=
+X-Google-Smtp-Source: ABdhPJwRdEZyv4hk1W4Hm33Dq4r+PG/EsgnTk8+o80Hh9ItwUOHBLZ7+kcad5imJclI1fxlvqCXT6RhDO7gETsIHGjE=
+X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr18403327wrz.369.1632142119203;
+ Mon, 20 Sep 2021 05:48:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210920121352.93063-1-arnd@kernel.org> <YUh8Mj59BtyBdTRH@infradead.org>
+In-Reply-To: <YUh8Mj59BtyBdTRH@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 20 Sep 2021 14:48:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a30a1SKh+71+EgPmsJ1FKJTPKYQuAFUebwKKrhuVzBh3Q@mail.gmail.com>
+Message-ID: <CAK8P3a30a1SKh+71+EgPmsJ1FKJTPKYQuAFUebwKKrhuVzBh3Q@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] io_uring: warning about unused-but-set parameter
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, io-uring@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
-
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Sep 20, 2021 at 2:18 PM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> Randconfig builds still show a failure for the ath5k driver,
-> similar to the one that was fixed for ath9k earlier:
+> On Mon, Sep 20, 2021 at 02:13:44PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > When enabling -Wunused warnings by building with W=1, I get an
+> > instance of the -Wunused-but-set-parameter warning in the io_uring code:
+> >
+> > fs/io_uring.c: In function 'io_queue_async_work':
+> > fs/io_uring.c:1445:61: error: parameter 'locked' set but not used [-Werror=unused-but-set-parameter]
+> >  1445 | static void io_queue_async_work(struct io_kiocb *req, bool *locked)
+> >       |                                                       ~~~~~~^~~~~~
+> >
+> > There are very few warnings of this type, so it would be nice to enable
+> > this by default and fix all the existing instances. I was almost
+> > done, but this was added recently as a precaution to prevent code
+> > from using the parameter, which could be done by either removing
+> > the initialization, or by adding a (fake) use of the variable, which
+> > I do here with the cast to void.
 >
-> WARNING: unmet direct dependencies detected for MAC80211_LEDS
->   Depends on [n]: NET [=y] && WIRELESS [=y] && MAC80211 [=y] && (LEDS_CLASS [=m]=y || LEDS_CLASS [=m]=MAC80211 [=y])
->   Selected by [m]:
->   - ATH5K [=m] && NETDEVICES [=y] && WLAN [=y] && WLAN_VENDOR_ATH [=y] && (PCI [=y] || ATH25) && MAC80211 [=y]
-> net/mac80211/led.c: In function 'ieee80211_alloc_led_names':
-> net/mac80211/led.c:34:22: error: 'struct led_trigger' has no member named 'name'
->    34 |         local->rx_led.name = kasprintf(GFP_KERNEL, "%srx",
->       |                      ^
->
-> Copying the same logic from my ath9k patch makes this one work
-> as well, stubbing out the calls to the LED subsystem.
->
-> Fixes: b64acb28da83 ("ath9k: fix build error with LEDS_CLASS=m")
-> Fixes: 72cdab808714 ("ath9k: Do not select MAC80211_LEDS by default")
-> Fixes: 3a078876caee ("ath5k: convert LED code to use mac80211 triggers")
-> Link: https://lore.kernel.org/all/20210722105501.1000781-1-arnd@kernel.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Changes in v2:
-> - avoid link failure when NEW_LEDS is disabled
+> Please don't.  These warning are utterly stupid and should not be
+> enabled.  For anything that is a "method" of sorts (that is assigned
+> to a function pointer), unused argument are perfectly normal.
 
-I'll queue this to v5.15.
+I'm not suggesting to enable -Wunused-parameter, which would be
+complete madness of crouse, only -Wunused-but-set-parameter,
+which is already part of W=1 and has the potential of catching
+actual bugs such as
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+int f(int val)
+{
+      if (val = 1)
+            return 0;
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+       return -1;
+}
+
+          Arnd
