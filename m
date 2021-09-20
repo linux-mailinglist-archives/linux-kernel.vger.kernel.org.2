@@ -2,69 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66069411606
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96950411608
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbhITNpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
+        id S239650AbhITNpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236096AbhITNpI (ORCPT
+        with ESMTP id S236096AbhITNpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:45:08 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC255C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:43:41 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id z62so16637941vsz.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:43:41 -0700 (PDT)
+        Mon, 20 Sep 2021 09:45:53 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3E2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:44:26 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id s69so17247009oie.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=n37RcggwdyC6/bpVHAh9YQZ5MIhsvNagb9vfvx5T5Lo=;
-        b=OQ7UCTDUdflz3DK7IOpBOkrfjcSpKaRCHgTcMT7F3wnebz8gdn0GP3lml3/mM/Nv4H
-         j/3qHvE9yuRu4zqLFEKqwyOwae/5RuQGInIkCpSBrRpLXxDUEts41q9v+u8vxU948AIv
-         FJaqIMxzBXa7OxAjEtAgDoFEHQJ9M+xM3ezrftKJDWINGhq9nRQw7kd1twD2GwOYbler
-         hv9+Yu8oUz1+8A6hkzZ88PvaUl3TFG4V/NSHBuQXb3UmFKfhpf4OBC1qvV5h/SjXrPVc
-         k0ricB6EhGLZXcCIzCIixEU/epvI/3LP56/d+TtB8fach05/LdKNLdie3k2pM5cv8sts
-         s4mA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ugZ3mOISe1bB3KTcfcAf8AXSxAmMIw6ehmJklg0PAD8=;
+        b=QpdEpMIAFasHjJYywPNq253rOM3iQIC1ka9kuJrZtjtTXahkk1mCxTGBDlz4+1sR+f
+         FTbNjKCR+g0Zug8smgzjx+2YGmh26cYh4b/uE+WumdTGY28V97gp4FcwdTttxj0vhBDv
+         NHqQn3IrmdEqrS+uIZBZlGPg1FTSbzWyd2kUx7Ek8q6zbbDS8itNqwPySBUD3GluUqZF
+         /PjN/iyF8/zKEeSoMxLrAhy3v4Aucrslq/SJoyufJ2RdBA3s0XIndRq1yyqbfOIXWGV6
+         A5lCp6tU6fZTVGe0xJ1iv1jsSw4oM5wwoCEZSqyCqqh+LRHdVRwn+CDR9n+qcBGehN28
+         jsSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=n37RcggwdyC6/bpVHAh9YQZ5MIhsvNagb9vfvx5T5Lo=;
-        b=MsrKKvNCoUHiuqrGF1a/kW3j+p7AngVAR1+pgGueSsC68eyaCsnow1nq4t4tWYyvpE
-         pAEVOkXWthnj+MIh9xB2XUCXw3F2Kufk3dluA0afMXe9PFsy6tdRzVTPSh2isNIq23tq
-         QZCsT6Ag92+oUp6ozxutLPFBiixJKzbTWhDEEKD3yPpLp7+Z33Z+Fo1AKj2viVqFseL8
-         OH53EUPm+XkzDu7IGU3o69wUcwDxgu9r0Rt2KDyKwFc4l+oDCbFMPZRy5HBfCLf1i9QY
-         Z0ckOLsmsdcciwZa8LG88lXOdQStwov14yUlvCuJZvWg2td+dJrP/VX+oZaD9v4HsLgT
-         NPLw==
-X-Gm-Message-State: AOAM5324Xdy5fEea/GFbOPfvHnrnuvLU0+8jaiLskAUrT6mKD1snGqEc
-        O1gJ9P5giEfrdcDn47pvlWpXQoXWuGQbjPfyd6M=
-X-Google-Smtp-Source: ABdhPJzX1CP2hPcHzwkFjf5fgRDnSpv3gmXUmPvorVQtpiF3U9Vn3SEwXVuuOZzPVRHOefEyWiAcsm5OEbw38ZrPzQQ=
-X-Received: by 2002:a67:7247:: with SMTP id n68mr5150964vsc.56.1632145420656;
- Mon, 20 Sep 2021 06:43:40 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ugZ3mOISe1bB3KTcfcAf8AXSxAmMIw6ehmJklg0PAD8=;
+        b=k3PIp+wu93eRQuToNJA3lpoRmqcEr6S7p/w1OZynZm1BHYDnm4NpmGLn7b3iJDo7Kr
+         //WDGa3m54g0fE7Ui4gk5hZ4FopWwY82t4pr/lgg6x/QHszgvNOdUHYOdG49ydodjl/r
+         +cqENE2jRgAL3xosbVKkbf8mcz+lIzm8ltZdybiTqPN9xo315FBdsdebOhPesXsZglIN
+         9yV8n6kLWhQNtDKKTeFMQOLWKTSAZixW4HsAkYiWE+R1iBFAc3Lf0rw70d9Oo5FMQD6c
+         eZdiOjDXIwlosCNwNnodncC5i/j1gXgCB5gr4QdGCpOyDVVbS2T+AI+bPj6klHxl8gxk
+         q+IA==
+X-Gm-Message-State: AOAM532xqPsYxb+GyibmZQmhNXgaJM7p3MR8oyAfLLL8H3wzidFNzkuc
+        9CyRlUkGei5BejjpIgH/tBQtjX/d86U=
+X-Google-Smtp-Source: ABdhPJw1pWQS+Q1ng/3Rb8xpm5bdTWfPhyE8pO7y4+j7LpGZdZbdXKVffuKRarALHwCh1Rt40xx+eA==
+X-Received: by 2002:a05:6808:1481:: with SMTP id e1mr12878841oiw.5.1632145466357;
+        Mon, 20 Sep 2021 06:44:26 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j8sm3426410ooc.21.2021.09.20.06.44.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 06:44:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 20 Sep 2021 06:44:24 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.15-rc2
+Message-ID: <20210920134424.GA346531@roeck-us.net>
+References: <CAHk-=wirexiZR+VO=H3xemGKOMkh8OasmXaKXTKUmAKYCzi8AQ@mail.gmail.com>
 MIME-Version: 1.0
-Reply-To: marannsilvia@gmail.com
-Sender: chantallawrence737@gmail.com
-Received: by 2002:ab0:76c6:0:0:0:0:0 with HTTP; Mon, 20 Sep 2021 06:43:40
- -0700 (PDT)
-From:   "Mrs.m silvia michael" <marannsilvia6@gmail.com>
-Date:   Mon, 20 Sep 2021 06:43:40 -0700
-X-Google-Sender-Auth: BRV0nAdGYLHyy6H-oMKxmBXho9g
-Message-ID: <CAGkvoh7QDM+bLnMbyePXZvSnYY2_NnOTBN+ZQsmjSFmtoOXMHg@mail.gmail.com>
-Subject: Urgent Help From Hospital!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wirexiZR+VO=H3xemGKOMkh8OasmXaKXTKUmAKYCzi8AQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day my Dearest,
-Am Mrs.Marann Silvia Michael,from one of the cancer hospital here in
-America.Am suffering from a long time cancer of breast and i want to
-donate my money to help the orphans, widows and handicap people
-through you because there is no more time left for me on this earth.I
-will be waiting to hear from you immediately by God grace amen,
+On Sun, Sep 19, 2021 at 05:40:42PM -0700, Linus Torvalds wrote:
+[ ... ]
+> 
+> Go test, and keep the reports coming,
+> 
 
-Yours sincerely.
-Mrs.Marann Silvia Michael
+Build results:
+	total: 153 pass: 148 fail: 5
+Failed builds:
+	mips:allmodconfig
+	parisc:allmodconfig
+	sparc64:allnoconfig
+	sparc64:tinyconfig
+	xtensa:allmodconfig
+Qemu test results:
+	total: 480 pass: 479 fail: 1
+Failed tests:
+	sparc64:sun4u:nodebug:smp:virtio-pci:net,i82559er:hd
+
+Details for build failures below. Several improvements since last week,
+but it looks like the alpha related pci_iounmap patches still need some
+tweaking (see error log at the very end).
+
+Guenter
+
+---
+In file included from arch/mips/include/asm/sibyte/sb1250.h:28,
+                 from drivers/watchdog/sb_wdog.c:58:
+arch/mips/include/asm/sibyte/bcm1480_scd.h:261: error: "M_SPC_CFG_CLEAR" redefined
+
+In file included from arch/mips/include/asm/sibyte/sb1250.h:28,
+                 from drivers/watchdog/sb_wdog.c:58:
+arch/mips/include/asm/sibyte/bcm1480_scd.h:262: error: "M_SPC_CFG_ENABLE" redefined
+
+Affected builds:
+	mips:allmodconfig
+
+Patch:
+	https://lore.kernel.org/r/20210913073220.1159520-1-liu.yun@linux.dev
+
+Status:
+	Waiting for pull request from Wim
+
+---
+drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c: In function 'nvkm_control_mthd_pstate_info':
+drivers/gpu/drm/nouveau/nvkm/engine/device/ctrl.c:60:35: error: overflow in conversion from 'int' to '__s8' {aka 'signed char'} changes value from '-251' to '5' [-Werror=overflow]
+   60 |                 args->v0.pwrsrc = -ENOSYS;
+
+Affected builds:
+	parisc:allmodconfig
+
+Background:
+	args->v0.pwrsrc is s8, -ENOSYS is -251 on parisc
+
+Patch:
+	https://lore.kernel.org/lkml/20210908190817.1213486-1-linux@roeck-us.net/
+
+Status:
+	No response as of 9/20
+
+---
+drivers/scsi/ncr53c8xx.c:8000:26: error: 'retrieve_from_waiting_list' defined but not used
+
+Affected builds:
+	parisc:allmodconfig
+
+Patch:
+	https://lore.kernel.org/r/YTfS/LH5vCN6afDW@ls3530
+
+Status:
+	Applied to 5.15/scsi-fixes
+
+---
+drivers/video/fbdev/omap2/omapfb/dss/dsi.c: In function 'dsi_dump_dsidev_irqs':
+drivers/video/fbdev/omap2/omapfb/dss/dsi.c:1623:1: error: the frame size of 1104 bytes is larger than 1024 bytes
+
+and many similar errors. Seen in xtensa:allmodconfig.
+
+Background:
+	xtensa:allmodconfig enables KASAN which in turn increases stack size
+	requirements significantly.
+
+Patch:
+	https://lore.kernel.org/lkml/20210912025235.3514761-1-linux@roeck-us.net/
+
+Status:
+	Queued in https://www.ozlabs.org/~akpm/mmotm/
+
+---
+arch/sparc/lib/iomap.c:22:6: error: redefinition of 'pci_iounmap'
+   22 | void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+      |      ^~~~~~~~~~~
+In file included from arch/sparc/include/asm/io_64.h:11,
+                 from arch/sparc/include/asm/io.h:5,
+                 from include/linux/io.h:13,
+                 from include/linux/pci.h:39,
+                 from arch/sparc/lib/iomap.c:5:
+include/asm-generic/pci_iomap.h:54:20: note: previous definition of 'pci_iounmap' was here
+   54 | static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+
+Affected builds:
+	sparc64:allnoconfig, sparc64:tinyconfig
