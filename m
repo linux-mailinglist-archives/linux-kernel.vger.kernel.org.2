@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9D04120CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98A5411B26
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243075AbhITR6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:58:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54550 "EHLO mail.kernel.org"
+        id S1343603AbhITQyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:54:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354992AbhITRwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:52:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3710061264;
-        Mon, 20 Sep 2021 17:12:39 +0000 (UTC)
+        id S239422AbhITQuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ADF161222;
+        Mon, 20 Sep 2021 16:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157959;
-        bh=wENsvrbL+pdXmz0efRsjHzzXhHlVlnNHUPkbemqW/NQ=;
+        s=korg; t=1632156558;
+        bh=oiGYG2uBGu1Vn0UML6hygkGyZT/y2qStDHRVXZcIB7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oQz0fzW91CV5GHZbIUrjlnLvpAcbRSyI6hT4+iyzU1oWQtsME+Q769BejSSZTvZlR
-         lOxXjLAgri/0nRumBqfw7ZtasT/l+ajFLzQyXo2WN69rgHSYeUqtrlIuQcibCq4T/l
-         OjPAFt/Pzqzmvrh4EdeVVuyi2b4BRu1V8hirOgs0=
+        b=xk2ew45QXbBfoaJPsT2kUdN7O4SRUdqnKYJcOOwsS5zIqi9eqkP2n6HGsdiay6Q4m
+         X2FKnFF5iGYUzBQAnAmbCfyeW/ZlyzpZ1YD+b9QTL0kfNQCm2Il20FUUM4liYURfMa
+         3x8jCKh9j2wjySy7gdln9bHk/5yeYeXbhMXdrsI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        stable@vger.kernel.org, Zekun Shen <bruceshenzk@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 230/293] Revert "USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set"
+Subject: [PATCH 4.4 114/133] ath9k: fix OOB read ar9300_eeprom_restore_internal
 Date:   Mon, 20 Sep 2021 18:43:12 +0200
-Message-Id: <20210920163941.263425917@linuxfoundation.org>
+Message-Id: <20210920163916.353189282@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,93 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Zekun Shen <bruceshenzk@gmail.com>
 
-[ Upstream commit 2847c46c61486fd8bca9136a6e27177212e78c69 ]
+[ Upstream commit 23151b9ae79e3bc4f6a0c4cd3a7f355f68dad128 ]
 
-This reverts commit 5d5323a6f3625f101dbfa94ba3ef7706cce38760.
+Bad header can have large length field which can cause OOB.
+cptr is the last bytes for read, and the eeprom is parsed
+from high to low address. The OOB, triggered by the condition
+length > cptr could cause memory error with a read on
+negative index.
 
-That commit effectively disabled Intel host initiated U1/U2 lpm for devices
-with periodic endpoints.
+There are some sanity check around length, but it is not
+compared with cptr (the remaining bytes). Here, the
+corrupted/bad EEPROM can cause panic.
 
-Before that commit we disabled host initiated U1/U2 lpm if the exit latency
-was larger than any periodic endpoint service interval, this is according
-to xhci spec xhci 1.1 specification section 4.23.5.2
+I was able to reproduce the crash, but I cannot find the
+log and the reproducer now. After I applied the patch, the
+bug is no longer reproducible.
 
-After that commit we incorrectly checked that service interval was smaller
-than U1/U2 inactivity timeout. This is not relevant, and can't happen for
-Intel hosts as previously set U1/U2 timeout = 105% * service interval.
-
-Patch claimed it solved cases where devices can't be enumerated because of
-bandwidth issues. This might be true but it's a side effect of accidentally
-turning off lpm.
-
-exit latency calculations have been revised since then
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210820123503.2605901-5-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/YM3xKsQJ0Hw2hjrc@Zekuns-MBP-16.fios-router.home
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath9k/ar9003_eeprom.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index c4e3760abd5b..bebab0ec2978 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -4580,19 +4580,19 @@ static u16 xhci_calculate_u1_timeout(struct xhci_hcd *xhci,
- {
- 	unsigned long long timeout_ns;
- 
--	if (xhci->quirks & XHCI_INTEL_HOST)
--		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
--	else
--		timeout_ns = udev->u1_params.sel;
--
- 	/* Prevent U1 if service interval is shorter than U1 exit latency */
- 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
--		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
-+		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
- 			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
- 			return USB3_LPM_DISABLED;
- 		}
- 	}
- 
-+	if (xhci->quirks & XHCI_INTEL_HOST)
-+		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
-+	else
-+		timeout_ns = udev->u1_params.sel;
-+
- 	/* The U1 timeout is encoded in 1us intervals.
- 	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
- 	 */
-@@ -4644,19 +4644,19 @@ static u16 xhci_calculate_u2_timeout(struct xhci_hcd *xhci,
- {
- 	unsigned long long timeout_ns;
- 
--	if (xhci->quirks & XHCI_INTEL_HOST)
--		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
--	else
--		timeout_ns = udev->u2_params.sel;
--
- 	/* Prevent U2 if service interval is shorter than U2 exit latency */
- 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
--		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
-+		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
- 			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
- 			return USB3_LPM_DISABLED;
- 		}
- 	}
- 
-+	if (xhci->quirks & XHCI_INTEL_HOST)
-+		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
-+	else
-+		timeout_ns = udev->u2_params.sel;
-+
- 	/* The U2 timeout is encoded in 256us intervals */
- 	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
- 	/* If the necessary timeout value is bigger than what we can set in the
+diff --git a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
+index c876dc2437b0..96e1f54cccaf 100644
+--- a/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
++++ b/drivers/net/wireless/ath/ath9k/ar9003_eeprom.c
+@@ -3345,7 +3345,8 @@ static int ar9300_eeprom_restore_internal(struct ath_hw *ah,
+ 			"Found block at %x: code=%d ref=%d length=%d major=%d minor=%d\n",
+ 			cptr, code, reference, length, major, minor);
+ 		if ((!AR_SREV_9485(ah) && length >= 1024) ||
+-		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485)) {
++		    (AR_SREV_9485(ah) && length > EEPROM_DATA_LEN_9485) ||
++		    (length > cptr)) {
+ 			ath_dbg(common, EEPROM, "Skipping bad header\n");
+ 			cptr -= COMP_HDR_LEN;
+ 			continue;
 -- 
 2.30.2
 
