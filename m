@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E0F411CFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02344411F37
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345253AbhITRPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41571 "EHLO mail.kernel.org"
+        id S1348387AbhITRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:38:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345859AbhITRNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:13:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE4A619E1;
-        Mon, 20 Sep 2021 16:57:40 +0000 (UTC)
+        id S1345083AbhITRgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:36:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE1161B29;
+        Mon, 20 Sep 2021 17:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157061;
-        bh=pXhrDvMIUMFh+pk8T6WaQUa6ymKu70SgdJTtnlSiUnY=;
+        s=korg; t=1632157600;
+        bh=war2w7rgM7oAcaLbc1DzlYdz/A2sVd0l8Tv64Q3aLmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e8pQjHtA0SeTkDwmXLiVTiJJ79ljoegIVaNWjx3+6WFnAKynF3mh5hvUZPnPnQbvh
-         nkexCWPg8yRqn/mENFa8KpLA0yWJKeZhgReYdkKRMS3KseuVIzL4EUey8GAkOh5w2O
-         qicQ/ecEW+Auz2dHutVVt+8wCuJsfsqrooNSQItE=
+        b=Xpz3fT4V2ljW//bmOokTWtfngJCTuv694htZHDSJrVnG7rwuiW+xJeTa3ibp7nnYJ
+         qvATOf2T0VlARjNuC/DHaJamn/Dl0RH0MX4Zl1102vQPAa99Lq4xKlI4w6g87KeTYt
+         npglqBTFAD1BLfbuUixWx0u/xFNuRLP2r+GMffuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harini Katakam <harini.katakam@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 004/217] net: macb: Add a NULL check on desc_ptp
-Date:   Mon, 20 Sep 2021 18:40:25 +0200
-Message-Id: <20210920163924.752875572@linuxfoundation.org>
+Subject: [PATCH 4.19 064/293] media: dvb-usb: fix uninit-value in dvb_usb_adapter_dvb_init
+Date:   Mon, 20 Sep 2021 18:40:26 +0200
+Message-Id: <20210920163935.445322307@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harini Katakam <harini.katakam@xilinx.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit 85520079afce885b80647fbd0d13d8f03d057167 ]
+[ Upstream commit c5453769f77ce19a5b03f1f49946fd3f8a374009 ]
 
-macb_ptp_desc will not return NULL under most circumstances with correct
-Kconfig and IP design config register. But for the sake of the extreme
-corner case, check for NULL when using the helper. In case of rx_tstamp,
-no action is necessary except to return (similar to timestamp disabled)
-and warn. In case of TX, return -EINVAL to let the skb be free. Perform
-this check before marking skb in progress.
-Fixes coverity warning:
-(4) Event dereference:
-Dereferencing a null pointer "desc_ptp"
+If dibusb_read_eeprom_byte fails, the mac address is not initialized.
+And nova_t_read_mac_address does not handle this failure, which leads to
+the uninit-value in dvb_usb_adapter_dvb_init.
 
-Signed-off-by: Harini Katakam <harini.katakam@xilinx.com>
-Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix this by handling the failure of dibusb_read_eeprom_byte.
+
+Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Fixes: 786baecfe78f ("[media] dvb-usb: move it to drivers/media/usb/dvb-usb")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_ptp.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/nova-t-usb2.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_ptp.c b/drivers/net/ethernet/cadence/macb_ptp.c
-index f1f07e9d53f8..07d6472dd149 100755
---- a/drivers/net/ethernet/cadence/macb_ptp.c
-+++ b/drivers/net/ethernet/cadence/macb_ptp.c
-@@ -286,6 +286,12 @@ void gem_ptp_rxstamp(struct macb *bp, struct sk_buff *skb,
+diff --git a/drivers/media/usb/dvb-usb/nova-t-usb2.c b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+index 43e0e0fd715b..705c2901a89e 100644
+--- a/drivers/media/usb/dvb-usb/nova-t-usb2.c
++++ b/drivers/media/usb/dvb-usb/nova-t-usb2.c
+@@ -133,7 +133,7 @@ ret:
  
- 	if (GEM_BFEXT(DMA_RXVALID, desc->addr)) {
- 		desc_ptp = macb_ptp_desc(bp, desc);
-+		/* Unlikely but check */
-+		if (!desc_ptp) {
-+			dev_warn_ratelimited(&bp->pdev->dev,
-+					     "Timestamp not supported in BD\n");
-+			return;
-+		}
- 		gem_hw_timestamp(bp, desc_ptp->ts_1, desc_ptp->ts_2, &ts);
- 		memset(shhwtstamps, 0, sizeof(struct skb_shared_hwtstamps));
- 		shhwtstamps->hwtstamp = ktime_set(ts.tv_sec, ts.tv_nsec);
-@@ -318,8 +324,11 @@ int gem_ptp_txstamp(struct macb_queue *queue, struct sk_buff *skb,
- 	if (CIRC_SPACE(head, tail, PTP_TS_BUFFER_SIZE) == 0)
- 		return -ENOMEM;
+ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ {
+-	int i;
++	int i, ret;
+ 	u8 b;
  
--	skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
- 	desc_ptp = macb_ptp_desc(queue->bp, desc);
-+	/* Unlikely but check */
-+	if (!desc_ptp)
-+		return -EINVAL;
-+	skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
- 	tx_timestamp = &queue->tx_timestamps[head];
- 	tx_timestamp->skb = skb;
- 	tx_timestamp->desc_ptp.ts_1 = desc_ptp->ts_1;
+ 	mac[0] = 0x00;
+@@ -142,7 +142,9 @@ static int nova_t_read_mac_address (struct dvb_usb_device *d, u8 mac[6])
+ 
+ 	/* this is a complete guess, but works for my box */
+ 	for (i = 136; i < 139; i++) {
+-		dibusb_read_eeprom_byte(d,i, &b);
++		ret = dibusb_read_eeprom_byte(d, i, &b);
++		if (ret)
++			return ret;
+ 
+ 		mac[5 - (i - 136)] = b;
+ 	}
 -- 
 2.30.2
 
