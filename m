@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9A94120A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE86411E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355696AbhITR41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
+        id S1345958AbhITR0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:26:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354597AbhITRuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:50:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D2C61BE4;
-        Mon, 20 Sep 2021 17:12:06 +0000 (UTC)
+        id S1349573AbhITRYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:24:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B303D61A7E;
+        Mon, 20 Sep 2021 17:01:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157927;
-        bh=LnkxSRlZlGz97B1C0web42fPnux/0Hyme/3MF6rOfpQ=;
+        s=korg; t=1632157307;
+        bh=XFAyc/5uULluSphW0nGAoJVIv0v99NxKYQaI5ogleMU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uDCsrQUOWI7GDnuvmmk27kMbenbs4g1qkrMk2sU0nyrwSQxEmNjKV173QAValLLNl
-         JcukMid/yMHQj+GutawMTdEuHhCzAhp+bJjLASKTB+r/bnKTq97PmKSDDEU7DyzHwY
-         Gce4Y1VJUJuxjxQCioucfTyNzXOefxSfPfxjIIFs=
+        b=EZ4CemsEWj+KLjJSsM07rxpnX67DuSuPi8MwecJNk8YqzWytwt8n+5VNA8mSu8ohF
+         2DtUMuk4j0gQTuQSB0N+EZTZvjrG14CcGsc9VvMLVsXbAIAsJef4rnuHqc4uFqRVwI
+         eLd2kjQZkmVW+TCdRu7BbKriqyFVdFSR/SVtPkZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 208/293] media: v4l2-dv-timings.c: fix wrong condition in two for-loops
+Subject: [PATCH 4.14 149/217] ipv4: ip_output.c: Fix out-of-bounds warning in ip_copy_addrs()
 Date:   Mon, 20 Sep 2021 18:42:50 +0200
-Message-Id: <20210920163940.388804511@linuxfoundation.org>
+Message-Id: <20210920163929.685883232@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit 4108b3e6db31acc4c68133290bbcc87d4db905c9 ]
+[ Upstream commit 6321c7acb82872ef6576c520b0e178eaad3a25c0 ]
 
-These for-loops should test against v4l2_dv_timings_presets[i].bt.width,
-not if i < v4l2_dv_timings_presets[i].bt.width. Luckily nothing ever broke,
-since the smallest width is still a lot higher than the total number of
-presets, but it is wrong.
+Fix the following out-of-bounds warning:
 
-The last item in the presets array is all 0, so the for-loop must stop
-when it reaches that sentinel.
+    In function 'ip_copy_addrs',
+        inlined from '__ip_queue_xmit' at net/ipv4/ip_output.c:517:2:
+net/ipv4/ip_output.c:449:2: warning: 'memcpy' offset [40, 43] from the object at 'fl' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 36 [-Warray-bounds]
+      449 |  memcpy(&iph->saddr, &fl4->saddr,
+          |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      450 |         sizeof(fl4->saddr) + sizeof(fl4->daddr));
+          |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reported-by: Krzysztof Hałasa <khalasa@piap.pl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy(). This causes a legitimate compiler warning because memcpy()
+overruns the length of &iph->saddr and &fl4->saddr. As these are just
+a couple of struct members, fix this by using direct assignments,
+instead of memcpy().
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-dv-timings.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/ip_output.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-dv-timings.c b/drivers/media/v4l2-core/v4l2-dv-timings.c
-index a24b40dfec97..af38c989ff33 100644
---- a/drivers/media/v4l2-core/v4l2-dv-timings.c
-+++ b/drivers/media/v4l2-core/v4l2-dv-timings.c
-@@ -196,7 +196,7 @@ bool v4l2_find_dv_timings_cap(struct v4l2_dv_timings *t,
- 	if (!v4l2_valid_dv_timings(t, cap, fnc, fnc_handle))
- 		return false;
- 
--	for (i = 0; i < v4l2_dv_timings_presets[i].bt.width; i++) {
-+	for (i = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
- 		if (v4l2_valid_dv_timings(v4l2_dv_timings_presets + i, cap,
- 					  fnc, fnc_handle) &&
- 		    v4l2_match_dv_timings(t, v4l2_dv_timings_presets + i,
-@@ -218,7 +218,7 @@ bool v4l2_find_dv_timings_cea861_vic(struct v4l2_dv_timings *t, u8 vic)
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 5ec185a9dcab..c9f82525bfa4 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -419,8 +419,9 @@ static void ip_copy_addrs(struct iphdr *iph, const struct flowi4 *fl4)
  {
- 	unsigned int i;
+ 	BUILD_BUG_ON(offsetof(typeof(*fl4), daddr) !=
+ 		     offsetof(typeof(*fl4), saddr) + sizeof(fl4->saddr));
+-	memcpy(&iph->saddr, &fl4->saddr,
+-	       sizeof(fl4->saddr) + sizeof(fl4->daddr));
++
++	iph->saddr = fl4->saddr;
++	iph->daddr = fl4->daddr;
+ }
  
--	for (i = 0; i < v4l2_dv_timings_presets[i].bt.width; i++) {
-+	for (i = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
- 		const struct v4l2_bt_timings *bt =
- 			&v4l2_dv_timings_presets[i].bt;
- 
+ /* Note: skb->sk can be different from sk, in case of tunnels */
 -- 
 2.30.2
 
