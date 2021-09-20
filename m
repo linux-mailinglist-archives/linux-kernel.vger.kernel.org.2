@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AD6411D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F34411F8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346916AbhITRQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41570 "EHLO mail.kernel.org"
+        id S1352850AbhITRmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347709AbhITROe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:14:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6270C6121E;
-        Mon, 20 Sep 2021 16:58:20 +0000 (UTC)
+        id S1352426AbhITRjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:39:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96BC461B47;
+        Mon, 20 Sep 2021 17:07:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157100;
-        bh=Ci8KDVpMEADlOHkWurzHkcZelu3nh3AyxqYz6cz8V/A=;
+        s=korg; t=1632157668;
+        bh=/EGVjqjkW2ksLqUu86HsbHEeo55q7PD/vjBexqhu/68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=igABBwS50xhzj5Xp408Ii05tAmpcWaVydUBq+h2V+zCxbsx84Dxu1QrV4eiq3nFD2
-         3LYN5zb0CLHOmpO3o0nbLTSTofwHgUaHyaZy9NU5XNGZ29+LP5Ff9z7sKhk8K6yKGY
-         y4/RadqyB4IevxPifPSf1IVH3KNnQhcGLv45etaY=
+        b=A0VOte0jcgwUdxoTwjwdcMT+/+M7h1PxHTfJeneeinM7JYHQmi08MoRPeeF/BBAAJ
+         e7xNLaGoIoQAia7ZX7TGcfdzQ4ZoggvbyWclXRmZVNCHdn32MpX6ag1aD3w4lqyBvL
+         uAdHijfb+u27/x97tlU9PaixL7sxiwPgTvoKJmMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Evgeny Novikov <novikov@ispras.ru>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 036/217] power: supply: max17042_battery: fix typo in MAx17042_TOFF
-Date:   Mon, 20 Sep 2021 18:40:57 +0200
-Message-Id: <20210920163925.852107955@linuxfoundation.org>
+Subject: [PATCH 4.19 096/293] usb: ehci-orion: Handle errors of clk_prepare_enable() in probe
+Date:   Mon, 20 Sep 2021 18:40:58 +0200
+Message-Id: <20210920163936.549910445@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit ed0d0a0506025f06061325cedae1bbebd081620a ]
+[ Upstream commit 4720f1bf4ee4a784d9ece05420ba33c9222a3004 ]
 
-Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+ehci_orion_drv_probe() did not account for possible errors of
+clk_prepare_enable() that in particular could cause invocation of
+clk_disable_unprepare() on clocks that were not prepared/enabled yet,
+e.g. in remove or on handling errors of usb_add_hcd() in probe. Though,
+there were several patches fixing different issues with clocks in this
+driver, they did not solve this problem.
+
+Add handling of errors of clk_prepare_enable() in ehci_orion_drv_probe()
+to avoid calls of clk_disable_unprepare() without previous successful
+invocation of clk_prepare_enable().
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Fixes: 8c869edaee07 ("ARM: Orion: EHCI: Add support for enabling clocks")
+Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Link: https://lore.kernel.org/r/20210825170902.11234-1-novikov@ispras.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/max17042_battery.c | 2 +-
- include/linux/power/max17042_battery.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/ehci-orion.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
-index 911d42366ef1..e824ab19318a 100644
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -717,7 +717,7 @@ static inline void max17042_override_por_values(struct max17042_chip *chip)
- 	struct max17042_config_data *config = chip->pdata->config_data;
+diff --git a/drivers/usb/host/ehci-orion.c b/drivers/usb/host/ehci-orion.c
+index 1ad72647a069..da0f36af0b38 100644
+--- a/drivers/usb/host/ehci-orion.c
++++ b/drivers/usb/host/ehci-orion.c
+@@ -250,8 +250,11 @@ static int ehci_orion_drv_probe(struct platform_device *pdev)
+ 	 * the clock does not exists.
+ 	 */
+ 	priv->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (!IS_ERR(priv->clk))
+-		clk_prepare_enable(priv->clk);
++	if (!IS_ERR(priv->clk)) {
++		err = clk_prepare_enable(priv->clk);
++		if (err)
++			goto err_put_hcd;
++	}
  
- 	max17042_override_por(map, MAX17042_TGAIN, config->tgain);
--	max17042_override_por(map, MAx17042_TOFF, config->toff);
-+	max17042_override_por(map, MAX17042_TOFF, config->toff);
- 	max17042_override_por(map, MAX17042_CGAIN, config->cgain);
- 	max17042_override_por(map, MAX17042_COFF, config->coff);
- 
-diff --git a/include/linux/power/max17042_battery.h b/include/linux/power/max17042_battery.h
-index a7ed29baf44a..86e5ad8aeee4 100644
---- a/include/linux/power/max17042_battery.h
-+++ b/include/linux/power/max17042_battery.h
-@@ -82,7 +82,7 @@ enum max17042_register {
- 	MAX17042_RelaxCFG	= 0x2A,
- 	MAX17042_MiscCFG	= 0x2B,
- 	MAX17042_TGAIN		= 0x2C,
--	MAx17042_TOFF		= 0x2D,
-+	MAX17042_TOFF		= 0x2D,
- 	MAX17042_CGAIN		= 0x2E,
- 	MAX17042_COFF		= 0x2F,
- 
+ 	priv->phy = devm_phy_optional_get(&pdev->dev, "usb");
+ 	if (IS_ERR(priv->phy)) {
+@@ -312,6 +315,7 @@ err_phy_init:
+ err_phy_get:
+ 	if (!IS_ERR(priv->clk))
+ 		clk_disable_unprepare(priv->clk);
++err_put_hcd:
+ 	usb_put_hcd(hcd);
+ err:
+ 	dev_err(&pdev->dev, "init %s fail, %d\n",
 -- 
 2.30.2
 
