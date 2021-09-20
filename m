@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14661411BD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3DD411DAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343891AbhITRCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51974 "EHLO mail.kernel.org"
+        id S1349271AbhITRWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344957AbhITQ7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3052961401;
-        Mon, 20 Sep 2021 16:52:41 +0000 (UTC)
+        id S1343515AbhITRS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:18:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A1F561A3C;
+        Mon, 20 Sep 2021 16:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156761;
-        bh=hqK4GfwyrxKZtwjNnAU39wYf3mmtdL9Jnu9htZQlyfI=;
+        s=korg; t=1632157176;
+        bh=ub+BceLFGSo6XLgsBWRu4wj+f8MVjPhUkeDi0c9/EYg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V6rGfqlet/TSjqH3r0nWihVfO9S+WzBo3ZYZF99/F27PADfakyiekDr4yEhqy9pfg
-         NHaMc39a/0+GQpYn/4yNSlTpKvITSoQ9/XzfHNJp+Fc6QYtP7+LrADsmbdjJKzI3MB
-         uonsamgW9tuya4IaxeM1/e9Y+vtB36lCZaKaGFi8=
+        b=bPyBSGKm46t+ztmoJmn01EsUTYD2Z3+eAjdJdvq1Won3lTAjA0ZPiQffbpGpALbUl
+         yzEQBtp5aXT4Rguje8FHoLBp9V0dFLboCRJ275MhPXWzOB5/v+JNmGC4PtJjcxl5kp
+         kMIfzE9/Yr7x+958VYFBCj/FsAPZyB/4UjTe2rGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 042/175] crypto: qat - do not ignore errors from enable_vf2pf_comms()
-Date:   Mon, 20 Sep 2021 18:41:31 +0200
-Message-Id: <20210920163919.436552676@linuxfoundation.org>
+Subject: [PATCH 4.14 071/217] usb: host: ohci-tmio: add IRQ check
+Date:   Mon, 20 Sep 2021 18:41:32 +0200
+Message-Id: <20210920163927.032938428@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-[ Upstream commit 5147f0906d50a9d26f2b8698cd06b5680e9867ff ]
+[ Upstream commit 4ac5132e8a4300637a2da8f5d6bc7650db735b8a ]
 
-The function adf_dev_init() ignores the error code reported by
-enable_vf2pf_comms(). If the latter fails, e.g. the VF is not compatible
-with the pf, then the load of the VF driver progresses.
-This patch changes adf_dev_init() so that the error code from
-enable_vf2pf_comms() is returned to the caller.
+The driver neglects to check the  result of platform_get_irq()'s call and
+blithely passes the negative error codes to usb_add_hcd() (which takes
+*unsigned* IRQ #), causing request_irq() that it calls to fail with
+-EINVAL, overriding an original error code. Stop calling usb_add_hcd()
+with the invalid IRQ #s.
 
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
-Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 78c73414f4f6 ("USB: ohci: add support for tmio-ohci cell")
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Link: https://lore.kernel.org/r/402e1a45-a0a4-0e08-566a-7ca1331506b1@omp.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_init.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/usb/host/ohci-tmio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_init.c b/drivers/crypto/qat/qat_common/adf_init.c
-index 888c6675e7e5..03856cc604b6 100644
---- a/drivers/crypto/qat/qat_common/adf_init.c
-+++ b/drivers/crypto/qat/qat_common/adf_init.c
-@@ -101,6 +101,7 @@ int adf_dev_init(struct adf_accel_dev *accel_dev)
- 	struct service_hndl *service;
- 	struct list_head *list_itr;
- 	struct adf_hw_device_data *hw_data = accel_dev->hw_device;
-+	int ret;
+diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
+index 16d081a093bb..0cf4b6dc8972 100644
+--- a/drivers/usb/host/ohci-tmio.c
++++ b/drivers/usb/host/ohci-tmio.c
+@@ -202,6 +202,9 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+ 	if (!cell)
+ 		return -EINVAL;
  
- 	if (!hw_data) {
- 		dev_err(&GET_DEV(accel_dev),
-@@ -167,9 +168,9 @@ int adf_dev_init(struct adf_accel_dev *accel_dev)
- 	}
- 
- 	hw_data->enable_error_correction(accel_dev);
--	hw_data->enable_vf2pf_comms(accel_dev);
-+	ret = hw_data->enable_vf2pf_comms(accel_dev);
- 
--	return 0;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(adf_dev_init);
- 
++	if (irq < 0)
++		return irq;
++
+ 	hcd = usb_create_hcd(&ohci_tmio_hc_driver, &dev->dev, dev_name(&dev->dev));
+ 	if (!hcd) {
+ 		ret = -ENOMEM;
 -- 
 2.30.2
 
