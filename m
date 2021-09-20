@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE37041215E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F160C4125E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357822AbhITSFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
+        id S1384949AbhITStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:49:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356129AbhITR6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:58:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABD62613AB;
-        Mon, 20 Sep 2021 17:15:14 +0000 (UTC)
+        id S1384096AbhITSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:46:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D2263361;
+        Mon, 20 Sep 2021 17:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158115;
-        bh=CF4znAEktDes8o/h9vI0NdXDlx+HSW6xSZRtfRzHPro=;
+        s=korg; t=1632159220;
+        bh=walABZlX11JaDQYOkSKG4JpsE8wTH7I7GPEVcS8ooGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OTRc3nAmzQoo937/+0ykNSqCepR4ZqaIJLQVNr182LZ8dUpk8rN1BQzv6qq1RU92r
-         XWGXXUu5yBkqhiuJVZhsohMDyJMITnSB0gTF6QWf9OW8w+HJz8bmknFWd/4uetzZOb
-         uK6vxktqFAzltNuwXiDIr2B3USICpQcKaK7Cjpd0=
+        b=SRM2GW7WVLz/mRmsipx2Wue5RhJgwXA+hzCU62ENSdJVimFnLVSPWt9msTCGyCIgY
+         CzerZLL5YF9tILmxkUWfkMYfUNeeeBDfGDlDu0PzBSeKxw+cvYKnbDFdWokBuCWJ3c
+         EW2vGlc4tSMr5qlIbm1tX4HScTp1ijEH03ZCsg9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 276/293] mfd: Dont use irq_create_mapping() to resolve a mapping
+        stable@vger.kernel.org, Kenneth Lee <liguozhu@hisilicon.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 100/168] riscv: fix the global name pfn_base confliction error
 Date:   Mon, 20 Sep 2021 18:43:58 +0200
-Message-Id: <20210920163942.863804957@linuxfoundation.org>
+Message-Id: <20210920163924.927901763@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,93 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Kenneth Lee <liguozhu@hisilicon.com>
 
-[ Upstream commit 9ff80e2de36d0554e3a6da18a171719fe8663c17 ]
+[ Upstream commit fb31f0a499332a053477ed57312b214e42476e6d ]
 
-Although irq_create_mapping() is able to deal with duplicate
-mappings, it really isn't supposed to be a substitute for
-irq_find_mapping(), and can result in allocations that take place
-in atomic context if the mapping didn't exist.
+RISCV uses a global variable pfn_base for page/pfn translation. But this
+is a common name and will be used elsewhere. In those cases, the
+page-pfn macros which refer to this name will be referred to the
+local/input variable instead. (such as in vfio_pin_pages_remote). This
+make everything wrong.
 
-Fix the handful of MFD drivers that use irq_create_mapping() in
-interrupt context by using irq_find_mapping() instead.
+This patch changes the name from pfn_base to riscv_pfn_base to fix
+this problem.
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Kenneth Lee <liguozhu@hisilicon.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/ab8500-core.c | 2 +-
- drivers/mfd/stmpe.c       | 4 ++--
- drivers/mfd/tc3589x.c     | 2 +-
- drivers/mfd/wm8994-irq.c  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ arch/riscv/include/asm/page.h | 4 ++--
+ arch/riscv/mm/init.c          | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
-index 11ab17f64c64..f0527e769867 100644
---- a/drivers/mfd/ab8500-core.c
-+++ b/drivers/mfd/ab8500-core.c
-@@ -493,7 +493,7 @@ static int ab8500_handle_hierarchical_line(struct ab8500 *ab8500,
- 		if (line == AB8540_INT_GPIO43F || line == AB8540_INT_GPIO44F)
- 			line += 1;
+diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+index b0ca5058e7ae..767852ae5e84 100644
+--- a/arch/riscv/include/asm/page.h
++++ b/arch/riscv/include/asm/page.h
+@@ -79,8 +79,8 @@ typedef struct page *pgtable_t;
+ #endif
  
--		handle_nested_irq(irq_create_mapping(ab8500->domain, line));
-+		handle_nested_irq(irq_find_mapping(ab8500->domain, line));
- 	}
+ #ifdef CONFIG_MMU
+-extern unsigned long pfn_base;
+-#define ARCH_PFN_OFFSET		(pfn_base)
++extern unsigned long riscv_pfn_base;
++#define ARCH_PFN_OFFSET		(riscv_pfn_base)
+ #else
+ #define ARCH_PFN_OFFSET		(PAGE_OFFSET >> PAGE_SHIFT)
+ #endif /* CONFIG_MMU */
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 7cb4f391d106..9786100f3a14 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -234,8 +234,8 @@ static struct pt_alloc_ops _pt_ops __initdata;
+ #define pt_ops _pt_ops
+ #endif
  
- 	return 0;
-diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
-index 566caca4efd8..722ad2c368a5 100644
---- a/drivers/mfd/stmpe.c
-+++ b/drivers/mfd/stmpe.c
-@@ -1035,7 +1035,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
+-unsigned long pfn_base __ro_after_init;
+-EXPORT_SYMBOL(pfn_base);
++unsigned long riscv_pfn_base __ro_after_init;
++EXPORT_SYMBOL(riscv_pfn_base);
  
- 	if (variant->id_val == STMPE801_ID ||
- 	    variant->id_val == STMPE1600_ID) {
--		int base = irq_create_mapping(stmpe->domain, 0);
-+		int base = irq_find_mapping(stmpe->domain, 0);
+ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+ pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+@@ -579,7 +579,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 	kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
+ #endif
  
- 		handle_nested_irq(base);
- 		return IRQ_HANDLED;
-@@ -1063,7 +1063,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
- 		while (status) {
- 			int bit = __ffs(status);
- 			int line = bank * 8 + bit;
--			int nestedirq = irq_create_mapping(stmpe->domain, line);
-+			int nestedirq = irq_find_mapping(stmpe->domain, line);
+-	pfn_base = PFN_DOWN(kernel_map.phys_addr);
++	riscv_pfn_base = PFN_DOWN(kernel_map.phys_addr);
  
- 			handle_nested_irq(nestedirq);
- 			status &= ~(1 << bit);
-diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
-index cc9e563f23aa..7062baf60685 100644
---- a/drivers/mfd/tc3589x.c
-+++ b/drivers/mfd/tc3589x.c
-@@ -187,7 +187,7 @@ again:
- 
- 	while (status) {
- 		int bit = __ffs(status);
--		int virq = irq_create_mapping(tc3589x->domain, bit);
-+		int virq = irq_find_mapping(tc3589x->domain, bit);
- 
- 		handle_nested_irq(virq);
- 		status &= ~(1 << bit);
-diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
-index 18710f3b5c53..2c58d9b99a39 100644
---- a/drivers/mfd/wm8994-irq.c
-+++ b/drivers/mfd/wm8994-irq.c
-@@ -159,7 +159,7 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
- 	struct wm8994 *wm8994 = data;
- 
- 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
--		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
-+		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
- 
- 	return IRQ_HANDLED;
- }
+ 	/*
+ 	 * Enforce boot alignment requirements of RV32 and
 -- 
 2.30.2
 
