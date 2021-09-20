@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B933B41267C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2960D412667
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355590AbhITS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33240 "EHLO mail.kernel.org"
+        id S1349038AbhITS5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:57:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384557AbhITSsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1384562AbhITSsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:48:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AEEB63370;
-        Mon, 20 Sep 2021 17:34:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1CBB6336B;
+        Mon, 20 Sep 2021 17:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159242;
-        bh=vJfuJtT04oEyvNLNclBtZQYkSoy2LkJlQZTTJaBXSO0=;
+        s=korg; t=1632159244;
+        bh=8+jA5Z2hfzZdTYeIsooOYKRrNlVHMu4dfpmOl8t+vBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W0ZOMc6Yeans5twLgHqSF5Pwd48fHiABBLvaZKvCmGjzlc3l+2w8NbZYz4wcLenAO
-         Ceko0GghbKo+wJqopqJSJHOdYU1eyPgVfaAgTcCTpjYoSI+glXsG1iEDg5azsvPoFB
-         y8doJnylpSvNCoG1s4ippMT4GH2jPkzp6vtV0EXQ=
+        b=IkkaOZDcw2WGdgXhsuc9P09EwI0SNe55k5l1nrlQ1yCCMJ+CcqMVq1vXauISvkmnc
+         DgDvjFSyLdCJ/+BQtfjVzsKcQwXZJ+OZuM4Q2kW0vqKaNOcUbchqDAcpeohSzaszCT
+         N3XjyGpPgi3DSf8lnTM7+TPoBjVDkFsAkYBHcTt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 142/168] perf bench inject-buildid: Handle writen() errors
-Date:   Mon, 20 Sep 2021 18:44:40 +0200
-Message-Id: <20210920163926.324189750@linuxfoundation.org>
+Subject: [PATCH 5.14 143/168] gpio: mpc8xxx: Fix a resources leak in the error handling path of mpc8xxx_probe()
+Date:   Mon, 20 Sep 2021 18:44:41 +0200
+Message-Id: <20210920163926.357983684@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
 References: <20210920163921.633181900@linuxfoundation.org>
@@ -40,159 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit edf7b4a2d85e37a1ee77156bddaed4aa6af9c5e1 ]
+[ Upstream commit 555bda42b0c1a5ffb72d3227c043e8afde778f1f ]
 
-The build on fedora:35 and fedora:rawhide with clang is failing with:
+Commit 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
+has introduced a new 'goto err;' at the very end of the function, but has
+not updated the error handling path accordingly.
 
-  49    41.00 fedora:35                     : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
-    bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
-            u64 len = 0;
-                ^
-    1 error generated.
-    make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
-  50    41.11 fedora:rawhide                : FAIL clang version 13.0.0 (Fedora 13.0.0~rc1-1.fc35)
-    bench/inject-buildid.c:351:6: error: variable 'len' set but not used [-Werror,-Wunused-but-set-variable]
-            u64 len = 0;
-                ^
-    1 error generated.
-    make[3]: *** [/git/perf-5.14.0-rc7/tools/build/Makefile.build:139: bench] Error 2
+Add the now missing 'irq_domain_remove()' call which balances a previous
+'irq_domain_create_linear() call.
 
-That 'len' variable is not used at all, so just make sure all the
-synthesize_RECORD() routines return ssize_t to propagate the writen()
-return, as it may fail, ditch the 'ret' var and bail out if those
-routines fail.
-
-Fixes: 0bf02a0d80427f26 ("perf bench: Add build-id injection benchmark")
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Link: http://lore.kernel.org/lkml/CAM9d7cgEZNSor+B+7Y2C+QYGme_v5aH0Zn0RLfxoQ+Fy83EHrg@mail.gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 698b8eeaed72 ("gpio/mpc8xxx: change irq handler from chained to normal")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/bench/inject-buildid.c | 52 ++++++++++++++++++-------------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+ drivers/gpio/gpio-mpc8xxx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/bench/inject-buildid.c b/tools/perf/bench/inject-buildid.c
-index 55d373b75791..17672790f123 100644
---- a/tools/perf/bench/inject-buildid.c
-+++ b/tools/perf/bench/inject-buildid.c
-@@ -133,7 +133,7 @@ static u64 dso_map_addr(struct bench_dso *dso)
- 	return 0x400000ULL + dso->ino * 8192ULL;
+diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+index 50b321a1ab1b..9acfa25ad6ee 100644
+--- a/drivers/gpio/gpio-mpc8xxx.c
++++ b/drivers/gpio/gpio-mpc8xxx.c
+@@ -416,6 +416,8 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ err:
++	if (mpc8xxx_gc->irq)
++		irq_domain_remove(mpc8xxx_gc->irq);
+ 	iounmap(mpc8xxx_gc->regs);
+ 	return ret;
  }
- 
--static u32 synthesize_attr(struct bench_data *data)
-+static ssize_t synthesize_attr(struct bench_data *data)
- {
- 	union perf_event event;
- 
-@@ -151,7 +151,7 @@ static u32 synthesize_attr(struct bench_data *data)
- 	return writen(data->input_pipe[1], &event, event.header.size);
- }
- 
--static u32 synthesize_fork(struct bench_data *data)
-+static ssize_t synthesize_fork(struct bench_data *data)
- {
- 	union perf_event event;
- 
-@@ -169,8 +169,7 @@ static u32 synthesize_fork(struct bench_data *data)
- 	return writen(data->input_pipe[1], &event, event.header.size);
- }
- 
--static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
--			   u64 timestamp)
-+static ssize_t synthesize_mmap(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
- {
- 	union perf_event event;
- 	size_t len = offsetof(struct perf_record_mmap2, filename);
-@@ -198,23 +197,25 @@ static u32 synthesize_mmap(struct bench_data *data, struct bench_dso *dso,
- 
- 	if (len > sizeof(event.mmap2)) {
- 		/* write mmap2 event first */
--		writen(data->input_pipe[1], &event, len - bench_id_hdr_size);
-+		if (writen(data->input_pipe[1], &event, len - bench_id_hdr_size) < 0)
-+			return -1;
- 		/* zero-fill sample id header */
- 		memset(id_hdr_ptr, 0, bench_id_hdr_size);
- 		/* put timestamp in the right position */
- 		ts_idx = (bench_id_hdr_size / sizeof(u64)) - 2;
- 		id_hdr_ptr[ts_idx] = timestamp;
--		writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size);
--	} else {
--		ts_idx = (len / sizeof(u64)) - 2;
--		id_hdr_ptr[ts_idx] = timestamp;
--		writen(data->input_pipe[1], &event, len);
-+		if (writen(data->input_pipe[1], id_hdr_ptr, bench_id_hdr_size) < 0)
-+			return -1;
-+
-+		return len;
- 	}
--	return len;
-+
-+	ts_idx = (len / sizeof(u64)) - 2;
-+	id_hdr_ptr[ts_idx] = timestamp;
-+	return writen(data->input_pipe[1], &event, len);
- }
- 
--static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
--			     u64 timestamp)
-+static ssize_t synthesize_sample(struct bench_data *data, struct bench_dso *dso, u64 timestamp)
- {
- 	union perf_event event;
- 	struct perf_sample sample = {
-@@ -233,7 +234,7 @@ static u32 synthesize_sample(struct bench_data *data, struct bench_dso *dso,
- 	return writen(data->input_pipe[1], &event, event.header.size);
- }
- 
--static u32 synthesize_flush(struct bench_data *data)
-+static ssize_t synthesize_flush(struct bench_data *data)
- {
- 	struct perf_event_header header = {
- 		.size = sizeof(header),
-@@ -348,14 +349,16 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 	int status;
- 	unsigned int i, k;
- 	struct rusage rusage;
--	u64 len = 0;
- 
- 	/* this makes the child to run */
- 	if (perf_header__write_pipe(data->input_pipe[1]) < 0)
- 		return -1;
- 
--	len += synthesize_attr(data);
--	len += synthesize_fork(data);
-+	if (synthesize_attr(data) < 0)
-+		return -1;
-+
-+	if (synthesize_fork(data) < 0)
-+		return -1;
- 
- 	for (i = 0; i < nr_mmaps; i++) {
- 		int idx = rand() % (nr_dsos - 1);
-@@ -363,13 +366,18 @@ static int inject_build_id(struct bench_data *data, u64 *max_rss)
- 		u64 timestamp = rand() % 1000000;
- 
- 		pr_debug2("   [%d] injecting: %s\n", i+1, dso->name);
--		len += synthesize_mmap(data, dso, timestamp);
-+		if (synthesize_mmap(data, dso, timestamp) < 0)
-+			return -1;
- 
--		for (k = 0; k < nr_samples; k++)
--			len += synthesize_sample(data, dso, timestamp + k * 1000);
-+		for (k = 0; k < nr_samples; k++) {
-+			if (synthesize_sample(data, dso, timestamp + k * 1000) < 0)
-+				return -1;
-+		}
- 
--		if ((i + 1) % 10 == 0)
--			len += synthesize_flush(data);
-+		if ((i + 1) % 10 == 0) {
-+			if (synthesize_flush(data) < 0)
-+				return -1;
-+		}
- 	}
- 
- 	/* this makes the child to finish */
 -- 
 2.30.2
 
