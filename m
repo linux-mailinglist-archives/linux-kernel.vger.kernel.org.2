@@ -2,112 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71284117B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 16:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B851A4117B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241003AbhITO6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 10:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S235244AbhITPDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbhITO6r (ORCPT
+        with ESMTP id S231887AbhITPDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 10:58:47 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B9CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:57:21 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id j14so4117550plx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 07:57:21 -0700 (PDT)
+        Mon, 20 Sep 2021 11:03:05 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF87DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:01:38 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id dj4so6700413edb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:01:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YPFvkcJ03ZkdfGpA8JCa3mFatKaCYINMtSZaZf+KaKI=;
-        b=Dz69VcFJ2dPo27VjmmzU0Ak2MknLb1cotIoH4WC74jS3MKZ6XB8lFGi7mXMCqkt2V+
-         6t18CD7JVYj85b0TzdcCxp09VXVeEExFNLbUgp1to/8ctlnU3XGEUmkJVIpAx2ZdpV5K
-         6Q2ZOxqIBgBm0POzYkxcmdqs5haGlBIeMhEjKo4RCdphxyk0NqXD0L2k850WI0joJBBB
-         cGH9w0D2uZWdVPA067kPy39uwscNJNHWRTObCTCmLkDlTb6VymBC/VotWXja3UQ6N57y
-         Tvf8SfyHJ2/uMoiniUUKEQIGaVPxh/qSdX2lcOYLAoP8m2mFqzz+k9rZUNl+vJjRkmsp
-         W+Xg==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z6SXVjESwxqs4/+lmjaMikpAAHEBRQ8ZRJFrE3wi3Bw=;
+        b=UKTuZjmty+RFPaupr20A8UCZDY8504Sk+38CFMdAglqniYuLPAMBF94HWGXR5fQc+5
+         ZbPwyT9XkZQwJafvZWCO7WbtOT/V4FmTxB6Jixv1JEcauu9Fk/oGrYyWdg37cbX8N2d8
+         Nvg1lDsjOCF2jY2pSxfuMwcwyJxbfuAK44NDMdyyhGQY/wEB2IJcJv14GKfxjuARjmkV
+         +n7/euaMZT5n17Idl0UdXntBNVq70Wxpqbf2lJNhoF67H/kCP1LQeOKzE6QmJfUDWqO4
+         XPan2swbgqA9MwzQDHee04OziG4E4PRXrNuvYgcSEdn5xo1godwXuQwoVieBAiEmfebh
+         kT9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YPFvkcJ03ZkdfGpA8JCa3mFatKaCYINMtSZaZf+KaKI=;
-        b=a/fF/Cmn9V6yTj3XLdiS2ghklycVuw3Wl0PyT55CpYlyiHHeKCTyeKICfLatM+Me47
-         LtRn3uoNSmDl+Lv6CP+PDdkmMzsuLEXpqUJWR9X20uT8UcUEqAL9y/LgPnwvIIysHvKq
-         GAurrV+ZfUgRoq6T+fH6nz8qG4yQ6/lTk2GZeCoCig9wUIv2dlgvmt68EpE+Og5Fux/i
-         s+xBmTaPgtPbGEIrpbh3fD+6L9pbLUefGayb0FjjgI+upZ2y8XonaPXC85G0U3BkaYdu
-         2O9U8Lvr29esYvyxwtqXsCkRQnQwijfBX8v2+aUJ3Q9ZyFD4Dwsu+mhE+Wub9wY0FWMD
-         3OCA==
-X-Gm-Message-State: AOAM533HvAqXHLnz/xSsWL5q67HMQpQP1uSe5R0KRCX+YN957f5Y7AAa
-        nrhrcHwA8PdlI0SepUUgpIv3IQ==
-X-Google-Smtp-Source: ABdhPJw4if6cbIHHe84v5c9oqaVlsHq/xuFSxdoTzdIX3cin4HpBoHlPMiaXYx7+NZIN0WzU03Lfug==
-X-Received: by 2002:a17:902:9a06:b0:13c:86d8:ce0b with SMTP id v6-20020a1709029a0600b0013c86d8ce0bmr23100015plp.51.1632149840313;
-        Mon, 20 Sep 2021 07:57:20 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g14sm2659581pjk.20.2021.09.20.07.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 07:57:19 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 14:57:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] KVM: x86: Identify vCPU0 by its vcpu_idx instead of
- walking vCPUs array
-Message-ID: <YUihS9CcTh9m53J6@google.com>
-References: <20210910183220.2397812-1-seanjc@google.com>
- <20210910183220.2397812-3-seanjc@google.com>
- <87czpd2bsi.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z6SXVjESwxqs4/+lmjaMikpAAHEBRQ8ZRJFrE3wi3Bw=;
+        b=NgkSCY4NgfKZNwN/d7tQq5n1aOP+hWVtzVkfrmNV4YmTqoI3/E/wfuJE6UP27EnCsI
+         HKOHmmPRZmcAIL3q9E12l1quZ6l1ZAdteHmjUZOLbZ4YtP6VfTNVubP+2M+LA8sHJ/7C
+         tBJvr3UgOLToPULIKkJne6jnaA83t6SlKDC5WNCJQrtPzS1dNH4Decu64QH7EXf008Ig
+         w5syjeea4r+5/hK+ALXcyHvAxpqXPQ8YPtt38C+CbBVDgCI4ctmlWdT8ShoPFg5B8Ilk
+         mP6NWt5B94AmByVGzopQ/H/lcx1SgjzT6nB4X0ADvzGspZ2E6UNfD/GVXYTUFxHNie+o
+         DI2A==
+X-Gm-Message-State: AOAM531oZoLqQrRMt6Bf9pgvyllCCh1wvva9ExfnRlrK7QlOhq7TyKDh
+        ed7YhZh9wTKFNmiEj9fYtpjkuiZ86BfZ5Udr6/zjmg==
+X-Google-Smtp-Source: ABdhPJzT1B90STBVxrV2Y11rYWrG6lqNbbI3X7Hc7MS7LxIhduOaEblG0K9zBWTd7NJQN4IENPBYzFOg9JqgvyaI4Gg=
+X-Received: by 2002:a05:6402:399:: with SMTP id o25mr30240808edv.118.1632150021260;
+ Mon, 20 Sep 2021 08:00:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87czpd2bsi.fsf@vitty.brq.redhat.com>
+References: <20210920140509.5177-1-brgl@bgdev.pl> <20210920140509.5177-3-brgl@bgdev.pl>
+ <20210920140938.GA24424@lst.de> <CAMuHMdXoZdhSydMpbW8B6oQJNnpYpTxmhHrV5CJNTUP7T1KsoA@mail.gmail.com>
+ <20210920143046.GA26163@lst.de> <CAMRc=McQoD=cUHLu6TMyW85fdtXOm4x38tHVnEGjkVfcfX0mfA@mail.gmail.com>
+ <CAMuHMdXUpMvhjjgNdLgfJvaWWG9_oHa_pmx4TTy0mC1p1zUEmw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXUpMvhjjgNdLgfJvaWWG9_oHa_pmx4TTy0mC1p1zUEmw@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 20 Sep 2021 17:00:10 +0200
+Message-ID: <CAMRc=MdNQ+rquq6_rf-rxvoPzz9G0EzO4T=ryF6XYXh51NBL_w@mail.gmail.com>
+Subject: Re: [PATCH v5 2/8] configfs: use BIT() for internal flags
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Joel Becker <jlbec@evilplan.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> 
-> > Use vcpu_idx to identify vCPU0 when updating HyperV's TSC page, which is
-> > shared by all vCPUs and "owned" by vCPU0 (because vCPU0 is the only vCPU
-> > that's guaranteed to exist).  Using kvm_get_vcpu() to find vCPU works,
-> > but it's a rather odd and suboptimal method to check the index of a given
-> > vCPU.
+On Mon, Sep 20, 2021 at 4:50 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Bartosz,
+>
+> On Mon, Sep 20, 2021 at 4:47 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > On Mon, Sep 20, 2021 at 4:30 PM Christoph Hellwig <hch@lst.de> wrote:
+> > > On Mon, Sep 20, 2021 at 04:29:30PM +0200, Geert Uytterhoeven wrote:
+> > > > On Mon, Sep 20, 2021 at 4:09 PM Christoph Hellwig <hch@lst.de> wrote:
+> > > > > On Mon, Sep 20, 2021 at 04:05:03PM +0200, Bartosz Golaszewski wrote:
+> > > > > > For better readability and maintenance: use the BIT() macro for flag
+> > > > > > definitions.
+> > > > >
+> > > > > NAK.  BIT() is the stupidest macro in the kernel and shall not be used
+> > > > > ever.  And I'm pretty sure we had this discussion a few times.
+> > > >
+> > > > Care to explain why it is a stupid macro?
+> > >
+> > > Please look at the previous thread.  I'm tired of this discussion.
 > >
-> > No functional change intended.
-> >
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 86539c1686fa..6ab851df08d1 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -2969,7 +2969,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
-> >  				       offsetof(struct compat_vcpu_info, time));
-> >  	if (vcpu->xen.vcpu_time_info_set)
-> >  		kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_time_info_cache, 0);
-> > -	if (v == kvm_get_vcpu(v->kvm, 0))
-> > +	if (!v->vcpu_idx)
-> >  		kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
-> >  	return 0;
-> >  }
-> 
-> " ... instead of walking vCPUs array" in the Subject line is a bit
-> confusing because kvm_get_vcpu() doesn't actually walk anything, it just
-> returns 'kvm->vcpus[i]' after checking that we actually have that many
-> vCPUs. The patch itself is OK, so
+> > The only previous answer from Christoph is this:
+> > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2399968.html
+>
+> Yep, found that one, too.
+>
+> Now, as these definitions do not correspond to hardware register bits,
+> perhaps use an enum?
+>
 
-Argh, yes, I have a feeling I wrote the changelog after digging into the history
-of kvm_get_vcpu().
+These are flags, we can set more than one to any given dirent.
 
-Paolo, can you tweak the shortlog to:
+Anyway, I'm more interested in Al's comments on the implementation of
+committable items than bikeshedding about whether to use or not to use
+BIT() so I'll wait for those before revisiting this patch.
 
-  KVM: x86: Identify vCPU0 by its vcpu_idx instead of its vCPUs array entry
+Bart
