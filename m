@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E6E412185
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823EB412191
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358372AbhITSGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:06:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57102 "EHLO mail.kernel.org"
+        id S1358407AbhITSGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:06:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356663AbhITSA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:00:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 072BE63225;
-        Mon, 20 Sep 2021 17:15:55 +0000 (UTC)
+        id S1356676AbhITSBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:01:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3405B6322A;
+        Mon, 20 Sep 2021 17:15:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158156;
-        bh=NZBw4Ex3/5MqZZMX7Wn6xPNs+ml3TBrMxKqbfYqvCaU=;
+        s=korg; t=1632158158;
+        bh=TUEd5GgCPvHCqT4uiCo//+eCmN6z45ot8WQiTPkqidw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfKeYbFn90mUo24xnV/udR+txDNisruU9+6k1hHS/xT8UDgZlg69XEvDYqkBpWPKa
-         zLZSK45KM19jqGVWWP//xtYHmLUBPcstU1mO/ALmsY8cPSKLekGBAcoTBUyHbptOGJ
-         7S3pASNjgsyq6PFWpQ0+caQSwBsHG1kWRBsaICBo=
+        b=GNtd16xGavbfs1w5fqFOZLno3mrcbu8Pygve3Ki4dqEVUogLYW1hiz9YvKO1wS01R
+         idAhn0+GLFmW2KG5Zdfws23u9N6hFE7B8fEfPojUimyh3kO4X+rHT/RV2EbcaX2xi0
+         tO9vd2AghXNWbGfz8a2B62tDdtFBSw1C1zmRo/yQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 027/260] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
-Date:   Mon, 20 Sep 2021 18:40:45 +0200
-Message-Id: <20210920163932.048375849@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        David Heidelberg <david@ixit.cz>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 5.4 028/260] ARM: 9105/1: atags_to_fdt: dont warn about stack size
+Date:   Mon, 20 Sep 2021 18:40:46 +0200
+Message-Id: <20210920163932.079793660@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -42,50 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: David Heidelberg <david@ixit.cz>
 
-commit 8a6430ab9c9c87cb64c512e505e8690bbaee190b upstream.
+commit b30d0289de72c62516df03fdad8d53f552c69839 upstream.
 
-Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
-covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
-and "Samsung SSD 850*" series based on information from Samsung.
+The merge_fdt_bootargs() function by definition consumes more than 1024
+bytes of stack because it has a 1024 byte command line on the stack,
+meaning that we always get a warning when building this file:
 
-But there is a large number of users which is still reporting issues
-with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
-Marvell SATA controllers and all reporters also report these problems
-going away when disabling queued trims.
+arch/arm/boot/compressed/atags_to_fdt.c: In function 'merge_fdt_bootargs':
+arch/arm/boot/compressed/atags_to_fdt.c:98:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-Note that with AMD SATA controllers users are reporting even worse
-issues and only completely disabling NCQ helps there, this will be
-addressed in a separate patch.
+However, as this is the decompressor and we know that it has a very shallow
+call chain, and we do not actually risk overflowing the kernel stack
+at runtime here.
 
-Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
-Cc: stable@vger.kernel.org
-Cc: Kate Hsuan <hpa@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Link: https://lore.kernel.org/r/20210823095220.30157-1-hdegoede@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This just shuts up the warning by disabling the warning flag for this
+file.
+
+Tested on Nexus 7 2012 builds.
+
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ata/libata-core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/boot/compressed/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -4556,6 +4556,10 @@ static const struct ata_blacklist_entry
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+--- a/arch/arm/boot/compressed/Makefile
++++ b/arch/arm/boot/compressed/Makefile
+@@ -90,6 +90,8 @@ $(addprefix $(obj)/,$(libfdt_objs) atags
+ 	$(addprefix $(obj)/,$(libfdt_hdrs))
+ 
+ ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
++CFLAGS_REMOVE_atags_to_fdt.o += -Wframe-larger-than=${CONFIG_FRAME_WARN}
++CFLAGS_atags_to_fdt.o += -Wframe-larger-than=1280
+ OBJS	+= $(libfdt_objs) atags_to_fdt.o
+ endif
  
 
 
