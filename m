@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37B6412305
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C74412308
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351753AbhITSUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:20:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35776 "EHLO mail.kernel.org"
+        id S1377750AbhITSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:20:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376368AbhITSMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1376365AbhITSMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:12:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 617E56128E;
-        Mon, 20 Sep 2021 17:20:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F9166327F;
+        Mon, 20 Sep 2021 17:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158429;
-        bh=Hxw1AH0oCOAJhHrcdjjBB0czoB7m10ulqxwFKZ23lqg=;
+        s=korg; t=1632158432;
+        bh=zSV7DOOWFw3nSUmyFh+zYk2R/S1ll/DHgGt+nt/QXng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jxDsIvxrc8eq5KlvLcJQ4HaBFLzwjT7aroIYv6t5OabXxxzQYZwUvznLdt9FSGGSi
-         dfQoXTfK6IfEpG2wSqg04XdnrmxQwWpj/m4KuKVx0jSA26XJsX0TVtm4iymGUnTLC2
-         6ri/ps3NuRS0mNKQAwZOJUVKKnyNo/SSNKgRxAyY=
+        b=sBLdFAI73fcHE0o8ATcKKn0dMhViQzAL4274IT2ex4Fdr/zp7J0lYRcegIqX9GU6s
+         FCQWWCxuVDBzmpZ04OIvP8yOx6s4wtSLMMeTb2byMW+Rxn5RLXW5Okv+zZHGHl2fln
+         lWC/9HO4j6+VnVI7KgldYgff52X4t06zpvdZgSWE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 120/260] media: TDA1997x: fix tda1997x_query_dv_timings() return value
-Date:   Mon, 20 Sep 2021 18:42:18 +0200
-Message-Id: <20210920163935.206498390@linuxfoundation.org>
+Subject: [PATCH 5.4 121/260] media: tegra-cec: Handle errors of clk_prepare_enable()
+Date:   Mon, 20 Sep 2021 18:42:19 +0200
+Message-Id: <20210920163935.238243450@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -42,42 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Hałasa <khalasa@piap.pl>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 7dee1030871a48d4f3c5a74227a4b4188463479a ]
+[ Upstream commit 38367073c796a37a61549b1f66a71b3adb03802d ]
 
-Correctly propagate the tda1997x_detect_std error value.
+tegra_cec_probe() and tegra_cec_resume() ignored possible errors of
+clk_prepare_enable(). The patch fixes this.
 
-Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/tda1997x.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/platform/tegra-cec/tegra_cec.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 1088161498df..18a2027ba145 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -1695,14 +1695,15 @@ static int tda1997x_query_dv_timings(struct v4l2_subdev *sd,
- 				     struct v4l2_dv_timings *timings)
- {
- 	struct tda1997x_state *state = to_state(sd);
-+	int ret;
+diff --git a/drivers/media/platform/tegra-cec/tegra_cec.c b/drivers/media/platform/tegra-cec/tegra_cec.c
+index a632602131f2..efb80a78d2fa 100644
+--- a/drivers/media/platform/tegra-cec/tegra_cec.c
++++ b/drivers/media/platform/tegra-cec/tegra_cec.c
+@@ -366,7 +366,11 @@ static int tegra_cec_probe(struct platform_device *pdev)
+ 		return -ENOENT;
+ 	}
  
- 	v4l_dbg(1, debug, state->client, "%s\n", __func__);
- 	memset(timings, 0, sizeof(struct v4l2_dv_timings));
- 	mutex_lock(&state->lock);
--	tda1997x_detect_std(state, timings);
-+	ret = tda1997x_detect_std(state, timings);
- 	mutex_unlock(&state->lock);
+-	clk_prepare_enable(cec->clk);
++	ret = clk_prepare_enable(cec->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "Unable to prepare clock for CEC\n");
++		return ret;
++	}
  
+ 	/* set context info. */
+ 	cec->dev = &pdev->dev;
+@@ -446,9 +450,7 @@ static int tegra_cec_resume(struct platform_device *pdev)
+ 
+ 	dev_notice(&pdev->dev, "Resuming\n");
+ 
+-	clk_prepare_enable(cec->clk);
+-
 -	return 0;
-+	return ret;
++	return clk_prepare_enable(cec->clk);
  }
+ #endif
  
- static const struct v4l2_subdev_video_ops tda1997x_video_ops = {
 -- 
 2.30.2
 
