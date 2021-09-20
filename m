@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53BA141255D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AAC41241D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383368AbhITSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56264 "EHLO mail.kernel.org"
+        id S242972AbhITSae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382175AbhITSkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:40:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4BBD6332D;
-        Mon, 20 Sep 2021 17:30:52 +0000 (UTC)
+        id S1378350AbhITSY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:24:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38017632C6;
+        Mon, 20 Sep 2021 17:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159053;
-        bh=dUAhWhvBrY8Ve4UTgALF8A2Ppz5Lnq+iQzVXBME9oCU=;
+        s=korg; t=1632158710;
+        bh=dc+e0zej0Q32wyD5utT0OrRCTsaAzJdhBe6RukD8kbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7upJLzGe7VpAtXceO5P7luqBbYjJMg4idQZZW1Kk9l9bVWEMUiVWC9jApVoLL6Ii
-         N0zwLovEDteK5Ccj94/u4PUU/V8a4fQ1EGGMYUtScupkp63H2+KsZgg09amQJKzMXT
-         Ooi5H53U+pgP0vV67IQsJU/XaLS4KbAaYr/F2/+A=
+        b=ztRnED2i0AY4okUQEf352TEHcHoqsbwXuezEdqsT4FFjI5W3afkJ+C3FQ8j3JqJs0
+         K2zctNt1jMBiZzY1qfr/zICtXX/Q+04r08W4xaIJewPF4KSodpB/ZH1n/7D40Q2NQN
+         bo2aw0wWAM3/W4cbacFB3ROxJbAdh0uTw0ft4iHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Corinna Vinschen <vinschen@redhat.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Nechama Kraus <nechamax.kraus@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.14 054/168] igc: fix tunnel offloading
+        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH 5.10 020/122] x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
 Date:   Mon, 20 Sep 2021 18:43:12 +0200
-Message-Id: <20210920163923.406720703@linuxfoundation.org>
+Message-Id: <20210920163916.438453746@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,100 +42,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit 40ee363c844fcb6ae0f1f5cfea68aed7e268c2f4 upstream.
+commit 34b1999da935a33be6239226bfa6cd4f704c5c88 upstream.
 
-Checking tunnel offloading, it turns out that offloading doesn't work
-as expected.  The following script allows to reproduce the issue.
-Call it as `testscript DEVICE LOCALIP REMOTEIP NETMASK'
+Jiri Olsa reported a fault when running:
 
-=== SNIP ===
-if [ $# -ne 4 ]
-then
-  echo "Usage $0 DEVICE LOCALIP REMOTEIP NETMASK"
-  exit 1
-fi
-DEVICE="$1"
-LOCAL_ADDRESS="$2"
-REMOTE_ADDRESS="$3"
-NWMASK="$4"
-echo "Driver: $(ethtool -i ${DEVICE} | awk '/^driver:/{print $2}') "
-ethtool -k "${DEVICE}" | grep tx-udp
-echo
-echo "Set up NIC and tunnel..."
-ip addr add "${LOCAL_ADDRESS}/${NWMASK}" dev "${DEVICE}"
-ip link set "${DEVICE}" up
-sleep 2
-ip link add vxlan1 type vxlan id 42 \
-		   remote "${REMOTE_ADDRESS}" \
-		   local "${LOCAL_ADDRESS}" \
-		   dstport 0 \
-		   dev "${DEVICE}"
-ip addr add fc00::1/64 dev vxlan1
-ip link set vxlan1 up
-sleep 2
-rm -f vxlan.pcap
-echo "Running tcpdump and iperf3..."
-( nohup tcpdump -i any -w vxlan.pcap >/dev/null 2>&1 ) &
-sleep 2
-iperf3 -c fc00::2 >/dev/null
-pkill tcpdump
-echo
-echo -n "Max. Paket Size: "
-tcpdump -r vxlan.pcap -nnle 2>/dev/null \
-| grep "${LOCAL_ADDRESS}.*> ${REMOTE_ADDRESS}.*OTV" \
-| awk '{print $8}' | awk -F ':' '{print $1}' \
-| sort -n | tail -1
-echo
-ip link del vxlan1
-ip addr del ${LOCAL_ADDRESS}/${NWMASK} dev "${DEVICE}"
-=== SNAP ===
+  # cat /proc/kallsyms | grep ksys_read
+  ffffffff8136d580 T ksys_read
+  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
 
-The expected outcome is
+  /proc/kcore:     file format elf64-x86-64
 
-  Max. Paket Size: 64904
+  Segmentation fault
 
-This is what you see on igb, the code igc has been taken from.
-However, on igc the output is
+  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+  RIP: 0010:kern_addr_valid
+  Call Trace:
+   read_kcore
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? trace_hardirqs_on
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   ? _raw_spin_unlock
+   ? __handle_mm_fault
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   proc_reg_read
+   ? vfs_read
+   vfs_read
+   ksys_read
+   do_syscall_64
+   entry_SYSCALL_64_after_hwframe
 
-  Max. Paket Size: 1516
+The fault happens because kern_addr_valid() dereferences existent but not
+present PMD in the high kernel mappings.
 
-so the GSO aggregate packets are segmented by the kernel before calling
-igc_xmit_frame.  Inside the subsequent call to igc_tso, the check for
-skb_is_gso(skb) fails and the function returns prematurely.
+Such PMDs are created when free_kernel_image_pages() frees regions larger
+than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
+the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+mark the PMD as not present rather than wipe it completely.
 
-It turns out that this occurs because the feature flags aren't set
-entirely correctly in igc_probe.  In contrast to the original code
-from igb_probe, igc_probe neglects to set the flags required to allow
-tunnel offloading.
+Have kern_addr_valid() check whether higher level page table entries are
+present before trying to dereference them to fix this issue and to avoid
+similar issues in the future.
 
-Setting the same flags as igb fixes the issue on igc.
+Stable backporting note:
+------------------------
 
-Fixes: 34428dff3679 ("igc: Add GSO partial support")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Tested-by: Corinna Vinschen <vinschen@redhat.com>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Nechama Kraus <nechamax.kraus@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Note that the stable marking is for all active stable branches because
+there could be cases where pagetable entries exist but are not valid -
+see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
+sure to be on the safe side here and use pXY_present() accessors rather
+than pXY_none() which could #GP when accessing pages in the direct map.
+
+Also see:
+
+  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+
+for more info.
+
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+Cc: <stable@vger.kernel.org>	# 4.4+
+Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/x86/mm/init_64.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -5962,7 +5962,9 @@ static int igc_probe(struct pci_dev *pde
- 	if (pci_using_dac)
- 		netdev->features |= NETIF_F_HIGHDMA;
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1389,18 +1389,18 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
  
--	netdev->vlan_features |= netdev->features;
-+	netdev->vlan_features |= netdev->features | NETIF_F_TSO_MANGLEID;
-+	netdev->mpls_features |= NETIF_F_HW_CSUM;
-+	netdev->hw_enc_features |= netdev->vlan_features;
+ 	p4d = p4d_offset(pgd, addr);
+-	if (p4d_none(*p4d))
++	if (!p4d_present(*p4d))
+ 		return 0;
  
- 	/* MTU range: 68 - 9216 */
- 	netdev->min_mtu = ETH_MIN_MTU;
+ 	pud = pud_offset(p4d, addr);
+-	if (pud_none(*pud))
++	if (!pud_present(*pud))
+ 		return 0;
+ 
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
+ 
+ 	pmd = pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (!pmd_present(*pmd))
+ 		return 0;
+ 
+ 	if (pmd_large(*pmd))
 
 
