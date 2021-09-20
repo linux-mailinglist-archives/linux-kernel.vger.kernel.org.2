@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9383F4124E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FA54124E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353447AbhITSjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:39:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50466 "EHLO mail.kernel.org"
+        id S1381631AbhITSjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:39:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380559AbhITSe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:34:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A43A363307;
-        Mon, 20 Sep 2021 17:28:22 +0000 (UTC)
+        id S1380558AbhITSeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:34:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC68B63308;
+        Mon, 20 Sep 2021 17:28:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158903;
-        bh=b/rRNjwkpOX6ShPOUdeXpzNgnbvmGEbOzQ6Xy+tOEmk=;
+        s=korg; t=1632158905;
+        bh=uMaNey5bY5FmnaAhFfgRORfIG30CzHaoiYonZxb42RM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yX7Gk/2nLYE99AIrM6nV5RpBvOh0pOKU346yHLkzbRAFoey4No+/e3wiy8iqWWtn5
-         M0JOBVp55eSPMMzJ/JfAdn66dEfWIZYZTuPYXEmY3wcciL7zV4ZkJTrjh83SdxamvD
-         SS/1HRX04PUEWs3OMj4ZWTNm0toGIfieEdxv5jT0=
+        b=QiKAVhhz8fAHl4YSKrNPpmIEjitVAY1w8gi57JG38UTDyiJ/s3/dHvI70bS9UqcQr
+         BXqkxkGVdol0ugfpRGX0TboM7T9EDQsosUPZveL3DZBqQ5B7hiVzC9LrGX7Em91dYl
+         CVnNfyRQ/MNCPITaIuBINXrp2me2UlFWovs23fLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@idosch.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 109/122] qlcnic: Remove redundant unlock in qlcnic_pinit_from_rom
-Date:   Mon, 20 Sep 2021 18:44:41 +0200
-Message-Id: <20210920163919.382030040@linuxfoundation.org>
+Subject: [PATCH 5.10 110/122] ip_gre: validate csum_start only on pull
+Date:   Mon, 20 Sep 2021 18:44:42 +0200
+Message-Id: <20210920163919.413818609@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -40,36 +43,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Willem de Bruijn <willemb@google.com>
 
-[ Upstream commit 9ddbc2a00d7f63fa9748f4278643193dac985f2d ]
+[ Upstream commit 8a0ed250f911da31a2aef52101bc707846a800ff ]
 
-Previous commit 68233c583ab4 removes the qlcnic_rom_lock()
-in qlcnic_pinit_from_rom(), but remains its corresponding
-unlock function, which is odd. I'm not very sure whether the
-lock is missing, or the unlock is redundant. This bug is
-suggested by a static analysis tool, please advise.
+The GRE tunnel device can pull existing outer headers in ipge_xmit.
+This is a rare path, apparently unique to this device. The below
+commit ensured that pulling does not move skb->data beyond csum_start.
 
-Fixes: 68233c583ab4 ("qlcnic: updated reset sequence")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+But it has a false positive if ip_summed is not CHECKSUM_PARTIAL and
+thus csum_start is irrelevant.
+
+Refine to exclude this. At the same time simplify and strengthen the
+test.
+
+Simplify, by moving the check next to the offending pull, making it
+more self documenting and removing an unnecessary branch from other
+code paths.
+
+Strengthen, by also ensuring that the transport header is correct and
+therefore the inner headers will be after skb_reset_inner_headers.
+The transport header is set to csum_start in skb_partial_csum_set.
+
+Link: https://lore.kernel.org/netdev/YS+h%2FtqCJJiQei+W@shredder/
+Fixes: 1d011c4803c7 ("ip_gre: add validation for csum_start")
+Reported-by: Ido Schimmel <idosch@idosch.org>
+Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/ipv4/ip_gre.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-index e6784023bce4..aa7ee43f9252 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-@@ -439,7 +439,6 @@ int qlcnic_pinit_from_rom(struct qlcnic_adapter *adapter)
- 	QLCWR32(adapter, QLCNIC_CRB_PEG_NET_4 + 0x3c, 1);
- 	msleep(20);
+diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+index a0829495b211..a9cc05043fa4 100644
+--- a/net/ipv4/ip_gre.c
++++ b/net/ipv4/ip_gre.c
+@@ -468,8 +468,6 @@ static void __gre_xmit(struct sk_buff *skb, struct net_device *dev,
  
--	qlcnic_rom_unlock(adapter);
- 	/* big hammer don't reset CAM block on reset */
- 	QLCWR32(adapter, QLCNIC_ROMUSB_GLB_SW_RESET, 0xfeffffff);
+ static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ {
+-	if (csum && skb_checksum_start(skb) < skb->data)
+-		return -EINVAL;
+ 	return iptunnel_handle_offloads(skb, csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+ }
  
+@@ -627,15 +625,20 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
+ 	}
+ 
+ 	if (dev->header_ops) {
++		const int pull_len = tunnel->hlen + sizeof(struct iphdr);
++
+ 		if (skb_cow_head(skb, 0))
+ 			goto free_skb;
+ 
+ 		tnl_params = (const struct iphdr *)skb->data;
+ 
++		if (pull_len > skb_transport_offset(skb))
++			goto free_skb;
++
+ 		/* Pull skb since ip_tunnel_xmit() needs skb->data pointing
+ 		 * to gre header.
+ 		 */
+-		skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
++		skb_pull(skb, pull_len);
+ 		skb_reset_mac_header(skb);
+ 	} else {
+ 		if (skb_cow_head(skb, dev->needed_headroom))
 -- 
 2.30.2
 
