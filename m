@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF97411ABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB685411BA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243681AbhITQvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37492 "EHLO mail.kernel.org"
+        id S1344372AbhITRBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:01:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243494AbhITQso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:48:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C3A06127B;
-        Mon, 20 Sep 2021 16:47:14 +0000 (UTC)
+        id S1344211AbhITQ6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60100613AC;
+        Mon, 20 Sep 2021 16:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156434;
-        bh=QRr37YfJQPLZnRmjJRbWWLgo8DpD2vvwR6bdK9vMWKg=;
+        s=korg; t=1632156721;
+        bh=nM9KDf4fQgUhc9doufy0Tl3PUKGDHTLP1Ze5aXqipoQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UKDthbAeqAjrOaYtpG8G8J6X1y32WNNDzZMW62k3XtfN3nX1UtIrfo2TGOrckT+6/
-         znoxbGlD8tJCHi7z3UJYGrp9loElr3Zb9XR0evG0dtZ/l+GbPWf0aVs7NLa6/w+w7w
-         ALFsGceCzPQra6mzNUpG8PwnC5zVE6ec3KapAEYY=
+        b=AaQiws+Ufrv17qZuKkh2+gAS7FcbsLETRQZXLMvowYws7FuinX3j/DHQXhaNFBEbp
+         D+xVGUFH+DM6T6FmN5tqpMDAlBhBPJXPpTQzNOviSgylyrscHgPzjnhSQHlDmWzvNl
+         S9veJUYsx3N47jDM/xirjianjRe4Ir0q/0LnIjxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 025/133] mm/page_alloc: speed up the iteration of max_order
-Date:   Mon, 20 Sep 2021 18:41:43 +0200
-Message-Id: <20210920163913.435100103@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 055/175] Bluetooth: sco: prevent information leak in sco_conn_defer_accept()
+Date:   Mon, 20 Sep 2021 18:41:44 +0200
+Message-Id: <20210920163919.856026712@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,73 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 7ad69832f37e3cea8557db6df7c793905f1135e8 upstream.
+[ Upstream commit 59da0b38bc2ea570ede23a3332ecb3e7574ce6b2 ]
 
-When we free a page whose order is very close to MAX_ORDER and greater
-than pageblock_order, it wastes some CPU cycles to increase max_order to
-MAX_ORDER one by one and check the pageblock migratetype of that page
-repeatedly especially when MAX_ORDER is much larger than pageblock_order.
+Smatch complains that some of these struct members are not initialized
+leading to a stack information disclosure:
 
-We also should not be checking migratetype of buddy when "order ==
-MAX_ORDER - 1" as the buddy pfn may be invalid, so adjust the condition.
-With the new check, we don't need the max_order check anymore, so we
-replace it.
+    net/bluetooth/sco.c:778 sco_conn_defer_accept() warn:
+    check that 'cp.retrans_effort' doesn't leak information
 
-Also adjust max_order initialization so that it's lower by one than
-previously, which makes the code hopefully more clear.
+This seems like a valid warning.  I've added a default case to fix
+this issue.
 
-Link: https://lkml.kernel.org/r/20201204155109.55451-1-songmuchun@bytedance.com
-Fixes: d9dddbf55667 ("mm/page_alloc: prevent merging between isolated and other pageblocks")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2f69a82acf6f ("Bluetooth: Use voice setting in deferred SCO connection request")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/page_alloc.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/bluetooth/sco.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -700,7 +700,7 @@ static inline void __free_one_page(struc
- 	struct page *buddy;
- 	unsigned int max_order;
- 
--	max_order = min_t(unsigned int, MAX_ORDER, pageblock_order + 1);
-+	max_order = min_t(unsigned int, MAX_ORDER - 1, pageblock_order);
- 
- 	VM_BUG_ON(!zone_is_initialized(zone));
- 	VM_BUG_ON_PAGE(page->flags & PAGE_FLAGS_CHECK_AT_PREP, page);
-@@ -715,7 +715,7 @@ static inline void __free_one_page(struc
- 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
- 
- continue_merging:
--	while (order < max_order - 1) {
-+	while (order < max_order) {
- 		buddy_idx = __find_buddy_index(page_idx, order);
- 		buddy = page + (buddy_idx - page_idx);
- 		if (!page_is_buddy(page, buddy, order))
-@@ -736,7 +736,7 @@ continue_merging:
- 		page_idx = combined_idx;
- 		order++;
- 	}
--	if (max_order < MAX_ORDER) {
-+	if (order < MAX_ORDER - 1) {
- 		/* If we are here, it means order is >= pageblock_order.
- 		 * We want to prevent merge between freepages on isolate
- 		 * pageblock and normal pageblock. Without this, pageblock
-@@ -757,7 +757,7 @@ continue_merging:
- 						is_migrate_isolate(buddy_mt)))
- 				goto done_merging;
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 95fd7a837dc5..3174eab6eafc 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -763,6 +763,11 @@ static void sco_conn_defer_accept(struct hci_conn *conn, u16 setting)
+ 			cp.max_latency = cpu_to_le16(0xffff);
+ 			cp.retrans_effort = 0xff;
+ 			break;
++		default:
++			/* use CVSD settings as fallback */
++			cp.max_latency = cpu_to_le16(0xffff);
++			cp.retrans_effort = 0xff;
++			break;
  		}
--		max_order++;
-+		max_order = order + 1;
- 		goto continue_merging;
- 	}
  
+ 		hci_send_cmd(hdev, HCI_OP_ACCEPT_SYNC_CONN_REQ,
+-- 
+2.30.2
+
 
 
