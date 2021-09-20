@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DAD410E56
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 04:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178BA410E58
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 04:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbhITCVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 22:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S234022AbhITCY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 22:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbhITCVu (ORCPT
+        with ESMTP id S231796AbhITCY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 22:21:50 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046CDC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 19:20:23 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id f129so15841059pgc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 19:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=sebezcrpo3CktmGSflruyEelHFPdim6pWkmPYMcLE7o=;
-        b=kilIYneKNOPSU7TPI8PrJKu4O4dOEW28PsehgQUqSR+pPz33bbtH1mpi4ZvVQcY3lF
-         pB2E4nG+BZSDf/AiSrNRf2Ekp5QmlXLaKqlGnKiXnueR6gsAd6UzWF9Mydn9bgiBPeTK
-         qSMhISDJpKONv1o+47BFcZiE6IRGydr1+76n4474d09EWwWkb1+nQ20BJhBjkrHVm7A4
-         hFTAIhq6gdI2rh1aLVBCuWM+gN/Iy5cGH+VmVf5rK0Gtka9kLckLtpltauUC6M7BTCKr
-         RpBDOMiIuX6RQYydJkjRSS8GUXpL4WkCRHdos/rop+IUt9XV/RxAVksPjWyv0r+IYs9/
-         mIdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=sebezcrpo3CktmGSflruyEelHFPdim6pWkmPYMcLE7o=;
-        b=hv9pGYWok07FoI1zrKjmP+Vv2UIDK1uB6KZhqhPPFmfCem85L6A78z7ZrWZ8ONdbU7
-         nEprKrj5eUzR6w8IIdmS2hepn+WDbtRQbkw83f8HIwsC0uG0KA4DWY2t2CsPj2iCepux
-         rRSgvCL4LEJAcDfLYpErGWIeWfnxF693paa2CmvzqXPgidHso1TMoGN39iqvcaIjKWcU
-         DzjDoZO5bMqMcnzp9KbajN/BDjgdo6YCgc+tJHAGQHvJ/IdS00RGUPitvgiMe3Y3LDBG
-         MhGMyyvdmzDB4xhZrzbmug+q/hT+AhoYTB0kYRkcpAGgXZbx9tWHFsXKHGljHaZg9y6x
-         SDjQ==
-X-Gm-Message-State: AOAM530vSno2T1gMMjTnXaihUHZW8rpnYX6x6AfKveX0/Hdbz/mjY/2L
-        s9Nq3uhG1btvjb0VcBvywPSPJXlGcutkHuR4BtY=
-X-Google-Smtp-Source: ABdhPJz0tCypDdPodo0jZAtjPayy172BJtdQs5zi/RZFPRsQaZklBsW1kgrotqgJP98gLY2ryua3n9LbHriIRNcifug=
-X-Received: by 2002:a65:62d1:: with SMTP id m17mr21073864pgv.370.1632104423287;
- Sun, 19 Sep 2021 19:20:23 -0700 (PDT)
+        Sun, 19 Sep 2021 22:24:58 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00075C061574;
+        Sun, 19 Sep 2021 19:23:31 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mS8xm-005iJJ-0G; Mon, 20 Sep 2021 02:23:22 +0000
+Date:   Mon, 20 Sep 2021 02:23:21 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        xu.xin16@zte.com.cn, christian.brauner@ubuntu.com
+Subject: Re: [PATCH v3] init/do_mounts.c: Harden split_fs_names() against
+ buffer overflow
+Message-ID: <YUfwmdWTylRidtkq@zeniv-ca.linux.org.uk>
+References: <YUSUc7AyCq/P3SLR@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a17:90b:2249:0:0:0:0 with HTTP; Sun, 19 Sep 2021 19:20:22
- -0700 (PDT)
-Reply-To: mrs.billchantal6@gmail.com
-From:   "MRS. BILL CHANTAL LAWRENCE" <angelnongu@gmail.com>
-Date:   Sun, 19 Sep 2021 19:20:22 -0700
-Message-ID: <CALEAfd+LVTFb-dh5199d7x=3k0R5aJGdFSZAg2sULqqpSdj4KQ@mail.gmail.com>
-Subject: United Nation,,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUSUc7AyCq/P3SLR@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You have been compensated with the sum of 5.9 million dollars in this
-united nation the payment will be issue into atm visa card and send to
-you from the santander bank we need your address and your whatsapp
-number
+On Fri, Sep 17, 2021 at 09:13:23AM -0400, Vivek Goyal wrote:
 
-Fill the followings with your details;
-1. Your Name:
-2. Country :
-3. Age and Sex:
-4. Occupation :
-5. Mobile Telephone:
-6. Delivery Address:
-7. Id Card Identification
+> --- redhat-linux.orig/init/do_mounts.c	2021-09-15 08:46:33.801689806 -0400
+> +++ redhat-linux/init/do_mounts.c	2021-09-17 08:44:40.781430167 -0400
+> @@ -338,20 +338,19 @@ __setup("rootflags=", root_data_setup);
+>  __setup("rootfstype=", fs_names_setup);
+>  __setup("rootdelay=", root_delay_setup);
+>  
+> -static int __init split_fs_names(char *page, char *names)
+> +/* This can return zero length strings. Caller should check */
+> +static int __init split_fs_names(char *page, size_t size, char *names)
+>  {
+> -	int count = 0;
+> +	int count = 1;
+>  	char *p = page;
+>  
+> -	strcpy(p, root_fs_names);
+> +	strlcpy(p, root_fs_names, size);
+>  	while (*p++) {
+> -		if (p[-1] == ',')
+> +		if (p[-1] == ',') {
+>  			p[-1] = '\0';
+> +			count++;
+> +		}
+>  	}
+> -	*p = '\0';
+> -
+> -	for (p = page; *p; p += strlen(p)+1)
+> -		count++;
+>  
+>  	return count;
+>  }
+> @@ -404,12 +403,16 @@ void __init mount_block_root(char *name,
+>  	scnprintf(b, BDEVNAME_SIZE, "unknown-block(%u,%u)",
+>  		  MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
+>  	if (root_fs_names)
+> -		num_fs = split_fs_names(fs_names, root_fs_names);
+> +		num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
+>  	else
+>  		num_fs = list_bdev_fs_names(fs_names, PAGE_SIZE);
+>  retry:
+>  	for (i = 0, p = fs_names; i < num_fs; i++, p += strlen(p)+1) {
+> -		int err = do_mount_root(name, p, flags, root_mount_data);
+> +		int err;
+> +
+> +		if (!*p)
+> +			continue;
+> +		err = do_mount_root(name, p, flags, root_mount_data);
+>  		switch (err) {
+>  			case 0:
+>  				goto out;
+> @@ -543,10 +546,12 @@ static int __init mount_nodev_root(void)
+>  	fs_names = (void *)__get_free_page(GFP_KERNEL);
+>  	if (!fs_names)
+>  		return -EINVAL;
+> -	num_fs = split_fs_names(fs_names, root_fs_names);
+> +	num_fs = split_fs_names(fs_names, PAGE_SIZE, root_fs_names);
+>  
+>  	for (i = 0, fstype = fs_names; i < num_fs;
+>  	     i++, fstype += strlen(fstype) + 1) {
+> +		if (!*fstype)
+> +			continue;
+>  		if (!fs_is_nodev(fstype))
+>  			continue;
+>  		err = do_mount_root(root_device_name, fstype, root_mountflags,
 
-Thanks
-Mrs. Bill Chantal,
+
+Applied.
