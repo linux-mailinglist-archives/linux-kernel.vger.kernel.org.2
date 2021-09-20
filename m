@@ -2,175 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E234412857
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B95641288A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 23:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241940AbhITVpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 17:45:12 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36816 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231410AbhITVnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 17:43:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=iaWR+4csH3XbjqwDPZ9H83JOs8k0zel2izzxGA+L4jw=; b=m+3c9VtjwnBJLKpiMU5
-        Eu6KEofV2PKAsRB9yqIj6ub8pZCOW0RoxkKggiizpvxpNSw6VWbKb3DSTL4ykdokDWvvpLtweVXDZ
-        GL/4oLPYHbFo5CfzChKGqXMen5Cum9+Rnya7gyYRhWOekfWmVOhMphedM+sUy097qmkZTQKommc=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mSR2d-002eAC-5C; Tue, 21 Sep 2021 00:41:35 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH net v8] skb_expand_head() adjust skb->truesize incorrectly
-To:     Christoph Paasch <christoph.paasch@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
-References: <20210920111259.18f9cc01@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Message-ID: <be927ca4-6fd7-ce89-e472-bb1e5a0dc2a9@virtuozzo.com>
-Date:   Tue, 21 Sep 2021 00:41:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235711AbhITV45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 17:56:57 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:45646 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234193AbhITVy4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 17:54:56 -0400
+Received: by mail-ot1-f42.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso25539738otv.12;
+        Mon, 20 Sep 2021 14:53:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=X2j5YtyheAq5Lphy8fXkDQEgWgYMfVgh6X/yNCkEz3Q=;
+        b=38YYFjauQkPGSA4wEPPyzNuWETM3kGW0c8xGcMFOR3CPAgqud3HiBuMDlkXc2R2PK0
+         QOVcNsaAQhAGs9hIhSnTdSfCgtPp2tQBHB8M5edPDReib5g/qprVh303BG+rsqWE+S7V
+         nrUnKA6WScX7WdUN9zZKH4Dsh2v9Ql+JkcjSyb7LNqUfKVp0HL3yDHL7hn7Y+rmhQoDP
+         iscxJiVtIhGBjCotMsZobh9KnsABv2EeUhIuLp983XOv/zgypNSC2ECFATcVJFfrzw9o
+         4UsrzB2XosR7J1eBOnr5D1ud5BSepH0K23KRZL1XD7EPgFr+kf5ntHMSX135RIdLMUmR
+         /RmQ==
+X-Gm-Message-State: AOAM530chm/4JIm6tmNgcFRdKuZ4BkT1hnNfE2C1g4KcHdJfo4ZzzLoB
+        Ssit4Zf+rJoe/GQiGYcUvw==
+X-Google-Smtp-Source: ABdhPJwegcq4esMvrkBxmsBb4RHxvmCqmtfc/O8GDwlMOCxv29nheZNjDAf1CkhXb2sVvNIZYuPpyw==
+X-Received: by 2002:a05:6830:14c2:: with SMTP id t2mr6795296otq.115.1632174808482;
+        Mon, 20 Sep 2021 14:53:28 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e10sm1316020oig.11.2021.09.20.14.53.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 14:53:27 -0700 (PDT)
+Received: (nullmailer pid 848408 invoked by uid 1000);
+        Mon, 20 Sep 2021 21:53:26 -0000
+Date:   Mon, 20 Sep 2021 16:53:26 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     linux-arm-msm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, bartosz.dudziak@snejp.pl,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/8] dt-bindings: arm: qcom: Document APQ8026 SoC binding
+Message-ID: <YUkC1q65RjkwBaAj@robh.at.kernel.org>
+References: <20210911232707.259615-1-luca@z3ntu.xyz>
+ <20210911232707.259615-8-luca@z3ntu.xyz>
 MIME-Version: 1.0
-In-Reply-To: <20210920111259.18f9cc01@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210911232707.259615-8-luca@z3ntu.xyz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Paasch reports [1] about incorrect skb->truesize
-after skb_expand_head() call in ip6_xmit.
-This may happen because of two reasons:
-- skb_set_owner_w() for newly cloned skb is called too early,
-before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-- pskb_expand_head() does not adjust truesize in (skb->sk) case.
-In this case sk->sk_wmem_alloc should be adjusted too.
+On Sun, Sep 12, 2021 at 01:27:01AM +0200, Luca Weiss wrote:
+> Document the APQ8026 (based on MSM8226) SoC device-tree binding and the
+> LG G Watch R.
 
-[1] https://lkml.org/lkml/2021/8/20/1082
+Looks like this was applied, but lg vs. lge needs to be sorted first. 
+IMO, we should fix the one instance of 'lge'.
 
-Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
-Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
-Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
-v8: clone non-wmem skb
-V7 (from kuba@):
-    shift more magic into helpers,
-    follow Eric's advice and don't inherit non-wmem skbs for now
-v6: fixed delta,
-    improved comments
-v5: fixed else condition, thanks to Eric
-    reworked update of expanded skb,
-    added corresponding comments
-v4: decided to use is_skb_wmem() after pskb_expand_head() call
-    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
-v3: removed __pskb_expand_head(),
-    added is_skb_wmem() helper for skb with wmem-compatible destructors
-    there are 2 ways to use it:
-     - before pskb_expand_head(), to create skb clones
-     - after successfull pskb_expand_head() to change owner on extended skb.
-v2: based on patch version from Eric Dumazet,
-    added __pskb_expand_head() function, which can be forced
-    to adjust skb->truesize and sk->sk_wmem_alloc.
----
- include/net/sock.h |  1 +
- net/core/skbuff.c  | 33 +++++++++++++++++++++------------
- net/core/sock.c    |  8 ++++++++
- 3 files changed, 30 insertions(+), 12 deletions(-)
-
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 95b2577..173d58c 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
- 			     gfp_t priority);
- void __sock_wfree(struct sk_buff *skb);
- void sock_wfree(struct sk_buff *skb);
-+bool is_skb_wmem(const struct sk_buff *skb);
- struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
- 			     gfp_t priority);
- void skb_orphan_partial(struct sk_buff *skb);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f931176..4b49f63 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1804,30 +1804,39 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
- struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- {
- 	int delta = headroom - skb_headroom(skb);
-+	int osize = skb_end_offset(skb);
-+	struct sock *sk = skb->sk;
- 
- 	if (WARN_ONCE(delta <= 0,
- 		      "%s is expecting an increase in the headroom", __func__))
- 		return skb;
- 
-+	delta = SKB_DATA_ALIGN(delta);
- 	/* pskb_expand_head() might crash, if skb is shared */
--	if (skb_shared(skb)) {
-+	if (skb_shared(skb) || !is_skb_wmem(skb)) {
- 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
- 
--		if (likely(nskb)) {
--			if (skb->sk)
--				skb_set_owner_w(nskb, skb->sk);
--			consume_skb(skb);
--		} else {
--			kfree_skb(skb);
--		}
-+		if (unlikely(!nskb))
-+			goto fail;
-+
-+		if (sk)
-+			skb_set_owner_w(nskb, sk);
-+		consume_skb(skb);
- 		skb = nskb;
- 	}
--	if (skb &&
--	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
--		kfree_skb(skb);
--		skb = NULL;
-+	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC))
-+		goto fail;
-+
-+	if (sk) {
-+		delta = skb_end_offset(skb) - osize;
-+		refcount_add(delta, &sk->sk_wmem_alloc);
-+		skb->truesize += delta;
- 	}
- 	return skb;
-+
-+fail:
-+	kfree_skb(skb);
-+	return NULL;
- }
- EXPORT_SYMBOL(skb_expand_head);
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 950f1e7..6cbda43 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
- }
- EXPORT_SYMBOL(skb_set_owner_w);
- 
-+bool is_skb_wmem(const struct sk_buff *skb)
-+{
-+	return skb->destructor == sock_wfree ||
-+	       skb->destructor == __sock_wfree ||
-+	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
-+}
-+EXPORT_SYMBOL(is_skb_wmem);
-+
- static bool can_skb_orphan_partial(const struct sk_buff *skb)
- {
- #ifdef CONFIG_TLS_DEVICE
--- 
-1.8.3.1
-
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index 880ddafc634e..da44688133af 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -25,6 +25,7 @@ description: |
+>    The 'SoC' element must be one of the following strings:
+>  
+>          apq8016
+> +        apq8026
+>          apq8074
+>          apq8084
+>          apq8096
+> @@ -92,6 +93,11 @@ properties:
+>                - qcom,apq8016-sbc
+>            - const: qcom,apq8016
+>  
+> +      - items:
+> +          - enum:
+> +              - lge,lenok
+> +          - const: qcom,apq8026
+> +
+>        - items:
+>            - enum:
+>                - qcom,apq8064-cm-qs600
+> -- 
+> 2.33.0
+> 
+> 
