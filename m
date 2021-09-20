@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457F44111F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CFE4111F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbhITJgH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Sep 2021 05:36:07 -0400
-Received: from mail4.swissbit.com ([176.95.1.100]:55294 "EHLO
-        mail4.swissbit.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhITJgE (ORCPT
+        id S230239AbhITJkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:40:11 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:63225 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhITJkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:36:04 -0400
-Received: from mail4.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id E4AEA1222A6;
-        Mon, 20 Sep 2021 11:34:35 +0200 (CEST)
-Received: from mail4.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id CF09B121B6E;
-        Mon, 20 Sep 2021 11:34:35 +0200 (CEST)
-X-TM-AS-ERS: 10.149.2.84-127.5.254.253
-X-TM-AS-SMTP: 1.0 ZXguc3dpc3NiaXQuY29t Y2xvZWhsZUBoeXBlcnN0b25lLmNvbQ==
-X-DDEI-TLS-USAGE: Used
-Received: from ex.swissbit.com (SBDEEX02.sbitdom.lan [10.149.2.84])
-        by mail4.swissbit.com (Postfix) with ESMTPS;
-        Mon, 20 Sep 2021 11:34:35 +0200 (CEST)
-Received: from sbdeex02.sbitdom.lan (10.149.2.84) by sbdeex02.sbitdom.lan
- (10.149.2.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.15; Mon, 20 Sep
- 2021 11:34:35 +0200
-Received: from sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74]) by
- sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74%8]) with mapi id
- 15.02.0792.015; Mon, 20 Sep 2021 11:34:35 +0200
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Jesper Nilsson <jesper.nilsson@axis.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "marten.lindahl@axis.com" <marten.lindahl@axis.com>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Thread-Topic: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-Thread-Index: AQHXq5f2H1xcZooo4kGJdi3JsFt1D6uoGrGAgASR040=
-Date:   Mon, 20 Sep 2021 09:34:34 +0000
-Message-ID: <0c002d216fa44df39fef87001079ca84@hyperstone.com>
-References: <bf19053cf6f547bcbb364975cda84c30@hyperstone.com>,<20210917134123.GL12780@axis.com>
-In-Reply-To: <20210917134123.GL12780@axis.com>
-Accept-Language: en-US, de-DE
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.154.1.4]
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        Mon, 20 Sep 2021 05:40:06 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210920093835euoutp027672c9320ac5d84e60e29e17910d2907~mfj0gLh5X2690926909euoutp02Y
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:38:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210920093835euoutp027672c9320ac5d84e60e29e17910d2907~mfj0gLh5X2690926909euoutp02Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1632130716;
+        bh=e6isLm0fq/xkM6oDTJGwHszCngzBJExBJzDBgTBtJs0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=l/ElDmCoYjJa66ScBu2HKInHkEAD4KiX1K8uZXGwnOCzdZIkI2isYApN4VrMzvpr6
+         m9Pem7H6dlKDJb/BgdnWvtF8gjWNMlx6FNGCqatR6E12I18pz6vPoi4zQmwWfVSHPL
+         y5EVUGFBo+5s1aq8lhwNQb+DQ/pPqJrvVsyLk+2s=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210920093835eucas1p1c9dda5ed24ec95143ab290b506c8f2b8~mfjz7AyFA0165601656eucas1p1n;
+        Mon, 20 Sep 2021 09:38:35 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 50.0F.42068.B9658416; Mon, 20
+        Sep 2021 10:38:35 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210920093834eucas1p2a0187690220f466590d390b9775ced84~mfjzKw59e2473024730eucas1p2R;
+        Mon, 20 Sep 2021 09:38:34 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210920093834eusmtrp2bcae9c6411b3f96dcbeba51ad7144439~mfjzJwm1L2829128291eusmtrp22;
+        Mon, 20 Sep 2021 09:38:34 +0000 (GMT)
+X-AuditID: cbfec7f4-c71ff7000002a454-e7-6148569bd40a
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 18.20.31287.A9658416; Mon, 20
+        Sep 2021 10:38:34 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210920093833eusmtip24b53e66487ae49756c55d09b113c5c6e~mfjyXLVVq1258312583eusmtip2n;
+        Mon, 20 Sep 2021 09:38:33 +0000 (GMT)
+Subject: Re: [PATCH v2 0/3] devfreq: exynos-ppmu: conform to dt naming
+ convention
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     Sylwester Nawrocki <snawrocki@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <04270892-0952-49ca-d9b7-eb8406e283ff@samsung.com>
+Date:   Mon, 20 Sep 2021 11:38:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-X-TMASE-Version: DDEI-5.1-8.6.1018-26418.007
-X-TMASE-Result: 10--1.266600-10.000000
-X-TMASE-MatchedRID: F7tLedRt7ifUL3YCMmnG4vGG8F2k2BBVv5tdwacZEnrfoEW8NyvnbyaC
-        jkFKp/+ebb+wP0Qo+N6TH1CW/TkdqldXhVJKmheR52cbj4/WmPsL8TGleseLPEoMHl9co6FPw9M
-        1TrvkSYercKMJSOLvFZo4ITanr/FwE29kWrNuieBFM72aEhcbjc0b3CgaR62KEcWQUCNHW2ds5J
-        OqCt0EWWQpTLT4bj+xEXcbsy/3gdUYB2fOueQzjxM0JxSxHjFJavP8b9lJtWr6C0ePs7A07V9vM
-        TaVNFNz2tl1Zv77sopJpXzj6uHXhHXaLkIcCRk2nXkRk1EvZ8Q=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-TMASE-XGENCLOUD: f2104eb2-9cd3-4d2d-ab0d-d76412f53db1-0-0-200-0
+In-Reply-To: <20210920071540.38337-1-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djPc7qzwzwSDZ71ClhsnLGe1eL6l+es
+        FvOPnGO12Pj2B5PF2aY37BabHl9jtbi8aw6bxefeI4wWM87vY7K43biCzaJ17xF2i/anL5kd
+        eDxmNfSyeWxa1cnmsXlJvUffllWMHp83yQWwRnHZpKTmZJalFunbJXBlXJh8hbXgLkfFlT3N
+        7A2Mk9m7GDk5JARMJK7NmsHSxcjFISSwglHi34FeJgjnC6NEx95PzCBVQgKfGSUeTbCD6fi4
+        +gkbRNFyoPiLD4wQzkdGiYk3b7OAVAkLBEucXLsaLCEi8I9JYs/+BYwgCWaBVIn/D3vAxrIJ
+        GEp0ve1iA7F5Bewkmr73gjWzCKhKXP3ZCnagqECyxLS/TcwQNYISJ2c+AavhFHCXaDx+AWqm
+        vMT2t3OYIWxxiVtP5oP9ICHwg0PiTMMhJoi7XSSunN/ADGELS7w6vgUaAjIS/3fCNDQzSjw8
+        t5YdwulhlLjcNIMRospa4s65X0CncgCt0JRYv0sfIuwosWDhEkaQsIQAn8SNt4IQR/BJTNo2
+        nRkizCvR0SYEUa0mMev4Ori1By9cYp7AqDQLyWuzkLwzC8k7sxD2LmBkWcUonlpanJueWmyU
+        l1quV5yYW1yal66XnJ+7iRGYtk7/O/5lB+PyVx/1DjEycTAeYpTgYFYS4U194pYoxJuSWFmV
+        WpQfX1Sak1p8iFGag0VJnDdpy5p4IYH0xJLU7NTUgtQimCwTB6dUA5OxMV/3rL6NM+ZFrM8L
+        7QjgCwuWTK6IL7ylurr39+4nz7/O5PXKZVqpsHRJTFHan8jOs4EH03Q+TIhPZZPIl0+ZdVhW
+        QPv9JvHdN9vVPM66fGNIn6TL7WXLoPu4tsAseecMW4436z5/97apf3STKXyKVfePrWe3rrXp
+        udywwqLAXNT1ivx0dv2TMdsrjG7sFfmhmMUj/sNVjd+Y06Lza/L7O7/X/76ufPa8zJI/JssX
+        f1/oWVz43pV1YpnrOZPmvFWzpwn/DblWF1yel7F40baHNRcn7b0QrJWWsGRG1Zqd9V15tfcV
+        8iP5rM1/Xv13XeVG9eF8xTmHHdaZnAx8pDZ1/f3gv8kJLetyNqXVvFdiKc5INNRiLipOBACp
+        dacpygMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xe7qzwjwSDXrmSVlsnLGe1eL6l+es
+        FvOPnGO12Pj2B5PF2aY37BabHl9jtbi8aw6bxefeI4wWM87vY7K43biCzaJ17xF2i/anL5kd
+        eDxmNfSyeWxa1cnmsXlJvUffllWMHp83yQWwRunZFOWXlqQqZOQXl9gqRRtaGOkZWlroGZlY
+        6hkam8daGZkq6dvZpKTmZJalFunbJehlXJh8hbXgLkfFlT3N7A2Mk9m7GDk5JARMJD6ufsLW
+        xcjFISSwlFHiYsckZoiEjMTJaQ2sELawxJ9rXVBF7xklus78A+sWFgiWOLl2NSOILSLwj0ni
+        0VdDEJtZIFVi+sQP7BANsxgl7rz9CTaJTcBQoustyCRODl4BO4mm770sIDaLgKrE1Z+tYENF
+        BZIl3r7+zgRRIyhxcuYTsBpOAXeJxuMXGCEWmEnM2/yQGcKWl9j+dg6ULS5x68l8pgmMQrOQ
+        tM9C0jILScssJC0LGFlWMYqklhbnpucWG+oVJ+YWl+al6yXn525iBMbptmM/N+9gnPfqo94h
+        RiYOxkOMEhzMSiK8qU/cEoV4UxIrq1KL8uOLSnNSiw8xmgL9M5FZSjQ5H5go8kriDc0MTA1N
+        zCwNTC3NjJXEebfOXRMvJJCeWJKanZpakFoE08fEwSnVwHRI5pkaR6q8kamo8/UDF0KWXtwS
+        pVW7u3Tm+6o9dg0bpnmWbinYOD9HeetysU/6exx4NqlOVN89Syv/b9nSk3leb+fOOSEYGRZs
+        enJqTkBiUnHsJPEsnYAeRlFTCYFVBSFL/u3kDxVerquSvYyhgyUx1eWD4uROxf5H2w8KPhQq
+        yOzWfV3cltq4aE179+bfGz2NDXVsWTgvmU/j87fOYFTzWFzZwdW6mPP9J/b7vybKa75w/Kix
+        J0tswbHdv3gVc8MW7zQLqmLbo363kokvZGuETMb69/9XqBW0i/22OGLBOPWUq1nwbTHNmcd6
+        HXVcV0ywULVcekeiNL04xUf62J8srXD1b2y9dtzLgsSVWIozEg21mIuKEwHHLAXgXAMAAA==
+X-CMS-MailID: 20210920093834eucas1p2a0187690220f466590d390b9775ced84
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210920071554eucas1p195184c73f79e7bc12ea83cb43e14adc5
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210920071554eucas1p195184c73f79e7bc12ea83cb43e14adc5
+References: <CGME20210920071554eucas1p195184c73f79e7bc12ea83cb43e14adc5@eucas1p1.samsung.com>
+        <20210920071540.38337-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Sent: Friday, September 17, 2021 3:41 PM
-To: Christian Löhle
-Cc: linux-kernel@vger.kernel.org; linux-mmc@vger.kernel.org; marten.lindahl@axis.com; jh80.chung@samsung.com; ulf.hansson@linaro.org
-Subject: Re: [PATCH] mmc: dw_mmc: avoid long timeout if register invalid
-
->One second could be to short, we have seen some cards take up
->to 10s on write operations. Although that was quite a few years ago.
+On 20.09.2021 09:15, Krzysztof Kozlowski wrote:
+> My previous patch 3/3 (ARM: dts: exynos: align PPMU event node names
+> with dtschema) caused issues reported by Marek [1].
 >
->TMOUT is only used for reads if I understand correctly,
->so it should be ok anyways.
+> Tested on Exynos5422. Testing on Exynso5433 board would be very useful.
+
+Works fine on both 5422 and 5433.
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+> Changes since v1:
+> 1. New patches 1/3 and 2/3.
+> 2. Patch 3/3: rename event-name to match node name.
 >
->/Jesper
-
-Yes, apart from it only affecting reads, the calculated timeout is only that high if the register still holds the reset value.
-I've only seen and would expect this for initialization 'read' commands, like ACMD13, or ACMD51.
-I have chosen 1s to hit an expectation that I would consider normal, that a card is initialized in a couple of seconds after plugging in, or never.
-
-Regards,
-Christian=
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+> [1] https://lore.kernel.org/linux-samsung-soc/0212a402-1490-0f8f-005e-32bb6f636a13@canonical.com/T/#m570c0257204af553fe11f9122551311beb56c15e
+>
+> Best regards,
+> Krzysztof
+>
+>
+> Krzysztof Kozlowski (3):
+>    devfreq: exynos-ppmu: use node names with hyphens
+>    devfreq: exynos-ppmu: simplify parsing event-type from DT
+>    ARM: dts: exynos: align PPMU event node names with dtschema
+>
+>   arch/arm/boot/dts/exynos5420.dtsi   | 16 ++++++++--------
+>   drivers/devfreq/event/exynos-ppmu.c | 12 +++++++-----
+>   2 files changed, 15 insertions(+), 13 deletions(-)
+>
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
