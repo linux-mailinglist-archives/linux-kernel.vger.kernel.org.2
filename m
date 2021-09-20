@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F29411A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B00411CA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239478AbhITQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:45:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:58896 "EHLO mga14.intel.com"
+        id S1345614AbhITRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237709AbhITQpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:45:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="222821628"
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="222821628"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 09:43:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,308,1624345200"; 
-   d="scan'208";a="434822284"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP; 20 Sep 2021 09:43:15 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 20 Sep 2021 09:43:14 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 20 Sep 2021 09:43:14 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Mon, 20 Sep 2021 09:43:14 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "Song, Youquan" <youquan.song@intel.com>,
-        "huangcun@sangfor.com.cn" <huangcun@sangfor.com.cn>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 3/3] x86/mce: Drop copyin special case for #MC
-Thread-Topic: [PATCH v2 3/3] x86/mce: Drop copyin special case for #MC
-Thread-Index: AQHXk8gq8Qe1g5tesEOw6jGkHsNov6utTUoAgAAAgWCAAHuLgP//i9Tw
-Date:   Mon, 20 Sep 2021 16:43:14 +0000
-Message-ID: <b65f57dd40e54572b3e00c571bafe1e3@intel.com>
-References: <20210706190620.1290391-1-tony.luck@intel.com>
- <20210818002942.1607544-1-tony.luck@intel.com>
- <20210818002942.1607544-4-tony.luck@intel.com> <YUhQsOKLeY/QV6ag@zn.tnic>
- <9d4690a2f3f143f882f63bd88c355004@intel.com> <YUi4v6BHqN5WqJUd@zn.tnic>
-In-Reply-To: <YUi4v6BHqN5WqJUd@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1346968AbhITRJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B58E66187F;
+        Mon, 20 Sep 2021 16:56:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632156985;
+        bh=rxqNsyf+5zOsajsG/cLOwTR5w2JzO9s+Wk3tEDzXAFE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f9WUWbEHedTdxxb4QNOMZKa2q0SFq7utEi6rmuDN952XBdMyG20GyGgGyCepGK+A3
+         EYSKYa/CzYhsHNrAsso4bWr84ZytCAC10lK4fjXnRzl1VIEJP05UuRT+jtZpfipbG7
+         GpuybEURaAgkbyR0b95gKYkSpRfzevNpSMV4/Ex8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Miaoqing Pan <miaoqing@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 145/175] ath9k: fix sleeping in atomic context
+Date:   Mon, 20 Sep 2021 18:43:14 +0200
+Message-Id: <20210920163922.814153383@linuxfoundation.org>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBJcyB0aGlzIGhvdyB5b3UgZ2VuZXJhdGVkIHRoYXQgbGlzdCwgcGVyIGNoYW5jZT8NCj4NCj4g
-JCBnaXQgbG9nIC0tb25lbGluZSB2NS4xNCAtLSBsaWIvaW92X2l0ZXIuYw0KDQpBbG1vc3QuIEkg
-aGFkICJ2NS4xNCBedjUuMTMiIHRvIHN0b3AgZ2l0IGZyb20gZ29pbmcgYmFjaw0KZnVydGhlciB0
-aGFuIHdoZW4gSSB0aGluayBBbCBzdGFydGVkIGFwcGx5aW5nIHRob3NlIGZpeGVzLg0KDQotVG9u
-eQ0K
+From: Miaoqing Pan <miaoqing@codeaurora.org>
+
+[ Upstream commit 7c48662b9d56666219f526a71ace8c15e6e12f1f ]
+
+The problem is that gpio_free() can sleep and the cfg_soc() can be
+called with spinlocks held. One problematic call tree is:
+
+--> ath_reset_internal() takes &sc->sc_pcu_lock spin lock
+   --> ath9k_hw_reset()
+      --> ath9k_hw_gpio_request_in()
+         --> ath9k_hw_gpio_request()
+            --> ath9k_hw_gpio_cfg_soc()
+
+Remove gpio_free(), use error message instead, so we should make sure
+there is no GPIO conflict.
+
+Also remove ath9k_hw_gpio_free() from ath9k_hw_apply_gpio_override(),
+as gpio_mask will never be set for SOC chips.
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1628481916-15030-1-git-send-email-miaoqing@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/ath/ath9k/hw.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
+index 9d664398a41b..b707c14dab6f 100644
+--- a/drivers/net/wireless/ath/ath9k/hw.c
++++ b/drivers/net/wireless/ath/ath9k/hw.c
+@@ -1595,7 +1595,6 @@ static void ath9k_hw_apply_gpio_override(struct ath_hw *ah)
+ 		ath9k_hw_gpio_request_out(ah, i, NULL,
+ 					  AR_GPIO_OUTPUT_MUX_AS_OUTPUT);
+ 		ath9k_hw_set_gpio(ah, i, !!(ah->gpio_val & BIT(i)));
+-		ath9k_hw_gpio_free(ah, i);
+ 	}
+ }
+ 
+@@ -2702,14 +2701,17 @@ static void ath9k_hw_gpio_cfg_output_mux(struct ath_hw *ah, u32 gpio, u32 type)
+ static void ath9k_hw_gpio_cfg_soc(struct ath_hw *ah, u32 gpio, bool out,
+ 				  const char *label)
+ {
++	int err;
++
+ 	if (ah->caps.gpio_requested & BIT(gpio))
+ 		return;
+ 
+-	/* may be requested by BSP, free anyway */
+-	gpio_free(gpio);
+-
+-	if (gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label))
++	err = gpio_request_one(gpio, out ? GPIOF_OUT_INIT_LOW : GPIOF_IN, label);
++	if (err) {
++		ath_err(ath9k_hw_common(ah), "request GPIO%d failed:%d\n",
++			gpio, err);
+ 		return;
++	}
+ 
+ 	ah->caps.gpio_requested |= BIT(gpio);
+ }
+-- 
+2.30.2
+
+
+
