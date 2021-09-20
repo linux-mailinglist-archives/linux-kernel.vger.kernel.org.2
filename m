@@ -2,84 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA4F4118CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A304118D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbhITQE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
+        id S242280AbhITQFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236609AbhITQEM (ORCPT
+        with ESMTP id S229881AbhITQFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:04:12 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDC0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:02:44 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id g41so37054564lfv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:02:43 -0700 (PDT)
+        Mon, 20 Sep 2021 12:05:10 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9371C061574;
+        Mon, 20 Sep 2021 09:03:42 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d21so31113260wra.12;
+        Mon, 20 Sep 2021 09:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HpjotW8bLVMH2vSH9tzMaoS14FhokAUiOoLrKOvnBaw=;
-        b=iPV4qzdlJ6k5QPU8jK9UiJNdM+ADtK5pfBp/C4Y1y7xOCt78xeOZ/ONlkV5paTLNS6
-         AyGwNIe4l1GgGB57g+gy7PGDptUrq5m9LJSFCmG0IMdfm3Sz99Z3ZlknBkEEeCgtGJyJ
-         U44NjHmGCN/deOuKfhu+h53Dzvy5m1KYdrtmLU/Z24RXEaY+DwHNxgBCabAzzALNeIpH
-         or9D8jMaYgJfOzDNRgW74V7rVYu0lLggcO64L+vXh/hto9ILR/08zVGH6i/ebfm9GsKt
-         vKTy3RWFBG9i+uU/xIn8O3baRpre+JtX8yUgu5XbRATlZh0olc3/acjQ8eBv0eP6wjb7
-         HHDg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcR8T78D6KzdaCdUdXtUTv6ShblvMHi/s5bj6aQtCUA=;
+        b=hXlvTF57VTAzUeU3SmrlIOFc08fH8PnH1CZtEmos1h/ms+tTe8LSb15CH1OwAv2l0j
+         fMvMZFZkJEZO683Ybx/3MnxNlp2wpLkXRG64/B64Tt+i4ENnCIEHDc44o2BzpCuUZ9Pz
+         HyP8ds0EELkUBO51Hd48Dk4V+6r+clmJJmZ2/l0J/+xV+ccIl2E/ft9j/W7kOQVvxxDQ
+         9Y7kcrfc3p7Sf8dMLKmT6PYrvtMKllkg+elSH+0Kcq+Sh4iFe64ZwFww/d/Cfpr9ZjJh
+         v/5jHBlP383T2CxK0a/QLdbpM3DqfuALbE1e0XXyKaGImASPlTMJEw/LsJbFgRO6ND2I
+         sBdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HpjotW8bLVMH2vSH9tzMaoS14FhokAUiOoLrKOvnBaw=;
-        b=dMqV2VXQXOX8SfTWEFMVdnH6DOyLevX548nEiMSm6TOJUiaBFt9mEdot314MkAsKSD
-         wRETen4QhXz4uayDcUjP2aOaBhIUTlY/kLxWBDKwj4J0tOJna6DX7SY5P6w8aBtmjHQo
-         BYgDPnsqe5mkwYcIQDm2kmiBNcuYHz9Xs+Ob5uwQrN3w7N+SCMEsQZzLUxlkbUzPCkO1
-         4nZI0E9+vckCqkU1zodUQ/nqiAqIdXwYPMlAQSZ8HsR8UrdaQqU6LcSUF5vnMeqDR7Ua
-         o0D127EiaRjoeU34Kp8m8dQzJspillgytkuL1CiBqzi6JXIAL5bNgTK91iw3nY0rMzWf
-         JkiQ==
-X-Gm-Message-State: AOAM530+J6pSGjbZqXbjJjl2zPhzs/Jf3a4H1OjgpDVTuaEteHVXwZ2K
-        JMNfnXtlZPy1dPirkPQOm5vZnRnHhPBx/FvPuXg=
-X-Google-Smtp-Source: ABdhPJxIgXytj5e2TG4Idy+IOTWcAJSBcsW/UQ1cJ/YMKCGF6y3kfvshcvIjynf6VRQZSQUvgMmN4qRCAme2R9/BpIM=
-X-Received: by 2002:ac2:4c4e:: with SMTP id o14mr13246681lfk.224.1632153680527;
- Mon, 20 Sep 2021 09:01:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcR8T78D6KzdaCdUdXtUTv6ShblvMHi/s5bj6aQtCUA=;
+        b=qI5Me0JXLL5/o+hQu+pQVM4ZST9Y6oSEwBRgGaVPr+Tl59vLUf7pMcQKVq6/2crekS
+         UPRzPkqsfaR4PjfMgeqTsm+D7uXnViEEdgqL+Z0dVU06LmNrWFxjvoQyT66QOATyoOpJ
+         z8vAT16bHDNWy35tlGrJaFZ4ZWPHX6OYlQ6gsRQnOlAMKFl4k7qmevHZIkItljFMaGxL
+         k7K+Ysxn/8D3IOKKYPDjVveoSL4u4mRCBQZipsASU8hxr71UbDQpVzFb8J2u0KzjFA6q
+         GaQRGB3BFcgFz7kktEjaH4+J7QlP3o4W3ZrbAWA7JWMyY7Zrcm+Q0ObM5uDjXm849Ws/
+         WWsA==
+X-Gm-Message-State: AOAM532NyZX3fS1984lCUXG/qvWCa/nmOJjzFQcTNKZChSw2n+MKeFpK
+        8BsCaqCdjqvFSGmBDpuRf6Y=
+X-Google-Smtp-Source: ABdhPJyLFCFhzUxxzuQH2Exq2CM/Wn7dn5n8fkWcWSVKmKJre8nPazDsDpiedPKmZPcho6hEd77cRA==
+X-Received: by 2002:a05:600c:4788:: with SMTP id k8mr9540521wmo.131.1632153821428;
+        Mon, 20 Sep 2021 09:03:41 -0700 (PDT)
+Received: from localhost.localdomain ([94.73.35.139])
+        by smtp.gmail.com with ESMTPSA id c17sm20015422wrn.54.2021.09.20.09.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 09:03:40 -0700 (PDT)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     hdegoede@redhat.com
+Cc:     alex.hung@canonical.com, mgross@linux.intel.com,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
+        Tobias Gurtzick <magic@wizardtales.com>
+Subject: [PATCH] platform/x86/intel: hid: Add DMI switches allow list
+Date:   Mon, 20 Sep 2021 18:03:12 +0200
+Message-Id: <20210920160312.9787-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210920124416.7063-1-zboszor@pr.hu>
-In-Reply-To: <20210920124416.7063-1-zboszor@pr.hu>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 20 Sep 2021 19:00:43 +0300
-Message-ID: <CAHp75VdTJ825JP51p24XJmpQORUhoTJ2=7_HOpqw-EGT1fFEOA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl-intel: Fix NULL pointer dereference
-To:     zboszor@pr.hu
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?Wm9sdMOhbiBCw7ZzesO2cm3DqW55aQ==?= <zboszor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 4:00 PM <zboszor@pr.hu> wrote:
-> On an Elkhart Lake based POS hardware prototype, I got this Oops:
+Some devices, even non convertible ones, can send incorrect
+SW_TABLET_MODE reports.
 
-Thank you for the report, my comments below.
+Add an allow list and accept such reports only from devices in it.
 
-> [    1.587455] BUG: kernel NULL pointer dereference, address: 0000000000000000
+Bug reported for Dell XPS 17 9710 on:
+https://gitlab.freedesktop.org/libinput/libinput/-/issues/662
 
-First of all, do not spoil the commit message with unneeded lines of
-the traceback. Only ~4-5 is usually more than enough.
+Reported-by: Tobias Gurtzick <magic@wizardtales.com>
+Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Tested-by: Tobias Gurtzick <magic@wizardtales.com>
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+---
+ drivers/platform/x86/intel/hid.c | 33 +++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
 
-> It's probably a firmware bug, so be overly protective:
-
-Patch is simply wrong. While Oops will be gone, the driver won't work correctly.
-Yes, it's either a firmware bug or the driver is outdated (depends
-from which side you look at this issue).
-
-I have heard that new firmware is on its way to the customers, but I
-have no more information right now.
-
+diff --git a/drivers/platform/x86/intel/hid.c b/drivers/platform/x86/intel/hid.c
+index a33a5826e81a..24d26336e39a 100644
+--- a/drivers/platform/x86/intel/hid.c
++++ b/drivers/platform/x86/intel/hid.c
+@@ -118,6 +118,24 @@ static const struct dmi_system_id dmi_vgbs_allow_list[] = {
+ 	{ }
+ };
+ 
++/*
++ * Some devices, even non convertible ones, can send incorrect SW_TABLET_MODE
++ * reports. Accept such reports only from devices in this list.
++ */
++static const struct dmi_system_id dmi_switches_auto_add_allow_list[] = {
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_CHASSIS_TYPE, "31" /* Convertible */),
++		},
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_CHASSIS_TYPE, "32" /* Detachable */),
++		},
++	},
++	{} /* Array terminator */
++};
++
+ struct intel_hid_priv {
+ 	struct input_dev *input_dev;
+ 	struct input_dev *array;
+@@ -455,11 +473,16 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
+ 	 *
+ 	 * See dual_accel_detect.h for more info on the dual_accel check.
+ 	 */
+-	if (!priv->switches && !priv->dual_accel && (event == 0xcc || event == 0xcd)) {
+-		dev_info(&device->dev, "switch event received, enable switches supports\n");
+-		err = intel_hid_switches_setup(device);
+-		if (err)
+-			pr_err("Failed to setup Intel HID switches\n");
++	if (event == 0xcc || event == 0xcd) {
++		if (!dmi_check_system(dmi_switches_auto_add_allow_list))
++			return;
++
++		if (!priv->switches && !priv->dual_accel) {
++			dev_info(&device->dev, "switch event received, enable switches supports\n");
++			err = intel_hid_switches_setup(device);
++			if (err)
++				pr_err("Failed to setup Intel HID switches\n");
++		}
+ 	}
+ 
+ 	if (priv->wakeup_mode) {
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
