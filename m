@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7A84115EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5A14115F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236625AbhITNjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhITNjF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:39:05 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18337C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:37:39 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id s20so13491932ioa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I5BHUeQDqZDo4PwVzyGcKr+XMnBx8AVg4XoTAeI0iqM=;
-        b=OegjK066w6oG7gRN0w2LsPZ/Fv/QnITUWWZ78nIfMwlypU716TJKqUT0TONaDnqeM4
-         Qn5TjM3MfoX9BTkw8UjiJKnLbAvRjxWx6Bd/g0h5V3sDx6F9VIDo8eTYODwO8CShIXAz
-         Za86JxoW3m0estyg2kL/936/mTvJEVyJ5e+Mc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I5BHUeQDqZDo4PwVzyGcKr+XMnBx8AVg4XoTAeI0iqM=;
-        b=v7/mneg/VlbimCgRAeEOJyPijEU4adRugK28c4fKt2DHCCkFqo3uzR+7RxYip3govJ
-         Vn0KfNZ1/J/Hrt2LHBQqm6R4R7VJjBVxyD4E6/5hyswqCNP1uakuxGWRQj9kxk0bLRlc
-         Z1eYzvrdEZNb3HUgjsjZuxplGDBBnFalJEMJY4JorjAx2fc52HEZ07w9PwdIOzH29cVV
-         OeG76tg+9hlhYBcBIDQPle9rwb+kbL+KdaGu9xJ5PKGBurCv/G0uWzc4gO1EObtHtc9q
-         aIbuLRIwfO6SC+/ejPiZ8+9QmdmOVhIbTegLhevzx+aFXMpZTjYMVsPHm7z3OtTf6tMn
-         kflQ==
-X-Gm-Message-State: AOAM531Rd3jeiJQj/Y5HuSqWRPKkfydinmGXfRWs5uiTgl2OEdjNKA+h
-        Pe/pk9gTA/pcRx4yLo1b65aI3NETD3Rg6Q==
-X-Google-Smtp-Source: ABdhPJwxfk4SMD10W2Kg44IjODHiM068s652/0d9kRah39Gi5dLJ9xwz/ZUXv0jOMIz9nmLmbWyQGw==
-X-Received: by 2002:a6b:e70f:: with SMTP id b15mr18671480ioh.140.1632145058085;
-        Mon, 20 Sep 2021 06:37:38 -0700 (PDT)
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com. [209.85.166.181])
-        by smtp.gmail.com with ESMTPSA id j5sm9090797ilk.58.2021.09.20.06.37.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 06:37:37 -0700 (PDT)
-Received: by mail-il1-f181.google.com with SMTP id h9so18675707ile.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:37:36 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1bad:: with SMTP id n13mr14574906ili.142.1632145056490;
- Mon, 20 Sep 2021 06:37:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920100226.1448267-1-arnd@kernel.org>
-In-Reply-To: <20210920100226.1448267-1-arnd@kernel.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 20 Sep 2021 06:37:23 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UYOSNG1we=MaNwqZCLjV9re7hHSvtYR3qmzAaLCvDJ=g@mail.gmail.com>
-Message-ID: <CAD=FV=UYOSNG1we=MaNwqZCLjV9re7hHSvtYR3qmzAaLCvDJ=g@mail.gmail.com>
-Subject: Re: [PATCH] PM: AVS: qcom-cpr: select CONFIG_NVMEM
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Niklas Cassel <nks@flawful.org>, Arnd Bergmann <arnd@arndb.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S239441AbhITNmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:42:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239325AbhITNmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:42:09 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32B9260F21;
+        Mon, 20 Sep 2021 13:40:42 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mSJXE-00Bm01-5z; Mon, 20 Sep 2021 14:40:40 +0100
+Date:   Mon, 20 Sep 2021 14:40:39 +0100
+Message-ID: <87o88nuzzc.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 00/13] perf: KVM: Fix, optimize, and clean up callbacks
+In-Reply-To: <7a5825d1-d6e9-8ac8-5df2-cce693525da7@redhat.com>
+References: <20210828003558.713983-1-seanjc@google.com>
+        <20210828201336.GD4353@worktop.programming.kicks-ass.net>
+        <YUO5J/jTMa2KGbsq@google.com>
+        <YURDqVZ1UXKCiKPV@hirez.programming.kicks-ass.net>
+        <662e93f9-e858-689d-d203-742731ecad2c@redhat.com>
+        <87tuifv3mb.wl-maz@kernel.org>
+        <7a5825d1-d6e9-8ac8-5df2-cce693525da7@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pbonzini@redhat.com, peterz@infradead.org, seanjc@google.com, mingo@redhat.com, acme@kernel.org, will@kernel.org, mark.rutland@arm.com, catalin.marinas@arm.com, guoren@kernel.org, nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, tglx@linutronix.de, bp@alien8.de, x86@kernel.org, boris.ostrovsky@oracle.com, jgross@suse.com, alexander.shishkin@linux.intel.com, jolsa@redhat.com, namhyung@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, hpa@zytor.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, sstabellini@kernel.org, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, xen-devel@lists.xenproject.org, artem.kashkanov@intel.com, like.xu.linux@gmail.com, lingsha
+ n.zhu@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 20 Sep 2021 14:18:30 +0100,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
+> 
+> On 20/09/21 14:22, Marc Zyngier wrote:
+> >> I think that's only ARM, and even then it is only because of
+> >> limitations of the hardware which mostly apply only if VHE is not in
+> >> use.
+> >> 
+> >> If anything, it's ARM that should support module build in VHE mode
+> >> (Linux would still need to know whether it will be running at EL1 or
+> >> EL2, but KVM's functionality is as self-contained as on x86 in the VHE
+> >> case).
+> > I don't see this happening anytime soon. At least not before we
+> > declare the arm64 single kernel image policy to be obsolete.
+> 
+> --verbose please. :)  I am sure you're right, but I don't understand
+> the link between the two.
 
-On Mon, Sep 20, 2021 at 3:02 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> nvmem_cell_read_variable_le_u32 is only defined when CONFIG_NVMEM
-> is set, otherwise we end up with this build failure:
->
-> drivers/soc/qcom/cpr.c: In function 'cpr_populate_ring_osc_idx':
-> drivers/soc/qcom/cpr.c:814:23: error: implicit declaration of function 'nvmem_cell_read_variable_le_u32' [-Werror=implicit-function-declaration]
->   814 |                 ret = nvmem_cell_read_variable_le_u32(drv->dev, fuses->ring_osc, &data);
->       |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Select the framwork from Kconfig.
->
-> Fixes: 6feba6a62c57 ("PM: AVS: qcom-cpr: Use nvmem_cell_read_variable_le_u32()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/soc/qcom/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+To start making KVM/arm64 modular, you'd have to build it such as
+there is no support for the nVHE hypervisor anymore. Which would mean
+two different configs (one that can only work with VHE, and one for
+the rest) and contradicts the current single kernel image policy.
 
-A fix should have already landed for this error. See the patch:
+It is bad enough that we have to support 3 sets of page sizes.
+Doubling the validation space for the sake of being able to unload KVM
+seems a dubious prospect.
 
-https://lore.kernel.org/r/20210830083449.1.I38e95343209fe1f808c3b4860795a00a2b539701@changeid
+	M.
 
-...and Greg has applied it. I got a message 6 days ago saying it was in:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git
-in the char-misc-linus branch.
-
-That being said, if people think that we should _also_ select NVMEM
-for this driver then I have no objections. The use of nvmem in this
-driver predates my patch.
-
--Doug
+-- 
+Without deviation from the norm, progress is not possible.
