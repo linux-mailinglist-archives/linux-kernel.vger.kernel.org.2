@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C42412B4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B90412B42
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343933AbhIUCMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        id S1343997AbhIUCMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239965AbhIUB7r (ORCPT
+        with ESMTP id S240691AbhIUCAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:59:47 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B3CC08EB1F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:04:18 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y28so69567085lfb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:04:18 -0700 (PDT)
+        Mon, 20 Sep 2021 22:00:51 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F720C095C34;
+        Mon, 20 Sep 2021 11:06:51 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id w14so6501488pfu.2;
+        Mon, 20 Sep 2021 11:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C96pDQyYyFg5qDGVLf3sLPlA5hQ7a8vVkj08bMsCj8M=;
-        b=EGycjJn+wnDLv4w5lW3U5Wn7gsAcaf6LTG1FqdE09AUzqmx2sOt3hXMLK/y4zNH99+
-         fl7CiEBkM9aBwsZrcqA4birLn9joAVXIKzRyWchC462H9YmTKBBw+fnnMc/T3VbhuGn3
-         Xr99GVBCb/6unRKmeB3xNNMDiBYkcm1rJQ8Fs=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QfKNuRVgUMi6kijPXEerjifXSZC9X3m8EnGJqYh1Cro=;
+        b=dx4+zI4MRNHv+qiZh9GTiM7NqMB4muQKxy8eGKxPztHUflafN6ZkDqrkyI7LQtGiFI
+         eTzz/IvHynwG0v2bcoB4aaXiRkcAbv1WcysFR0xJcVFteKwjyMIwFSDI3DclHVeZ4Chg
+         usonn1O1/BhEBRjUYdx8fHQ/B2XMy8Xv5srAEBOq3UyHa46MIh1ibCexlcfYKFliJPdX
+         C6J/Zmj4npDSKbvRIHV0SGOSxq0O75ujT82+iP5smFRqq4vGGTa5cemfw+ig3Q0FjBny
+         MuhXlz+sokxjqG+yQ5302zcAg6m25bqy7feY/P3QBIVzSkM0Diz3UnIL6g5kO0lHJtzB
+         fxIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C96pDQyYyFg5qDGVLf3sLPlA5hQ7a8vVkj08bMsCj8M=;
-        b=2ZZPrhCE3AHVLvehcDswY62aN4HmnFYOOMTcbKGzGSHExVl2dLBPg8B3oWRSPkwkh2
-         DhU5b8WK8zlQFm85qB2gPmlDjMEZsV/PItITPQ3giPukFqQRUOTd2AhQ5tAe+k3+VqiF
-         9x/3kgNSLAluF/h7cnoUY1s55zxQzQ7WVO11UPtPYMu+sqylwTbNNyQX4u1b9o8QmWs5
-         jIRzmpXWK5eq10jbkzkTI2IccMzv4ugwO6/PJNi1uWPCljIgCdP5zcWWsXrZaOPTUs7h
-         R1M8pGgLg0LJm8N9DTGE/BBztgJR0nconemfx9pGeRkS/j2wQ1c/mFk+XiehgYjc8fTz
-         0rdA==
-X-Gm-Message-State: AOAM532pT9wHLYrLafW1ZiVZqOvraY6VSX7blUbKtK8Eagi+YYVfuaQP
-        f+9nRbwyN2EtyTxb3eqGDBqHZ5FLgSGstYG9
-X-Google-Smtp-Source: ABdhPJyllAAAtPLzDBc8hzpeRAQ6WkvMW7afeHUjxGo3txq8mulviWEzfRXWExaqe2EyxgZBT7WeNg==
-X-Received: by 2002:a2e:5749:: with SMTP id r9mr6113691ljd.91.1632161054622;
-        Mon, 20 Sep 2021 11:04:14 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id q5sm656985lfn.277.2021.09.20.11.04.11
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QfKNuRVgUMi6kijPXEerjifXSZC9X3m8EnGJqYh1Cro=;
+        b=B6mOQzn+3pAPAj/1ZIsk+O0NYIQWW7oYOCOhceZVP3MAuIqTEgwqXw+mBMQ2+eYPeL
+         8tMc6lT8Dt4b1Ui3Rb973f/xwiQ+kL01cFeOeLlSg1P69yDgzy0L2MAten9tkxwE3JzU
+         hjckrFLSBHk046vyPM4nYgnhb2oNV+xBB52aeZj66DoypYHcyWZglrKpgDhdqXoRxCur
+         jSY5f+8Ne+/Ez/UYR4pmV/Icu1c/9Kc88PxH+JeNJYCKRzHCSkQUsPJJo4jCwMleu5Ba
+         FF20mOI6x6BZyxkZL3Wxqru9XTxiJmhlC6rkM6oKL9exH1GTBx06U8/m7P9jIT7p6HK7
+         YA2g==
+X-Gm-Message-State: AOAM533mhI9eCgNlKUimquEtkmnXrXUqSk4G4oTmZBniG0/rDEG86W4M
+        ST4Sl0aFVH8VEPj2e37fTupcuoGh/uk=
+X-Google-Smtp-Source: ABdhPJwuLVQUP+eGnAooHZDiCw/1dAJiobfuAmzezJo1p/O5YUM+FJ/yRi8xV/CsBaMnEXoEt6vvrw==
+X-Received: by 2002:a62:dd94:0:b0:442:bb03:9663 with SMTP id w142-20020a62dd94000000b00442bb039663mr23684184pff.0.1632161209983;
+        Mon, 20 Sep 2021 11:06:49 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id f2sm16028195pga.60.2021.09.20.11.06.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 11:04:12 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id b15so52785970lfe.7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:04:11 -0700 (PDT)
-X-Received: by 2002:a05:651c:1250:: with SMTP id h16mr4886099ljh.68.1632161051649;
- Mon, 20 Sep 2021 11:04:11 -0700 (PDT)
+        Mon, 20 Sep 2021 11:06:49 -0700 (PDT)
+Subject: Re: [PATCH 4.9 000/175] 4.9.283-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210920163918.068823680@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a0e47bb6-50a2-fd82-b9c7-1443cade5170@gmail.com>
+Date:   Mon, 20 Sep 2021 11:06:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CAHk-=wirexiZR+VO=H3xemGKOMkh8OasmXaKXTKUmAKYCzi8AQ@mail.gmail.com>
- <20210920134424.GA346531@roeck-us.net> <CAHk-=wgheheFx9myQyy5osh79BAazvmvYURAtub2gQtMvLrhqQ@mail.gmail.com>
- <CAHk-=wgnSFePkt9_TxgdgFvMz6ZyofLFQLuV_Tc7MQVXYdgSng@mail.gmail.com>
-In-Reply-To: <CAHk-=wgnSFePkt9_TxgdgFvMz6ZyofLFQLuV_Tc7MQVXYdgSng@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 20 Sep 2021 11:03:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg9Th7A8eGiWK4gY8fGG41k6J3JQhip=4NCa9xUR7kMVQ@mail.gmail.com>
-Message-ID: <CAHk-=wg9Th7A8eGiWK4gY8fGG41k6J3JQhip=4NCa9xUR7kMVQ@mail.gmail.com>
-Subject: Re: Linux 5.15-rc2
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:04 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> But let me build a few more sparc configs (and this time do it
-> properly for both 32-bit and 64-bit) before I actually commit it and
-> push it out.
+On 9/20/21 9:40 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.283 release.
+> There are 175 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.283-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Actually, I think I _had_ tested sparc64 properly before, it's just
-that I had only done the bigger configurations that had CONFIG_PCI
-enabled and that didn't show the failure due to that.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-But I have now done the allnoconfig and tinyconfig builds that showed
-the problem, and verified that the trivial "depend on CONFIG_PCI"
-fixes things for me.
-
-Looks like the only remaining problem in your build configuration list
-that isn't queued up somewhere is that odd nouveau use of pwrsrc and
-the errno range thing. I'll apply it directly.
-
-I'm sure that other configs will have a lot of other cases, but it is
-good to see at least your set shrinking.
-
-            Linus
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
