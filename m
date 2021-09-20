@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEA94114BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83AB4114C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238595AbhITMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234162AbhITMnk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:43:40 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD827C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:42:12 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id m3so65009639lfu.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aD0ZimcpDdMwxxDkok8INnwAF4L8JkxKG7hlNjJNuc4=;
-        b=ROkKUP5Wti0ZceJVkqlAW1hw9pw2rtGO+UYdzPbSZg0ZsAEcFmWUy5DNCnc2MIrx4b
-         BYp0RUGvkHwf934xqPgpQ6UUwcdgw6xDoe22pz4EAJzNIkulRo31v++TUs9ymGhu5K5u
-         tFmeYg86tBZ7B0TP8fKKkgwBNWF29JNbAnbvAilubZMvvjqh33+omk3tgv1z+6L1bSvw
-         FCli+M02Sz/IhIHZXabClzluGQtQlRj9xfOIJWpPK6WGTy5EPC3C9NjyvqDaeSeKSJCU
-         Vakycw1Ed8PiorDWqI1+IUXUUnKX7kJZHW55ViIYHRIy6ZFT8OOia60WSN3/sQxWirf6
-         jpSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aD0ZimcpDdMwxxDkok8INnwAF4L8JkxKG7hlNjJNuc4=;
-        b=hU65grR3g0NhMJ//mTOqtARwiFDs6YMkHVGMm5GtRQcGXNIcj0h8xVvmdlvVQ/Y99j
-         J6E0U7JxwqtFKrQsVRWyTgwDwV0LG/BYSY0JhmW+SXSj/dt3oqHOR3YOVptOC76SZwW4
-         5IQN51BgYJzXjgqTymIPwMaSsl6wJJ/OgMzkwB9CcZX8ACbBW290mho8oGS/VbjaMSgl
-         fchlQ+a5kFXTRt2siOkyKUk0MM5IEb3tezpHgIHkKE+I4mPZr7Sn9T2gxqmBU1ehc+Ux
-         Kqc0pyFhalEX9eqG/HzcCy2Ib+7b8ThHpQl10O7sClUsGzF2HojhnR0gapn/bwLvfL+M
-         21aQ==
-X-Gm-Message-State: AOAM530R7bm86RKwJ7XOIWNI8E6negdtorJ00mZjnSXwW2rQ7NqQixpc
-        raPZVHuAnKHqbtDOfmDD9WZElA==
-X-Google-Smtp-Source: ABdhPJzdjJvEESBsRijWxynJclTM1jLd3jz584eIX1nzT8MgbP4/OcLKY9ulXqJbDoTj+2jHr5+kVA==
-X-Received: by 2002:a2e:9a07:: with SMTP id o7mr6991825lji.125.1632141730817;
-        Mon, 20 Sep 2021 05:42:10 -0700 (PDT)
-Received: from grasshopper.googchameleon.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id v1sm630944lfo.308.2021.09.20.05.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 05:42:10 -0700 (PDT)
-From:   =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-        dinguyen@kernel.org, p.zabel@pengutronix.de
-Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        tn@semihalf.com, ka@semihalf.com, jam@semihalf.com,
-        =?UTF-8?q?Pawe=C5=82=20Anikiel?= <pan@semihalf.com>
-Subject: [PATCH 3/3] reset: socfpga: add empty driver allowing consumers to probe
-Date:   Mon, 20 Sep 2021 14:41:41 +0200
-Message-Id: <20210920124141.1166544-4-pan@semihalf.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210920124141.1166544-1-pan@semihalf.com>
-References: <20210920124141.1166544-1-pan@semihalf.com>
+        id S238557AbhITMoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234162AbhITMoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:44:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D905660F43;
+        Mon, 20 Sep 2021 12:42:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632141763;
+        bh=LJd326Onj4XtLEwt35NMphBK1paSjnbTcGe5Aoy65Mg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DeJ1xOEstl5+CzNf5BKwpkGnrbneFDGVk5At3W8ysipTWc8z+u9S1YNrQkNsV0TMQ
+         oZ2q5CrK92h44aq6/Lm8db0Pyk9wuAVYuYAyl4gqBhUhT7xS+bkHpq8COsHw33o8QK
+         aYO3l9R/XW5AnHhK+zuDV4Q2vX9D2C70wTOeDgE8aBWqXcgiWn5bl+GDG851KP00Gb
+         ndatDskBGCB87CDK8SsejrzEgTsvRw9MJxVpOHynCqsSWAIj++R/8ff6P1fcfPXMwn
+         GCrw8K7/eFZOxlJxz8aSwLaYfYesetfUVro0ijMII/5EQ/Lb3fuNHpe0+bcI012RSv
+         kBjlThj7ZBJyQ==
+Received: by mail-ed1-f41.google.com with SMTP id bx4so16080361edb.4;
+        Mon, 20 Sep 2021 05:42:43 -0700 (PDT)
+X-Gm-Message-State: AOAM532XEH6RvcE1qnczsi2PchEXyvXf8DkRbTvqX80OxfMKxJY2rYrB
+        roTmHAPhdq5gmtxGWX8Yr11sWsxegHBjvHlifg==
+X-Google-Smtp-Source: ABdhPJxe0pzq32S+O6qzUtsUF2LFq6WiPntxr4KAmr/C6XTVEYsfFTdYU9uZ2o/8Mg9Se/FqIR+u8ERaaUAWpNgzCo0=
+X-Received: by 2002:a17:906:7217:: with SMTP id m23mr27972643ejk.466.1632141762450;
+ Mon, 20 Sep 2021 05:42:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210916084714.311048-1-zhang.lyra@gmail.com> <20210916084714.311048-3-zhang.lyra@gmail.com>
+ <YUNUyolr6ksEoZI3@robh.at.kernel.org> <CAAfSe-vYMUb8wGUJG7Fzehjkj8gAq1QOdgCdsTvcNyMuVeEW8g@mail.gmail.com>
+In-Reply-To: <CAAfSe-vYMUb8wGUJG7Fzehjkj8gAq1QOdgCdsTvcNyMuVeEW8g@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 20 Sep 2021 07:42:30 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKmznCOk+qHFccnG1b5xuoNHY2vmqyv=WAjB9d=0AW70Q@mail.gmail.com>
+Message-ID: <CAL_JsqKmznCOk+qHFccnG1b5xuoNHY2vmqyv=WAjB9d=0AW70Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: clk: sprd: Add bindings for ums512
+ clock controller
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The early reset driver doesn't ever probe, which causes consuming
-devices to be unable to probe. Add an empty driver to set this device
-as available, allowing consumers to probe.
+On Fri, Sep 17, 2021 at 3:41 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+>
+> On Thu, 16 Sept 2021 at 22:29, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Thu, Sep 16, 2021 at 04:47:12PM +0800, Chunyan Zhang wrote:
+> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > >
+> > > Add a new bindings to describe ums512 clock compatible strings.
+> > >
+> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > ---
+> > >  .../bindings/clock/sprd,ums512-clk.yaml       | 106 ++++++++++++++++++
+> > >  1 file changed, 106 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> > > new file mode 100644
+> > > index 000000000000..be3c37180279
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/clock/sprd,ums512-clk.yaml
+> > > @@ -0,0 +1,106 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +# Copyright 2019-2021 Unisoc Inc.
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: "http://devicetree.org/schemas/clock/sprd,ums512-clk.yaml#"
+> > > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > > +
+> > > +title: UMS512 Clock Control Unit Device Tree Bindings
+> > > +
+> > > +maintainers:
+> > > +  - Orson Zhai <orsonzhai@gmail.com>
+> > > +  - Baolin Wang <baolin.wang7@gmail.com>
+> > > +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> > > +
+> > > +properties:
+> > > +  "#clock-cells":
+> > > +    const: 1
+> > > +
+> > > +  compatible:
+> > > +    enum:
+> > > +      - sprd,ums512-apahb-gate
+> > > +      - sprd,ums512-ap-clk
+> > > +      - sprd,ums512-aonapb-clk
+> > > +      - sprd,ums512-pmu-gate
+> > > +      - sprd,ums512-g0-pll
+> > > +      - sprd,ums512-g2-pll
+> > > +      - sprd,ums512-g3-pll
+> > > +      - sprd,ums512-gc-pll
+> > > +      - sprd,ums512-aon-gate
+> > > +      - sprd,ums512-audcpapb-gate
+> > > +      - sprd,ums512-audcpahb-gate
+> > > +      - sprd,ums512-gpu-clk
+> > > +      - sprd,ums512-mm-clk
+> > > +      - sprd,ums512-mm-gate-clk
+> > > +      - sprd,ums512-apapb-gate
+> > > +
+> > > +  clocks:
+> > > +    minItems: 1
+> > > +    maxItems: 4
+> > > +    description: |
+> > > +      The input parent clock(s) phandle for this clock, only list fixed
+> > > +      clocks which are declared in devicetree.
+> > > +
+> > > +  clock-names:
+> > > +    minItems: 1
+> > > +    maxItems: 4
+> > > +    items:
+> > > +      - const: ext-26m
+> > > +      - const: ext-32k
+> > > +      - const: ext-4m
+> > > +      - const: rco-100m
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - '#clock-cells'
+> > > +
+> > > +if:
+> > > +  properties:
+> > > +    compatible:
+> > > +      enum:
+> > > +        - sprd,ums512-ap-clk
+> > > +        - sprd,ums512-aonapb-clk
+> > > +        - sprd,ums512-mm-clk
+> > > +then:
+> > > +  required:
+> > > +    - reg
+> > > +
+> > > +else:
+> > > +  description: |
+> > > +    Other UMS512 clock nodes should be the child of a syscon node in
+> > > +    which compatible string should be:
+> > > +            "sprd,ums512-glbregs", "syscon", "simple-mfd"
+> > > +
+> > > +    The 'reg' property for the clock node is also required if there is a sub
+> > > +    range of registers for the clocks.
+> >
+> > In which cases is this not true?
+>
+> Seems not needed, I will remove 'reg' property for this kind of cases.
 
-Signed-off-by: Paweł Anikiel <pan@semihalf.com>
----
- drivers/reset/reset-socfpga.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Wrong direction. Please keep 'reg'. My question is why can't you
+always have it? That is the preference.
 
-diff --git a/drivers/reset/reset-socfpga.c b/drivers/reset/reset-socfpga.c
-index 2a72f861f798..8c6492e5693c 100644
---- a/drivers/reset/reset-socfpga.c
-+++ b/drivers/reset/reset-socfpga.c
-@@ -92,3 +92,29 @@ void __init socfpga_reset_init(void)
- 	for_each_matching_node(np, socfpga_early_reset_dt_ids)
- 		a10_reset_init(np);
- }
-+
-+/*
-+ * The early driver is problematic, because it doesn't register
-+ * itself as a driver. This causes certain device links to prevent
-+ * consumer devices from probing. The hacky solution is to register
-+ * an empty driver, whose only job is to attach itself to the reset
-+ * manager and call probe.
-+ */
-+static const struct of_device_id socfpga_reset_dt_ids[] = {
-+	{ .compatible = "altr,rst-mgr", },
-+	{ /* sentinel */ },
-+};
-+
-+static int reset_simple_probe(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct platform_driver reset_socfpga_driver = {
-+	.probe	= reset_simple_probe,
-+	.driver = {
-+		.name		= "socfpga-reset",
-+		.of_match_table	= socfpga_reset_dt_ids,
-+	},
-+};
-+builtin_platform_driver(reset_socfpga_driver);
--- 
-2.25.1
-
+Rob
