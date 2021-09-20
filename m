@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3F4412157
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9004125EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357482AbhITSEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:04:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56658 "EHLO mail.kernel.org"
+        id S1384973AbhITStY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:49:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355737AbhITR4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF9B61CA7;
-        Mon, 20 Sep 2021 17:14:19 +0000 (UTC)
+        id S1384094AbhITSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:46:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86C3363365;
+        Mon, 20 Sep 2021 17:33:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158060;
-        bh=xESobgeIkbpJA62rLjpHEFlWrZqp6AXEsmRZp0ZSGiw=;
+        s=korg; t=1632159218;
+        bh=6n8ZrpCjHK/0owdGbK700/HKwHqdWGyYWY9zC/fI8/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S9zePXkdiCyWF3egT3uBieR/bTTBEGR/cm22bIsZxtq+TqwT7xH5b4VKyGNlZRP1B
-         A7i/VwGo+psop34mOVdVaEylhvP0w+51vbf2yPiB0JjebhvdvGbUlh7e2s27xAJvoi
-         uUq6LesnYHycbhKcZDRFdji65T5lQA6tvnOiCjS4=
+        b=DhE+ehgzp2Cpx0ugOkiBf0ezfHmkvLJ1RZxvzSBMvyFekkbX/zUeKKjIOjmzqPUNu
+         U7xV1q7h5GzwTMgYGBx4ELp8LoRv4vPwgTpsbBFXAJyzL8qZBxaRhw+FH8Ix2h1R0Z
+         PPb4nbPU7b7xJzUdJVK0Rnpmm5Li/ld4YCd5c2PY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Ryan J. Barnett" <ryan.barnett@collins.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 275/293] dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 099/168] PCI: rcar: Fix runtime PM imbalance in rcar_pcie_ep_probe()
 Date:   Mon, 20 Sep 2021 18:43:57 +0200
-Message-Id: <20210920163942.831129095@linuxfoundation.org>
+Message-Id: <20210920163924.891453310@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 778cb8e39f6ec252be50fc3850d66f3dcbd5dd5a ]
+[ Upstream commit 1e29cd9983eba1b596bc07f94d81d728007f8a25 ]
 
-"PAGESIZE / 512" is the number of ECC chunks.
-"ECC_BYTES" is the number of bytes needed to store a single ECC code.
-"2" is the space reserved by the bad block marker.
+pm_runtime_get_sync() will increase the runtime PM counter
+even it returns an error. Thus a pairing decrement is needed
+to prevent refcount leak. Fix this by replacing this API with
+pm_runtime_resume_and_get(), which will not change the runtime
+PM counter on error.
 
-"2 + (PAGESIZE / 512) * ECC_BYTES" should of course be lower or equal
-than the total number of OOB bytes, otherwise it won't fit.
-
-Fix the equation by substituting s/>=/<=/.
-
-Suggested-by: Ryan J. Barnett <ryan.barnett@collins.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/linux-mtd/20210610143945.3504781-1-miquel.raynal@bootlin.com
+Link: https://lore.kernel.org/r/20210408072402.15069-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/pcie-rcar-ep.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index c059ab74ed88..a4a75fa79524 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -122,7 +122,7 @@ on various other factors also like;
- 	so the device should have enough free bytes available its OOB/Spare
- 	area to accommodate ECC for entire page. In general following expression
- 	helps in determining if given device can accommodate ECC syndrome:
--	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE"
-+	"2 + (PAGESIZE / 512) * ECC_BYTES" <= OOBSIZE"
- 	where
- 		OOBSIZE		number of bytes in OOB/spare area
- 		PAGESIZE	number of bytes in main-area of device page
+diff --git a/drivers/pci/controller/pcie-rcar-ep.c b/drivers/pci/controller/pcie-rcar-ep.c
+index b4a288e24aaf..c91d85b15129 100644
+--- a/drivers/pci/controller/pcie-rcar-ep.c
++++ b/drivers/pci/controller/pcie-rcar-ep.c
+@@ -492,9 +492,9 @@ static int rcar_pcie_ep_probe(struct platform_device *pdev)
+ 	pcie->dev = dev;
+ 
+ 	pm_runtime_enable(dev);
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+-		dev_err(dev, "pm_runtime_get_sync failed\n");
++		dev_err(dev, "pm_runtime_resume_and_get failed\n");
+ 		goto err_pm_disable;
+ 	}
+ 
 -- 
 2.30.2
 
