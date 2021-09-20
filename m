@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98B411B00
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBF9411E34
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245523AbhITQy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38784 "EHLO mail.kernel.org"
+        id S1345666AbhITR1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237332AbhITQun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:50:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0CB61351;
-        Mon, 20 Sep 2021 16:49:02 +0000 (UTC)
+        id S1349950AbhITRZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:25:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 918056135D;
+        Mon, 20 Sep 2021 17:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156543;
-        bh=IBIVmOL369LFjKG+XM3g14fm6SBagN/h5YPqfsTxOQs=;
+        s=korg; t=1632157344;
+        bh=Bi3WETzN51HufuWv6N46T1KgUw5xB/9dbiMDTx5rleY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncF+UGwvIuasqfIzXWpomcSFi7uNP6TTtLS32fwwcazdoVmjaJSVXrIzH9a/Innje
-         mCa1cq3YsJA9tpbVYvIkUkMtJ57JA2q6QoHjZfuR53K79qj748NGkuz1l7XQoQ7lQk
-         pF9kQa7zL91+JVmK/Y2bEXTsc7K36Yvit8Wxi56M=
+        b=ncYhz3YNi4Cfroci6aWwxvzyXeCaUFaxdpKKcPF+FKzjat48T0erWLuooZUXTlaGV
+         ZkFiPV184Mrh470TDloW0J22frv+ysbwOXfRO4FBxzIqIb7IWuLBhKrmhiA9cT20Bp
+         FtJyjPJWv8yZBYXJXQlq5F/dnXGf7j52S3KNTp9Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org,
+        Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 108/133] rpc: fix gss_svc_init cleanup on failure
+Subject: [PATCH 4.14 165/217] ARM: tegra: tamonten: Fix UART pad setting
 Date:   Mon, 20 Sep 2021 18:43:06 +0200
-Message-Id: <20210920163916.157962735@linuxfoundation.org>
+Message-Id: <20210920163930.232959956@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: J. Bruce Fields <bfields@redhat.com>
+From: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
 
-[ Upstream commit 5a4753446253a427c0ff1e433b9c4933e5af207c ]
+[ Upstream commit 2270ad2f4e123336af685ecedd1618701cb4ca1e ]
 
-The failure case here should be rare, but it's obviously wrong.
+This patch fixes the tristate and pullup configuration for UART 1 to 3
+on the Tamonten SOM.
 
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Andreas Obergschwandtner <andreas.obergschwandtner@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sunrpc/auth_gss/svcauth_gss.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/tegra20-tamonten.dtsi | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/net/sunrpc/auth_gss/svcauth_gss.c b/net/sunrpc/auth_gss/svcauth_gss.c
-index bb8b0ef5de82..daf0c1ea3917 100644
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -1845,7 +1845,7 @@ gss_svc_init_net(struct net *net)
- 		goto out2;
- 	return 0;
- out2:
--	destroy_use_gss_proxy_proc_entry(net);
-+	rsi_cache_destroy_net(net);
- out1:
- 	rsc_cache_destroy_net(net);
- 	return rv;
+diff --git a/arch/arm/boot/dts/tegra20-tamonten.dtsi b/arch/arm/boot/dts/tegra20-tamonten.dtsi
+index 872046d48709..4d69d67792d1 100644
+--- a/arch/arm/boot/dts/tegra20-tamonten.dtsi
++++ b/arch/arm/boot/dts/tegra20-tamonten.dtsi
+@@ -185,8 +185,9 @@ conf_ata {
+ 				nvidia,pins = "ata", "atb", "atc", "atd", "ate",
+ 					"cdev1", "cdev2", "dap1", "dtb", "gma",
+ 					"gmb", "gmc", "gmd", "gme", "gpu7",
+-					"gpv", "i2cp", "pta", "rm", "slxa",
+-					"slxk", "spia", "spib", "uac";
++					"gpv", "i2cp", "irrx", "irtx", "pta",
++					"rm", "slxa", "slxk", "spia", "spib",
++					"uac";
+ 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 			};
+@@ -211,7 +212,7 @@ conf_crtp {
+ 			conf_ddc {
+ 				nvidia,pins = "ddc", "dta", "dtd", "kbca",
+ 					"kbcb", "kbcc", "kbcd", "kbce", "kbcf",
+-					"sdc";
++					"sdc", "uad", "uca";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 			};
+@@ -221,10 +222,9 @@ conf_hdint {
+ 					"lvp0", "owc", "sdb";
+ 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+ 			};
+-			conf_irrx {
+-				nvidia,pins = "irrx", "irtx", "sdd", "spic",
+-					"spie", "spih", "uaa", "uab", "uad",
+-					"uca", "ucb";
++			conf_sdd {
++				nvidia,pins = "sdd", "spic", "spie", "spih",
++					"uaa", "uab", "ucb";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+ 			};
 -- 
 2.30.2
 
