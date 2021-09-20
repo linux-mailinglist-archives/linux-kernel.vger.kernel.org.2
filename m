@@ -2,118 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825994110F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864AF4110F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 10:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbhITIaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 04:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235779AbhITIa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 04:30:29 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44CDC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:29:02 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id d6so27309272wrc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 01:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NmwufkRm5QXP0RAh9pBbo8ktk5iDLTsqfPbzEqZPusQ=;
-        b=ASztJaW6JLqDSrnzAc8sDk8rdLwza8sZQRFbsVufD7S6x99Hhl7BGV5YzttOZprJPR
-         A6TbTopEIqMinlR87Ykkzakz5iZ/O/5AuzDw4YkrqTEzes8j1K5NNjA2QOw3sTxJDGo1
-         XfwHT0hIyrbhKwUogGCw6ZC/OLu1RprMonZ9Yj7TzNFrcOJTTC+hFsqWWqbusTZVIns3
-         HIrSkjQ1/g2BaOGHXjp7iU8kmma/vSYLuYp3Ba7eGXib4bCsmpcwJYXGuSMU8W/KojWX
-         ehFVT2F7wWBmutG0rItwEPu77rY+Gr2IPyptA1Iz0a49hWLhllx3WS+WWU82s7eXfgZ+
-         197Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=NmwufkRm5QXP0RAh9pBbo8ktk5iDLTsqfPbzEqZPusQ=;
-        b=iNq95YN/R8S2FoS7u1wHCEcepAxp0o5C3L5OohNrPnyubDKi7t5oc70KAaSCD0ncvG
-         35tM/zjDbOr8ABXCZztpgeIThYLTp+LSvTidz4S0X2kcX6Kudh4ucbQkvzCRM+u2Pk1c
-         l1covbg1/E8MaLcI8hj1XK6XbVnHGdTMfjnDp6/S0EgcRBtQf85d7zKg24Vi2PtGAGjP
-         AKXFkMJMDqYgCZU4p5yROMLqIIJJYlklD9Q2NxSW+3Gzj9y2ne50+EHpvyJkDGJAiWWt
-         PDRVAZLxYhswyrvO7av3HGKHXCR3LbG8kJyK3AjBtD7d+I22IqgBVknAuzdnwI8RsuR6
-         SOqA==
-X-Gm-Message-State: AOAM533ov9WXbK742GP0boh5TMp5ntZ77FqmKXv1Y+20U1pgV5HDyqxM
-        eCpFLnJoZWqtQWC1KPv0g/2KyA==
-X-Google-Smtp-Source: ABdhPJzuxaefHZvd38Fmw8Tt/MDEALuJp9Z/DsWNUXhTEtV7qyVR7JWj5ElkPT5QmeIyOw9MdlrDLw==
-X-Received: by 2002:adf:d1cf:: with SMTP id b15mr803908wrd.181.1632126541068;
-        Mon, 20 Sep 2021 01:29:01 -0700 (PDT)
-Received: from [172.20.10.7] ([37.169.24.17])
-        by smtp.gmail.com with ESMTPSA id b16sm15249049wrp.82.2021.09.20.01.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 01:29:00 -0700 (PDT)
-Subject: Re: [PATCHv2 0/3] Fix the pwm regulator supply properties
-To:     Anand Moon <linux.amoon@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        devicetree@vger.kernel.org
-References: <20210919202918.3556-1-linux.amoon@gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <9d759c05-c67f-1230-7f58-562dc9bb1224@baylibre.com>
-Date:   Mon, 20 Sep 2021 10:28:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235863AbhITIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 04:32:08 -0400
+Received: from www.zeus03.de ([194.117.254.33]:44198 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235726AbhITIbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 04:31:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=V3qeqboLXKvTgpPPFp/00Iz4UpTd
+        r9XWmObz8M34siw=; b=eUUYID1QsLx886Vp+BV3KPbCF4rGhGBiXSr0mC9juqQR
+        MV5uUV0BVjlVKNZBgunxvEBsSage8axBidUT71z0zbFY7ydm5ujWzLMqnx4X9fu0
+        ArV9dUsHWki2dmLsiFUm0BOjTW0EMA6axfi/9ZQcHrL3X8bDgvr+LsXAyoPEY2c=
+Received: (qmail 2400880 invoked from network); 20 Sep 2021 10:30:08 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Sep 2021 10:30:08 +0200
+X-UD-Smtp-Session: l3s3148p1@YWy9FmnMroogAwDPXwlxANIWpbLKE1Uh
+Date:   Mon, 20 Sep 2021 10:30:08 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YUhGkBdXJUI3XadP@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
+ <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+ <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210919202918.3556-1-linux.amoon@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+LAkWgDK13VhUQYg"
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+
+--+LAkWgDK13VhUQYg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Andy,
+
+thanks for the prompt review again!
+
+> > +       /* upper limit is arbitrary */
+>=20
+> Not really. I believe if the upper limit is > PAGE_SIZE, you would get
+> -ENOMEM with much higher chances. So, I think the comment should be
+> amended,
+
+? Dunno, maybe it is not arbitrary that it is < PAGE_SIZE but other than
+that the value I chose is arbitrary. There is no technical reason for
+2048.
+
+>=20
+> > +       if (count > 2048 || count & 1)
+> > +               return -EINVAL;
+>=20
+> ...
+>=20
+> > +       ret =3D device_property_read_string_array(dev, "probe-names", g=
+pio_names,
+> > +                                               priv->descs->ndescs);
+> > +       if (ret >=3D 0 && ret !=3D priv->descs->ndescs)
+> > +               ret =3D -ENODATA;
+> > +       if (ret < 0) {
+>=20
+> > +               dev_err(dev, "error naming the GPIOs: %d\n", ret);
+> > +               return ret;
+> > +       }
+>=20
+> Perhaps
+>=20
+>   return dev_err_probe() ?
+
+Reading strings from DT can be deferred? I don't think so.
+
+> And I think it might be split into two conditionals with
+> distinguishable error messages.
+
+I think "something is wrong with the names" is helpful enough for the
+user.
 
 
-On 19/09/2021 22:29, Anand Moon wrote:
-> Changes PWM supply properties help fix internal link of PWM to
-> main 12V supply as per the shematics.
-> 
-> V1: https://lkml.org/lkml/2021/6/29/288
-> 
-> Thanks
-> -Anand
-> 
-> Anand Moon (3):
->   arm64: dts: meson-g12a: Fix the pwm regulator supply properties
->   arm64: dts: meson-g12b: Fix the pwm regulator supply properties
->   arm64: dts: meson-sm1: Fix the pwm regulator supply properties
-> 
->  arch/arm64/boot/dts/amlogic/meson-g12a-sei510.dts       | 2 +-
->  arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts         | 2 +-
->  arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts      | 2 +-
->  arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi | 4 ++--
->  arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi   | 4 ++--
->  arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi        | 4 ++--
->  arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts   | 2 +-
->  arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts  | 2 +-
->  arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi       | 2 +-
->  arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts        | 2 +-
->  10 files changed, 13 insertions(+), 13 deletions(-)
+> > +       dev_info(dev, "initialized");
+>=20
+> Unneeded noise.
 
-Thanks for fixing all the other boards !
+Nope, I added it because when I was adding more instances, this proved
+useful. I'd agree if this is a regular driver. But this is a
+only-for-special-case-debugging one.
 
-I'll let a few days for Martin to review, but it's ok for me.
+> > +       [ -n "$cur_cpu" ] && fail "CPU$isol_cpu requested but CPU$cur_c=
+pu already isolated"
+>=20
+> For the sake of style (handle errors on the error) I would use
+>=20
+> [ -z "..." ] || fail ...
 
-Neil
+I'll think about it. On first glimpse, this doesn't look more readable
+to me. "if this is true then do that" is super readable in my book. But
+yes, when calling external programs, I need '||' anyhow, true.
+
+> > +       # Move tasks away from isolated CPU
+> > +       for p in $(ps -o pid | tail -n +2); do
+> > +               mask=3D$(taskset -p "$p") || continue
+> > +               [ "${mask##*: }" !=3D "$oldmask" ] && continue
+>=20
+> Perhaps
+>=20
+>   [ ... =3D ... ] || continue
+>=20
+> to be in alignment with the rest of the similar lines here?
+
+Yes.
+
+> > +       *) fail "error parsing commandline: $*";;
+>=20
+> command line
+
+OK.
+
+> > +if [ -n "$lainstance" ]; then
+>=20
+> Shouldn't be rather '-d' ?
+
+Nope, this is just a string for now. '-d' comes later with $lasysfsdir.
+
+> > +[ ! -d "$lacpusetdir" ] && echo "Auto-Isolating CPU1" && init_cpu 1
+>=20
+> This ! along with double && is hard to read. Simply
+
+Same as above, will think about it. But "if there is not this directory,
+then do a) and b)" is not hard to read in my book.
+
+Happy hacking,
+
+   Wolfram
 
 
-> 
-> --
-> 2.33.0
-> 
+--+LAkWgDK13VhUQYg
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFIRowACgkQFA3kzBSg
+KbZ1QA/8D789923P8m5eIJH+JqOLgIPKLF8efnTccUKrYUJpfiHOQZbHLoxwLEg5
+iqYi3h0Y3iN5fXoPsK7UGHgrywtlWGnXY+pplXWhEqYtH10TC+j3lK92UzaR4bHR
++kImKQBCKnQoowA4CEHIs7/hx7B11IlS/Kyty564QOQAKwDZ7mSUOGCg12H2clEs
+bl6JysehXdfmZhNnrv8Rs/nwa14h7kRIFCoHQwPP3vctRtKhOsoeOjaK1MEGf2ov
+I9cxnb0y6VrBRHulz/sp04SD1MJn8SjPDC/UH217YJsUkWrrAEi9SfdT1iK1bMrC
+cC0ohuCRQLUgYTD8RKNFIyW8E7yKDsIudcx+1WpV+Q2kt8w6KXlOwcVuOw2mC2SO
+fx1AZr6Us2Gj2daEbLooTfxYC5q3VbjVPfmBxX5yeE1Ph3E0l/7iUFHJ9SRQePQ+
+kRIc/QLHtikqlnRJ475xFbUObkJzTkv4TahRSwO4rs5SLLZ+QlshhcAYnQQgsuUK
+9zTmg2Q6LLZVBY/wUb+cVnZVpomBa9FNX6EuEhmxzsi8XGqJDTwZXUmJE2VaEmPM
+3hj4yFhNM4tr+HrpoptiBuwonITYAOWP6w/dEf6lePbqRyuj+KZBhwueCptsValD
+htisxjWaHjw/Fm+iFUsm+uSezh4alXjaNWhi+EstoBHaarFN7+4=
+=XuoP
+-----END PGP SIGNATURE-----
+
+--+LAkWgDK13VhUQYg--
