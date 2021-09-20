@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBD1412092
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352AB411C10
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349605AbhITRzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:55:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52068 "EHLO mail.kernel.org"
+        id S1345753AbhITRET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354387AbhITRtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:49:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A50D361107;
-        Mon, 20 Sep 2021 17:11:40 +0000 (UTC)
+        id S239881AbhITRBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:01:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 072D061244;
+        Mon, 20 Sep 2021 16:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157901;
-        bh=ys93JIkJor0XQfcdfHsBQ3ju1Zsl222TxIT0neTqpJQ=;
+        s=korg; t=1632156796;
+        bh=6CxgdGrVJ0MGEM/4hU0l4geVwAUiZnKv8uWB3SO70a0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ad0adb00jiZKYWCMY+Tg74ThwHSfq0lhBjzXmCOdJe4hbQZufqxBg9Lc6A1FDnLYG
-         9029Ja8rK+WhvPUm2+ZuU3Bz4ldpHDBPCEzyy5Hw86rOD+tu61V+wMMUHUtAO+QKIc
-         1+Pow2Ll7kRDZEPgClvnK6tcMl3koDZGS+hrgP5Q=
+        b=tiG+AAt2rJpiozyvivu/Qmy9qHejmpFQajapC6/E9AEFr6UX80U7FKcCgmVs2GjeG
+         RccSX5NoFi7AMuRxsn10GkAHAARbfxaEOp7WUHMQl9swxAIpEaSRXKUAqwyyu1Eplw
+         uRnvaAst4wJVgAWU6Z5iu4LA4nHKhqYa/aX7OH/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        kernel test robot <lkp@intel.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 176/293] iio: dac: ad5624r: Fix incorrect handling of an optional regulator.
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.9 089/175] PCI/MSI: Skip masking MSI-X on Xen PV
 Date:   Mon, 20 Sep 2021 18:42:18 +0200
-Message-Id: <20210920163939.303771935@linuxfoundation.org>
+Message-Id: <20210920163920.990514478@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,68 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
-[ Upstream commit 97683c851f9cdbd3ea55697cbe2dcb6af4287bbd ]
+commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
 
-The naming of the regulator is problematic.  VCC is usually a supply
-voltage whereas these devices have a separate VREF pin.
+When running as Xen PV guest, masking MSI-X is a responsibility of the
+hypervisor. The guest has no write access to the relevant BAR at all - when
+it tries to, it results in a crash like this:
 
-Secondly, the regulator core might have provided a stub regulator if
-a real regulator wasn't provided. That would in turn have failed to
-provide a voltage when queried. So reality was that there was no way
-to use the internal reference.
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-In order to avoid breaking any dts out in the wild, make sure to fallback
-to the original vcc naming if vref is not available.
+The recently introduced function msix_mask_all() does not check the global
+variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
+of MSI[-X] interrupts.
 
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Nuno Sá <nuno.sa@analog.com>
-Link: https://lore.kernel.org/r/20210627163244.1090296-9-jic23@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Add the check to make this function XEN PV compatible.
+
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/dac/ad5624r_spi.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/pci/msi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/iio/dac/ad5624r_spi.c b/drivers/iio/dac/ad5624r_spi.c
-index 13fdb4dfe356..cc3a24c43e57 100644
---- a/drivers/iio/dac/ad5624r_spi.c
-+++ b/drivers/iio/dac/ad5624r_spi.c
-@@ -230,7 +230,7 @@ static int ad5624r_probe(struct spi_device *spi)
- 	if (!indio_dev)
- 		return -ENOMEM;
- 	st = iio_priv(indio_dev);
--	st->reg = devm_regulator_get(&spi->dev, "vcc");
-+	st->reg = devm_regulator_get_optional(&spi->dev, "vref");
- 	if (!IS_ERR(st->reg)) {
- 		ret = regulator_enable(st->reg);
- 		if (ret)
-@@ -241,6 +241,22 @@ static int ad5624r_probe(struct spi_device *spi)
- 			goto error_disable_reg;
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -777,6 +777,9 @@ static void msix_mask_all(void __iomem *
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
  
- 		voltage_uv = ret;
-+	} else {
-+		if (PTR_ERR(st->reg) != -ENODEV)
-+			return PTR_ERR(st->reg);
-+		/* Backwards compatibility. This naming is not correct */
-+		st->reg = devm_regulator_get_optional(&spi->dev, "vcc");
-+		if (!IS_ERR(st->reg)) {
-+			ret = regulator_enable(st->reg);
-+			if (ret)
-+				return ret;
++	if (pci_msi_ignore_mask)
++		return;
 +
-+			ret = regulator_get_voltage(st->reg);
-+			if (ret < 0)
-+				goto error_disable_reg;
-+
-+			voltage_uv = ret;
-+		}
- 	}
- 
- 	spi_set_drvdata(spi, indio_dev);
--- 
-2.30.2
-
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
 
 
