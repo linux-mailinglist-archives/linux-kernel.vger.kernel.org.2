@@ -2,121 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE16E41276B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDD2412775
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhITUoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:44:12 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:46649 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233240AbhITUmI (ORCPT
+        id S235707AbhITUsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:48:15 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:40600 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhITUqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:42:08 -0400
-Received: by mail-ot1-f43.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso25304155otr.13;
-        Mon, 20 Sep 2021 13:40:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XQfBkyxcnpFDWr8Mv2qU5aEkU/ePQ/ccdR6CWROptdM=;
-        b=t6ITI6dpfetnsbezLgwpn1DToC/n0t0/J2Ya3zpnM2VyF+SC1vUk5KjYsJvdgqbFDu
-         CtcTTtZVIUV1VottuKHGarATzaie1H57WzJNPRm/Ff/r9pzCepLrT23/V0UctS9AXbTO
-         YsNwI3lKwJ+gGcvL3F9oWg48Ob1mRMYdskUfgQm/X7s3jWIqR9m0BQpVZaRLp3l1qpS4
-         L2KbHbea6BrOX8EJjJsLsdFVsIBCVQeeR7AzIPzLZZyQxdM2eXmz9zdileKN2FFnSwIv
-         SqXrQIQZleK0+l5IDgtVVjfKY+c49xttEKjQW011D+P2LeJMWuGZGMrGZtTxjFtKOS3j
-         1wmA==
-X-Gm-Message-State: AOAM532pQcAvwJMoSH2qkX+geiQ1eiqRS+TiY+8V8yhBHMF4oiVKovsW
-        C0wr3u78UPEC8NpP9ZiaRZcNUCpoVw==
-X-Google-Smtp-Source: ABdhPJx5C21c6ugEjGBz0jMaQ38Z+t9k2bOlXXGsQUNkAc5zOzx+48Adu0nx01bsJD60uutCywtDrA==
-X-Received: by 2002:a9d:17c5:: with SMTP id j63mr23078469otj.208.1632170440898;
-        Mon, 20 Sep 2021 13:40:40 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v2sm3693372ooh.28.2021.09.20.13.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 13:40:40 -0700 (PDT)
-Received: (nullmailer pid 717119 invoked by uid 1000);
-        Mon, 20 Sep 2021 20:40:38 -0000
-Date:   Mon, 20 Sep 2021 15:40:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Satya Priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, mka@chromium.org,
-        swboyd@chromium.org, Das Srinagesh <gurus@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
-Message-ID: <YUjxxnz9BFS7/WDK@robh.at.kernel.org>
-References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
- <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+        Mon, 20 Sep 2021 16:46:13 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3DB11806A8;
+        Tue, 21 Sep 2021 08:44:43 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1632170683;
+        bh=A3hXOjI+P/TxKzBQBrxWgNBplidSCkfNmRVI7sFeCRk=;
+        h=From:To:Cc:Subject:Date;
+        b=OUgUEkNfiEuJlNhDPYX+/vkGBehSJGciLrUl4ZYUA5CMhtvOAjF9/BtIUozlwSNCs
+         6adS34t5ttiIvCToNnwDz4gJTI6vBiBUYwqYIAewgS55ly18V/wWkdnppYkvOhJfOM
+         H9uG8LTstVdhnlPKOBB2LjWhokWfCZ9C/1w5WRP7q30fhRGx81da15r5OeAthYV1KT
+         cgP5C2US97LzY9TRRgFudmFn0GdY22bSbENWMgaQv2SBk2ivjp14EouOdAwaCG2TQs
+         VEdX+M40gxphYrLgybXQDglIxzRqcBak2tkC36Q+dXA8qOiHsiCd/CBNzfgIyrAH0Q
+         huuE8kC4z1Nyw==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6148f2ba0000>; Tue, 21 Sep 2021 08:44:42 +1200
+Received: from coled-dl.ws.atlnz.lc (coled-dl.ws.atlnz.lc [10.33.25.26])
+        by pat.atlnz.lc (Postfix) with ESMTP id D8FA913EE39;
+        Tue, 21 Sep 2021 08:44:42 +1200 (NZST)
+Received: by coled-dl.ws.atlnz.lc (Postfix, from userid 1801)
+        id D2DF7242827; Tue, 21 Sep 2021 08:44:42 +1200 (NZST)
+From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
+Subject: [PATCH net v6 0/2] Fix port selection of FTP for NF_NAT_RANGE_PROTO_SPECIFIED
+Date:   Tue, 21 Sep 2021 08:44:37 +1200
+Message-Id: <20210920204439.13179-1-Cole.Dishington@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=FtN7AFjq c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=7QKq2e-ADPsA:10 a=8zFdtlccS6W11XtEw-MA:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 04:15:35PM +0530, Satya Priya wrote:
-> Add pm8008-regulator node and example.
-> 
-> Signed-off-by: Satya Priya <skakit@codeaurora.org>
-> ---
->  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 ++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
-> index ec3138c..de182f8 100644
-> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
-> @@ -45,6 +45,10 @@ properties:
->      const: 0
->  
->  patternProperties:
-> +  "^pm8008[a-z]?-regulator$":
+Thanks for your time reviewing!
 
-Is more than 1 node possible for a given PMIC? If not use 'regulators' 
-for the node name.
+Changes:
+- Fix compiler warning in 1/2 patch.
+- Add Acked-by: Florian Westphal <fw@strlen.de> to 1/2 and 2/2.
 
-> +    type: object
-> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
-> +
->    "^gpio@[0-9a-f]+$":
->      type: object
->  
-> @@ -122,6 +126,26 @@ examples:
->            interrupt-controller;
->            #interrupt-cells = <2>;
->          };
-> +
-> +        pm8008-regulator {
-> +          compatible = "qcom,pm8008-regulator";
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          vdd_l1_l2-supply = <&vreg_s8b_1p2>;
-> +          vdd_l3_l4-supply = <&vreg_s1b_1p8>;
-> +          vdd_l5-supply = <&vreg_bob>;
-> +          vdd_l6-supply = <&vreg_bob>;
-> +          vdd_l7-supply = <&vreg_bob>;
-> +
-> +          pm8008_l1: regulator@4000 {
-> +            reg = <0x4000>;
-> +            regulator-name = "pm8008_l1";
-> +            regulator-min-microvolt = <950000>;
-> +            regulator-max-microvolt = <1300000>;
-> +            qcom,min-dropout-voltage = <96000>;
-> +          };
-> +        };
->        };
->      };
->  
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
-> 
+Cole Dishington (2):
+  net: netfilter: Limit the number of ftp helper port attempts
+  net: netfilter: Fix port selection of FTP for
+    NF_NAT_RANGE_PROTO_SPECIFIED
+
+ include/net/netfilter/nf_nat.h |  6 ++++
+ net/netfilter/nf_nat_core.c    |  9 ++++++
+ net/netfilter/nf_nat_ftp.c     | 51 ++++++++++++++++++++++++++--------
+ net/netfilter/nf_nat_helper.c  | 10 +++++++
+ 4 files changed, 65 insertions(+), 11 deletions(-)
+
+--=20
+2.33.0
+
