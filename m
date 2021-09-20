@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8641E4125F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF0A4123C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348387AbhITSvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33192 "EHLO mail.kernel.org"
+        id S1378918AbhITS1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383981AbhITSqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:46:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80D4261AFA;
-        Mon, 20 Sep 2021 17:33:09 +0000 (UTC)
+        id S1377694AbhITSUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:20:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A470061A78;
+        Mon, 20 Sep 2021 17:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159190;
-        bh=W067M9YuUs/H/l/wOW2OpgBb+e2lq9U28N6uJgw6CEw=;
+        s=korg; t=1632158613;
+        bh=pv1Hz86Cr7ckeW96l4PLPiyMMDa3YeUNrTrhx+5k008=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPsOuWouAA7eEdL4Mmtery8zq0rRTmhsazsYMITR2vLWDeTx4gXO5qIAGJPuEzT2r
-         dqkpVGGIYlbN0qaV3xskCV50o5JB3h/OFMTyUFgI56pahBfq9frsdBplFKLbxSHsz/
-         zbjlmtp1EEth6O2GqZZAMtVBg1ORqWRsh6InCEGE=
+        b=LjHJgVu4OyrGhcOVXEshC38XvhfXI3wgP1joyknwgUQXOSoQYJt2hQO53ER/46jDr
+         0cynzHbCNyjxDQP6+xWgEAy5Cba97DDyPGserkFdzBOG21B/t9yJa8sWkttlQg4hWF
+         Fcan+FavGoWotWRKtguKl42m84lRKePMSiW4qNEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 117/168] NTB: Fix an error code in ntb_msit_probe()
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 237/260] mfd: Dont use irq_create_mapping() to resolve a mapping
 Date:   Mon, 20 Sep 2021 18:44:15 +0200
-Message-Id: <20210920163925.485854416@linuxfoundation.org>
+Message-Id: <20210920163939.187304980@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 319f83ac98d7afaabab84ce5281a819a358b9895 ]
+[ Upstream commit 9ff80e2de36d0554e3a6da18a171719fe8663c17 ]
 
-When the value of nm->isr_ctx is false, the value of ret is 0.
-So, we set ret to -ENOMEM to indicate this error.
+Although irq_create_mapping() is able to deal with duplicate
+mappings, it really isn't supposed to be a substitute for
+irq_find_mapping(), and can result in allocations that take place
+in atomic context if the mapping didn't exist.
 
-Clean up smatch warning:
-drivers/ntb/test/ntb_msi_test.c:373 ntb_msit_probe() warn: missing
-error code 'ret'.
+Fix the handful of MFD drivers that use irq_create_mapping() in
+interrupt context by using irq_find_mapping() instead.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_msi_test.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mfd/ab8500-core.c | 2 +-
+ drivers/mfd/stmpe.c       | 4 ++--
+ drivers/mfd/tc3589x.c     | 2 +-
+ drivers/mfd/wm8994-irq.c  | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-index 7095ecd6223a..4e18e08776c9 100644
---- a/drivers/ntb/test/ntb_msi_test.c
-+++ b/drivers/ntb/test/ntb_msi_test.c
-@@ -369,8 +369,10 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
- 	if (ret)
- 		goto remove_dbgfs;
+diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
+index 3e9dc92cb467..842de1f352df 100644
+--- a/drivers/mfd/ab8500-core.c
++++ b/drivers/mfd/ab8500-core.c
+@@ -493,7 +493,7 @@ static int ab8500_handle_hierarchical_line(struct ab8500 *ab8500,
+ 		if (line == AB8540_INT_GPIO43F || line == AB8540_INT_GPIO44F)
+ 			line += 1;
  
--	if (!nm->isr_ctx)
-+	if (!nm->isr_ctx) {
-+		ret = -ENOMEM;
- 		goto remove_dbgfs;
-+	}
+-		handle_nested_irq(irq_create_mapping(ab8500->domain, line));
++		handle_nested_irq(irq_find_mapping(ab8500->domain, line));
+ 	}
  
- 	ntb_link_enable(ntb, NTB_SPEED_AUTO, NTB_WIDTH_AUTO);
+ 	return 0;
+diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+index 1aee3b3253fc..508349399f8a 100644
+--- a/drivers/mfd/stmpe.c
++++ b/drivers/mfd/stmpe.c
+@@ -1091,7 +1091,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
  
+ 	if (variant->id_val == STMPE801_ID ||
+ 	    variant->id_val == STMPE1600_ID) {
+-		int base = irq_create_mapping(stmpe->domain, 0);
++		int base = irq_find_mapping(stmpe->domain, 0);
+ 
+ 		handle_nested_irq(base);
+ 		return IRQ_HANDLED;
+@@ -1119,7 +1119,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
+ 		while (status) {
+ 			int bit = __ffs(status);
+ 			int line = bank * 8 + bit;
+-			int nestedirq = irq_create_mapping(stmpe->domain, line);
++			int nestedirq = irq_find_mapping(stmpe->domain, line);
+ 
+ 			handle_nested_irq(nestedirq);
+ 			status &= ~(1 << bit);
+diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
+index 67c9995bb1aa..23cfbd050120 100644
+--- a/drivers/mfd/tc3589x.c
++++ b/drivers/mfd/tc3589x.c
+@@ -187,7 +187,7 @@ again:
+ 
+ 	while (status) {
+ 		int bit = __ffs(status);
+-		int virq = irq_create_mapping(tc3589x->domain, bit);
++		int virq = irq_find_mapping(tc3589x->domain, bit);
+ 
+ 		handle_nested_irq(virq);
+ 		status &= ~(1 << bit);
+diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
+index 6c3a619e2628..651a028bc519 100644
+--- a/drivers/mfd/wm8994-irq.c
++++ b/drivers/mfd/wm8994-irq.c
+@@ -154,7 +154,7 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
+ 	struct wm8994 *wm8994 = data;
+ 
+ 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
+-		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
++		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
+ 
+ 	return IRQ_HANDLED;
+ }
 -- 
 2.30.2
 
