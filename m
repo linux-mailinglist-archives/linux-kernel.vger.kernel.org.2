@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DA0411A20
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8D9411D94
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240043AbhITQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35394 "EHLO mail.kernel.org"
+        id S1344687AbhITRVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242058AbhITQrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:47:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56B69611AE;
-        Mon, 20 Sep 2021 16:45:45 +0000 (UTC)
+        id S1348602AbhITRTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:19:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E54961245;
+        Mon, 20 Sep 2021 17:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156345;
-        bh=onUe9Tx0CiO6YpwNg8NIYuxQVQQT1EWhaSNkiyKwy+o=;
+        s=korg; t=1632157215;
+        bh=5CF0LH7OY6iwG7fugtDG6glgozGKS9EZyankhiIpnRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0VCWt5m6ta9JlTGgeHccpdE37GloNMMDQyWrvI+GFK/QbnIBa25Cy8slfPQLQZ+iT
-         s11rNDrBq8UFIihZA51tsN5pC2CYoNxNclsPqtfGYuUY1DjN4hbVupcrNvW3siKL3h
-         BFB6Cwh479fkyg2oZyriTw9O8oqD4+4aW0pb+Ur4=
+        b=hgq8+OTXNZaLgwU7SbpuAaG5LfxWFNQ1yhYuqzZ5lK67vUGveIjhuq3SfK1wzAd94
+         aqiKtsgvFNIHqKEWrC4nK2SOsmczy9gYdMRss6xnVT6kXn3SemJO324qahL0aI3U4t
+         eBQ5zFFrkhWl70z4wINXBVhlUXvO/NMIk7OjhnvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Keerthy <j-keerthy@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.4 017/133] PM / wakeirq: Enable dedicated wakeirq for suspend
-Date:   Mon, 20 Sep 2021 18:41:35 +0200
-Message-Id: <20210920163913.176418675@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 075/217] Bluetooth: add timeout sanity check to hci_inquiry
+Date:   Mon, 20 Sep 2021 18:41:36 +0200
+Message-Id: <20210920163927.172366640@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit c84345597558349474f55be2b7d4093256e42884 upstream.
+[ Upstream commit f41a4b2b5eb7872109723dab8ae1603bdd9d9ec1 ]
 
-We currently rely on runtime PM to enable dedicated wakeirq for suspend.
-This assumption fails in the following two cases:
+Syzbot hit "task hung" bug in hci_req_sync(). The problem was in
+unreasonable huge inquiry timeout passed from userspace.
+Fix it by adding sanity check for timeout value to hci_inquiry().
 
-1. If the consumer driver does not have runtime PM implemented, the
-   dedicated wakeirq never gets enabled for suspend
+Since hci_inquiry() is the only user of hci_req_sync() with user
+controlled timeout value, it makes sense to check timeout value in
+hci_inquiry() and don't touch hci_req_sync().
 
-2. If the consumer driver has runtime PM implemented, but does not idle
-   in suspend
-
-Let's fix the issue by always enabling the dedicated wakeirq during
-suspend.
-
-Depends-on: bed570307ed7 (PM / wakeirq: Fix dedicated wakeirq for drivers not using autosuspend)
-Fixes: 4990d4fe327b (PM / Wakeirq: Add automated device wake IRQ handling)
-Reported-by: Keerthy <j-keerthy@ti.com>
-Tested-by: Keerthy <j-keerthy@ti.com>
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-[ tony@atomide.com: updated based on bed570307ed7, added description ]
-Tested-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-and-tested-by: syzbot+be2baed593ea56c6a84c@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/power/wakeirq.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ net/bluetooth/hci_core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/base/power/wakeirq.c
-+++ b/drivers/base/power/wakeirq.c
-@@ -319,8 +319,12 @@ void dev_pm_arm_wake_irq(struct wake_irq
- 	if (!wirq)
- 		return;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 89f4b9fc9bcc..1906adfd553a 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1258,6 +1258,12 @@ int hci_inquiry(void __user *arg)
+ 		goto done;
+ 	}
  
--	if (device_may_wakeup(wirq->dev))
-+	if (device_may_wakeup(wirq->dev)) {
-+		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
-+			enable_irq(wirq->irq);
-+
- 		enable_irq_wake(wirq->irq);
++	/* Restrict maximum inquiry length to 60 seconds */
++	if (ir.length > 60) {
++		err = -EINVAL;
++		goto done;
 +	}
- }
- 
- /**
-@@ -335,6 +339,10 @@ void dev_pm_disarm_wake_irq(struct wake_
- 	if (!wirq)
- 		return;
- 
--	if (device_may_wakeup(wirq->dev))
-+	if (device_may_wakeup(wirq->dev)) {
- 		disable_irq_wake(wirq->irq);
 +
-+		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
-+			disable_irq_nosync(wirq->irq);
-+	}
- }
+ 	hci_dev_lock(hdev);
+ 	if (inquiry_cache_age(hdev) > INQUIRY_CACHE_AGE_MAX ||
+ 	    inquiry_cache_empty(hdev) || ir.flags & IREQ_CACHE_FLUSH) {
+-- 
+2.30.2
+
 
 
