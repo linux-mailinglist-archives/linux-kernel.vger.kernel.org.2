@@ -2,118 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29402410F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 08:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A02410F9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 08:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhITGnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 02:43:32 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48790 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233374AbhITGna (ORCPT
+        id S233202AbhITGqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 02:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232938AbhITGqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 02:43:30 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18K6fnNH073492;
-        Mon, 20 Sep 2021 01:41:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632120109;
-        bh=/4Zz3FNlBeAefxVx1iflggGljsIGocoijkMKMEhCHa8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=iFrTV5T69RG37DgBBAFe7S2cGN4k2Vo32OxbM4eQP8/OabfOLgi/XiEPBqxDUmThz
-         b99kSHMwPSbdgeooIayfpomBASLh45lx4px5okM0UqQJpPgd6awTb5PYv3zHsbtX7f
-         fKoG2BjNc/Ksa2G5FrkTSCIWv25mAD2dlkO0HQqw=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18K6fnvh064834
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Sep 2021 01:41:49 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
- Sep 2021 01:41:48 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 20 Sep 2021 01:41:48 -0500
-Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18K6fYa8015912;
-        Mon, 20 Sep 2021 01:41:45 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        <lokeshvutla@ti.com>
-Subject: [PATCH 3/3] irqchip/gic-v3-its: Include "msi-map-mask" for calculating nvecs
-Date:   Mon, 20 Sep 2021 12:11:33 +0530
-Message-ID: <20210920064133.14115-4-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210920064133.14115-1-kishon@ti.com>
-References: <20210920064133.14115-1-kishon@ti.com>
+        Mon, 20 Sep 2021 02:46:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF3AC061574;
+        Sun, 19 Sep 2021 23:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3Sy/rEGgIqKcMWpTMiQbwNJaSJE3pv4762nDAuPaBrI=; b=he667LqfnFO1EieNx8AAe5GaTQ
+        GTPR4ubHrX5lNhUEp/E/QwW26YOAALFn2E9HOICZVh+gkZARqQNV+4RU3syr3jWcqJaalUZP37egP
+        TUr/VyO7Ry/7JKLYRbsyfqf3qTlhYfLK3dcR5r1ddyUVSGbbJOfuSSZTjhg2pSKaO29JrPmZdMqEc
+        mNFuQmlEDZ8Q65nqa61Nq2PHp/e/ZTJv3iy14rWAtMRuxa4FJfR3A0Q1413SBwcCf+P6Ba5Fv33NH
+        K2+PsJ51fFyWRGHDAnwtPKny07xHp90Tn4zBD7qR4Ar38b+Q3xpj4j5ror7MPSGemq0C6eN/sM+gi
+        3iHhGLag==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSD1s-002QwW-Gw; Mon, 20 Sep 2021 06:44:15 +0000
+Date:   Mon, 20 Sep 2021 07:43:52 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Ian Pilcher <arequipeno@gmail.com>, hch@infradead.org,
+        pavel@ucw.cz, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kabel@kernel.org
+Subject: Re: [PATCH v4 1/2] docs: Add block device (blkdev) LED trigger
+ documentation
+Message-ID: <YUgtqL4zUEV2YPnQ@infradead.org>
+References: <20210916202127.1216994-1-arequipeno@gmail.com>
+ <20210916202127.1216994-2-arequipeno@gmail.com>
+ <YUQzdyG+WWoiJ2I9@kroah.com>
+ <e09257e0-ce95-623c-3a04-cc033aa9fec2@gmail.com>
+ <YUWQSlXjIb58eCJZ@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUWQSlXjIb58eCJZ@kroah.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using "msi-map-mask" in device tree lets multiple PCIe requestor ID to
-use the same GIC ITS device ID. So while creating the Interrupt
-Translation Table (ITT) for a specific GIC ITS device ID, the total number
-of interrupts required by all the PCIe requestor ID that maps to the
-same GIC ITS device ID should be calculated
+On Sat, Sep 18, 2021 at 09:07:54AM +0200, Greg KH wrote:
+> > Honestly, I wasn't particularly enthusiastic about it in the first
+> > place; it feels like something that should be done in user space.  I
+> > wouldn't have included it if I didn't have to make a writable copy of
+> > the buffer anyway, in order to trim a trailing newline.
+> > 
+> > I can certainly remove the re-check logic.  The end result will be an
+> > API that is slightly less "user friendly" in return for saving a bit of
+> > pointer arithmetic and a 5-byte memcpy().
+> 
+> Just use the kernel block device name and that way you do not have to
+> parse anything as it is unique and no paths are having to be followed.
+> 
+> That's the way that other LED apis are working, right?
 
-Add support for gic-v3-its to include "msi-map-mask" property in device
-tree for calculating the total number of MSI interrupts in
-its_pci_msi_prepare().
-
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- drivers/irqchip/irq-gic-v3-its-pci-msi.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/irqchip/irq-gic-v3-its-pci-msi.c b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-index ad2810c017ed..c79bca1a5787 100644
---- a/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-+++ b/drivers/irqchip/irq-gic-v3-its-pci-msi.c
-@@ -54,9 +54,13 @@ static int its_get_pci_alias(struct pci_dev *pdev, u16 alias, void *data)
- static int its_pci_msi_prepare(struct irq_domain *domain, struct device *dev,
- 			       int nvec, msi_alloc_info_t *info)
- {
-+	int alias_count = 0, map_count = 0, minnvec = 1, ret;
- 	struct pci_dev *pdev, *alias_dev;
- 	struct msi_domain_info *msi_info;
--	int alias_count = 0, minnvec = 1;
-+	struct device *parent_dev;
-+	struct pci_bus *root_bus;
-+	struct device_node *np;
-+	u32 map_mask, rid;
- 
- 	if (!dev_is_pci(dev))
- 		return -EINVAL;
-@@ -78,6 +82,21 @@ static int its_pci_msi_prepare(struct irq_domain *domain, struct device *dev,
- 		info->flags |= MSI_ALLOC_FLAGS_PROXY_DEVICE;
- 	}
- 
-+	for (parent_dev = dev; parent_dev; parent_dev = parent_dev->parent) {
-+		np = parent_dev->of_node;
-+		if (!np)
-+			continue;
-+
-+		ret = of_property_read_u32(np, "msi-map-mask", &map_mask);
-+		if (!ret && map_mask != 0xffff) {
-+			rid = pci_dev_id(pdev) & map_mask;
-+			root_bus = find_pci_root_bus(pdev->bus);
-+			__pci_walk_bus(root_bus, its_pci_msi_vec_count, &map_count, rid, map_mask);
-+			break;
-+		}
-+	}
-+	alias_count = max(map_count, alias_count);
-+
- 	/* ITS specific DeviceID, as the core ITS ignores dev. */
- 	info->scratchpad[0].ul = pci_msi_domain_get_msi_rid(domain, pdev);
- 
--- 
-2.17.1
-
+The "kernel block device name" is the a block device special path
+that a normal VFS path lookup is done on.  This is the preferred block
+device API used by everyone.  And yes, this includes resolving symlinks.
+The only other API is by dev_t, but it is highly discouraged and should
+really not grow any new users.
