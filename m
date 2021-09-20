@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08928412D16
+	by mail.lfdr.de (Postfix) with ESMTP id 53371412D17
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352687AbhIUCyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
+        id S1352731AbhIUCys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238650AbhIUC3X (ORCPT
+        with ESMTP id S239642AbhIUCaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:29:23 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B070C0F3457;
-        Mon, 20 Sep 2021 12:26:21 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id t6so65150872edi.9;
-        Mon, 20 Sep 2021 12:26:21 -0700 (PDT)
+        Mon, 20 Sep 2021 22:30:03 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD104C0470B5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:06:20 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id cf2so12035834qvb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 13:06:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
+        d=uged.al; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RJWnZekTUMSnBRk/CtZe/v9CvFL/Hwr4JrpVx75Cmtk=;
-        b=ZdiTJXLL9mgXbyU5Qnw0VxfH6+FlkVxGLpvKOkpbK2L5XLuH1ISSVM2i5YsSzv538d
-         Y3zLxEWtL52DZlUT9ehwoPZ9aMiO8iSp5Zlt9m2H9QdyEZ9GvSTTXd1gH8aT1BmtkyZF
-         bWNEyJhSpyHwgkLwM9Z0Dnh1wfi1UQCUmPhdAwR6Z0ucyryHZ/2f4IqUNl0QsnJs7jHK
-         9c30JmQqxVlas0u3kN0dg0NklDnWDz7IwkWoKBgVT4khJYCCWqwWDsgU9KF/wfCWmmZy
-         wVHzUDGDkelDhFf8NRZXfzNN3vgmCtSczIr3bJDAIfDxRWnn2FOK1sO7Xkn8AWvETb4k
-         wGtw==
+         :cc:content-transfer-encoding;
+        bh=7tqFjTUIXiBvPf6FAx8yLkqgiBHfgu/uf4F9JFl7j8g=;
+        b=erwejbOYNIXzuXsHHdUD+xyNQzWUMv6q3K0hBcDZmgJNMYVGr4khmR319qaa/yfXoe
+         XnARs8/pHWG44eW6MVowTnznWJLp2hO6K2nZPAvDOSJCNMNMDAOapAwEzL/fjsrKw/gS
+         DlJEeMGumo9WCA55YabFsSo+2oOeHXpGMs5flRl21evsrEQ6quI40H6Y9LGV0NGjOPUm
+         UDOdaAZ4TfASdTf/iOK129tDeEm9R7GSTUaWgpOzyNMh7b+075/H0ox0AyAex+IOKC6e
+         t2qPhutziXkW7qhzFqJXgFwh9EjGTTO2t7FdErK8peZivOQodoJ/4s4TU+naQJfxsOxY
+         Ovtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RJWnZekTUMSnBRk/CtZe/v9CvFL/Hwr4JrpVx75Cmtk=;
-        b=7dhAuV9BIORRaL+bH46kTwOKc053bHpSbLsNKCUc+wrCH/kIzmLtZOLUz5Qi5VbH4/
-         fgy7CPZTQcyjUre5qlOLxeGL4MXl6nSQ5fEL3phdsb8i5ew6K9oaFLCZUYJX8HgnZR//
-         9g10nu0FIC08V2loNGCz9WEvdXoxjhn/LMCNMJOpotjmcLiYpEck7j2Ck+Wp/0TGbemx
-         IU3v3HXE71490MLhP/z0X1TZLF4VNrs6yK4bWAgpYvh25YC6irn2WmSIiL5H0o08SocS
-         PV6iUh6krzdWtLpU2vFVUGv6Of6wM69jsiAsgE9648RUBayVSD2VxA5tnfdSK8qmlJeI
-         bnBA==
-X-Gm-Message-State: AOAM531V5mXQaSBzUL4EKtIlXOEMAj3uVNuTKdgZ7KFlOsuwLERm6Av1
-        rLWtJXgLlwB99SQbI8USDOwz9Cd8xm0ZeZDY0vk=
-X-Google-Smtp-Source: ABdhPJwdPfnVeY2p6IsWhgrDuynL1Mi9SZtZIeW/NWNfEuNbq4u5cqaYdIMy2elkx0SvapDlMWXEb9a6p2wF4K3n4I8=
-X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr29600783ejb.408.1632165979872;
- Mon, 20 Sep 2021 12:26:19 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7tqFjTUIXiBvPf6FAx8yLkqgiBHfgu/uf4F9JFl7j8g=;
+        b=afh3UHYSrGFS/lF5CaeJ1DCVMLX++yvn+1KPrmlONSShKTyyMkQng9RNiPU3bSZoKl
+         nwCUH6YHkMD1zeGfuZr7AYTBxzYylY18vqZULPwYx9ry8VcI221IXIRAP0zxD2igGncd
+         1JML3wE9HhLHu2u8MDw1tRspmJIeGKv4o8yOM/zG9rmZNUlWWf9i3yjviGpdxA43oiQs
+         mU6hkvjLoIawUCGulAwPwrpKpJ5IZGWEmecsAkZHfk+5l+pWWaMlmBeGg0SUpSxo261k
+         LJuFG6DHc7wJyuJ2rLS3qMZMqX8cQESEhje7Q6zoMaPcyK2PRCZKpoMj4IO3WIcIzpqg
+         UEdA==
+X-Gm-Message-State: AOAM531/dBjMLLMswIGrCAJFfKjCpMI7KBcjXRALdWnxyTYu+OsEq4Jg
+        JItLoRhm3XV3fFxHKgeX8aNMH4OACNxlC0ooJi2uLA==
+X-Google-Smtp-Source: ABdhPJz0U3VYkUDqV523iuNPXNtGW/njcAsC8pizY1mnsoYA8XVz/Z1MXMyc8P+XOhDs5o+OVr2VR/4uGYlgSOHkndw=
+X-Received: by 2002:a05:6214:1492:: with SMTP id bn18mr24329662qvb.44.1632168379939;
+ Mon, 20 Sep 2021 13:06:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210817041548.1276-1-linux.amoon@gmail.com> <20210817041548.1276-2-linux.amoon@gmail.com>
- <c7f6213b-5ddc-881c-1aea-9cc7b03e6a4f@baylibre.com> <CAFBinCBeNMET2tvH0h6HF3dR+xBb59hifQyaoXigUs3UGkS+KQ@mail.gmail.com>
- <2b07b3de-cee5-c570-8fde-6a4c684122d6@baylibre.com> <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
-In-Reply-To: <CANAwSgRNp8UtU+Yy4smwZ5POTWTU+xN1mrf_cH7Pu9yX5HU=VA@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 20 Sep 2021 21:26:08 +0200
-Message-ID: <CAFBinCDmNt+aXRE4xFZdegOUs8BqJiTPF3+DQ-buvWWXrQLkdw@mail.gmail.com>
-Subject: Re: [PATCHv3 1/6] ARM: dts: meson8b: odroidc1: Add usb phy power node
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Matt Corallo <oc2udbzfd@mattcorallo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Brian Kim <brian.kim@hardkernel.com>
+References: <20210917153037.11176-1-mkoutny@suse.com>
+In-Reply-To: <20210917153037.11176-1-mkoutny@suse.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Mon, 20 Sep 2021 21:06:09 +0100
+Message-ID: <CAFpoUr3fVLxdxyu4SrR5qKZm0LmZY=UKnjU7Ww7f_zOh0OYnNA@mail.gmail.com>
+Subject: Re: [PATCH v3] sched/fair: Add ancestors of unthrottled undecayed cfs_rq
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+fre. 17. sep. 2021 kl. 16:32 skrev Michal Koutn=C3=BD <mkoutny@suse.com>:
+>
+> Since commit a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to
+> list on unthrottle") we add cfs_rqs with no runnable tasks but not fully
+> decayed into the load (leaf) list. We may ignore adding some ancestors
+> and therefore breaking tmp_alone_branch invariant. This broke LTP test
+> cfs_bandwidth01 and it was partially fixed in commit fdaba61ef8a2
+> ("sched/fair: Ensure that the CFS parent is added after unthrottling").
+>
+> I noticed the named test still fails even with the fix (but with low
+> probability, 1 in ~1000 executions of the test). The reason is when
+> bailing out of unthrottle_cfs_rq early, we may miss adding ancestors of
+> the unthrottled cfs_rq, thus, not joining tmp_alone_branch properly.
+>
+> Fix this by adding ancestors if we notice the unthrottled cfs_rq was
+> added to the load list.
+>
+> Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on un=
+throttle")
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 
-On Tue, Aug 31, 2021 at 10:48 PM Anand Moon <linux.amoon@gmail.com> wrote:
-[...]
-> After enabling CONFIG_REGULATOR_DEBUG, with this patch applied
-> I still not getting the USB regulator to enable.
-> Do you see different output at your end?
-I don't have much time for testing and debugging currently but I'll
-put it on my TODO-list
-Until either of us has found the issue I suggest not merging this patch.
+Thanks for catching this!
 
+Reviewed-by: Odin Ugedal <odin@uged.al>
 
-Best regards,
-Martin
+> Changes since v2 [1]:
+> - jump to completion for loop, don't duplicate it
+> - singled out of the series (to handle a fix separately from the rest)
+>
+> [1] https://lore.kernel.org/r/20210819175034.4577-2-mkoutny@suse.com/
+>
+>  kernel/sched/fair.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..f6a05d9b5443 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4936,8 +4936,12 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+>         /* update hierarchical throttle state */
+>         walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)r=
+q);
+>
+> -       if (!cfs_rq->load.weight)
+> +       /* Nothing to run but something to decay (on_list)? Complete the =
+branch */
+> +       if (!cfs_rq->load.weight) {
+> +               if (cfs_rq->on_list)
+> +                       goto unthrottle_throttle;
+>                 return;
+> +       }
+>
+>         task_delta =3D cfs_rq->h_nr_running;
+>         idle_task_delta =3D cfs_rq->idle_h_nr_running;
+> --
+> 2.32.0
+>
