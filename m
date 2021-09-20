@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1F1411D28
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326F5411B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347803AbhITRQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:16:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41202 "EHLO mail.kernel.org"
+        id S245604AbhITQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:58:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347612AbhITRO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:14:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAF60613A5;
-        Mon, 20 Sep 2021 16:58:11 +0000 (UTC)
+        id S1343557AbhITQyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:54:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A1F76138F;
+        Mon, 20 Sep 2021 16:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157092;
-        bh=S3kVn85mjnu0Qvr5bIEbxz2Euwg5MAybncTBszSHQiI=;
+        s=korg; t=1632156649;
+        bh=X73W8+lecl+2gQJjUWNNpqFRg2L8jX9VBx6ncKnREhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VTNcomfyd5VQXKZdkutyQYbG9Rq+nwPJeiIKh564MToqz3Q4Md0pd1qKx/aJawwwN
-         0uUfbyuyGtYjRh89Lt/SLP4MVeTfn9bd+gFDnGPcFZ0PiJFu8oFoijHE9GOiChaQ0h
-         mimCMCI0DdMXpeLZljEDrv8MdDlJBK21r5OboNo0=
+        b=cYjPAFKVL+c/SQ3Glr8cuCMs2LTkiTh9hW6I2OYzE7JT/hhaEmi49vNo1Pe96dc9c
+         SIYE4fE0m74A/4yPMDNhdbjvYqVJ7Gc9Sw2KvDlq1Ek/vXty0cFLIRWzWcX7csTRBv
+         UKBLULpswROmKZ1GsC0EbbOledtTE/8uEsRS0x9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 050/217] certs: Trigger creation of RSA module signing key if its not an RSA key
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Keith Busch <keith.busch@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.9 022/175] nvme-pci: Fix an error handling path in nvme_probe()
 Date:   Mon, 20 Sep 2021 18:41:11 +0200
-Message-Id: <20210920163926.320216001@linuxfoundation.org>
+Message-Id: <20210920163918.799178405@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ea35e0d5df6c92fa2e124bb1b91d09b2240715ba ]
+commit b00c9b7aa06786fc5469783965ff3e2a705a1dec upstream.
 
-Address a kbuild issue where a developer created an ECDSA key for signing
-kernel modules and then builds an older version of the kernel, when bi-
-secting the kernel for example, that does not support ECDSA keys.
+Release resources in the correct order in order not to miss a
+'put_device()' if 'nvme_dev_map()' fails.
 
-If openssl is installed, trigger the creation of an RSA module signing
-key if it is not an RSA key.
-
-Fixes: cfc411e7fff3 ("Move certificate handling to its own directory")
-Cc: David Howells <dhowells@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: b00a726a9fd8 ("NVMe: Don't unmap controller registers on reset")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Keith Busch <keith.busch@intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- certs/Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/nvme/host/pci.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/certs/Makefile b/certs/Makefile
-index 5d0999b9e21b..ca3c71e3a3d9 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -46,11 +46,19 @@ endif
- redirect_openssl	= 2>&1
- quiet_redirect_openssl	= 2>&1
- silent_redirect_openssl = 2>/dev/null
-+openssl_available       = $(shell openssl help 2>/dev/null && echo yes)
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -1927,7 +1927,7 @@ static int nvme_probe(struct pci_dev *pd
  
- # We do it this way rather than having a boolean option for enabling an
- # external private key, because 'make randconfig' might enable such a
- # boolean option and we unfortunately can't make it depend on !RANDCONFIG.
- ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
-+
-+ifeq ($(openssl_available),yes)
-+X509TEXT=$(shell openssl x509 -in "certs/signing_key.pem" -text 2>/dev/null)
-+
-+$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f "certs/signing_key.pem"))
-+endif
-+
- $(obj)/signing_key.pem: $(obj)/x509.genkey
- 	@$(kecho) "###"
- 	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
--- 
-2.30.2
-
+ 	result = nvme_dev_map(dev);
+ 	if (result)
+-		goto free;
++		goto put_pci;
+ 
+ 	INIT_WORK(&dev->reset_work, nvme_reset_work);
+ 	INIT_WORK(&dev->remove_work, nvme_remove_dead_ctrl_work);
+@@ -1938,7 +1938,7 @@ static int nvme_probe(struct pci_dev *pd
+ 
+ 	result = nvme_setup_prp_pools(dev);
+ 	if (result)
+-		goto put_pci;
++		goto unmap;
+ 
+ 	result = nvme_init_ctrl(&dev->ctrl, &pdev->dev, &nvme_pci_ctrl_ops,
+ 			id->driver_data);
+@@ -1953,9 +1953,10 @@ static int nvme_probe(struct pci_dev *pd
+ 
+  release_pools:
+ 	nvme_release_prp_pools(dev);
++ unmap:
++	nvme_dev_unmap(dev);
+  put_pci:
+ 	put_device(dev->dev);
+-	nvme_dev_unmap(dev);
+  free:
+ 	kfree(dev->queues);
+ 	kfree(dev);
 
 
