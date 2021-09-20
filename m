@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49843411E6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED02411B41
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347633AbhITRav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
+        id S1343783AbhITQ4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244952AbhITR2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BAE961AA8;
-        Mon, 20 Sep 2021 17:03:13 +0000 (UTC)
+        id S237965AbhITQxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:53:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADDB361360;
+        Mon, 20 Sep 2021 16:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157393;
-        bh=SXAb/fenrJVXMgzhgtsEmhVtxnDwiKVlIRwIzHAPvQ8=;
+        s=korg; t=1632156613;
+        bh=ojhhNTi73cRz3Z0Hdttpvn/1HdiWvPSVdbMFNNj3LkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ItUDxobQSGejRX6YvlNIV+XhFIVyzqVIYCWCyaegFvd1/dwC6JLwuSos6hS7hngF4
-         enWPLlWGqyClNSubfvZznqMDhWLaufMbmgFUl1kpt5w7AIQBmDdt2ILIZPW4vi39Gf
-         l4IeC66UkTqTwUv+foOPIR4JwtA2hI/wmGrDajvw=
+        b=tYCUAkki9/Nf7TrhIWL5yJ7NpCCDUc+MuVLkjsDDhLwKq8qxfkUqKPRQI+y08LV/v
+         c+tV6kjJRjUolVFqZhXGmHVztaULWfjfwJSyoA9OXO78JFJs0WTwaQo+WzOoCc2s/t
+         KzKepK4j2e9JMkr14j0oBrRvy17ExQALzvhJctXE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 189/217] memcg: enable accounting for pids in nested pid namespaces
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 132/133] qlcnic: Remove redundant unlock in qlcnic_pinit_from_rom
 Date:   Mon, 20 Sep 2021 18:43:30 +0200
-Message-Id: <20210920163931.032353615@linuxfoundation.org>
+Message-Id: <20210920163916.940456425@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit fab827dbee8c2e06ca4ba000fa6c48bcf9054aba upstream.
+[ Upstream commit 9ddbc2a00d7f63fa9748f4278643193dac985f2d ]
 
-Commit 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
-enabled memcg accounting for pids allocated from init_pid_ns.pid_cachep,
-but forgot to adjust the setting for nested pid namespaces.  As a result,
-pid memory is not accounted exactly where it is really needed, inside
-memcg-limited containers with their own pid namespaces.
+Previous commit 68233c583ab4 removes the qlcnic_rom_lock()
+in qlcnic_pinit_from_rom(), but remains its corresponding
+unlock function, which is odd. I'm not very sure whether the
+lock is missing, or the unlock is redundant. This bug is
+suggested by a static analysis tool, please advise.
 
-Pid was one the first kernel objects enabled for memcg accounting.
-init_pid_ns.pid_cachep marked by SLAB_ACCOUNT and we can expect that any
-new pids in the system are memcg-accounted.
-
-Though recently I've noticed that it is wrong.  nested pid namespaces
-creates own slab caches for pid objects, nested pids have increased size
-because contain id both for all parent and for own pid namespaces.  The
-problem is that these slab caches are _NOT_ marked by SLAB_ACCOUNT, as a
-result any pids allocated in nested pid namespaces are not
-memcg-accounted.
-
-Pid struct in nested pid namespace consumes up to 500 bytes memory, 100000
-such objects gives us up to ~50Mb unaccounted memory, this allow container
-to exceed assigned memcg limits.
-
-Link: https://lkml.kernel.org/r/8b6de616-fd1a-02c6-cbdb-976ecdcfa604@virtuozzo.com
-Fixes: 5d097056c9a0 ("kmemcg: account certain kmem allocations to memcg")
-Cc: stable@vger.kernel.org
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Michal Koutný <mkoutny@suse.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 68233c583ab4 ("qlcnic: updated reset sequence")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/pid_namespace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/kernel/pid_namespace.c
-+++ b/kernel/pid_namespace.c
-@@ -55,7 +55,7 @@ static struct kmem_cache *create_pid_cac
- 	snprintf(pcache->name, sizeof(pcache->name), "pid_%d", nr_ids);
- 	cachep = kmem_cache_create(pcache->name,
- 			sizeof(struct pid) + (nr_ids - 1) * sizeof(struct upid),
--			0, SLAB_HWCACHE_ALIGN, NULL);
-+			0, SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, NULL);
- 	if (cachep == NULL)
- 		goto err_cachep;
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
+index be41e4c77b65..eff587c6e9be 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
+@@ -440,7 +440,6 @@ int qlcnic_pinit_from_rom(struct qlcnic_adapter *adapter)
+ 	QLCWR32(adapter, QLCNIC_CRB_PEG_NET_4 + 0x3c, 1);
+ 	msleep(20);
  
+-	qlcnic_rom_unlock(adapter);
+ 	/* big hammer don't reset CAM block on reset */
+ 	QLCWR32(adapter, QLCNIC_ROMUSB_GLB_SW_RESET, 0xfeffffff);
+ 
+-- 
+2.30.2
+
 
 
