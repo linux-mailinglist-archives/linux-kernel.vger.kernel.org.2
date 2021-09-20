@@ -2,110 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765BA4119AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ADF4119AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243268AbhITQVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49120 "EHLO
+        id S236032AbhITQVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242945AbhITQVL (ORCPT
+        with ESMTP id S233273AbhITQVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:21:11 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A8FC0613EF
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:18:11 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id f130so5064306qke.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:18:11 -0700 (PDT)
+        Mon, 20 Sep 2021 12:21:48 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB2BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:20:21 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id p29so69173388lfa.11
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=labbott.name; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=95LUMqEJ9/lbpkDllt+74gP/DPDagYgPuusq48yd7js=;
-        b=XyqFPnf9gMzF5YjPWm9T76f0zhiAkBwKe8qkdSUFTNfxCFqxS9Cq2QuVA7d5H6uz51
-         MgyXYflsq1N/favy0shwrTE72MTUQ01ntdh89N/hDC5BzsadDUS7EmkgCoNxsLWk5/mj
-         4A6iA+kg85+Zs0lSkbcqJ33+ASaMpayd0M8CY=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p6S4CYEe+OsYY46IgkJ+1TEXHqbYAus5AGqsEYFfN7E=;
+        b=BrwGsZhT+O3aV2XhB18zof47KBPcf181XFlZ7xpdeBC77csZCShFo9Wnrr9HfEHZHd
+         NR7wWnGg2pUE+b3gCqtFSMVFN3aNYTZi3knS61iefh0yLQoPaPKKQQIOrgF/ztIXY0+0
+         SScFzMEtV71S0xGGX08itTfL4oRZe9EFBmVlI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=95LUMqEJ9/lbpkDllt+74gP/DPDagYgPuusq48yd7js=;
-        b=C+N1PagTUKCkD68xpBbj97SXIeh4081aJLILtR2RHA6sWlsZAOsfmLfWJ8lRbRIsIF
-         S0VX5Ae1/qjR25qVnkgEm0qlQ8fWRGk3FKjXCVxwfJ1/6uL37QZgQALBTBgQbkVYVDux
-         38zPPoghpXVDfR7tXt6kiUMh8+7hzu4Vqzgd698aEtBHGg41zpU/xrlHANl+CfnltiIJ
-         xtF8QNirt6g6veHDKAqNp4JbEGD0VE5/dLkq6I+yj1ou20NpHLLFpPgAFcJvLFi/TjMA
-         7QyYhU8TtUOlt1VDQMhmRKofFT9mJ6BfRU5KMKQtRMYv4zPq7TiiFaJtabBM8nQSdraX
-         Qrnw==
-X-Gm-Message-State: AOAM531LaL4WXuqtrE0NgSk2j+FyRISY7BdSfY+2bJCwEb0guM7iDpSg
-        G5UTzTZnUeaGZAFF3O1fQUTRXg==
-X-Google-Smtp-Source: ABdhPJzg8TRJjQ+Owc9YPRp8WpafdiFFFiGqLYQxAfkP6iSdFWJLPxITzthsdZg9VLuzVLb1nRtPSA==
-X-Received: by 2002:a37:b483:: with SMTP id d125mr3679370qkf.362.1632154690680;
-        Mon, 20 Sep 2021 09:18:10 -0700 (PDT)
-Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
-        by smtp.gmail.com with ESMTPSA id r139sm10083414qke.84.2021.09.20.09.18.10
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p6S4CYEe+OsYY46IgkJ+1TEXHqbYAus5AGqsEYFfN7E=;
+        b=4L5dbfnAkrSzMR3sM/ere4mVDeabCdtso8kOeAq/MddcCfHmiH82GpJZQqjrM7SCn/
+         7AKQ6chZ7NoyHseqyNs1dKD2ARLM79bgsxpG9Xc20CYK+PeNagP3+t/pZo+hrxovVeYe
+         bch4ZEqAYcadl/QkCJJXoL+zkj2S8JgrMjqtxsHdNcqM8M6UztVYc7RiSmZOIISUSAz1
+         T7eRjpKY6AI4LRC8ezJurS5E1U60U0BkIqA66SFcWV4USy3mZgaiFIqQEC/vXeMwDyKY
+         X+Qj9hwXe0cQwvlyerkvj/M7lLd2X8YB5pe5rOWacLbKpKo714KunlLbokUx8vb9HLIT
+         iZRw==
+X-Gm-Message-State: AOAM530u5q8tlp2tyMTLDx3moUeG6b4QrBgEUdflDGSP87E+UFa1CXKn
+        KrE16Iin+5MdKy11b2cAeonzq3B7jOQBM70p
+X-Google-Smtp-Source: ABdhPJwHPZPX42yky847WpHNZpVoZI33124EU09VQsIsLZSMS1x1vmS/V5PjYUdHpzb9qG86ca5huA==
+X-Received: by 2002:a2e:2406:: with SMTP id k6mr7951992ljk.453.1632154779549;
+        Mon, 20 Sep 2021 09:19:39 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id o3sm964091lfd.208.2021.09.20.09.19.38
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 09:18:10 -0700 (PDT)
-Message-ID: <bf22702e-01b2-214a-1650-da9e4ec3c2be@labbott.name>
-Date:   Mon, 20 Sep 2021 12:18:09 -0400
+        Mon, 20 Sep 2021 09:19:38 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id x27so69954832lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:19:38 -0700 (PDT)
+X-Received: by 2002:a2e:3309:: with SMTP id d9mr11340107ljc.249.1632154726138;
+ Mon, 20 Sep 2021 09:18:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [Tech-board-discuss] IMPORTANT: CIVS opt-in for Technical
- Advisory Board voting
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dave Hansen <dave@sr71.net>
-Cc:     "tab-elections@lists.linuxfoundation.org" 
-        <tab-elections@lists.linuxfoundation.org>, ksummit@lists.linux.dev,
-        "tech-board-discuss@lists.linuxfoundation.org" 
-        <tech-board-discuss@lists.linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <44ee2bfe-e4bc-b918-b908-7352ea012524@oxidecomputer.com>
- <dfa20866-0d00-9bd3-6078-5544cfa5b633@sr71.net>
- <CAMuHMdUUfm6u_Pz3qzA0V7tLZd7jhcwdyxU7L0SyC_EdyzwQxw@mail.gmail.com>
- <CAMuHMdVtHDQ2f0VKAdQFQV9dZJ5uFGD9yHvNviQ_k7AEfhN77w@mail.gmail.com>
-From:   Laura Abbott <laura@labbott.name>
-In-Reply-To: <CAMuHMdVtHDQ2f0VKAdQFQV9dZJ5uFGD9yHvNviQ_k7AEfhN77w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=wirexiZR+VO=H3xemGKOMkh8OasmXaKXTKUmAKYCzi8AQ@mail.gmail.com>
+ <20210920134424.GA346531@roeck-us.net>
+In-Reply-To: <20210920134424.GA346531@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 20 Sep 2021 09:18:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgheheFx9myQyy5osh79BAazvmvYURAtub2gQtMvLrhqQ@mail.gmail.com>
+Message-ID: <CAHk-=wgheheFx9myQyy5osh79BAazvmvYURAtub2gQtMvLrhqQ@mail.gmail.com>
+Subject: Re: Linux 5.15-rc2
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 12:03, Geert Uytterhoeven wrote:
-> On Mon, Sep 20, 2021 at 5:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Mon, Sep 20, 2021 at 5:37 PM Dave Hansen <dave@sr71.net> wrote:
->>> My @linux.intel.com account is the most common one from the git logs.  I
->>> have only received one TAB-related email there:
->>>
->>>          Subject: Upcoming Technical Advisory Board election -- look for
->>>                   your ballot
->>>
->>> However, I never actually received a ballot at that email, presumably
->>> because of this CIVS opt-in issue.
->>>
->>> Was this just me?  Or would it be appropriate to send these opt-in
->>> instructions to all of those that should have received a ballot instead
->>> of just sending to the mailing lists?
->>
->> I did the CIVS opt-in, and entered the confirmation number.
->> Still, unlike Vlastimil, I saw no way to vote?
->> Just retried the opt-in, "already opted-in".
-> 
-> If you use multiple email addresses, make sure to opt-in using the exact
-> same one on which you received the original email from Laura.
-> Then there will be a link to the actual poll after entering the confirmation
-> code.
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+On Mon, Sep 20, 2021 at 6:44 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Details for build failures below. Several improvements since last week,
+> but it looks like the alpha related pci_iounmap patches still need some
+> tweaking (see error log at the very end).
 
-Yes that is correct. We attempted to consolidate e-mail addresses if you
-contribute under multiple ones. This is a pain point we will need to fix
-next year.
+Bah.
 
-Thanks,
-Laura
+I thought I had tested sparc64, but I was wrong.
+
+Silly me, I had only tested the 32-bit case.
+
+That sparc64 thing is being particularly stupid: sparc64 uses
+GENERIC_PCI_IOMAP, but declares its own empty pci_iounmap() because it
+didn't use GENERIC_IOMAP that does this all right.
+
+And because it didn't use the generic iomap code, it's all actually
+entirely buggy, in that it seems to think that pci_iounmap() is about
+unmapping ports (like ioport_unmap) and thus a no-op. But no,
+pci_iounmap() is supposed to unmap anything that pci_iomap() mapped,
+which includes the actual MMIO range too.
+
+Basically, the whole idea of "pci_iomap()" is that you give it a PCI
+device and the index to the BAR in that device, and it maps that BAR -
+whether it is MMIO or PIO. And then you can use that __iomem pointer
+for ioread*() and friends (or you can use readl()/writel() if you know
+it was MMIO).
+
+You can give it a maximum length if you want, but by default it just
+maps the whole PCI BAR, so the default usage would just be
+
+    void __iomem *map = pci_iomap(pdev, bar, 0);
+
+And then you do whatever IO using that 'map' base pointer, and once
+you're done you do "pci_iounmap()" on it all.
+
+And then the trick most cases use is that they know that the PIO case
+is just always a fixed map, so for PIO that "map/unmap" part os a
+no-op. But generally ONLY for the PIO case.
+
+And the sparc64 code seems to think it's only used for PIO, and makes
+pci_iounmap() a no-op in general. Which is all kinds of completely
+broken.
+
+This is the same bug that the broken inline function in
+<asm-generic/io.h> had, and that I added a big comment about in commit
+316e8d79a095 ("pci_iounmap'2: Electric Boogaloo: try to make sense of
+it all"):
+
++ * This code is odd, and the ARCH_HAS/ARCH_WANTS #define logic comes
++ * from legacy <asm-generic/io.h> header file behavior. In particular,
++ * it would seem to make sense to do the iounmap(p) for the non-IO-space
++ * case here regardless, but that's not what the old header file code
++ * did. Probably incorrectly, but this is meant to be bug-for-bug
++ * compatible.
+
+but I intentionally didn't fix the bug in that commit, because I
+wanted to just try to keep the odd old logic as closely as possible.
+
+It looks like a big part of the "people do their own pci_iounmap()"
+thing is that they do it badly and with bugs.
+
+This was all meant to uncover and fix warnings, but it seems to be
+uncovering bigger issues.
+
+Of course, most of the time the "pci_iounmap()" only happens at driver
+unload time, so it's basically only a kernel virtual memory mapping
+leak, which may be why people didn't realize how buggy their own
+implementations were.
+
+What the normal GENERIC_IOMAP code does is:
+
+ - it "fake maps" the PIO space at an invalid fixed virtual address
+
+   Since we know that a PIO address on PCI is just a 16-bit number,
+this fake virtual window is small and easy to do:
+
+        /*
+         * We encode the physical PIO addresses (0-0xffff) into the
+         * pointer by offsetting them with a constant (0x10000) and
+         * assuming that all the low addresses are always PIO. That means
+         * we can do some sanity checks on the low bits, and don't
+         * need to just take things for granted.
+         */
+        #define PIO_OFFSET      0x10000UL
+        #define PIO_MASK        0x0ffffUL
+        #define PIO_RESERVED    0x40000UL
+
+   so the logic is basically that we can trivially test whether a
+"void __iomem *" pointer is a PIO pointer or not: if the pointer value
+is in that range of PIO_OFFSET..PIO_OFFSET+PIO_MASK range, it's PIO,
+otherwise it's mmio.
+
+ - the MMIO space acts using all the normal ioremap() logic, and we
+can tell the end result apart from PIO with the above trivial thing.
+
+ - the GENERIC_IOMAP code internally just has a IO_COND(adds, is_pio,
+is_mmio) helper macro, which sets "port" for the is_pio case, and
+"addr" for the is_mmio case, so you can do trivial things like this:
+
+        unsigned int ioread8(const void __iomem *addr)
+        {
+                IO_COND(addr, return inb(port), return readb(addr));
+                return 0xff;
+        }
+
+   which does the "inb(port)" for the PIO case, and the "readb(addr)"
+for the MMIO case.
+
+ - and lookie here what the GENERIC_IOMAP code for pci_iounmap() is:
+
+        void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+        {
+                IO_COND(addr, /* nothing */, iounmap(addr));
+        }
+
+  IOW, for the "is_pio" case it does nothing, and for the "is_mmio"
+case it does "iounmap()".
+
+So the GENERIC_IOMAP code is actually really simple and should just
+work for pretty much everybody. All it requires is that fake kernel
+virtual address range at PIO_OFFSET (you can override the default
+values if you want - maybe your architecture really wants to put MMIO
+in those virtual addresses, but I don't think there's a lot of reason
+to generally want to do it)
+
+But despite that, people think they should implement their own code,
+and then they clearly get it HORRIBLY WRONG.
+
+Anyway, this email ended up being a long explanation of what the code
+_should_ do, in the hope that some enterprising kernel developer
+decides "Oh, this sounds like an easy thing to fix". But you do need
+to be able to test the end result at least a tiny bit.
+
+Because I suspect that the real fix for sparc64 is to just get rid of
+its broken non-GENERIC_IOMAP code, and just do "select GENERIC_IOMAP"
+
+And I don't think sparc64 is the only architecture that should go "Oh,
+I should just use GENERIC_IOMAP instead of implementing it badly by
+hand".
+
+Anyone?
+
+               Linus
