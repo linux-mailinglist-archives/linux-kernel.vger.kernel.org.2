@@ -2,151 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D33A411489
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7698041148D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbhITMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:34:38 -0400
-Received: from egress-ip4a.ess.de.barracuda.com ([18.184.203.227]:38064 "EHLO
-        egress-ip4a.ess.de.barracuda.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233066AbhITMee (ORCPT
+        id S238401AbhITMfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:35:32 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35062 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233066AbhITMfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:34:34 -0400
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198]) by mx-outbound8-184.eu-central-1a.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Mon, 20 Sep 2021 12:33:05 +0000
-Received: by mail-pf1-f198.google.com with SMTP id v206-20020a627ad7000000b0043e010e5392so13017099pfc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 05:33:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mistralsolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SEL1gkIAJp4KVblBAp/xhehzJxXPAFWh7FPt5vFeWVs=;
-        b=OYMo6gnbLCtZZtBUzwIqSzxff70GhWSCYTxM54e15pLXvWDJBNHICSOMtZpsEDW/P4
-         8bPJNlbEttfsryty2dACC8alIulPFB9RPS/uzx416TRpWRfw1+5i1qRi9Bc3gxAfMjGz
-         g1URznygBLY+7fLMfbyXjdWLtF3gZ3OdN6EgQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SEL1gkIAJp4KVblBAp/xhehzJxXPAFWh7FPt5vFeWVs=;
-        b=3PVyv6VZ5gHb++Mds/pwxkLnnsYgvw9YpnZyONjA5nJLoCoIxLHCaDLTyZF2dgismW
-         oJ94gZL9Z1YCpvIQo4MFvLhWJFqOHjQBwVsRllLhgePbbc9joMF1vFqL4NvTy9Ve/GX9
-         j0D70meqYOHIEad4a5NwpB76I4kC47E8jo3kILY8bZDaI0yl0jwK+xfZZzR88ay5bLjN
-         ubVIetPKm/Z0OCubfx2lrkd8MAYhQaPtgoxtnMt/72KRpZKGBO4GKXl/dL32fB8/rI39
-         uFS09JFTOMjRjVBEdW7DbCE+gIdLzKaTAiNQndlI9APraIY40AuoPPlJFB0M/zSJIxN1
-         jGYw==
-X-Gm-Message-State: AOAM533sI00fUquJ1upDebqvgxa+sQwtXGevQGpUH7s/c5b2vNBfxcdW
-        zr90Onc1+5iC6194lNHoAV9WzI/BN5Wgyo1vghMtL4/w4WIlrHWDuULj59J+Hf+QSdZ7Gdb7AYJ
-        MJ7IJ79VfOKUcIwgERa75U/XEUzY5F8eeV+EYkPoLfwrAGUTT7YsEqTz7zdGA
-X-Received: by 2002:a17:902:a50f:b029:11a:b033:e158 with SMTP id s15-20020a170902a50fb029011ab033e158mr22604825plq.26.1632141183820;
-        Mon, 20 Sep 2021 05:33:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjw48yoSF+t1cM9uQwmmG4D25VWxribqv/ULIu0flFFUYM1g25aTWElA0jtLb7zkd+Nj5KlA==
-X-Received: by 2002:a17:902:a50f:b029:11a:b033:e158 with SMTP id s15-20020a170902a50fb029011ab033e158mr22604807plq.26.1632141183540;
-        Mon, 20 Sep 2021 05:33:03 -0700 (PDT)
-Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id d14sm7605712pfq.61.2021.09.20.05.32.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 05:33:03 -0700 (PDT)
-From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
-X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
-To:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Nishanth Menon <nm@ti.com>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: [PATCH V3] dt-bindings: hwlock: omap: Remove redundant binding example
-Date:   Mon, 20 Sep 2021 18:01:52 +0530
-Message-Id: <20210920123152.32751-1-sinthu.raja@ti.com>
-X-Mailer: git-send-email 2.31.1
+        Mon, 20 Sep 2021 08:35:30 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18KCXqMP098780;
+        Mon, 20 Sep 2021 07:33:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632141232;
+        bh=0qDxJRZQTjlN4ImylXnG13bIrn2pKRdM3+BUIaf+tN0=;
+        h=From:To:CC:Subject:Date;
+        b=cTAq1l4BEjbIH6si+3oGNsExaUAyd47Gjs/rqW/TsahJjzeJUhMi1Fi/tK7i4U+Ud
+         IR/WG6Om2lsT0VxC5fRpYjpT3C22oWgjd7C8qp0Mn9HU1irBYlZzx9dizVRP4dCKN0
+         NppnjLT8dBML+8tZeraH441DkNTWNxeXEAx7t/A8=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18KCXqfl125518
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Sep 2021 07:33:52 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 20
+ Sep 2021 07:33:51 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 20 Sep 2021 07:33:51 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18KCXl5l085969;
+        Mon, 20 Sep 2021 07:33:48 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matt Kline <matt@bitbashing.io>, <linux-can@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] can: m_can: m_can_platform: Fix iomap_read_fifo() and iomap_write_fifo()
+Date:   Mon, 20 Sep 2021 18:03:43 +0530
+Message-ID: <20210920123344.2320-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1632141184-302232-5362-224-1
-X-BESS-VER: 2019.1_20210917.1726
-X-BESS-Apparent-Source-IP: 209.85.210.198
-X-BESS-Outbound-Spam-Score: 0.50
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.234608 [from 
-        cloudscan19-45.eu-central-1b.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
-        0.50 BSF_RULE7568M          META: Custom Rule 7568M 
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-X-BESS-Outbound-Spam-Status: SCORE=0.50 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_SC0_MISMATCH_TO, BSF_RULE7568M, BSF_BESS_OUTBOUND
-X-BESS-BRTS-Status: 1
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sinthu Raja <sinthu.raja@ti.com>
+The read and writes from the fifo are from a buffer, with various fields
+and data at predefined offsets. So, they should not be done to the same
+address(or port) in case of val_count greater than 1. Therefore, fix this
+by using iowrite32/ioread32 instead of ioread32_rep/iowrite32_rep.
 
-The example includes a board-specific compatible property, this is wrong
-as the example should be board agnostic and should represent the particular
-binding. Also, the file includes two similar examples but with a different
-compatible. So, drop the entire second example
+Also, the write into fifo must be performed with an offset from the message
+ram base address. Therefore, fix the base address to mram_base.
 
-Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
-
+Fixes: e39381770ec9 ("can: m_can: Disable IRQs on FIFO bus errors")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 ---
+ drivers/net/can/m_can/m_can_platform.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-Changes in V3:
-Addressed review comment, that includes adding Suggested By: tag to the 
-commit message
-
-V2: https://lore.kernel.org/all/20210917170805.5079-1-sinthu.raja@ti.com/
-V1: https://lore.kernel.org/all/20210917094740.18891-1-sinthu.raja@ti.com/
-
- .../bindings/hwlock/ti,omap-hwspinlock.yaml   | 33 +------------------
- 1 file changed, 1 insertion(+), 32 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-index ae1b37dbee75..0a955c7b9706 100644
---- a/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-+++ b/Documentation/devicetree/bindings/hwlock/ti,omap-hwspinlock.yaml
-@@ -39,39 +39,8 @@ additionalProperties: false
- examples:
+diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
+index 308d4f2fff00..eee47bad0592 100644
+--- a/drivers/net/can/m_can/m_can_platform.c
++++ b/drivers/net/can/m_can/m_can_platform.c
+@@ -32,8 +32,13 @@ static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+ static int iomap_read_fifo(struct m_can_classdev *cdev, int offset, void *val, size_t val_count)
+ {
+ 	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
++	void __iomem *src = priv->mram_base + offset;
  
-   - |
--    /* OMAP4 SoCs */
--    hwspinlock: spinlock@4a0f6000 {
-+    spinlock@4a0f6000 {
-         compatible = "ti,omap4-hwspinlock";
-         reg = <0x4a0f6000 0x1000>;
-         #hwlock-cells = <1>;
-     };
--
--  - |
--    / {
--        /* K3 AM65x SoCs */
--        model = "Texas Instruments K3 AM654 SoC";
--        compatible = "ti,am654-evm", "ti,am654";
--        #address-cells = <2>;
--        #size-cells = <2>;
--
--        bus@100000 {
--            compatible = "simple-bus";
--            #address-cells = <2>;
--            #size-cells = <2>;
--            ranges = <0x00 0x00100000 0x00 0x00100000 0x00 0x00020000>, /* ctrl mmr */
--                     <0x00 0x30800000 0x00 0x30800000 0x00 0x0bc00000>; /* Main NavSS */
--
--            bus@30800000 {
--                compatible = "simple-mfd";
--                #address-cells = <2>;
--                #size-cells = <2>;
--                ranges = <0x00 0x30800000 0x00 0x30800000 0x00 0x0bc00000>;
--
--                spinlock@30e00000 {
--                    compatible = "ti,am654-hwspinlock";
--                    reg = <0x00 0x30e00000 0x00 0x1000>;
--                    #hwlock-cells = <1>;
--                };
--            };
--        };
--    };
+-	ioread32_rep(priv->mram_base + offset, val, val_count);
++	while (val_count--) {
++		*(unsigned int *)val = ioread32(src);
++		val += 4;
++		src += 4;
++	}
+ 
+ 	return 0;
+ }
+@@ -51,8 +56,13 @@ static int iomap_write_fifo(struct m_can_classdev *cdev, int offset,
+ 			    const void *val, size_t val_count)
+ {
+ 	struct m_can_plat_priv *priv = cdev_to_priv(cdev);
++	void __iomem *dst = priv->mram_base + offset;
+ 
+-	iowrite32_rep(priv->base + offset, val, val_count);
++	while (val_count--) {
++		iowrite32(*(unsigned int *)val, dst);
++		val += 4;
++		dst += 4;
++	}
+ 
+ 	return 0;
+ }
 -- 
-2.31.1
+2.17.1
 
