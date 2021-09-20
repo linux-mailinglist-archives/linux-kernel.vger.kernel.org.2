@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3E7411DC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E00411BFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345287AbhITRXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:23:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47440 "EHLO mail.kernel.org"
+        id S1343744AbhITRFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:05:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348972AbhITRVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:21:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47AC6613E8;
-        Mon, 20 Sep 2021 17:00:48 +0000 (UTC)
+        id S1344999AbhITRBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:01:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E00CA6135F;
+        Mon, 20 Sep 2021 16:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157248;
-        bh=VW15CReD1dEtFTCbNstJ6kTm42MK8dwWR9SVXVZpG7c=;
+        s=korg; t=1632156807;
+        bh=xf0YbatEnMmfTs+5VSBVKKe7pFah5K7ZriwPi85SFwY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZiPFLGRxcSWQ9CBRQ1xSa34bCQItOLVAoIUm2Tf6jpZKSQLqIT2zt2KtmWaQXa98M
-         q8pIE2IhuMIr+YjFVKgYVVEJSXVjZQhjI06QrWyCXziXYEXKTf+/W+7HcLgmE7EmyJ
-         uKickdV78u7YBZTOLfKdiaccBhg62B4BbmVu3wjo=
+        b=Us+FmZLy0zC6xAsJfooeMFDHzGMY8sN7BzQmVlBv/dcyIxsHVc1BJ0EtGwmYWj2Zf
+         ZVrG8QttEO9c4gVx8V/K0zgjTq9aBA8eEugNjE+Dk/s02SJ/wDqwBUSquewwzbCOrH
+         voUGRdL9I6MbkHX2OV4gybCzRmjiGPe+9dKesPQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 122/217] RDMA/iwcm: Release resources if iw_cm module initialization fails
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Wang Hai <wanghai38@huawei.com>
+Subject: [PATCH 4.9 094/175] VMCI: fix NULL pointer dereference when unmapping queue pair
 Date:   Mon, 20 Sep 2021 18:42:23 +0200
-Message-Id: <20210920163928.793310670@linuxfoundation.org>
+Message-Id: <20210920163921.153102444@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit e677b72a0647249370f2635862bf0241c86f66ad ]
+commit a30dc6cf0dc51419021550152e435736aaef8799 upstream.
 
-The failure during iw_cm module initialization partially left the system
-with unreleased memory and other resources. Rewrite the module init/exit
-routines in such way that netlink commands will be opened only after
-successful initialization.
+I got a NULL pointer dereference report when doing fuzz test:
 
-Fixes: b493d91d333e ("iwcm: common code for port mapper")
-Link: https://lore.kernel.org/r/b01239f99cb1a3e6d2b0694c242d89e6410bcd93.1627048781.git.leonro@nvidia.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Call Trace:
+  qp_release_pages+0xae/0x130
+  qp_host_unregister_user_memory.isra.25+0x2d/0x80
+  vmci_qp_broker_unmap+0x191/0x320
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  vmci_host_unlocked_ioctl+0x59f/0xd50
+  ? do_vfs_ioctl+0x14b/0xa10
+  ? tomoyo_file_ioctl+0x28/0x30
+  ? vmci_host_do_alloc_queuepair.isra.9+0x1c0/0x1c0
+  __x64_sys_ioctl+0xea/0x120
+  do_syscall_64+0x34/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+When a queue pair is created by the following call, it will not
+register the user memory if the page_store is NULL, and the
+entry->state will be set to VMCIQPB_CREATED_NO_MEM.
+
+vmci_host_unlocked_ioctl
+  vmci_host_do_alloc_queuepair
+    vmci_qp_broker_alloc
+      qp_broker_alloc
+        qp_broker_create // set entry->state = VMCIQPB_CREATED_NO_MEM;
+
+When unmapping this queue pair, qp_host_unregister_user_memory() will
+be called to unregister the non-existent user memory, which will
+result in a null pointer reference. It will also change
+VMCIQPB_CREATED_NO_MEM to VMCIQPB_CREATED_MEM, which should not be
+present in this operation.
+
+Only when the qp broker has mem, it can unregister the user
+memory when unmapping the qp broker.
+
+Only when the qp broker has no mem, it can register the user
+memory when mapping the qp broker.
+
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Link: https://lore.kernel.org/r/20210818124845.488312-1-wanghai38@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/core/iwcm.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-index 16b0c10348e8..66204e08ce5a 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -1176,29 +1176,34 @@ static int __init iw_cm_init(void)
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -2344,7 +2344,8 @@ int vmci_qp_broker_map(struct vmci_handl
+ 	is_local = entry->qp.flags & VMCI_QPFLAG_LOCAL;
+ 	result = VMCI_SUCCESS;
  
- 	ret = iwpm_init(RDMA_NL_IWCM);
- 	if (ret)
--		pr_err("iw_cm: couldn't init iwpm\n");
--	else
--		rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
-+		return ret;
-+
- 	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
- 	if (!iwcm_wq)
--		return -ENOMEM;
-+		goto err_alloc;
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    !QPBROKERSTATE_HAS_MEM(entry)) {
+ 		struct vmci_qp_page_store page_store;
  
- 	iwcm_ctl_table_hdr = register_net_sysctl(&init_net, "net/iw_cm",
- 						 iwcm_ctl_table);
- 	if (!iwcm_ctl_table_hdr) {
- 		pr_err("iw_cm: couldn't register sysctl paths\n");
--		destroy_workqueue(iwcm_wq);
--		return -ENOMEM;
-+		goto err_sysctl;
- 	}
+ 		page_store.pages = guest_mem;
+@@ -2454,7 +2455,8 @@ int vmci_qp_broker_unmap(struct vmci_han
  
-+	rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
- 	return 0;
-+
-+err_sysctl:
-+	destroy_workqueue(iwcm_wq);
-+err_alloc:
-+	iwpm_exit(RDMA_NL_IWCM);
-+	return -ENOMEM;
- }
+ 	is_local = entry->qp.flags & VMCI_QPFLAG_LOCAL;
  
- static void __exit iw_cm_cleanup(void)
- {
-+	rdma_nl_unregister(RDMA_NL_IWCM);
- 	unregister_net_sysctl_table(iwcm_ctl_table_hdr);
- 	destroy_workqueue(iwcm_wq);
--	rdma_nl_unregister(RDMA_NL_IWCM);
- 	iwpm_exit(RDMA_NL_IWCM);
- }
- 
--- 
-2.30.2
-
+-	if (context_id != VMCI_HOST_CONTEXT_ID) {
++	if (context_id != VMCI_HOST_CONTEXT_ID &&
++	    QPBROKERSTATE_HAS_MEM(entry)) {
+ 		qp_acquire_queue_mutex(entry->produce_q);
+ 		result = qp_save_headers(entry);
+ 		if (result < VMCI_SUCCESS)
 
 
