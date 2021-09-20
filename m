@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E1241128E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958BB411292
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 12:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234753AbhITKH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 06:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46228 "EHLO mail.kernel.org"
+        id S234335AbhITKIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 06:08:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231182AbhITKHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 06:07:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FF5760F5D;
-        Mon, 20 Sep 2021 10:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632132356;
-        bh=mEIhB5gFO41gQ3sUmqJQlg/kWWUDHL4ECHOeQmvQpg8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TWh7aaNP0ht/JZhEtvnli9sWjRSesj7JtMP1fhpkq/Ox6LbM8AIvwD3rMhYAdffZx
-         DflCXf/CEy6LwylZWp8KNf1t21ESsN1wyu9afVi1xJXkb1y2R3+eXuRvGd2GqnprTC
-         IAVp/G8ruQXI2gryAgv4TFgr3cwi3z8ZKMfJAiV1+Gv9fG91wT2WGUmKZ+i4+9DGet
-         RluQGa6j62yzuh21hSnmars9IXYDzPZwP/HGPji3w7pSl1wi7JnOA7/1hvCc5gEn5R
-         hCZA3EPTg4tULLUH/gVasPIZBSqNsEGhqVTTMLga+ZaZDcfhvTW3hB5+M84RRhw/G4
-         0p8mQnqU74Juw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: ecc: fix CRYPTO_DEFAULT_RNG dependency
-Date:   Mon, 20 Sep 2021 12:05:35 +0200
-Message-Id: <20210920100551.1568868-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S229574AbhITKIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 06:08:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF671600D4;
+        Mon, 20 Sep 2021 10:06:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632132396;
+        bh=Y9K2peoP+053qe709BSIBNv+PSkuEnDu9beMJCEm1kc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dkZ2epxCWQxx9jGPfmKG17yir0Al78Bj8bxw0HJyH1jiDCtaQSMGtqhObnPzzvMpK
+         4V+BJYy+XemFXhVNC06d9O/SNjIZ99+fHu16NpYET3vJuvOZi3DtwYPiXrrP7JT8pA
+         ZevrqQ1u94LO2H51eSLSYqKePMLKurQCKfR3vxKI=
+Date:   Mon, 20 Sep 2021 12:06:33 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Gaelan Steele <gbs@canishe.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 1/2] fs: move struct linux_dirent into headers
+Message-ID: <YUhdKQV2ZC8T8MhB@kroah.com>
+References: <20210920095649.28600-1-gbs@canishe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920095649.28600-1-gbs@canishe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Sep 20, 2021 at 10:56:48AM +0100, Gaelan Steele wrote:
+> Move the definition of linux_dirent to include/linux/dirent.h,
+> where the newer linux_dirent64 already lives. This is done in
+> preparation for moving both of these struct definitions into uapi/
+> so userspace code doesn't need to duplicate them.
+> 
+> Signed-off-by: Gaelan Steele <gbs@canishe.com>
+> ---
+>  fs/readdir.c           | 8 +-------
+>  include/linux/dirent.h | 7 +++++++
+>  2 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/readdir.c b/fs/readdir.c
+> index 09e8ed7d4161..51890aeafc53 100644
+> --- a/fs/readdir.c
+> +++ b/fs/readdir.c
+> @@ -202,14 +202,8 @@ SYSCALL_DEFINE3(old_readdir, unsigned int, fd,
+>  
+>  /*
+>   * New, all-improved, singing, dancing, iBCS2-compliant getdents()
+> - * interface. 
+> + * interface.
+>   */
+> -struct linux_dirent {
+> -	unsigned long	d_ino;
+> -	unsigned long	d_off;
+> -	unsigned short	d_reclen;
+> -	char		d_name[1];
+> -};
+>  
+>  struct getdents_callback {
+>  	struct dir_context ctx;
+> diff --git a/include/linux/dirent.h b/include/linux/dirent.h
+> index 99002220cd45..48e119dd3694 100644
+> --- a/include/linux/dirent.h
+> +++ b/include/linux/dirent.h
+> @@ -2,6 +2,13 @@
+>  #ifndef _LINUX_DIRENT_H
+>  #define _LINUX_DIRENT_H
+>  
+> +struct linux_dirent {
+> +	unsigned long	d_ino;
+> +	unsigned long	d_off;
+> +	unsigned short	d_reclen;
+> +	char		d_name[1];
 
-The ecc.c file started out as part of the ECDH algorithm but got
-moved out into a standalone module later. It does not build without
-CRYPTO_DEFAULT_RNG, so now that other modules are using it as well we
-can run into this link error:
+These are not valid user/kernel api types.  If you want them in
+userspace, please use the correct ones (__u64, __u16, __u8, etc.)
 
-aarch64-linux-ld: ecc.c:(.text+0xfc8): undefined reference to `crypto_default_rng'
-aarch64-linux-ld: ecc.c:(.text+0xff4): undefined reference to `crypto_put_default_rng'
+thanks,
 
-Move the 'select CRYPTO_DEFAULT_RNG' statement into the correct symbol.
-
-Fixes: 0d7a78643f69 ("crypto: ecrdsa - add EC-RDSA (GOST 34.10) algorithm")
-Fixes: 4e6602916bc6 ("crypto: ecdsa - Add support for ECDSA signature verification")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- crypto/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 536df4b6b825..285f82647d2b 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -233,12 +233,12 @@ config CRYPTO_DH
- 
- config CRYPTO_ECC
- 	tristate
-+	select CRYPTO_RNG_DEFAULT
- 
- config CRYPTO_ECDH
- 	tristate "ECDH algorithm"
- 	select CRYPTO_ECC
- 	select CRYPTO_KPP
--	select CRYPTO_RNG_DEFAULT
- 	help
- 	  Generic implementation of the ECDH algorithm
- 
--- 
-2.29.2
-
+greg k-h
