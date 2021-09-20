@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDC24125E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92C54124C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384859AbhITStM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33444 "EHLO mail.kernel.org"
+        id S1353220AbhITSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:38:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1384058AbhITSq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:46:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CACE161AFC;
-        Mon, 20 Sep 2021 17:33:26 +0000 (UTC)
+        id S1380110AbhITSce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:32:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE2F461458;
+        Mon, 20 Sep 2021 17:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632159207;
-        bh=nJGjqA4VqaiblFXEo8JfggKKB+XrHLLpy63g1y+s3nY=;
+        s=korg; t=1632158880;
+        bh=3yos3JvVPLcMvFsxovYx1mLu68HlfZthsxXRfdeKGhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sxcv3nSzzM/GoUQlU+H0sj13g/FUvAHUUqASJHk8HFHOMD26lVVZJpUrGdVfw3Xbt
-         zTjuJuCGPnykuf/JbVLSbN3BVfTREPCr9z9WDNpX4LddWD1Oz/4OvDGQYZlhulkPix
-         GYeeCw1Qcyyam0afvOkrqqNuxfTsg597DLwXBYGs=
+        b=Rp5OI6k6sY4RRKRT4kVsyS4hGo4hFDPnF+NYRzpONEa5raYHyRsQCkjPbq8BWWtZr
+         PWvh+mV8qR14koohncDasbfSPeCFd+GvHQvDvpXxIkrcI2yT2+BuLy3HqwfrM6oquH
+         J+nAOjiE/Ka/La1/kPBrBPiGZG5ZDbSBXln3QDbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 098/168] mfd: Dont use irq_create_mapping() to resolve a mapping
-Date:   Mon, 20 Sep 2021 18:43:56 +0200
-Message-Id: <20210920163924.850784488@linuxfoundation.org>
+        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 065/122] PCI: cadence: Use bitfield for *quirk_retrain_flag* instead of bool
+Date:   Mon, 20 Sep 2021 18:43:57 +0200
+Message-Id: <20210920163917.907574413@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
+References: <20210920163915.757887582@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,93 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 9ff80e2de36d0554e3a6da18a171719fe8663c17 ]
+[ Upstream commit f4455748b2126a9ba2bcc9cfb2fbcaa08de29bb2 ]
 
-Although irq_create_mapping() is able to deal with duplicate
-mappings, it really isn't supposed to be a substitute for
-irq_find_mapping(), and can result in allocations that take place
-in atomic context if the mapping didn't exist.
+No functional change. As we are intending to add additional 1-bit
+members in struct j721e_pcie_data/struct cdns_pcie_rc, use bitfields
+instead of bool since it takes less space. As discussed in [1],
+the preference is to use bitfileds instead of bool inside structures.
 
-Fix the handful of MFD drivers that use irq_create_mapping() in
-interrupt context by using irq_find_mapping() instead.
+[1] -> https://lore.kernel.org/linux-fsdevel/CA+55aFzKQ6Pj18TB8p4Yr0M4t+S+BsiHH=BJNmn=76-NcjTj-g@mail.gmail.com/
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20210811123336.31357-2-kishon@ti.com
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/ab8500-core.c | 2 +-
- drivers/mfd/stmpe.c       | 4 ++--
- drivers/mfd/tc3589x.c     | 2 +-
- drivers/mfd/wm8994-irq.c  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/pci/controller/cadence/pci-j721e.c    | 2 +-
+ drivers/pci/controller/cadence/pcie-cadence.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/ab8500-core.c b/drivers/mfd/ab8500-core.c
-index 30489670ea52..cca0aac26148 100644
---- a/drivers/mfd/ab8500-core.c
-+++ b/drivers/mfd/ab8500-core.c
-@@ -485,7 +485,7 @@ static int ab8500_handle_hierarchical_line(struct ab8500 *ab8500,
- 		if (line == AB8540_INT_GPIO43F || line == AB8540_INT_GPIO44F)
- 			line += 1;
+diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+index d34ca0fda0f6..973b309ac9ba 100644
+--- a/drivers/pci/controller/cadence/pci-j721e.c
++++ b/drivers/pci/controller/cadence/pci-j721e.c
+@@ -63,7 +63,7 @@ enum j721e_pcie_mode {
  
--		handle_nested_irq(irq_create_mapping(ab8500->domain, line));
-+		handle_nested_irq(irq_find_mapping(ab8500->domain, line));
- 	}
+ struct j721e_pcie_data {
+ 	enum j721e_pcie_mode	mode;
+-	bool quirk_retrain_flag;
++	unsigned int		quirk_retrain_flag:1;
+ };
  
- 	return 0;
-diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
-index 1dd39483e7c1..58d09c615e67 100644
---- a/drivers/mfd/stmpe.c
-+++ b/drivers/mfd/stmpe.c
-@@ -1095,7 +1095,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
+ static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+index 6705a5fedfbb..60981877f65b 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.h
++++ b/drivers/pci/controller/cadence/pcie-cadence.h
+@@ -299,7 +299,7 @@ struct cdns_pcie_rc {
+ 	u32			vendor_id;
+ 	u32			device_id;
+ 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+-	bool                    quirk_retrain_flag;
++	unsigned int		quirk_retrain_flag:1;
+ };
  
- 	if (variant->id_val == STMPE801_ID ||
- 	    variant->id_val == STMPE1600_ID) {
--		int base = irq_create_mapping(stmpe->domain, 0);
-+		int base = irq_find_mapping(stmpe->domain, 0);
- 
- 		handle_nested_irq(base);
- 		return IRQ_HANDLED;
-@@ -1123,7 +1123,7 @@ static irqreturn_t stmpe_irq(int irq, void *data)
- 		while (status) {
- 			int bit = __ffs(status);
- 			int line = bank * 8 + bit;
--			int nestedirq = irq_create_mapping(stmpe->domain, line);
-+			int nestedirq = irq_find_mapping(stmpe->domain, line);
- 
- 			handle_nested_irq(nestedirq);
- 			status &= ~(1 << bit);
-diff --git a/drivers/mfd/tc3589x.c b/drivers/mfd/tc3589x.c
-index 7614f8fe0e91..13583cdb93b6 100644
---- a/drivers/mfd/tc3589x.c
-+++ b/drivers/mfd/tc3589x.c
-@@ -187,7 +187,7 @@ again:
- 
- 	while (status) {
- 		int bit = __ffs(status);
--		int virq = irq_create_mapping(tc3589x->domain, bit);
-+		int virq = irq_find_mapping(tc3589x->domain, bit);
- 
- 		handle_nested_irq(virq);
- 		status &= ~(1 << bit);
-diff --git a/drivers/mfd/wm8994-irq.c b/drivers/mfd/wm8994-irq.c
-index 6c3a619e2628..651a028bc519 100644
---- a/drivers/mfd/wm8994-irq.c
-+++ b/drivers/mfd/wm8994-irq.c
-@@ -154,7 +154,7 @@ static irqreturn_t wm8994_edge_irq(int irq, void *data)
- 	struct wm8994 *wm8994 = data;
- 
- 	while (gpio_get_value_cansleep(wm8994->pdata.irq_gpio))
--		handle_nested_irq(irq_create_mapping(wm8994->edge_irq, 0));
-+		handle_nested_irq(irq_find_mapping(wm8994->edge_irq, 0));
- 
- 	return IRQ_HANDLED;
- }
+ /**
 -- 
 2.30.2
 
