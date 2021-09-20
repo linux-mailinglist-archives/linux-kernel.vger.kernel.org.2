@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E7C411E85
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612AE411C9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351067AbhITRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
+        id S1346135AbhITRL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:11:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344166AbhITR2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2839261ABF;
-        Mon, 20 Sep 2021 17:03:35 +0000 (UTC)
+        id S1346852AbhITRJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FBB9617E5;
+        Mon, 20 Sep 2021 16:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157415;
-        bh=B86PRED4PdLByGVox0tnjkMQ0m8otuqvicJQkt9BFPc=;
+        s=korg; t=1632156976;
+        bh=D6Q0CGmtPfbV2L/9Dnn75v8VgKbZgpEEeDgUXPoPixA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B0/8SuWAnuuMRY7TZ7Mp2pCnoWMPnsjg8+uTN4W2QyX4b4nSweZvynrH/iFUABuiU
-         BavQjbXP+1IQWVw0D5uqzouc8xVi/VBN10dF1tZRacA9b34+DjUojeqGzV+8u6zJQO
-         KyswWvEn0qC53O07kPmyTUbLvuVHVQNvvnX2quRQ=
+        b=ZfUp/l5lzFY//1+yUaU+6FhnA1SWqza/wd0zxUqcxIo4AlsejWyqi3xUH4Eyvwvxw
+         25W4D74K/7momgkb+QhwJUTuR9Z3Izr/SA2A3+Rou6eGL7ZL/HRaW8hGw8IRTjK2Be
+         DSP8Ra4YLA4TaKfGZXXo1VQ1x24M+PEzC8DAWiJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 198/217] net/l2tp: Fix reference count leak in l2tp_udp_recv_core
-Date:   Mon, 20 Sep 2021 18:43:39 +0200
-Message-Id: <20210920163931.344534385@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 171/175] mtd: rawnand: cafe: Fix a resource leak in the error handling path of cafe_nand_probe()
+Date:   Mon, 20 Sep 2021 18:43:40 +0200
+Message-Id: <20210920163923.662758170@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 9b6ff7eb666415e1558f1ba8a742f5db6a9954de upstream.
+[ Upstream commit 6b430c7595e4eb95fae8fb54adc3c3ce002e75ae ]
 
-The reference count leak issue may take place in an error handling
-path. If both conditions of tunnel->version == L2TP_HDR_VER_3 and the
-return value of l2tp_v3_ensure_opt_in_linear is nonzero, the function
-would directly jump to label invalid, without decrementing the reference
-count of the l2tp_session object session increased earlier by
-l2tp_tunnel_get_session(). This may result in refcount leaks.
+A successful 'init_rs_non_canonical()' call should be balanced by a
+corresponding 'free_rs()' call in the error handling path of the probe, as
+already done in the remove function.
 
-Fix this issue by decrease the reference count before jumping to the
-label invalid.
+Update the error handling path accordingly.
 
-Fixes: 4522a70db7aa ("l2tp: fix reading optional fields of L2TPv3")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8c61b7a7f4d4 ("[MTD] [NAND] Use rslib for CAFÉ ECC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/fd313d3fb787458bcc73189e349f481133a2cdc9.1629532640.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/l2tp/l2tp_core.c |    4 +++-
+ drivers/mtd/nand/cafe_nand.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -994,8 +994,10 @@ static int l2tp_udp_recv_core(struct l2t
+diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+index c16e740c01c3..894d771c87aa 100644
+--- a/drivers/mtd/nand/cafe_nand.c
++++ b/drivers/mtd/nand/cafe_nand.c
+@@ -700,7 +700,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 			  "CAFE NAND", mtd);
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
+-		goto out_ior;
++		goto out_free_rs;
  	}
  
- 	if (tunnel->version == L2TP_HDR_VER_3 &&
--	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
-+	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
-+		l2tp_session_dec_refcount(session);
- 		goto error;
-+	}
- 
- 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length, payload_hook);
- 	l2tp_session_dec_refcount(session);
+ 	/* Disable master reset, enable NAND clock */
+@@ -808,6 +808,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	/* Disable NAND IRQ in global IRQ mask register */
+ 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
+ 	free_irq(pdev->irq, mtd);
++ out_free_rs:
++	free_rs(cafe->rs);
+  out_ior:
+ 	pci_iounmap(pdev, cafe->mmio);
+  out_free_mtd:
+-- 
+2.30.2
+
 
 
