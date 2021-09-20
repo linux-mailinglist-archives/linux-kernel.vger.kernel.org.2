@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423DF4111ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091E54111EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhITJc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:32:58 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:38501 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233719AbhITJc5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:32:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632130290; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=rArp1RA0/MIPIrJ9K0lLkQd4he/8EHpqu1s9srPsVr0=;
- b=NJ/QdPaxd9PmuyN+9KXYNseJMLgIrzjGq7twYJa+rRxA95EMtQnLOXejTio26tkOZ6AbBlBg
- BKuyZAicO5DUhP407th1Cfh2L7xSk/U5Ip6yXG2OkDdyXnLVPV+tJFzRxb9KFRm3Q0PZufsy
- c8D9Pnc9S5PfY+HV2ayNd8AzkmQ=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 614854dcec62f57c9a028217 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 20 Sep 2021 09:31:08
- GMT
-Sender: jeyr=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1F469C4360C; Mon, 20 Sep 2021 09:31:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jeyr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8547BC4338F;
-        Mon, 20 Sep 2021 09:31:07 +0000 (UTC)
+        id S234757AbhITJd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233719AbhITJdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26E3660F70;
+        Mon, 20 Sep 2021 09:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632130348;
+        bh=QtIbrVxChQ8x2+rrnisFBg18QvRgKQ8XOzzmsXcPUsg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vCuwAAQzWiUIOvELmqRMQN3et2Jowt6cP+0z3WYiZkN0oixigT8cALdtgb5zdkCF9
+         4uvjzPT40/gNidN45WkUI3TiE0SLo/tKhNSizbCbTUnAL3Oa41JczabuemVn/YvORT
+         FFrj0n/vqzydeoH6rN5vuaEppIPDAhgbdaiIkQadeMkENaI2eWX+up3OWhzg1O/n6Y
+         8MvutxmiIvibanviyTBoz7SWZbBhv1BbEWAUhDiZi166jLt/WYiKr2ZCLFhQk5D1mh
+         SZr7+2unLTEhSbaugkZuo+z5hDaNMiyg8jKIMmaMI6+Fqilhp5gqJ4uC8hTa2hIUBe
+         zF2DqzY0/nPxw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mSFf0-0000mn-TX; Mon, 20 Sep 2021 11:32:26 +0200
+Date:   Mon, 20 Sep 2021 11:32:26 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Slark Xiao <slark_xiao@163.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB:serial:option Add Foxconn T99W265
+Message-ID: <YUhVKrRJ8M2hKJil@hovoldconsulting.com>
+References: <20210917110106.9852-1-slark_xiao@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 20 Sep 2021 15:01:07 +0530
-From:   jeyr@codeaurora.org
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH] misc: fastrpc: fix improper packet size calculation
-In-Reply-To: <YUhPlj8eeszBNZTE@kroah.com>
-References: <1632125731-18768-1-git-send-email-jeyr@codeaurora.org>
- <YUhPlj8eeszBNZTE@kroah.com>
-Message-ID: <6b3663fcadfdc5bc0cc82eedce533905@codeaurora.org>
-X-Sender: jeyr@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917110106.9852-1-slark_xiao@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-20 14:38, Greg KH wrote:
-> On Mon, Sep 20, 2021 at 01:45:31PM +0530, Jeya R wrote:
->> The buffer list is sorted and this is not being
->> considered while calculating packet size. This
->> would lead to improper copy length calculation
->> for non-dmaheap buffers which would eventually
->> cause sending improper buffers to DSP.
+On Fri, Sep 17, 2021 at 07:01:06PM +0800, Slark Xiao wrote:
+> Adding support for Foxconn device T99W265 for enumeration with
+> PID 0xe0db.
 > 
-> You do have the full 72 columns to use :)
+> usb-devices output for 0xe0db
+> T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 19 Spd=5000 MxCh= 0
+> D:  Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs=  1
+> P:  Vendor=0489 ProdID=e0db Rev=05.04
+> S:  Manufacturer=Microsoft
+> S:  Product=Generic Mobile Broadband Adapter
+> S:  SerialNumber=6c50f452
+> C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
+> I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=0e Prot=00 Driver=cdc_mbim
+> I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+> I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
+> I:  If#=0x3 Alt= 0 #EPs= 1 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+> I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
+> 
+> if0/1: MBIM, if2:Diag, if3:GNSS, if4: Modem
+> 
+> Signed-off-by: Slark Xiao <slark_xiao@163.com>
 
-Thanks, will update the commit message considering this.
+Thanks for the patch and for including all the necessary details in the
+commit message.
 
-> 
->> 
->> Signed-off-by: Jeya R <jeyr@codeaurora.org>
->> ---
->>  drivers/misc/fastrpc.c | 13 +++++++++----
->>  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> What commit does this fix?
-> 
-> thanks,
-> 
-> greg k-h
+First, a minor style nit: Please add spaces after the ':'s in the patch
+Subject.
 
-Payload calculation function was modified to handle buffer overlapping 
-calculation in this commit:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/misc/fastrpc.c?h=v5.15-rc2&id=25e8dfb83cda0a123bb1e091d6c3599cde050d76
+> ---
+>  drivers/usb/serial/option.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+> index 29c765cc8495..fde599fa2d73 100644
+> --- a/drivers/usb/serial/option.c
+> +++ b/drivers/usb/serial/option.c
+> @@ -2068,6 +2068,8 @@ static const struct usb_device_id option_ids[] = {
+>  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+>  	{ USB_DEVICE(0x0489, 0xe0b5),						/* Foxconn T77W968 ESIM */
+>  	  .driver_info = RSVD(0) | RSVD(1) | RSVD(6) },
+> +	{ USB_DEVICE(0x0489, 0xe0db),						/* Foxconn T99W265 MBIM extension*/
+> +	  .driver_info = RSVD(0) | RSVD(1) | RSVD(3) },
 
-Here during buffer overlap calculation, the buffer list is getting 
-sorted. This needs to be considered during the calculation of payload 
-size also by using unsorted buffer index "raix".
+If you use USB_DEVICE_INTERFACE_CLASS() instead you don't need to
+explicitly reserve the MBIM interfaces. 
+
+Also, why are you reserving the GNSS interface (e.g. unlike T77W968)?
+
+>  	{ USB_DEVICE(0x1508, 0x1001),						/* Fibocom NL668 (IOT version) */
+>  	  .driver_info = RSVD(4) | RSVD(5) | RSVD(6) },
+>  	{ USB_DEVICE(0x2cb7, 0x0104),						/* Fibocom NL678 series */
+
+Johan
