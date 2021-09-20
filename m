@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CD9412169
+	by mail.lfdr.de (Postfix) with ESMTP id 79E6341216A
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358116AbhITSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57388 "EHLO mail.kernel.org"
+        id S1358137AbhITSF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:05:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350191AbhITR7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:59:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A98B76321D;
-        Mon, 20 Sep 2021 17:15:27 +0000 (UTC)
+        id S1356400AbhITR7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:59:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D44FD6321A;
+        Mon, 20 Sep 2021 17:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158128;
-        bh=mffSr3rdLXHCmAquyg9L1oP3D8nDGf8+Zyi1VCdmh70=;
+        s=korg; t=1632158130;
+        bh=LwQjO8XX9cG305iFtxVrIZ87BK8ecdMD62X2++UmegI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W9bguv2Og1hxpUo1H9LCFUgnXSTA9GZu4F0SLpo1P0+VeqhA1BlbHfBphwZRC9LC1
-         JfOVEwsrdnCFxHdoAzcsWMXyVHBzRHmSQgH1uLLukPSu+97L6sMyG2UVcjedZswgUI
-         Jsrx2tlXF9iEbhl6Sy9nZrBsK3Tj/nAquuowjid8=
+        b=Zwhco9n6Ui8xofXgW0IEdScho65tLOJb+u8Ix4P5kywn9W09pghLQg7IsyFFdemcT
+         oieHfakBHM8XDDjcGg51zIwRNlELjLiL5ihSI1UqxqE0IZqbgCn3ghoeHIHyzK+F/0
+         8I1Xg4SHexBlwmA7Hb0+fLu43+qabcov53yPSuEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Niklas Cassel <niklas.cassel@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Aravind Ramesh <aravind.ramesh@wdc.com>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 005/260] blk-zoned: allow BLKREPORTZONE without CAP_SYS_ADMIN
-Date:   Mon, 20 Sep 2021 18:40:23 +0200
-Message-Id: <20210920163931.312510017@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.4 006/260] PCI/MSI: Skip masking MSI-X on Xen PV
+Date:   Mon, 20 Sep 2021 18:40:24 +0200
+Message-Id: <20210920163931.344981502@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -44,45 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Cassel <niklas.cassel@wdc.com>
+From: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
-commit 4d643b66089591b4769bcdb6fd1bfeff2fe301b8 upstream.
+commit 1a519dc7a73c977547d8b5108d98c6e769c89f4b upstream.
 
-A user space process should not need the CAP_SYS_ADMIN capability set
-in order to perform a BLKREPORTZONE ioctl.
+When running as Xen PV guest, masking MSI-X is a responsibility of the
+hypervisor. The guest has no write access to the relevant BAR at all - when
+it tries to, it results in a crash like this:
 
-Getting the zone report is required in order to get the write pointer.
-Neither read() nor write() requires CAP_SYS_ADMIN, so it is reasonable
-that a user space process that can read/write from/to the device, also
-can get the write pointer. (Since e.g. writes have to be at the write
-pointer.)
+    BUG: unable to handle page fault for address: ffffc9004069100c
+    #PF: supervisor write access in kernel mode
+    #PF: error_code(0x0003) - permissions violation
+    RIP: e030:__pci_enable_msix_range.part.0+0x26b/0x5f0
+     e1000e_set_interrupt_capability+0xbf/0xd0 [e1000e]
+     e1000_probe+0x41f/0xdb0 [e1000e]
+     local_pci_probe+0x42/0x80
+    (...)
 
-Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
-Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Aravind Ramesh <aravind.ramesh@wdc.com>
-Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: stable@vger.kernel.org # v4.10+
-Link: https://lore.kernel.org/r/20210811110505.29649-3-Niklas.Cassel@wdc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+The recently introduced function msix_mask_all() does not check the global
+variable pci_msi_ignore_mask which is set by XEN PV to bypass the masking
+of MSI[-X] interrupts.
+
+Add the check to make this function XEN PV compatible.
+
+Fixes: 7d5ec3d36123 ("PCI/MSI: Mask all unused MSI-X entries")
+Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210826170342.135172-1-marmarek@invisiblethingslab.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-zoned.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/pci/msi.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -316,9 +316,6 @@ int blkdev_report_zones_ioctl(struct blo
- 	if (!blk_queue_is_zoned(q))
- 		return -ENOTTY;
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -782,6 +782,9 @@ static void msix_mask_all(void __iomem *
+ 	u32 ctrl = PCI_MSIX_ENTRY_CTRL_MASKBIT;
+ 	int i;
  
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
--
- 	if (copy_from_user(&rep, argp, sizeof(struct blk_zone_report)))
- 		return -EFAULT;
- 
++	if (pci_msi_ignore_mask)
++		return;
++
+ 	for (i = 0; i < tsize; i++, base += PCI_MSIX_ENTRY_SIZE)
+ 		writel(ctrl, base + PCI_MSIX_ENTRY_VECTOR_CTRL);
+ }
 
 
