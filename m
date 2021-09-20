@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C10411FC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156CC411A14
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353518AbhITRpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:45:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
+        id S239832AbhITQrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348934AbhITRmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C91E161B67;
-        Mon, 20 Sep 2021 17:08:52 +0000 (UTC)
+        id S237692AbhITQq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:46:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A94611AE;
+        Mon, 20 Sep 2021 16:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157733;
-        bh=aQ3ss94Ysz8Z2rgJ7EBicK34Av2AyGubTaj1Y/1YGx4=;
+        s=korg; t=1632156330;
+        bh=SXdcB+wnMpMouMRbowSBCr0qL7+JfhLwmHDUwFaS01w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jTxl1rDcpTVT9d2ifPXn9z6X+S+BXEytGyj5m7LRXjtTDi+0ssvcjwCS0S9eTCEiM
-         NQvyGgzXYdfJ7u7XB0PXvIBoP2tX4T6nwJzRCNPppr7/QOa0rO4mInLZWiqOgxrymu
-         3rxSY8fFj7H1at62+p6XbJjfj9QqHAYF9X4TwVzQ=
+        b=WxhUKconbOX+ChbTHmLbT7N8Frwhs2fdsy8nD6+wZbpO/Hx7mFWk6Jou797F5qKLY
+         gCzKXwSdYeVjxEDiScJ10KIILLFBf4P6HUbTr9A13Wa50MzokjkmVKPXY28+yqakxz
+         bTvgp1454WHErkYZr1LpEWWdjxytIQkJ7C1gEUIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 4.19 126/293] 9p/xen: Fix end of loop tests for list_for_each_entry
+        stable@vger.kernel.org, Jouni Malinen <jouni@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.4 010/133] ath: Export ath_hw_keysetmac()
 Date:   Mon, 20 Sep 2021 18:41:28 +0200
-Message-Id: <20210920163937.570612652@linuxfoundation.org>
+Message-Id: <20210920163912.938524021@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+From: Jouni Malinen <jouni@codeaurora.org>
 
-commit 732b33d0dbf17e9483f0b50385bf606f724f50a2 upstream.
+commit d2d3e36498dd8e0c83ea99861fac5cf9e8671226 upstream.
 
-This patch addresses the following problems:
- - priv can never be NULL, so this part of the check is useless
- - if the loop ran through the whole list, priv->client is invalid and
-it is more appropriate and sufficient to check for the end of
-list_for_each_entry loop condition.
+ath9k is going to use this for safer management of key cache entries.
 
-Link: http://lkml.kernel.org/r/20210727000709.225032-1-harshvardhan.jha@oracle.com
-Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201214172118.18100-4-jouni@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/9p/trans_xen.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath.h |    1 +
+ drivers/net/wireless/ath/key.c |    4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/net/9p/trans_xen.c
-+++ b/net/9p/trans_xen.c
-@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen
+--- a/drivers/net/wireless/ath/ath.h
++++ b/drivers/net/wireless/ath/ath.h
+@@ -205,6 +205,7 @@ int ath_key_config(struct ath_common *co
+ 			  struct ieee80211_sta *sta,
+ 			  struct ieee80211_key_conf *key);
+ bool ath_hw_keyreset(struct ath_common *common, u16 entry);
++bool ath_hw_keysetmac(struct ath_common *common, u16 entry, const u8 *mac);
+ void ath_hw_cycle_counters_update(struct ath_common *common);
+ int32_t ath_hw_get_listen_time(struct ath_common *common);
  
- static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+--- a/drivers/net/wireless/ath/key.c
++++ b/drivers/net/wireless/ath/key.c
+@@ -84,8 +84,7 @@ bool ath_hw_keyreset(struct ath_common *
+ }
+ EXPORT_SYMBOL(ath_hw_keyreset);
+ 
+-static bool ath_hw_keysetmac(struct ath_common *common,
+-			     u16 entry, const u8 *mac)
++bool ath_hw_keysetmac(struct ath_common *common, u16 entry, const u8 *mac)
  {
--	struct xen_9pfs_front_priv *priv = NULL;
-+	struct xen_9pfs_front_priv *priv;
- 	RING_IDX cons, prod, masked_cons, masked_prod;
- 	unsigned long flags;
- 	u32 size = p9_req->tc.size;
-@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_clie
- 			break;
- 	}
- 	read_unlock(&xen_9pfs_lock);
--	if (!priv || priv->client != client)
-+	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
- 		return -EINVAL;
+ 	u32 macHi, macLo;
+ 	u32 unicast_flag = AR_KEYTABLE_VALID;
+@@ -125,6 +124,7 @@ static bool ath_hw_keysetmac(struct ath_
  
- 	num = p9_req->tc.tag % priv->num_rings;
+ 	return true;
+ }
++EXPORT_SYMBOL(ath_hw_keysetmac);
+ 
+ static bool ath_hw_set_keycache_entry(struct ath_common *common, u16 entry,
+ 				      const struct ath_keyval *k,
 
 
