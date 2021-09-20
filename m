@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A823411DE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F1741201F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349446AbhITRZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:25:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
+        id S1346972AbhITRs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:48:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346011AbhITRXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:23:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E84B61A83;
-        Mon, 20 Sep 2021 17:01:31 +0000 (UTC)
+        id S1345997AbhITRqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:46:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7225F61B64;
+        Mon, 20 Sep 2021 17:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157292;
-        bh=wzVDT37lH9Bt1PqEs6wucnIu2XQ9yKhvKOBrUdOjV+k=;
+        s=korg; t=1632157828;
+        bh=vCCoET0WdO5QElwbuafGH/cpV4DVSdm0ts81ooXYe04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nhfKXACqXty+JTq2hMt3rma6wauzMF/QsnRK4OGEwBtE5WHn4FcNVkmo9UOahpc94
-         OZwBiBrW9HQPTqjEHoVMGkEdA6YYHhlG4FzblziZkP6oCJBu9iJH9TA1uKA1OY3Pug
-         1FLpBY8xrzCV+b3EpgwiuI438ZVvj6wKlqn5Tx8Y=
+        b=WztIgrZn9HOgSrIpCIbLgr8bw8pbQ8uoOAwnn4eWqsrI6cegCd1i/RkaG4CAd8b5D
+         5Gea2GAl1OKumioDleWI/23Dwp9zGe94jrjC6GPKDS+8SRZr2rVqgl1G1D5HloaDZt
+         pA8swScTsbImO+dp7K38foEauqY67bhtYmm3D4yM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.14 109/217] power: supply: max17042: handle fails of reading status register
-Date:   Mon, 20 Sep 2021 18:42:10 +0200
-Message-Id: <20210920163928.331366868@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 169/293] f2fs: fix to unmap pages from userspace process in punch_hole()
+Date:   Mon, 20 Sep 2021 18:42:11 +0200
+Message-Id: <20210920163939.071285531@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Chao Yu <chao@kernel.org>
 
-commit 54784ffa5b267f57161eb8fbb811499f22a0a0bf upstream.
+[ Upstream commit c8dc3047c48540183744f959412d44b08c5435e1 ]
 
-Reading status register can fail in the interrupt handler.  In such
-case, the regmap_read() will not store anything useful under passed
-'val' variable and random stack value will be used to determine type of
-interrupt.
+We need to unmap pages from userspace process before removing pagecache
+in punch_hole() like we did in f2fs_setattr().
 
-Handle the regmap_read() failure to avoid handling interrupt type and
-triggering changed power supply event based on random stack value.
+Similar change:
+commit 5e44f8c374dc ("ext4: hole-punch use truncate_pagecache_range")
 
-Fixes: 39e7213edc4f ("max17042_battery: Support regmap to access device's registers")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: fbfa2cc58d53 ("f2fs: add file operations")
+Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/max17042_battery.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/f2fs/file.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -833,8 +833,12 @@ static irqreturn_t max17042_thread_handl
- {
- 	struct max17042_chip *chip = dev;
- 	u32 val;
-+	int ret;
-+
-+	ret = regmap_read(chip->regmap, MAX17042_STATUS, &val);
-+	if (ret)
-+		return IRQ_HANDLED;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 95330dfdbb1a..2a7249496c57 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -957,7 +957,6 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 		}
  
--	regmap_read(chip->regmap, MAX17042_STATUS, &val);
- 	if ((val & STATUS_INTR_SOCMIN_BIT) ||
- 		(val & STATUS_INTR_SOCMAX_BIT)) {
- 		dev_info(&chip->client->dev, "SOC threshold INTR\n");
+ 		if (pg_start < pg_end) {
+-			struct address_space *mapping = inode->i_mapping;
+ 			loff_t blk_start, blk_end;
+ 			struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 
+@@ -969,8 +968,7 @@ static int punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+ 			down_write(&F2FS_I(inode)->i_mmap_sem);
+ 
+-			truncate_inode_pages_range(mapping, blk_start,
+-					blk_end - 1);
++			truncate_pagecache_range(inode, blk_start, blk_end - 1);
+ 
+ 			f2fs_lock_op(sbi);
+ 			ret = f2fs_truncate_hole(inode, pg_start, pg_end);
+-- 
+2.30.2
+
 
 
