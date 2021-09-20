@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73A4411561
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA2341156B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbhITNUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:20:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236028AbhITNUG (ORCPT
+        id S239274AbhITNWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239225AbhITNWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:20:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632143919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XZbiHti4vCOqgWKM54l6a3juvV92A2baM8UIqCN0ZRQ=;
-        b=BfMynupe51AKq55EdOEA4cfDI+zI3G7cwKM5MX1bQKmFL9XvmflcmGqtc5Aik5Yz2f9bjA
-        KkeqGt88AQNFCBW/D3S8s1ziFQgkN2xhO8Nu34ylZkxml+0Pj3Eh3oZ3vuiUUiO1OeTU0k
-        pLp0al8sGnwlMnWiOthU471zj83GPi4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-zaIgn4tBM6qQIBWvMaPvcQ-1; Mon, 20 Sep 2021 09:18:34 -0400
-X-MC-Unique: zaIgn4tBM6qQIBWvMaPvcQ-1
-Received: by mail-wr1-f71.google.com with SMTP id x2-20020a5d54c2000000b0015dfd2b4e34so6048947wrv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:18:34 -0700 (PDT)
+        Mon, 20 Sep 2021 09:22:36 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37ADC061574;
+        Mon, 20 Sep 2021 06:21:09 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id p29so66937590lfa.11;
+        Mon, 20 Sep 2021 06:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u6GB2XJ25N7du6+keolf1xpjOAUOuO0nlhOfiMwGosc=;
+        b=WUl9raFZdZmVdrAFxYDDogwBxjqdYpNcL9Oh/UZvzQuu7Gfp5/W2NOpSfqiA51+3iv
+         KEcbq5YHwo87woY05cQBjhpmuHr1x7hFVZW0s5yJh9VD5JCCZY7oX9Rr0tfwgamm81AH
+         9vHPkw1gpBLMT3hICaOn6FAtG4zWmezf4MYTow3IpFOhkWvk2pkTK1EIRKQZNUkjxSRN
+         TCaa/Y2GBjiodXB5j+3AA1iNO/RADOPMmOnz5h1F+nlyTWBkfYW/MDYhK/1aJRLImjLl
+         PVSFEHcwNY5PpEkTL1P2/Nu+VDPYMQgAPHDe1MiBOpQU2nKXVEY/leq8x8vLIdwAVCEq
+         K/6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XZbiHti4vCOqgWKM54l6a3juvV92A2baM8UIqCN0ZRQ=;
-        b=dzeewz5v6HcB0wppDmmg8ogU4z4ZMdcTohmQLvywatGQWX2HQ3QRBqoTy3WSVYcZsV
-         v/QVbzLE8a529ETKkMVuGcWiPO1FiU4ASWP28G+QGVwJ8f8WqexosRWnUCyXYdcD4QOj
-         jIYn/wCSIwjF6MtO9g6P7pFBdsKFs3fIXjO+NX1i3nT0FlmjDq68+lQJ9CkT2gQPgj3f
-         GvpFb82g1SK6ntItMdCSUkYFAwNVOjWrLZHpSfjfMlcLp56ugJr06xZVvlfTS9AejYNE
-         9OSa0g2N7rIPSZAM6i/Rln28nn1fmvBp3tnJAFbGKiYhCqTOjUGa/nTg5PheCkdZtk7f
-         fGng==
-X-Gm-Message-State: AOAM531G9r74z4UkJRzXIP8VSOzU1qIpGy9bJlDPzzbmdcUU5Z1xW6/e
-        nIx4CGBKKLG2RIbPrpFr9i52pPKfpXXnG0pPv7dlNDAWfWIsKeY0f2vsHk2NtsE9mxsaFN0Z5E5
-        mHbG8dW4m1J7IyoxLtU/Pny5C
-X-Received: by 2002:a5d:6c6d:: with SMTP id r13mr13376910wrz.439.1632143913678;
-        Mon, 20 Sep 2021 06:18:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7N3hxz36qRlOw1/rL/DwL4aDROJ8XxG8xzFR2ylC3WRZ+AXi5MycER2AoBKQtMUNziJuirw==
-X-Received: by 2002:a5d:6c6d:: with SMTP id r13mr13376850wrz.439.1632143913429;
-        Mon, 20 Sep 2021 06:18:33 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o12sm13359543wms.15.2021.09.20.06.18.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Sep 2021 06:18:32 -0700 (PDT)
-Subject: Re: [PATCH v2 00/13] perf: KVM: Fix, optimize, and clean up callbacks
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-References: <20210828003558.713983-1-seanjc@google.com>
- <20210828201336.GD4353@worktop.programming.kicks-ass.net>
- <YUO5J/jTMa2KGbsq@google.com>
- <YURDqVZ1UXKCiKPV@hirez.programming.kicks-ass.net>
- <662e93f9-e858-689d-d203-742731ecad2c@redhat.com>
- <87tuifv3mb.wl-maz@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <7a5825d1-d6e9-8ac8-5df2-cce693525da7@redhat.com>
-Date:   Mon, 20 Sep 2021 15:18:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u6GB2XJ25N7du6+keolf1xpjOAUOuO0nlhOfiMwGosc=;
+        b=6pokcTIzILjMejCMjjSV0UqSLQKC41Xs1ygieLbj7f9BqXyTz7laKtH2My0xvbbTDJ
+         kWdMDX6O8l250A614KZ7A7P6pmxoDSenjzsVSGWUtASKQ/bQA6d4NBZFCHT8iyofRfpJ
+         t0Q/LFUhCo9LlPZctbMAORenEXGVIUid9VTACKcrHaRDyImbMlw7djuCNQJ7SiXjdkmL
+         a7XKUbraGvISJgSlapqw6MXXhCnZRBZVwmDXlpwNmbFzWs+ntjvj1ahDmwUtIbcoB8/X
+         e9T0QiO5ciluUV/NxTN8Wre11m1RL1tSylf1qRM4fELv05AO+g//yPC49u3lUjqXgpZ8
+         neYA==
+X-Gm-Message-State: AOAM530GW+/KR4aF6c3NtOJTtpuTCVRtiC0nn9tDOAnG28UdQEW3ookI
+        66dYWD9BcO0MWnN4EfSvJ0jIixlPEG/cbow/xS4=
+X-Google-Smtp-Source: ABdhPJx0qPnmu+9JXcNEtDd+hROg13K9h163miZ0QCh31ioY/3l77YNaz2O02/6GOiUyEKu42BKCwwQrPryXg+4Yl9Y=
+X-Received: by 2002:a05:6512:1284:: with SMTP id u4mr1063524lfs.395.1632144033466;
+ Mon, 20 Sep 2021 06:20:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87tuifv3mb.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210902213500.3795948-1-pmalani@chromium.org>
+ <20210902213500.3795948-3-pmalani@chromium.org> <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
+ <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUB16up3JDwi3HfI@kuha.fi.intel.com> <YULwz8NsoA3+vrhA@google.com>
+ <YUMbGp0aemx1HCHv@kuha.fi.intel.com> <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CAPTae5Kxmp0L35KnkYaHARrBmysX9wkMYZhGhJsu6tX4bcHuAA@mail.gmail.com>
+In-Reply-To: <CAPTae5Kxmp0L35KnkYaHARrBmysX9wkMYZhGhJsu6tX4bcHuAA@mail.gmail.com>
+From:   Rajaram R <rajaram.officemail@gmail.com>
+Date:   Mon, 20 Sep 2021 18:50:22 +0530
+Message-ID: <CAOiXhaLpe7gHw6c8pCZDNeOC31WfxFum5G1RNiEbEG2Fn=6oeQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/21 14:22, Marc Zyngier wrote:
->> I think that's only ARM, and even then it is only because of
->> limitations of the hardware which mostly apply only if VHE is not in
->> use.
->>
->> If anything, it's ARM that should support module build in VHE mode
->> (Linux would still need to know whether it will be running at EL1 or
->> EL2, but KVM's functionality is as self-contained as on x86 in the VHE
->> case).
-> I don't see this happening anytime soon. At least not before we
-> declare the arm64 single kernel image policy to be obsolete.
+On Fri, Sep 17, 2021 at 6:25 AM Badhri Jagan Sridharan
+<badhri@google.com> wrote:
+>
+> On Thu, Sep 16, 2021 at 7:12 AM Adam Thomson
+> <Adam.Thomson.Opensource@diasemi.com> wrote:
+> >
+> > On 16 September 2021 11:23, Heikki Krogerus wrote:
+> >
+> > > > Thanks for providing the clarification. So you're proposing a port-psy and a
+> > > > port-partner-psy that are connected to each other (one supplying the other).
+> > > > If PD is not present, those two will exist per port and partner, and there
+> > > > will be information about Type-C current (and possibly BC 1.2 and other
+> > > > methods?)
+> > >
+> > > Yes, exactly.
 
---verbose please. :)  I am sure you're right, but I don't understand the 
-link between the two.
 
-Paolo
+ As Benson mentioned PDOs contain more than power details like USB
+Suspend indicator etc or Type-C only devices as Badhri mentioned here
+may not integrate well with PSY class.  Additionally, it is also
+important to consider cable properties here for power as they also
+have a role to play in the power limits and necessitates change of
+existing PDOs or power limits. ( Type-C Monitor charging a computing
+system does not have captive cables)
 
+Given too many possibilities, would an approach similar to
+gadgetfs/configfs or cpu scaling say like "type-configfs" or "typec
+scaling" ABI framework that allows USB=C port management under one
+path /sys/class/typec that allows:
+
+- Provision to manage USB-C port power (  Power supply class should
+still represent power contract established, as remaining
+characteristics are nested with functional aspects and relevant on a
+power contract failure )
++ dynamically change Rp ( Rp(default) is required to enter USB suspend)
++ Set PDO Policy ( PPS, Fixed, etc)
++ Give back power
++ Expose complete PDO ( As we do for VDOs)
++ Change USB Suspend flag
+
+- Provision for extended messages
++ Provides additional details regarding ports like Get Status etc.
+This shall allow us to take system level decisions.
+
+- Provision to manage USB-C modes
++ Provision to enter modes as provided by interface standards like UCSI
+
+With this user tools like Chrome OS "typecd" be able to use a single
+class and its ABIs to manage USB-C port power and mode. Kindly correct
+me if I am missing something here.
