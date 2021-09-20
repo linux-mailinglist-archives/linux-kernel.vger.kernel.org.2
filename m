@@ -2,63 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBBB4118DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C6C4118DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238046AbhITQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:07:36 -0400
-Received: from smtp4-g21.free.fr ([212.27.42.4]:10920 "EHLO smtp4-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232262AbhITQHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:07:35 -0400
-Received: from bender.morinfr.org (unknown [82.64.86.27])
-        by smtp4-g21.free.fr (Postfix) with ESMTPS id B75D519F5B2;
-        Mon, 20 Sep 2021 18:06:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
-        ; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Reply-To:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RKjXYi91sm7Ea3vEffGcG1Ew3/UF7y6Pi6GRhcrx0wg=; b=KvHy/Y8YvXwYnJsW5LdSvbfmWe
-        9qYtrqlZwlkk1jMGs+PMwEBHJ5Fj+z3X4rgZyPa6+YjM3kRxMsTVmbjJ93dKua+iIonQdWlI5iaGH
-        QWHBDibmYPTpCWAmmdVt4xTXYvlnNLQxl92q6SZjDiX5lMQtHBC7StWrnRYpxEFGKIJA=;
-Received: from guillaum by bender.morinfr.org with local (Exim 4.92)
-        (envelope-from <guillaume@morinfr.org>)
-        id 1mSLnY-000058-EI; Mon, 20 Sep 2021 18:05:40 +0200
-Date:   Mon, 20 Sep 2021 18:05:40 +0200
-From:   Guillaume Morin <guillaume@morinfr.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: call_rcu data race patch
-Message-ID: <20210920160540.GA31426@bender.morinfr.org>
-Reply-To: Guillaume Morin <guillaume@morinfr.org>
-Mail-Followup-To: "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210917191555.GA2198@bender.morinfr.org>
- <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
- <20210917213404.GA14271@bender.morinfr.org>
- <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
- <20210918003933.GA25868@bender.morinfr.org>
- <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
- <20210918070836.GA19555@bender.morinfr.org>
- <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
+        id S238389AbhITQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233586AbhITQIh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:08:37 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620CAC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:07:10 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id y4so15162216pfe.5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 09:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=itsXyZ7jguPhr3bK0GIBz8XHWfLYp7eKoXqnDU/8Lpk=;
+        b=Uy95jo46zcjnm1ARS467XhRXqOoHrxDj5afayc9YrQfXOn6c7dq/LA4TVa8BKcFu5P
+         aKybacCfrfrMN8ZUXMlUPmocznl+1Ig7+uQX7omlu/vjsElNmEumpkBkq4w2hS5YgSxT
+         nkXPiSDtvzRIGeKk0Llj/yT1yta+YLeJOWtJt8eGTZ06x7rmTESoLMSDA31FBbIeVAHA
+         LItf0RKF6EWuI9FmX1vxwXBN0FO2b5EUiXDlB1/wAr+TZRR/Itc8UeGSB96vmJLMTe1i
+         v8S8GLrRsn5YnyGLSYktPfyKmWGhjWA8/cr9x4IVhNtM9J3gGjwKpMwUy5f91vGirpNz
+         7u0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=itsXyZ7jguPhr3bK0GIBz8XHWfLYp7eKoXqnDU/8Lpk=;
+        b=azohV0d24WXmGYVdOgkJ8MSIO35Ow1jSCLTyzd5nNqqGmkzBo0fzDBQZpKu33DqvuK
+         2yfy6Lxs6XWksNU0dm73bLxo3PyZ1nTJj4qvKbINm7y/Hraqe5SdeMg6bZJhbuq7kNwB
+         JIrbFe1tnC0v/p64dQeFCCwMBK1aMgKynrZYPMkBJSFH9fSJXSsQBS7JYU70bnf1HUz7
+         7uYyBPXpGrVVOi4i8xufatoMbeytbBYCN1BAvJPLOVYpo88PBSAEDaNNDxHZ0G55TUqH
+         Fsy3q+4pbOlZtAC7YFx/TjuWspK233t5UI/fwcg7OEWYIVSuCR6tsJ3mlX9Evk6Tk08Z
+         rQTA==
+X-Gm-Message-State: AOAM533Zj78ilmR4akvV6EdJklEddnjCGBJIo2fT+4iT2SdLfkMMPHCG
+        c/7P4gcDNYkIX/2+V/W5XG8LSg==
+X-Google-Smtp-Source: ABdhPJwfGga4x4k4I1A/DBJ/7hT5H15rnGUWQbAes0XcZJteGNIYvIfYM3Zjc73a/TQuNZjaAorFrg==
+X-Received: by 2002:a62:4e4a:0:b0:444:59c3:665e with SMTP id c71-20020a624e4a000000b0044459c3665emr20809877pfb.0.1632154029683;
+        Mon, 20 Sep 2021 09:07:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m28sm15749201pgl.9.2021.09.20.09.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 09:07:09 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 16:07:04 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Steve Rutherford <srutherford@google.com>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@alien8.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, dovmurik@linux.ibm.com, tobin@linux.ibm.com,
+        jejb@linux.ibm.com, dgilbert@redhat.com
+Subject: Re: [PATCH v6 1/5] x86/kvm: Add AMD SEV specific Hypercall3
+Message-ID: <YUixqL+SRVaVNF07@google.com>
+References: <cover.1629726117.git.ashish.kalra@amd.com>
+ <6fd25c749205dd0b1eb492c60d41b124760cc6ae.1629726117.git.ashish.kalra@amd.com>
+ <CABayD+fnZ+Ho4qoUjB6YfWW+tFGUuftpsVBF3d=-kcU0-CEu0g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CABayD+fnZ+Ho4qoUjB6YfWW+tFGUuftpsVBF3d=-kcU0-CEu0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19 Sep  9:35, Paul E. McKenney wrote:
-> How is the testing of the patches going?  (I am guessing nothing yet
-> based on the failure times, but who knows?)
+On Wed, Sep 15, 2021, Steve Rutherford wrote:
+> Looking at these threads, this patch either:
+> 1) Needs review/approval from a maintainer that is interested or
+> 2) Should flip back to using alternative (as suggested by Sean). In
+> particular: `ALTERNATIVE("vmmcall", "vmcall",
+> ALT_NOT(X86_FEATURE_VMMCALL))`. My understanding is that the advantage
+> of this is that (after calling apply alternatives) you get exactly the
+> same behavior as before. But before apply alternatives, you get the
+> desired flipped behavior. The previous patch changed the behavior
+> after apply alternatives in a very slight manner (if feature flags
+> were not set, you'd get a different instruction).
+> 
+> I personally don't have strong feelings on this decision, but this
+> decision does need to be made for this patch series to move forward.
+> 
+> I'd also be curious to hear Sean's opinion on this since he was vocal
+> about this previously.
 
-Nothing yet. I think we'll have a better idea by wednesday.
+Pulling in Ashish's last email from the previous thread, which I failed to respond
+to.
 
-Guillaume.
+https://lore.kernel.org/all/20210820133223.GA28059@ashkalra_ubuntu_server/T/#u
 
--- 
-Guillaume Morin <guillaume@morinfr.org>
+On Fri, Aug 20, 2021, Ashish Kalra wrote:
+> On Thu, Aug 19, 2021 at 11:15:26PM +0000, Sean Christopherson wrote:
+> > On Thu, Aug 19, 2021, Kalra, Ashish wrote:
+> > >
+> > > > On Aug 20, 2021, at 3:38 AM, Kalra, Ashish <Ashish.Kalra@amd.com> wrote:
+> > > > I think it makes more sense to stick to the original approach/patch, i.e.,
+> > > > introducing a new private hypercall interface like kvm_sev_hypercall3() and
+> > > > let early paravirtualized kernel code invoke this private hypercall
+> > > > interface wherever required.
+> >
+> > I don't like the idea of duplicating code just because the problem is tricky to
+> > solve.  Right now it's just one function, but it could balloon to multiple in
+> > the future.  Plus there's always the possibility of a new, pre-alternatives
+> > kvm_hypercall() being added in generic code, at which point using an SEV-specific
+> > variant gets even uglier.
+
+...
+
+> Now, apply_alternatives() is called much later when setup_arch() calls
+> check_bugs(), so we do need some kind of an early, pre-alternatives
+> hypercall interface.
+>
+> Other cases of pre-alternatives hypercalls include marking per-cpu GHCB
+> pages as decrypted on SEV-ES and per-cpu apf_reason, steal_time and
+> kvm_apic_eoi as decrypted for SEV generally.
+>
+> Actually using this kvm_sev_hypercall3() function may be abstracted
+> quite nicely. All these early hypercalls are made through
+> early_set_memory_XX() interfaces, which in turn invoke pv_ops.
+>
+> Now, pv_ops can have this SEV/TDX specific abstractions.
+>
+> Currently, pv_ops.mmu.notify_page_enc_status_changed() callback is setup
+> to kvm_sev_hypercall3() in case of SEV.
+>
+> Similarly, in case of TDX, pv_ops.mmu.notify_page_enc_status_changed() can
+> be setup to a TDX specific callback.
+>
+> Therefore, this early_set_memory_XX() -> pv_ops.mmu.notify_page_enc_status_changed()
+> is a generic interface and can easily have SEV, TDX and any other future platform
+> specific abstractions added to it.
+
+Unless there's some fundamental technical hurdle I'm overlooking, if pv_ops can
+be configured early enough to handle this, then so can alternatives.  Adding
+notify_page_enc_status_changed() may be necessary in the future, e.g. for TDX
+or SNP, but IMO that is orthogonal to adding a generic, 100% redundant helper.
+
+I appreciate that simply swapping the default from VMCALL->VMMCALL is a bit dirty
+since it gives special meaning to the default value, but if that's the argument
+against reusing kvm_hypercall3() then we should solve the early alternatives
+problem, not fudge around it.
