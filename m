@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE63411A27
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89554411D3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243228AbhITQrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:47:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35604 "EHLO mail.kernel.org"
+        id S1346581AbhITRR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:17:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240024AbhITQrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:47:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0093460F38;
-        Mon, 20 Sep 2021 16:45:53 +0000 (UTC)
+        id S1344703AbhITRPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:15:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E42613B1;
+        Mon, 20 Sep 2021 16:58:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156354;
-        bh=WVdzr/fvn3Ok1gVQMMWVCaCXO0ernf2/um3q3qc3oVg=;
+        s=korg; t=1632157116;
+        bh=wvW2C+mIwkxgh2kS/OPbgm4bEmTJXqzyB42UevjPiHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3hPkQR5Z31mVdRB3qTkgHn8a0722qjRrhcUeak72oi3FG2U1GCJ1bnaDXhV6NKuW
-         3jOQL2ZlmqwRcB7tFH0qagOtLWzum2BeJWIgt/5GuZU4Kol6DX98CK2DfJQ5GVG5d7
-         2Xpdo7KZOVgMNMYi5t14mjlZvdj3CV1kNuGn5+SQ=
+        b=H8rJ8YiUXmL3xtOdNcm7C7sHmXxYmZJNt0mtFXkro9OP1Y9oLIKa/Q0ei3XO5cyOG
+         k/qqvrdvrIoArDfNCzpDYHBlAWMQ0gY23mGpwXWyNyg4/GmOACx4wMC2U813UmX5Et
+         YPvOtDV6Yl6swPnJNR/q8KhU+J1slnv32/w8o4S4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dmitrii Kolesnichenko <dmitrii@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 4.4 003/133] ARC: fix allnoconfig build warning
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Koba Ko <koba.ko@canonical.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 060/217] PCI: PM: Avoid forcing PCI_D0 for wakeup reasons inconsistently
 Date:   Mon, 20 Sep 2021 18:41:21 +0200
-Message-Id: <20210920163912.718308913@linuxfoundation.org>
+Message-Id: <20210920163926.662233474@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,27 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 5464d03d92601ac2977ef605b0cbb33276567daf upstream.
+[ Upstream commit da9f2150684ea684a7ddd6d7f0e38b2bdf43dcd8 ]
 
-Reported-by: Dmitrii Kolesnichenko <dmitrii@synopsys.com>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It is inconsistent to return PCI_D0 from pci_target_state() instead
+of the original target state if 'wakeup' is true and the device
+cannot signal PME from D0.
+
+This only happens when the device cannot signal PME from the original
+target state and any shallower power states (including D0) and that
+case is effectively equivalent to the one in which PME singaling is
+not supported at all.  Since the original target state is returned in
+the latter case, make the function do that in the former one too.
+
+Link: https://lore.kernel.org/linux-pm/3149540.aeNJFYEL58@kreacher/
+Fixes: 666ff6f83e1d ("PCI/PM: Avoid using device_may_wakeup() for runtime PM")
+Reported-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Reported-by: Koba Ko <koba.ko@canonical.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/pci.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -23,7 +23,7 @@ config ARC
- 	select GENERIC_SMP_IDLE_THREAD
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_TRACEHOOK
--	select HAVE_FUTEX_CMPXCHG
-+	select HAVE_FUTEX_CMPXCHG if FUTEX
- 	select HAVE_IOREMAP_PROT
- 	select HAVE_KPROBES
- 	select HAVE_KRETPROBES
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index c847b5554db6..ac2c9d0c02fe 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -2054,17 +2054,21 @@ static pci_power_t pci_target_state(struct pci_dev *dev, bool wakeup)
+ 	if (dev->current_state == PCI_D3cold)
+ 		target_state = PCI_D3cold;
+ 
+-	if (wakeup) {
++	if (wakeup && dev->pme_support) {
++		pci_power_t state = target_state;
++
+ 		/*
+ 		 * Find the deepest state from which the device can generate
+ 		 * wake-up events, make it the target state and enable device
+ 		 * to generate PME#.
+ 		 */
+-		if (dev->pme_support) {
+-			while (target_state
+-			      && !(dev->pme_support & (1 << target_state)))
+-				target_state--;
+-		}
++		while (state && !(dev->pme_support & (1 << state)))
++			state--;
++
++		if (state)
++			return state;
++		else if (dev->pme_support & 1)
++			return PCI_D0;
+ 	}
+ 
+ 	return target_state;
+-- 
+2.30.2
+
 
 
