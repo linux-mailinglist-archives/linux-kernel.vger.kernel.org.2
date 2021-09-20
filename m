@@ -2,200 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C552411499
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B0E41149D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 14:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238463AbhITMgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 08:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57594 "EHLO mail.kernel.org"
+        id S238482AbhITMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 08:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhITMgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:36:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2134A610A8;
-        Mon, 20 Sep 2021 12:35:26 +0000 (UTC)
+        id S231849AbhITMhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 08:37:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DAD260F4B;
+        Mon, 20 Sep 2021 12:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632141326;
-        bh=X6TmFKEMJ7r1hkXSfoYExkSnFh55gCMOKrgmsy914DI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pLzZa5QmYpjLIjol6Ayc/MzKR4Hw27CIpiTujBs1vhNY2hPr3ddIyLLdAeqs3OHQ4
-         +M0H0MTN3skkGIAVvub1xrPkn9jUAKTJ8NOfFeuqYAWq0frdTzRyVZ1fxsqCZCBT8H
-         jmNbAtqOAKL3c8etMA5dvtkNsyILHsMdlCE55iIShzxtxlph9u0LRztL0/f2tfpfnR
-         045Zt9nIBEMIuJfOMW1krCSpZSmGZz8D70JSSv+9ZmGqfkBDXs5ojPGt2yrg2ZCAWo
-         p9H5d43YH4vLtXzr8KShm2jJOna8/eaGashadwhrHvZECZR1UYMMhnM/YseieDodcQ
-         PlSmNkex8H5ag==
-Received: by mail-ed1-f46.google.com with SMTP id v22so56390753edd.11;
-        Mon, 20 Sep 2021 05:35:26 -0700 (PDT)
-X-Gm-Message-State: AOAM530ZX4c+WkrD/2/Zoc7qIGiU/p7KqqeB05cE2QJgX1kzxtvJrzF9
-        +NRXiRZRvr2euCWFMEhUqG957RDMtoO55g2YIg==
-X-Google-Smtp-Source: ABdhPJwF88jQtPjfNvvL1nKjml4PuXc3iZMNOvFq0Gm0Ol5FfAgq3Zb8NcC/qYhD2qqpX1pKJGAY5SQWfgROQcdI244=
-X-Received: by 2002:a05:6402:b23:: with SMTP id bo3mr29186170edb.145.1632141324479;
- Mon, 20 Sep 2021 05:35:24 -0700 (PDT)
+        s=k20201202; t=1632141386;
+        bh=ywph2O72bB55A0SZOZeKnv7szm1alhRoV5amvQ+xdmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eTCnsEGVHfxv7QPlvq9V/ADyNY1gD58w0YYnz6K82QCLN3WSrOpG6nJiegqCZCQ63
+         Ztix/126YwnBRKjAaPv5qDC5WV1fH7gqbKJhOozE1nXIDCP1p4I0aypn/CjBUHO+c5
+         5HNI1booHeRADuJ7eLDAQVVU8ydqH3vKbUeea4VxcPe+RL5DG4TqWgdfWoYV6nlMeN
+         XzrCEJ4Yrs0XA21xUyqjIlExj2T201bpD00DfJbostrihBT7SyZFTymelI6smm9v4h
+         YW6utw6HSFtrd7IDzQVvsqCbDzpbJOqC8gpvwOZdRfVOBB0epBek1gDQjcnCKdOiTj
+         N8RXyfCGtY0Vw==
+Date:   Mon, 20 Sep 2021 13:35:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Trevor Wu <trevor.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] ASoC: mediatek: mt8195: force COMMON_CLK dependency
+Message-ID: <20210920123542.GA14852@sirena.org.uk>
+References: <20210920100206.1418649-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210826211830.3311140-1-sean.anderson@seco.com>
- <YS6M9jmTmy4EvB4k@robh.at.kernel.org> <eedf3b19-18be-50ca-783e-c9537498db4a@seco.com>
-In-Reply-To: <eedf3b19-18be-50ca-783e-c9537498db4a@seco.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 20 Sep 2021 07:35:12 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK+vfnGUpuQT=Bb3Zf0q7_M8aOUZao+e4icx+vtx5zssA@mail.gmail.com>
-Message-ID: <CAL_JsqK+vfnGUpuQT=Bb3Zf0q7_M8aOUZao+e4icx+vtx5zssA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] dt-bindings: pwm: Add Xilinx AXI Timer
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     Linux PWM List <linux-pwm@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Content-Disposition: inline
+In-Reply-To: <20210920100206.1418649-1-arnd@kernel.org>
+X-Cookie: The only perfect science is hind-sight.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 12:58 PM Sean Anderson <sean.anderson@seco.com> wrote:
->
->
->
-> On 8/31/21 4:11 PM, Rob Herring wrote:
-> > On Thu, Aug 26, 2021 at 05:18:28PM -0400, Sean Anderson wrote:
-> >> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is a
-> >> "soft" block, so it has some parameters which would not be configurable in
-> >> most hardware. This binding is usually automatically generated by Xilinx's
-> >> tools, so the names and values of some properties should be kept as they
-> >> are, if possible. In addition, this binding is already in the kernel at
-> >> arch/microblaze/boot/dts/system.dts, and in user software such as QEMU.
-> >>
-> >> The existing driver uses the clock-frequency property, or alternatively the
-> >> /cpus/timebase-frequency property as its frequency input. Because these
-> >> properties are deprecated, they have not been included with this schema.
-> >> All new bindings should use the clocks/clock-names properties to specify
-> >> the parent clock.
-> >>
-> >> Because we need to init timer devices so early in boot, we determine if we
-> >> should use the PWM driver or the clocksource/clockevent driver by the
-> >> presence/absence, respectively, of #pwm-cells. Because both counters are
-> >> used by the PWM, there is no need for a separate property specifying which
-> >> counters are to be used for the PWM.
-> >>
-> >> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> >> ---
-> >>
-> >> Changes in v6:
-> >> - Fix incorrect schema id
-> >> - Enumerate possible counter widths
-> >>
-> >> Changes in v5:
-> >> - Update commit message to reflect revisions
-> >> - Fix indentation lint
-> >> - Add example for timer binding
-> >> - Remove xlnx,axi-timer-2.0 compatible string
-> >> - Move schema into the timer directory
-> >>
-> >> Changes in v4:
-> >> - Remove references to generate polarity so this can get merged
-> >> - Predicate PWM driver on the presence of #pwm-cells
-> >> - Make some properties optional for clocksource drivers
-> >>
-> >> Changes in v3:
-> >> - Mark all boolean-as-int properties as deprecated
-> >> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> >> - Make newer replacement properties mutually-exclusive with what they
-> >>   replace
-> >> - Add an example with non-deprecated properties only.
-> >>
-> >> Changes in v2:
-> >> - Use 32-bit addresses for example binding
-> >>
-> >>  .../bindings/timer/xlnx,xps-timer.yaml        | 90 +++++++++++++++++++
-> >>  1 file changed, 90 insertions(+)
-> >>  create mode 100644 Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> >> new file mode 100644
-> >> index 000000000000..5be353a642aa
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/timer/xlnx,xps-timer.yaml
-> >> @@ -0,0 +1,90 @@
-> >> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/timer/xlnx,xps-timer.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
-> >> +
-> >> +maintainers:
-> >> +  - Sean Anderson <sean.anderson@seco.com>
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    contains:
-> >> +      const: xlnx,xps-timer-1.00.a
-> >> +
-> >> +  clocks:
-> >> +    maxItems: 1
-> >> +
-> >> +  clock-names:
-> >> +    const: s_axi_aclk
-> >> +
-> >> +  interrupts:
-> >> +    maxItems: 1
-> >> +
-> >> +  reg:
-> >> +    maxItems: 1
-> >> +
-> >> +  xlnx,count-width:
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +    enum: [8, 16, 32]
-> >> +    default: 32
-> >> +    description:
-> >> +      The width of the counter(s), in bits.
-> >> +
-> >> +  xlnx,one-timer-only:
-> >> +    $ref: /schemas/types.yaml#/definitions/uint32
-> >> +    enum: [ 0, 1 ]
-> >> +    description:
-> >> +      Whether only one timer is present in this block.
-> >> +
-> >> +required:
-> >> +  - compatible
-> >> +  - reg
-> >> +  - xlnx,one-timer-only
-> >> +
-> >> +allOf:
-> >> +  - if:
-> >> +      required:
-> >> +        - '#pwm-cells'
-> >> +    then:
-> >> +      allOf:
-> >> +        - required:
-> >> +            - clocks
-> >> +        - properties:
-> >> +            xlnx,one-timer-only:
-> >> +              const: 0
-> >> +    else:
-> >> +      required:
-> >> +        - interrupts
-> >> +  - if:
-> >> +      required:
-> >> +        - clocks
-> >> +    then:
-> >> +      required:
-> >> +        - clock-names
-> >> +
-> >> +additionalProperties: true
-> >
-> > This needs to be false. What else do you expect to be present?
->
-> I am going to leave this as true for the next revision to avoid the following error:
->
-> arch/microblaze/boot/dts/system.dt.yaml: timer@83c00000: 'xlnx,family', 'xlnx,gen0-assert', 'xlnx,gen1-assert', 'xlnx,trig0-assert', 'xlnx,trig1-assert' do not match any of the regexes: 'pinctrl-[0-9]+'
 
-If I wasn't clear: NAK
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All properties must be documented or removed from .dts files if not needed.
+On Mon, Sep 20, 2021 at 12:01:58PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Without CONFIG_COMMON_CLK, this driver fails to link:
+>=20
+> ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-soc-=
+mt8195-afe.ko] undefined!
+> ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-soc-mt=
+8195-afe.ko] undefined!
 
-Rob
+This doesn't apply against current code, please check and resend.
+
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFIgB0ACgkQJNaLcl1U
+h9CgTwf+MjdtdtiCsDwjnRIAJ8Zkv9hB5KXV0gHoCPjSyFF5tGeALEPdRb0NkkV/
+SJJtvwBCG7RiNaaERXhF6hsxIXjivKxoz4gk8RmNLCgWrXxCEVJdSCO9ck/7dBtU
+v4qjpA6YwPs6vNNmdRCqco+ftpWaCsfI+/WUvkYuyWX3nVFctr1/36ZX1bNpyIKh
+yGkM1sSaM0hFA76VEsbTuL5DWZmwhcU4JmAf1xJXV/PwnCtk6qI37uptD8jI2Boe
+g3ocEvaCCN0VUfaCW63TTAKvNmnsuQYItaBFEtmkoJlZqAi2toQmPtRGvp4Hzl07
+AfnIDu5F+SVROur48PzSi2k9eeNkCA==
+=FMjp
+-----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
