@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0906412161
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B7B4121CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357899AbhITSFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:05:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58468 "EHLO mail.kernel.org"
+        id S1359412AbhITSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:09:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345734AbhITR7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:59:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 074E46321E;
-        Mon, 20 Sep 2021 17:15:18 +0000 (UTC)
+        id S1357337AbhITSD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:03:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 003E663241;
+        Mon, 20 Sep 2021 17:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158119;
-        bh=aQ3ss94Ysz8Z2rgJ7EBicK34Av2AyGubTaj1Y/1YGx4=;
+        s=korg; t=1632158217;
+        bh=rYpuYWuL85NPJVb7hEvBG/6OSBru/NwAp5iRIDttqi0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ft5abr21jPaYvV5GQvwoZdJei4RGAGNIIHyM7llhVgpNoWILG6kTkWQJioslN6sYJ
-         4SGa2dk1slRylfKCcIuPnOMQI5jQU4IhWakeN52I8s807lAZW0Ed9JKh5Vyqx6JyNr
-         epXFpH1x8NOGY+FnjqODDMkXEo5NU0VV7ENAPop0=
+        b=zaSYwz3xpM13N8XnFStpp4xSwLGUVdpRmopWPgm/OYp+sbVOuoQv5UbG4xNOvaR1s
+         bOiB2Q974/aEcZcZaMUwsYc8rK5k93SgJ0S98rVso2Bxf213rSb/Elo74/XHQMtOXf
+         iLPzQLqPd82ZvSG4o70l96flqOnqD8JV3fokFhHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harshvardhan Jha <harshvardhan.jha@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 5.4 010/260] 9p/xen: Fix end of loop tests for list_for_each_entry
-Date:   Mon, 20 Sep 2021 18:40:28 +0200
-Message-Id: <20210920163931.478272759@linuxfoundation.org>
+        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH 5.4 011/260] tools/thermal/tmon: Add cross compiling support
+Date:   Mon, 20 Sep 2021 18:40:29 +0200
+Message-Id: <20210920163931.509064195@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
 References: <20210920163931.123590023@linuxfoundation.org>
@@ -41,46 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+From: Rolf Eike Beer <eb@emlix.com>
 
-commit 732b33d0dbf17e9483f0b50385bf606f724f50a2 upstream.
+commit b5f7912bb604b47a0fe024560488a7556dce8ee7 upstream.
 
-This patch addresses the following problems:
- - priv can never be NULL, so this part of the check is useless
- - if the loop ran through the whole list, priv->client is invalid and
-it is more appropriate and sufficient to check for the end of
-list_for_each_entry loop condition.
+Default to prefixed pkg-config when crosscompiling, this matches what
+other parts of the tools/ directory already do.
 
-Link: http://lkml.kernel.org/r/20210727000709.225032-1-harshvardhan.jha@oracle.com
-Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+[dlezcano] : Reworked description
+
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/31302992.qZodDJZGDc@devpool47
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/9p/trans_xen.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/thermal/tmon/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/9p/trans_xen.c
-+++ b/net/9p/trans_xen.c
-@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen
+--- a/tools/thermal/tmon/Makefile
++++ b/tools/thermal/tmon/Makefile
+@@ -10,7 +10,7 @@ override CFLAGS+= $(call cc-option,-O3,-
+ # Add "-fstack-protector" only if toolchain supports it.
+ override CFLAGS+= $(call cc-option,-fstack-protector-strong)
+ CC?= $(CROSS_COMPILE)gcc
+-PKG_CONFIG?= pkg-config
++PKG_CONFIG?= $(CROSS_COMPILE)pkg-config
  
- static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
- {
--	struct xen_9pfs_front_priv *priv = NULL;
-+	struct xen_9pfs_front_priv *priv;
- 	RING_IDX cons, prod, masked_cons, masked_prod;
- 	unsigned long flags;
- 	u32 size = p9_req->tc.size;
-@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_clie
- 			break;
- 	}
- 	read_unlock(&xen_9pfs_lock);
--	if (!priv || priv->client != client)
-+	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
- 		return -EINVAL;
- 
- 	num = p9_req->tc.tag % priv->num_rings;
+ override CFLAGS+=-D VERSION=\"$(VERSION)\"
+ LDFLAGS+=
 
 
