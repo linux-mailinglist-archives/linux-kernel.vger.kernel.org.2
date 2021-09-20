@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492DE411C81
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2AF411E65
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245662AbhITRKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:10:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34920 "EHLO mail.kernel.org"
+        id S1347672AbhITRab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:30:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346519AbhITRHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:07:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51E9B615E2;
-        Mon, 20 Sep 2021 16:55:41 +0000 (UTC)
+        id S1344060AbhITR1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:27:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B066161AA6;
+        Mon, 20 Sep 2021 17:03:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156941;
-        bh=Mdf+Xl0GHfADmY1M5BhOFaJG7sBmJPf506QHXx1dJts=;
+        s=korg; t=1632157385;
+        bh=SueQYwpv99GQGxKfVB4UpOLiYZpOz1H7abY1IwtjASg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JjwjweqORAb9zAsPYGc4DSwQ2NTyA5I2kdLpa3Q+wW+6IspQDwPmwG8tdEQGFosu1
-         56ke52qinLvBBG3gmWMSl9v0ZU3W5RJ1fIcaYFa8aTuNiSgbd96WM3HcjkXp5hPMUO
-         N1mQ5coNi0FyVWjNuFdaXq3QN8WYdCe1D/57oeA8=
+        b=i5taLKMVgtmYJoldAwaP6TZqhhq6oRVbX+pcpZ0BUz200+sPVjQlYnEqtY7K5BFVV
+         F+dniu+ByqCb9dfPVlZXbW8ou97kzbVQI1NZuVLq1wv2Ja/RhhVDBCN8eoyzqxbQhR
+         Rw1RhdsVGZo7KrKseq3u12jYxtoXsXJeD8b/qAdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenpeng Lin <zplin@psu.edu>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 157/175] dccp: dont duplicate ccid when cloning dccp sock
+        stable@vger.kernel.org, Khalid Aziz <khalid@gonehiking.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.14 185/217] scsi: BusLogic: Fix missing pr_cont() use
 Date:   Mon, 20 Sep 2021 18:43:26 +0200
-Message-Id: <20210920163923.206208166@linuxfoundation.org>
+Message-Id: <20210920163930.894811070@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,41 +40,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin, Zhenpeng <zplin@psu.edu>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-commit d9ea761fdd197351890418acd462c51f241014a7 upstream.
+commit 44d01fc86d952f5a8b8b32bdb4841504d5833d95 upstream.
 
-Commit 2677d2067731 ("dccp: don't free ccid2_hc_tx_sock ...") fixed
-a UAF but reintroduced CVE-2017-6074.
+Update BusLogic driver's messaging system to use pr_cont() for continuation
+lines, bringing messy output:
 
-When the sock is cloned, two dccps_hc_tx_ccid will reference to the
-same ccid. So one can free the ccid object twice from two socks after
-cloning.
+pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
+scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
+scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
+scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
+scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
+scsi0:   PCI Bus: 0, Device: 19, Address:
+0xE0012000,
+Host Adapter SCSI ID: 7
+scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
+scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
+scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
+scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
+scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
+scsi0:   Tagged Queue Depth:
+Automatic
+, Untagged Queue Depth: 3
+scsi0:   SCSI Bus Termination: Both Enabled
+, SCAM: Disabled
 
-This issue was found by "Hadar Manor" as well and assigned with
-CVE-2020-16119, which was fixed in Ubuntu's kernel. So here I port
-the patch from Ubuntu to fix it.
+scsi0: *** BusLogic BT-958 Initialized Successfully ***
+scsi host0: BusLogic BT-958
 
-The patch prevents cloned socks from referencing the same ccid.
+back to order:
 
-Fixes: 2677d2067731410 ("dccp: don't free ccid2_hc_tx_sock ...")
-Signed-off-by: Zhenpeng Lin <zplin@psu.edu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
+scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
+scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
+scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
+scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
+scsi0:   PCI Bus: 0, Device: 19, Address: 0xE0012000, Host Adapter SCSI ID: 7
+scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
+scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
+scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
+scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
+scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
+scsi0:   Tagged Queue Depth: Automatic, Untagged Queue Depth: 3
+scsi0:   SCSI Bus Termination: Both Enabled, SCAM: Disabled
+scsi0: *** BusLogic BT-958 Initialized Successfully ***
+scsi host0: BusLogic BT-958
+
+Also diagnostic output such as with the BusLogic=TraceConfiguration
+parameter is affected and becomes vertical and therefore hard to read.
+This has now been corrected, e.g.:
+
+pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
+blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
+blogic_cmd(95) Status = 28: (Modify I/O Address)
+blogic_cmd(91) Status = 30:  1 ==>  1: 01
+blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
+blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
+scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
+scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
+blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
+blogic_cmd(0B) Status = 30:  3 ==>  3: 00 08 07
+blogic_cmd(0D) Status = 30: 34 ==> 34: 03 01 07 04 00 00 00 00 00 00 00 00 00 00 00 00 FF 42 44 46 FF 00 00 00 00 00 00 00 00 00 FF 00 FF 00
+blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
+blogic_cmd(84) Status = 30:  1 ==>  1: 37
+blogic_cmd(8B) Status = 30:  5 ==>  5: 39 35 38 20 20
+blogic_cmd(85) Status = 30:  1 ==>  1: 42
+blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
+blogic_cmd(91) Status = 30: 64 ==> 64: 41 46 3E 20 39 35 38 20 20 00 C4 00 04 01 07 2F 07 04 35 FF FF FF FF FF FF FF FF FF FF 01 00 FE FF 08 FF FF 00 00 00 00 00 00 00 01 00 01 00 00 FF FF 00 00 00 00 00 00 00 00 00 00 00 00 00 FC
+scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
+
+etc.
+
+Link: https://lore.kernel.org/r/alpine.DEB.2.21.2104201940430.44318@angie.orcam.me.uk
+Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
+Cc: stable@vger.kernel.org # v4.9+
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dccp/minisocks.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/BusLogic.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/dccp/minisocks.c
-+++ b/net/dccp/minisocks.c
-@@ -98,6 +98,8 @@ struct sock *dccp_create_openreq_child(c
- 		newdp->dccps_role	    = DCCP_ROLE_SERVER;
- 		newdp->dccps_hc_rx_ackvec   = NULL;
- 		newdp->dccps_service_list   = NULL;
-+		newdp->dccps_hc_rx_ccid     = NULL;
-+		newdp->dccps_hc_tx_ccid     = NULL;
- 		newdp->dccps_service	    = dreq->dreq_service;
- 		newdp->dccps_timestamp_echo = dreq->dreq_timestamp_echo;
- 		newdp->dccps_timestamp_time = dreq->dreq_timestamp_time;
+--- a/drivers/scsi/BusLogic.c
++++ b/drivers/scsi/BusLogic.c
+@@ -3605,7 +3605,7 @@ static void blogic_msg(enum blogic_msgle
+ 			if (buf[0] != '\n' || len > 1)
+ 				printk("%sscsi%d: %s", blogic_msglevelmap[msglevel], adapter->host_no, buf);
+ 		} else
+-			printk("%s", buf);
++			pr_cont("%s", buf);
+ 	} else {
+ 		if (begin) {
+ 			if (adapter != NULL && adapter->adapter_initd)
+@@ -3613,7 +3613,7 @@ static void blogic_msg(enum blogic_msgle
+ 			else
+ 				printk("%s%s", blogic_msglevelmap[msglevel], buf);
+ 		} else
+-			printk("%s", buf);
++			pr_cont("%s", buf);
+ 	}
+ 	begin = (buf[len - 1] == '\n');
+ }
 
 
