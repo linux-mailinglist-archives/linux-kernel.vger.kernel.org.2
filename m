@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC1C411B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D686D411F80
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237712AbhITRAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45190 "EHLO mail.kernel.org"
+        id S1352381AbhITRlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:41:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343694AbhITQ4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D40161359;
-        Mon, 20 Sep 2021 16:51:28 +0000 (UTC)
+        id S1352382AbhITRjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:39:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70D566138D;
+        Mon, 20 Sep 2021 17:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156689;
-        bh=QEIpEauqMVQHTTKwPThLQMQF/ItxHwVo6fas/4hyDyA=;
+        s=korg; t=1632157665;
+        bh=YHvBBEJO2TLMAOWyIBpwxVBAY3nEi6MMKL98naqdXc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BQono5Ct6rwfLp4DhqquO+37aQcLUSxOOslbiiPk2aknS1yWt9LQPwWjQcx9jHdXO
-         BdK7Q+eGIYotEIGFvzcCDOl0xsHUgytfCgUstmRz0gtdYJewzAuuFpwWfFtA/KBTdP
-         hTPdJrkkvvmKTBZodZmCmNLyJJbExz1eEU2N16RM=
+        b=ABQ3qm8QSRBhjbtDLVfagZ53mXggwwGJ+bQASA+aGs/V2E5h/dXuFhyMVePvMLZst
+         LqKT5TBQkN5qNbX1aFvfJ67GVDF+fSWsKGVbAJOO4H4u+tf/11dOVlTEo6WFQnOiBK
+         T0kAmg1v/cYGUaz1Pki13H1J7BrzXLb1zFKTFTZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.9 008/175] ARM: 8918/2: only build return_address() if needed
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Qii Wang <qii.wang@mediatek.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 095/293] i2c: mt65xx: fix IRQ check
 Date:   Mon, 20 Sep 2021 18:40:57 +0200
-Message-Id: <20210920163918.339840582@linuxfoundation.org>
+Message-Id: <20210920163936.518869581@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Dooks <ben-linux@fluff.org>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-commit fb033c95c94ca1ee3d16e04ebdb85d65fb55fff8 upstream.
+[ Upstream commit 58fb7c643d346e2364404554f531cfa6a1a3917c ]
 
-The system currently warns if the config conditions for
-building return_address in arch/arm/kernel/return_address.c
-are not met, leaving just an EXPORT_SYMBOL_GPL(return_address)
-of a function defined to be 'static linline'.
-This is a result of aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h").
+Iff platform_get_irq() returns 0, the driver's probe() method will return 0
+early (as if the method's call was successful).  Let's consider IRQ0 valid
+for simplicity -- devm_request_irq() can always override that decision...
 
-Since we're not going to build anything other than an exported
-symbol for something that is already being defined to be an
-inline-able return of NULL, just avoid building the code to
-remove the following warning:
-
-Fixes: aeea3592a13b ("ARM: 8158/1: LLVMLinux: use static inline in ARM ftrace.h")
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ce38815d39ea ("I2C: mediatek: Add driver for MediaTek I2C controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Reviewed-by: Qii Wang <qii.wang@mediatek.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/Makefile         |    6 +++++-
- arch/arm/kernel/return_address.c |    4 ----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-mt65xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/kernel/Makefile
-+++ b/arch/arm/kernel/Makefile
-@@ -16,10 +16,14 @@ CFLAGS_REMOVE_return_address.o = -pg
- # Object file lists.
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 2bb4d20ead32..e09b065a6aff 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -804,7 +804,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
+ 		return PTR_ERR(i2c->pdmabase);
  
- obj-y		:= elf.o entry-common.o irq.o opcodes.o \
--		   process.o ptrace.o reboot.o return_address.o \
-+		   process.o ptrace.o reboot.o \
- 		   setup.o signal.o sigreturn_codes.o \
- 		   stacktrace.o sys_arm.o time.o traps.o
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq <= 0)
++	if (irq < 0)
+ 		return irq;
  
-+ifneq ($(CONFIG_ARM_UNWIND),y)
-+obj-$(CONFIG_FRAME_POINTER)	+= return_address.o
-+endif
-+
- obj-$(CONFIG_ATAGS)		+= atags_parse.o
- obj-$(CONFIG_ATAGS_PROC)	+= atags_proc.o
- obj-$(CONFIG_DEPRECATED_PARAM_STRUCT) += atags_compat.o
---- a/arch/arm/kernel/return_address.c
-+++ b/arch/arm/kernel/return_address.c
-@@ -10,8 +10,6 @@
-  */
- #include <linux/export.h>
- #include <linux/ftrace.h>
--
--#if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
- #include <linux/sched.h>
- 
- #include <asm/stacktrace.h>
-@@ -56,6 +54,4 @@ void *return_address(unsigned int level)
- 		return NULL;
- }
- 
--#endif /* if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND) */
--
- EXPORT_SYMBOL_GPL(return_address);
+ 	init_completion(&i2c->msg_complete);
+-- 
+2.30.2
+
 
 
