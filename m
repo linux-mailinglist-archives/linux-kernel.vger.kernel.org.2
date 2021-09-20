@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D0A411B61
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1AB411B5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhITQ6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39012 "EHLO mail.kernel.org"
+        id S242660AbhITQ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:57:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245667AbhITQyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:54:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E409361374;
-        Mon, 20 Sep 2021 16:50:40 +0000 (UTC)
+        id S245752AbhITQym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:54:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA846138B;
+        Mon, 20 Sep 2021 16:50:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156641;
-        bh=H7A+ut54xGdFXn+yKNopAfYAAV4loLicS8xQGpK1qAk=;
+        s=korg; t=1632156645;
+        bh=onUe9Tx0CiO6YpwNg8NIYuxQVQQT1EWhaSNkiyKwy+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pAYcdiX7f71CJb4aBlLnxJ94tnR3JPNdS7CsCdJ1W6wRC2LFgEJXOKHb2NCc61wci
-         f67bTJM8ixONR6z+aT8DWtIm2YVL8OLgLt5I9VI4jqWPfdY0wQKJvCmETeTR8XIFG+
-         7/myGy6E+jI4/R9kICeXuVxP2gWI7093U2c8EH2U=
+        b=dPCigM3FPzJg7uHe/57GZL0bfIfp01PxlXTcg7Ncubk4EuJ25Vg87ff5Uj9Es8nfo
+         IWuZQil8Qar6rkoQjmqQx7FKpmOgwitP07WVj/M9fgvsCzdIV+ACfAwDB3cCmyXrZf
+         fRmcwrBXFECCzzWURRhhwEI/lfUj1pjNRVpu9dBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Blakey <paulb@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>, Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 019/175] net/sched: cls_flower: Use mask for addr_type
-Date:   Mon, 20 Sep 2021 18:41:08 +0200
-Message-Id: <20210920163918.704707053@linuxfoundation.org>
+        stable@vger.kernel.org, Keerthy <j-keerthy@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.9 020/175] PM / wakeirq: Enable dedicated wakeirq for suspend
+Date:   Mon, 20 Sep 2021 18:41:09 +0200
+Message-Id: <20210920163918.738218588@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
 References: <20210920163918.068823680@linuxfoundation.org>
@@ -40,56 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Blakey <paulb@mellanox.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit 970bfcd09791282de7de6589bfe440eb11e2efd2 upstream.
+commit c84345597558349474f55be2b7d4093256e42884 upstream.
 
-When addr_type is set, mask should also be set.
+We currently rely on runtime PM to enable dedicated wakeirq for suspend.
+This assumption fails in the following two cases:
 
-Fixes: 66530bdf85eb ('sched,cls_flower: set key address type when present')
-Fixes: bc3103f1ed40 ('net/sched: cls_flower: Classify packet in ip tunnels')
-Signed-off-by: Paul Blakey <paulb@mellanox.com>
-Reviewed-by: Roi Dayan <roid@mellanox.com>
-Acked-by: Jiri Pirko <jiri@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+1. If the consumer driver does not have runtime PM implemented, the
+   dedicated wakeirq never gets enabled for suspend
+
+2. If the consumer driver has runtime PM implemented, but does not idle
+   in suspend
+
+Let's fix the issue by always enabling the dedicated wakeirq during
+suspend.
+
+Depends-on: bed570307ed7 (PM / wakeirq: Fix dedicated wakeirq for drivers not using autosuspend)
+Fixes: 4990d4fe327b (PM / Wakeirq: Add automated device wake IRQ handling)
+Reported-by: Keerthy <j-keerthy@ti.com>
+Tested-by: Keerthy <j-keerthy@ti.com>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+[ tony@atomide.com: updated based on bed570307ed7, added description ]
+Tested-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/cls_flower.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/base/power/wakeirq.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
---- a/net/sched/cls_flower.c
-+++ b/net/sched/cls_flower.c
-@@ -445,6 +445,7 @@ static int fl_set_key(struct net *net, s
+--- a/drivers/base/power/wakeirq.c
++++ b/drivers/base/power/wakeirq.c
+@@ -319,8 +319,12 @@ void dev_pm_arm_wake_irq(struct wake_irq
+ 	if (!wirq)
+ 		return;
  
- 	if (tb[TCA_FLOWER_KEY_IPV4_SRC] || tb[TCA_FLOWER_KEY_IPV4_DST]) {
- 		key->control.addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
-+		mask->control.addr_type = ~0;
- 		fl_set_key_val(tb, &key->ipv4.src, TCA_FLOWER_KEY_IPV4_SRC,
- 			       &mask->ipv4.src, TCA_FLOWER_KEY_IPV4_SRC_MASK,
- 			       sizeof(key->ipv4.src));
-@@ -453,6 +454,7 @@ static int fl_set_key(struct net *net, s
- 			       sizeof(key->ipv4.dst));
- 	} else if (tb[TCA_FLOWER_KEY_IPV6_SRC] || tb[TCA_FLOWER_KEY_IPV6_DST]) {
- 		key->control.addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
-+		mask->control.addr_type = ~0;
- 		fl_set_key_val(tb, &key->ipv6.src, TCA_FLOWER_KEY_IPV6_SRC,
- 			       &mask->ipv6.src, TCA_FLOWER_KEY_IPV6_SRC_MASK,
- 			       sizeof(key->ipv6.src));
-@@ -480,6 +482,7 @@ static int fl_set_key(struct net *net, s
- 	if (tb[TCA_FLOWER_KEY_ENC_IPV4_SRC] ||
- 	    tb[TCA_FLOWER_KEY_ENC_IPV4_DST]) {
- 		key->enc_control.addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
-+		mask->enc_control.addr_type = ~0;
- 		fl_set_key_val(tb, &key->enc_ipv4.src,
- 			       TCA_FLOWER_KEY_ENC_IPV4_SRC,
- 			       &mask->enc_ipv4.src,
-@@ -495,6 +498,7 @@ static int fl_set_key(struct net *net, s
- 	if (tb[TCA_FLOWER_KEY_ENC_IPV6_SRC] ||
- 	    tb[TCA_FLOWER_KEY_ENC_IPV6_DST]) {
- 		key->enc_control.addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
-+		mask->enc_control.addr_type = ~0;
- 		fl_set_key_val(tb, &key->enc_ipv6.src,
- 			       TCA_FLOWER_KEY_ENC_IPV6_SRC,
- 			       &mask->enc_ipv6.src,
+-	if (device_may_wakeup(wirq->dev))
++	if (device_may_wakeup(wirq->dev)) {
++		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
++			enable_irq(wirq->irq);
++
+ 		enable_irq_wake(wirq->irq);
++	}
+ }
+ 
+ /**
+@@ -335,6 +339,10 @@ void dev_pm_disarm_wake_irq(struct wake_
+ 	if (!wirq)
+ 		return;
+ 
+-	if (device_may_wakeup(wirq->dev))
++	if (device_may_wakeup(wirq->dev)) {
+ 		disable_irq_wake(wirq->irq);
++
++		if (wirq->status & WAKE_IRQ_DEDICATED_ALLOCATED)
++			disable_irq_nosync(wirq->irq);
++	}
+ }
 
 
