@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA1F4117DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E114117DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 17:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241177AbhITPK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 11:10:29 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44022
+        id S241205AbhITPKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 11:10:39 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44066
         "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235723AbhITPK2 (ORCPT
+        by vger.kernel.org with ESMTP id S241200AbhITPKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 11:10:28 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        Mon, 20 Sep 2021 11:10:37 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id BF0EA40267
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:09:00 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CCC3C402D0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 15:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632150540;
-        bh=RrUHW9qWnN4ubyMN56WONJrQMAnYJXVEP7VdjrUGoI4=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=AFOM6TcHjSb05N9wnmVVk1u0W60SnXAKhn8eO5V+/9/e2NPCKMg5XylKOafVa9Lz1
-         oqR+Xe/BXXVd2ooH7qnLXYTWmzLssyTv3gtDFLFkW9oDxiqQNKkg8Fj+otyeU3XPA6
-         NC8T6/pqJ72uQYXFcqckXpY/yHzswwN5pL0UqXzbP+PCUqTjHzuT8AFAeHiTfjLOC6
-         5jjcMMS3wVfDCumkBtLpClI3XA2Sk2yZOBGVYUvgmXRzrlyf+CRwanKxIFoWfCZgbC
-         4JxwgZCdoQkaKUcBB3ohPQhB7rulMVndO8KmGLRIuuG6NDoUFk3HUB4WDVb8HJKPvy
-         GOW0Q7R1plg4Q==
-Received: by mail-wr1-f72.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so2075671wrh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:09:00 -0700 (PDT)
+        s=20210705; t=1632150549;
+        bh=405kNu3dtB0zJ30yHuYcgVnAp+AYJ1QTK0vyYlLZaqY=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=B860XeaeCJ2mRKiHEU/o8TbGj0puEcPzB6IPDIVcv1aTGM7/YcHe0ua5E3eyT/AMq
+         MFQbPPWM9ouxJJd0R1bkvI2oExYJmLiir9VT/EGqsZkJ+C2yXR/ZkUjFshB2xqFKux
+         0Hed+HK1QYtY36fqh3OVgyFGJknZfeCzB0A1iCteX54ZZn0FQU1yUHTvdZSZASblFe
+         m049y4b87QNSTB3eaFiSF1166bHKUNUmTDp8Sl8E5QEczSq5Po0QAAZ+SDIJix2+GJ
+         20Nq8zJ8doCLm8cmCrXK6lp9G03v5DDMjHHknEVgPRJgbXimiDkV6TckBggmuiTTd8
+         +h3qfiMNosZ5Q==
+Received: by mail-wr1-f69.google.com with SMTP id z2-20020a5d4c82000000b0015b140e0562so6379504wrs.7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 08:09:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RrUHW9qWnN4ubyMN56WONJrQMAnYJXVEP7VdjrUGoI4=;
-        b=Q8n3GmpiwlzSusBtc3wPL8iYnaaincXt8F3BDec3YT6l2mmO12/OCFJliJvZg6aoRB
-         i6Lyd5KWBw2F6OcQDKRQmlJf0DITvTVDqpLpcjs1E+W0FkvHK8e4iOFuSdSKD0X0QnoE
-         pdeUUZJS/lmKZr/fzOZPmYLCA8ojwzHKc/b4Us945sYMTbKrOOFkpvkWIJJ9fJvXlPyu
-         L5x0FxyDmiI9H4GE1mS+GiKqhBaa9PCU0v+czdoAYrzGkTp++00JtwBRyNTO4ikTp5oN
-         5O9j9y3w8uPAehjUxjVe7ofB1bWL2LNHKwtuMUGjusL93d4I8YSqNpIF7XQkGkjorX5J
-         QfZA==
-X-Gm-Message-State: AOAM530isuPNCaTTCEoQQCH9xCMVaML+wKQ7UywgMpzfbh9Ym1GmWKMb
-        i3r6uY27zQBow6hX5yDbZLpw/sLLRaGwnYG02CuxRdZuX3DK7ke8Y7mW/Y+BN134Tjk14EpRuaH
-        WMF+y7IKxQTyAEF0yY26iKy9Q8h5ppx9fCcNbHMBCzA==
-X-Received: by 2002:a1c:4d17:: with SMTP id o23mr23903322wmh.125.1632150540355;
-        Mon, 20 Sep 2021 08:09:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy9q96BO6SmIHFGad+uos8pAFJ1J9kCDWwhrXRWKfSkT84ucEy7lcgN0Rquc/RlyJ/PH3RBzA==
-X-Received: by 2002:a1c:4d17:: with SMTP id o23mr23903276wmh.125.1632150540071;
-        Mon, 20 Sep 2021 08:09:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=405kNu3dtB0zJ30yHuYcgVnAp+AYJ1QTK0vyYlLZaqY=;
+        b=0Is4gc3IuSH/4xYxEtMCWL3+lN2LgQaw6FpJpCo8i+xybPlsq8SoUZkP9x8HTyJP7J
+         eB7ShLp88IbzPYsw0GncZVbG8kzceLGJJjg7Xjjay2Fdu4sbC6PTcGll5pZTO3mOF/E5
+         huZuKzdJh7Ze8Kq8h3qy6i52ep2hGBQIwwPkEu+HQgsfMN4zTtz3MYIFrrSlMqKaHegk
+         CJu2PEuV0MqdA+H8AiHMzaM+5oVKRPET+zUdoLYJP9bcxjKrpT5s8nJyke9Zwb19v/ev
+         HRuxdQDiZzjdjZg/M3GqrxrpJMgUUPwBSh2ENxo83JN0qylqHXGB5knIistysNHw3xEE
+         0YHg==
+X-Gm-Message-State: AOAM531rL5aZzxG41ipAkqimv+S6f7fmMoYIlAH47uooqsvjUloaJQ3k
+        bHmxvEVaT9jilUn7egO2E8rvyPMnLmIApOmr8+V4n2uAgeD9WTGCFSbeppubRcLWHJDxiPPrDFe
+        uKnDS4+gxjFeZagZl4cWscFuTHkdnAcl76yj+JOR+Pg==
+X-Received: by 2002:a5d:470b:: with SMTP id y11mr29637079wrq.213.1632150549339;
+        Mon, 20 Sep 2021 08:09:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxaf7A+XQqcH4LxJ/S2BYB7M3Xi66LL55Zn0Sh/VmFgsRmUSD1/dSX6l4Dsp8K0+aE14mlaWA==
+X-Received: by 2002:a5d:470b:: with SMTP id y11mr29637030wrq.213.1632150549106;
+        Mon, 20 Sep 2021 08:09:09 -0700 (PDT)
 Received: from kozik-lap.lan (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id i2sm15803136wrq.78.2021.09.20.08.08.50
+        by smtp.gmail.com with ESMTPSA id i2sm15803136wrq.78.2021.09.20.08.09.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 08:08:55 -0700 (PDT)
+        Mon, 20 Sep 2021 08:09:03 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -66,44 +67,49 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH v3 1/6] dt-bindings: mmc: cdns: document Microchip MPFS MMC/SDHCI controller
-Date:   Mon, 20 Sep 2021 17:08:02 +0200
-Message-Id: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH v3 2/6] riscv: dts: microchip: drop duplicated nodes
+Date:   Mon, 20 Sep 2021 17:08:03 +0200
+Message-Id: <20210920150807.164673-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
+References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
-without any additional vendor compatible:
-
-  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible:0: 'cdns,sd4hc' is not one of ['socionext,uniphier-sd4hc']
-  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible: ['cdns,sd4hc'] is too short
+The DTSI file defines soc node and address/size cells, so there is no
+point in duplicating it in DTS file.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
 ---
+ arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Changes since v2:
-1. Document vendor compatible instead of dropping it.
----
- Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-index af7442f73881..4207fed62dfe 100644
---- a/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-+++ b/Documentation/devicetree/bindings/mmc/cdns,sdhci.yaml
-@@ -17,6 +17,7 @@ properties:
-   compatible:
-     items:
-       - enum:
-+          - microchip,mpfs-sd4hc
-           - socionext,uniphier-sd4hc
-       - const: cdns,sd4hc
+diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+index b254c60589a1..3b04ef17e8da 100644
+--- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
++++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+@@ -9,8 +9,6 @@
+ #define RTCCLK_FREQ		1000000
  
+ / {
+-	#address-cells = <2>;
+-	#size-cells = <2>;
+ 	model = "Microchip PolarFire-SoC Icicle Kit";
+ 	compatible = "microchip,mpfs-icicle-kit";
+ 
+@@ -35,9 +33,6 @@ memory@80000000 {
+ 		reg = <0x0 0x80000000 0x0 0x40000000>;
+ 		clocks = <&clkcfg 26>;
+ 	};
+-
+-	soc {
+-	};
+ };
+ 
+ &serial0 {
 -- 
 2.30.2
 
