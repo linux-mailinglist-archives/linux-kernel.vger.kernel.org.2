@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D03A412768
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE16E41276B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhITUmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:42:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230454AbhITUkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:40:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E215604DC;
-        Mon, 20 Sep 2021 20:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632170358;
-        bh=HSGus3tms+/naFCRfd2OqZSYp0GX+lVXfRB0c7xZaaE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VOyWXLhIjft27gGpCqTFtBF9Lad4X9qm6BBibJf/CTf+N7LjMSljUrew/M6TLGR7r
-         995V8mfqkgdxuO+JzwcfwJUpf7n886+Z1UwpCQSWcuePUzg1jHnnMC1MQqJWszFNaI
-         b5jWc3vH5Ll8FL+zizrkKWFquAZ6Jelv9JXVuYcpDifuC56KUXEV0S/ryQdzVKIHH5
-         Kb0Nd7b0Z4hBVJuMbEeTpWASjbFsfMFt0QotnAxqpEmiCjoIG3VTYi9Gnn1tWtYPY8
-         QWvxlVLr5N4MSYEVTo+J3DCgZzIZxBV/14Fm0a6kZwIGOC8niagziQNAmuSpPkxCZ3
-         SmHf4AEdMHqXQ==
-Date:   Mon, 20 Sep 2021 13:39:15 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
-Message-ID: <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
-References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
+        id S231806AbhITUoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:44:12 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46649 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233240AbhITUmI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 16:42:08 -0400
+Received: by mail-ot1-f43.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso25304155otr.13;
+        Mon, 20 Sep 2021 13:40:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XQfBkyxcnpFDWr8Mv2qU5aEkU/ePQ/ccdR6CWROptdM=;
+        b=t6ITI6dpfetnsbezLgwpn1DToC/n0t0/J2Ya3zpnM2VyF+SC1vUk5KjYsJvdgqbFDu
+         CtcTTtZVIUV1VottuKHGarATzaie1H57WzJNPRm/Ff/r9pzCepLrT23/V0UctS9AXbTO
+         YsNwI3lKwJ+gGcvL3F9oWg48Ob1mRMYdskUfgQm/X7s3jWIqR9m0BQpVZaRLp3l1qpS4
+         L2KbHbea6BrOX8EJjJsLsdFVsIBCVQeeR7AzIPzLZZyQxdM2eXmz9zdileKN2FFnSwIv
+         SqXrQIQZleK0+l5IDgtVVjfKY+c49xttEKjQW011D+P2LeJMWuGZGMrGZtTxjFtKOS3j
+         1wmA==
+X-Gm-Message-State: AOAM532pQcAvwJMoSH2qkX+geiQ1eiqRS+TiY+8V8yhBHMF4oiVKovsW
+        C0wr3u78UPEC8NpP9ZiaRZcNUCpoVw==
+X-Google-Smtp-Source: ABdhPJx5C21c6ugEjGBz0jMaQ38Z+t9k2bOlXXGsQUNkAc5zOzx+48Adu0nx01bsJD60uutCywtDrA==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr23078469otj.208.1632170440898;
+        Mon, 20 Sep 2021 13:40:40 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v2sm3693372ooh.28.2021.09.20.13.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 13:40:40 -0700 (PDT)
+Received: (nullmailer pid 717119 invoked by uid 1000);
+        Mon, 20 Sep 2021 20:40:38 -0000
+Date:   Mon, 20 Sep 2021 15:40:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Satya Priya <skakit@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, mka@chromium.org,
+        swboyd@chromium.org, Das Srinagesh <gurus@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: mfd: pm8008: Add pm8008 regulator node
+Message-ID: <YUjxxnz9BFS7/WDK@robh.at.kernel.org>
+References: <1631875538-22473-1-git-send-email-skakit@codeaurora.org>
+ <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1631875538-22473-2-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, Sep 17, 2021 at 04:15:35PM +0530, Satya Priya wrote:
+> Add pm8008-regulator node and example.
 > 
-> devlink_register() can't fail and always returns success, but all drivers
-> are obligated to check returned status anyway. This adds a lot of boilerplate
-> code to handle impossible flow.
+> Signed-off-by: Satya Priya <skakit@codeaurora.org>
+> ---
+>  .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 24 ++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 > 
-> Make devlink_register() void and simplify the drivers that use that
-> API call.
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+> index ec3138c..de182f8 100644
+> --- a/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+> @@ -45,6 +45,10 @@ properties:
+>      const: 0
+>  
+>  patternProperties:
+> +  "^pm8008[a-z]?-regulator$":
 
-Unlike unused functions bringing back error handling may be
-non-trivial. I'd rather you deferred such cleanups until you're 
-ready to post your full rework and therefore give us some confidence 
-the revert will not be needed.
+Is more than 1 node possible for a given PMIC? If not use 'regulators' 
+for the node name.
+
+> +    type: object
+> +    $ref: "../regulator/qcom,pm8008-regulator.yaml#"
+> +
+>    "^gpio@[0-9a-f]+$":
+>      type: object
+>  
+> @@ -122,6 +126,26 @@ examples:
+>            interrupt-controller;
+>            #interrupt-cells = <2>;
+>          };
+> +
+> +        pm8008-regulator {
+> +          compatible = "qcom,pm8008-regulator";
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          vdd_l1_l2-supply = <&vreg_s8b_1p2>;
+> +          vdd_l3_l4-supply = <&vreg_s1b_1p8>;
+> +          vdd_l5-supply = <&vreg_bob>;
+> +          vdd_l6-supply = <&vreg_bob>;
+> +          vdd_l7-supply = <&vreg_bob>;
+> +
+> +          pm8008_l1: regulator@4000 {
+> +            reg = <0x4000>;
+> +            regulator-name = "pm8008_l1";
+> +            regulator-min-microvolt = <950000>;
+> +            regulator-max-microvolt = <1300000>;
+> +            qcom,min-dropout-voltage = <96000>;
+> +          };
+> +        };
+>        };
+>      };
+>  
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
+> 
