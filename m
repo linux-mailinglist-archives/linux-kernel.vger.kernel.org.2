@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C18412A7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29E1412A4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbhIUBmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S230192AbhIUBdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 21:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232374AbhIUBja (ORCPT
+        with ESMTP id S229892AbhIUBdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:39:30 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD678C0430D3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:53:42 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 24so5262902oix.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:53:42 -0700 (PDT)
+        Mon, 20 Sep 2021 21:33:36 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C158C128EEF
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:54:44 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h17so65795222edj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 12:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=1DxHtYBh4DzHUQ01KgUFLlooV5ZfuLGGb9gtdlSK5T8=;
-        b=oVUzKPQf3Dx+Ish9YbiDA6rmx4JK8gznqZ15XRqd1dK66S42rpOkuLnHCip24bG6tN
-         Kb6ll0czgwMocjwN/yauCrFg3hlkqytUJdDVSc2+K7mFNXl4WjdfUAW4gKt9ZqFbvQRO
-         YfV+Ey0wR+Ut7axwjG/USkB+P5lf6NBtOqqEA=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TOeWGQccqNIO3Gt6IciB4/cPzEmqz/XqdZFiLVlEWq0=;
+        b=bDrqRXrNNUauDRopz+n+sYeQFqZ+OvibCLkMNmaH1WxcRlq46RDtCsFdswnmuipmFP
+         1zzzimMKzt3UC98fp9QL8tdvqFfJD9Xl5MbwWqLQ9RW7e+RfmHn3qyjWB0j8G9S2bxZe
+         oQEYMDfq12DLkouVVKdGIT92jyLSdfxa0AajlS5WFS1UQxHicg+tfqbQWFgU8aQItq7x
+         SeI3cnv2nBUqpKam4EookkUS1xtOL7A9CviwpZH4BCkevQ8wSfY1o2z3hSc937FefBDr
+         vTF5xA1Sr+DULxBGRHuTogIUbWIWLhiLlCiwF+qbl5saE/lHMVwhDSgNKBs8F2wR350G
+         eJew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=1DxHtYBh4DzHUQ01KgUFLlooV5ZfuLGGb9gtdlSK5T8=;
-        b=ol1Su+8lF/vkq3owxGuo7KsL6QRvQODm57ohIax9KB/N6ejQAzCspa24Pl2eAB++cI
-         yA4M0RsW0OlI9tCPQr3aih7cnjgDimM/fyZjk249n563sbM3k1YFdh6DkL7QFEnqZXA1
-         Rj8PwBMbfp1hK7oTcx7a/nCWU7pNJXU+4OCnSxh1iITyQlUvFMUAlRgzuE5CzP7U+ipH
-         B2lvhgL2MDHRkVNixMc+3AoBzhF61vzZTmTdi1jkSsEYCH9GhVSblCV+bWXqwt6DUnnP
-         eAbNsOWzdm9ElI9hprCqFJtsk/x2/xhzNXjcFIaR43acXrs8KJJ9JQtCWxOj7FVrqNwz
-         VqhA==
-X-Gm-Message-State: AOAM5313URE/lYQ/iy5wCN/6U72MmpQdISXyh9Q0uxkVS6Vn/yRVJMDi
-        2jNM2GP6u7hRPZnzIQ8ibzCWQQZYC0vg1lLMydttmw==
-X-Google-Smtp-Source: ABdhPJzJSN3Q2nCHPr+PzZnQ71Bc+cOTt8uQg6u8yZOdsf4zxwJFblSLVn5oUvAQ1oeCgPIlgC/6LUu0BqWU3Rk4sjI=
-X-Received: by 2002:aca:1a11:: with SMTP id a17mr639799oia.164.1632167622190;
- Mon, 20 Sep 2021 12:53:42 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 20 Sep 2021 12:53:41 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TOeWGQccqNIO3Gt6IciB4/cPzEmqz/XqdZFiLVlEWq0=;
+        b=frvySVyBf6bcf5TvQH4XQDfk9bvDaJyHBYXoj1ic8z4RStnXKemomtk0iWDxL/3U2Z
+         hpVMuT/ROKBNoLGmbGOrvCO2IQmDn5BtWUr6eUrwZk+CN9ZIO/5VJt7uP0YxLw2CkD0d
+         NnuLTW5aJE2kpTM3W7uoe36DUSmK4LcDlxLr9HV7H31FzuGcNoMT/1f5AXOxeWLc7OQm
+         xru0dNIMt8ptn9pnR2nlCPV8CypcUPh3iYRee0VMNHT+IblYOPbpWm8G6oYDcT0n06DH
+         VFIxIKwGyETe7KBS0oYxh+51wQG4TruBSHkLOy33ZvalBUs6bJ+EIcl7nMq2GK4TNPlZ
+         03RQ==
+X-Gm-Message-State: AOAM530/GB0tFha/xRjSYPHI2ikPPBIMWCoW/8o/KpX7NxABSMPEapHS
+        j41uOrps5k5rYUUo1/QxhQI=
+X-Google-Smtp-Source: ABdhPJzDGkAslpZRA4vTkrGCJmSSYSiU3d0sQK9NACOhYqiX9/7NX8AzJV2hVHYmy4UXIHPTlwTifg==
+X-Received: by 2002:a17:907:2624:: with SMTP id aq4mr30819421ejc.448.1632167683247;
+        Mon, 20 Sep 2021 12:54:43 -0700 (PDT)
+Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
+        by smtp.gmail.com with ESMTPSA id g10sm6518271ejj.44.2021.09.20.12.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 12:54:42 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <david.Laight@aculab.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH v8 15/19] staging: r8188eu: change the type of a variable in rtw_read16()
+Date:   Mon, 20 Sep 2021 21:54:41 +0200
+Message-ID: <2079638.AGfTBEE1WJ@localhost.localdomain>
+In-Reply-To: <20210920190133.GS2116@kadam>
+References: <20210919235356.4151-1-fmdefrancesco@gmail.com> <3187315.KoBY3qX4Pt@localhost.localdomain> <20210920190133.GS2116@kadam>
 MIME-Version: 1.0
-In-Reply-To: <1631898947-27433-5-git-send-email-pmaliset@codeaurora.org>
-References: <1631898947-27433-1-git-send-email-pmaliset@codeaurora.org> <1631898947-27433-5-git-send-email-pmaliset@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 20 Sep 2021 12:53:41 -0700
-Message-ID: <CAE-0n53d9wjc7-U2M6i5MzjAqOxu8oNUcihrxJv-HJnRX0TJHQ@mail.gmail.com>
-Subject: Re: [PATCH v8 4/4] PCI: qcom: Switch pcie_1_pipe_clk_src after PHY
- init in SC7280
-To:     Prasad Malisetty <pmaliset@codeaurora.org>, agross@kernel.org,
-        bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org, svarbanov@mm-sol.com
-Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, manivannan.sadhasivam@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Prasad Malisetty (2021-09-17 10:15:47)
-> On the SC7280, the clock source for gcc_pcie_1_pipe_clk_src
-> must be the TCXO while gdsc is enabled. After PHY init successful
-> clock source should switch to pipe clock for gcc_pcie_1_pipe_clk_src.
->
-> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
-> ---
+On Monday, September 20, 2021 9:01:33 PM CEST Dan Carpenter wrote:
+> On Mon, Sep 20, 2021 at 06:17:36PM +0200, Fabio M. De Francesco wrote:
+> > On Monday, September 20, 2021 3:10:36 PM CEST Dan Carpenter wrote:
 
-One nit below
+> > Back to the code... uninitialised data is not a problem in the old code, 
+it's 
+> > just bad design. The new code cannot affect runtime, it's just better 
+design. 
+> 
+> It would be a problem for KMSan and the kbuild-bot will email you about
+> it.  From your commit message "Change the type of "data" from __le32 to
+> __le16." it's not clear you understand why the kbuild-bot will email you
+> and why it's correct to do so.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+I guess that for sure you are right in saying that it is not entirely clear 
+why the kbuild-bot will email me. However, since the change is correct, but 
+the commit message is not, I confirm that we'll use your note with only a 
+slight change (only if you agree): replace KASan with KMSan in your text.
 
-> @@ -1488,7 +1553,9 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->
->         pcie->pci = pci;
->
-> -       pcie->ops = of_device_get_match_data(dev);
-> +       pcie_cfg = of_device_get_match_data(dev);
-> +       pcie->ops = pcie_cfg->ops;
+Thanks,
 
-Maybe worth failing probe with if (!pcie->ops) just to be a little
-nicer here.
+Fabio  
+ 
+> regards,
+> dan carpenter
 
-> +       pcie->pipe_clk_need_muxing = pcie_cfg->pipe_clk_need_muxing;
->
->         pcie->reset = devm_gpiod_get_optional(dev, "perst", GPIOD_OUT_HIGH);
->         if (IS_ERR(pcie->reset)) {
+
+
