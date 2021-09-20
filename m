@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B936B41233C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B839412562
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348484AbhITSW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:22:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35774 "EHLO mail.kernel.org"
+        id S1383531AbhITSol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:44:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376696AbhITSOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:14:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C090C6140F;
-        Mon, 20 Sep 2021 17:21:23 +0000 (UTC)
+        id S1382299AbhITSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:40:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F48663336;
+        Mon, 20 Sep 2021 17:31:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158484;
-        bh=hxvYJXzLOBb86zZuAAnjK9qsfM0NA/De+iZ/7peCopA=;
+        s=korg; t=1632159061;
+        bh=2GJuYlt5+/+RNZzlYfYMWvApPEszUcLLoEHpH35uNAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vt4VVw+y+5Ah3TcsvyOBdDfxKOGGJ0Xl5fe1BuKEtH6dp0fjwwiKhrKO4KYaQ2MCX
-         rWbxhDYXi1IJHLCj4DXGU0ziWnmDMCNkd29GueW0LR6nEhowfQelFFdJk3bDWDvxd4
-         oqGuho/4oNXjMYcpp5UVqEBiqfU/+zRKq0XDa124=
+        b=pWUDfWlDB53nf7c5j000sQIWOK8v0pq+LcUaluoJwdXXt4TOGm9YiplWPyviHuGYs
+         uHVtoJ0TG6zHLjyuwZB8mOaeho0YRmbpKnbYoSSgCtYUycQulTXCOS4BO+MTErJHJK
+         /ui3NH5oWBq1KNHc8r7dj/Yd2XFvr9nW1Kdc9vVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 177/260] scsi: qla2xxx: Changes to support kdump kernel
+        Baptiste Lepers <baptiste.lepers@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.14 057/168] events: Reuse value read using READ_ONCE instead of re-reading it
 Date:   Mon, 20 Sep 2021 18:43:15 +0200
-Message-Id: <20210920163937.105801843@linuxfoundation.org>
+Message-Id: <20210920163923.518240867@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-References: <20210920163931.123590023@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurav Kashyap <skashyap@marvell.com>
+From: Baptiste Lepers <baptiste.lepers@gmail.com>
 
-commit 62e0dec59c1e139dab55aff5aa442adc97804271 upstream.
+commit b89a05b21f46150ac10a962aa50109250b56b03b upstream.
 
-Avoid allocating firmware dump and only allocate a single queue for a kexec
-kernel.
+In perf_event_addr_filters_apply, the task associated with
+the event (event->ctx->task) is read using READ_ONCE at the beginning
+of the function, checked, and then re-read from event->ctx->task,
+voiding all guarantees of the checks. Reuse the value that was read by
+READ_ONCE to ensure the consistency of the task struct throughout the
+function.
 
-Link: https://lore.kernel.org/r/20210810043720.1137-12-njavali@marvell.com
-Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 375637bc52495 ("perf/core: Introduce address range filtering")
+Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210906015310.12802-1-baptiste.lepers@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_os.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/events/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/blk-mq-pci.h>
- #include <linux/refcount.h>
-+#include <linux/crash_dump.h>
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -10192,7 +10192,7 @@ static void perf_event_addr_filters_appl
+ 		return;
  
- #include <scsi/scsi_tcq.h>
- #include <scsi/scsicam.h>
-@@ -2799,6 +2800,11 @@ qla2x00_probe_one(struct pci_dev *pdev,
- 			return ret;
- 	}
- 
-+	if (is_kdump_kernel()) {
-+		ql2xmqsupport = 0;
-+		ql2xallocfwdump = 0;
-+	}
-+
- 	/* This may fail but that's ok */
- 	pci_enable_pcie_error_reporting(pdev);
+ 	if (ifh->nr_file_filters) {
+-		mm = get_task_mm(event->ctx->task);
++		mm = get_task_mm(task);
+ 		if (!mm)
+ 			goto restart;
  
 
 
