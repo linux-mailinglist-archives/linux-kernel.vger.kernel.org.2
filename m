@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053C7411D88
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A40D412004
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348985AbhITRVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:21:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
+        id S1353861AbhITRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:47:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346756AbhITRTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:19:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 421D961A38;
-        Mon, 20 Sep 2021 17:00:02 +0000 (UTC)
+        id S1353535AbhITRpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:45:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51DEC617E5;
+        Mon, 20 Sep 2021 17:10:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157202;
-        bh=T6xjQNMD3v/b2sjYw6zu3k/YVkukEjQsBA4yo3Ag8/k=;
+        s=korg; t=1632157802;
+        bh=6tvwoOAlcjIycR11o2SvqXIqdGko0qu5Oi80GOJY9Os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q4HmUcEhzYe8FIwxw1RR9aPhoB7XJ+Uw8fhBLHQpWisAQ9Zd13gblPOHAC8n4z0q7
-         b6iKugHpjrmoAHyUQeN6Nuu1kt2sDiI+hrHVfT9+BON9pjVo6FdErJIIY9i89rlXg8
-         fIgM7v3Eke2KLUEiYvCkc4jf7uuyVS2W3hHieu5o=
+        b=fuFlAe2y0Gy3QmFBaDWCxZ6Z/pG3z3M1PIiYDp/ZnikSd7OfO5PI/HJ2Of6FedbD/
+         iMiKJK8jS87bVOKNDvwUqphZy5Nmo9N/TweSf6zoKCdrLH6Qj+8gom2T5B5XjNYQWd
+         Z8hoE/PSq0uOJibaQKxne57nvhS+awM/V/oMle5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Niklas Cassel <niklas.cassel@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Aravind Ramesh <aravind.ramesh@wdc.com>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.14 099/217] blk-zoned: allow zone management send operations without CAP_SYS_ADMIN
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 158/293] RDMA/iwcm: Release resources if iw_cm module initialization fails
 Date:   Mon, 20 Sep 2021 18:42:00 +0200
-Message-Id: <20210920163927.990433438@linuxfoundation.org>
+Message-Id: <20210920163938.701165533@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
-References: <20210920163924.591371269@linuxfoundation.org>
+In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
+References: <20210920163933.258815435@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Cassel <niklas.cassel@wdc.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit ead3b768bb51259e3a5f2287ff5fc9041eb6f450 upstream.
+[ Upstream commit e677b72a0647249370f2635862bf0241c86f66ad ]
 
-Zone management send operations (BLKRESETZONE, BLKOPENZONE, BLKCLOSEZONE
-and BLKFINISHZONE) should be allowed under the same permissions as write().
-(write() does not require CAP_SYS_ADMIN).
+The failure during iw_cm module initialization partially left the system
+with unreleased memory and other resources. Rewrite the module init/exit
+routines in such way that netlink commands will be opened only after
+successful initialization.
 
-Additionally, other ioctls like BLKSECDISCARD and BLKZEROOUT only check if
-the fd was successfully opened with FMODE_WRITE.
-(They do not require CAP_SYS_ADMIN).
-
-Currently, zone management send operations require both CAP_SYS_ADMIN
-and that the fd was successfully opened with FMODE_WRITE.
-
-Remove the CAP_SYS_ADMIN requirement, so that zone management send
-operations match the access control requirement of write(), BLKSECDISCARD
-and BLKZEROOUT.
-
-Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
-Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Aravind Ramesh <aravind.ramesh@wdc.com>
-Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: stable@vger.kernel.org # v4.10+
-Link: https://lore.kernel.org/r/20210811110505.29649-2-Niklas.Cassel@wdc.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: b493d91d333e ("iwcm: common code for port mapper")
+Link: https://lore.kernel.org/r/b01239f99cb1a3e6d2b0694c242d89e6410bcd93.1627048781.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-zoned.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/infiniband/core/iwcm.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -338,9 +338,6 @@ int blkdev_reset_zones_ioctl(struct bloc
- 	if (!blk_queue_is_zoned(q))
- 		return -ENOTTY;
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index 99dd8452724d..57aec656ab7f 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -1173,29 +1173,34 @@ static int __init iw_cm_init(void)
  
--	if (!capable(CAP_SYS_ADMIN))
--		return -EACCES;
--
- 	if (!(mode & FMODE_WRITE))
- 		return -EBADF;
+ 	ret = iwpm_init(RDMA_NL_IWCM);
+ 	if (ret)
+-		pr_err("iw_cm: couldn't init iwpm\n");
+-	else
+-		rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
++		return ret;
++
+ 	iwcm_wq = alloc_ordered_workqueue("iw_cm_wq", 0);
+ 	if (!iwcm_wq)
+-		return -ENOMEM;
++		goto err_alloc;
  
+ 	iwcm_ctl_table_hdr = register_net_sysctl(&init_net, "net/iw_cm",
+ 						 iwcm_ctl_table);
+ 	if (!iwcm_ctl_table_hdr) {
+ 		pr_err("iw_cm: couldn't register sysctl paths\n");
+-		destroy_workqueue(iwcm_wq);
+-		return -ENOMEM;
++		goto err_sysctl;
+ 	}
+ 
++	rdma_nl_register(RDMA_NL_IWCM, iwcm_nl_cb_table);
+ 	return 0;
++
++err_sysctl:
++	destroy_workqueue(iwcm_wq);
++err_alloc:
++	iwpm_exit(RDMA_NL_IWCM);
++	return -ENOMEM;
+ }
+ 
+ static void __exit iw_cm_cleanup(void)
+ {
++	rdma_nl_unregister(RDMA_NL_IWCM);
+ 	unregister_net_sysctl_table(iwcm_ctl_table_hdr);
+ 	destroy_workqueue(iwcm_wq);
+-	rdma_nl_unregister(RDMA_NL_IWCM);
+ 	iwpm_exit(RDMA_NL_IWCM);
+ }
+ 
+-- 
+2.30.2
+
 
 
