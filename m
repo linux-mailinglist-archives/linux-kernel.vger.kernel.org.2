@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB6F411BE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC25D411AB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345498AbhITRDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:03:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52174 "EHLO mail.kernel.org"
+        id S244847AbhITQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229849AbhITRAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:00:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BC40613D5;
-        Mon, 20 Sep 2021 16:52:58 +0000 (UTC)
+        id S243369AbhITQsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:48:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6BEB61244;
+        Mon, 20 Sep 2021 16:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156779;
-        bh=uihfpJGoz/LDNYMXmxUG+7BoLFsm/2BCmk1CtOlY4OM=;
+        s=korg; t=1632156428;
+        bh=VxJEmnn+dozpsenHvujRYCWutCoXWG37VuCpXSfThXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FhO5qEa/BRTYMqzcl812/su462sFgHOL8Z8szND7z941JHO3jiCPokj+47p0/LWs4
-         RCdZ5GGqyIwF5irqBaeXkOK9PkZ/zTUvZFkVviFZDjnjH46jNJhCwG9suJNb4quzfF
-         bnc+zayQWitfPjIk5XnawFK0xiZ30wOYoxA4CcGI=
+        b=KrZVIzEzYY40TOvFyxRjQzsYwFdN3HBxBYlKT57+hdvPVPEA5m2By/fh76cGDVlqQ
+         2o1KXVX6u+GyfPkaAKS5zqCIf5slgILmQ2zT3zVuwSTYvCKPPwJ0VqA7Uh1gT4lldD
+         MYpZlvNhOSbL4eElnXYtUdIhS2E0hsn5mrYrnTf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Keyu Man <kman001@ucr.edu>, Willy Tarreau <w@1wt.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 082/175] ipv4: make exception cache less predictible
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Subject: [PATCH 4.4 053/133] Bluetooth: Move shutdown callback before flushing tx and rx queue
 Date:   Mon, 20 Sep 2021 18:42:11 +0200
-Message-Id: <20210920163920.750381901@linuxfoundation.org>
+Message-Id: <20210920163914.380474897@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
-References: <20210920163918.068823680@linuxfoundation.org>
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
+References: <20210920163912.603434365@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,125 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 67d6d681e15b578c1725bad8ad079e05d1c48a8e ]
+[ Upstream commit 0ea53674d07fb6db2dd7a7ec2fdc85a12eb246c2 ]
 
-Even after commit 6457378fe796 ("ipv4: use siphash instead of Jenkins in
-fnhe_hashfun()"), an attacker can still use brute force to learn
-some secrets from a victim linux host.
+Commit 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues
+are flushed or cancelled") introduced a regression that makes mtkbtsdio
+driver stops working:
+[   36.593956] Bluetooth: hci0: Firmware already downloaded
+[   46.814613] Bluetooth: hci0: Execution of wmt command timed out
+[   46.814619] Bluetooth: hci0: Failed to send wmt func ctrl (-110)
 
-One way to defeat these attacks is to make the max depth of the hash
-table bucket a random value.
+The shutdown callback depends on the result of hdev->rx_work, so we
+should call it before flushing rx_work:
+-> btmtksdio_shutdown()
+ -> mtk_hci_wmt_sync()
+  -> __hci_cmd_send()
+   -> wait for BTMTKSDIO_TX_WAIT_VND_EVT gets cleared
 
-Before this patch, each bucket of the hash table used to store exceptions
-could contain 6 items under attack.
+-> btmtksdio_recv_event()
+ -> hci_recv_frame()
+  -> queue_work(hdev->workqueue, &hdev->rx_work)
+   -> clears BTMTKSDIO_TX_WAIT_VND_EVT
 
-After the patch, each bucket would contains a random number of items,
-between 6 and 10. The attacker can no longer infer secrets.
+So move the shutdown callback before flushing TX/RX queue to resolve the
+issue.
 
-This is slightly increasing memory size used by the hash table,
-by 50% in average, we do not expect this to be a problem.
-
-This patch is more complex than the prior one (IPv6 equivalent),
-because IPv4 was reusing the oldest entry.
-Since we need to be able to evict more than one entry per
-update_or_create_fnhe() call, I had to replace
-fnhe_oldest() with fnhe_remove_oldest().
-
-Also note that we will queue extra kfree_rcu() calls under stress,
-which hopefully wont be a too big issue.
-
-Fixes: 4895c771c7f0 ("ipv4: Add FIB nexthop exceptions.")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Keyu Man <kman001@ucr.edu>
-Cc: Willy Tarreau <w@1wt.eu>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Tested-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-and-tested-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Fixes: 0ea9fd001a14 ("Bluetooth: Shutdown controller after workqueues are flushed or cancelled")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/route.c | 46 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 16 deletions(-)
+ net/bluetooth/hci_core.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 5350e1b61c06..f05b8d63dba3 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -597,18 +597,25 @@ static void fnhe_flush_routes(struct fib_nh_exception *fnhe)
- 	}
- }
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 304abf2af9f3..bf69bfd0b475 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1679,6 +1679,14 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	hci_req_cancel(hdev, ENODEV);
+ 	hci_req_lock(hdev);
  
--static struct fib_nh_exception *fnhe_oldest(struct fnhe_hash_bucket *hash)
-+static void fnhe_remove_oldest(struct fnhe_hash_bucket *hash)
- {
--	struct fib_nh_exception *fnhe, *oldest;
-+	struct fib_nh_exception __rcu **fnhe_p, **oldest_p;
-+	struct fib_nh_exception *fnhe, *oldest = NULL;
- 
--	oldest = rcu_dereference(hash->chain);
--	for (fnhe = rcu_dereference(oldest->fnhe_next); fnhe;
--	     fnhe = rcu_dereference(fnhe->fnhe_next)) {
--		if (time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp))
-+	for (fnhe_p = &hash->chain; ; fnhe_p = &fnhe->fnhe_next) {
-+		fnhe = rcu_dereference_protected(*fnhe_p,
-+						 lockdep_is_held(&fnhe_lock));
-+		if (!fnhe)
-+			break;
-+		if (!oldest ||
-+		    time_before(fnhe->fnhe_stamp, oldest->fnhe_stamp)) {
- 			oldest = fnhe;
-+			oldest_p = fnhe_p;
-+		}
- 	}
- 	fnhe_flush_routes(oldest);
--	return oldest;
-+	*oldest_p = oldest->fnhe_next;
-+	kfree_rcu(oldest, rcu);
- }
- 
- static inline u32 fnhe_hashfun(__be32 daddr)
-@@ -685,16 +692,21 @@ static void update_or_create_fnhe(struct fib_nh *nh, __be32 daddr, __be32 gw,
- 		if (rt)
- 			fill_route_from_fnhe(rt, fnhe);
- 	} else {
--		if (depth > FNHE_RECLAIM_DEPTH)
--			fnhe = fnhe_oldest(hash);
--		else {
--			fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
--			if (!fnhe)
--				goto out_unlock;
--
--			fnhe->fnhe_next = hash->chain;
--			rcu_assign_pointer(hash->chain, fnhe);
-+		/* Randomize max depth to avoid some side channels attacks. */
-+		int max_depth = FNHE_RECLAIM_DEPTH +
-+				prandom_u32_max(FNHE_RECLAIM_DEPTH);
++	if (!hci_dev_test_flag(hdev, HCI_UNREGISTER) &&
++	    !hci_dev_test_flag(hdev, HCI_USER_CHANNEL) &&
++	    test_bit(HCI_UP, &hdev->flags)) {
++		/* Execute vendor specific shutdown routine */
++		if (hdev->shutdown)
++			hdev->shutdown(hdev);
++	}
 +
-+		while (depth > max_depth) {
-+			fnhe_remove_oldest(hash);
-+			depth--;
- 		}
-+
-+		fnhe = kzalloc(sizeof(*fnhe), GFP_ATOMIC);
-+		if (!fnhe)
-+			goto out_unlock;
-+
-+		fnhe->fnhe_next = hash->chain;
-+
- 		fnhe->fnhe_genid = genid;
- 		fnhe->fnhe_daddr = daddr;
- 		fnhe->fnhe_gw = gw;
-@@ -702,6 +714,8 @@ static void update_or_create_fnhe(struct fib_nh *nh, __be32 daddr, __be32 gw,
- 		fnhe->fnhe_mtu_locked = lock;
- 		fnhe->fnhe_expires = expires;
- 
-+		rcu_assign_pointer(hash->chain, fnhe);
-+
- 		/* Exception created; mark the cached routes for the nexthop
- 		 * stale, so anyone caching it rechecks if this exception
- 		 * applies to them.
+ 	if (!test_and_clear_bit(HCI_UP, &hdev->flags)) {
+ 		cancel_delayed_work_sync(&hdev->cmd_timer);
+ 		hci_req_unlock(hdev);
 -- 
 2.30.2
 
