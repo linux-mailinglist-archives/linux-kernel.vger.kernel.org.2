@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E77241272B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5156C412725
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 22:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244451AbhITUHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 16:07:51 -0400
+        id S231688AbhITUFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 16:05:49 -0400
 Received: from mga12.intel.com ([192.55.52.136]:63268 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhITUFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:05:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="202723602"
+        id S229697AbhITUDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 16:03:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="202723608"
 X-IronPort-AV: E=Sophos;i="5.85,309,1624345200"; 
-   d="scan'208";a="202723602"
+   d="scan'208";a="202723608"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 13:02:13 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,309,1624345200"; 
-   d="scan'208";a="473779464"
+   d="scan'208";a="473779468"
 Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga007.fm.intel.com with ESMTP; 20 Sep 2021 13:02:12 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 20 Sep 2021 13:02:13 -0700
 From:   Fenghua Yu <fenghua.yu@intel.com>
 To:     "Thomas Gleixner" <tglx@linutronix.de>,
         "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
@@ -38,67 +38,93 @@ To:     "Thomas Gleixner" <tglx@linutronix.de>,
 Cc:     iommu@lists.linux-foundation.org, "x86" <x86@kernel.org>,
         "linux-kernel" <linux-kernel@vger.kernel.org>,
         Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH 0/8] Re-enable ENQCMD and PASID MSR
-Date:   Mon, 20 Sep 2021 19:23:41 +0000
-Message-Id: <20210920192349.2602141-1-fenghua.yu@intel.com>
+Subject: [PATCH 1/8] iommu/vt-d: Clean up unused PASID updating functions
+Date:   Mon, 20 Sep 2021 19:23:42 +0000
+Message-Id: <20210920192349.2602141-2-fenghua.yu@intel.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210920192349.2602141-1-fenghua.yu@intel.com>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since updating PASID (Process Address Space ID) MSR through IPI has a few
-issues that are beyond repair, Thomas disables ENQCMD [1].
+update_pasid() and its call chain are currently unused in the tree because
+Thomas disabled the ENQCMD feature. The feature will be re-enabled shortly
+using a different approach and update_pasid() and its call chain will not
+be used in the new approach.
 
-Please check Documentation/x86/sva.rst for various concepts and terms
-related to PASID, ENQCMD, SVM (Shared Virtual Memory), etc.
+Remove the useless functions.
 
-This series re-enables ENQCMD and IA32_PASID MSR by using a #GP fix up
-method previously published in [2]. A PASID is allocated to a mm once
-a SVM is bound to the mm via intel_svm_bind() API. The #GP fix up method
-updates the PASID MSR from the mm's PASID in #GP handler when one thread
-in a process executes ENQCMD for the first time and one reference is taken
-to the PASID. Once the MSR is uploaded, the thread keeps and can use it
-for the rest life time of the thread. In exit(2) or unbind, the PASID's
-reference is dropped and the PASID is freed if there is no reference.
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/include/asm/fpu/api.h |  2 --
+ drivers/iommu/intel/svm.c      | 24 +-----------------------
+ 2 files changed, 1 insertion(+), 25 deletions(-)
 
-References:
-1. ENQCMD was disabled in upstream due to serious issues:
-https://lore.kernel.org/linux-iommu/87mtsd6gr9.ffs@nanos.tec.linutronix.de/
-
-2. #GP fix up PASID MSR:
-https://lore.kernel.org/linux-iommu/1594684087-61184-1-git-send-email-fenghua.yu@intel.com/
-
-Fenghua Yu (7):
-  iommu/vt-d: Clean up unused PASID updating functions
-  x86/process: Clear PASID state for a newly forked/cloned thread
-  x86/traps: Demand-populate PASID MSR via #GP
-  x86/mmu: Add mm-based PASID refcounting
-  x86/cpufeatures: Re-enable ENQCMD
-  tools/objtool: Check for use of the ENQCMD instruction in the kernel
-  docs: x86: Change documentation for SVA (Shared Virtual Addressing)
-
-Peter Zijlstra (1):
-  sched: Define and initialize a flag to identify valid PASID in the
-    task
-
- Documentation/x86/sva.rst                | 81 ++++++++++++++++++--
- arch/x86/include/asm/disabled-features.h |  7 +-
- arch/x86/include/asm/fpu/api.h           |  6 +-
- arch/x86/include/asm/iommu.h             |  8 ++
- arch/x86/include/asm/mmu_context.h       |  2 +
- arch/x86/kernel/fpu/xstate.c             | 59 +++++++++++++++
- arch/x86/kernel/process.c                |  8 ++
- arch/x86/kernel/traps.c                  | 12 +++
- drivers/iommu/intel/svm.c                | 95 ++++++++++++++++++------
- include/linux/sched.h                    |  4 +
- kernel/fork.c                            |  4 +
- tools/objtool/arch/x86/decode.c          | 10 ++-
- tools/objtool/check.c                    | 20 +++++
- tools/objtool/include/objtool/arch.h     |  1 +
- 14 files changed, 283 insertions(+), 34 deletions(-)
-
+diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
+index 23bef08a8388..ca4d0dee1ecd 100644
+--- a/arch/x86/include/asm/fpu/api.h
++++ b/arch/x86/include/asm/fpu/api.h
+@@ -106,6 +106,4 @@ extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
+  */
+ #define PASID_DISABLED	0
+ 
+-static inline void update_pasid(void) { }
+-
+ #endif /* _ASM_X86_FPU_API_H */
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 0c228787704f..5b5d69b04fcc 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -505,21 +505,6 @@ int intel_svm_unbind_gpasid(struct device *dev, u32 pasid)
+ 	return ret;
+ }
+ 
+-static void _load_pasid(void *unused)
+-{
+-	update_pasid();
+-}
+-
+-static void load_pasid(struct mm_struct *mm, u32 pasid)
+-{
+-	mutex_lock(&mm->context.lock);
+-
+-	/* Update PASID MSR on all CPUs running the mm's tasks. */
+-	on_each_cpu_mask(mm_cpumask(mm), _load_pasid, NULL, true);
+-
+-	mutex_unlock(&mm->context.lock);
+-}
+-
+ static int intel_svm_alloc_pasid(struct device *dev, struct mm_struct *mm,
+ 				 unsigned int flags)
+ {
+@@ -614,10 +599,6 @@ static struct iommu_sva *intel_svm_bind_mm(struct intel_iommu *iommu,
+ 	if (ret)
+ 		goto free_sdev;
+ 
+-	/* The newly allocated pasid is loaded to the mm. */
+-	if (!(flags & SVM_FLAG_SUPERVISOR_MODE) && list_empty(&svm->devs))
+-		load_pasid(mm, svm->pasid);
+-
+ 	list_add_rcu(&sdev->list, &svm->devs);
+ success:
+ 	return &sdev->sva;
+@@ -670,11 +651,8 @@ static int intel_svm_unbind_mm(struct device *dev, u32 pasid)
+ 			kfree_rcu(sdev, rcu);
+ 
+ 			if (list_empty(&svm->devs)) {
+-				if (svm->notifier.ops) {
++				if (svm->notifier.ops)
+ 					mmu_notifier_unregister(&svm->notifier, mm);
+-					/* Clear mm's pasid. */
+-					load_pasid(mm, PASID_DISABLED);
+-				}
+ 				pasid_private_remove(svm->pasid);
+ 				/* We mandate that no page faults may be outstanding
+ 				 * for the PASID when intel_svm_unbind_mm() is called.
 -- 
 2.33.0
 
