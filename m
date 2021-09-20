@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F074D411B1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5EC411E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242555AbhITQzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39624 "EHLO mail.kernel.org"
+        id S1344935AbhITRc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243494AbhITQvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:51:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F5061268;
-        Mon, 20 Sep 2021 16:49:33 +0000 (UTC)
+        id S1350820AbhITRaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:30:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56FEC61AAD;
+        Mon, 20 Sep 2021 17:03:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156574;
-        bh=vn5V48WHea7ZI1gUMJLNHFexHBmcof4BOoIcF9NdWyE=;
+        s=korg; t=1632157437;
+        bh=GwWGm9WFdrC2XQPy9txcEwUY19vlnXcJNvKB8+v6fa0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KlIFUYNOawbFkRhlpUzWDP7enJQWr0CCTb5DI+JR88IjlCK/tgPIzxwcDdayBEZoU
-         DUCI6fFuGzuEnX9fa4pO+HWRS2uRnmnhJkVsPb0+cTX39DXYDm9Rb/RbycNNnbc7k0
-         iOYCmwraT6T9PW0T7RF1vnJUOQMt871rwyHI7jK8=
+        b=QBMqBOHCjKrkpRXAOAW1o8DYCXmaYEob4run+qz6atj/gL0x4NFrz8APryCIsJzgZ
+         vd6ervJbi5JRhkRiGTLivdWHfEudJJQpl3wpX5arzteulxE1N8KjfZazwkStze7yTm
+         bFzd9SjD7iAOTu0wLSj1plwLv1Iz36xYbX17ygOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Cochran <richard.cochran@omicron.at>,
-        John Stultz <john.stultz@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 120/133] ptp: dp83640: dont define PAGE0
+        stable@vger.kernel.org, Sugar Zhang <sugar.zhang@rock-chips.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 177/217] ASoC: rockchip: i2s: Fix regmap_ops hang
 Date:   Mon, 20 Sep 2021 18:43:18 +0200
-Message-Id: <20210920163916.546337866@linuxfoundation.org>
+Message-Id: <20210920163930.629971471@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
 
-commit 7366c23ff492ad260776a3ee1aaabba9fc773a8b upstream.
+[ Upstream commit 53ca9b9777b95cdd689181d7c547e38dc79adad0 ]
 
-Building dp83640.c on arch/parisc/ produces a build warning for
-PAGE0 being redefined. Since the macro is not used in the dp83640
-driver, just make it a comment for documentation purposes.
+API 'set_fmt' maybe called when PD is off, in the situation,
+any register access will hang the system. so, enable PD
+before r/w register.
 
-In file included from ../drivers/net/phy/dp83640.c:23:
-../drivers/net/phy/dp83640_reg.h:8: warning: "PAGE0" redefined
-    8 | #define PAGE0                     0x0000
-                 from ../drivers/net/phy/dp83640.c:11:
-../arch/parisc/include/asm/page.h:187: note: this is the location of the previous definition
-  187 | #define PAGE0   ((struct zeropage *)__PAGE_OFFSET)
-
-Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Richard Cochran <richard.cochran@omicron.at>
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20210913220605.19682-1-rdunlap@infradead.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Link: https://lore.kernel.org/r/1629950520-14190-4-git-send-email-sugar.zhang@rock-chips.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/dp83640_reg.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_i2s.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
---- a/drivers/net/phy/dp83640_reg.h
-+++ b/drivers/net/phy/dp83640_reg.h
-@@ -4,7 +4,7 @@
- #ifndef HAVE_DP83640_REGISTERS
- #define HAVE_DP83640_REGISTERS
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 0e07e3dea7de..93a4829f80cc 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -188,7 +188,9 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct rk_i2s_dev *i2s = to_info(cpu_dai);
+ 	unsigned int mask = 0, val = 0;
++	int ret = 0;
  
--#define PAGE0                     0x0000
-+/* #define PAGE0                  0x0000 */
- #define PHYCR2                    0x001c /* PHY Control Register 2 */
++	pm_runtime_get_sync(cpu_dai->dev);
+ 	mask = I2S_CKR_MSS_MASK;
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+@@ -201,7 +203,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		i2s->is_master_mode = false;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
  
- #define PAGE4                     0x0004
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -215,7 +218,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_CKR_CKP_POS;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
+@@ -238,7 +242,8 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
+@@ -261,12 +266,16 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_pm_put;
+ 	}
+ 
+ 	regmap_update_bits(i2s->regmap, I2S_RXCR, mask, val);
+ 
+-	return 0;
++err_pm_put:
++	pm_runtime_put(cpu_dai->dev);
++
++	return ret;
+ }
+ 
+ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+-- 
+2.30.2
+
 
 
