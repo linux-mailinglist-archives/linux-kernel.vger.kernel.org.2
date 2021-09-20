@@ -2,105 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C73412A91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 03:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBE14129DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 02:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhIUBoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 21:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbhIUBkP (ORCPT
+        id S239514AbhIUARY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 20:17:24 -0400
+Received: from gateway36.websitewelcome.com ([192.185.186.5]:19231 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233289AbhIUAPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:40:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8160C0818CE;
-        Mon, 20 Sep 2021 14:44:14 -0700 (PDT)
+        Mon, 20 Sep 2021 20:15:23 -0400
+X-Greylist: delayed 1230 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Sep 2021 20:15:23 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id 3D0B0400F0C52
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 18:53:24 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id ST6Cmmm7DrJtZST6CmV6uK; Mon, 20 Sep 2021 18:53:24 -0500
+X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D26fSnJLbC9XZDfSrbIUPFGxJqUcYaE49d48YeAtGx8=; b=NBcRJuW96wCs2L5yciBjnu4F4c
-        Rn9oYNN1r/1pdLA61JWi8mSh2jw4C197H6PxcOg2RORNnVp0NHy3B2/mVwzXnkDgC9Bnt9SFoFpZq
-        E4HHHEzgLP5+gHSOKUS4bEvDYdobZ6BKb8IOsWWpInVAuyr0pBgxnJp8SXIHvvLfeLKukmB80eL+B
-        HOWdqQdII79WYdIrZ/4XgmeMgjaGc0llYrEViO4WDCrlrjRY4sBOgcW6IYtgGedGJUZuTpyw49ERA
-        cKp1wpEFy0klyQ3ztACi2tVfmneinCUyDoVWNGLeZRw814u7MRUpuq5zDgDHzlfmHeRjcjSf8u/Nl
-        pMB4G/bw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSR4j-003CEI-VS; Mon, 20 Sep 2021 21:43:45 +0000
-Date:   Mon, 20 Sep 2021 14:43:45 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, rdunlap@infradead.org, rafael@kernel.org,
-        masahiroy@kernel.org, ndesaulniers@google.com, yzaikin@google.com,
-        nathan@kernel.org, ojeda@kernel.org,
-        penguin-kernel@i-love.sakura.ne.jp, vitor@massaru.org,
-        elver@google.com, jarkko@kernel.org, glider@google.com,
-        rf@opensource.cirrus.com, stephen@networkplumber.org,
-        David.Laight@aculab.com, jolsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, trishalfonso@google.com,
-        andreyknvl@gmail.com, jikos@kernel.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        reinette.chatre@intel.com, fenghua.yu@intel.com, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, daniel.vetter@ffwll.ch, bhelgaas@google.com,
-        kw@linux.com, dan.j.williams@intel.com, senozhatsky@chromium.org,
-        hch@lst.de, joe@perches.com, hkallweit1@gmail.com, axboe@kernel.dk,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, copyleft-next@lists.fedorahosted.org
-Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
-Message-ID: <YUkAkSUQtUZvNvTu@bombadil.infradead.org>
-References: <20210918050430.3671227-1-mcgrof@kernel.org>
- <20210918050430.3671227-10-mcgrof@kernel.org>
- <6db06c27-e3af-b0aa-6f38-9c31dd8194fa@acm.org>
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9dKrNFiIoQV/+gE4BwQR5jmTOuHAiTPni8wW5D6aAnw=; b=cdVSmnaDElW698bbPVn0JtIKyf
+        gE92q9CxgK48XjHTjzj0tT4urlocEEFLNJCrL/p+SrAu5yLIuWpZkRd1aXGaXkDCv/lr4j8mo0Kar
+        edZhkIfGJ45lpzKJTJ4sjCKgi//nuVY9PhVs7Pm8kiJZPvCWE3I9oB/Ml3bWp906I2ei9X+r6104M
+        cGD4fEBPxky90cZrwmarkSfsqM65AZkt2Qj6G8ykeCq0J76mQzLds0h9FOH83UMFcOXXBhDEzEu9U
+        ef0aEemZKD+J+lZb0i5JsvW8ETSq1aOyxxLsY8Zv5SD+cCjbfJcyV67Pci6QeSd0GKcj1w1cV9AHI
+        pHQjx/Og==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33600 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mST6B-000NEv-NP; Mon, 20 Sep 2021 18:53:23 -0500
+Subject: Re: [PATCH] scsi: advansys: Prefer struct_size over open coded
+ arithmetic
+To:     Len Baker <len.baker@gmx.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210918111805.15471-1-len.baker@gmx.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <422fbbe3-6f22-b16d-7af2-23efeb6dd125@embeddedor.com>
+Date:   Mon, 20 Sep 2021 18:57:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6db06c27-e3af-b0aa-6f38-9c31dd8194fa@acm.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210918111805.15471-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mST6B-000NEv-NP
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:33600
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 10
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:36:38PM -0700, Bart Van Assche wrote:
-> On 9/17/21 10:04 PM, Luis Chamberlain wrote:
-> > A sketch of how this can happen follows:
-> > 
-> > CPU A                              CPU B
-> >                                     whatever_store()
-> > module_unload
-> >    mutex_lock(foo)
-> >                                     mutex_lock(foo)
-> >     del_gendisk(zram->disk);
-> >       device_del()
-> >         device_remove_groups()
-> > 
-> > In this situation whatever_store() is waiting for the mutex foo to
-> > become unlocked, but that won't happen until module removal is complete.
-> > But module removal won't complete until the sysfs file being poked
-> > completes which is waiting for a lock already held.
+
+
+On 9/18/21 06:18, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> If I remember correctly I encountered the deadlock scenario described
-> above for the first time about ten years ago while working on the SCST
-> project. We solved this deadlock by removing the sysfs attributes from
-> the module unload code before grabbing mutex_lock(foo), e.g. by calling
-> sysfs_remove_file().
+> So, refactor the code a bit to use the struct_size() helper instead of
+> the argument "size + count * size" in the kzalloc() function.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  drivers/scsi/advansys.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
+> index ffb391967573..fe882502e7bf 100644
+> --- a/drivers/scsi/advansys.c
+> +++ b/drivers/scsi/advansys.c
+> @@ -7465,6 +7465,7 @@ static int asc_build_req(struct asc_board *boardp, struct scsi_cmnd *scp,
+>  		return ASC_BUSY;
+>  	} else if (use_sg > 0) {
+>  		int sgcnt;
+> +		size_t size;
 
-Well the sysfs attributes in zram do tons of funky mucking around so
-unfortunately no. It's not the only driver where this can happen. It is
-why I decided to work on a generic solution instead.
+I don't think a new variable is needed.
 
-> This works because calling sysfs_remove_file()
-> multiple times in a row is safe. Is that solution good enough for the
-> zram driver?
+>  		struct scatterlist *slp;
+>  		struct asc_sg_head *asc_sg_head;
+> 
+> @@ -7477,8 +7478,8 @@ static int asc_build_req(struct asc_board *boardp, struct scsi_cmnd *scp,
+>  			return ASC_ERROR;
+>  		}
+> 
+> -		asc_sg_head = kzalloc(sizeof(asc_scsi_q->sg_head) +
+> -			use_sg * sizeof(struct asc_sg_list), GFP_ATOMIC);
+> +		size = struct_size(asc_scsi_q->sg_head, sg_list, use_sg);
+> +		asc_sg_head = kzalloc(size, GFP_ATOMIC);
 
-The sysfs attributes are group attributes part of the block, and so are
-removed for the driver on a del_gendisk(). So unfortunately no, this
-would not be a good solution in this case.
+You can go with this:
 
-  Luis
+diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
+index ffb391967573..e341b3372482 100644
+--- a/drivers/scsi/advansys.c
++++ b/drivers/scsi/advansys.c
+@@ -7477,8 +7477,8 @@ static int asc_build_req(struct asc_board *boardp, struct scsi_cmnd *scp,
+                        return ASC_ERROR;
+                }
+
+-               asc_sg_head = kzalloc(sizeof(asc_scsi_q->sg_head) +
+-                       use_sg * sizeof(struct asc_sg_list), GFP_ATOMIC);
++               asc_sg_head = kzalloc(struct_size(asc_sg_head, sg_list, use_sg),
++                                     GFP_ATOMIC);
+                if (!asc_sg_head) {
+                        scsi_dma_unmap(scp);
+                        set_host_byte(scp, DID_SOFT_ERROR);
+
+It perfectly fits withing the 80 columns, which by the way is deprecated
+but still good-to-have.
+
+Also, if you are finding these instances with the help of Coccinelle, it'd be nice
+if you mention that in the changelog text. :)
+
+Thanks!
+--
+Gustavo
+
+>  		if (!asc_sg_head) {
+>  			scsi_dma_unmap(scp);
+>  			set_host_byte(scp, DID_SOFT_ERROR);
+> --
+> 2.25.1
+> 
