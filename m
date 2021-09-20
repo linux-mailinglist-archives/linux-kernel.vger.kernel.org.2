@@ -2,36 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5A54124C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31094125EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381325AbhITShY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:37:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49246 "EHLO mail.kernel.org"
+        id S1384995AbhITSt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:49:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380084AbhITSc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0E7D61A8F;
-        Mon, 20 Sep 2021 17:27:46 +0000 (UTC)
+        id S1384095AbhITSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:46:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D350061B04;
+        Mon, 20 Sep 2021 17:33:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158867;
-        bh=HzC4FEJyEmQTpbQRKNOD5mi7b2ZooCXj66Madr1v6Og=;
+        s=korg; t=1632159209;
+        bh=12eTKTrgXoNsliTpBIj9AqdcGCF3gdeRnknu9J4fK+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ae94xqIv2PkhSN4WnA+SIrVLJICf9yu9XxO62zHwOE4iFSqr4bV2b1t7c4++czXv9
-         eSyepO8LRLNVOYMVkk37KuyIzz0YFqvyGqFen6pgRlmdPmC95845IHeZcjdqjwoDaA
-         NFGTXXUgMnVIP8bY4eXrILES2HzsCTr2Ghsnzzk4=
+        b=uyxL9mY4mYLrNFN2/xfkjxSThPYWEgMXLtxCpHhNTEpjNjbDMgD791NXt3FxflRBi
+         VIwkMeE+TTEOwBp88qDDOXA/4RIFOngMr7l0ZInZXm090MVeH7PVZiOi+sk7y4Uly1
+         o4x5wEdZUxpOXrqFpfPxxCIR1YFFOCeb9uPslgOk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>,
+        Roman Bacik <roman.bacik@broadcom.com>,
+        Bharat Gooty <bharat.gooty@broadcom.com>,
+        Abhishek Shah <abhishek.shah@broadcom.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        Ray Jui <ray.jui@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 091/122] mtd: mtdconcat: Check _read, _write callbacks existence before assignment
+Subject: [PATCH 5.14 125/168] PCI: iproc: Fix BCMA probe resource handling
 Date:   Mon, 20 Sep 2021 18:44:23 +0200
-Message-Id: <20210920163918.770771631@linuxfoundation.org>
+Message-Id: <20210920163925.767828626@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
-References: <20210920163915.757887582@linuxfoundation.org>
+In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+References: <20210920163921.633181900@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +54,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Rob Herring <robh@kernel.org>
 
-[ Upstream commit a89d69a44e282be95ae76125dddc79515541efeb ]
+[ Upstream commit aeaea8969b402e0081210cc9144404d13996efed ]
 
-Since 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() as wrappers
-around mtd_{read,write}_oob()") don't allow _write|_read and
-_write_oob|_read_oob existing at the same time, we should check the
-existence of callbacks "_read and _write" from subdev's master device
-(We can trust master device since it has been registered) before
-assigning, otherwise following warning occurs while making
-concatenated device:
+In commit 7ef1c871da16 ("PCI: iproc: Use
+pci_parse_request_of_pci_ranges()"), calling
+devm_request_pci_bus_resources() was dropped from the common iProc
+probe code, but is still needed for BCMA bus probing. Without it, there
+will be lots of warnings like this:
 
-  WARNING: CPU: 2 PID: 6728 at drivers/mtd/mtdcore.c:595
-  add_mtd_device+0x7f/0x7b0
+pci 0000:00:00.0: BAR 8: no space for [mem size 0x00c00000]
+pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x00c00000]
 
-Fixes: 2431c4f5b46c3 ("mtd: Implement mtd_{read,write}() around ...")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210817114857.2784825-3-chengzhihao1@huawei.com
+Add back calling devm_request_pci_bus_resources() and adding the
+resources to pci_host_bridge.windows for BCMA bus probe.
+
+Link: https://lore.kernel.org/r/20210803215656.3803204-2-robh@kernel.org
+Fixes: 7ef1c871da16 ("PCI: iproc: Use pci_parse_request_of_pci_ranges()")
+Reported-by: Rafał Miłecki <zajec5@gmail.com>
+Tested-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Srinath Mannam <srinath.mannam@broadcom.com>
+Cc: Roman Bacik <roman.bacik@broadcom.com>
+Cc: Bharat Gooty <bharat.gooty@broadcom.com>
+Cc: Abhishek Shah <abhishek.shah@broadcom.com>
+Cc: Jitendra Bhivare <jitendra.bhivare@broadcom.com>
+Cc: Ray Jui <ray.jui@broadcom.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Cc: Scott Branden <sbranden@broadcom.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: "Krzysztof Wilczyński" <kw@linux.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/mtdconcat.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pcie-iproc-bcma.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index af51eee6b5e8..f685a581df48 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -694,6 +694,10 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 		concat->mtd._block_markbad = concat_block_markbad;
- 	if (subdev_master->_panic_write)
- 		concat->mtd._panic_write = concat_panic_write;
-+	if (subdev_master->_read)
-+		concat->mtd._read = concat_read;
-+	if (subdev_master->_write)
-+		concat->mtd._write = concat_write;
+diff --git a/drivers/pci/controller/pcie-iproc-bcma.c b/drivers/pci/controller/pcie-iproc-bcma.c
+index 56b8ee7bf330..f918c713afb0 100644
+--- a/drivers/pci/controller/pcie-iproc-bcma.c
++++ b/drivers/pci/controller/pcie-iproc-bcma.c
+@@ -35,7 +35,6 @@ static int iproc_pcie_bcma_probe(struct bcma_device *bdev)
+ {
+ 	struct device *dev = &bdev->dev;
+ 	struct iproc_pcie *pcie;
+-	LIST_HEAD(resources);
+ 	struct pci_host_bridge *bridge;
+ 	int ret;
  
- 	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
+@@ -60,19 +59,16 @@ static int iproc_pcie_bcma_probe(struct bcma_device *bdev)
+ 	pcie->mem.end = bdev->addr_s[0] + SZ_128M - 1;
+ 	pcie->mem.name = "PCIe MEM space";
+ 	pcie->mem.flags = IORESOURCE_MEM;
+-	pci_add_resource(&resources, &pcie->mem);
++	pci_add_resource(&bridge->windows, &pcie->mem);
++	ret = devm_request_pci_bus_resources(dev, &bridge->windows);
++	if (ret)
++		return ret;
  
-@@ -755,8 +759,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	concat->mtd.name = name;
+ 	pcie->map_irq = iproc_pcie_bcma_map_irq;
  
- 	concat->mtd._erase = concat_erase;
--	concat->mtd._read = concat_read;
--	concat->mtd._write = concat_write;
- 	concat->mtd._sync = concat_sync;
- 	concat->mtd._lock = concat_lock;
- 	concat->mtd._unlock = concat_unlock;
+-	ret = iproc_pcie_setup(pcie, &resources);
+-	if (ret) {
+-		dev_err(dev, "PCIe controller setup failed\n");
+-		pci_free_resource_list(&resources);
+-		return ret;
+-	}
+-
+ 	bcma_set_drvdata(bdev, pcie);
+-	return 0;
++
++	return iproc_pcie_setup(pcie, &bridge->windows);
+ }
+ 
+ static void iproc_pcie_bcma_remove(struct bcma_device *bdev)
 -- 
 2.30.2
 
