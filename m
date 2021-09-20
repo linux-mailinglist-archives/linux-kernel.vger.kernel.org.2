@@ -2,107 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96526411B86
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37725411AE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344641AbhITQ7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244745AbhITQ4q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:56:46 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690AEC0611C2;
-        Mon, 20 Sep 2021 09:47:58 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id eg28so41093661edb.1;
-        Mon, 20 Sep 2021 09:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ODjPastsD2NOA/L+wDqQJKwRxMJSl3wumfFhFRpLojE=;
-        b=oIFJgq83weqYLjUU9K6+CJHBB3FwK+mrgj8dCZ9WaQgXlRpm/Senzgc8oCf9s+7N+E
-         bWRg0Frk33m9uZY00gST2iIfKb2G+D/cMoYLlZegA/hTOo7wYL5zp5DJ9vRTBSfGPr4K
-         YqNrzVa2XCdGQUZyVQWJQooVFyXNuAWsXraicDykF6I3L6Bi4Ifk0bPf4KFeYg2zjwZH
-         Gi9MDosqJ0+Xsvfq8k+fEd182st0JrR6h/TuyY4UceAQGXSFjVGb5aK2NZJatJOgA03s
-         htyhKsKxbcE/rcMYKuHN3K0/EiyLBzY9qgUxhKEwBCWs1fB/yJOTz3wd8r0LWGpLOg1P
-         fhLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ODjPastsD2NOA/L+wDqQJKwRxMJSl3wumfFhFRpLojE=;
-        b=jJlqpa1C6bZfFwF5SZ7s7pZK2qChnGDCYfhssIiVH4gdPLj4WsrdrA8q8UvudmSVta
-         Gv4Tr1Sve8ErnZriOfoEvfSlpIcr+vS3s3gwbvNDRABdkFN2cjtaGIoqlidXP0uy8GpX
-         TpkyZl0SLQp+UPEWp7KMjqYOLrZ6zhxWjPcNU7gPs75lQxc7uFg2+qQ+0jfo9u2eds80
-         q/1OSGILDwQIuAY0l0ltAigt6BUg/WYrxa7NQMvOemmVZh6aAFJ2nxP/byixP5+2zSYM
-         RTn212KQf+iXQVfngi4bWeKPgYBXaZQekeItLDwhWUL5urgWzo4gzqHaddzszqwhK2g1
-         +SSA==
-X-Gm-Message-State: AOAM5311pt8FdarDe8EpohHcikyfQgXYr+f4BCGhl8/J6lFL/LakFr9e
-        6ORB+cU0nBshJoiFIGfnh+zaGzAwLIY=
-X-Google-Smtp-Source: ABdhPJwcik+CyJY/m/YLMovDRxl/WkYdPqADj2GSaLWRgWX3lw7c1A1s67/EY0mn17hoXaXql7ZYTw==
-X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr28796269ejb.39.1632156476868;
-        Mon, 20 Sep 2021 09:47:56 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-67-254.ip85.fastwebnet.it. [93.42.67.254])
-        by smtp.googlemail.com with ESMTPSA id 6sm6385232ejx.82.2021.09.20.09.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 09:47:56 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 1/1] drivers: net: dsa: qca8k: fix sgmii with some specific switch revision
-Date:   Mon, 20 Sep 2021 18:47:45 +0200
-Message-Id: <20210920164745.30162-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210920164745.30162-1-ansuelsmth@gmail.com>
-References: <20210920164745.30162-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S244116AbhITQxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 12:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244355AbhITQuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 12:50:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AAC461213;
+        Mon, 20 Sep 2021 16:48:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632156520;
+        bh=JNFmVKopSY3zild0Tv3+xFBOULjKMkMEN821JJpnIGA=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=FsUJa8pYj6IPl/aiRt9kaClSiVbeKeMxQS2AxyS01HnfWhRRTrlWxsEA9AsXVGtxS
+         IYbW+bSCKk79VPwuYVEYNXYRl3lAt8wm1+gaLDEtVQm5CtCfZLnemlvPtNb2HszN70
+         AZGDPXV0cb4pYY+7aOLZZfGBBJZozVfTAoP5RQhfNEcclljTbtswj6mxVoqMvzaUVB
+         SeQTwCXwO6SUVlU2YiftoE5La9MdHw3Rp/mWhXZFLpy8JEdUYmP/twxXeOztxUY7Ee
+         bgm+oL16xqPQ8E4ZN3+F6PD0pjHuuelx3EFFaJR3U83mxWxNsM71BIYM5vATkDhWUZ
+         x1RWJU9sR1AYA==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 2D57927C005A;
+        Mon, 20 Sep 2021 12:48:37 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute6.internal (MEProxy); Mon, 20 Sep 2021 12:48:37 -0400
+X-ME-Sender: <xms:YrtIYUOTCuIT4q4qJwYGzgfWBqYr-zpR5kcX02t8OgaUfR876h2EFw>
+    <xme:YrtIYa8BieKbTCcf2O_q8-evxBy66zCNK49kqFi5gi-AaE1J6qiOZBmG__C87mVNX
+    qNUWJrnRubXXk7u3Tg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
+    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
+    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
+    hugidrlhhuthhordhush
+X-ME-Proxy: <xmx:YrtIYbRJjdLVd2SslELsb2LzJ7T5vsbKCMsHt50iRXG6H50Bh6WYfQ>
+    <xmx:YrtIYcuFM-XUVyJsiQyiylvKnHoCPAY3VZUipXPh_sU1Jo54ZGY9_Q>
+    <xmx:YrtIYccdjH5tsn67wtNSdMmikWEgmKkdksL6Wr7sKO5Ha08lJgO3hQ>
+    <xmx:ZbtIYQ-vHq5NUKRU6PnOevwmtu3DRLhwx5WmzYWMrHfpRoah-UsoJTxwG7o>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id EF814A03DC4; Mon, 20 Sep 2021 12:48:33 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
+Mime-Version: 1.0
+Message-Id: <b5b5787b-17ce-4e66-8bc6-ab42ae3e398d@www.fastmail.com>
+In-Reply-To: <45c62101c065ed7e728fadac7207866bf8c36ec4.camel@intel.com>
+References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
+ <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
+ <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
+ <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
+ <20200901102758.GY6642@arm.com>
+ <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
+ <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
+ <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
+ <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
+ <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
+ <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
+ <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
+ <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
+ <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
+ <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
+ <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
+ <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
+ <a1efc4330a3beff10671949eddbba96f8cde96da.camel@intel.com>
+ <41aa5e8f-ad88-2934-6d10-6a78fcbe019b@intel.com>
+ <CALCETrX5qJAZBe9sHL6+HFvre-bbo+us1==q9KHNCyRrzaUsjw@mail.gmail.com>
+ <45c62101c065ed7e728fadac7207866bf8c36ec4.camel@intel.com>
+Date:   Mon, 20 Sep 2021 09:48:10 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Rick P Edgecombe" <rick.p.edgecombe@intel.com>,
+        "Dave Hansen" <dave.hansen@intel.com>
+Cc:     "Balbir Singh" <bsingharora@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Florian Weimer" <fweimer@redhat.com>,
+        "Nadav Amit" <nadav.amit@gmail.com>,
+        "Jann Horn" <jannh@google.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "kcc@google.com" <kcc@google.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Oleg Nesterov" <oleg@redhat.com>, "H.J. Lu" <hjl.tools@gmail.com>,
+        "Pavel Machek" <pavel@ucw.cz>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "Weijiang Yang" <weijiang.yang@intel.com>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        "Moreira, Joao" <joao.moreira@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Mike Kravetz" <mike.kravetz@oracle.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "tarasmadan@google.com" <tarasmadan@google.com>,
+        "Dave Martin" <Dave.Martin@arm.com>,
+        "vedvyas.shanbhogue@intel.com" <vedvyas.shanbhogue@intel.com>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Linux API" <linux-api@vger.kernel.org>,
+        "Cyrill Gorcunov" <gorcunov@gmail.com>
+Subject: =?UTF-8?Q?Re:_[NEEDS-REVIEW]_Re:_[PATCH_v11_25/25]_x86/cet/shstk:_Add_ar?=
+ =?UTF-8?Q?ch=5Fprctl_functions_for_shadow_stack?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable sgmii pll, tx driver and rx chain only on switch revision 1. This
-is not needed on later revision and with qca8327 cause the sgmii
-connection to not work at all. This is a case with some router that use
-the qca8327 switch and have the cpu port 0 using a sgmii connection.
-Without this, routers with this specific configuration won't work as the
-ports won't be able to communicate with the cpu port with the result of
-no traffic.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/dsa/qca8k.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index bda5a9bf4f52..efeed8094865 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1227,8 +1227,14 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 		if (ret)
- 			return;
- 
--		val |= QCA8K_SGMII_EN_PLL | QCA8K_SGMII_EN_RX |
--			QCA8K_SGMII_EN_TX | QCA8K_SGMII_EN_SD;
-+		/* SGMII PLL, TX driver and RX chain is only needed in
-+		 * switch revision 1, later revision doesn't need this.
-+		 */
-+		if (priv->switch_revision == 1)
-+			val |= QCA8K_SGMII_EN_PLL | QCA8K_SGMII_EN_RX |
-+			       QCA8K_SGMII_EN_TX | QCA8K_SGMII_EN_SD;
-+		else
-+			val |= QCA8K_SGMII_EN_SD;
- 
- 		if (dsa_is_cpu_port(ds, port)) {
- 			/* CPU port, we're talking to the CPU MAC, be a PHY */
--- 
-2.32.0
+On Mon, Sep 13, 2021, at 6:33 PM, Edgecombe, Rick P wrote:
+> On Mon, 2020-09-14 at 11:31 -0700, Andy Lutomirski wrote:
+> > > On Sep 14, 2020, at 7:50 AM, Dave Hansen <dave.hansen@intel.com>
+> > > wrote:
+> > >=20
+> > > =EF=BB=BFOn 9/11/20 3:59 PM, Yu-cheng Yu wrote:
+> > > ...
+> > > > Here are the changes if we take the mprotect(PROT_SHSTK)
+> > > > approach.
+> > > > Any comments/suggestions?
+> > >=20
+> > > I still don't like it. :)
+> > >=20
+> > > I'll also be much happier when there's a proper changelog to
+> > > accompany
+> > > this which also spells out the alternatives any why they suck so
+> > > much.
+> > >=20
+> >=20
+> > Let=E2=80=99s take a step back here. Ignoring the precise API, what =
+exactly
+> > is
+> > a shadow stack from the perspective of a Linux user program?
+> >=20
+> > The simplest answer is that it=E2=80=99s just memory that happens to=
+ have
+> > certain protections.  This enables all kinds of shenanigans.  A
+> > program could map a memfd twice, once as shadow stack and once as
+> > non-shadow-stack, and change its control flow.  Similarly, a program
+> > could mprotect its shadow stack, modify it, and mprotect it back.  In
+> > some threat models, though could be seen as a WRSS bypass.  (Although
+> > if an attacker can coerce a process to call mprotect(), the game is
+> > likely mostly over anyway.)
+> >=20
+> > But we could be more restrictive, or perhaps we could allow user code
+> > to opt into more restrictions.  For example, we could have shadow
+> > stacks be special memory that cannot be written from usermode by any
+> > means other than ptrace() and friends, WRSS, and actual shadow stack
+> > usage.
+> >=20
+> > What is the goal?
+> >=20
+> > No matter what we do, the effects of calling vfork() are going to be
+> > a
+> > bit odd with SHSTK enabled.  I suppose we could disallow this, but
+> > that seems likely to cause its own issues.
+>=20
+> Hi,
+>=20
+> Resurrecting this old thread to highlight a consequence of the design
+> change that came out of it. I am going to be taking over this series
+> from Yu-cheng, and wanted to check if people would be interested in re-
+> visiting this interface.
+>=20
+> The consequence I wanted to highlight, is that making userspace be
+> responsible for mapping memory as shadow stack, also requires moving
+> the writing of the restore token to userspace for glibc ucontext
+> operations. Since these operations involve creating/pivoting to new
+> stacks in userspace, ucontext cet support involves also creating a new
+> shadow stack. For normal thread stacks, the kernel has always done the
+> shadow stack allocation and so it is never writable (in the normal
+> sense) from userspace. But after this change makecontext() now first
+> has to mmap() writable memory, then write the restore token, then
+> mprotect() it as shadow stack. See the glibc changes to support
+> PROT_SHADOW_STACK here[0].
+>=20
+> The writable window leaves an opening for an attacker to create an
+> arbitrary shadow stack that could be pivoted to later by tweaking the
+> ucontext_t structure. To try to see how much this matters, we have done
+> a small test that uses this window to ROP from writes in another
+> thread during the makecontext()/setcontext() window. (offensive work
+> credit to Joao on CC). This would require a real app to already to be
+> using ucontext in the course of normal runtime.
 
+My general opinion here (take this with a grain of salt -- I haven't pag=
+ed back in every single detail) is that the kernel should make it straig=
+htforward for a libc to do the right thing without nasty races, cross-th=
+read coordination, or unnecessary permission to write to the stack.  I *=
+also* think that it should be possible for userspace to manage its own s=
+hadow stack allocation if it wants to, since I'm sure there will be JIT =
+or green thread or other use cases that want to do crazy things that we =
+fail to anticipate with in-kernel magic.
+
+So perhaps we should keep the explicit allocation and free operations, h=
+ave a way to opt-in to WRSS being flipped on, but also do our best to ha=
+ve API that handle the known cases well.
+
+Does that make sense?  Can we have both approaches work in the same kern=
+el?
