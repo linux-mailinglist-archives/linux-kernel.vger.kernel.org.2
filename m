@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ED041214B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB9F4123E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350452AbhITSEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
+        id S1379211AbhITS2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:28:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355894AbhITR5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:57:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65E01619F6;
-        Mon, 20 Sep 2021 17:14:39 +0000 (UTC)
+        id S1377708AbhITSW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF924632C2;
+        Mon, 20 Sep 2021 17:24:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158079;
-        bh=2v6a9C3C0rZCgY7feWL1aqEai1BPQIroN+rAdK4iUFg=;
+        s=korg; t=1632158667;
+        bh=01A7hg0luvvHutHgUdAsWYsGXGS2biR/gkZDFPQxexo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ld48aoNPG6OsFXdEsNTp+YEXNdjmnU0sldKEA5auSsePaigp7Bd2g7EHd4AiE5XLC
-         i4ln0lTQgG08Wue9DuMKnvvIhXxqv2msB61C7X+enBA7lEnYsj6AIbw56+y9l6bTG4
-         DiXi2KIf3tYhZGottrigmhh79RCvsl5HZs2/uZOY=
+        b=eNq2rzpvzFnJGm/PqEKh26mwwg6+AhPrxkTPmNFpLoTsoFCucYCL2qQG4ebpi5+zX
+         gK5snh38MRDhyj7wjHZ/IOrHxHRej4peomL+CeNCEMINESKiEDDgNVJ5e+y5IqBAOg
+         x+t2MHVdnxCS6Iid5zGdcRZWRH87gh97yMBI8NOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 286/293] mtd: rawnand: cafe: Fix a resource leak in the error handling path of cafe_nand_probe()
+        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 230/260] net: hns3: disable mac in flr process
 Date:   Mon, 20 Sep 2021 18:44:08 +0200
-Message-Id: <20210920163943.218391163@linuxfoundation.org>
+Message-Id: <20210920163938.932240118@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
+References: <20210920163931.123590023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Yufeng Mo <moyufeng@huawei.com>
 
-[ Upstream commit 6b430c7595e4eb95fae8fb54adc3c3ce002e75ae ]
+commit b81d8948746520f989e86d66292ff72b5056114a upstream.
 
-A successful 'init_rs_non_canonical()' call should be balanced by a
-corresponding 'free_rs()' call in the error handling path of the probe, as
-already done in the remove function.
+The firmware will not disable mac in flr process. Therefore, the driver
+needs to proactively disable mac during flr, which is the same as the
+function reset.
 
-Update the error handling path accordingly.
-
-Fixes: 8c61b7a7f4d4 ("[MTD] [NAND] Use rslib for CAFÉ ECC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/fd313d3fb787458bcc73189e349f481133a2cdc9.1629532640.git.christophe.jaillet@wanadoo.fr
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 35d93a30040c ("net: hns3: adjust the process of PF reset")
+Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 3304594177c6..1fee298d5680 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -758,7 +758,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 			  "CAFE NAND", mtd);
- 	if (err) {
- 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
--		goto out_ior;
-+		goto out_free_rs;
- 	}
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -6685,11 +6685,12 @@ static void hclge_ae_stop(struct hnae3_h
+ 	hclge_clear_arfs_rules(handle);
+ 	spin_unlock_bh(&hdev->fd_rule_lock);
  
- 	/* Disable master reset, enable NAND clock */
-@@ -802,6 +802,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
- 	free_irq(pdev->irq, mtd);
-+ out_free_rs:
-+	free_rs(cafe->rs);
-  out_ior:
- 	pci_iounmap(pdev, cafe->mmio);
-  out_free_mtd:
--- 
-2.30.2
-
+-	/* If it is not PF reset, the firmware will disable the MAC,
++	/* If it is not PF reset or FLR, the firmware will disable the MAC,
+ 	 * so it only need to stop phy here.
+ 	 */
+ 	if (test_bit(HCLGE_STATE_RST_HANDLING, &hdev->state) &&
+-	    hdev->reset_type != HNAE3_FUNC_RESET) {
++	    hdev->reset_type != HNAE3_FUNC_RESET &&
++	    hdev->reset_type != HNAE3_FLR_RESET) {
+ 		hclge_mac_stop_phy(hdev);
+ 		hclge_update_link_status(hdev);
+ 		return;
 
 
