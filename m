@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A22412617
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AEE412673
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386030AbhITSxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
+        id S1384675AbhITS6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:58:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1385894AbhITSwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B0361264;
+        id S1385851AbhITSwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:52:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC4C761184;
         Mon, 20 Sep 2021 17:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1632160613;
-        bh=WosCvV1JmUK5ETxM63LC5LHc9UhJvmkbOb6SQ9HQRCY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Lp3JnVDw1ie0nEvoc6RjCG3ZSX8FmUH9p/imspF1stYQX8HxyIHinKZctWOAswonx
-         YiM07jJiuAEwguX0rlonIvqyGRHPjDwOndVZZ7GA6aq3+fkEOHHieDzUOYXoUBpNEf
-         T+aujHdp+VYjuxI3pQpw/An5IEAywA9OqGsLow3R/bkqbovuQSNxSrI5FtFZXzTJpx
-         U3h8J9HwRn5dnGsmHq2ptSIbJv4zsPc73BnIvELmPDZae6+E1VQnlj/MI9940LHJ8V
-         QiHAv+gxwpM4r3bNTYUzeTaB3tSOcJwBR+CrSBLYAp5t8Vj6tHyizdMwUGE1HR52JP
-         Bw1bCeX2qSEyQ==
+        bh=SvqoDHMQRz9kNEKqEJuI5cMDNIKcZUTM+5LaGIm43aw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NVdm+/LKQlTGEHyX0fU9o8EU/2zTZA9yoVMdjCwO5MVyBKTT/bxst7vcB8eHYWpEb
+         jiWvS9yzOihUo+kHuBIPFMrD25tkcPn73rhT7aNM13OAJ6JR93e2Xz1vhwsDMEMmMg
+         nUKcY/B5OV3kQm96oVt0snDc+MWe0/JQ7Io6ER16GACH+AlJU7qoXLAMplrSYGiHs1
+         S3gdq24MrIKsJmBVfJJnySQENUyiCtrVyfpnK8YmM6FaIUV7npA7n8PE5mPVjmAFQf
+         6G4rccr0xv1k+cRHkF2EMNhRwsjnST6cEnhxBmbFHxMS6lxOB4AhRnBufXZZKCjqVB
+         52tHbnpcZpdKQ==
 Received: by wens.tw (Postfix, from userid 1000)
-        id 73B285FC6F; Tue, 21 Sep 2021 01:56:51 +0800 (CST)
+        id 857095F861; Tue, 21 Sep 2021 01:56:51 +0800 (CST)
 From:   Chen-Yu Tsai <wens@kernel.org>
 To:     Heiko Stuebner <heiko@sntech.de>
 Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: nanopi4: decrease Bluetooth UART baud rate
-Date:   Tue, 21 Sep 2021 01:56:46 +0800
-Message-Id: <20210920175647.13008-1-wens@kernel.org>
+Subject: [PATCH] arm64: dts: rockchip: rk3399: Hook up DMA for UARTs
+Date:   Tue, 21 Sep 2021 01:56:47 +0800
+Message-Id: <20210920175647.13008-2-wens@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210920175647.13008-1-wens@kernel.org>
+References: <20210920175647.13008-1-wens@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -43,31 +45,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chen-Yu Tsai <wens@csie.org>
 
-The RK3399 does not seem to be able to properly generate the required
-64 MHz clock for the UART to operate at 4MBd.
+The RK3399 has two DMA controllers, one of which is wired up to work
+with the SPI controllers and UARTs. The SPI controllers are already
+hooked up, but the UARTs aren't.
 
-Drop the baud rate down to 3MBd, which can be used as the clock
-controller is able to produce a 48 MHz clock.
+Add the "dmas" and "dma-names" to the UART device nodes to hook up DMA.
 
-Fixes: 3e2f0bb72be3 ("arm64: dts: rockchip: Add nanopi4 bluetooth")
 Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-index 8c0ff6c96e03..45ff053b119d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi4.dtsi
-@@ -699,7 +699,7 @@ bluetooth {
- 		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
- 		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
- 		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
--		max-speed = <4000000>;
-+		max-speed = <3000000>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
- 		vbat-supply = <&vcc3v3_sys>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 3871c7fd83b0..87d6e4eb1337 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -608,6 +608,8 @@ uart0: serial@ff180000 {
+ 		reg = <0x0 0xff180000 0x0 0x100>;
+ 		clocks = <&cru SCLK_UART0>, <&cru PCLK_UART0>;
+ 		clock-names = "baudclk", "apb_pclk";
++		dmas = <&dmac_peri 0>, <&dmac_peri 1>;
++		dma-names = "tx", "rx";
+ 		interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		reg-shift = <2>;
+ 		reg-io-width = <4>;
+@@ -621,6 +623,8 @@ uart1: serial@ff190000 {
+ 		reg = <0x0 0xff190000 0x0 0x100>;
+ 		clocks = <&cru SCLK_UART1>, <&cru PCLK_UART1>;
+ 		clock-names = "baudclk", "apb_pclk";
++		dmas = <&dmac_peri 2>, <&dmac_peri 3>;
++		dma-names = "tx", "rx";
+ 		interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		reg-shift = <2>;
+ 		reg-io-width = <4>;
+@@ -634,6 +638,8 @@ uart2: serial@ff1a0000 {
+ 		reg = <0x0 0xff1a0000 0x0 0x100>;
+ 		clocks = <&cru SCLK_UART2>, <&cru PCLK_UART2>;
+ 		clock-names = "baudclk", "apb_pclk";
++		dmas = <&dmac_peri 4>, <&dmac_peri 5>;
++		dma-names = "tx", "rx";
+ 		interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		reg-shift = <2>;
+ 		reg-io-width = <4>;
+@@ -647,6 +653,8 @@ uart3: serial@ff1b0000 {
+ 		reg = <0x0 0xff1b0000 0x0 0x100>;
+ 		clocks = <&cru SCLK_UART3>, <&cru PCLK_UART3>;
+ 		clock-names = "baudclk", "apb_pclk";
++		dmas = <&dmac_peri 6>, <&dmac_peri 7>;
++		dma-names = "tx", "rx";
+ 		interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		reg-shift = <2>;
+ 		reg-io-width = <4>;
+@@ -1142,6 +1150,8 @@ uart4: serial@ff370000 {
+ 		reg = <0x0 0xff370000 0x0 0x100>;
+ 		clocks = <&pmucru SCLK_UART4_PMU>, <&pmucru PCLK_UART4_PMU>;
+ 		clock-names = "baudclk", "apb_pclk";
++		dmas = <&dmac_peri 8>, <&dmac_peri 9>;
++		dma-names = "tx", "rx";
+ 		interrupts = <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		reg-shift = <2>;
+ 		reg-io-width = <4>;
 -- 
 2.30.2
 
