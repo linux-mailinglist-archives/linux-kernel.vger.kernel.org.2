@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F780412111
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37077411CB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344036AbhITSBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:01:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
+        id S244837AbhITRMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:12:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355346AbhITRyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:54:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB9B661C48;
-        Mon, 20 Sep 2021 17:13:44 +0000 (UTC)
+        id S1347078AbhITRJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:09:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C31BE60F5D;
+        Mon, 20 Sep 2021 16:56:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158025;
-        bh=qSPVq1QYb/17JQhpAL26QqVNXC4IyuIV763pmjtzeQM=;
+        s=korg; t=1632156998;
+        bh=VrdVBAhcWadPQQ8STGedLvI9KmDWZCfL2lhU1p3I+po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c+wwj8R3yB+9E6YBnh/Ez8jmmCkppb2ei1sFo7Sk9gYTkq2n/Z9OuCaRSOgwUgwY5
-         dM0KtWKVuwI7zcY1hVuhO8johUhyssJouZ1Ik6yj0GZFeW+csqpi5gNr7zELI/xdwK
-         csfjvkNN6zk98eMD3bax89UbCd7Pg7c5GJ/+D9LA=
+        b=gk2/TjhGFVWaENPW75WUdWP1MarTnBDWBOfXjJhJCZd6Le4X0RoV4p3EDD3pjiOGT
+         ZfsTh+OhjeSgetv/OT/dgceNvybOzaXFHTbqGLpyvOLfhq9aKIsRiIL6bvs2U4fltq
+         fT6AjNYkzlkViouopw5AM/SzIYdrfuNCnQsR4CCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 261/293] net/l2tp: Fix reference count leak in l2tp_udp_recv_core
-Date:   Mon, 20 Sep 2021 18:43:43 +0200
-Message-Id: <20210920163942.327638881@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 175/175] net: renesas: sh_eth: Fix freeing wrong tx descriptor
+Date:   Mon, 20 Sep 2021 18:43:44 +0200
+Message-Id: <20210920163923.807463491@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163933.258815435@linuxfoundation.org>
-References: <20210920163933.258815435@linuxfoundation.org>
+In-Reply-To: <20210920163918.068823680@linuxfoundation.org>
+References: <20210920163918.068823680@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit 9b6ff7eb666415e1558f1ba8a742f5db6a9954de upstream.
+[ Upstream commit 0341d5e3d1ee2a36dd5a49b5bef2ce4ad1cfa6b4 ]
 
-The reference count leak issue may take place in an error handling
-path. If both conditions of tunnel->version == L2TP_HDR_VER_3 and the
-return value of l2tp_v3_ensure_opt_in_linear is nonzero, the function
-would directly jump to label invalid, without decrementing the reference
-count of the l2tp_session object session increased earlier by
-l2tp_tunnel_get_session(). This may result in refcount leaks.
+The cur_tx counter must be incremented after TACT bit of
+txdesc->status was set. However, a CPU is possible to reorder
+instructions and/or memory accesses between cur_tx and
+txdesc->status. And then, if TX interrupt happened at such a
+timing, the sh_eth_tx_free() may free the descriptor wrongly.
+So, add wmb() before cur_tx++.
+Otherwise NETDEV WATCHDOG timeout is possible to happen.
 
-Fix this issue by decrease the reference count before jumping to the
-label invalid.
-
-Fixes: 4522a70db7aa ("l2tp: fix reading optional fields of L2TPv3")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Fixes: 86a74ff21a7a ("net: sh_eth: add support for Renesas SuperH Ethernet")
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/l2tp/l2tp_core.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/renesas/sh_eth.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -889,8 +889,10 @@ static int l2tp_udp_recv_core(struct l2t
- 	}
+diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
+index 468f02beccee..3bfae675b43a 100644
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -2333,6 +2333,7 @@ static int sh_eth_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	else
+ 		txdesc->status |= cpu_to_le32(TD_TACT);
  
- 	if (tunnel->version == L2TP_HDR_VER_3 &&
--	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr))
-+	    l2tp_v3_ensure_opt_in_linear(session, skb, &ptr, &optr)) {
-+		l2tp_session_dec_refcount(session);
- 		goto error;
-+	}
++	wmb(); /* cur_tx must be incremented after TACT bit was set */
+ 	mdp->cur_tx++;
  
- 	l2tp_recv_common(session, skb, ptr, optr, hdrflags, length);
- 	l2tp_session_dec_refcount(session);
+ 	if (!(sh_eth_read(ndev, EDTRR) & sh_eth_get_edtrr_trns(mdp)))
+-- 
+2.30.2
+
 
 
