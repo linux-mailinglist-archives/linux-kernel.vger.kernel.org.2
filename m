@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01804411A83
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 18:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EABC411DC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236869AbhITQuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 12:50:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35746 "EHLO mail.kernel.org"
+        id S1349018AbhITRXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:23:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236735AbhITQtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 12:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C269F6124A;
-        Mon, 20 Sep 2021 16:47:31 +0000 (UTC)
+        id S1345161AbhITRVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:21:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA8861A55;
+        Mon, 20 Sep 2021 17:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632156452;
-        bh=EilGhHmjxJ4GkuYk2HAGE4cchxQ1H6wSlnwmazFEnDs=;
+        s=korg; t=1632157253;
+        bh=tvWnjDeNXQsfdL6mR4Zq9jSKTlaF1Ox6r8W0CGxkrn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yRO1d5ySnKvrnjZQ6kADyahSEijWDZwK+7/VLbOMi1sgQFe3fr4XVT6r1QTLSsJXL
-         ldxkNJibDDvEDlghp9JP/Q0oGI3IqIKz2QYSUgeOD3FF57ZCa5UFUhwefzFnw9/5+H
-         b5g/iw2KKWkctDS7Rp3AxviqNzjq4W6WAxZ2k1kg=
+        b=JCX6KdiYDL4rGkKEfy1VNsookKdkhRjvzYofpUUg98NRdabVfID0MZsiT70S/SSf0
+         jZuy2oL3g7i9S9cBBVyHoDUKugw4s32W9i1jVYEh5xV4q8o7fVOHHoRrJQZe47KBIZ
+         b6fkvrcqDKdS1ZxLUhuulC1rm4kfsSFxL5mxNxP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 066/133] bcma: Fix memory leak for internally-handled cores
+Subject: [PATCH 4.14 123/217] docs: Fix infiniband uverbs minor number
 Date:   Mon, 20 Sep 2021 18:42:24 +0200
-Message-Id: <20210920163914.807839243@linuxfoundation.org>
+Message-Id: <20210920163928.827656429@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
-References: <20210920163912.603434365@linuxfoundation.org>
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+References: <20210920163924.591371269@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zenghui Yu <yuzenghui@huawei.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit b63aed3ff195130fef12e0af590f4838cf0201d8 ]
+[ Upstream commit 8d7e415d55610d503fdb8815344846b72d194a40 ]
 
-kmemleak reported that dev_name() of internally-handled cores were leaked
-on driver unbinding. Let's use device_initialize() to take refcounts for
-them and put_device() to properly free the related stuff.
+Starting from the beginning of infiniband subsystem, the uverbs char
+devices start from 192 as a minor number, see
+commit bc38a6abdd5a ("[PATCH] IB uverbs: core implementation").
 
-While looking at it, there's another potential issue for those which should
-be *registered* into driver core. If device_register() failed, we put
-device once and freed bcma_device structures. In bcma_unregister_cores(),
-they're treated as unregistered and we hit both UAF and double-free. That
-smells not good and has also been fixed now.
+This patch updates the admin guide documentation to reflect it.
 
-Fixes: ab54bc8460b5 ("bcma: fill core details for every device")
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210727025232.663-2-yuzenghui@huawei.com
+Fixes: 9d85025b0418 ("docs-rst: create an user's manual book")
+Link: https://lore.kernel.org/r/bad03e6bcde45550c01e12908a6fe7dfa4770703.1627477347.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bcma/main.c | 6 +++---
+ Documentation/admin-guide/devices.txt | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/bcma/main.c b/drivers/bcma/main.c
-index 327f9e374b44..30827ab3bb07 100644
---- a/drivers/bcma/main.c
-+++ b/drivers/bcma/main.c
-@@ -246,6 +246,7 @@ EXPORT_SYMBOL(bcma_core_irq);
+diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
+index 4ec843123cc3..361bff6d3053 100644
+--- a/Documentation/admin-guide/devices.txt
++++ b/Documentation/admin-guide/devices.txt
+@@ -2989,10 +2989,10 @@
+ 		65 = /dev/infiniband/issm1     Second InfiniBand IsSM device
+ 		  ...
+ 		127 = /dev/infiniband/issm63    63rd InfiniBand IsSM device
+-		128 = /dev/infiniband/uverbs0   First InfiniBand verbs device
+-		129 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
++		192 = /dev/infiniband/uverbs0   First InfiniBand verbs device
++		193 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
+ 		  ...
+-		159 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
++		223 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
  
- void bcma_prepare_core(struct bcma_bus *bus, struct bcma_device *core)
- {
-+	device_initialize(&core->dev);
- 	core->dev.release = bcma_release_core_dev;
- 	core->dev.bus = &bcma_bus_type;
- 	dev_set_name(&core->dev, "bcma%d:%d", bus->num, core->core_index);
-@@ -309,11 +310,10 @@ static void bcma_register_core(struct bcma_bus *bus, struct bcma_device *core)
- {
- 	int err;
- 
--	err = device_register(&core->dev);
-+	err = device_add(&core->dev);
- 	if (err) {
- 		bcma_err(bus, "Could not register dev for core 0x%03X\n",
- 			 core->id.id);
--		put_device(&core->dev);
- 		return;
- 	}
- 	core->dev_registered = true;
-@@ -404,7 +404,7 @@ void bcma_unregister_cores(struct bcma_bus *bus)
- 	/* Now noone uses internally-handled cores, we can free them */
- 	list_for_each_entry_safe(core, tmp, &bus->cores, list) {
- 		list_del(&core->list);
--		kfree(core);
-+		put_device(&core->dev);
- 	}
- }
- 
+  232 char	Biometric Devices
+ 		0 = /dev/biometric/sensor0/fingerprint	first fingerprint sensor on first device
 -- 
 2.30.2
 
