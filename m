@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D37411E76
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3DA411E78
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 19:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347909AbhITRbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 13:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56306 "EHLO mail.kernel.org"
+        id S1350930AbhITRbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 13:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347496AbhITR2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 13:28:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D1861AAA;
-        Mon, 20 Sep 2021 17:03:24 +0000 (UTC)
+        id S1347500AbhITR2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 13:28:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67F5061452;
+        Mon, 20 Sep 2021 17:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632157404;
-        bh=l16qG+F5o+7kNpPs82jL7PXkKb+2Vx1dGgZH8LU5+/8=;
+        s=korg; t=1632157406;
+        bh=kTIULCP1z6wRky27o8R+gQLIL1uO5RfMbjMxVrnXaqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDwX21YyJeKlhrdXOs1rngEH1aLQiVd3+7eanTIEmXOKzxmkkKfVAuZZVVG8pk2MV
-         SMkYrYjBJ9VRF7syUKFKO0wLMwhlZ1WUWeMQlDE1pgJbb0qm+yfnBSSDb83BCh6DTI
-         B6jZl+ik7NOCacEY/ri04eKDDLvXkxvFsoeJNNwQ=
+        b=Vb2lhBoMl7uwP6pZoXY7wS10M0hGMVOzjQmZ0LY8XQ9nZrSRMRkvdIydy2BqYYd+o
+         5sAff2f73KyNcPm+WjCe0zPecJQPZ+GJTBFOlyKNr5EPRBLz5bO2pJyEaUiQ4eWY3J
+         25uRJksg/eNjjL7vg2DskPfkIXMmHYaXnar8YLtc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH 4.14 193/217] PM: base: power: dont try to use non-existing RTC for storing data
-Date:   Mon, 20 Sep 2021 18:43:34 +0200
-Message-Id: <20210920163931.180448520@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH 4.14 194/217] x86/mm: Fix kern_addr_valid() to cope with existing but not present entries
+Date:   Mon, 20 Sep 2021 18:43:35 +0200
+Message-Id: <20210920163931.212928124@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
 References: <20210920163924.591371269@linuxfoundation.org>
@@ -39,62 +42,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit 0560204b360a332c321124dbc5cdfd3364533a74 upstream.
+commit 34b1999da935a33be6239226bfa6cd4f704c5c88 upstream.
 
-If there is no legacy RTC device, don't try to use it for storing trace
-data across suspend/resume.
+Jiri Olsa reported a fault when running:
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lore.kernel.org/r/20210903084937.19392-2-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+  # cat /proc/kallsyms | grep ksys_read
+  ffffffff8136d580 T ksys_read
+  # objdump -d --start-address=0xffffffff8136d580 --stop-address=0xffffffff8136d590 /proc/kcore
+
+  /proc/kcore:     file format elf64-x86-64
+
+  Segmentation fault
+
+  general protection fault, probably for non-canonical address 0xf887ffcbff000: 0000 [#1] SMP PTI
+  CPU: 12 PID: 1079 Comm: objdump Not tainted 5.14.0-rc5qemu+ #508
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-4.fc34 04/01/2014
+  RIP: 0010:kern_addr_valid
+  Call Trace:
+   read_kcore
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? trace_hardirqs_on
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   ? _raw_spin_unlock
+   ? __handle_mm_fault
+   ? rcu_read_lock_sched_held
+   ? lock_acquire
+   ? rcu_read_lock_sched_held
+   ? lock_release
+   proc_reg_read
+   ? vfs_read
+   vfs_read
+   ksys_read
+   do_syscall_64
+   entry_SYSCALL_64_after_hwframe
+
+The fault happens because kern_addr_valid() dereferences existent but not
+present PMD in the high kernel mappings.
+
+Such PMDs are created when free_kernel_image_pages() frees regions larger
+than 2Mb. In this case, a part of the freed memory is mapped with PMDs and
+the set_memory_np_noalias() -> ... -> __change_page_attr() sequence will
+mark the PMD as not present rather than wipe it completely.
+
+Have kern_addr_valid() check whether higher level page table entries are
+present before trying to dereference them to fix this issue and to avoid
+similar issues in the future.
+
+Stable backporting note:
+------------------------
+
+Note that the stable marking is for all active stable branches because
+there could be cases where pagetable entries exist but are not valid -
+see 9a14aefc1d28 ("x86: cpa, fix lookup_address"), for example. So make
+sure to be on the safe side here and use pXY_present() accessors rather
+than pXY_none() which could #GP when accessing pages in the direct map.
+
+Also see:
+
+  c40a56a7818c ("x86/mm/init: Remove freed kernel image areas from alias mapping")
+
+for more info.
+
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+Cc: <stable@vger.kernel.org>	# 4.4+
+Link: https://lkml.kernel.org/r/20210819132717.19358-1-rppt@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/base/power/trace.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/x86/mm/init_64.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/base/power/trace.c
-+++ b/drivers/base/power/trace.c
-@@ -11,6 +11,7 @@
- #include <linux/export.h>
- #include <linux/rtc.h>
- #include <linux/suspend.h>
-+#include <linux/init.h>
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1282,18 +1282,18 @@ int kern_addr_valid(unsigned long addr)
+ 		return 0;
  
- #include <linux/mc146818rtc.h>
+ 	p4d = p4d_offset(pgd, addr);
+-	if (p4d_none(*p4d))
++	if (!p4d_present(*p4d))
+ 		return 0;
  
-@@ -165,6 +166,9 @@ void generate_pm_trace(const void *trace
- 	const char *file = *(const char **)(tracedata + 2);
- 	unsigned int user_hash_value, file_hash_value;
+ 	pud = pud_offset(p4d, addr);
+-	if (pud_none(*pud))
++	if (!pud_present(*pud))
+ 		return 0;
  
-+	if (!x86_platform.legacy.rtc)
-+		return;
-+
- 	user_hash_value = user % USERHASH;
- 	file_hash_value = hash_string(lineno, file, FILEHASH);
- 	set_magic_time(user_hash_value, file_hash_value, dev_hash_value);
-@@ -267,6 +271,9 @@ static struct notifier_block pm_trace_nb
+ 	if (pud_large(*pud))
+ 		return pfn_valid(pud_pfn(*pud));
  
- static int early_resume_init(void)
- {
-+	if (!x86_platform.legacy.rtc)
-+		return 0;
-+
- 	hash_value_early_read = read_magic_time();
- 	register_pm_notifier(&pm_trace_nb);
- 	return 0;
-@@ -277,6 +284,9 @@ static int late_resume_init(void)
- 	unsigned int val = hash_value_early_read;
- 	unsigned int user, file, dev;
+ 	pmd = pmd_offset(pud, addr);
+-	if (pmd_none(*pmd))
++	if (!pmd_present(*pmd))
+ 		return 0;
  
-+	if (!x86_platform.legacy.rtc)
-+		return 0;
-+
- 	user = val % USERHASH;
- 	val = val / USERHASH;
- 	file = val % FILEHASH;
+ 	if (pmd_large(*pmd))
 
 
