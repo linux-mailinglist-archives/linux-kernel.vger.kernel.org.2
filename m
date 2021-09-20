@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF86041262D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0A441262B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349607AbhITS4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38252 "EHLO mail.kernel.org"
+        id S1354606AbhITSyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353914AbhITSwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 14:52:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50CA1611C2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 18:37:03 +0000 (UTC)
+        id S1385885AbhITSww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 14:52:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6EF260FE6;
+        Mon, 20 Sep 2021 18:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632163023;
-        bh=vQjBnhTwHmPMbbhl5uyt9zJIV9R7eGnAmOsYenFvtsk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AGrJqMWLy5D8MwbrPjvH57/frMZS8S7h+L//qAV4bKFU+HlX8arcdT2Ob9ihnD8d2
-         xeoCik8ycGNmI+WAlLIMnk4UP/i8ZX2K4bXfLFOY9xvc7belpMuLi+LplsX0af9QXh
-         fi3HP54KCv36+hF/zA1NWiTlRgoHkgVSkGB5vfQSM/vJdBWnP2y43Z12j3DQjSHDWh
-         Pg2xpmi6uJHtCWRteGH62j/5mJA3PYQNZyfYqYdhbFF6RYh6f0c11cxQbIenKAO9zT
-         FrPQnqv4SezdW+iRpIg4NIXW0MEXCNMqXx80fJnEPY4W0qnZ349pBapAiS1DHTAKdJ
-         nQVijGdTYNzpg==
-Received: by mail-ed1-f50.google.com with SMTP id v5so63785501edc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:37:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531zCqYWeX5yI+JUoW8pnCnN6hdGa+LCBq0T08H5Qb11G+IBPu0K
-        j6rIwxx5FoquY9H1jAiXxElZiq3BEEwn647zIOv7Rw==
-X-Google-Smtp-Source: ABdhPJybR6N3U9WMW2cuE+TpvrIh2UZNl4YM1p+MlmtT3J1aFk/vnh+3IzRCGMqSBwkk5gktGNysKCQGbjYyhLubSuo=
-X-Received: by 2002:a17:906:2cd5:: with SMTP id r21mr30711354ejr.435.1632163021669;
- Mon, 20 Sep 2021 11:37:01 -0700 (PDT)
+        s=k20201202; t=1632163015;
+        bh=Y1MRtGKzuPI2JTlrjLOY35BQbbHHLFtK6fTUmmYSbY8=;
+        h=From:To:Subject:Date:From;
+        b=hpC+GjzApEGH34r2DiTT97Vd4nzhtRtuGJhhvtS2+/eV6n3k4ZQgfhwLdjPTOZac6
+         HqePsaW6fJvadIEJmsxmEYYuMXgQxw2SggnxR30VrvTaQxeFjORHGgu+XYxjP/sEgw
+         gCeN8qC2Xq1/tkAmsa96cpUTKljDa9f3dpF0W1trQC+Acb3Kcwc8iOmQJY9SGzt7ZQ
+         +hbaJ/kdheytJR5BJXzhRQJ6zPoaWgPJNE4At7RwcevXi1Ehom5R3t8n5OfbtAQDAM
+         D8dWXiXhVPVRyEtc2Iwqx2KUzAfR9AWGD3FHcIb9+YuWA0rDv2LXtVQY8JAku0ba/5
+         kasY8eiCP2lBw==
+Received: by envy17 (sSMTP sendmail emulation); Mon, 20 Sep 2021 11:36:54 -0700
+From:   markgross@kernel.org
+To:     linux-kernel@vger.kernel.org, hdegoede@redhat.com
+Subject: [PATCH] update email addresses. Change all email addresses for Mark Gross to use markgross@kernel.org.
+Date:   Mon, 20 Sep 2021 11:36:54 -0700
+Message-Id: <20210920183654.82668-1-markgross@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <705fde50-37a6-49ed-b9c2-c9107cd88189@t-8ch.de>
- <CALCETrUM0cko=5ki-Dd402DNFU2TmgnJTz_vfrsaofkGD-1kmA@mail.gmail.com>
- <20210916092719.v4pkhhugdiq7ytcp@wittgenstein> <2ebf1a9d-77d5-472b-a99a-b141654725da@www.fastmail.com>
- <6eff0e8a-4965-437d-9273-1d9d73892e1a@t-8ch.de> <CALCETrWA1TBvbknH1Jzt=newTd4sHzNFm0RPuRxazjuRQRsR7w@mail.gmail.com>
- <8cbf0703-5734-4e92-a6cc-12de69094f95@t-8ch.de> <YUi95tFDWS7oceYP@bombadil.infradead.org>
-In-Reply-To: <YUi95tFDWS7oceYP@bombadil.infradead.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 20 Sep 2021 11:36:47 -0700
-X-Gmail-Original-Message-ID: <CALCETrX9keVFxEZYUkKr7_dWb9Ubo9q4E2aTY_ZOWGSHyRph8g@mail.gmail.com>
-Message-ID: <CALCETrX9keVFxEZYUkKr7_dWb9Ubo9q4E2aTY_ZOWGSHyRph8g@mail.gmail.com>
-Subject: Re: [RFC] Expose request_module via syscall
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 11:16 AM Luis Chamberlain <mcgrof@kernel.org> wrote=
-:
->
-> On Mon, Sep 20, 2021 at 04:51:19PM +0200, Thomas Wei=C3=9Fschuh wrote:
+From: mark <mark@thegnar.org>
 
-> > > Do you mean it literally invokes /sbin/modprobe?  If so, hooking this
-> > > at /sbin/modprobe and calling out to the container manager seems like
-> > > a decent solution.
-> >
-> > Yes it does. Thanks for the idea, I'll see how this works out.
->
-> Would documentation guiding you in that way have helped? If so
-> I welcome a patch that does just that.
+Signed-off-by: Mark Gross<markgross@kernel.org>
+---
+ MAINTAINERS | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-If someone wants to make this classy, we should probably have the
-container counterpart of a standardized paravirt interface.  There
-should be a way for a container to, in a runtime-agnostic way, issue
-requests to its manager, and requesting a module by (name, Linux
-kernel version for which that name makes sense) seems like an
-excellent use of such an interface.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ca6d6fde85cf..9d9800f79b97 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6683,7 +6683,7 @@ S:	Supported
+ F:	drivers/edac/dmc520_edac.c
+ 
+ EDAC-E752X
+-M:	Mark Gross <mark.gross@intel.com>
++M:	Mark Gross <markgross@kernel.org>
+ L:	linux-edac@vger.kernel.org
+ S:	Maintained
+ F:	drivers/edac/e752x_edac.c
+@@ -11979,7 +11979,7 @@ F:	drivers/net/ethernet/mellanox/mlxfw/
+ 
+ MELLANOX HARDWARE PLATFORM SUPPORT
+ M:	Hans de Goede <hdegoede@redhat.com>
+-M:	Mark Gross <mgross@linux.intel.com>
++M:	Mark Gross <markgross@kernel.org>
+ M:	Vadim Pasternak <vadimp@nvidia.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Supported
+@@ -12431,7 +12431,7 @@ F:	drivers/platform/surface/surface_gpe.c
+ 
+ MICROSOFT SURFACE HARDWARE PLATFORM SUPPORT
+ M:	Hans de Goede <hdegoede@redhat.com>
+-M:	Mark Gross <mgross@linux.intel.com>
++M:	Mark Gross <markgross@kernel.org>
+ M:	Maximilian Luz <luzmaximilian@gmail.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+@@ -18460,7 +18460,7 @@ S:	Supported
+ F:	drivers/net/ethernet/tehuti/*
+ 
+ TELECOM CLOCK DRIVER FOR MCPL0010
+-M:	Mark Gross <mark.gross@intel.com>
++M:	Mark Gross <markgross@kernel.org>
+ S:	Supported
+ F:	drivers/char/tlclk.c
+ 
+@@ -20376,7 +20376,7 @@ F:	arch/x86/mm/
+ 
+ X86 PLATFORM DRIVERS
+ M:	Hans de Goede <hdegoede@redhat.com>
+-M:	Mark Gross <mgross@linux.intel.com>
++M:	Mark Gross <markgross@kernel.org>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+-- 
+2.30.2
 
---Andy
-
->
->   Luis
