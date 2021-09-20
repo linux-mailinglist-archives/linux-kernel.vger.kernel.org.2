@@ -2,85 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAF241125B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C82C411264
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 11:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhITJ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 05:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhITJ57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 05:57:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78ABD60F9D;
-        Mon, 20 Sep 2021 09:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632131793;
-        bh=/JPK7Aa+16V2XfmQjabOyz7J9/sDWLciDQDg3Rabzw8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qd1DbWTkZetXA19rFyBSAErgu9uP23Hz56h5qq07iAYfhxzhWsEN8yd/CUQNjzQV1
-         LQ/b3j+FVIDDVb6YeiKJNyFWvGxrV7TlQ9ClmuhHmjckK/DF2R4zoGAMUtel2WkQxs
-         AyDmsEkMIdQXmXpGsHiNmfBqeeGEwx60yBLqKNWsAdAojANXCdN5tnY+Fpvu7I/Opj
-         u6nUc6pxl3yBHnJZ62lVFWmgtMxVwNhl5QCEaTIabj4IT3sUyLUh12T8DgFW2QP9eU
-         aHcH3b/YxPjyD5UNqcB3gOvFTvfb+KN5ZYHZHJFE0W0ifuQ4A1arbFUFRhYqUyjjRh
-         NzVYa/wMtwwvg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Justin Tee <justin.tee@broadcom.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Gaurav Srivastava <gaurav.srivastava@broadcom.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: lpfc: Fix gcc -Wstringop-overread warning, again
-Date:   Mon, 20 Sep 2021 11:56:22 +0200
-Message-Id: <20210920095628.1191676-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233780AbhITJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 05:59:03 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:50207 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231929AbhITJ7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 05:59:00 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 20DA43202562;
+        Mon, 20 Sep 2021 05:57:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 20 Sep 2021 05:57:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canishe.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=fzxVNUji38DpJbP6LjRwH3G943
+        FyfuC6dm8NxaQ7CXA=; b=KpbGNuGooDlzxeMYo2QgK+Ds6KK5thKZRPtuRYXxtM
+        q2cJZIflym5vw1DFtN588N+EzO7aBbcrtbH6eWO7DpE59YQNkw+AKRiZUFak6HuA
+        FMfJs0gdVfYKuUoGhf3jeEiWxqQFhQ6/G3ojcd4CYWruWFvv5OkbJapBxkbEqPR5
+        5DiUHp/2tLX7dnr8yFCNWmmKC0P/ki/ZwhKsyEw0VB/uBsqjk5yAJ43c+l9kh66F
+        I5k51PNJ9iFlMwX8GT+L4OW0cSrrOl26cBgNjD89UkEY7/CBlfiChpn7r/lnWPGD
+        8l+GBTh3b1r1oa6AaQOrkv3PqPy0xGKfr6qUIytbn1iw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fzxVNUji38DpJbP6L
+        jRwH3G943FyfuC6dm8NxaQ7CXA=; b=dicaiQtZZqj5Vcyazw643YzGUPFIynh0w
+        Jp/mczHJURDKpmbwzuBKFkRmlANCfWa8cpnTCWi7KDO0JsNy6eHB8gPo0bSXL1EN
+        HEy3jTL52LNps6bISoNdYhhds4h+uaJKgrMm6tdygQVawu22HyxI88snSc6iNKd4
+        mlspv1vmCyMtmM/FKzQgpuCY8ii0v2IuNRPA4fkQ248yGa6zYIung0Paf8XHEweJ
+        60my4ZK8rJJnXu0GBZFk++GHtvMaWlGSHgpoEW5jwbd0yUI+6e9q82FogIHF6noj
+        B3LISFfgwvkJjN3L39SpSuaIOV0jSUbTOQrum8CwNyEMaq93lJ6og==
+X-ME-Sender: <xms:DFtIYYfCo8zVoidJkO_c4yDftGi68IMH6WI7G6RpihKhjxnPinQQ-w>
+    <xme:DFtIYaM56fCg1dutIGMl3vHn75aljoc66UFbTwi5SoB4NiN4769W9_yLOCpQx2ks3
+    gfNi4YYVBW77YrZ0g>
+X-ME-Received: <xmr:DFtIYZhUupAA29C0GOUkkn5TUwLEx9fSjU1DBMifLhY-ydStGDfOA1ge87XuYx--GqlzmlJapx0Kadin7dadkbToa_4S_oBgRAz2wUQtOTegRkUx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeivddgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefirggvlhgrnhcu
+    ufhtvggvlhgvuceoghgsshestggrnhhishhhvgdrtghomheqnecuggftrfgrthhtvghrnh
+    epkedujefgkedtvddttdfgvdejteelheethedukeevheefveefgedthfdtfeetgfeunecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgsshestg
+    grnhhishhhvgdrtghomh
+X-ME-Proxy: <xmx:DFtIYd8AWhgbkjmSG79tGAv3diaTbQpAlTLEPTIK--mYvm-loNWDpg>
+    <xmx:DFtIYUt98qYqaWyE8Daa9pZ37yAWCVp5fk_o4OC7B5EgkyeNtyqjEw>
+    <xmx:DFtIYUFX2_3I-P4Ums-wd68pnwTqWHht7DyfeSyJvDwn_HnwXmh-qw>
+    <xmx:DFtIYWIgqLEfu87iSkRfrt9vKd9NG_xagN_y5_yD6721MI9G0TuSNQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 20 Sep 2021 05:57:31 -0400 (EDT)
+From:   Gaelan Steele <gbs@canishe.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-man@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, Gaelan Steele <gbs@canishe.com>
+Subject: [PATCH 1/2] fs: move struct linux_dirent into headers
+Date:   Mon, 20 Sep 2021 10:56:48 +0100
+Message-Id: <20210920095649.28600-1-gbs@canishe.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Move the definition of linux_dirent to include/linux/dirent.h,
+where the newer linux_dirent64 already lives. This is done in
+preparation for moving both of these struct definitions into uapi/
+so userspace code doesn't need to duplicate them.
 
-I fixed a stringop-overread warning earlier this year, now a
-second copy of the original code was added and the warning came
-back:
-
-drivers/scsi/lpfc/lpfc_attr.c: In function 'lpfc_cmf_info_show':
-drivers/scsi/lpfc/lpfc_attr.c:289:25: error: 'strnlen' specified bound 4095 exceeds source size 24 [-Werror=stringop-overread]
-  289 |                         strnlen(LPFC_INFO_MORE_STR, PAGE_SIZE - 1),
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Fix it the same way as the other copy.
-
-Fixes: ada48ba70f6b ("scsi: lpfc: Fix gcc -Wstringop-overread warning")
-Fixes: 74a7baa2a3ee ("scsi: lpfc: Add cmf_info sysfs entry")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Gaelan Steele <gbs@canishe.com>
 ---
- drivers/scsi/lpfc/lpfc_attr.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ fs/readdir.c           | 8 +-------
+ include/linux/dirent.h | 7 +++++++
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_attr.c b/drivers/scsi/lpfc/lpfc_attr.c
-index b35bf70a8c0d..ca0433e28ac3 100644
---- a/drivers/scsi/lpfc/lpfc_attr.c
-+++ b/drivers/scsi/lpfc/lpfc_attr.c
-@@ -285,11 +285,8 @@ lpfc_cmf_info_show(struct device *dev, struct device_attribute *attr,
- 				"6312 Catching potential buffer "
- 				"overflow > PAGE_SIZE = %lu bytes\n",
- 				PAGE_SIZE);
--		strscpy(buf + PAGE_SIZE - 1 -
--			strnlen(LPFC_INFO_MORE_STR, PAGE_SIZE - 1),
--			LPFC_INFO_MORE_STR,
--			strnlen(LPFC_INFO_MORE_STR, PAGE_SIZE - 1)
--			+ 1);
-+		strscpy(buf + PAGE_SIZE - 1 - sizeof(LPFC_INFO_MORE_STR),
-+			LPFC_INFO_MORE_STR, sizeof(LPFC_INFO_MORE_STR) + 1);
- 	}
- 	return len;
- }
+diff --git a/fs/readdir.c b/fs/readdir.c
+index 09e8ed7d4161..51890aeafc53 100644
+--- a/fs/readdir.c
++++ b/fs/readdir.c
+@@ -202,14 +202,8 @@ SYSCALL_DEFINE3(old_readdir, unsigned int, fd,
+ 
+ /*
+  * New, all-improved, singing, dancing, iBCS2-compliant getdents()
+- * interface. 
++ * interface.
+  */
+-struct linux_dirent {
+-	unsigned long	d_ino;
+-	unsigned long	d_off;
+-	unsigned short	d_reclen;
+-	char		d_name[1];
+-};
+ 
+ struct getdents_callback {
+ 	struct dir_context ctx;
+diff --git a/include/linux/dirent.h b/include/linux/dirent.h
+index 99002220cd45..48e119dd3694 100644
+--- a/include/linux/dirent.h
++++ b/include/linux/dirent.h
+@@ -2,6 +2,13 @@
+ #ifndef _LINUX_DIRENT_H
+ #define _LINUX_DIRENT_H
+ 
++struct linux_dirent {
++	unsigned long	d_ino;
++	unsigned long	d_off;
++	unsigned short	d_reclen;
++	char		d_name[1];
++};
++
+ struct linux_dirent64 {
+ 	u64		d_ino;
+ 	s64		d_off;
 -- 
-2.29.2
+2.30.1 (Apple Git-130)
 
