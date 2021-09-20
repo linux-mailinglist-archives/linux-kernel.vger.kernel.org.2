@@ -2,203 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1830441294D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA16412956
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 01:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239762AbhITXTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 19:19:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239487AbhITXRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 19:17:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D2961211;
-        Mon, 20 Sep 2021 23:16:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632179774;
-        bh=lWL8fnGNKTXM4Bi+yAVp1+gpNMDcF8Ek0Z+rLqzdBB8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=YEnp5FBXjtQsJausdghHKuLJItlSCUlpC2G+ai9iRGx9pGdDBniFNbpSBrobhC0Cz
-         udviL2kOafQidCQaV1xpH53ha4GYfV8xaqKhTHHg3aM/g28kQEiFmht2+HiBCq5nFB
-         GgqQa2vfu0+UORnW/8LvucewzMCrF3iKcRVzst9Jn+OHtBs8+6XhhDJtYnupvsaYhP
-         CveIWnFLn9iU64Jv8J+Z3MLhIpBwWNSgNH2rkTgxkZYjz0PtV91H2V2cvyvvQoWGEm
-         XBA5u+LZ0fERDYZguxuCh5HEbxpt2axAUFxdc7bj27chIwpKeS7uCQCUqleJgSI1CS
-         dNpWHWgV3/m6g==
-Date:   Mon, 20 Sep 2021 16:16:06 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
-In-Reply-To: <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
-Message-ID: <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
-References: <20210917130123.1764493-1-andr2000@gmail.com> <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s> <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com> <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
- <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S239553AbhITXWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 19:22:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44216 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238939AbhITXUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 19:20:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8602D220BF;
+        Mon, 20 Sep 2021 23:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632179954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTG5leen4lsheGEtRl+XIP6c1M4zrXLbsnzmWtAP2fg=;
+        b=0PmnifexSNW1CkM5Wvo8xI+UTLtvD1h/brYNC9wlrEXICRvuaD41l7d/xPXLmWBuQIzevP
+        8OtmGkeRuTHSl5TG6Ze9tLzkeoPYDP7PC4lNLiYrXYNfaI+b+WLO4ZVR2jC+E53Sy31C+g
+        jreTclLqJ1O+a3xXLWB/gMXRjBYBudI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632179954;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MTG5leen4lsheGEtRl+XIP6c1M4zrXLbsnzmWtAP2fg=;
+        b=6efB7MK0zg99DdxQyQNC5nu0tx+KnQdjfTcYNA5gLMMlp8yu0SqI0xDLsW8MkwvvdVE3Qo
+        eV+PlbVFs6OSTEBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F5E213B38;
+        Mon, 20 Sep 2021 23:19:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EFA3F+4WSWGxZQAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 20 Sep 2021 23:19:10 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1040504615-1632174404=:17979"
-Content-ID: <alpine.DEB.2.21.2109201454550.17979@sstabellini-ThinkPad-T480s>
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Mel Gorman" <mgorman@techsingularity.net>
+Cc:     "Linux-MM" <linux-mm@kvack.org>, "Theodore Ts'o" <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Dave Chinner" <david@fromorbit.com>,
+        "Rik van Riel" <riel@surriel.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "LKML" <linux-kernel@vger.kernel.org>,
+        "Mel Gorman" <mgorman@techsingularity.net>
+Subject: Re: [PATCH 1/5] mm/vmscan: Throttle reclaim until some writeback
+ completes if congested
+In-reply-to: <20210920085436.20939-2-mgorman@techsingularity.net>
+References: <20210920085436.20939-1-mgorman@techsingularity.net>,
+ <20210920085436.20939-2-mgorman@techsingularity.net>
+Date:   Tue, 21 Sep 2021 09:19:07 +1000
+Message-id: <163217994752.3992.5443677201798473600@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, 20 Sep 2021, Mel Gorman wrote:
+> =20
+> +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page);
+> +static inline void acct_reclaim_writeback(struct page *page)
+> +{
+> +	pg_data_t *pgdat =3D page_pgdat(page);
+> +
+> +	if (atomic_read(&pgdat->nr_reclaim_throttled))
+> +		__acct_reclaim_writeback(pgdat, page);
 
---8323329-1040504615-1632174404=:17979
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.DEB.2.21.2109201454551.17979@sstabellini-ThinkPad-T480s>
-
-On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
-> On 20.09.21 14:30, Juergen Gross wrote:
-> > On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
-> >> Hello, Stefano!
-> >>
-> >> On 18.09.21 00:45, Stefano Stabellini wrote:
-> >>> Hi Oleksandr,
-> >>>
-> >>> Why do you want to enable pciback on ARM? Is it only to "disable" a PCI
-> >>> device in Dom0 so that it can be safely assigned to a DomU?
-> >> Not only that
-> >>>
-> >>> I am asking because actually I don't think we want to enable the PV PCI
-> >>> backend feature of pciback on ARM, right? That would clash with the PCI
-> >>> assignment work you have been doing in Xen. They couldn't both work at
-> >>> the same time.
-> >> Correct, it is not used
-> >>>
-> >>> If we only need pciback to "park" a device in Dom0, wouldn't it be
-> >>> possible and better to use pci-stub instead?
-> >>
-> >> Not only that, so pci-stub is not enough
-> >>
-> >> The functionality which is implemented by the pciback and the toolstack
-> >> and which is relevant/missing/needed for ARM:
-> >>
-> >> 1. pciback is used as a database for assignable PCI devices, e.g. xl
-> >>      pci-assignable-{add|remove|list} manipulates that list. So, whenever the
-> >>      toolstack needs to know which PCI devices can be passed through it reads
-> >>      that from the relevant sysfs entries of the pciback.
-> >>
-> >> 2. pciback is used to hold the unbound PCI devices, e.g. when passing through
-> >>      a PCI device it needs to be unbound from the relevant device driver and bound
-> >>      to pciback (strictly speaking it is not required that the device is bound to
-> >>      pciback, but pciback is again used as a database of the passed through PCI
-> >>      devices, so we can re-bind the devices back to their original drivers when
-> >>      guest domain shuts down)
-> >>
-> >> 3. Device reset
-> >>
-> >> We have previously discussed on xen-devel ML possible solutions to that as from the
-> >> above we see that pciback functionality is going to be only partially used on Arm.
-> >>
-> >> Please see [1] and [2]:
-> >>
-> >> 1. It is not acceptable to manage the assignable list in Xen itself
-> >>
-> >> 2. pciback can be split into two parts: PCI assignable/bind/reset handling and
-> >> the rest like vPCI etc.
-> >>
-> >> 3. pcifront is not used on Arm
-> >
-> > It is neither in x86 PVH/HVM guests.
-> Didn't know that, thank you for pointing
-> >
-> >> So, limited use of the pciback is one of the bricks used to enable PCI passthrough
-> >> on Arm. It was enough to just re-structure the driver and have it run on Arm to achieve
-> >> all the goals above.
-> >>
-> >> If we still think it is desirable to break the pciback driver into "common" and "pcifront specific"
-> >> parts then it can be done, yet the patch is going to be the very first brick in that building.
-> >
-> > Doing this split should be done, as the pcifront specific part could be
-> > omitted on x86, too, in case no PV guests using PCI passthrough have to
-> > be supported.
-> Agree, that the final solution should have the driver split
-> >
-> >> So, I think this patch is still going to be needed besides which direction we take.
-> >
-> > Some kind of this patch, yes. It might look different in case the split
-> > is done first.
-> >
-> > I don't mind doing it in either sequence.
-> >
-> With this patch we have Arm on the same page as the above mentioned x86 guests,
-> 
-> e.g. the driver has unused code, but yet allows Arm to function now.
-> 
-> At this stage of PCI passthrough on Arm it is yet enough. Long term, when
-> 
-> the driver gets split, Arm will benefit from that split too, but unfortunately I do not
-> 
-> have enough bandwidth for that piece of work at the moment.
-
-That's fair and I don't want to scope-creep this simple patch asking for
-an enormous rework. At the same time I don't think we should enable the
-whole of pciback on ARM because it would be erroneous and confusing.
-
-I am wonder if there is a simple:
-
-if (!xen_pv_domain())
-    return;
-
-That we could add in a couple of places in pciback to stop it from
-initializing the parts we don't care about. Something along these lines
-(untested and probably incomplete).
-
-What do you guys think?
+The first thing __acct_reclaim_writeback() does is repeat that
+atomic_read().
+Should we read it once and pass the value in to
+__acct_reclaim_writeback(), or is that an unnecessary
+micro-optimisation?
 
 
-diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
-index da34ce85dc88..991ba0a9b359 100644
---- a/drivers/xen/xen-pciback/xenbus.c
-+++ b/drivers/xen/xen-pciback/xenbus.c
-@@ -15,6 +15,7 @@
- #include <xen/xenbus.h>
- #include <xen/events.h>
- #include <xen/pci.h>
-+#include <xen/xen.h>
- #include "pciback.h"
- 
- #define INVALID_EVTCHN_IRQ  (-1)
-@@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_device *dev,
- 				const struct xenbus_device_id *id)
- {
- 	int err = 0;
--	struct xen_pcibk_device *pdev = alloc_pdev(dev);
-+	struct xen_pcibk_device *pdev;
-+
-+	if (!xen_pv_domain())
-+		return 0;
- 
-+	pdev = alloc_pdev(dev);
- 	if (pdev == NULL) {
- 		err = -ENOMEM;
- 		xenbus_dev_fatal(dev, err,
-@@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
- 
- int __init xen_pcibk_xenbus_register(void)
- {
-+	if (!xen_pv_domain())
-+		return 0;
-+
- 	xen_pcibk_backend = &xen_pcibk_vpci_backend;
- 	if (passthrough)
- 		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
-@@ -752,5 +760,7 @@ int __init xen_pcibk_xenbus_register(void)
- 
- void __exit xen_pcibk_xenbus_unregister(void)
- {
-+	if (!xen_pv_domain())
-+		return;
- 	xenbus_unregister_driver(&xen_pcibk_driver);
- }
---8323329-1040504615-1632174404=:17979--
+> +/*
+> + * Account for pages written if tasks are throttled waiting on dirty
+> + * pages to clean. If enough pages have been cleaned since throttling
+> + * started then wakeup the throttled tasks.
+> + */
+> +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page)
+> +{
+> +	unsigned long nr_written;
+> +	int nr_throttled =3D atomic_read(&pgdat->nr_reclaim_throttled);
+> +
+> +	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
+> +	nr_written =3D node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
+> +		READ_ONCE(pgdat->nr_reclaim_start);
+> +
+> +	if (nr_written > SWAP_CLUSTER_MAX * nr_throttled)
+> +		wake_up_interruptible_all(&pgdat->reclaim_wait);
+
+A simple wake_up() could be used here.  "interruptible" is only needed
+if non-interruptible waiters should be left alone.  "_all" is only needed
+if there are some exclusive waiters.  Neither of these apply, so I think
+the simpler interface is best.
+
+
+> +}
+> +
+>  /* possible outcome of pageout() */
+>  typedef enum {
+>  	/* failed to write page out, page is locked */
+> @@ -1412,9 +1453,8 @@ static unsigned int shrink_page_list(struct list_head=
+ *page_list,
+> =20
+>  		/*
+>  		 * The number of dirty pages determines if a node is marked
+> -		 * reclaim_congested which affects wait_iff_congested. kswapd
+> -		 * will stall and start writing pages if the tail of the LRU
+> -		 * is all dirty unqueued pages.
+> +		 * reclaim_congested. kswapd will stall and start writing
+> +		 * pages if the tail of the LRU is all dirty unqueued pages.
+>  		 */
+>  		page_check_dirty_writeback(page, &dirty, &writeback);
+>  		if (dirty || writeback)
+> @@ -3180,19 +3220,20 @@ static void shrink_node(pg_data_t *pgdat, struct sc=
+an_control *sc)
+>  		 * If kswapd scans pages marked for immediate
+>  		 * reclaim and under writeback (nr_immediate), it
+>  		 * implies that pages are cycling through the LRU
+> -		 * faster than they are written so also forcibly stall.
+> +		 * faster than they are written so forcibly stall
+> +		 * until some pages complete writeback.
+>  		 */
+>  		if (sc->nr.immediate)
+> -			congestion_wait(BLK_RW_ASYNC, HZ/10);
+> +			reclaim_throttle(pgdat, VMSCAN_THROTTLE_WRITEBACK, HZ/10);
+>  	}
+> =20
+>  	/*
+>  	 * Tag a node/memcg as congested if all the dirty pages
+>  	 * scanned were backed by a congested BDI and
+
+"congested BDI" doesn't mean anything any more.  Is this a good time to
+correct that comment.
+This comment seems to refer to the test
+
+      sc->nr.dirty && sc->nr.dirty =3D=3D sc->nr.congested)
+
+a few lines down.  But nr.congested is set from nr_congested which
+counts when inode_write_congested() is true - almost never - and when=20
+"writeback and PageReclaim()".
+
+Is that last test the sign that we are cycling through the LRU to fast?
+So the comment could become:
+
+   Tag a node/memcg as congested if all the dirty page were
+   already marked for writeback and immediate reclaim (counted in
+   nr.congested).
+
+??
+
+Patch seems to make sense to me, but I'm not expert in this area.
+
+Thanks!
+NeilBrown
