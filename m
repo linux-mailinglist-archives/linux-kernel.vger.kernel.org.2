@@ -2,182 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109C4411625
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5C5411621
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 15:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239975AbhITN4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 09:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        id S237129AbhITN4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 09:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239864AbhITN4H (ORCPT
+        with ESMTP id S233461AbhITN4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:56:07 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3446C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:54:40 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id t6so61691750edi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 06:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ago48Rpx2s0FA5kJM2lxWBXF4wmn4ZxkGTX5NYeA3xk=;
-        b=OPkpOlpOI0cKLBaZYHDxS5Py1PuZu0k9JisRRpyo8vUabXajREiZLRibhylW7O3Cvq
-         3fn2zYtJK9ZBJdYV4YlCWyPc8DUbMnWQcvRG3NiiGKjzKRwrrpKeijd890S7p2wsB0Ia
-         k34Y6FPCxptuEp+OH4m3ROhDoG2pdIlMKoYZs2PvfOXdl2GBs3Bli3e9yVygpmFp2qEm
-         Rz+ocAWrHEu9RaBFgRZDvJRypyDiKD3B4ZuSXF2E+Xl//WC+9lK/0lD/YtHcbFjapkUC
-         k0gwCVVlsPjvI8/N5tjp+1+MtnXDCTXpHF8jtSkPm0yZJcUPaEnxcXDJZXwc6st9m9yD
-         Y3NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ago48Rpx2s0FA5kJM2lxWBXF4wmn4ZxkGTX5NYeA3xk=;
-        b=kDXz/21z7tXNiUUM37Tc1sq16F58fVYTHYiNWslsIjzKJg2LgrcHV1lu78KfDmojl8
-         m8gUwx/vfV3B5iRqGpE4o6wlULrxTBto8h0U314ZukaKsBWyd0HBbzmzONiu6OAaXv0z
-         YFXnV4SRn94zU3Xi2hoe0Q4AZk8qYUUe2JRvEEVxVAcV0i8REDQxrpd0kitMOLz05Fpn
-         d+IiD1S1Z7LgODvmHQRUhLnWTebzLqSxJpoVFEe67ofkA/qQFPEiNyiQ78NA3M0yxBh3
-         lhXhvtnVgHAEuAlute0txC8fcKWg49cgraRY0fGx2VZKo5vcEaqD4i+J/it8yghuvcvt
-         sUbQ==
-X-Gm-Message-State: AOAM5330WNWwmfz1viy/HU9Ff6zsrp2szZ1JFZ5HG/gUtAgnTSY5MaSn
-        PLCr8Kma1vhypeGp0rBwaQQ=
-X-Google-Smtp-Source: ABdhPJxmvsfS6nF71sy4H20g5P+EHRJ8FhgIDIgsmqdKioEvCUqqVZGrI7X4kqPxJxIWjRu5M9c/lg==
-X-Received: by 2002:a50:d581:: with SMTP id v1mr29488085edi.210.1632146056206;
-        Mon, 20 Sep 2021 06:54:16 -0700 (PDT)
-Received: from localhost.localdomain (host-79-47-104-104.retail.telecomitalia.it. [79.47.104.104])
-        by smtp.gmail.com with ESMTPSA id t14sm6168932ejf.24.2021.09.20.06.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 06:54:15 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: core: remove the function power_saving_wk_hdl
-Date:   Mon, 20 Sep 2021 15:54:14 +0200
-Message-ID: <3091070.onRVGqex5P@localhost.localdomain>
-In-Reply-To: <20210920123910.GQ2088@kadam>
-References: <YTub30ZRG3oLbxQW@user> <2311011.CixZWWR6MO@localhost.localdomain> <20210920123910.GQ2088@kadam>
+        Mon, 20 Sep 2021 09:56:03 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D555C061574;
+        Mon, 20 Sep 2021 06:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Ml6l0rn52QlsFUnOCfmpKHL/TyYLnkrCtmGMxVRDliA=; b=yd65DEFZ25sB3j/ggV0Xl+wDsh
+        phEeQ/Xfp/Ie5T4Emv+TWwNaWVoIe7ZNgyAEWfMmTDNu/nY+MHAGAEoBfMPigvGdh1DQg0FmtdtKK
+        Oo2gOJYUvAqfda08B9g5n6BcoOnN6GGYZvkfenUxmMojG/0LY0BEUw+F5FfCQnmjKl6zvZFrW4B71
+        WaWkKs0Tu8dwAfsYwfsNoYbGoew4mMDznzGpfzGjTMvLToDfCfSioUQc4o9AI4b7FKTbZJ5KQqU/7
+        8T9bAiwzoFOGh2xqQsFW5OQkA2wWLKZisi0iVvUUy5BmkaZ2S0UdPdm2kyaPawR1DIUaI/NfBR+Md
+        0+j7LgZw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54674)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mSJkb-0001fr-D8; Mon, 20 Sep 2021 14:54:29 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mSJkY-0002LQ-Tm; Mon, 20 Sep 2021 14:54:26 +0100
+Date:   Mon, 20 Sep 2021 14:54:26 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, f.fainelli@gmail.com,
+        alexandre.belloni@bootlin.com, vladimir.oltean@nxp.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 10/12] net: lan966x: add port module support
+Message-ID: <YUiSkpRvvL0fvija@shell.armlinux.org.uk>
+References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
+ <20210920095218.1108151-11-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920095218.1108151-11-horatiu.vultur@microchip.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 20, 2021 2:39:10 PM CEST Dan Carpenter wrote:
-> On Mon, Sep 20, 2021 at 02:31:28PM +0200, Fabio M. De Francesco wrote:
-> > On Monday, September 20, 2021 1:32:21 PM CEST Dan Carpenter wrote:
-> > > On Mon, Sep 20, 2021 at 01:13:54PM +0200, Fabio M. De Francesco wrote:
-> > > > On Monday, September 20, 2021 12:36:06 PM CEST Greg KH wrote:
-> > > > > On Sat, Sep 18, 2021 at 10:52:50PM +0530, Saurav Girepunje wrote:
-> > > > > > 
-> > > > > > 
-> > > > > > On 13/09/21 9:48 pm, Greg KH wrote:
-> > > > > > > On Fri, Sep 10, 2021 at 11:24:39PM +0530, Saurav Girepunje 
-wrote:
-> > > > > > > > Remove the function power_saving_wk_hdl() as it just calling
-> > > > > > > > the rtw_ps_processor().Instead of power_saving_wk_hdl() call 
-> > directly
-> > > > > > > > rtw_ps_processor().
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> > > > > > >
-> > > > > > > []
-> > > > > > > 
-> > > > > > > Also does not apply to my tree.  Please rebase against my 
-staging-
-> > next
-> > > > > > > branch and resend.
-> > > > > > > 
-> > > > > > > thanks,
-> > > > > > > 
-> > > > > > > greg k-h
-> > > > > > > 
-> > > > > > 
-> > > > > > Hi Greg,
-> > > > > > 
-> > > > > > I always do rebase against your staging-testing branch. Can you 
-help 
-> > me 
-> > > > to
-> > > > > > understand.When we need to rebase on staging-next. Do we always 
-need 
-> > to
-> > > > > > rebase against staging-next..!
-> > > > > 
-> > > > > Yes, you should.  When you are working on code that lots of other 
-> > people
-> > > > > are working on, there will be conflicts like this, and you just 
-need to
-> > > > > stay on top of it.
-> > > > > 
-> > > > > thanks,
-> > > > > 
-> > > > > greg k-h
-> > > > > 
-> > > > 
-> > > > Sorry, Greg. I'm confused... :(
-> > > > 
-> > > > As far as I know, everyone here make patches for staging-testing.
-> > > 
-> > > Nope.  It's only you.
-> > 
-> > And Saurav (at least) :)
-> > 
-> 
-> Nope.  Saurav is working against something old.  You can see the
-> #ifdef CONFIG_88EU_P2P stuff that was removed in commit 102243f893ec
-> ("staging: r8188eu: Remove conditionals CONFIG_88EU_{AP_MODE,P2P}") was
-> applied.
-> 
+On Mon, Sep 20, 2021 at 11:52:16AM +0200, Horatiu Vultur wrote:
+> +static void lan966x_cleanup_ports(struct lan966x *lan966x)
+> +{
+> +	struct lan966x_port *port;
+> +	int portno;
+> +
+> +	for (portno = 0; portno < lan966x->num_phys_ports; portno++) {
+> +		port = lan966x->ports[portno];
+> +		if (!port)
+> +			continue;
+> +
+> +		if (port->phylink) {
+> +			rtnl_lock();
+> +			lan966x_port_stop(port->dev);
+> +			rtnl_unlock();
+> +			port->phylink = NULL;
 
-Oh, I didn't notice that he was working against something old. 
+This leaks the phylink structure. You need to call phylink_destroy().
 
-My attention was drawn only by the fact that Greg talked about staging-next, 
-while I was expecting something like "please rebase and resend against my 
-current staging-testing".
+>  static int lan966x_probe_port(struct lan966x *lan966x, u8 port,
+>  			      phy_interface_t phy_mode)
+>  {
+>  	struct lan966x_port *lan966x_port;
+> +	struct phylink *phylink;
+> +	struct net_device *dev;
+> +	int err;
+>  
+>  	if (port >= lan966x->num_phys_ports)
+>  		return -EINVAL;
+>  
+> -	lan966x_port = devm_kzalloc(lan966x->dev, sizeof(*lan966x_port),
+> -				    GFP_KERNEL);
+> +	dev = devm_alloc_etherdev_mqs(lan966x->dev,
+> +				      sizeof(struct lan966x_port), 8, 1);
+> +	if (!dev)
+> +		return -ENOMEM;
+>  
+> +	SET_NETDEV_DEV(dev, lan966x->dev);
+> +	lan966x_port = netdev_priv(dev);
+> +	lan966x_port->dev = dev;
+>  	lan966x_port->lan966x = lan966x;
+>  	lan966x_port->chip_port = port;
+>  	lan966x_port->pvid = PORT_PVID;
+>  	lan966x->ports[port] = lan966x_port;
+>  
+> +	dev->max_mtu = ETH_MAX_MTU;
+> +
+> +	dev->netdev_ops = &lan966x_port_netdev_ops;
+> +	dev->needed_headroom = IFH_LEN * sizeof(u32);
+> +
+> +	err = register_netdev(dev);
+> +	if (err) {
+> +		dev_err(lan966x->dev, "register_netdev failed\n");
+> +		goto err_register_netdev;
+> +	}
 
-> > I've been misled and in turn I misled Pavel. This is due to a guide in 
-> > kernelnewbies.org that explicitly says to use staging-testing:
-> > 
-> > https://kernelnewbies.org/OutreachyfirstpatchSetup
-> > 
-> > In that page the is a section ("Set up your Linux kernel code 
-repository") 
-> > which says: "[] Then use the revision control system called git to clone 
-Greg 
-> > Kroah-Hartman's staging tree repository: git clone -b staging-testing 
-git://
-> > git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git".
-> > 
-> 
-> Huh...
-> 
-> Those aren't *bad* instructions.  Working against testing-next is fine,
-> but just be aware that it can rebase.
+register_netdev() publishes the network device.
 
-Good to know. For what the series Pavel and I submitted we'll complete our 
-work, that is sending v9, against current staging-testing. I suppose we'd 
-better stay consistent.
+> +
+> +	lan966x_port->phylink_config.dev = &lan966x_port->dev->dev;
+> +	lan966x_port->phylink_config.type = PHYLINK_NETDEV;
+> +	lan966x_port->phylink_config.pcs_poll = true;
+> +
+> +	phylink = phylink_create(&lan966x_port->phylink_config,
+> +				 lan966x_port->fwnode,
+> +				 phy_mode,
+> +				 &lan966x_phylink_mac_ops);
 
-For new work, since you make notice that we have to "be aware that it 
-[staging-testing] can rebase", we'll switch to staging-next.
+phylink_create() should always be called _prior_ to the network device
+being published. In any case...
 
-Thanks for pointing this out.
+> +	if (IS_ERR(phylink))
+> +		return PTR_ERR(phylink);
 
-Regards,
+If this fails, this function returns an error, but leaves the network
+device published - which is a bug in itself.
 
-Fabio 
+> +static void lan966x_phylink_mac_link_down(struct phylink_config *config,
+> +					  unsigned int mode,
+> +					  phy_interface_t interface)
+> +{
 
-> 
-> regards,
-> dan carpenter
-> 
-> 
+Hmm? Shouldn't this do something?
 
-
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
