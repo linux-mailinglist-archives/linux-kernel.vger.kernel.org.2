@@ -2,73 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1F3410DFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 02:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2EF410E00
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 02:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhITAMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Sep 2021 20:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhITAMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Sep 2021 20:12:05 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B6FC061766
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 17:10:39 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id c4so9885857pls.6
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Sep 2021 17:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EmTuuBkgfu7PIcF+07HUiBDImoAebJFY6j2NyWamoP0=;
-        b=buSllOw0K2eKiv4B8E/+WiLU22fYFX8Z7pIhDd2XjqjYmudTx2w9oP45QsSEz16btQ
-         YzMngXfy5iO4G4e4iGTG1v91yplCA4S2mhwrd9Monkafyj6Wa7rhb/p+kukokAyLzn37
-         cBpxzWqXNkt3uJCISMNPrNNifuDRn4bck64YnQPFpJtpCrxw3p7vQmYDPGXH+FN9NkRs
-         GDhMDhQanG+tm9/SdvraIjEAOb5EbCYEBoo4EPD9QcLKGfAA5iaYG1vA5JOhgpm+BQUh
-         XoZGrrVaQFzXToFEpj7riLfi5Hja61hrt3bsQyuW2iegtAk/P3OTIvoZhxq8iZBfjy2H
-         zj+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EmTuuBkgfu7PIcF+07HUiBDImoAebJFY6j2NyWamoP0=;
-        b=LTNQEdV8VTNaAOgWxqrBvH/65uIkzb4Tu5wExFjapQvFxi4hj2g7lqda5Mxqjv0Pot
-         qPoXh+z/oTHW7zSde1RE1vyeRL4HomQzdM2jgo6VLh3IdTcioySSeK9rTYfYUBIf42zy
-         rIKxHSeRexSjy6NdOJUC/g29dksVLkksaa/Z8EV/yadwfz2WtVlV609QB3OVf2QOw6ru
-         o8PGiH4ClwmsAeOvmHscMMxKSEdHdC6DeDcB0EonWcJfslNP/L3cQR5PiZdevp5ln/fE
-         E/mTDxcuUSNdZkzxb5T3ekZPSPSEIHKOJbE41AOaMq3hsqTS5xScylgLthyzzhzWV7Gk
-         UzsA==
-X-Gm-Message-State: AOAM5320qMuaoEqH1tbtkpIWVfIDdCLVzepFvwfmR5DJgHanBTTnYsvK
-        JMzp8G7kZDHEHwvrACxlI6+sq8J1Tr66Ul+mlYM=
-X-Google-Smtp-Source: ABdhPJzg3lJmdciQsUfDNRY83cvSy2NKeWQNlYCH6iDhArBDVPjJn+zCBm6ypYInrcInwAplsviVdRsm9kvx2BZqMVM=
-X-Received: by 2002:a17:90a:f411:: with SMTP id ch17mr25993483pjb.182.1632096639244;
- Sun, 19 Sep 2021 17:10:39 -0700 (PDT)
+        id S230495AbhITAVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Sep 2021 20:21:18 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55781 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229565AbhITAVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 19 Sep 2021 20:21:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632097190;
+        bh=n6Y6mJwPd87qzTAfHIij558bqPiM0Z4YLCOxd/dfKZI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KbdrCOUQ0yiXFEVjxseO4Cd0di5qpNQSygTN/0yJ0ol+bv6cC33j/kCuYg8dErqUs
+         duCIM4c6jPaDXbKlqLZU/55oTRt8bJAhDYWy/Ac7Hg2uMkPqN6vez/7K6PFe4DrU6z
+         FymJSxym+2HnqKauTlR5Kqx/1xQcsZeBv7sklxYsy8ShA1zF6QGEquEDVMIGq/Dnqd
+         z+xiRgMZbR66eof1NTGu2Vr19XrfUgBuTuHcZGiP1Dzy9pufOYysPsijleMb5NGa4F
+         lCwdbqhVjadqyekReEtyY4s0Yh6uItYxuAuLPwInQ3tVMENtMmyOzoh2m3CYOwSeUL
+         b034eMKdiVT6g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HCQDP4StWz9sX3;
+        Mon, 20 Sep 2021 10:19:49 +1000 (AEST)
+Date:   Mon, 20 Sep 2021 10:19:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Sean Young <sean@mess.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the v4l-dvb-next tree
+Message-ID: <20210920101948.34a93713@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e20d:0:0:0:0 with HTTP; Sun, 19 Sep 2021 17:10:38
- -0700 (PDT)
-Reply-To: johnsonk100@gmail.com
-From:   Raphael John Diko <mohamedalabbar10@gmail.com>
-Date:   Sun, 19 Sep 2021 17:10:38 -0700
-Message-ID: <CAOB23ShUZVXMZ=Q5nQNhv3vN8p_6XrJ__YFSw79_9rSO59Bj-A@mail.gmail.com>
-Subject: CONFIRM IF YOU DID RECEIVE MY MAIL
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/gdCjGjDERhYfAqrx4wkOt2+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear
+--Sig_/gdCjGjDERhYfAqrx4wkOt2+
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I am Raphael.K.John Diko,
+Hi all,
 
-I want to confirm from you if you are able to handle a transaction
-project valued at $7.5 million dollars only, that  will benefit both
-of us.
+After merging the v4l-dvb-next tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-Let me know your willingness.
+drivers/media/rc/ir_toy.c: In function 'irtoy_tx':
+drivers/media/rc/ir_toy.c:332:36: error: 'STATE_RESET' undeclared (first us=
+e in this function)
+  332 |        sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
+      |                                    ^~~~~~~~~~~
+drivers/media/rc/ir_toy.c:332:36: note: each undeclared identifier is repor=
+ted only once for each function it appears in
 
-You should get back to me on this email address:  alexptt56@gmail.com
+Caused by commit
 
-Thanks
+  6a014f20734d ("media: ir_toy: allow tx carrier to be set")
 
-Raphael.K.John Diko
+interacting with commit
+
+  f0c15b360fb6 ("media: ir_toy: prevent device from hanging during transmit=
+")
+
+from the v4l-vdb-fixes tree.
+
+I have applied the following merge fix patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 20 Sep 2021 10:14:37 +1000
+Subject: [PATCH] fix for "media: ir_toy: allow tx carrier to be set"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/media/rc/ir_toy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/rc/ir_toy.c b/drivers/media/rc/ir_toy.c
+index 9ea91d418635..71aced52248f 100644
+--- a/drivers/media/rc/ir_toy.c
++++ b/drivers/media/rc/ir_toy.c
+@@ -329,7 +329,7 @@ static int irtoy_tx(struct rc_dev *rc, uint *txbuf, uin=
+t count)
+ 	// with its led on. It does not respond to any command when this
+ 	// happens. To work around this, re-enter sample mode.
+ 	err =3D irtoy_command(irtoy, COMMAND_SMODE_EXIT,
+-			    sizeof(COMMAND_SMODE_EXIT), STATE_RESET);
++			    sizeof(COMMAND_SMODE_EXIT), STATE_COMMAND_NO_RESP);
+ 	if (err) {
+ 		dev_err(irtoy->dev, "exit sample mode: %d\n", err);
+ 		return err;
+--=20
+2.32.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gdCjGjDERhYfAqrx4wkOt2+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFH06QACgkQAVBC80lX
+0GzfPAf+PMwV6x5eNTNKhUAiOJsBhppdJLhjLLqapACfHWaHOSJRl5YSHiRwH3q/
+BaTlSEnwAldjUUpCRPxWwI2RuXsu7kRb+Ef9lMHKLfwrqyDe6m5VbSzZlPENMcXO
+V68PIcH8KH9R/xNhwns06YqXIOlcIdQG2Ifc4W2AN79D1Nzl/Zi7IYuArX66dI14
+XVGhxvOvxXAggjEfUpKzktXIk5xe26VVYTnPqyggPYMxYr5sESSrEEOwqi/6Xj6y
+ot9YgOETQIdNmJjJHYBWiHQu9qu0+tiSYaYpl2C9xDblDb7Mryp8PLlIs4eCVTBz
+eGA93Z3KULfyLuQBI4SEtjQvUd5RNw==
+=7HlU
+-----END PGP SIGNATURE-----
+
+--Sig_/gdCjGjDERhYfAqrx4wkOt2+--
