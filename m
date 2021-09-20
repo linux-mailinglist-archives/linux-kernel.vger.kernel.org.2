@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DC24124E8
+	by mail.lfdr.de (Postfix) with ESMTP id 709484124E9
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Sep 2021 20:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381691AbhITSjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 14:39:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
+        id S1381706AbhITSjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 14:39:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1380560AbhITSe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1380562AbhITSe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 14:34:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57BD26330B;
-        Mon, 20 Sep 2021 17:28:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A29C26330C;
+        Mon, 20 Sep 2021 17:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632158911;
-        bh=ewc69y/F6LFv42I1lm/qQybPhoWFzmIud7/vDV0fXhA=;
+        s=korg; t=1632158916;
+        bh=OuoYNISQKaS+VW8KpV7xBcXXNd7ZlUJVKae6lHk9z9E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=amW5ADwVv512gmUTrh+smNg2vnGfdIr9rZv66wyu6jpQzlJadNtyZ1ZvYllSymFcl
-         RTMXzIfQv+Y3QJ76HYBXX0ikF/kg6OnbO6VGtHZYBApemVV1wTSigRXA1e3QC0YBuB
-         yY0pfb4f/9707GeQnbLPrPUAU/kXj/xG0yrosuOA=
+        b=FOuNpKRE+TasI2D+5LM1X3QLyVUWdWp9MDDFZ+NGhrh75jr2mE7Old54Rwzw1N1u3
+         GrRRafqfIKc7xe+fdwpUGopBFHxl0ccK6wGECN3qaQER6p7Y27XG0+Zk5mvGd1HUFH
+         KyGFykrhXO7WzynwkjqniQWFAIsijWsVesSmq0Sg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
+        stable@vger.kernel.org, Pavan Chebbi <pavan.chebbi@broadcom.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
         Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 113/122] bnxt_en: Fix asic.rev in devlink dev info command
-Date:   Mon, 20 Sep 2021 18:44:45 +0200
-Message-Id: <20210920163919.520834557@linuxfoundation.org>
+Subject: [PATCH 5.10 114/122] bnxt_en: log firmware debug notifications
+Date:   Mon, 20 Sep 2021 18:44:46 +0200
+Message-Id: <20210920163919.553785546@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 References: <20210920163915.757887582@linuxfoundation.org>
@@ -42,37 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Edwin Peer <edwin.peer@broadcom.com>
 
-[ Upstream commit 6fdab8a3ade2adc123bbf5c4fdec3394560b1fb1 ]
+[ Upstream commit a44daa8fcbcf572545c4c1a7908b3fbb38388048 ]
 
-The current asic.rev is incomplete and does not include the metal
-revision.  Add the metal revision and decode the complete asic
-revision into the more common and readable form (A0, B0, etc).
+Firmware is capable of generating asynchronous debug notifications.
+The event data is opaque to the driver and is simply logged. Debug
+notifications can be enabled by turning on hardware status messages
+using the ethtool msglvl interface.
 
-Fixes: 7154917a12b2 ("bnxt_en: Refactor bnxt_dl_info_get().")
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-index 2bd476a501bd..e2fd625fc6d2 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-@@ -452,7 +452,7 @@ static int bnxt_dl_info_get(struct devlink *dl, struct devlink_info_req *req,
- 		return rc;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 1def6caba349..621634d40966 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -272,6 +272,7 @@ static const u16 bnxt_async_events_arr[] = {
+ 	ASYNC_EVENT_CMPL_EVENT_ID_PORT_PHY_CFG_CHANGE,
+ 	ASYNC_EVENT_CMPL_EVENT_ID_RESET_NOTIFY,
+ 	ASYNC_EVENT_CMPL_EVENT_ID_ERROR_RECOVERY,
++	ASYNC_EVENT_CMPL_EVENT_ID_DEBUG_NOTIFICATION,
+ 	ASYNC_EVENT_CMPL_EVENT_ID_RING_MONITOR_MSG,
+ };
  
- 	ver_resp = &bp->ver_resp;
--	sprintf(buf, "%X", ver_resp->chip_rev);
-+	sprintf(buf, "%c%d", 'A' + ver_resp->chip_rev, ver_resp->chip_metal);
- 	rc = bnxt_dl_info_put(bp, req, BNXT_VERSION_FIXED,
- 			      DEVLINK_INFO_VERSION_GENERIC_ASIC_REV, buf);
- 	if (rc)
+@@ -2132,6 +2133,13 @@ static int bnxt_async_event_process(struct bnxt *bp,
+ 			bnxt_fw_health_readl(bp, BNXT_FW_RESET_CNT_REG);
+ 		goto async_event_process_exit;
+ 	}
++	case ASYNC_EVENT_CMPL_EVENT_ID_DEBUG_NOTIFICATION:
++		if (netif_msg_hw(bp)) {
++			netdev_notice(bp->dev,
++				      "Received firmware debug notification, data1: 0x%x, data2: 0x%x\n",
++				      data1, data2);
++		}
++		goto async_event_process_exit;
+ 	case ASYNC_EVENT_CMPL_EVENT_ID_RING_MONITOR_MSG: {
+ 		struct bnxt_rx_ring_info *rxr;
+ 		u16 grp_idx;
 -- 
 2.30.2
 
