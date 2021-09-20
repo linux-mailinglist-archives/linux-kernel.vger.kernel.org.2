@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0856D412B90
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB22412B9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347215AbhIUCTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
+        id S1347412AbhIUCUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245504AbhIUCKd (ORCPT
+        with ESMTP id S1344291AbhIUCNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:10:33 -0400
-Received: from wp441.webpack.hosteurope.de (wp441.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:85d2::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45810C14D205;
-        Mon, 20 Sep 2021 11:26:11 -0700 (PDT)
-Received: from [2a03:7846:b79f:101:21c:c4ff:fe1f:fd93] (helo=valdese.nms.ulrich-teichert.org); authenticated
-        by wp441.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1mSNzM-00027j-Q1; Mon, 20 Sep 2021 20:26:00 +0200
-Received: from valdese.nms.ulrich-teichert.org (localhost [127.0.0.1])
-        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Debian-8+deb9u1) with ESMTPS id 18KIPwvw026068
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Sep 2021 20:25:58 +0200
-Received: (from ut@localhost)
-        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Submit) id 18KIPsV4026066;
-        Mon, 20 Sep 2021 20:25:54 +0200
-Message-Id: <202109201825.18KIPsV4026066@valdese.nms.ulrich-teichert.org>
-Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
-To:     torvalds@linux-foundation.org (Linus Torvalds)
-Date:   Mon, 20 Sep 2021 20:25:54 +0200 (CEST)
-Cc:     krypton@ulrich-teichert.org (Ulrich Teichert),
-        mcree@orcon.net.nz (Michael Cree),
-        linux@roeck-us.net (Guenter Roeck),
-        rth@twiddle.net (Richard Henderson),
-        ink@jurassic.park.msu.ru (Ivan Kokshaysky),
-        mattst88@gmail.com (Matt Turner),
-        James.Bottomley@hansenpartnership.com (James E . J . Bottomley),
-        deller@gmx.de (Helge Deller),
-        davem@davemloft.net (David S . Miller),
-        kuba@kernel.org (Jakub Kicinski),
-        linux-alpha@vger.kernel.org (alpha),
-        geert@linux-m68k.org (Geert Uytterhoeven),
-        linux-kernel@vger.kernel.org (Linux Kernel Mailing List),
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org (Netdev),
-        linux-sparse@vger.kernel.org (Sparse Mailing-list)
-In-Reply-To: <CAHk-=wh-=tMO9iCA4v+WgPSd+Gbowe5kptwo+okahihnO2fAOA@mail.gmail.com>
-From:   Ulrich Teichert <krypton@ulrich-teichert.org>
-X-Mailer: ELM [version 2.5 PL8]
+        Mon, 20 Sep 2021 22:13:06 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DEDC09CCC2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:28:52 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id j6so17085092pfa.4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 11:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=thLxpg55L9L13LgTK3I+f/Vrx/go018u31qP2p6Akx0=;
+        b=WHXDWtWcwFGk7LtXnSZ+PjQsT2VIAEZhKXrYUYCUqx275UrjId3tNEFrVrFval+6VY
+         ASne1xFDtcgrVAHM0ho6Jz0an8+X7rpaMwNgpvvoptvSiH7Nh4vjF4vM8+OwOEh54BVO
+         he7wqilNLX8KmGWIidRONIwihDDVpXGrUbUOc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=thLxpg55L9L13LgTK3I+f/Vrx/go018u31qP2p6Akx0=;
+        b=RtBw6JlBs+AN0LLSkNA8WjPLshDcZh4aHOX/nlQVWA9fYIsjUDCUjseDPvWYIHvl+I
+         TLgiqX25BSebiEMe+UUD79pi3PuO+eGE+vfu33qDGyDSYubrdusgDg0zb0/J+q1Rro9f
+         1mEw9CwOPHy4d1jLJ7q44PJ5ckj+LWOlA2KDUuO6tzSub5zzdu20nOLv61DV1FOrqX1h
+         d7TS10FrsgmRG9BTrG7rb6Ow13FOcamWeJE/trwHQMGjm643ZXYLDoOmWs6gn9DtfluE
+         UwUIe8PmN81E8fE+bMdeY+Oj8KpxxOab2Ah0hgXe0iQJ8VhvMhXhvwCtw8Pr7a+AwYZo
+         gysQ==
+X-Gm-Message-State: AOAM531CHXzahPBz8pla6R0fs4fPm3TQRgKUUpv/11HZJGjUmdGPuND+
+        ioFWNUA4ZHQw7LomOeE0y1X2Mw==
+X-Google-Smtp-Source: ABdhPJwhFVKdYlCToObhylE8KnrZUUrTqmif27AzPVOfkfhLdgmla4KXX1yzLyQmcd3Kf9O4pHq1Dg==
+X-Received: by 2002:a62:7c01:0:b0:447:cd36:c9a7 with SMTP id x1-20020a627c01000000b00447cd36c9a7mr3827780pfc.2.1632162532349;
+        Mon, 20 Sep 2021 11:28:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u6sm1965997pgc.68.2021.09.20.11.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 11:28:51 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 11:28:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Petr Mladek <pmladek@suse.com>, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v3 4/4] slub: Force on no_hash_pointers when slub_debug
+ is enabled
+Message-ID: <202109201126.E9902480D9@keescook>
+References: <20210601182202.3011020-1-swboyd@chromium.org>
+ <20210601182202.3011020-5-swboyd@chromium.org>
+ <202109200726.2EFEDC5@keescook>
+ <CAE-0n50v6Wm2OBsy5-Q3B9VrNhH+_uyDDa8Ps3MeXsCLZczW3w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;ut@ulrich-teichert.org;1632162371;b2cd99ed;
-X-HE-SMSGID: 1mSNzM-00027j-Q1
+Content-Disposition: inline
+In-Reply-To: <CAE-0n50v6Wm2OBsy5-Q3B9VrNhH+_uyDDa8Ps3MeXsCLZczW3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-[sorry for the late answer, I was sick yesterday with digestive
-system trouble, but nothing serious, just painful....]
-> On Sat, Sep 18, 2021 at 1:26 PM Ulrich Teichert
-> <krypton@ulrich-teichert.org> wrote:
+On Mon, Sep 20, 2021 at 11:23:01AM -0700, Stephen Boyd wrote:
+> Quoting Kees Cook (2021-09-20 07:29:54)
+> > On Tue, Jun 01, 2021 at 11:22:02AM -0700, Stephen Boyd wrote:
+> > > Obscuring the pointers that slub shows when debugging makes for some
+> > > confusing slub debug messages:
+> > >
+> > >  Padding overwritten. 0x0000000079f0674a-0x000000000d4dce17
+> > >
+> > > Those addresses are hashed for kernel security reasons. If we're trying
+> > > to be secure with slub_debug on the commandline we have some big
+> > > problems given that we dump whole chunks of kernel memory to the kernel
+> > > logs. Let's force on the no_hash_pointers commandline flag when
+> > > slub_debug is on the commandline. This makes slub debug messages more
+> > > meaningful and if by chance a kernel address is in some slub debug
+> > > object dump we will have a better chance of figuring out what went
+> > > wrong.
+> > >
+> > > Note that we don't use %px in the slub code because we want to reduce
+> > > the number of places that %px is used in the kernel. This also nicely
+> > > prints a big fat warning at kernel boot if slub_debug is on the
+> > > commandline so that we know that this kernel shouldn't be used on
+> > > production systems.
 > >
-> > I was just tinkering with it to get it compiled without warning,
-> > I certainly didn't get the big picture :-/
+> > Eeeek. I missed this patch. NAK NAK. People use slub_debug for
+> > production systems to gain redzoning, etc, as a layer of defense, and
+> > they absolutely do not want %p-hashing disabled. %p hashing is
+> > controlled by the no_hash_pointers boot param (since v5.12), and needs to stay
+> > separate from slub_debug.
+> >
+> > Can we please revert this in Linus's tree and in v5.14?
+> >
 > 
-> Ok, you shamed me into some tinkering too, and I fixed a couple of
-> issues with the alpha build.
+> This is fine with me as long as debugging with slub_debug on the
+> commandline is possible. Would you prefer v1 of this patch series[1]
+> that uses the printk format to print unhashed pointers in slub debugging
+> messages?
 > 
-> The whole "pci_iounmap()" mess is not something I solved (you were
-> cc'd on the email I sent out about that), but I did test a few
-> different Jensen configurations and fixed a couple of uglies.
-> 
-> So at least _some_ Jensen configurations build cleanly once more, and
-> I re-enabled JENSEN as a valid machine target.
+> [1] https://lore.kernel.org/r/20210520013539.3733631-1-swboyd@chromium.org
 
-Yes, I was able to build a minimal Jensen config without any warning
-after pulling today, thanks! I think investing a bit in cleaning up
-non-PCI configurations may help as soon as PCIe will be obsoleted
-by the next bus system ;-)
+I'd like to keep %px use in the kernel minimized. Seeing full pointers (%p
+hashing disabled) can be done with the no_hash_pointers boot param, and
+that's used in other debug cases as well. I'd rather keep it a global
+knob.
 
-> But if it doesn't boot, it's all fairly moot. And those things are a
-> pain to debug, and if the last booting kernel was years and years ago,
-> I don't think it realistically will necessarily ever be fixed.
+Thanks!
 
-The main trouble is that my system has only 64MB of memory and the smallest
-kernel image with all drivers I need was about 105MB big. According
-to: http://users.bart.nl/~geerten/FAQ-9.html
-the Jensen can take up to 128MB of RAM and the required PS/2 SIMMs
-with partity are still available on ebay, so I just bought 4x32 MB SIMMs.
-After setting CONFIG_CC_OPTIMIZE_FOR_SIZE the kernel image was still
-93MB big, but with 128MB I should be able to boot it. Let's see....
+-Kees
 
-> Oh well. I have an odd love-hate relationship with alpha.
-> 
-> I think it's one of the worst architectures ever designed (memory
-> ordering is completely broken, and the lack of byte operations in the
-> original specs were a big reason for the initial problems and eventual
-> failure).
-
-I didn't had the money for an Alpha at that time, but as soon as
-cheap systems were available on ebay, I took the opportunity. At the
-time I bought them, I considered the Miatas (the "Personal Workstations"
-from DEC) as quite fast - that must have been around 2004/2006.
-
-> But at the same time, I really did enjoy it back in the day, and it
-> _was_ the first port I did, and the first truly integrated kernel
-> architecture (the original Linux m68k port that preceded it was a
-> "hack up and replace" job rather than "integrate")
-
-My experience is that each port is good for code quality, but I can
-only state that for user space applications, not having done much kernel
-work,
-
-CU,
-Uli
 -- 
-Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de | Listening to:
-Stormweg 24               |Eat Lipstick: Dirty Little Secret, The Baboon Show:
-24539 Neumuenster, Germany|Work Work Work, The Bellrays: Bad Reaction
+Kees Cook
