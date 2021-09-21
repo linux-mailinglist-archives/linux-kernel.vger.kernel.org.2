@@ -2,202 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C16E412F71
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D4D412F75
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhIUH3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhIUH3g (ORCPT
+        id S230292AbhIUHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:31:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21727 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhIUHbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:29:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04657C061762;
-        Tue, 21 Sep 2021 00:28:08 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 07:28:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632209286;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NWwLEEw6WlW9jLgzDSQFExKwmlbCC9KpNskPgeJc818=;
-        b=q95K4BSmzHfEYbppWeVPbUs/OX15veR1Q6zjM7YgnP0rn5sizAgydsFI4b3ORJ4aFNw/W9
-        60t4/EwEy4MjrV8NOjUWvr7LQXXechk3sPUjHzF+jvZxQ32YnIIrmhM5t5cBxEuWYfvNDZ
-        kiNV8icSfyk+7ER07iIbdtJT99reVSuk+EH84N1sZmKmnVoujPWKc5QVa8fsdPyZiK97sY
-        sKrwZPfynXro2OvpqT4mpEyvyAuw7vM3ibaTFEZ0fqTh9yxE7FjnXqOmWcfIZ2+4EvV7C+
-        U6hA9X8ozAtWLV/fs3hZ4rcSfEvBxsV67HhtXVNzPHkHRj+uUXl3pw6pfxJntA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632209286;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NWwLEEw6WlW9jLgzDSQFExKwmlbCC9KpNskPgeJc818=;
-        b=HtHih6u1YPIejliryOq3JHay0cHOM6TxnNUDI8TbhDsCFkHdgSJBJIGgvHklsm3eSKhxvx
-        XS13JQr74weuFKCA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/iopl: Fake iopl(3) CLI/STI usage
-Cc:     Ondrej Zary <linux@zary.sk>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210918090641.GD5106@worktop.programming.kicks-ass.net>
-References: <20210918090641.GD5106@worktop.programming.kicks-ass.net>
+        Tue, 21 Sep 2021 03:31:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632209384; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=kKdhD4lzVyFP69pBm3weZQlw0bDreWRpvFnA2JACO6A=; b=HQ7oXllr0amf8d9veQtrLAkb+z1dYNeZ/xZ63XugP/LkRvad9fxhMwnhWPaqmGdOO+bAoled
+ RSYKstoy9akKj1DDTkAD9E1kw95yFji2YQ9ZDYgvSlM6h2cQL29QA6xGKfEAQdNm/P4mzY1R
+ J8wPxsaoRO6oD4itOmSp5TmBtCE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 614989e5507800c880f997d7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 07:29:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 91B12C43618; Tue, 21 Sep 2021 07:29:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0E18BC4338F;
+        Tue, 21 Sep 2021 07:29:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0E18BC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "sparks71\@gmx.de" <sparks71@gmx.de>
+Cc:     ojab // <ojab@ojab.ru>, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] ath10k: don't fail if IRAM write fails
+References: <20210722193459.7474-1-ojab@ojab.ru>
+        <CAKzrAgRt0jRFyFNjF-uq=feG-9nhCx=tTztCgCEitj1cpMk_Xg@mail.gmail.com>
+        <CAKzrAgQgsN6=Cu4SvjSSFoJOqAkU2t8cjt7sgEsJdNhvM8f7jg@mail.gmail.com>
+        <CAKzrAgSEiq-qOgetzryaE3JyBUe3URYjr=Fn0kz9sF7ZryQ5pA@mail.gmail.com>
+        <538825a2-82f0-6102-01da-6e0385e53cf5@gmx.de>
+Date:   Tue, 21 Sep 2021 10:29:34 +0300
+In-Reply-To: <538825a2-82f0-6102-01da-6e0385e53cf5@gmx.de> (sparks's message
+        of "Sat, 18 Sep 2021 12:12:23 +0200")
+Message-ID: <87wnnav129.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Message-ID: <163220928593.25758.16098239507716851071.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+"sparks71@gmx.de" <sparks71@gmx.de> writes:
 
-Commit-ID:     32e1ae626f295152d1fc9a3375214133cbe62878
-Gitweb:        https://git.kernel.org/tip/32e1ae626f295152d1fc9a3375214133cbe62878
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 17 Sep 2021 11:20:04 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Sat, 18 Sep 2021 12:18:32 +02:00
+> Have you seen the new patch?
+>
+> https://www.mail-archive.com/ath10k@lists.infradead.org/msg13784.html
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=master-pending&id=973de582639a1e45276e4e3e2f3c2d82a04ad0a6
+>
+>
+> could probably have been communicated better
 
-x86/iopl: Fake iopl(3) CLI/STI usage
+Yeah, apparently there are two different fixes now. I'll review both of
+them and try to choose which one to take.
 
-Since commit c8137ace5638 ("x86/iopl: Restrict iopl() permission
-scope") it's possible to emulate iopl(3) using ioperm(), except for
-the CLI/STI usage.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-Userspace CLI/STI usage is very dubious (read broken), since any
-exception taken during that window can lead to rescheduling anyway (or
-worse). The IOPL(2) manpage even states that usage of CLI/STI is highly
-discouraged and might even crash the system.
-
-Of course, that won't stop people and HP has the dubious honour of
-being the first vendor to be found using this in their hp-health
-package.
-
-In order to enable this 'software' to still 'work', have the #GP treat
-the CLI/STI instructions as NOPs when iopl(3). Warn the user that
-their program is doing dubious things.
-
-Fixes: a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
-Reported-by: Ondrej Zary <linux@zary.sk>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20210918090641.GD5106@worktop.programming.kicks-ass.net
----
- arch/x86/include/asm/insn-eval.h |  1 +-
- arch/x86/include/asm/processor.h |  1 +-
- arch/x86/kernel/process.c        |  1 +-
- arch/x86/kernel/traps.c          | 33 +++++++++++++++++++++++++++++++-
- arch/x86/lib/insn-eval.c         |  2 +-
- 5 files changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
-index 91d7182..4ec3613 100644
---- a/arch/x86/include/asm/insn-eval.h
-+++ b/arch/x86/include/asm/insn-eval.h
-@@ -21,6 +21,7 @@ int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
- int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
- unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
- int insn_get_code_seg_params(struct pt_regs *regs);
-+int insn_get_effective_ip(struct pt_regs *regs, unsigned long *ip);
- int insn_fetch_from_user(struct pt_regs *regs,
- 			 unsigned char buf[MAX_INSN_SIZE]);
- int insn_fetch_from_user_inatomic(struct pt_regs *regs,
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 9ad2aca..577f342 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -518,6 +518,7 @@ struct thread_struct {
- 	 */
- 	unsigned long		iopl_emul;
- 
-+	unsigned int		iopl_warn:1;
- 	unsigned int		sig_on_uaccess_err:1;
- 
- 	/*
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 1d9463e..f2f733b 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -132,6 +132,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	frame->ret_addr = (unsigned long) ret_from_fork;
- 	p->thread.sp = (unsigned long) fork_frame;
- 	p->thread.io_bitmap = NULL;
-+	p->thread.iopl_warn = 0;
- 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index a588009..f3f3034 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -528,6 +528,36 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
- 
- #define GPFSTR "general protection fault"
- 
-+static bool fixup_iopl_exception(struct pt_regs *regs)
-+{
-+	struct thread_struct *t = &current->thread;
-+	unsigned char byte;
-+	unsigned long ip;
-+
-+	if (!IS_ENABLED(CONFIG_X86_IOPL_IOPERM) || t->iopl_emul != 3)
-+		return false;
-+
-+	if (insn_get_effective_ip(regs, &ip))
-+		return false;
-+
-+	if (get_user(byte, (const char __user *)ip))
-+		return false;
-+
-+	if (byte != 0xfa && byte != 0xfb)
-+		return false;
-+
-+	if (!t->iopl_warn && printk_ratelimit()) {
-+		pr_err("%s[%d] attempts to use CLI/STI, pretending it's a NOP, ip:%lx",
-+		       current->comm, task_pid_nr(current), ip);
-+		print_vma_addr(KERN_CONT " in ", ip);
-+		pr_cont("\n");
-+		t->iopl_warn = 1;
-+	}
-+
-+	regs->ip += 1;
-+	return true;
-+}
-+
- DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- {
- 	char desc[sizeof(GPFSTR) + 50 + 2*sizeof(unsigned long) + 1] = GPFSTR;
-@@ -553,6 +583,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- 	tsk = current;
- 
- 	if (user_mode(regs)) {
-+		if (fixup_iopl_exception(regs))
-+			goto exit;
-+
- 		tsk->thread.error_code = error_code;
- 		tsk->thread.trap_nr = X86_TRAP_GP;
- 
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index a1d24fd..eb3ccff 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -1417,7 +1417,7 @@ void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs)
- 	}
- }
- 
--static int insn_get_effective_ip(struct pt_regs *regs, unsigned long *ip)
-+int insn_get_effective_ip(struct pt_regs *regs, unsigned long *ip)
- {
- 	unsigned long seg_base = 0;
- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
