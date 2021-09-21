@@ -2,163 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA837412E97
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6DB412E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhIUG0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:26:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:45573 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhIUG0L (ORCPT
+        id S229823AbhIUG25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhIUG24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:26:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632205483; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=r1MIh/PkldH2U+1tjZkQG+gLUFnytt67vnrcPlCRQvw=;
- b=Bqx1dfJ64j6ICx/M2Xnb4fBqYUV4J2WTy+pxf53BUph0hxCeq0SrL0o0NhOuefSvjR2f+Ecs
- Nzw8axMlvlcMoSz21ERn0jpmfr2KGEr4Vm5Ywa0XN0uGRsF0uDAUl4BUqykWlNM3cfoAU/iM
- NoaFqbkBrQ86t934/tB7Iae20s4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 61497aa2b585cc7d2498a9fa (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 06:24:33
- GMT
-Sender: kathirav=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CBA2AC4360D; Tue, 21 Sep 2021 06:24:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3792C4338F;
-        Tue, 21 Sep 2021 06:24:32 +0000 (UTC)
+        Tue, 21 Sep 2021 02:28:56 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED06C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:27:28 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id c7so45758763qka.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bx2qLnibyjBQP3Cwq2rxTrw1KpHuF4QRllMp6t6UiFc=;
+        b=a+vdvt88RTaFWVh/6GdGX0TUYAxYiZBTFwUXiduLzzBGBA58aeJyJ/WH5xNmFBtn/r
+         xRrBAFTpOUiBaElOXIFY/I4e5GBgQG1E7dSqBD6oh6smn7vW7enSkUx1VLFh//geJ+8v
+         J1VEIrYJ11fBZTo5/LP/PXnOJJLTqTREpTQLE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bx2qLnibyjBQP3Cwq2rxTrw1KpHuF4QRllMp6t6UiFc=;
+        b=PTJmUkcOYJicGEAchG0xWx4m9dz69YVJiK19O+LAwBsX+t0rN7FgxlzoN4Z0GRz6+j
+         doCFtl+ylmI03p665yyPOPh4cv5aSiNXvnCxRJ+C7mrBGUd4vTtNiKotiCAoWvHOWwWm
+         wFqkfZoS3WkXyKrh6mutMqNBAx9lw3AZkDXWEZiJ3ClOW3Ikiez8tCGfysFIW4mYreEV
+         h4M2K2o/LMfISZch2S2OKfLWyS7C3WD/JMd6BHyDxi5ecgo/k0cXg4XSuxZk2atYQoz2
+         HNxGdgHheSoE/KZcoSUwQNeY8oo5U5yO+i4mTnTyciPBulA8IveVpa8cxqMDQEyH+X9J
+         dhMA==
+X-Gm-Message-State: AOAM532gKNZ+8QkNneU37u3o7Zuyucm+HI2cRts88Y0tVd06FQq5xT7j
+        Vx2JLlke5rq0187+VHN/BZJpY1pfljXtgjZyQ8UrgA==
+X-Google-Smtp-Source: ABdhPJwqv0yS1pJjqGFDkqVh9BDwoNusU5NQWtDRZgLijPyw8WvND8LS4z/Pgwym+MF/bGjXyf5kg/pSdTblO8nOE/I=
+X-Received: by 2002:a05:6902:1547:: with SMTP id r7mr34266227ybu.72.1632205647689;
+ Mon, 20 Sep 2021 23:27:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Sep 2021 11:54:32 +0530
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>, agross@kernel.org,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
-In-Reply-To: <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
-References: <20210902214708.1776690-1-robimarko@gmail.com>
- <YUf3aKn78+41Cb/G@builder.lan>
- <CAOX2RU5b46H7nqm6G4mHLSqEhGiWktwWjUKF5w10Ut+AdKea-A@mail.gmail.com>
-Message-ID: <632a7d28c23a8497d35ea009bfe89883@codeaurora.org>
-X-Sender: kathirav@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210825025009.2081060-1-stevensd@google.com>
+In-Reply-To: <20210825025009.2081060-1-stevensd@google.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Tue, 21 Sep 2021 15:27:16 +0900
+Message-ID: <CAD=HUj6_CFE0ZjexVMQMansmVcFRm3-udG=_12ROKfWDroNt-g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] KVM: allow mapping non-refcounted pages
+To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        open list <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-20 14:55, Robert Marko wrote:
-> On Mon, 20 Sept 2021 at 04:52, Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
->> 
->> On Thu 02 Sep 16:47 CDT 2021, Robert Marko wrote:
->> 
->> > IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
->> > supported by the kernel add the required DT nodes.
->> >
->> > Signed-off-by: Robert Marko <robimarko@gmail.com>
->> 
->> Thanks for your patch Robert.
->> 
->> > ---
->> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
->> >  1 file changed, 28 insertions(+)
->> >
->> > diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
->> > index a620ac0d0b19..83e9243046aa 100644
->> > --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
->> > +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
->> > @@ -82,6 +82,29 @@ scm {
->> >               };
->> >       };
->> >
->> > +     reserved-memory {
->> > +             #address-cells = <2>;
->> > +             #size-cells = <2>;
->> > +             ranges;
->> > +
->> > +             smem_region: memory@4ab00000 {
->> > +                     no-map;
->> > +                     reg = <0x0 0x4ab00000 0x0 0x00100000>;
->> > +             };
->> > +     };
->> > +
->> > +     tcsr_mutex: hwlock {
->> > +             compatible = "qcom,tcsr-mutex";
->> > +             syscon = <&tcsr_mutex_regs 0 0x80>;
->> 
->> Since it's not okay to have a lone "syscon" and I didn't think it was
->> worth coming up with a binding for the TCSR mutex "syscon" I rewrote 
->> the
->> binding a while back. As such qcom,tcsr-mutex should now live in /soc
->> directly.
->> 
->> So can you please respin accordingly?
-> 
-> Sure, can you just confirm that the:
-> reg = <0x01905000 0x8000>;
-> 
-> Is the whole TCSR range as I don't have docs?
+Is there any feedback on these patches? CVE-2021-22543 was fixed by
+disallowing mapping of non-refcounted memory. These patches add proper
+support for mapping that type of memory.
 
-Robert,
+-David
 
-TCSR_MUTEX block starts from 0x01905000 and has size 0x20000 (128KB)
-
-Thanks,
-Kathiravan T.
-
-> 
-> Regards,
-> Robert
->> 
->> Thanks,
->> Bjorn
->> 
->> > +             #hwlock-cells = <1>;
->> > +     };
->> > +
->> > +     smem {
->> > +             compatible = "qcom,smem";
->> > +             memory-region = <&smem_region>;
->> > +             hwlocks = <&tcsr_mutex 0>;
->> > +     };
->> > +
->> >       soc: soc {
->> >               #address-cells = <0x1>;
->> >               #size-cells = <0x1>;
->> > @@ -293,6 +316,11 @@ gcc: gcc@1800000 {
->> >                       #reset-cells = <0x1>;
->> >               };
->> >
->> > +             tcsr_mutex_regs: syscon@1905000 {
->> > +                     compatible = "syscon";
->> > +                     reg = <0x01905000 0x8000>;
->> > +             };
->> > +
->> >               sdhc_1: sdhci@7824900 {
->> >                       compatible = "qcom,sdhci-msm-v4";
->> >                       reg = <0x7824900 0x500>, <0x7824000 0x800>;
->> > --
->> > 2.31.1
->> >
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of Code Aurora Forum, hosted by The Linux Foundation
+On Wed, Aug 25, 2021 at 11:50 AM David Stevens <stevensd@chromium.org> wrote:
+>
+> From: David Stevens <stevensd@chromium.org>
+>
+> This patch series adds support for mapping non-refcount VM_IO and
+> VM_PFNMAP memory into the guest.
+>
+> Currently, the gfn_to_pfn functions require being able to pin the target
+> pfn, so they will fail if the pfn returned by follow_pte isn't a
+> ref-counted page.  However, the KVM secondary MMUs do not require that
+> the pfn be pinned, since they are integrated with the mmu notifier API.
+> This series adds a new set of gfn_to_pfn_page functions which parallel
+> the gfn_to_pfn functions but do not pin the pfn. The new functions
+> return the page from gup if it was present, so callers can use it and
+> call put_page when done.
+>
+> The gfn_to_pfn functions should be depreciated, since as they are unsafe
+> due to relying on trying to obtain a struct page from a pfn returned by
+> follow_pte. I added new functions instead of simply adding another
+> optional parameter to the existing functions to make it easier to track
+> down users of the deprecated functions.
+>
+> This series updates x86 and arm64 secondary MMUs to the new API.
+>
+> v2 -> v3:
+>  - rebase on kvm next branch
+> v1 -> v2:
+>  - Introduce new gfn_to_pfn_page functions instead of modifying the
+>    behavior of existing gfn_to_pfn functions, to make the change less
+>    invasive.
+>  - Drop changes to mmu_audit.c
+>  - Include Nicholas Piggin's patch to avoid corrupting refcount in the
+>    follow_pte case, and use it in depreciated gfn_to_pfn functions.
+>  - Rebase on kvm/next
+>
+> David Stevens (4):
+>   KVM: mmu: introduce new gfn_to_pfn_page functions
+>   KVM: x86/mmu: use gfn_to_pfn_page
+>   KVM: arm64/mmu: use gfn_to_pfn_page
+>   KVM: mmu: remove over-aggressive warnings
+>
+>  arch/arm64/kvm/mmu.c            |  26 +++--
+>  arch/x86/kvm/mmu/mmu.c          |  50 +++++----
+>  arch/x86/kvm/mmu/mmu_internal.h |   3 +-
+>  arch/x86/kvm/mmu/paging_tmpl.h  |  23 ++--
+>  arch/x86/kvm/mmu/tdp_mmu.c      |   6 +-
+>  arch/x86/kvm/mmu/tdp_mmu.h      |   4 +-
+>  arch/x86/kvm/x86.c              |   6 +-
+>  include/linux/kvm_host.h        |  17 +++
+>  virt/kvm/kvm_main.c             | 188 +++++++++++++++++++++++---------
+>  9 files changed, 220 insertions(+), 103 deletions(-)
+>
+> --
+> 2.33.0.rc2.250.ged5fa647cd-goog
+>
