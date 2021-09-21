@@ -2,148 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65663412FF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FC5412FFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhIUIN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 04:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        id S231195AbhIUINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhIUINW (ORCPT
+        with ESMTP id S230508AbhIUINt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:13:22 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1517BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:11:54 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id d6so36446632wrc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:11:53 -0700 (PDT)
+        Tue, 21 Sep 2021 04:13:49 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DE2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:12:21 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id b65so1049530qkc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:12:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ydWqOkie+tr01fbOoWOEuomByeEyt2VRZxMCMJGoWKQ=;
-        b=m90vVQ0/g+glJejnMxIyN9vpccBAGiYy5DSylPUvFlECP6wxT9gbfdgf/ycu0oLZzn
-         rvf7DeSGFkOCsKdA7GF/xT3QIO9x69g7b8g6DO2wLzrFDDUdkTmkRo1Jslj9UBik09iy
-         Fxf6Xtj4tyaeCnlf5VypiGZnDNBqEAK9cflPq1vlmlZHNmzYLmtowCWGtbfDyCSqVmXZ
-         PVr7fSmLRNfmLKsPvvqqubuAFw1i/5smUFViSPgTYEnVqikvaUi3JZNJ1kBF5xg1JNYI
-         MgJePs34Jdh5p0Sjk7u4jfVS/fTtHkdJyc11AEKcD/0tuf9lnJ5ZKQncr0uHn1hlHGKp
-         k7SQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i8nUr+QDDJZCKOcpKCPWU28LUdFh51QC3wOAl+6MMVI=;
+        b=PicYGeY0ITMj5Z+cj4ydO2URRrZ0fm9BybP/+CbfpoxwQW9CZZjDcf9Vy1XOcpzlwz
+         wWMJWVY3PPlN6YV+Vxfee1OhIGMW7sAVnv/YGejV0xGuOrrQUGqqE22xpqagEmQ2r0J1
+         l4wqlatB1ITTjgyLYheIXeW0Uo/WTkj/JXuGyJ4A7YZBncajhhVdS0KQPzCk26AS9Uxj
+         LXEo2ZnaqhuHlEWgLs545i3L4Vczy6LuGjEGRa3xVEuN27z4m3vC4VWMKQv89bOva9Ve
+         MA2wu4SXxGoNdOJ4vpRSk3f2mZWL9OBQliwVOpeM4zEGXE6Dj5yV0NUPpEiluLNzLXvZ
+         Bv5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ydWqOkie+tr01fbOoWOEuomByeEyt2VRZxMCMJGoWKQ=;
-        b=sosnEExFoXP9uE/VwDCaxrrmOWDMymJe5osgcojSoQ6T8SWw2JwawSN79fqUS9Ndlg
-         zliDkrc+CaB5KwH8MpFhWW2p+O/seh0PKAvO9ArH7OqDLMyaUWJexA6hxEfMbujmMcut
-         xE+WNhE7rrs+xADyNBUjhEFgf5jqLVEEElDAIi4BY7lxUvbLZO3iYGERfRWkCBiUY/fP
-         QQ1X4UHd2qWcQb6nrBfZ4s4ESR4B7uKNUk8CNLVp7sIYke09zzItSB7epvoWmeZ/uSat
-         cjjWMDEjAOreNsyY5Y6eHEvACQy4oE4eWPR/prUEFUnRpoOjXpEl0I+rPLjHv6V23Gk+
-         ki5A==
-X-Gm-Message-State: AOAM533gxEJhpJ2cGrZwWpIKju/U7wkF6q9qQXESlNQvMQVrdCWqpyPQ
-        pALUPw4nAeXT92EEu2mn7SMSqrxFOPierQ==
-X-Google-Smtp-Source: ABdhPJzv2vNo66rTcRBrAlohDVsFc3SMmKKr76F/SZVNAIZ9JZ7eBaIvwAaVxjt21dQdltK+QYYkLA==
-X-Received: by 2002:a5d:43cc:: with SMTP id v12mr33874060wrr.329.1632211907545;
-        Tue, 21 Sep 2021 01:11:47 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id j21sm18300805wrd.48.2021.09.21.01.11.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 01:11:47 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 09:11:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
-Message-ID: <YUmTwZPqrCfRMekd@google.com>
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i8nUr+QDDJZCKOcpKCPWU28LUdFh51QC3wOAl+6MMVI=;
+        b=gesD90VsWZITBT64IxPG24klVXTC0LAf3bg5TWBUNbaVnsETMvoGOAGOtAy6X81aoy
+         2YsqdT4QJyUJLc+BD81xl9esrA1Zd8F0O7ksYTLdAV+mrP+DN1kkohM/LmjrrCbAanXR
+         a/Y8AEmcOyJEpr1ZiyEngQEAJFfF6sTbWlOmpB08gxjMiKz1pASos/Zv5sU/76lTm8Eg
+         DBL9jpmkHz7wwa0jsxab5caiFw8aAHsD2eqk+EMzZ9fQWbP6QUegYk545z6QRBxq1V42
+         lJq/RnuMfqSfb+lvSnnMOePMlTvhVySjfAG4IIGzKML6aIAIfueGMCjS/iJMp5wPMK9+
+         IQqQ==
+X-Gm-Message-State: AOAM530cqIz45iCtlJ+dkIDH3Akv/6u6Oq73X1pkfPjbZBBfTElZiyBf
+        EBGZdn2Zdbz3vom00TuAKukOchCyL4Bip89D8aViSg==
+X-Google-Smtp-Source: ABdhPJxE0/GpkbAUwdbxFMPW81zlnu51++iYCGQquag9vlD3zJmlYgJpaFfS0XVhLSKva4irj0MXIpektmg0bFTRUH4=
+X-Received: by 2002:a25:c753:: with SMTP id w80mr37395357ybe.245.1632211941000;
+ Tue, 21 Sep 2021 01:12:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-2-mgorman@techsingularity.net> <CAKfTPtBTL+KTJdEWv=-6OF8mFvnWUQ1PWKufzhKOASzMcUbnww@mail.gmail.com>
+ <20210921075309.GK3959@techsingularity.net>
+In-Reply-To: <20210921075309.GK3959@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 21 Sep 2021 10:12:10 +0200
+Message-ID: <CAKfTPtBfYuprtTdeSTfkjt6V9J-mDZ=a7SUAo9g7Bwe=N3am0w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] sched/fair: Remove redundant lookup of rq in check_preempt_wakeup
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
+On Tue, 21 Sept 2021 at 09:53, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Tue, Sep 21, 2021 at 09:21:16AM +0200, Vincent Guittot wrote:
+> > On Mon, 20 Sept 2021 at 16:26, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > >
+> > > The rq for curr is read during the function preamble, remove the
+> > > redundant lookup.
+> > >
+> > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > > ---
+> > >  kernel/sched/fair.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index ff69f245b939..038edfaaae9e 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -7190,7 +7190,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+> > >         if (cse_is_idle != pse_is_idle)
+> > >                 return;
+> > >
+> > > -       update_curr(cfs_rq_of(se));
+> > > +       update_curr(cfs_rq);
+> >
+> > se can have been modified by find_matching_se(&se, &pse)
+> >
+>
+> I still expected the cfs_rq to be the same, particularly given that the
+> context is about preempting the current task on a runqueue. Is that
+> wrong?
 
-> On 20/09/2021 21:03, Will McVicker wrote:
-> > This patch series tries to address the issue of ARCH_EXYNOS force selecting
-> > a handful of drivers without allowing the vendor to override any of the
-> > default configs. This takes away from the flexibilty of compiling a generic
-> > kernel with exynos kernel modules. For example, it doesn't allow vendors to
-> > modularize these drivers out of the core kernel in order to share a generic
-> > kernel image across multiple devices that require device-specific kernel
-> > modules.
-> 
-> You do not address the issue in these patches. The problem you describe
-> is that drivers are not modules and you are not changing them into modules.
+As soon as the tasks don't belong to the same cgroup, se can be
+modified and cfs_rq will not be the same
 
-The wording is unfortunate.  The reason for this change doesn't have
-much to do with kernel modules.
-
-Let's go back in time 18 months or so when Greg KH submitted this [0]
-patch, which you Acked.  Greg was trying to solve the problem of not
-having to enable ARCH_EXYNOS on kernels which are designed to be
-platform agnostic (sometimes called Generic Kernels).  For some reason
-SERIAL_SAMSUNG is the only symbol with these dependencies, so the
-solution seemed simple and straight forward at the time.
-
-However, For sound reasons Geert NACKed the patch.
-
-Quoting from [1] he says:
-
-  "A generic kernel will include Samsung SoC support, hence
-  PLAT_SAMSUNG or ARCH_EXYNOS will be enabled."
-
-However, since the entry for ARCH_EXYNOS *insists* on building-in a
-bunch of other symbols (via 'select') which will be unused in most
-cases, this is not a currently acceptable approach for many Generic
-Kernels due to size constraints.
-
-What this patch does is migrates those symbols from being 'select'ed
-(always built-in with no recourse) to 'default y'.  Where the former
-cannot be over-ridden, but the latter can be via a vendor's
-defconfig/fragment.
-
-I doubt many (any?) of these symbols can be converted to kernel
-modules anyway, as they are required very early on in the boot
-sequence.
-
-> > To address this without impacting the existing behavior, this series
-> > switches the default config logic for the offending configs to use "default
-> > y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
-> > verified that these patches do not impact the default aarch64 .config.
-> 
-> Yep, this is what you did but it does not match the described problem.
-> You are not solving it but doing something else.
-> 
-> > Will McVicker (4):
-> >   clk: samsung: change COMMON_CLK_SAMSUNG default config logic
-> >   soc: samsung: change SOC_SAMSUNG default config logic
-> >   pinctrl: samsung: change PINCTRL_EXYNOS default config logic
-> >   rtc: change HAVE_S3C_RTC default config logic
-
-[0] https://lore.kernel.org/lkml/20200220102628.3371996-1-gregkh@linuxfoundation.org/
-[1] https://lore.kernel.org/lkml/CAMuHMdVrVe37JyUNFSf9KRZTcndrvDaZvrVoBxzm_7J2nhg1kg@mail.gmail.com/
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> --
+> Mel Gorman
+> SUSE Labs
