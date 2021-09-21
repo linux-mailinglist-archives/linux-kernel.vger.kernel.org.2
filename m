@@ -2,132 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BE2413AAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FAF413AB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhIUT0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S234502AbhIUT1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhIUT0i (ORCPT
+        with ESMTP id S234493AbhIUT1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:26:38 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14866C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:25:10 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a591700b001976d2db364so396585pji.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:25:10 -0700 (PDT)
+        Tue, 21 Sep 2021 15:27:39 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECD4C061756;
+        Tue, 21 Sep 2021 12:26:10 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id t7so9171043wrw.13;
+        Tue, 21 Sep 2021 12:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B/sF6vDBPQtENY4PnJ/8XwK3HbUXNlrJIJQBSSE9vbI=;
-        b=fWbX0xDo8U2ZnatPjBX47UgYg0iqOdULfaRNfdpJXUzsFOqbQPBZ5ulMrwJn54SyKw
-         2Ens85w8fQYitomjl4iqqi4CFhLAL1jdYyn70mbZqZmmGFB0sJZyrMDrtioTEtAg27iB
-         ITkv3xNUTLfyvrkKZhPXpUccMJ9rYy/u9iJfTrabLsop51SSGrgfQ6hYp56r61tdp07s
-         xT+JJCdAG5MeIKSbvQfMURQQPQz0ROVosg4sMZ+Nqy9DxuZitSI4NUVliJYCAFK41vjm
-         DjvpEE2KClktTISKx5zsWcdt7GedXa4QuiHE4dozH6Jol3VKPo0epJHXqiZkOlvzWyYf
-         0BGw==
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M44k/EQ5RVp2yV+FZ63Q3mCrPnRwPKMhbcxeLAftlN4=;
+        b=bweWDEWDgqV7R6EumEFd5vNnTKlTBbyYJ2DHQCzg5wb8m47z/V1BmAcKMllzSJjlI1
+         cd67qGVsUjp+j9j+pgZNVkYVHy9pMgxN03BByXq/DDiIAZshSzSJZ/iMuuF2M4KBVfKf
+         oLLCHYkj3WekIPsjZvYBL6VqJ6K3yNWXYVXb2VJC86HkSKAy3sEk00ogh5/6d1ViH/+6
+         ZhejDnINkH3WfBiJLUyzaSdR6Baw3QF0vTWs8ktG9Bt+ldBGUxyJExGbuAEfY/ahER8n
+         N6aglGdOrBgsq3n+OlWGEPcf/EQQ0Y9tY8x7avCVVJvViq2ekjhE/FezjicObvA3VadS
+         j0Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B/sF6vDBPQtENY4PnJ/8XwK3HbUXNlrJIJQBSSE9vbI=;
-        b=Owzcj+/s15GS5x6MseNp3s1k/hYxWIYNksaL1floO4w+PEDqosFELVxhBwsnlsUvBu
-         jhmVCGwrkU5D6wPKBXp8e88KAoWs9Kj50kzyCuqIqBCBW/whHiVW5EUXYjFsm/9swB/v
-         KxVBiKfcxq6x9o4VYua7eSmKfXooQD/22GtRRoCKvkYuBwun32W2en4T3jUnls1ACSEt
-         tXMOCmwrsXcwvxUKYZ0WqGNZHsbitmxSocuNrG6Kt5dB8CYvFLXYr4zMQKDaZ+CKt9jg
-         iX8SyLcr/LTzezq+CV2ygaM5ad3bTXTHzZnS/NkGRbTRF9yqTBUMmAhfl7zaNsSjlze9
-         zCiw==
-X-Gm-Message-State: AOAM530YxmjNauxiuyQzBiybtvookAT4DJFuclZPxOOPX0f15SkFqhHL
-        ydiJ6UFOJml9rhk4kMOJ6IlrcDI6D6hHm2LKoxXuUw==
-X-Google-Smtp-Source: ABdhPJzPH6XI7yR49/WYhgC3n5ZArm2hEgxUmQbfig+Y9g9qnDKrm4QAEW97NTxx7V92t4PQxePz1VE8Tg+VrJIqOuM=
-X-Received: by 2002:a17:90b:4b51:: with SMTP id mi17mr7088788pjb.120.1632252309287;
- Tue, 21 Sep 2021 12:25:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M44k/EQ5RVp2yV+FZ63Q3mCrPnRwPKMhbcxeLAftlN4=;
+        b=4JpHSxs8SNWYTuK9CPbIv1GxQe5r/V+P44V78dTMOzBt4o+lmItH98LKpsFp4B8bPO
+         srcIpgZ7q8HNR9yM97cKhYdLgj8hKAsToWBAiCobZqwLNHGSVzpqctoqcnSvwfPXCu+5
+         1MrfMmEQsneepQFys6T3WK8sqc34Z6ow0b9jwbmeF3ItKTCPHvpIQWv4Ppl8pLAN4uLo
+         XCZDyJz8rDA7UZXmfgBJIjAqesVQ7IrAJICHFmgAGEGBEIjtqkHz8wP5bPbH591d1bVV
+         QhpGX4dalEFIGmcH0vMLN9Owv4zSG5J1SfugyWv2pBz9ggkdIvC4JVGIRdLR8xPvjht+
+         k4Bg==
+X-Gm-Message-State: AOAM531hM5Bs2wTDDagCSP+DBqRfD6DB2YMBmAKWro5SlEvO0u4+89Ez
+        rfwxMQ/jdoJliGZec2XzufsLQ49EGl8=
+X-Google-Smtp-Source: ABdhPJzHXP8AcOpgY33+bQhi4pgiyZbRt+mZNlNVSYZUpT54FOogKTy2Libt6XIg4Jf9JkaD3rjyxQ==
+X-Received: by 2002:a05:6000:1284:: with SMTP id f4mr37470100wrx.88.1632252368869;
+        Tue, 21 Sep 2021 12:26:08 -0700 (PDT)
+Received: from localhost.localdomain (dynamic-2a01-0c23-c4aa-d500-f22f-74ff-fe21-0725.c23.pool.telefonica.de. [2a01:c23:c4aa:d500:f22f:74ff:fe21:725])
+        by smtp.googlemail.com with ESMTPSA id h125sm3980771wmh.9.2021.09.21.12.26.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 12:26:08 -0700 (PDT)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-remoteproc@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mathieu.poirier@linaro.org, bjorn.andersson@linaro.org,
+        ohad@wizery.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v4 0/2] Amlogic Meson Always-On ARC remote-processor support
+Date:   Tue, 21 Sep 2021 21:25:55 +0200
+Message-Id: <20210921192557.1610709-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210921150345.2221634-1-pgonda@google.com> <20210921150345.2221634-2-pgonda@google.com>
-In-Reply-To: <20210921150345.2221634-2-pgonda@google.com>
-From:   Nathan Tempelman <natet@google.com>
-Date:   Tue, 21 Sep 2021 12:24:58 -0700
-Message-ID: <CAKiEG5rTnZNAyTZLR+JAbcQ=Hr8Nz5NQQjMRxc1Kvsu9-6RMUA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: SEV: Update svm_vm_copy_asid_from for SEV-ES
-To:     Peter Gonda <pgonda@google.com>
-Cc:     kvm <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 8:03 AM Peter Gonda <pgonda@google.com> wrote:
->
-> For mirroring SEV-ES the mirror VM will need more then just the ASID.
-> The FD and the handle are required to all the mirror to call psp
-> commands. The mirror VM will need to call KVM_SEV_LAUNCH_UPDATE_VMSA to
-> setup its vCPUs' VMSAs for SEV-ES.
->
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: Nathan Tempelman <natet@google.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Steve Rutherford <srutherford@google.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  arch/x86/kvm/svm/sev.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 75e0b21ad07c..08c53a4e060e 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1715,8 +1715,7 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
->  {
->         struct file *source_kvm_file;
->         struct kvm *source_kvm;
-> -       struct kvm_sev_info *mirror_sev;
-> -       unsigned int asid;
-> +       struct kvm_sev_info source_sev, *mirror_sev;
->         int ret;
->
->         source_kvm_file = fget(source_fd);
-> @@ -1739,7 +1738,8 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
->                 goto e_source_unlock;
->         }
->
-> -       asid = to_kvm_svm(source_kvm)->sev_info.asid;
-> +       memcpy(&source_sev, &to_kvm_svm(source_kvm)->sev_info,
-> +              sizeof(source_sev));
->
->         /*
->          * The mirror kvm holds an enc_context_owner ref so its asid can't
-> @@ -1759,8 +1759,16 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
->         /* Set enc_context_owner and copy its encryption context over */
->         mirror_sev = &to_kvm_svm(kvm)->sev_info;
->         mirror_sev->enc_context_owner = source_kvm;
-> -       mirror_sev->asid = asid;
->         mirror_sev->active = true;
-> +       mirror_sev->asid = source_sev.asid;
-> +       mirror_sev->fd = source_sev.fd;
-> +       mirror_sev->es_active = source_sev.es_active;
-> +       mirror_sev->handle = source_sev.handle;
-> +       /*
-> +        * Do not copy ap_jump_table. Since the mirror does not share the same
-> +        * KVM contexts as the original, and they may have different
-> +        * memory-views.
-> +        */
->
->         mutex_unlock(&kvm->lock);
->         return 0;
-> --
-> 2.33.0.464.g1972c5931b-goog
->
-Looks good. Thanks for doing this Peter.
+Amlogic Meson6/8/8b/8m2 come with an ARC core in the Always-On (AO)
+power-domain. This is typically used for waking up the ARM CPU after
+powering it down for system suspend.
 
-Reviewed-by: Nathan Tempelman <natet@google.com>
+The exact ARC core used on Meson6 and earlier is not known. I believe
+it is an ARC625, but I am not sure about this. Meson8/8b/8m2 uses an
+ARC EM4 core.
+They all have in common that they use a section of the SoCs SRAM for
+running code on the ARC core.
+
+Unfortunately there's no information about the remote-processor control
+registers in the public Meson8b (S805) datasheet. All information is
+either taken from Amlogic's 3.10 kernel and 2011-03 u-boot or found by
+testing (for example the clock input is not mentioned anywhere in the
+reference code, but disabling it stops the AO ARC core from working).
+
+This series consists of five patches:
+ 1: dt-bindings for the SRAM section
+ 2: dt-bindings for the SECBUS2 syscon region which contains a few
+    bits for controlling this remote processor
+ 3: dt-bindings for the AO ARC remote processor
+ 4: the driver for booting code on the AO ARC remote processor
+ 5: (only included for documentation purposes) dts changes (these will
+    be re-sent separately)
+
+To test this series I ported the Amlogic serial driver and added the
+board files for the Amlogic AO ARC EM4 to the Zephyr RTOS. The code can
+be found here: [0] (the resulting zephyr.elf can then be loaded as
+remote-processor firmware from Linux).
+
+
+Changes since v1 at [1]:
+- fixed yamllint warnings (after installing the package these now also
+  show up on my build machine) in patches #2 and #3. Thanks for the
+  hint Rob
+- dropped the explicit "select" statement from the dt-bindings in patch
+  #2 as suggested by Rob (thanks)
+
+Changes since v2 at [2]:
+- added Rob's Reviewed-by to the dt-bindings patch (thank you!)
+- all other patches (secbus2 dt-bindings, .dtsi, etc.) are already
+  applied so they're not part of this series anymore
+- remove extra indentation for register fields
+- fix maximum (da + len) check in meson_mx_ao_arc_rproc_da_to_va to not
+  exceed the allocated SRAM size (thanks for spotting this Bjorn!)
+- remove extra usleep_range from meson_mx_ao_arc_rproc_start
+- make the code to generate the value for the AO_CPU_CNTL register
+  easier to read
+- removed unused secbus2_pdev variable from meson_mx_ao_arc_rproc_probe
+- add preprocessor defines for the AO_REMAP_REG0 and AO_REMAP_REG1
+  fields. Special thanks to Jianxin from Amlogic for providing this
+  information
+- program AO_REMAP_REG0 correctly so bits 17:14 in the SRAM address can
+  be used
+- program AO_REMAP_REG1 with 0x0 and add a comment as to why this is
+  needed. This comment should also clarify why the da_to_va
+  implementation can assume that the memory always starts at 0x0
+- allow bits 17:14 to be set in the SRAM address. I tested this with
+  physical address 0xd9010000 (SRAM offset 0x10000)
+- re-reading the Amlogic u-boot and kernel code again made me understand
+  what the bits in AO_SECURE_REG0 are used for: these need to be
+  programmed with bits [19:12] of the used SRAM address. The field macro
+  and GENMASK is updated accordingly.
+- initialize fw_name with NULL so we can simplify the code as we don't
+  have to check for the return value of device_property_read_string
+  anymore (thanks for the suggestion Bjorn)
+- drop of_match_ptr as it's not needed (thanks for the suggestion Bjorn)
+- add the new is_iomem parameter to the .da_to_va implementation
+
+Changes since v3 at [3]:
+- fix "unsure" typo in Kconfig (thanks Mathieu)
+- remove unnecessary #include <linux/ioport.h> as spotted by Mathieu
+- add comment about the ARC core's memory starting address to
+  meson_mx_ao_arc_rproc_da_to_va as recommended by Mathieu
+- split long FIELD_PREP lines inside meson_mx_ao_arc_rproc_start() to
+  first assign the value to a new temporary variable and then use that
+  with writel() to make the code easier to read
+
+
+[0] https://github.com/xdarklight/zephyr-rtos/commits/amlogic_ao_em4-20201229
+[1] https://patchwork.kernel.org/project/linux-amlogic/list/?series=407349
+[2] https://patchwork.kernel.org/project/linux-amlogic/cover/20210102205904.2691120-1-martin.blumenstingl@googlemail.com/
+[3] https://patchwork.kernel.org/project/linux-amlogic/cover/20210717234859.351911-1-martin.blumenstingl@googlemail.com/
+
+
+Martin Blumenstingl (2):
+  dt-bindings: remoteproc: Add the documentation for Meson AO ARC rproc
+  remoteproc: meson-mx-ao-arc: Add a driver for the AO ARC remote
+    procesor
+
+ .../remoteproc/amlogic,meson-mx-ao-arc.yaml   |  87 ++++++
+ drivers/remoteproc/Kconfig                    |  11 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/meson_mx_ao_arc.c          | 261 ++++++++++++++++++
+ 4 files changed, 360 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+ create mode 100644 drivers/remoteproc/meson_mx_ao_arc.c
+
+-- 
+2.33.0
+
