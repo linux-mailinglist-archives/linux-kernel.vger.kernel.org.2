@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5B3412D1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF77E412D24
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243759AbhIUCzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:55:20 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50825 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229973AbhIUCcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:32:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632191435;
-        bh=vTQXciGMsRDBZPI3BtUp0IkecWENffXTdzLmGGjwXEY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fAVuU1PJi5/E6E2oL4KQgp/Ason8H5fS60aStrxWBBbRJcjnrlVu580PUxZWFgye2
-         PIOc96sKhQgGWcO5B0C2qYeCTSkpXAIVHEaEHInlVYZbXoOpEBQ3H6BfvCVqSxjtCO
-         JGFeuL7pe4vP5xq2yCZCj6eJnnngKgvJvzgYSmzyj2tlLNJ35KtPjUrYxlNAzULH2H
-         /azRWXoaG59ZAmTNKBqELEC7lNzvgH82XzGYQve/5S4st0Ylyig4uPgugR/r1SpsnC
-         y1GNzpHVHYxTSy7PS+CopyPmyVZxVcCF2wtHj8MK3yDRQ7Godiu9GYY8qLzASouaU2
-         po//ol4w2Am5Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HD54n4QRQz9sW5;
-        Tue, 21 Sep 2021 12:30:33 +1000 (AEST)
-Date:   Tue, 21 Sep 2021 12:30:32 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Andy Gross <agross@kernel.org>
-Cc:     Baruch Siach <baruch@tkos.co.il>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kathiravan T <kathirav@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the usb tree with the qcom tree
-Message-ID: <20210921123032.02cd498b@canb.auug.org.au>
+        id S231422AbhIUC4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:56:38 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:38566 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352791AbhIUCzD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 22:55:03 -0400
+Received: by mail-lf1-f45.google.com with SMTP id x27so75642318lfu.5;
+        Mon, 20 Sep 2021 19:53:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IC0pg/XX+TI+s5bIXMNwch4sO7j1nEoBLODd5HuH4zo=;
+        b=nA84a7kTHr4gQHJosCqtcn8rA1p1+oJf9gjAblY1sajKurT8QteAyV8qutsAvhQrg+
+         Sao5l79ccRXA44NvSb4E7qu2zsci+QJyhu7OHc0G+2YoX5R8nVb/5+fXi95w1y75gjjR
+         pLxWBKO8UeOmEpIyDMJgpUUsdrtDY85K+hryRwI44WqVFyS5084SYQBhImmwG58W8YNc
+         3X7EVfJSFn32LVmmsAIyywY6xtNnjQABDHDFuEv5BqUXa9C0Mx8Sibb4xC2M3nIyhvjG
+         Zxa/H4tGKNrngBbzWQj1HWjty5ivO+81OmHVv/j3SKSGwLVI5Im7SpEMtfLF6UGhMOC+
+         W5nw==
+X-Gm-Message-State: AOAM531WFM4ps+OGUdmKG/z5T9XzNX3zNj0YdxINR4NFqtzacb24jHIm
+        5gxkx7IpzoNJcZSYNSopgPFp7KkY0Shj7zmrrGY=
+X-Google-Smtp-Source: ABdhPJxBcBj27N0TTO69dgMarQ2SCYu+PhTbfemZzP4y8lLoYVpqH62I91YWXTrklj655Qn1US/umvEUN/gNtO1y80c=
+X-Received: by 2002:a2e:a782:: with SMTP id c2mr25735230ljf.388.1632192814113;
+ Mon, 20 Sep 2021 19:53:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/a01qS2U2KELLuIltukzra2.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210920123045.795228-1-arnd@kernel.org>
+In-Reply-To: <20210920123045.795228-1-arnd@kernel.org>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Tue, 21 Sep 2021 11:53:22 +0900
+Message-ID: <CAMZ6Rq+pfOHGshH=U3ZtzooD9sHvAz+=i2vdEcqF8Xv=q4eexQ@mail.gmail.com>
+Subject: Re: [PATCH] can: etas_es58x: avoid -Wzero-length-bounds warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/a01qS2U2KELLuIltukzra2.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Arnd,
++CC: Kees Cook
 
-Hi all,
+On Mon. 20 Sep 2021 at 21:30, Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc complains when writing into a zero-length array:
+>
+> drivers/net/can/usb/etas_es58x/es581_4.c: In function 'es581_4_tx_can_msg':
+> drivers/net/can/usb/etas_es58x/es581_4.c:374:42: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
+>   374 |         tx_can_msg = (typeof(tx_can_msg))&es581_4_urb_cmd->raw_msg[msg_len];
+>       |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:21,
+>                  from drivers/net/can/usb/etas_es58x/es581_4.c:15:
+> drivers/net/can/usb/etas_es58x/es581_4.h:195:20: note: while referencing 'raw_msg'
+>   195 |                 u8 raw_msg[0];
+>       |                    ^~~~~~~
+>   CC [M]  drivers/net/can/usb/etas_es58x/es58x_fd.o
+> drivers/net/can/usb/etas_es58x/es58x_fd.c: In function 'es58x_fd_tx_can_msg':
+> drivers/net/can/usb/etas_es58x/es58x_fd.c:360:42: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[]'} [-Wzero-length-bounds]
+>   360 |         tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
+>       |                                          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from drivers/net/can/usb/etas_es58x/es58x_core.h:22,
+>                  from drivers/net/can/usb/etas_es58x/es58x_fd.c:17:
+> drivers/net/can/usb/etas_es58x/es58x_fd.h:222:20: note: while referencing 'raw_msg'
+>   222 |                 u8 raw_msg[0];
+>       |                    ^~~~~~~
+>
+> The solution is usually to use a flexible-array member the struct, but
+> we can't directly have that inside of a union, nor can it be the only
+> member of a struct, so add a dummy struct with another zero-length
+> member to get the intended behavior.
+>
+> If someone has a better workaround, let me know and I can send a new
+> patch, as this version is rather ugly.
 
-Today's linux-next merge of the usb tree got a conflict in:
+Actually, there is one. Kees Cook introduced a new macro,
+DECLARE_FLEX_ARRAY(), to do this in a more elegant way:
+https://lkml.org/lkml/2021/8/27/524
 
-  arch/arm64/boot/dts/qcom/ipq6018.dtsi
+The same series also fixes the warning in the etas_es58x driver:
+https://lkml.org/lkml/2021/8/27/523
 
-between commit:
+So we only need to wait for Kees's series to get merged :)
 
-  261e8a95d9aa ("arm64: dts: qcom: ipq6018: add usb3 DT description")
 
-from the qcom tree and commit:
-
-  9da2c3f76164 ("arm64: qcom: ipq6018: add usb3 DT description")
-
-from the usb tree.
-
-Same author, same date, but the former has this committer comment:
-
-bjorn: Changed dwc3 node name to usb, per binding
-
-So I used that version.
-
-I fixed it up (see above) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/a01qS2U2KELLuIltukzra2.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFJQ8gACgkQAVBC80lX
-0GwsbAf/VxEFKaQYvUE4SCGt/iMkHoiyBRMCeoGLRHDqs5kxqbziyAmvYvwUwbL1
-+PzFSDZ11YoLEsQ4G0DAv4G5wgvtYg7UUtXMt4NLykz5frQ3b72dYqin1ZdcuZI7
-rFdx+7EtSl917uon2trZE/cFMGYuFNuCL7CSUxF4tpz2TUu0qxjD48TnRkZca8nm
-xv7Uv1TZ1Zkb6Cuy16KocqYqQJKOkXgmnfaIRjlLNc2rg+Av3UiGH5Pm9hPv8RvB
-vDo4LnjOihNc1LhY8uzRhHfvIuGIQEE9MhgLLlWAJmZMN9Rrhq5dec2VSMdfPmfA
-/x7e9MrZGsrkuOWvJqmBnbC96JDNfA==
-=Vymu
------END PGP SIGNATURE-----
-
---Sig_/a01qS2U2KELLuIltukzra2.--
+Yours sincerely,
+Vincent Mailhol
