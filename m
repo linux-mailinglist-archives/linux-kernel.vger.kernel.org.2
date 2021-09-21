@@ -2,65 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825AC413346
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4357941334B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhIUMS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:18:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229984AbhIUMS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:18:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1416C610A0;
-        Tue, 21 Sep 2021 12:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632226648;
-        bh=bWsTDjni5u6mdvyJlAemtOiPqypgXEyovig5ApuWNOc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hhB1k93T+uA4csLp23S25X6hM8PNNkjgDb9ZiixWIjp56kg41K4emiNFAroYks1xZ
-         nI27uB2RP2pNRfqH2isIJVNjSrkD6V+O+enucCB6L8Y+rjwBKW1yADymW5exl0137k
-         gUAYJxDGfhxrAC5KN/R55n8pkdnAvahzcmOg6sAQmQTCZNSDglSp46/1J/wLw6JfuU
-         8rMYrcnkbI2IJXH+uuMprLxyjBeitYzlN9JxTpoXvaNNZtcJCdsDMAl3AfDg2oxew1
-         CEn0/bPNZ5yXyjkaw6WlnxV8pZe6Z2v/I9N2AManNjvX7V5R75ffQC8+03DaPbXd2C
-         L0LwyHMMfC48A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mSeiE-0004tY-AS; Tue, 21 Sep 2021 14:17:27 +0200
-Date:   Tue, 21 Sep 2021 14:17:26 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] USB: serial: ftdi_sio: use usb_control_msg_recv()
-Message-ID: <YUnNVupLrhPo0e4X@hovoldconsulting.com>
-References: <20210801203122.3515-1-himadrispandya@gmail.com>
- <20210801203122.3515-5-himadrispandya@gmail.com>
+        id S232625AbhIUMXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229984AbhIUMXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:23:34 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68253C061574;
+        Tue, 21 Sep 2021 05:22:06 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id t8so38596786wrq.4;
+        Tue, 21 Sep 2021 05:22:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5M2bRv2kmamfcOnSq0h86eu6NBUQ+EJzp0SymobeTak=;
+        b=DFvrS0QYGhxB0DmDAsfqXwyI+pX2mHkxCYq+b45Yg8wY4PUEJnCOtxBrHoy/2jXbyB
+         FgO0R+5uEjOde54sTR4+NH06OD095RdLgTqqo0TaL/sbZbswFwbEo2MaS96vxse+lbuP
+         bgjGTlbdOAvXj7sy2hN/xYD6UhEdZzKlUJFydFO9B7VIOYMjO4RMQh6BbdQNS+h+EbJ6
+         Wlb/88coA7F8iNaT0OPMEbaiuVcT2vslSjXODVshGWrgO26idvmiGYXqyaIAlvqgB5f4
+         DOiEUssCsmgnE2FhUf55C6ecskd67exeNlR2lIM9QvRxb7HVqHbTmETxRH87WSCnwgnZ
+         EN5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5M2bRv2kmamfcOnSq0h86eu6NBUQ+EJzp0SymobeTak=;
+        b=jSL+oH7JjlVUb8t/tDpLeeGIxbAUY/Jv6nt1WwrmyRISP0J0V5ghz9tpkUbUjQYqfC
+         p6OtRdBFoNN9GVeaQd4ioOXdo+n+EwSlMGldR/UzlJJPw3uPVo+ybIk+XdIbr5LK/YCO
+         XBKyv8mwYJoBDk5pz52mciWNGgpJ//g74G0QllGWJkmGawLA8L+0YEKrLf0N9oWEUi+4
+         vA9r1BvrL84BniDqqoARMvlX5uiowYIuNUbMv5qh4NNwKdLjwN+LF/4Wo2/fGqGqn2Ps
+         ZlcVY6y6L9bsLw0beG51kDrszsHFP4gWgkPltY9aLumDEZsxk/oPoKNBh7j4nJsRjbRL
+         9hcQ==
+X-Gm-Message-State: AOAM532pSFpGOoffwzkl0lSz24BwJyD6HZGKzAYP0PuUbtg3vw9cqyup
+        QzLtXN/jYwT4EXhIajdnKhY=
+X-Google-Smtp-Source: ABdhPJxH/FHabvrYaa7eWfww74FZM0cp4SKhlS2u1GpqB0+l22TAx/x2zXu3m8WRvLuGV1egPRURkg==
+X-Received: by 2002:a1c:4c13:: with SMTP id z19mr4357450wmf.154.1632226924831;
+        Tue, 21 Sep 2021 05:22:04 -0700 (PDT)
+Received: from localhost.localdomain (i59F67ACA.versanet.de. [89.246.122.202])
+        by smtp.gmail.com with ESMTPSA id 20sm2999829wme.46.2021.09.21.05.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 05:22:04 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Markuss Broks <markuss.broks@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, phone-devel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: fix typo in DRM DRIVER FOR SAMSUNG S6D27A1 PANELS
+Date:   Tue, 21 Sep 2021 14:21:46 +0200
+Message-Id: <20210921122146.13132-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801203122.3515-5-himadrispandya@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:01:20AM +0530, Himadri Pandya wrote:
-> usb_control_msg_recv() nicely wraps usb_control_msg() and removes the
-> compulsion of using dma buffers for usb messages. It also includes proper
-> error check for possible short read. So use the wrapper and remove dma
-> buffers from the callers.
-> 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
-> Changes in v2:
->  - Drop unnecessary use of wrappers
+Commit ebd8cbf1fb96 ("drm/panel: s6d27a1: Add driver for Samsung S6D27A1
+display panel") introduces a new section DRM DRIVER FOR SAMSUNG S6D27A1
+PANELS with a minor typo in one of its file entries.
 
-Now applied, with a slightly amended commit message:
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-    USB: serial: ftdi_sio: use usb_control_msg_recv()
-    
-    usb_control_msg_recv() nicely wraps usb_control_msg() and removes the
-    compulsion of using DMA buffers for USB messages. It also includes proper
-    error check for possible short read. So use the wrapper where
-    appropriate and remove DMA buffers from the callers.
+  warning: no file matches  F:  driver/gpu/drm/panel/panel-samsung-s6d27a1.c
 
-Johan
+So, repair the entry and make get_maintainer.pl happy.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210920
+
+Linus, please pick this minor quick clean-up patch on drm-misc-next
+(on top of the commit mentioned above).
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2b990794ec35..1c486baf9c8d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6045,7 +6045,7 @@ DRM DRIVER FOR SAMSUNG S6D27A1 PANELS
+ M:	Markuss Broks <markuss.broks@gmail.com>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/display/panel/samsung,s6d27a1.yaml
+-F:	driver/gpu/drm/panel/panel-samsung-s6d27a1.c
++F:	drivers/gpu/drm/panel/panel-samsung-s6d27a1.c
+ 
+ DRM DRIVER FOR SITRONIX ST7703 PANELS
+ M:	Guido Günther <agx@sigxcpu.org>
+-- 
+2.26.2
+
