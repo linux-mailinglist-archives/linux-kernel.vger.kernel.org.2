@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA1A413C93
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467B8413C95
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235468AbhIUVgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:36:39 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:43949 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235478AbhIUVgd (ORCPT
+        id S235472AbhIUVhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:37:12 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:41822 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhIUVhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:36:33 -0400
-Received: by mail-oi1-f181.google.com with SMTP id w19so1196251oik.10;
-        Tue, 21 Sep 2021 14:35:04 -0700 (PDT)
+        Tue, 21 Sep 2021 17:37:09 -0400
+Received: by mail-ot1-f54.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso456335ota.8;
+        Tue, 21 Sep 2021 14:35:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=dcgHDu7kuMN8cnYChJ8cfUIB89K+3PFZVOLd99yPVP4=;
-        b=b6Cb23q6HcBOiEbNEQSZuc+icglKzpZ2snSCDqwKhw+R6YsG0cCORLF5Zx1rtshi3U
-         Nowu4swuQ7zfb/3CiswfThoJfEG33opGojbO+DQqncIXkiH/IE8Ss+roponT0edrUbrL
-         4JQ/JXxinuKA6yuUulJWK4/lEyYaWfvtJDQjFwLSvGvmiFG4zu+Ohx+O2BbFcE4BBNDM
-         YKJsJ6l8J/XT7Na813RbfIRK1T0m/lzVokwtYybTDtf7x0de5urB2pVOLqTbL9h/5i+K
-         dv0SAaBky8QnK68iESZA2cO82nlG+pS6exXrwxSFWr+wuxaP0/dieFjo8rBRDloD9vmT
-         DLfQ==
-X-Gm-Message-State: AOAM530kjagMD6zja1h90+3UYXuccqNSWo5bozr65PudXMA5j8IPdi5e
-        la1f2Q4YNx11Y4jo242CHxBLki4Tmg==
-X-Google-Smtp-Source: ABdhPJyuc7AGioITl/AaAT5ge4D3bes68aMCmfSUzK9Q3KRWrTmoIr2f77jsEUbtwEaJyC2od1/Rgw==
-X-Received: by 2002:a05:6808:2099:: with SMTP id s25mr5584251oiw.97.1632260103974;
-        Tue, 21 Sep 2021 14:35:03 -0700 (PDT)
+        bh=T4j5cvKZQ8N+YvWUCi17+Fr4x/Z3vE4XiOx0eKjk+tU=;
+        b=xSkYb9nz3PfC8r7zBi2uMr5z6JkP0cyrCubNZZBpdOPa9K04QEPgmtl/imufGXZkLy
+         QR2+5HuzoBRGSIfADTFOmicYMPIMoAhMKOsvS5EKnZAE7jRYVeZcrXQKZdfEXZaj1meY
+         GxwGEnI/TaZR3dB63i8joHXY3EEk1uCEu4t7G9UekxPg8wAMiyg3lyR7wumptS5u1dur
+         AxYTm+3caVDCTthfBd3a+T4JzEc5TBgtlxRaI8IxeYjapsiWK11jmtGE9qEPYqTsAgjS
+         geuUQ8wBJtiy3MGZCAiE6+RsG+OyAoM2Gnki1EvlyuX3ViX8nhEX313k8m9BVcys3Izb
+         jZcg==
+X-Gm-Message-State: AOAM532PIUum5r9DrEa009vEOgvT5M3WF9OlplQQcRc2V9skcM9/EQqr
+        FOeWEYqEiuJMaM+JynRUHQ==
+X-Google-Smtp-Source: ABdhPJxmma6JhoB5zdppHeGnccC3TREmxZ6BnGVfI08ib2UHUPXJUaOhty7Iqw6WCnvNBoQJGWSnpA==
+X-Received: by 2002:a9d:6206:: with SMTP id g6mr12495159otj.62.1632260140624;
+        Tue, 21 Sep 2021 14:35:40 -0700 (PDT)
 Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
-        by smtp.gmail.com with ESMTPSA id o18sm40223ote.69.2021.09.21.14.35.02
+        by smtp.gmail.com with ESMTPSA id u12sm47768otq.20.2021.09.21.14.35.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:35:03 -0700 (PDT)
-Received: (nullmailer pid 3362639 invoked by uid 1000);
-        Tue, 21 Sep 2021 21:35:00 -0000
-Date:   Tue, 21 Sep 2021 16:35:00 -0500
+        Tue, 21 Sep 2021 14:35:40 -0700 (PDT)
+Received: (nullmailer pid 3363560 invoked by uid 1000);
+        Tue, 21 Sep 2021 21:35:37 -0000
+Date:   Tue, 21 Sep 2021 16:35:37 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Benoit Parrot <bparrot@ti.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 11/11] media: dt-bindings: Convert Cadence CSI2RX
- binding to YAML
-Message-ID: <YUpQBHQ2DFMx/E70@robh.at.kernel.org>
-References: <20210915120240.21572-1-p.yadav@ti.com>
- <20210915120240.21572-12-p.yadav@ti.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bao Cheng Su <baocheng.su@siemens.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Chao Zeng <chao.zeng@siemens.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/6] dt-bindings: arm: ti: Add bindings for Siemens
+ IOT2050 PG2 boards
+Message-ID: <YUpQKbl5OCVxoLbp@robh.at.kernel.org>
+References: <cover.1631708830.git.jan.kiszka@siemens.com>
+ <336ade4715b3d2f5f83c3ed8f3fa2989f5699578.1631708830.git.jan.kiszka@siemens.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915120240.21572-12-p.yadav@ti.com>
+In-Reply-To: <336ade4715b3d2f5f83c3ed8f3fa2989f5699578.1631708830.git.jan.kiszka@siemens.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 17:32:40 +0530, Pratyush Yadav wrote:
-> Convert the Cadence CSI2RX binding to use YAML schema.
+On Wed, 15 Sep 2021 14:27:08 +0200, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> Product Generation 2 (PG2) boards are based on SR2.x SoCs and will be
+> released soon.
 > 
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 > ---
-> 
-> Changes in v4:
-> - Add power-domains property.
-> - Drop maxItems from clock-names.
-> - Drop the type for data-lanes.
-> - Drop uniqueItems from data-lanes. Move it to video-interfaces.yaml
->   instead.
-> 
-> Changes in v3:
-> - Add compatible: contains: const: cdns,csi2rx to allow SoC specific
->   compatible.
-> - Add more constraints for data-lanes property.
-> 
-> Changes in v2:
-> - New in v2.
-> 
->  .../devicetree/bindings/media/cdns,csi2rx.txt | 100 -----------
->  .../bindings/media/cdns,csi2rx.yaml           | 169 ++++++++++++++++++
->  2 files changed, 169 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.txt
->  create mode 100644 Documentation/devicetree/bindings/media/cdns,csi2rx.yaml
+>  Documentation/devicetree/bindings/arm/ti/k3.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
