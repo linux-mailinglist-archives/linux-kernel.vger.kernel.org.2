@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF455412B32
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D097B412B3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245331AbhIUCKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
+        id S245381AbhIUCKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238076AbhIUB5E (ORCPT
+        with ESMTP id S238081AbhIUB5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Sep 2021 21:57:04 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D62C06B66F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:13 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id h4-20020a05620a244400b004334ede5036so29413842qkn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:13 -0700 (PDT)
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EAFC06B671
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:15 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id r5-20020ac85e85000000b0029bd6ee5179so197796443qtx.18
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=7ySQ7PzHzecQkNA7fuuC9dVS9Ycf6xIgHtLk0jm/WMk=;
-        b=fw+KWXlLNh2fa9IxHz5fE2f4PlO5c8TJsApHW2RJelnJ65DuB6p+yssry8A+9LSKDE
-         AJTX5LQ/RkzF89E8NPksvnb03OhPIUZYUZZpne/Y6O2QUpeEqKqILkhjuF52nNvYZ859
-         8genJkp33FiqCPnqr125Y3/RED1JWUxvuQCcSnI2QgO/AIWaDPU1mTJ8CJu72fWBs5Jr
-         cF/3CCjP1cUAW4NY8h3s4qOp1ziOYSpZCR7R/kxEINlGXcNhfmEPCN3yDGp90hlR9cNE
-         qvhWvu9Zk2UCuXpiYCbSRzpE0+AIY1XoG+eS45o7V/n/eEa8kJfCWzojC1N4qHftE15g
-         AxRg==
+        bh=TaOFnh9pXKvlFAgxCXG8pz2yPTn2EvG+MXmMc1YbXv8=;
+        b=XANYy4kQA/dxnSdwpOjKZufPVeEHBPsLJR8SQwiKtMc/hrrjoE7YTGFtL8MtYJjzkT
+         TpYG7RtwfHAcomNdxfIF7ecGtQZ4DOxCFVk1woATwZHhrJKx5O6emgjxNwblBdxfE8ms
+         Qpss2GgcvkyBWXNIyQNnNlUEY1GGfmd2r3usj31xYg6GmBvUNLBEWY+Jq+HWQDOc6J3k
+         5XtL7dVMZHHKoCt0nnpNLCnh2cahVJfhWeAY60+hwmOW2eOTMEvoPb3YFTqSNqPCRuIL
+         PWobg/OwORqfRog2zuhRdv2acJCAICDWYwqN3ANTcGt++s3JAAAibPprfkcwBQNESkJQ
+         wcIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=7ySQ7PzHzecQkNA7fuuC9dVS9Ycf6xIgHtLk0jm/WMk=;
-        b=Qjqv/Prm8sVhlsGmM1huORhzzAtp28cEBVJITZysZFfJLLlrW5EHiBe1DwRGpaFvrt
-         T75Er0XJkiLyIOO+e3U5HARhhMc7MeOt2YX+uBi0TwCr6k7Bxf7O15UAcL3GkJiCgU+s
-         yJZUnczItZQqypz98UUZAFMu0g6YUzhN+NPSwTSgEHCn3AHr3Uiga3p1rtLBVDhdFPj1
-         l0gFs0WIyuk7DFMXUHtsbLFT50pdcu0BUtkIPOj/di5RSw0BWJKkMtMNieei5uTsneWi
-         9NAM8rCoE6L/xSp4if15J5vUpqkOayP2lfnDo84L4D1f03qu5ustN1PcVXa0QBi6zwBa
-         r3bw==
-X-Gm-Message-State: AOAM5313RqkMgInosUynim+AEaHe9Sdu0UnsInFK0vIuYTHBkELNBGKy
-        H+5jSIH5yDseGbN2Qcm0S2uC6NzbZOQ=
-X-Google-Smtp-Source: ABdhPJzKtDAhlL41PSsN3qvFgBT0gaVvW3TWjbUFRNfc75CQpNiThhjhAk0MFSGV5KVrAFzUiUe5XrWVfEc=
+        bh=TaOFnh9pXKvlFAgxCXG8pz2yPTn2EvG+MXmMc1YbXv8=;
+        b=PUNEzqFcz6JSioVNdsJlRMTt41rvwXjC3brkWQ06QK2qCZIfVIqDYdB/SWifAP7XqZ
+         sEysctlBavQK2O2IJWxCFxQTozUKiz9syBnIvpI0N+0XN59ze+xdKtwUNE2BMP39EPBu
+         X2Se+2r9NoySGYNExg503ceRaLPeWTGTnHjdPC3VuUCmgZ/33LWJgO6Ms5BzrOcbOqJO
+         jOkdKMuSOFof/Sbp3z7IowLdF5MxBiGGUbLJ7CTyAVQissxOQZC60b6sFkdH+cM3iaSp
+         cSDB8snOuH36a9Xkm5Ua7o3DO2QSZK4nDE2pwkmGcxdMXouLAmF9rqYFg+8TnCr2lEPT
+         toug==
+X-Gm-Message-State: AOAM532xR1U0B4Qp8fjgQwLIzbtdrV+qPEG5rjcRMQuf0m58+er/qjAA
+        EMBjpBHusTyvmDQLHIt8g1h/MjlWy4o=
+X-Google-Smtp-Source: ABdhPJxGRjzoPJfx96khcwuanlK/hcJNUg9koX7RsTp6tA76rmSNFpnq0dcsSmvKzzEtOotVi88bp//wcH0=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e430:8766:b902:5ee3])
- (user=seanjc job=sendgmr) by 2002:a05:6214:528:: with SMTP id
- x8mr27797931qvw.30.1632182592456; Mon, 20 Sep 2021 17:03:12 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:ad4:4741:: with SMTP id c1mr14047272qvx.7.1632182594679;
+ Mon, 20 Sep 2021 17:03:14 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 20 Sep 2021 17:02:56 -0700
+Date:   Mon, 20 Sep 2021 17:02:57 -0700
 In-Reply-To: <20210921000303.400537-1-seanjc@google.com>
-Message-Id: <20210921000303.400537-4-seanjc@google.com>
+Message-Id: <20210921000303.400537-5-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210921000303.400537-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2 03/10] KVM: x86: Do not mark all registers as avail/dirty
- during RESET/INIT
+Subject: [PATCH v2 04/10] KVM: x86: Remove defunct setting of CR0.ET for
+ guests during vCPU create
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,56 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not blindly mark all registers as available+dirty at RESET/INIT, and
-instead rely on writes to registers to go through the proper mutators or
-to explicitly mark registers as dirty.  INIT in particular does not blindly
-overwrite all registers, e.g. select bits in CR0 are preserved across INIT,
-thus marking registers available+dirty without first reading the register
-from hardware is incorrect.
+Drop code to set CR0.ET for the guest during initialization of the guest
+FPU.  The code was added as a misguided bug fix by commit 380102c8e431
+("KVM Set the ET flag in CR0 after initializing FX") to resolve an issue
+where vcpu->cr0 (now vcpu->arch.cr0) was not correctly initialized on SVM
+systems.  While init_vmcb() did set CR0.ET, it only did so in the VMCB,
+and subtly did not update vcpu->cr0.  Stuffing CR0.ET worked around the
+immediate problem, but did not fix the real bug of vcpu->cr0 and the VMCB
+being out of sync.  That underlying bug was eventually remedied by commit
+18fa000ae453 ("KVM: SVM: Reset cr0 properly on vcpu reset").
 
-In practice this is a benign bug as KVM doesn't let the guest control CR0
-bits that are preserved across INIT, and all other true registers are
-explicitly written during the RESET/INIT flows.  The PDPTRs and EX_INFO
-"registers" are not explicitly written, but accessing those values during
-RESET/INIT is nonsensical and would be a KVM bug regardless of register
-caching.
+No functional change intended.
 
-Fixes: 66f7b72e1171 ("KVM: x86: Make register state after reset conform to specification")
-[sean: !!! NOT FOR STABLE !!!]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 1 +
- arch/x86/kvm/x86.c     | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kvm/x86.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index fada1055f325..d44d07d5a02f 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4448,6 +4448,7 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	kvm_set_cr8(vcpu, 0);
- 
- 	vmx_segment_cache_clear(vmx);
-+	kvm_register_mark_available(vcpu, VCPU_EXREG_SEGMENTS);
- 
- 	seg_setup(VCPU_SREG_CS);
- 	vmcs_write16(GUEST_CS_SELECTOR, 0xf000);
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 2cb38c67ed43..ab907a0b9eeb 100644
+index ab907a0b9eeb..e0bff5473813 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -10876,9 +10876,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 		vcpu->arch.xcr0 = XFEATURE_MASK_FP;
- 	}
+@@ -10628,8 +10628,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
+ 	 * Ensure guest xcr0 is valid for loading
+ 	 */
+ 	vcpu->arch.xcr0 = XFEATURE_MASK_FP;
+-
+-	vcpu->arch.cr0 |= X86_CR0_ET;
+ }
  
-+	/* All GPRs except RDX (handled below) are zeroed on RESET/INIT. */
- 	memset(vcpu->arch.regs, 0, sizeof(vcpu->arch.regs));
--	vcpu->arch.regs_avail = ~0;
--	vcpu->arch.regs_dirty = ~0;
-+	kvm_register_mark_dirty(vcpu, VCPU_REGS_RSP);
- 
- 	/*
- 	 * Fall back to KVM's default Family/Model/Stepping of 0x600 (P6/Athlon)
+ void kvm_free_guest_fpu(struct kvm_vcpu *vcpu)
 -- 
 2.33.0.464.g1972c5931b-goog
 
