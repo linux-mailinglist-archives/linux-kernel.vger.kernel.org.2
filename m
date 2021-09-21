@@ -2,105 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDEC413DD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4225E413DD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhIUXID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:08:03 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52752 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhIUXIC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:08:02 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 00F781F4358B
-Message-ID: <9db8c79a-f704-84ce-360b-84335f926a48@collabora.com>
-Date:   Tue, 21 Sep 2021 20:06:21 -0300
+        id S229722AbhIUXJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:09:59 -0400
+Received: from ms.lwn.net ([45.79.88.28]:53834 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhIUXJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:09:58 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A4DB337B;
+        Tue, 21 Sep 2021 23:08:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A4DB337B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1632265709; bh=CdsObx61OtVA6UmkkyHj1HJ0dVqZUkttfdTVmAMUUrc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=MWZUX3OR2jLyzSwbvwPcjW9ol8lM0z8WzruV89oy4VTyABw8vr5Y8jw+kMt6eVpxT
+         Z35nJbEJu8opiOrZ1sC8QGpj0mLbKx35l3ykPYGkMDBE+nEkhD3Ndi8TmbuH1zRl0j
+         DJzzC89HBrFx4kxhn6p9TT7ljlkQy33HgZ+pkEMLKjxaIkaiKBePtqLmUxcDs3WMO9
+         Q7J6wMChMC640nPKdihTJ9BkP7fL9b4myu+DwTyR/foyGu5rHMrVNbYPtbHxGBjoJX
+         rYP23hhWqHIkT9DbkP9OugQLqZNrzRpVxN22EEtjWQWZdpfNC/RlrAiooYe3hv2TiV
+         e9tdTOCaW6exQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: arm: marvell: Add 88F6040 model into list
+In-Reply-To: <20210919143327.24289-1-pali@kernel.org>
+References: <20210919143327.24289-1-pali@kernel.org>
+Date:   Tue, 21 Sep 2021 17:08:29 -0600
+Message-ID: <87k0j9ttle.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
- 64-bit time_t
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <alistair.francis@wdc.com>
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
- <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
- <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
- <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 05:08 de 21/09/21, Arnd Bergmann escreveu:
-> On Tue, Sep 21, 2021 at 12:47 AM André Almeida
-> <andrealmeid@collabora.com> wrote:
->>
->> #if defined(__i386__) || __TIMESIZE == 32
->> # define NR_gettime64 __NR_clock_gettime64
->> #else
->> # define NR_gettime64 __NR_clock_gettime
->> #endif
->>
->> struct timespec64 {
->>         long long tv_sec;       /* seconds */
->>         long long tv_nsec;      /* nanoseconds */
->> };
->>
->> int gettime64(clock_t clockid, struct timespec64 *tv)
->> {
->>         return syscall(NR_gettime64, clockid, tv);
->> }
->>
->> Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
->> __NR_futex for 64bit arch.
-> 
-> This is still broken when you disable CONFIG_COMPAT_32BIT_TIME,
-> which disables all system calls that take time32 arguments.
-> 
+Pali Roh=C3=A1r <pali@kernel.org> writes:
 
-Oh, I think my point was confusing then. My suggestion was to use only
-the futex entry points that accepts time64, and to always use
-clock_gettime that uses time64, for all platforms. Then it will work if
-we disable CONFIG_COMPAT_32BIT_TIME.
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> ---
+>  Documentation/arm/marvell.rst | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/arm/marvell.rst b/Documentation/arm/marvell.rst
+> index 56bb592dbd0c..f9b09b06e1d6 100644
+> --- a/Documentation/arm/marvell.rst
+> +++ b/Documentation/arm/marvell.rst
+> @@ -212,6 +212,7 @@ EBU Armada family ARMv8
+>  	arch/arm64/boot/dts/marvell/armada-37*
+>=20=20
+>    Armada 7K Flavors:
+> +	  - 88F6040 (AP806 Quad 600 MHz + one CP110)
+>  	  - 88F7020 (AP806 Dual + one CP110)
 
->> This might be a simpler solution to the problem that you are facing but
->> I'm not entirely sure. Also, futex's selftests do use the timeout
->> argument and I think that they also won't compile in 32-bit RISC-V, so
->> maybe we can start from there so we can actually test the timeout
->> argument and check if it's working.
-> 
-> I would love to see the wrapper that Alistair wrote as part of some kernel
-> uapi header provided to user space. futex is used by tons of applications,
-> and we never had a library abstraction for it, so everyone has to do these
-> by hand, and they all get them slightly wrong in different ways.
+Applied, thanks.
 
-Why we don't have a futex() wrapper at glibc as we do have for others
-syscalls?
-
-> 
-> We normally don't do this in kernel headers, but I think the benefits
-> would be far greater compared to today's situation.
-> 
->       Arnd
-> 
+jon
