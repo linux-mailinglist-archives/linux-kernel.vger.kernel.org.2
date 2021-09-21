@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E6B4132BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4229E4132BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhIULmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:42:25 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:43969 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbhIULmW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:42:22 -0400
-Received: by mail-vs1-f54.google.com with SMTP id n17so19204386vsr.10;
-        Tue, 21 Sep 2021 04:40:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bOlfZTrSii7Nb14rl9dZd76xYIBrclWvgXtZcJh0XvM=;
-        b=oXivQnx3c3N7ZaGmzhlOGE+RN4ji6nIuRM1zJaGRXlBpVWeGk2wjJkwAhUjezUhe0D
-         n8M6mjXFZ2C64eWvnT63QZA1ccwZas7vyJ00DPDLFAHuPLtZLwTl4jT2irtxrgsqMgJP
-         H0ncqJTeHlkFy0Z/D5OwYk2yfepdwGlNbAR2Rcr8YFAc0CT9Nb1f6qYO+VuBz4gUXXCu
-         t31gnft4C6iMWwhnE5gq23FhOc4jbuANtJhHJvKyteh4OJ5bbouhqhVfuXGlhKZFE23N
-         5xLeoTBThieRPc8m6/CSEngZVKYOtP5RWIqpm7p+k7JeMvu3M5a3A3AWJ9b8rjvwm0tB
-         lG2Q==
-X-Gm-Message-State: AOAM531yGCOYYjR0ZmJdls7sCKrBlGhG0ZwH8Z2dLvwo8iIKiw4MM3fn
-        SKXIO/+qwRqdsRtMezxB2QhU1DdheibyGNIl3Yk=
-X-Google-Smtp-Source: ABdhPJwiN7fv8zkCxGRdSiJIiixTxoRHMRXiLr8T19X9+fGqcKipwyfkQQaXHbvVsTR6Cg4anMFHRjlYU50G8LO/Lys=
-X-Received: by 2002:a67:f147:: with SMTP id t7mr13834174vsm.41.1632224444687;
- Tue, 21 Sep 2021 04:40:44 -0700 (PDT)
+        id S232588AbhIULnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232504AbhIULnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:43:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E9860F24;
+        Tue, 21 Sep 2021 11:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632224494;
+        bh=LRagK15X7G3x85GkTeZ0DGufm6ujvUR3qrSLF32MkUs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wLRY8Xi1vtd5DwKggCyo2B8jpGaEZgrZr4jskrLLvs8hULuZqlUCTz1HJJa14PM1o
+         mzuV+X9J6C2Gnyfr829G996gYU0Z8Md9OMOqqon+PfKkeFqi6A32CQk8oIIypDj08r
+         5DOn79YEiZl6rwNHYRmDNKh1dMCtzzXPGo0Xq00A=
+Date:   Tue, 21 Sep 2021 13:41:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     jeyr@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH] [PATCH v2] misc: fastrpc: fix improper packet size
+ calculation
+Message-ID: <YUnE5laIe4S9xE5t@kroah.com>
+References: <1632221847-987-1-git-send-email-jeyr@codeaurora.org>
+ <YUnCw4uCSd1O7QX0@kroah.com>
+ <c4b294b251ed5ae4d7062edebcb397c1@codeaurora.org>
 MIME-Version: 1.0
-References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Sep 2021 13:40:33 +0200
-Message-ID: <CAMuHMdU7HHEHAcn=vPqAPYPkgeywKqb-rL6YmDRH0+4XNw8CuA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/6] dt-bindings: mmc: cdns: document Microchip MPFS
- MMC/SDHCI controller
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Piotr Sroka <piotrs@cadence.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4b294b251ed5ae4d7062edebcb397c1@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Tue, Sep 21, 2021 at 05:05:29PM +0530, jeyr@codeaurora.org wrote:
+> On 2021-09-21 17:02, Greg KH wrote:
+> > On Tue, Sep 21, 2021 at 04:27:27PM +0530, Jeya R wrote:
+> > > The buffer list is sorted and this is not being considered while
+> > > calculating packet size. This would lead to improper copy length
+> > > calculation for non-dmaheap buffers which would eventually cause
+> > > sending improper buffers to DSP.
+> > > 
+> > > Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke
+> > > method")
+> > > Signed-off-by: Jeya R <jeyr@codeaurora.org>
+> > > 
+> > > Changes in v2:
+> > > - updated commit message to proper format
+> > > - added fixes tag to commit message
+> > > - removed unnecessary variable initialization
+> > > - removed length check during payload calculation
+> > > ---
+> > >  drivers/misc/fastrpc.c | 10 ++++++----
+> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > The "Changes" need to go below the --- line, as the documentation states
+> > to do.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> Thanks Greg for your comment. Will resend PATCH 2 to address this.
 
-Thanks for your patch!
-
-On Mon, Sep 20, 2021 at 5:09 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
-
-Actually it's the SoC .dtsi
-
-> without any additional vendor compatible:
->
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible:0: 'cdns,sd4hc' is not one of ['socionext,uniphier-sd4hc']
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible: ['cdns,sd4hc'] is too short
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-With the above fixed:
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+v3 please.
