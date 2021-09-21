@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F14412E13
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BA1412E1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhIUEwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 00:52:23 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:50737 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhIUEwV (ORCPT
+        id S229481AbhIUFHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 01:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhIUFHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 00:52:21 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 20 Sep 2021 21:50:50 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 20 Sep 2021 21:50:48 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 21 Sep 2021 10:20:32 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 1C78721D93; Tue, 21 Sep 2021 10:20:31 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Subject: [RESEND PATCH v6] arm64: dts: qcom: sc7280: Add venus DT node
-Date:   Tue, 21 Sep 2021 10:20:29 +0530
-Message-Id: <1632199829-25686-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 21 Sep 2021 01:07:40 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82002C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 22:06:12 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id b6so21380389ilv.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 22:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L+tfnHMedGZe2TFbLCJcKj8ZBwL3hCr8DyK+pgVSE+4=;
+        b=QXWd88y2WJnDIsPwkEYPzcd/JXfLUTRpO318D7yusvGQ4g+wvLNzfnJRIjp42X+5kx
+         XgULeZOsCGhbGf9cIoth7WZgA8l/Gsovl3AVZE+shaRppsYL7wOhTjFOPvt47T6mvAYY
+         7dkdEzqqqFMaOMAmHIDRy+2ONB2AG+0VMBuGSUKtkTKgTiXU9KlFd/NMXeHM1+UdJe04
+         oQYLXfesNaJMFETttGOt2hBodvoBhbqzJRp8Vzblf6t4tN9q9vJOpx20bMavfIFXWm/q
+         ETTlnuQvctQIQdSrh5B/3gxFM7I3EKhN2Qs1Mlr0ND95ElQVtA6aPsUKr2kmUiHgL2OV
+         IQcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L+tfnHMedGZe2TFbLCJcKj8ZBwL3hCr8DyK+pgVSE+4=;
+        b=bzDF/dXxMbc6Trj038ud/LNWUns9FfVCVTL19rZBa6KVLY1HKFZrjY3rSUKjol1X+x
+         12PqbP2aOSFHiUMWpbpcLi7UhTpJI3WBs7yOcMLIL2A9OS2+/HuJTkh8fSHqwblhJlsp
+         o631dSndYY+aagAcpODnIjGp46e1PERlxce0njIvphbqm36SE+yX40uCfCY2bMKy6KQ6
+         uwrX1Pa9q+4IdvG/zNraZPMNVE2Wfn3WWCSKfz3CLKvnAv0X97EHOXLqyh+BvNSPsRjW
+         B4Znup5ZXFYvH1tkQ4ahmFCp01d+SC7GqV/Wk8YC20rKAkog3ulOmibvYxOe9voRGANB
+         E0Kw==
+X-Gm-Message-State: AOAM533Unzv4AThHIAi0v6AHYZBR+40zVEXXIVn4CXR810pGB90yPNTy
+        PlLgGOCU693MHgHBFJQrQ9DUVc03T5YMdPJ1foE9zw==
+X-Google-Smtp-Source: ABdhPJzVjEyiyrOobrt+R+WGvly+cwuaGiPLn6fNOPjSS7m+B01J9uyOvXZ6/MYVBQqnlp0AXh1bqUkjqJodsFqW7Ts=
+X-Received: by 2002:a92:c605:: with SMTP id p5mr19598295ilm.53.1632200771676;
+ Mon, 20 Sep 2021 22:06:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210916060525.1890638-1-irogers@google.com> <f7bbc59b-794f-2675-a044-1e3a58ad1495@huawei.com>
+ <CAP-5=fUAxfHb8fNjpPKthztJhB7Q3yUZucLS-6kKZtq-iNOVoA@mail.gmail.com> <361478a4-98d0-d488-2903-2c859a2c8524@huawei.com>
+In-Reply-To: <361478a4-98d0-d488-2903-2c859a2c8524@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 20 Sep 2021 22:05:59 -0700
+Message-ID: <CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com>
+Subject: Re: [PATCH v2] perf test: Workload test of metric and metricgroups
+To:     John Garry <john.garry@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, Paul Clarke <pc@us.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT entries for the sc7280 venus encoder/decoder.
+On Mon, Sep 20, 2021 at 3:00 AM John Garry <john.garry@huawei.com> wrote:
+>
+> On 17/09/2021 20:16, Ian Rogers wrote:
+> > On Thu, Sep 16, 2021 at 12:37 AM John Garry<john.garry@huawei.com>  wrote:
+> >> On 16/09/2021 07:05, Ian Rogers wrote:
+> >>> Test every metric and metricgroup with 'true' as a workload.
+> >>>
+> >>> Signed-off-by: Ian Rogers<irogers@google.com>
+> >> Reviewed-by: John Garry<john.garry@huawei.com>
+> >>
+> >> Note that I also had a local test for pmu events:
+> >> for e in `$PERF list --raw-dump pmu`; do
+> >>     echo "Testing $e"
+> >>     result=$($PERF stat -v -e "$e" perf bench internals synthesize)
+> >>     if [[ "$result" =~ "$e" ]]; then
+> >>       echo "Event not printed: $e"
+> >>       exit 1
+> >>     fi
+> >> done
+> >>
+> >> Is there any value in upstreaming this? I could not see same already
+> >> there. Or else make your new script generic, so that it accepts an
+> >> argument whether to test events or metrics or metricgroups
+> > It is not easy to make a generic script with the current shell test
+> > infrastructure. I made a variant of this test:
+> > https://lore.kernel.org/linux-perf-users/20210917184240.2181186-2-irogers@google.com/T/#u
+> > For skylake it ran for 1m15s and so it may be too slow. Perhaps we
+> > need to add to the test infrastructure with some kind of speed flag.
+>
+> Hi Ian,
+>
+> I suggested this before I realized that it would be called from "perf test".
+>
+> You think that 1m15s could be considered too slow, but I think that it
+> could be much slower to now run "perf test" on some other systems. Like
+> my arm64 system - see series
+> https://lore.kernel.org/linux-perf-users/1631795665-240946-1-git-send-email-john.garry@huawei.com/T/#t
+> - where I mention that we have >700 HW PMU events (before applying that
+> series to take advantage of the event merging). And each of those events
+> would be tested individually - slow...
+>
+> So firstly maybe a speed or test level flag could be added before we try
+> this. Sorry for any inconvenience caused.
 
-this patch depends on [1].
+Hi John,
 
-[1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=529463
+I think a flag would be best. I'll look to add a notion of test sizes,
+as that mirrors what works well at Google. We can then tag a test as
+small, medium, large and default to just say running small and medium
+tests.
 
-Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+Thanks,
+Ian
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index a8c274a..f171ababc 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -63,6 +63,11 @@
- 			no-map;
- 			reg = <0x0 0x80b00000 0x0 0x100000>;
- 		};
-+
-+		video_mem: memory@8b200000 {
-+			reg = <0x0 0x8b200000 0x0 0x500000>;
-+			no-map;
-+		};
- 	};
- 
- 	cpus {
-@@ -1063,6 +1068,76 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
-+		venus: video-codec@aa00000 {
-+			compatible = "qcom,sc7280-venus";
-+			reg = <0 0x0aa00000 0 0xd0600>;
-+			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-+				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-+				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-+			clock-names = "core", "bus", "iface",
-+				      "vcodec_core", "vcodec_bus";
-+
-+			power-domains = <&videocc MVSC_GDSC>,
-+					<&videocc MVS0_GDSC>,
-+					<&rpmhpd SC7280_CX>;
-+			power-domain-names = "venus", "vcodec0", "cx";
-+			operating-points-v2 = <&venus_opp_table>;
-+
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
-+					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "cpu-cfg", "video-mem";
-+
-+			iommus = <&apps_smmu 0x2180 0x20>,
-+				 <&apps_smmu 0x2184 0x20>;
-+			memory-region = <&video_mem>;
-+
-+			video-decoder {
-+				compatible = "venus-decoder";
-+			};
-+
-+			video-encoder {
-+				compatible = "venus-encoder";
-+			};
-+
-+			video-firmware {
-+				iommus = <&apps_smmu 0x21a2 0x0>;
-+			};
-+
-+			venus_opp_table: venus-opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-133330000 {
-+					opp-hz = /bits/ 64 <133330000>;
-+					required-opps = <&rpmhpd_opp_low_svs>;
-+				};
-+
-+				opp-240000000 {
-+					opp-hz = /bits/ 64 <240000000>;
-+					required-opps = <&rpmhpd_opp_svs>;
-+				};
-+
-+				opp-335000000 {
-+					opp-hz = /bits/ 64 <335000000>;
-+					required-opps = <&rpmhpd_opp_svs_l1>;
-+				};
-+
-+				opp-424000000 {
-+					opp-hz = /bits/ 64 <424000000>;
-+					required-opps = <&rpmhpd_opp_nom>;
-+				};
-+
-+				opp-460000048 {
-+					opp-hz = /bits/ 64 <460000048>;
-+					required-opps = <&rpmhpd_opp_turbo>;
-+				};
-+			};
-+
-+		};
-+
- 		videocc: clock-controller@aaf0000 {
- 			compatible = "qcom,sc7280-videocc";
- 			reg = <0 0xaaf0000 0 0x10000>;
--- 
-2.7.4
-
+> Thanks,
+> John
