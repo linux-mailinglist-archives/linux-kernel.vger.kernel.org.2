@@ -2,157 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F025412FC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438B2412FC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhIUHyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhIUHyY (ORCPT
+        id S230172AbhIUHyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:54:41 -0400
+Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:48465 "EHLO
+        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230437AbhIUHyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:54:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DCFC061574;
-        Tue, 21 Sep 2021 00:52:56 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 07:52:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632210774;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XjXvsy3Z/50ORRiKG9iCQPOaiGQm7B/uIN3YWIln1Qs=;
-        b=gtd3gLQHTvb+hzwt7bHmj3vq2tvR6RMCmdehLYzKPavOXpst09Rt0CeGv8s9VgZ2Gpxm1r
-        L78ZSso1p/QAP4rd/r8bUD8rTQbft49rSwP5PoLY/vZSJg/brKNMfUTNCv7cIfIUm1l2lV
-        20ZdsPV9jysZw4mjI0QES1AAexaqeKZKBC2TnkpKdH0KB5KZ7HCcnlabLVPtAmcoJUoYqe
-        kbXN116yJuXq3oPdzsnrgNT0BT/EMHqX0jqLeqsFy8RhiwqciMRZIvEtDi1/5hU4D11/Kp
-        ohkeT8COWeYgOXnoNFfa7nZBuNmjRC4z8OCLEMAPloUJVVxjID79umngg+lKWQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632210774;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XjXvsy3Z/50ORRiKG9iCQPOaiGQm7B/uIN3YWIln1Qs=;
-        b=GRk0JvIhZhCP1GRVcfiTSUyLNBw4wjJ+OMyp3N/q+eFTfPUOHLmAapBHdHL+afvzwF6NMG
-        zHJMxxPRBiyuOOAg==
-From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Change to not send SIGBUS error during copy
- from user
-Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210818002942.1607544-3-tony.luck@intel.com>
-References: <20210818002942.1607544-3-tony.luck@intel.com>
+        Tue, 21 Sep 2021 03:54:40 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id 4BB1B1C4B53
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:53:11 +0100 (IST)
+Received: (qmail 17839 invoked from network); 21 Sep 2021 07:53:11 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 21 Sep 2021 07:53:11 -0000
+Date:   Tue, 21 Sep 2021 08:53:09 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched/fair: Remove redundant lookup of rq in
+ check_preempt_wakeup
+Message-ID: <20210921075309.GK3959@techsingularity.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-2-mgorman@techsingularity.net>
+ <CAKfTPtBTL+KTJdEWv=-6OF8mFvnWUQ1PWKufzhKOASzMcUbnww@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <163221077390.25758.9394361131538462134.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtBTL+KTJdEWv=-6OF8mFvnWUQ1PWKufzhKOASzMcUbnww@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+On Tue, Sep 21, 2021 at 09:21:16AM +0200, Vincent Guittot wrote:
+> On Mon, 20 Sept 2021 at 16:26, Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > The rq for curr is read during the function preamble, remove the
+> > redundant lookup.
+> >
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > ---
+> >  kernel/sched/fair.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index ff69f245b939..038edfaaae9e 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -7190,7 +7190,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+> >         if (cse_is_idle != pse_is_idle)
+> >                 return;
+> >
+> > -       update_curr(cfs_rq_of(se));
+> > +       update_curr(cfs_rq);
+> 
+> se can have been modified by find_matching_se(&se, &pse)
+> 
 
-Commit-ID:     a6e3cf70b772541c2388abdb86e5a562cfe18e63
-Gitweb:        https://git.kernel.org/tip/a6e3cf70b772541c2388abdb86e5a562cfe18e63
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Tue, 17 Aug 2021 17:29:41 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 20 Sep 2021 10:55:41 +02:00
+I still expected the cfs_rq to be the same, particularly given that the
+context is about preempting the current task on a runqueue. Is that
+wrong?
 
-x86/mce: Change to not send SIGBUS error during copy from user
-
-Sending a SIGBUS for a copy from user is not the correct semantic.
-System calls should return -EFAULT (or a short count for write(2)).
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210818002942.1607544-3-tony.luck@intel.com
----
- arch/x86/kernel/cpu/mce/core.c | 35 ++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 193204a..69768fe 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1272,7 +1272,7 @@ static void kill_me_maybe(struct callback_head *cb)
- 		flags |= MF_MUST_KILL;
- 
- 	ret = memory_failure(p->mce_addr >> PAGE_SHIFT, flags);
--	if (!ret && !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-+	if (!ret) {
- 		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
- 		sync_core();
- 		return;
-@@ -1286,15 +1286,21 @@ static void kill_me_maybe(struct callback_head *cb)
- 	if (ret == -EHWPOISON)
- 		return;
- 
--	if (p->mce_vaddr != (void __user *)-1l) {
--		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
--	} else {
--		pr_err("Memory error not recovered");
--		kill_me_now(cb);
--	}
-+	pr_err("Memory error not recovered");
-+	kill_me_now(cb);
-+}
-+
-+static void kill_me_never(struct callback_head *cb)
-+{
-+	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
-+
-+	p->mce_count = 0;
-+	pr_err("Kernel accessed poison in user space at %llx\n", p->mce_addr);
-+	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, 0))
-+		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
- }
- 
--static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
-+static void queue_task_work(struct mce *m, char *msg, void (*func)(struct callback_head *))
- {
- 	int count = ++current->mce_count;
- 
-@@ -1304,11 +1310,7 @@ static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
- 		current->mce_kflags = m->kflags;
- 		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
- 		current->mce_whole_page = whole_page(m);
--
--		if (kill_current_task)
--			current->mce_kill_me.func = kill_me_now;
--		else
--			current->mce_kill_me.func = kill_me_maybe;
-+		current->mce_kill_me.func = func;
- 	}
- 
- 	/* Ten is likely overkill. Don't expect more than two faults before task_work() */
-@@ -1459,7 +1461,10 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		/* If this triggers there is no way to recover. Die hard. */
- 		BUG_ON(!on_thread_stack() || !user_mode(regs));
- 
--		queue_task_work(&m, msg, kill_current_task);
-+		if (kill_current_task)
-+			queue_task_work(&m, msg, kill_me_now);
-+		else
-+			queue_task_work(&m, msg, kill_me_maybe);
- 
- 	} else {
- 		/*
-@@ -1477,7 +1482,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		}
- 
- 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
--			queue_task_work(&m, msg, kill_current_task);
-+			queue_task_work(&m, msg, kill_me_never);
- 	}
- out:
- 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
+-- 
+Mel Gorman
+SUSE Labs
