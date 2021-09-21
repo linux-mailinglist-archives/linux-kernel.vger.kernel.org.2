@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34857413A20
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F54413A28
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbhIUSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
+        id S233433AbhIUSmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbhIUSiQ (ORCPT
+        with ESMTP id S233372AbhIUSmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:38:16 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9303AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:36:47 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id eg28so171554edb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:36:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3cOxiaXTx9Z24g7+I+WmBeZRqCcpFDof8uhshlDK3+s=;
-        b=pyVkZOT8drL8yKpXiTdD7UMqtjaRWMOiR7Xrq0cbvrceD2G03xHJ8P2Kx1uxsWD4QO
-         krWpJOZDgIrCYVb9qCK/BsHaIGgnN0nc7a5CNYpGlA2aKRz9X7KhdHzCiatlGPcWG3Jz
-         lnx7lUwANO5E+8dpmMUAfsEQbJXSjIWg+SeWhXpdZFxUemoUcxcCtWMlbNDzfb414qK6
-         W16LGj9LXC3lBD6a6UnrffijMsNd3WZsDXdyzOSrh9Ws2vYML5halzGfqWfiOwmRAfoG
-         L2qNvBjJ5HEwXB0vgTFZsri//xmp0Zh03ovSjb8geD2pgdny2cLSYAjw1JL7Bu0JSX+2
-         GJhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3cOxiaXTx9Z24g7+I+WmBeZRqCcpFDof8uhshlDK3+s=;
-        b=CGMlL4+M8cNeqks+JMmAPMmMPcMs3sWHMrYe5So1pXc3hKJ2ML2pC3cNpNAR7QHHMG
-         WVvPRUasiT52GpuF21zonnDFyO9NCJRs+k/X3ARZhSsA8tgz/W2/oscJQ/jFuCKKWjcT
-         FbMDBgryI+70YBTEKXItXRzUt4BKRU1dncMQoFR3ryir3d1tHhzutzNoNllvxDZUZIxz
-         rhSj36ItnytXM2C1RQQbNkn5XXy661ZMLtT0k3SFHHpJ2fKth57z8KfbB3/A1vvc2HKE
-         NOWUdFX2TJhfWmpZ9NA87QVLsakktFOzjjRiyod9YITk2+aq6YN3BqTU3/5URKHVpW6i
-         vvKw==
-X-Gm-Message-State: AOAM531ttW6IChw94wd7A7ydRaiGTyAlKAl6A97EAgCxwWPnulWIb+NN
-        qra6nVMnJVDpqONSmze4l0U=
-X-Google-Smtp-Source: ABdhPJwJ8fdjdbDMPXfJJ96A7n4DqcIP+j08vvmoMHD//l9E+AVT3cWqjb2uPA6U7qd/6DDrp3jsnQ==
-X-Received: by 2002:a17:907:98e6:: with SMTP id ke6mr9914004ejc.63.1632249406256;
-        Tue, 21 Sep 2021 11:36:46 -0700 (PDT)
-Received: from localhost.localdomain (host-212-171-30-160.retail.telecomitalia.it. [212.171.30.160])
-        by smtp.gmail.com with ESMTPSA id d16sm7827280ejk.39.2021.09.21.11.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 11:36:45 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH] staging: r8188eu: Remove mp, a.k.a. manufacturing process, code
-Date:   Tue, 21 Sep 2021 20:36:44 +0200
-Message-ID: <10957254.UNI85QxBjH@localhost.localdomain>
-In-Reply-To: <20210920185437.15652-1-Larry.Finger@lwfinger.net>
-References: <20210920185437.15652-1-Larry.Finger@lwfinger.net>
+        Tue, 21 Sep 2021 14:42:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B89C061574;
+        Tue, 21 Sep 2021 11:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VCDewzfHbbVh3g/pRbOQUFxbt5WA/PRKwiZLKfGDQGo=; b=BN8N5u5qh8Fz/U0975RdYo6u27
+        Cw+dJJlx9MbHYoL8blt8kjhIP9YlJW3Z07zt2ASJc6CKxpub8T6ZfsKGGtYK4F7xt7zcRAojyBKbr
+        /T5JcwQYAYanMTWU3d+V6lrLSWdl0lXAPNyhl1XOwOkJWnnobkZ+ZBxEJuyELDHz2PNYpQaYuMg03
+        OIcOODNHbkS59B7cp2LcuIUiVlvH20/YZTXEI8Co39N4Z0BjNPfK9URWHk2ZbHJ19ACerCu65//XF
+        tORQkZU1xyGDdjgBNOlf8CyAJtadq8RHf+Qi2hKdCu+/M/7GyVTvm2QNeQgHKajEe+NUugwFVrobi
+        mvOP0VsQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSkhI-005W8J-I5; Tue, 21 Sep 2021 18:40:52 +0000
+Date:   Tue, 21 Sep 2021 11:40:52 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Lucas De Marchi <lucas.de.marchi@gmail.com>
+Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
+        linux-modules <linux-modules@vger.kernel.org>,
+        live-patching@vger.kernel.org, fstests@vger.kernel.org,
+        linux-block@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
+        Jessica Yu <jeyu@kernel.org>, osandov@fb.com,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] libkmod: add a library notice log level print
+Message-ID: <YUonNDxy+8zU9B52@bombadil.infradead.org>
+References: <20210810051602.3067384-1-mcgrof@kernel.org>
+ <20210810051602.3067384-2-mcgrof@kernel.org>
+ <CAKi4VAKa7LKXdRmA7epgbkUZw2wpUz19JYYdZ35mPCxSL_W_kw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKi4VAKa7LKXdRmA7epgbkUZw2wpUz19JYYdZ35mPCxSL_W_kw@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, September 20, 2021 8:54:37 PM CEST Larry Finger wrote:
-> The standard driver contains code used by the factory to evaluate chips
-> that have just been manufactured. Such code is indicated by "mp" in
-> the variable names, the routine names, and in file names. All of these
-> can be deleted.
+On Mon, Sep 20, 2021 at 10:53:53PM -0700, Lucas De Marchi wrote:
+> On Mon, Aug 9, 2021 at 11:56 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >
+> > When you use pass the -v argument to modprobe we bump
+> > the log level from the default modprobe log level of
+> > LOG_WARNING (4) to LOG_NOTICE (5), however the library
+> > only has avaiable to print:
+> >
+> >  #define DBG(ctx, arg...) kmod_log_cond(ctx, LOG_DEBUG, ## arg)
+> >  #define INFO(ctx, arg...) kmod_log_cond(ctx, LOG_INFO, ## arg)
+> >  #define ERR(ctx, arg...) kmod_log_cond(ctx, LOG_ERR, ## arg)
+> >
+> > LOG_INFO (6) however is too high of a level for it to be
+> > effective at printing anything when modprobe -v is passed.
+> > And so the only way in which modprobe -v can trigger the
+> > library to print a verbose message is to use ERR() but that
+> > always prints something and we don't want that in some
+> > situations.
+> >
+> > We need to add a new log level macro which uses LOG_NOTICE (5)
+> > for a "normal but significant condition" which users and developers
+> > can use to look underneath the hood to confirm if a situation is
+> > happening.
+> >
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  libkmod/libkmod-internal.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/libkmod/libkmod-internal.h b/libkmod/libkmod-internal.h
+> > index 398af9c..2e5e1bc 100644
+> > --- a/libkmod/libkmod-internal.h
+> > +++ b/libkmod/libkmod-internal.h
+> > @@ -25,10 +25,12 @@ static _always_inline_ _printf_format_(2, 3) void
+> >  #  else
+> >  #    define DBG(ctx, arg...) kmod_log_null(ctx, ## arg)
+> >  #  endif
+> > +#  define NOTICE(ctx, arg...) kmod_log_cond(ctx, LOG_NOTICE, ## arg)
+> >  #  define INFO(ctx, arg...) kmod_log_cond(ctx, LOG_INFO, ## arg)
+> >  #  define ERR(ctx, arg...) kmod_log_cond(ctx, LOG_ERR, ## arg)
+> >  #else
+> >  #  define DBG(ctx, arg...) kmod_log_null(ctx, ## arg)
+> > +#  define NOTICE(ctx, arg...) kmod_log_cond(ctx, LOG_NOTICE, ## arg)
 > 
-> In addition to removing nearly 7,000 lines of code, the size of the driver
-> is reduced by 63 KB:
->           text    data     bss     dec     hex
-> Before  573959   48582   14660  637201   9b911
-> After   513530   45894   14660  574084   8c284
-> 
-> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+> did you mean kmod_log_null()?
 
-Dear Larry,
+Sure, feel free to change on your end or let me know if you would
+prefer if I respin.
 
-It's a great job, a heavyweight, impressive!
-
-Congratulations,
-
-Fabio
-
-
+  Luis
