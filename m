@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434BE413A6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A9D413A73
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhIUTBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S233925AbhIUTCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbhIUTBG (ORCPT
+        with ESMTP id S233905AbhIUTCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:01:06 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D4DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:59:38 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id h20so23900362ilj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:59:38 -0700 (PDT)
+        Tue, 21 Sep 2021 15:02:43 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13171C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:01:15 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g14so463206pfm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rPanjl/X9LOUVmXrjkeXI0Q7gVy8gp22iJNWmdA5zZg=;
-        b=oJAh/Se0IUU493aQZeFEycxN0jgmMrqqfg8bRl2QN9NCCvx/b1R7KbCPnWQ8GcWvSk
-         T+8zaXjaQaJ7arkXQqtnT1Xmk0wUH9bovJfATBBVQl1dYBpLPImXLnh1xneyZXVjiW+h
-         UrBBJuk0zYG/2/Zx+nJGSq1+0RPqvuacEezNI=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uUvwtgDvS9z+MmLCsIbndyuppV43gHnzlz5qvL6KeNg=;
+        b=c9uP+rap/UfN7fREE6h8u3lsZij8/9nesp5oAq6rWx9xNnYvzMF9PP463fCmsUqDar
+         kEwNNzzupFjl3iVssQImb8bF3h2/B/8MlMGNIDKsuMe9bchBPSyFkLc+uuhUiy9QTIMI
+         6UVxssDsqkegyngHCgoDjyvtGGXIsR18yy7Rg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rPanjl/X9LOUVmXrjkeXI0Q7gVy8gp22iJNWmdA5zZg=;
-        b=j0IO7sUscADfX//Pg8GIswWPJcmHspUCCBPdBt+9VHYsSF/GE1v78HVsy4UcMWfbYB
-         T599CxyMD8FC0kaADas4twUxqSA3plRtwLpnByjW0AfXUjBqDizjwJn07DoydTXEEk4G
-         Scn9lzs51YZMn8EfmkmRfST9AkcDfIIcthSJVr60t5Xwwt9X+VuN+ej/hGIzlgzpS5Oy
-         It7C/Q9O6IC1wGBRJOyiCmCn7Z7FSOWJLdaQ/SEROG48GV8CdY1pS72JY6agbToOV26o
-         1N/h447GhdFnZ2E0zKl1/dgexjgLM8KH8S90fMTtoHPL0H0xcZL54o7IALV7S2I28DPQ
-         9Z3Q==
-X-Gm-Message-State: AOAM530Nb5TmH2yLIZEmPjO/rQB9+3VTuD9tMeLBeEKmIqrEL3v859Rv
-        OwCXuUELnUA0ehkwH3ge5B4PKlgsukL1OQ==
-X-Google-Smtp-Source: ABdhPJxUUL56sx6JHPniCNvKnftCK//TyP6htoFS6KudiiljBau1M2o2ghZH9ruzX0jubWUjgQ1kfQ==
-X-Received: by 2002:a05:6e02:b29:: with SMTP id e9mr16232927ilu.136.1632250777140;
-        Tue, 21 Sep 2021 11:59:37 -0700 (PDT)
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
-        by smtp.gmail.com with ESMTPSA id s5sm10602621ilq.59.2021.09.21.11.59.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 11:59:36 -0700 (PDT)
-Received: by mail-il1-f169.google.com with SMTP id a20so23910588ilq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:59:36 -0700 (PDT)
-X-Received: by 2002:a92:da0c:: with SMTP id z12mr21949905ilm.120.1632250775619;
- Tue, 21 Sep 2021 11:59:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uUvwtgDvS9z+MmLCsIbndyuppV43gHnzlz5qvL6KeNg=;
+        b=qbBTzHf18+G+9jpELCDkhYUN/tKmgDKIXIla3ElUbD41LgirLENzHvzqp2/2uMYqJC
+         BKLNJhnJs1AW/nnWWfD6S5DRss6v+IDr9NOLJ/z/+497xfxQWNI1+U7xXl5GAO3Yy04D
+         Ip+vhcH2Txawj0q8HVr2vDNZRnZUdXL7WwRuOZmQPxcl9BBS1L77b0i+Xr/As4unGsbs
+         EVZyCn7wXYaz6EbHhkRwpv0KPJW0ujk1qgm5aVoI11yA8lrl4ob8QGK2GCo6g6ZfZ8Qs
+         NfRq3dA29mKGkESOVaKo0+1ijlXGSW/BF9lrd+L0NUVfijhWlRwrIr1kGfcHeFo4JjNE
+         7R8g==
+X-Gm-Message-State: AOAM530NZGB+73oM7V6Kg6cK1FHNPI15EuLe9QgI7uwhikbNfOokMNdC
+        GGufFUC4NwCeB8MRmugJ2asNWQ==
+X-Google-Smtp-Source: ABdhPJyhkEtFnUnBg+9qtMK4KmQYa6j/evLKD74iespv+jzZ07EoQOA7rlY7bUrm0t6g+7REwX8YJw==
+X-Received: by 2002:a63:2cce:: with SMTP id s197mr3869655pgs.45.1632250874538;
+        Tue, 21 Sep 2021 12:01:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t6sm3451285pjr.36.2021.09.21.12.01.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 12:01:13 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 12:01:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] mm: Remove HARDENED_USERCOPY_FALLBACK
+Message-ID: <202109211200.14E421C@keescook>
+References: <20210921061149.1091163-1-steve@sk2.org>
 MIME-Version: 1.0
-References: <20210921110556.v6.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
- <20210921110556.v6.2.I1d6ea362dc76efa77cca2b46253d31b7651eaf17@changeid>
-In-Reply-To: <20210921110556.v6.2.I1d6ea362dc76efa77cca2b46253d31b7651eaf17@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 21 Sep 2021 11:59:24 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XFK44E_gz8KvPRape-KHE7FGH1L=kYW9Qtx8V8P35Jcg@mail.gmail.com>
-Message-ID: <CAD=FV=XFK44E_gz8KvPRape-KHE7FGH1L=kYW9Qtx8V8P35Jcg@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921061149.1091163-1-steve@sk2.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 21, 2021 at 08:11:49AM +0200, Stephen Kitt wrote:
+> This has served its purpose and is no longer used. All usercopy
+> violations appear to have been handled by now, any remaining
+> instances (or new bugs) will cause copies to be rejected.
+> 
+> This isn't a direct revert of commit 2d891fbc3bb6 ("usercopy: Allow
+> strict enforcement of whitelists"); since usercopy_fallback is
+> effectively 0, the fallback handling is removed too.
+> 
+> This also removes the usercopy_fallback module parameter on
+> slab_common.
+> 
+> Link: https://github.com/KSPP/linux/issues/153
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> Suggested-by: Kees Cook <keescook@chromium.org>
 
-On Tue, Sep 21, 2021 at 11:06 AM Philip Chen <philipchen@chromium.org> wrote:
->
-> Implement the first version of AUX support, which will be useful as
-> we expand the driver to support varied use cases.
->
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
+Thanks for doing this!
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Kees Cook <keescook@chromium.org>
 
-Snoozing for 2 days and will plan to apply to drm-misc-next unless
-there are objections.
-
--Doug
+-- 
+Kees Cook
