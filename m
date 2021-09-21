@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B9C413BE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6375E413BE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbhIUVDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37086 "EHLO mail.kernel.org"
+        id S235202AbhIUVEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:04:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52850 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231592AbhIUVDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD6FB61159;
-        Tue, 21 Sep 2021 21:02:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632258125;
-        bh=lDwQzdXVgtBtV2xSS/Tbe8ndRTlTdXxGKtVsEMYWjM0=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=k7XBg+5Z5Omooz7EG3y4ErV2xS4y2PFh9/ZtJ67DEz3Pu4lTkq7bWXc3Uni17pDMS
-         zKYu7Cd7EfnRJG9MXZkP6j8FU29F2ci5Z0XbxnWbp7wMgbNTh9ivB9Yick0PNpwXaC
-         14H3kUR4/Wzzf1uEULxrOqZyyRsh7AOjmyCam+eS6ay/r1dePFMkX9DG25JMmD//eu
-         goSUq0SLAcogJgzS3C1JiStVtO6pVpOmVYIwT2M4dBe+Jc+ANYPj0mMpz1vySkOoiy
-         Eqm6oDvOJvOPAPVtWQ79ijUD1WOrWWo7i2uBhs1oAXej1KHtNe+jiZJF1TyRwsP3AI
-         3hoo/DlN6W3/g==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 9F55F27C0054;
-        Tue, 21 Sep 2021 17:02:03 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute6.internal (MEProxy); Tue, 21 Sep 2021 17:02:03 -0400
-X-ME-Sender: <xms:SkhKYT___25HHUyI2-xNjeCsjBXD1cMZIu30_GrHBwInI4fQ_xWr5w>
-    <xme:SkhKYftjXHryenuG6M1Jp06TZHRt0FEWt6cABajwO_cGow4xGfQnMnzJA9m6lWKUw
-    5REtQ4yGgjSvP8M8MU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeihedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedthfehtedtvdetvdetudfgueeuhfdtudegvdelveelfedvteelfffg
-    fedvkeegfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:SkhKYRBs7ud_Y7yraVXqqaZhuinfWMmdGuaZRCiLNvwZAiqmOSffQA>
-    <xmx:SkhKYffOPblAaFwqsBm66qntTP0n_XbgKJiScsJV3RJbW9NtevI1dg>
-    <xmx:SkhKYYPNOqGp_sEWrn4Sbr_bRyn2NYqX8SnC7KZ2Jmh_pyX5jV5xig>
-    <xmx:S0hKYVoe8hf7O_i_OocegQkWIwXqtRyWKYifvincCqiz4LI7nd6cFA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5D857A000E3; Tue, 21 Sep 2021 17:02:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
-Mime-Version: 1.0
-Message-Id: <01288fc6-4525-48a5-8ab5-0c617fdbcfc9@www.fastmail.com>
-In-Reply-To: <YUWPuPyBxR9OVtXS@hirez.programming.kicks-ass.net>
-References: <202109151423.43604.linux@zary.sk>
- <202109162227.17415.linux@zary.sk>
- <20210916210509.GG4323@worktop.programming.kicks-ass.net>
- <202109171011.31916.linux@zary.sk>
- <YURdxNpH8YNQZQT7@hirez.programming.kicks-ass.net>
- <CAHk-=wj_-bRjcJdXubdUUsTph+DH-5f77FmkbNCfFVYg=Td2zw@mail.gmail.com>
- <CAHk-=whsG4LfNJHjeprDn0iR=zRGBUBtSSgLep=MqbEb8yBuuA@mail.gmail.com>
- <YUWPuPyBxR9OVtXS@hirez.programming.kicks-ass.net>
-Date:   Tue, 21 Sep 2021 14:01:40 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc:     "Ondrej Zary" <linux@zary.sk>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/iopl: Fake iopl(3) CLI/STI usage
-Content-Type: text/plain
+        id S233740AbhIUVEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:04:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=prpIZcxjvdXTKyMRNo5Wbn7PrK6WuARtzohRlOC6YHU=; b=2WvwaUkUIq1tNnXUQuhHTtZ5wd
+        fBMTVNrGTpiogLWrUqRBTgeI7zYujZQ5bu+Zs84B3OyGCrlZf2nDBbVs3ZkkZomRO920dAGLU58dh
+        Z9q52nNVmVyvnHYRRy8heqQGFXL/DuZi6snFXMtvluRXE28LHJwk/gAHvGf1lInesPS4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mSmun-007gZb-UF; Tue, 21 Sep 2021 23:02:57 +0200
+Date:   Tue, 21 Sep 2021 23:02:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+Message-ID: <YUpIgTqyrDRXMUyC@lunn.ch>
+References: <20210915170940.617415-1-saravanak@google.com>
+ <20210915170940.617415-3-saravanak@google.com>
+ <CAJZ5v0h11ts69FJh7LDzhsDs=BT2MrN8Le8dHi73k9dRKsG_4g@mail.gmail.com>
+ <YUaPcgc03r/Dw0yk@lunn.ch>
+ <YUoFFXtWFAhLvIoH@kroah.com>
+ <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch>
+ <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch>
+ <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> There are cases where the children try to probe too quickly (before
+> the parent has had time to set up all the resources it's setting up)
+> and the child defers the probe. Even Andrew had an example of that
+> with some ethernet driver where the deferred probe is attempted
+> multiple times wasting time and then it eventually succeeds.
 
-On Sat, Sep 18, 2021, at 12:05 AM, Peter Zijlstra wrote:
-> On Fri, Sep 17, 2021 at 03:24:51PM -0700, Linus Torvalds wrote:
->> On Fri, Sep 17, 2021 at 3:23 PM Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->> >
->> > I think the proper thing to do is perhaps something like
->> 
->> The alternative is to just ignore cs_abse entirely, and just use
->> "regs->ip", which makes this all even easier.
->> 
->> If somebody uses a code segment _and_ cli/sti, maybe they should just
->> get the SIGSEGV?
->
-> I did a hatched job on fixup_ump_exception() which is why it looks like
-> it does, that said...
->
-> our case at hand mmap()'s BIOS code from /dev/mem and executes that, I
-> don't think it does an LDT segment but it would be entirely in line with
-> the level of hack we're looking at.
->
-> Let me frob at this after breakfast and see if I can make it better.
+And i prefer an occasional EPROBE_DEFER over a broken Ethernet switch,
+which is the current state. I'm happy to see optimisations, but not at
+the expense of breaking working stuff.
 
-The patch seems fine, but I have to ask: is this really worth fixing?
+> Also, this assumption that the child will be bound successfully upon
+> addition forces the parent/child drivers to play initcall chicken
 
-I suppose the log message could check if the computer comes from HP(E) and gently that the owner switch vendors.
+We have never had any initcall chicken problems. The switch drivers
+all are standard mdio_module_driver, module_platform_driver,
+module_i2c_driver, module_pci_driver. Nothing special here. Things
+load in whatever order they load, and it all works out, maybe with an
+EPROBE_DEFER cycle. Which is good, we get our error paths tested, and
+sometimes find bugs that way.
+
+     Andrew
