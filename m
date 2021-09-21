@@ -2,121 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B812413E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13BC413E29
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhIUXyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:54:53 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:45008 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhIUXyw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:54:52 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18LNrCqK081573;
-        Tue, 21 Sep 2021 18:53:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632268392;
-        bh=jjUeDPDF1YHObUoZjxKJB2Gi2KKuOAOryz8ngfflF1k=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=vaWUJLsqSa2U6Ex5C4K1z8Rcpto4+UQoghsms0QR9Srx3t42smUFlOIQzuk30fa1n
-         Svi8JX9+lghCPTDwAciVzlkpKbPGUD3HPloJ/BSwZetVVnF3yAQVEbEJpADO8TL97o
-         UN0Ci6qtaVMQPxq9ZmuzI9i1sa668tgLSNuwms5Q=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18LNrCOZ011409
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 21 Sep 2021 18:53:12 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
- Sep 2021 18:53:12 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 21 Sep 2021 18:53:12 -0500
-Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18LNrC4q119274;
-        Tue, 21 Sep 2021 18:53:12 -0500
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-To:     Robert Nelson <robertcnelson@gmail.com>
-CC:     Drew Fustini <pdp7pdp7@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
- <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
- <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
- <YUmOGFUFONR/ynfW@atomide.com> <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
- <CAEf4M_B1vam_ykRZmQ5++QArC-=+yooRg25BrQXKE5nk8AtqbA@mail.gmail.com>
- <40077cea-1f5e-de67-58dd-7fae0f63678d@ti.com>
- <CAOCHtYjMO1XjLRGxP1GMFudXh3meNQB2F44z_NRaFUnX=Fb+Mw@mail.gmail.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <066d9a7e-89c2-b8b5-b2cd-4993513f5a64@ti.com>
-Date:   Tue, 21 Sep 2021 18:53:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CAOCHtYjMO1XjLRGxP1GMFudXh3meNQB2F44z_NRaFUnX=Fb+Mw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S231241AbhIUX4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:56:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhIUX4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:56:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8500E610A1;
+        Tue, 21 Sep 2021 23:54:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632268477;
+        bh=rcMcMVou3tsD5zDoDQ84q7losgPrnq29lRr/6GzIb5Q=;
+        h=Date:From:To:Subject:From;
+        b=QptiPt1LDZXJ1j4ddARAOHewStQ1dXoEQ2Bqg3y8qn53JaDtZPk2DorW6CK2HmJUE
+         RJ/3L1LQzkveeHr6XEQmhf0khDlWggcyOqhDvdQodtulUXt6KeEdexAAidqLxKULZ5
+         Ogm+CBX0rYgPw7nWffmz3yt9HzzCNFnwbNnYLO0c=
+Date:   Tue, 21 Sep 2021 16:54:37 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2021-09-21-16-54 uploaded
+Message-ID: <20210921235437.zcAiZPmxd%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 5:00 PM, Robert Nelson wrote:
-> On Tue, Sep 21, 2021 at 4:54 PM Suman Anna <s-anna@ti.com> wrote:
->>
->> On 9/21/21 3:29 PM, Drew Fustini wrote:
->>> On Tue, Sep 21, 2021 at 9:09 AM Suman Anna <s-anna@ti.com> wrote:
->>>>
->>>> Hi Matti, Tony,
->>>>
->>>> On 9/21/21 2:47 AM, Tony Lindgren wrote:
->>>>> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
->>>>>> Finally, adding the udelay(100); (as Tony suggested) at the end of the
->>>>>> omap_reset_deassert() did make the oops go away even when pruss_tm was
->>>>>> enabled. I don't know what would be a proper fix though.
->>>>
->>>> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
->>>> changes [1].
->>>>
->>>> May I ask what is your BBB board version? My board is rev.A5C.
->>>
->>> That rev is quite old [1].  Would you be able to try a Rev C?  It has
->>> been in production since around 2014 with the move from 2GB to 4GB
->>> eMMC.
->>
->> I don't have any rev.C boards handy to try.
->>
->> I am curious to see if there is some correlation between failures and board
->> versions. I see that there is a minor processor change to AM3358 from rev.B
->> onwards compared to the AM3359 that I would have on my board. PRU-ICSS IP would
->> be present and supported on both though.
-> 
-> Rev B vs Rev C shouldn't matter..  I don't think I even have a Rev
-> "B".. A6A, B, to C* was done very quickly at CIrcuitCo at that time..
-> 
-> https://elinux.org/Beagleboard:BeagleBoneBlack#Revision_B
-> 
-> "This version moves to the AM3358BZCZ100 processor as we are no longer
-> able to get the limited production version of the AM3359AZCZ100."
-> 
-> I'm assuming the AM3358 had the pru enabled..
+The mm-of-the-moment snapshot 2021-09-21-16-54 has been uploaded to
 
-Yes, PRU-ICSS is present on AM3356 and above.
+   https://www.ozlabs.org/~akpm/mmotm/
 
-regards
-Suman
+mmotm-readme.txt says
+
+README for mm-of-the-moment:
+
+https://www.ozlabs.org/~akpm/mmotm/
+
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
+
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
+
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
+
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
+
+
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
+
+	https://github.com/hnaz/linux-mm
+
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
+
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
+
+
+
+This mmotm tree contains the following patches against 5.15-rc2:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* mm-hwpoison-add-is_free_buddy_page-in-hwpoisonhandlable.patch
+* kasan-fix-kconfig-check-of-cc_has_working_nosanitize_address.patch
+* mm-damon-dont-use-strnlen-with-known-bogus-source-length.patch
+* xtensa-increase-size-of-gcc-stack-frame-check.patch
+* fix-judgment-error-in-shmem_is_huge.patch
+* ocfs2-drop-acl-cache-for-directories-too.patch
+* scripts-sorttable-riscv-fix-undelcred-identifier-em_riscv-error.patch
+* tools-vm-page-types-remove-dependency-on-opt_file-for-idle-page-tracking.patch
+* lib-zlib_inflate-inffast-check-config-in-c-to-avoid-unused-function-warning.patch
+* mm-fs-invalidate-bh_lrus-for-only-cold-path.patch
+* mm-debug-sync-up-mr_contig_range-and-mr_longterm_pin.patch
+* mm-debug-sync-up-latest-migrate_reason-to-migrate_reason_names.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
+* scripts-spellingtxt-add-more-spellings-to-spellingtxt.patch
+* ocfs2-fix-handle-refcount-leak-in-two-exception-handling-paths.patch
+* ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+  mm.patch
+* mm-move-kvmalloc-related-functions-to-slabh.patch
+* mm-slub-fix-two-bugs-in-slab_debug_trace_open.patch
+* mm-slub-fix-mismatch-between-reconstructed-freelist-depth-and-cnt.patch
+* mm-slub-fix-potential-memoryleak-in-kmem_cache_open.patch
+* mm-slub-fix-potential-use-after-free-in-slab_debugfs_fops.patch
+* mm-slub-fix-incorrect-memcg-slab-count-for-bulk-free.patch
+* mm-dont-include-linux-daxh-in-linux-mempolicyh.patch
+* compiler-attributes-add-__alloc_size-for-better-bounds-checking.patch
+* compiler-attributes-add-__alloc_size-for-better-bounds-checking-fix.patch
+* checkpatch-add-__alloc_size-to-known-attribute.patch
+* slab-clean-up-function-declarations.patch
+* slab-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* mm-page_alloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* percpu-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* mm-vmalloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
+* rapidio-avoid-bogus-__alloc_size-warning.patch
+* mm-smaps-fix-shmem-pte-hole-swap-calculation.patch
+* mm-smaps-use-vma-vm_pgoff-directly-when-counting-partial-swap.patch
+* mm-smaps-simplify-shmem-handling-of-pte-holes.patch
+* mm-remove-bogus-vm_bug_on.patch
+* vfs-keep-inodes-with-page-cache-off-the-inode-shrinker-lru.patch
+* mm-gup-further-simplify-__gup_device_huge.patch
+* mm-swapfile-remove-needless-request_queue-null-pointer-check.patch
+* mm-memcg-drop-swp_entry_t-in-mc_handle_file_pte.patch
+* memcg-prohibit-unconditional-exceeding-the-limit-of-dying-tasks.patch
+* mm-mmapc-fix-a-data-race-of-mm-total_vm.patch
+* mm-use-__pfn_to_section-instead-of-open-coding-it.patch
+* mm-memory-avoid-unnecessary-kernel-user-pointer-conversion.patch
+* mm-shmem-unconditionally-set-pte-dirty-in-mfill_atomic_install_pte.patch
+* mm-clear-vmf-pte-after-pte_unmap_same-returns.patch
+* mm-drop-first_index-last_index-in-zap_details.patch
+* mm-add-zap_skip_check_mapping-helper.patch
+* mm-introduce-pmd_install-helper.patch
+* mm-remove-redundant-smp_wmb.patch
+* lazy-tlb-introduce-lazy-mm-refcount-helper-functions.patch
+* lazy-tlb-allow-lazy-tlb-mm-refcounting-to-be-configurable.patch
+* lazy-tlb-shoot-lazies-a-non-refcounting-lazy-tlb-option.patch
+* powerpc-64s-enable-mmu_lazy_tlb_shootdown.patch
+* mm-mremap-dont-account-pages-in-vma_to_resize.patch
+* mm-vmalloc-repair-warn_allocs-in-__vmalloc_area_node.patch
+* mm-vmalloc-dont-allow-vm_no_guard-on-vmap.patch
+* kasan-test-add-memcpy-test-that-avoids-out-of-bounds-write.patch
+* lib-stackdepot-include-gfph.patch
+* lib-stackdepot-remove-unused-function-argument.patch
+* lib-stackdepot-introduce-__stack_depot_save.patch
+* kasan-common-provide-can_alloc-in-kasan_save_stack.patch
+* kasan-generic-introduce-kasan_record_aux_stack_noalloc.patch
+* workqueue-kasan-avoid-alloc_pages-when-recording-stack.patch
+* mm-large-system-hash-avoid-possible-null-deref-in-alloc_large_system_hash.patch
+* mm-page_allocc-remove-meaningless-vm_bug_on-in-pindex_to_order.patch
+* mm-page_allocc-simplify-the-code-by-using-macro-k.patch
+* mm-page_allocc-fix-obsolete-comment-in-free_pcppages_bulk.patch
+* mm-page_allocc-use-helper-function-zone_spans_pfn.patch
+* mm-page_allocc-avoid-allocating-highmem-pages-via-alloc_pages_exact.patch
+* mm-page_alloc-print-node-fallback-order.patch
+* mm-page_alloc-use-accumulated-load-when-building-node-fallback-list.patch
+* mm-move-node_reclaim_distance-to-fix-numa-without-smp.patch
+* mm-move-fold_vm_numa_events-to-fix-numa-without-smp.patch
+* mm-fix-data-race-in-pagepoisoned.patch
+* mm-hugetlb-drop-__unmap_hugepage_range-definition-from-hugetlbh.patch
+* userfaultfd-selftests-fix-feature-support-detection.patch
+* userfaultfd-selftests-fix-calculation-of-expected-ioctls.patch
+* userfaultfd-selftests-dont-rely-on-gnu-extensions-for-random-numbers.patch
+* mm-page_isolation-fix-potential-missing-call-to-unset_migratetype_isolate.patch
+* mm-page_isolation-guard-against-possible-putback-unisolated-page.patch
+* tools-vm-page_owner_sortc-count-and-sort-by-mem.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
+* mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
+* mm-mark-the-oom-reaper-thread-as-freezable.patch
+* oom_kill-oom_score_adj-broken-for-processes-with-small-memory-usage.patch
+* mmhugetlb-remove-mlock-ulimit-for-shm_hugetlb.patch
+* mm-nommu-kill-arch_get_unmapped_area.patch
+* selftest-vm-fix-ksm-selftest-to-run-with-different-numa-topologies.patch
+* mm-vmstat-annotate-data-race-for-zone-free_areanr_free.patch
+* mm-vmstat-annotate-data-race-for-zone-free_areanr_free-fix.patch
+* mm-memory_hotplug-add-static-qualifier-for-online_policy_to_str.patch
+* mm-memory_hotplug-make-hwpoisoned-dirty-swapcache-pages-unmovable.patch
+* mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
+* mm-zsmallocc-close-race-window-between-zs_pool_dec_isolated-and-zs_unregister_migration.patch
+* mm-zsmallocc-combine-two-atomic-ops-in-zs_pool_dec_isolated.patch
+* mm-highmem-remove-deprecated-kmap_atomic.patch
+* zram_drv-allow-reclaim-on-bio_alloc.patch
+* zram-off-by-one-in-read_block_state.patch
+* mm-remove-hardened_usercopy_fallback.patch
+* include-linux-mmh-move-nr_free_buffer_pages-from-swaph-to-mmh.patch
+* mm-damon-grammar-s-works-work.patch
+* documentation-vm-move-user-guides-to-admin-guide-mm.patch
+* maintainers-update-seongjaes-email-address.patch
+* docs-vm-damon-remove-broken-reference.patch
+* include-linux-damonh-fix-kernel-doc-comments-for-damon_callback.patch
+* mm-damon-core-print-kdamond-start-log-in-debug-mode-only.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* lib-stackdepot-check-stackdepot-handle-before-accessing-slabs.patch
+* lib-stackdepot-add-helper-to-print-stack-entries.patch
+* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer.patch
+* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer-v2.patch
+* lib-stackdepot-add-helper-to-print-stack-entries-into-buffer-v3.patch
+* binfmt_elf-reintroduce-using-map_fixed_noreplace.patch
+* ramfs-fix-mount-source-show-for-ramfs.patch
+* init-mainc-silence-some-wunused-parameter-warnings.patch
+* coda-avoid-null-pointer-dereference-from-a-bad-inode.patch
+* coda-check-for-async-upcall-request-using-local-state.patch
+* coda-remove-err-which-no-one-care.patch
+* coda-avoid-flagging-null-inodes.patch
+* coda-avoid-hidden-code-duplication-in-rename.patch
+* coda-avoid-doing-bad-things-on-inode-type-changes-during-revalidation.patch
+* coda-convert-from-atomic_t-to-refcount_t-on-coda_vm_ops-refcnt.patch
+* coda-use-vmemdup_user-to-replace-the-open-code.patch
+* coda-bump-module-version-to-72.patch
+* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
+* unshare-use-swap-to-make-code-cleaner.patch
+* kernel-resource-clean-up-and-optimize-iomem_is_exclusive.patch
+* kernel-resource-disallow-access-to-exclusive-system-ram-regions.patch
+* virtio-mem-disallow-mapping-virtio-mem-memory-via-dev-mem.patch
+* ipc-check-checkpoint_restore_ns_capable-to-modify-c-r-proc-files.patch
+* ipc-check-checkpoint_restore_ns_capable-to-modify-c-r-proc-files-fix.patch
+* ipc-ipc_sysctlc-remove-fallback-for-config_proc_sysctl.patch
+  linux-next.patch
+* assoc_array-avoid-open-coded-arithmetic-in-allocator-arguments.patch
+* mm-migrate-simplify-the-file-backed-pages-validation-when-migrating-its-mapping.patch
+* mm-unexport-folio_memcg_unlock.patch
+* mm-unexport-unlock_page_memcg.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
