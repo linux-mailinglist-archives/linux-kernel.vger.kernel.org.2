@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FAB4132DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3789D4132DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhIULxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:53:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54854 "EHLO mail.kernel.org"
+        id S232486AbhIULx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:53:57 -0400
+Received: from todd.t-8ch.de ([159.69.126.157]:40719 "EHLO todd.t-8ch.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232387AbhIULxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:53:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCF9861178;
-        Tue, 21 Sep 2021 11:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632225137;
-        bh=M7aG/OqpQwhK9zNCrDbAoJPSoqqij4FtrHWoIqJuwko=;
+        id S232387AbhIULxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:53:55 -0400
+Date:   Tue, 21 Sep 2021 13:52:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1632225146;
+        bh=8eMTdJKgrTU/j4CDQr38gY0ihDGwVWqp14X73FihxXE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OWfCkI84ze2jWcRRUNK1pXwU2hki4phgAc8uQV7ykEQm8nhA8ovodzhpiWWaip5pc
-         UU9orG2mYFu+Oxm9OwjkLoum6ELQN/AedzKrt/RvD5B8A+Na+5jx+99kKzqpzWD5TI
-         PiSjMMnK7GfoVPNObJXS6bXLils1imtwUtuIcxXI=
-Date:   Tue, 21 Sep 2021 13:52:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jeya R <jeyr@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH v3] misc: fastrpc: fix improper packet size calculation
-Message-ID: <YUnHbiQDZK/+tTAp@kroah.com>
-References: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
+        b=AcCNVUGlj56KMOAsGg62bdDDEBsv3gyYnimTvb17Da9iJL84WU89sG7oOxQB3KF6s
+         7iNIYrAmm3/dRJVhVfON+oYCQ1vJZJKUXDJjQks+9JbXWKH4Vt+kNyROb4CMeYofDK
+         ltd+o0gkkJ8TfaasHpUqxEj4IjQ9/8vv+8foAHeU=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@weissschuh.net>
+To:     Tobias Jakobi <cubic2k@gmail.com>
+Cc:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
+        Tobias Jakobi <tjakobi@math.uni-bielefeld.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] platform/x86: gigabyte-wmi: add support for B550I Aorus
+ Pro AX
+Message-ID: <2643586e-cfda-4273-9ebe-585696eac755@t-8ch.de>
+References: <20210921100702.3838-1-tjakobi@math.uni-bielefeld.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210921100702.3838-1-tjakobi@math.uni-bielefeld.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 05:18:15PM +0530, Jeya R wrote:
-> The buffer list is sorted and this is not being considered while
-> calculating packet size. This would lead to improper copy length
-> calculation for non-dmaheap buffers which would eventually cause
-> sending improper buffers to DSP.
+On 2021-09-21T12:07+0200, Tobias Jakobi wrote:
+> - tested with a AMD Ryzen 7 5800X
 > 
-> Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
-> Signed-off-by: Jeya R <jeyr@codeaurora.org>
-> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-Does this also need to go to the stable kernels?
-
+> Signed-off-by: Tobias Jakobi <tjakobi@math.uni-bielefeld.de>
 > ---
-> Changes in v3:
-> - relocate patch change list
+>  drivers/platform/x86/gigabyte-wmi.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Changes in v2:
-> - updated commit message to proper format
-> - added fixes tag to commit message
-> - removed unnecessary variable initialization
-> - removed length check during payload calculation
-> 
->  drivers/misc/fastrpc.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index beda610..69d45c4 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
->  static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, int metalen)
->  {
->  	u64 size = 0;
-> -	int i;
-> +	int oix;
+> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+> index 7f3a03f937f6..d53634c8a6e0 100644
+> --- a/drivers/platform/x86/gigabyte-wmi.c
+> +++ b/drivers/platform/x86/gigabyte-wmi.c
+> @@ -144,6 +144,7 @@ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE V2"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 GAMING X V2"),
+> +	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550I AORUS PRO AX"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M AORUS PRO-P"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M DS3H"),
+>  	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("Z390 I AORUS PRO WIFI-CF"),
+> -- 
+> 2.32.0
 
-What does "oix" stand for?  What was wrong with i?
+Thanks!
 
-thanks,
+Ack-by: Thomas Weißschuh <thomas@weissschuh.net>
 
-greg k-h
+FYI you should also Cc LKML to all patches.
