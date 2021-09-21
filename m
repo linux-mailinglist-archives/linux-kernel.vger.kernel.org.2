@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17532412FA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393F2412FA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhIUHtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:49:09 -0400
-Received: from muru.com ([72.249.23.125]:35266 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230172AbhIUHtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:49:06 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 8CB4580A8;
-        Tue, 21 Sep 2021 07:48:05 +0000 (UTC)
-Date:   Tue, 21 Sep 2021 10:47:36 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-Message-ID: <YUmOGFUFONR/ynfW@atomide.com>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
- <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
- <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
+        id S230423AbhIUHtk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 03:49:40 -0400
+Received: from mail1.shanghaitech.edu.cn ([119.78.254.90]:32535 "EHLO
+        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230172AbhIUHti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 03:49:38 -0400
+Received: from [10.15.44.216] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 456895189764503;
+        Tue, 21 Sep 2021 15:48:00 +0800 (CST)
+Received: from DESKTOP-U066CHB.localdomain (10.15.44.220) by
+ smtp.shanghaitech.edu.cn (10.15.44.216) with Microsoft SMTP Server (TLS) id
+ 14.3.399.0; Tue, 21 Sep 2021 15:48:01 +0800
+From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+CC:     Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Mianhan Liu <liumh1@shanghaitech.edu.cn>
+Subject: [PATCH -next v2] net/ipv4/sysctl_net_ipv4.c: remove superfluous header files from sysctl_net_ipv4.c
+Date:   Tue, 21 Sep 2021 15:47:51 +0800
+Message-ID: <20210921074751.6182-1-liumh1@shanghaitech.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Originating-IP: [10.15.44.220]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
-> Finally, adding the udelay(100); (as Tony suggested) at the end of the
-> omap_reset_deassert() did make the oops go away even when pruss_tm was
-> enabled. I don't know what would be a proper fix though.
+sysctl_net_ipv4.c hasn't use any macro or function declared in igmp.h,
+inetdevice.h, mm.h, module.h, nsproxy.h, swap.h, inet_frag.h, route.h
+and snmp.h. Thus, these files can be removed from sysctl_net_ipv4.c
+safely without affecting the compilation of the net module.
 
-The following patch works for me on bbb with the following test script:
+Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
 
-#!/bin/sh
+---
+ net/ipv4/sysctl_net_ipv4.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-module="4a326000.target-module"
-driver="/sys/bus/platform/drivers/ti-sysc"
-
-while true; do
-	echo ${module} > ${driver}/bind
-	echo ${module} > ${driver}/unbind
-done
-
-It also allows leaving out the udelay for dra7 iva reset. Care to try
-this and see if it helps?
-
-Regards,
-
-Tony
-
-8< -----------------
-diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
---- a/drivers/soc/ti/omap_prm.c
-+++ b/drivers/soc/ti/omap_prm.c
-@@ -825,26 +825,29 @@ static int omap_reset_deassert(struct reset_controller_dev *rcdev,
- 	writel_relaxed(v, reset->prm->base + reset->prm->data->rstctrl);
- 	spin_unlock_irqrestore(&reset->lock, flags);
+diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
+index 6f1e64d49..4680268f2 100644
+--- a/net/ipv4/sysctl_net_ipv4.c
++++ b/net/ipv4/sysctl_net_ipv4.c
+@@ -6,25 +6,16 @@
+  * Added /proc/sys/net/ipv4 directory entry (empty =) ). [MS]
+  */
  
--	if (!has_rstst)
--		goto exit;
--
--	/* wait for the status to be set */
--	ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
-+	if (has_rstst) {
-+		/* wait for the status to be set */
-+		ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
- 						 reset->prm->data->rstst,
- 						 v, v & BIT(st_bit), 1,
- 						 OMAP_RESET_MAX_WAIT);
--	if (ret)
--		pr_err("%s: timedout waiting for %s:%lu\n", __func__,
--		       reset->prm->data->name, id);
--
--exit:
--	if (reset->clkdm) {
--		/* At least dra7 iva needs a delay before clkdm idle */
--		if (has_rstst)
--			udelay(1);
--		pdata->clkdm_allow_idle(reset->clkdm);
-+		if (ret)
-+			pr_err("%s: timedout waiting for %s:%lu\n", __func__,
-+			       reset->prm->data->name, id);
-+	} else {
-+		/* wait for the reset bit to cleaar */
-+		ret = readl_relaxed_poll_timeout_atomic(reset->prm->base +
-+						reset->prm->data->rstctrl,
-+						v, !(v & BIT(id)), 1,
-+						OMAP_RESET_MAX_WAIT);
-+		if (ret)
-+			pr_err("%s: timedout waiting for %s:%lu\n", __func__,
-+			       reset->prm->data->name, id);
- 	}
- 
-+	if (reset->clkdm)
-+		pdata->clkdm_allow_idle(reset->clkdm);
-+
- 	return ret;
- }
- 
+-#include <linux/mm.h>
+-#include <linux/module.h>
+ #include <linux/sysctl.h>
+-#include <linux/igmp.h>
+-#include <linux/inetdevice.h>
+ #include <linux/seqlock.h>
+ #include <linux/init.h>
+ #include <linux/slab.h>
+-#include <linux/nsproxy.h>
+-#include <linux/swap.h>
+-#include <net/snmp.h>
+ #include <net/icmp.h>
+ #include <net/ip.h>
+ #include <net/ip_fib.h>
+-#include <net/route.h>
+ #include <net/tcp.h>
+ #include <net/udp.h>
+ #include <net/cipso_ipv4.h>
+-#include <net/inet_frag.h>
+ #include <net/ping.h>
+ #include <net/protocol.h>
+ #include <net/netevent.h>
 -- 
-2.33.0
+2.25.1
+
+
