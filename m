@@ -2,128 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A9E413AF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1D9413AED
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234680AbhIUTsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
+        id S234637AbhIUTrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbhIUTs1 (ORCPT
+        with ESMTP id S234631AbhIUTq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:48:27 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08615C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:46:59 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id g14so582484pfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:46:59 -0700 (PDT)
+        Tue, 21 Sep 2021 15:46:58 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0000C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:45:29 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id a13so389120qvo.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:45:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
-        b=GZqxpdJJuL+hNBU7ee0pq7yIm/gUPal57NgRxanXayXpevy33et+3KyFtjnulMGz/x
-         xZ9peVfs4t6zjQ47DGahKCK76jDlKzKQLTwT2vPNytOcfBhorfav2kUSPNMvTqs3Zy4x
-         +yWMZiIjdyA1frpzCyxmqliOd2ZFFAoUOq4owi9ZRWDtDpFh+0fUviwWmabx5hDx3IGW
-         aRlMui/SzfcW+iS27P9mmnqmvnlExIGCfKkjw/DNAeZp2zVZE1RarE/w88DpwRzUJo9q
-         G1xKVkHmS032wcdP+YvwOge+f+liEAXnv4oj5Iw9Y/Q7CRbnroBiFNeoTje77sa9h1zH
-         18Iw==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P2hKmqMNICJwJyh1tO1otHne+fYy7MxE4cSSZC9424M=;
+        b=yHL9t8dBl+W232Ka9BmRxn8xqfpjDWEUy2RLMqu4cD8h1HGOyxipU7OdjzSUsOTvOh
+         EeY+vEAC1WnTCOPuR/u8qU9LXTqJRnkgD0rwrCofRUHmyuAZrSkvdLQgTFDda2XILX/W
+         X6clX+/l56NUc/8nY2ufoUeYyNonDjaYuGvVMojK4+loULtOECzxaFKfZLwZxzaNbvOx
+         2QGPmPAfCGIRPG6EZvMNTdxDJJePSNcOHOJesfrITIfddMdfZc5QhmFLMTvWTcQe0L8Q
+         qKot7nKnxqy6fL8++3alQPt/pgvJLry4GYieFHAzvwVMo3+77KVvfMnDxT6UmiNgMjdz
+         2FXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
-        b=0qhqpfwh6wIiLRb3o+2rIExjk8XUu8ElOfK8L6+0mC5kExNyjpbEq1EZQnk8BpafBk
-         hl99mYu1WHBestGoh3faTfROnWshwF8hhNzbY3havvPfUf85hVFvosM2WqOGl8mq7wXB
-         n+hrzZyFMDo5QSq/y57JVvIJrX21tA8V7ZgJ6lkmKXCyt2uTSSdr1AXRxANOVP26MayO
-         2WScno0suIP6cWvHT//Esi15z0L9VPQuOAaTyylFUi8JYJ7sAHyGkFQAyBw9IHQq1rZU
-         4Z9biYRcQ4q32F35csbqQweR0z1OlghBSwTEPxnW/fsyUFdVfeuh55nLm1mbJ6n1ITKK
-         GqJg==
-X-Gm-Message-State: AOAM533FSsjkyoWCLfvP2IWzz8LalDRHZfnEqTep+0O1BqcNv//au/PT
-        KKciQLPFD0S+PK3hKzkVJI1pO6GU53Gr155SHvs=
-X-Google-Smtp-Source: ABdhPJx4oQ837JhCKRDIUlPvmDv860ZJfwxRvpP9CcTzqD2++j6Y41NjjzUuqywMy4Z2ToLJaWc4j9Jb88x03EVes3M=
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr29692707pgq.206.1632253618535;
- Tue, 21 Sep 2021 12:46:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P2hKmqMNICJwJyh1tO1otHne+fYy7MxE4cSSZC9424M=;
+        b=t4RmiEcvGEa1dIfGQ7ccK4hWeE8AwNwxkZBftr6HLWGfKgHSoJ5hwreD3deHNLobu9
+         6+j07feSDM2soIFdSAkaEGndsXYxuA/X7KuP6W48+lNchXisEXoQqNyd09n0gb381aB8
+         CLEvNWWO2OdGH7xAjXwci5kpu4lwPwmbBfq1ePzt6Q7V8SMFq3NPkWfnZoAxFNFJYHBT
+         av5Tdf04mXn559qTRARgOcVwdGtrmXAKdwRgiVhsum8aKkEHqrxZubq4zSd1fiER/SvJ
+         n7cbmLsqNn+2x8KFX/q21r5oKWw6dsWZ/gKvdfsLbxpUtDErMbxJ2PtbuY+yCdim2lE/
+         O8vQ==
+X-Gm-Message-State: AOAM531c1atWzQmWa3VRVA/FLvd5pCrLJGsQmU3VJy5SuIJxVYU+mzmj
+        xoKKKfAJM6jHDPEFKldpbLSzNrl5LL4MJA==
+X-Google-Smtp-Source: ABdhPJz+bInVP0iEiev9C6j+xKFeGElydsdCkEEIqZMerZU8HbM1KHRbndTjuYpHMP9b5NRAjiKjmQ==
+X-Received: by 2002:a0c:f10b:: with SMTP id i11mr32469556qvl.67.1632253528873;
+        Tue, 21 Sep 2021 12:45:28 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id p9sm6384101qkm.23.2021.09.21.12.45.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 12:45:28 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 15:47:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <YUo20TzAlqz8Tceg@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
 MIME-Version: 1.0
-Received: by 2002:a17:90b:4b06:0:0:0:0 with HTTP; Tue, 21 Sep 2021 12:46:58
- -0700 (PDT)
-Reply-To: om250752@gmail.com
-From:   Mrs Rose Samuel <mrsrosesamuel@gmail.com>
-Date:   Tue, 21 Sep 2021 12:46:58 -0700
-Message-ID: <CAJeEN1CpyyH-85Rzj8Q+emQnzXp0c4wv93qwDT_KVGR3qPA1kQ@mail.gmail.com>
-Subject: Thanks and God bless you.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUfvK3h8w+MmirDF@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Good Friend.
+Just a note upfront:
 
-I am happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from India.
-Presently I am in India for investment projects with my own share of
-the total sum. Meanwhile, I didn=E2=80=99t forget you=E2=80=99re past effor=
-ts and
-attempts to assist me in transferring those funds despite that it
-failed us some how. Now contact my lawyer in Benin Republic his name
-is Barrister Adam Smith.
+This discussion is now about whether folio are suitable for anon pages
+as well. I'd like to reiterate that regardless of the outcome of this
+discussion I think we should probably move ahead with the page cache
+bits, since people are specifically blocked on those and there is no
+dependency on the anon stuff, as the conversion is incremental.
 
+On Mon, Sep 20, 2021 at 03:17:15AM +0100, Matthew Wilcox wrote:
+> I don't believe it is realistic to disentangle file pages and anon
+> pages from each other.  Thanks to swap and shmem, both file pages and
+> anon pages need to be able to be moved in and out of the swap cache.
 
+Yes, the swapcache is actually shared code and needs a shared type.
 
-Barrister Adam Smith.
+However, once swap and shmem are fully operating on *typed* anon and
+file pages, there are no possible routes of admission for tail pages
+into the swapcache:
 
-Email:adm.smth126@gmail.com
+	vmscan:
+	add_to_swap_cache(anon_page->page);
 
+	shmem:
+	delete_from_swap_cache(file_page->page);
 
+and so the justification for replacing page with folio *below* those
+entry points to address tailpage confusion becomes nil: there is no
+confusion. Move the anon bits to anon_page and leave the shared bits
+in page. That's 912 lines of swap_state.c we could mostly leave alone.
 
-Contact him and ask him to send you the total of $920.000.00.{Nine
-Hundred And Twenty Thousand United States Dollars} which I kept for
-your past efforts and attempts to assist me in this matter. I
-appreciated your efforts at that time very much. So feel free and get
-in touched with my lawyer and instruct him where to send the amount to
-you. Please do let me know immediately you receive it so that we can
-share the joy after all the sufferness at that time. Do send to Adam
-Smith, your contact details.
+The same is true for the LRU code in swap.c. Conceptually, already no
+tailpages *should* make it onto the LRU. Once the high-level page
+instantiation functions - add_to_page_cache_lru, do_anonymous_page -
+have type safety, you really do not need to worry about tail pages
+deep in the LRU code. 1155 more lines of swap.c.
 
+And when you've ensured that tail pages can't make it onto the LRU,
+that takes care of the entire page reclaim code as well; converting it
+wholesale to folio again would provide little additional value. 4707
+lines of vmscan.c.
 
+And with the page instantiation functions typed, nobody can pass tail
+pages into memcg charging code, either. 7509 lines of memcontrol.c.
 
-Your Full Names=E2=80=A6...........................................
+But back to your generic swapcache example: beyond the swapcache and
+the page LRU management, there really isn't a great deal of code that
+is currently truly type-agnostic and generic like that. And the rest
+could actually benefit from being typed more tightly to bring out what
+is actually going on.
 
+The anon_page->page relationship may look familiar too. It's a natural
+type hierarchy between superclass and subclasses that is common in
+object oriented languages: page has attributes and methods that are
+generic and shared; anon_page and file_page encode where their
+implementation differs.
 
+A type system like that would set us up for a lot of clarification and
+generalization of the MM code. For example it would immediately
+highlight when "generic" code is trying to access type-specific stuff
+that maybe it shouldn't, and thus help/force us refactor - something
+that a shared, flat folio type would not.
 
-You=E2=80=99re Address=E2=80=A6............................................=
-..
+And again, higher-level types would take care of the tail page
+confusion in many (most?) places automatically.
 
+> The swap cache shares a lot of code with the page cache, so changing
+> how the swap cache works is also tricky.
 
+The overlap is actually fairly small right now. Add and delete
+routines are using the raw xarray functions. Lookups use the most
+minimal version of find_get_page(), which wouldn't be a big deal to
+open-code until swapcache and pagecache would *actually* be unified.
 
-Cell Phone Number=E2=80=A6........................................
+> What I do believe is possible is something Kent hinted at; treating
+> anon pages more like file pages.  I also believe that shmem should
+> be able to write pages to swap without moving the pages into the
+> swap cache first.  But these two things are just beliefs.  I haven't
+> tried to verify them and they may come to nothing.
 
+Treating anon and file pages the same where possible makes sense. It's
+simple: the more code that can be made truly generic and be shared
+between subclasses, the better.
 
+However, for that we first have to identify what parts actually are
+generic, and what parts are falsely shared and shoehorned into
+equivalency due to being crammed into the same overloaded structure.
 
-Your occupation................................................
+For example, page->mapping for file is an address_space and the page's
+membership in that tree structure is protected by the page
+lock. page->mapping for anon is... not that. The pointer itself is
+ad-hoc typed to point to an anon_vma instead. And anon_vmas behave
+completely differently from a page's pagecache state.
 
+The *swapcache* state of an anon page is actually much closer to what
+the pagecache state of a file page is. And since it would be nice to
+share more of the swapcache and pagecache *implementation*, it makes
+sense that the relevant page attributes would correspond as well.
 
+(Yeah, page->mapping and page->index are used "the same way" for rmap,
+but that's a much smaller, read-only case. And when you look at how
+"generic" the rmap code is - with its foo_file and foo_anon functions,
+and PageAnon() checks, and conditional page locking in the shared
+bits-- the attribute sharing at the page level really did nothing to
+help the implementation be more generic.)
 
-Your Age=E2=80=A6.....................................................
+It really should be something like:
 
+	struct page {
+		/* pagecache/swapcache state */
+		struct address_space *address_space;
+		pgoff_t index;
+		lock_t lock;
+	}
 
+	struct file_page {
+		struct page;
+	}
 
-To enable him submit your details to my paying bank the Need Bank in
-Benin Republic to wire your compensation money to your nominated bank
-account/western Union or they can send to you an authorized bank ATM
-VISA CARD  to your address for you to withdraw the money from any bank
-ATM machine in your country.
+	struct anon_page {
+		struct page;
+		struct anon_vma *anon_vma;
+		pgoff_t offset;
+	};
 
+to recognize the difference in anon vs file rmapping and locking,
+while recognizing the similarity between swapcache and pagecache.
 
-In the moment, I am very busy here because of the investment projects
-which me and the new partner are having at hand, finally, remember
-that I had forwarded instruction to my lawyer on your behalf to
-receive that money, so feel free to get in touch with him and he will
-send the amount to you with out any delay.
+A shared folio would perpetuate false equivalencies between anon and
+file which make it difficult to actually split out and refactor what
+*should* be generic vs what should be type-specific. And instead lead
+to more "generic" code littered with FolioAnon() conditionals.
 
+And in the name of tail page cleanup it would churn through thousands
+of lines of code where there is no conceptual confusion about tail
+pages to begin with.
 
-Thanks and God bless you.
-Regards
-Mrs Rose Samuel
+Proper type inheritance would allow us to encode how things actually
+are implemented right now and would be a great first step in
+identifying what needs to be done in order to share more code.
+
+And it would take care of so many places re: tail pages that it's a
+legitimate question to ask: how many places would actually be *left*
+that *need* to deal with tail pages? Couldn't we bubble
+compound_head() and friends into these few select places and be done?
+
+> I also want to split out slab_page and page_table_page from struct page.
+> I don't intend to convert either of those to folios.
+> 
+> I do want to make struct page dynamically allocated (and have for
+> a while).  There are some complicating factors ...
+> 
+> There are two primary places where we need to map from a physical
+> address to a "memory descriptor".  The one that most people care about
+> is get_user_pages().  We have a page table entry and need to increment
+> the refcount on the head page, possibly mark the head page dirty, but
+> also return the subpage of any compound page we find.  The one that far
+> fewer people care about is memory-failure.c; we also need to find the
+> head page to determine what kind of memory has been affected, but we
+> need to mark the subpage as HWPoison.
+> 
+> Both of these need to be careful to not confuse tail and non-tail pages.
+
+That makes sense.
+
+But gup() as an interface to the rest of the kernel is rather strange:
+It's not a generic page table walker that can take a callback argument
+to deal with whatever the page table points to. It also doesn't return
+properly typed objects: it returns struct page which is currently a
+wildcard for whatever people cram into it.
+
+> So yes, we need to use folios for anything that's mappable to userspace.
+> That's not just anon & file pages but also network pools, graphics card
+> memory and vmalloc memory.  Eventually, I think struct page actually goes
+> down to a union of a few words of padding, along with ->compound_head.
+> Because that's all we're guaranteed is actually there; everything else
+> is only there in head pages.
+
+(Side question: if GUP can return tail pages, how does that map to
+folios?)
+
+Anyway, I don't see that folio for everything mappable is the obvious
+conclusion, because it doesn't address what is really weird about gup.
+
+While a folio interface would clean up the head and tail page issue,
+it maintains the incentive of cramming everything that people want to
+mmap and gup into the same wildcard type struct. And still leave the
+bigger problem of ad-hoc typing that wildcard ("What is the thing that
+was returned? Anon? File? GPU memory?") to the user.
+
+I think rather than cramming everything that can be mmapped into folio
+for the purpose of GUP and tail pages - even when these objects have
+otherwise little in common - it would make more sense to reconsider
+how GUP as an interface deals with typing. Some options:
+
+  a) Make it a higher-order function that leaves typing fully to the
+     provided callback. This makes it clear (and greppable) which
+     functions need to be wary about tail pages, and type inference in
+     general.
+
+  b) Create an intermediate mmap type that can map to one of the
+     higher-order types like anon or file, but never to a tail
+     page. This sounds like what you want struct page to be
+     long-term. But this sort of depends on the side question above -
+     what if pte maps tail page?
+
+  c) Provide a stricter interface for known higher-order types
+     (get_anon_pages...). Supporting new types means adding more entry
+     function, which IMO is preferable to cramming more stuff into a
+     wildcard struct folio.
+
+  d) A hybrid of a) and c) to safely cover common cases, while
+     allowing "i know what i'm doing" uses.
+
+In summary, I think a page type hierarchy would do wonders to clean up
+anon and file page implementations, and encourage and enable more code
+sharing down the line, while taking care of tail pages as well.
+
+This leaves the question how many places are actually *left* to deal
+with tail pages in MM. Folios are based on the premise that the
+confusion is simply everywhere, and that everything needs to be
+converted first to be safe. This is convenient because it means we
+never have to identify which parts truly *do* need tailpage handling,
+truly *need* the compound_head() lookups. Yes, compound_head() has to
+go from generic page flags testers. But as per the examples at the
+top, I really don't think we need to convert every crevice of the MM
+code to folio before we can be reasonably sure that removing it is
+safe. I really want to to see a better ballpark analysis of what parts
+need to deal with tail pages to justify all this churn for them.
