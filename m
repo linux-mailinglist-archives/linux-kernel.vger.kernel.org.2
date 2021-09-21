@@ -2,106 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61402413D31
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A85413D1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235825AbhIUWA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56584 "EHLO
+        id S235783AbhIUV7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235766AbhIUWA4 (ORCPT
+        with ESMTP id S234138AbhIUV7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:00:56 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA19C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:59:27 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso508730otv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:59:27 -0700 (PDT)
+        Tue, 21 Sep 2021 17:59:03 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0E4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:57:33 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id a13so754449qtw.10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ERZn09RzvY8rn9MTPmUjdnDe5Cvx6gD06HefJz6Y3b4=;
-        b=SQFXCpc7vgjKtuYXKBRS76J6eM5IhO65sgVlBujADSM3DO4deLw0qaTSiT3daTesCl
-         Kb76k0R3Wcx9gZCg+FH/2kzDk11VMaHp+RWx6SI7ie8e/9iKbleiIqeqn13orm1Z1zf3
-         Zz3LfkO17f2uagRueFDiZW7wqVjyRKCAd+itSe+OZuFBByEB83+m4U/sqrN/KeZhLq7Z
-         qk7iyk828b25Wgd6Y/EZJfd6sK5RAePlMqxXOCA025/Q1NEr/CLov0z3XhP+cCQdwCZf
-         rh7nOQRFbQ48/EFetpE2tXvA4mmFK3yzGOPomy9anWMKtUpKaJ7/NO7Bi1E/4krwK7Qu
-         mQ/Q==
+        bh=UVeSCGRKIiyvWycmoGx6GlZVf+OBysJsxMROIYkTp+E=;
+        b=VoYhdhCluGoYbkdSs9ZviRrXOCFdtZ5H099jEvPGW5j298L+m7OYhjvZTXrWQEpzuH
+         IqHC5TNqkf0Ig6ZGyOuZ4kHUFiv3leqg6iJTAxKfm8dnORvZKQZE/2gtybjrS2srK1Wt
+         FLF9r5VMSDiIZy+Sh4FL0V9blVUOrfIjCIoJjsPyMIsGf53hSsbu9wxQQDsCJ1q0voF2
+         zrm1tT25pHefoQTyqIFKfFXdnuEZ3cGQHC/hJOeaT7pu3YklcjJn+eB7FzXRx/JMsPZc
+         v82mao0R5OX4ZnE+11YHpJuLTpr2LjTcTC5fCet6NvV+ofdj53hv8sWr3fUwPTiRLnCU
+         on8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ERZn09RzvY8rn9MTPmUjdnDe5Cvx6gD06HefJz6Y3b4=;
-        b=Ady9MANWE9S4wksnXiF85NNeKc32UBgywRoVL3kOQpz7cgZEcU4Gx/9s3kdF32swc9
-         lKXc4y4MF67jFDH7/n5INFHw8XvJORMOLG8zsYBk0h/uyzXwqLiljseNHpwZaYL/qAZL
-         1uzV9IBit+elogVkirbQ+jEZuRUseFZXeJjGWOSrRvK5ihaQ701A4INr4yBIcrLbEov7
-         GI+i5wo9lMwdpj+n1R0JSafbFxER+vO4LSLPHXL2tLkZCkBMfMu5cOK1kxgDFWP1o5ty
-         n+HNbXnXZkfFiscM8PPpjFcP2z2JflzgBfFQuNMjuwAHWBWuanUG/dlbY7G/RwGmdHu2
-         Ftmw==
-X-Gm-Message-State: AOAM530NIPvzGb0pevGZ+m8sI6sri+szfrTvXzNMELvCBKIcr4e1KyGz
-        uio/Yu/UiCFX4Mo7VTtjV7+IDA==
-X-Google-Smtp-Source: ABdhPJxmVxfbRCUjhNToAtcJMU5kjhsgQITrJ1T/7CkH3AvdQJofm2nbdZgkn8AGULg+tYI4vAlW/w==
-X-Received: by 2002:a9d:192c:: with SMTP id j44mr8721188ota.302.1632261566430;
-        Tue, 21 Sep 2021 14:59:26 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n15sm62070oic.25.2021.09.21.14.59.25
+        bh=UVeSCGRKIiyvWycmoGx6GlZVf+OBysJsxMROIYkTp+E=;
+        b=o4CcmLccLJBMzEOlWo+24AkHjcMzM2mHouK18VkbgcLGUR5WgYClB4ZCIr4TZTxn8+
+         P+k+MYamwqava/rEwwgwAd0/K79cQ0pnl5TH6oPEEoT629Q3K2QK0CNqpvG3e4Z1RJAb
+         ddxziDkOBsfO0lO1tTLqA+QfFEaw9sgAbvmWAn2+VsYLlN3QgEQ5hbl2CqqubJgzBAOU
+         azlA8aNOnOKU+buD47WVGdXspUWzAoXI72nn7ffLBFmyjhnhWeZ+yH5bp5bJm1ZMpi/M
+         0Gjsm76LOTmM6xKmA7rK4z59yacPU5NQhTI2WercdnXOexH/tTxtI9DuHqy4Ous4z+Em
+         sB7g==
+X-Gm-Message-State: AOAM533uPiTvn8oGt+LnmrPFeWsDjXS6qctC4Y88drieufh1mzFX6h6Q
+        xiJanI+AIoTX3m1gQB7Qs09KGQ==
+X-Google-Smtp-Source: ABdhPJxKO5CZhPNluh8HozyZ0PrmHrVvmnYlcPVGIoDlha+Wmwkfv0kh/u+uKkiXQYXa/nyXEWp8sw==
+X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr20150301qta.378.1632261452739;
+        Tue, 21 Sep 2021 14:57:32 -0700 (PDT)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id k17sm176027qtx.67.2021.09.21.14.57.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:59:26 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 16:59:24 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add QCM2290 pinctrl
- bindings
-Message-ID: <YUpVvB3zNMaiV78I@builder.lan>
-References: <20210914074542.12957-1-shawn.guo@linaro.org>
- <20210914074542.12957-2-shawn.guo@linaro.org>
+        Tue, 21 Sep 2021 14:57:32 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:59:33 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <YUpVxZnfskGcJHbD@cmpxchg.org>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210914074542.12957-2-shawn.guo@linaro.org>
+In-Reply-To: <YUpC3oV4II+u+lzQ@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14 Sep 02:45 CDT 2021, Shawn Guo wrote:
-
-> Add device tree bindings for QCM2290 pinctrl.
+On Tue, Sep 21, 2021 at 09:38:54PM +0100, Matthew Wilcox wrote:
+> On Tue, Sep 21, 2021 at 03:47:29PM -0400, Johannes Weiner wrote:
+> > This discussion is now about whether folio are suitable for anon pages
+> > as well. I'd like to reiterate that regardless of the outcome of this
+> > discussion I think we should probably move ahead with the page cache
+> > bits, since people are specifically blocked on those and there is no
+> > dependency on the anon stuff, as the conversion is incremental.
 > 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  .../pinctrl/qcom,qcm2290-pinctrl.yaml         | 186 ++++++++++++++++++
->  1 file changed, 186 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,qcm2290-pinctrl.yaml
+> So you withdraw your NAK for the 5.15 pull request which is now four
+> weeks old and has utterly missed the merge window?
+
+Once you drop the bits that convert shared anon and file
+infrastructure, yes. Because we haven't discussed yet, nor agree on,
+that folio are the way forward for anon pages.
+
+> > and so the justification for replacing page with folio *below* those
+> > entry points to address tailpage confusion becomes nil: there is no
+> > confusion. Move the anon bits to anon_page and leave the shared bits
+> > in page. That's 912 lines of swap_state.c we could mostly leave alone.
 > 
-[..]
-> +'$defs':
-> +  qcom-qcm2290-tlmm-state:
-> +    type: object
-> +    description:
-> +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> +      Client device subnodes use below standard properties.
-> +    $ref: "qcom,tlmm-common.yaml#/$defs/qcom-tlmm-state"
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          List of gpio pins affected by the properties specified in this
-> +          subnode.
-> +        items:
-> +          oneOf:
-> +            - pattern: "^gpio([0-9]|[1-9][0-9]|10[0-9]|11[0-2])$"
+> Your argument seems to be based on "minimising churn". Which is certainly
+> a goal that one could have, but I think in this case is actually harmful.
+> There are hundreds, maybe thousands, of functions throughout the kernel
+> (certainly throughout filesystems) which assume that a struct page is
+> PAGE_SIZE bytes.  Yes, every single one of them is buggy to assume that,
+> but tracking them all down is a never-ending task as new ones will be
+> added as fast as they can be removed.
 
-^gpio([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-6])$
+What does that have to do with anon pages?
 
-To make it cover the entire gpio space.
+> > The same is true for the LRU code in swap.c. Conceptually, already no
+> > tailpages *should* make it onto the LRU. Once the high-level page
+> > instantiation functions - add_to_page_cache_lru, do_anonymous_page -
+> > have type safety, you really do not need to worry about tail pages
+> > deep in the LRU code. 1155 more lines of swap.c.
+> 
+> It's actually impossible in practice as well as conceptually.  The list
+> LRU is in the union with compound_head, so you cannot put a tail page
+> onto the LRU.  But yet we call compound_head() on every one of them
+> multiple times because our current type system does not allow us to
+> express "this is not a tail page".
 
-The rest looks good!
+No, because we haven't identified *who actually needs* these calls
+and move them up and out of the low-level helpers.
 
-Regards,
-Bjorn
+It was a mistake to add them there, yes. But they were added recently
+for rather few callers. And we've had people send patches already to
+move them where they are actually needed.
+
+Of course converting *absolutely everybody else* to not-tailpage
+instead will also fix the problem... I just don't agree that this is
+an appropriate response to the issue.
+
+Asking again: who conceptually deals with tail pages in MM? LRU and
+reclaim don't. The page cache doesn't. Compaction doesn't. Migration
+doesn't. All these data structures and operations are structured
+around headpages, because that's the logical unit they operate on. The
+notable exception, of course, are the page tables because they map the
+pfns of tail pages. But is that it?  Does it come down to page table
+walkers encountering pte-mapped tailpages? And needing compound_head()
+before calling mark_page_accessed() or set_page_dirty()?
+
+We couldn't fix vm_normal_page() to handle this? And switch khugepaged
+to a new vm_raw_page() or whatever?
+
+It should be possible to answer this question as part of the case for
+converting tens of thousands of lines of code to folio.
