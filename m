@@ -2,402 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C5A4136CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A8E4136B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbhIUP7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:59:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
+        id S234292AbhIUPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbhIUP7W (ORCPT
+        with ESMTP id S234308AbhIUPy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:59:22 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D74C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:57:53 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id j27-20020a05620a0a5b00b0042874883070so181546680qka.19
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:57:53 -0700 (PDT)
+        Tue, 21 Sep 2021 11:54:29 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870E6C061756;
+        Tue, 21 Sep 2021 08:53:00 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id i23so40700459wrb.2;
+        Tue, 21 Sep 2021 08:53:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=T7anISc7/uSEkQXpkVxCntKRxcDqej9hluZQlCHI5OQ=;
-        b=mMbZJVA3NPe/Hb4MiG/8zCGkBeXVAYznBhfCkrz45nSDxVUedTzyDhsShf7Eh/qJrB
-         ya2+MtKEIO4TZQUmkGWGHLewsnzZHPHavMXalBy57noJBxelQE9hXakKimAnGMFVfnnl
-         CTMmfGKdvzy/rFyHIPeccM7GbEQRMD7MSg3TxeDcg7cm3vnGKplnL0PCKa4/0vbUmwQ+
-         LUZMNG2zj0S/UtBf5Bos7UQ0Y8A6sGlgVO+CePcnmtl+FhMlAD03H98jI/vHb02zkngy
-         qz+RGJRWPbYsqUmyq8V8Mn7Yi2WuMwLhLqMvCkNakB+iyCBcWp7HDkfiwlRaRXfhKLlV
-         R9ow==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d4eQmrNAVl39PalM5fwhXxM88NUL3ePE+A2JPS57N4w=;
+        b=ef8rubMr6Nid+b3nkLu3G1Xd64Haez5FeHv5/hc8yJNu74Pu1zy1pWRBfBYcj9PJgq
+         EPrIQkk0QpsYERNoGBHdcH1D7To3hyddndsUvirsRB78UetcnoVk01S5a8ve9WPpT5pd
+         a4YXbk/j6oXyIn39LnUp76KDyGpfz/BU1Ftkm6WiWJwLnTDH1E17TZ7LGmldJFGRGXuU
+         Af7R8sYG6mdl7xC1PzilwjdypS95czOs+X8tOS63E1npNUHjDvB6TCNANML6BQLL1WgI
+         3KcJtDliJmanMlELMDX98rK6h5zyEvBKK3upePRBffH8WfOZeq4MlF/ol/tw5xbzd02k
+         4AFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=T7anISc7/uSEkQXpkVxCntKRxcDqej9hluZQlCHI5OQ=;
-        b=M7ZfGmhuw7sr1oScZl6Ku8EJWH9oviwrqIkGMM+B3RzxUU8PiqcjyukppR2KC2Oe+3
-         D8hvCEmfqX77JoVUWU/jY79ManaWEYdzHTUb2P/O+ZYW/fzy1O0XqP9Otsi2WaXb+hGC
-         fZoloQ5n6JvI6z/1SDQkQ9wI7PDU1QDCkGsVav/yht7xORXXlbRwd5i+YLtwwArFZ7AM
-         r2Gn6Opl3CoaIvjmvsP3+wNFGtJMU/7jDly2wv2QyIRDsXVMgRXkeOMOolITO0b+iHE4
-         0EoJwlXDEStWSV7NJ4c/CdgrBEWNQ44j6qjRD11A9w7L8tNfizs3C15+5bZGn4IrmNLw
-         P8rg==
-X-Gm-Message-State: AOAM533Fvu6hUQGuibmPRI/vxIJgm0t7KGqvl22Od+sBQS8evc5VmtJ7
-        jV9sC//almSuNVXsEXoQrz3j9EZsQnv4mw==
-X-Google-Smtp-Source: ABdhPJyC82nU9YjbfXpQlDUJr7edQiAeRYvXuzm6zmEmhWlSfy3xIsYlfpBuns5LkACs330Iqf4WNr3rbQkcSw==
-X-Received: from mmandlik.mtv.corp.google.com ([2620:15c:202:201:c2de:a92c:e275:5bdf])
- (user=mmandlik job=sendgmr) by 2002:a25:8505:: with SMTP id
- w5mr7790318ybk.185.1632239872820; Tue, 21 Sep 2021 08:57:52 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 08:57:22 -0700
-Message-Id: <20210921085652.v2.1.Ib31940aba2253e3f25cbca09a2d977d27170e163@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2] bluetooth: Fix Advertisement Monitor Suspend/Resume
-From:   Manish Mandlik <mmandlik@google.com>
-To:     marcel@holtmann.org, luiz.dentz@gmail.com
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org,
-        Manish Mandlik <mmandlik@google.com>,
-        Archie Pusaka <apusaka@google.com>,
-        Miao-chen Chou <mcchou@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d4eQmrNAVl39PalM5fwhXxM88NUL3ePE+A2JPS57N4w=;
+        b=biYt/Vu/7t1L/f8l1Q+OziWFnWtaDUFL42lA22hkPCcP44HJQSZBZuuFkvLnurI/Q1
+         IRSiOTjk0jnIVctFYUNvHNz+dnCPKnWS7jd4qwzVb4npNFVYWnkgdh8rhZSWdixmikzw
+         tJVvlpsT3tjXikM+RGRWopRVoQfa5uCFWv9JtlgJFYl+yy0/+8x3f5VlQb0LouYMBv0M
+         fUvCkyfHqDV2XoX3iWQfzEE9sRzhr9LsZSkGeSJhyySMMBZYWWuOCeuAjBf7k0EJa7Bq
+         W3oGxTo/6azv0U/UUYiCVi/Y4MF05MTMpJgY6pNf4QDR4tyqCo9LfUBpJkn95yP7CCxn
+         uvgA==
+X-Gm-Message-State: AOAM533UHkNYpxekBqsLFtXwhDoDc1X2KVDAsmT8hJDLKCJpUoXyaRWT
+        Ls7Pu1OLONfWSOQqoJcjSBJKIixVdb84k3dSnsM=
+X-Google-Smtp-Source: ABdhPJxa8WEFU1tumRmQJ7/8JtnY18IcnRj9pLNairKRoGtyxhlxZkDIP69UhdnWh8W/D79PWE9EzVdOF2+YEYoXlrU=
+X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr5441796wmq.151.1632239579021;
+ Tue, 21 Sep 2021 08:52:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-5-robdclark@gmail.com>
+ <YTj2scNdCHAdF+cl@phenom.ffwll.local>
+In-Reply-To: <YTj2scNdCHAdF+cl@phenom.ffwll.local>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 21 Sep 2021 08:57:30 -0700
+Message-ID: <CAF6AEGvHQHbOP65jq53WEuJc9uxReOFMyXUN--JjjcB1FxHSCw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/9] drm/scheduler: Add fence deadline support
+To:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Steven Price <steven.price@arm.com>,
+        Melissa Wen <mwen@igalia.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During system suspend, advertisement monitoring is disabled by setting
-the=C2=A0HCI_VS_MSFT_LE_Set_Advertisement_Filter_Enable to False. This
-disables the monitoring during suspend, however, if the controller is
-monitoring a device, it sends HCI_VS_MSFT_LE_Monitor_Device_Event to
-indicate that the monitoring has been stopped for that particular
-device. This event may occur after suspend depending on the
-low_threshold_timeout and peer device advertisement frequency, which
-causes early wake up.
+On Wed, Sep 8, 2021 at 10:45 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Fri, Sep 03, 2021 at 11:47:55AM -0700, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > As the finished fence is the one that is exposed to userspace, and
+> > therefore the one that other operations, like atomic update, would
+> > block on, we need to propagate the deadline from from the finished
+> > fence to the actual hw fence.
+> >
+> > v2: Split into drm_sched_fence_set_parent() (ckoenig)
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/scheduler/sched_fence.c | 34 +++++++++++++++++++++++++
+> >  drivers/gpu/drm/scheduler/sched_main.c  |  2 +-
+> >  include/drm/gpu_scheduler.h             |  8 ++++++
+> >  3 files changed, 43 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
+> > index bcea035cf4c6..4fc41a71d1c7 100644
+> > --- a/drivers/gpu/drm/scheduler/sched_fence.c
+> > +++ b/drivers/gpu/drm/scheduler/sched_fence.c
+> > @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
+> >       dma_fence_put(&fence->scheduled);
+> >  }
+> >
+> > +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
+> > +                                               ktime_t deadline)
+> > +{
+> > +     struct drm_sched_fence *fence = to_drm_sched_fence(f);
+> > +     unsigned long flags;
+> > +
+> > +     spin_lock_irqsave(&fence->lock, flags);
+> > +
+> > +     /* If we already have an earlier deadline, keep it: */
+> > +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
+> > +         ktime_before(fence->deadline, deadline)) {
+> > +             spin_unlock_irqrestore(&fence->lock, flags);
+> > +             return;
+> > +     }
+> > +
+> > +     fence->deadline = deadline;
+> > +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
+> > +
+> > +     spin_unlock_irqrestore(&fence->lock, flags);
+> > +
+> > +     if (fence->parent)
+> > +             dma_fence_set_deadline(fence->parent, deadline);
+> > +}
+> > +
+> >  static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
+> >       .get_driver_name = drm_sched_fence_get_driver_name,
+> >       .get_timeline_name = drm_sched_fence_get_timeline_name,
+> > @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
+> >       .get_driver_name = drm_sched_fence_get_driver_name,
+> >       .get_timeline_name = drm_sched_fence_get_timeline_name,
+> >       .release = drm_sched_fence_release_finished,
+> > +     .set_deadline = drm_sched_fence_set_deadline_finished,
+> >  };
+> >
+> >  struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+> > @@ -152,6 +177,15 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
+> >  }
+> >  EXPORT_SYMBOL(to_drm_sched_fence);
+> >
+> > +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
+> > +                             struct dma_fence *fence)
+> > +{
+> > +     s_fence->parent = dma_fence_get(fence);
+> > +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
+> > +                  &s_fence->finished.flags))
+>
+> Don't you need the spinlock here too to avoid races? test_bit is very
+> unordered, so guarantees nothing. Spinlock would need to be both around
+> ->parent = and the test_bit.
+>
+> Entirely aside, but there's discussions going on to preallocate the hw
+> fence somehow. If we do that we could make the deadline forwarding
+> lockless here. Having a spinlock just to set the parent is a bit annoying
+> ...
+>
+> Alternative is that you do this locklessly with barriers and a _lot_ of
+> comments. Would be good to benchmark whether the overhead matters though
+> first.
 
-Right way to disable the monitoring for suspend is by removing all the
-monitors before suspend and re-monitor after resume to ensure no events
-are received=C2=A0during suspend. This patch fixes this suspend/resume issu=
-e.
+So, my thinking is that very few (well no) guarantees are made to the
+fence implementor that their ->set_deadline() is not called multiple
+times, from multiple threads, etc.  And no guarantee that a later
+deadline is set after an earlier deadline has been set.  It is all up
+to the set_deadline() implementation to deal with these cases.
 
-Following tests are performed:
-- Add monitors before suspend and make sure DeviceFound gets triggered
-- Suspend the system and verify that all monitors are removed by kernel
-  but not Released by bluetoothd
-- Wake up and verify that all monitors are added again and DeviceFound
-  gets triggered
+So that means we just need the appropriate barrier-fu to ensure
+another thread calling drm_sched_fence_set_deadline_finished() sees
+fence->parent set before the test_bit.  It could mean that the backend
+implementation sees the same deadline set twice, but that is fine.
 
-Signed-off-by: Manish Mandlik <mmandlik@google.com>
-Reviewed-by: Archie Pusaka <apusaka@google.com>
-Reviewed-by: Miao-chen Chou <mcchou@google.com>
----
+BR,
+-R
 
-Changes in v2:
-- Updated the Reviewd-by names
-
- net/bluetooth/hci_request.c |  15 +++--
- net/bluetooth/msft.c        | 117 +++++++++++++++++++++++++++++++-----
- net/bluetooth/msft.h        |   5 ++
- 3 files changed, 116 insertions(+), 21 deletions(-)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 47fb665277d4..c018a172ced3 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1281,21 +1281,24 @@ static void suspend_req_complete(struct hci_dev *hd=
-ev, u8 status, u16 opcode)
- 	}
- }
-=20
--static void hci_req_add_set_adv_filter_enable(struct hci_request *req,
--					      bool enable)
-+static void hci_req_prepare_adv_monitor_suspend(struct hci_request *req,
-+						bool suspending)
- {
- 	struct hci_dev *hdev =3D req->hdev;
-=20
- 	switch (hci_get_adv_monitor_offload_ext(hdev)) {
- 	case HCI_ADV_MONITOR_EXT_MSFT:
--		msft_req_add_set_filter_enable(req, enable);
-+		if (suspending)
-+			msft_remove_all_monitors_on_suspend(hdev);
-+		else
-+			msft_reregister_monitors_on_resume(hdev);
- 		break;
- 	default:
- 		return;
- 	}
-=20
- 	/* No need to block when enabling since it's on resume path */
--	if (hdev->suspended && !enable)
-+	if (hdev->suspended && suspending)
- 		set_bit(SUSPEND_SET_ADV_FILTER, hdev->suspend_tasks);
- }
-=20
-@@ -1362,7 +1365,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, en=
-um suspended_state next)
- 		}
-=20
- 		/* Disable advertisement filters */
--		hci_req_add_set_adv_filter_enable(&req, false);
-+		hci_req_prepare_adv_monitor_suspend(&req, true);
-=20
- 		/* Prevent disconnects from causing scanning to be re-enabled */
- 		hdev->scanning_paused =3D true;
-@@ -1404,7 +1407,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, en=
-um suspended_state next)
- 		/* Reset passive/background scanning to normal */
- 		__hci_update_background_scan(&req);
- 		/* Enable all of the advertisement filters */
--		hci_req_add_set_adv_filter_enable(&req, true);
-+		hci_req_prepare_adv_monitor_suspend(&req, false);
-=20
- 		/* Unpause directed advertising */
- 		hdev->advertising_paused =3D false;
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index 21b1787e7893..328d5e341f9a 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -94,11 +94,14 @@ struct msft_data {
- 	__u16 pending_add_handle;
- 	__u16 pending_remove_handle;
- 	__u8 reregistering;
-+	__u8 suspending;
- 	__u8 filter_enabled;
- };
-=20
- static int __msft_add_monitor_pattern(struct hci_dev *hdev,
- 				      struct adv_monitor *monitor);
-+static int __msft_remove_monitor(struct hci_dev *hdev,
-+				 struct adv_monitor *monitor, u16 handle);
-=20
- bool msft_monitor_supported(struct hci_dev *hdev)
- {
-@@ -154,7 +157,7 @@ static bool read_supported_features(struct hci_dev *hde=
-v,
- }
-=20
- /* This function requires the caller holds hdev->lock */
--static void reregister_monitor_on_restart(struct hci_dev *hdev, int handle=
-)
-+static void reregister_monitor(struct hci_dev *hdev, int handle)
- {
- 	struct adv_monitor *monitor;
- 	struct msft_data *msft =3D hdev->msft_data;
-@@ -182,6 +185,69 @@ static void reregister_monitor_on_restart(struct hci_d=
-ev *hdev, int handle)
- 	}
- }
-=20
-+/* This function requires the caller holds hdev->lock */
-+static void remove_monitor_on_suspend(struct hci_dev *hdev, int handle)
-+{
-+	struct adv_monitor *monitor;
-+	struct msft_data *msft =3D hdev->msft_data;
-+	int err;
-+
-+	while (1) {
-+		monitor =3D idr_get_next(&hdev->adv_monitors_idr, &handle);
-+		if (!monitor) {
-+			/* All monitors have been removed */
-+			msft->suspending =3D false;
-+			hci_update_background_scan(hdev);
-+			return;
-+		}
-+
-+		msft->pending_remove_handle =3D (u16)handle;
-+		err =3D __msft_remove_monitor(hdev, monitor, handle);
-+
-+		/* If success, return and wait for monitor removed callback */
-+		if (!err)
-+			return;
-+
-+		/* Otherwise free the monitor and keep removing */
-+		hci_free_adv_monitor(hdev, monitor);
-+		handle++;
-+	}
-+}
-+
-+/* This function requires the caller holds hdev->lock */
-+void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev)
-+{
-+	struct msft_data *msft =3D hdev->msft_data;
-+
-+	if (!msft)
-+		return;
-+
-+	if (msft_monitor_supported(hdev)) {
-+		msft->suspending =3D true;
-+		/* Quitely remove all monitors on suspend to avoid waking up
-+		 * the system.
-+		 */
-+		remove_monitor_on_suspend(hdev, 0);
-+	}
-+}
-+
-+/* This function requires the caller holds hdev->lock */
-+void msft_reregister_monitors_on_resume(struct hci_dev *hdev)
-+{
-+	struct msft_data *msft =3D hdev->msft_data;
-+
-+	if (!msft)
-+		return;
-+
-+	if (msft_monitor_supported(hdev)) {
-+		msft->reregistering =3D true;
-+		/* Monitors are removed on suspend, so we need to add all
-+		 * monitors on resume.
-+		 */
-+		reregister_monitor(hdev, 0);
-+	}
-+}
-+
- void msft_do_open(struct hci_dev *hdev)
- {
- 	struct msft_data *msft =3D hdev->msft_data;
-@@ -214,7 +280,7 @@ void msft_do_open(struct hci_dev *hdev)
- 		/* Monitors get removed on power off, so we need to explicitly
- 		 * tell the controller to re-monitor.
- 		 */
--		reregister_monitor_on_restart(hdev, 0);
-+		reregister_monitor(hdev, 0);
- 	}
- }
-=20
-@@ -382,8 +448,7 @@ static void msft_le_monitor_advertisement_cb(struct hci=
-_dev *hdev,
-=20
- 	/* If in restart/reregister sequence, keep registering. */
- 	if (msft->reregistering)
--		reregister_monitor_on_restart(hdev,
--					      msft->pending_add_handle + 1);
-+		reregister_monitor(hdev, msft->pending_add_handle + 1);
-=20
- 	hci_dev_unlock(hdev);
-=20
-@@ -420,13 +485,25 @@ static void msft_le_cancel_monitor_advertisement_cb(s=
-truct hci_dev *hdev,
- 	if (handle_data) {
- 		monitor =3D idr_find(&hdev->adv_monitors_idr,
- 				   handle_data->mgmt_handle);
--		if (monitor)
-+
-+		if (monitor && monitor->state =3D=3D ADV_MONITOR_STATE_OFFLOADED)
-+			monitor->state =3D ADV_MONITOR_STATE_REGISTERED;
-+
-+		/* Do not free the monitor if it is being removed due to
-+		 * suspend. It will be re-monitored on resume.
-+		 */
-+		if (monitor && !msft->suspending)
- 			hci_free_adv_monitor(hdev, monitor);
-=20
- 		list_del(&handle_data->list);
- 		kfree(handle_data);
- 	}
-=20
-+	/* If in suspend/remove sequence, keep removing. */
-+	if (msft->suspending)
-+		remove_monitor_on_suspend(hdev,
-+					  msft->pending_remove_handle + 1);
-+
- 	/* If remove all monitors is required, we need to continue the process
- 	 * here because the earlier it was paused when waiting for the
- 	 * response from controller.
-@@ -445,7 +522,8 @@ static void msft_le_cancel_monitor_advertisement_cb(str=
-uct hci_dev *hdev,
- 	hci_dev_unlock(hdev);
-=20
- done:
--	hci_remove_adv_monitor_complete(hdev, status);
-+	if (!msft->suspending)
-+		hci_remove_adv_monitor_complete(hdev, status);
- }
-=20
- static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev *hde=
-v,
-@@ -578,15 +656,15 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, st=
-ruct adv_monitor *monitor)
- 	if (!msft)
- 		return -EOPNOTSUPP;
-=20
--	if (msft->reregistering)
-+	if (msft->reregistering || msft->suspending)
- 		return -EBUSY;
-=20
- 	return __msft_add_monitor_pattern(hdev, monitor);
- }
-=20
- /* This function requires the caller holds hdev->lock */
--int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
--			u16 handle)
-+static int __msft_remove_monitor(struct hci_dev *hdev,
-+				 struct adv_monitor *monitor, u16 handle)
- {
- 	struct msft_cp_le_cancel_monitor_advertisement cp;
- 	struct msft_monitor_advertisement_handle_data *handle_data;
-@@ -594,12 +672,6 @@ int msft_remove_monitor(struct hci_dev *hdev, struct a=
-dv_monitor *monitor,
- 	struct msft_data *msft =3D hdev->msft_data;
- 	int err =3D 0;
-=20
--	if (!msft)
--		return -EOPNOTSUPP;
--
--	if (msft->reregistering)
--		return -EBUSY;
--
- 	handle_data =3D msft_find_handle_data(hdev, monitor->handle, true);
-=20
- 	/* If no matched handle, just remove without telling controller */
-@@ -619,6 +691,21 @@ int msft_remove_monitor(struct hci_dev *hdev, struct a=
-dv_monitor *monitor,
- 	return err;
- }
-=20
-+/* This function requires the caller holds hdev->lock */
-+int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
-+			u16 handle)
-+{
-+	struct msft_data *msft =3D hdev->msft_data;
-+
-+	if (!msft)
-+		return -EOPNOTSUPP;
-+
-+	if (msft->reregistering || msft->suspending)
-+		return -EBUSY;
-+
-+	return __msft_remove_monitor(hdev, monitor, handle);
-+}
-+
- void msft_req_add_set_filter_enable(struct hci_request *req, bool enable)
- {
- 	struct hci_dev *hdev =3D req->hdev;
-diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
-index 8018948c5975..6ec843b94d16 100644
---- a/net/bluetooth/msft.h
-+++ b/net/bluetooth/msft.h
-@@ -24,6 +24,8 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_=
-monitor *monitor,
- 			u16 handle);
- void msft_req_add_set_filter_enable(struct hci_request *req, bool enable);
- int msft_set_filter_enable(struct hci_dev *hdev, bool enable);
-+void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev);
-+void msft_reregister_monitors_on_resume(struct hci_dev *hdev);
- bool msft_curve_validity(struct hci_dev *hdev);
-=20
- #else
-@@ -59,6 +61,9 @@ static inline int msft_set_filter_enable(struct hci_dev *=
-hdev, bool enable)
- 	return -EOPNOTSUPP;
- }
-=20
-+void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev) {}
-+void msft_reregister_monitors_on_resume(struct hci_dev *hdev) {}
-+
- static inline bool msft_curve_validity(struct hci_dev *hdev)
- {
- 	return false;
---=20
-2.33.0.464.g1972c5931b-goog
-
+> -Daniel
+>
+> > +             dma_fence_set_deadline(fence, s_fence->deadline);
+> > +}
+> > +
+> >  struct drm_sched_fence *drm_sched_fence_alloc(struct drm_sched_entity *entity,
+> >                                             void *owner)
+> >  {
+> > diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+> > index 595e47ff7d06..27bf0ac0625f 100644
+> > --- a/drivers/gpu/drm/scheduler/sched_main.c
+> > +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> > @@ -978,7 +978,7 @@ static int drm_sched_main(void *param)
+> >               drm_sched_fence_scheduled(s_fence);
+> >
+> >               if (!IS_ERR_OR_NULL(fence)) {
+> > -                     s_fence->parent = dma_fence_get(fence);
+> > +                     drm_sched_fence_set_parent(s_fence, fence);
+> >                       r = dma_fence_add_callback(fence, &sched_job->cb,
+> >                                                  drm_sched_job_done_cb);
+> >                       if (r == -ENOENT)
+> > diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+> > index 7f77a455722c..158ddd662469 100644
+> > --- a/include/drm/gpu_scheduler.h
+> > +++ b/include/drm/gpu_scheduler.h
+> > @@ -238,6 +238,12 @@ struct drm_sched_fence {
+> >           */
+> >       struct dma_fence                finished;
+> >
+> > +     /**
+> > +      * @deadline: deadline set on &drm_sched_fence.finished which
+> > +      * potentially needs to be propagated to &drm_sched_fence.parent
+> > +      */
+> > +     ktime_t                         deadline;
+> > +
+> >          /**
+> >           * @parent: the fence returned by &drm_sched_backend_ops.run_job
+> >           * when scheduling the job on hardware. We signal the
+> > @@ -505,6 +511,8 @@ void drm_sched_entity_set_priority(struct drm_sched_entity *entity,
+> >                                  enum drm_sched_priority priority);
+> >  bool drm_sched_entity_is_ready(struct drm_sched_entity *entity);
+> >
+> > +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
+> > +                             struct dma_fence *fence);
+> >  struct drm_sched_fence *drm_sched_fence_alloc(
+> >       struct drm_sched_entity *s_entity, void *owner);
+> >  void drm_sched_fence_init(struct drm_sched_fence *fence,
+> > --
+> > 2.31.1
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
