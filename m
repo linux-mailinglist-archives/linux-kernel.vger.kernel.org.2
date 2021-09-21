@@ -2,261 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78554413788
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715A541378C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhIUQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhIUQ1L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:27:11 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56E8C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:25:42 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso7247006oon.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8730Bktiqk4tNVMLL/QOHd8DUmsTsfdK+RPNnLjS13I=;
-        b=VRrsr8juMP7JcmvqszJf3Kw5kbOJBokuGC7gnKzAt9Z9sG06orD0t9EfuL4N1XzuXB
-         rk1S8O8rqs54ly/NehWr5i2OVuQYHIGOBvAu5yemWMHut7f+fk8KgA4hdmi2HhFth4rh
-         D+/G6qXG27KpDHa8mJCt+scEnQU6ZU3J+TZY1s26n1+abSBnBjrFDstSFpEoZHDsXAS/
-         X9+U+MnUQRLyQIwQqy2KN1LdDB1iFJqGgkzmcAzEsjFwqs9NYrw/HEPDEIw7eIz8AKUV
-         Kfe6yFj9ysNde8C1vC0faX/KaG2FBxwrPJHBdZ+cRm+8TAWpObJ+7bV3LK7AK5MPX9AC
-         qc6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8730Bktiqk4tNVMLL/QOHd8DUmsTsfdK+RPNnLjS13I=;
-        b=ZK7HXelLs10pfTyy/DXKLXeKsJmj8ZWvO6mfPxWMbU5vbwmbkWbmDyPDTJPNi1xByi
-         F/hM3yHy5z44d5Vt5h/T/uR2UC6Fz0axz6S/x16EKNkrLvMKutjhv8pPZ0Gihn1nZLt0
-         BwigGezwB8hxJHLOFbtd8ZjXy/5SnlQzpKwJcw7v/yI2BMq/H4UtIgvlDTzPE4U4hojs
-         +Nc8/+smaThkwNcQwr+s8x3uIXQ+t0Eq1Adubc3ck4E+61CZRZvEv4s5vM5mqCw11xpO
-         Ybl8zoj7WhGfT7MJ80sQqJhYzhUf+R7TraqSrxB4kIp7X+57xbMNaoWAGL3fy3WWHv5s
-         15UQ==
-X-Gm-Message-State: AOAM530PqDoRkaS5Ylted8vmIfW8yyTXOraRmRsL69Uu6mmsvoAByQUy
-        +8BvgJxSIGAz8BNJeCzOUp1Tnw==
-X-Google-Smtp-Source: ABdhPJyWx86fuRCxiB1BbAZsfo1axvq1nZpMeHdaaS8MkdJ7Qfh2CZw6I5ofRnlPQT0RBvanujWInQ==
-X-Received: by 2002:a4a:a388:: with SMTP id s8mr6397396ool.39.1632241541498;
-        Tue, 21 Sep 2021 09:25:41 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q7sm4154239otl.68.2021.09.21.09.25.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 09:25:41 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 09:26:23 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: Re: [PATCH] pinctrl: qcom: Add egpio feature support
-Message-ID: <YUoHr0F9qjr2Toeb@ripper>
-References: <1631860648-31774-1-git-send-email-rnayak@codeaurora.org>
- <YUfZbsf3MX1aQJ2+@builder.lan>
- <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
+        id S233587AbhIUQ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:29:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:36200 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhIUQ3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:29:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5EC87113E;
+        Tue, 21 Sep 2021 09:28:08 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.23.155])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D13C53F718;
+        Tue, 21 Sep 2021 09:28:06 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:28:04 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <20210921162804.GD35846@C02TD0UTHF1T.local>
+References: <20210920233237.90463-1-frederic@kernel.org>
+ <20210920233237.90463-3-frederic@kernel.org>
+ <YUmFFvZCb2yXn3os@hirez.programming.kicks-ass.net>
+ <CAMj1kXEVjKGkRU_4JWH5d9YzT+pYVuEZYPNLw0VkUAb6d+W9kQ@mail.gmail.com>
+ <20210921153352.GC35846@C02TD0UTHF1T.local>
+ <CAMj1kXHQM9WOQutZg6P63=zQDE67jjfGv1tub1+W44LoZrON+g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
+In-Reply-To: <CAMj1kXHQM9WOQutZg6P63=zQDE67jjfGv1tub1+W44LoZrON+g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21 Sep 03:39 PDT 2021, Rajendra Nayak wrote:
-
+On Tue, Sep 21, 2021 at 05:55:11PM +0200, Ard Biesheuvel wrote:
+> On Tue, 21 Sept 2021 at 17:33, Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Tue, Sep 21, 2021 at 04:44:56PM +0200, Ard Biesheuvel wrote:
+> > > On Tue, 21 Sept 2021 at 09:10, Peter Zijlstra <peterz@infradead.org> wrote:
+> ...
+> > > >
+> > > > So I like what Christophe did for PPC32:
+> > > >
+> > > >   https://lkml.kernel.org/r/6ec2a7865ed6a5ec54ab46d026785bafe1d837ea.1630484892.git.christophe.leroy@csgroup.eu
+> > > >
+> > > > Where he starts with an unconditional jmp and uses that IFF the offset
+> > > > fits and only does the data load when it doesn't. Ard, woulnd't that
+> > > > also make sense on ARM64? I'm thinking most in-kernel function pointers
+> > > > would actually fit, it's just the module muck that gets to have too
+> > > > large pointers, no?
+> > > >
+> > >
+> > > Yeah, I'd have to page that back in. But it seems like the following
+> > >
+> > >   bti c
+> > >   <branch>
+> > >   adrp x16, <literal>
+> > >   ldr x16, [x16, ...]
+> > >   br x16
+> > >
+> > > with <branch> either set to 'b target' for the near targets, 'ret' for
+> > > the NULL target, and 'nop' for the far targets should work, and the
+> > > architecture permits patching branches into NOPs and vice versa
+> > > without special synchronization.
+> >
+> > I think so, yes. We can do sligntly better with an inline literal pool
+> > and a PC-relative LDR to fold the ADRP+LDR, e.g.
+> >
+> >         .align 3
+> > tramp:
+> >         BTI     C
+> >         {B <func> | RET | NOP}
+> >         LDR     X16, 1f
+> >         BR      X16
+> > 1:      .quad   <literal>
+> >
+> > Since that's in the .text, it's RO for regular accesses anyway.
+> >
 > 
+> I tried to keep the literal in .rodata to avoid inadvertent gadgets
+> and/or anticipate exec-only mappings of .text, but that may be a bit
+> overzealous.
+
+I think that in practice the risk of gadgetisation is minimal, and
+having it inline means we only need to record a single address per
+trampoline, so there's less risk that we get the patching wrong.
+
+> > > But I must be missing something here, or why did we have that long
+> > > discussion before?
+> >
+> > I think the long discussion was because v2 had some more complex options
+> > (mostly due to trying to use ADRP+ADD) and atomicity/preemption issues
+> > meant we could only transition between some of those one-way, and it was
+> > subtle/complex:
+> >
+> > https://lore.kernel.org/linux-arm-kernel/20201028184114.6834-1-ardb@kernel.org/
+> >
 > 
-> On 9/20/2021 6:14 AM, Bjorn Andersson wrote:
-> > On Fri 17 Sep 01:37 CDT 2021, Rajendra Nayak wrote:
-> > 
-> > > From: Prasad Sodagudi <psodagud@codeaurora.org>
-> > > 
-> > > egpio is a scheme which allows special power Island Domain IOs
-> > > (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
-> > > TLMM functions with Island Domain functions.
-> > > With this scheme, an IO can be controlled both by the cpu running
-> > > linux and the Island processor. This provides great flexibility to
-> > > re-purpose the Island IOs for regular TLMM usecases.
-> > > 
-> > > 2 new bits are added to ctl_reg, egpio_present is a read only bit
-> > > which shows if egpio feature is available or not on a given gpio.
-> > > egpio_enable is the read/write bit and only effective if egpio_present
-> > > is 1. Once its set, the Island IO is controlled from Chip TLMM.
-> > > egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
-> > > 
-> > > The support exists on most recent qcom SoCs, and we add support
-> > > for sm8150/sm8250/sm8350 and sc7280 as part of this patch.
-> > > 
-> > 
-> > I was under the impression that this feature would allow you to
-> > repurpose pins for use either by the remote island or by apps.
+> Ah yes, I was trying to use ADRP/ADD to avoid the load, and this is
+> what created all the complexity.
 > 
-> thats right, you can repurpose the pins for usage by apps by setting
-> the egpio_enable to 1, when set to 0 its owned by the island processor.
-
-Good.
-
-> > 
-> > But if I understand your proposal, you check to see if the pin is
-> > "egpio capable" for a pin and if so just sets the bit - muxing it to
-> > apps (or the island?).
+> > For v3, that was all gone, but we didn't have a user.
+> >
+> > Since the common case *should* be handled by {B <func> | RET | NOP }, I
+> > reckon it's fine to have just that and the literal pool fallback (which
+> > I'll definitely need for the sorts of kernel I run when fuzzing, where
+> > the kernel Image itself can be 100s of MiBs).
 > 
-> Right, so if there is a request for a egpio-capable pin, the driver
-> flips the ownership. Are you suggesting having some kind of checks to determine
-> who should own it?
-> 
+> Ack. So I'll respin this along these lines.
 
-I see, I missed that nuance. So Linux will steal any pins that are
-mentioned in DT. But that would mean that you're relying on someone else
-to ensure that this bit is cleared for the other pins and you would not
-be able to explicitly flip the state back to island mode in runtime.
+Sounds good!
 
-I would prefer that this was more explicit.
+> Do we care deeply about the branch and the literal being transiently
+> out of sync?
 
-> > It seems reasonable that this would be another pinmux state for these
-> > pins, rather than just flipping them all in one or the other direction.
-> 
-> hmm, I don't understand. This is not a pinmux state, its a switch to decide
-> the ownership.
+I don't think we care about the tranisent window, since even if we just
+patched a branch, a thread could be preempted immediately after the
+branch and sit around blocked for a while. So it's always necessary to
+either handle such threads taking stale branches, or to flip the branch
+such that this doesn't matter (e.g. done once at boot time).
 
-But does it mux the pin to the island, or does it state that the island
-is now in charge of the associated TLMM registers?
+That said, I'd suggest that we always patch the literal, then patch the
+{B| RET | NOP}, so that outside of patch times those are consistent with
+one another and we can't accidentally get into a state were we use a
+stale/bogus target after multiple patches. We can align the trampoline
+such that we know it falls within a single page, so that we only need to
+map/unmap it once (and the cost of the extra STR will be far smaller
+than the map/unmap anyhow).
 
-If it's muxing the pin to the island, then it's conceptually just a
-special mux state that we can represent in DT as another pinmux
-function.
-
-> These egpio pins have regulator mux functions, some for apps, some for the
-> island processor, they might not always be used as gpios.
-
-Right, so if egpio = 1 for a pin, then it works like any other pin
-that's handled by the pinctrl-msm driver, with whatever muxing options
-are available for the given pin.
-
-But what happens when egpio = 0? Is the TLMM decoupled from the physical
-pin, or does the island use the TLMM as well?
-
-If it's not using the TLMM, do we need the TLMM to be in some particular
-state?
-
-
-What I'm proposing is that if the egpio is simply a first-line mux and
-the TLMM isn't used when the pin is muxed towards the island. Then we
-could add a custom 'function = "egpio"' muxing state and you could per
-pin mux things explicitly, and possibly dynamically, to be routed to the
-island.
-
-Regards,
-Bjorn
-
-> > PS. When I spoke with Prasad about this a couple of years ago, I think
-> > we talked about representing this as a pinconf property, but it seems to
-> > make more sense to me now that it would be a pinmux state.
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-> > > [rnayak: rewrite commit log, minor rebase]
-> > > Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> > > ---
-> > >   drivers/pinctrl/qcom/pinctrl-msm.c    | 4 ++++
-> > >   drivers/pinctrl/qcom/pinctrl-msm.h    | 2 ++
-> > >   drivers/pinctrl/qcom/pinctrl-sc7280.c | 2 ++
-> > >   drivers/pinctrl/qcom/pinctrl-sm8150.c | 2 ++
-> > >   drivers/pinctrl/qcom/pinctrl-sm8250.c | 2 ++
-> > >   drivers/pinctrl/qcom/pinctrl-sm8350.c | 2 ++
-> > >   6 files changed, 14 insertions(+)
-> > > 
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> > > index 8476a8a..f4a2343 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> > > @@ -220,6 +220,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
-> > >   	val = msm_readl_ctl(pctrl, g);
-> > >   	val &= ~mask;
-> > >   	val |= i << g->mux_bit;
-> > > +	/* Check if egpio present and enable that feature */
-> > > +	if (val & BIT(g->egpio_present))
-> > > +		val |= BIT(g->egpio_enable);
-> > > +
-> > >   	msm_writel_ctl(val, pctrl, g);
-> > >   	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
-> > > index e31a516..3635b31 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-msm.h
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-msm.h
-> > > @@ -77,6 +77,8 @@ struct msm_pingroup {
-> > >   	unsigned drv_bit:5;
-> > >   	unsigned od_bit:5;
-> > > +	unsigned egpio_enable:5;
-> > > +	unsigned egpio_present:5;
-> > >   	unsigned oe_bit:5;
-> > >   	unsigned in_bit:5;
-> > >   	unsigned out_bit:5;
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-> > > index afddf6d..607d459 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
-> > > @@ -43,6 +43,8 @@
-> > >   		.mux_bit = 2,			\
-> > >   		.pull_bit = 0,			\
-> > >   		.drv_bit = 6,			\
-> > > +		.egpio_enable = 12,		\
-> > > +		.egpio_present = 11,		\
-> > >   		.oe_bit = 9,			\
-> > >   		.in_bit = 0,			\
-> > >   		.out_bit = 1,			\
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm8150.c b/drivers/pinctrl/qcom/pinctrl-sm8150.c
-> > > index 7359bae..63a625a 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-sm8150.c
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-sm8150.c
-> > > @@ -56,6 +56,8 @@ enum {
-> > >   		.mux_bit = 2,			\
-> > >   		.pull_bit = 0,			\
-> > >   		.drv_bit = 6,			\
-> > > +		.egpio_enable = 12,		\
-> > > +		.egpio_present = 11,		\
-> > >   		.oe_bit = 9,			\
-> > >   		.in_bit = 0,			\
-> > >   		.out_bit = 1,			\
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm8250.c b/drivers/pinctrl/qcom/pinctrl-sm8250.c
-> > > index af144e7..ad4fd94 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-sm8250.c
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-sm8250.c
-> > > @@ -57,6 +57,8 @@ enum {
-> > >   		.mux_bit = 2,				\
-> > >   		.pull_bit = 0,				\
-> > >   		.drv_bit = 6,				\
-> > > +		.egpio_enable = 12,			\
-> > > +		.egpio_present = 11,			\
-> > >   		.oe_bit = 9,				\
-> > >   		.in_bit = 0,				\
-> > >   		.out_bit = 1,				\
-> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm8350.c b/drivers/pinctrl/qcom/pinctrl-sm8350.c
-> > > index 4d8f863..bb436dc 100644
-> > > --- a/drivers/pinctrl/qcom/pinctrl-sm8350.c
-> > > +++ b/drivers/pinctrl/qcom/pinctrl-sm8350.c
-> > > @@ -46,6 +46,8 @@
-> > >   		.mux_bit = 2,			\
-> > >   		.pull_bit = 0,			\
-> > >   		.drv_bit = 6,			\
-> > > +		.egpio_enable = 12,		\
-> > > +		.egpio_present = 11,		\
-> > >   		.oe_bit = 9,			\
-> > >   		.in_bit = 0,			\
-> > >   		.out_bit = 1,			\
-> > > -- 
-> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> > > of Code Aurora Forum, hosted by The Linux Foundation
-> > > 
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+Thanks,
+Mark.
