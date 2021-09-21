@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76D6413E07
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02A7413E0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhIUXc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
+        id S230267AbhIUXfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhIUXc0 (ORCPT
+        with ESMTP id S230216AbhIUXfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:32:26 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6DEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:30:57 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id u22so1659656oie.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:30:57 -0700 (PDT)
+        Tue, 21 Sep 2021 19:35:43 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546F8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:34:14 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id u18so761287pgf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:34:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=4qChEl1sgA5DGAUFkJiPbV2Qy64fRtkylb8jYRAJqTM=;
-        b=ksKuH+iTmEobV/bnWPS3WEekoC2PaWqW8ekaWW25+P2usAgAW7ojUEZwXd5PaxjYzT
-         CTNuZg8mfTqACGrglVNAXTxBauFBMHHQPpV8O250dbqA+oDkJGGB+nu5k5JDWW/5pGEZ
-         ulX6DAEDLme6qHKUpJ8uZr8wSZ8QrZz3lrPmgHeypDCwWVanNMaqAV/4yxh4rVi2HsYI
-         5GJ+96gMxBgk3Gs9lUGwsD4usD2WH2UdqHXiZwq9HSFyPwv4+43QFe3hwj5DdjAls9h0
-         py5ymApC7GVDhwIzToJaVtJaTehEGp7IGC+5nNamdI1AnWEWD0HSgc+e3wttpC4KzA63
-         8IIA==
+        bh=CLwXFb9bh237p3NLMPDDN3QcXe2KmKQWVOAqgszlTS8=;
+        b=ZvuPio6qyfipioiP/dvGdAsdJVc+VUAkgK2fA/9fKTi893FzD+/qJT1K/0XuvIF7X8
+         5Ci6Nj/XWd3iJCThByjK2fo0cqpDqERIE3PCv/LgArpAkqmf80Mlae+qWWJo6x5JyHKa
+         VQnECUX7tTC9EY+jo/uOG8Itd3jZixAT3pNOLdICTqpK4H+TmjmL1sV3bpHizrFX5+RK
+         mlptqnXrh0TxAMAiWCrjP9OgYeGd6wV+RifJ+nxvtJETCsvHzxtEvI/Bsc9De0BwyBtQ
+         bIifOxXSXdx9nQ35PERkINo2ExXvJIC+K9wYXVs8vb1bpSf44QabIrApjQsBuuK+cYc6
+         4fQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4qChEl1sgA5DGAUFkJiPbV2Qy64fRtkylb8jYRAJqTM=;
-        b=zsdbdqSPvDkFEBOFfjG3Kv9JxzlJWiqieWzt3k+y4zPsKAvhQxzWZzBWqFh1d3ZGOa
-         cLyKDx6kCYQJvQDLR2kkXPgBfM9URB+c4dmDZbpJsRpzIcchtjZj55ieKPiqaik6M4Uj
-         RuI0V0TY/UUJ457RaEzAc5uNQugOYq6L9TANFUDVuqL1an/Xz2kQJtoYSV2eZyO/kQNE
-         0NiTJ5RwwHZ2ycvljh54cdsjL7ab0ZI8+AtiTyou9aPP7OKMZFyP/F4UckerjF96OPjN
-         0taLtJmFF45eLTOAIlrg9NYc3pREESTI7PvKUGn4MYeEluEfcUSIcjHwmITPZ3H4a2XV
-         hjJg==
-X-Gm-Message-State: AOAM530Yjp1DrV+PS1TM5ZAC9F0MjMYw97+u3GY2otfu25EyPztYllVL
-        rWnr6bDfuvCoPbksNbxGESBAfw==
-X-Google-Smtp-Source: ABdhPJyjldyg2TGfw9nWFgy6YQOjSLILWjIR0gFyDn+NQN4SVY2S3orp5IUw4GhS3mkVrKYVp58Dmg==
-X-Received: by 2002:a05:6808:2099:: with SMTP id s25mr5902116oiw.97.1632267056767;
-        Tue, 21 Sep 2021 16:30:56 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 65sm104853otc.32.2021.09.21.16.30.56
+        bh=CLwXFb9bh237p3NLMPDDN3QcXe2KmKQWVOAqgszlTS8=;
+        b=aJ9Pu0bFlLs8st1v2fcmWOQTTe1rYYe4LEJXZA/gLMzfrJLSkmIemJtCTyM+xfQrm/
+         ynpjLMhaBcQkubSq50FhvYhZ/tKjmgVb82b+PD4Lwr5V+G73e6TtVm9t8hX3zHoWrTrm
+         FOCAD7HjhpaSDlVDCWtxIgpEzGFI0u/CXYSQz449/xwtcDuhIP4fyt2pVytIShinhDVR
+         Rz1maNPdSktzkqQZpagYK9cHjBTlXT6WKB21W8Si/i4ta/ge7d93BiUmYl5eE40dumS0
+         EMqvp/RIb4Z20B6xtiH16sHjTeY3tiutlL6dpXvl2nrQTj0s/g3oFe70u19ud0c4jlQ+
+         x5FA==
+X-Gm-Message-State: AOAM532kUB1XbRZo3lsYIGo51wkJmJh7lDWOGCW1ogQowiR9KUramHZS
+        /TYEtCgZA3gFJJDlmUrlZj7TNA==
+X-Google-Smtp-Source: ABdhPJyeyei+KC0c9FO+SEEq5fFZ0WoTeeAjimEYskFd5/X3mugtX1W01HtIQmxapsWcTaEdUsmHZA==
+X-Received: by 2002:aa7:9282:0:b0:3e2:800a:b423 with SMTP id j2-20020aa79282000000b003e2800ab423mr32998153pfa.21.1632267253615;
+        Tue, 21 Sep 2021 16:34:13 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g3sm161923pjm.22.2021.09.21.16.34.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 16:30:56 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 16:31:38 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andy Gross <agross@kernel.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the qcom tree
-Message-ID: <YUprWiZNgPt2YEUl@ripper>
-References: <20210921082438.26550938@canb.auug.org.au>
- <20210922090235.2a626af6@canb.auug.org.au>
+        Tue, 21 Sep 2021 16:34:12 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 23:34:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        syzbot <syzbot+d08efd12a2905a344291@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: [syzbot] upstream test error: KFENCE: use-after-free in
+ kvm_fastop_exception
+Message-ID: <YUpr8Vu8xqCDwkE8@google.com>
+References: <000000000000d6b66705cb2fffd4@google.com>
+ <CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com>
+ <CANpmjNMq=2zjDYJgGvHcsjnPNOpR=nj-gQ43hk2mJga0ES+wzQ@mail.gmail.com>
+ <CACT4Y+Y1c-kRk83M-qiFY40its+bP3=oOJwsbSrip5AB4vBnYA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922090235.2a626af6@canb.auug.org.au>
+In-Reply-To: <CACT4Y+Y1c-kRk83M-qiFY40its+bP3=oOJwsbSrip5AB4vBnYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21 Sep 16:02 PDT 2021, Stephen Rothwell wrote:
-
-> Hi all,
-> 
-> On Tue, 21 Sep 2021 08:24:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Fri, Sep 17, 2021, Dmitry Vyukov wrote:
+> On Fri, 17 Sept 2021 at 13:04, Marco Elver <elver@google.com> wrote:
+> > > So it looks like in both cases the top fault frame is just wrong. But
+> > > I would assume it's extracted by arch-dependent code, so it's
+> > > suspicious that it affects both x86 and arm64...
+> > >
+> > > Any ideas what's happening?
 > >
-> > In commit
-> > 
-> >   33c4296d99ef ("arm64: dts: qcom: sc7280: fix display port phy reg property")
+> > My suspicion for the x86 case is that kvm_fastop_exception is related
+> > to instruction emulation and the fault occurs in an emulated
+> > instruction?
 > 
-> This is now commit 1a5968e5b7de.
+> Why would the kernel emulate a plain MOV?
+> 2a:   4c 8b 21                mov    (%rcx),%r12
 > 
-> > Fixes tag
-> > 
-> >   Fixes: 9886e8fd8438 ("arm64: dts: qcom: sc7280: Add USB related nodes")
-> > 
-> > has these problem(s):
-> > 
-> >   - Target SHA1 does not exist
-> > 
-> > Maybe you meant
-> > 
-> > Fixes: bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
-> 
-> Surely if you are going to rebase the tree anyway, you can fix this up
-> :-(
-> 
+> And it would also mean a broken unwind because the emulated
+> instruction is in __d_lookup, so it should be in the stack trace.
 
-Yes of course!
+kvm_fastop_exception is a red herring.  It's indeed related to emulation, and
+while MOV emulation is common in KVM, that emulation is for KVM guests not for
+the host kernel where this splat occurs (ignoring the fact that the "host" is
+itself a guest).
 
-I had made a git merge snafu earlier in the branch, fixed the fixes and
-then fixed the snafu, which broke the fixes...
+kvm_fastop_exception is out-of-line fixup, and certainly shouldn't be reachable
+via d_lookup.  It's also two instruction, XOR+RET, neither of which are in the
+code stream.
 
-I should have double checked this before pushing out the rebased branch,
-but it looks okay to me (and checkpatch) now.
-
-Thanks,
-Bjorn
+IIRC, the unwinder gets confused when given an IP that's in out-of-line code,
+e.g. exception fixup like this.  If you really want to find out what code blew
+up, you might be able to objdump -D the kernel and search for unique, matching
+disassembly, e.g. find "jmpq   0xf86d288c" and go from there.
