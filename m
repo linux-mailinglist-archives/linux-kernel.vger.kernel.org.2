@@ -2,171 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2640C413024
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE98A41302A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhIUI1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 04:27:14 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34686
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231168AbhIUI1M (ORCPT
+        id S231218AbhIUIam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhIUIaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:27:12 -0400
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        Tue, 21 Sep 2021 04:30:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EEAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3pGj8C8pWUiQBpKJtGVzknsFdRDfba8Mc0AV+KNc0rs=; b=lj3fL5TA/SHrtjjBNRJLFNmF+r
+        ApEI0NEfHknyBJuuqWRBOpq3IUCjYhRNG1iMmW4H9+KeW1m+2T7sIPbkGQY5y7Nz23k74qcp62ezp
+        E4ILAOwxrDfVl0C88TY4pOY2hpzbWDUjNt1UqdViBmSMyCa0pTXr4SVD7jeAMKZTxWJs1+UK6TnX/
+        3Xk0DGp8rheZZ1w7uFMACeKPdrqynr5hwUjL1A4svkkgPKpNa8u1Qpm1uj6GwgkcB0t29T9OSjUd9
+        QCK/yhOpoevqRgJvBfe5PzdJQ1BKgc3mvum6RljFYCF3T30fHkgfYdC6Yl2G7VVWKFtJ/uO4E1zsG
+        z1kNBDuQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSb7l-003dSV-QU; Tue, 21 Sep 2021 08:27:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AF2733F4BE
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632212743;
-        bh=PakN2wbGs/med/D4ZWenpx5EeuVdG2xsZUFyxVDNDpM=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=LAk0vPfckMMSyktNld/vuvQX+8a5g4UIMfl1CqaBK7GK0XnoJvq3JrEICNr5naYig
-         j4heNgKMAZ5c3BFGl+sLwp9UYQnCTeOtgeodsCAq0eFju4pv+ZajDTEx/Jl9bhZ/+Z
-         /AaEJ5wUnutJfAt6hoyfU8OqzbZZ+s8tq15BdbRIlrfasRhoJk6VLwS498fdM1Hbq2
-         Kc2EMhZRTRg8a0mwr4AejWXLamww2eMmvEghwAT48ZUbg0wZDzV2XUH4OUjhf07avb
-         q41LjW5jFh7/cUEw+GfJVoNggp9oW7PToPaqgLVlsoxJcUPyEgKETPpVOSrdhkcZeE
-         KPPQwECZV5+sQ==
-Received: by mail-wr1-f69.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so3896643wrh.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:25:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PakN2wbGs/med/D4ZWenpx5EeuVdG2xsZUFyxVDNDpM=;
-        b=rcHbLRNmT+YcfD1R/3Q9ATZ6ZZ8pMj+OdwZoikHq72S3frjVP6tJuYWTUbSW4GEaLT
-         MtVN6VZ8mFQpBOoE/dylls/kNUDvlm+KLCdXdPZJxOK1F+398vWwCHA9cOwv9ESWm+V9
-         FwLt4UmnHH1+Ij2HzKPPIbdEze8/rYTgrRc12EHTYBfpBQx29Z2Fsp3LIIgGdsmsHIMo
-         pRs59Ujv298ETSzHtc+5qq0r1agFCfuVQgWQ+vwUopM19vy1BrevgdDvWhcB3viLi42j
-         YGpWcRUGhXE3iwcR77m/BOTqmlsoP6Cvppbz25jVybf8Wes6ALQWQGW8UkUJYJfltLLp
-         GrOg==
-X-Gm-Message-State: AOAM530Y2UC1KKHy8emX/v1mPFZyUL31Gql6G6GJD+p0P6sHyiDJPKwK
-        YH1UTa2/cgMVl0Rlu7lgtz7m7H7o5Q3opgQwyES7d6UgbWizSWUhdkYv5LeYIsG1RbZsedEjpFC
-        Y6r5SVAqsO4xfn20yifUlJBCehtVzGn4S1EQikU/0cA==
-X-Received: by 2002:a1c:210a:: with SMTP id h10mr3268417wmh.117.1632212743175;
-        Tue, 21 Sep 2021 01:25:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwp0rPHyWd368/Ze8iF9YfFlWr90/JCakDv7rQLGftI6ArWqIbwE51Hrm/RKPh1ClGVqMawxw==
-X-Received: by 2002:a1c:210a:: with SMTP id h10mr3268385wmh.117.1632212742951;
-        Tue, 21 Sep 2021 01:25:42 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id g2sm5599447wrb.20.2021.09.21.01.25.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 01:25:42 -0700 (PDT)
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
- <YUmTwZPqrCfRMekd@google.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
-Message-ID: <d6212801-f2a0-a6a7-6154-0f99b57f1c4d@canonical.com>
-Date:   Tue, 21 Sep 2021 10:25:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EFA53300252;
+        Tue, 21 Sep 2021 10:27:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C97CD213969B1; Tue, 21 Sep 2021 10:27:32 +0200 (CEST)
+Date:   Tue, 21 Sep 2021 10:27:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86/xen: remove unneeded preempt_disable() from
+ xen_irq_enable()
+Message-ID: <YUmXdEGhgEoukk80@hirez.programming.kicks-ass.net>
+References: <20210921070226.32021-1-jgross@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <YUmTwZPqrCfRMekd@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921070226.32021-1-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 10:11, Lee Jones wrote:
-> On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
+On Tue, Sep 21, 2021 at 09:02:26AM +0200, Juergen Gross wrote:
+> Disabling preemption in xen_irq_enable() is not needed. There is no
+> risk of missing events due to preemption, as preemption can happen
+> only in case an event is being received, which is just the opposite
+> of missing an event.
 > 
->> On 20/09/2021 21:03, Will McVicker wrote:
->>> This patch series tries to address the issue of ARCH_EXYNOS force selecting
->>> a handful of drivers without allowing the vendor to override any of the
->>> default configs. This takes away from the flexibilty of compiling a generic
->>> kernel with exynos kernel modules. For example, it doesn't allow vendors to
->>> modularize these drivers out of the core kernel in order to share a generic
->>> kernel image across multiple devices that require device-specific kernel
->>> modules.
->>
->> You do not address the issue in these patches. The problem you describe
->> is that drivers are not modules and you are not changing them into modules.
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  arch/x86/xen/irq.c | 18 +++++++-----------
+>  1 file changed, 7 insertions(+), 11 deletions(-)
 > 
-> The wording is unfortunate.  The reason for this change doesn't have
-> much to do with kernel modules.
+> diff --git a/arch/x86/xen/irq.c b/arch/x86/xen/irq.c
+> index dfa091d79c2e..ba9b14a97109 100644
+> --- a/arch/x86/xen/irq.c
+> +++ b/arch/x86/xen/irq.c
+> @@ -57,24 +57,20 @@ asmlinkage __visible void xen_irq_enable(void)
+>  {
+>  	struct vcpu_info *vcpu;
+>  
+> -	/*
+> -	 * We may be preempted as soon as vcpu->evtchn_upcall_mask is
+> -	 * cleared, so disable preemption to ensure we check for
+> -	 * events on the VCPU we are still running on.
+> -	 */
+> -	preempt_disable();
+> -
+>  	vcpu = this_cpu_read(xen_vcpu);
+>  	vcpu->evtchn_upcall_mask = 0;
+>  
+> -	/* Doesn't matter if we get preempted here, because any
+> -	   pending event will get dealt with anyway. */
+> +	/*
+> +	 * Now preemption could happen, but this is only possible if an event
+> +	 * was handled, so missing an event due to preemption is not
+> +	 * possible at all.
+> +	 * The worst possible case is to be preempted and then check events
+> +	 * pending on the old vcpu, but this is not problematic.
+> +	 */
+>  
+>  	barrier(); /* unmask then check (avoid races) */
+>  	if (unlikely(vcpu->evtchn_upcall_pending))
+>  		xen_force_evtchn_callback();
+> -
+> -	preempt_enable();
+>  }
+>  PV_CALLEE_SAVE_REGS_THUNK(xen_irq_enable);
+>  
+> -- 
+> 2.26.2
 > 
-> Let's go back in time 18 months or so when Greg KH submitted this [0]
-> patch, which you Acked.  Greg was trying to solve the problem of not
-> having to enable ARCH_EXYNOS on kernels which are designed to be
-> platform agnostic (sometimes called Generic Kernels).  For some reason
-> SERIAL_SAMSUNG is the only symbol with these dependencies, so the
-> solution seemed simple and straight forward at the time.
-> 
-> However, For sound reasons Geert NACKed the patch.
-> 
-> Quoting from [1] he says:
-> 
->   "A generic kernel will include Samsung SoC support, hence
->   PLAT_SAMSUNG or ARCH_EXYNOS will be enabled."
 
-Yes, it's correct reasoning. There is also one more use-case -
-non-upstreamed (out of tree) platform which wants to use Exynos-specific
-drivers. Something like was happening with Apple M1 except that it got
-upstreamed and we do not care much about out-of-tree.
+So the reason I asked about this is:
 
-> 
-> However, since the entry for ARCH_EXYNOS *insists* on building-in a
-> bunch of other symbols (via 'select') which will be unused in most
-> cases, this is not a currently acceptable approach for many Generic
-> Kernels due to size constraints.
+  vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_count_add() leaves .noinstr.text section
+  vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_count_add() leaves .noinstr.text section
 
-In the mainline kernel there is no such use case. If you want to have
-Exynos-whatever-driver (e.g. SERIAL_SAMSUNG or S3C RTC), you should
-select ARCH_EXYNOS because otherwise it does not make any sense. Zero
-sense. Such kernel won't work.
+as reported by sfr here:
 
-It makes sense only if there is some other work, hidden here, where
-someone might want to have SERIAL_SAMSUNG or S3C RTC without
-ARCH_EXYNOS. Although GKI is not that work because GKI kernel will
-select ARCH_EXYNOS. It must select ARCH_EXYNOS if it wants to support
-Exynos platforms.
+  https://lkml.kernel.org/r/20210920113809.18b9b70c@canb.auug.org.au
 
-Therefore I expect first to bring this "some other work, hidden here" to
-broader audience, so we can review its use case.
+(I'm still not entirely sure why I didn't see them in my build, or why
+0day didn't either)
 
-> 
-> What this patch does is migrates those symbols from being 'select'ed
-> (always built-in with no recourse) to 'default y'.  Where the former
-> cannot be over-ridden, but the latter can be via a vendor's
-> defconfig/fragment.
+Anyway, I can 'fix' xen_irq_disable(), see below, but I'm worried about
+that still having a hole vs the preempt model. Consider:
 
-It cannot be overridden by vendor fragment because options are not
-visible. You cannot change them.
+xen_irq_disable()
+  preempt_disable();
+  <IRQ>
+    set_tif_need_resched()
+  </IRQ no preemption because preempt_count!=0>
+  this_cpu_read(xen_vcpu)->evtchn_upcall_mask = 1; // IRQs are actually disabled
+  preempt_enable_no_resched(); // can't resched because IRQs are disabled 
 
-The patch does nothing in this regard (making them selectable/possible
-to disable), which is why I complained.
+  ...
 
-> 
-> I doubt many (any?) of these symbols can be converted to kernel
-> modules anyway, as they are required very early on in the boot
-> sequence.
-
-True, some could, some not. Also some platforms are set up via
-bootloader, so actually could "survive" till module is loaded from some
-initrd.
+xen_irq_enable()
+  preempt_disable();
+  vcpu->evtch_upcall_mask = 0; // IRQs are on
+  preempt_enable() // catches the resched from above
 
 
-Best regards,
-Krzysztof
+Now your patch removes that preempt_enable() and we'll have a missing
+preemption.
+
+Trouble is, because this is noinstr, we can't do schedule().. catch-22
+
+---
+Subject: x86/xen: Fixup noinstr in xen_irq_{en,dis}able()
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Mon Sep 20 13:46:19 CEST 2021
+
+  vmlinux.o: warning: objtool: xen_irq_disable()+0xa: call to preempt_count_add() leaves .noinstr.text section
+  vmlinux.o: warning: objtool: xen_irq_enable()+0xb: call to preempt_count_add() leaves .noinstr.text section
+
+XXX, trades it for:
+
+  vmlinux.o: warning: objtool: xen_irq_enable()+0x5c: call to __SCT__preempt_schedule_notrace() leaves .noinstr.text section
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/xen/irq.c |   24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
+
+--- a/arch/x86/xen/irq.c
++++ b/arch/x86/xen/irq.c
+@@ -44,12 +44,18 @@ __PV_CALLEE_SAVE_REGS_THUNK(xen_save_fl,
+ 
+ asmlinkage __visible noinstr void xen_irq_disable(void)
+ {
+-	/* There's a one instruction preempt window here.  We need to
+-	   make sure we're don't switch CPUs between getting the vcpu
+-	   pointer and updating the mask. */
+-	preempt_disable();
++	/*
++	 * There's a one instruction preempt window here.  We need to
++	 * make sure we're don't switch CPUs between getting the vcpu
++	 * pointer and updating the mask.
++	 */
++	preempt_disable_notrace();
+ 	this_cpu_read(xen_vcpu)->evtchn_upcall_mask = 1;
+-	preempt_enable_no_resched();
++	/*
++	 * We have IRQs disabled at this point, rescheduling isn't going to
++	 * happen, so no point calling into the scheduler for it.
++	 */
++	preempt_enable_no_resched_notrace();
+ }
+ __PV_CALLEE_SAVE_REGS_THUNK(xen_irq_disable, ".noinstr.text");
+ 
+@@ -62,7 +68,7 @@ asmlinkage __visible noinstr void xen_ir
+ 	 * cleared, so disable preemption to ensure we check for
+ 	 * events on the VCPU we are still running on.
+ 	 */
+-	preempt_disable();
++	preempt_disable_notrace();
+ 
+ 	vcpu = this_cpu_read(xen_vcpu);
+ 	vcpu->evtchn_upcall_mask = 0;
+@@ -74,7 +80,11 @@ asmlinkage __visible noinstr void xen_ir
+ 	if (unlikely(vcpu->evtchn_upcall_pending))
+ 		xen_force_evtchn_callback();
+ 
+-	preempt_enable();
++	/*
++	 * XXX if we noinstr we shouldn't be calling schedule(), OTOH we also
++	 * cannot not schedule() as that would violate PREEMPT.
++	 */
++	preempt_enable_notrace();
+ }
+ __PV_CALLEE_SAVE_REGS_THUNK(xen_irq_enable, ".noinstr.text");
+ 
