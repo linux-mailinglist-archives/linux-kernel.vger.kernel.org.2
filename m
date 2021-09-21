@@ -2,70 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E681241395B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4184841395C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbhIUSAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:00:50 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:39807 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhIUSAt (ORCPT
+        id S232096AbhIUSAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:00:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20346 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232045AbhIUSAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:00:49 -0400
-Received: by mail-oi1-f172.google.com with SMTP id a3so348404oid.6;
-        Tue, 21 Sep 2021 10:59:19 -0700 (PDT)
+        Tue, 21 Sep 2021 14:00:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632247161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zJEAcSEIgId9AwYVRC0qQ3ajHWBc7r/Wum0Va5Cj43g=;
+        b=e3/QXpBSnbSxpapmMgpxQZrr8NkPHN3drLIbMfvpDGZbX8AxTI8O6zxmYIa6/dqkx7Vrii
+        iDeXyjAnL5tR8/Y1X0qI9ycQSwC1Uj2UEAE2ICRqtvdnfJ1cELI4VQXVpxS32agHjxPDD2
+        0vQFm2aCS58msQk2TRjvd/fdJgbCj3I=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-Byq_dsI0MWShpcfAVqzwKQ-1; Tue, 21 Sep 2021 13:59:19 -0400
+X-MC-Unique: Byq_dsI0MWShpcfAVqzwKQ-1
+Received: by mail-wr1-f69.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so9490366wrq.18
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:59:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7tij06sZBOhk4dPckuX930zTj0/mSpGUpmNq1qsMPrI=;
-        b=lFrhYQrd9hUkGLc1avm0EV9EHTJfVBh20MgVUXX1dTDloklVT3ib8Zc/qVP+iuGAvi
-         1lHpnFWZ6e/emV9VIa03FUhkgcrpWexefPHy6albjcZo5p5PPPwzlbI/MP5I89GDgZ7y
-         CCS3nw7m37Zp4q7yiuey+HokLJSQITD2e5JBvGP4PJxxutANIp+Lgdt6TzcqBLcDnFeS
-         sxEbH8oYe/XRLlIYgeBKD0qqI/O64ZXDpt93sKouj6w1P1zvPk5GvZT/i/CVIOrGIt3U
-         6/zQ+Jesv66TasAAeGjg4AyuSHBRWoUNyFAvfonuIllfumNpLcc/1H9KbBLahwo7OKoq
-         pC1A==
-X-Gm-Message-State: AOAM530emrazXWXM7VWVe8TpNo4x96t3Hx5b4wSniz7zuX2rIGDlbNZ1
-        lrrSQiw3s7JhWqo3hJJHeHz+BeBrKQ==
-X-Google-Smtp-Source: ABdhPJykh8BTdxWRtHjP6IXT31v4yHgej/H162fCJhJu0TzXFNuaify8/IHXFawRp7pl808zyP2fuA==
-X-Received: by 2002:aca:1c02:: with SMTP id c2mr4761414oic.11.1632247158636;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zJEAcSEIgId9AwYVRC0qQ3ajHWBc7r/Wum0Va5Cj43g=;
+        b=Eoh9CirguVPElMTp/g/y9KIe9XWvCUMAFzTvtOX/Qj10Ake1yzLJDSKiHZXSdFfLFS
+         egLMrXKcficoctkTibeo2Pb+bB33SSGXPXnPY3YCJIMuJC2+3BRiGEGDsHtB2rSta4ki
+         jwIpQGByvoSrDF38Q6/IRqyjHsMvHPj/Xxf5k+VaFRDXnQRRlKfGf9eHJD/zaZz9vmeA
+         j1mL4XyN0RkvcartLJFMlZHjJ8NQMqrsUW8fbKkcnXh9XWS11C8ua/PFE1hCV0otNid4
+         aa4vlXYX/z5BahYr0n5yZgG/ZOoX86/NIutw2jVbPJH2iv1PHpkKqERYorgWJQo6ahGn
+         murQ==
+X-Gm-Message-State: AOAM532FdnscOmixrL4v+dUWErVJ2aF5QUYUjSTHyPwmQ6ZZJVCvxphJ
+        AsiovDcN5Qdm16/WW1OWADm1vjSZbiZWzbiHt2hUZsC9vqOTCI0i/3lbuyULSxWupdLeViaqPoy
+        lrICc1P4m0kenvVQr+lAi8xWa
+X-Received: by 2002:a7b:c112:: with SMTP id w18mr6169889wmi.86.1632247158799;
         Tue, 21 Sep 2021 10:59:18 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id u15sm4556963oon.35.2021.09.21.10.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+X-Google-Smtp-Source: ABdhPJzE58/MDukCj9/T6TCsmIk/mI3Qr4J4pYFiogRVuZatAFTjuNxHA7WL3p8No1sKEner6nUpvw==
+X-Received: by 2002:a7b:c112:: with SMTP id w18mr6169872wmi.86.1632247158573;
+        Tue, 21 Sep 2021 10:59:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f19sm3626219wmf.11.2021.09.21.10.59.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 21 Sep 2021 10:59:17 -0700 (PDT)
-Received: (nullmailer pid 3050526 invoked by uid 1000);
-        Tue, 21 Sep 2021 17:59:16 -0000
-Date:   Tue, 21 Sep 2021 12:59:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Tom Rini <trini@konsulko.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: dt: submitting-patches: Add note about other
- project usage
-Message-ID: <YUoddAztd2csXINE@robh.at.kernel.org>
-References: <20210910142419.5237-1-trini@konsulko.com>
+Subject: Re: [PATCH 1/2] KVM: SEV: Pin guest memory for write for
+ RECEIVE_UPDATE_DATA
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
+        Marc Orr <marcorr@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Masahiro Kozuka <masa.koz@kozuka.jp>
+References: <20210914210951.2994260-1-seanjc@google.com>
+ <20210914210951.2994260-2-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bdbe4098-a72c-6e73-6f1e-88c2ebc07571@redhat.com>
+Date:   Tue, 21 Sep 2021 19:59:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210910142419.5237-1-trini@konsulko.com>
+In-Reply-To: <20210914210951.2994260-2-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 10:24:19 -0400, Tom Rini wrote:
-> In an attempt to make it more broadly known that other projects are
-> equal consumers / users of the device tree bindings, add a note to
-> submitting patches to say that extra care and consideration may need to
-> be taken when updating existing bindings.
+On 14/09/21 23:09, Sean Christopherson wrote:
+> Require the target guest page to be writable when pinning memory for
+> RECEIVE_UPDATE_DATA.  Per the SEV API, the PSP writes to guest memory:
 > 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Tom Rini <trini@konsulko.com>
+>    The result is then encrypted with GCTX.VEK and written to the memory
+>    pointed to by GUEST_PADDR field.
+> 
+> Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
+> Cc: stable@vger.kernel.org
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  Documentation/devicetree/bindings/submitting-patches.rst | 3 +++
->  1 file changed, 3 insertions(+)
+>   arch/x86/kvm/svm/sev.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 75e0b21ad07c..95228ba3cd8f 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1464,7 +1464,7 @@ static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   
+>   	/* Pin guest memory */
+>   	guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
+> -				    PAGE_SIZE, &n, 0);
+> +				    PAGE_SIZE, &n, 1);
+>   	if (IS_ERR(guest_page)) {
+>   		ret = PTR_ERR(guest_page);
+>   		goto e_free_trans;
 > 
 
-Applied, thanks!
+Queued both, thanks.
+
+Paolo
+
