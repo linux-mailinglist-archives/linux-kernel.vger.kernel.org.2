@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30A4413BC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB1E413BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhIUUvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:51:43 -0400
-Received: from mga09.intel.com ([134.134.136.24]:2351 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232145AbhIUUvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:51:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="223493202"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="223493202"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 13:50:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="512468408"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Sep 2021 13:50:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 21 Sep 2021 13:50:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 21 Sep 2021 13:50:11 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2242.012;
- Tue, 21 Sep 2021 13:50:11 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-Thread-Topic: [PATCH v5 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-Thread-Index: AQHXrAxnZDX1Yl9E4Uu8UQt85PjUBauvanYA//+PLtA=
-Date:   Tue, 21 Sep 2021 20:50:11 +0000
-Message-ID: <eeeb51049e894a70b40013ec18a9fa65@intel.com>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
- <20210917213836.175138-1-tony.luck@intel.com>
- <20210917213836.175138-3-tony.luck@intel.com>
- <ccb678fc-25b8-dcd6-ffaa-267865c66ea5@intel.com>
-In-Reply-To: <ccb678fc-25b8-dcd6-ffaa-267865c66ea5@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233333AbhIUUxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232145AbhIUUxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 16:53:45 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB29C061574;
+        Tue, 21 Sep 2021 13:52:16 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id d6so408615wrc.11;
+        Tue, 21 Sep 2021 13:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=L66QhiZcUuwlRKorNm9Yc4Tr9VadEmevichCsHyMvjU=;
+        b=DeThqqKIqz0+ijJFStlvltj0n+pX12EMofg6z2zKHIxA4eOPVCJqHGT8r9C6B2w7Dx
+         riZSEIi81OvVJMbPiz4zGYvruPbq2Wk/NIIK8+pt5FfyLlZ3otZevCnlFoXsgGIO8t3o
+         0I3J91YkTlDmq+gRQPWfN9TUEsRhmk1D2PS1FJTTY7FR6plQNGOhOeLE7i4OVpZJE5Md
+         CJ8PcpG/Ue7k0C76Y634kdpnjMDWsdEjtAupdRloK9vfJ++xK2PARS3ztOUKQz2YLtN2
+         YfiEaJvcpLd2ySNY37aHhBZHhSRWC9xcFFKLJlraeO+LGY5RTStUWqe2M2aHA8e1AR9s
+         M0kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=L66QhiZcUuwlRKorNm9Yc4Tr9VadEmevichCsHyMvjU=;
+        b=YDtVqC7X6JfvrmL99b0a0rgGmLlGPftcf4DSv7CMlPeSvofAaGFoWus+cAk9j+blK2
+         /O/VuF3vZXb0IdFVOv4Jyuiwza0wgyoEVGxpyj3FJskuf05Lj5l6GGB0moPxmN4QKKL/
+         jxNyLDs0J41OZ9LxX472TYZSUBNSkD6lyzWX/L2PGNiY4dpkM74+rc66QiIAXO5NcwBT
+         1enTfH/JRkYxZFbePJtrU+v8gaDg10C08BgT+N63oWgwP6Mgr+E59QsWtjw/2sa6dipe
+         CLppChF2Mida9HfH23NUugYd5ySfP2YONstAYuYtkOmZf5YV3plUz5r0DWO1xTiqFEdv
+         /NlQ==
+X-Gm-Message-State: AOAM532CfdrFsEhcPqXSbQBn9OahgBrPE4qz6WzU2jaaQkhdPfqRzlXW
+        HNzKqbxA2pIKIrA07m0dcXjFeFoLjhA=
+X-Google-Smtp-Source: ABdhPJy1CFKxlE3RZVvlblinxGQcMEPWS2moN/XHUkffr8EQNzJgsOqyIAMzlaD9DploankGPz48VQ==
+X-Received: by 2002:a05:600c:b42:: with SMTP id k2mr6872197wmr.134.1632257534855;
+        Tue, 21 Sep 2021 13:52:14 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p200300c78f4e0664d2c35468e13948d7.dip0.t-ipconnect.de. [2003:c7:8f4e:664:d2c3:5468:e139:48d7])
+        by smtp.gmail.com with ESMTPSA id 23sm5490wme.27.2021.09.21.13.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 13:52:14 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 22:52:12 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] usb: usb-skeleton: Update min() to min_t()
+Message-ID: <20210921205212.GA8669@matrix-ESPRIMO-P710>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pj4gIAlzZWN0aW9uLT5waHlzX2FkZHIgPSBwaHlzX2FkZHI7DQo+PiArCXNlY3Rpb24tPmVuZF9w
-aHlzX2FkZHIgPSBwaHlzX2FkZHIgKyBzaXplIC0gMTsNCj4+ICsJeGFfc3RvcmVfcmFuZ2UoJmVw
-Y19wYWdlX3Jhbmdlcywgc2VjdGlvbi0+cGh5c19hZGRyLA0KPj4gKwkJICAgICAgIHNlY3Rpb24t
-PmVuZF9waHlzX2FkZHIsIHNlY3Rpb24sIEdGUF9LRVJORUwpOw0KPg0KPiBEaWQgd2UgZXZlciBm
-aWd1cmUgb3V0IGhvdyBtdWNoIHNwYWNlIHN0b3JpbmcgcmVhbGx5IGJpZyByYW5nZXMgaW4gdGhl
-DQo+IHhhcnJheSBjb25zdW1lcz8NCg0KTm8uIFdpbGx5IHNhaWQgdGhlIGV4aXN0aW5nIHhhcnJh
-eSBjb2RlIHdvdWxkIGJlIGxlc3MgdGhhbiBvcHRpbWFsIHdpdGgNCnRoaXMgdXNhZ2UsIGJ1dCB0
-aGF0IHRoaW5ncyB3b3VsZCBiZSBtdWNoIGJldHRlciB3aGVuIGhlIGFwcGxpZWQgc29tZQ0KbWFw
-bGUgdHJlZSB1cGRhdGVzIHRvIHRoZSBpbnRlcm5hbHMgb2YgeGFycmF5Lg0KDQpJZiB0aGVyZSBp
-cyBzb21lIGVhc3kgd2F5IHRvIG1lYXN1cmUgdGhlIG1lbW9yeSBiYWNraW5nIGFuIHhhcnJheSBJ
-J20NCmhhcHB5IHRvIGdldCB0aGUgZGF0YS4gT3IgaWYgc29tZW9uZSBlbHNlIGNhbiBzeW50aGVz
-aXplIGl0IC4uLiB0aGUgdHdvDQpyYW5nZXMgb24gbXkgc3lzdGVtIHRoYXQgYXJlIGFkZGVkIHRv
-IHRoZSB4YXJyYXkgYXJlOg0KDQokIGRtZXNnIHwgZ3JlcCAtaSBzZ3gNClsgICAgOC40OTY4NDRd
-IHNneDogRVBDIHNlY3Rpb24gMHg4MDAwYzAwMDAwLTB4ODA3ZjdmZmZmZg0KWyAgICA4LjUwNTEx
-OF0gc2d4OiBFUEMgc2VjdGlvbiAweDEwMDAwYzAwMDAwLTB4MTAwN2ZmZmZmZmYNCg0KSS5lLiB0
-d28gcmFuZ2VzIG9mIGEgYml0IHVuZGVyIDJHQiBlYWNoLg0KDQpCdXQgSSBkb24ndCB0aGluayB0
-aGUgb3ZlcmhlYWQgY2FuIGJlIHRvbyBoaWRlb3VzOg0KDQokIGdyZXAgTWVtRnJlZSAvcHJvYy9t
-ZW1pbmZvDQpNZW1GcmVlOiAgICAgICAgMTA0ODY4MjAxNiBrQg0KDQpJIHN0aWxsIGhhdmUgfiAx
-VEIgZnJlZS4gV2hpY2ggaXMgbXVjaCBncmVhdGVyIHRoYXQgdGhlIDY0MCBLQiB3aGljaCBzaG91
-bGQNCmJlICJlbm91Z2ggZm9yIGFueWJvZHkiIDotKS4NCg0KLVRvbnkNCg==
+This patch fixes the checkpatch.pl warning:
+WARNING: min() should probably be min_t(size_t, count, MAX_TRANSFER)
++	size_t writesize = min(count, (size_t)MAX_TRANSFER);
+
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+ drivers/usb/usb-skeleton.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
+index 2dc58766273a..d87deee3e26e 100644
+--- a/drivers/usb/usb-skeleton.c
++++ b/drivers/usb/usb-skeleton.c
+@@ -363,7 +363,7 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
+ 	int retval = 0;
+ 	struct urb *urb = NULL;
+ 	char *buf = NULL;
+-	size_t writesize = min(count, (size_t)MAX_TRANSFER);
++	size_t writesize = min_t(size_t, count, MAX_TRANSFER);
+ 
+ 	dev = file->private_data;
+ 
+-- 
+2.25.1
+
