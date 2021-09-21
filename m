@@ -2,162 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD184136DE
+	by mail.lfdr.de (Postfix) with ESMTP id 3EADC4136DD
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbhIUQBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234369AbhIUQBP (ORCPT
+        id S234375AbhIUQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:01:16 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:36700 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234373AbhIUQBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:01:15 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271FBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:59:47 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t8so40729028wrq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AtZyyTP986q5izPT5lFbv6cJ5CVeOkj7bVUgoAF+aPE=;
-        b=qn8z1Wbkql8CqtKixkOZJfHbzjeuBbinRO0kMwKxCb0qOIrbleyJ5e2P2YBme9hhQd
-         npB+D2tprMu7tQ9xPboAPoUxLWvzYj0qtGUdZWjjnX/QACr4MJjk9P6kaSN/NVT4vhSo
-         C9ODmI/mHhyqcDhULh3v0wjFyt8Uu/Elftxsz4cTyqK6mkROt3VFsJtokj4kXciRUZfX
-         OsxZgAgRk2Z8USr6T+8L0LP7KNak3SelmLNRb6o1DuePBxyc0FGr/ZG6/wccXWQhCKg4
-         fu5VLgQA3b/YaW/POQ2oM8m7kG1gdwq9KHKIwzfrYAYUI2CMm+Wbw7X6yS6nTTRLRwEq
-         3kZA==
+        Tue, 21 Sep 2021 12:01:04 -0400
+Received: by mail-vs1-f53.google.com with SMTP id h30so8779199vsq.3;
+        Tue, 21 Sep 2021 08:59:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AtZyyTP986q5izPT5lFbv6cJ5CVeOkj7bVUgoAF+aPE=;
-        b=uGJOt+fIVvsqW3MifORQRMi4Bvqf6Fw1XQZ3376bc7iTZL4slumGV4o/XdiK3aMsee
-         DqRDKF8zM/GlwDpEBiby3QMLj6SG8cnInsulcHlR1syJKGpdf9qmVwqjgwmxnokFiWNa
-         8T4ABSAZp8lBwK64lDsAQwyysNUw/cXXN1ut/dhN3R0d+8NF2NgoC8eQ4jB1DGwlV6Ct
-         s8+ac/n26w8ftPLga1gGQ53chnRJLjBWajFW1puLJxwPrveKBflb3hg0QHMhEjizi/HE
-         SLktAZyDQGMsxoCs7k872w+AkPfa8Wb0ARfc7UE/wg1C+OedCxSsPY+kr3xmQ+D2mMvD
-         2MTw==
-X-Gm-Message-State: AOAM533lDvzjT97Gj17m2rqkniP5uRQulx2zYuqtEt4+2UnXuzX2zAbM
-        wfCGbg0qIFx5YuDW1ag9b0Qyog==
-X-Google-Smtp-Source: ABdhPJwaROKNZrdKnelWS30U+Qu/Ae+90Y3oEspXKLXzr2302zCcSxHLGjrCndLcOXgApQye9wguvg==
-X-Received: by 2002:a5d:4f91:: with SMTP id d17mr36130015wru.285.1632239985681;
-        Tue, 21 Sep 2021 08:59:45 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id o1sm2799031wmq.26.2021.09.21.08.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 08:59:45 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 16:59:23 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Vivek Gautam <vivek.gautam@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, joro@8bytes.org,
-        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
-        eric.auger@redhat.com, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
-Subject: Re: [PATCH RFC v1 02/11] iommu/virtio: Maintain a list of endpoints
- served by viommu_dev
-Message-ID: <YUoBW13+CvIljUgc@myrica>
-References: <20210423095147.27922-1-vivek.gautam@arm.com>
- <20210423095147.27922-3-vivek.gautam@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mTJZgRpQCXW35Rxvt9ZGI3fck6n1VBcSO8z5XwjCQEY=;
+        b=2BbEIx6A/1/cug/wakdaI14vhJDAVa7NWDs05Ndf05M/vDq+tbzctgVCmuWZ3Ya2E4
+         EzZ1G7x0LhAz1Ybf+zPRuNXYZecBAdBosZ7d1AXZyqDG2MrbWU5HWfpHjEEH7T+PrHUS
+         VxsjTJ9ht+8YqbD/Qw1ODCN4RA6lBN5zg5vpGUgpuPLn7xf3ZTocO4fXiugoKsJsvnxX
+         CqcWGSPSV2lB9OosHFltYAytOK8rJbaUGMxO0OCQrMfqzY52WFGYd8bB2yTa9844W71z
+         EKLJoGBgChivIfuiktqC3C1Ra0oOp9mVDdunRgPtk6q1t+wssCrbY3ILXgMY8aJTrlrK
+         XD7A==
+X-Gm-Message-State: AOAM531katc+AXcFRXdSCRup4XKm2haMBUQJ/JsAipJej9EFsex151Ra
+        HLMphJWAqCInAZSnCP2zP4Zp8uwt44URuaSqeg4=
+X-Google-Smtp-Source: ABdhPJxGk+ZNAOK4RBRiV2IzpsOAK6PbKaCelOzB5jSrZCZBiBVoZTnMHFDNeaB0VyOmBwe1DOacP03WrEAzuNEPy2M=
+X-Received: by 2002:a67:cc1c:: with SMTP id q28mr20464519vsl.37.1632239975914;
+ Tue, 21 Sep 2021 08:59:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423095147.27922-3-vivek.gautam@arm.com>
-X-TUID: +1WeLErnK1xS
+References: <20210901235330.1611086-1-kieran.bingham@ideasonboard.com> <20210901235330.1611086-4-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210901235330.1611086-4-kieran.bingham@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 21 Sep 2021 17:59:24 +0200
+Message-ID: <CAMuHMdU5WzvdfeSqEESt0r7_7XX0Mc9jRNGCBHLtt_JCMCWZyw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: renesas: falcon-cpu: Add DSI display output
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 03:21:38PM +0530, Vivek Gautam wrote:
-> Keeping a record of list of endpoints that are served by the virtio-iommu
-> device would help in redirecting the requests of page faults to the
-> correct endpoint device to handle such requests.
-> 
-> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
-> ---
->  drivers/iommu/virtio-iommu.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-> index 50039070e2aa..c970f386f031 100644
-> --- a/drivers/iommu/virtio-iommu.c
-> +++ b/drivers/iommu/virtio-iommu.c
-> @@ -48,6 +48,7 @@ struct viommu_dev {
->  	spinlock_t			request_lock;
->  	struct list_head		requests;
->  	void				*evts;
-> +	struct list_head		endpoints;
+Hi Kieran,
 
-As we're going to search by ID, an xarray or rb_tree would be more
-appropriate than a list
+On Thu, Sep 2, 2021 at 1:53 AM Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>
+> Provide the display output using the sn65dsi86 MIPI DSI bridge.
+>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
->  
->  	/* Device configuration */
->  	struct iommu_domain_geometry	geometry;
-> @@ -115,6 +116,12 @@ struct viommu_endpoint {
->  	void				*pgtf;
->  };
->  
-> +struct viommu_ep_entry {
-> +	u32				eid;
-> +	struct viommu_endpoint		*vdev;
-> +	struct list_head		list;
+Thanks for your patch!
+
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+> @@ -66,6 +66,15 @@ memory@700000000 {
+>                 reg = <0x7 0x00000000 0x0 0x80000000>;
+>         };
+>
+> +       reg_1p2v: regulator-1p2v {
+> +               compatible = "regulator-fixed";
+> +               regulator-name = "fixed-1.2V";
+> +               regulator-min-microvolt = <1800000>;
+> +               regulator-max-microvolt = <1800000>;
+> +               regulator-boot-on;
+> +               regulator-always-on;
+> +       };
+> +
+>         reg_1p8v: regulator-1p8v {
+>                 compatible = "regulator-fixed";
+>                 regulator-name = "fixed-1.8V";
+> @@ -83,6 +92,46 @@ reg_3p3v: regulator-3p3v {
+>                 regulator-boot-on;
+>                 regulator-always-on;
+>         };
+> +
+> +       mini-dp-con {
+> +               compatible = "dp-connector";
+> +               label = "CN5";
+> +               type = "mini";
+> +
+> +               port {
+> +                       mini_dp_con_in: endpoint {
+> +                               remote-endpoint = <&sn65dsi86_out>;
+> +                       };
+> +               };
+> +       };
+> +
+> +       sn65dsi86_refclk: sn65dsi86-refclk {
+> +               compatible = "fixed-clock";
+> +               #clock-cells = <0>;
+> +               clock-frequency = <38400000>;
+> +       };
 > +};
-
-No need for a separate struct, I think you can just add the list head and
-id into viommu_endpoint.
-
 > +
->  struct viommu_request {
->  	struct list_head		list;
->  	void				*writeback;
-> @@ -573,6 +580,7 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
->  	size_t probe_len;
->  	struct virtio_iommu_req_probe *probe;
->  	struct virtio_iommu_probe_property *prop;
-> +	struct viommu_ep_entry *ep;
->  	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
->  	struct viommu_endpoint *vdev = dev_iommu_priv_get(dev);
->  
-> @@ -640,6 +648,18 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
->  		prop = (void *)probe->properties + cur;
->  		type = le16_to_cpu(prop->type) & VIRTIO_IOMMU_PROBE_T_MASK;
->  	}
-> +	if (ret)
-> +		goto out_free;
+> +&dsi0 {
+> +       status = "okay";
 > +
-> +	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
-> +	if (!ep) {
-> +		ret = -ENOMEM;
-> +		goto out_free;
-> +	}
-> +	ep->eid = probe->endpoint;
-> +	ep->vdev = vdev;
-> +
-> +	list_add(&ep->list, &viommu->endpoints);
+> +       clocks = <&cpg CPG_MOD 415>,
+> +                <&cpg CPG_CORE R8A779A0_CLK_DSI>,
+> +                <&extal_clk>;
+> +       clock-names = "fck", "dsi", "extal";
 
-This should be in viommu_probe_device() (viommu_probe_endpoint() is only
-called if F_PROBE is negotiated). I think we need a lock for this
-list/xarray
+Ah, that's where the third clock was hiding ;-)
 
-Thanks,
-Jean
+Is this hardwired to extal, or board-specific?
+In case of the former, I think it should be moved to the .dtsi.
 
->  
->  out_free:
->  	kfree(probe);
-> @@ -1649,6 +1669,7 @@ static int viommu_probe(struct virtio_device *vdev)
->  	viommu->dev = dev;
->  	viommu->vdev = vdev;
->  	INIT_LIST_HEAD(&viommu->requests);
-> +	INIT_LIST_HEAD(&viommu->endpoints);
->  
->  	ret = viommu_init_vqs(viommu);
->  	if (ret)
-> -- 
-> 2.17.1
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
