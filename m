@@ -2,82 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DFD41326D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24E0413270
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232334AbhIULUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:20:00 -0400
-Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:53731 "EHLO
-        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232270AbhIULT5 (ORCPT
+        id S232343AbhIULVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:21:41 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44114
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232229AbhIULVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:19:57 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id 93B4F16C008
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:18:18 +0100 (IST)
-Received: (qmail 30926 invoked from network); 21 Sep 2021 11:18:18 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 21 Sep 2021 11:18:18 -0000
-Date:   Tue, 21 Sep 2021 12:18:17 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     dsterba@suse.cz, Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/5] Remove dependency on congestion_wait in mm/
-Message-ID: <20210921111816.GS3959@techsingularity.net>
-References: <20210920085436.20939-1-mgorman@techsingularity.net>
- <YUhztA8TmplTluyQ@casper.infradead.org>
- <20210920125058.GI3959@techsingularity.net>
- <20210920141152.GM9286@twin.jikos.cz>
+        Tue, 21 Sep 2021 07:21:40 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DAC4A3FE05
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632223211;
+        bh=MjesVevkYIqX1GQ7DanAgbDwI571QgAHXDgwfVLZUzk=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=OyUhrziLcDFlH7MmAr5uOEFZZUXtAIS77FEtEKNx+Vkm11az0J54tFv0LRJ9wT9DN
+         HJOL+H8xohwKPPqqTVr/P7lOwUt8ZHxsQdwRxNjey+IvVlo0JfTEpy3j/Z8oib3rq9
+         r6FMcZG/VDN+iSqFsyHng/DDAonB7BSnE79jHRaChgckDWXsEC0m6Yy7E2v6mR1WFm
+         KTs4DqMvwtser2kMDRI4C4NBRsNz/rscu7IMytNaMdrKWU3zxeaEUlbdnr5Y5blH+T
+         BrtAtNs85LD4L1kHBKSdBu3v8gfwKeG8CKWt9OpqwRzysuF+qa5cnnqVrqD5AFwleK
+         H6qUJcFsJkvdA==
+Received: by mail-ed1-f70.google.com with SMTP id w24-20020a056402071800b003cfc05329f8so18761593edx.19
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 04:20:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MjesVevkYIqX1GQ7DanAgbDwI571QgAHXDgwfVLZUzk=;
+        b=1xqKKdV4WnPu1J67ksfafFN9FaSjxA6bxDW6VNfSyWUMaqWIRE0YrI69qnW4qT2GnI
+         T+cQt4OdKl5U6NFtH3k1h08dOO58MxJeRuF8oW7IuR+Qy3pzr+eQdYBp8dR8bqqm7AgX
+         U2DpxhMQ284VMTWUw8rzfDT6526Hn+zeyRQs+/L6c78ZzptmyJnyj6B20og37tJ5rWvB
+         OMNvgnQayHfOFDSOcES0jZsA5WaM0zhKc6vZ4b1ck07R4XRP6vtsqD9mHBSPVRBDswVt
+         1f/5XVTdc8Cq0ZEsiuTfcAa2txyavi/3XAuOYgKL2Nqg+SBRcLCJFD5tgqbFMO0/HIbG
+         OTCw==
+X-Gm-Message-State: AOAM530p3ov/Z48eP/b2vpn/pXvP+YYratIuVH96uXYTk4IlETJV7HBD
+        Ln6VoqXU9oEslJOwWql36BaCtAQuy57JMW3XshvnlugcJKN/hYFsjbcP4qudYEXPEo7QZNUIM2l
+        Jl11jwrhE9DuADs8GOzBlsiNbe5XMuynf2/bhHSE++zL6LMfYdydtB/FdUg==
+X-Received: by 2002:a17:906:8981:: with SMTP id gg1mr34363649ejc.95.1632223211456;
+        Tue, 21 Sep 2021 04:20:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzy1Zml1lG/L7siYipoWZFKyg+Vw32nqM/rZd7PNcGFYuxpgdmkEWCLjGp8N6QGPtYWTGqstZeGuhBNqGpURJw=
+X-Received: by 2002:a17:906:8981:: with SMTP id gg1mr34363627ejc.95.1632223211220;
+ Tue, 21 Sep 2021 04:20:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210920141152.GM9286@twin.jikos.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com> <CAAhSdy07KzQnTH+ad4esxtfhogzpXQagY8KeDkq1Kc81-Z33Yw@mail.gmail.com>
+In-Reply-To: <CAAhSdy07KzQnTH+ad4esxtfhogzpXQagY8KeDkq1Kc81-Z33Yw@mail.gmail.com>
+From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Date:   Tue, 21 Sep 2021 13:20:00 +0200
+Message-ID: <CA+zEjCsFG31kcM89B6LfP32Kh7WTHxzU6zvxigmKrDheKkU2fQ@mail.gmail.com>
+Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 04:11:52PM +0200, David Sterba wrote:
-> On Mon, Sep 20, 2021 at 01:50:58PM +0100, Mel Gorman wrote:
-> > On Mon, Sep 20, 2021 at 12:42:44PM +0100, Matthew Wilcox wrote:
-> > > On Mon, Sep 20, 2021 at 09:54:31AM +0100, Mel Gorman wrote:
-> > > > This has been lightly tested only and the testing was useless as the
-> > > > relevant code was not executed. The workload configurations I had that
-> > > > used to trigger these corner cases no longer work (yey?) and I'll need
-> > > > to implement a new synthetic workload. If someone is aware of a realistic
-> > > > workload that forces reclaim activity to the point where reclaim stalls
-> > > > then kindly share the details.
-> > > 
-> > > The stereeotypical "stalling on I/O" problem is to plug in one of the
-> > > crap USB drives you were given at a trade show and simply
-> > > 	dd if=/dev/zero of=/dev/sdb
-> > > 	sync
-> > > 
-> > 
-> > The test machines are 1500KM away so plugging in a USB stick but worst
-> > comes to the worst, I could test it on a laptop.
-> 
-> There's a device mapper target dm-delay [1] that as it says delays the
-> reads and writes, so you could try to emulate the slow USB that way.
-> 
-> [1] https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/delay.html
+I chose a priority lower than the one you proposed in your SRST series
+(https://lkml.org/lkml/2021/6/9/620).
 
-Ah, thanks for that tip. I wondered if something like this existed and
-clearly did not search hard enough. I was able to reproduce the problem
-without throttling but this could still be useful if examining cases
-where there are 2 or more BDIs with variable speeds.
+Alex
 
--- 
-Mel Gorman
-SUSE Labs
+On Tue, Sep 21, 2021 at 12:17 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Tue, Sep 21, 2021 at 11:04 AM Alexandre Ghiti
+> <alexandre.ghiti@canonical.com> wrote:
+> >
+> > The SiFive Unmatched board uses the da9063 PMIC for reset: add a restart
+> > notifier that will execute a small i2c sequence allowing to reset the
+> > board.
+> >
+> > The original implementation comes from Marcus Comstedt and Anders Montonen
+> > (https://forums.sifive.com/t/reboot-command/4721/28).
+> >
+> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
+> > ---
+> >  drivers/mfd/da9063-core.c       | 25 +++++++++++++++++++++++++
+> >  include/linux/mfd/da9063/core.h |  3 +++
+> >  2 files changed, 28 insertions(+)
+> >
+> > diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
+> > index df407c3afce3..c87b8d611f20 100644
+> > --- a/drivers/mfd/da9063-core.c
+> > +++ b/drivers/mfd/da9063-core.c
+> > @@ -20,6 +20,7 @@
+> >  #include <linux/mutex.h>
+> >  #include <linux/mfd/core.h>
+> >  #include <linux/regmap.h>
+> > +#include <linux/reboot.h>
+> >
+> >  #include <linux/mfd/da9063/core.h>
+> >  #include <linux/mfd/da9063/registers.h>
+> > @@ -158,6 +159,18 @@ static int da9063_clear_fault_log(struct da9063 *da9063)
+> >         return ret;
+> >  }
+> >
+> > +static int da9063_restart_notify(struct notifier_block *this,
+> > +                                unsigned long mode, void *cmd)
+> > +{
+> > +       struct da9063 *da9063 = container_of(this, struct da9063, restart_handler);
+> > +
+> > +       regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
+> > +       regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
+> > +       regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
+> > +
+> > +       return NOTIFY_DONE;
+> > +}
+> > +
+> >  int da9063_device_init(struct da9063 *da9063, unsigned int irq)
+> >  {
+> >         int ret;
+> > @@ -197,6 +210,18 @@ int da9063_device_init(struct da9063 *da9063, unsigned int irq)
+> >                 }
+> >         }
+> >
+> > +       da9063->restart_handler.notifier_call = da9063_restart_notify;
+> > +       da9063->restart_handler.priority = 128;
+>
+> How was this priority value chosen ?
+>
+> I mean, we will be having SBI SRST as well so we should choose
+> a priority value lower than what we choose for SBI SRST handler.
+>
+> Regards,
+> Anup
+>
+> > +       ret = register_restart_handler(&da9063->restart_handler);
+> > +       if (ret) {
+> > +               dev_err(da9063->dev, "Failed to register restart handler\n");
+> > +               return ret;
+> > +       }
+> > +
+> > +       devm_add_action(da9063->dev,
+> > +                       (void (*)(void *))unregister_restart_handler,
+> > +                       &da9063->restart_handler);
+> > +
+> >         return ret;
+> >  }
+> >
+> > diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/core.h
+> > index fa7a43f02f27..1b20c498e340 100644
+> > --- a/include/linux/mfd/da9063/core.h
+> > +++ b/include/linux/mfd/da9063/core.h
+> > @@ -85,6 +85,9 @@ struct da9063 {
+> >         int             chip_irq;
+> >         unsigned int    irq_base;
+> >         struct regmap_irq_chip_data *regmap_irq;
+> > +
+> > +       /* Restart */
+> > +       struct notifier_block restart_handler;
+> >  };
+> >
+> >  int da9063_device_init(struct da9063 *da9063, unsigned int irq);
+> > --
+> > 2.30.2
+> >
