@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4665413D95
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3BA413D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbhIUWdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:33:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:64604 "EHLO mga04.intel.com"
+        id S236003AbhIUWeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:34:17 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53112 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhIUWdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:33:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="221590536"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="221590536"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 15:32:17 -0700
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="436031562"
-Received: from adkuncha-mobl2.amr.corp.intel.com (HELO [10.251.2.103]) ([10.251.2.103])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 15:32:17 -0700
-Subject: Re: [PATCH v5 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
- <20210917213836.175138-1-tony.luck@intel.com>
- <20210917213836.175138-3-tony.luck@intel.com>
- <ccb678fc-25b8-dcd6-ffaa-267865c66ea5@intel.com>
- <eeeb51049e894a70b40013ec18a9fa65@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <8c39b812-b77a-7d63-2d82-f1c0401a5f16@intel.com>
-Date:   Tue, 21 Sep 2021 15:32:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229804AbhIUWeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 18:34:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=0zt4dGRGiG2hvtuVUNLMzRo7RRgH5y2zRAjMPF4/mZ4=; b=rX2dOnix6rYqsIYA3/nuthQK2r
+        UWcdOdNLieKt7OMdGjRITzszHutb/aJ19yviZacxH3tsz7OVSlNP5uAwQU/5y0yiW64N3vWb2NMr1
+        e0XPIiZs7RLLRmxgyyhykkyP+gEhIU4t3MaOhKyTq6EWcvui8rvydLE2dZ8QsWa2WFP4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mSoJi-007hKx-3C; Wed, 22 Sep 2021 00:32:46 +0200
+Date:   Wed, 22 Sep 2021 00:32:46 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, kuba@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
+Subject: Re: [PATCH v2 1/2] gpio: mlxbf2: Introduce IRQ support
+Message-ID: <YUpdjh8dtjz29TWU@lunn.ch>
+References: <20210920212227.19358-1-asmaa@nvidia.com>
+ <20210920212227.19358-2-asmaa@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <eeeb51049e894a70b40013ec18a9fa65@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920212227.19358-2-asmaa@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 1:50 PM, Luck, Tony wrote:
->> Did we ever figure out how much space storing really big ranges in the
->> xarray consumes?
-> No. Willy said the existing xarray code would be less than optimal with
-> this usage, but that things would be much better when he applied some
-> maple tree updates to the internals of xarray.
-> 
-> If there is some easy way to measure the memory backing an xarray I'm
-> happy to get the data. Or if someone else can synthesize it ... the two
-> ranges on my system that are added to the xarray are:
-> 
-> $ dmesg | grep -i sgx
-> [    8.496844] sgx: EPC section 0x8000c00000-0x807f7fffff
-> [    8.505118] sgx: EPC section 0x10000c00000-0x1007fffffff
-> 
-> I.e. two ranges of a bit under 2GB each.
-> 
-> But I don't think the overhead can be too hideous:
-> 
-> $ grep MemFree /proc/meminfo
-> MemFree:        1048682016 kB
-> 
-> I still have ~ 1TB free. Which is much greater that the 640 KB which should
-> be "enough for anybody" :-).
+> +static int
+> +mlxbf2_gpio_irq_set_type(struct irq_data *irqd, unsigned int type)
+> +{
+> +	struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
+> +	struct mlxbf2_gpio_context *gs = gpiochip_get_data(gc);
+> +	int offset = irqd_to_hwirq(irqd);
+> +	unsigned long flags;
+> +	bool fall = false;
+> +	bool rise = false;
+> +	u32 val;
+> +
+> +	switch (type & IRQ_TYPE_SENSE_MASK) {
+> +	case IRQ_TYPE_EDGE_BOTH:
+> +		fall = true;
+> +		rise = true;
+> +		break;
+> +	case IRQ_TYPE_EDGE_RISING:
+> +		rise = true;
+> +		break;
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +		fall = true;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
 
-There is a kmem_cache_create() for the xarray nodes.  So, you should be
-able to see the difference in /proc/meminfo's "Slab" field.  Maybe boot
-with init=/bin/sh to reduce the noise and look at meminfo both with and
-without SGX your patch applied, or just with the xarray bits commented out.
+What PHY are you using? I think every one i've looked at are level
+triggered, not edge. Using an edge interrupt might work 99% of the
+time, but when the timing is just wrong, you can loose an interrupt.
+Which might mean phylib thinks the link is down, when it fact it is
+up. You will need to unplug and replug to recover from that.
 
-I don't quite know how the data structures are munged, but xas_alloc()
-makes it look like 'struct xa_node' is allocated from
-radix_tree_node_cachep.  If that's the case, you should also be able to
-see this in even more detail in:
-
-# grep radix /proc/slabinfo
-radix_tree_node   432305 482412    584   28    4 : tunables    0    0
- 0 : slabdata  17229  17229      0
-
-again, on a system with and without your new code enabled.
+    Andrew
