@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4E34131F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF744131FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhIUKxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbhIUKxB (ORCPT
+        id S232153AbhIUKyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:54:12 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:45683 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232060AbhIUKyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:53:01 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0FAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:51:33 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id w206so17453730oiw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N8im2OS98fNlJW2Ij6zQsDpm5TLK4cuMawMCjuGiTZU=;
-        b=RR3cWHZ7Pw8yzusQe/R4SgSdvdSokVrUN1ScMzm8Low2Rp9NdUT/hMEzxFMF2nyhoD
-         MZzrjwBiFKM9KDWtQ2ca6aNVcuzWC3B+Div+rkPUelnOGhf6sF2ltiY1VS1YQkCAY/O6
-         7hAzDV9UBpTMR3HWey0UrUsOsvWpsP8hyQ3FmznVziVH9+4hLqPwKxZMHHQu+80rQn0R
-         eMjzGCNby8+kvvir55KtM/RdBpgwdVycCcPLQfxb8u8T7gI1n3cc81239/YY8lWDSZlk
-         dAkiGsYiBTgKVF/XSqcKaI7ON9208ReerBrU6IZ4Qsb0G6Lepw7yaX/GFs6noreOq8ym
-         +1wA==
+        Tue, 21 Sep 2021 06:54:11 -0400
+Received: by mail-ed1-f53.google.com with SMTP id c22so72460849edn.12;
+        Tue, 21 Sep 2021 03:52:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N8im2OS98fNlJW2Ij6zQsDpm5TLK4cuMawMCjuGiTZU=;
-        b=0axVG3V5hYi7IcPM/YXzrvFIdEJXKRffmRMfcDgZkDH/xS8k/nbr+WgYkGxPx23Y1Y
-         yVL0aXbS6VLnfrwqVKj57Xmy2OL/48tIU+4QhawRZuyBTqXcYHejRFUcmEaz8J6/Cbn3
-         rzaUHaKsc1F8GJqvP/kFBcDIsF+lqAmohsBANw2JQnuWunXzQWJr1YoFQHUBEZtt6NBb
-         SnqxkodL91ldKCWjWa+YnrUshTvuGPk5KHeKA52F0t0rBabeTw34m8cI0feV3ES9UnnN
-         D5tuSNcQTqEJaqV908kcA31OAsiX2JM4QoP51id+/UqtgGPEhVkGuBLJHTn0kBlTCL9Q
-         OCOA==
-X-Gm-Message-State: AOAM530bxsr1zsNTBALcxpZct+XunyI1JS/VsB9kVYBIt5DpuhuGHIic
-        NJo8yrifeVKFz5lzHscXMGYzcWyU+1RC8oo2aO5EGw==
-X-Google-Smtp-Source: ABdhPJzHhMZvBpunQ9yksrBPafO+qk6Wq8WAzorP2+VXo94nhZjFWf2ZcLqY+NbwApLV7gcHfWQ6J0SIkkglMBmVT7Q=
-X-Received: by 2002:aca:3083:: with SMTP id w125mr3028189oiw.109.1632221492218;
- Tue, 21 Sep 2021 03:51:32 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=STQ1SYPDR3l1tp+29Ksawhjtp3/4UkFtTcVlzO20jxw=;
+        b=eYEEEHY7Yc5Jp+UniIVV9z6z0e7nWxGRT0U7OQim/zRmuUsh7D4BqRX7ikyQICrazc
+         hCgFsxRgVaaDRdWkSfeprfD+ODGF7IPT7NZghF1uKKt+BnVWdolACy3IBXZUTFj1v+kF
+         suUs2NFKCyqyWbRT0jhsab11arF5/ZYKO/MiqG06h3UArFSuaLZkqxKFoNfTGj8AseNd
+         OmeZxHd7aWdQeKyo4ov0r9yUglCQjdocsQO4PLG/Rpw6iiJ8+6wQNz3l2lEphRvmbXaz
+         +SlJkOLXsC1/WvuHu4l8bBif9lfGBSyexLkzS0jhex8xEfYI2ZvH6Bla0NsySlRBTcT/
+         9ZGA==
+X-Gm-Message-State: AOAM530uyk+RTt6eEnhaWogKESv00CJMGi776YHKKZQ0Hp4/O/ziIieU
+        3zcvHsTwy3o70HHKIEQkGj9JPgAoAAQ=
+X-Google-Smtp-Source: ABdhPJzV8kO9F47YfqiJ4yR/67N6EPeYnE5Lb57mIqp/kxCSXyTqietIepnIBS8SxLdoCnSBkVZnxw==
+X-Received: by 2002:a50:bf02:: with SMTP id f2mr21867212edk.98.1632221562314;
+        Tue, 21 Sep 2021 03:52:42 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id 10sm5689589ejo.111.2021.09.21.03.52.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 03:52:41 -0700 (PDT)
+Message-ID: <9049e956-2865-7309-2eaf-aa4516ab28d6@kernel.org>
+Date:   Tue, 21 Sep 2021 12:52:38 +0200
 MIME-Version: 1.0
-References: <20210921101014.1938382-1-elver@google.com> <20210921101014.1938382-5-elver@google.com>
-In-Reply-To: <20210921101014.1938382-5-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 21 Sep 2021 12:51:21 +0200
-Message-ID: <CACT4Y+aUUNFvVsA86D280e4JqaQ4UdesMnG-+DVc=9v59_ZsJA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] kfence: add note to documentation about skipping
- covered allocations
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
+ compat_ioctl
+Content-Language: en-US
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091134.17426-7-jslaby@suse.cz> <YUlY5pQQWf2P2fKn@google.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <YUlY5pQQWf2P2fKn@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 12:10, Marco Elver <elver@google.com> wrote:
->
-> Add a note briefly mentioning the new policy about "skipping currently
-> covered allocations if pool close to full." Since this has a notable
-> impact on KFENCE's bug-detection ability on systems with large uptimes,
-> it is worth pointing out the feature.
->
-> Signed-off-by: Marco Elver <elver@google.com>
+On 21. 09. 21, 6:00, Dmitry Torokhov wrote:
+> Hi Jiri,
+> 
+> On Tue, Sep 14, 2021 at 11:11:25AM +0200, Jiri Slaby wrote:
+>> diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
+>> index 17eb8f2aa48d..55e91d0e70ec 100644
+>> --- a/drivers/input/serio/serport.c
+>> +++ b/drivers/input/serio/serport.c
+>> @@ -207,8 +207,8 @@ static void serport_set_type(struct tty_struct *tty, unsigned long type)
+>>    * serport_ldisc_ioctl() allows to set the port protocol, and device ID
+>>    */
+>>   
+>> -static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
+>> -			       unsigned int cmd, unsigned long arg)
+>> +static int serport_ldisc_ioctl(struct tty_struct *tty, unsigned int cmd,
+>> +		unsigned long arg)
+> 
+> Can we please keep arguments aligned as they were? Otherwise
 
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Fixed, thanks. Likely, I will send a follow-up -- depending if Greg 
+drops or keeps these in the tree.
 
-> ---
-> v2:
-> * Rewrite.
-> ---
->  Documentation/dev-tools/kfence.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools/kfence.rst
-> index 0fbe3308bf37..d45f952986ae 100644
-> --- a/Documentation/dev-tools/kfence.rst
-> +++ b/Documentation/dev-tools/kfence.rst
-> @@ -269,6 +269,17 @@ tail of KFENCE's freelist, so that the least recently freed objects are reused
->  first, and the chances of detecting use-after-frees of recently freed objects
->  is increased.
->
-> +If pool utilization reaches 75% (default) or above, to reduce the risk of the
-> +pool eventually being fully occupied by allocated objects yet ensure diverse
-> +coverage of allocations, KFENCE limits currently covered allocations of the
-> +same source from further filling up the pool. The "source" of an allocation is
-> +based on its partial allocation stack trace. A side-effect is that this also
-> +limits frequent long-lived allocations (e.g. pagecache) of the same source
-> +filling up the pool permanently, which is the most common risk for the pool
-> +becoming full and the sampled allocation rate dropping to zero. The threshold
-> +at which to start limiting currently covered allocations can be configured via
-> +the boot parameter ``kfence.skip_covered_thresh`` (pool usage%).
-> +
->  Interface
->  ---------
->
-> --
-> 2.33.0.464.g1972c5931b-goog
->
+-- 
+js
+suse labs
