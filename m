@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0246412F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6052412F93
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhIUHgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbhIUHgU (ORCPT
+        id S230228AbhIUHiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:38:08 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37542
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230168AbhIUHiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:36:20 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415BFC061767
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:34:44 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id k24so19908659pgh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bF9+Kwfn7J49uwIO6g2s47av3jU4BAiRk3ofOE8TGxo=;
-        b=aW64q1DW5XmITWIlAMoTrDOd28xiWhCwkhTwXudAdPo2nubWch8Ds4qlAVM0qgsp4P
-         BItRrHsQXyRHxEl+NND6UVLQM0YEBW4lN3eHhb607y98YoifpIts0PfTnUKIjWcnxtOr
-         thi7ThtvFhRQkhR4o4TbtME+FQ3m6ppcMaYYu4qQfLuPbPOaGbqfcG8kFvz6ruafqznx
-         8QHtnBWlbvk+Zo2L3eHZ5tS220B29MrsMm1Ut19q67x5UaF2GBAFSaJGTrzI+BP3lL1f
-         5pJ4AXs2iGIBPI3xnsLvZ2M/qUNwfyBX6yNYCVTaqIO72LCCmPj88Vzw9t8HP9toQC21
-         hB2Q==
+        Tue, 21 Sep 2021 03:38:03 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 8C36E40262
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632209794;
+        bh=5xtuLVRlXiTMHH96D8zimgkDHcNXy9X9ihNLTsNCcqE=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=KYeovEO7J1SuJYe3ER8quU3K/9bGCFFvYmykARPDPS6wAUODPE/7zPWekYhOdB6sP
+         yWHRVHNsJp4ztdxDOSh2db+egrZn83kHDZ1nqgUcJql6y+sIIoackAJ6IUDY4M6H4N
+         4yiisoed0JBCFjV/OifNryVt6DqzQ11EnDxoSjNpU5ihZsOJ0S1zDlp2bpldIYguHn
+         nBbBMNU3Igu6Vr40Y5HVkKzZE/GELGqi7mfi7R+N30+XJy+HVNRhMnHbkdLu1uATRQ
+         1HPaUwT+smKnyeHFwpyKOK8IacFUk0RenPqgUPTlExRD/JaSz8kXiB1NTFSe6I3FaR
+         KVoWmhmBg++cw==
+Received: by mail-wr1-f72.google.com with SMTP id e1-20020adfa741000000b0015e424fdd01so7614404wrd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:36:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bF9+Kwfn7J49uwIO6g2s47av3jU4BAiRk3ofOE8TGxo=;
-        b=TXbWofTtXdjLDp6eyUAaxSRU9a4joHnUKVBLvLs6QBtdQ62ODOV3t6v4TcJVL+i1dO
-         YWMqQTWShyFJ3SA8AaunZ/eJYqpSTp6TEJcVFCdj3kabZ3CwZrFhJ1TkCSM7JZ5tM91o
-         r/QQCzPhLjy/Ef9csQohxbxSLE9mKaFAPF/f/V9IiJTixgraLukRIsap1xTUIqqjRUog
-         HjjWvdpYOZQ+lPZnVoNQ48DwcUo3qu5w6avPUKzxrqAMHqzlAMsLGkVpfKy7ls60qA+l
-         UYnD/xqAjpvZqXbVCNJCZlcYhRsH/L3nUWwg+BVZvCNusIo3DGaHbeLzjT/81qXL3nsO
-         HNiA==
-X-Gm-Message-State: AOAM532u7FoXcDZssYVrR1bSkbC4MH2eCYDMEtWJ2f/yIP1/RHc3nLU9
-        gqCdRtH0EJ95vTKS6rWgqMI=
-X-Google-Smtp-Source: ABdhPJw6ZwGxaugEdf5GoQzLvqC+7wCzPFlZRYgxnMpnNl35ml83OQ3KSy7+llpYY5uG0Megdpz+dw==
-X-Received: by 2002:a62:1dc5:0:b0:43e:f8a4:49a7 with SMTP id d188-20020a621dc5000000b0043ef8a449a7mr29648570pfd.26.1632209683801;
-        Tue, 21 Sep 2021 00:34:43 -0700 (PDT)
-Received: from localhost.localdomain ([2402:e280:2130:198:9b25:1cfb:9ff3:2a8f])
-        by smtp.gmail.com with ESMTPSA id x8sm16565957pfq.131.2021.09.21.00.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 00:34:43 -0700 (PDT)
-From:   Benjamin Philip <benjamin.philip495@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Benjamin Philip <benjamin.philip495@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] staging: rts5208: remove parentheses pair in sd.c
-Date:   Tue, 21 Sep 2021 13:03:49 +0530
-Message-Id: <4a56facd2c04a321b091d3b7dbea87168e8ddd6e.1632209460.git.benjamin.philip495@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632209460.git.benjamin.philip495@gmail.com>
-References: <cover.1632209460.git.benjamin.philip495@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5xtuLVRlXiTMHH96D8zimgkDHcNXy9X9ihNLTsNCcqE=;
+        b=fU/tUXL+qRMrfpjaquEQ5o0u1iTgHmrTuzUNfBfTRRD2tEuKklhvVsgWUPnHOt40/1
+         yU1pLh5NLybAA/Ar0f2xNjtBmJ2Z/S8LM+ikyXAMKKtwUft2ffkThDXbZ2fcPpwLhvkZ
+         eeHWE/2i0itoaV+2loy/DEO3b7qDqA37mTVNhwQJB0qlPyn8KDxqM1IdTEwmWZyqsl4I
+         niBA9BjfibKAGawkjVofcbLPzCUu7lKu0jd9LyL2cp9dwhzLmOZ/VMm+2qJzgP9YK62s
+         r9hcYNNUdQ5AkvCLe+yBnnUBej4TLBe+wqhV4cB8IWAx0ZB3hBL4t4+lkHWuWHYn3vgQ
+         x9jw==
+X-Gm-Message-State: AOAM531j+nfT/l5ng/TRmAUHoCvJhU91oV6wYOOCtrFUmssBJXyTQb4n
+        4lGnBVi9Kn7e30aFGytt3qz95dPFG8FYfo+cU7wVSQ1jBiuQqm6D9iB18RtYV+4VyGP8O4SET0s
+        cPrAN3eQiZhf5jfRYAFr8K3Cmp80Pl/SWZLBFG0p8og==
+X-Received: by 2002:a5d:598f:: with SMTP id n15mr30497162wri.74.1632209794145;
+        Tue, 21 Sep 2021 00:36:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLKQWe41cx6PvZ19KxjufcOkHR0IX8PQ9IjcFMsfMXm6dylIN5TbRIN773VgRDP6J6eJhhWw==
+X-Received: by 2002:a5d:598f:: with SMTP id n15mr30497148wri.74.1632209793950;
+        Tue, 21 Sep 2021 00:36:33 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id i203sm1353028wma.7.2021.09.21.00.36.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 00:36:33 -0700 (PDT)
+Subject: Re: [PATCH v1 4/4] rtc: change HAVE_S3C_RTC default config logic
+To:     Will McVicker <willmcvicker@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+References: <20210920190350.3860821-1-willmcvicker@google.com>
+ <20210920190350.3860821-5-willmcvicker@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <1f4efb90-4c6f-0972-de67-eae8e0246f5b@canonical.com>
+Date:   Tue, 21 Sep 2021 09:36:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920190350.3860821-5-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I had missed a single parentheses pair in the commit for sd.c.
-This commit removes the pair I missed.
+On 20/09/2021 21:03, Will McVicker wrote:
+> Switches the default config logic of HAVE_S3C_RTC to use "default y if
+> (ARCH_EXYNOS && RTC_CLASS)" versus having ARCH_EXYNOS directly select
+> it. This provides vendors flexibility to disable the config if desired
+> or modularize it in the presence of a generic kernel.
+> 
+> Verified this change doesn't impact the .config.
+> 
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> ---
+>  arch/arm64/Kconfig.platforms | 1 -
+>  drivers/rtc/Kconfig          | 1 +
+>  2 files changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Signed-off-by: Benjamin Philip <benjamin.philip495@gmail.com>
----
- drivers/staging/rts5208/sd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It took me some effort to find this patch because you did not send it to
+neither me, nor Samsung SoC list.
 
-diff --git a/drivers/staging/rts5208/sd.c b/drivers/staging/rts5208/sd.c
-index 71f04e317eff..d1fafd530c80 100644
---- a/drivers/staging/rts5208/sd.c
-+++ b/drivers/staging/rts5208/sd.c
-@@ -1335,7 +1335,7 @@ static int sd_switch_function(struct rtsx_chip *chip, u8 bus_width)
- 			return STATUS_FAIL;
- 	}
- 
--	if (!func_to_switch || (func_to_switch == HS_SUPPORT)) {
-+	if (!func_to_switch || func_to_switch == HS_SUPPORT) {
- 		/* Do not try to switch current limit if the card doesn't
- 		 * support UHS mode or we don't want it to support UHS mode
- 		 */
--- 
-2.31.1
+Since you touch arm64 code, this should go either via SoC tree or with
+SoC ack, therefore you should simply use get_maintainers.pl on entire
+patchset, not on some pieces.
 
+> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+> index a884e5da8b0f..f9f829aab511 100644
+> --- a/arch/arm64/Kconfig.platforms
+> +++ b/arch/arm64/Kconfig.platforms
+> @@ -91,7 +91,6 @@ config ARCH_BRCMSTB
+>  
+>  config ARCH_EXYNOS
+>  	bool "ARMv8 based Samsung Exynos SoC family"
+> -	select HAVE_S3C_RTC if RTC_CLASS
+
+Just remove HAVE_S3C_RTC entirely like in commit:
+7dd3cae90d856e97e93bc1c32904e5aed7210f7b
+
+>  	select PINCTRL
+>  	select PM_GENERIC_DOMAINS if PM
+>  	help
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index e1bc5214494e..40afdb37d2a5 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1406,6 +1406,7 @@ config RTC_DRV_OMAP
+>  
+>  config HAVE_S3C_RTC
+>  	bool
+> +	default y if (ARCH_EXYNOS && RTC_CLASS)
+>  	help
+>  	  This will include RTC support for Samsung SoCs. If
+>  	  you want to include RTC support for any machine, kindly
+> 
+
+
+Best regards,
+Krzysztof
