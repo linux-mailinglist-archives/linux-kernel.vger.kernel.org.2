@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5C8413E22
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B812413E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbhIUXwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:52:15 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34912 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhIUXwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:52:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="287156721"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="287156721"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 16:50:45 -0700
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="436049920"
-Received: from adkuncha-mobl2.amr.corp.intel.com (HELO [10.251.2.103]) ([10.251.2.103])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 16:50:45 -0700
-Subject: Re: [PATCH v5 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
+        id S231215AbhIUXyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:54:53 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45008 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhIUXyw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:54:52 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18LNrCqK081573;
+        Tue, 21 Sep 2021 18:53:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632268392;
+        bh=jjUeDPDF1YHObUoZjxKJB2Gi2KKuOAOryz8ngfflF1k=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=vaWUJLsqSa2U6Ex5C4K1z8Rcpto4+UQoghsms0QR9Srx3t42smUFlOIQzuk30fa1n
+         Svi8JX9+lghCPTDwAciVzlkpKbPGUD3HPloJ/BSwZetVVnF3yAQVEbEJpADO8TL97o
+         UN0Ci6qtaVMQPxq9ZmuzI9i1sa668tgLSNuwms5Q=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18LNrCOZ011409
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Sep 2021 18:53:12 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
+ Sep 2021 18:53:12 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 21 Sep 2021 18:53:12 -0500
+Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18LNrC4q119274;
+        Tue, 21 Sep 2021 18:53:12 -0500
+Subject: Re: beaglebone black boot failure Linux v5.15.rc1
+To:     Robert Nelson <robertcnelson@gmail.com>
+CC:     Drew Fustini <pdp7pdp7@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        Paul Barker <paul.barker@sancloud.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
- <20210917213836.175138-1-tony.luck@intel.com>
- <20210917213836.175138-3-tony.luck@intel.com>
- <ccb678fc-25b8-dcd6-ffaa-267865c66ea5@intel.com>
- <eeeb51049e894a70b40013ec18a9fa65@intel.com>
- <8c39b812-b77a-7d63-2d82-f1c0401a5f16@intel.com>
- <YUpvVK1C4y66Cj2Q@agluck-desk2.amr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3d6b0136-dcaa-e0c0-a830-68a012222b19@intel.com>
-Date:   Tue, 21 Sep 2021 16:50:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
+ <YUQyQgFAOFnBlcdP@atomide.com>
+ <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
+ <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
+ <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
+ <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
+ <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
+ <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
+ <YUmOGFUFONR/ynfW@atomide.com> <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
+ <CAEf4M_B1vam_ykRZmQ5++QArC-=+yooRg25BrQXKE5nk8AtqbA@mail.gmail.com>
+ <40077cea-1f5e-de67-58dd-7fae0f63678d@ti.com>
+ <CAOCHtYjMO1XjLRGxP1GMFudXh3meNQB2F44z_NRaFUnX=Fb+Mw@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <066d9a7e-89c2-b8b5-b2cd-4993513f5a64@ti.com>
+Date:   Tue, 21 Sep 2021 18:53:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YUpvVK1C4y66Cj2Q@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAOCHtYjMO1XjLRGxP1GMFudXh3meNQB2F44z_NRaFUnX=Fb+Mw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 4:48 PM, Luck, Tony wrote:
+On 9/21/21 5:00 PM, Robert Nelson wrote:
+> On Tue, Sep 21, 2021 at 4:54 PM Suman Anna <s-anna@ti.com> wrote:
+>>
+>> On 9/21/21 3:29 PM, Drew Fustini wrote:
+>>> On Tue, Sep 21, 2021 at 9:09 AM Suman Anna <s-anna@ti.com> wrote:
+>>>>
+>>>> Hi Matti, Tony,
+>>>>
+>>>> On 9/21/21 2:47 AM, Tony Lindgren wrote:
+>>>>> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
+>>>>>> Finally, adding the udelay(100); (as Tony suggested) at the end of the
+>>>>>> omap_reset_deassert() did make the oops go away even when pruss_tm was
+>>>>>> enabled. I don't know what would be a proper fix though.
+>>>>
+>>>> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
+>>>> changes [1].
+>>>>
+>>>> May I ask what is your BBB board version? My board is rev.A5C.
+>>>
+>>> That rev is quite old [1].  Would you be able to try a Rev C?  It has
+>>> been in production since around 2014 with the move from 2GB to 4GB
+>>> eMMC.
+>>
+>> I don't have any rev.C boards handy to try.
+>>
+>> I am curious to see if there is some correlation between failures and board
+>> versions. I see that there is a minor processor change to AM3358 from rev.B
+>> onwards compared to the AM3359 that I would have on my board. PRU-ICSS IP would
+>> be present and supported on both though.
 > 
-> # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+> Rev B vs Rev C shouldn't matter..  I don't think I even have a Rev
+> "B".. A6A, B, to C* was done very quickly at CIrcuitCo at that time..
 > 
-> So I think this means that I have (9950 - 9800) * 584 = 87600 more bytes
-> allocated. Maybe that's a lot? But percentage-wise is seems in the
-> noise. E.g. We allocate one "struct sgx_epc_page" for each SGX page.
-> On my system I have 4GB of SGX EPC, so around 32 MB of these structures.
+> https://elinux.org/Beagleboard:BeagleBoneBlack#Revision_B
+> 
+> "This version moves to the AM3358BZCZ100 processor as we are no longer
+> able to get the limited production version of the AM3359AZCZ100."
+> 
+> I'm assuming the AM3358 had the pru enabled..
 
-100k for 4GB of EPC is certainly in the noise as far as I'm concerned.
+Yes, PRU-ICSS is present on AM3356 and above.
 
-Thanks for checking this.
+regards
+Suman
