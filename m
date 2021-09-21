@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B290413A63
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E00413A69
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbhIUS4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232142AbhIUS4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:56:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 449AB61186;
-        Tue, 21 Sep 2021 18:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1632250524;
-        bh=4nfKbEEvnuIK73VTBrjV7lsPLdW7d5cR0/3cZDpflDE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XQ+uwo9Ce+qeUe704wH19OCWWpxZTbGGZupNJ9QAWTxokV6Pl54kFG8CGUjfSin5P
-         2qTK4wVyhoeLepL7/wCyWf9SYbghTbeZ9lU9z7iIS+ZxtmF1wiEpq6H4d9beaaP3bG
-         FCxw6qzVjGkphbM53CO0re/aquN3en7e4TUSt7NY=
-Date:   Tue, 21 Sep 2021 11:55:23 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH mm] vmalloc: back off when the current task is
- OOM-killed
-Message-Id: <20210921115523.8606cea0b2f0a5ca4e79cbd0@linux-foundation.org>
-In-Reply-To: <c9d43874-138e-54a9-3222-a08c269eeeb5@virtuozzo.com>
-References: <YT8PEBbYZhLixEJD@dhcp22.suse.cz>
-        <d07a5540-3e07-44ba-1e59-067500f024d9@virtuozzo.com>
-        <20210919163126.431674722b8db218453dc18c@linux-foundation.org>
-        <bb5616b0-faa6-e12a-102b-b9c402e27ec1@i-love.sakura.ne.jp>
-        <c9d43874-138e-54a9-3222-a08c269eeeb5@virtuozzo.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233843AbhIUS62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:58:28 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:38687 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhIUS61 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 14:58:27 -0400
+Received: by mail-ot1-f52.google.com with SMTP id c6-20020a9d2786000000b005471981d559so8256520otb.5;
+        Tue, 21 Sep 2021 11:56:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eV7OqCzNTmtz8a37D7yz/JSHz8NlPnMG62v9vN3eHxw=;
+        b=iAywxJBgHOzYXwh1y+S/y1aQbYhqpQZGirP7AI1CH6Rzh/xgC2S//QEmeTWx8SpJaq
+         xH0zFaX63hBkXm8mspqNzBmVnAYyzmpr/cLgCz/pLVjPIGg6JGAEMMQ5PyetrUXF4pui
+         32IuPOgWwWk0HXDksiKRDsQwMH5YV2QCfXVw0monk8b49VqBuG/B7NgPzbdW7NdKPwfn
+         VsufiutCja6CbJxo/rNpFkjdLrjPu4/Lt3/lxxb9OKh7Th5uyBLfA9OTZB2Ty1XLesK8
+         eTTHaEP0OxcXHkPN9uxURZzTxIzBHxPO2Otb7yg1w6GjzIwdKIy6foFXcwB6nn3s/4Dn
+         wCLA==
+X-Gm-Message-State: AOAM530NXwEQg/5ztVprp2wLjKgzUlynefekXfbDRh6Xg7sOBJi4PJ98
+        J1+IIuzc8L+1hRGQim3Cxj96hnAC+ssOzJeMTdA=
+X-Google-Smtp-Source: ABdhPJxUJaNRd6w2vd96JNTLSzhfnTfzZ4d/uk/tfTMYfM1NysI5eXJLJd2A/XyGy5NjR1kT0oZYZF1yQKTHUs51mX4=
+X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr2336373otr.301.1632250618522;
+ Tue, 21 Sep 2021 11:56:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210915170940.617415-1-saravanak@google.com> <20210915170940.617415-3-saravanak@google.com>
+ <CAJZ5v0h11ts69FJh7LDzhsDs=BT2MrN8Le8dHi73k9dRKsG_4g@mail.gmail.com>
+ <YUaPcgc03r/Dw0yk@lunn.ch> <YUoFFXtWFAhLvIoH@kroah.com> <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch>
+In-Reply-To: <YUocuMM4/VKzNMXq@lunn.ch>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 21 Sep 2021 20:56:47 +0200
+Message-ID: <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 13:59:35 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
+On Tue, Sep 21, 2021 at 7:56 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > The existing code attempts to "enforce" device links where the
+> > supplier is a direct ancestor of the consumer (e.g. its parent), which
+> > is questionable by itself (why do that?)
+>
+> In this case, we have an Ethernet switch as the parent device. It
+> registers an interrupt controller, to the interrupt subsystem. It also
+> registers an MDIO controller to the MDIO subsystem. The MDIO subsystem
+> finds the Ethernet PHYs on the MDIO bus, and registers the PHYs to the
+> PHY subsystem.
+>
+> Device tree is then used to glue all the parts together. The PHY has
+> an interrupt output which is connected to the interrupt controller,
+> and a standard DT property is used to connect the two. The MACs in the
+> switch are connected to the PHYs, and standard DT properties are used
+> to connect them together. So we have a loop. But the driver model does
+> not have a problem with this, at least not until fw_devlink came
+> along. As soon as a resource is registered with a subsystem, it can be
+> used. Where as fw_devlink seems to assume a resource cannot be used
+> until the driver providing it completes probe.
 
-> On 9/20/21 4:22 AM, Tetsuo Handa wrote:
-> > On 2021/09/20 8:31, Andrew Morton wrote:
-> >> On Fri, 17 Sep 2021 11:06:49 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
-> >>
-> >>> Huge vmalloc allocation on heavy loaded node can lead to a global
-> >>> memory shortage. A task called vmalloc can have the worst badness
-> >>> and be chosen by OOM-killer, however received fatal signal and
-> >>> oom victim mark does not interrupt allocation cycle. Vmalloc will
-> >>> continue allocating pages over and over again, exacerbating the crisis
-> >>> and consuming the memory freed up by another killed tasks.
-> >>>
-> >>> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-> >>> effective and avoid host panic.
-> >>>
-> >>> Unfortunately it is not 100% safe. Previous attempt to break vmalloc
-> >>> cycle was reverted by commit b8c8a338f75e ("Revert "vmalloc: back off when
-> >>> the current task is killed"") due to some vmalloc callers did not handled
-> >>> failures properly. Found issues was resolved, however, there may
-> >>> be other similar places.
-> >>
-> >> Well that was lame of us.
-> >>
-> >> I believe that at least one of the kernel testbots can utilize fault
-> >> injection.  If we were to wire up vmalloc (as we have done with slab
-> >> and pagealloc) then this will help to locate such buggy vmalloc callers.
-> 
-> Andrew, could you please clarify how we can do it?
-> Do you mean we can use exsiting allocation fault injection infrastructure to trigger
-> such kind of issues? Unfortunately I found no ways to reach this goal.
-> It  allows to emulate single faults with small probability, however it is not enough,
-> we need to completely disable all vmalloc allocations. 
+It works at a device level, so it doesn't know about resources.  The
+only information it has is of the "this device may depend on that
+other device" type and it uses that information to figure out a usable
+probe ordering for drivers.
 
-I don't see why there's a problem?  You're saying "there might still be
-vmalloc() callers which don't correctly handle allocation failures",
-yes?
+> Now, we could ignore all these subsystems, re-invent the wheels inside
+> the switch driver, and then not have suppliers and consumers at all,
+> it is all internal. But that seems like a bad idea, more wheels, more
+> bugs.
+>
+> So for me, the real fix is that fw_devlink learns that resources are
+> available as soon as they are registered, not when the provider device
+> completes probe.
 
-I'm suggesting that we use fault injection to cause a small proportion
-of vmalloc() calls to artificially fail, so such buggy callers will
-eventually be found and fixed.  Why does such a scheme require that
-*all* vmalloc() calls fail?
+Because it doesn't know about individual resources, it cannot really do that.
 
+Also if the probe has already started, it may still return
+-EPROBE_DEFER at any time in theory, so as a rule the dependency is
+actually known to be satisfied when the probe has successfully
+completed.
 
+However, making children wait for their parents to complete probing is
+generally artificial, especially in the cases when the children are
+registered by the parent's driver.  So waiting should be an exception
+in these cases, not a rule.
