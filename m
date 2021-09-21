@@ -2,221 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E98413D60
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE731413D69
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbhIUWPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S235436AbhIUWQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbhIUWPK (ORCPT
+        with ESMTP id S233983AbhIUWQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:15:10 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF270C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:13:41 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u18so3294044lfd.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:13:41 -0700 (PDT)
+        Tue, 21 Sep 2021 18:16:38 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4394C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:15:09 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso596622ota.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:15:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pCZE/KATfVul7zh4Istxf2mLH4yD9uQZLzU/uqsm3SY=;
-        b=MTDamyLducVf/fexpFbF74KsLN0AjIGWkypxrsjC2pB4V5VdW2adz1qfQv6xdz6Bx2
-         t5OHe/cSfQyo76F3W/r9jU9+ul+s6w71n5usmCuus1vqi6mJEJCeHKwYuYpe0LV5krPg
-         6X+ie3WOEEIJh7/7roZn0lHOds0F0Rp0LgIE4vzbiHo/krH7zLLeOyHVhdCIQIG7qQXz
-         3cUJaZAcNWdJHNhoaXc2zOPG7UtqCIHl+sWUTPru8Gge180ZUXuN/rgN0Yf+5y+k/Hnc
-         ekSEL2HwnshlHf0B05ltS3o23ZNjvDvaWt1Z5LKB+AfXfjQwgJC5XJtz0tDPhucr4SiD
-         t4eg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x94ioewznGOI6gQ5YIl2Sid87jK2fFCaelf+CMRDOF4=;
+        b=LQDy2v9QFGuKgGFzbnu14WqsNjNrgXyv9aqQStW0dN1rlBn6zqLA6wafLgrCdwonci
+         Vv9TZHEZOvDXcy27gpXabClErpN0tyQ9KTf+mfDBrm4qc05iSzbicIGjknVKq7kDPbf+
+         K0LuccmlXYwpWPBJSTadxC4N7OcU8WPOPPhlKX7VkefaaquWGLLPR/20fU4t+XFyB/Zt
+         cgkBQjI1x/rD0hopFATYcJLi/vRmU6Pw4jfIqOFeM+p8TGv9OAONpbKu+JBQvnl94sZW
+         eWXDawIUl0PMQc7D7YRB/qhPCLrH7QIX/LOj2m2jzrxx2RQlu2XODeHlPZLHgp3PuMfd
+         e1kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pCZE/KATfVul7zh4Istxf2mLH4yD9uQZLzU/uqsm3SY=;
-        b=nfbMsiCk3EXv64HPTozW4svJk4zQ29tA6TIdwQmyTuO3Uf4N3PVLDPjnLMh9cEuS+u
-         7NKGgJfk4mVp6PDClzxyzDziMuEcmUdUcKz+MSEDGgXY+CMnfJxMKhJUclOOD0FpA5B3
-         H7uuiXSXF+L/GtoECxKRkOiFVdZ0pl4JBiq5KLFW0ODi0KP6w1KwOt7j3v2mO+mUFmcT
-         AcmL3v//Hh2evfCV0dlJ3E2QqOEW1+tIPpeQR+OGvRcdLN4IVLPX+vYqJH3Ia3K8SB3a
-         N2SHLH5u0ERNsoXdWUVrU1hXRBv4TaahfnkH5apGm58bfdR1PSaEEijmXbYUHG1aiB/J
-         G8EQ==
-X-Gm-Message-State: AOAM530WchGXqct5pkz+fDNUn+VrfgOaVrU8ADp35ExiHaYqeM7qBx2K
-        1MUQBxpPNzalIF7ZbCdQ0b0=
-X-Google-Smtp-Source: ABdhPJxHZ98JNyN/RVo5CFQyNkvyu8J+eSut3oEfn9GUlznngSgBTQP0BgP9fFFKD7NzQpBexmWJUQ==
-X-Received: by 2002:a05:6512:128b:: with SMTP id u11mr25724700lfs.24.1632262419992;
-        Tue, 21 Sep 2021 15:13:39 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id r206sm23234lff.100.2021.09.21.15.13.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x94ioewznGOI6gQ5YIl2Sid87jK2fFCaelf+CMRDOF4=;
+        b=apwNd18Ap7Eh9Dk0vYs/GfB+9kXh0sFHJFXKqkXa6I4h7AzesZ4nEi0U3K2NlYqHWC
+         0eU3B5zyh+p6LtveayzCI2ZHC0U7dR5grXDXPg7jn9zBHvRJXO1CMgSnn3dWX4axi6Us
+         SgX/yrPyZ+VWKZ8DlNCJKB8UXoFiuAt0Pz72LrIL08SSfzSuOd8JW7PxNCOkyq0oww5w
+         pxweqH6nfRfPO6hP/MOdlr69Z/jNHDo64CQCRP3b/AfEuYWNCQ3c2G19gHJTvNK5UcMN
+         duP6gEgglbXjOGyDu2oT6peBorHj89XxpYHz66m4EZsIQMNIfx43Ru2SjZ2VXA2Y1DGq
+         j8pw==
+X-Gm-Message-State: AOAM532oqr1Pm3PjTCMi9IHgcLMpZza/PGvMPFv9vc1UB4wdnxEM9rk+
+        GgaiGzeJlsiuZ2mxC0auAnmAEw==
+X-Google-Smtp-Source: ABdhPJwBlxa/coBdaEbNyj3pl6qZm1u0sr6cLsEoVWt9mrBrMs4sa3Qu4OYYNwIeGjc4Iht8aPIzBw==
+X-Received: by 2002:a9d:4702:: with SMTP id a2mr13819459otf.271.1632262507823;
+        Tue, 21 Sep 2021 15:15:07 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d10sm90595ooj.24.2021.09.21.15.15.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 15:13:39 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 22 Sep 2021 00:13:37 +0200
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ping Fang <pifang@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [PATCH v1] mm/vmalloc: fix exact allocations with an alignment >
- 1
-Message-ID: <20210921221337.GA60191@pc638.lan>
-References: <20210908132727.16165-1-david@redhat.com>
- <CA+KHdyWadbqZ=xVBv6uZwxpZSEndAAk_inK+0962VcntY+mnSA@mail.gmail.com>
- <CA+KHdyUTQLwN0YASOX8XJoWCD_x1QwRmz81BGShCzb_8jZ93XQ@mail.gmail.com>
- <ea75df96-f381-6949-5627-1382a370dc71@redhat.com>
- <20210916193403.GA1940@pc638.lan>
- <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com>
+        Tue, 21 Sep 2021 15:15:07 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:15:05 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dikshita Agarwal <dikshita@codeaurora.org>
+Cc:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Subject: Re: [RESEND PATCH v6] arm64: dts: qcom: sc7280: Add venus DT node
+Message-ID: <YUpZaQ42ldzEKtV/@builder.lan>
+References: <1632199829-25686-1-git-send-email-dikshita@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <221e38c1-4b8a-8608-455a-6bde544adaf0@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1632199829-25686-1-git-send-email-dikshita@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 10:47:54AM +0200, David Hildenbrand wrote:
-> > > > This patch looks like a KASAN specific to me. So i would like to avoid
-> > > > such changes to
-> > > > the vmalloc internals in order to simplify further maintenance and
-> > > > keeping it generic
-> > > > instead.
-> > > 
-> > > There is nothing KASAN specific in there :) It's specific to exact
-> > > applications -- and KASAN may be one of the only users for now.
-> > > 
-> > Well, you can name it either way :) So it should not be specific by the
-> > design, otherwise as i mentioned the allocator would be like a peace of
-> > code that handles corner cases what is actually not acceptable.
-> 
-> Let's not overstress the situation of adding essentially 3 LOC in order to
-> fix a sane use case of the vmalloc allocator that was not considered
-> properly by internal changes due to 68ad4a330433 ("mm/vmalloc.c: keep track
-> of free blocks for vmap allocation").
-> 
-> > 
-> > > > 
-> > > > Currently the find_vmap_lowest_match() adjusts the search size
-> > > > criteria for any alignment
-> > > > values even for PAGE_SIZE alignment. That is not optimal. Because a
-> > > > PAGE_SIZE or one
-> > > > page is a minimum granularity we operate on vmalloc allocations thus
-> > > > all free blocks are
-> > > > page aligned.
-> > > > 
-> > > > All that means that we should adjust the search length only if an
-> > > > alignment request is bigger than
-> > > > one page, in case of one page, that corresponds to PAGE_SIZE value,
-> > > > there is no reason in such
-> > > > extra adjustment because all free->va_start have a page boundary anyway.
-> > > > 
-> > > > Could you please test below patch that is a generic improvement?
-> > > 
-> > > I played with the exact approach below (almost exactly the same code in
-> > > find_vmap_lowest_match()), and it might make sense as a general improvement
-> > > -- if we can guarantee that start+end of ranges are always PAGE-aligned; I
-> > > was not able to come to that conclusion...
-> > All free blocks are PAGE aligned that is how it has to be. A vstart also
-> > should be aligned otherwise the __vunmap() will complain about freeing
-> > a bad address:
-> > 
-> > <snip>
-> >      if (WARN(!PAGE_ALIGNED(addr), "Trying to vfree() bad address (%p)\n",
-> >              addr))
-> >          return;
-> > <snip>
-> > 
-> > BTW, we should add an extra check to the alloc_vmap_area(), something like
-> > below:
-> > 
-> > <snip>
-> >      if (!PAGE_ALIGNED(ALIGN(vstart, align))) {
-> >          WARN_ONCE(1, "vmalloc: vstart or align are not page aligned (0x%lx, 0x%lx)\n",
-> >              vstart, align);
-> >          return ERR_PTR(-EBUSY);
-> > 	}
-> > <snip>
-> > 
-> > to check that passed pair of vstart and align are correct.
-> > 
-> 
-> Yes we better should.
-> 
-> > > 
-> > > vmap_init_free_space() shows me that our existing alignment code/checks
-> > > might be quite fragile.
-> > > 
-> > It is not important to page align a first address. As i mentioned before
-> > vstart and align have to be correct and we should add such check.
-> > 
-> > > 
-> > > But I mainly decided to go with my patch instead because it will also work
-> > > for exact allocations with align > PAGE_SIZE: most notably, when we try
-> > > population of hugepages instead of base pages in __vmalloc_node_range(), by
-> > > increasing the alignment. If the exact range allows for using huge pages,
-> > > placing huge pages will work just fine with my modifications, while it won't
-> > > with your approach.
-> > > 
-> > > Long story short: my approach handles exact allocations also for bigger
-> > > alignment, Your optimization makes sense as a general improvement for any
-> > > vmalloc allocations.
-> > > 
-> > > Thanks for having a look!
-> > > 
-> > The problem is that there are no users(seems only KASAN) who set the range
-> > that corresponds to exact size. If you add an aligment overhead on top of
-> 
-> So there is one user and it was broken by 68ad4a330433 ("mm/vmalloc.c: keep
-> track of free blocks for vmap allocation").
-> 
-> > it means that search size should include it because we may end up with exact
-> > free block and after applying aligment it will not fit. This is how allocators
-> > handle aligment.
-> 
-> This is an implementation detail of the vmalloc allocator ever since
-> 68ad4a330433 ("mm/vmalloc.c: keep track of free blocks for vmap
-> allocation").
-> 
-> If callers pass an exact range, and the alignment they specify applies, why
-> should we reject such an allocation? It's leaking an implementation detail
-> fixed easily internally into callers.
-> 
-> > 
-> > Another approach is(you mentioned it in your commit message):
-> > 
-> > urezki@pc638:~/data/raid0/coding/linux-next.git$ git diff mm/kasan/shadow.c
-> > diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> > index 082ee5b6d9a1..01d3bd76c851 100644
-> > --- a/mm/kasan/shadow.c
-> > +++ b/mm/kasan/shadow.c
-> > @@ -200,7 +200,7 @@ static int __meminit kasan_mem_notifier(struct notifier_block *nb,
-> >                  if (shadow_mapped(shadow_start))
-> >                          return NOTIFY_OK;
-> > -               ret = __vmalloc_node_range(shadow_size, PAGE_SIZE, shadow_start,
-> > +               ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
-> >                                          shadow_end, GFP_KERNEL,
-> >                                          PAGE_KERNEL, VM_NO_GUARD,
-> >                                          pfn_to_nid(mem_data->start_pfn),
-> > urezki@pc638:~/data/raid0/coding/linux-next.git$
-> > 
-> > why not? Also you can increase the range in KASAN code.
-> 
-> No, that's leaking implementation details to the caller. And no, increasing
-> the range and eventually allocating something bigger (e.g., placing a huge
-> page where it might not have been possible) is not acceptable for KASAN.
-> 
-> If you're terribly unhappy with this patch,
-Sorry to say but it simple does not make sense.
+On Mon 20 Sep 23:50 CDT 2021, Dikshita Agarwal wrote:
 
->
-> please suggest something reasonable to fix exact allocations:
-> a) Fixes the KASAN use case.
-> b) Allows for automatic placement of huge pages for exact allocations.
-> c) Doesn't leak implementation details into the caller.
->
-I am looking at it.
+> Add DT entries for the sc7280 venus encoder/decoder.
+> 
+> this patch depends on [1].
+> 
+> [1] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=529463
 
---
-Vlad Rezki
+The stuff you write here will be forever imprinted in the git history
+and it's already unnecessary, given that the patch you reference here is
+available in linux-next.
+
+Things you want to mention, but shouldn't go into the git history, put
+those below the '---' line.
+
+> 
+> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index a8c274a..f171ababc 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -63,6 +63,11 @@
+>  			no-map;
+>  			reg = <0x0 0x80b00000 0x0 0x100000>;
+>  		};
+> +
+> +		video_mem: memory@8b200000 {
+> +			reg = <0x0 0x8b200000 0x0 0x500000>;
+> +			no-map;
+> +		};
+>  	};
+>  
+>  	cpus {
+> @@ -1063,6 +1068,76 @@
+>  			qcom,bcm-voters = <&apps_bcm_voter>;
+>  		};
+>  
+> +		venus: video-codec@aa00000 {
+> +			compatible = "qcom,sc7280-venus";
+
+I do however now see this compatible defined in a binding in linux-next,
+so you definitely should have listed that patch as a dependency - and
+preferably held off sending me 6 versions (plus resend) of a patch that
+I can't merge.
+
+Please ping me once the binding is merged, so that I know when I can
+merge this patch.
+
+Thanks,
+Bjorn
+
+> +			reg = <0 0x0aa00000 0 0xd0600>;
+> +			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
+> +				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
+> +				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+> +				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
+> +				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
+> +			clock-names = "core", "bus", "iface",
+> +				      "vcodec_core", "vcodec_bus";
+> +
+> +			power-domains = <&videocc MVSC_GDSC>,
+> +					<&videocc MVS0_GDSC>,
+> +					<&rpmhpd SC7280_CX>;
+> +			power-domain-names = "venus", "vcodec0", "cx";
+> +			operating-points-v2 = <&venus_opp_table>;
+> +
+> +			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_VENUS_CFG 0>,
+> +					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
+> +			interconnect-names = "cpu-cfg", "video-mem";
+> +
+> +			iommus = <&apps_smmu 0x2180 0x20>,
+> +				 <&apps_smmu 0x2184 0x20>;
+> +			memory-region = <&video_mem>;
+> +
+> +			video-decoder {
+> +				compatible = "venus-decoder";
+> +			};
+> +
+> +			video-encoder {
+> +				compatible = "venus-encoder";
+> +			};
+> +
+> +			video-firmware {
+> +				iommus = <&apps_smmu 0x21a2 0x0>;
+> +			};
+> +
+> +			venus_opp_table: venus-opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-133330000 {
+> +					opp-hz = /bits/ 64 <133330000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +				};
+> +
+> +				opp-240000000 {
+> +					opp-hz = /bits/ 64 <240000000>;
+> +					required-opps = <&rpmhpd_opp_svs>;
+> +				};
+> +
+> +				opp-335000000 {
+> +					opp-hz = /bits/ 64 <335000000>;
+> +					required-opps = <&rpmhpd_opp_svs_l1>;
+> +				};
+> +
+> +				opp-424000000 {
+> +					opp-hz = /bits/ 64 <424000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +				};
+> +
+> +				opp-460000048 {
+> +					opp-hz = /bits/ 64 <460000048>;
+> +					required-opps = <&rpmhpd_opp_turbo>;
+> +				};
+> +			};
+> +
+> +		};
+> +
+>  		videocc: clock-controller@aaf0000 {
+>  			compatible = "qcom,sc7280-videocc";
+>  			reg = <0 0xaaf0000 0 0x10000>;
+> -- 
+> 2.7.4
+> 
