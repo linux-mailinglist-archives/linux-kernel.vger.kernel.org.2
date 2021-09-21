@@ -2,251 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CD4413AD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D10413ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhIUTgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbhIUTg1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:36:27 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77B1C061574;
-        Tue, 21 Sep 2021 12:34:58 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id bx4so653802edb.4;
-        Tue, 21 Sep 2021 12:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UibWS27dG8CTdjCuiOWaZ3ON4LxN1iE+u65371mY3a0=;
-        b=ShnVAfrWu5IT9WTexqaZjjzqQU9EMo/+7ySpOf+s0xZCWk9Mc8wFc7xUSxhh5fjB5F
-         wYz6AQeB6KOZx/N7GdlMWoIpSLktglS0E+IYJr+sBMcb6sEPsYqN5IEdqYcV2PcUqIHc
-         UKw5fqkaZ60QeVChr7xp9oW4MwdtEHwI3RztFQ5zEl/soIKrZeKhgmSZiy3KJ4hwiIgt
-         X5UTjooyVa9FTCjH0eT6WnMHC9IGHpgyr7g/FyBo45ucAT3Fdh+Hd+tUo6gAPtL9fCeR
-         8p6VkYdfSksSKPgQVrrf79aWL40BphuEPMCTKUljg3H2pm2zVXNtoogJT8pZfrUMji7Z
-         WX4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UibWS27dG8CTdjCuiOWaZ3ON4LxN1iE+u65371mY3a0=;
-        b=pDVp4AS3WrmIBmtYyC1rK9BbZHs2AERr0uEfQyzfg/XsxqbhP9lXOSZQ+Ta2Xu/+YS
-         5KxmNchzLYF0uZiGVAYSr8bEQk3ISisd89u7wYL/U6UmDrLXJLnJAdiq39KQYBW7mJn9
-         K7Ip/SsqCd1KoTx0kqYnRJ9nJryPqg1JJ796jAV3UlTf2M2ECXtxipng4jxYORprVpLC
-         YQthVMhZhLxARBEkvau4afWC9kctvsRJsGXpMKN/+rgj0xgqTZCy2m10qYw/xd7wXwVJ
-         uxW32TxTqdwcoGnxZ/Wi585rt2lPZHctiFPD1uah30hZqpQs1HXixVakIETT8009GNYa
-         eZBA==
-X-Gm-Message-State: AOAM532efN/8UEOg7eqTV8N3Xow8TYVeX16aHx2c5PMbVWSJgPYkOkAU
-        ZrUCvcXbMKmd94BW9tD6WGJXfXYbwxj0ZTxV9/yEEy7UGJg=
-X-Google-Smtp-Source: ABdhPJwOFmeQMvCgyBmT6psowBIEA54SUKqi+LlzYiTmkOhrdNgQSsWNofJcoRi6XBE2EFUaY1gkRxVHSF2cx8r2nbo=
-X-Received: by 2002:a50:9d49:: with SMTP id j9mr26706153edk.81.1632252897323;
- Tue, 21 Sep 2021 12:34:57 -0700 (PDT)
+        id S234589AbhIUTkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:40:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233197AbhIUTj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:39:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7068960F9E;
+        Tue, 21 Sep 2021 19:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632253110;
+        bh=Pv7ShSr/idpVyjsfAovBxi7kcQnkZuciFINPA0Ibvbg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=AdYVyudjbmk+sBCLEwnjWtxdfo0cCB5cf/nA5XOlmuMcDyvi+Si7YDnahjIYLvYEP
+         FLFFGFKUHfrQVZr4C+Woauy2607Yih/OFgEOlVxKN346BL0JJlLJco/O6q36KQW+9m
+         Alk9DzrbeucAgWiHr+a7n2ec035+LWQqmpsZP/bgzYapV2wYDN9SaUfXDC0QKKwimQ
+         XsILcfOouNKzrDbSWriuLxKoLWV5xTHrXnd+eNSea+H3ShiFCqBsytLvZUGSlt+DVY
+         ZhdgZOietFROJUZ83V1gT5OU7/Y+2fAF4C0ek+0aQhhev9OsPtQZERAtzlaBHrLUY0
+         pJ54+StfqlQ7w==
+Date:   Tue, 21 Sep 2021 14:38:29 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/3] PCI: fix 'pci_remap_iospace' for architectures
+ with PCI_IOBASE not defined
+Message-ID: <20210921193829.GA114725@bhelgaas>
 MIME-Version: 1.0
-References: <20210914183718.4236-1-shy828301@gmail.com> <20210914183718.4236-4-shy828301@gmail.com>
- <20210921094915.GA817765@u2004>
-In-Reply-To: <20210921094915.GA817765@u2004>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 21 Sep 2021 12:34:44 -0700
-Message-ID: <CAHbLzkrxFrG9ncaFMVZhnXut0VmON0MP1bM=4DqFgwqXGRtoJg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] mm: shmem: don't truncate page if memory failure happens
-To:     Naoya Horiguchi <naoya.horiguchi@linux.dev>
-Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMhs-H90yvbnPN26C7P_431cYqD4=8yrCUrxUY3L5k1GdsCeiQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 2:49 AM Naoya Horiguchi
-<naoya.horiguchi@linux.dev> wrote:
->
-> On Tue, Sep 14, 2021 at 11:37:17AM -0700, Yang Shi wrote:
-> > The current behavior of memory failure is to truncate the page cache
-> > regardless of dirty or clean.  If the page is dirty the later access
-> > will get the obsolete data from disk without any notification to the
-> > users.  This may cause silent data loss.  It is even worse for shmem
-> > since shmem is in-memory filesystem, truncating page cache means
-> > discarding data blocks.  The later read would return all zero.
+If you repost this, please update the subject line like:
+
+  PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+
+On Tue, Sep 21, 2021 at 08:36:07PM +0200, Sergio Paracuellos wrote:
+> On Tue, Sep 21, 2021 at 7:49 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 > >
-> > The right approach is to keep the corrupted page in page cache, any
-> > later access would return error for syscalls or SIGBUS for page fault,
-> > until the file is truncated, hole punched or removed.  The regular
-> > storage backed filesystems would be more complicated so this patch
-> > is focused on shmem.  This also unblock the support for soft
-> > offlining shmem THP.
+> > [+cc Liviu, Rob, Catalin, Arnd, since this warning was added by
+> > 8b921acfeffd ("PCI: Add pci_remap_iospace() to map bus I/O resources"),
+> > https://git.kernel.org/linus/8b921acfeffd]
 > >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  mm/memory-failure.c |  3 ++-
-> >  mm/shmem.c          | 25 +++++++++++++++++++++++--
-> >  2 files changed, 25 insertions(+), 3 deletions(-)
+> > On Sun, Aug 22, 2021 at 06:10:04PM +0200, Sergio Paracuellos wrote:
+> > > Request for I/O resources from device tree call 'pci_remap_iospace' from
+> > > 'devm_pci_remap_iospace' which is also called from device tree function
+> > > 'pci_parse_request_of_pci_ranges'. if PCI_IOBASE is not defined and I/O
+> > > resources are requested the following warning appears:
+
+s/'pci_remap_iospace'/pci_remap_iospace()/
+s/'devm_pci_remap_iospace'/devm_pci_remap_iospace()/
+s/'pci_parse_request_of_pci_ranges'/pci_parse_request_of_pci_ranges()/
+s/if PCI_IOBASE/If PCI_IOBASE/
+
+I think you can trim the stacktrace below and keep just this:
+
+  WARNING: CPU: 2 PID: 1 at ../drivers/pci/pci.c:4066 pci_remap_iospace+0x3c/0x54
+  This architecture does not support memory mapped I/O
+  mt7621-pci 1e140000.pcie: error -19: failed to map resource [io  0x1e160000-0x1e16ffff]
+
+> > >
+> > > ------------[ cut here ]------------
+> > > WARNING: CPU: 2 PID: 1 at ../drivers/pci/pci.c:4066 pci_remap_iospace+0x3c/0x54
+> > > This architecture does not support memory mapped I/O
+> > > Modules linked in:
+> > > CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.10.1+ #1228
+> > > Stack : 00000000 00000000 807fa974 00000000 827ffa80 80066b48 80710000 0000000b
+> > >         00000000 00000000 81c59aac 7d06ddec 80850000 00000001 81c59a40 7d06ddec
+> > >         00000000 00000000 807c909c 81c598f0 00000001 81c59904 00000000 0000000a
+> > >         203a6d6d 80708880 0000000f 70617773 80850000 00000000 00000000 807d0000
+> > >         807ffecc 1e160000 00000001 00000200 00000000 8054e920 00000008 815e0008
+> > >         ...
+> > > Call Trace:
+> > > [<80008efc>] show_stack+0x8c/0x130
+> > > [<806e1674>] dump_stack+0x9c/0xc8
+> > > [<80024a3c>] __warn+0xc0/0xe8
+> > > [<80024ad0>] warn_slowpath_fmt+0x6c/0xbc
+> > > [<80410ca8>] pci_remap_iospace+0x3c/0x54
+> > > [<80410d20>] devm_pci_remap_iospace+0x58/0xa4
+> > > [<8042019c>] devm_of_pci_bridge_init+0x4dc/0x55c
+> > > [<80408de8>] devm_pci_alloc_host_bridge+0x78/0x88
+> > > [<80424e44>] mt7621_pci_probe+0x68/0x9a4
+> > > [<80464804>] platform_drv_probe+0x40/0x7c
+> > > [<804628bc>] really_probe+0x2fc/0x4e4
+> > > [<80463214>] device_driver_attach+0x4c/0x74
+> > > [<80463384>] __driver_attach+0x148/0x150
+> > > [<8046047c>] bus_for_each_dev+0x6c/0xb0
+> > > [<804614dc>] bus_add_driver+0x1b4/0x1fc
+> > > [<80463aa0>] driver_register+0xd0/0x110
+> > > [<80001714>] do_one_initcall+0x84/0x1c0
+> > > [<808e7fd0>] kernel_init_freeable+0x214/0x24c
+> > > [<806e4164>] kernel_init+0x14/0x118
+> > > [<80003358>] ret_from_kernel_thread+0x14/0x1c
+> > >
+> > > ---[ end trace 1c9d4412bd51b53c ]---
+> > > mt7621-pci 1e140000.pcie: error -19: failed to map resource [io  0x1e160000-0x1e16ffff]
+> > >
+> > > Since there are architectures (like MIPS ralink) that can request I/O
+> > > resources from device tree but have not mapeable I/O space and also PCI_IOBASE
+> > > not defined, avoid this warning and just return zero to make the I/O ranges
+> > > assignment work.
+
+s/have not mapeable I/O space and also PCI_IOBASE not defined/
+  don't have mappable I/O space and therefore don't define PCI_IOBASE/
+s/avoid this warning .../
+  avoid calling devm_pci_remap_iospace() in that case/
+
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > ---
+> > >  drivers/pci/pci.c | 12 ++++++------
+> > >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index aacf575c15cf..10bb2191f376 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -4102,9 +4102,9 @@ unsigned long __weak pci_address_to_pio(phys_addr_t address)
+> > >   * @phys_addr: physical address of range to be mapped
+> > >   *
+> > >   * Remap the memory mapped I/O space described by the @res and the CPU
+> > > - * physical address @phys_addr into virtual address space.  Only
+> > > - * architectures that have memory mapped IO functions defined (and the
+> > > - * PCI_IOBASE value defined) should call this function.
+> > > + * physical address @phys_addr into virtual address space. There
+> > > + * are architectures that don't define PCI_IOBASE but can have not
+> > > + * mapeable IO space. Return zero for those cases.
+> > >   */
+> > >  int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
+> > >  {
+> > > @@ -4122,10 +4122,10 @@ int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
+> > >  #else
+> > >       /*
+> > >        * This architecture does not have memory mapped I/O space,
+> > > -      * so this function should never be called
+> > > +      * but can have not mapeable I/O space, so just return ok
+> > > +      * here.
+> > >        */
+> > > -     WARN_ONCE(1, "This architecture does not support memory mapped I/O\n");
+> > > -     return -ENODEV;
+> > > +     return 0;
 > >
-> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> > index 54879c339024..3e06cb9d5121 100644
-> > --- a/mm/memory-failure.c
-> > +++ b/mm/memory-failure.c
-> > @@ -1101,7 +1101,8 @@ static int page_action(struct page_state *ps, struct page *p,
-> >       result = ps->action(p, pfn);
+> > This doesn't seem right to me.  pci_remap_iospace() remaps
+> > memory-mapped I/O space into virtual address space.
 > >
-> >       count = page_count(p) - 1;
-> > -     if (ps->action == me_swapcache_dirty && result == MF_DELAYED)
-> > +     if ((ps->action == me_swapcache_dirty && result == MF_DELAYED) ||
-> > +         (ps->action == me_pagecache_dirty && result == MF_FAILED))
->
-> This new line seems to affect the cases of dirty page cache
-> on other filesystems, whose result is to miss "still referenced"
-> messages for some unmap failure cases (although it's not so critical).
-> So checking filesystem type (for example with shmem_mapping())
-> might be helpful?
->
-> And I think that if we might want to have some refactoring to pass
-> *ps to each ps->action() callback, then move this refcount check to
-> the needed places.
-> I don't think that we always need the refcount check, for example in
-> MF_MSG_KERNEL and MF_MSG_UNKNOWN cases (because no one knows the
-> expected values for these cases).
-
-Yeah, seems make sense to me. How's about doing the below (totally untested):
-
-static inline bool check_refcount(struct *page, bool dec)
-{
-    int count = page_count(page) - 1;
-
-    if (dec || shmem_mapping(page->mapping))
-        count -= 1;
-
-    if (count > 0) {
-         pr_err("Memory failure: %#lx: %s still referenced by %d users\n",
-                       pfn, action_page_types[ps->type], count);
-         return false;
-    }
-
-    return true;
-}
-
-Then call this in the needed me_* functions and return right value per
-the return value of it. I think me_swapcache_dirty() is the only place
-need pass in true for dec parameter.
-
->
->
-> >               count--;
-> >       if (count > 0) {
-> >               pr_err("Memory failure: %#lx: %s still referenced by %d users\n",
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index 88742953532c..ec33f4f7173d 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
-> >       struct inode *inode = mapping->host;
-> >       struct shmem_inode_info *info = SHMEM_I(inode);
-> >       pgoff_t index = pos >> PAGE_SHIFT;
-> > +     int ret = 0;
+> > If the architecture doesn't support that remapping, we shouldn't claim
+> > that it succeeded.
 > >
-> >       /* i_rwsem is held by caller */
-> >       if (unlikely(info->seals & (F_SEAL_GROW |
-> > @@ -2466,7 +2467,19 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
-> >                       return -EPERM;
-> >       }
+> > The analogous path for ACPI is in acpi_pci_root_remap_iospace(), where
+> > we only call pci_remap_iospace() if PCI_IOBASE is defined.  Maybe we
+> > should use the same approach here, i.e., add the corresonding #ifdef
+> > in pci_parse_request_of_pci_ranges()?
+> 
+> This approach you are talking here is what I did in v1 of this series
+> [0] and you tell me to properly fix that in the 'pci_remap_iospace'.
+
+Hmm, sorry, you're absolutely right.
+
+I guess I was thinking that pci_remap_iospace() was broken because it
+returns -ENODEV when the arch can't remap I/O port space into virtual
+memory space.  But that doesn't seem right.  If the arch literally
+cannot do that remapping, why should pci_remap_iospace() return
+success and basically pretend that it can?
+
+And the acpi_pci_root_remap_iospace() case is doing exactly the same
+thing, and we live with the #ifdef there.  So I think I was just wrong
+before, and we should make the DT case similar by adding the #ifdef
+where you initially put it, in pci_parse_request_of_pci_ranges().
+
+> Both of these v1 and v2 obviously end up in a working pci system for
+> mt7621 ralink.
+> Another option I guess would be to mark 'pci_remap_iospace' as weak
+> and redefine the symbol for ralink but since it is only for one simple
+> return zero maybe it makes no sense at all... Please, tell me the
+> correct approach to properly fix this and make things work for this
+> platform.
+
+Making pci_remap_iospace() weak could work (and I think it was
+originally that way), but seems overkill to me, unless you want a way
+to make generic mips kernels that work both on ralink and other mips
+platforms.
+
+> Thanks in advance for your time,
+>      Sergio Paracuellos
+> 
+> [0]: https://lore.kernel.org/linux-pci/20210807072409.9018-2-sergio.paracuellos@gmail.com/T/#m73c19c3b72fdf8c63e6d3fe8dc80aeee4e4adcaa
+> 
 > >
-> > -     return shmem_getpage(inode, index, pagep, SGP_WRITE);
-> > +     ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
-> > +
-> > +     if (!ret) {
->
-> Maybe this "!ret" check is not necessary because *pagep is set
-> non-NULL only when ret is 0.  It could save one indent level.
-
-Yes, sure.
-
->
-> > +             if (*pagep) {
-> > +                     if (PageHWPoison(*pagep)) {
-> > +                             unlock_page(*pagep);
-> > +                             put_page(*pagep);
-> > +                             ret = -EIO;
-> > +                     }
-> > +             }
-> > +     }
-> > +
-> > +     return ret;
-> >  }
-> >
-> >  static int
-> > @@ -2555,6 +2568,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >                       unlock_page(page);
-> >               }
-> >
-> > +             if (page && PageHWPoison(page)) {
-> > +                     error = -EIO;
-> > +                     break;
-> > +             }
-> > +
-> >               /*
-> >                * We must evaluate after, since reads (unlike writes)
-> >                * are called without i_rwsem protection against truncate
-> > @@ -3782,7 +3800,6 @@ const struct address_space_operations shmem_aops = {
-> >  #ifdef CONFIG_MIGRATION
-> >       .migratepage    = migrate_page,
-> >  #endif
-> > -     .error_remove_page = generic_error_remove_page,
->
-> This change makes truncate_error_page() calls invalidate_inode_page(),
-> and in my testing it fails with "Failed to invalidate" message.
-> So as a result memory_failure() finally returns with -EBUSY. I'm not
-> sure it's expected because this patchset changes to keep error pages
-> in page cache as a proper error handling.
-> Maybe you can avoid this by defining .error_remove_page in shmem_aops
-> which simply returns 0.
-
-Yes, the "Failed to invalidate" message seems confusing. I agree a
-shmem specific callback is better.
-
->
-> >  };
-> >  EXPORT_SYMBOL(shmem_aops);
-> >
-> > @@ -4193,6 +4210,10 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
-> >               page = ERR_PTR(error);
-> >       else
-> >               unlock_page(page);
-> > +
-> > +     if (PageHWPoison(page))
-> > +             page = NULL;
-> > +
-> >       return page;
->
-> One more comment ...
->
->   - I guess that you add PageHWPoison() checks after some call sites
->     of shmem_getpage() and shmem_getpage_gfp(), but seems not cover all.
->     For example, mcontinue_atomic_pte() in mm/userfaultfd.c can properly
->     handle PageHWPoison?
-
-No, I didn't touch anything outside shmem.c. I could add this in the
-next version.
-
-BTW, I just found another problem for the change in
-shmem_read_mapping_page_gfp(), it should return ERR_PTR(-EIO) instead
-of NULL since the callers may not handle NULL. Will fix in the next
-version too.
-
->
-> I'm trying to test more detail, but in my current understanding,
-> this patch looks promising to me.  Thank you for your effort.
-
-Thank a lot for taking time do the review.
-
->
-> Thanks,
-> Naoya Horiguchi
+> > >  #endif
+> > >  }
+> > >  EXPORT_SYMBOL(pci_remap_iospace);
+> > > --
+> > > 2.25.1
+> > >
