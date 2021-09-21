@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8A74135EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA154135EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbhIUPMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:12:21 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9750 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233893AbhIUPMS (ORCPT
+        id S234077AbhIUPMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:12:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9898 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233919AbhIUPMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:12:18 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDPwf5dkLzW8bW;
-        Tue, 21 Sep 2021 23:09:38 +0800 (CST)
+        Tue, 21 Sep 2021 11:12:19 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HDPrm44YLz8yhV;
+        Tue, 21 Sep 2021 23:06:16 +0800 (CST)
 Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Tue, 21 Sep 2021 23:10:47 +0800
+ 15.1.2308.8; Tue, 21 Sep 2021 23:10:48 +0800
 Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
  dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -31,9 +31,9 @@ CC:     <linux-kernel@vger.kernel.org>, <arei.gonglei@huawei.com>,
         <stefanha@redhat.com>, <vkuznets@redhat.com>,
         <ne-devel-upstream@amazon.com>,
         "Longpeng(Mike)" <longpeng2@huawei.com>
-Subject: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc functionality
-Date:   Tue, 21 Sep 2021 23:10:38 +0800
-Message-ID: <20210921151039.1502-4-longpeng2@huawei.com>
+Subject: [PATCH v2 4/4] nitro_enclaves: add kunit tests for physical contiguous region merging
+Date:   Tue, 21 Sep 2021 23:10:39 +0800
+Message-ID: <20210921151039.1502-5-longpeng2@huawei.com>
 X-Mailer: git-send-email 2.25.0.windows.1
 In-Reply-To: <20210921151039.1502-1-longpeng2@huawei.com>
 References: <20210921151039.1502-1-longpeng2@huawei.com>
@@ -48,102 +48,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add test framework for the misc functionality.
+Add kunit tests for the physical contiguous memory region merging
+functionality.
 
 Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
 ---
- drivers/virt/nitro_enclaves/Kconfig        |  8 ++++++++
- drivers/virt/nitro_enclaves/ne_misc_dev.c  | 27 +++++++++++++++++++++++++++
- drivers/virt/nitro_enclaves/ne_misc_test.c | 17 +++++++++++++++++
- 3 files changed, 52 insertions(+)
- create mode 100644 drivers/virt/nitro_enclaves/ne_misc_test.c
+ drivers/virt/nitro_enclaves/ne_misc_test.c | 46 ++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/drivers/virt/nitro_enclaves/Kconfig b/drivers/virt/nitro_enclaves/Kconfig
-index 8c9387a..24c54da 100644
---- a/drivers/virt/nitro_enclaves/Kconfig
-+++ b/drivers/virt/nitro_enclaves/Kconfig
-@@ -18,3 +18,11 @@ config NITRO_ENCLAVES
- 
- 	  To compile this driver as a module, choose M here.
- 	  The module will be called nitro_enclaves.
-+
-+config NITRO_ENCLAVES_MISC_TEST
-+	bool "Tests for the misc functionality of Nitro enclaves"
-+	depends on NITRO_ENCLAVES && KUNIT=y
-+	help
-+	  Enable KUnit tests for the misc functionality of Nitro Enclaves. Select
-+	  this option only if you will boot the kernel for the purpose of running
-+	  unit tests (e.g. under UML or qemu). If unsure, say N.
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index d551b88..0131e1b 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -1735,8 +1735,33 @@ static long ne_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	return 0;
- }
- 
-+#if defined(CONFIG_NITRO_ENCLAVES_MISC_TEST)
-+#include "ne_misc_test.c"
-+
-+static inline int ne_misc_test_init(void)
-+{
-+	return __kunit_test_suites_init(ne_misc_test_suites);
-+}
-+
-+static inline void ne_misc_test_exit(void)
-+{
-+	__kunit_test_suites_exit(ne_misc_test_suites);
-+}
-+#else
-+static inline int ne_misc_test_init(void)
-+{
-+	return 0;
-+}
-+
-+static inline void ne_misc_test_exit(void)
-+{
-+}
-+#endif
-+
- static int __init ne_init(void)
- {
-+	ne_misc_test_init();
-+
- 	mutex_init(&ne_cpu_pool.mutex);
- 
- 	return pci_register_driver(&ne_pci_driver);
-@@ -1747,6 +1772,8 @@ static void __exit ne_exit(void)
- 	pci_unregister_driver(&ne_pci_driver);
- 
- 	ne_teardown_cpu_pool();
-+
-+	ne_misc_test_exit();
- }
- 
- module_init(ne_init);
 diff --git a/drivers/virt/nitro_enclaves/ne_misc_test.c b/drivers/virt/nitro_enclaves/ne_misc_test.c
-new file mode 100644
-index 0000000..3426c35
---- /dev/null
+index 3426c35..8532bec 100644
+--- a/drivers/virt/nitro_enclaves/ne_misc_test.c
 +++ b/drivers/virt/nitro_enclaves/ne_misc_test.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
+@@ -2,7 +2,53 @@
+ 
+ #include <kunit/test.h>
+ 
++#define MAX_PHYS_REGIONS	16
 +
-+#include <kunit/test.h>
-+
-+static struct kunit_case ne_misc_test_cases[] = {
-+	{}
++struct phys_regions_test {
++	u64 paddr;
++	u64 size;
++	int expect_rc;
++	unsigned long expect_num;
++	u64 expect_last_paddr;
++	u64 expect_last_size;
++} phys_regions_testcases[] = {
++	{0x1000, 0x200000, -EINVAL, 0, ~0, ~0},
++	{0x200000, 0x1000, -EINVAL, 0, ~0, ~0},
++	{0x200000, 0x200000, 0, 1, 0x200000, 0x200000},
++	{0x0, 0x200000, 0, 2, 0x0, 0x200000},
++	{0x600000, 0x400000, 0, 3, 0x600000, 0x400000},
++	{0xa00000, 0x400000, 0, 3, 0x600000, 0x800000},
++	{0x1000, 0x200000, -EINVAL, 3, 0x600000, 0x800000},
 +};
 +
-+static struct kunit_suite ne_misc_test_suite = {
-+	.name = "ne_misc_test",
-+	.test_cases = ne_misc_test_cases,
-+};
++static void ne_misc_test_set_phys_region(struct kunit *test)
++{
++	struct phys_contig_mem_region *regions;
++	size_t sz;
++	int i, rc;
 +
-+static struct kunit_suite *ne_misc_test_suites[] = {
-+	&ne_misc_test_suite,
-+	NULL
-+};
++	sz = sizeof(*regions) + MAX_PHYS_REGIONS * sizeof(struct phys_mem_region);
++	regions = kunit_kzalloc(test, sz, GFP_KERNEL);
++	KUNIT_ASSERT_TRUE(test, regions != NULL);
++
++	for (i = 0; i < ARRAY_SIZE(phys_regions_testcases); i++) {
++		rc = ne_add_phys_memory_region(regions, phys_regions_testcases[i].paddr,
++					       phys_regions_testcases[i].size);
++		KUNIT_EXPECT_EQ(test, rc, phys_regions_testcases[i].expect_rc);
++		KUNIT_EXPECT_EQ(test, regions->num, phys_regions_testcases[i].expect_num);
++
++		if (phys_regions_testcases[i].expect_last_paddr == ~0ul)
++			continue;
++
++		KUNIT_EXPECT_EQ(test, regions->region[regions->num - 1].paddr,
++				phys_regions_testcases[i].expect_last_paddr);
++		KUNIT_EXPECT_EQ(test, regions->region[regions->num - 1].size,
++				phys_regions_testcases[i].expect_last_size);
++	}
++}
++
+ static struct kunit_case ne_misc_test_cases[] = {
++	KUNIT_CASE(ne_misc_test_set_phys_region),
+ 	{}
+ };
+ 
 -- 
 1.8.3.1
 
