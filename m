@@ -2,186 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31F0413A14
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA9C413A2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhIUS27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:28:59 -0400
-Received: from gateway22.websitewelcome.com ([192.185.46.234]:31169 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232951AbhIUS25 (ORCPT
+        id S233497AbhIUSnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:43:20 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:51397 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233372AbhIUSnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:28:57 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id B6E7A48EF7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:26:48 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id SkTgmovBXcEL1SkTgmSpoN; Tue, 21 Sep 2021 13:26:48 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/dj7s67eUkkTGvtArxjq5kIQaqJk5zQlj2EZsb9EvXo=; b=CtuNvfEow+zACbdw8ZfOWssMzl
-        0bHsT+p1GmSL1VqJrs09WJhuaZJFffasqXANF3MxH/Y4vLRVAEfim4Hda6s3LFYYoqhJQasLwSEHH
-        DnHqRTKkEsAZXT1YIspdXGmROyBPTsmUpORTmA+AIUXgBk9/nA5NNMTbh6P4bTqI0hcsQwjAakWzD
-        0VVGEufBvFHAp1mO+BleA1MK2ovX3ZymnIAiXDa8UhPO3m9ttBqHSOfjVRRcNb3AH43DNysaEvG9N
-        Jivx1sdQ3ViLwRtEhZnR21ANBPuHuoBsGqUA4ZRMzDhb+YlB0Qdvz7n1EKXXVNYvHvTBDOnHlxAzw
-        BkPouv8w==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:36388 helo=[192.168.15.9])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1mSkTg-000c67-5M; Tue, 21 Sep 2021 13:26:48 -0500
-Subject: Re: [PATCH] assoc_array: Avoid open coded arithmetic in allocator
- arguments
-To:     Len Baker <len.baker@gmx.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210919110913.39386-1-len.baker@gmx.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <c7bc0092-96e5-9be8-1987-00689ef9cab8@embeddedor.com>
-Date:   Tue, 21 Sep 2021 13:30:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 14:43:15 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Sep 2021 14:43:14 EDT
+Received: from cust-df1d398c ([IPv6:fc0c:c1f5:9ac0:c45f:1583:5c5b:91fa:2436])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Skb8mlMr9pQdWSkbAmYt2D; Tue, 21 Sep 2021 20:34:34 +0200
+From:   Mark Kettenis <kettenis@openbsd.org>
+To:     devicetree@vger.kernel.org
+Cc:     maz@kernel.org, robin.murphy@arm.com, sven@svenpeter.dev,
+        alyssa@rosenzweig.io, Mark Kettenis <kettenis@openbsd.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-rpi-kernel@lists.infradead.org
+Subject: [PATCH v5 0/4] Apple M1 PCIe DT bindings
+Date:   Tue, 21 Sep 2021 20:34:11 +0200
+Message-Id: <20210921183420.436-1-kettenis@openbsd.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210919110913.39386-1-len.baker@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1mSkTg-000c67-5M
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:36388
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfJAwNRZfItx7Ca/LQZGO8Hp6gt9AXY4gOPt4meSRg+3UmnKdHuwFhbQCu6nsqyqxNvOyuzarFKw3/4fLWCJGzEc0GGLfq23sEKY4AVHHAM849h4iLU9n
+ TiVAFPhOKXPC9KSXurCf+NcfTy1GGLtCxInTPgoT3yT2wSBTNB28NAQw3kBjC9HtXeDP3UHcPO1FFWvIBxr9XX181R1/Z7GwOafKlivDRIYsKToDk/K8dbn7
+ un2ZVmgru+jaUtF8VDMF/8Wj9Rnq0y/sB2ETSaFGDXsOyQKIry5u43TU+05kMXQEOqDnx5C1iMJ5z49oCkW+UcIAYKDrfvqV44FqTwZFuqnUYcz3KhZ8uYZV
+ RG0GN96IPTCAqaEwNczdMrZUyQV8Tk7eeiAdsBPf+sDGZpxU38SBrvdXHU9idppHkKX9xkvT8/e765fm+NeVJZyWjZBBWLtlVVO9XreHWaIJ+Nejubotf1M/
+ JhjoCxNbTShh7xgeYZrUPHYIi2MsuDOXcOQRmUWpOE0UMGqCmHd4il7XDjq0Uzr6iyjFwNLH3ujE9i6UqffgQZsSqD/Pd+a9hJkByvIebNM8EdmDvRnHhuda
+ +HxcVUB+xpwkb+0T+EAqZW7aeZsE0fHCMp/amZYUMYgzhX91ZEkh8nAi5E82m38+TfDn5nQECIPOcYAOAB3RtjzTBHu2iriKCygnVtpbVQF5uFxVBjxZQIYu
+ nVj0/HLh63zm3hVuYLjfD9gcYBEixTqOAo+4lt8Btkmhn5+/QIGu+2qhpZJIcd4UzuUsKkABJqo/qf+mI64j7rl/w3htHDgtT+ISVH7v50O9WJ4MlxJw9MW4
+ 10DQy0yp0W9JEEp4XvfNuwzwx2bft4rpCaSmij18BvCmuxDVhYacg7N5CWEIzQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This small series adds bindings for the PCIe controller found on the
+Apple M1 SoC.
+
+At this point, the primary consumer for these bindings is U-Boot.
+With these bindings U-Boot can bring up the links for the root ports
+of the PCIe root complex.  A simple OS driver can then provide
+standard ECAM access and manage MSI interrupts to provide access
+to the built-in Ethernet and XHCI controllers of the Mac mini.
+
+The Apple controller incorporates Synopsys Designware PCIe logic
+to implement its root port.  But unlike other hardware currently
+supported by U-Boot and the Linux kernel the Apple hardware
+integrates multiple root ports.  As such the existing bindings
+for the DWC PCIe interface can't be used.  There is a single ECAM
+space for all root space, but separate GPIOs to take the PCI devices
+on those ports out of reset.  Therefore the standard "reset-gpio" and
+"max-link-speed" properties appear on the child nodes representing
+the PCI devices that correspond to the individual root ports.
+
+MSIs are handled by the PCIe controller and translated into "regular
+interrupts".  A range of 32 MSIs is provided.  These 32 MSIs can be
+distributed over the root ports as the OS sees fit by programming the
+PCIe controller port registers.
+
+This now adds an MSI controller binding schema and uses the generic
+msi-ranges property to specify how the MSIs are mapped to interrupts
+on the AIC.  I copied some of the description text in the MSI
+controller binding schema from msi.txt but it may need some further
+tweaks to make sense.
+
+Patch 4/4 of this series depends on the pinctrl series I sent earlier
+and will probably go through Hector Martin's Apple M1 SoC tree.
 
 
-On 9/19/21 06:09, Len Baker wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
-> 
-> So, use the struct_size() helper to do the arithmetic instead of the
-> argument "size + count * size" in the kmalloc() and kzalloc() functions.
-> 
-> Also, take the opportunity to refactor the memcpy() calls to use the
-> struct_size() and flex_array_size() helpers.
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
+Changelog:
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+v5: - Use correct license for MSI controller binding schema
+    - Use power-domains instead of clocks as we figured out
+      that the hardware actually does power gating.
+    - Fix sizes of the "reg" property.
+    - Improve constraints.
+    - Improve descriptions.
 
-I'll add this to my -next tree.
+v4: - Convert MSI controller binding to YAML
+    - Add generic msi-ranges property to MSI controller binding
+    - Fix typos/formatting in apple,pcie binding
+    - Use generic MSI controller binding in apple,pcie
 
-Thanks
---
-Gustavo
+v3: - Remove unneeded include in example
 
-> ---
->  lib/assoc_array.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/lib/assoc_array.c b/lib/assoc_array.c
-> index 04c98799c3ba..079c72e26493 100644
-> --- a/lib/assoc_array.c
-> +++ b/lib/assoc_array.c
-> @@ -741,8 +741,7 @@ static bool assoc_array_insert_into_terminal_node(struct assoc_array_edit *edit,
->  	keylen = round_up(diff, ASSOC_ARRAY_KEY_CHUNK_SIZE);
->  	keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
-> 
-> -	new_s0 = kzalloc(sizeof(struct assoc_array_shortcut) +
-> -			 keylen * sizeof(unsigned long), GFP_KERNEL);
-> +	new_s0 = kzalloc(struct_size(new_s0, index_key, keylen), GFP_KERNEL);
->  	if (!new_s0)
->  		return false;
->  	edit->new_meta[2] = assoc_array_shortcut_to_ptr(new_s0);
-> @@ -849,8 +848,8 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
->  		keylen = round_up(diff, ASSOC_ARRAY_KEY_CHUNK_SIZE);
->  		keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
-> 
-> -		new_s0 = kzalloc(sizeof(struct assoc_array_shortcut) +
-> -				 keylen * sizeof(unsigned long), GFP_KERNEL);
-> +		new_s0 = kzalloc(struct_size(new_s0, index_key, keylen),
-> +				 GFP_KERNEL);
->  		if (!new_s0)
->  			return false;
->  		edit->new_meta[1] = assoc_array_shortcut_to_ptr(new_s0);
-> @@ -864,7 +863,7 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
->  		new_n0->parent_slot = 0;
-> 
->  		memcpy(new_s0->index_key, shortcut->index_key,
-> -		       keylen * sizeof(unsigned long));
-> +		       flex_array_size(new_s0, index_key, keylen));
-> 
->  		blank = ULONG_MAX << (diff & ASSOC_ARRAY_KEY_CHUNK_MASK);
->  		pr_devel("blank off [%zu] %d: %lx\n", keylen - 1, diff, blank);
-> @@ -899,8 +898,8 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
->  		keylen = round_up(shortcut->skip_to_level, ASSOC_ARRAY_KEY_CHUNK_SIZE);
->  		keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
-> 
-> -		new_s1 = kzalloc(sizeof(struct assoc_array_shortcut) +
-> -				 keylen * sizeof(unsigned long), GFP_KERNEL);
-> +		new_s1 = kzalloc(struct_size(new_s1, index_key, keylen),
-> +				 GFP_KERNEL);
->  		if (!new_s1)
->  			return false;
->  		edit->new_meta[2] = assoc_array_shortcut_to_ptr(new_s1);
-> @@ -913,7 +912,7 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
->  		new_n0->slots[sc_slot] = assoc_array_shortcut_to_ptr(new_s1);
-> 
->  		memcpy(new_s1->index_key, shortcut->index_key,
-> -		       keylen * sizeof(unsigned long));
-> +		       flex_array_size(new_s1, index_key, keylen));
-> 
->  		edit->set[1].ptr = &side->back_pointer;
->  		edit->set[1].to = assoc_array_shortcut_to_ptr(new_s1);
-> @@ -1490,13 +1489,12 @@ int assoc_array_gc(struct assoc_array *array,
->  		shortcut = assoc_array_ptr_to_shortcut(cursor);
->  		keylen = round_up(shortcut->skip_to_level, ASSOC_ARRAY_KEY_CHUNK_SIZE);
->  		keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
-> -		new_s = kmalloc(sizeof(struct assoc_array_shortcut) +
-> -				keylen * sizeof(unsigned long), GFP_KERNEL);
-> +		new_s = kmalloc(struct_size(new_s, index_key, keylen),
-> +				GFP_KERNEL);
->  		if (!new_s)
->  			goto enomem;
->  		pr_devel("dup shortcut %p -> %p\n", shortcut, new_s);
-> -		memcpy(new_s, shortcut, (sizeof(struct assoc_array_shortcut) +
-> -					 keylen * sizeof(unsigned long)));
-> +		memcpy(new_s, shortcut, struct_size(new_s, index_key, keylen));
->  		new_s->back_pointer = new_parent;
->  		new_s->parent_slot = shortcut->parent_slot;
->  		*new_ptr_pp = new_parent = assoc_array_shortcut_to_ptr(new_s);
-> --
-> 2.25.1
-> 
+v2: - Adjust name for ECAM in "reg-names"
+    - Drop "phy" registers
+    - Expand description
+    - Add description for "interrupts"
+    - Fix incorrect minItems for "interrupts"
+    - Fix incorrect MaxItems for "reg-names"
+    - Document the use of "msi-controller", "msi-parent", "iommu-map" and
+      "iommu-map-mask"
+    - Fix "bus-range" and "iommu-map" properties in the example
+
+Mark Kettenis (4):
+  dt-bindings: interrupt-controller: Convert MSI controller to
+    json-schema
+  dt-bindings: interrupt-controller: msi: Add msi-ranges property
+  dt-bindings: pci: Add DT bindings for apple,pcie
+  arm64: apple: Add PCIe node
+
+ .../interrupt-controller/msi-controller.yaml  |  46 +++++
+ .../devicetree/bindings/pci/apple,pcie.yaml   | 161 ++++++++++++++++++
+ .../bindings/pci/brcm,stb-pcie.yaml           |   1 +
+ .../bindings/pci/microchip,pcie-host.yaml     |   1 +
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/apple/t8103.dtsi          |  63 +++++++
+ 6 files changed, 273 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/msi-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+
+-- 
+2.33.0
+
