@@ -2,141 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F326412F7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BCB412F88
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhIUHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        id S230257AbhIUHfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhIUHdA (ORCPT
+        with ESMTP id S230216AbhIUHfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:33:00 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA1AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:31:32 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id f3-20020a17090a638300b00199097ddf1aso1366553pjj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:31:32 -0700 (PDT)
+        Tue, 21 Sep 2021 03:35:53 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5190DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:34:25 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q68so19903992pga.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:34:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=iT/A7saFWdSRDEDmu/VTK8EiZ0qLpHBdaDox0oesTUg=;
-        b=gDTXZuETD2SrveG2tnn6mLAaK2DRY8v2YdE0Z7B0hKnnlfXnZ2hk+2wW1OwZ6x56xY
-         Y88fiHi8iF1Pvxk0TsSR868FvnZHjFX2O8cprwraKRVgxBbl2gNM75eQl/KJds7yp5MB
-         gtMYE8OXZHyykH7gCNkTCRBUnJfNHxLwWADCy5nmfn6g0DHgahBiLssTYUlTBM3PkYzA
-         rKmgK+CnKGmPz1MoGpNQxlDx+Bz501MppVqPuNLFyLxXIG2A9URiJjn2oGOgLi2h4hX8
-         39vGn15EYJG+HwqLZ6mGFgdH18p7vIwqga5bVekEViFweHBDFnt0tR9cmrgiIn6Yb/8K
-         mQyg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9fj7HOMTAEjrvCtbYb+Vzu40lpj7JG3HNn+Dw24QDhE=;
+        b=XiHW8y8HiRKWE4MjzdMcGMKrnLNUm/2DxA23Rwjpv/Y2uyPKsGHVF9SKjyTZVOVt3u
+         tgiuas0utFrWqv82kSL92lTElSNbMUhfilYsigMBE4gg4Z+0qqWEcJaE36vLVbqHK8EU
+         S1mlWNz3aV+xpcH30RxiKwXEaOaqo3/wPwL3KA/pY83VxwI+4t5uXrCmDwDDf2kue1m9
+         S3Bj+0XGOPmuNxVCcr+oCUFw3V+P9n4DG2NPHtEPKcMJuRfjiqK/j+vzSlmyX3xhnvbM
+         HCpYgs68zPF3esI/eCuWrEfgdERS/P/6D0XZNFlIzjRMzIHHSTB4MVAM0KLay/cFcNOQ
+         RdJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=iT/A7saFWdSRDEDmu/VTK8EiZ0qLpHBdaDox0oesTUg=;
-        b=Q7aFLRyrTiCWusUrbQLcmVahFOX8ujOqkyA+Ztwu+7s/BF9a6BPy4W5WCjtOCe4zrw
-         i738C6MXdaeVAUBFCum2qtyqkAWclxaWatjxjG48sz7LIbdtpYIB690nJsxtnvO32H/X
-         haXwjkXScX+sbNRp/B9lHVlehPJUgUvM3eGpAbhMcs4Sg4EyGlqsZZ6K8udn9QLfRBk+
-         63oaAFxxrFvH+GzNfqHmUildVs7jnlSqOY4sZqhHN2srXtBz0FOUsw3CEkJnd3/1xGhh
-         TLrPxNon+F8z2B0SqqEtGBM+/OTnb8WiI2NlPfmSHa0TiO4JyPWQ3AfVbvbFTt4oi8vg
-         h0yw==
-X-Gm-Message-State: AOAM531vb4yRKty1AlkpxQU5W1WzQoelfU+4P5gZ4Tw+QdrEpk8wKR2+
-        2oMSGZ7oeO8KRf13qA2bhIM=
-X-Google-Smtp-Source: ABdhPJyPWVA16UxUHFcNGd2HYDeNHwaIxj84SZUFfQ+9V5Vht1lQ67OKECMEgHpldsZweSXbpYRE4w==
-X-Received: by 2002:a17:903:4094:b0:13c:86b0:3050 with SMTP id z20-20020a170903409400b0013c86b03050mr26129372plc.58.1632209491760;
-        Tue, 21 Sep 2021 00:31:31 -0700 (PDT)
-Received: from owniadeMacBook-Pro.local ([103.97.201.31])
-        by smtp.gmail.com with ESMTPSA id g19sm1568094pjl.25.2021.09.21.00.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 00:31:31 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mm/debug: sync up latest migrate_reason to
- migrate_reason_names
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Anshuman Khandual <khandual@linux.vnet.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mina Almasry <almasrymina@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>, Wei Xu <weixugc@google.com>
-References: <20210921064553.293905-1-o451686892@gmail.com>
- <20210921064553.293905-3-o451686892@gmail.com>
- <87mto676fq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Weizhao Ouyang <o451686892@gmail.com>
-Message-ID: <d57aaff2-b154-4462-1a7d-3d288ebabb6a@gmail.com>
-Date:   Tue, 21 Sep 2021 15:31:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9fj7HOMTAEjrvCtbYb+Vzu40lpj7JG3HNn+Dw24QDhE=;
+        b=rYebg4mBXXCD4PnTUXeaLRrm8qw73rjbRdmef4QcoaYFPVPwqMqNCfAqQVW7lRpQmv
+         8hYv7sAFfKi9noD0r40bUEO8NK/rNZpp42WHAazv2JrYTsdeeLLmwqs7gEam9EOSThrw
+         2b8Xy2g+IKUpHwMgFmtWwgb6HpeoejB9AvxLcansZK5uConWKUvxwix0RcMeEN+o0qd4
+         rRDg+7OEnDphSfxqVlUGRPZJd87ufdPvp3qQprAZurMCXjp/y+ETYOAEPBC0B9RYuE7j
+         8Y04j5Afv3KcpLLryxtRxA6cqQ4J77VhXCfPGd3YzomTpxKheTiiGBIfZ1G51f+vXkUq
+         WELQ==
+X-Gm-Message-State: AOAM533fAxjDKWZtSwfsFvUmY5hWKZ+OOEeB4QNCkE4YquJMQQIBrdzp
+        BmJch89zZ0e0fMTh+rg++rvYR7H6hWc=
+X-Google-Smtp-Source: ABdhPJxAImd3GsLSf8jEOhahqfGtQvb40nnbL+RNafys5hkuywableCwRRUk/AB6esCS4cPJbBL2aA==
+X-Received: by 2002:aa7:9e0a:0:b0:447:a7f7:40e with SMTP id y10-20020aa79e0a000000b00447a7f7040emr11513094pfq.37.1632209664732;
+        Tue, 21 Sep 2021 00:34:24 -0700 (PDT)
+Received: from localhost.localdomain ([2402:e280:2130:198:9b25:1cfb:9ff3:2a8f])
+        by smtp.gmail.com with ESMTPSA id x8sm16565957pfq.131.2021.09.21.00.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 00:34:24 -0700 (PDT)
+From:   Benjamin Philip <benjamin.philip495@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Benjamin Philip <benjamin.philip495@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] staging: rts5208: remove unnecessary parentheses in all files
+Date:   Tue, 21 Sep 2021 13:03:41 +0530
+Message-Id: <cover.1632209460.git.benjamin.philip495@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <87mto676fq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset removes all unnecessary parentheses in the rts5208 driver.
 
-On 2021/9/21 15:07, Huang, Ying wrote:
-> Weizhao Ouyang <o451686892@gmail.com> writes:
->
->> Sync up MR_DEMOTION to migrate_reason_names and add a synch prompt.
->>
->> Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
->> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
->> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->> ---
->>  include/linux/migrate.h | 6 +++++-
->>  mm/debug.c              | 1 +
->>  2 files changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
->> index 326250996b4e..c8077e936691 100644
->> --- a/include/linux/migrate.h
->> +++ b/include/linux/migrate.h
->> @@ -19,6 +19,11 @@ struct migration_target_control;
->>   */
->>  #define MIGRATEPAGE_SUCCESS		0
->>  
->> +/*
->> + * Keep sync with:
->> + * - macro MIGRATE_REASON in include/trace/events/migrate.h
->> + * - migrate_reason_names[MR_TYPES] in mm/debug.c
->> + */
->>  enum migrate_reason {
->>  	MR_COMPACTION,
->>  	MR_MEMORY_FAILURE,
->> @@ -32,7 +37,6 @@ enum migrate_reason {
->>  	MR_TYPES
->>  };
->>  
->> -/* In mm/debug.c; also keep sync with include/trace/events/migrate.h */
->>  extern const char *migrate_reason_names[MR_TYPES];
->>  
->>  #ifdef CONFIG_MIGRATION
->> diff --git a/mm/debug.c b/mm/debug.c
->> index e61037cded98..fae0f81ad831 100644
->> --- a/mm/debug.c
->> +++ b/mm/debug.c
->> @@ -26,6 +26,7 @@ const char *migrate_reason_names[MR_TYPES] = {
->>  	"numa_misplaced",
->>  	"contig_range",
->>  	"longterm_pin",
->> +	"demotion",
->>  };
->>  
->>  const struct trace_print_flags pageflag_names[] = {
-> Can we add BUILD_BUG_ON() somewhere to capture at least some
-> synchronization issue?
+Benjamin Philip (8):
+  staging: rts5208: remove unnecessary parentheses in rtsx_card.c
+  staging: rts5208: remove unnecessary parentheses in rtsx.c
+  staging: rts5208: remove unnecessary parentheses in rtsx_chip.c
+  staging: rts5208: remove unnecessary parentheses in rtsx_transport.c
+  staging: rts5208: remove unnecessary parentheses in sd.c
+  staging: rts5208: remove unnecessary parentheses in xd.c
+  staging: rts5208: remove unnecessary parentheses in rtsx_scsi.c
+  staging: rts5208: remove parentheses pair in sd.c
 
-Hi Huang, we discussed this in the v1 thread with you and John, seems you
-missed it. Now we just add a comment to do the synchronization, and we can
-figure out a more general way to use strings which in trace_events straight.
+ drivers/staging/rts5208/rtsx.c           |   2 +-
+ drivers/staging/rts5208/rtsx_card.c      |   8 +-
+ drivers/staging/rts5208/rtsx_chip.c      |  16 ++--
+ drivers/staging/rts5208/rtsx_scsi.c      | 106 +++++++++++------------
+ drivers/staging/rts5208/rtsx_transport.c |   6 +-
+ drivers/staging/rts5208/sd.c             |  68 +++++++--------
+ drivers/staging/rts5208/xd.c             |  48 +++++-----
+ 7 files changed, 127 insertions(+), 127 deletions(-)
 
-Thanks,
-Weizhao
+-- 
+2.31.1
+
