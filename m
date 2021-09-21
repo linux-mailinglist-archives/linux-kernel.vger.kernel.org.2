@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87188413C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08E5413C81
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235279AbhIUVeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:34:09 -0400
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:47061 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232915AbhIUVeI (ORCPT
+        id S235447AbhIUVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232088AbhIUVes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:34:08 -0400
-Received: by mail-oi1-f172.google.com with SMTP id s69so1136624oie.13;
-        Tue, 21 Sep 2021 14:32:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qDO1fvNwhfLREKr/5ATsuvM8YFuU+0xw+gUsA5EGmvk=;
-        b=Ojl3kGaYi8ujlkkCqUQ/z8fduZviywcnNplbCX6xtnFsZ1witfypRWidr2iQeuD7Do
-         H10u2uLVih2q6VHtk/zBK8bJAvI41Nj9lhw3sEo3MOQfNDtHhaWmy6Uw1WwCR9MS/tSG
-         klUX+lisJbhQ8EvDjbHqKCU6KlcNb7WdhLrys/YDUq71Ranj3yRN6ExQJAA2LM+hdQvl
-         V8Vs59SrFCumqEkxujfJbdRdlH3+sJFJvVd5mLkUyb404tEjKBN/ZPMO4XrlThye6iYQ
-         HAqc2XcfN5Du3wWrHlklR+QDC2q9adSBrWTo4vCwraZrN3GUkZBfiGibYmUX7CU1jf1e
-         ihKw==
-X-Gm-Message-State: AOAM531z7BVuYD/XTDmZmqnWzXTqtuaNyrzRyhwmfcMC7Sv435fnTJSY
-        Aq09ylLVAuLtHFnWUfOGzw==
-X-Google-Smtp-Source: ABdhPJwFa4ByiEhygBH5y0xgNlCz55dCTlPSBcXL8rW3zgHYH+RGzySuP3g+1fuRljgvV89NE8wgbg==
-X-Received: by 2002:a05:6808:570:: with SMTP id j16mr5246148oig.119.1632259959323;
-        Tue, 21 Sep 2021 14:32:39 -0700 (PDT)
-Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
-        by smtp.gmail.com with ESMTPSA id d7sm59473ooa.36.2021.09.21.14.32.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:32:38 -0700 (PDT)
-Received: (nullmailer pid 3359413 invoked by uid 1000);
-        Tue, 21 Sep 2021 21:32:37 -0000
-Date:   Tue, 21 Sep 2021 16:32:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Benoit Parrot <bparrot@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: [PATCH v4 10/11] media: dt-bindings: Add DT bindings for TI
- J721E CSI2RX driver
-Message-ID: <YUpPdbv2YoBJ+4Z5@robh.at.kernel.org>
-References: <20210915120240.21572-1-p.yadav@ti.com>
- <20210915120240.21572-11-p.yadav@ti.com>
+        Tue, 21 Sep 2021 17:34:48 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED47FC061574;
+        Tue, 21 Sep 2021 14:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZajkgWCi0yDRNW6H+n3ZFs1aW16iYhABZhxg/AoBYvw=; b=s5rg++9t1nqEFcw5oLCBxYRfeK
+        NIbToqlfdAOBSouhSQTRtcCE7get7605g8ZAdPRdavXQMRFHJNcyBU6B5ReVWEKgPyi8qj1E7R++s
+        5u1VEnytviDQa4z42NjFNkizc140FUNrBWz6s2hU31c1ywS29ulGrdR8/olvORJ64VyobMT+54BeN
+        zfbclzEzYdVd8/hp9kYvV5Vlknv1qm3tH76aGU+G3yXnRcTHDu/CtEpPIrwv7GhFpiuuITBLAOTpV
+        B0agmJDalimch/Pxgv6Wc4jgOn0reNU5h7n3GYqdE7F+MtL1UDO7/XOxTwVOZJ658lStkqR46ZUTv
+        9x42J6wA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54718)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mSnO7-000368-Jj; Tue, 21 Sep 2021 22:33:15 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mSnO5-0003dF-Er; Tue, 21 Sep 2021 22:33:13 +0100
+Date:   Tue, 21 Sep 2021 22:33:13 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
+Message-ID: <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163918.373775935@linuxfoundation.org>
+ <20210921212837.GA29170@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915120240.21572-11-p.yadav@ti.com>
+In-Reply-To: <20210921212837.GA29170@duo.ucw.cz>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Sep 2021 17:32:39 +0530, Pratyush Yadav wrote:
-> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
-> parts together.
+On Tue, Sep 21, 2021 at 11:28:37PM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver broke
+> > when moving the incorrect handling of mac link state out of mac_config().
+> > This reason this breaks is because the stmmac's WoL is handled by the MAC
+> > rather than the PHY, and phylink doesn't cater for that scenario.
+> > 
+> > This patch adds the necessary phylink code to handle suspend/resume events
+> > according to whether the MAC still needs a valid link or not. This is the
+> > barest minimum for this support.
 > 
-> ---
-> 
-> (no changes since v2)
-> 
-> Changes in v2:
-> - Rename to ti,j721e-csi2rx.yaml
-> - Add an entry in MAINTAINERS.
-> - Add a description for the binding.
-> - Change compatible to ti,j721e-csi2rx to make it SoC specific.
-> - Remove description from dmas, reg, power-domains.
-> - Remove a limit of 2 from #address-cells and #size-cells.
-> - Fix add ^ to csi-bridge subnode regex.
-> - Make ranges mandatory.
-> - Add unit address in example.
-> - Add a reference to cdns,csi2rx in csi-bridge subnode.
-> - Expand the example to include the csi-bridge subnode as well.
-> - Re-order subject prefixes.
-> 
->  .../bindings/media/ti,j721e-csi2rx.yaml       | 101 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 102 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/ti,j721e-csi2rx.yaml
-> 
+> This adds functions that end up being unused in 5.10. AFAICT we do not
+> need this in 5.10.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+It needs to be backported to any kernel that also has
+"net: stmmac: fix MAC not working when system resume back with WoL active"
+backported to. From what I can tell, the fixes line in that commit
+refers to a commit (46f69ded988d) in v5.7-rc1.
+
+If "net: stmmac: fix MAC not working when system resume back with WoL
+active" is not being backported to 5.10, then there is no need to
+backport this patch.
+
+As I'm not being copied on the stmmac commit, I've no idea which kernels
+this patch should be backported to.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
