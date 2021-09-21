@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE7541347D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8D6413452
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhIUNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:41:21 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27587 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233096AbhIUNlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:41:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="308909930"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="308909930"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 06:34:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="613006988"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 21 Sep 2021 06:34:23 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 21 Sep 2021 16:34:22 +0300
-Date:   Tue, 21 Sep 2021 16:34:22 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alexander Graf <graf@amazon.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: Re: [RFT PATCH 5/9] usb: typec: tipd: Allow to configure irq bits
-Message-ID: <YUnfXkVHbgeqV9V2@kuha.fi.intel.com>
-References: <20210918120934.28252-1-sven@svenpeter.dev>
- <20210918120934.28252-6-sven@svenpeter.dev>
+        id S233054AbhIUNgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:36:54 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45528 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233033AbhIUNgt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:36:49 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18L7AKhB006203;
+        Tue, 21 Sep 2021 15:35:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=9+Kwlm+L8H7YKY6mvIF1mdYOkB2nTTC9Hu8EuriSzrU=;
+ b=nXFMZrZzOSdm5R6DaTY7ZzSwgPRXY9EWeYurFmkxS0NtlCvAxgTFNo+je7p/46boFQLY
+ 2aR2dK1A2nw6CrlrGcIN7bAv4l9vuwO4FSBMBCF1YwcfQCliyOq6Ez8IniEL38fF8bVc
+ 7+J+cA1lCMwhp2ZSN4deoNSzKgzbynxD1HYFXwkYEsK8A96ETfSlZ81nZ/ZWeodev0oX
+ g8bAFVyhAAzDWC06Rx7lCBqtInkt8EBW/eilPjkOvfsiOxrUdo47FOo7m1quuhE4xvSE
+ P3ZhBl+okv+B4uUiuZJVrY83MOIgPREY938GUv8022FCzjfc8k20+pzyVj/eu0pkc71M gA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3b7as51u8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 15:35:09 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A1364100034;
+        Tue, 21 Sep 2021 15:35:07 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9A44D244899;
+        Tue, 21 Sep 2021 15:35:07 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 21 Sep 2021 15:35:04
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+To:     <alexandre.torgue@foss.st.com>
+CC:     <robh+dt@kernel.org>, <amelie.delaunay@foss.st.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <fabrice.gasnier@foss.st.com>
+Subject: [PATCH] ARM: dts: stm32: fix STUSB1600 Type-C irq level on stm32mp15xx-dkx
+Date:   Tue, 21 Sep 2021 15:34:49 +0200
+Message-ID: <1632231289-18881-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210918120934.28252-6-sven@svenpeter.dev>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_01,2021-09-20_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 02:09:30PM +0200, Sven Peter wrote:
-> The Apple variant of the TI TPS6598x chip uses different interrupt
-> numbers. Prepare for that by allowing those to be configured depending
-> on the compatible.
+STUSB1600 IRQ (Alert pin) is active low (open drain). Interrupts may get
+lost currently, so fix the IRQ type.
 
-OK, so I think this justifies having a completely separate irq
-handler for your board.
+Fixes: 83686162c0eb ("ARM: dts: stm32: add STUSB1600 Type-C using I2C4 on stm32mp15xx-dkx")
 
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> ---
->  drivers/usb/typec/tipd/core.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 4a6d66250fef..d191e7435018 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -80,6 +80,10 @@ static const char *const modes[] = {
->  struct tps6598x_hw {
->  	bool use_int1;
->  	bool use_int2;
-> +	unsigned int irq_power_status_update;
-> +	unsigned int irq_data_status_update;
-> +	unsigned int irq_plug_event;
-> +	void (*irq_trace)(u64 event1, u64 event2);
->  };
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+---
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Then I believe you don't need any of that.
-
-
-thanks,
-
+diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+index 9a95489..878ea36 100644
+--- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
++++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
+@@ -260,7 +260,7 @@
+ 	stusb1600@28 {
+ 		compatible = "st,stusb1600";
+ 		reg = <0x28>;
+-		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-parent = <&gpioi>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&stusb1600_pins_a>;
 -- 
-heikki
+2.7.4
+
