@@ -2,182 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1B64130EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 11:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088554130F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 11:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhIUJuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 05:50:55 -0400
-Received: from out0.migadu.com ([94.23.1.103]:57218 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231435AbhIUJuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 05:50:54 -0400
-Date:   Tue, 21 Sep 2021 18:49:15 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1632217764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Quq+0jhOskeL/K3WU9X/OZRgaVP3m6IJiCXAdpAnFeA=;
-        b=MkwFFnRmyXHMxZ11CLpYFa99w3IOyuVE6xQBoEO8hx/6pSBEG0fUnXVpV2hk6CUTiLUZ//
-        21mf6T5dlVnQNkJEOFY70W8foUumsNIp57hsb1X8FqmfzsM+FJJJMti6+jRET/P8DQerB3
-        ZnWt5HDBfJTUGIMz5whC/XEt6pC7Mfc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        osalvador@suse.de, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] mm: shmem: don't truncate page if memory failure
- happens
-Message-ID: <20210921094915.GA817765@u2004>
-References: <20210914183718.4236-1-shy828301@gmail.com>
- <20210914183718.4236-4-shy828301@gmail.com>
+        id S231509AbhIUJvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 05:51:08 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:41744
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231513AbhIUJvD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 05:51:03 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 3A11F3F32A
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632217770;
+        bh=TC8to0fdr9vxFSQxicA3tEJVkEMx8qYFCoQHA/EWSRQ=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=ewR8X7tPOefeU0cAt047cYQtlpu5DRDi1TBxfRsJ2PkJWDyawz+FCijJ5QlQWgdsQ
+         76kHXvfa+CA/86bjWJzlfMeE0JP7I5NZYAIzXn/aAEPyyP0oWQ5tCjG4POpnC1VHaJ
+         YyyU12+kWf5lLphTuRCet29fSlKcXLWVjg9+E9bNipAiHS8wV3pXHR4EKKfvi6Btye
+         opCToHTcNyJTuJfHobm/ABvHT42Nsd4GaL+StG/Odw7meSnBgSRK/VpbuxEwm7yGnZ
+         hQ+KaHieJ6hiIWePkIEXOVXo6i57k2Cfwb67dExrhB2n1E5YXIUjlLbt+tcc8pqJpj
+         2mfJUWwzs8XiQ==
+Received: by mail-wr1-f69.google.com with SMTP id u10-20020adfae4a000000b0016022cb0d2bso577831wrd.19
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 02:49:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TC8to0fdr9vxFSQxicA3tEJVkEMx8qYFCoQHA/EWSRQ=;
+        b=2gNo1VtWycHC6TCudLvP6vohgD2DvmfLbrXhSzzgDJWOP3aPqiSCjVhcbmm8l2kCv6
+         6UpeA/tXo3K+mefee1lWnSIUKd7f4vSfSmCB5DnIPZg+HN93iUbz2UaXxz5TizjD/9wy
+         0hYTQmD9qq/3EC+/5cqCYUl9qENYsiOMDyzf5Q5+9HhRFjPTz1iktk5gessufCGwNwrv
+         USE1+k5Uhjcs71hFuLZhkw/OR9EWi8POa3kkfqQQxvBX+hYRyrq0ig+pZ/5M/dsKmvQT
+         BhivOwhowe6aMSJ3yVBIlcsD6hKZiTWl4HPxavhkDrBh/Bw5ieQQufyZ0lZBK5amimmY
+         5fnA==
+X-Gm-Message-State: AOAM5313DJdFHiOQ0y2UtjpyNUmVHuHvRb2s1KxPFMwFALRolkrGMotv
+        +G50lH38iSRzSRItExLsACGW6FDcrhdUs7SbfYOyH9lCrsBvAx0LGCvR20cEh7D1B1VbevOqIZy
+        Y+8fVNz40d0XwLaoYNPcff70RAreCFKj9LH3LB8Re3Q==
+X-Received: by 2002:adf:e6d0:: with SMTP id y16mr33331507wrm.284.1632217769961;
+        Tue, 21 Sep 2021 02:49:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQF/TUirez5540bL5zNEt/2NcRjxdz50w7vq6r7Er4fKkMq96l4CT6K2GEozMAHCojeKegcg==
+X-Received: by 2002:adf:e6d0:: with SMTP id y16mr33331492wrm.284.1632217769817;
+        Tue, 21 Sep 2021 02:49:29 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id j134sm2798987wmj.27.2021.09.21.02.49.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 02:49:29 -0700 (PDT)
+Subject: Re: [PATCH V1 1/3] dt-bindings: tegra: memory,bpmp-thermal: add SPDX
+ license
+To:     Bitan Biswas <bbiswas@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210921094206.2632-1-bbiswas@nvidia.com>
+ <20210921094206.2632-2-bbiswas@nvidia.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <176ba3a3-5179-56b6-081a-6c93493b207b@canonical.com>
+Date:   Tue, 21 Sep 2021 11:49:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210921094206.2632-2-bbiswas@nvidia.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210914183718.4236-4-shy828301@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 11:37:17AM -0700, Yang Shi wrote:
-> The current behavior of memory failure is to truncate the page cache
-> regardless of dirty or clean.  If the page is dirty the later access
-> will get the obsolete data from disk without any notification to the
-> users.  This may cause silent data loss.  It is even worse for shmem
-> since shmem is in-memory filesystem, truncating page cache means
-> discarding data blocks.  The later read would return all zero.
+On 21/09/2021 11:42, Bitan Biswas wrote:
+> Add Dual licensing SPDX license identifier for tegra186,tegra194
+> memory and bpmp-thermal headers.
 > 
-> The right approach is to keep the corrupted page in page cache, any
-> later access would return error for syscalls or SIGBUS for page fault,
-> until the file is truncated, hole punched or removed.  The regular
-> storage backed filesystems would be more complicated so this patch
-> is focused on shmem.  This also unblock the support for soft
-> offlining shmem THP.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Bitan Biswas <bbiswas@nvidia.com>
 > ---
->  mm/memory-failure.c |  3 ++-
->  mm/shmem.c          | 25 +++++++++++++++++++++++--
->  2 files changed, 25 insertions(+), 3 deletions(-)
+>  include/dt-bindings/memory/tegra186-mc.h            | 1 +
+>  include/dt-bindings/memory/tegra194-mc.h            | 1 +
+>  include/dt-bindings/thermal/tegra186-bpmp-thermal.h | 1 +
+>  include/dt-bindings/thermal/tegra194-bpmp-thermal.h | 1 +
+>  4 files changed, 4 insertions(+)
 > 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 54879c339024..3e06cb9d5121 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1101,7 +1101,8 @@ static int page_action(struct page_state *ps, struct page *p,
->  	result = ps->action(p, pfn);
+> diff --git a/include/dt-bindings/memory/tegra186-mc.h b/include/dt-bindings/memory/tegra186-mc.h
+> index 82a1e27f7357..be313d3790ae 100644
+> --- a/include/dt-bindings/memory/tegra186-mc.h
+> +++ b/include/dt-bindings/memory/tegra186-mc.h
+> @@ -1,3 +1,4 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+>  #ifndef DT_BINDINGS_MEMORY_TEGRA186_MC_H
+>  #define DT_BINDINGS_MEMORY_TEGRA186_MC_H
 >  
->  	count = page_count(p) - 1;
-> -	if (ps->action == me_swapcache_dirty && result == MF_DELAYED)
-> +	if ((ps->action == me_swapcache_dirty && result == MF_DELAYED) ||
-> +	    (ps->action == me_pagecache_dirty && result == MF_FAILED))
 
-This new line seems to affect the cases of dirty page cache
-on other filesystems, whose result is to miss "still referenced"
-messages for some unmap failure cases (although it's not so critical).
-So checking filesystem type (for example with shmem_mapping())
-might be helpful?
+The files were licensed as GPL-2.0 only, so you are effectively
+re-licensing them. I guess this is ok, as you act on behalf of copyright
+holders, but please state it in the commit message.
 
-And I think that if we might want to have some refactoring to pass
-*ps to each ps->action() callback, then move this refcount check to
-the needed places.
-I don't think that we always need the refcount check, for example in
-MF_MSG_KERNEL and MF_MSG_UNKNOWN cases (because no one knows the
-expected values for these cases).
-
-
->  		count--;
->  	if (count > 0) {
->  		pr_err("Memory failure: %#lx: %s still referenced by %d users\n",
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 88742953532c..ec33f4f7173d 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2456,6 +2456,7 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
->  	struct inode *inode = mapping->host;
->  	struct shmem_inode_info *info = SHMEM_I(inode);
->  	pgoff_t index = pos >> PAGE_SHIFT;
-> +	int ret = 0;
->  
->  	/* i_rwsem is held by caller */
->  	if (unlikely(info->seals & (F_SEAL_GROW |
-> @@ -2466,7 +2467,19 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
->  			return -EPERM;
->  	}
->  
-> -	return shmem_getpage(inode, index, pagep, SGP_WRITE);
-> +	ret = shmem_getpage(inode, index, pagep, SGP_WRITE);
-> +
-> +	if (!ret) {
-
-Maybe this "!ret" check is not necessary because *pagep is set
-non-NULL only when ret is 0.  It could save one indent level.
-
-> +		if (*pagep) {
-> +			if (PageHWPoison(*pagep)) {
-> +				unlock_page(*pagep);
-> +				put_page(*pagep);
-> +				ret = -EIO;
-> +			}
-> +		}
-> +	}
-> +
-> +	return ret;
->  }
->  
->  static int
-> @@ -2555,6 +2568,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  			unlock_page(page);
->  		}
->  
-> +		if (page && PageHWPoison(page)) {
-> +			error = -EIO;
-> +			break;
-> +		}
-> +
->  		/*
->  		 * We must evaluate after, since reads (unlike writes)
->  		 * are called without i_rwsem protection against truncate
-> @@ -3782,7 +3800,6 @@ const struct address_space_operations shmem_aops = {
->  #ifdef CONFIG_MIGRATION
->  	.migratepage	= migrate_page,
->  #endif
-> -	.error_remove_page = generic_error_remove_page,
-
-This change makes truncate_error_page() calls invalidate_inode_page(),
-and in my testing it fails with "Failed to invalidate" message.
-So as a result memory_failure() finally returns with -EBUSY. I'm not
-sure it's expected because this patchset changes to keep error pages
-in page cache as a proper error handling.
-Maybe you can avoid this by defining .error_remove_page in shmem_aops
-which simply returns 0.
-
->  };
->  EXPORT_SYMBOL(shmem_aops);
->  
-> @@ -4193,6 +4210,10 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
->  		page = ERR_PTR(error);
->  	else
->  		unlock_page(page);
-> +
-> +	if (PageHWPoison(page))
-> +		page = NULL;
-> +
->  	return page;
-
-One more comment ...
-
-  - I guess that you add PageHWPoison() checks after some call sites
-    of shmem_getpage() and shmem_getpage_gfp(), but seems not cover all.
-    For example, mcontinue_atomic_pte() in mm/userfaultfd.c can properly
-    handle PageHWPoison?
-
-I'm trying to test more detail, but in my current understanding,
-this patch looks promising to me.  Thank you for your effort.
-
-Thanks,
-Naoya Horiguchi
+Best regards,
+Krzysztof
