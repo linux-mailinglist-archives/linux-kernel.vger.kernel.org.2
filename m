@@ -2,133 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF83413466
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F711413487
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbhIUNkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:40:05 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44734
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232227AbhIUNkD (ORCPT
+        id S233212AbhIUNmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232953AbhIUNmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:40:03 -0400
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A97A93F320
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:38:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632231514;
-        bh=qjV8xhkZjX89cHr8o702pqyeIg4T7wQY+u2MdwI/m28=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=uLn46G1LZkuAfthtsoP7adx8d0SUj8oEw2fAc5vLt7r99UVzQwtL0jnbo7+W1d7I1
-         V53ctJXxIi1lzx/VUwOCdnuv6NQsYwo4mwNvLCbVzpYnVzBGWVAwup9GLBEAzPFVyi
-         QhKLzj0IETyQPdgjwONbvNW0Zkr/LrTO4WVVXQXajAayWJJlr2pWIvmVqxHTaptAcp
-         7RyeaY7i6GPiBLCSwsLvSTLAK+Og6JPT1VmOv9+qKR77Ayz5NFEQ+YOIAgpTwGxKNa
-         PcOWqVsI7Jx6hKnJpGRN/vAp70PxYz55x4/zEFiJapgHq1rM2ywbkYiMkIeRc8YsdE
-         3FfEaXvtjTz3Q==
-Received: by mail-pf1-f198.google.com with SMTP id q186-20020a6275c3000000b0043e096071a1so16043222pfc.18
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:38:34 -0700 (PDT)
+        Tue, 21 Sep 2021 09:42:11 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F9BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:40:42 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id v5so72829567edc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:40:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hy0PolOjfaXYxlg2doenD/4mEsnT0y4Wgn5+QthoNgQ=;
+        b=mXOd8Uuve41DKLvJrr6/QoaBIEC98yneQWLoPVx38AYsBq1kgX4II0RB8nur8E3FFd
+         02ourtfGk+JaJRPJ4PiZNcJzErw7nj6ut4k0mh75Oe08Wz1jT2Sds4c8ME2Ui6kyA+0r
+         T7GKMPTxoYgvgi/7XR1kA+a07Ko6GDhqZgU4cgNhtL6whEr5iKu2GKtqL6nNtcDrTXkJ
+         RzO3vYQvY39KnW3a5I6O2e9syhpCvLsETc0FHOcWSxnZQoim2XK4MIlhiGWRNm+ex+Tj
+         CmGFSsM5cDH4dZw1CwzPwIRvr6jjA1x4Jc+xtlmK1XmvJA8frCmUT1IJq02Tb8zR6NT9
+         mQVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qjV8xhkZjX89cHr8o702pqyeIg4T7wQY+u2MdwI/m28=;
-        b=6NZJ742Ym54emXi1ipR4JJBFsGYA7NVG/f4awoOKQZLG5UsDvnVM0LJ29MlIIzLuDr
-         Ys9PdbSvCWuEuq1AAfJwMeLK3Qr4a/T0Q+sm41tid+0tWL00Hyff/RT0pKyRP9AjQj2+
-         AYAqmmjRR7R+iAq6p9LRIorON1YJzKhWlJGGo1kWZP2aBKH/mQwgBBwVkRHMFz7WQO9t
-         yYpoMixJd5ys9R8q7xyw7S6/f9sRSF7B51NEz4xm9thOnC4gfR99yV4UKK5WAp42r9Q0
-         c8qPldb1X/8n7XdXrCJs/ee7RqTnXB4Riunn50I1ZWL9DQIiBIcbocefacKasWWos73p
-         tAAA==
-X-Gm-Message-State: AOAM53190PX0pByZ5rNP8ILiEzUCWq8FGuSCQIpsmuyLUHM3JEScfMRN
-        tD6sgoyXOhrEVnfAffYCPFVWuuJ74tIOkt4gGhwALxJSKoeEtm6NAbDcNuBfoJ9i4dcYnU1Q8rD
-        UPFbhkBT+WYvJ4JXAN5UvCbLaw3MiskGpSmBfTGlw6A==
-X-Received: by 2002:a05:6a00:1694:b0:440:3c9a:ea68 with SMTP id k20-20020a056a00169400b004403c9aea68mr31444878pfc.84.1632231512927;
-        Tue, 21 Sep 2021 06:38:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcZEWQ3UWc885uWznJLamRyMTscM1Ee10GdlOObmfDeddIIH/9d36JlrVlXlmCqVHxvFM0Cg==
-X-Received: by 2002:a05:6a00:1694:b0:440:3c9a:ea68 with SMTP id k20-20020a056a00169400b004403c9aea68mr31444850pfc.84.1632231512700;
-        Tue, 21 Sep 2021 06:38:32 -0700 (PDT)
-Received: from localhost.localdomain ([69.163.84.166])
-        by smtp.gmail.com with ESMTPSA id v25sm17087692pfm.202.2021.09.21.06.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 06:38:32 -0700 (PDT)
-From:   Tim Gardner <tim.gardner@canonical.com>
-To:     linux-iio@vger.kernel.org
-Cc:     tim.gardner@canonical.com,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3][next] counter: Add default statement to switch() in quad8_function_read()
-Date:   Tue, 21 Sep 2021 07:37:49 -0600
-Message-Id: <20210921133749.15461-1-tim.gardner@canonical.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <YUkpBU8mN4yrDfu5@shinobu>
-References: <YUkpBU8mN4yrDfu5@shinobu>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hy0PolOjfaXYxlg2doenD/4mEsnT0y4Wgn5+QthoNgQ=;
+        b=XkyLRrFLH7NWj2cZ4/pT7U5D04BA9rWYIUUquqn1BZLV3EDVLXO59EdYu+in3in09O
+         xEf50/onAXe+WKZEP3RpqBhSHRRB/cpV0oxBaAm2iX1KcS+nCKwQD0QZrKgIm+1kuZN6
+         k/DiLUZuZKnaxUv+HDxfr5wpv0RjtRFvc5OUIxwi3FW2c/XNadeCONUj+B/sk5F4+sC7
+         5iRWZLG83v5SK39OdxRx9C19kEtkoeijNPRcAH3dM57EFRnRy2LR1ZtjWIL0D2DV1LIz
+         IWw+azDIsa/eMo+q2g7FJsrrMwkwnuyzgX+fI3NVM7yOp+wLB6d/dGwS2jA9/xRQOFpd
+         PIqw==
+X-Gm-Message-State: AOAM532qk7DCkxMe04Dj4SIezi9bxk0WD8KeU7JikyuexiiJXMMvoM0p
+        w/in1uLeWsRrbnR244RAXsTEus8CbI6l6g==
+X-Google-Smtp-Source: ABdhPJxzci9Rw5XMfFMzir7le7QhtInOzGHLhYgrNyW2wx7vWHnfoqwW/vAgOw35Y2R00vHPEVnFWg==
+X-Received: by 2002:a50:d84c:: with SMTP id v12mr34819451edj.203.1632231544394;
+        Tue, 21 Sep 2021 06:39:04 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id i20sm8475321eds.14.2021.09.21.06.39.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 06:39:03 -0700 (PDT)
+Subject: Re: [PATCH] ASoC: qdsp6: q6afe-dai: Fix spelling mistake "Fronend" ->
+ "Frontend"
+To:     Colin King <colin.king@canonical.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210920184152.18109-1-colin.king@canonical.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <ccecfbda-c328-22ad-7a00-0f1980fe7589@linaro.org>
+Date:   Tue, 21 Sep 2021 14:39:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920184152.18109-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity complains of a possible use of an uninitialized variable in
-quad8_action_read().
 
-CID 119643 (#1 of 1): Uninitialized scalar variable (UNINIT)
-4. uninit_use: Using uninitialized value function.
-346        switch (function) {
 
-The call to quad8_function_read() could theoretically return without assigning
-a value to '*function', thus causing the use of an ininitialized variable
-'function' in quad8_action_read().
+On 20/09/2021 19:41, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in the module description. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Fix this by adding a default statement to the switch in quad8_function_read()
-and setting a return error code.
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-Cc: linux-iio@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
----
-v2 - Add the correct Cc's
-v3 - Add comment to the default switch statement. Also noticed v2 would have
-     returned with a lock held. Fix that by returning a variable return code.
----
- drivers/counter/104-quad-8.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-index c587f295d720..7faca6b760e7 100644
---- a/drivers/counter/104-quad-8.c
-+++ b/drivers/counter/104-quad-8.c
-@@ -201,6 +201,7 @@ static int quad8_function_read(struct counter_device *counter,
- {
- 	struct quad8 *const priv = counter->priv;
- 	const int id = count->id;
-+	int ret = 0;
- 
- 	mutex_lock(&priv->lock);
- 
-@@ -215,13 +216,16 @@ static int quad8_function_read(struct counter_device *counter,
- 		case 2:
- 			*function = COUNTER_FUNCTION_QUADRATURE_X4;
- 			break;
-+		default:
-+			/* should never reach this path */
-+			ret = -EINVAL;
- 		}
- 	else
- 		*function = COUNTER_FUNCTION_PULSE_DIRECTION;
- 
- 	mutex_unlock(&priv->lock);
- 
--	return 0;
-+	return ret;
- }
- 
- static int quad8_function_write(struct counter_device *counter,
--- 
-2.33.0
-
+> ---
+>   sound/soc/qcom/qdsp6/q6afe-dai.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+> index ac8f7324e94b..8b664cbf6fa6 100644
+> --- a/sound/soc/qcom/qdsp6/q6afe-dai.c
+> +++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+> @@ -1747,5 +1747,5 @@ static struct platform_driver q6afe_dai_platform_driver = {
+>   };
+>   module_platform_driver(q6afe_dai_platform_driver);
+>   
+> -MODULE_DESCRIPTION("Q6 Audio Fronend dai driver");
+> +MODULE_DESCRIPTION("Q6 Audio Frontend dai driver");
+>   MODULE_LICENSE("GPL v2");
+> 
