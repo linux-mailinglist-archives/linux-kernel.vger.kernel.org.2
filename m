@@ -2,170 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D56E41306C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92EE413053
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhIUIuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 04:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhIUIuE (ORCPT
+        id S231261AbhIUIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:47:03 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3848 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhIUIrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:50:04 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E27C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:48:36 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id eg28so48887557edb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pUh98EEgZG2+uO+vlZkUsJ82k9SQPEJS3egqtCoQfL4=;
-        b=JidHcdbTA56g9QDi5/rHubK3yUC4vaq0Q1uH2W1sMozCl7XKea40FpA5+GO7W1pE27
-         uo/UXYDxhtRzZrcBFQN6HIjpA9kdWR6CeUE+KBvO5ut2PCb1R8bbqlY89qitsK1OLzeG
-         w2bFos4aXABG4zXHt6QDag0bPaCuZyUoRczIViiHIt/oqVWE9HM8q2YmdoRg7z2FyPLQ
-         qpjdvgNnQnLlc19nqORxpUDlRBDuE2S8L9DmrZbn5FkZOdaaSNPx/TMMmIG+Baph5OsF
-         h6k5gftIt1TCjCu66WfbKVtnd+BLzsBTunxdU5zsRKa/FSj1+nzkBqiA/oIKe0YZFAVs
-         n+Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pUh98EEgZG2+uO+vlZkUsJ82k9SQPEJS3egqtCoQfL4=;
-        b=OsosS+eEnI5vZ55yn7LBJt4ed9PjiAp4XVUP0hTSbfzNS5lIOncUJigLzLWkyQ67Xc
-         uhHX4mLyTqgeUhVbdGNAxe5loNgl6/td02YXu27KnqNX0yFcZdGZcDLJ9UTymgT5bgSj
-         VoPcbel0Uletrvpdvb3cIaWVYykPR58XTvyvx2tIjUa6iTsl1e+3uP26X3J3aSPt2lpq
-         VR28m2H20PqIbMBFrqfPMLl1t8GrlRTwRhEquZTGuTDDnbewbQwLiB2H0Y7qJRsxecf3
-         CBeVoDMpApSpBCPxNhJr5kKEZ0P+OZz45cE5MUXBl3UNGtxF6/8GEPXnStPlvzrRlti4
-         5xNg==
-X-Gm-Message-State: AOAM532C72u6bvq34Jq8GQf8E7H8VgANR+Tv+OHp6JEn8AYBfEfR689z
-        tnpBD616EzevD8l5/V5ZKzPo6w==
-X-Google-Smtp-Source: ABdhPJxrQxE9ACVMOX6Sh5MbXYcHLRld4KwTJA0+3Vfku8/s36x38h1VCVUeBEctj8vgBsGMB9oXdA==
-X-Received: by 2002:a17:906:1945:: with SMTP id b5mr32587263eje.347.1632214115300;
-        Tue, 21 Sep 2021 01:48:35 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id o23sm8153195eds.75.2021.09.21.01.48.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 01:48:34 -0700 (PDT)
-Subject: Re: [PATCH 3/7] ASoC: codecs: tx-macro: Change mic control registers
- to volatile
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
- <1632123331-2425-4-git-send-email-srivasam@codeaurora.org>
- <c1c7b1e8-98f5-99a3-1374-11d1d61535b4@linaro.org>
- <b442ee2b-622c-674d-3abe-b1fbbfa5aeb9@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e87ef6e1-0c10-beaa-81ad-2c0ceae6bbcc@linaro.org>
-Date:   Tue, 21 Sep 2021 09:48:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 21 Sep 2021 04:47:01 -0400
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HDFLb5jzPz67lZq;
+        Tue, 21 Sep 2021 16:43:03 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 21 Sep 2021 10:45:31 +0200
+Received: from [10.47.88.85] (10.47.88.85) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 21 Sep
+ 2021 09:45:30 +0100
+Subject: Re: [PATCH v4 5/6] iova: Add iova_len argument to init_iova_domain()
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
+CC:     <joro@8bytes.org>, <baolu.lu@linux.intel.com>,
+        <iommu@lists.linux-foundation.org>, <linuxarm@huawei.com>,
+        <thierry.reding@gmail.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jonathanh@nvidia.com>, <sakari.ailus@linux.intel.com>,
+        <bingbu.cao@intel.com>, <tian.shu.qiu@intel.com>,
+        <mchehab@kernel.org>, <gregkh@linuxfoundation.org>,
+        <digetx@gmail.com>, <mst@redhat.com>, <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <chenxiang66@hisilicon.com>
+References: <1626259003-201303-1-git-send-email-john.garry@huawei.com>
+ <1626259003-201303-6-git-send-email-john.garry@huawei.com>
+ <20210802150644.GD28735@willie-the-truck>
+ <c6be0b9f-531b-dc12-2747-3acbecfcd531@huawei.com>
+ <1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4add7fb2-e9de-9c15-1915-6a6e2596941d@huawei.com>
+Date:   Tue, 21 Sep 2021 09:48:51 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <b442ee2b-622c-674d-3abe-b1fbbfa5aeb9@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1d06eda1-9961-d023-f5e7-fe87e768f067@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.88.85]
+X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 21/09/2021 08:30, Srinivasa Rao Mandadapu wrote:
+On 02/08/2021 17:16, Robin Murphy wrote:
+>>>>
+>>>> Also fix up all users to set this value (at 0, meaning use default).
+>>> Wrap that in init_iova_domain_defaults() to avoid the mysterious 0?
+>>
+>> Sure, I can do something like that. I actually did have separate along 
+>> those lines in v3 before I decided to change it.
 > 
-> On 9/20/2021 6:54 PM, Srinivas Kandagatla wrote:
-> Thanks for your time Srini!!
->>
->> On 20/09/2021 08:35, Srinivasa Rao Mandadapu wrote:
->>> Update amic and dmic related tx macro control registers to volatile
->>>
->>> Fixes: c39667ddcfc5 (ASoC: codecs: lpass-tx-macro: add support for 
->>> lpass tx macro)
->>>
->>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->>> ---
->>>   sound/soc/codecs/lpass-tx-macro.c | 13 +++++++++++++
->>>   1 file changed, 13 insertions(+)
->>>
->>> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
->>> b/sound/soc/codecs/lpass-tx-macro.c
->>> index 9273724..e65b592 100644
->>> --- a/sound/soc/codecs/lpass-tx-macro.c
->>> +++ b/sound/soc/codecs/lpass-tx-macro.c
->>> @@ -423,6 +423,13 @@ static bool tx_is_volatile_register(struct 
->>> device *dev, unsigned int reg)
->>>       case CDC_TX_TOP_CSR_SWR_DMIC1_CTL:
->>>       case CDC_TX_TOP_CSR_SWR_DMIC2_CTL:
->>>       case CDC_TX_TOP_CSR_SWR_DMIC3_CTL:
->>> +    case CDC_TX_TOP_CSR_SWR_AMIC0_CTL:
->>> +    case CDC_TX_TOP_CSR_SWR_AMIC1_CTL:
->>> +    case CDC_TX_CLK_RST_CTRL_MCLK_CONTROL:
->>> +    case CDC_TX_CLK_RST_CTRL_FS_CNT_CONTROL:
->>> +    case CDC_TX_CLK_RST_CTRL_SWR_CONTROL:
->>> +    case CDC_TX_TOP_CSR_SWR_CTRL:
->>> +    case CDC_TX0_TX_PATH_SEC7:
->>
->> Why are these marked as Volatile?
->> Can you provide some details on the issue that you are seeing?
->>
->> --srini
+> Y'know, at this point I'm now starting to seriously wonder whether 
+> moving the rcaches into iommu_dma_cookie wouldn't make a whole lot of 
+> things simpler... :/
 > 
-> Without volatile these registers are not reflecting in Hardware and 
-> playback and capture is not working.
-> 
-> Will do recheck and keep only required registers as volatile.
+> Does that sound like crazy talk to you, or an idea worth entertaining?
 
-This sounds like a total hack to me,
+Hi Robin,
 
-this might be happening in your case:
+JFYI, to try to make inroads into my IOVA issues, I'm going to look to 
+do this first, if you don't mind. I think that the fq stuff can also be 
+put into a separate structure also, rather than iova_domain, and that 
+can also be a member of iommu_dma_cookie.
 
-The default values for this register are different to actual defaults.
-Ex: CDC_TX_TOP_CSR_SWR_AMIC0_CTL default is 0x00
-so writing 0x0 to this register will be no-op as there is no change in 
-the register value as compared to default value as per regmap.
+BTW, with regards to separating the rcache magazine code out, I see 
+someone already trying to introduce something similar:
 
-In you case make sure the hardware default values are correctly 
-reflected in tx_defaults array.
+https://lore.kernel.org/lkml/CAKW4uUxperg41z8Lu5QYsS-YEGt1anuD1CuiUqXC0ANFqJBosQ@mail.gmail.com/T/#me4cc5de775ad16ab3d6e7ca854b55f274ddcba08
 
-Then setting the desired value should work.
+https://lore.kernel.org/lkml/YUkErK1vVZMht4s8@casper.infradead.org/T/#t
 
-
---srini
-
-
-
-> 
->>
->>
->>>           return true;
->>>       }
->>>       return false;
->>> @@ -1674,6 +1681,12 @@ static int tx_macro_component_probe(struct 
->>> snd_soc_component *comp)
->>>         snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 0x3F,
->>>                         0x0A);
->>> +    snd_soc_component_update_bits(comp, 
->>> CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
->>> +    snd_soc_component_update_bits(comp, 
->>> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
->>> +    snd_soc_component_update_bits(comp, 
->>> CDC_TX_TOP_CSR_SWR_DMIC0_CTL, 0xFF, 0x00);
->>> +    snd_soc_component_update_bits(comp, 
->>> CDC_TX_TOP_CSR_SWR_DMIC1_CTL, 0xFF, 0x00);
->>> +    snd_soc_component_update_bits(comp, 
->>> CDC_TX_TOP_CSR_SWR_DMIC2_CTL, 0xFF, 0x00);
->>> +    snd_soc_component_update_bits(comp, 
->>> CDC_TX_TOP_CSR_SWR_DMIC3_CTL, 0xFF, 0x00);
->>>         return 0;
->>>   }
->>>
+Cheers,
+John
