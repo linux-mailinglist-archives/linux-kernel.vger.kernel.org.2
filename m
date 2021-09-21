@@ -2,128 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9F6413ACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C04413ACF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhIUTcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:32:20 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:18568 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233960AbhIUTcS (ORCPT
+        id S234543AbhIUTeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:34:20 -0400
+Received: from shells.gnugeneration.com ([66.240.222.126]:54162 "EHLO
+        shells.gnugeneration.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232667AbhIUTeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:32:18 -0400
-X-IronPort-AV: E=Sophos;i="5.85,311,1624287600"; 
-   d="scan'208";a="94721296"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 22 Sep 2021 04:30:48 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2883940E82C9;
-        Wed, 22 Sep 2021 04:30:45 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [RFC PATCH v2 4/4] arm64: dts: renesas: r9a07g044: Add IRQC node to SoC DTSI
-Date:   Tue, 21 Sep 2021 20:30:28 +0100
-Message-Id: <20210921193028.13099-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210921193028.13099-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Tue, 21 Sep 2021 15:34:18 -0400
+Received: by shells.gnugeneration.com (Postfix, from userid 1000)
+        id 6FAD31A56019; Tue, 21 Sep 2021 12:32:49 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 12:32:49 -0700
+From:   Vito Caputo <vcaputo@pengaru.com>
+To:     jpoimboe@redhat.com
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>
+Subject: CONFIG_ORC_UNWINDER=y breaks get_wchan()?
+Message-ID: <20210921193249.el476vlhg5k6lfcq@shells.gnugeneration.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add IRQC node to R9A07G044 (RZ/G2L) SoC DTSI.
+Hi Josh (and CC:lkml),
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi | 58 ++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+I've recently transitioned to an Arch system which has
+CONFIG_ORC_UNWINDER=y in the default kernel.  My window manager
+integrates process monitoring showing the wchans of processes, making
+it very apparent when wchan breaks.
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-index 9c170db544d2..d10cedeb5880 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-@@ -388,6 +388,8 @@
- 			reg = <0 0x11030000 0 0x10000>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
-+			interrupt-parent = <&irqc>;
-+			interrupt-controller;
- 			gpio-ranges = <&pinctrl 0 0 392>;
- 			clocks = <&cpg CPG_MOD R9A07G044_GPIO_HCLK>;
- 			power-domains = <&cpg>;
-@@ -396,6 +398,62 @@
- 				 <&cpg R9A07G044_GPIO_SPARE_RESETN>;
- 		};
- 
-+		irqc: interrupt-controller@110a0000 {
-+			compatible = "renesas,r9a07g044-irqc",
-+				     "renesas,rzg2l-irqc";
-+			#interrupt-cells = <2>;
-+			#address-cells = <0>;
-+			interrupt-controller;
-+			reg = <0 0x110a0000 0 0x10000>;
-+			interrupts =
-+				<GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 445 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 446 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 447 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 449 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 450 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 451 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 453 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 454 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 455 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 456 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 457 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 461 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 462 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 463 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 470 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 471 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>,
-+				<GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD R9A07G044_IA55_CLK>,
-+				 <&cpg CPG_MOD R9A07G044_IA55_PCLK>;
-+			clock-names = "clk", "pclk";
-+			power-domains = <&cpg>;
-+			resets = <&cpg R9A07G044_IA55_RESETN>;
-+		};
-+
- 		dmac: dma-controller@11820000 {
- 			compatible = "renesas,r9a07g044-dmac",
- 				     "renesas,rz-dmac";
--- 
-2.17.1
+Glancing at the kernel code to see what's involved in get_wchan() for
+x86, it looks to assume there are frame pointers in the stack.  I
+don't see any mention of ORC_UNWINDER in the get_wchan() code which
+seems like an oversight when ORC_UNWINDER=y gets rid of them.
 
+I had originally assumed this was just a Kconfig problem and asked
+lkml about it (hearing crickets back) [0], but have since learned of
+ORC_UNWINDER's existence via the Arch kernel maintainer.
+
+Is this an oversight of the ORC_UNWINDER implementation?  It's
+arguably a regression to completely break wchans for tools like `ps -o
+wchan` and `top`, or my window manager and its separate monitoring
+utility.  Presumably there are other tools out there sampling wchans
+for monitoring as well, there's also an internal use of get_chan() in
+kernel/sched/fair.c for sleep profiling.
+
+I've occasionally seen when monitoring at a high sample rate (60hz) on
+something churny like a parallel kernel or systemd build, there's a
+spurious non-zero sample coming out of /proc/[pid]/wchan containing a
+hexadecimal address like 0xffffa9ebc181bcf8.  This all smells broken,
+is get_wchan() occasionally spitting out random junk here kallsyms
+can't resolve, because get_chan() is completely ignorant of
+ORC_UNWINDER's effects?
+
+My time to spend on this currently is very limited, but I'd like to at
+least get the relevant parties aware if they're not already...  Maybe
+I should just file something in bugzilla.
+
+Thanks,
+Vito Caputo
+
+
+[0] https://lore.kernel.org/lkml/20210914012612.vwlowt5wsojmyfzr@shells.gnugeneration.com/
