@@ -2,183 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D0B413208
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA0A41320C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhIULAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhIULAP (ORCPT
+        id S232262AbhIULB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:01:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39370 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232276AbhIULB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:00:15 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A1DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:58:46 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id bx4so28268738edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RP1t6F1ow/8OQN+izm78Y9bJ9MVZd+yMFKLR4PsDpvY=;
-        b=dNYC1TlF4OiaopZt2R6nRivqbgyYgnbN3v8OhCvwyorE/5RGAWb3kO/pkQcgonl00r
-         7qxUhIpiCupJEMDxoHJ+2HWYa0RsC3IT48AS2KoAbTL94FU+1QgfYdn3TFzbx4H7mLvX
-         ekbq9mhGySKGUIGlpnehR7dUtQU9k5dptnTdRUyVANV/scuPe1gPMfxVG5Arf8wVXKtk
-         eJ0vWVF2xj8rXf0Oqxv0+D95r7T6er6unkKDae+JRW6qN8OUIZ2/iNXVnaOLyQyGmJhL
-         17AulVxZ/MR95Ra/i1lF6Ti6EhwqIVgNj6XcSC6f5K+RcBifB5PynzD3UUo9bZFU954e
-         ERkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RP1t6F1ow/8OQN+izm78Y9bJ9MVZd+yMFKLR4PsDpvY=;
-        b=xXawgNe3h3OY/kfxeOmBWrdagjHXTvYRxPqb+dDKkuC7mSmV3lgcmyCh/224bAeR/k
-         /ry9tgbiVstlFKVUm48prVWrh1nReriq5zQZ61kERIOyhL0ZZc1lH4/z45HWsg2HIZAg
-         HG+BmhFi9wNc26Kli8skBctVg/2/emydAp4cnVBrqOna7xNPKUFLnBCBF6jY5Ycocxl7
-         4bUMI83FAjUdijkLqkXZ7OelMH1oFo5avY3lTBISYye491gIY+JEeh1GK9Zv3aoyilVB
-         g+mhmsbvD+0sk1lBbvzI0RZvzo9ZXEkR+xzi2XW6Xmkg7w6P78wIc+Lsn+DIE6cEcOYm
-         o4OA==
-X-Gm-Message-State: AOAM531MPLMMdJs+Ho7o8F1GqXej6wR9m+DfoiIU+DuuRtZzq9v5NIrg
-        KzPnK/Wmw7TNl6yOFH/J2LB+TSV9R6pJ3zyUBr1kvA==
-X-Google-Smtp-Source: ABdhPJyuF5p756lFHQ9knf9JJSVQj6VYBSdcR/CvJQbKvyiwGLh4557EpxMR/12vC/dPOYLSz5LtAt03kjsbubN3s2I=
-X-Received: by 2002:aa7:c988:: with SMTP id c8mr34846134edt.105.1632221925394;
- Tue, 21 Sep 2021 03:58:45 -0700 (PDT)
+        Tue, 21 Sep 2021 07:01:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DB4472210B;
+        Tue, 21 Sep 2021 10:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632221996; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Dgb4dMSO/ZPMje1n5AU7MFOcooNI9E1W94iQ8KrDZ0=;
+        b=ravFfU/S/tBIzibtKj4QZ4F7gmd7EznlZLFhUdqTeyP5BuwZPBG73WpZmjbG2jVd8Z2XA1
+        FJd/w5kD9h+FKqVpAU/dSXvLcHzhIIHw8sV51LgG5ei5nZI3PHrYS4+8aoEvUDW04VZ2h1
+        Kao/pJOVDlDA40DvW+pBZcJL+OgfAVs=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A998DA3B9A;
+        Tue, 21 Sep 2021 10:59:56 +0000 (UTC)
+Date:   Tue, 21 Sep 2021 12:59:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vishnu Rangayyan <vishnu.rangayyan@apple.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fs: fix for core dumping of a process getting oom-killed
+Message-ID: <YUm7LLqwrXygzKll@dhcp22.suse.cz>
+References: <9aec4002-754c-ca6d-7caf-9de6e8c31dd7@apple.com>
 MIME-Version: 1.0
-References: <20210908130922.118265849@linutronix.de> <20210908132525.794334915@linutronix.de>
-In-Reply-To: <20210908132525.794334915@linutronix.de>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Tue, 21 Sep 2021 12:58:34 +0200
-Message-ID: <CADYN=9K1BdyupzcDAbyk2JTio1A98J9tsBS_LeOH4=GVG=7FqQ@mail.gmail.com>
-Subject: Re: [patch V3 15/20] x86/fpu/signal: Change return type of
- copy_fpregs_to_sigframe() helpers to boolean
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9aec4002-754c-ca6d-7caf-9de6e8c31dd7@apple.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Sept 2021 at 15:30, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Now that copy_fpregs_to_sigframe() returns boolean the individual return
-> codes in the related helper functions do not make sense anymore. Change
-> them to return boolean success/fail.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+On Mon 20-09-21 23:38:40, Vishnu Rangayyan wrote:
+> 
+> Processes inside a memcg that get core dumped when there is less memory
+> available in the memcg can have the core dumping interrupted by the
+> oom-killer.
+> We saw this with qemu processes inside a memcg, as in this trace below.
+> The memcg was not out of memory when the core dump was triggered.
 
-When I build and boot (qemu_x86_64) a defconfig kernel on from todays
-next tag next-20210921 I see the following segmentation fault
+Why is it important to mention that the the memcg was not oom when the
+dump was triggered?
 
-2021-09-21T10:11:45 <6>[    1.622922] mount (89) used greatest stack
-depth: 14384 bytes left
-2021-09-21T10:11:45 <6>[    1.664760] EXT4-fs (sda): re-mounted. Opts:
-(null). Quota mode: none.
-2021-09-21T10:11:45 <6>[    1.691041] mkdir (92) used greatest stack
-depth: 14312 bytes left
-2021-09-21T10:11:45 <6>[    1.713201] mount (93) used greatest stack
-depth: 13720 bytes left
-2021-09-21T10:11:46 Starting syslogd: /etc/init.d/rcS: line 12:   101
-Segmentation fault      $i start
+> [201169.028782] qemu-kata-syste invoked oom-killer: gfp_mask=0x101c4a(GFP_NOFS|__GFP_HIGHMEM|__GFP_HARDWALL|__GFP_MOVABLE|__GFP_WRITE),
+> order=0, oom_score_adj=-100
+[...]
+> [201169.028863] memory: usage 12218368kB, limit 12218368kB, failcnt 1728013
 
+it obviously is for the particular allocation from the core dumping
+code.
 
-I did a bisection and found this as the faulty patch [1]. When I
-revert this patch I can't see the issue.
+> [201169.028864] memory+swap: usage 12218368kB, limit 9007199254740988kB, failcnt 0
+> [201169.028864] kmem: usage 154424kB, limit 9007199254740988kB, failcnt 0
+> [201169.028880] oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=podacfa3d53-2068-4b61-a754-fa21968b4201,mems_allowed=0-1,oom_memcg=/kubepods/burstable/podacfa3d53-2068-4b61-a754-fa21968b4201,task_memcg=/kubepods/burstable/podacfa3d53-2068-4b61-a754-fa21968b4201,task=qemu-kata-syste,pid=1887079,uid=0
+> [201169.028888] Memory cgroup out of memory: Killed process 1887079
+> (qemu-kata-syste) total-vm:13598556kB, anon-rss:39836kB, file-rss:8712kB, shmem-rss:12017992kB, UID:0 pgtables:24204kB oom_score_adj:-100
+> [201169.045201] oom_reaper: reaped process 1887079 (qemu-kata-syste), now anon-rss:0kB, file-rss:28kB, shmem-rss:12018016kB
+> 
+> This change adds an fsync only for regular file core dumps based on a
+> configurable limit core_sync_bytes placed alongside other core dump params
+> and defaults the limit to (an arbitrary value) of 128KB.
+> Setting core_sync_bytes to zero disables the sync.
 
-We noticed that function 'save_xstate_epilog()' changes the polarity
-of its return code for one of the return statements, and for its only
-caller. but not for the other return statement.
+This doesn't really explain neither the problem nor the solution. Why
+is fsync helping at all? Why do we need a new sysctl to address the
+problem and how does it help to prevent the memcg OOM. Also why is this
+a problem in the first place.
 
-I tried this patch and I couldn't see the segmentation fault.
-
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 445c57c9c539..61eeebc04427 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -104,7 +104,7 @@ static inline int save_xstate_epilog(void __user
-*buf, int ia32_frame)
-        err = __copy_to_user(&x->i387.sw_reserved, sw_bytes, sizeof(*sw_bytes));
-
-        if (!use_xsave())
--               return err;
-+               return !err;
-
-        err |= __put_user(FP_XSTATE_MAGIC2,
-                          (__u32 __user *)(buf + fpu_user_xstate_size));
-
-
-
-Cheers,
-Anders
-[1] http://ix.io/3zxf
-
-> ---
->  arch/x86/kernel/fpu/signal.c |   17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
->
-> --- a/arch/x86/kernel/fpu/signal.c
-> +++ b/arch/x86/kernel/fpu/signal.c
-> @@ -65,7 +65,7 @@ static inline int check_xstate_in_sigfra
->  /*
->   * Signal frame handlers.
->   */
-> -static inline int save_fsave_header(struct task_struct *tsk, void __user *buf)
-> +static inline bool save_fsave_header(struct task_struct *tsk, void __user *buf)
->  {
->         if (use_fxsr()) {
->                 struct xregs_state *xsave = &tsk->thread.fpu.state.xsave;
-> @@ -82,18 +82,19 @@ static inline int save_fsave_header(stru
->                 if (__copy_to_user(buf, &env, sizeof(env)) ||
->                     __put_user(xsave->i387.swd, &fp->status) ||
->                     __put_user(X86_FXSR_MAGIC, &fp->magic))
-> -                       return -1;
-> +                       return false;
->         } else {
->                 struct fregs_state __user *fp = buf;
->                 u32 swd;
-> +
->                 if (__get_user(swd, &fp->swd) || __put_user(swd, &fp->status))
-> -                       return -1;
-> +                       return false;
->         }
->
-> -       return 0;
-> +       return true;
->  }
->
-> -static inline int save_xstate_epilog(void __user *buf, int ia32_frame)
-> +static inline bool save_xstate_epilog(void __user *buf, int ia32_frame)
->  {
->         struct xregs_state __user *x = buf;
->         struct _fpx_sw_bytes *sw_bytes;
-> @@ -131,7 +132,7 @@ static inline int save_xstate_epilog(voi
->
->         err |= __put_user(xfeatures, (__u32 __user *)&x->header.xfeatures);
->
-> -       return err;
-> +       return !err;
->  }
->
->  static inline int copy_fpregs_to_sigframe(struct xregs_state __user *buf)
-> @@ -219,10 +220,10 @@ bool copy_fpstate_to_sigframe(void __use
->         }
->
->         /* Save the fsave header for the 32-bit frames. */
-> -       if ((ia32_fxstate || !use_fxsr()) && save_fsave_header(tsk, buf))
-> +       if ((ia32_fxstate || !use_fxsr()) && !save_fsave_header(tsk, buf))
->                 return false;
->
-> -       if (use_fxsr() && save_xstate_epilog(buf_fx, ia32_fxstate))
-> +       if (use_fxsr() && !save_xstate_epilog(buf_fx, ia32_fxstate))
->                 return false;
->
->         return true;
->
+Have a look at the oom report. It says that only 8MB of the 11GB limit
+is consumed by the file backed memory. The absolute majority (98%) is
+sitting in the shmem and fsync will not help a wee bit there.
+-- 
+Michal Hocko
+SUSE Labs
