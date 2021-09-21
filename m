@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340FF4130F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 11:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B884130FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 11:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhIUJwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 05:52:16 -0400
-Received: from out0.migadu.com ([94.23.1.103]:57839 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231446AbhIUJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 05:52:12 -0400
-Date:   Tue, 21 Sep 2021 18:50:34 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1632217840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gPRQDB+cf55TSto6+2IaK/1yaAZ8EqxZw27am8rgyfE=;
-        b=QwK2TqI8SGnkU2Q64iH5TYfsIO7EcLgz41GXymySEHouHrYP7FGITUs7008YIDBYf/qcvO
-        WtlmUoN9aZYv5mYRQQ/bDmxF5ttB6BPISY5HJAU8S8eo3ou83lqcGgCg4/jqNnxuUcqGRK
-        bt+lEGsp2xhybzhWNyNvvRtRwnnzbpE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     naoya.horiguchi@nec.com, hughd@google.com,
-        kirill.shutemov@linux.intel.com, willy@infradead.org,
-        osalvador@suse.de, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mm: hwpoison: handle non-anonymous THP correctly
-Message-ID: <20210921095034.GB817765@u2004>
-References: <20210914183718.4236-1-shy828301@gmail.com>
- <20210914183718.4236-5-shy828301@gmail.com>
+        id S231522AbhIUJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 05:52:46 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:37546
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231508AbhIUJwn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 05:52:43 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8946E40257
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632217873;
+        bh=ANyVFwa8/cSt4LiPU1T6EcsddAoJy9awAm8594hSheg=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=o+ZhixaJEC81CZAoNEXB7W1IyNYWsQBwWM5gVKZsBx46nKXiL5bkywbQOrfhnAGBh
+         j5ZIjD6E/6/z3F8SHZoQeJIxH80DggaDiYmlbGXrfvVSh+r8clvp8gNpiTW7Z961F0
+         AZVaxNS5QWmxDfG4t4UDBNvLgDDAnipPWPEaM3k97mlvEKfoitD/hTbGw5fKMuxMTE
+         sdco5sxk5LbRM+qk0Fem8DFfQ4pKRbQwDF+xnX+mHqUTg0t4Phzr9JXRBWU9tS5ix0
+         mf+Vr/eYoxjxpeim/SU0HJnIlOjc3eCIto4rT4I3agIe4COJOfXIvMr7bjdO2ELGzd
+         Q4+UL0j2NSgwA==
+Received: by mail-wr1-f72.google.com with SMTP id m1-20020a056000180100b0015e1ec30ac3so8337688wrh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 02:51:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ANyVFwa8/cSt4LiPU1T6EcsddAoJy9awAm8594hSheg=;
+        b=QXTyVLajNdq9/09JWVl0bFxrbWfcZia60YhKzZJOZUkb9RiIWQEdYQJ/S8brvBdUMi
+         gquAdhSWK0M8FkXnEE415LieVFt2mnsrSNoGfk1wj2V4bET69VFQ2JQDgHrKmv02uZl8
+         rCRz6cF5FCpaaaiQIHlKEyasYlpJvpDuURzWTTGINNdLIHa9JfQha/3LSVU967AMmmxf
+         eq3w9De21MAW3GhfThokYYRhQHmZNeijfAxfxQIfsF02zRpT2fK2ABZ5DaryWvBncL41
+         IyvlYF3eKj4zcg12CnZPnObrPeDw8O2tbzV/oRJbbwPfg7k8PaTInfExacLqrsZimXQ5
+         t5iw==
+X-Gm-Message-State: AOAM532hG81t05tX9Tl4fm5GXlt/b3SCtWyaAL4DFl92E9QmfBOAmOZl
+        /iQapRZDpCajSx+f3tozRNGQgQ+uvWFtDJWap8MTWnO90UPIpiK9nK6NX8msmzVaPzLpwIX+AJT
+        QxvrGgSKYK8ln/U5J1Jye9L/efKW4gM2TRNoAX6/a1Q==
+X-Received: by 2002:a1c:210a:: with SMTP id h10mr3660093wmh.117.1632217872135;
+        Tue, 21 Sep 2021 02:51:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwaD4ttkkbvIoXdYO3QkoQKEbWCzyZA83Qx0shJpz/rWqDxNHrBU0ogPqjDK6L54QUP/fwE2Q==
+X-Received: by 2002:a1c:210a:: with SMTP id h10mr3660066wmh.117.1632217871940;
+        Tue, 21 Sep 2021 02:51:11 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id x21sm2264969wmc.14.2021.09.21.02.51.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 02:51:11 -0700 (PDT)
+Subject: Re: [PATCH V1 2/3] trace: events: tegra_apb_dma: add SPDX license
+ identifier
+To:     Bitan Biswas <bbiswas@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>
+References: <20210921094206.2632-1-bbiswas@nvidia.com>
+ <20210921094206.2632-3-bbiswas@nvidia.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <17f1827a-5919-271d-ef00-d2e95d046226@canonical.com>
+Date:   Tue, 21 Sep 2021 11:51:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210921094206.2632-3-bbiswas@nvidia.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210914183718.4236-5-shy828301@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: naoya.horiguchi@linux.dev
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 11:37:18AM -0700, Yang Shi wrote:
-> Currently hwpoison doesn't handle non-anonymous THP, but since v4.8 THP
-> support for tmpfs and read-only file cache has been added.  They could
-> be offlined by split THP, just like anonymous THP.
+On 21/09/2021 11:42, Bitan Biswas wrote:
+> Add GPL license in Tegra apb dma trace header file.
 > 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> Signed-off-by: Bitan Biswas <bbiswas@nvidia.com>
 > ---
->  mm/memory-failure.c | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
+>  include/trace/events/tegra_apb_dma.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 3e06cb9d5121..6f72aab8ec4a 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1150,13 +1150,16 @@ static int __get_hwpoison_page(struct page *page)
->  
->  	if (PageTransHuge(head)) {
->  		/*
-> -		 * Non anonymous thp exists only in allocation/free time. We
-> -		 * can't handle such a case correctly, so let's give it up.
-> -		 * This should be better than triggering BUG_ON when kernel
-> -		 * tries to touch the "partially handled" page.
-> +		 * We can't handle allocating or freeing THPs, so let's give
-> +		 * it up. This should be better than triggering BUG_ON when
-> +		 * kernel tries to touch the "partially handled" page.
-> +		 *
-> +		 * page->mapping won't be initialized until the page is added
-> +		 * to rmap or page cache.  Use this as an indicator for if
-> +		 * this is an instantiated page.
->  		 */
-> -		if (!PageAnon(head)) {
-> -			pr_err("Memory failure: %#lx: non anonymous thp\n",
-> +		if (!head->mapping) {
-> +			pr_err("Memory failure: %#lx: non instantiated thp\n",
->  				page_to_pfn(page));
->  			return 0;
->  		}
+> diff --git a/include/trace/events/tegra_apb_dma.h b/include/trace/events/tegra_apb_dma.h
+> index 971cd02d2daf..fe10897b00b8 100644
+> --- a/include/trace/events/tegra_apb_dma.h
+> +++ b/include/trace/events/tegra_apb_dma.h
+> @@ -1,3 +1,4 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
 
-How about cleaning up this whole "PageTransHuge()" block?  As explained in
-commit 415c64c1453a (mm/memory-failure: split thp earlier in memory error
-handling), this check was introduced to avoid that non-anonymous thp is
-considered as hugetlb and code for hugetlb is executed (resulting in crash).
+Looks good, but you should Cc the copyrights holder (Ben) to be nice and
+friendly.
 
-With recent improvement in __get_hwpoison_page(), this confusion never
-happens (because hugetlb check is done before this check), so this check
-seems to finish its role.
-
-Thanks,
-Naoya Horiguchi
-
-> @@ -1415,12 +1418,12 @@ static int identify_page_state(unsigned long pfn, struct page *p,
->  static int try_to_split_thp_page(struct page *page, const char *msg)
->  {
->  	lock_page(page);
-> -	if (!PageAnon(page) || unlikely(split_huge_page(page))) {
-> +	if (!page->mapping || unlikely(split_huge_page(page))) {
->  		unsigned long pfn = page_to_pfn(page);
->  
->  		unlock_page(page);
-> -		if (!PageAnon(page))
-> -			pr_info("%s: %#lx: non anonymous thp\n", msg, pfn);
-> +		if (!page->mapping)
-> +			pr_info("%s: %#lx: not instantiated thp\n", msg, pfn);
->  		else
->  			pr_info("%s: %#lx: thp split failed\n", msg, pfn);
->  		put_page(page);
-> -- 
-> 2.26.2
-> 
+Best regards,
+Krzysztof
