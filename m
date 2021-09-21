@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEB2412D86
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3532C412D8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhIUDkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 23:40:43 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:50822 "EHLO mail.skyhub.de"
+        id S231961AbhIUDwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 23:52:13 -0400
+Received: from ozlabs.org ([203.11.71.1]:33617 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230240AbhIUDk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 23:40:28 -0400
-Received: from zn.tnic (p200300ec2f0d06007c9abd750032b61b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:600:7c9a:bd75:32:b61b])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S231551AbhIUDwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 23:52:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632196235;
+        bh=Nf2v3ium6ChudMEM/tpTI7QeK1+fS9wTGzEBFP1rJ3I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fNwI2bLn3o98nWktKaj2OTL2mkDrGTQW99n9eNIHhCnpHJRho6m57uaqR2phAzFXM
+         0uqN9L6pZdhmpMpNvyLMYoRgE8iKBaPYkc+0jkeUfl5zBCjTRd6vAI/YAAAkYyOPgQ
+         wt47lssXID40DJ3e7I8bkvWgM8P8zpg08YsGG3cB25ccy5lFI5llAfm3hc7jcjW7yv
+         qQ8LKK+cqfw/p4RxadNFTz4GlTLobswx1a7tLIAcIK7xfR5EB1snhZqy8gK2JN248F
+         OtuSvSy4Ge3fBJrbBqV5b40Ev99DlhWkcgkONU+pqBfUIIe5Vm3t6/XI2VMDCBbDki
+         F50RSjBKak6SQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0DF0A1EC0298;
-        Tue, 21 Sep 2021 05:38:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632195533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nZr0eMMqGzU85seVe3N8hdl2qJOEAEKLwcna2876nyc=;
-        b=qo6ZGOncHn3pMNoJM2mHTGa7nHxBRy9F0D3QUZG5ZPhbw37nuN/3/mPfVTU46S0i38WV4+
-        rsWeDd4ENNL4tkcHcC+RPDP9y/z7T7zS5yQIqg3oJbyvsSqQUNFVWt5HajZVmoGass05NE
-        hdRyruit86Ui4tWDnCKa3822JZ6EOgM=
-Date:   Tue, 21 Sep 2021 05:38:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        marmarek@invisiblethingslab.com, Juergen Gross <jgross@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, x86@kernel.org
-Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
-Message-ID: <YUlTlsVB7gJUVNT0@zn.tnic>
-References: <20210914094108.22482-1-jgross@suse.com>
- <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
- <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
- <YUdwMm9ncgNuuN4f@zn.tnic>
- <YUkPsjUUtRewyOn3@archlinux-ax161>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HD6s51MQ2z9ssP;
+        Tue, 21 Sep 2021 13:50:32 +1000 (AEST)
+Date:   Tue, 21 Sep 2021 13:50:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the tip tree
+Message-ID: <20210921135031.2b39fb76@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YUkPsjUUtRewyOn3@archlinux-ax161>
+Content-Type: multipart/signed; boundary="Sig_/XyyHhQ02R++M=wGEVN_Y4J5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 03:48:18PM -0700, Nathan Chancellor wrote:
-> Could auto-latest get updated too so that it does not show up in -next?
-> I just spent a solid chunk of my day bisecting a boot failure on one of
-> my test boxes on -next down to this change, only to find out it was
-> already reported :/
+--Sig_/XyyHhQ02R++M=wGEVN_Y4J5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Sorry about that - commit is zapped from tip/master and tip/auto-latest.
+Hi all,
 
-But your effort hasn't been in vain - you have a box which triggers this
-boot issue and I haven't found one yet.
+After merging the tip tree, today's linux-next build (arm64 allmodconfig
+clang-12) produced this warning:
 
-Can you please test on that exact test box whether the new version of
-that commit works?
+kernel/locking/test-ww_mutex.c:138:7: error: variable 'ret' is used uniniti=
+alized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
 
-That one:
+Introduced by commit
 
-https://lkml.kernel.org/r/20210920120421.29276-1-jgross@suse.com
+  12235da8c80a ("kernel/locking: Add context to ww_mutex_trylock()")
 
-It would be much appreciated.
+--=20
+Cheers,
+Stephen Rothwell
 
-Thx!
+--Sig_/XyyHhQ02R++M=wGEVN_Y4J5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-Regards/Gruss,
-    Boris.
+-----BEGIN PGP SIGNATURE-----
 
-https://people.kernel.org/tglx/notes-about-netiquette
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFJVocACgkQAVBC80lX
+0GyJfggAk6CVwUjJvJjalOB9L4oqE0B3fDbednJx/0VPVqsJEQfcW1aOh6s0nlmC
+TOGWSAEk2WBMddzPmj1JAJEBsrx1gOplLFpaVVhUvSA9+qPt3uk+neini3QPFcbz
+6XP0b7ysMDUOEgwsSQ1rcWjaWkbjI3/948iBpqq3AvTQ82gmoC9wnb8ao0Flqgkx
+WAahsN6mdX5v+M/wwNWQx7TX/lvpEYwlnAev1WpECMIqzCi+Fd5vTd0WVPCvreQD
+Wfvj52ngTZpQJJxzpe7kDuN+vO9oheEWEoI29Y8eZpTCdOXIMVt16ps9AyagkZ0V
+ndsOSYHiJZidI0rp95qfAo3JlUfmyA==
+=U0ML
+-----END PGP SIGNATURE-----
+
+--Sig_/XyyHhQ02R++M=wGEVN_Y4J5--
