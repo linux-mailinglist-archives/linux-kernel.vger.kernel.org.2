@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F205E41362E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D291D413622
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhIUP1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:27:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234064AbhIUP1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:27:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D1961215;
-        Tue, 21 Sep 2021 15:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632237969;
-        bh=vhLzjTgLnOT8QnJf7y/WSgDwF6yaNzF8AzzcaXhlpgM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MohmUdb3bmGffzzxtnXNhA6agKbH70gjj8JdakpsgSojS9mXK6M55oQLxrvxK/6AK
-         oZvoD54oC8f6oMZN/yA19bqE65wOeCobAYp6MLU1BSH2QSenSpFThMI0co3hza5S8K
-         /qQnn3yt7CWD5D7Hwfr3FcJN7iUfpd6v29REudwxaZOdkOB9hxgBuztUm8Pa8qrXYS
-         XvuNU/NtivjHppwO6nV9FB23KXQUCdZ1nyVZxfEUsYWUBPuUFQT7oPy+oCW90EvdqG
-         4ld1bbfG76aZm4u5FdXXTAC8WMz3KXsMSl3yHh6puxgJr3OHQeMC+VCy3mK7VsKbKb
-         j2cQ8whYH6Ynw==
-From:   Mark Brown <broonie@kernel.org>
-To:     festevam@gmail.com, Xiubo.Lee@gmail.com, tiwai@suse.com,
-        perex@perex.cz, alsa-devel@alsa-project.org, timur@kernel.org,
-        nicoleotsuka@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: fsl_spdif: Add support for i.MX8ULP
-Date:   Tue, 21 Sep 2021 16:25:12 +0100
-Message-Id: <163223651318.32236.12273348857072894060.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1631238562-27081-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1631238562-27081-1-git-send-email-shengjiu.wang@nxp.com>
+        id S234014AbhIUP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233756AbhIUP1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:27:15 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25530C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:25:47 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d21so40304670wra.12
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dDzxxa5Lvo+gSE3fdEoxI3ZuoRWBLEBLy8XJ81TyYDY=;
+        b=ZjfSk25cctACsOQ1pNXcEn8R/vERSKAX2EStYiFxTKO4SwFRhuhsBfmdkdPdBHTICI
+         NuYIkES8OvoKCS+2Qiba9QQ38pmUPuZoCLNLjQEoGHFTqBXLeDhkvDTXnNtADmonzUQR
+         MiVDMPZD/DbYvWiCe66lotjzSfyBpleeYLZURbAUc37ovouVt9PsQUXsJsdPF/bsUOhj
+         sbbStA4MoZIA9GGNZ6c0qHvqtpjrziosKw6S9i5wGp/9Lfh/1p7WT+53slB1MTaw5VrI
+         fBnlbgMgblD+RlM0GMsnoXMLfZK0qKrDtnEJT3SCncPICmlg8uCEBj3qE2uWVjBL7aZF
+         HGPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dDzxxa5Lvo+gSE3fdEoxI3ZuoRWBLEBLy8XJ81TyYDY=;
+        b=ZTOv/2eRRhCLFUnIdcig4VPFtlJEBa30lrssyR+CMugQqKxZ9p9r9IF6tdOlE1sQP1
+         OXELGu9W7vA0sl1IKU/zkDT+deOW6ODdVNl57zzGlTHZpz2YmROmg+XFz7IMY87EPvc/
+         QNcJVHK+/yh4QZ5xOZ2NxSo+3/sfHdkBmv2x989Lgq9Ph6d2vdEaYYcQjY39JDC3G0zA
+         NDP21sNc6CkcpzjvyD9VTxpNIrUl7xz9ya/qd/kfBKZDPOrphGmyJ6HaDsnWxyl9CY7N
+         Yd41IJQesDDFe82o8+aCUe8GG8kMT6+Gjk4oSmu8GQkBFamzLHA0l4DSQzeWHbvCuAyv
+         RNUw==
+X-Gm-Message-State: AOAM531DA3NdD16FUGQzsStl8zHEAhrlD+jThAyF5F2mvVwbrWzeOyhn
+        UWEDAp9Pk4xpBATkl99yjxrOSA==
+X-Google-Smtp-Source: ABdhPJyoLJdvyxpRfhWBg1ob+t87CcgTMBV5MNdCG8EfJsU+Hj/gKLDqQtpSNcrNpBCGddHrnYdcTg==
+X-Received: by 2002:adf:f4ca:: with SMTP id h10mr35948315wrp.159.1632237945765;
+        Tue, 21 Sep 2021 08:25:45 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id i18sm19614209wrn.64.2021.09.21.08.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 08:25:45 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 16:25:43 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v1 3/4] mfd: intel_quark_i2c_gpio: Convert GPIO to use
+ software nodes
+Message-ID: <YUn5d6157uUHpDRz@google.com>
+References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+ <20210726125436.58685-3-andriy.shevchenko@linux.intel.com>
+ <YRpihHP3kDz5nYV9@google.com>
+ <CAHp75VdcWsNFervoU7e4_m7qVKAnWXzF2z2mUgKg06-qmwn-2A@mail.gmail.com>
+ <YRppKOxp4Jya5iEI@google.com>
+ <YRpva4gS1LfncPUj@smile.fi.intel.com>
+ <YRpz5UEDQbpewq5o@google.com>
+ <CAHp75VczCKwNQE8k6_e9Trk0qkD2EumFVxxG5w2BTYhiOTDUzA@mail.gmail.com>
+ <YRtkt8e25ZSeOICx@google.com>
+ <CAHp75Ve-24wno-z8rQSCtgBdf6_a70TFf3aCJPP7JSFPG8sfhg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Ve-24wno-z8rQSCtgBdf6_a70TFf3aCJPP7JSFPG8sfhg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Sep 2021 09:49:22 +0800, Shengjiu Wang wrote:
-> On i.MX8ULP the spdif works with EDMA, so add compatible
-> string and soc specific data for i.MX8ULP.
+On Tue, 17 Aug 2021, Andy Shevchenko wrote:
+
+> On Tue, Aug 17, 2021 at 10:26 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
+> > > On Mon, Aug 16, 2021 at 5:19 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > On Mon, 16 Aug 2021, Andy Shevchenko wrote:
 > 
+> ...
 > 
+> > > > > > > Would it be okay for you to pull the immutable tag?
+> > > > > >
+> > > > > > What immutable tag?
+> > > > >
+> > > > > It's here:
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-gpio-intel.git/tag/?h=intel-gpio-v5.15-1
+> > > >
+> > > > My Ack can't be merged like that.
+> > >
+> > > Which one? There are two on different patches.
+> >
+> > The one that I specifically said was "for my own reference".
+> >
+> > > Do you have any documentation on the rules you imply by MFD?
+> >
+> > No, the documentation is provided with the tag.
+> 
+> I see.
 
-Applied to
+And now the patch is merged with an invalid tag! *facepalm*
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: fsl_spdif: Add support for i.MX8ULP
-      commit: a635d66be1642e59af17383a27b2c61409121241
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
