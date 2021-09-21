@@ -2,440 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759C4412E80
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EC2412E8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhIUGJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:09:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43956 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhIUGI6 (ORCPT
+        id S229798AbhIUGTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:19:22 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:23250 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229614AbhIUGTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:08:58 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 23F031FE5E;
-        Tue, 21 Sep 2021 06:07:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632204449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EMk+GC3syGEDD553AiTSALMMtJS88qIkMD4XQpesw/U=;
-        b=BPOzHiGi7qbpQI4YeMZ+YMIH5PQfWTjB8ZPY+sw9YgrPLJWpacvvq6Vl2raYXH45sR6UmK
-        3zR0PwIrVKC4MMQZ7Kpzh4xYPpyLT/ZXYoF9O1GI+dcwXOYqrzntzA6U2ops6i8IrIB57w
-        vJLXrK9h7rLFjD4DDRLFOfuq3szsW/A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9A9A13B93;
-        Tue, 21 Sep 2021 06:07:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id a3XpM6B2SWEwZQAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 21 Sep 2021 06:07:28 +0000
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-References: <20210917130123.1764493-1-andr2000@gmail.com>
- <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
- <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
- <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
- <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
- <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
- <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
- <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
-Message-ID: <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com>
-Date:   Tue, 21 Sep 2021 08:07:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 21 Sep 2021 02:19:20 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18L42Unl002155;
+        Tue, 21 Sep 2021 06:17:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=k4w8DcLru7C9UG+hcXZOWS7ilSeSPDfcUMNnm2Pw7dE=;
+ b=HLcSQ89jqzty4sntfjp+uItofjku7KBXXpZODrAeoTxcKqfMwT3IQMR+6RQ9jB/hbsRr
+ M/4d0zAm99K6E5F12cPp5x3zQPOh91S7Z/gZKU85gWfu1Xnew1zgfHuIPOVVEAYr1zQ1
+ w51oUlzaVh/hl/KCBaDySoJATV67POKu13UflQeuUH1iGdgYSIqyiiOlUG2Sed4v6BrN
+ yof4ppGZHmsE5B+vCINMQwXRevl+N1M/MggWk2eY4Za9dhq89gDxZr4nI0TPFEfR6hQ3
+ CwaEfZQGVE2M8X2Da4jOLKaolsBWJRF0w/orpN6teRBao6k2LIfLU8h/MVRXCOgzxERc mg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b7814gbsx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Sep 2021 06:17:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18L6AtBv068017;
+        Tue, 21 Sep 2021 06:17:41 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
+        by aserp3030.oracle.com with ESMTP id 3b565dkfae-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Sep 2021 06:17:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WJ2VvgT9iNEjoRw94z+IewnfitZyDidqdOHm+vyGBKzp2dllVBg/m6RcDalMA88roJBh+Cx5bcYM31cAW6E0CbgK9vRoH2oyta+4G+8qWoqmazxSm5ZYDhJSLKUusnLDent3cuNkHR7JDPz7V9tuVS0ZbyVVOhcbMO25yY3vukGfzfiEZZ4zAyymPw4mkUgFpDRNmLBY95WPZi1t6tpzUjS1kBgJFVh8+TpbHkivhp3HVnE3497nvB9I/Vh2FoUorxl6LUL+s8bkWFsvC322ivsCAzJ+Mf5prt0pa064A8EqUblZdAyhz/R2Wom3hqIWc7SSeFgJoQWhdP0uitkqfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=k4w8DcLru7C9UG+hcXZOWS7ilSeSPDfcUMNnm2Pw7dE=;
+ b=RxpJq/5qqxyEP9bfykmYWXQJySjXT3AujwyBzrP3nQxegrsialfjfPd5VA5Fk5JSyEGVObMf/ZUeKDZneQN0MCFIIepjGkY2isIFXP5VqvKInPRdrwlpB74ZOo5L5HKhjdW6EgjWKbRDBzwpXMYqTE7IUfwdXab2B8ajbimhlZ+6pdCXoZ0KjROuyNfCorgy2/UGw5LPEtMHgbd1UPOEB69dj/eg8aVtLhw69xnVc7n8WDlAR0j2bIbzg9SERprCxpc5SQj08Q6rVBdbR55axU4Q1wyL0VzIKX1a5Qid+4k3HD8OBEnYo6QQNrl/9W8wmgHjz3r71o0OZr3dMKldsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k4w8DcLru7C9UG+hcXZOWS7ilSeSPDfcUMNnm2Pw7dE=;
+ b=szYIHgHdetbKfTWrhxWK+gXCtH/6KFCqIFZMY90Qu53gory8Oo8heJdKUM6c3bXZYerEmMtyLdv/mTMPSbDUecctRPW8x1JCt5pesbHM2iJNVcS5UAGyoQA0Vrjkq4bBmPtpUzWGkGAXMZkXtiOCezemQG76r4jFHzu/wRlOwoI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1727.namprd10.prod.outlook.com
+ (2603:10b6:301:8::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Tue, 21 Sep
+ 2021 06:17:39 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4523.018; Tue, 21 Sep 2021
+ 06:17:39 +0000
+Date:   Tue, 21 Sep 2021 09:17:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, x86@kernel.org
+Subject: Re: [tip: sched/core] sched: Make struct sched_statistics
+ independent of fair sched class
+Message-ID: <20210921061727.GA24828@kili>
+References: <20210905143547.4668-3-laoar.shao@gmail.com>
+ <163179357090.25758.13267982301302997472.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163179357090.25758.13267982301302997472.tip-bot2@tip-bot2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: ZR0P278CA0147.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:41::21) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8"
+Received: from kili (62.8.83.99) by ZR0P278CA0147.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:41::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16 via Frontend Transport; Tue, 21 Sep 2021 06:17:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7295e442-3c57-4307-725f-08d97cc7830c
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1727:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB172759D80DF2D0A7898D003E8EA19@MWHPR10MB1727.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Y9ibR8h324nYzaOc+8pCR7vHJqq37OdMcOQnuK9oJRHhZ0K/ZLBeNbGpsu7NwszNM21u4AiJk2U0laFJpFyTCYY63NMQt15vtCcMNOO5OjGsD6I1wA8tapODurJ7Y0ZrtmzqRJE20RZ/BnICn5XGy13jjmwFII7gpjLJR3My9RYhDjHPMZ1G76ZqpIMVBeZNPJ+XoQmLP4Xdq6JFXqzoTDALA32N2Rt+SxP34BBDxb8zRzzIxF/kCNOT3Jw93euuAcAC1H6WOqZ9obmGaS5dLuuAY+kpb1209/zvgkJHw5UgO7k3R7e8BP36qDUOyhihdyTzRFiuApD834/7KRGyRLR6EHGpZPm5AcVTFs8u7AViq2dIpo++zxAuhpdedHAUU21Ki5tuL4d3AbAaBm6Z9uFMGbdhiWB7N55ZibyquqKjJXsnFu5qWZAob6cwOVsdOiiIuz6rvzks5Q+kC+ItEsXaN3Lx22c2mb5k9O0NNVs/zlF8ZCW60OHR40sZiJZCetwfghYVspv37/9qxJlZdiI18QkAVJOHsmrZ2Y9yFewNxjOcyYsoo07fvy+9+VWraajM5tAD2jIRPsa2MFlrTMt5V3fEiaLEc8YbGhZQTdFjubPWueV8lcc2qCwWTRRMTp9XnS/fOBM0sxmgApcyixe0ZdPmjUwhG8gFj7SiQaxuV9/QvQa0QLX939LnlvRDdoh81axsSBOG7AnvLeeuHg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(4326008)(2906002)(44832011)(26005)(508600001)(66556008)(66946007)(83380400001)(38100700002)(6666004)(9576002)(4744005)(66476007)(186003)(956004)(316002)(38350700002)(52116002)(33716001)(8676002)(6916009)(55016002)(86362001)(5660300002)(6496006)(33656002)(9686003)(1076003)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FX47fAI37MDuN/rWMWGempkhr1w9zEjq3PfkQ0rdbZWFpZd3s1CEbNKXLsC4?=
+ =?us-ascii?Q?4HHyI9wdckkpwJ5B25cs+V5B6nWPF1RaHGdl9KGjxeZ8BX/d5kdZe/B9ePFE?=
+ =?us-ascii?Q?+WL4eeW6524sClW3kmk0Y7mk6MbJU+J1Q5SbyP8J9HVr0A1Fyk2/Q2K82j49?=
+ =?us-ascii?Q?YI0ByRCP3Lnl081O9UnAGQ/BtxMVVdpiUtp0+lqjR2jI8Z46Ly+rs6GUnGW2?=
+ =?us-ascii?Q?acOPULFGFWo6ITMVpJJKh7w+e/3dXUIQMJD6S2/DWQM+5UQjGgX2gEICfQMB?=
+ =?us-ascii?Q?8zkWHw82RWYhSEClaDl/R14S5oNWIgmbspngw7fB51JHtiLv+i+ksXKe4sTV?=
+ =?us-ascii?Q?8QcxC7fto0zRi+4UmMAL21f31ZwQfSN+A4ouQO39KoLYq9sXTed/lbRmAJ2f?=
+ =?us-ascii?Q?i7ZHLFlntHacHljeb4PO/Cgt9oet9BYyBBLBozPCeq6QbT8ELON38oLSqBcf?=
+ =?us-ascii?Q?GHC8kz6IrbJvcc6lxLANruvTXxkJQ6vZjwtaQ3kkrdKzUIcqQzKzI+04CLUu?=
+ =?us-ascii?Q?x+ITOcNvbZ3X7cSdjShPuvBIL72kWCn14uayFHvhYodyjWphGBELFNzqZ2pg?=
+ =?us-ascii?Q?F5kmOCHBz8iKDAdjUyMN3amBaG/ITmtlxTCamHPVFGGxH89oG6UKkZHgmXta?=
+ =?us-ascii?Q?CX4iQxzfRYbWWmCziCM6CMVqcOZ8OVMmj3ka71iMf95+OrrMn5C9in1CjzIy?=
+ =?us-ascii?Q?gUHyhp+5V0VcJ4REDeVS6U5kaePUXa6J/7RrlLviNAjvRPyP19aO7iaoNysY?=
+ =?us-ascii?Q?PPe42nuk4y2z4LtJDody7cCzfXXgq2P6LdhST4kmNeSnHa4Z5HY9MLAaspmB?=
+ =?us-ascii?Q?4t5xTP6MvBsLVYESwiVMC2Klv40AxLcZb5xwnOluQxP96gmaCMYjHdVo4snl?=
+ =?us-ascii?Q?ZA7+PgnEWJSuZjt2OdXruiyVB0cArLUsB+XBI3gGXpJZwissn8trpr+6oLDW?=
+ =?us-ascii?Q?Irmw2NIVPb3wTLy3tf5wAYSj3q1lKlQ6fmCOL9SXiZrCQmbra9oodYYi275+?=
+ =?us-ascii?Q?nx/96FQcJiWrudeA/fzIEzwo1kTG3Bj/8+6jnnotyay/E3WTbTuw6jMqrzGA?=
+ =?us-ascii?Q?MF2Rxyv7oa/DPiYDFXd2uJE2MHhiu0cvnasX8gNsdHGuoZBfX+mtQ72u7uyx?=
+ =?us-ascii?Q?kQZ9+Ltcd4Hs2CkqLBI/+mDF9fT4khfVb5t7bcp/lXCVKRoHjVBPECzDy0ve?=
+ =?us-ascii?Q?TDkdtIjhGMlg8fOgqU2MiDlB9H2gDvmHIFCvcnXSImO+Yovf4rmA3+RywWN9?=
+ =?us-ascii?Q?jVEjQCIEm6Df2rjXLM8osQOal8iLTn0liAUTLULa3Mr4yZYmuqjec06QyraO?=
+ =?us-ascii?Q?0Twt2+sQeVk3iqWS+99zSo8x?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7295e442-3c57-4307-725f-08d97cc7830c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 06:17:39.0821
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: grJyV6MA3PhcgM+jWR5LboE+VbUk1U8UKHAQ4cFmnpO4TpCm0J27eIO8XBboZqcEwnCI+tyjRComFBNHkcVI55EYRPQzoGFmE+yVKz40bzc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1727
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10113 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109210040
+X-Proofpoint-GUID: MuRYNQgNUldcIbWY7gcsvaE8gXnZfEdc
+X-Proofpoint-ORIG-GUID: MuRYNQgNUldcIbWY7gcsvaE8gXnZfEdc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8
-Content-Type: multipart/mixed; boundary="HJdGdPYCV6JJoHpoUhOSa2P0UnPvIQRni";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
- "julien@xen.org" <julien@xen.org>, "jbeulich@suse.com" <jbeulich@suse.com>,
- Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
- Oleksandr Andrushchenko <andr2000@gmail.com>
-Message-ID: <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com>
-Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
-References: <20210917130123.1764493-1-andr2000@gmail.com>
- <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
- <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
- <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
- <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
- <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
- <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
- <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
-In-Reply-To: <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
+On Thu, Sep 16, 2021 at 11:59:30AM -0000, tip-bot2 for Yafang Shao wrote:
+> @@ -11424,7 +11441,7 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+>  		if (!cfs_rq)
+>  			goto err;
+>  
+> -		se = kzalloc_node(sizeof(struct sched_entity),
+> +		se = kzalloc_node(sizeof(struct sched_entity_stats),
 
---HJdGdPYCV6JJoHpoUhOSa2P0UnPvIQRni
-Content-Type: multipart/mixed;
- boundary="------------D23FCEDD6DEB2FBE19FCAC30"
-Content-Language: en-US
+This wasn't there in the original patch and it causes a Smatch warning
+because "se" is declared as a "sched_entity" but it's allocating a
+larger "sched_entity_stats" which contains a sched_entity.
 
-This is a multi-part message in MIME format.
---------------D23FCEDD6DEB2FBE19FCAC30
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+To me, ideally, we would update the type of se.
 
-On 21.09.21 07:51, Oleksandr Andrushchenko wrote:
->=20
-> On 21.09.21 08:20, Juergen Gross wrote:
->> On 21.09.21 01:16, Stefano Stabellini wrote:
->>> On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
->>>> On 20.09.21 14:30, Juergen Gross wrote:
->>>>> On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
->>>>>> Hello, Stefano!
->>>>>>
->>>>>> On 18.09.21 00:45, Stefano Stabellini wrote:
->>>>>>> Hi Oleksandr,
->>>>>>>
->>>>>>> Why do you want to enable pciback on ARM? Is it only to "disable"=
- a PCI
->>>>>>> device in Dom0 so that it can be safely assigned to a DomU?
->>>>>> Not only that
->>>>>>>
->>>>>>> I am asking because actually I don't think we want to enable the =
-PV PCI
->>>>>>> backend feature of pciback on ARM, right? That would clash with t=
-he PCI
->>>>>>> assignment work you have been doing in Xen. They couldn't both wo=
-rk at
->>>>>>> the same time.
->>>>>> Correct, it is not used
->>>>>>>
->>>>>>> If we only need pciback to "park" a device in Dom0, wouldn't it b=
-e
->>>>>>> possible and better to use pci-stub instead?
->>>>>>
->>>>>> Not only that, so pci-stub is not enough
->>>>>>
->>>>>> The functionality which is implemented by the pciback and the tool=
-stack
->>>>>> and which is relevant/missing/needed for ARM:
->>>>>>
->>>>>> 1. pciback is used as a database for assignable PCI devices, e.g. =
-xl
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 pci-assignable-{add|remove|list} manipu=
-lates that list. So, whenever the
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 toolstack needs to know which PCI devic=
-es can be passed through it reads
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 that from the relevant sysfs entries of=
- the pciback.
->>>>>>
->>>>>> 2. pciback is used to hold the unbound PCI devices, e.g. when pass=
-ing through
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 a PCI device it needs to be unbound fro=
-m the relevant device driver and bound
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 to pciback (strictly speaking it is not=
- required that the device is bound to
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 pciback, but pciback is again used as a=
- database of the passed through PCI
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 devices, so we can re-bind the devices =
-back to their original drivers when
->>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 guest domain shuts down)
->>>>>>
->>>>>> 3. Device reset
->>>>>>
->>>>>> We have previously discussed on xen-devel ML possible solutions to=
- that as from the
->>>>>> above we see that pciback functionality is going to be only partia=
-lly used on Arm.
->>>>>>
->>>>>> Please see [1] and [2]:
->>>>>>
->>>>>> 1. It is not acceptable to manage the assignable list in Xen itsel=
-f
->>>>>>
->>>>>> 2. pciback can be split into two parts: PCI assignable/bind/reset =
-handling and
->>>>>> the rest like vPCI etc.
->>>>>>
->>>>>> 3. pcifront is not used on Arm
->>>>>
->>>>> It is neither in x86 PVH/HVM guests.
->>>> Didn't know that, thank you for pointing
->>>>>
->>>>>> So, limited use of the pciback is one of the bricks used to enable=
- PCI passthrough
->>>>>> on Arm. It was enough to just re-structure the driver and have it =
-run on Arm to achieve
->>>>>> all the goals above.
->>>>>>
->>>>>> If we still think it is desirable to break the pciback driver into=
- "common" and "pcifront specific"
->>>>>> parts then it can be done, yet the patch is going to be the very f=
-irst brick in that building.
->>>>>
->>>>> Doing this split should be done, as the pcifront specific part coul=
-d be
->>>>> omitted on x86, too, in case no PV guests using PCI passthrough hav=
-e to
->>>>> be supported.
->>>> Agree, that the final solution should have the driver split
->>>>>
->>>>>> So, I think this patch is still going to be needed besides which d=
-irection we take.
->>>>>
->>>>> Some kind of this patch, yes. It might look different in case the s=
-plit
->>>>> is done first.
->>>>>
->>>>> I don't mind doing it in either sequence.
->>>>>
->>>> With this patch we have Arm on the same page as the above mentioned =
-x86 guests,
->>>>
->>>> e.g. the driver has unused code, but yet allows Arm to function now.=
+>  				  GFP_KERNEL, cpu_to_node(i));
+>  		if (!se)
+>  			goto err_free_rq;
 
->>>>
->>>> At this stage of PCI passthrough on Arm it is yet enough. Long term,=
- when
->>>>
->>>> the driver gets split, Arm will benefit from that split too, but unf=
-ortunately I do not
->>>>
->>>> have enough bandwidth for that piece of work at the moment.
->>>
->>> That's fair and I don't want to scope-creep this simple patch asking =
-for
->>> an enormous rework. At the same time I don't think we should enable t=
-he
->>> whole of pciback on ARM because it would be erroneous and confusing.
->=20
-> As the first stage before the driver is split or ifdef's used - can we =
-take the patch
-> as is now? In either way we chose this needs to be done, e.g. enable co=
-mpiling
-> for other architectures and common code move.
+regards,
+dan carpenter
 
-Fine with me in principle. I need to take a more thorough look
-at the patch, though.
-
->=20
->>>
->>> I am wonder if there is a simple:
->>>
->>> if (!xen_pv_domain())
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 return;
->>>
->>> That we could add in a couple of places in pciback to stop it from
->>> initializing the parts we don't care about. Something along these lin=
-es
->>> (untested and probably incomplete).
->>>
->>> What do you guys think?
->>
->> Uh no, not in this way, please. This will kill pci passthrough on x86
->> with dom0 running as PVH. I don't think this is working right now, but=
-
->> adding more code making it even harder to work should be avoided.
->>
->>> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciba=
-ck/xenbus.c
->>> index da34ce85dc88..991ba0a9b359 100644
->>> --- a/drivers/xen/xen-pciback/xenbus.c
->>> +++ b/drivers/xen/xen-pciback/xenbus.c
->>> @@ -15,6 +15,7 @@
->>>  =C2=A0 #include <xen/xenbus.h>
->>>  =C2=A0 #include <xen/events.h>
->>>  =C2=A0 #include <xen/pci.h>
->>> +#include <xen/xen.h>
->>>  =C2=A0 #include "pciback.h"
->>>  =C2=A0 =C2=A0 #define INVALID_EVTCHN_IRQ=C2=A0 (-1)
->>> @@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_=
-device *dev,
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct xenbus_device_id *id)
->>>  =C2=A0 {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err =3D 0;
->>> -=C2=A0=C2=A0=C2=A0 struct xen_pcibk_device *pdev =3D alloc_pdev(dev)=
-;
->>> +=C2=A0=C2=A0=C2=A0 struct xen_pcibk_device *pdev;
->>> +
->>> +=C2=A0=C2=A0=C2=A0 if (!xen_pv_domain())
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>  =C2=A0 +=C2=A0=C2=A0=C2=A0 pdev =3D alloc_pdev(dev);
->>
->> This hunk isn't needed, as with bailing out of xen_pcibk_xenbus_regist=
-er
->> early will result in xen_pcibk_xenbus_probe never being called.
->>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pdev =3D=3D NULL) {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D -ENOM=
-EM;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xenbus_dev_fa=
-tal(dev, err,
->>> @@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly xen=
-_pcibk_backend;
->>>  =C2=A0 =C2=A0 int __init xen_pcibk_xenbus_register(void)
->>>  =C2=A0 {
->>> +=C2=A0=C2=A0=C2=A0 if (!xen_pv_domain())
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>> +
->>
->> Use #ifdef CONFIG_X86 instead.
->=20
-> The title of this patch says that we want to allow this driver for othe=
-r archs
-> and now we want to introduce "#ifdef CONFIG_X86" which doesn't sound
-> right with that respect. Instead, we may want having something like a
-> dedicated gate for this, e.g. "#ifdef CONFIG_XEN_PCIDEV_BACKEND_SUPP_PV=
-"
-> or something which is architecture agnostic.
-
-Something like that, yes. But I'd rather use CONFIG_XEN_PCIDEV_BACKEND
-acting as this gate and introduce CONFIG_XEN_PCI_STUB for the stub
-functionality needed on Arm. XEN_PCIDEV_BACKEND would depend on X86 and
-select XEN_PCI_STUB, while on Arm XEN_PCI_STUB could be configured if
-wanted. The splitting of the driver can still be done later.
-
-> Gating also means that we are not thinking about splitting the backend =
-driver into
-> two different ones, e.g. one for "common" code and one for PV stuff.
-> Otherwise this ifdefery won't be needed.
-
-I just wanted to avoid the xen_pv_domain() tests creeping in, as
-they are wrong IMO.
-
-
-Juergen
-
---------------D23FCEDD6DEB2FBE19FCAC30
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------D23FCEDD6DEB2FBE19FCAC30--
-
---HJdGdPYCV6JJoHpoUhOSa2P0UnPvIQRni--
-
---DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFJdqAFAwAAAAAACgkQsN6d1ii/Ey80
-lAf/ag3+BoLQ5HT8A5VbqdaqsjYmqkN/wxhA5YhgRadB54IBkZ4K+bB+lbIfFKnSO2cVoB9JFdvf
-AiPTc8Urmyigf/3s9GeJzUxfseJ7CoxiiH+aW6KcOmPvGb/dHii/oylqt/EHwKIeY/r41F9OX1AX
-W2ksbdxBbD94bFWhddBMjHURsHbQskdhzeK66E77MKKBr48TOFha+ibsxrbMFqDFEQEF5Z2Ree5j
-c+onWJI9PXFJmnPCbeqYw4VIht55u2SR0j9fOtBTo95Ni4MPR3YctL+zZ8lfn8mu1apUrT6ddNXv
-0OmdXxv8bP7ldl17FUE0OVeZZTI9kUvjZIZZUZWBIQ==
-=C9P/
------END PGP SIGNATURE-----
-
---DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8--
