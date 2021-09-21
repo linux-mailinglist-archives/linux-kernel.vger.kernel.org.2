@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B665413540
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E263413544
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhIUOZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:25:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33264 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233461AbhIUOZD (ORCPT
+        id S233593AbhIUOZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:25:19 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:35714 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233587AbhIUOZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:25:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632234215;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wDh0oMN6VwKrbIN4CU/frP4g1lxciAjNHJADjKyJ4Io=;
-        b=B4t04PyrDzAbQCLfHk/jOQO7OZpC1hVj/K7ULKlFaIGgifU6oBoe6azoMdYihbqBJcZUja
-        GGbA7TL/rwlOwfLHRFwPaSVU5M/Nt4um1r/P3FNtZG9D6Jd9wc3JIra8NvN3xg6nPfawMO
-        bMGMnLaLNT4/Gs16E4GQyFfPN5dfaTs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-qJLtbyuHNb6h8b97DgKxxg-1; Tue, 21 Sep 2021 10:23:33 -0400
-X-MC-Unique: qJLtbyuHNb6h8b97DgKxxg-1
-Received: by mail-wr1-f72.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so8960720wrt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:23:33 -0700 (PDT)
+        Tue, 21 Sep 2021 10:25:17 -0400
+Received: by mail-oi1-f180.google.com with SMTP id r26so29904980oij.2;
+        Tue, 21 Sep 2021 07:23:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=wDh0oMN6VwKrbIN4CU/frP4g1lxciAjNHJADjKyJ4Io=;
-        b=Fk4FtgNVrpJemcTI8IV0fhmNeXKeeOzq1uMpmRZGG22GBs8YB5pgy63AA1cJWO9Wcd
-         8/AhBljmc6Wo6U2NjJsBlt2qo8Jobf4UBXkc08aVKNxJVdRhd4oUUN6X1ug4AxFOrzs0
-         So5sMr9jWXH66VbA//6aSbIXYXucrng0uNx4lr3pPJklSwMt69Jkbj26dzfwgntyvmYT
-         aEqVts1UWczrMHZXK21FqYSzDGdKiLIZYqNROUBpvIipwZrg9oEuJdcAthQKNrkKf6r1
-         gQ98BemGBcw9/pt/D3O2h6jMiSiin/woCEmeoEtzy+AYfwySdj2WT+FnsOOLhOWOkYsT
-         AuEw==
-X-Gm-Message-State: AOAM530+hDTVgk/uCDmFpeHPYhySJrSMBbWpGeiYekZclnkxLMMM/ly9
-        MHfeUQS17EnkaFD41QFFQvcC6DQYDY+u2cBXhdMCi3f0NOH02twkeAv4+dIVLFZs3tmjTjhTCWJ
-        przOQTa5wk+nepduhyCnZn8Gy
-X-Received: by 2002:a05:600c:1552:: with SMTP id f18mr4829441wmg.184.1632234212185;
-        Tue, 21 Sep 2021 07:23:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy8dBsUGmpSS/VnNnROL3eISK4+6sMfIjPu7vf/SpQmq1Qcp7XpNAZWxQfzCtY6FcM1lKR9/g==
-X-Received: by 2002:a05:600c:1552:: with SMTP id f18mr4829420wmg.184.1632234212000;
-        Tue, 21 Sep 2021 07:23:32 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id k6sm2873679wmo.37.2021.09.21.07.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 07:23:31 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH v2 04/10] KVM: x86: Remove defunct setting of CR0.ET for
- guests during vCPU create
-In-Reply-To: <20210921000303.400537-5-seanjc@google.com>
-References: <20210921000303.400537-1-seanjc@google.com>
- <20210921000303.400537-5-seanjc@google.com>
-Date:   Tue, 21 Sep 2021 16:23:30 +0200
-Message-ID: <87zgs680t9.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P3b2jcfDbA2RMzWspcDxsQ8EfzdIgm88kRmi16zOKlw=;
+        b=WULpk8jYyspTEByHRnSC2Ztz7j1U8Iq3/QEmjzp0Ud+hxIPdWsWz+D/ChYKvdV+tJb
+         fqNIlo4zLrgcEZZZ4emCChUP0P61eEkGoGpIFIT5W2xAAZc0WCz5dNiicbaVklx5NhXH
+         nfh72AxU0kh1nM+6z9v5grJG5t48BZBhRNt/vZqtVb051hYaGA3sMtcUIH0nTiQEn5gl
+         xhdh0otAUmEXHU+j84n32/v5FH9+O9E+w2gNa9ZMD1dalJzuSIm4z+SrH6WWI5iZkP2T
+         1/ASSgz/HSb1RSAUzbJ7VnQuGcgdIUEioxziBrnwfW7RcXejFZpf9mlGYoXkGF2gExkR
+         vHkQ==
+X-Gm-Message-State: AOAM531PdUvFS1R3mlCs6JDMf20lrypg0f6UewvigXxqFC138c0VUvNO
+        UJZndeV6HoWCOQHhiXV09Nepc++Lf2uCiSIQpog=
+X-Google-Smtp-Source: ABdhPJzf5nipsndEIxk+EpwoHUJsQvwNMTHnGbodOvtQwDvXh+YzqvzGOP8SfHoDQX9setnok5msn6HpzyMmEl4suf8=
+X-Received: by 2002:a54:4f89:: with SMTP id g9mr3870082oiy.71.1632234228818;
+ Tue, 21 Sep 2021 07:23:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <8003272.NyiUUSuA9g@kreacher> <1798761.CQOukoFCf9@kreacher>
+ <CAHp75VdoFwH2sQT6dwz4BCorkgJgmYEBHq-+YpT18HZx2cpmrA@mail.gmail.com>
+ <CAJZ5v0iRviZkLzRP0t2f4q5oY9y6CxRotDnyBVBt-QBt-uYReQ@mail.gmail.com> <CAHp75VdE3gNXy+p=8iyqyY0Ja+AHjv6zFEGwWJSXQwz+A0X1TQ@mail.gmail.com>
+In-Reply-To: <CAHp75VdE3gNXy+p=8iyqyY0Ja+AHjv6zFEGwWJSXQwz+A0X1TQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 21 Sep 2021 16:23:37 +0200
+Message-ID: <CAJZ5v0jxVfqraab7zO2t3LoZecasV+gy5HRfjjacVDut2OscUw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/5] PCI: PM: x86: Drop Intel MID PCI PM support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        x86 Maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Len Brown <len.brown@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
-
-> Drop code to set CR0.ET for the guest during initialization of the guest
-> FPU.  The code was added as a misguided bug fix by commit 380102c8e431
-> ("KVM Set the ET flag in CR0 after initializing FX") to resolve an issue
-> where vcpu->cr0 (now vcpu->arch.cr0) was not correctly initialized on SVM
-> systems.  While init_vmcb() did set CR0.ET, it only did so in the VMCB,
-> and subtly did not update vcpu->cr0.  Stuffing CR0.ET worked around the
-> immediate problem, but did not fix the real bug of vcpu->cr0 and the VMCB
-> being out of sync.  That underlying bug was eventually remedied by commit
-> 18fa000ae453 ("KVM: SVM: Reset cr0 properly on vcpu reset").
+On Tue, Sep 21, 2021 at 2:17 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> No functional change intended.
-
-fx_init() is only called from kvm_arch_vcpu_create() (and inlined later
-in the series) a few lines before kvm_vcpu_reset() which stuffs CR0 with 
-X86_CR0_ET too and it doesn't seem that arch.cr0 value is important in
-between.
-
+> On Mon, Sep 20, 2021 at 1:57 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Sun, Sep 19, 2021 at 10:32 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Sun, Sep 19, 2021 at 9:01 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
 >
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/x86.c | 2 --
->  1 file changed, 2 deletions(-)
+> ...
 >
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ab907a0b9eeb..e0bff5473813 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10628,8 +10628,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
->  	 * Ensure guest xcr0 is valid for loading
->  	 */
->  	vcpu->arch.xcr0 = XFEATURE_MASK_FP;
-> -
-> -	vcpu->arch.cr0 |= X86_CR0_ET;
->  }
->  
->  void kvm_free_guest_fpu(struct kvm_vcpu *vcpu)
+> > > > I am going to post patches removing the rest of MID support from arch/x86/
+> > > > and elsewhere, but that is still quite a bit of stuff and I don't want this
+> > > > simple PCI PM series to depend on that work.
+> > >
+> > > This is still being used by MID with ACPI assisted (*) support.
+> > > Hence, not ack.
+> > >
+> > > *) ACPI layer is provided by U-Boot and can't fulfill all possible
+> > > features that ACPI may use in the Linux kernel.
+> >
+> > OK, good to know.
+> >
+> > I'm not sure how this PCI PM stuff works with ACPI.
+>
+> It doesn't that is the point. The PCI is very interesting there and
+> what I meant is that the ACPI implementation I have provided via
+> U-Boot does not cover these.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+That's OK.  It just means that these devices are not power-manageable
+via ACPI on the platforms in question, but the MID PCI PM code is
+present in the kernel, so we don't need analogous code in AML in the
+ACPI tables.
 
--- 
-Vitaly
+My point is that something like the v2 of this patch series
+(https://lore.kernel.org/linux-acpi/1800633.tdWV9SEqCh@kreacher/T/#m1ec249724a5ad5ad358b0ed8e149e3926934955d)
+is needed to prevent ACPI from overtaking the PM for the PCI devices
+on the platform once we've decided to use the MID PM for them.
 
+Now, if it is necessary to use ACPI PM for some devices and the MID PM
+for other devices on the same platform, the latter needs to grow a
+meaningful "power manageable" function that needs to be used in the
+code as appropriate.
+
+> If you have any hints/ideas how it may be handled, I am all ears!
