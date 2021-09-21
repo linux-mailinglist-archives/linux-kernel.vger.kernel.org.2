@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB47F413502
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAF3413530
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhIUOHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:07:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40638 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbhIUOHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:07:09 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id A1EFF2014A;
-        Tue, 21 Sep 2021 14:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632233139;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E557MN5H/z8gMR1F1UOzgrMHbd/CGDwH5EaTlthnE2Q=;
-        b=v7PwXdhSncGdSn0M9Iq8A3YFGWARdPt3gbuo815jkU+soPK31djxrG92ITY9NNfKHraOal
-        rA0KcBFdcdl+5Y1KKvi4EktFSrFglCPD3Fb2n9F4GBSa7dAmN4068mz/iwksfh1R8oErRg
-        3GNQHficINR3MCbjv/JZLme3g1KsVzk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632233139;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E557MN5H/z8gMR1F1UOzgrMHbd/CGDwH5EaTlthnE2Q=;
-        b=PKvj/vdOw6eDti9HjiU84sIJYlLtvn8+PLaYrxEPOXszzqowYIXPaJNymb5oe/3evCNwNm
-        kVstYJmGCMCSJDBQ==
-Received: from g78 (unknown [10.163.24.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id DCD40A3B84;
-        Tue, 21 Sep 2021 14:05:38 +0000 (UTC)
-References: <20210921130127.24131-1-rpalethorpe@suse.com>
- <CAK8P3a29ycNqOC_pD-UUtK37jK=Rz=nik=022Q1XtXr6-o6tuA@mail.gmail.com>
-User-agent: mu4e 1.4.15; emacs 27.2
-From:   Richard Palethorpe <rpalethorpe@suse.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-aio <linux-aio@kvack.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>
-Subject: Re: [PATCH] aio: Wire up compat_sys_io_pgetevents_time64 for x86
-Reply-To: rpalethorpe@suse.de
-In-reply-to: <CAK8P3a29ycNqOC_pD-UUtK37jK=Rz=nik=022Q1XtXr6-o6tuA@mail.gmail.com>
-Date:   Tue, 21 Sep 2021 15:05:38 +0100
-Message-ID: <87o88mkor1.fsf@suse.de>
+        id S233567AbhIUOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:19:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27769 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233352AbhIUOTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 10:19:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="210450840"
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="210450840"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 07:06:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="549502391"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 07:06:05 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Weizhao Ouyang <o451686892@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Anshuman Khandual <khandual@linux.vnet.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Mina Almasry <almasrymina@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>, Wei Xu <weixugc@google.com>
+Subject: Re: [PATCH v2 2/2] mm/debug: sync up latest migrate_reason to
+ migrate_reason_names
+References: <20210921064553.293905-1-o451686892@gmail.com>
+        <20210921064553.293905-3-o451686892@gmail.com>
+        <87mto676fq.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <d57aaff2-b154-4462-1a7d-3d288ebabb6a@gmail.com>
+Date:   Tue, 21 Sep 2021 22:06:03 +0800
+In-Reply-To: <d57aaff2-b154-4462-1a7d-3d288ebabb6a@gmail.com> (Weizhao
+        Ouyang's message of "Tue, 21 Sep 2021 15:31:27 +0800")
+Message-ID: <87ee9i6n1w.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Arnd,
+Weizhao Ouyang <o451686892@gmail.com> writes:
 
-Arnd Bergmann <arnd@arndb.de> writes:
-
-> On Tue, Sep 21, 2021 at 3:01 PM Richard Palethorpe <rpalethorpe@suse.com> wrote:
+> On 2021/9/21 15:07, Huang, Ying wrote:
+>> Weizhao Ouyang <o451686892@gmail.com> writes:
 >>
->> The LTP test io_pgetevents02 fails in 32bit compat mode because an
->> nr_max of -1 appears to be treated as a large positive integer. This
->> causes pgetevents_time64 to return an event. The test expects the call
->> to fail and errno to be set to EINVAL.
->>
->> Using the compat syscall fixes the issue.
->>
->> Fixes: 7a35397f8c06 ("io_pgetevents: use __kernel_timespec")
->> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>>> Sync up MR_DEMOTION to migrate_reason_names and add a synch prompt.
+>>>
+>>> Fixes: 26aa2d199d6f ("mm/migrate: demote pages during reclaim")
+>>> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+>>> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+>>> ---
+>>>  include/linux/migrate.h | 6 +++++-
+>>>  mm/debug.c              | 1 +
+>>>  2 files changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+>>> index 326250996b4e..c8077e936691 100644
+>>> --- a/include/linux/migrate.h
+>>> +++ b/include/linux/migrate.h
+>>> @@ -19,6 +19,11 @@ struct migration_target_control;
+>>>   */
+>>>  #define MIGRATEPAGE_SUCCESS		0
+>>>  
+>>> +/*
+>>> + * Keep sync with:
+>>> + * - macro MIGRATE_REASON in include/trace/events/migrate.h
+>>> + * - migrate_reason_names[MR_TYPES] in mm/debug.c
+>>> + */
+>>>  enum migrate_reason {
+>>>  	MR_COMPACTION,
+>>>  	MR_MEMORY_FAILURE,
+>>> @@ -32,7 +37,6 @@ enum migrate_reason {
+>>>  	MR_TYPES
+>>>  };
+>>>  
+>>> -/* In mm/debug.c; also keep sync with include/trace/events/migrate.h */
+>>>  extern const char *migrate_reason_names[MR_TYPES];
+>>>  
+>>>  #ifdef CONFIG_MIGRATION
+>>> diff --git a/mm/debug.c b/mm/debug.c
+>>> index e61037cded98..fae0f81ad831 100644
+>>> --- a/mm/debug.c
+>>> +++ b/mm/debug.c
+>>> @@ -26,6 +26,7 @@ const char *migrate_reason_names[MR_TYPES] = {
+>>>  	"numa_misplaced",
+>>>  	"contig_range",
+>>>  	"longterm_pin",
+>>> +	"demotion",
+>>>  };
+>>>  
+>>>  const struct trace_print_flags pageflag_names[] = {
+>> Can we add BUILD_BUG_ON() somewhere to capture at least some
+>> synchronization issue?
 >
-> Thanks a lot for finding this, indeed there is definitely a mistake that
-> this function is defined and not used, but I don't yet see how it would
-> get to the specific failure you report.
->
-> Between the two implementations, I can see a difference in the
-> handling of the signal mask, but that should only affect architectures
-> with incompatible compat_sigset_t, i.e. big-endian or
-> _COMPAT_NSIG_WORDS!=_NSIG_WORDS, and the latter is
-> never true for currently supported architectures. On x86, there is
-> no difference in the sigset at all.
->
-> The negative 'nr' and 'min_nr' arguments that you list as causing
-> the problem /should/ be converted by the magic
-> SYSCALL_DEFINE6() definition. If this is currently broken, I would
-> expect other syscalls to be affected as well.
+> Hi Huang, we discussed this in the v1 thread with you and John, seems you
+> missed it. Now we just add a comment to do the synchronization, and we can
+> figure out a more general way to use strings which in trace_events straight.
 
-That is what I thought, but I couldn't think of another explanation for
-it.
+Got it!  And I think we can add the BUILD_BUG_ON() now and delete it
+when we have a better solution to deal with that.  But if you can work
+out a better solution quickly, that's fine to ignore this.
 
->
-> Have you tried reproducing this on non-x86 architectures? If I
-> misremembered how the compat conversion in SYSCALL_DEFINE6()
-> works, then all architectures that support CONFIG_COMPAT have
-> to be fixed.
->
->          Arnd
-
-No, but I suppose I can try it on ARM or PowerPC. I suppose printing the
-arguments would be a good idea too.
-
--- 
-Thank you,
-Richard.
+Best Regards,
+Huang, Ying
