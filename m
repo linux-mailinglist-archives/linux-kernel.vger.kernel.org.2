@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B243E4137EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A9B4137F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhIURCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhIURCo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:02:44 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B199CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:01:15 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id e15so71081lfr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WkliQtuiB7gvGpUed1TYW2cuQJQCTGKxOOGy0fW2hRk=;
-        b=WbOckG2skYZuQKXj+ZAjrYV7deYygJ/bpLQKvThd0tPoDGHuyHvFFDYrbDftUvObHH
-         O0okqjuCgOAk165AorGHrwfcXmWaGNt9K9ndgbUaCMlygpyNO1abhzxl6dreVnl1vL2i
-         vraLDIIkNsB2mgFUUK0R18SKvJsH6TPmM8ro+XXPtgD+4z3FWMyWbD1sWuFcB3RJJKoc
-         7VSQkcECcadKjXO5xfdzDrdyDuGoGjKO7oeZWG0ywucxIoFndSF1GPbD0rD9RK1bhSJT
-         PEB0qrCdsLTExfDsNbmbaZlngKF9sCTVQiuN+d481RBJwyk3wrzq5hMI3aAjMYWnL/Ls
-         cacA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WkliQtuiB7gvGpUed1TYW2cuQJQCTGKxOOGy0fW2hRk=;
-        b=rPFewE0QLsfuNzJLyj9+WgIticRPjoSqPdphmlUA9G+8lLcNeXQSmtPb+5fDz9Ei53
-         d4pYRiESHnjsc6uvYK2kPtyRgpx/pkwho+nLVy89Iy9O7TA1RxR+rm7/ALJGWqzcddr3
-         qzFW+nufkgb8d7NAatskcw1R5byy0yHtYEQAqwP5k0nSkqjWIpp+dKw9HI/xrac+cqxS
-         5rwe8O599t8FIFPRkWIHGtQJUSIWYzxhTj/eMlrXlQnLRvefQDptp87JUZEgrG/tU9N5
-         PDEpK+Pap2YEBP8xUSKLPJI3Br2uD1B0HjUbT4pUFEWDqIFTeZFGSPQmOIScha54FT3D
-         cy8Q==
-X-Gm-Message-State: AOAM5316E4Fhkz4/Le+UUsSb3AimbS3z2fD/5ZB3nImbVxc/xaKbYPWW
-        PUzCfb3pSHSTQhq1BZs0uEVU44GUvbJbCg==
-X-Google-Smtp-Source: ABdhPJzrJZKyUtD/n4mB5S/SLyhOR8MN/nGmg3MWJXyWm7D1ECqQK9A8AuUtiyBIRU5UbqiXYQ9H9w==
-X-Received: by 2002:ac2:4a6e:: with SMTP id q14mr24704180lfp.685.1632243674060;
-        Tue, 21 Sep 2021 10:01:14 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id v26sm1718430ljv.77.2021.09.21.10.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 10:01:13 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH] fs/ntfs3: Remove deprecated mount options nls
-Date:   Tue, 21 Sep 2021 20:00:53 +0300
-Message-Id: <20210921170053.48676-1-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231417AbhIURDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 13:03:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:58174 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229912AbhIURDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 13:03:39 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="202911756"
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="202911756"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 10:01:36 -0700
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="435946559"
+Received: from adkuncha-mobl2.amr.corp.intel.com (HELO [10.251.2.103]) ([10.251.2.103])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 10:01:36 -0700
+Subject: Re: [PATCH 1/2] mm/migrate: optimize hotplug-time demotion order
+ updates
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com,
+        mhocko@suse.com, weixugc@google.com, osalvador@suse.de,
+        rientjes@google.com, dan.j.williams@intel.com, david@redhat.com,
+        gthelen@google.com, yang.shi@linux.alibaba.com,
+        akpm@linux-foundation.org
+References: <20210917223504.C140445A@davehans-spike.ostc.intel.com>
+ <20210917223505.F817CB6B@davehans-spike.ostc.intel.com>
+ <87k0jeog7r.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <2d7e4078-f9c0-7511-0bab-de5dab25b45d@intel.com>
+ <87a6k66lnd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <d87ef236-f113-8765-7fef-e41db0adf2b2@intel.com>
+Date:   Tue, 21 Sep 2021 10:01:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <87a6k66lnd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some discussion has been spoken that this deprecated mount options
-should be removed before 5.15 lands. This driver is not never seen day
-light so it was decided that nls mount option has to be removed. We have
-always possibility to add this if needed.
+On 9/21/21 7:36 AM, Huang, Ying wrote:
+>> This removes the need for the demotion code to track *any* state.  I've
+>> attached a totally untested patch to do this.
+> Yes.  This sounds good.  I will try to test this patch on my side.
+> 
+>>From another point of view, we still need to update demotion order upon
+> CPU hotplug too, because whether a node has CPU may be changed there.
+> And we need a solution for that too.
 
-One possible need is example if current ntfs driver will be taken out of
-kernel and ntfs3 needs to support mount options what it has.
+Just to recap...  The reason I sent this series is that there's a known,
+detectable regression in a memory hotplug "benchmark".  This affects the
+5.15 series.
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
-Patch is compile and checkpatch tested.
----
- fs/ntfs3/super.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index 6a535b144ff9..66a3d02a5e14 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -246,11 +246,6 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
- 	fsparam_flag_no("prealloc",		Opt_prealloc),
- 	fsparam_flag_no("acsrules",		Opt_noacsrules),
- 	fsparam_string("iocharset",		Opt_iocharset),
--
--	__fsparam(fs_param_is_string,
--		  "nls", Opt_iocharset,
--		  fs_param_deprecated, NULL),
--	{}
- };
- 
- /*
-
-base-commit: 6354467245ff8dd04b54e39790f2ee4d21d5419e
--- 
-2.25.1
+While I agree that we should look into the impact on CPU hotplug, I
+think we should probably focus on the *known* memory hotplug issue for 5.15.
 
