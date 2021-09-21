@@ -2,178 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BE24133AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473054133AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhIUNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:04:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:26885 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbhIUNEQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:04:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632229368; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=qH2l5wCnZnelf0eU2pGiDEZnMruL9bfu6QZc4HulXxE=; b=BnbJZ7mRZv1aEqPxi7Az0whTJKS58+RmKA3T83QeWVWz/38n9YLaA8U9PZ5AsgfbREXycy6s
- Tw58hzX3+GB/vtGIc4XhPrRlXJCkLmHfjezxZiLj34siKllzDYkUDlTr16BhDLkL4m3YNmba
- Mk+vzN60z0Y0gUlOVnnB3zIUCpI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6149d7ddec62f57c9a213e41 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 13:02:21
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6C83CC43616; Tue, 21 Sep 2021 13:02:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [157.48.153.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3A5CC4338F;
-        Tue, 21 Sep 2021 13:02:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D3A5CC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH 3/7] ASoC: codecs: tx-macro: Change mic control registers
- to volatile
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
- <1632123331-2425-4-git-send-email-srivasam@codeaurora.org>
- <c1c7b1e8-98f5-99a3-1374-11d1d61535b4@linaro.org>
- <b442ee2b-622c-674d-3abe-b1fbbfa5aeb9@codeaurora.org>
- <e87ef6e1-0c10-beaa-81ad-2c0ceae6bbcc@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <62c85130-df75-5aa6-8954-d1a55167827f@codeaurora.org>
-Date:   Tue, 21 Sep 2021 18:32:09 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232731AbhIUNEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:04:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:33316 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230052AbhIUNEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:04:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB37B106F;
+        Tue, 21 Sep 2021 06:02:43 -0700 (PDT)
+Received: from e121896.arm.com (unknown [10.57.50.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C29E03F59C;
+        Tue, 21 Sep 2021 06:02:41 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     suzuki.poulose@arm.com, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org
+Cc:     James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] coresight: Don't immediately close events that are run on invalid CPU/sink combos
+Date:   Tue, 21 Sep 2021 14:02:31 +0100
+Message-Id: <20210921130231.386095-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <e87ef6e1-0c10-beaa-81ad-2c0ceae6bbcc@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When a traced process runs on a CPU that can't reach the selected sink,
+the event will be stopped with PERF_HES_STOPPED. This means that even if
+the process migrates to a valid CPU, tracing will not resume.
 
-On 9/21/2021 2:18 PM, Srinivas Kandagatla wrote:
->
->
-> On 21/09/2021 08:30, Srinivasa Rao Mandadapu wrote:
->>
->> On 9/20/2021 6:54 PM, Srinivas Kandagatla wrote:
->> Thanks for your time Srini!!
->>>
->>> On 20/09/2021 08:35, Srinivasa Rao Mandadapu wrote:
->>>> Update amic and dmic related tx macro control registers to volatile
->>>>
->>>> Fixes: c39667ddcfc5 (ASoC: codecs: lpass-tx-macro: add support for 
->>>> lpass tx macro)
->>>>
->>>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->>>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->>>> ---
->>>>   sound/soc/codecs/lpass-tx-macro.c | 13 +++++++++++++
->>>>   1 file changed, 13 insertions(+)
->>>>
->>>> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
->>>> b/sound/soc/codecs/lpass-tx-macro.c
->>>> index 9273724..e65b592 100644
->>>> --- a/sound/soc/codecs/lpass-tx-macro.c
->>>> +++ b/sound/soc/codecs/lpass-tx-macro.c
->>>> @@ -423,6 +423,13 @@ static bool tx_is_volatile_register(struct 
->>>> device *dev, unsigned int reg)
->>>>       case CDC_TX_TOP_CSR_SWR_DMIC1_CTL:
->>>>       case CDC_TX_TOP_CSR_SWR_DMIC2_CTL:
->>>>       case CDC_TX_TOP_CSR_SWR_DMIC3_CTL:
->>>> +    case CDC_TX_TOP_CSR_SWR_AMIC0_CTL:
->>>> +    case CDC_TX_TOP_CSR_SWR_AMIC1_CTL:
->>>> +    case CDC_TX_CLK_RST_CTRL_MCLK_CONTROL:
->>>> +    case CDC_TX_CLK_RST_CTRL_FS_CNT_CONTROL:
->>>> +    case CDC_TX_CLK_RST_CTRL_SWR_CONTROL:
->>>> +    case CDC_TX_TOP_CSR_SWR_CTRL:
->>>> +    case CDC_TX0_TX_PATH_SEC7:
->>>
->>> Why are these marked as Volatile?
->>> Can you provide some details on the issue that you are seeing?
->>>
->>> --srini
->>
->> Without volatile these registers are not reflecting in Hardware and 
->> playback and capture is not working.
->>
->> Will do recheck and keep only required registers as volatile.
->
-> This sounds like a total hack to me,
->
-> this might be happening in your case:
->
-> The default values for this register are different to actual defaults.
-> Ex: CDC_TX_TOP_CSR_SWR_AMIC0_CTL default is 0x00
-> so writing 0x0 to this register will be no-op as there is no change in 
-> the register value as compared to default value as per regmap.
->
-> In you case make sure the hardware default values are correctly 
-> reflected in tx_defaults array.
+This can be reproduced (on N1SDP) by using taskset to start the process
+on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
+CPU 2):
 
-The default values in tx_defaults are proper. But same value is not 
-reflecting in Hardware, but In Cache it's reflecting set value.
+  taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
 
->
-> Then setting the desired value should work.
->
->
-> --srini
->
->
->
->>
->>>
->>>
->>>>           return true;
->>>>       }
->>>>       return false;
->>>> @@ -1674,6 +1681,12 @@ static int tx_macro_component_probe(struct 
->>>> snd_soc_component *comp)
->>>>         snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 
->>>> 0x3F,
->>>>                         0x0A);
->>>> +    snd_soc_component_update_bits(comp, 
->>>> CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
->>>> +    snd_soc_component_update_bits(comp, 
->>>> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
->>>> +    snd_soc_component_update_bits(comp, 
->>>> CDC_TX_TOP_CSR_SWR_DMIC0_CTL, 0xFF, 0x00);
->>>> +    snd_soc_component_update_bits(comp, 
->>>> CDC_TX_TOP_CSR_SWR_DMIC1_CTL, 0xFF, 0x00);
->>>> +    snd_soc_component_update_bits(comp, 
->>>> CDC_TX_TOP_CSR_SWR_DMIC2_CTL, 0xFF, 0x00);
->>>> +    snd_soc_component_update_bits(comp, 
->>>> CDC_TX_TOP_CSR_SWR_DMIC3_CTL, 0xFF, 0x00);
->>>>         return 0;
->>>>   }
->>>>
+This produces a single 0 length AUX record, and then no more trace:
+
+  0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
+
+After the fix, the same command produces normal AUX records. The perf
+self test "89: Check Arm CoreSight trace data recording and synthesized
+samples" no longer fails intermittently. This was because the taskset in
+the test is after the fork, so there is a period where the task is
+scheduled on a random CPU rather than forced to a valid one.
+
+Specifically selecting an invalid CPU will still result in a failure to
+open the event because it will never produce trace:
+
+  ./perf record -C 2 -e cs_etm/@tmc_etf0/
+  failed to mmap with 12 (Cannot allocate memory)
+
+The only scenario that has changed is if the CPU mask has a valid CPU
+sink combo in it.
+
+Testing
+=======
+
+* Coresight self test passes consistently:
+  ./perf test Coresight
+
+* CPU wide mode still produces trace:
+  ./perf record -e cs_etm// -a
+
+* Invalid -C options still fail to open:
+  ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
+  failed to mmap with 12 (Cannot allocate memory)
+
+* Migrating a task to a valid sink/CPU now produces trace:
+  taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
+
+* If the task remains on an invalid CPU, no trace is emitted:
+  taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
+
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+index 8ebd728d3a80..79346f0f0e0b 100644
+--- a/drivers/hwtracing/coresight/coresight-etm-perf.c
++++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+@@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
+ 	 * sink from this ETM. We can't do much in this case if
+ 	 * the sink was specified or hinted to the driver. For
+ 	 * now, simply don't record anything on this ETM.
++	 *
++	 * As such we pretend that everything is fine, and let
++	 * it continue without actually tracing. The event could
++	 * continue tracing when it moves to a CPU where it is
++	 * reachable to a sink.
+ 	 */
+ 	if (!cpumask_test_cpu(cpu, &event_data->mask))
+-		goto fail_end_stop;
++		goto out;
+ 
+ 	path = etm_event_cpu_path(event_data, cpu);
+ 	/* We need a sink, no need to continue without one */
+@@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
+ 	if (coresight_enable_path(path, CS_MODE_PERF, handle))
+ 		goto fail_end_stop;
+ 
+-	/* Tell the perf core the event is alive */
+-	event->hw.state = 0;
+-
+ 	/* Finally enable the tracer */
+ 	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+ 		goto fail_disable_path;
+ 
++out:
++	/* Tell the perf core the event is alive */
++	event->hw.state = 0;
+ 	/* Save the event_data for this ETM */
+ 	ctxt->event_data = event_data;
+-out:
+ 	return;
+ 
+ fail_disable_path:
+@@ -517,6 +521,19 @@ static void etm_event_stop(struct perf_event *event, int mode)
+ 	if (WARN_ON(!event_data))
+ 		return;
+ 
++	/*
++	 * Check if this ETM was allowed to trace, as decided at
++	 * etm_setup_aux(). If it wasn't allowed to trace, then
++	 * nothing needs to be torn down other than outputting a
++	 * zero sized record.
++	 */
++	if (handle->event && (mode & PERF_EF_UPDATE) &&
++	    !cpumask_test_cpu(cpu, &event_data->mask)) {
++		event->hw.state = PERF_HES_STOPPED;
++		perf_aux_output_end(handle, 0);
++		return;
++	}
++
+ 	if (!csdev)
+ 		return;
+ 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.28.0
 
