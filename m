@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF384138F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136564138FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhIURpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhIURo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:44:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6F8C061574;
-        Tue, 21 Sep 2021 10:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=a2OzgtMmGpk6woPpOvOOcLPpmrGPO53fLZOixEExQ+g=; b=I5os7sMIFl2i1UmHdrajeHi+xW
-        XBO+ZEeHOom+1PPrXwszjpQUos2Xo1bBktJ7J9wIemW/1cndJLEVJ42gtPV6bHSNdte43CCGb/kiW
-        n9NUP+xXpfoax7cTGABhNvqvlP+QTeVjhx7lOS88wul5r5BV/PURM4ZLFGX8OiKjABWEyPew0xPYz
-        FO2cnYum4z+o1FOMjtktnuc2mJq2kI4P25hcTRBWsID8yyZxPZuFTjfArxok1oZ0/+Egf3gC/vV3r
-        qFr0It7LM56SV0FSgkCOPja53jcUaFu3zFvaUeNMZnvetFfWsU7OqnWIHHHopqxoAegc3HVMjmh2K
-        B43mzaVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSjna-004o6w-5i; Tue, 21 Sep 2021 17:43:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDB89300252;
-        Tue, 21 Sep 2021 19:43:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A7DF720303903; Tue, 21 Sep 2021 19:43:16 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 19:43:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] livepatch: Fix idle cpu's tasks transition
-Message-ID: <YUoZtF1qPyTx07pU@hirez.programming.kicks-ass.net>
-References: <patch.git-94c1daf66a9c.your-ad-here.call-01631714463-ext-3692@work.hours>
+        id S231224AbhIURqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 13:46:30 -0400
+Received: from mail-mw2nam10on2073.outbound.protection.outlook.com ([40.107.94.73]:54689
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231211AbhIURq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 13:46:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DyuMfmSJlvv6YX2zJRLY40U8RKc1tPL0EceD1f28JMY499gmKrgxmJKKG+xetIoBK6HZtDsHM1xShCj13jKF0bERc2RHsne8N9T9JUZd1qZAKKAQ8bUPBnBRv47sZJXw/nj3zd6MR4aUeHd0ZXi5muMfyfKFDMPIlwrXskD3XITjVKAfbFVTH5A+YPlo/z06XUrBUTgkhm4KARHzgKmxhnmyumU/kjBTKKYWWzibrT1xxeGrgxitBd3Ib6fJpFnBkFlpMdD2DvHuu42fMJPj2SY8h9Vaqf/jRaDdCEH9aybor10JouhTpGvdL2UpqirjegOpSZ/WgDqW8ekn8UXvOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=gLgBtsa3wJ8t/xKjueaEyvy68Tw8OHCzmqn1dq+7GDE=;
+ b=AI3grDt18tGgWSMpZ0tLv5weebQt9EIAQL3YRi6Mo/wvAB5Lve9typDJQC76JVeWsM02fZdpGM8XrJU9WgWoZcnNsLcbNNozienfT6VfjUwzixmQejXgWzxnCltNfH7AsQmohRyy/i5/aJHEHY4v6++EW+/wUMZRVIlPgFdek00OEHjwPzwtw3CyOB9fgx+t4ZstKSB8b0XCX/NP6F6ahv3mhIhyUMgvg02R+HYT5yyQx7CQamiZduZoU1hIka45EfiwxhvtHJfe4t2P/pMe54SkYJS7uCzRE1liEG7ZdNLK1bpWpYN4u9Jxkqi1Kxk1/6okGD5M+9FJnKHk+JvBig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gLgBtsa3wJ8t/xKjueaEyvy68Tw8OHCzmqn1dq+7GDE=;
+ b=b+TmODI0C4ej1nzmmsmejAZMoLt+RW6MUyimGJ4cA6L8cD1KfjcQrtWylQOGzCRdfyOIRfIo1nnypF5Z0QksNx7opb8qiJhGIooLBnW8DWBV73UO1avwhnD+v+AswuG5jF33aD3dy2RUQMr6AY35rAFvApSAz2Y25UWcSH0WA9tpUKqxeoagQpWqxt6eGAps/ncetyW/jgT3TyTZjKgq6MtUorfa7Hd61usqd+bIcDk6awOf2rkHNpiFP3FikRN2g+p0DwqKv1ZBSLjiKXLci2i6qeNeaBAk9m68a2lBXz+s5TBWtMFRrTELkczouCemfoItVjH7ay03G78P12u6wg==
+Received: from MWHPR17CA0065.namprd17.prod.outlook.com (2603:10b6:300:93::27)
+ by DM4PR12MB5279.namprd12.prod.outlook.com (2603:10b6:5:39f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 21 Sep
+ 2021 17:44:59 +0000
+Received: from CO1NAM11FT032.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:93:cafe::97) by MWHPR17CA0065.outlook.office365.com
+ (2603:10b6:300:93::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
+ Transport; Tue, 21 Sep 2021 17:44:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ CO1NAM11FT032.mail.protection.outlook.com (10.13.174.218) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 17:44:58 +0000
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 21 Sep
+ 2021 10:44:57 -0700
+Received: from dhcp-10-19-66-63.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 21 Sep 2021 17:44:54 +0000
+From:   Bitan Biswas <bbiswas@nvidia.com>
+To:     <krzysztof.kozlowski@canonical.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>,
+        <jassisinghbrar@gmail.com>, <p.zabel@pengutronix.de>
+CC:     <skomatineni@nvidia.com>, <broonie@kernel.org>,
+        <linus.walleij@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Bitan Biswas <bbiswas@nvidia.com>
+Subject: [PATCH V1 0/3] Add tegra header license and dt-bindings Copyright
+Date:   Tue, 21 Sep 2021 10:44:31 -0700
+Message-ID: <20210921174434.4839-1-bbiswas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <patch.git-94c1daf66a9c.your-ad-here.call-01631714463-ext-3692@work.hours>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7a97b79f-a021-495d-0587-08d97d2787fd
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5279:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5279C1FA8C7456A7F49CAFB6D7A19@DM4PR12MB5279.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M3seCnN7ER57PWC1vJr4WdVdzVQf9zFnco1bg4XEM08wzckgH8HvRwLCblJnNlfm/CrwiBGq1lEbfGF0ZNIvnLLD6/xznlJJ1KG5Gz8oEvNwcTvJUiG6CF7VavmjPyjB3GwmM5y9hhWOlVhcmV8DsusuwcTMm2sNTnawvgm+s2orFNn+4L7k/y62pGB7PMDHNGsoT7VH0Hstigt0r3ckD39mQeWeIGLWKB9SyU2JX+3x4qLK8c1QTL5eJwHm6bOy27i8jWoqkPyOcCI5YsOjCPe6WabgEe72VuCT4c7pKUL9hR6J+qvEwWtgbGxtRzViocKHF/em+HqBnMrmRjVyVrGP58JO5sSU0sLSxy2NiG4YfhObS2B36d/IrutWWeDQ2cYYtHcPxL/cTI+57WMLAQDuhKVOTOWytP61uh9bs/bvD2M+F392o2g74m9IrLlj/a22oE0E18NuTDJ6PhhkWVeWz4xUENb1cr1o4bjdc2AdPpWK8Qbyn1qoMURl1bH+Mi62RGH8NgEYolpR6j4iu+StoizNt3LfR3BHRwQy1h+FzK7rEyg1WLucb6OBrCHP1upto9/A4LC2XQ/CGWo+vA2STWw+gm6grWUjDrEO95Jcsb+TGX6T8oRIi+5TzyOdx3hWTs80hIVKn9mLvktcHaQQkJ5jYSfbNfhUJFcXaGgkkQwdqEabO6p5hYL7RPJ7X4zoqCQLpc5GSeYmNbfzTw==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(5660300002)(7416002)(26005)(7636003)(186003)(316002)(70206006)(54906003)(110136005)(70586007)(7696005)(107886003)(8936002)(356005)(508600001)(36860700001)(86362001)(4326008)(36756003)(2616005)(426003)(336012)(82310400003)(6666004)(2906002)(83380400001)(8676002)(47076005)(1076003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 17:44:58.5710
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a97b79f-a021-495d-0587-08d97d2787fd
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT032.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5279
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 04:18:01PM +0200, Vasily Gorbik wrote:
+Few Tegra header file are missing license text.
+Some Tegra dt-bindings header do not have Copyright.
+Add license and Copyright for such Tegra header files.
 
-> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-> index 291b857a6e20..2846a879f2dc 100644
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -278,6 +278,8 @@ static int klp_check_stack(struct task_struct *task, char *err_buf)
->   * Try to safely switch a task to the target patch state.  If it's currently
->   * running, or it's sleeping on a to-be-patched or to-be-unpatched function, or
->   * if the stack is unreliable, return false.
-> + *
-> + * Idle tasks are switched in the main loop when running.
->   */
->  static bool klp_try_switch_task(struct task_struct *task)
->  {
-> @@ -308,6 +310,12 @@ static bool klp_try_switch_task(struct task_struct *task)
->  	rq = task_rq_lock(task, &flags);
->  
->  	if (task_running(rq, task) && task != current) {
-> +		/*
-> +		 * Idle task might stay running for a long time. Switch them
-> +		 * in the main loop.
-> +		 */
-> +		if (is_idle_task(task))
-> +			resched_curr(rq);
->  		snprintf(err_buf, STACK_ERR_BUF_SIZE,
->  			 "%s: %s:%d is running\n", __func__, task->comm,
->  			 task->pid);
+Bitan Biswas (3):
+  dt-bindings: tegra: memory,bpmp-thermal: add SPDX license
+  trace: events: tegra_apb_dma: add SPDX license identifier
+  dt-bindings: tegra: clock,memory,thermal: add header Copyright
 
-So 'recently' we grew try_invoke_on_locked_down_task() (yes, that's a
-crap name), and I'm thinking this code is very similar to that. So
-perhaps we re-use that.
+ include/dt-bindings/clock/tegra114-car.h            | 4 ++++
+ include/dt-bindings/clock/tegra124-car-common.h     | 4 ++++
+ include/dt-bindings/clock/tegra124-car.h            | 4 ++++
+ include/dt-bindings/clock/tegra186-clock.h          | 6 ++++++
+ include/dt-bindings/clock/tegra20-car.h             | 4 ++++
+ include/dt-bindings/clock/tegra210-car.h            | 4 ++++
+ include/dt-bindings/clock/tegra30-car.h             | 4 ++++
+ include/dt-bindings/gpio/tegra-gpio.h               | 4 ++++
+ include/dt-bindings/gpio/tegra186-gpio.h            | 4 ++++
+ include/dt-bindings/mailbox/tegra186-hsp.h          | 4 ++++
+ include/dt-bindings/memory/tegra114-mc.h            | 6 ++++++
+ include/dt-bindings/memory/tegra124-mc.h            | 6 ++++++
+ include/dt-bindings/memory/tegra186-mc.h            | 7 +++++++
+ include/dt-bindings/memory/tegra194-mc.h            | 7 +++++++
+ include/dt-bindings/memory/tegra210-mc.h            | 6 ++++++
+ include/dt-bindings/memory/tegra30-mc.h             | 6 ++++++
+ include/dt-bindings/pinctrl/pinctrl-tegra-xusb.h    | 6 ++++++
+ include/dt-bindings/reset/tegra124-car.h            | 4 ++++
+ include/dt-bindings/reset/tegra210-car.h            | 4 ++++
+ include/dt-bindings/thermal/tegra124-soctherm.h     | 4 ++++
+ include/dt-bindings/thermal/tegra186-bpmp-thermal.h | 5 +++++
+ include/dt-bindings/thermal/tegra194-bpmp-thermal.h | 5 +++++
+ include/trace/events/tegra_apb_dma.h                | 1 +
+ 23 files changed, 109 insertions(+)
 
-Perhaps have func() > 0 imply resched.
+-- 
+2.17.1
 
-I'll have a play...
