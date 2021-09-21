@@ -2,139 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E024413AA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78E3413AA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbhIUTWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:22:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38973 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229915AbhIUTWv (ORCPT
+        id S234427AbhIUTXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhIUTXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:22:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632252082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yTp5nZl5FP2S4p5cUtShACrTS3ff7K6W1gpGjotFl+0=;
-        b=EcUrosvIB+wWWhgtC7zp2zvbdvl3S2Ou+VZ0FwxawhxjEeFC0ymjKenaPrM64eLRvCZJys
-        8SUZmUbyTaK5/F2klCjeTa9pF5kvLRWpN9KG09adXfAgt8BINSDowa4iKkRIDQJ42UFE+z
-        oc3Z+L/4FypjEp4eEHpz1Fg74HzJmks=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-GK-ELhDbMDe0UdcVPyT4Mg-1; Tue, 21 Sep 2021 15:21:21 -0400
-X-MC-Unique: GK-ELhDbMDe0UdcVPyT4Mg-1
-Received: by mail-qk1-f198.google.com with SMTP id ay30-20020a05620a179e00b00433294fbf97so2586358qkb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:21:21 -0700 (PDT)
+        Tue, 21 Sep 2021 15:23:13 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529F6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:21:44 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id v24so558212eda.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CoizIjqkQkAgXO3NanmUI7a4z4Mg4O/HFwzVnIRa9bA=;
+        b=L4Dq7fxn+T5CnRWjI2RzQxbBMPmM/uJPBGd1OH6JHrHqcDodPJRB7rVWREZn/NMDx5
+         kvQ9wgp9tp4se1p5dxYmvfMC/rLxgofi19rrgBti+gXm3P6CGdUeRVDwQD+OCEVGzV/m
+         HYyv+0K/E6P6shH08Di8bhjwK2q9p8yE/Vhuj50rkmEsNmPt6hTHfd4qVz7mXfpOJpNL
+         18KdaM+jBKiPMmTWUuCOPxKsO1Ceqz3xW4v+/hLMij67QCFyseY3abu3zFf3n0boGNq7
+         TVhHbbZOPCJpwkem989BAeTmUUBmweed4AH6fldPEAYXrTtl2PTaTTNfrm763ZLF729U
+         Q2aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yTp5nZl5FP2S4p5cUtShACrTS3ff7K6W1gpGjotFl+0=;
-        b=rbUHzJSLV1uHl5v3/HR79U2/fWdB+PRrBNMYEJkfbcfI5WRA28bbRcLoSng/NjUCN9
-         iEzS3pfhw6zszeZVvRZJIXHmKeL+p9GsXm2QXfYod+20oZlzXze2Gv8i4VadCdn4dUHc
-         IhM6woievx1QG7r4XN9KwvPjaNB8lm3i0V9SEc2J9YpX9c4kkNiGPGS4pyOPsi+5bAlL
-         bMGejxNHnBMzWWUc18XxWtRoYQpWbL8oV+lLYi6TGexCx8qe/WFHcJnzMHftSCXKRvUn
-         1p//ojB/kB5aT5vwYVsxYXKOfGBObqm2hfEe+/opCMIOGwT+Nvitcssfyn9ufBmNGXqZ
-         7d3w==
-X-Gm-Message-State: AOAM5324Fb+WY/2O3rGEPxVkkiqmVCl13AHvNim7wuPZYSGpSJeCx6HJ
-        0vfvYY5+YR0uwq3ZaQDwTeO12pZUQcCAUbzpMLuth24hExfow52t82oi/XDZSb6XYcsyXfdxBDT
-        53uBI73+pA4LqL9BQEAq8PMX1
-X-Received: by 2002:a0c:b391:: with SMTP id t17mr8884817qve.35.1632252081320;
-        Tue, 21 Sep 2021 12:21:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCxg/1fWoiiV7evbw5NzE0whd7BvYgpUL/aAEXYfn2sAz+T6HT6pVp513PoQzhTVefWS6UXA==
-X-Received: by 2002:a0c:b391:: with SMTP id t17mr8884784qve.35.1632252081010;
-        Tue, 21 Sep 2021 12:21:21 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id a9sm14623542qkk.82.2021.09.21.12.21.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 12:21:20 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 15:21:19 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-Message-ID: <YUowr6phZU4v7dds@t490s>
-References: <20210921163323.944352-1-axelrasmussen@google.com>
- <YUoaDr2wsW8wtk5Z@t490s>
- <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CoizIjqkQkAgXO3NanmUI7a4z4Mg4O/HFwzVnIRa9bA=;
+        b=2U5fzTZ/Wgp6zzwnp+Kxfvt/1MFWDEq+mKf1gNTl0xFUrFT45b55g+lN5yzUcKT2L0
+         jPWbooL2o74wWRCuXE/LJm38biCA5KcYiV65McsODQ6w9/Mqvw5MH52oqV4JPZIJi7PZ
+         5CBNt4SZtQW+awohl7mLL1gFDBPPVFYcyLtejJd6b4FErNIPWs7g7HENPBv5ohJOhegG
+         0qOtghcgki5AAafiCwMhgx1VlB8jWNJANAnhQVbGBfbedhDtRJWJ+NaHqKzt4XL79k8Q
+         /2lTMT5qNui6+CN77tQvrtp9XPxBOkrqdPsUZw1TqgSk0MT8I2WfK1zveqEj1IOrwTHv
+         sDZg==
+X-Gm-Message-State: AOAM533NYYMCO5D5UBR23W+mKhECGL5fkviMtkIBVpE8lWDgarKu5m0W
+        gSZ6Ege1mcGC3ALf63yjCi4pXN+q4Wtu8RbIRYU=
+X-Google-Smtp-Source: ABdhPJyjeX9akdEf/RuGH/Q17gt5cyRtdcyppYt3wLVuxPcQ1tZjaAft84WEeGuffcm8zyVLfvWSyMIRng0kLQAYcrs=
+X-Received: by 2002:a17:906:85d8:: with SMTP id i24mr36091538ejy.451.1632252102971;
+ Tue, 21 Sep 2021 12:21:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
+References: <20210920203735.675-1-linux.amoon@gmail.com> <CAFBinCB682kFB47=K5-Pod5cbrnNTtKdAj3i8PHrxj8VxOH8FA@mail.gmail.com>
+In-Reply-To: <CAFBinCB682kFB47=K5-Pod5cbrnNTtKdAj3i8PHrxj8VxOH8FA@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Wed, 22 Sep 2021 00:51:32 +0530
+Message-ID: <CANAwSgRtZoAmMO-WtRBX4W4pTkmzJKH1zc=6-99Py-d_4cOR0w@mail.gmail.com>
+Subject: Re: [PATCHv2] regulator: pwm-regulator: Make use of the helper
+ function dev_err_probe()
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:26:14AM -0700, Axel Rasmussen wrote:
-> On Tue, Sep 21, 2021 at 10:44 AM Peter Xu <peterx@redhat.com> wrote:
+Hi Martin,
+
+On Tue, 21 Sept 2021 at 11:04, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Mon, Sep 20, 2021 at 10:38 PM Anand Moon <linux.amoon@gmail.com> wrote:
 > >
-> > Hi, Axel,
+> > devm_pwm_get() can return -EPROBE_DEFER if the pwm regulator is not
+> > ready yet. Use dev_err_probe() for pwm regulator resources
+> > to indicate the deferral reason when waiting for the
+> > resource to come up.
 > >
-> > On Tue, Sep 21, 2021 at 09:33:21AM -0700, Axel Rasmussen wrote:
-> > > diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-> > > index 10ab56c2484a..2366caf90435 100644
-> > > --- a/tools/testing/selftests/vm/userfaultfd.c
-> > > +++ b/tools/testing/selftests/vm/userfaultfd.c
-> > > @@ -79,10 +79,6 @@ static int test_type;
-> > >  #define ALARM_INTERVAL_SECS 10
-> > >  static volatile bool test_uffdio_copy_eexist = true;
-> > >  static volatile bool test_uffdio_zeropage_eexist = true;
-> > > -/* Whether to test uffd write-protection */
-> > > -static bool test_uffdio_wp = false;
-> > > -/* Whether to test uffd minor faults */
-> > > -static bool test_uffdio_minor = false;
-> >
-> > IMHO it's not a fault to have these variables; they're still the fastest way to
-> > do branching.  It's just that in some cases we should set them to "false"
-> > rather than "true", am I right?
-> >
-> > How about we just set them properly in set_test_type?  Say, we can fetch the
-> > feature bits in set_test_type rather than assuming it's only related to the
-> > type of memory.
-> 
-> We could do that, but it would require opening a userfaultfd, issuing
-> a UFFDIO_API ioctl, and getting the feature bits in set_test_type. And
-> then I guess just closing the UFFD again, as we aren't yet setting up
-> for any particular test. To me, it seemed "messier" than this
-> approach.
-> 
-> Another thing to consider is, for the next patch we don't just want to
-> know "does this kernel support $FEATURE in general?" but also "is
-> $FEATURE supported for this particular memory region I've
-> registered?", and we can't have a single global answer to that.
+> > Fixes: 0cd71b9a43ad ("regulator: pwm: Don't warn on probe deferral")
+> Personally I consider this as an improvement (having the deferral
+> reason show up in debugfs), not a bugfix.
+> Because of that I would drop the Fixes tag.
+> Let's wait on other people's opinions though.
+>
+Ok will drop this in the next version.
 
-Could I ask why?  For each run, the memory type doesn't change, isn't it?  Then
-I think the capability it should support is a constant?
+> [...]
+> > -                       dev_err(&pdev->dev, "Failed to get PWM: %d\n", ret);
+> > -               return ret;
+> > +               return dev_err_probe(&pdev->dev, PTR_ERR(drvdata->pwm),
+> > +                                    "Failed to register regulator %s\n",
+> The message here should still be similar to the original one since the
+> actual problem is that we could not get a reference to the PWM
+> controller. At this point we are not trying to register the
+> pwm-regulator yet.
+>
 
-Btw, note that "open an uffd, detect features, close uffd quickly" during setup
-phase is totally fine to me just for probing the capabilities, and instead of
-thinking it being messy I see it a very clean approach..
+Yep, Typo I mixed up the logs completely.
+it should be  "Failed to get PWM, deferring probe"
 
-> It seemed a bit cleaner to me to write the code as if I was dealing with that
-> case, and then re-use the infrastructure I'd built for patch 2/3.
-
-I didn't comment on patch 2, but I had the same confusion - aren't all these
-information constant after we settle the hardware, the kernel and the memory
-type to test?
-
-> 
-> Basically, I didn't initially have a goal of getting rid of these
-> variables, but it ended up being the cleanest way (IMHO).
-> 
-> Just trying to explain the thinking. :) In the end, I think it's a
-> stylistic choice and don't feel super strongly about it, either way
-> could work. So, I can change it if you or others do feel strongly.
-
-I have no strong opinion as long as the code works (which I trust you on :).
-We can keep it in Andrew's queue unless you do feel the other way is better.
-
-Thanks,
-
--- 
-Peter Xu
-
+Thanks
+-Anand
+>
+> Best regards,
+> Martin
