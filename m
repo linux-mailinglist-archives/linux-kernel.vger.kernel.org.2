@@ -2,199 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA426413940
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7549413947
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhIURyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhIURyk (ORCPT
+        id S231922AbhIURz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 13:55:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231748AbhIURzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:54:40 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF10C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:53:11 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id me1so142781pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g3Ie4lAZHJkjTqSCJA2msx6oJOosrwYmylIab5VDUbQ=;
-        b=s7B3qh1A0Uy+Ta2/mNnDyDzsCwhMkYxPlleUMXsJONjNJISZpfNJ6Z7msPIYVDagbb
-         xefBxySQRsjdJRuaIvZvjJdVDrKSEfpnQiOeXXmt4q5G6Y12bDfP/QmQmUIuWmvXNe7i
-         wsU7OTuo/cJI/qe/1KsDqepG6VgKMdQyqFGRk9gEl2D0uvmBaHVtjSqRO/YUVScl5GgU
-         SIGAfg966uKy2+kXknDY83z4YwBUchdG7iPwlC5kq4QyJQkVRH/9HR1U4yfpZXat6Rnz
-         GFwoXZH5StgHI+6fXrFcCbL5xQKb3TVxZMxpR//Ry2QBRC/77aqROTL4QdcIhvtFvdRw
-         6Izw==
+        Tue, 21 Sep 2021 13:55:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632246865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9i/9hjImBidlUHv+Kt5Nf7id/F15Vwrv4hNmN253GQ0=;
+        b=JAOvQSZo4Grwl3n56Csfc25ViVFE7Vq3AHwO7oc5L4QCDvtDV/ixYcR4kK3K6wr3qOwY9D
+        k5DOPSwOlUzrGWZgsB7NKRQTxMTjC0lQNV0PQnaVxnP95ZLr2eCMtOwuQa5sK2ZInmbC07
+        tTvW4j9Bs2bJ37yHkxerPfOCOJUrCQs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-134-EfBztuAOMPKx87TDuuaK1A-1; Tue, 21 Sep 2021 13:54:23 -0400
+X-MC-Unique: EfBztuAOMPKx87TDuuaK1A-1
+Received: by mail-ed1-f70.google.com with SMTP id o23-20020a509b17000000b003d739e2931dso18170445edi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:54:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g3Ie4lAZHJkjTqSCJA2msx6oJOosrwYmylIab5VDUbQ=;
-        b=mCWLYpLpcoFU8UF51karH7E5avjYrLZOPTVEn9qa5MxKYtG7P5vbKCi2sFT1LGAXT/
-         uf2CRVoByqyAtPzMu1Aj+kX79+2N1KtRPp2yVAHRnb/cszxzRLyC3KYXmY1JNzTm+Ub4
-         ATm//xeCpK+pDgjiLzxdz3aU0htxLHrLsS6iKbyoH7oRx71skSs8S7OwlmlzyJxwxskV
-         RpTeRwezqnmDkN9ghKVpyAo1iMRE1CSSia+O0Kl/6Z65SiaKvtitId2FX/BQAqCehZJN
-         q7ZFve5PxtHCEglSplxst0sIy4/5rZ63VE9wP/RooMzItDlofHvpntyRd40h6t0LMbVQ
-         +1ww==
-X-Gm-Message-State: AOAM5303zhbUd3eP9S8y945AamniE0unriVS140tOHdJy8No3ZhN9dSf
-        /bMAwu5wZp33c3M5GqNZhE0cbQ==
-X-Google-Smtp-Source: ABdhPJyGskc7dwQIIgpQA/e6j4h/k14mRv90byezKQlM6w0LRJtz6XCXtFKZo3PfvoMAY1nUXDSucA==
-X-Received: by 2002:a17:902:ce83:b0:13b:67d5:2c4e with SMTP id f3-20020a170902ce8300b0013b67d52c4emr28886949plg.45.1632246791266;
-        Tue, 21 Sep 2021 10:53:11 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id g141sm18118677pfb.128.2021.09.21.10.53.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 10:53:10 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 11:53:08 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coresight: Don't immediately close events that are run
- on invalid CPU/sink combos
-Message-ID: <20210921175308.GF2059841@p14s>
-References: <20210921130231.386095-1-james.clark@arm.com>
- <20210921151721.GA2059841@p14s>
- <2d1326ea-a60c-8723-28a4-891a5478846f@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9i/9hjImBidlUHv+Kt5Nf7id/F15Vwrv4hNmN253GQ0=;
+        b=U8YnDYb7LaDRHKD38dxDReDYWr9EgTBXNp1qG0cf8r8jeaiaA/GglmtnciH5TnA2Lp
+         ej+pjUAmtr8IMRpBtPp0+dCjgumzTC+4eEjfstF7sG0777nsnF9DmA0nrY5Ajnl4SVDq
+         PDTTKVSid1PpbaLGR0DCwgcZQqLzgsCATjkC4H8lc1wFPXelhNz8SIcaWGcDJbXmmMUc
+         XbiPTN6HCglFWhc1sAFu34xdv66879vClN329NmqMLBLg8Z78OwTrlkS421doOGWgT5L
+         SF4mASmTKn6QlKel/+ehzgRTtj6+ZCp5xG8+uP3EzXbmzLdHjEJ1g9lWqAALOev3DznB
+         7dKQ==
+X-Gm-Message-State: AOAM533an64dJTJOMPzQqpKxapZesxp8ee7wbuIAEP+wQT5LJcUgM7P9
+        csod9flspezrfgCsvEJ7hjjcJuRJxUYgx49e+ttlyfZo2swmSXue0vT54SAG6wTXD9hQEXnGPbu
+        8xmzyUitf+UGxVnHfs/p3H48+DKsqCnAoai1Hj82O2M6aAoC5PywuP1h9IQ5xdn/MNa2fR77/BY
+        AS
+X-Received: by 2002:a50:d948:: with SMTP id u8mr16796376edj.306.1632246861586;
+        Tue, 21 Sep 2021 10:54:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOjMELjYB1Evm+oOb7Gu1LV3uiN5hAVZ06ur7zauhxhMyiCDnQPAztydd+/wqsXO8qjmXehg==
+X-Received: by 2002:a50:d948:: with SMTP id u8mr16796349edj.306.1632246861323;
+        Tue, 21 Sep 2021 10:54:21 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id r23sm6462323edw.39.2021.09.21.10.54.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 10:54:20 -0700 (PDT)
+Subject: Re: [PATCH V2] KVM: SEV: Acquire vcpu mutex when updating VMSA
+To:     Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210915171755.3773766-1-pgonda@google.com>
+ <CAA03e5E=qi4+4c0SUv7u4P4ouJOTN9XUmD_Q2h-kBtBhwKLVDA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f911af87-ba9e-fca4-7950-61c636499c7d@redhat.com>
+Date:   Tue, 21 Sep 2021 19:54:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d1326ea-a60c-8723-28a4-891a5478846f@arm.com>
+In-Reply-To: <CAA03e5E=qi4+4c0SUv7u4P4ouJOTN9XUmD_Q2h-kBtBhwKLVDA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 05:22:23PM +0100, Suzuki K Poulose wrote:
-> On 21/09/2021 16:17, Mathieu Poirier wrote:
-> > On Tue, Sep 21, 2021 at 02:02:31PM +0100, James Clark wrote:
-> > > When a traced process runs on a CPU that can't reach the selected sink,
-> > > the event will be stopped with PERF_HES_STOPPED. This means that even if
-> > > the process migrates to a valid CPU, tracing will not resume.
-> > > 
-> > > This can be reproduced (on N1SDP) by using taskset to start the process
-> > > on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
-> > > CPU 2):
-> > > 
-> > >    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
-> > > 
-> > > This produces a single 0 length AUX record, and then no more trace:
-> > > 
-> > >    0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
-> > > 
-> > > After the fix, the same command produces normal AUX records. The perf
-> > > self test "89: Check Arm CoreSight trace data recording and synthesized
-> > > samples" no longer fails intermittently. This was because the taskset in
-> > > the test is after the fork, so there is a period where the task is
-> > > scheduled on a random CPU rather than forced to a valid one.
-> > > 
-> > > Specifically selecting an invalid CPU will still result in a failure to
-> > > open the event because it will never produce trace:
-> > > 
-> > >    ./perf record -C 2 -e cs_etm/@tmc_etf0/
-> > >    failed to mmap with 12 (Cannot allocate memory)
-> > > 
-> > > The only scenario that has changed is if the CPU mask has a valid CPU
-> > > sink combo in it.
-> > > 
-> > > Testing
-> > > =======
-> > > 
-> > > * Coresight self test passes consistently:
-> > >    ./perf test Coresight
-> > > 
-> > > * CPU wide mode still produces trace:
-> > >    ./perf record -e cs_etm// -a
-> > > 
-> > > * Invalid -C options still fail to open:
-> > >    ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
-> > >    failed to mmap with 12 (Cannot allocate memory)
-> > > 
-> > > * Migrating a task to a valid sink/CPU now produces trace:
-> > >    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
-> > > 
-> > > * If the task remains on an invalid CPU, no trace is emitted:
-> > >    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
-> > > 
-> > > Signed-off-by: James Clark <james.clark@arm.com>
-> > > ---
-> > >   .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
-> > >   1 file changed, 22 insertions(+), 5 deletions(-)
-> > 
-> > Very interesting corner case - and I like your solution.  Arnaldo, please
-> > consider.
-> > 
-> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > 
+On 16/09/21 00:40, Marc Orr wrote:
+> On Wed, Sep 15, 2021 at 10:18 AM Peter Gonda <pgonda@google.com> wrote:
+>>
+>> Adds vcpu mutex guard to the VMSA updating code. Refactors out
+>> __sev_launch_update_vmsa() function to deal with per vCPU parts
+>> of sev_launch_update_vmsa().
 > 
-> PS: This is for coresight driver, I can pick this up. Otherwise,
+> Can you expand the changelog, and perhaps add a comment into the
+> source code as well, to explain what grabbing the mutex protects us
+> from? I assume that it's a poorly behaved user-space, rather than a
+> race condition in a well-behaved user-space VMM, but I'm not certain.
+> 
+> Other than that, the patch itself seems fine to me.
+
+I added this:
+
+The update-VMSA ioctl touches data stored in struct kvm_vcpu, and
+therefore should not be performed concurrently with any VCPU ioctl
+that might cause KVM or the processor to use the same data.
+
+Paolo
+
+>>
+>> Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
+>>
+>> Signed-off-by: Peter Gonda <pgonda@google.com>
+>> Cc: Marc Orr <marcorr@google.com>
+>> Cc: Paolo Bonzini <pbonzini@redhat.com>
+>> Cc: Sean Christopherson <seanjc@google.com>
+>> Cc: Brijesh Singh <brijesh.singh@amd.com>
+>> Cc: kvm@vger.kernel.org
+>> Cc: stable@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> ---
+>>
+>> V2
+>>   * Refactor per vcpu work to separate function.
+>>   * Remove check to skip already initialized VMSAs.
+>>   * Removed vmsa struct zeroing.
+>>
+>> ---
+>>   arch/x86/kvm/svm/sev.c | 53 ++++++++++++++++++++++++------------------
+>>   1 file changed, 30 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+>> index 75e0b21ad07c..766510fe3abb 100644
+>> --- a/arch/x86/kvm/svm/sev.c
+>> +++ b/arch/x86/kvm/svm/sev.c
+>> @@ -595,43 +595,50 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+>>          return 0;
+>>   }
+>>
+>> -static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>> +static int __sev_launch_update_vmsa(struct kvm *kvm, struct kvm_vcpu *vcpu,
+>> +                                   int *error)
+>>   {
+>> -       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+>>          struct sev_data_launch_update_vmsa vmsa;
+>> +       struct vcpu_svm *svm = to_svm(vcpu);
+>> +       int ret;
+>> +
+>> +       /* Perform some pre-encryption checks against the VMSA */
+>> +       ret = sev_es_sync_vmsa(svm);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       /*
+>> +        * The LAUNCH_UPDATE_VMSA command will perform in-place encryption of
+>> +        * the VMSA memory content (i.e it will write the same memory region
+>> +        * with the guest's key), so invalidate it first.
+>> +        */
+>> +       clflush_cache_range(svm->vmsa, PAGE_SIZE);
+>> +
+>> +       vmsa.reserved = 0;
+>> +       vmsa.handle = to_kvm_svm(kvm)->sev_info.handle;
+>> +       vmsa.address = __sme_pa(svm->vmsa);
+>> +       vmsa.len = PAGE_SIZE;
+>> +       return sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa, error);
+>> +}
+>> +
+>> +static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>> +{
+>>          struct kvm_vcpu *vcpu;
+>>          int i, ret;
+>>
+>>          if (!sev_es_guest(kvm))
+>>                  return -ENOTTY;
+>>
+>> -       vmsa.reserved = 0;
+>> -
+>> -       kvm_for_each_vcpu(i, vcpu, kvm) {
+>> -               struct vcpu_svm *svm = to_svm(vcpu);
+>> -
+>> -               /* Perform some pre-encryption checks against the VMSA */
+>> -               ret = sev_es_sync_vmsa(svm);
+>> +       kvm_for_each_vcpu(i, vcpu, kvm) {
+>> +               ret = mutex_lock_killable(&vcpu->mutex);
+>>                  if (ret)
+>>                          return ret;
+>>
+>> -               /*
+>> -                * The LAUNCH_UPDATE_VMSA command will perform in-place
+>> -                * encryption of the VMSA memory content (i.e it will write
+>> -                * the same memory region with the guest's key), so invalidate
+>> -                * it first.
+>> -                */
+>> -               clflush_cache_range(svm->vmsa, PAGE_SIZE);
+>> +               ret = __sev_launch_update_vmsa(kvm, vcpu, &argp->error);
+>>
+>> -               vmsa.handle = sev->handle;
+>> -               vmsa.address = __sme_pa(svm->vmsa);
+>> -               vmsa.len = PAGE_SIZE;
+>> -               ret = sev_issue_cmd(kvm, SEV_CMD_LAUNCH_UPDATE_VMSA, &vmsa,
+>> -                                   &argp->error);
+>> +               mutex_unlock(&vcpu->mutex);
+>>                  if (ret)
+>>                          return ret;
+>> -
+>> -               svm->vcpu.arch.guest_state_protected = true;
+>>          }
+>>
+>>          return 0;
+>> --
+>> 2.33.0.464.g1972c5931b-goog
+>>
 > 
 
-As yes, silly me... Sure, please add it to the tree.
-
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> 
-> > > 
-> > > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > > index 8ebd728d3a80..79346f0f0e0b 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > > @@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
-> > >   	 * sink from this ETM. We can't do much in this case if
-> > >   	 * the sink was specified or hinted to the driver. For
-> > >   	 * now, simply don't record anything on this ETM.
-> > > +	 *
-> > > +	 * As such we pretend that everything is fine, and let
-> > > +	 * it continue without actually tracing. The event could
-> > > +	 * continue tracing when it moves to a CPU where it is
-> > > +	 * reachable to a sink.
-> > >   	 */
-> > >   	if (!cpumask_test_cpu(cpu, &event_data->mask))
-> > > -		goto fail_end_stop;
-> > > +		goto out;
-> > >   	path = etm_event_cpu_path(event_data, cpu);
-> > >   	/* We need a sink, no need to continue without one */
-> > > @@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
-> > >   	if (coresight_enable_path(path, CS_MODE_PERF, handle))
-> > >   		goto fail_end_stop;
-> > > -	/* Tell the perf core the event is alive */
-> > > -	event->hw.state = 0;
-> > > -
-> > >   	/* Finally enable the tracer */
-> > >   	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
-> > >   		goto fail_disable_path;
-> > > +out:
-> > > +	/* Tell the perf core the event is alive */
-> > > +	event->hw.state = 0;
-> > >   	/* Save the event_data for this ETM */
-> > >   	ctxt->event_data = event_data;
-> > > -out:
-> > >   	return;
-> > >   fail_disable_path:
-> > > @@ -517,6 +521,19 @@ static void etm_event_stop(struct perf_event *event, int mode)
-> > >   	if (WARN_ON(!event_data))
-> > >   		return;
-> > > +	/*
-> > > +	 * Check if this ETM was allowed to trace, as decided at
-> > > +	 * etm_setup_aux(). If it wasn't allowed to trace, then
-> > > +	 * nothing needs to be torn down other than outputting a
-> > > +	 * zero sized record.
-> > > +	 */
-> > > +	if (handle->event && (mode & PERF_EF_UPDATE) &&
-> > > +	    !cpumask_test_cpu(cpu, &event_data->mask)) {
-> > > +		event->hw.state = PERF_HES_STOPPED;
-> > > +		perf_aux_output_end(handle, 0);
-> > > +		return;
-> > > +	}
-> > > +
-> > >   	if (!csdev)
-> > >   		return;
-> > > -- 
-> > > 2.28.0
-> > > 
-> 
