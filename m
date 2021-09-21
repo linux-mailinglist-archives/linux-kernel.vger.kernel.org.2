@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E673A412EC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA56B412ECA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhIUGrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:47:23 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:55505 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhIUGrW (ORCPT
+        id S229951AbhIUGsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhIUGsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:47:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1632206754; x=1663742754;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=o6lZk7/5WF5P0l2QkPxsSgucPRrvLaW9ltnagGvs3Ts=;
-  b=nOrxSakIOFUsFuj9YihH/ubI/+iH3KOaIEsflIWeJiervmsy4wMCflpj
-   n6+8PweNtpMRxEeuOGVIVhOJ+IXqEyfpu6Gyq4xY6/nLu8ykEnvnEPTBH
-   Kmqjc/XZPegTDLMkdC0d6g6UZ4lXz3FaUrBX92ucvK8Qd6Bk9wUOj+mKy
-   9ASl243UF/+ILfCiKOqbO2A3RvsR/D2Ek2/xicm8pUNGq3gunJ8oSYan/
-   Ibq3zGxDyyIaSfbewiYwu52HI5SuL8KIZuxi6xpBvHkgQsliMDW+Ary18
-   nk93z05mPaQx7K7tni4lMZjkwxDqju9Zlv3yLAH9FVbfOTscVDGX5bCIL
-   w==;
-IronPort-SDR: DvFRNCRS0JnYcPmGrGwhRYqvK+jLwSSmsjpBF40qA+m9JSVloxHKzWsfa//4BL8rQ0d7H4DHrU
- ey8NVXketEc6YwcLVZUq04XY8Pmj+I2S2qtEz0yphYMJ8E/IJ6kNVJCRuPwONJIXUBblFQvFFS
- 6spEJ58exI5RFoJxjga6tobQUUKHb5Y7evTDJ4hDT70RlbCQzLvXAtzlLLdOuN77oqji3swl1n
- SDmDJdpUyue/fT0T1zTe1RK1y0ydvb3+d6riQwItU578LUvAbGInocKcsyboy4szKOmhrneAtY
- iaBvMqN68O8YqU4EUty9pzz+
-X-IronPort-AV: E=Sophos;i="5.85,310,1624345200"; 
-   d="scan'208";a="144928458"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Sep 2021 23:45:53 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 20 Sep 2021 23:45:53 -0700
-Received: from CHE-LT-I66125LX.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 20 Sep 2021 23:45:46 -0700
-From:   Durai Manickam KR <durai.manickamkr@microchip.com>
-To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Hari.PrasathGE@microchip.com>
-CC:     Durai Manickam KR <durai.manickamkr@microchip.com>
-Subject: [PATCH] ARM: dts: at91-sama5d2_icp.dts: Added I2C bus recovery support
-Date:   Tue, 21 Sep 2021 12:13:44 +0530
-Message-ID: <20210921064344.889304-1-durai.manickamkr@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 21 Sep 2021 02:48:00 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3724AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:46:33 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id w11so3173175plz.13
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H1yv0YD1p8/r7hGH7jOiQD60zt6r6Sa+YFTXmu6GaNM=;
+        b=d+IkiQxcb0/TAQhEFcSzVDTGsu7GhCriwCojht4gK8z4Z0Kyb3hItyEmT2WzWvkztX
+         SbVlDqRjLVuvu5D10R/sybP6Mh7Pv+0+i9VwHnIA3Wu47E6MaCiI8lohcYHe9hslsUR5
+         Mi+eRtfh55KfJPDAUwvfogCGT26q+8N3FaVsK+qvkbdF9W+7ctgc50LCdu8ksC3vWqf/
+         xo1hhjF5MGGRP48/3Pa7P1JArH8odNqUXARE2byE3DXPa409581SsPzJhgXhgdRrgQo6
+         zhhbsJOwQo0srHI8F+01pCBGrbtQUMDTuP3DszimDhdLKxKoYOUyehTTDZYkOJxD3KUp
+         79fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H1yv0YD1p8/r7hGH7jOiQD60zt6r6Sa+YFTXmu6GaNM=;
+        b=HClXzf9dGuYhQ/psnqfYrrpKHaxovxGuLiGW44laj/GkfkoeHanAKzRtid7T5wAM31
+         Gp2mBpTXSS0ruQNF5sZQCP6c4fG6DfE//fL2OHdNKddwl4Tim0dPaxhMpypWvG2N6DdR
+         LC29PhjK5lZSifGYSkULzJYu8Fvy3AgOqS8ZV3HL3LVL4DvzIknQrA/RzkHs9uF9nSyX
+         6qAzKsUv854i70QZJTpERaERnIF7MUozxMcOChFXPiqux/pWpm61+AFEmAweMQnI4K/l
+         I8DwdEh7T9F4ruxybCwh4a/qNCyQSdXmqDx+MHwq6vPlKXYefdI78CJ5SWtKCpAZgztS
+         t9bw==
+X-Gm-Message-State: AOAM531moCp61pO7WuoH7yhG72Ye8xtOmjgjkoLqnCgiZefJJmx5xST1
+        NnIwe8tuRikzk6cRKH/2/Pdww3EIQq96Rt02
+X-Google-Smtp-Source: ABdhPJwNnKhLZFlV2OBG9HRT6TYafMJOwcWNaAmwYxpMuUys54yJQKyASKBXHroL1BGHYRTrWw3VvQ==
+X-Received: by 2002:a17:903:4112:b0:13a:7afa:f9c4 with SMTP id r18-20020a170903411200b0013a7afaf9c4mr26020393pld.66.1632206792766;
+        Mon, 20 Sep 2021 23:46:32 -0700 (PDT)
+Received: from ownia.. ([103.97.201.35])
+        by smtp.gmail.com with ESMTPSA id a1sm1413101pjg.0.2021.09.20.23.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 23:46:32 -0700 (PDT)
+From:   Weizhao Ouyang <o451686892@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Anshuman Khandual <khandual@linux.vnet.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Weizhao Ouyang <o451686892@gmail.com>,
+        Mina Almasry <almasrymina@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Oscar Salvador <osalvador@suse.de>, Wei Xu <weixugc@google.com>
+Subject: [PATCH v2 0/2] mm/debug: sync up latest migrate_reason to migrate_reason_names
+Date:   Tue, 21 Sep 2021 14:45:51 +0800
+Message-Id: <20210921064553.293905-1-o451686892@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SDA and SCL is configured as GPIO for I2C bus to recover during
-I2C bus malfunction.
+After related migrate page updates, sync up latest migrate_reason to
+migrate_reason_names, page_owner use it to parse the page migrate
+reason.
 
-Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
----
- arch/arm/boot/dts/at91-sama5d2_icp.dts | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+Changes in V2:
+-- sync up MR_CONTIG_RANGE
+-- split patchset for stable kernel
 
-diff --git a/arch/arm/boot/dts/at91-sama5d2_icp.dts b/arch/arm/boot/dts/at91-sama5d2_icp.dts
-index e06b58724ca8..806eb1d911d7 100644
---- a/arch/arm/boot/dts/at91-sama5d2_icp.dts
-+++ b/arch/arm/boot/dts/at91-sama5d2_icp.dts
-@@ -307,8 +307,11 @@ regulator-state-mem {
- };
- 
- &i2c0 { /* mikrobus i2c */
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_mikrobus_i2c>;
-+	pinctrl-1 = <&pinctrl_i2c0_gpio>;
-+	sda-gpios = <&pioA PIN_PD21 GPIO_ACTIVE_HIGH>;
-+	scl-gpios = <&pioA PIN_PD22 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	i2c-digital-filter;
- 	i2c-digital-filter-width-ns = <35>;
- 	status = "okay";
-@@ -316,8 +319,11 @@ &i2c0 { /* mikrobus i2c */
- 
- &i2c1 {
- 	dmas = <0>, <0>;
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c1_default>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	sda-gpios = <&pioA PIN_PD19 GPIO_ACTIVE_HIGH>;
-+	scl-gpios = <&pioA PIN_PD20 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	i2c-digital-filter;
- 	i2c-digital-filter-width-ns = <35>;
- 	status = "okay";
-@@ -402,6 +408,12 @@ pinctrl_i2c1_default: i2c1_default {
- 		bias-disable;
- 	};
- 
-+	pinctrl_i2c1_gpio: i2c1_gpio {
-+                pinmux = <PIN_PD19__GPIO>,
-+                         <PIN_PD20__GPIO>;
-+                bias-disable;
-+        };
-+
- 	pinctrl_key_gpio_default: key_gpio_default {
- 		pinmux = <PIN_PD0__GPIO>;
- 		bias-pull-up;
-@@ -463,6 +475,12 @@ pinctrl_mikrobus_i2c: mikrobus_i2c {
- 		bias-disable;
- 	};
- 
-+	pinctrl_i2c0_gpio: i2c0_gpio {
-+		pinmux = <PIN_PD21__GPIO>,
-+			 <PIN_PD22__GPIO>;
-+		bias-disable;
-+	};
-+
- 	pinctrl_mikrobus1_an: mikrobus1_an {
- 		pinmux = <PIN_PD26__GPIO>;
- 		bias-disable;
+Weizhao Ouyang (2):
+  mm/debug: sync up MR_CONTIG_RANGE and MR_LONGTERM_PIN
+  mm/debug: sync up latest migrate_reason to migrate_reason_names
+
+ include/linux/migrate.h | 6 +++++-
+ mm/debug.c              | 4 +++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
 -- 
-2.25.1
+2.30.2
 
