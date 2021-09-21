@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A2A413379
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA3641337B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhIUMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:43:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50806 "EHLO mail.kernel.org"
+        id S232878AbhIUMnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:43:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232838AbhIUMnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:43:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 785EA60249;
-        Tue, 21 Sep 2021 12:41:33 +0000 (UTC)
+        id S232704AbhIUMnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:43:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4112F61100;
+        Tue, 21 Sep 2021 12:41:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632228093;
-        bh=KctZ37/K53xgz2KFk6mwt+AcFiMxEwJaw677ODdeatY=;
+        s=k20201202; t=1632228104;
+        bh=4Rvx3u9HCP441RTjiHrvCRRwauhtSwEWIhzMrD3GJIk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rpttbj55Oat4YnDVWW5MjLLzhuvkstSB0F1tt0FOVWs8PLkFptAFh8smRIxm7ux4a
-         aRU9rUtp/sjV9dZW5/nEfGEKDtTqsGx/QreDQUwFli+24H5+kUyLxEbFavIVddBrGS
-         kJT5RRJGyBjA8DT5gH8/0zQs7HTy5D2PRYA9nIQnM5Atud1+j0Vi60wO86d13oeFvU
-         qdZ2wnfIclxPCcmcGxifM3yd7jpx801M0JJ/+d/T0EDVUVSnmVoNRCNfXoanbS3fA/
-         o1kOVK/7P8vnjEQ3DffQAeNoAmvPwobOPxqBKvbMIYPBtK71iWfjltoUqsAvzmJeMS
-         2b91sgnvUFH7A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mSf5Y-000561-7f; Tue, 21 Sep 2021 14:41:32 +0200
-Date:   Tue, 21 Sep 2021 14:41:32 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] USB: serial: kl5kusb105: use
- usb_control_msg_recv() and usb_control_msg_send()
-Message-ID: <YUnS/Chgat7vNHO7@hovoldconsulting.com>
-References: <20210801203122.3515-1-himadrispandya@gmail.com>
- <20210801203122.3515-7-himadrispandya@gmail.com>
+        b=JlKXwDIBNap74zCnEhXMgxiublDocy3uzTUFXF4wLpkIwOPwYBPfMaNnn9Y1ZZQ3q
+         J0+wP0eLaD0JCaF/D11G8ZLrORPgtDWoh3fURT1q3UQJfA6udsu9wBHOid32rFbSxZ
+         HcWM44BghlLd+aIM6vvTA/pu4P+I5TYegDDvmI3dOmrsS1RxCc0u9YGoJ1Y1zmST5t
+         iOnA65shHi6DbkZI2p91BRWr/Qs+l0Ry+uXLpzKfmer8aSjVegtXyJFNW7WF+xu5F8
+         4qhJJo2gFWn8v5M7BrtT+IqOVLQuO+5Btr8vmBvAWiZnYTD7lokhhHo726gYslrqqT
+         1MDNBpxoR6aFw==
+Date:   Tue, 21 Sep 2021 13:41:39 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+e6bda7e03e329ed0b1db@syzkaller.appspotmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] upstream test error: WARNING in __do_kernel_fault
+Message-ID: <20210921124138.GA13537@willie-the-truck>
+References: <000000000000f8d56e05cb50a541@google.com>
+ <CACT4Y+YLEUuuNQ+2TOEevwNRvPHp-wT4W+dXAdKds_kf+upQbQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210801203122.3515-7-himadrispandya@gmail.com>
+In-Reply-To: <CACT4Y+YLEUuuNQ+2TOEevwNRvPHp-wT4W+dXAdKds_kf+upQbQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:01:22AM +0530, Himadri Pandya wrote:
-> The wrappers usb_control_msg_send/recv eliminate the need of allocating
-> dma buffers for usb message. They also impose proper error checks on the
-> return value of usb_control_msg() to handle short read/write. Hence use
-> the wrappers and remove dma allocations.
+On Fri, Sep 17, 2021 at 10:20:40AM +0200, Dmitry Vyukov wrote:
+> On Mon, 6 Sept 2021 at 11:55, syzbot
+> <syzbot+e6bda7e03e329ed0b1db@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    f1583cb1be35 Merge tag 'linux-kselftest-next-5.15-rc1' of ..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=17756315300000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=5fe535c85e8d7384
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=e6bda7e03e329ed0b1db
+> > compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> > userspace arch: arm64
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+e6bda7e03e329ed0b1db@syzkaller.appspotmail.com
 > 
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
-> Changes in v2:
->  - Fix the caller of klsi_105_chg_port_settings()
->  - Drop unnecessary use of the wrappers
+> +Will, you added this WARNING in 42f91093b04333.
+> This now crashes periodically on syzbot.
 
-Now applied with an amended commit message:
+I'm still inclined to chalk this one down to a QEMU bug. We're not seeing it
+anywhere else, and last time you looked at it I seem to remember that it
+depended upon QEMU configuration [1].
 
-    USB: serial: kl5kusb105: use usb_control_msg_recv() and usb_control_msg_send()
-    
-    The wrappers usb_control_msg_send/recv eliminate the need of
-    manually allocating DMA buffers for USB messages. They also treat
-    short reads as an error. Hence use the wrappers and remove DMA
-    allocations.
-    
-    Note that short reads are now logged as -EREMOTEIO instead of the amount
-    of data read.
+Will
 
-I've applied all but the first two patches in the series now. Would you
-mind respinning those two?
-
-Thanks,
-Johan
+[1] https://lore.kernel.org/all/CAAeHK+wDz8aSLyjq1b=q3+HG9aJXxwYR6+gN_fTttMN5osM5gg@mail.gmail.com/
