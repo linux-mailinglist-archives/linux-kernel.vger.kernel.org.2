@@ -2,116 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F411F412B38
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11856412B28
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237937AbhIUCLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
+        id S244776AbhIUCJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238124AbhIUB5G (ORCPT
+        with ESMTP id S237486AbhIUBy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:57:06 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BE9C08E6E1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:28 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id h9-20020a05621413a900b0037a2d3eaf8fso206367988qvz.8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=Ym2emPwLi6hBWXuVQ5SMChiyaLYndbZZKPx2aD/RWHg=;
-        b=G53bu8YtWfPhTJl7dpgEOdGgUv2aGGU1Y/ekt2BFN7/krSh0oUFzBv3QdhYcHymA15
-         +CFObsnyeSzM0f7vsX/Wmue34f49I+NYYiiDldzIm+asPs+zMqpEvQCQZaeM/lE1q+jl
-         llLCL6rf0Mxyz6cMqgjdkNScgAsEfvvA/O9ZFXeicjo6BDSq0zKSeZUoCanw2ps4U/Y0
-         TOSeVjWhJLA1KsjIg1XhZY3FKCWJDULbVigcLkJkCXjtqLAXiGHycEqPOU3QGZKwtCvx
-         ZY1FZS8v4qp70R4BJck0Q8a2e60rqbhtcCl9OKhikCuAI4fT/jY62bcG4oEGSTurOu4r
-         tUvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=Ym2emPwLi6hBWXuVQ5SMChiyaLYndbZZKPx2aD/RWHg=;
-        b=deAsPsGNQtG314Feg9UM+tdMpO6Ru3KsMiRFlFleq2gM1dlbczu+0avqKTZRLvocED
-         meiDmFDZAOUnmgLFXmIwDTMI6r1+VtzV5J623m/YXpArlUP+DB4mvD2GqwgPWLbmzSLN
-         kzk3KTq+PmTSCbzYrWiuH4ne/AEAFA77l4Yb8Iyn0jzW3UVo2POb4kTkGByhJKiIvA1Z
-         UrIvmGnXsFVju4QE3Dn+QPcULh3ZLsn3xS+n/CnwIxQL2S3L4+5/g0cy7IRGGhhgY7pI
-         Rj2KauEgObTer0T/FOqq9AYTWj3PYcGJJAY9gnaBhGElWAKICcLfL/qz2v/tyMX15FN+
-         TWYg==
-X-Gm-Message-State: AOAM533VX1jkBuEb8ZEfng0u0/kJEqOpPp7SAxRnIbdY4Nmm3/YAAhhw
-        NE5SpwnK+y9ItU3eSVWYnD39lycY0jI=
-X-Google-Smtp-Source: ABdhPJzuVdqk4ThCgINc8YkhlliVHw3Jms0KhMiLJkLelwBCitGX1BRAKRmGs4BK+ZmwFDj2dedaImMA0UE=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e430:8766:b902:5ee3])
- (user=seanjc job=sendgmr) by 2002:a25:ef03:: with SMTP id g3mr35561970ybd.369.1632182607846;
- Mon, 20 Sep 2021 17:03:27 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 20 Sep 2021 17:03:03 -0700
-In-Reply-To: <20210921000303.400537-1-seanjc@google.com>
-Message-Id: <20210921000303.400537-11-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210921000303.400537-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2 10/10] KVM: x86: WARN on non-zero CRs at RESET to detect
- improper initalization
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 20 Sep 2021 21:54:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CCAC0313FF;
+        Mon, 20 Sep 2021 17:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dFAUFg/mX5umZGWtfy03pLeHbDGj6EjlCd5lUAE3GFQ=; b=dObeiqsndcF+lNoh24bcIlQ0Z4
+        8K6tr6/HQqzHejW7tcCx2uFWkOSwSDGccUZUOO2HSbtwyHL2bzieHlxL/ZHYYKEk4p9CFnO8yXcPK
+        f/HQ2/ZQdndlnXyIUJdZ0aJXLTxz6QwLUg1BzKdC6l5F015c1tMcwzAgGVNaIhiqeaim5LUH14T5q
+        SfrB2JGYzUuVFRpexD44YBdIJt19FFXMuXQ78E+NFAQjPzOw2KYPs158O36UwjUA4HwZgR9XHQuYE
+        ogpEbh3JR5+EHuSxOJT6kAbYkYcwK3PhKk2oYu4rhbOLPFOZheHL/NsJp3sMZeprOIKrHIsh9/J3J
+        bDfWazSw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSTFv-003Nm8-F2; Tue, 21 Sep 2021 00:03:27 +0000
+Date:   Mon, 20 Sep 2021 17:03:27 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>, jeyu@kernel.org,
+        shuah <shuah@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>, yzaikin@google.com,
+        Nathan Chancellor <nathan@kernel.org>, ojeda@kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        vitor@massaru.org, elver@google.com,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        rf@opensource.cirrus.com,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        David Laight <David.Laight@aculab.com>, bvanassche@acm.org,
+        jolsa@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        trishalfonso@google.com, andreyknvl@gmail.com,
+        Jiri Kosina <jikos@kernel.org>, mbenes@suse.com,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, lizefan.x@bytedance.com,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        senozhatsky@chromium.org, Christoph Hellwig <hch@lst.de>,
+        Joe Perches <joe@perches.com>, hkallweit1@gmail.com,
+        Jens Axboe <axboe@kernel.dk>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kees Cook <keescook@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-spdx@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        copyleft-next@lists.fedorahosted.org
+Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YUkhTxhgPWRxMMJo@bombadil.infradead.org>
+References: <20210918050430.3671227-1-mcgrof@kernel.org>
+ <20210918050430.3671227-10-mcgrof@kernel.org>
+ <CAPcyv4i0xEwMQ5kSK-xGroV7aZr3j1YNrGMVLiLMr3U8nFCMKA@mail.gmail.com>
+ <YUj6TrGbqlNI0OGC@bombadil.infradead.org>
+ <CAPcyv4jFaNTfpKq6hQsFrWXTwHz-wG+5K4m-hmsPeteLX4p5AQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jFaNTfpKq6hQsFrWXTwHz-wG+5K4m-hmsPeteLX4p5AQ@mail.gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARN if CR0, CR3, or CR4 are non-zero at RESET, which given the current
-KVM implementation, really means WARN if they're not zeroed at vCPU
-creation.  VMX in particular has several ->set_*() flows that read other
-registers to handle side effects, and because those flows are common to
-RESET and INIT, KVM subtly relies on emulated/virtualized registers to be
-zeroed at vCPU creation in order to do the right thing at RESET.
+On Mon, Sep 20, 2021 at 02:55:10PM -0700, Dan Williams wrote:
+> On Mon, Sep 20, 2021 at 2:17 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >
+> > On Mon, Sep 20, 2021 at 01:52:21PM -0700, Dan Williams wrote:
+> > > On Fri, Sep 17, 2021 at 10:05 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > > > This deadlock was first reported with the zram driver, however the live
+> > > > patching folks have acknowledged they have observed this as well with
+> > > > live patching, when a live patch is removed. I was then able to
+> > > > reproduce easily by creating a dedicated selftests.
+> > > >
+> > > > A sketch of how this can happen follows:
+> > > >
+> > > > CPU A                              CPU B
+> > > >                                    whatever_store()
+> > > > module_unload
+> > > >   mutex_lock(foo)
+> > > >                                    mutex_lock(foo)
+> > > >    del_gendisk(zram->disk);
+> > > >      device_del()
+> > > >        device_remove_groups()
+> > >
+> > > This flow seems possible to trigger with:
+> > >
+> > >    echo $dev > /sys/bus/$bus/drivers/$driver/unbind
+> > >
+> > > I am missing why module pinning
+> >
+> > The aspect of try_module_get() which comes to value to prevent the
+> > deadlock is it ensures kernfs ops do not run once exit is on the way.
+> >
+> > > is part of the solution when it's the
+> > > device_del() path that is racing?
+> >
+> > But its not, the device_del() path will yield until the kernfs op
+> > completes. It is fine to wait there.
+> >
+> > The deadlock happens if a module exit routine uses a lock which is
+> > also used on a sysfs op. If the lock was first held by module exit,
+> > and module exit is waiting for the kernfs op to complete, and the
+> > kernfs op is waiting to hold the same lock then the exit will wait
+> > forever.
+> >
+> > > Module removal is just a more coarse
+> > > grained way to trigger unbind => device_del().
+> >
+> > Right, but the device_del() path is not sharing a lock with the sysfs op.
+> 
+> The deadlock in the example comes from holding a lock over
+> device_del() [...]
 
-Use CRs as a sentinel because they are most likely to be written as side
-effects, and because KVM specifically needs CR0.PG and CR0.PE to be '0'
-to correctly reflect the state of the vCPU's MMU.  CRs are also loaded
-and stored from/to the VMCS, and so adds some level of coverage to verify
-that KVM doesn't conflate zero-allocating the VMCS with properly
-initializing the VMCS with VMWRITEs.
+No sorry, that is my mistake not making it clear that the mutex held
+in the example is on module exit. Or any lock for that matter. That is
+these locks are driver specific.
 
-Note, '0' is somewhat arbitrary, vCPU creation can technically stuff any
-value for a register so long as it's coherent with respect to the current
-vCPU state.  In practice, '0' works for all registers and is convenient.
+> > > Isn't the above a bug
+> > > in the driver, not missing synchronization in kernfs?
+> >
+> > We can certainly take the position as an alternative:
+> >
+> >   "thou shalt not use a lock on exit which is also used on a syfs op"
+> >
+> > However that seems counter intuitive, specially if we can resolve the
+> > issue easily with a try_module_get().
+> 
+> Again, I don't see how try_module_get() can affect the ABBA failure
+> case of holding a lock over device_del() that is also held inside
+> sysfs op.
 
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+It is not device_del(), it is on module exit. Sorry for this not being
+clear before. I'll fix the commit log to make it clearer. The subject
+at least was clear but I think the example could be clearer.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ec61b90d9b73..4e25baac3977 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10800,6 +10800,16 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	unsigned long new_cr0;
- 	u32 eax, dummy;
- 
-+	/*
-+	 * Several of the "set" flows, e.g. ->set_cr0(), read other registers
-+	 * to handle side effects.  RESET emulation hits those flows and relies
-+	 * on emulated/virtualized registers, including those that are loaded
-+	 * into hardware, to be zeroed at vCPU creation.  Use CRs as a sentinel
-+	 * to detect improper or missing initialization.
-+	 */
-+	WARN_ON_ONCE(!init_event &&
-+		     (old_cr0 || kvm_read_cr3(vcpu) || kvm_read_cr4(vcpu)));
-+
- 	kvm_lapic_reset(vcpu, init_event);
- 
- 	vcpu->arch.hflags = 0;
--- 
-2.33.0.464.g1972c5931b-goog
-
+  Luis
