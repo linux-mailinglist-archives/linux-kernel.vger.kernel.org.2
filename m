@@ -2,416 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A937412E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83921412EBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhIUGBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:01:49 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:47559 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229619AbhIUGBs (ORCPT
+        id S229922AbhIUGnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:43:01 -0400
+Received: from rn-mailsvcp-ppex-lapp44.apple.com ([17.179.253.48]:51966 "EHLO
+        rn-mailsvcp-ppex-lapp44.apple.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229788AbhIUGm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:01:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0Up6QHrG_1632204012;
-Received: from 192.168.2.142(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0Up6QHrG_1632204012)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 21 Sep 2021 14:00:15 +0800
-Subject: Re: [PATCH] [RFC/RFT]SCS:Add gcc plugin to support Shadow Call Stack
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Colin King <colin.king@canonical.com>, andreyknvl@gmail.com,
-        Mark Rutland <mark.rutland@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
-        luc.vanoostenryck@gmail.com, Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <1632069436-25075-1-git-send-email-ashimida@linux.alibaba.com>
- <CAMj1kXGQ+x243wK-8NP+kxs2dCgSa+MD5+Tv3Xzo3510Td1t3Q@mail.gmail.com>
- <bbe282c6-64f4-cd95-5d64-8266d52ee7a1@linux.alibaba.com>
- <CAMj1kXGr7ZzBmr-SrxmBsqWvn+NSPC_VKAr5gqx1WN-91i7wpg@mail.gmail.com>
-From:   Dan Li <ashimida@linux.alibaba.com>
-Message-ID: <94198e26-2cfd-fdc8-7427-d41437cae964@linux.alibaba.com>
-Date:   Tue, 21 Sep 2021 14:00:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <CAMj1kXGr7ZzBmr-SrxmBsqWvn+NSPC_VKAr5gqx1WN-91i7wpg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 21 Sep 2021 02:42:59 -0400
+X-Greylist: delayed 7365 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Sep 2021 02:42:59 EDT
+Received: from pps.filterd (rn-mailsvcp-ppex-lapp44.rno.apple.com [127.0.0.1])
+        by rn-mailsvcp-ppex-lapp44.rno.apple.com (8.16.1.2/8.16.1.2) with SMTP id 18L4ao8T013367;
+        Mon, 20 Sep 2021 21:38:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=cc : from : subject :
+ to : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=20180706;
+ bh=S4U9re3F2Mbh/Pkuydk3z4vcCN13N9hiDA8wPV2znSs=;
+ b=h/BOQFKHLOik6fD6lekP1VYVWPLkcSY99c6ZImdASgEXEVwXYGn0DRBn8o+Gtm6UEvr+
+ w9FUWEaSwws19z/5fPAzDu5+8Pg3DZRTCr3b33aR0yff3pDDtbN3hOInoajrP9WHGeEV
+ 8TjLoRjykv/dn1KhOa0t0kJwwrIeXdPH4SiuavQ+pR2rNP4CdR2fJMclgKY/HgalwSjc
+ eiZoa9xnOBhHrxrFixmQaex5mdCTiOW/UKCe3fRr+DJ36BrA5xlS7hE2oVkreZMj6JAy
+ PQ1/SDo4rjk9/GchRHi18ukd+6GC6bILP2fws1P4Uxh/bNSRMdzLltpQ9M1BDyFShgMe Lw== 
+Received: from ma-mailsvcp-mta-lapp04.corp.apple.com (ma-mailsvcp-mta-lapp04.corp.apple.com [10.226.18.136])
+        by rn-mailsvcp-ppex-lapp44.rno.apple.com with ESMTP id 3b5bmb2j3d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
+        Mon, 20 Sep 2021 21:38:42 -0700
+Received: from ma-mailsvcp-mmp-lapp01.apple.com
+ (ma-mailsvcp-mmp-lapp01.apple.com [17.32.222.14])
+ by ma-mailsvcp-mta-lapp04.corp.apple.com
+ (Oracle Communications Messaging Server 8.1.0.9.20210415 64bit (built Apr 15
+ 2021))
+ with ESMTPS id <0QZR00ENTOWHZZ10@ma-mailsvcp-mta-lapp04.corp.apple.com>; Mon,
+ 20 Sep 2021 21:38:41 -0700 (PDT)
+Received: from process_milters-daemon.ma-mailsvcp-mmp-lapp01.apple.com by
+ ma-mailsvcp-mmp-lapp01.apple.com
+ (Oracle Communications Messaging Server 8.1.0.9.20210415 64bit (built Apr 15
+ 2021)) id <0QZR00M00OBA4K00@ma-mailsvcp-mmp-lapp01.apple.com>; Mon,
+ 20 Sep 2021 21:38:41 -0700 (PDT)
+X-Va-A: 
+X-Va-T-CD: d5b3a1fcc7da27abb9160183583a5404
+X-Va-E-CD: 3e89611b360c530842f7aca1f508208c
+X-Va-R-CD: 2aafdd1a66914cad20b8966d251bd628
+X-Va-CD: 0
+X-Va-ID: 54147b7f-437f-406b-97ce-95bcdc1ca2e5
+X-V-A:  
+X-V-T-CD: d5b3a1fcc7da27abb9160183583a5404
+X-V-E-CD: 3e89611b360c530842f7aca1f508208c
+X-V-R-CD: 2aafdd1a66914cad20b8966d251bd628
+X-V-CD: 0
+X-V-ID: 25b70092-addd-4b82-aaf8-7a74e1b939f8
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-21_01:2021-09-20,2021-09-21 signatures=0
+Received: from Vishnus-iPro.lan (unknown [17.168.70.206])
+ by ma-mailsvcp-mmp-lapp01.apple.com
+ (Oracle Communications Messaging Server 8.1.0.9.20210415 64bit (built Apr 15
+ 2021)) with ESMTPSA id <0QZR00U7AOWGHR00@ma-mailsvcp-mmp-lapp01.apple.com>;
+ Mon, 20 Sep 2021 21:38:41 -0700 (PDT)
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Vishnu Rangayyan <vishnu.rangayyan@apple.com>
+Subject: [PATCH] fs: fix for core dumping of a process getting oom-killed
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Message-id: <9aec4002-754c-ca6d-7caf-9de6e8c31dd7@apple.com>
+Date:   Mon, 20 Sep 2021 23:38:40 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8; format=flowed
+Content-language: en-US
+Content-transfer-encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-20_10:2021-09-20,2021-09-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Processes inside a memcg that get core dumped when there is less memory
+available in the memcg can have the core dumping interrupted by the 
+oom-killer.
+We saw this with qemu processes inside a memcg, as in this trace below.
+The memcg was not out of memory when the core dump was triggered.
 
-On 9/21/21 5:22 AM, Ard Biesheuvel wrote:
-> On Mon, 20 Sept 2021 at 20:53, Dan Li <ashimida@linux.alibaba.com> wrote:
->>
->> Hi Ard,
->>
->> Thanks for your comment.
->>
->> I pasted a copy of the config code in my last email, could you please check it again?
->>
->> On 9/20/21 3:18 PM, Ard Biesheuvel wrote:
->>> Hi Dan,
->>>
->>> On Sun, 19 Sept 2021 at 18:37, Dan Li <ashimida@linux.alibaba.com> wrote:
->>>>
->>>> The Clang-based shadow call stack protection has been integrated into the
->>>> mainline, but kernel compiled by gcc cannot enable this feature for now.
->>>>
->>>> This Patch supports gcc-based SCS protection by adding a plugin.
->>>>
->>>
->>> Thanks for working on this. I had a stab at this myself about 2 years
->>> ago and couldn't make it work.
->>>
->>>> For each function that x30 will be pushed onto the stack during execution,
->>>> this plugin:
->>>> 1) insert "str x30, [x18], #8" at the entry of the function to save x30
->>>>      to current SCS
->>>> 2) insert "ldr x30, [x18, #-8]!"  before the exit of this function to
->>>>      restore x30
->>>>
->>>
->>> This logic seems sound to me, but it would be nice if someone more
->>> familiar with Clang's implementation could confirm that it is really
->>> this simple.
->>>
->>> Looking at your plugin, there is an issue with tail calls, and I don't
->>> think Clang simply disables those altogether as well, right?
->>
->> I am not familiar with clang's code, the logic comes from clang's description and the
->> disassembled binary code for now, so it may be different from the actual situation.
->>
-> 
-> OK
-> 
->> The tail call could be handled (theoretically), and I will try to solve the issue in
->> the next version.
->>>
->>>>    ifdef CONFIG_SHADOW_CALL_STACK
->>>> -CC_FLAGS_SCS   := -fsanitize=shadow-call-stack
->>>> +CC_FLAGS_SCS   := $(if $(CONFIG_CC_IS_CLANG),-fsanitize=shadow-call-stack,)
->>>
->>> This variable should contain whatever needs to be added to the
->>> compiler comamand line
->>     In the new code, an 'enable' option is added here to enable the plugin
->>>>    KBUILD_CFLAGS  += $(CC_FLAGS_SCS)
->>>>    export CC_FLAGS_SCS
->>>>    endif
->>>> diff --git a/arch/Kconfig b/arch/Kconfig
->>>> index 98db634..81ff127 100644
->>>> --- a/arch/Kconfig
->>>> +++ b/arch/Kconfig
->>>> @@ -594,7 +594,7 @@ config ARCH_SUPPORTS_SHADOW_CALL_STACK
->>>>
->>>>    config SHADOW_CALL_STACK
->>>>           bool "Clang Shadow Call Stack"
->>>> -       depends on CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK
->>>> +       depends on (CC_IS_CLANG && ARCH_SUPPORTS_SHADOW_CALL_STACK) || GCC_PLUGIN_SHADOW_CALL_STACK
->>>
->>> This logic needs to be defined in such a way that a builtin
->>> implementation provided by GCC will take precedence once it becomes
->>> available.
->>>
->>     In new code, if gcc supports SCS in the future, the plugin will be closed due to
->>     CC_HAVE_SHADOW_CALL_STACK is true.
->>>>           depends on DYNAMIC_FTRACE_WITH_REGS || !FUNCTION_GRAPH_TRACER
->>>>           help
->>>>             This option enables Clang's Shadow Call Stack, which uses a
->>>> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
->>>> index ab9eb4c..2534195e 100644
->>>> --- a/scripts/gcc-plugins/Kconfig
->>>> +++ b/scripts/gcc-plugins/Kconfig
->>>> @@ -19,6 +19,14 @@ menuconfig GCC_PLUGINS
->>>>
->>>>    if GCC_PLUGINS
->>>>
->>>> +config GCC_PLUGIN_SHADOW_CALL_STACK
->>>> +       bool "GCC Shadow Call Stack plugin"
->>>> +       select SHADOW_CALL_STACK
->>>
->>> You shouldn't 'select' something like this if the symbol has its own
->>> dependencies which may be unsatisfied, as this causes a Kconfig
->>> warning. Also, en/disabling shadow call stacks for the architecture
->>> should be done from the arch's 'kernel features' menu, it shouldn't be
->>> buried in the GCC plugins menu.
->>      I removed 'select' in the new version.
->>      SCS's enable is changed to rely on CONFIG_SHADOW_CALL_STACK in arch/kernel,
->>      the GCC_PLUGIN_SHADOW_CALL_STACK config is just to add a usable platform to it.
->>>> +       help
->>>> +         This plugin is used to support the kernel CONFIG_SHADOW_CALL_STACK
->>>> +         compiled by gcc. Its principle is basically the same as that of CLANG.
->>>> +         For more information, please refer to "config SHADOW_CALL_STACK"
->>>> +
->>>> +__visible int plugin_is_GPL_compatible;
->>>> +
->>>> +static struct plugin_info arm64_scs_plugin_info = {
->>>> +       .version        = "20210926vanilla",
->>>
->>> I will respond to this obvious invitation at bikeshedding by saying
->>> that 'salted caramel' is clearly the superior flavor of ice cream.
->>     I'm sorry, as a non-native English speaker, I think I might not understand
->>     what you mean here. My intention is to say that this is the first/initial
->>     version, do I miss something?
-> 
-> It was a joke - don't worry about it.
-> 
->>>> +       .help           = "disable\tdo not activate plugin\n"
->>>> +                         "verbose\tprint all debug infos\n",
->>>> +};
->>>> +static unsigned int arm64_scs_execute(void)
->>>> +{
->>>> +       rtx_insn *insn;
->>>> +       enum scs_state state = SCS_SEARCHING_FIRST_INSN;
->>>> +
->>>> +       for (insn = get_insns(); insn; insn = NEXT_INSN(insn)) {
->>>> +               rtx mark = NULL;
->>>> +
->>>> +               switch (GET_CODE(insn)) {
->>>> +               case NOTE:
->>>> +               case BARRIER:
->>>> +               case CODE_LABEL:
->>>> +               case INSN:
->>>> +               case DEBUG_INSN:
->>>> +               case JUMP_INSN:
->>>> +               case JUMP_TABLE_DATA:
->>>> +                       break;
->>>> +               case CALL_INSN:
->>>> +                       if (SIBLING_CALL_P(insn)) {
->>>> +                               error(G_("Sibling call found in func:%s, file:%s\n"),
->>>> +                                               get_name(current_function_decl),
->>>> +                                               main_input_filename);
->>>> +                               gcc_unreachable();
->>>> +                       }
->>>
->>> Sibling calls are an important optimization, not only for performance
->>> but also for stack utilization, so this needs to be fixed. Can you
->>> elaborate on the issue you are working around here?
->>>
->>     Since the ARM64 has disabled sibling calls (-fno-optimize-sibling-calls) by default,
->>     there is almost no sibling call appear in the kernel I encountered.
-> 
-> What do you mean this is disabled by default? Is that a compiler
-> setting or a Linux setting?
-It's a linux setting in aarch64 kernel.
+[201169.028782] qemu-kata-syste invoked oom-killer: 
+gfp_mask=0x101c4a(GFP_NOFS|__GFP_HIGHMEM|__GFP_HARDWALL|__GFP_MOVABLE|__GFP_WRITE), 
+order=0, oom_score_adj=-100
+[201169.028785] CPU: 3 PID: 1887079 Comm: qemu-kata-syste Kdump: loaded 
+Tainted: P W O 5.4.77-7.el7pie #1
+[201169.028786] Call Trace:
+[201169.028794] dump_stack+0x8f/0xd0
+[201169.028797] dump_header+0x4a/0x1d8
+[201169.028799] oom_kill_process.cold.33+0xb/0x10
+[201169.028800] out_of_memory+0x199/0x460
+[201169.028804] mem_cgroup_out_of_memory+0xbe/0xd0
+[201169.028805] try_charge+0x789/0x800
+[201169.028807] mem_cgroup_try_charge+0x6a/0x190
+[201169.028809] __add_to_page_cache_locked+0x29d/0x2f0
+[201169.028812] ? scan_shadow_nodes+0x30/0x30
+[201169.028813] add_to_page_cache_lru+0x4a/0xc0
+[201169.028814] pagecache_get_page+0x101/0x220
+[201169.028816] grab_cache_page_write_begin+0x1f/0x40
+[201169.028818] iomap_write_begin.constprop.31+0x1b6/0x330
+[201169.028819] ? iomap_write_end+0x240/0x240
+[201169.028822] ? xfs_file_iomap_begin+0x387/0x5d0
+[201169.028823] ? iomap_write_end+0x240/0x240
+[201169.028824] iomap_write_actor+0x92/0x170
+[201169.028825] ? iomap_write_end+0x240/0x240
+[201169.028826] iomap_apply+0xba/0x130
+[201169.028827] ? iomap_write_end+0x240/0x240
+[201169.028828] iomap_file_buffered_write+0x61/0x80
+[201169.028829] ? iomap_write_end+0x240/0x240
+[201169.028831] xfs_file_buffered_aio_write+0xca/0x320
+[201169.028832] new_sync_write+0x11b/0x1b0
+[201169.028833] __kernel_write+0x4f/0xf0
+[201169.028834] dump_emit+0x91/0xc0
+[201169.028837] elf_core_dump+0x818/0x9a0
+[201169.028839] do_coredump+0x52b/0xb0b
+[201169.028842] get_signal+0x134/0x820
+[201169.028844] do_signal+0x36/0x5d0
+[201169.028845] ? do_send_specific+0x66/0x80
+[201169.028847] ? audit_filter_inodes+0x2e/0x100
+[201169.028848] ? audit_filter_syscall.constprop.19+0x2c/0xd0
+[201169.028850] do_syscall_64+0x1aa/0x58e
+[201169.028852] ? trace_hardirqs_off_thunk+0x1a/0x30
+[201169.028854] entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[201169.028856] RIP: 0033:0x7fdf0bbd73d7
+[201169.028857] Code: 02 00 00 85 f6 75 34 b8 ba 00 00 00 0f 05 89 c1 64 
+89 04 25 d0 02 00 00 89 c6 48 63 d7 48 63 f6 48 63 f9 b8 ea 00 00 00 0f 
+05 <48> 3d 00 f0 ff ff 77 1e f3 c3 0f 1f 80 00 00 00 00 85 c9 7f db 89
+[201169.028858] RSP: 002b:00007fff9b56a018 EFLAGS: 00000202 ORIG_RAX: 
+00000000000000ea
+[201169.028860] RAX: 0000000000000000 RBX: 00007fdf20d7b000 RCX: 
+00007fdf0bbd73d7
+[201169.028860] RDX: 0000000000000006 RSI: 00000000001ccb67 RDI: 
+00000000001ccb67
+[201169.028861] RBP: 00007fdf0bd2be00 R08: 0000000000000000 R09: 
+0000556728a30390
+[201169.028861] R10: 0000000000000008 R11: 0000000000000202 R12: 
+0000556727115cb5
+[201169.028862] R13: 0000556727115e20 R14: 00005567277fe700 R15: 
+0000556727806701
+[201169.028863] memory: usage 12218368kB, limit 12218368kB, failcnt 1728013
+[201169.028864] memory+swap: usage 12218368kB, limit 9007199254740988kB, 
+failcnt 0
+[201169.028864] kmem: usage 154424kB, limit 9007199254740988kB, failcnt 0
+[201169.028880] 
+oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=podacfa3d53-2068-4b61-a754-fa21968b4201,mems_allowed=0-1,oom_memcg=/kubepods/burstable/podacfa3d53-2068-4b61-a754-fa21968b4201,task_memcg=/kubepods/burstable/podacfa3d53-2068-4b61-a754-fa21968b4201,task=qemu-kata-syste,pid=1887079,uid=0
+[201169.028888] Memory cgroup out of memory: Killed process 1887079 
+(qemu-kata-syste) total-vm:13598556kB, anon-rss:39836kB, 
+file-rss:8712kB, shmem-rss:12017992kB, UID:0 pgtables:24204kB 
+oom_score_adj:-100
+[201169.045201] oom_reaper: reaped process 1887079 (qemu-kata-syste), 
+now anon-rss:0kB, file-rss:28kB, shmem-rss:12018016kB
 
-In aarch64, since CONFIG_FRAME_POINTER is always selected, -fno-optimize-sibling-calls is
-usually enable by default, and I think sibling calls rarely appear (I only encountered
-it once in my cases from bsp's code):
+This change adds an fsync only for regular file core dumps based on a 
+configurable limit core_sync_bytes placed alongside other core dump 
+params and defaults the limit to (an arbitrary value) of 128KB.
+Setting core_sync_bytes to zero disables the sync.
 
-./arch/arm64/Kconfig
-config ARM64
-...
-select FRAME_POINTER
+Cc: stable@vger.kernel.org
+Reported-by: Eric Ernst <eric_ernst@apple.com>
+Signed-off-by: Vishnu Rangayyan <vrangayyan@apple.com>
+---
+  fs/coredump.c            | 9 +++++++++
+  include/linux/binfmts.h  | 1 +
+  include/linux/coredump.h | 1 +
+  kernel/sysctl.c          | 7 +++++++
+  4 files changed, 18 insertions(+)
 
-./Makefile
-ifdef CONFIG_FRAME_POINTER
-KBUILD_CFLAGS   += -fno-omit-frame-pointer -fno-optimize-sibling-calls
-...
+diff --git a/fs/coredump.c b/fs/coredump.c
+index 3224dee44d30..187813704533 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -54,6 +54,7 @@
 
+  int core_uses_pid;
+  unsigned int core_pipe_limit;
++unsigned int core_sync_bytes = 131072; /* sync core file every so many 
+bytes */
+  char core_pattern[CORENAME_MAX_SIZE] = "core";
+  static int core_name_size = CORENAME_MAX_SIZE;
 
->>     So I did not provide support for it, and I will fix this issue in the next version.
->>>> +                       break;
->>>> +               default:
->>>> +                       error(G_("Invalid rtx_insn seqs found with type:%s in func:%s, file:%s\n"),
->>>> +                                       GET_RTX_NAME(GET_CODE(insn)),
->>>> +                                       get_name(current_function_decl), main_input_filename);
->>>> +                       gcc_unreachable();
->>>> +                       break;
->>>> +               }
->>>> +               /* A function return insn was found */
->>>> +               if (ANY_RETURN_P(PATTERN(insn))) {
->>>> +                       /* There should be an epilogue before 'RETURN' inst */
->>>> +                       if (GET_CODE(PATTERN(insn)) == RETURN) {
->>>> +                               gcc_assert(state == SCS_FOUND_ONE_EPILOGUE_NOTE);
->>>> +                               state = SCS_SEARCHING_FUNC_RETURN;
->>>> +                       }
->>>> +
->>>> +                       /* There is no epilogue before 'SIMPLE_RETURN' insn */
->>>> +                       if (GET_CODE(PATTERN(insn)) == SIMPLE_RETURN)
->>>> +                               gcc_assert(state == SCS_SEARCHING_FUNC_RETURN);
->>>
->>> These assert()s will crash the compiler if the RTL doesn't have quite
->>> the right structure, correct? Could we issue a warning instead, saying
->>> function 'x' could not be handled, and back out gracefully (i.e.,
->>> don't insert the push either)?
->>>
->>      Sure, I think I need to dynamically mark all instrumented positions here,
->>      and then confirm that the instruction sequence is correct before inserting in batches.
-> 
-> Yes, that sounds more suitable.
-> 
->>>> +
->>>> +                       /* Insert scs pop instruction(s) before return insn */
->>>> +                       mark = gen_scs_pop(RESERVED_LOCATION_COUNT);
->>>> +                       emit_insn_before(mark, insn);
->>>> +               }
->>>> +       }
->>>> +       return 0;
->>>> +}
->>>> +
->>>> +static tree handle_noscs_attribute(tree *node, tree name, tree args __unused, int flags,
->>>> +               bool *no_add_attrs)
->>>> +{
->>>> +       *no_add_attrs = true;
->>>> +
->>>> +       gcc_assert(DECL_P(*node));
->>>> +       switch (TREE_CODE(*node)) {
->>>> +       default:
->>>> +               error(G_("%qE attribute can be applies to function decl only (%qE)"), name, *node);
->>>> +               gcc_unreachable();
->>>> +
->>>> +       case FUNCTION_DECL:     /* the attribute is only used for function declarations */
->>>> +               break;
->>>> +       }
->>>> +
->>>> +       *no_add_attrs = false;
->>>
->>> I'm not familiar with this idiom: what is the purpose of setting this
->>> to true initially and then to false again when the expected flow
->>> through the function is to do nothing at all?
->>>
->>      This is my mistake, at the beginning default case only return 0 directly after a warning;
->>      At that time, if *no_add_attrs is true, the corresponding attribute will not be added to 'node',
->>      and it means __noscs attribute can only be added for FUNCTION_DECL.
->>      For now, *no_add_attrs = true; is useless, it should be deleted.
->>
->>      But if, as you said, try to back out gracefully, is it better to report warning in the default case?
-> 
-> error() just terminates the compile with an error, right? I think that is fine.
-> 
-   Yes. I got it.
+@@ -866,6 +867,14 @@ static int __dump_emit(struct coredump_params 
+*cprm, const void *addr, int nr)
+         n = __kernel_write(file, addr, nr, &pos);
+         if (n != nr)
+                 return 0;
++       if (file->f_inode && S_ISREG(file->f_inode->i_mode)) {
++               cprm->not_synced += n;
++               if (cprm->not_synced >= core_sync_bytes &&
++                   core_sync_bytes) {
++                       generic_file_fsync(file, 0, pos - 1, 0);
++                       cprm->not_synced = 0;
++               }
++       }
+         file->f_pos = pos;
+         cprm->written += n;
+         cprm->pos += n;
+diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
+index 049cf9421d83..588d8f240715 100644
+--- a/include/linux/binfmts.h
++++ b/include/linux/binfmts.h
+@@ -84,6 +84,7 @@ struct coredump_params {
+         struct file *file;
+         unsigned long limit;
+         unsigned long mm_flags;
++       loff_t not_synced;
+         loff_t written;
+         loff_t pos;
+         loff_t to_skip;
+diff --git a/include/linux/coredump.h b/include/linux/coredump.h
+index 78fcd776b185..2f65e2f10118 100644
+--- a/include/linux/coredump.h
++++ b/include/linux/coredump.h
+@@ -17,6 +17,7 @@ struct core_vma_metadata {
+  extern int core_uses_pid;
+  extern char core_pattern[];
+  extern unsigned int core_pipe_limit;
++extern unsigned int core_sync_bytes;
 
->>>> +       return NULL_TREE;
->>>> +}
->>>> +
->>>> +static void (*old_override_options_after_change)(void);
->>>> +
->>>> +static void scs_override_options_after_change(void)
->>>> +{
->>>> +       if (old_override_options_after_change)
->>>> +               old_override_options_after_change();
->>>> +
->>>> +       flag_optimize_sibling_calls = 0;
->>>> +}
->>>> +
->>>> +static void callback_before_start_unit(void *gcc_data __unused, void *user_data __unused)
->>>> +{
->>>> +       /* Turn off sibling call to avoid inserting duplicate scs pop codes */
->>>
->>> Sibling calls will restore x30 before the calk, right? So where do the
->>> duplicate pops come from?
->>      a sibling call could be like:
->>      stp     x29, x30, [sp, #-xx]!
->>      .......
->>      ldp     x29, x30, [sp], #xx
->>      ---> p1
->>      b       callee
->>      ldp     x29, x30, [sp], #xx
->>      ---> p2
->>      ret
->>
->>      What i mean here is if we need to insert, the scs pop code should be insert in both p1/p2,
-> 
-> Yes, so you have to identify the 'b' insn as a function return so it
-> is treated the same.
->
-   Thanks, let me try.
->>>
->>>> +       old_override_options_after_change = targetm.override_options_after_change;
->>>> +       targetm.override_options_after_change = scs_override_options_after_change;
->>>> +
->>>> +       flag_optimize_sibling_calls = 0;
->>>
->>> Do we need this twice?
->>     I think so, there are functions similar to push/pop in gcc (cl_optimization_restore/save)
->>     * callback_before_start_unit is used to set zero during initialization
->>     * scs_override_options_after_change is used to reset to 0 after a 'push' occurs
-> 
-> OK
-> 
->>>> +}
->>>> +
->>>> +#define PASS_NAME arm64_scs
->>>> +#define TODO_FLAGS_FINISH (TODO_dump_func | TODO_verify_rtl_sharing)
->>>> +#include "gcc-generate-rtl-pass.h"
->>>> +
->>>> +__visible int plugin_init(struct plugin_name_args *plugin_info, struct plugin_gcc_version *version)
->>>> +{
->>>> +       int i;
->>>> +       const char * const plugin_name = plugin_info->base_name;
->>>> +       const int argc = plugin_info->argc;
->>>> +       const struct plugin_argument * const argv = plugin_info->argv;
->>>> +       bool enable = true;
->>>> +
->>>> +       PASS_INFO(arm64_scs, "shorten", 1, PASS_POS_INSERT_BEFORE);
->>>> +
->>>> +       if (!plugin_default_version_check(version, &gcc_version)) {
->>>> +               error(G_("Incompatible gcc/plugin versions"));
->>>> +               return 1;
->>>> +       }
->>>> +
->>>> +       if (strncmp(lang_hooks.name, "GNU C", 5) && !strncmp(lang_hooks.name, "GNU C+", 6)) {
->>>> +               inform(UNKNOWN_LOCATION, G_("%s supports C only, not %s"), plugin_name,
->>>> +                               lang_hooks.name);
->>>> +               enable = false;
->>>> +       }
->>>> +
->>>
->>> Do we need this check?
->>     This code is copied from structleak_plugin.c, I misunderstood the meaning here, and I will delete it later
-> 
-> OK. Kees should correct me if I'm wrong, but we use GCC in the kernel
-> only to compile C files, so this check should be redundant.
-> 
-> 
->>>
->>>> +       for (i = 0; i < argc; ++i) {
->>>> +               if (!strcmp(argv[i].key, "disable")) {
->>>> +                       enable = false;
->>>> +                       continue;
->>>> +               }
->>>> +               if (!strcmp(argv[i].key, "verbose")) {
->>>> +                       verbose = true;
->>>> +                       continue;
->>>> +               }
->>>> +               error(G_("unknown option '-fplugin-arg-%s-%s'"), plugin_name, argv[i].key);
->>>> +       }
->>>> +
->>>> +       register_callback(plugin_name, PLUGIN_INFO, NULL, &arm64_scs_plugin_info);
->>>> +
->>>> +       register_callback(plugin_name, PLUGIN_ATTRIBUTES, scs_register_attributes, NULL);
->>>> +
->>>> +       if (!enable) {
->>>> +               v_info("Plugin disabled for file:%s\n", main_input_filename);
->>>> +               return 0;
->>>> +       }
->>>> +
->>>> +       register_callback(plugin_name, PLUGIN_START_UNIT, callback_before_start_unit, NULL);
->>>> +
->>>> +       register_callback(plugin_name, PLUGIN_PASS_MANAGER_SETUP, NULL, &arm64_scs_pass_info);
->>>> +
->>>> +       return 0;
->>>> +}
->>>> --
->>>> 2.7.4
->>>>
+  /*
+   * These are the only things you should do on a core-file: use only these
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 083be6af29d7..89b54e9ca963 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1948,6 +1948,13 @@ static struct ctl_table kern_table[] = {
+                 .mode           = 0644,
+                 .proc_handler   = proc_dointvec,
+         },
++       {
++               .procname       = "core_sync_bytes",
++               .data           = &core_sync_bytes,
++               .maxlen         = sizeof(unsigned int),
++               .mode           = 0644,
++               .proc_handler   = proc_dointvec,
++       },
+  #endif
+  #ifdef CONFIG_PROC_SYSCTL
+         {
+-- 
+2.25.1
+
