@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917884134BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE684134CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhIUNr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:47:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46567 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233382AbhIUNrz (ORCPT
+        id S233416AbhIUNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233099AbhIUNtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:47:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632231987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JvAmThRyy+RUTWUi/6d03wzJkG7ApoxnCwQT7lVpJIU=;
-        b=asfj9Bh0QAQexJ6ou7rb54xrCq3IdjF9eAvZTixLN+6pmgaexMpP2Dqq97a1RN5eifQbUt
-        sMxB2GT0wHKvMWhWVlfbrayl7eVRsirRWTY/vqGM9uC2c1xmMbLDYmNWLeXhwfTUzFZZEa
-        46OqU3dtbhQpB2azGuQV2tRbdvvUd2Q=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-1AFiEbMOPemyG3RdTZ5XOA-1; Tue, 21 Sep 2021 09:46:25 -0400
-X-MC-Unique: 1AFiEbMOPemyG3RdTZ5XOA-1
-Received: by mail-ed1-f72.google.com with SMTP id e7-20020a50d4c7000000b003d871ecccd8so5140358edj.18
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:46:25 -0700 (PDT)
+        Tue, 21 Sep 2021 09:49:45 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F6DC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:48:16 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id c21so73231993edj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:48:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aNTuizOqdzDW7h7h80neHzRKPQ4VEqD5lgD02Fykhis=;
+        b=cwAeLQHcRd3Uq6KkyWNqKcGT6AwrJ4sheK5cgo9pLjTGusgx0FGT6Vj783nqbphwof
+         nkQgjyV4+zOvSUoMbwoEEmjD+h0iR84nLwNDHrFF9sCnV33cdycDdPxmeXBMP/HMGaO2
+         hJHHx9zVdMlWsyRtPnR8F2u1bFKF23Evpihm1El73VB/xjMsayPNP8gCestCG5gcGjRQ
+         gkCptOwSyRCrt0NxZHMW+4p1k4BaWEDrSZo4iRT2F12yu2v4NNTnFsCECQl51UDsAYjo
+         y4iJAlNfAmaCHOnTuFdtG0LOmslJDNsJyC40Tn0mj/L45OcT2v8kkVm3/jLNm8boCufG
+         RG2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JvAmThRyy+RUTWUi/6d03wzJkG7ApoxnCwQT7lVpJIU=;
-        b=13/+hCD61siSIl8+yX8OeK0L8YRZ49OUg2LVoXZIeD6Y7vhTx1VhI09wO68Y18NiOk
-         Ynx6+J+atXUBMwbWCetMkNzBECxr5Z5FGeucAYM978lOKoWK2NxL0y6TuGnJYQldeeJn
-         CgG8g/iFhOwCEQaiYlFVtnvK74nGA2jgaKuk+S5VU3d44R+FQdkbIhhXJCF2S6z84rbk
-         /4dlSHt7mZedUX5XttAx9jJkvc7X9c/srjXfLYBYXR5elTPB6Mmfd6ekaUJZrmBmY473
-         /TyhAnVW7okaRqt+ZMAPP5NRIG74Lwd735wSJ1bLcar5Z0Dlmh+xrBgDxvayezbgK68H
-         p7hQ==
-X-Gm-Message-State: AOAM533RvwESJsFluXa2QF1oqTTmsxWBxjG72DI0nK+9WpAh13QPlXM/
-        7QYrXLI+LGv0g0e9FIiHf5EEyqfyQ67EIP3i4vV9BM3EMw29Y/MWaDvUxhMsNT6kR7Gi5GWb5Wt
-        ftt0X3+FdK+W7XaB3I5JEBfd+nD5KV7g0wG3M7NuSOdMEeSq2senxHClru+Wf1Drg/uy0/+oWUX
-        1y
-X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr35686288edc.348.1632231984310;
-        Tue, 21 Sep 2021 06:46:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxuMWC72gfkEbgCU16//CHfsCXwFHzIUTYNM/BMn7rMOz+GwSGYe5QXo4U0pKFB0Mb8mGLHOw==
-X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr35686260edc.348.1632231984096;
-        Tue, 21 Sep 2021 06:46:24 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id z18sm8468335edq.29.2021.09.21.06.46.23
+        bh=aNTuizOqdzDW7h7h80neHzRKPQ4VEqD5lgD02Fykhis=;
+        b=iRQ44TEC98g+DimBa19jKivE4jndVVIRMmc4hp9Dyt3+qj/C0uUX5F3dufRPQOps2z
+         50FUs1B/TlqpChuIFb3KEKaQFUAYPKn39rUdHDy1OV9oQz9VNNvsDT9AeDK2rNljKfUD
+         9nlfCUFp/Pgh9IYpBnFeWRyFJVEdzQhzsHgN6vqYXb5eE4QEoSDYUkZhzIotiEKWvdYF
+         tSNqL/RO1XrJTU3ajUKd3BpEz+totPLOK608mOLBqb8hfNTjYFDt3s9oeBwYtYw7FVhi
+         W2Wswkm37yVxXjbiu72xZQmxkkQJhSOXcfVC7IXqogzf05B81SfPp12AxYcb24Bsa1lE
+         CUGw==
+X-Gm-Message-State: AOAM531+A6Ak7kZITE52Ar7O3ymA0sp3aWZEklVWOM5vPyg9blzXmM4F
+        Mrw/rW5earm5NyDH7p7VudkpjA==
+X-Google-Smtp-Source: ABdhPJxTC4ocrnN/aqmIcIz7gSOiuc6J9ZIJPBIuge5cZv5KeVcxjyEE2ujPIUbb6GrWuK+rP9PSmw==
+X-Received: by 2002:a17:906:1601:: with SMTP id m1mr35348931ejd.485.1632232037519;
+        Tue, 21 Sep 2021 06:47:17 -0700 (PDT)
+Received: from [192.168.1.15] (hst-221-95.medicom.bg. [84.238.221.95])
+        by smtp.googlemail.com with ESMTPSA id d16sm8588731edu.8.2021.09.21.06.47.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 06:46:23 -0700 (PDT)
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Prefer struct_size over open
- coded arithmetic
-To:     Kees Cook <keescook@chromium.org>, Len Baker <len.baker@gmx.com>
-Cc:     Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210918150500.21530-1-len.baker@gmx.com>
- <202109192246.B438B42EF@keescook>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
-Date:   Tue, 21 Sep 2021 15:46:23 +0200
+        Tue, 21 Sep 2021 06:47:17 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: Re: [V3] venus: vdec: decoded picture buffer handling during reconfig
+ sequence
+To:     Mansur Alisha Shaik <mansur@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, dikshita@codeaurora.org
+References: <20210825110841.12815-1-mansur@codeaurora.org>
+Message-ID: <78dec463-5e75-18d7-b74e-154f00b8a7b2@linaro.org>
+Date:   Tue, 21 Sep 2021 16:47:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <202109192246.B438B42EF@keescook>
+In-Reply-To: <20210825110841.12815-1-mansur@codeaurora.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,129 +70,210 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mansur,
 
-On 9/20/21 7:58 AM, Kees Cook wrote:
-> On Sat, Sep 18, 2021 at 05:05:00PM +0200, Len Baker wrote:
->> As noted in the "Deprecated Interfaces, Language Features, Attributes,
->> and Conventions" documentation [1], size calculations (especially
->> multiplication) should not be performed in memory allocator (or similar)
->> function arguments due to the risk of them overflowing. This could lead
->> to values wrapping around and a smaller allocation being made than the
->> caller was expecting. Using those allocations could lead to linear
->> overflows of heap memory and other misbehaviors.
->>
->> So, switch to flexible array member in the struct attribute_set_obj and
->> refactor the code accordingly to use the struct_size() helper instead of
->> the argument "size + count * size" in the kzalloc() function.
->>
->> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
->>
->> Signed-off-by: Len Baker <len.baker@gmx.com>
->> ---
->>  drivers/platform/x86/thinkpad_acpi.c | 8 +++-----
->>  1 file changed, 3 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
->> index 50ff04c84650..ed0b01ead796 100644
->> --- a/drivers/platform/x86/thinkpad_acpi.c
->> +++ b/drivers/platform/x86/thinkpad_acpi.c
->> @@ -1008,7 +1008,7 @@ struct attribute_set {
->>
->>  struct attribute_set_obj {
->>  	struct attribute_set s;
->> -	struct attribute *a;
->> +	struct attribute *a[];
->>  } __attribute__((packed));
+On 8/25/21 2:08 PM, Mansur Alisha Shaik wrote:
+> In existing implementation, driver is freeing and un-mapping all the
+> decoded picture buffers(DPB) as part of dynamic resolution change(DRC)
+> handling. As a result, when firmware try to access the DPB buffer, from
+> previous sequence, SMMU context fault is seen due to the buffer being
+> already unmapped.
 > 
-> Whoa. I have so many questions... :)
+> With this change, driver defines ownership of each DPB buffer. If a buffer
+> is owned by firmware, driver would skip from un-mapping the same.
 > 
->>
->>  static struct attribute_set *create_attr_set(unsigned int max_members,
->> @@ -1020,13 +1020,11 @@ static struct attribute_set *create_attr_set(unsigned int max_members,
->>  		return NULL;
->>
->>  	/* Allocates space for implicit NULL at the end too */
->> -	sobj = kzalloc(sizeof(struct attribute_set_obj) +
->> -		    max_members * sizeof(struct attribute *),
->> -		    GFP_KERNEL);
->> +	sobj = kzalloc(struct_size(sobj, a, max_members + 1), GFP_KERNEL);
+> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
 > 
-> Whoa, this needs a lot more detail in the changelog if this is actually
-> correct. The original code doesn't seem to match the comment? (Where is
-> the +1?) So is this also a bug-fix?
-
-Kees, at first I thought you were spot-on with this comment, but the
-truth is more subtle. struct attribute_set_obj was:
-
-struct attribute_set_obj {
-        struct attribute_set s;
-        struct attribute *a;
-} __attribute__((packed));
-
-Another way of looking at this, which makes things more clear is as:
-
-struct attribute_set_obj {
-        struct attribute_set s;
-        struct attribute *a[1];
-} __attribute__((packed));
-
-So the sizeof(struct attribute_set_obj) in the original kzalloc call
-included room for 1 "extra" pointer which is reserved for the terminating
-NULL pointer.
-
-Changing the struct to:
-
-struct attribute_set_obj {
-        struct attribute_set s;
-        struct attribute *a[];
-} __attribute__((packed));
-
-Is equivalent to changing it to:
-
-struct attribute_set_obj {
-        struct attribute_set s;
-        struct attribute *a[0];
-} __attribute__((packed));
-
-So the change in the struct declaration reduces the sizeof(struct attribute_set_obj)
-by the size of 1 pointer, making the +1 necessary.
-
-So AFAICT there is actually no functional change here.
-
-Still I will hold off merging this until we agree on this :)
-
-> (I see the caller uses +2? Why? It seems to be using each of hotkey_attributes,
-> plus 1 more attr, plus a final NULL?)
-
-The +2 is actually for 2 extra attributes (making the total number
-of extra attributes +3 because the sizeof(struct attribute_set_obj)
-already includes 1 extra). 
-
-FWIW these 2 extra attributes are for devices with a
-a physical rfkill on/off switch and for the device being
-a convertible capable of reporting laptop- vs tablet-mode.
-
->>  	if (!sobj)
->>  		return NULL;
->>  	sobj->s.max_members = max_members;
->> -	sobj->s.group.attrs = &sobj->a;
->> +	sobj->s.group.attrs = sobj->a;
->>  	sobj->s.group.name = name;
+> Changes in V3:
+> - Migrated id allocation using kernel API ida_alloc_min()
 > 
-> The caller also never sets a name?
+> ---
+>  drivers/media/platform/qcom/venus/helpers.c | 50 ++++++++++++++++++++-
+>  drivers/media/platform/qcom/venus/helpers.h |  2 +
+>  drivers/media/platform/qcom/venus/vdec.c    |  7 ++-
+>  3 files changed, 57 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
+> index 8012f5c7bf34..f36361d346b2 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.c
+> +++ b/drivers/media/platform/qcom/venus/helpers.c
+> @@ -3,6 +3,7 @@
+>   * Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
+>   * Copyright (C) 2017 Linaro Ltd.
+>   */
+> +#include <linux/idr.h>
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+>  #include <linux/slab.h>
+> @@ -21,6 +22,13 @@
+>  #define NUM_MBS_720P	(((1280 + 15) >> 4) * ((720 + 15) >> 4))
+>  #define NUM_MBS_4K	(((4096 + 15) >> 4) * ((2304 + 15) >> 4))
+>  
+> +static DEFINE_IDA(dpb_out_tag_ida);
 
-attribute_group.name may be NULL, I don't know
-of (m)any drivers which actual set this to non NULL.
+No global static variables please. Make it part of venus_inst structure.
 
-> Why is struct attribute_set_obj marked as __packed?
+> +
+> +enum dpb_buf_owner {
+> +	DRIVER,
+> +	FIRMWARE,
+> +};
+> +
+>  struct intbuf {
+>  	struct list_head list;
+>  	u32 type;
+> @@ -28,6 +36,8 @@ struct intbuf {
+>  	void *va;
+>  	dma_addr_t da;
+>  	unsigned long attrs;
+> +	enum dpb_buf_owner owned_by;
+> +	u32 dpb_out_tag;
+>  };
+>  
+>  bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt)
+> @@ -95,9 +105,16 @@ int venus_helper_queue_dpb_bufs(struct venus_inst *inst)
+>  		fdata.device_addr = buf->da;
+>  		fdata.buffer_type = buf->type;
+>  
+> +		if (buf->owned_by == FIRMWARE)
+> +			continue;
+> +
+> +		fdata.clnt_data = buf->dpb_out_tag;
+> +
+>  		ret = hfi_session_process_buf(inst, &fdata);
+>  		if (ret)
+>  			goto fail;
+> +
+> +		buf->owned_by = FIRMWARE;
+>  	}
+>  
+>  fail:
+> @@ -110,13 +127,19 @@ int venus_helper_free_dpb_bufs(struct venus_inst *inst)
+>  	struct intbuf *buf, *n;
+>  
+>  	list_for_each_entry_safe(buf, n, &inst->dpbbufs, list) {
+> +		if (buf->owned_by == FIRMWARE)
+> +			continue;
+> +
+> +		ida_free(&dpb_out_tag_ida, buf->dpb_out_tag);
+> +
+>  		list_del_init(&buf->list);
+>  		dma_free_attrs(inst->core->dev, buf->size, buf->va, buf->da,
+>  			       buf->attrs);
+>  		kfree(buf);
+>  	}
+>  
+> -	INIT_LIST_HEAD(&inst->dpbbufs);
+> +	if (list_empty(&inst->dpbbufs))
+> +		INIT_LIST_HEAD(&inst->dpbbufs);
+>  
+>  	return 0;
+>  }
+> @@ -134,6 +157,7 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+>  	unsigned int i;
+>  	u32 count;
+>  	int ret;
+> +	int id;
+>  
+>  	/* no need to allocate dpb buffers */
+>  	if (!inst->dpb_fmt)
+> @@ -171,6 +195,15 @@ int venus_helper_alloc_dpb_bufs(struct venus_inst *inst)
+>  			ret = -ENOMEM;
+>  			goto fail;
+>  		}
+> +		buf->owned_by = DRIVER;
+> +
+> +		id = ida_alloc_min(&dpb_out_tag_ida, VB2_MAX_FRAME, GFP_KERNEL);
+> +		if (id < 0) {
+> +			ret = id;
+> +			goto fail;
+> +		}
+> +
+> +		buf->dpb_out_tag = id;
+>  
+>  		list_add_tail(&buf->list, &inst->dpbbufs);
+>  	}
+> @@ -1365,6 +1398,21 @@ venus_helper_find_buf(struct venus_inst *inst, unsigned int type, u32 idx)
+>  }
+>  EXPORT_SYMBOL_GPL(venus_helper_find_buf);
+>  
+> +void venus_helper_find_dpb_buf(struct venus_inst *inst, struct vb2_v4l2_buffer *vbuf,
+> +			       unsigned int type, unsigned int buf_type, u32 tag)
 
-I have no clue, this seems completely unnecessary.
+If this helper will return void then it should be renamed to something
+like venus_helper_dpb_buf_change_owner().
 
-Len Baker can you submit a separate patch removing the useless
-__packed ?
+> +{
+> +	struct intbuf *dpb_buf;
+> +
+> +	if (type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
+> +	    buf_type == HFI_BUFFER_OUTPUT)
+> +		list_for_each_entry(dpb_buf, &inst->dpbbufs, list)
+> +			if (dpb_buf->dpb_out_tag == tag) {
+> +				dpb_buf->owned_by = DRIVER;
+> +				break;
+> +			}
+> +}
+> +EXPORT_SYMBOL_GPL(venus_helper_find_dpb_buf);
+> +
+>  int venus_helper_vb2_buf_init(struct vb2_buffer *vb)
+>  {
+>  	struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+> diff --git a/drivers/media/platform/qcom/venus/helpers.h b/drivers/media/platform/qcom/venus/helpers.h
+> index e6269b4be3af..17c5aadaec82 100644
+> --- a/drivers/media/platform/qcom/venus/helpers.h
+> +++ b/drivers/media/platform/qcom/venus/helpers.h
+> @@ -14,6 +14,8 @@ struct venus_core;
+>  bool venus_helper_check_codec(struct venus_inst *inst, u32 v4l2_pixfmt);
+>  struct vb2_v4l2_buffer *venus_helper_find_buf(struct venus_inst *inst,
+>  					      unsigned int type, u32 idx);
+> +void venus_helper_find_dpb_buf(struct venus_inst *inst, struct vb2_v4l2_buffer *vbuf,
+> +			       unsigned int type, unsigned int buf_type, u32 idx);
+>  void venus_helper_buffers_done(struct venus_inst *inst, unsigned int type,
+>  			       enum vb2_buffer_state state);
+>  int venus_helper_vb2_buf_init(struct vb2_buffer *vb);
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 198e47eb63f4..cafdc3d8e473 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -1297,6 +1297,7 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>  	struct vb2_v4l2_buffer *vbuf;
+>  	struct vb2_buffer *vb;
+>  	unsigned int type;
+> +	struct intbuf *dpb_buf;
+>  
+>  	vdec_pm_touch(inst);
+>  
+> @@ -1306,8 +1307,10 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+>  		type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+>  
+>  	vbuf = venus_helper_find_buf(inst, type, tag);
+> -	if (!vbuf)
+> +	if (!vbuf) {
+> +		venus_helper_find_dpb_buf(inst, vbuf, type, buf_type, tag);
+>  		return;
+> +	}
+>  
+>  	vbuf->flags = flags;
+>  	vbuf->field = V4L2_FIELD_NONE;
+> @@ -1622,6 +1625,8 @@ static int vdec_close(struct file *file)
+>  
+>  	vdec_pm_get(inst);
+>  
+> +	venus_helper_free_dpb_bufs(inst);
+> +	INIT_LIST_HEAD(&inst->dpbbufs);
 
-Regards,
+This belongs to venus_helper_free_dpb_bufs not here.
 
-Hans
+>  	v4l2_m2m_ctx_release(inst->m2m_ctx);
+>  	v4l2_m2m_release(inst->m2m_dev);
+>  	vdec_ctrl_deinit(inst);
+> 
 
+-- 
+regards,
+Stan
+
+-- 
+regards,
+Stan
