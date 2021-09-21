@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AF6413564
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A56413569
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhIUOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:34:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhIUOeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:34:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CCD260EC0;
-        Tue, 21 Sep 2021 14:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632234772;
-        bh=zQxpb0Ck9L61Y91Q3j6IA0anwKfO4DPTphZBNgiEbQA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OkxYCVTG2+8/QUMCTFbzXjXBcPCtBlBtybCSTDRSFsx1Hg4AqW3cn8ERWJlzb/t+t
-         XgSZ/WSCHInDySE+8lvkAPKcd3gQ/GpweqcEFSEXeSM/u3VAZkRWYSXvW+28nurZ7H
-         BgoaOtxtee4AYvfs+6Q1fdtIP8LHG8h7v3R3d0CM=
-Date:   Tue, 21 Sep 2021 16:32:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu
-Subject: Re: [PATCH v2] usb: host: ohci-tmio: check return value after
- calling platform_get_resource()
-Message-ID: <YUntCyDOxif+DPxB@kroah.com>
-References: <20210916031317.2871282-1-yangyingliang@huawei.com>
+        id S233645AbhIUOgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:36:24 -0400
+Received: from pv50p00im-ztdg10021801.me.com ([17.58.6.56]:36877 "EHLO
+        pv50p00im-ztdg10021801.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233598AbhIUOgW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 10:36:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1632234894; bh=mt5z+MTvIXfkfJHGwkXCnjTCaO1yXPjuyx+vnuzqbpY=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=dZtu7zQjb8UDJQ6/fAx52qpNf0Eo/pPzoKYPxNYvhwF7NuySopjA2HmpyGd/dvAyB
+         XgkhwVQGM4mFHBHtscAG8NvC1vG1SrVB8467IVQqdvuvqaaF/B6cbtOxknKoxXAP/h
+         VpJ7uNCE8RRSgHWRSib02SqXuc0xw7gkEgOcmdFTJtrpvePq6dgBlvJLZvluYZLMCk
+         X1NgGiXW6D9Y+K3K2MEhLzFAYjVb0sV9dpjEg1nZMFeDh+BaHMhf4fzc6pdS7Yu00I
+         AswAK9LVmadh8zxDkIdMhwgoOVlZK80xh2R66uKUBoMQLoNIzecQcaNNLWicuOVII6
+         W6i6GKFEPF/pw==
+Received: from xiongwei.. (unknown [120.245.3.37])
+        by pv50p00im-ztdg10021801.me.com (Postfix) with ESMTPSA id 3D93C360390;
+        Tue, 21 Sep 2021 14:34:36 +0000 (UTC)
+From:   sxwjean@me.com
+To:     x86@kernel.org, linux-mm@kvack.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        luto@kernel.org, krisman@collabora.com, chang.seok.bae@intel.com,
+        viro@zeniv.linux.org.uk, nivedita@alum.mit.edu,
+        adobriyan@gmail.com, oleg@redhat.com, sblbir@amazon.com,
+        axboe@kernel.dk, laijs@linux.alibaba.com,
+        dave.hansen@linux.intel.com, peterz@infradead.org,
+        akpm@linux-foundation.org, arnd@arndb.de, davem@davemloft.net,
+        keescook@chromium.org, kim.phillips@amd.com, yazen.ghannam@amd.com,
+        dave@stgolabs.net, metze@samba.org, elver@google.com,
+        ebiederm@xmission.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH RESEND 0/2] Use generic code for randomization of virtual address of x86
+Date:   Tue, 21 Sep 2021 22:34:12 +0800
+Message-Id: <20210921143414.70723-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916031317.2871282-1-yangyingliang@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-21_04:2021-09-20,2021-09-21 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=233 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2109210090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:13:17AM +0800, Yang Yingliang wrote:
-> It will cause null-ptr-deref if platform_get_resource() returns NULL,
-> we need check the return value.
-> 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/usb/host/ohci-tmio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
-> index 08ec2ab0d95a..3f3d62dc0674 100644
-> --- a/drivers/usb/host/ohci-tmio.c
-> +++ b/drivers/usb/host/ohci-tmio.c
-> @@ -199,7 +199,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
->  	if (usb_disabled())
->  		return -ENODEV;
->  
-> -	if (!cell)
-> +	if (!cell || !regs || !config || !sram)
->  		return -EINVAL;
->  
->  	if (irq < 0)
-> -- 
-> 2.25.1
-> 
+From: Xiongwei Song <sxwjean@gmail.com>
 
+Hello,
 
-Hi,
+The two patches are to use generic code for randomization of virtual
+address of x86. Since the basic code logic of x86 is same as generic
+code, so no need to implement these functions on x86, please see the
+details in comments of patch 2.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Please review it.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Why resend?
+Because I missed email addresses for patch 1 and 2, so resend the patches.
+Sorry for the inconvenience.
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+Xiongwei Song (2):
+  x86: Rename TIF_ADDR32 to TIF_32BIT
+  x86/mm: Randomize va with generic arch_pick_mmap_layout()
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+ arch/x86/Kconfig                     |   2 +-
+ arch/x86/include/asm/compat.h        |   7 +-
+ arch/x86/include/asm/elf.h           |   2 +-
+ arch/x86/include/asm/page_64_types.h |   6 +-
+ arch/x86/include/asm/processor.h     |   4 +-
+ arch/x86/include/asm/thread_info.h   |   4 +-
+ arch/x86/kernel/process.c            |   5 --
+ arch/x86/kernel/process_64.c         |   4 +-
+ arch/x86/mm/mmap.c                   | 112 ---------------------------
+ include/linux/compat.h               |   4 +
+ mm/util.c                            |  18 ++++-
+ 11 files changed, 37 insertions(+), 131 deletions(-)
 
-thanks,
+-- 
+2.30.2
 
-greg k-h's patch email bot
