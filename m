@@ -2,118 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4184841395C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54604413964
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhIUSAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:00:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20346 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232045AbhIUSAu (ORCPT
+        id S232166AbhIUSCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:02:09 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36920 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231903AbhIUSCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:00:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632247161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 21 Sep 2021 14:02:07 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 351871FF03;
+        Tue, 21 Sep 2021 18:00:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632247238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zJEAcSEIgId9AwYVRC0qQ3ajHWBc7r/Wum0Va5Cj43g=;
-        b=e3/QXpBSnbSxpapmMgpxQZrr8NkPHN3drLIbMfvpDGZbX8AxTI8O6zxmYIa6/dqkx7Vrii
-        iDeXyjAnL5tR8/Y1X0qI9ycQSwC1Uj2UEAE2ICRqtvdnfJ1cELI4VQXVpxS32agHjxPDD2
-        0vQFm2aCS58msQk2TRjvd/fdJgbCj3I=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-Byq_dsI0MWShpcfAVqzwKQ-1; Tue, 21 Sep 2021 13:59:19 -0400
-X-MC-Unique: Byq_dsI0MWShpcfAVqzwKQ-1
-Received: by mail-wr1-f69.google.com with SMTP id r9-20020a5d4989000000b0015d0fbb8823so9490366wrq.18
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:59:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zJEAcSEIgId9AwYVRC0qQ3ajHWBc7r/Wum0Va5Cj43g=;
-        b=Eoh9CirguVPElMTp/g/y9KIe9XWvCUMAFzTvtOX/Qj10Ake1yzLJDSKiHZXSdFfLFS
-         egLMrXKcficoctkTibeo2Pb+bB33SSGXPXnPY3YCJIMuJC2+3BRiGEGDsHtB2rSta4ki
-         jwIpQGByvoSrDF38Q6/IRqyjHsMvHPj/Xxf5k+VaFRDXnQRRlKfGf9eHJD/zaZz9vmeA
-         j1mL4XyN0RkvcartLJFMlZHjJ8NQMqrsUW8fbKkcnXh9XWS11C8ua/PFE1hCV0otNid4
-         aa4vlXYX/z5BahYr0n5yZgG/ZOoX86/NIutw2jVbPJH2iv1PHpkKqERYorgWJQo6ahGn
-         murQ==
-X-Gm-Message-State: AOAM532FdnscOmixrL4v+dUWErVJ2aF5QUYUjSTHyPwmQ6ZZJVCvxphJ
-        AsiovDcN5Qdm16/WW1OWADm1vjSZbiZWzbiHt2hUZsC9vqOTCI0i/3lbuyULSxWupdLeViaqPoy
-        lrICc1P4m0kenvVQr+lAi8xWa
-X-Received: by 2002:a7b:c112:: with SMTP id w18mr6169889wmi.86.1632247158799;
-        Tue, 21 Sep 2021 10:59:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzE58/MDukCj9/T6TCsmIk/mI3Qr4J4pYFiogRVuZatAFTjuNxHA7WL3p8No1sKEner6nUpvw==
-X-Received: by 2002:a7b:c112:: with SMTP id w18mr6169872wmi.86.1632247158573;
-        Tue, 21 Sep 2021 10:59:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f19sm3626219wmf.11.2021.09.21.10.59.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 10:59:17 -0700 (PDT)
-Subject: Re: [PATCH 1/2] KVM: SEV: Pin guest memory for write for
- RECEIVE_UPDATE_DATA
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Marc Orr <marcorr@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Masahiro Kozuka <masa.koz@kozuka.jp>
-References: <20210914210951.2994260-1-seanjc@google.com>
- <20210914210951.2994260-2-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <bdbe4098-a72c-6e73-6f1e-88c2ebc07571@redhat.com>
-Date:   Tue, 21 Sep 2021 19:59:16 +0200
+        bh=CYaWP1FKTUsV2gAS0XYYjwyo9Bf8DdyZWhObLWn/jw8=;
+        b=VRfyMRk/T9URM/a6Ppj0tGTnK8GE9rrePM2p/b4ekwc01Cxl5ZYYfdmklnVb8BsFiOcGCw
+        BzfOEOnROQN2U1ii/GYZSBPKi0zdgPfBZ7Qa/prQ5qItypUADlZGUNJcO7OldpJoOp44JK
+        QUq9USv/7zPcePH1dG6usflxWnFkQRo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632247238;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CYaWP1FKTUsV2gAS0XYYjwyo9Bf8DdyZWhObLWn/jw8=;
+        b=r+9DYsUmf9GR/REYQqSWduAic4zAzdLuut4eV/blR4X2P5cQPZM2N9W8CA5JSxR2EMlrnL
+        H8VW+d9zygX/XtCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F151313BE8;
+        Tue, 21 Sep 2021 18:00:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nqNeOsUdSmGpSAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 21 Sep 2021 18:00:37 +0000
+Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
+ list drain support
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        akpm@linux-foundation.org, frederic@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        tglx@linutronix.de, cl@linux.com, peterz@infradead.org,
+        juri.lelli@redhat.com, mingo@redhat.com, mtosatti@redhat.com,
+        nilal@redhat.com, mgorman@suse.de, ppandit@redhat.com,
+        williams@redhat.com, bigeasy@linutronix.de,
+        anna-maria@linutronix.de, linux-rt-users@vger.kernel.org
+References: <20210921161323.607817-1-nsaenzju@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <f608b4bf-aa36-b0c4-e748-4f39010f3d06@suse.cz>
+Date:   Tue, 21 Sep 2021 19:59:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210914210951.2994260-2-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210921161323.607817-1-nsaenzju@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/21 23:09, Sean Christopherson wrote:
-> Require the target guest page to be writable when pinning memory for
-> RECEIVE_UPDATE_DATA.  Per the SEV API, the PSP writes to guest memory:
+On 9/21/21 6:13 PM, Nicolas Saenz Julienne wrote:
+> This series introduces an alternative locking scheme around mm/swap.c's per-cpu
+> LRU pagevec caches and mm/page_alloc.c's per-cpu page lists which will allow
+> for remote CPUs to drain them. Currently, only a local CPU is permitted to
+> change its per-cpu lists, and it's expected to do so, on-demand, whenever a
+> process demands it (by means of queueing an drain task on the local CPU). Most
+> systems will handle this promptly, but it'll cause problems for NOHZ_FULL CPUs
+> that can't take any sort of interruption without breaking their functional
+> guarantees (latency, bandwidth, etc...). Having a way for these processes to
+> remotely drain the lists themselves will make co-existing with isolated CPUs
+> possible, at the cost of more constraining locks.
 > 
->    The result is then encrypted with GCTX.VEK and written to the memory
->    pointed to by GUEST_PADDR field.
+> Fortunately for non-NOHZ_FULL users, the alternative locking scheme and remote
+> drain code are conditional to a static key which is disabled by default. This
+> guarantees minimal functional or performance regressions. The feature will only
+> be enabled if NOHZ_FULL's initialization process was successful.
 > 
-> Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
-> Cc: stable@vger.kernel.org
-> Cc: Peter Gonda <pgonda@google.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/svm/sev.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 75e0b21ad07c..95228ba3cd8f 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1464,7 +1464,7 @@ static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
->   
->   	/* Pin guest memory */
->   	guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
-> -				    PAGE_SIZE, &n, 0);
-> +				    PAGE_SIZE, &n, 1);
->   	if (IS_ERR(guest_page)) {
->   		ret = PTR_ERR(guest_page);
->   		goto e_free_trans;
-> 
+> This work is based on a previous series by Thomas Gleixner, Anna-Maria
+> Gleixner, and Sebastian Andrzej Siewior[1].
 
-Queued both, thanks.
+These days the pcplist protection is done by local_lock, which solved
+the RT concerns. Probably a stupid/infeasible idea, but maybe what you
+want to achieve could be more generally solved at the local_lock level?
+That on NOHZ_FULL CPUs, local_locks could have this mode where they
+could synchronize with remote cpus?
 
-Paolo
+> [1] https://patchwork.kernel.org/project/linux-mm/patch/20190424111208.24459-3-bigeasy@linutronix.de/
+> 
+> Nicolas Saenz Julienne (6):
+>   mm/swap: Introduce lru_cpu_needs_drain()
+>   mm/swap: Introduce alternative per-cpu LRU cache locking
+>   mm/swap: Allow remote LRU cache draining
+>   mm/page_alloc: Introduce alternative per-cpu list locking
+>   mm/page_alloc: Allow remote per-cpu page list draining
+>   sched/isolation: Enable 'remote_pcpu_cache_access' on NOHZ_FULL
+>     systems
+> 
+>  kernel/sched/isolation.c |   9 +-
+>  mm/internal.h            |   2 +
+>  mm/page_alloc.c          | 111 ++++++++++++++++-----
+>  mm/swap.c                | 202 ++++++++++++++++++++++++++++++---------
+>  4 files changed, 253 insertions(+), 71 deletions(-)
+> 
 
