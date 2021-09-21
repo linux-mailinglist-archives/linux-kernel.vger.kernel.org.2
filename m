@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1F1413CDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346A1413CE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbhIUVrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:47:04 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47744 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbhIUVq6 (ORCPT
+        id S235679AbhIUVsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:48:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54418 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234813AbhIUVsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:46:58 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B61881C0B76; Tue, 21 Sep 2021 23:45:28 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 23:45:28 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
-Message-ID: <20210921214528.GA30221@duo.ucw.cz>
-References: <20210920163915.757887582@linuxfoundation.org>
- <20210920163918.373775935@linuxfoundation.org>
- <20210921212837.GA29170@duo.ucw.cz>
- <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
+        Tue, 21 Sep 2021 17:48:35 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A7CE622231;
+        Tue, 21 Sep 2021 21:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632260825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MmQGJX320SQ4PZHIT6qqIM++413uNofSb605veJtUls=;
+        b=lo3tPEOB+9EEtY34A9L0SIPIqL8yXfjOoyht9pn3t5JrMo/ofPS9Qve5i+0IP1YTzCjwj7
+        Qt5bAr4Fr5aHKrtALXP1f4Fa4OEYr7IPJWdjiErbWJoMhV4RubzSGtuztoLzbzeKzwdcWa
+        LkFM5DGifU7g8HUNPZc31k5jUcOcdFw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632260825;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MmQGJX320SQ4PZHIT6qqIM++413uNofSb605veJtUls=;
+        b=51wishEjuzRkwfkIV3k1ec7a1+4CQwhMnJYsRAX6+vvLW1sJPtJQf9+e4HLn/WfVnjGS5b
+        5EVYZRn/eLAq1lCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BF75413BF7;
+        Tue, 21 Sep 2021 21:47:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id emXmHtVSSmFPJQAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 21 Sep 2021 21:47:01 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-In-Reply-To: <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Mel Gorman" <mgorman@techsingularity.net>
+Cc:     "Linux-MM" <linux-mm@kvack.org>, "Theodore Ts'o" <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Dave Chinner" <david@fromorbit.com>,
+        "Rik van Riel" <riel@surriel.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "LKML" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] mm/vmscan: Throttle reclaim when no progress is being made
+In-reply-to: <20210921111630.GR3959@techsingularity.net>
+References: <20210920085436.20939-1-mgorman@techsingularity.net>,
+ <20210920085436.20939-4-mgorman@techsingularity.net>,
+ <163218069080.3992.14261132300912173043@noble.neil.brown.name>,
+ <20210921111630.GR3959@techsingularity.net>
+Date:   Wed, 22 Sep 2021 07:46:58 +1000
+Message-id: <163226081891.21861.1286773174123207227@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 21 Sep 2021, Mel Gorman wrote:
+> On Tue, Sep 21, 2021 at 09:31:30AM +1000, NeilBrown wrote:
+> > On Mon, 20 Sep 2021, Mel Gorman wrote:
+> > > +
+> > > +		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS, HZ/10);
+> > 
+> > We always seem to pass "HZ/10" to reclaim_throttle().  Should we just
+> > hard-code that in the one place inside reclaim_throttle() itself?
+> > 
+> 
+> do_writepages passes in HZ/50. I'm not sure if these values even have
+> any special meaning, I think it's more likely they were pulled out of
+> the air based on the speed of some disk in the past and then copied.
+> It's another reason why I want the wakeups to be based on events within
+> the mm as much as possible.
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I saw the HZ/50 shortly after writing that email :-)
+I agree with your guess for the source of these numbers.  I still think
+we should pull them all from the same piece of air.
+Hopefully, once these changes are properly understood and the events
+reliably come as expected, we can make it quite large (HZ?) with minimal
+cost.
 
-Hi!
+Thanks,
+NeilBrown
 
-> > > Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver=
- broke
-> > > when moving the incorrect handling of mac link state out of mac_confi=
-g().
-> > > This reason this breaks is because the stmmac's WoL is handled by the=
- MAC
-> > > rather than the PHY, and phylink doesn't cater for that scenario.
-> > >=20
-> > > This patch adds the necessary phylink code to handle suspend/resume e=
-vents
-> > > according to whether the MAC still needs a valid link or not. This is=
- the
-> > > barest minimum for this support.
-> >=20
-> > This adds functions that end up being unused in 5.10. AFAICT we do not
-> > need this in 5.10.
->=20
-> It needs to be backported to any kernel that also has
-> "net: stmmac: fix MAC not working when system resume back with WoL active"
-> backported to. From what I can tell, the fixes line in that commit
-> refers to a commit (46f69ded988d) in v5.7-rc1.
->=20
-> If "net: stmmac: fix MAC not working when system resume back with WoL
-> active" is not being backported to 5.10, then there is no need to
-> backport this patch.
 
-Agreed.
-
-> As I'm not being copied on the stmmac commit, I've no idea which kernels
-> this patch should be backported to.
-
-AFAICT "net: stmmac: fix MAC not working when..." is not queued for
-5.10.68-rc1 or 5.14.7-rc1.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUpSeAAKCRAw5/Bqldv6
-8jTBAJ0TGvDkLjp0bJitWGss9PANDf6zTACffzoV1Z+/5OQQBKIXKsSiXBthCMg=
-=YGOO
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
+> 
+> -- 
+> Mel Gorman
+> SUSE Labs
+> 
+> 
