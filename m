@@ -2,235 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A8E4136B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1179D4136D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234292AbhIUPy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        id S234345AbhIUQAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbhIUPy3 (ORCPT
+        with ESMTP id S234329AbhIUQAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:54:29 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870E6C061756;
-        Tue, 21 Sep 2021 08:53:00 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id i23so40700459wrb.2;
-        Tue, 21 Sep 2021 08:53:00 -0700 (PDT)
+        Tue, 21 Sep 2021 12:00:13 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC5CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:58:44 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id u15so40665961wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:58:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d4eQmrNAVl39PalM5fwhXxM88NUL3ePE+A2JPS57N4w=;
-        b=ef8rubMr6Nid+b3nkLu3G1Xd64Haez5FeHv5/hc8yJNu74Pu1zy1pWRBfBYcj9PJgq
-         EPrIQkk0QpsYERNoGBHdcH1D7To3hyddndsUvirsRB78UetcnoVk01S5a8ve9WPpT5pd
-         a4YXbk/j6oXyIn39LnUp76KDyGpfz/BU1Ftkm6WiWJwLnTDH1E17TZ7LGmldJFGRGXuU
-         Af7R8sYG6mdl7xC1PzilwjdypS95czOs+X8tOS63E1npNUHjDvB6TCNANML6BQLL1WgI
-         3KcJtDliJmanMlELMDX98rK6h5zyEvBKK3upePRBffH8WfOZeq4MlF/ol/tw5xbzd02k
-         4AFQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rNZaBRo6KuYpkYQWXBblrhd42cpP2Z/LzyFVP0pduSg=;
+        b=owdSaQODCfjwam9yCa/45kwOkRitWJz6P7xw58GNzOuAi9z3vUcDQ6zYY+hKxCkGBg
+         HziiVMWTPnEW3Rpn6kaulnon9zQlShOzupU71xnPlabFe6r2C7IFFIN9svHtz5+8OEve
+         w99a5xLpWckDqllV6ACAFLVupF5vJI1b9Xo8cEUvMD33L05IvqXWGUEer++XtNdJb8VZ
+         et0s9UzBjuv5ETPcV7VjpIqkBfDi4PSvkRfuEONCULtAA0rjLPLwJLA3f/QsMdx2zHyQ
+         qxtRsdQLRxWoF3UsfCC6xTrkkJsR0y7nRjXfJr5LXGz/bON5L4+UX42F0CqRGSTgPsDU
+         yukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d4eQmrNAVl39PalM5fwhXxM88NUL3ePE+A2JPS57N4w=;
-        b=biYt/Vu/7t1L/f8l1Q+OziWFnWtaDUFL42lA22hkPCcP44HJQSZBZuuFkvLnurI/Q1
-         IRSiOTjk0jnIVctFYUNvHNz+dnCPKnWS7jd4qwzVb4npNFVYWnkgdh8rhZSWdixmikzw
-         tJVvlpsT3tjXikM+RGRWopRVoQfa5uCFWv9JtlgJFYl+yy0/+8x3f5VlQb0LouYMBv0M
-         fUvCkyfHqDV2XoX3iWQfzEE9sRzhr9LsZSkGeSJhyySMMBZYWWuOCeuAjBf7k0EJa7Bq
-         W3oGxTo/6azv0U/UUYiCVi/Y4MF05MTMpJgY6pNf4QDR4tyqCo9LfUBpJkn95yP7CCxn
-         uvgA==
-X-Gm-Message-State: AOAM533UHkNYpxekBqsLFtXwhDoDc1X2KVDAsmT8hJDLKCJpUoXyaRWT
-        Ls7Pu1OLONfWSOQqoJcjSBJKIixVdb84k3dSnsM=
-X-Google-Smtp-Source: ABdhPJxa8WEFU1tumRmQJ7/8JtnY18IcnRj9pLNairKRoGtyxhlxZkDIP69UhdnWh8W/D79PWE9EzVdOF2+YEYoXlrU=
-X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr5441796wmq.151.1632239579021;
- Tue, 21 Sep 2021 08:52:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rNZaBRo6KuYpkYQWXBblrhd42cpP2Z/LzyFVP0pduSg=;
+        b=dAP85e4tmArRMns9pLBYCMCJQhFKjX7kBX49MeSwkJtz2BJOJKMIGV/MOGXOqZsqRE
+         tcQ+zm7UYl16RoijLYLVdYj30nqKCwP5JOml5mUACPJymOneL/uZKyB7CYBnyQ5rtBan
+         HA3QZ6ffB61UwE+NI3vWhznHqS3ivDo8yToZis2VMQuTThabLANaqEvzJE1Ql0q4ZBg/
+         Q1MuO+2mjYhYhoD2YwXuMQ9D9DMoS8GNmNbrcltNcTmoF9ywDwd1PcXx9V+9O60Aw3U1
+         0gW5SYS+mjINnoKOlaWWkyMByq5ydoWtd45OAOfXXANRB1ex+otkkrRJ+Tp7To1a5pOZ
+         HOXw==
+X-Gm-Message-State: AOAM5303gY9tu4Xe+DFtowHfBEqo2+33Hdhw3rtLB2oF2k/SO9sUlBXd
+        INKt5xTCvlmlsmKhOjnrqTwlvseERCuaWQ==
+X-Google-Smtp-Source: ABdhPJzCu4pXqY9304sJsjOUOKqLOE9NZBXLU1E16vU0ec0UFC0QKS3WsIUo6q+DMz8jdf+Bi/MtVQ==
+X-Received: by 2002:a5d:598c:: with SMTP id n12mr35092715wri.391.1632239922976;
+        Tue, 21 Sep 2021 08:58:42 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id q10sm3272495wmq.12.2021.09.21.08.58.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 08:58:42 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 16:58:20 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Vivek Gautam <vivek.gautam@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, joro@8bytes.org,
+        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
+        eric.auger@redhat.com, kevin.tian@intel.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH RFC v1 01/11] uapi/virtio-iommu: Add page request grp-id
+ and flags information
+Message-ID: <YUoBHA6NZaz8wlkA@myrica>
+References: <20210423095147.27922-1-vivek.gautam@arm.com>
+ <20210423095147.27922-2-vivek.gautam@arm.com>
 MIME-Version: 1.0
-References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-5-robdclark@gmail.com>
- <YTj2scNdCHAdF+cl@phenom.ffwll.local>
-In-Reply-To: <YTj2scNdCHAdF+cl@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 21 Sep 2021 08:57:30 -0700
-Message-ID: <CAF6AEGvHQHbOP65jq53WEuJc9uxReOFMyXUN--JjjcB1FxHSCw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/9] drm/scheduler: Add fence deadline support
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Steven Price <steven.price@arm.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423095147.27922-2-vivek.gautam@arm.com>
+X-TUID: Sphz2dU6TdZ7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 8, 2021 at 10:45 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Sep 03, 2021 at 11:47:55AM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > As the finished fence is the one that is exposed to userspace, and
-> > therefore the one that other operations, like atomic update, would
-> > block on, we need to propagate the deadline from from the finished
-> > fence to the actual hw fence.
-> >
-> > v2: Split into drm_sched_fence_set_parent() (ckoenig)
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/gpu/drm/scheduler/sched_fence.c | 34 +++++++++++++++++++++++++
-> >  drivers/gpu/drm/scheduler/sched_main.c  |  2 +-
-> >  include/drm/gpu_scheduler.h             |  8 ++++++
-> >  3 files changed, 43 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
-> > index bcea035cf4c6..4fc41a71d1c7 100644
-> > --- a/drivers/gpu/drm/scheduler/sched_fence.c
-> > +++ b/drivers/gpu/drm/scheduler/sched_fence.c
-> > @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
-> >       dma_fence_put(&fence->scheduled);
-> >  }
-> >
-> > +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
-> > +                                               ktime_t deadline)
-> > +{
-> > +     struct drm_sched_fence *fence = to_drm_sched_fence(f);
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&fence->lock, flags);
-> > +
-> > +     /* If we already have an earlier deadline, keep it: */
-> > +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
-> > +         ktime_before(fence->deadline, deadline)) {
-> > +             spin_unlock_irqrestore(&fence->lock, flags);
-> > +             return;
-> > +     }
-> > +
-> > +     fence->deadline = deadline;
-> > +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
-> > +
-> > +     spin_unlock_irqrestore(&fence->lock, flags);
-> > +
-> > +     if (fence->parent)
-> > +             dma_fence_set_deadline(fence->parent, deadline);
-> > +}
-> > +
-> >  static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
-> >       .get_driver_name = drm_sched_fence_get_driver_name,
-> >       .get_timeline_name = drm_sched_fence_get_timeline_name,
-> > @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
-> >       .get_driver_name = drm_sched_fence_get_driver_name,
-> >       .get_timeline_name = drm_sched_fence_get_timeline_name,
-> >       .release = drm_sched_fence_release_finished,
-> > +     .set_deadline = drm_sched_fence_set_deadline_finished,
-> >  };
-> >
-> >  struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
-> > @@ -152,6 +177,15 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
-> >  }
-> >  EXPORT_SYMBOL(to_drm_sched_fence);
-> >
-> > +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
-> > +                             struct dma_fence *fence)
-> > +{
-> > +     s_fence->parent = dma_fence_get(fence);
-> > +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
-> > +                  &s_fence->finished.flags))
->
-> Don't you need the spinlock here too to avoid races? test_bit is very
-> unordered, so guarantees nothing. Spinlock would need to be both around
-> ->parent = and the test_bit.
->
-> Entirely aside, but there's discussions going on to preallocate the hw
-> fence somehow. If we do that we could make the deadline forwarding
-> lockless here. Having a spinlock just to set the parent is a bit annoying
-> ...
->
-> Alternative is that you do this locklessly with barriers and a _lot_ of
-> comments. Would be good to benchmark whether the overhead matters though
-> first.
+Hi Vivek,
 
-So, my thinking is that very few (well no) guarantees are made to the
-fence implementor that their ->set_deadline() is not called multiple
-times, from multiple threads, etc.  And no guarantee that a later
-deadline is set after an earlier deadline has been set.  It is all up
-to the set_deadline() implementation to deal with these cases.
+Thanks a lot for your work on this
 
-So that means we just need the appropriate barrier-fu to ensure
-another thread calling drm_sched_fence_set_deadline_finished() sees
-fence->parent set before the test_bit.  It could mean that the backend
-implementation sees the same deadline set twice, but that is fine.
+On Fri, Apr 23, 2021 at 03:21:37PM +0530, Vivek Gautam wrote:
+> Add fault information for group-id and necessary flags for page
+> request faults that can be handled by page fault handler in
+> virtio-iommu driver.
+> 
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Eric Auger <eric.auger@redhat.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Kevin Tian <kevin.tian@intel.com>
+> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Cc: Liu Yi L <yi.l.liu@intel.com>
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Cc: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> ---
+>  include/uapi/linux/virtio_iommu.h | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index f8bf927a0689..accc3318ce46 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -307,14 +307,27 @@ struct virtio_iommu_req_invalidate {
+>  #define VIRTIO_IOMMU_FAULT_F_DMA_UNRECOV	1
+>  #define VIRTIO_IOMMU_FAULT_F_PAGE_REQ		2
+>  
+> +#define VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID		(1 << 0)
+> +#define VIRTIO_IOMMU_FAULT_PRQ_F_LAST_PAGE		(1 << 1)
+> +#define VIRTIO_IOMMU_FAULT_PRQ_F_PRIV_DATA		(1 << 2)
+> +#define VIRTIO_IOMMU_FAULT_PRQ_F_NEEDS_PASID		(1 << 3)
 
-BR,
--R
+I don't think this one is necessary here. The NEEDS_PASID flags added by
+commit 970471914c67 ("iommu: Allow page responses without PASID") mainly
+helps Linux keep track of things internally. It does tell the fault
+handler whether to reply with PASID or not, but we don't need that here.
+The virtio-iommu driver knows whether a PASID is required by looking at
+the "PRG Response PASID Required" bit in the PCIe capability. For non-PCIe
+faults (e.g. SMMU stall), I'm guessing we'll need a PROBE property to
+declare that the endpoint supports recoverable faults anyway, so "PASID
+required in response" can go through there as well.
 
-> -Daniel
->
-> > +             dma_fence_set_deadline(fence, s_fence->deadline);
-> > +}
-> > +
-> >  struct drm_sched_fence *drm_sched_fence_alloc(struct drm_sched_entity *entity,
-> >                                             void *owner)
-> >  {
-> > diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-> > index 595e47ff7d06..27bf0ac0625f 100644
-> > --- a/drivers/gpu/drm/scheduler/sched_main.c
-> > +++ b/drivers/gpu/drm/scheduler/sched_main.c
-> > @@ -978,7 +978,7 @@ static int drm_sched_main(void *param)
-> >               drm_sched_fence_scheduled(s_fence);
-> >
-> >               if (!IS_ERR_OR_NULL(fence)) {
-> > -                     s_fence->parent = dma_fence_get(fence);
-> > +                     drm_sched_fence_set_parent(s_fence, fence);
-> >                       r = dma_fence_add_callback(fence, &sched_job->cb,
-> >                                                  drm_sched_job_done_cb);
-> >                       if (r == -ENOENT)
-> > diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
-> > index 7f77a455722c..158ddd662469 100644
-> > --- a/include/drm/gpu_scheduler.h
-> > +++ b/include/drm/gpu_scheduler.h
-> > @@ -238,6 +238,12 @@ struct drm_sched_fence {
-> >           */
-> >       struct dma_fence                finished;
-> >
-> > +     /**
-> > +      * @deadline: deadline set on &drm_sched_fence.finished which
-> > +      * potentially needs to be propagated to &drm_sched_fence.parent
-> > +      */
-> > +     ktime_t                         deadline;
-> > +
-> >          /**
-> >           * @parent: the fence returned by &drm_sched_backend_ops.run_job
-> >           * when scheduling the job on hardware. We signal the
-> > @@ -505,6 +511,8 @@ void drm_sched_entity_set_priority(struct drm_sched_entity *entity,
-> >                                  enum drm_sched_priority priority);
-> >  bool drm_sched_entity_is_ready(struct drm_sched_entity *entity);
-> >
-> > +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
-> > +                             struct dma_fence *fence);
-> >  struct drm_sched_fence *drm_sched_fence_alloc(
-> >       struct drm_sched_entity *s_entity, void *owner);
-> >  void drm_sched_fence_init(struct drm_sched_fence *fence,
-> > --
-> > 2.31.1
-> >
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> +
+> +#define VIRTIO_IOMMU_FAULT_UNREC_F_PASID_VALID		(1 << 0)
+> +#define VIRTIO_IOMMU_FAULT_UNREC_F_ADDR_VALID		(1 << 1)
+> +#define VIRTIO_IOMMU_FAULT_UNREC_F_FETCH_ADDR_VALID	(1 << 2)
+> +
+>  struct virtio_iommu_fault {
+>  	__u8					reason;
+>  	__u8					reserved[3];
+>  	__le16					flt_type;
+>  	__u8					reserved2[2];
+> +	/* flags is actually permission flags */
+
+It's also used for declaring validity of fields.
+VIRTIO_IOMMU_FAULT_F_ADDRESS already tells whether the address field is
+valid, so all the other flags introduced by this patch can go in here.
+
+>  	__le32					flags;
+> +	/* flags for PASID and Page request handling info */
+> +	__le32					pr_evt_flags;
+>  	__le32					endpoint;
+>  	__le32					pasid;
+> +	__le32					grpid;
+
+I'm not sure why we made it 32-bit in Linux UAPI, it's a little wasteful.
+PCIe PRGI is 9-bits and SMMU STAG is 16-bits. Since the scope of the grpid
+is the endpoint, 16-bit means 64k in-flight faults per endpoint, which
+seems more than enough.
+
+New fields must be appended at the end of the struct, because old drivers
+will expect to find the 'endpoint' field at this offset. You could remove
+'reserved3' while adding 'grpid', to keep the struct layout.
+
+>  	__u8					reserved3[4];
+>  	__le64					address;
+>  	__u8					reserved4[8];
+
+
+So the base structure, currently in the spec, looks like this:
+
+	struct virtio_iommu_fault {
+		u8   reason;
+		u8   reserved[3];
+		le32 flags;
+		le32 endpoint;
+		le32 reserved1;
+		le64 address;
+	};
+
+	#define VIRTIO_IOMMU_FAULT_F_READ	(1 << 0)
+	#define VIRTIO_IOMMU_FAULT_F_WRITE	(1 << 1)
+	#define VIRTIO_IOMMU_FAULT_F_ADDRESS	(1 << 8)
+
+The extended struct could be:
+
+	struct virtio_iommu_fault {
+		u8   reason;
+		u8   reserved[3];
+		le32 flags;
+		le32 endpoint;
+		le32 pasid;
+		le64 address;
+		/* Page request group ID */
+		le16 group_id;
+		u8   reserved1[6];
+		/* For VT-d private data */
+		le64 private_data[2];
+	};
+
+	#define VIRTIO_IOMMU_FAULT_F_READ	(1 << 0)
+	#define VIRTIO_IOMMU_FAULT_F_WRITE	(1 << 1)
+	#define VIRTIO_IOMMU_FAULT_F_EXEC	(1 << 2)
+	#define VIRTIO_IOMMU_FAULT_F_PRIVILEGED	(1 << 3)
+	/* Last fault in group */
+	#define VIRTIO_IOMMU_FAULT_F_LAST	(1 << 4)
+	/* Fault is a recoverable page request and requires a response */
+	#define VIRTIO_IOMMU_FAULT_F_PAGE_REQ	(1 << 5)
+
+	/* address field is valid */
+	#define VIRTIO_IOMMU_FAULT_F_ADDRESS	(1 << 8)
+	/* pasid field is valid */
+	#define VIRTIO_IOMMU_FAULT_F_PASID	(1 << 9)
+	/* group_id field is valid */
+	#define VIRTIO_IOMMU_FAULT_F_GROUP_ID	(1 << 10)
+	/* private data field is valid */
+	#define VIRTIO_IOMMU_FAULT_F_PRIV_DATA	(1 << 11)
+
+Thanks,
+Jean
