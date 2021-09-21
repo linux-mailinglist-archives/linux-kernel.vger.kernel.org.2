@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4383413491
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69897413493
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbhIUNnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:43:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:33810 "EHLO foss.arm.com"
+        id S233297AbhIUNnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:43:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:33824 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233333AbhIUNnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:43:08 -0400
+        id S233105AbhIUNnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:43:10 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 022136D;
-        Tue, 21 Sep 2021 06:41:40 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F15F911B3;
+        Tue, 21 Sep 2021 06:41:41 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3AA043F793;
-        Tue, 21 Sep 2021 06:41:38 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 34DD43F40C;
+        Tue, 21 Sep 2021 06:41:40 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
@@ -25,9 +25,9 @@ Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
         mike.leach@linaro.org, mathieu.poirier@linaro.org, will@kernel.org,
         lcherian@marvell.com, coresight@lists.linaro.org,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v2 05/17] coresight: trbe: Decouple buffer base from the hardware base
-Date:   Tue, 21 Sep 2021 14:41:09 +0100
-Message-Id: <20210921134121.2423546-6-suzuki.poulose@arm.com>
+Subject: [PATCH v2 06/17] coresight: trbe: Allow driver to choose a different alignment
+Date:   Tue, 21 Sep 2021 14:41:10 +0100
+Message-Id: <20210921134121.2423546-7-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210921134121.2423546-1-suzuki.poulose@arm.com>
 References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
@@ -37,68 +37,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We always set the TRBBASER_EL1 to the base of the virtual ring
-buffer. We are about to change this for working around an erratum.
-So, in preparation to that, allow the driver to choose a different
-base for the TRBBASER_EL1 (which is within the buffer range).
+The TRBE hardware mandates a minimum alignment for the TRBPTR_EL1,
+advertised via the TRBIDR_EL1. This is used by the driver to
+align the buffer write head. This patch allows the driver to
+choose a different alignment from that of the hardware, by
+decoupling the alignment tracking. This will be useful for
+working around errata.
 
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Leo Yan <leo.yan@linaro.org>
 Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-trbe.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/hwtracing/coresight/coresight-trbe.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index a32ef083aa36..27616eac24ba 100644
+index 27616eac24ba..f569010c672b 100644
 --- a/drivers/hwtracing/coresight/coresight-trbe.c
 +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -59,6 +59,8 @@ struct trbe_buf {
- 	 * trbe_limit sibling pointers.
- 	 */
- 	unsigned long trbe_base;
-+	/* The base programmed into the TRBE */
-+	unsigned long trbe_hw_base;
- 	unsigned long trbe_limit;
- 	unsigned long trbe_write;
- 	int nr_pages;
-@@ -498,12 +500,13 @@ static void set_trbe_limit_pointer_enabled(unsigned long addr)
- 
- static void trbe_enable_hw(struct trbe_buf *buf)
+@@ -92,7 +92,8 @@ static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+ /*
+  * struct trbe_cpudata: TRBE instance specific data
+  * @trbe_flag		- TRBE dirty/access flag support
+- * @tbre_align		- Actual TRBE alignment required for TRBPTR_EL1.
++ * @trbe_hw_align	- Actual TRBE alignment required for TRBPTR_EL1.
++ * @trbe_align		- Software alignment used for the TRBPTR_EL1,
+  * @cpu			- CPU this TRBE belongs to.
+  * @mode		- Mode of current operation. (perf/disabled)
+  * @drvdata		- TRBE specific drvdata
+@@ -100,6 +101,7 @@ static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
+  */
+ struct trbe_cpudata {
+ 	bool trbe_flag;
++	u64 trbe_hw_align;
+ 	u64 trbe_align;
+ 	int cpu;
+ 	enum cs_mode mode;
+@@ -903,7 +905,7 @@ static ssize_t align_show(struct device *dev, struct device_attribute *attr, cha
  {
--	WARN_ON(buf->trbe_write < buf->trbe_base);
-+	WARN_ON(buf->trbe_hw_base < buf->trbe_base);
-+	WARN_ON(buf->trbe_write < buf->trbe_hw_base);
- 	WARN_ON(buf->trbe_write >= buf->trbe_limit);
- 	set_trbe_disabled();
- 	isb();
- 	clr_trbe_status();
--	set_trbe_base_pointer(buf->trbe_base);
-+	set_trbe_base_pointer(buf->trbe_hw_base);
- 	set_trbe_write_pointer(buf->trbe_write);
+ 	struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
  
- 	/*
-@@ -707,6 +710,8 @@ static int __arm_trbe_enable(struct trbe_buf *buf,
- 		trbe_stop_and_truncate_event(handle);
- 		return -ENOSPC;
+-	return sprintf(buf, "%llx\n", cpudata->trbe_align);
++	return sprintf(buf, "%llx\n", cpudata->trbe_hw_align);
+ }
+ static DEVICE_ATTR_RO(align);
+ 
+@@ -991,13 +993,14 @@ static void arm_trbe_probe_cpu(void *info)
+ 		goto cpu_clear;
  	}
-+	/* Set the base of the TRBE to the buffer base */
-+	buf->trbe_hw_base = buf->trbe_base;
- 	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
- 	trbe_enable_hw(buf);
- 	return 0;
-@@ -804,7 +809,7 @@ static bool is_perf_trbe(struct perf_output_handle *handle)
- 	struct trbe_drvdata *drvdata = cpudata->drvdata;
- 	int cpu = smp_processor_id();
  
--	WARN_ON(buf->trbe_base != get_trbe_base_pointer());
-+	WARN_ON(buf->trbe_hw_base != get_trbe_base_pointer());
- 	WARN_ON(buf->trbe_limit != get_trbe_limit_pointer());
+-	cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
+-	if (cpudata->trbe_align > SZ_2K) {
++	cpudata->trbe_hw_align = 1ULL << get_trbe_address_align(trbidr);
++	if (cpudata->trbe_hw_align > SZ_2K) {
+ 		pr_err("Unsupported alignment on cpu %d\n", cpu);
+ 		goto cpu_clear;
+ 	}
  
- 	if (cpudata->mode != CS_MODE_PERF)
+ 	trbe_check_errata(cpudata);
++	cpudata->trbe_align = cpudata->trbe_hw_align;
+ 	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
+ 	cpudata->cpu = cpu;
+ 	cpudata->drvdata = drvdata;
 -- 
 2.24.1
 
