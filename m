@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EE0412F3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B229412F43
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhIUHTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhIUHTm (ORCPT
+        id S230124AbhIUHVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:21:34 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36752
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230071AbhIUHVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:19:42 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8451C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:18:11 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id t8so36253949wrq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=a7uF0Ju609A3dPOAheIk7wjb/5qCM4rAGA2kRg4FHZ4=;
-        b=OR2wui6VjK5ZS5kdC2paxolwDfj105bIdjj0Y40/FzANDUPZcdxe0hZ5XaghXoNgdk
-         XbL3FD2Xzd1tn8x7Wt3FJETSXyWodSx5oMSlbEn5kM2St0ZVWEIwU4KOGbS+oxcCs1v5
-         sawEWFY51RSxBbDgnsCMd1gYSmnIGPFbp9dZpOoacCiqWH1gJVWf1mH5+YMmQLXLNLJy
-         ggbQXJ0xGZazo3FSsE5VgU45vJCaE7/XfoSF6IbsSBVFamp6078yXWadq6e5aiNr3huN
-         +Um0S1SSbvdAP08Tu24VIYUNYZiDa7lZ8BpY0Goov/fAz92Ys2UP/AgFc1qCURhfSOwR
-         04jg==
+        Tue, 21 Sep 2021 03:21:32 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A1A1140262
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:20:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632208802;
+        bh=AEgBA3R77w9KryrrVCKS+IcMBHSWWQYQcCPJfI9REUY=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=q5I2OKK/BHIgeadXIt4B504ihWDnqoms3PgcGZQGSft7i44IlbxsDlXvkhVjJFIW3
+         mzYuofJjMvriDGreAPnbacsXV4600h+II6SoC0/cUriDo8/BwzS1MsBO4ZYx1WoBRY
+         Hhiz/tJZjvxtjhGvANGJlRhJ/ZPg4lKfqDYZ6sYHyc267AUtnWybwqolIxF49/bRVf
+         lYGazccFPhBDNT5/WgSwoDgG70BJdUuJOV58O8soOlGA4x2ifxfz2Vbb4dVsBor53I
+         PeZHGG2I7TKlyOocxsFvmTY7QOZVuO5RA0wJ7vMhnXmk2OGAhpLM5q87yNT9wrvMBU
+         JYcuEZT4dxsQQ==
+Received: by mail-wr1-f69.google.com with SMTP id c15-20020a5d4ccf000000b0015dff622f39so8027736wrt.21
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:20:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a7uF0Ju609A3dPOAheIk7wjb/5qCM4rAGA2kRg4FHZ4=;
-        b=L/sGdyR17+cn7WyPy0R8V9fnLhDuAILAOQgvlRJL1UbExbkpxza5VDwAhfgiSwARzK
-         rAbnfU3a9qo+yNKIMZiTX8qY2RPFBg+Jcuverk3K+J+vpDRCTlv0cZ8jggImnkTiRJQu
-         XplkiMoIIS5f9Fg5rU8ELZk6iv7nNLQTA7Yp06/zo3EprOrQBYhjVnpJiu8rFt2Ho5r8
-         crrb3y9OR/K8FwflPsXDbRQHEVo7ggL2xNfV0wsMe5nFgZ4YR8f6NlfcHbXml2MngqdO
-         mWSQxbF3W6IFqqqNTAWdl+VGy97YxzijnlKOoSVzEHbI439uZ3coU40IFPyXbDYrqXnm
-         il/Q==
-X-Gm-Message-State: AOAM531cWo+rBNmFo4W4gTfqICmmpiX7RZnX4Np54AEd9Kv2MLMM1hpt
-        YkTa/0HiK2nTMoKNENUK2xjODg==
-X-Google-Smtp-Source: ABdhPJwzF0OI1j11Yao0iEQAFr4D92BXLB53EGDrQsgNU3A85EpDT3FdkM07yJX+scDKxe/77JoIFg==
-X-Received: by 2002:a5d:49c6:: with SMTP id t6mr33652411wrs.201.1632208690071;
-        Tue, 21 Sep 2021 00:18:10 -0700 (PDT)
-Received: from localhost.localdomain (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
-        by smtp.gmail.com with ESMTPSA id w9sm1786918wmc.19.2021.09.21.00.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 00:18:09 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     tony@atomide.com
-Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Gowtham Tammana <g-tammana@ti.com>,
-        Jyri Sarha <jsarha@ti.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 1/1] ARM: dts: dra7: add entry for bb2d module
-Date:   Tue, 21 Sep 2021 09:18:07 +0200
-Message-Id: <20210921071807.30978-2-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210921071807.30978-1-narmstrong@baylibre.com>
-References: <20210921071807.30978-1-narmstrong@baylibre.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AEgBA3R77w9KryrrVCKS+IcMBHSWWQYQcCPJfI9REUY=;
+        b=06FTt+tXbv20igJ9gMsZPsupPYNQ2n+Th1bEYV2w1rOB2SEpd8LmJScQh2V+8Y689z
+         3uQAOJpG+IlkPaAmsATfNb/sYgqHCcit7gRJnyadSoqGt2402ucAgluRcTdXAyqc5bzT
+         kl9NMMp47Y6V9Mb/ybuSQoDX1KH1eMcqpZkr2OwdHfRAfkDy5p/hWEKPOTznLkAnrXRC
+         H/kzmOhTcPS80Wu8iMYbuueDkATN9SOCe3bm7ApAoGuAUg/Ui/8PfXkhKQ8c8WWQzbnE
+         YClZtmcATBwwN4ju685BJvig0DDjYVyJ5Xt+mw5+WzAGQ5m1DGG6+MtBwJ50RwZArrCg
+         kUXA==
+X-Gm-Message-State: AOAM533bQ/kCxZFLYeSPTkg3Bf94H5F86pi7tnacnQfRbH85XicJ/2lN
+        uoG+eL/L638xHSX+yfQSg2BIk5uLbbniduCA1K84UwglPZyaxomFFozCWiHuXmyReh2/+otTeOa
+        Gcz4DAKs9ptUVOe8tomF7GLeAzcM7TK6SB6FTwzdW5g==
+X-Received: by 2002:a7b:c750:: with SMTP id w16mr2977700wmk.128.1632208802084;
+        Tue, 21 Sep 2021 00:20:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzO5jz1FEI8gyX7GyxtVi5eDjZZJeMMrwVlptuHEN5O7i5u5mvto6Hcns9xoz5xze1ScI9CPA==
+X-Received: by 2002:a7b:c750:: with SMTP id w16mr2977671wmk.128.1632208801861;
+        Tue, 21 Sep 2021 00:20:01 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id u5sm3543492wrg.57.2021.09.21.00.20.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 00:20:01 -0700 (PDT)
+Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
+To:     Will McVicker <willmcvicker@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+References: <20210920190350.3860821-1-willmcvicker@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
+Date:   Tue, 21 Sep 2021 09:19:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920190350.3860821-1-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gowtham Tammana <g-tammana@ti.com>
+On 20/09/2021 21:03, Will McVicker wrote:
+> This patch series tries to address the issue of ARCH_EXYNOS force selecting
+> a handful of drivers without allowing the vendor to override any of the
+> default configs. This takes away from the flexibilty of compiling a generic
+> kernel with exynos kernel modules. For example, it doesn't allow vendors to
+> modularize these drivers out of the core kernel in order to share a generic
+> kernel image across multiple devices that require device-specific kernel
+> modules.
 
-BB2D is a Vivante GC 2D Accelerator.
-This adds the node to the dts file within a target module node.
-Crossbar index number is used for interrupt mapping.
+You do not address the issue in these patches. The problem you describe
+is that drivers are not modules and you are not changing them into modules.
 
-Signed-off-by: Gowtham Tammana <g-tammana@ti.com>
-Signed-off-by: Jyri Sarha <jsarha@ti.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm/boot/dts/dra7.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+> 
+> To address this without impacting the existing behavior, this series
+> switches the default config logic for the offending configs to use "default
+> y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
+> verified that these patches do not impact the default aarch64 .config.
 
-diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
-index dfc1ef8ef6ae..6b485cbed8d5 100644
---- a/arch/arm/boot/dts/dra7.dtsi
-+++ b/arch/arm/boot/dts/dra7.dtsi
-@@ -965,6 +965,25 @@ hdmi: encoder@0 {
- 			};
- 		};
- 
-+		target-module@59000000 {
-+			compatible = "ti,sysc-omap4", "ti,sysc";
-+			reg = <0x59000020 0x4>;
-+			reg-names = "rev";
-+			clocks = <&dss_clkctrl DRA7_DSS_BB2D_CLKCTRL 0>;
-+			clock-names = "fck";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0x0 0x59000000 0x1000>;
-+
-+			bb2d: gpu@0 {
-+				compatible = "vivante,gc";
-+				reg = <0x0 0x700>;
-+				interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&dss_clkctrl DRA7_BB2D_CLKCTRL 0>;
-+				clock-names = "core";
-+			};
-+		};
-+
- 		aes1_target: target-module@4b500000 {
- 			compatible = "ti,sysc-omap2", "ti,sysc";
- 			reg = <0x4b500080 0x4>,
--- 
-2.25.1
+Yep, this is what you did but it does not match the described problem.
+You are not solving it but doing something else.
 
+> 
+> Will McVicker (4):
+>   clk: samsung: change COMMON_CLK_SAMSUNG default config logic
+>   soc: samsung: change SOC_SAMSUNG default config logic
+>   pinctrl: samsung: change PINCTRL_EXYNOS default config logic
+>   rtc: change HAVE_S3C_RTC default config logic
+> 
+
+
+I received only two patches from this set. Please resend following
+get_maintainers.pl script.
+
+
+Best regards,
+Krzysztof
