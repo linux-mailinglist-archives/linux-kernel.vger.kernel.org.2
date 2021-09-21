@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099784134F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495A14134FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233472AbhIUOFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbhIUOFt (ORCPT
+        id S233484AbhIUOGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:06:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48892 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233448AbhIUOGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:05:49 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECACC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:04:21 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id h9so22769041ile.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JBfmWO8YuHksDLM0tZii9fOthBDpexUuMKCylGu88Cw=;
-        b=EHWeL1VMJ/v0SHwQlZV/FP0kMr9RauCFK81LrN190g6hbeMK6qEq8f4CFTfRv6uJuy
-         bg2snEvcsMYDVnI+39v3QOajGPsWX1kxzQifuLHuxYZs1D9zX7pl7gwEd26xSthGts9j
-         dut0xFNloWL2FBrHQBmz0H/W8+ltBxHV8SmXU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JBfmWO8YuHksDLM0tZii9fOthBDpexUuMKCylGu88Cw=;
-        b=GAEhaX2tFb+CYEwJ5xCqOBgvfVP7ppCZs6Q8OftX1xxjhZsLQJ71qxLC0NTDoOBenk
-         mRF+FCmDToW81s+Jpnf2oAFTQg/lQlrN7x68YFXrT8jGBe2TUKnx0fExY5nUsGRu3UQ/
-         3sHuRSBvRZBO+VkLpTRtsv0qnsXDPGsh4zmdSjcgAHE2FFRD0FBkMluSDpMGIYdQCmbP
-         eMgBCFh05XVdnWNBuy0XNQlyGLbZjrd4+FJOKDwXUiex7kuV/6NATIQfKbY3LEAfTctl
-         c1aN15CGE79t4EpS4Ukj2gR0SOI9PenkiA3QgbAFus8QEGyle2HIC0TiX5TCE57Ugcrg
-         q2Yg==
-X-Gm-Message-State: AOAM532BuHvyieCvTjohYX+JdxmBstNWLfXbZV4xSTD/HP8dhA2g8i1I
-        MsysmOW8Gfn2Zlc/rKv1+g2Q7w==
-X-Google-Smtp-Source: ABdhPJwDZOKXXkc2LfAl7W3Xs7JKt3pUECGqbtWXsGxtUfr/lL+S3U5ITF72sGHxthGSciZ7S5ztoA==
-X-Received: by 2002:a92:c888:: with SMTP id w8mr21524545ilo.188.1632233060550;
-        Tue, 21 Sep 2021 07:04:20 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w1sm10581557ilj.55.2021.09.21.07.04.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 07:04:20 -0700 (PDT)
-Subject: Re: [PATCH 5.14 000/168] 5.14.7-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210920163921.633181900@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <29059709-73e2-ac7f-7045-fc1e922b3632@linuxfoundation.org>
-Date:   Tue, 21 Sep 2021 08:04:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 21 Sep 2021 10:06:37 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632233107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
+        b=fNNNVdBGg+ZulgR/yTyHw3OPyblYrJkTcS+WFxAIGwuHX+/NhHihA1O68bezkykOCH6+rP
+        aj+KRbIMVXK9+xwWRlXdETmYdGguenGbIWi31gR4OhHxo2zW+2VEp/jQgT8VyWV58ThUGY
+        si7riMahz8V4dyLV6FikLL9e5gU0JO/7nPfRKywDNfUYHNmY8BkYgTmFmZXM9V6pPpAT+Y
+        Qm6ZDXbTrrKF4vLUdhquYJWlJEX7F+p6Frt7rEKWjvw8eh0QXWIY3OTObCyZTihXAz1tyv
+        RQwBUaTe8Qiw5Wy3Hf1RylvujyscQHgWKWfIXwSOOj92v2GGSG5taAmDGHqtRg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632233107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
+        b=/92k433iTx4+5yQA3qLenYPKHol2U3cD80NQ9hfx8ufaAt0X5/KFSHo2ByKulagfN2n12I
+        p3DTEu1QJXtWH+BQ==
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock()
+ under PREEMPT_RT
+In-Reply-To: <20210811201354.1976839-4-valentin.schneider@arm.com>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-4-valentin.schneider@arm.com>
+Date:   Tue, 21 Sep 2021 16:05:07 +0200
+Message-ID: <874kae6n3g.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/20/21 10:42 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.7 release.
-> There are 168 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Valentin,
 
-Compiled and booted on my test system. No dmesg regressions.
+On Wed, Aug 11 2021 at 21:13, Valentin Schneider wrote:
+> Running v5.13-rt1 on my arm64 Juno board triggers:
+>
+> [    0.156302] =============================
+> [    0.160416] WARNING: suspicious RCU usage
+> [    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+> [    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+> [    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+> [    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+>
+> In this case, this is the RCU core kthread accessing the local CPU's
+> rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
+>
+> Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
+> incrementing the preempt_count, which satisfies the "local non-preemptible
+> read" of rcu_rdp_is_offloaded().
+>
+> Under CONFIG_PREEMPT_RT however, this becomes
+>
+>   local_lock(&softirq_ctrl.lock)
+>
+> which, under the same config, is migrate_disable() + rt_spin_lock(). As
+> pointed out by Frederic, this is not sufficient to safely access an rdp's
+> offload state, as the RCU core kthread can be preempted by a kworker
+> executing rcu_nocb_rdp_offload() [1].
+>
+> Introduce a local_lock to serialize an rdp's offload state while the rdp's
+> associated core kthread is executing rcu_core().
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Yes, sure. But I don't think that local_lock is required at all.
 
-thanks,
--- Shuah
+The point is that the two places where this actually matters invoke
+rcu_rdp_is_offloaded() just at the top of the function outside of the
+anyway existing protection sections. Moving it into the sections which
+already provide the required protections makes it just work for both RT
+and !RT.
 
+Thanks,
+
+        tglx
+---
+
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+ {
+ 	unsigned long flags;
+ 	unsigned long mask;
+-	bool needwake = false;
+-	const bool offloaded = rcu_rdp_is_offloaded(rdp);
++	bool offloaded, needwake = false;
+ 	struct rcu_node *rnp;
+ 
+ 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+ 	rnp = rdp->mynode;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
++	offloaded = rcu_rdp_is_offloaded(rdp);
+ 	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+ 	    rdp->gpwrap) {
+ 
+@@ -2446,7 +2446,7 @@ static void rcu_do_batch(struct rcu_data
+ 	int div;
+ 	bool __maybe_unused empty;
+ 	unsigned long flags;
+-	const bool offloaded = rcu_rdp_is_offloaded(rdp);
++	bool offloaded;
+ 	struct rcu_head *rhp;
+ 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+ 	long bl, count = 0;
+@@ -2472,6 +2472,7 @@ static void rcu_do_batch(struct rcu_data
+ 	rcu_nocb_lock(rdp);
+ 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+ 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
++	offloaded = rcu_rdp_is_offloaded(rdp);
+ 	div = READ_ONCE(rcu_divisor);
+ 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+ 	bl = max(rdp->blimit, pending >> div);
