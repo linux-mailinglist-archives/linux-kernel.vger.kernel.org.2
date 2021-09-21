@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844104134AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEE24134B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbhIUNpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:45:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34198 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbhIUNpq (ORCPT
+        id S233260AbhIUNqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:46:20 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43044 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233165AbhIUNqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:45:46 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 36CF31FEE4;
-        Tue, 21 Sep 2021 13:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632231856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CoZFjUYonYzhLeSwSFFInp3fJp1MWSimvWrr2M9y5z0=;
-        b=fFHRp+PyX8nFEjo6545k/OVEsKq9G7hPqicI15E/whzFTyEOgindG4LI2Ezrd/XHCRCe/f
-        t53qH5/+b1pYVozrTj8l5BYE7PyQ9HPvf+OOp1MWSf2Ym4nKNLxwGIWo2JHw4RZ33f6CeH
-        Fz15o72HVrYvhAeBmFAHiHMG3a8G8h4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1762D13BCD;
-        Tue, 21 Sep 2021 13:44:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Q68OBbDhSWFpRwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 21 Sep 2021 13:44:16 +0000
-Date:   Tue, 21 Sep 2021 15:44:14 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>,
-        Khazhy Kumykov <khazhy@google.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [RFC PATCH] blk-throttle: enable io throttle for root in cgroup
- v2
-Message-ID: <20210921134414.GE4091@blackbody.suse.cz>
-References: <20210909140815.2600858-1-yukuai3@huawei.com>
- <20210917174103.GC13346@blackbody.suse.cz>
- <CACGdZYJiLuh6kED_tdWkYqbHDXc_18m-XJbevp-ri5ansvbtYg@mail.gmail.com>
- <37f8c687-8549-104a-2501-532a0cfc9a48@huawei.com>
+        Tue, 21 Sep 2021 09:46:19 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18LDigMU006925;
+        Tue, 21 Sep 2021 08:44:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632231882;
+        bh=9/0CIvgoXoNw6Uen/PE86wIdMfBIuYgmLDb8VlnIav0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=BFJP5YFFVhDp+nh/dlHvCeL9SoaNRHQGefPUcH3JJS7HiTgVxTB250Ic1Elh/qwz7
+         KUg18hW7VgHq+c4PdQJNJEVrpY6REIPjc0BLQwBxdOlYwsXCKlvNLUprkcqfa7SQT7
+         kWwfMmllrMDxBGbggbxwVCR8JhF/a7yTwgHe2Zlc=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18LDif9u079754
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Sep 2021 08:44:42 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
+ Sep 2021 08:44:41 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 21 Sep 2021 08:44:41 -0500
+Received: from [10.250.233.5] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18LDiapY003451;
+        Tue, 21 Sep 2021 08:44:37 -0500
+Subject: Re: [PATCH v2 2/2] dt-bindings: snps,dw-apb-ssi: Use 'flash' node
+ name instead of 'spi-flash' in example
+To:     Rob Herring <robh@kernel.org>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <michael@walle.cc>
+References: <20210920142713.129295-1-a-nandan@ti.com>
+ <20210920142713.129295-3-a-nandan@ti.com>
+ <YUj6yUBx0xCY9QGj@robh.at.kernel.org>
+From:   Apurva Nandan <a-nandan@ti.com>
+Message-ID: <408954fa-aa71-6f35-3b02-0e7a078658f0@ti.com>
+Date:   Tue, 21 Sep 2021 19:14:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <37f8c687-8549-104a-2501-532a0cfc9a48@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YUj6yUBx0xCY9QGj@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 06:31:38PM +0800, "yukuai (C)" <yukuai3@huawei.com> wrote:
-> Our use case is similair to this, a host can provide several remote
-> devices to difierent client. If one client is under high io pressure,
-> other client might be affected. Thus we want to limit the overall
-> iops/bps from the client.
 
-I see where are you coming from now. (Perhaps I'd suggest
-allocating/prioritizing the allowances on the hosting side. If simply
-wrapping "everything" into a non-root cgroup is not enough.)
-
-
-On 2021/09/18 3:58, Khazhy Kumykov wrote:
-> (This does also bring up: if this is a useful thing, would it make
-> sense to tie to the device, vs. requiring cgroup. We happen to use
-> cgroups so that requirement doesn't affect us).
-
-Good point, That's IMO a better idea, it'd be more consistent with other
-resources for which there exist global (cgroup independent) kernel
-constraints (e.g. threads-max sysctl, mem= cmdline, cpu hotplug) that
-double the root cgroup contraint role.
-
-OTOH, this also deepens the precedent of init NS root cgroup being
-special (more special than a container's root cgroup).
-
-My .02€,
-Michal
+On 21/09/21 2:49 am, Rob Herring wrote:
+> On Mon, Sep 20, 2021 at 07:57:13PM +0530, Apurva Nandan wrote:
+>> Change the nodename in the example with spi-nand from 'spi-flash@1'
+>> to 'flash@1' to make the schema uniform with both spi-nand and spi-nor
+>> flashes. jedec,spi-nor.yaml uses 'flash@' nodename for spi-nor flashes,
+>> so make the spi-nand examples in dt-bindings use it too for uniformity.
+>>
+>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>> ---
+>>   Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+> Fixes should come first. Maybe Mark can apply this before you respin.
+>
+> Acked-by: Rob Herring <robh@kernel.org>
+Please tell if I need to re-roll this series for changing the order of 
+the two patches.
+>> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+>> index ca91201a9926..d7e08b03e204 100644
+>> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+>> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+>> @@ -171,7 +171,7 @@ examples:
+>>         cs-gpios = <&gpio0 13 0>,
+>>                    <&gpio0 14 0>;
+>>         rx-sample-delay-ns = <3>;
+>> -      spi-flash@1 {
+>> +      flash@1 {
+>>           compatible = "spi-nand";
+>>           reg = <1>;
+>>           rx-sample-delay-ns = <7>;
+>> -- 
+>> 2.25.1
+>>
+>>
+Thanks,
+Apurva Nandan
