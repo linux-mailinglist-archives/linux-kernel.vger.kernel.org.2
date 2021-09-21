@@ -2,144 +2,584 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9873D4139D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950724139E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhIUSQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:16:22 -0400
-Received: from mail-dm6nam11on2080.outbound.protection.outlook.com ([40.107.223.80]:13217
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232465AbhIUSQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:16:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e6Ba3xMKYTGe3j0xhJ94cS1Z0jCy0VUuUyDJ7jhU8qy9Z116GWwFQTi503mNLvPbi3QAQeKvk2wEovUGjc6at+nWruZ+RyoOqKM7F/CShHHUI4W5PgUjOoaBm7LruxSPn6K+RH/iscGIJ59AEAzYCsYqPvNYGzlP//jLtThHEg1BOVNc6IULmTTQwSnbh5/WPpZbHBFMspL34j1cbsm4NzNx8hP9oeTUZZXEL6x1jETXMdiSOjQVfGhG5EZerYQpC/HVOpPMKIdct2MjZeSwUl1K2Sq+44hbfL+EMq9EtkMD1NvvHTKF/EoPJj+qrAWdjQXFqSF+3LemIpzycZs7bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=B7eOnOE1zer9H3RTtVACkTXlYjm2KkDrCxNS6v5SHG8=;
- b=YQPl/KL+mBHqzcuQ1mgcVF+e8/hSTS9jjoqyn6TmU2BHjd5KVZGNpeaVCJnK6XajsHzQidLNwIN2pTj+8yf7o+9uA26HZjtGfoYuP7HIIAsEqWB3++yOOtb5d2e0I8kmpsoKuKOSh6eyKj5j/KMC70K692agDtIu8s+eYQ/zmsA/062tpFV/Bpo/RJEufWclCOLFiA5e4HgEd6fUrzMRQlpoGCjPBTaWoWKvs1i2Fpg5l/kaoPIGBAeZnZMHmZMN2q/8oY4zrVAmxU5Ha+iA/gGdHIXfbiW99sdcEr9JkJVpUbuMZqgkP7Jlll5counhnPlXPS5GtGde5SBiF225Dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B7eOnOE1zer9H3RTtVACkTXlYjm2KkDrCxNS6v5SHG8=;
- b=fiJdipoxaB9psBlzIpxet3nlIsYWZKUPb26dL9GfjT8G5ccXKXH/YPPqWdN6dKclLGCus5yyuzULNttPZ4Qaw1I+fzs9Wt7EqclnU35HE2CR8LPxp0jQQauMKmQAOzFDav7r1g0/79wlKLvQZc3hqEMB8oV1GOU5ka9+dFHAQD88nhnNQ7uIDMu3zqVP31mHATEjvEAg+AtOihhaizmWEcagW53yiTBg2Y0+gc7WuAkvI+Qx6aQsr9KfCL61nOImIJaYMNfAzx0j8PtZM0XfWpJlU+fKJoBkWz6OFRb4NdGGqC0tkYTulQBQUSA5r5TY9ZUyz9HI8FF50xv/0vEfWw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5538.namprd12.prod.outlook.com (2603:10b6:208:1c9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
- 2021 18:14:50 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Tue, 21 Sep 2021
- 18:14:50 +0000
-Date:   Tue, 21 Sep 2021 15:14:48 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, hch@lst.de, jasowang@redhat.com,
-        joro@8bytes.org, jean-philippe@linaro.org, kevin.tian@intel.com,
-        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
-        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
-        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        david@gibson.dropbear.id.au, nicolinc@nvidia.com
-Subject: Re: [RFC 16/20] vfio/type1: Export symbols for dma [un]map code
- sharing
-Message-ID: <20210921181448.GA327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-17-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919063848.1476776-17-yi.l.liu@intel.com>
-X-ClientProxiedBy: MN2PR02CA0025.namprd02.prod.outlook.com
- (2603:10b6:208:fc::38) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232645AbhIUSSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:18:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232465AbhIUSSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 14:18:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FBB860F48;
+        Tue, 21 Sep 2021 18:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632248199;
+        bh=CZ1jS1fbgx8mv8FGFJWF9Qe/+BOAki1/dRRl8GRTDK4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j21R1nTKkra6hmoia4Sro3lz8h1arqw2MZ96VJMvTmsrtDmn1lATQSqRhny78o3Zu
+         al75kpmnfzZb8jQcuvJDvZ0TSffZVZ96Zr/afkV09QBWFJDvbLpSPW+9W/JE/19WP7
+         LbcCTDCUztM/Et5ZZQJ2wv9hNZXionyyU9cemI1tnkltKkUJnPtMI3S+T5bcTYQPFM
+         51XB3fsFHaxpSUiFSDUbF9+pd71YfzoBPnlOcnfPwHcJ2mojR7o/n1EJIVcaw+58/f
+         vps8ew1TUPKDLUzE0wkYOqzQQNnW8uUzPOlmZDF5sNf1qreauEtGNTexdr+ArkqOYz
+         sZft78ubw3thg==
+Date:   Tue, 21 Sep 2021 20:16:33 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
+ specs
+Message-ID: <20210921201633.5e6128a0@coco.lan>
+In-Reply-To: <YUoN2m/OYHVLPrSl@kroah.com>
+References: <cover.1631957565.git.mchehab+huawei@kernel.org>
+        <YUoN2m/OYHVLPrSl@kroah.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR02CA0025.namprd02.prod.outlook.com (2603:10b6:208:fc::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 18:14:49 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mSkI4-003Xav-70; Tue, 21 Sep 2021 15:14:48 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc05f923-e110-40a1-38d9-08d97d2bb369
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5538:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5538329E076B4F4A4D984083C2A19@BL0PR12MB5538.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L0PjB5TQ/VjW2svakaT5jqEQ7CzBMmAePAQRKz91+UJOxw8IPeEUb6U8QEEDbiC4PcdEFgQ0lvGjNu40KtiuhRwyo7FhChcy/PBVGfZjfnWifKmuW6DlroYxsZWFROfXyTvlFsYQTmOd00jpgnHoJNwK7eTH6TkSQJ04ZNapp3+aBGNINxQBIEC6oJNXHl/td1vQSC7aMM5CAhVEwub0jgIWUoYtIOeYaqSO5dlZcUHU2DIELJU5b5ydgfFy6hU5lgIWzH4XLOlahY4nfy0lpt24SxDeTLJDyBR+yyuqa+Kl6AllNkYiofKnMvE6BNwCKGW27a1XPb1StyNndjKJVTb4DJiBtYXqx+xGWZLdYaW2PstzjCrvAEp0xoOg3z/ebBdl4O79SwNwBVs/P7SAsMpj755/U7ksYItlmB9XXGcDegHKvqYXMfXNlWxtoOV3xhFOV9HCQu8pSEFfx0adWCni4GFAsp1Ooi9KjZGGBoQ2exfR+ILI4QuwPKBVlbAgx/C+2ccLYnZdOIvPOg/GCdflUGWzJcu3NdHNemtl2C2cZy9kayKuqFFAfR8cdQT9Ai5+9LZRVFc99G3AQKMycc3Rsg3c9wFx7Z+XxdIx2Ws7ItHEutYSkBDswm7h4o4cehkP4YffaTA7n9s7XCbVP+P4M4phRBhwlVgg64XfXDX6EECjcelxi0YGn+vaRfxs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(7416002)(66946007)(107886003)(426003)(8676002)(2906002)(6916009)(33656002)(36756003)(9746002)(8936002)(4326008)(9786002)(186003)(83380400001)(38100700002)(66556008)(86362001)(508600001)(26005)(316002)(1076003)(5660300002)(66476007)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yj+smsLV5bIdOm+bFURN31lvkuto3yZ2LL4yGHeoGAU7JwYK4AqjYu5f0lEi?=
- =?us-ascii?Q?AtqJQ7M6pgCvtKMxHQFYQpldUpR0BtFe5s+GabaCitQfbVfoRn65vUs9ttW1?=
- =?us-ascii?Q?uYmzUIMvJQoKud3ltPdkZroUWUAU2N5I5drjxjQbb+0aYx9D+zKD603w7z2D?=
- =?us-ascii?Q?q/NAZ5f/UuHnFUHm7yVZq3UAlZEVx8PMIGSayk06Vd2j/u36fegHdl2EaXRg?=
- =?us-ascii?Q?u+xSriS87S7q7M+MgxM/2B9uJCjrgT/+UrCHArcJQtwjT4Hbb9ZMKCLgxSxD?=
- =?us-ascii?Q?+CRZXB47rzSiDtDPGzDQ6lNzqAL1/Q+lZWGgScMQ0gNKkXLPbg3ECTRGebXK?=
- =?us-ascii?Q?QZokx/inrbHBTqX9hnoMrLk57KhtGv6vm76yc/O7oxvPkZ18dX1wPkA0X5ms?=
- =?us-ascii?Q?+rdrktXV3LJhcEIV+qu1RGJRxua3bwUHgxW30qs+jX3KO9OHRj9yIyolVEcX?=
- =?us-ascii?Q?9wVq1MjcYchjJ6VeHvq1/ZXTFY5KQFJ9t42gsm/RuvB2V7Ai6PxqpnzcUB5T?=
- =?us-ascii?Q?/S3uPzaXXh/7xObg03kD2BS/UB3O6zNKu9UIOQbgpJN15kq2fqDrzUqhdYbU?=
- =?us-ascii?Q?tDV8ydVrR6rZbX2gjzE8E9++l+nGswAC5UiwFUejkOQTbWDAybhvGGCYly1f?=
- =?us-ascii?Q?cRl1yX2/SSVy6h/5ndIdJ+VAM5RD7edG7PnsTtbOswPhiEF4WMtV+ujkvKDi?=
- =?us-ascii?Q?fsTgVGYK73YiMqqQZ5HERrkcEe8Tn/xxeHifZkDOQlrPnSbSTZ9eUGw0gRZi?=
- =?us-ascii?Q?xSuso13enjwGlnHYt2W8924d1bU4hVtnCck0Uq/9UwvPKL7ZJOWB3VgGIj+2?=
- =?us-ascii?Q?g4D6IyycIAUF6hnmzzhO921HyNJehUolxzh7h5GGNzyvBkc4JdIIw/iFUvR2?=
- =?us-ascii?Q?m9CNPU8hA4dJ+WjBTYMu5wa94CNiNKozuP7bg9a35imL9Ai3qJhUQoo9i6g4?=
- =?us-ascii?Q?5/z2tf5jDVzW68uwx6GXle39G1ZmbAPxhop4eQ2J0KR90jAhkHLGk8uU8j4G?=
- =?us-ascii?Q?BSDYSmYYNe5OkKd1TDHJDbFgFZZKOPd1svj5cB/YJLJdrCS/hhPnCYoCnnIb?=
- =?us-ascii?Q?j4Q5RyUBLHo3rGBaCjWHABTKZ8OHnDU7xo3Wrl0Gdp7rSpHudegGkmBGgsv1?=
- =?us-ascii?Q?5o8Bo52jBv/4uPu8Wo4IjHamCnNRxk2WSmq35niK4iKDU+IIZwX69PZe5C34?=
- =?us-ascii?Q?0ubdgIZ5iV0ArtHRaJSjICFCHeXZeavBYlkfzIBxHu3qRh5gLVF9kb17WODY?=
- =?us-ascii?Q?r9fldEvofAqUn2LShh0hON2TwHiP7tITb4YjprSTGTsMNhMXIXsAi1zem/nq?=
- =?us-ascii?Q?yGp0LbccbYYUb8volaJnfHX/?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc05f923-e110-40a1-38d9-08d97d2bb369
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 18:14:50.1448
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aPNPXEe05aq/uj3L8EscYw5jod/flg0H97q78+qnioWQXgU1T6XI2X62Ow1iJpib
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5538
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 02:38:44PM +0800, Liu Yi L wrote:
-> [HACK. will fix in v2]
-> 
-> There are two options to impelement vfio type1v2 mapping semantics in
-> /dev/iommu.
-> 
-> One is to duplicate the related code from vfio as the starting point,
-> and then merge with vfio type1 at a later time. However vfio_iommu_type1.c
-> has over 3000LOC with ~80% related to dma management logic, including:
+Em Tue, 21 Sep 2021 18:52:42 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 
-I can't really see a way forward like this. I think some scheme to
-move the vfio datastructure is going to be necessary.
+> On Sat, Sep 18, 2021 at 11:52:10AM +0200, Mauro Carvalho Chehab wrote:
+> > Hi Greg,
+> >=20
+> > Add a new feature at get_abi.pl to optionally check for existing symbols
+> > under /sys that won't match a "What:" inside Documentation/ABI.
+> >=20
+> > Such feature is very useful to detect missing documentation for ABI.
+> >=20
+> > This series brings a major speedup, plus it fixes a few border cases wh=
+en
+> > matching regexes that end with a ".*" or \d+.
+> >=20
+> > patch 1 changes get_abi.pl logic to handle multiple What: lines, in
+> > order to make the script more robust;
+> >=20
+> > patch 2 adds the basic logic. It runs really quicky (up to 2
+> > seconds), but it doesn't use sysfs softlinks.
+> >=20
+> > Patch 3 adds support for parsing softlinks. It makes the script a
+> > lot slower, making it take a couple of minutes to process the entire
+> > sysfs files. It could be optimized in the future by using a graph,
+> > but, for now, let's keep it simple.
+> >=20
+> > Patch 4 adds an optional parameter to allow filtering the results
+> > using a regex given by the user. When this parameter is used
+> > (which should be the normal usecase), it will only try to find softlinks
+> > if the sysfs node matches a regex.
+> >=20
+> > Patch 5 improves the report by avoiding it to ignore What: that
+> > ends with a wildcard.
+> >=20
+> > Patch 6 is a minor speedup.  On a Dell Precision 5820, after patch 6,=20
+> > results are:
+> >=20
+> > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefine=
+d| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr=
+ >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> >=20
+> > 	real	2m35.563s
+> > 	user	2m34.346s
+> > 	sys	0m1.220s
+> > 	7595 undefined
+> > 	896 undefined_symbols
+> >=20
+> > Patch 7 makes a *huge* speedup: it basically switches a linear O(n^3)
+> > search for links by a logic which handle symlinks using BFS. It
+> > also addresses a border case that was making 'msi-irqs/\d+' regex to
+> > be misparsed.=20
+> >=20
+> > After patch 7, it is 11 times faster:
+> >=20
+> > 	$ time ./scripts/get_abi.pl undefined |sort >undefined && cat undefine=
+d| perl -ne 'print "$1\n" if (m#.*/(\S+) not found#)'|sort|uniq -c|sort -nr=
+ >undefined_symbols; wc -l undefined; wc -l undefined_symbols
+> >=20
+> > 	real	0m14.137s
+> > 	user	0m12.795s
+> > 	sys	0m1.348s
+> > 	7030 undefined
+> > 	794 undefined_symbols
+> >=20
+> > (the difference on the number of undefined symbols are due to the fix f=
+or
+> > it to properly handle 'msi-irqs/\d+' regex)
+> >=20
+> > -
+> >=20
+> > While this series is independent from Documentation/ABI changes, it
+> > works best when applied from this tree, which also contain ABI fixes
+> > and a couple of additions of frequent missed symbols on my machine:
+> >=20
+> >     https://git.kernel.org/pub/scm/linux/kernel/git/mchehab/devel.git/l=
+og/?h=3Dget_undefined_abi_v3 =20
+>=20
+> I've taken all of these, but get_abi.pl seems to be stuck in an endless
+> loop or something.  I gave up and stopped it after 14 minutes.  It had
+> stopped printing out anything after finding all of the pci attributes
+> that are not documented :)
 
-> - the dma map/unmap metadata management
-> - page pinning, and related accounting
-> - iova range reporting
-> - dirty bitmap retrieving
-> - dynamic vaddr update, etc.
+It is probably not an endless loop, just there are too many vars to
+check on your system, which could make it really slow.
 
-All of this needs to be part of the iommufd anyhow..
+The way the search algorithm works is that reduces the number of regex=20
+expressions that will be checked for a given file entry at sysfs. It=20
+does that by looking at the devnode name. For instance, when it checks for
+this file:
 
-> The alternative is to consolidate type1v2 logic in /dev/iommu immediately,
-> which requires converting vfio_iommu_type1 to be a shim driver. 
+	/sys/bus/pci/drivers/iosf_mbi_pci/bind
 
-Another choice is the the datastructure coulde move and the two
-drivers could share its code and continue to exist more independently
+The logic will seek only the "What:" expressions that end with "bind".
+Currently, there are just two What expressions for it[1]:
 
-Jason
+	What: /sys/bus/fsl\-mc/drivers/.*/bind
+	What: /sys/bus/pci/drivers/.*/bind
+
+It will then run an O(n=C2=B2) algorithm to seek:
+
+		foreach my $a (@names) {
+                       foreach my $w (split /\xac/, $what) {
+                               if ($a =3D~ m#^$w$#) {
+					exact =3D 1;
+                                        last;
+                                }
+			}
+		}
+
+Which runs quickly, when there are few regexs to seek. There are,=20
+however, some What: expressions that end with a wildcard. Those are
+harder to process. Right now, they're all grouped together, which
+makes them slower. Most of the processing time are spent on those.
+
+I'm working right now on some strategy to also speed up the search=20
+for them. Once I get something better, I'll send a patch series.
+
+--
+
+[1] On a side note, there are currently some problems with the What:
+    definitions for bind/unbind, as:
+
+	- it doesn't match all PCI devices;
+	- it doesn't match ACPI and other buses that also export
+	  bind/unbind.
+
+>=20
+> Anything I can do to help debug this?
+>
+
+There are two parameters that can help to identify the issue:
+
+a) You can add a "--show-hints" parameter. This turns on some=20
+   prints that may help to identify what the script is doing.
+   It is not really a debug option, but it helps to identify
+   when some regexes are failing.
+
+b) You can limit the What expressions that will be parsed with:
+	   --search-string <something>
+
+You can combine both. For instance, if you want to make it
+a lot more verbose, you could run it as:
+
+	./scripts/get_abi.pl undefined --search-string /sys --show-hints
+
+The script will then print all regexes that will be checked, and when
+actually checking for the missing vars, it will print all names for
+a given entry at sysfs.
+
+So, if you want to know how an i2c bind has been validated, you
+could do:
+
+	$ ./scripts/get_abi.pl undefined --search-string i2c/.*/bind --show-hints
+	--> /sys/bus/i2c/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/driver/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/driver/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/dummy/bi=
+nd
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/dummy/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/dummy/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+	--> /sys/bus/i2c/drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/axp20x-i2=
+c/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/axp20x-i2=
+c/bind
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/axp20x-i=
+2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/axp20x-i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/axp20x-i2=
+c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/axp20x-i2c/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+	--> /sys/bus/i2c/drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/smbus_ale=
+rt/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/smbus_ale=
+rt/bind
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/smbus_al=
+ert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/smbus_alert/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/smbus_ale=
+rt/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/smbus_alert/bind
+	--> /sys/module/i2c_smbus/drivers/i2c:smbus_alert/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+	--> /sys/bus/i2c/drivers/ee1004/bind
+	--> /sys/module/ee1004/drivers/i2c:ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/ee1004/bi=
+nd
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/ee1004/bi=
+nd
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/ee1004/b=
+ind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/ee1004/bi=
+nd
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/ee1004/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/driver/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+	--> /sys/bus/i2c/drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/intel_soc=
+_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/intel_soc=
+_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/intel_so=
+c_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/intel_soc_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/intel_soc=
+_pmic_i2c/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/intel_soc_pmic_i2c/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+	--> /sys/bus/i2c/drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/tps68470/=
+bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/tps68470/=
+bind
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/tps68470=
+/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/tps68470/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/tps68470/=
+bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/tps68470/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+	--> /sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-3=
+/i2c-14/subsystem/drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-4=
+/i2c-15/subsystem/drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0036/subsystem/drivers/=
+CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-2=
+/i2c-13/subsystem/drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0050/subsystem/drivers/=
+CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-10/subsystem/dri=
+vers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-5/subsystem/drivers/CHT Whisk=
+ey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-3/subsystem/drivers/CHT Whisk=
+ey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/i2c-1/subsystem/=
+drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/drm/card1/card1-DP-1=
+/i2c-12/subsystem/drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/16-0037/subsystem/drivers/=
+CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-8/subsystem/driv=
+ers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-9/subsystem/driv=
+ers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:15.2/i2c_designware.2/i2c-2/subsystem/=
+drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:15.0/i2c_designware.0/i2c-0/subsystem/=
+drivers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:1f.4/i2c-16/subsystem/drivers/CHT Whis=
+key Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-7/subsystem/driv=
+ers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-6/subsystem/driv=
+ers/CHT Whiskey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/CHT Whisk=
+ey Cove PMIC/bind
+	--> /sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/i2c-11/subsystem/dri=
+vers/CHT Whiskey Cove PMIC/bind
+	    more likely regexes:
+		/sys/bus/fsl\-mc/drivers/.*/bind
+		/sys/bus/pci/drivers/.*/bind
+
+Btw, on the above example, I have already a patch addressing it
+(see enclosed). I intend to submit it on a newer patch series.
+
+Thanks,
+Mauro
+
+[PATCH] ABI: sysfs-bus-pci: add a alternative What fields
+
+There are some PCI ABI that aren't shown under:
+
+	/sys/bus/pci/drivers/.../
+
+Because they're registered with a different class. That's
+the case of, for instance:
+
+	/sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/unbind
+
+This one is not present under /sys/bus/pci:
+
+	$ find /sys/bus/pci -name 'CHT Whiskey Cove PMIC'
+
+Although clearly this is provided by a PCI driver:
+
+	/sys/devices/pci0000:00/0000:00:02.0/i2c-4/subsystem/drivers/CHT Whiskey C=
+ove PMIC/unbind
+
+So, add an altertate What location in order to match bind/unbind
+to such devices.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/te=
+sting/sysfs-bus-pci
+index 1da4c8db3a9e..f4efbcb0b18c 100644
+--- a/Documentation/ABI/testing/sysfs-bus-pci
++++ b/Documentation/ABI/testing/sysfs-bus-pci
+@@ -1,4 +1,5 @@
+ What:		/sys/bus/pci/drivers/.../bind
++What:		/sys/devices/pciX/.../bind
+ Date:		December 2003
+ Contact:	linux-pci@vger.kernel.org
+ Description:
+@@ -14,6 +15,7 @@ Description:
+ 		(Note: kernels before 2.6.28 may require echo -n).
+=20
+ What:		/sys/bus/pci/drivers/.../unbind
++What:		/sys/devices/pciX/.../unbind
+ Date:		December 2003
+ Contact:	linux-pci@vger.kernel.org
+ Description:
+@@ -29,6 +31,7 @@ Description:
+ 		(Note: kernels before 2.6.28 may require echo -n).
+=20
+ What:		/sys/bus/pci/drivers/.../new_id
++What:		/sys/devices/pciX/.../new_id
+ Date:		December 2003
+ Contact:	linux-pci@vger.kernel.org
+ Description:
+@@ -47,6 +50,7 @@ Description:
+ 		  # echo "8086 10f5" > /sys/bus/pci/drivers/foo/new_id
+=20
+ What:		/sys/bus/pci/drivers/.../remove_id
++What:		/sys/devices/pciX/.../remove_id
+ Date:		February 2009
+ Contact:	Chris Wright <chrisw@sous-sol.org>
+ Description:
+
+
