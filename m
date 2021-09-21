@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB3841344B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE7541347D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233061AbhIUNft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:35:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40676 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbhIUNfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:35:45 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A0DB42212C;
-        Tue, 21 Sep 2021 13:34:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632231255;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dz5qSW/vIE0C9b96WRqJrDiPaO441jP3yZ4XrNvQgCA=;
-        b=bOB9cM999mRlGL1qCQRlCOcNnqL0GisdAByfT7efFGq79RUATPcJWLHr3N75MsBiiN70E2
-        eQCqPTRCekXVMVJoc3kW7OM9gjPzHVTc1ZKTBwXmJJ1S75ZEm1JponC6MAntDhNp4/wIO9
-        unYyVBrh6Wt8Uugc4sB2/mRiQnjL990=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632231255;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dz5qSW/vIE0C9b96WRqJrDiPaO441jP3yZ4XrNvQgCA=;
-        b=ZAWJGzdMkElo0sT9uf1r1b4V1ylafQ+GmzMzOHXcoqijmL6lnmodlvqfNvOoxmmkth0uRL
-        Xrg5US4lmBXGuQAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D30E13BD1;
-        Tue, 21 Sep 2021 13:34:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id PQulCVffSWFDQgAAMHmgww
-        (envelope-from <pvorel@suse.cz>); Tue, 21 Sep 2021 13:34:15 +0000
-Date:   Tue, 21 Sep 2021 15:34:13 +0200
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Richard Palethorpe <rpalethorpe@suse.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org,
-        linux-api@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>, ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH] aio: Wire up compat_sys_io_pgetevents_time64 for
- x86
-Message-ID: <YUnfVVjDhLNMSigV@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20210921130127.24131-1-rpalethorpe@suse.com>
+        id S233168AbhIUNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:41:21 -0400
+Received: from mga05.intel.com ([192.55.52.43]:27587 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233096AbhIUNlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:41:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="308909930"
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="308909930"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 06:34:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="613006988"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 21 Sep 2021 06:34:23 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 21 Sep 2021 16:34:22 +0300
+Date:   Tue, 21 Sep 2021 16:34:22 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alexander Graf <graf@amazon.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Subject: Re: [RFT PATCH 5/9] usb: typec: tipd: Allow to configure irq bits
+Message-ID: <YUnfXkVHbgeqV9V2@kuha.fi.intel.com>
+References: <20210918120934.28252-1-sven@svenpeter.dev>
+ <20210918120934.28252-6-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921130127.24131-1-rpalethorpe@suse.com>
+In-Reply-To: <20210918120934.28252-6-sven@svenpeter.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richie,
+On Sat, Sep 18, 2021 at 02:09:30PM +0200, Sven Peter wrote:
+> The Apple variant of the TI TPS6598x chip uses different interrupt
+> numbers. Prepare for that by allowing those to be configured depending
+> on the compatible.
 
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+OK, so I think this justifies having a completely separate irq
+handler for your board.
 
-Thanks!
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  drivers/usb/typec/tipd/core.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 4a6d66250fef..d191e7435018 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -80,6 +80,10 @@ static const char *const modes[] = {
+>  struct tps6598x_hw {
+>  	bool use_int1;
+>  	bool use_int2;
+> +	unsigned int irq_power_status_update;
+> +	unsigned int irq_data_status_update;
+> +	unsigned int irq_plug_event;
+> +	void (*irq_trace)(u64 event1, u64 event2);
+>  };
 
-Kind regards,
-Petr
+Then I believe you don't need any of that.
+
+
+thanks,
+
+-- 
+heikki
