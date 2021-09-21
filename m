@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393F2412FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32929412FAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhIUHtk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 03:49:40 -0400
-Received: from mail1.shanghaitech.edu.cn ([119.78.254.90]:32535 "EHLO
-        mail.shanghaitech.edu.cn" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230172AbhIUHti (ORCPT
+        id S230286AbhIUHvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:51:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60946 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhIUHvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:49:38 -0400
-Received: from [10.15.44.216] by mail.shanghaitech.edu.cn with MESSAGESEC ESMTP id 456895189764503;
-        Tue, 21 Sep 2021 15:48:00 +0800 (CST)
-Received: from DESKTOP-U066CHB.localdomain (10.15.44.220) by
- smtp.shanghaitech.edu.cn (10.15.44.216) with Microsoft SMTP Server (TLS) id
- 14.3.399.0; Tue, 21 Sep 2021 15:48:01 +0800
-From:   Mianhan Liu <liumh1@shanghaitech.edu.cn>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>
-CC:     Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Mianhan Liu <liumh1@shanghaitech.edu.cn>
-Subject: [PATCH -next v2] net/ipv4/sysctl_net_ipv4.c: remove superfluous header files from sysctl_net_ipv4.c
-Date:   Tue, 21 Sep 2021 15:47:51 +0800
-Message-ID: <20210921074751.6182-1-liumh1@shanghaitech.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 21 Sep 2021 03:51:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9938D21D59;
+        Tue, 21 Sep 2021 07:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632210619; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FTiZUwoZLD7CoTiPY7EAa8Ut/2BuzZbrnfa7NhOfH4g=;
+        b=WaTWtd/zyEaKy32pCO/ZFivMBrGBsNSSYsOmLfz2N2vNrCNSqUdoJXcC5wAJfcHU1tEjFe
+        hLxCmBUc61a4RKr1Zs4/cThVcZfwuJIJ/KE+0hwgql2dctCRltou2hlafJSjc+G8Co/py7
+        lAsLJeP1KoKdl9BY+Hob9NW/qbqRgbY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4584EA3B9D;
+        Tue, 21 Sep 2021 07:50:19 +0000 (UTC)
+Date:   Tue, 21 Sep 2021 09:50:18 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@suse.de>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: Mark the OOM reaper thread as freezable
+Message-ID: <YUmOup7qwBbUqTJ7@dhcp22.suse.cz>
+References: <20210918233920.9174-1-sultan@kerneltoast.com>
+ <YUiBRdrkjIdB/rSN@dhcp22.suse.cz>
+ <YUiu42krQjSTVPnc@sultan-box.localdomain>
+ <YUjGIuQciY7HNj+Y@dhcp22.suse.cz>
+ <YUjeF6YsHKljSFis@sultan-box.localdomain>
+ <YUjvVP8pFL3Be9Jv@dhcp22.suse.cz>
+ <YUkLWuJYrvNp+tMh@sultan-box.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain
-X-Originating-IP: [10.15.44.220]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUkLWuJYrvNp+tMh@sultan-box.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sysctl_net_ipv4.c hasn't use any macro or function declared in igmp.h,
-inetdevice.h, mm.h, module.h, nsproxy.h, swap.h, inet_frag.h, route.h
-and snmp.h. Thus, these files can be removed from sysctl_net_ipv4.c
-safely without affecting the compilation of the net module.
+On Mon 20-09-21 15:29:46, Sultan Alsawaf wrote:
+> On Mon, Sep 20, 2021 at 10:30:12PM +0200, Michal Hocko wrote:
+> > We usually tend to provide Fixes where there has been something fixed.
+> > It seems just confusing if it is used for non functional changes,
+> > cleanups etc. Thera are gray zones of course.
+> 
+> Got it, thanks. So no tag would be used in such a case?
+> 
+> > I am not sure I follow. My understanding is that we need to make sure
+> > oom_reaper is not running after the quiescent state as it is changing
+> > user space address space. For that I believe we need to freeze the
+> > kthread at a proper moment. That is currently the entry point and maybe
+> > we can extend that even to the reaping loop but I haven't really
+> > explored that. PF_FREEZER_SKIP would skip over the reaper and that could
+> > result in it racing with the snapshotting no?
+> 
+> Kthreads cannot be implicitly frozen; it's not like PREEMPT. From what I've read
+> in the freezer code, two things must occur for a kthread to freeze: the kthread
+> must have PF_NOFREEZE unset (via set_freezable(), as is done in the patch I've
+> submitted here), and the kthread must have an explicit call into the freezer,
+> such as via wait_event_freezable().
+> 
+> Right now, oom_reaper is totally ignored by the freezer because PF_NOFREEZE is
+> set by default in all kthreads. As such, oom_reaper can keep running while
+> system-wide freezing occurs. If you think this can mangle snapshots, then
+> perhaps there is a real bug here after all.
 
-Signed-off-by: Mianhan Liu <liumh1@shanghaitech.edu.cn>
-
----
- net/ipv4/sysctl_net_ipv4.c | 9 ---------
- 1 file changed, 9 deletions(-)
-
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 6f1e64d49..4680268f2 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -6,25 +6,16 @@
-  * Added /proc/sys/net/ipv4 directory entry (empty =) ). [MS]
-  */
- 
--#include <linux/mm.h>
--#include <linux/module.h>
- #include <linux/sysctl.h>
--#include <linux/igmp.h>
--#include <linux/inetdevice.h>
- #include <linux/seqlock.h>
- #include <linux/init.h>
- #include <linux/slab.h>
--#include <linux/nsproxy.h>
--#include <linux/swap.h>
--#include <net/snmp.h>
- #include <net/icmp.h>
- #include <net/ip.h>
- #include <net/ip_fib.h>
--#include <net/route.h>
- #include <net/tcp.h>
- #include <net/udp.h>
- #include <net/cipso_ipv4.h>
--#include <net/inet_frag.h>
- #include <net/ping.h>
- #include <net/protocol.h>
- #include <net/netevent.h>
+OK, now I am getting your point. Sorry for being dense here. Process
+freezing has always been kinda muddy to me as I've said earlier. I have
+completely misunderstood your earlier PF_NOFREEZE remark.
 -- 
-2.25.1
-
-
+Michal Hocko
+SUSE Labs
