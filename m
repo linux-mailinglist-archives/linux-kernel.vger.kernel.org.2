@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F043413393
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93126413396
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbhIUMx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:53:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44567 "EHLO
+        id S232739AbhIUMyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:54:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48505 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232667AbhIUMxZ (ORCPT
+        by vger.kernel.org with ESMTP id S232667AbhIUMyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:53:25 -0400
+        Tue, 21 Sep 2021 08:54:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632228716;
+        s=mimecast20190719; t=1632228752;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TqxAQwuwKeUNvwuaTqo1+dLfw9h1X6NxpXvwJl/CpGM=;
-        b=itExvVqPG2cyY/PK7A/KCBqNiE/df2bbBtLHHFCo1VLnElZHsABLHbyhIqp2T0epgOhpkV
-        3/coGXBkH227QEQ8w6k6U/tD9bR+4iuqkAtEWsiFbcGKQiNfVFF/NaJ63j7We61wQR2+m+
-        d2GhiNKDqxIw+mRVvkKARliG+Sq7/cE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-QFtRXGZiPYSdUyLgA5hlNA-1; Tue, 21 Sep 2021 08:51:55 -0400
-X-MC-Unique: QFtRXGZiPYSdUyLgA5hlNA-1
-Received: by mail-ed1-f72.google.com with SMTP id s12-20020a05640217cc00b003cde58450f1so19027741edy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 05:51:55 -0700 (PDT)
+        bh=QT7c1hyCu5qlCGLm4lU550mRBx+ss6BkQeQEtVJJ7O4=;
+        b=et91dBfNIqfYBIWlXjMt56qQ1oy0PW5wUhRjh52zP3FwSTUxgqeKe9SyWGxQnxBzjMjTC3
+        MLDY635dSM6uzHHhunJ4uxtpIxokPTKIjqG5SIGT0HDTezOxrdoOvp/BwiKVU2rs5FpsnY
+        TfuIIh0/vr/P3xFRAfz1GTrZQ7EZbb0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-Hl7mrXghM6yvUfj0ZRN3lg-1; Tue, 21 Sep 2021 08:52:31 -0400
+X-MC-Unique: Hl7mrXghM6yvUfj0ZRN3lg-1
+Received: by mail-ed1-f71.google.com with SMTP id m20-20020aa7c2d4000000b003d1add00b8aso18947590edp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 05:52:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TqxAQwuwKeUNvwuaTqo1+dLfw9h1X6NxpXvwJl/CpGM=;
-        b=CNQmMxA5saxIu99mP+xeluNYpnOMBG+LxWRuV5K5JQTSLeV4OKYBhynnDHXp9AJ+ap
-         0w28L8oeR90vTu+0tFroE+AqR+34iOvhemCnapayiAhAo5zKlol6bzcrKDAFNtOkoADc
-         WGExLbU9VFJHZdd+4oPr4LaNeJhyJSJrjIBlU5g8tRxWoGM7safiExxBIR8pR+pzHbib
-         mvpOP+y1Ua6ZDlRs1hkeVRXiSquC8vyCXwRRk9Igw8XkovgQz9470sNSJfAMWFpoyIup
-         wXJRaRp756TWQaIJe0ThIyfzBeN2i+k7Gscb/kd6wvc66XRxjwJ7LiboNBHTiF6dqHHl
-         ZnmQ==
-X-Gm-Message-State: AOAM531F1o8ciYMohC1cGZ0lIPUFlpfMN/EP/O2jmHRsLPu+Hx3okKPo
-        wE1zndjqdu+LDauRr4sCD7Asiqw7POz7PMtfp5B2apDRofyx0jNTBfYngXk8sC6wBVt5Y2QLakA
-        HCtHlxomkgSDMjseOWAtLJHmh
-X-Received: by 2002:a17:906:c52:: with SMTP id t18mr34493872ejf.148.1632228714521;
-        Tue, 21 Sep 2021 05:51:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhuiUQhb0tewsqj63rPQftRwt57rxaB6FUVbu3JbDMhgH6wEublWh/IKVcBTwPNrwaAf/NaA==
-X-Received: by 2002:a17:906:c52:: with SMTP id t18mr34493856ejf.148.1632228714315;
-        Tue, 21 Sep 2021 05:51:54 -0700 (PDT)
+        bh=QT7c1hyCu5qlCGLm4lU550mRBx+ss6BkQeQEtVJJ7O4=;
+        b=pWHcHhxoiH1AheJM5tHT8TCdFe39+90BDXJIiFDeVdBPOtzziyJtgNFJWsiawGjkTn
+         budtS68M5Qofr1ypmm2p1wlFbzOKPjIU/wAC3BVvtbh373ORKtikQD+6l5v9j71OkDzp
+         pAbprLv4irj57W+9/jJsD8RbhK2Rjo19+FM3W8K2ccmKKuxXYWkKi9JyfP6UD5t1Eglt
+         3O2QAGdN9wgs/8fukKq4S7G9Hy2c5RkdmGXIFVAiie7ax1Vm+ADqZKENrC5p1TurnG90
+         1XYfJdlS6Uu/uv83ns0n0+GUp5WK75tzz/9C7lItlIu9mFdHKUGfYGqAiNOrWKGt3Ajb
+         z10w==
+X-Gm-Message-State: AOAM532GYJ4hMKZKsvHcuHQ5HKFJUHcVhHI2G9lfv2U4dhsmSL3wmE9d
+        FPbw0Zar/taHLBkvFL8yWArKuqCBAtdB+Gc3CbHH7+eYq2aoZ8BqUp7M2tNnZDlxEVdyYTzhxQr
+        qdlj4s8QaoPD2g17+ZoqEfR4L
+X-Received: by 2002:aa7:d850:: with SMTP id f16mr35080562eds.176.1632228750482;
+        Tue, 21 Sep 2021 05:52:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwpsuNi5Q+WZay0piknbslOd2NnlEfRhQpdmEoN5ZN/nyc2tFUMYba8wi0JfcdtHWs0a/242w==
+X-Received: by 2002:aa7:d850:: with SMTP id f16mr35080550eds.176.1632228750354;
+        Tue, 21 Sep 2021 05:52:30 -0700 (PDT)
 Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id d9sm8435983ede.31.2021.09.21.05.51.53
+        by smtp.gmail.com with ESMTPSA id f2sm7323114eje.109.2021.09.21.05.52.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 05:51:54 -0700 (PDT)
-Subject: Re: [PATCH 2/2] acpi: pnp: remove duplicated BRI0A49 and BDP3336
- entries
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Matan Ziv-Av <matan@svgalib.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20210916170054.136790-1-krzysztof.kozlowski@canonical.com>
- <20210916170054.136790-2-krzysztof.kozlowski@canonical.com>
+        Tue, 21 Sep 2021 05:52:30 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: dell: fix DELL_WMI_PRIVACY dependencies &
+ build error
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Perry Yuan <Perry.Yuan@dell.com>, Dell.Client.Kernel@dell.com,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <mgross@linux.intel.com>
+References: <20210918044829.19222-1-rdunlap@infradead.org>
 From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f78523c5-df88-a768-3b9a-d542bbd73a1c@redhat.com>
-Date:   Tue, 21 Sep 2021 14:51:53 +0200
+Message-ID: <3cd39888-d0ec-f3b2-b696-8d1cf86a7684@redhat.com>
+Date:   Tue, 21 Sep 2021 14:52:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210916170054.136790-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210918044829.19222-1-rdunlap@infradead.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,38 +75,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 9/16/21 7:00 PM, Krzysztof Kozlowski wrote:
-> BRI0A49 and BDP3336 are already on the list.
+On 9/18/21 6:48 AM, Randy Dunlap wrote:
+> When DELL_WMI=y, DELL_WMI_PRIVACY=y, and LEDS_TRIGGER_AUDIO=m, there
+> is a linker error since the LEDS trigger code is built as a loadable
+> module. This happens because DELL_WMI_PRIVACY is a bool that depends
+> on a tristate (LEDS_TRIGGER_AUDIO=m), which can be dangerous.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ld: drivers/platform/x86/dell/dell-wmi-privacy.o: in function `dell_privacy_wmi_probe':
+> dell-wmi-privacy.c:(.text+0x3df): undefined reference to `ledtrig_audio_get'
+> 
+> Fixes: 8af9fa37b8a3 ("platform/x86: dell-privacy: Add support for Dell hardware privacy")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Perry Yuan <Perry.Yuan@dell.com>
+> Cc: Dell.Client.Kernel@dell.com
+> Cc: platform-driver-x86@vger.kernel.org
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Cc: Mark Gross <mgross@linux.intel.com>
 
-Thanks, patch looks good to me:
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-Rafael, I've picked up 1/2 since that applies to a drivers/platform/x86
-driver. I'll leave picking this one up to you.
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
 Regards,
 
 Hans
 
+
 > ---
->  drivers/acpi/acpi_pnp.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/platform/x86/dell/Kconfig |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/acpi/acpi_pnp.c b/drivers/acpi/acpi_pnp.c
-> index 8f2dc176bb41..ffdcfcd4a10d 100644
-> --- a/drivers/acpi/acpi_pnp.c
-> +++ b/drivers/acpi/acpi_pnp.c
-> @@ -156,8 +156,6 @@ static const struct acpi_device_id acpi_pnp_device_ids[] = {
->  	{"BRI0A49"},		/* Boca Complete Ofc Communicator 14.4 Data-FAX */
->  	{"BRI1400"},		/* Boca Research 33,600 ACF Modem */
->  	{"BRI3400"},		/* Boca 33.6 Kbps Internal FD34FSVD */
-> -	{"BRI0A49"},		/* Boca 33.6 Kbps Internal FD34FSVD */
-> -	{"BDP3336"},		/* Best Data Products Inc. Smart One 336F PnP Modem */
->  	{"CPI4050"},		/* Computer Peripherals Inc. EuroViVa CommCenter-33.6 SP PnP */
->  	{"CTL3001"},		/* Creative Labs Phone Blaster 28.8 DSVD PnP Voice */
->  	{"CTL3011"},		/* Creative Labs Modem Blaster 28.8 DSVD PnP Voice */
+> --- linux-next-20210917.orig/drivers/platform/x86/dell/Kconfig
+> +++ linux-next-20210917/drivers/platform/x86/dell/Kconfig
+> @@ -166,8 +166,7 @@ config DELL_WMI
+>  
+>  config DELL_WMI_PRIVACY
+>  	bool "Dell WMI Hardware Privacy Support"
+> -	depends on DELL_WMI
+> -	depends on LEDS_TRIGGER_AUDIO
+> +	depends on LEDS_TRIGGER_AUDIO = y || DELL_WMI = LEDS_TRIGGER_AUDIO
+>  	help
+>  	  This option adds integration with the "Dell Hardware Privacy"
+>  	  feature of Dell laptops to the dell-wmi driver.
 > 
 
