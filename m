@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67612414127
+	by mail.lfdr.de (Postfix) with ESMTP id AFDE1414128
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhIVFO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:14:56 -0400
+        id S232278AbhIVFO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:14:57 -0400
 Received: from mga12.intel.com ([192.55.52.136]:29329 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231901AbhIVFOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232109AbhIVFOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 01:14:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203012045"
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203012048"
 X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
-   d="scan'208";a="203012045"
+   d="scan'208";a="203012048"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 22:13:14 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 22:13:15 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
-   d="scan'208";a="550107698"
+   d="scan'208";a="550107703"
 Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
   by FMSMGA003.fm.intel.com with ESMTP; 21 Sep 2021 22:13:14 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -34,9 +34,9 @@ Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
         Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
         Yi Liu <yi.l.liu@intel.com>,
         "Tian, Kevin" <kevin.tian@intel.com>
-Subject: [RFC 6/7] iommu: Add KVA map API
-Date:   Tue, 21 Sep 2021 13:29:40 -0700
-Message-Id: <1632256181-36071-7-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [RFC 7/7] dma/idxd: Use dma-iommu PASID API instead of SVA lib
+Date:   Tue, 21 Sep 2021 13:29:41 -0700
+Message-Id: <1632256181-36071-8-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -47,105 +47,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds KVA map API. It enforces KVA address range checking and
-other potential sanity checks. Currently, only the direct map range is
-checked.
-For trusted devices, this API returns immediately after the above sanity
-check. For untrusted devices, this API serves as a simple wrapper around
-IOMMU map/unmap APIs. 
-OPEN: Alignment at the minimum page size is required, not as rich and
-flexible as DMA-APIs.
+Showcase a partial usage of the new PASID DMA API, it replaces SVA
+lib API in terms of obtaining system PASID and addressing mode setup.
+But the actual work submission is not included.
 
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/iommu/iommu.c | 57 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/iommu.h |  5 ++++
- 2 files changed, 62 insertions(+)
+ drivers/dma/idxd/idxd.h |  4 +++-
+ drivers/dma/idxd/init.c | 36 ++++++++++++++++--------------------
+ 2 files changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index acfdcd7ebd6a..45ba55941209 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2490,6 +2490,63 @@ int iommu_map(struct iommu_domain *domain, unsigned long iova,
- }
- EXPORT_SYMBOL_GPL(iommu_map);
+diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
+index 507f5d5119f9..eaedaf3c3e3b 100644
+--- a/drivers/dma/idxd/idxd.h
++++ b/drivers/dma/idxd/idxd.h
+@@ -12,6 +12,7 @@
+ #include <linux/pci.h>
+ #include <linux/perf_event.h>
+ #include <linux/idxd.h>
++#include <linux/dma-iommu.h>
+ #include "registers.h"
  
-+/*
-+ * REVISIT: This might not be sufficient. Could also check permission match,
-+ * exclude kernel text, etc.
-+ */
-+static inline bool is_kernel_direct_map(unsigned long start, phys_addr_t size)
-+{
-+	return (start >= PAGE_OFFSET) && ((start + size) <= VMALLOC_START);
-+}
+ #define IDXD_DRIVER_VERSION	"1.00"
+@@ -253,7 +254,8 @@ struct idxd_device {
+ 
+ 	struct iommu_sva *sva;
+ 	unsigned int pasid;
+-
++	enum iommu_dma_pasid_mode spasid_mode;
++	struct iommu_domain *domain; /* For KVA mapping */
+ 	int num_groups;
+ 
+ 	u32 msix_perm_offset;
+diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+index c404a1320536..8f952a4c8909 100644
+--- a/drivers/dma/idxd/init.c
++++ b/drivers/dma/idxd/init.c
+@@ -16,6 +16,7 @@
+ #include <linux/idr.h>
+ #include <linux/intel-svm.h>
+ #include <linux/iommu.h>
++#include <linux/dma-iommu.h>
+ #include <uapi/linux/idxd.h>
+ #include <linux/dmaengine.h>
+ #include "../dmaengine.h"
+@@ -32,6 +33,11 @@ static bool sva = true;
+ module_param(sva, bool, 0644);
+ MODULE_PARM_DESC(sva, "Toggle SVA support on/off");
+ 
++static int spasid_mode = IOMMU_DMA_PASID_IOVA;
++module_param(spasid_mode, int, 0644);
++MODULE_PARM_DESC(spasid_mode,
++		 "Supervisor PASID mode (1: pass-through,2: DMA API)");
 +
-+/**
-+ * @brief Map kernel virtual address for DMA remap. DMA request with
-+ *	domain's default PASID will target kernel virtual address space.
-+ *
-+ * @param domain	Domain contains the PASID
-+ * @param page		Kernel virtual address
-+ * @param size		Size to map
-+ * @param prot		Permissions
-+ * @return int		0 on success or error code
-+ */
-+int iommu_map_kva(struct iommu_domain *domain, struct page *page,
-+		  size_t size, int prot)
-+{
-+	phys_addr_t phys = page_to_phys(page);
-+	void *kva = phys_to_virt(phys);
-+
-+	/*
-+	 * TODO: Limit DMA to kernel direct mapping only, avoid dynamic range
-+	 * until we have mmu_notifier for making IOTLB coherent with CPU.
-+	 */
-+	if (!is_kernel_direct_map((unsigned long)kva, size))
-+		return -EINVAL;
-+	/* KVA domain type indicates shared CPU page table, skip building
-+	 * IOMMU page tables. This is the fast mode where only sanity check
-+	 * is performed.
-+	 */
-+	if (domain->type == IOMMU_DOMAIN_KVA)
-+		return 0;
-+
-+	return iommu_map(domain, (unsigned long)kva, phys, size, prot);
-+}
-+EXPORT_SYMBOL_GPL(iommu_map_kva);
-+
-+int iommu_unmap_kva(struct iommu_domain *domain, void *kva,
-+		    size_t size)
-+{
-+	if (!is_kernel_direct_map((unsigned long)kva, size))
-+		return -EINVAL;
-+
-+	if (domain->type == IOMMU_DOMAIN_KVA) {
-+		pr_debug_ratelimited("unmap kva skipped %llx", (u64)kva);
-+		return 0;
-+	}
-+	/* REVISIT: do we need a fast version? */
-+	return iommu_unmap(domain, (unsigned long)kva, size);
-+}
-+EXPORT_SYMBOL_GPL(iommu_unmap_kva);
-+
- int iommu_map_atomic(struct iommu_domain *domain, unsigned long iova,
- 	      phys_addr_t paddr, size_t size, int prot)
+ #define DRV_NAME "idxd"
+ 
+ bool support_enqcmd;
+@@ -519,35 +525,25 @@ static struct idxd_device *idxd_alloc(struct pci_dev *pdev, struct idxd_driver_d
+ 
+ static int idxd_enable_system_pasid(struct idxd_device *idxd)
  {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index cd8225f6bc23..c0fac050ca57 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -427,6 +427,11 @@ extern size_t iommu_map_sg(struct iommu_domain *domain, unsigned long iova,
- extern size_t iommu_map_sg_atomic(struct iommu_domain *domain,
- 				  unsigned long iova, struct scatterlist *sg,
- 				  unsigned int nents, int prot);
-+extern int iommu_map_kva(struct iommu_domain *domain,
-+			 struct page *page, size_t size, int prot);
-+extern int iommu_unmap_kva(struct iommu_domain *domain,
-+			   void *kva, size_t size);
+-	int flags;
+-	unsigned int pasid;
+-	struct iommu_sva *sva;
+-
+-	flags = SVM_FLAG_SUPERVISOR_MODE;
+-
+-	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, &flags);
+-	if (IS_ERR(sva)) {
+-		dev_warn(&idxd->pdev->dev,
+-			 "iommu sva bind failed: %ld\n", PTR_ERR(sva));
+-		return PTR_ERR(sva);
+-	}
++	int pasid;
++	struct iommu_domain *domain = NULL;
+ 
+-	pasid = iommu_sva_get_pasid(sva);
+-	if (pasid == IOMMU_PASID_INVALID) {
+-		iommu_sva_unbind_device(sva);
++	pasid = iommu_dma_pasid_enable(&idxd->pdev->dev, &domain, spasid_mode);
++	if (pasid == INVALID_IOASID) {
++		dev_err(&idxd->pdev->dev, "No DMA PASID in mode %d\n", spasid_mode);
+ 		return -ENODEV;
+ 	}
+-
+-	idxd->sva = sva;
+ 	idxd->pasid = pasid;
+-	dev_dbg(&idxd->pdev->dev, "system pasid: %u\n", pasid);
++	idxd->spasid_mode = spasid_mode;
++	idxd->domain = domain;
 +
- extern phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain, dma_addr_t iova);
- extern void iommu_set_fault_handler(struct iommu_domain *domain,
- 			iommu_fault_handler_t handler, void *token);
+ 	return 0;
+ }
+ 
+ static void idxd_disable_system_pasid(struct idxd_device *idxd)
+ {
+-
+-	iommu_sva_unbind_device(idxd->sva);
++	/* TODO: remove sva, restore no PASID PT and PASIDE */
++	iommu_dma_pasid_disable(&idxd->pdev->dev, idxd->domain);
+ 	idxd->sva = NULL;
+ }
+ 
 -- 
 2.25.1
 
