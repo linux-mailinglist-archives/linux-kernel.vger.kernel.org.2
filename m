@@ -2,180 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 334A24131FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A570413202
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbhIUKzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:55:13 -0400
-Received: from mga12.intel.com ([192.55.52.136]:26569 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231969AbhIUKzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:55:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="202823384"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="202823384"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 03:53:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="612931945"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 21 Sep 2021 03:53:38 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 21 Sep 2021 13:53:37 +0300
-Date:   Tue, 21 Sep 2021 13:53:37 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc:     Benson Leung <bleung@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "bleung@chromium.org" <bleung@chromium.org>,
-        "badhri@google.com" <badhri@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
-Message-ID: <YUm5sdbceMcDTvYj@kuha.fi.intel.com>
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-3-pmalani@chromium.org>
- <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
- <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
- <YUB16up3JDwi3HfI@kuha.fi.intel.com>
- <YULwz8NsoA3+vrhA@google.com>
- <YUMbGp0aemx1HCHv@kuha.fi.intel.com>
- <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+        id S232203AbhIUK5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhIUK5f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:57:35 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B415C061574;
+        Tue, 21 Sep 2021 03:56:07 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id t4so13126079plo.0;
+        Tue, 21 Sep 2021 03:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y7LURbSsGsDLVF+thUJ2ISGPY7TGQ+JWR2GJD3gQl74=;
+        b=Zn+V9OroQ+EvS2kYx+2MQAXc1/lL+8Nh/fK2eyp67nOYVbL6w7j5TDZjaRU3Ys9fZ2
+         nySpBS+1drMi7MiROt1+cLz95IAl6+UGcwByaqw+G0AmUA0jFOmPKUp9PfEH7MvJePgt
+         rHOEuphF9qvBfkSeA6/CcoUbSPLtM6+F9jianHTHSyAKHJwtzFhUEHrNWNg1uddkr02k
+         Xbj/8O5nx+qfHfiuf7hKe+MjKDSWOJFF1dvHjIWffPgQm5pRQzuBKA4PsbAN39zSQYpg
+         OuGKUGEkeq8mNB/7vXUE361/tCV5qCWO/l4aNU/HfdmoAA6Z6JbmkZ3J8Kr1Q3oPPKQ7
+         xU/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y7LURbSsGsDLVF+thUJ2ISGPY7TGQ+JWR2GJD3gQl74=;
+        b=gnNOKZ4OU22KKAUH/eMzSAJL/q9EfI5cKHJvqFMewbX41mkaKoC87BOuvC1+KB9bO5
+         1vwFzg3OGugNdg5tZnO1q39DUHtM7Schx3/HpGpeDLuN0ys6TWmgSFC+L4Kn5PYWSCnR
+         OP1T7D4K66uetJPKruq3npHKsFR0MnUFhuP8SBuMqEQs5uALgPO8Zeoq0Z1GDEnv/rJB
+         PjaQfTuzfOvKQUEMmt71uWnD+qiolKf9KUbs5Sm5umJjUKlhAKjLZUyGJqG+dkWVheqD
+         gzOaV2IQhOtEuQbDSN7eHhxlNKZ1tSQrgwwRoWnLau/I2gNAabAkN94ZKvBoEAS0S70T
+         BA6w==
+X-Gm-Message-State: AOAM533iBh7bR/lpqOlK9/gxu2N1RkzPlTgNnyjY6uVHh1PSxrnVqZ+z
+        T80siKL8or0QUmKiDcqME28=
+X-Google-Smtp-Source: ABdhPJwvzFa3P9dyBNmtq5bhtLhCGwRi18+b7ku5ZrFRQr7sb0n8C8DlXibxPdegCQqRaS7/BAcRyw==
+X-Received: by 2002:a17:90b:3b41:: with SMTP id ot1mr4564161pjb.186.1632221766670;
+        Tue, 21 Sep 2021 03:56:06 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (252.229.64.34.bc.googleusercontent.com. [34.64.229.252])
+        by smtp.gmail.com with ESMTPSA id z9sm3083784pfr.124.2021.09.21.03.56.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 03:56:06 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 10:56:01 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        John Garry <john.garry@huawei.com>,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
+Message-ID: <20210921105601.GA3121@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
+ <YUkErK1vVZMht4s8@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <YUkErK1vVZMht4s8@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 02:12:23PM +0000, Adam Thomson wrote:
-> On 16 September 2021 11:23, Heikki Krogerus wrote:
-> 
-> > > Thanks for providing the clarification. So you're proposing a port-psy and a
-> > > port-partner-psy that are connected to each other (one supplying the other).
-> > > If PD is not present, those two will exist per port and partner, and there
-> > > will be information about Type-C current (and possibly BC 1.2 and other
-> > > methods?)
-> > 
-> > Yes, exactly.
-> > 
-> > > Do you have an example hierarchy you could share that explains what it would
-> > > look like in /sys/class/power_supply with PD with Source Caps and Sink Caps on
-> > > both sides?
-> > 
-> > I don't yet, but I'll prepare something. I did notice already that the
-> > power supply class does not seem to display the suppliers nor
-> > supplicants in sysfs. But we can always improve the class.
-> > 
-> > I probable should not talk about "hierarchy". Maybe taking about
-> > simply "chain" of power supplies is more correct?
-> > 
-> > > I think this all makes sense if the connector class is a read interface
-> > > for this info. Have you considered how the type-c connector class and this pd
-> > > psy support will handle dynamic PDO changes for advertisement FROM the
-> > ports?
-> > >
-> > > For example, let's say you wanted the kernel and user to manage two USB-C
-> > ports
-> > > with higher power support (meaning, 5V, 9V, 15V, 20V capable), but then your
-> > > kernel and user needs to edit the Source Caps on the fly based on load
-> > > balancing.
-> > >
-> > > If caps are represented as a group of psys together, how do you as a kernel
-> > > and user create an modify the set of Source_Caps you put out on a port?
-> > 
-> > My idea is to utilise the "present" property with the ports. You would
-> > always display all the possible supplies, but only the ones that you
-> > expose in your current capabilities will be present.
-> > 
-> > The idea is also that the ports are always supplied by normal power
-> > supplies of type "battery", "AC" and what have you. Those you can use
-> > to see the maximum power your port can get, and to determine the
-> > currently available power by checking the other ports that consume the
-> > same supply.
+Hello Matthew,
+I love your suggestion to make it more cache-friendly (and batch
+allocation) and it sounds good to me. I appreciate it so much.
 
-Going back here a bit... It now looks like this second part is not
-possible, which sucks, but it only means registering a separate object
-(psy) for each PDO is even more important.
+But give me some time (from just one to few days) to
+read relevant papers. and then I'll reply to your suggestions
+and send v3 with your suggestions in mind.
 
-> > So if you need more power for one port, you most likely will need to
-> > attempt to adjust the power levels of the source PDO power supplies of
-> > the other ports that share the base supply (like battery), or possibly
-> > disable them, and that way enable (make present) more source supplies
-> > for your port. That is the idea, but I admit I have not thought of
-> > everything, so I'm not completely sure would it work exactly like
-> > that, but the power balancing should in any case be possible with the
-> > chain of power supplies one way or the other.
-> > 
-> > I hope I understood your question correctly, and I hope I was able to
-> > give you an answer :-)
-> 
-> Thanks for the additional updates. So is the intention here to move control of
-> PDO selection away from TCPM, or add more flexibility to it? As I understand it
-> from previous efforts around all of this, the intention was that TCPM makes the
-> decision as to which PDO to select (and which APDO for PPS) based on the offered
-> capabilities of the source and the sink capabilities which are described in FW.
-> Am just trying to envisage the use-cases here and how the kernel/user is
-> involved in selecting PDOs/voltages/currents.
-
-If we can leave the decision about the selection to TCPM, that would
-be great! I'm not against that at all. As I said, I have not though
-through the control aspect. Right now I'm mostly concerned about how
-we expose the information to the user. The only reason why I have
-considered the control part at all is because how ever we decide to
-expose the information to the user, it has to work with control as
-well.
-
-> IIRC there used to be functions for updating source/sink capabilities but these
-> never had users and were subsequently removed. I guess this would be essentially
-> the functional replacement for those APIs?
-> 
-> Personally, I think the idea of source/sink PSY instances supplying each other
-> seems reasonable. Right now we represent the external PD/Type-C supply (partner)
-> through TCPM as a PSY instance which is always present for the associated port,
-> although obviously when no source partner exists we're marked as offline. For
-> the partner side I'm guessing the PSY instance will be dynamically
-> created/destroyed? From previous experience PSY classes have tended to be
-> statically included so would be interested in seeing what this looks like in
-> reality.
-
-If there is anything that should be improved in the PSY class itself
-(and I'm sure there's plenty), then we improve it.
-
-> Am still unsure on using PSY to expose individual PDOs though and this still
-> feels quite heavyweight. I assume we're not wanting to expose everything in PDOs
-> really, just the voltage/current info? Feels like we should be able to do this
-> with individual properties which a user can be notified of changes to through
-> the normal prop notifier, rather than a collection of PSY class instances.
-> However, I'm happy to be convinced the other way so will await further
-> details. :)
-
-The final PSYs and the supply chains they create as well as the
-individual properties I'm more than happy to talk about, but having a
-separate object for the smallest thing that we can see (PDO) is the
-right thing to do here IMO. Trying to concatenate things into single
-objects especially in sysfs, despite how nice it always would seem,
-has taken me to the brink of disaster in the past far too many times.
-
-In this case we don't need to take the risk of having to duplicated
-information or in worst case deprecate something that is also exposed
-to the sysfs in the future.
-
-So the question is not why should we registers every individual PDO
-separately. The question is, why shouldn't we do that? And saying that
-it's "heavyweight" I'm afraid is not good enough. :-)
-
-Right now I simply don't see any other way that would be as flexible,
-or that could even handle all the different platforms in uniform way
-(this needs to work with TCPM, UCSI, and everything else), as
-registering separate object (psy) for every single PDO.
-
-thanks,
-
--- 
-heikki
+Cheers,
+Hyeonggon
