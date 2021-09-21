@@ -2,134 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D8C413C0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFFF413C11
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235298AbhIUVLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:11:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54015 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235296AbhIUVLE (ORCPT
+        id S235328AbhIUVMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:12:39 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45965 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235287AbhIUVM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:11:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632258573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MlpLbPlo4KBTm6av7Erxbr1sl480yKpqTzkq1T4fFto=;
-        b=i3+Ts1UazGToaiU19md1QAeIb6XQu3crxJ7BdznORFJ8UMVR18VPCFT3O/MUWBrZ6vrovQ
-        elXBQAKAE5Qwfz5yjyP+7xxLQZFX0xIR2QbGiZKMz2J2iUvg2Hcu7+4yXn9NksxB1M0EPG
-        eiCy3cLy8Sl7axi9QLcqUgNnYdJ8GHY=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-fEwmo4xfN6O1So43PYimXw-1; Tue, 21 Sep 2021 17:09:32 -0400
-X-MC-Unique: fEwmo4xfN6O1So43PYimXw-1
-Received: by mail-ot1-f71.google.com with SMTP id x23-20020a056830245700b00547388c3da3so137267otr.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:09:32 -0700 (PDT)
+        Tue, 21 Sep 2021 17:12:26 -0400
+Received: by mail-oi1-f173.google.com with SMTP id v10so1070922oic.12;
+        Tue, 21 Sep 2021 14:10:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MlpLbPlo4KBTm6av7Erxbr1sl480yKpqTzkq1T4fFto=;
-        b=ijuVt6axvg0RFZU614YvGBWXhiUJE/jcTLUNCxIo/DSwkgbCCOfK0IlVDuL3U68199
-         LhnPMDFN99+XWlbsoRqEpqd/SD4Bx00dKJk484TWIEu49iwy/r0RjQqutSQcM1zbeSg7
-         ktMtgMuN0impazevAgTm5anwhQdodt0UvLXRtSFTWc0LNJ4bmTg3OpKjz/Qc08wV5AX+
-         ys0bQo6zn9a4bL02tTBilDBh7VlH3h+YHSZtOGPR/QYJ5tndvnyI51rp67eap5B9818N
-         Exhm73QzN4LcqMRiw1mnTru16yn2gbybZ47bv0P8afEF6oKC61pSEv3ct2jHDz2HJMfv
-         zzFw==
-X-Gm-Message-State: AOAM533TGLemc64olDrLIL4sZMZXcKeoDI2KQXGOwilgPvbyT1asO+6s
-        7mpCMOltg6F4H3f/i1No9QohyjAH9Y0hb/TV6rBtAk4BjStXrmAMd5D+/OEHPqfyRM9XGWh0zRe
-        fVIg9qWASGrFxzAWGvF5oSM6h
-X-Received: by 2002:aca:120f:: with SMTP id 15mr1525403ois.62.1632258571925;
-        Tue, 21 Sep 2021 14:09:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhqVoP+OVs+kyF/lfOuiIjVaG7CDYwxfFsiO8jsmgxqmlxGTrRDnls5rys+4wGpfrkbujdyw==
-X-Received: by 2002:aca:120f:: with SMTP id 15mr1525386ois.62.1632258571725;
-        Tue, 21 Sep 2021 14:09:31 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id k23sm55513ood.12.2021.09.21.14.09.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jIz2G48SF2XThdMGQsfeQUy2tCLoDKrmydgjbV43nOk=;
+        b=QpJ0ARP+wALZvRtftGIdnz/AqNsLle1AH8XngMUkV/iOQkorCyKU8RB0D2/9S7/LbK
+         P5a52gpa0lWu3JrY5heZu+o9Rz2UXKzg8fPItGltX30IK/5Wscdq4PtqZXOh/+MpWQ55
+         yA0TcpfD+W3SfmrAhj5J+S9NBB4kYIuOYjVu0UcVXl+YLYBviZKQCKDzk//VLKBR43xz
+         bDbn4CGGqcXkBbCSZ3bQXoDAaJeM/v+cQk4JYy8X5JUWZK+cgJJK7qttjjhFQFWXc2hP
+         avzAWoLUZ98KA9M89YpP1QUmF4BNat+1W1pzZ5pS3BwkZFP0aOK97kC8JDjFdsuWVMoZ
+         7lrg==
+X-Gm-Message-State: AOAM532oGVXmqOfiad3dzichOdsK4LwI31N86uMLEc5dM+mcf4fQVjpm
+        xmBYRDsHvj98hs11SpckYg==
+X-Google-Smtp-Source: ABdhPJzVxcUKtkEaMTuDtJmU/GqAZYe5OyjA58+NTxsyuCgjp7qZKhxVm2JNoJ6jbd2cdujwTNJ7/Q==
+X-Received: by 2002:aca:eb83:: with SMTP id j125mr107354oih.47.1632258656807;
+        Tue, 21 Sep 2021 14:10:56 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id s24sm35233oic.34.2021.09.21.14.10.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:09:31 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 15:09:29 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Liu Yi L <yi.l.liu@intel.com>, hch@lst.de, jasowang@redhat.com,
-        joro@8bytes.org, jean-philippe@linaro.org, kevin.tian@intel.com,
-        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
-        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
-        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        david@gibson.dropbear.id.au, nicolinc@nvidia.com
-Subject: Re: [RFC 05/20] vfio/pci: Register device to /dev/vfio/devices
-Message-ID: <20210921150929.5977702c.alex.williamson@redhat.com>
-In-Reply-To: <20210921164001.GR327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
-        <20210919063848.1476776-6-yi.l.liu@intel.com>
-        <20210921164001.GR327412@nvidia.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Tue, 21 Sep 2021 14:10:56 -0700 (PDT)
+Received: (nullmailer pid 3331030 invoked by uid 1000);
+        Tue, 21 Sep 2021 21:10:55 -0000
+Date:   Tue, 21 Sep 2021 16:10:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Ryu Euiyoul <ryu.real@samsung.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-clk@vger.kernel.org, Amit Pundir <amit.pundir@linaro.org>,
+        Tom Gall <tom.gall@linaro.org>, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/6] dt-bindings: clock: Add bindings definitions for
+ Exynos850 CMU
+Message-ID: <YUpKX+0nZNTvLUgH@robh.at.kernel.org>
+References: <20210914155607.14122-1-semen.protsenko@linaro.org>
+ <20210914155607.14122-5-semen.protsenko@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914155607.14122-5-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021 13:40:01 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Sun, Sep 19, 2021 at 02:38:33PM +0800, Liu Yi L wrote:
-> > This patch exposes the device-centric interface for vfio-pci devices. To
-> > be compatiable with existing users, vfio-pci exposes both legacy group
-> > interface and device-centric interface.
-> > 
-> > As explained in last patch, this change doesn't apply to devices which
-> > cannot be forced to snoop cache by their upstream iommu. Such devices
-> > are still expected to be opened via the legacy group interface.
-
-This doesn't make much sense to me.  The previous patch indicates
-there's work to be done in updating the kvm-vfio contract to understand
-DMA coherency, so you're trying to limit use cases to those where the
-IOMMU enforces coherency, but there's QEMU work to be done to support
-the iommufd uAPI at all.  Isn't part of that work to understand how KVM
-will be told about non-coherent devices rather than "meh, skip it in the
-kernel"?  Also let's not forget that vfio is not only for KVM.
- 
-> > When the device is opened via /dev/vfio/devices, vfio-pci should prevent
-> > the user from accessing the assigned device because the device is still
-> > attached to the default domain which may allow user-initiated DMAs to
-> > touch arbitrary place. The user access must be blocked until the device
-> > is later bound to an iommufd (see patch 08). The binding acts as the
-> > contract for putting the device in a security context which ensures user-
-> > initiated DMAs via this device cannot harm the rest of the system.
-> > 
-> > This patch introduces a vdev->block_access flag for this purpose. It's set
-> > when the device is opened via /dev/vfio/devices and cleared after binding
-> > to iommufd succeeds. mmap and r/w handlers check this flag to decide whether
-> > user access should be blocked or not.  
+On Tue, 14 Sep 2021 18:56:05 +0300, Sam Protsenko wrote:
+> Clock controller driver is designed to have separate instances for each
+> particular CMU. So clock IDs in this bindings header also start from 1
+> for each CMU.
 > 
-> This should not be in vfio_pci.
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
+>  include/dt-bindings/clock/exynos850.h | 72 +++++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/exynos850.h
 > 
-> AFAIK there is no condition where a vfio driver can work without being
-> connected to some kind of iommu back end, so the core code should
-> handle this interlock globally. A vfio driver's ops should not be
-> callable until the iommu is connected.
-> 
-> The only vfio_pci patch in this series should be adding a new callback
-> op to take in an iommufd and register the pci_device as a iommufd
-> device.
 
-Couldn't the same argument be made that registering a $bus device as an
-iommufd device is a common interface that shouldn't be the
-responsibility of the vfio device driver?  Is userspace opening the
-non-group device anything more than a reservation of that device if
-access is withheld until iommu isolation?  I also don't really want to
-predict how ioctls might evolve to guess whether only blocking .read,
-.write, and .mmap callbacks are sufficient.  Thanks,
-
-Alex
-
+Acked-by: Rob Herring <robh@kernel.org>
