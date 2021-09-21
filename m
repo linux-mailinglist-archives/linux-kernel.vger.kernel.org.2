@@ -2,130 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7F74136E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145AB4136E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234260AbhIUQED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S234276AbhIUQFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbhIUQEC (ORCPT
+        with ESMTP id S233038AbhIUQFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:04:02 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD79C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:02:34 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n71so8482513iod.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:02:34 -0700 (PDT)
+        Tue, 21 Sep 2021 12:05:17 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19348C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:03:49 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id u18so38979441wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:03:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hLKvecr7rVDv4E5rFe3ar/63VqLQrIXucEIO2M9I4t8=;
-        b=HTv0g8JFV4VYzaYPYW+h2sTqr/myWOJeCcTCbkbR7Q8b9rDWU7AdrnoQEhzwDf21B1
-         olE/Pi/Fv04FDKuQoXhdjReyIhzaeAZQVUzw4B39OFQrO/iUFQcdxCt6rTH9qvToBk24
-         /vA9SSGB9PCJKZGIDW7U8WbLZCAVyNDakk0zg=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c9ydbvY8sDfCdxG0I7FnWgHTf3YXOLh553u7tDIhY7Q=;
+        b=hOu9oqEpgRma4m5TwajhAd5E/ajA0+oK5Wilrodt3LT7oGNBQVS/alGR9wd4Vflv/v
+         Jxp4GyJh+p4DoX7CDkqq4P9vJ/4OO/DUQQqOTCLQXw/iaOKndL3YBFu74cReCsa3WB85
+         h2zl/fVWmaAyNvuPTxYcKdDgXat04zMpqmEvVr2eDR3XgdWLCKrz9ALQAw7Ae0CWv5Cf
+         E82i7jMw1EoTdPtwkwPy85ocWzQsCVLxR6CLmAer6depp97ulfIRcVODaNsWq17W94tc
+         8NTYrtEnImcl7CE8pLca0kYtxR0e6N6JjBfCnoBDqY57l9J6Z4XR9y/xi9jkDVCIFsUd
+         8RyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hLKvecr7rVDv4E5rFe3ar/63VqLQrIXucEIO2M9I4t8=;
-        b=nQtcRqvgB2r1Uq4d9yLX34lMFnY+GvTU2U5kIJKxiqf7MqS6Uo/P0ETrAJJ9JvdOls
-         8e7cqwTlQP9qubVeTUZgMUZ4xMec0SsmLL1okh0SiH7iTwXKUuOeWYwPwQFn/lkzJgYY
-         TD9aVeKUsqq0b+1rfu3hR75lLWn09jvF+bs9WMGqHRVnTGwx7jmwvhUe520tsEKM1OuC
-         WwQmiUW8CQN1reOyH2Idw0YSs2R6Wf53kQTCCU0f4s0bluP4dn0T9XgGprSAQeWLLuJh
-         hEHMAtyTshBo4I2I9Mn6vPFEECiUPbZEkAeMjmgGP+9LkvwefHI6YY9Czbq+FICGQxQw
-         mn0A==
-X-Gm-Message-State: AOAM532BqAn8Q7AqBMRWgUNBjHV0jqNC4R9rCngePpC8Xlh04bpzACgE
-        DRWcUDJPeI8xLnkdynCKtrFrEFIeBXarbw==
-X-Google-Smtp-Source: ABdhPJwVGJh+RkQXxiLNXPMg39w0C78GKLDvOlynccMukRGOOLjclw1fmlGwn08bIq3P0fzeP6Wrng==
-X-Received: by 2002:a6b:2bce:: with SMTP id r197mr600912ior.212.1632240153316;
-        Tue, 21 Sep 2021 09:02:33 -0700 (PDT)
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
-        by smtp.gmail.com with ESMTPSA id 12sm5286889ilq.23.2021.09.21.09.02.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 09:02:32 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id h20so23228317ilj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:02:32 -0700 (PDT)
-X-Received: by 2002:a92:c8c3:: with SMTP id c3mr21290506ilq.165.1632240152306;
- Tue, 21 Sep 2021 09:02:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c9ydbvY8sDfCdxG0I7FnWgHTf3YXOLh553u7tDIhY7Q=;
+        b=fQg0WLLIAJjAKq+yyU6S8cnSX7f9sKKPeYEah/ClvHvf6zSc6eg88UmByfNT6eSaqh
+         MZsBiJrkgh8yE8B3lyVHdUCMdAQm7FmNq8qlrlcgGmgBH4xGLxuD32sxRz9ZNailo/EX
+         xvL3N4s/xB9kqF4u9fFisNZzAoh2SEqWPE30qZPvXyrW7KM94PlCYg+6RToCJiOnLIkM
+         SkyI6Ar4oIgLxpYz2F1WYYmguGUlMKNeYPkU3Tc0LoALxA6sLFq/AeSewMMfbXHakMAl
+         eIZJuCNOH50H+SrqskNoz0MgHhNPlNf0h7+6XsYEnkoahGws/yaYMLPXKLqTQXXMfo5v
+         iiCg==
+X-Gm-Message-State: AOAM530RBETe3AjQknzhtpApFVP2GigbW/rkT+U8I8ylc1TdiGZU2EYu
+        j5G1RZoBU1PI89ddg5VLbic0iw==
+X-Google-Smtp-Source: ABdhPJzogdRHMobW1EV7gNAcIgxeJ8ugHZsaEOBpNSPLnWVSDi+WSM6RWXiAksaaRnOXJnSOuAd9Ug==
+X-Received: by 2002:a05:600c:3209:: with SMTP id r9mr5445839wmp.35.1632240227704;
+        Tue, 21 Sep 2021 09:03:47 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id j20sm19907636wrb.5.2021.09.21.09.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 09:03:46 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:03:25 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Vivek Gautam <vivek.gautam@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, joro@8bytes.org,
+        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
+        eric.auger@redhat.com, kevin.tian@intel.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
+Subject: Re: [PATCH RFC v1 03/11] iommu/virtio: Handle incoming page faults
+Message-ID: <YUoCTV6WYxxE10qj@myrica>
+References: <20210423095147.27922-1-vivek.gautam@arm.com>
+ <20210423095147.27922-4-vivek.gautam@arm.com>
 MIME-Version: 1.0
-References: <20210918102058.v5.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
- <20210918102058.v5.2.Ifcb5df5de5b1cead7c99e0f37b044ef5cfc69eda@changeid>
-In-Reply-To: <20210918102058.v5.2.Ifcb5df5de5b1cead7c99e0f37b044ef5cfc69eda@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 21 Sep 2021 09:02:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VgQWLmPEFBv=Ufnm8Gc4srRUd15GNbSrL-pYBGysCYqw@mail.gmail.com>
-Message-ID: <CAD=FV=VgQWLmPEFBv=Ufnm8Gc4srRUd15GNbSrL-pYBGysCYqw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423095147.27922-4-vivek.gautam@arm.com>
+X-TUID: xnj50RSTlhls
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sat, Sep 18, 2021 at 10:21 AM Philip Chen <philipchen@chromium.org> wrote:
->
-> +static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
-> +                                  struct drm_dp_aux_msg *msg)
-> +{
-> +       struct ps8640 *ps_bridge = aux_to_ps8640(aux);
-> +       struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
-> +       struct device *dev = &ps_bridge->page[PAGE0_DP_CNTL]->dev;
+On Fri, Apr 23, 2021 at 03:21:39PM +0530, Vivek Gautam wrote:
+> Redirect the incoming page faults to the registered fault handler
+> that can take the fault information such as, pasid, page request
+> group-id, address and pasid flags.
+> 
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> ---
+>  drivers/iommu/virtio-iommu.c      | 80 ++++++++++++++++++++++++++++++-
+>  include/uapi/linux/virtio_iommu.h |  1 +
+>  2 files changed, 80 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index c970f386f031..fd237cad1ce5 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -37,6 +37,13 @@
+>  /* Some architectures need an Address Space ID for each page table */
+>  DEFINE_XARRAY_ALLOC1(viommu_asid_xa);
+>  
+> +struct viommu_dev_pri_work {
+> +	struct work_struct		work;
+> +	struct viommu_dev		*dev;
+> +	struct virtio_iommu_fault	*vfault;
+> +	u32				endpoint;
+> +};
 > +
-> +       unsigned int len = msg->size;
+>  struct viommu_dev {
+>  	struct iommu_device		iommu;
+>  	struct device			*dev;
+> @@ -49,6 +56,8 @@ struct viommu_dev {
+>  	struct list_head		requests;
+>  	void				*evts;
+>  	struct list_head		endpoints;
+> +	struct workqueue_struct		*pri_wq;
+> +	struct viommu_dev_pri_work	*pri_work;
 
-nit: usually no blank lines in the variable definition section.
+IOPF already has a workqueue, so the driver doesn't need one.
+iommu_report_device_fault() should be fast enough to be called from the
+event handler.
 
+>  
+>  	/* Device configuration */
+>  	struct iommu_domain_geometry	geometry;
+> @@ -666,6 +675,58 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
+>  	return ret;
+>  }
+>  
+> +static void viommu_handle_ppr(struct work_struct *work)
+> +{
+> +	struct viommu_dev_pri_work *pwork =
+> +				container_of(work, struct viommu_dev_pri_work, work);
+> +	struct viommu_dev *viommu = pwork->dev;
+> +	struct virtio_iommu_fault *vfault = pwork->vfault;
+> +	struct viommu_endpoint *vdev;
+> +	struct viommu_ep_entry *ep;
+> +	struct iommu_fault_event fault_evt = {
+> +		.fault.type = IOMMU_FAULT_PAGE_REQ,
+> +	};
+> +	struct iommu_fault_page_request *prq = &fault_evt.fault.prm;
+> +
+> +	u32 flags	= le32_to_cpu(vfault->flags);
+> +	u32 prq_flags	= le32_to_cpu(vfault->pr_evt_flags);
+> +	u32 endpoint	= pwork->endpoint;
+> +
+> +	memset(prq, 0, sizeof(struct iommu_fault_page_request));
 
-> +       base = PAGE0_SWAUX_ADDR_7_0;
-> +       addr_len[PAGE0_SWAUX_ADDR_7_0 - base] = msg->address;
-> +       addr_len[PAGE0_SWAUX_ADDR_15_8 - base] = msg->address >> 8;
-> +       addr_len[PAGE0_SWAUX_ADDR_23_16 - base] = (msg->address >> 16) &
-> +                                                 SWAUX_ADDR_19_16_MASK;
-> +       addr_len[PAGE0_SWAUX_ADDR_23_16 - base] |= (msg->request << 4) &
-> +                                                  SWAUX_CMD_MASK;
+The fault_evt struct is already initialized
 
-optional nit: Probably you could get rid of the mask for the request.
-After all, you're storing it to a thing that's a byte (so bits above
-bit 7 will implicitly be masked) and you're left shifting by 4 (so
-bits 0-3 will implicitly be masked) so this just makes it uglier. ;-)
+> +	prq->addr = le64_to_cpu(vfault->address);
+> +
+> +	if (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_LAST_PAGE)
+> +		prq->flags |= IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
+> +	if (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID) {
+> +		prq->flags |= IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
+> +		prq->pasid = le32_to_cpu(vfault->pasid);
+> +		prq->grpid = le32_to_cpu(vfault->grpid);
+> +	}
+> +
+> +	if (flags & VIRTIO_IOMMU_FAULT_F_READ)
+> +		prq->perm |= IOMMU_FAULT_PERM_READ;
+> +	if (flags & VIRTIO_IOMMU_FAULT_F_WRITE)
+> +		prq->perm |= IOMMU_FAULT_PERM_WRITE;
+> +	if (flags & VIRTIO_IOMMU_FAULT_F_EXEC)
+> +		prq->perm |= IOMMU_FAULT_PERM_EXEC;
+> +	if (flags & VIRTIO_IOMMU_FAULT_F_PRIV)
+> +		prq->perm |= IOMMU_FAULT_PERM_PRIV;
+> +
+> +	list_for_each_entry(ep, &viommu->endpoints, list) {
+> +		if (ep->eid == endpoint) {
+> +			vdev = ep->vdev;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if ((prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID) &&
+> +	    (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_NEEDS_PASID))
+> +		prq->flags |= IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
+> +
+> +	if (iommu_report_device_fault(vdev->dev, &fault_evt))
+> +		dev_err(vdev->dev, "Couldn't handle page request\n");
 
-optional nit: In theory you could also get rid of the
-SWAUX_ADDR_19_16_MASK and if you really wanted to you could error
-check that the address wasn't bigger than 20-bits since giving an
-error for an invalid address would actually be better than silently
-masking it anyway...
+An error likely means that nobody registered a fault handler, but we could
+display a few more details about the fault that would help debug the
+endpoint
 
+> +}
+> +
+>  static int viommu_fault_handler(struct viommu_dev *viommu,
+>  				struct virtio_iommu_fault *fault)
+>  {
+> @@ -679,7 +740,13 @@ static int viommu_fault_handler(struct viommu_dev *viommu,
+>  	u32 pasid	= le32_to_cpu(fault->pasid);
+>  
+>  	if (type == VIRTIO_IOMMU_FAULT_F_PAGE_REQ) {
+> -		dev_info(viommu->dev, "Page request fault - unhandled\n");
+> +		dev_info_ratelimited(viommu->dev,
+> +				     "Page request fault from EP %u\n",
+> +				     endpoint);
 
-> +       if (len && (request == DP_AUX_NATIVE_READ ||
-> +                   request == DP_AUX_I2C_READ)) {
-> +               /* Read from the internal FIFO buffer */
-> +               for (i = 0; i < len; i++) {
-> +                       ret = regmap_read(map, PAGE0_SWAUX_RDATA,
-> +                                         (unsigned int *)(buf + i));
+That's rather for debugging the virtio-iommu driver, so should be
+dev_dbg() (or removed entirely)
 
-The cast to "unsigned int *" looks wrong to me. You can't just cast
-like this for a number of reasons. Go back to reading into a local
-variable and copy the byte into your buffer.
+> +
+> +		viommu->pri_work->vfault = fault;
+> +		viommu->pri_work->endpoint = endpoint;
+> +		queue_work(viommu->pri_wq, &viommu->pri_work->work);
+>  		return 0;
+>  	}
+>  
+> @@ -1683,6 +1750,17 @@ static int viommu_probe(struct virtio_device *vdev)
+>  		goto err_free_vqs;
+>  	}
+>  
+> +	viommu->pri_work = kzalloc(sizeof(*viommu->pri_work), GFP_KERNEL);
+> +	if (!viommu->pri_work)
+> +		return -ENOMEM;
+> +
+> +	viommu->pri_work->dev = viommu;
+> +
+> +	INIT_WORK(&viommu->pri_work->work, viommu_handle_ppr);
+> +	viommu->pri_wq = create_singlethread_workqueue("viommu-pri-wq");
+> +	if (!viommu->pri_wq)
+> +		return -ENOMEM;
+> +
+>  	viommu->map_flags = VIRTIO_IOMMU_MAP_F_READ | VIRTIO_IOMMU_MAP_F_WRITE;
+>  	viommu->last_domain = ~0U;
+>  
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index accc3318ce46..53aa88e6b077 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -302,6 +302,7 @@ struct virtio_iommu_req_invalidate {
+>  #define VIRTIO_IOMMU_FAULT_F_READ		(1 << 0)
+>  #define VIRTIO_IOMMU_FAULT_F_WRITE		(1 << 1)
+>  #define VIRTIO_IOMMU_FAULT_F_EXEC		(1 << 2)
+> +#define VIRTIO_IOMMU_FAULT_F_PRIV		(1 << 3)
 
+Should go in the previous patch. (I'd also prefer 'privileged' because in
+this context 'priv' is easily read as 'private')
 
-Other than the regmap_read() this looks fine to me. If you send a v6
-with that fixed I'll plan to wait a day or two and then apply it with
-Sam's tags.
+Thanks,
+Jean
 
--Doug
+>  #define VIRTIO_IOMMU_FAULT_F_ADDRESS		(1 << 8)
+>  
+>  #define VIRTIO_IOMMU_FAULT_F_DMA_UNRECOV	1
+> -- 
+> 2.17.1
+> 
