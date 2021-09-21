@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B70412E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E729412E6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhIUF5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 01:57:50 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:12918 "EHLO
+        id S229750AbhIUGBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:01:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34952 "EHLO
         so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhIUF5s (ORCPT
+        with ESMTP id S229619AbhIUGBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 01:57:48 -0400
+        Tue, 21 Sep 2021 02:01:37 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632203779; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=5J+mY/GIZ6S+95pX2KeVLWJAtGrqksmvQfiqOpSBkMc=; b=lKiLMBQYxBqL+tq9ReHzk7N6hyL76kwfwMiXH5aChrw41aLmtwTeA4DCB7Rw8FV4w61ii4bM
- 1Fia5Q7A+HsuyLwfmOW9JRs7CCueC4jEz+85zuIVGX7Dimtw3SgCWimhNW1pAKdCC7YkAd6T
- PaPzBAWm28DToiZEDUB82iw+NJo=
+ s=smtp; t=1632204009; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=OhGeWw49+gS6KAJRqr/xs6z83h7Ybuk7Knmq/JpWzIg=; b=vTCZb+FLnme8rzmZe/gLJ/zORddZ9JjTAyP46I3Xy0SJEWw1KGwKJAsi0Fn8KLlkL1PxVEqL
+ +BFsV4V4ctiOOOPf9TPRTT3YPzzRx5wAzyTaz2ZlepcmeYbUoZKWKryvRGafKMc2K4DJAC1d
+ odJLjBF3rWjjzauPu3FQE1Ceokw=
 X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 614973f7648642cc1cf1db2b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 05:56:07
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 614974deec62f57c9a786045 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 05:59:58
  GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC0BDC4361A; Tue, 21 Sep 2021 05:56:07 +0000 (UTC)
+        id A0F5FC4360C; Tue, 21 Sep 2021 05:59:57 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67C9DC4360D;
-        Tue, 21 Sep 2021 05:56:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 67C9DC4360D
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CFCF9C4338F;
+        Tue, 21 Sep 2021 05:59:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CFCF9C4338F
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] brcmfmac: Replace zero-length array with flexible array member
-References: <20210904092217.2848-1-len.baker@gmx.com>
-        <20210912191536.GB146608@embeddedor> <87o88sy2gk.fsf@codeaurora.org>
-Date:   Tue, 21 Sep 2021 08:55:59 +0300
-In-Reply-To: <87o88sy2gk.fsf@codeaurora.org> (Kalle Valo's message of "Thu, 16
-        Sep 2021 18:17:31 +0300")
-Message-ID: <871r5iwjyo.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Naina Mehta <nainmeht@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH] soc: qcom: llcc: Disable MMUHWT retention
+Date:   Tue, 21 Sep 2021 11:29:42 +0530
+Message-Id: <20210921055942.30600-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
+From: Naina Mehta <nainmeht@codeaurora.org>
 
-> "Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
->
->> On Sat, Sep 04, 2021 at 11:22:17AM +0200, Len Baker wrote:
->>> There is a regular need in the kernel to provide a way to declare
->>> having a dynamically sized set of trailing elements in a structure.
->>> Kernel code should always use "flexible array members"[1] for these
->>> cases. The older style of one-element or zero-length arrays should
->>> no longer be used[2].
->>> 
->>> Also, make use of the struct_size() helper in devm_kzalloc().
->>> 
->>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
->>> [2]
->>> https://www.kernel.org/doc/html/v5.14/process/deprecated.html#zero-length-and-one-element-arrays
->>> 
->>> Signed-off-by: Len Baker <len.baker@gmx.com>
->>
->> Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->>
->> I'll take this in my -next tree. :)
->
-> Why? It should go to wireless-drivers-next.
+Disable MMUHWT retention for SC7280 as done for other platforms
+to avoid more power burn.
 
-Gustavo, so have you dropped this from your tree now? I do not want to
-get any conflicts because of this.
+Fixes: f6a07be63301 ("soc: qcom: llcc: Add configuration data for SC7280")
+Signed-off-by: Naina Mehta <nainmeht@codeaurora.org>
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/soc/qcom/llcc-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll reiterate again: do not take any patches touching
-drivers/net/wireless unless I have acked them.
-
+diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+index fb471cc4066b..6bf2f1d1f2c5 100644
+--- a/drivers/soc/qcom/llcc-qcom.c
++++ b/drivers/soc/qcom/llcc-qcom.c
+@@ -115,7 +115,7 @@ static const struct llcc_slice_config sc7280_data[] =  {
+ 	{ LLCC_CMPT,     10, 768, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
+ 	{ LLCC_GPUHTW,   11, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
+ 	{ LLCC_GPU,      12, 512, 1, 0, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
+-	{ LLCC_MMUHWT,   13, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 1, 0},
++	{ LLCC_MMUHWT,   13, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 0, 1, 0},
+ 	{ LLCC_MDMPNG,   21, 768, 0, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
+ 	{ LLCC_WLHW,     24, 256, 1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
+ 	{ LLCC_MODPE,    29, 64,  1, 1, 0x3f, 0x0, 0, 0, 0, 1, 0, 0},
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
