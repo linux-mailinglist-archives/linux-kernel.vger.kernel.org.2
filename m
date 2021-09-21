@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B4E413C56
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700B4413C5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhIUVZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:25:07 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:47244
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229586AbhIUVZG (ORCPT
+        id S235021AbhIUV05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:26:57 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45254 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234385AbhIUV04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:25:06 -0400
-Received: from [192.168.192.153] (unknown [50.126.114.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 15AA0401A5;
-        Tue, 21 Sep 2021 21:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632259409;
-        bh=G6F86AKGq73JnF59j667fCmaxhjYnzVx/CjEQY1Jr+c=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=q/iCMNsxtzSkStRH1tkk0U6ie/EgGZzYEA+mNFjBXt0rfZu+rMHuGI59dHZA3ThZR
-         KnUh0/iH91yQWY4vK3RcUaTbJBIfCp1g/TehdJofmlkYddYQemXxjsvG02ZJnt1unw
-         kRQGvNyl7ZQIgnCfLEaDm+BP+INGRZdxDR3uia04vWAZCZFxzzArreVSFeMiAhO8c7
-         EakNDCRyYEv7BBut2TSaAXWmYu6lNpmu/ykPxZIujgoKP4SmHfWSndoivFMYaoo2sn
-         beyfP/H/KZHPRajKZTnBn0/1VuqgD6CyqWjTGTJdOMU2yqKHTfKE8F+fT9GFtdCVhe
-         EPkeaYbXN0sFg==
-Subject: Re: apparmor: WARNING: suspicious RCU usage
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     James Morris <jmorris@namei.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <877dfa72hm.ffs@tglx>
-From:   John Johansen <john.johansen@canonical.com>
-Organization: Canonical
-Message-ID: <4dbd0e0d-b1a3-8a06-5f65-bdcbb76fccee@canonical.com>
-Date:   Tue, 21 Sep 2021 14:23:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 17:26:56 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 583451C0B7C; Tue, 21 Sep 2021 23:25:26 +0200 (CEST)
+Date:   Tue, 21 Sep 2021 23:25:26 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 100/122] gpio: mpc8xxx: Fix a potential double
+ iounmap call in mpc8xxx_probe()
+Message-ID: <20210921212526.GA28467@duo.ucw.cz>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163919.067590477@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <877dfa72hm.ffs@tglx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
+Content-Disposition: inline
+In-Reply-To: <20210920163919.067590477@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 1:32 AM, Thomas Gleixner wrote:
-> 
-> Running with CONFIG_PROVE_RCU_LIST triggers the following splat:
-> 
-> [    6.805926] =============================
-> [    6.806848] WARNING: suspicious RCU usage
-> [    6.807738] 5.15.0-rc2+ #24 Tainted: G            E    
-> [    6.808860] -----------------------------
-> [    6.809734] security/apparmor/include/lib.h:191 RCU-list traversed in non-reader section!!
-> [    6.811508] 
->                other info that might help us debug this:
-> 
-> [    6.811516] 
->                rcu_scheduler_active = 2, debug_locks = 1
-> [    6.811527] 2 locks held by apparmor_parser/1897:
-> [    6.811530]  #0: ffff88885f139450 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0x68/0xe0
-> [    6.816110]  #1: ffff8881000578a0 (&ns->lock){+.+.}-{3:3}, at: aa_replace_profiles+0x16d/0x11e0
-> [    6.817418] 
->                stack backtrace:
-> [    6.818086] CPU: 38 PID: 1897 Comm: apparmor_parser Tainted: G            E     5.15.0-rc2+ #24
-> [    6.819359] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> [    6.820536] Call Trace:
-> [    6.820918]  dump_stack_lvl+0x57/0x72
-> [    6.821499]  __lookupn_profile+0x193/0x1a0
-> [    6.822461]  aa_replace_profiles+0x395/0x11e0
-> [    6.823448]  policy_update+0x13f/0x240
-> [    6.824326]  profile_replace+0xb1/0x120
-> [    6.825213]  vfs_write+0xe4/0x3b0
-> [    6.826027]  ksys_write+0x68/0xe0
-> [    6.826576]  do_syscall_64+0x3b/0x90
-> [    6.827099]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> which is pretty obvious because aa_replace_profile() invokes:
-> 
->     __lookup_replace()
->       __lookup_profile()
->         __strn_find_child()
->           __policy_strn_find()
->             list_for_each_entry_rcu()  <- Splat
-> 
-> The code is "correct" as this is the writer side and holding ns->lock,
-> but it's incorrect to use list_for_each_entry_rcu() without being in a
-> read side critical section unless it is properly annotated.
-> 
-> Same problem in the same function vs. __lookup_parent() and there are
-> more issues of that sort, e.g. vs. __lookup_profile() in
-> aa_remove_profiles().
-> 
-thanks Thomas, I look into it
 
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> [ Upstream commit 7d6588931ccd4c09e70a08175cf2e0cf7fc3b869 ]
+>=20
+> Commit 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support") has switched to a
+> managed version when dealing with 'mpc8xxx_gc->regs'. So the corresponding
+> 'iounmap()' call in the error handling path and in the remove should be
+> removed to avoid a double unmap.
+
+This is wrong, AFAICT. 5.10 does not have 76c47d1449fc ("gpio:
+mpc8xxx: Add ACPI support") so iounmap is still neccessary and this
+adds a memory leak.
+
+Best regards,
+								Pavel
+--=20
+'DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk'
+'HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany'
+
+
+--+QahgC5+KEYLbs62
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUpNxgAKCRAw5/Bqldv6
+8pzMAKCzDPu78SUUCBOXMUvMmgSTMVVHaQCdFCPSgYWZJ6SJ641FhcV8C8/7j9g=
+=gwmp
+-----END PGP SIGNATURE-----
+
+--+QahgC5+KEYLbs62--
