@@ -2,220 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A637413303
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F53413309
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbhIUL7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:59:02 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:40968
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232187AbhIUL7B (ORCPT
+        id S232519AbhIUMBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231778AbhIUMBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:59:01 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D7A333F4BE
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632225450;
-        bh=Edrk8YB/JSUDN6TkY8ir7fMmkzEbx6D96lPgLtCkIX0=;
-        h=To:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=qcBfR45+D2cnz8JbPwwcmSxWCUS3nLrqJ9KmgIxLMzffuuOTCirpTRs3SVPuE+cBf
-         TuLZN0aUNupFCVY04dQUaYGUvY1ho8fqh6624BrvhrCAMaLIjiAAMFWSaFe7C/8Fem
-         GlqVjgpEuknIg/4AeDi5vUs7kt2WLrgosH6f7WGL1CGJ9lsYo36OlsxIgjxYLLlH/y
-         2lj4GY+nuvqRcfsKG2pYClZFhDHlU+Lug0EWrXdOgy9mn0SxW6WzUp5JX9dJS2DVI0
-         Zx6mzjrBaj6CBD4VoNT7lVqFBNYKsU+9/fSu/kyTi+hkbJp2tLQjJHgyVMm68zcY3x
-         cEjd6SqB7ZFhw==
-Received: by mail-wr1-f71.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso7261724wrb.20
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 04:57:30 -0700 (PDT)
+        Tue, 21 Sep 2021 08:01:05 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1155AC061574;
+        Tue, 21 Sep 2021 04:59:37 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id bx4so28912094edb.4;
+        Tue, 21 Sep 2021 04:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KHxdyV8EyJ0XBPQEDxJ1v4h9kj1JfLTsZlYSfzSaMA0=;
+        b=HlBo9gi3cYBrHujgvixSoBUWSIePnuwaETvI0dM2Zg0LvfzLZ7Rd2nOyujd9kLs3xM
+         RA+PE9pbT4RBXfsXmbqlJsds5UuHBuekAngHh3DPOwjrFg/lQSEOATEtrnsUIu6NeMS6
+         9EtSMV8JZOu/qiO0/PmvpUfhvQ0g7IyvWPKaP9fFMpWMmC2N3np2yhUWq+yLfmOyTGv3
+         LBmVy4gS2+4LPpRwBTyhtMThNelJr30jqSJSc+iGNxTKI5dvyQIfIdmoFgryXPYtvDdK
+         XYCuQ5NDxTbv3DlHEhKkBogdlGHW/RW5sdfCzetPJXUthJJ7ppx4I9ilKuhGktpqHu+q
+         B2XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Edrk8YB/JSUDN6TkY8ir7fMmkzEbx6D96lPgLtCkIX0=;
-        b=ZMyXy9aM162RiY/9n5qsufeRjbx+p/jrpIjcEdlvFk3CKClQ2lLnO1iqdrheksv0nM
-         Yrt8zKjbzufZi6HNzH1A73erWg9yF0BmGEcFekVssn62ncwrU5kAvuAGTE5Sg5L7hibA
-         zTLL7axGRhboFlKgzvnuJkdy3a4u+btjdSaIydYnV5+w8Ut27BhEk1kJ2wm4XyUysIGn
-         m6QLxPj/sjcOoA8iAf8jetab1yCI3h+OeBQQwQqYGU6BCdaWGLCmZeCBy1p5eOazTu70
-         ea4kAowe2KBaQlB+xNx774KRj7MTFHtNYRSBOPPcQrlh+XR20iKxLcym3Gbw9bAisREX
-         fAcw==
-X-Gm-Message-State: AOAM532sQkSVWcZLIdWqNaf0EJzaGXfPBjG5p79NxVwe4F2Yev+nfEQ/
-        no5zq+1eToq0udsSrKN9ptHL9ugW5pJ4yifmEpbNMGvnG5N7epT1boMmGt4WS/Luj6QRB91y6mn
-        MiO2byYkN1Ku5EkkgSNIYELdc6tAO6wnbOF9q8eQ12Q==
-X-Received: by 2002:a5d:4b10:: with SMTP id v16mr34257867wrq.176.1632225450427;
-        Tue, 21 Sep 2021 04:57:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywrtK6qK54rP6gUN9u5o1jj6AXZs8KZz+kX4eWk6zyX0PcrVcN3qgGUnuD3nSi/IKh/sHT2Q==
-X-Received: by 2002:a5d:4b10:: with SMTP id v16mr34257845wrq.176.1632225450222;
-        Tue, 21 Sep 2021 04:57:30 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id k4sm18725530wrv.24.2021.09.21.04.57.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 04:57:29 -0700 (PDT)
-To:     Conor.Dooley@microchip.com, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, geert@linux-m68k.org,
-        yamada.masahiro@socionext.com, piotrs@cadence.com,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
- <20210920150807.164673-4-krzysztof.kozlowski@canonical.com>
- <b83355ee-cce3-0a7d-a048-147dcb44b012@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v3 4/6] riscv: dts: microchip: drop duplicated MMC/SDHC
- node
-Message-ID: <d79c4aee-2c57-91a8-3bc5-b8d989ed41e1@canonical.com>
-Date:   Tue, 21 Sep 2021 13:57:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KHxdyV8EyJ0XBPQEDxJ1v4h9kj1JfLTsZlYSfzSaMA0=;
+        b=O54PU5FsxTHkR7p+YMUGqap3hnef4XwgkEsW5ClgFs1zvUuzKIcSIlOOzgajz5g75T
+         3flcdA5lZWyDBj1Z9NZYQ/zLUZtaSZnkV+ayObTLFaMjGvIjkwdxuFU6ai9hfh2Knjt2
+         sLr30cD21FI3nnlqnGu1cOUpwdN1khu3AFTcwbLpO3m6w7DUfHpcohkS0XI9fFOyYWBg
+         zn7Ulx2cV2NPJgzSYINXFszmt0OlCPPDCI/B+izPHvhAT6TlXLvtzp5pxTL9CCpz7Vau
+         TLxNvH7xTRtN+ERprT74zg9UEkbtOskMpoY8BP/xmXXJeXyVSiUQ8f2Td8kGW1fUdeNF
+         3yRw==
+X-Gm-Message-State: AOAM53265p9LgQ/l0IPWjPCXwyQjRo3aoX4PncbuJgy+z5Arvyu4yX0x
+        i6W+Ld/V4JkEx++qarZEgr5yjRBllre/CxHARAI=
+X-Google-Smtp-Source: ABdhPJxmDNUrn/pjfqGBtuarR0ifn3xMY97hBg31i3Lrvhgn4lXmgIdu/Mx35BIvjqGEfO7bu1TPzpTPeYd3gQihQQU=
+X-Received: by 2002:a17:906:90c9:: with SMTP id v9mr32826020ejw.356.1632225573722;
+ Tue, 21 Sep 2021 04:59:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <b83355ee-cce3-0a7d-a048-147dcb44b012@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210921103346.64824-1-tony@atomide.com> <20210921103346.64824-2-tony@atomide.com>
+In-Reply-To: <20210921103346.64824-2-tony@atomide.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Sep 2021 14:58:55 +0300
+Message-ID: <CAHp75VeBM-k39HJWe8cyiz+7sKbgMwJLivOGSs_8=nMADUbukw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] n_tty: Start making use of -EAGAIN returned from process_output_block()
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 12:40, Conor.Dooley@microchip.com wrote:
-> On 20/09/2021 16:08, Krzysztof Kozlowski wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Devicetree source is a description of hardware and hardware has only one
->> block @20008000 which can be configured either as eMMC or SDHC.  Having
->> two node for different modes is an obscure, unusual and confusing way to
->> configure it.  Instead the board file is supposed to customize the block
->> to its needs, e.g. to SDHC mode.
->>
->> This fixes dtbs_check warning:
->>    arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: sdhc@20008000: $nodename:0: 'sdhc@20008000' does not match '^mmc(@.*)?$'
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>
->> ---
->>
->> Changes since v1:
->> 1. Move also bus-width, suggested by Geert.
->> ---
->>   .../microchip/microchip-mpfs-icicle-kit.dts   | 11 +++++++-
->>   .../boot/dts/microchip/microchip-mpfs.dtsi    | 28 +------------------
->>   2 files changed, 11 insertions(+), 28 deletions(-)
->>
->> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
->> index 07f1f3cab686..fc1e5869df1b 100644
->> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
->> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
->> @@ -51,8 +51,17 @@ &serial3 {
->>          status = "okay";
->>   };
->>
->> -&sdcard {
->> +&mmc {
->>          status = "okay";
->> +
->> +       bus-width = <4>;
->> +       disable-wp;
->> +       cap-sd-highspeed;
->> +       card-detect-delay = <200>;
->> +       sd-uhs-sdr12;
->> +       sd-uhs-sdr25;
->> +       sd-uhs-sdr50;
->> +       sd-uhs-sdr104;
->>   };
->>
->>   &emac0 {
->> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
->> index 5084b93188f0..83bc14860960 100644
->> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
->> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
->> @@ -262,39 +262,13 @@ serial3: serial@20104000 {
->>                          status = "disabled";
->>                  };
->>
->> -               emmc: mmc@20008000 {
->> -                       compatible = "cdns,sd4hc";
->> -                       reg = <0x0 0x20008000 0x0 0x1000>;
->> -                       interrupt-parent = <&plic>;
->> -                       interrupts = <88 89>;
->> -                       pinctrl-names = "default";
->> -                       clocks = <&clkcfg 6>;
->> -                       bus-width = <4>;
->> -                       cap-mmc-highspeed;
->> -                       mmc-ddr-3_3v;
->> -                       max-frequency = <200000000>;
->> -                       non-removable;
->> -                       no-sd;
->> -                       no-sdio;
->> -                       voltage-ranges = <3300 3300>;
->> -                       status = "disabled";
->> -               };
->> -
->> -               sdcard: sdhc@20008000 {
->> +               mmc: mmc@20008000 {
->>                          compatible = "cdns,sd4hc";
->>                          reg = <0x0 0x20008000 0x0 0x1000>;
->>                          interrupt-parent = <&plic>;
->>                          interrupts = <88>;
->>                          pinctrl-names = "default";
->>                          clocks = <&clkcfg 6>;
->> -                       bus-width = <4>;
->> -                       disable-wp;
->> -                       cap-sd-highspeed;
->> -                       card-detect-delay = <200>;
->> -                       sd-uhs-sdr12;
->> -                       sd-uhs-sdr25;
->> -                       sd-uhs-sdr50;
->> -                       sd-uhs-sdr104;
->>                          max-frequency = <200000000>;
->>                          status = "disabled";
->>                  };
->> --
->> 2.30.2
->>
-> Hi Krzysztof,
-> Seems I missed most of this series other than the new vendor name in the V1.
+On Tue, Sep 21, 2021 at 1:34 PM Tony Lindgren <tony@atomide.com> wrote:
+>
+> We check for -EAGAIN in n_tty_write() but never currently get it from
+> process_output_block(). Let's add -EAGAIN handling and break out with 0
+> bytes processed. Note that if we return -EAGAIN from n_tty_write(), it
+> will be treated as error by the caller rather than a retry.
+>
+> Looking at the patch description for commit 9ef8927f45f2 ("n_tty: check
+> for negative and zero space return from tty_write_room") it looks like we
+> have not made use of -EGAIN from process_output_block() so far, so this
 
-Unfortunately your name does not appear as maintainer for these files
-and get_maintainers.pl brings it only sometimes as a --git fallback.
-Also few addresses from that --git fallback are non working, so I am not
-always Cc-ing them. Sorry for that, I'll try to Cc you on next Microchip
-RISC-V submissions, however you should probably add a proper platform
-maintainer entry (similarly to ARM/ARM64 subarchitectures).
+-EGAIN?
+
+> does not seem like it's currently needed as a fix.
+>
+> We can use -EAGAIN for serial layer power management changes as we now
+> will make use of write_room() returning 0 for an idled serial port.
+>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  drivers/tty/n_tty.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+> --- a/drivers/tty/n_tty.c
+> +++ b/drivers/tty/n_tty.c
+> @@ -549,6 +549,8 @@ static ssize_t process_output_block(struct tty_struct *tty,
+>         space = tty_write_room(tty);
+>         if (space <= 0) {
+>                 mutex_unlock(&ldata->output_lock);
+> +               if (!space)
+> +                       space = -EAGAIN;
+>                 return space;
+>         }
+>         if (nr > space)
+> @@ -2287,8 +2289,10 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
+>                         while (nr > 0) {
+>                                 ssize_t num = process_output_block(tty, b, nr);
+>                                 if (num < 0) {
+> -                                       if (num == -EAGAIN)
+> -                                               break;
+> +                                       if (num == -EAGAIN) {
+> +                                               retval = 0;
+> +                                               goto break_out;
+> +                                       }
+>                                         retval = num;
+>                                         goto break_out;
+>                                 }
+> --
+> 2.33.0
 
 
-> 
-> We have been redoing the device tree for the mpfs/icicle kit partly dye 
-> to some changes we made to the design. Previously SD and eMMC were 
-> different FPGA designs but now both are in the same design and managed 
-> by the bootloader, depending on where it finds the image to boot from.
-> Since then we've just been using the following single entry in the .dtsi:
-> 
->          mmc: mmc@20008000 { /* Common node entry for emmc/sd */
->              compatible = "cdns,sd4hc";
->              reg = <0x0 0x20008000 0x0 0x1000>;
->              clocks = <&clkcfg CLK_MMC>;
->              interrupt-parent = <&plic>;
->              interrupts = <PLIC_INT_MMC_MAIN PLIC_INT_MMC_WAKEUP>;
 
-I'll switch to 2 interrupts.
-
->              bus-width = <4>;
->              cap-mmc-highspeed;
->              cap-sd-highspeed;
->              no-1-8-v;
->              disable-wp;
->              max-frequency = <200000000>;
->              status = "disabled";
-
-I understand you prefer then the mmc node to be active? Before the DT
-had SDHC one enable, so my patch did not introduce changes (except
-mentioned interrupt).
-
-I can change it to mmc above with your explanation.
-
-
-Best regards,
-Krzysztof
+-- 
+With Best Regards,
+Andy Shevchenko
