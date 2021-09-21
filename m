@@ -2,98 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EF241354B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFF9413537
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhIUO3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
+        id S233539AbhIUOVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbhIUO3M (ORCPT
+        with ESMTP id S233461AbhIUOVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:29:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5DEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TjymtK4Uye3NIhYBiQcIsrxWTzAB+926rKoA7a0oIl4=; b=nJH/ZHUc056KnYDUhZ79RhbyLH
-        9b9XF3BRAv73fmIPFatTDQN/Y3+AaF2XHCtLDbKzj6FbO2ov3tvsT+OdPk3/yHS6WxO4wIzW+3rlj
-        DxZLVOH5Z5yM1Wor9ga6Hnwqtdulifue2U8D0QDs8X1A8fgMq3MzNBsgiXLNff+E7sKQIH+YpzcWd
-        xL1DQpyfeIyWByjCxv9UAdajFUR4xdK6tT8AK4LrI5qv8Av+XvAmKLSVK9idzgSfBdXOX8bgQrCVL
-        a/y6Kqv8wUzoxdRJ3BpG7Ely0F1WICsadHA6fbxSwfNP0l4hgKyluHmIN2JFr29DA4t/7tO7ttxwx
-        s11nPe6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSgcQ-003s8S-WF; Tue, 21 Sep 2021 14:19:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B137C3000A9;
-        Tue, 21 Sep 2021 16:19:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9EA762019DA07; Tue, 21 Sep 2021 16:19:31 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 16:19:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     sxwjean@me.com, x86@kernel.org, linux-mm@kvack.org,
-        Xiongwei Song <sxwjean@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>, Jens Axboe <axboe@kernel.dk>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Stefan Metzmacher <metze@samba.org>,
-        Marco Elver <elver@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Use generic code for virtual address of
- randomization of x86
-Message-ID: <YUnp8wxRTPriAaD9@hirez.programming.kicks-ass.net>
-References: <20210921110252.2593542-1-sxwjean@me.com>
- <4EB3D825-264D-447A-8C55-FA0CE8BC31F6@chromium.org>
+        Tue, 21 Sep 2021 10:21:48 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBA4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:20:19 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id b20so23522256lfv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KI5XuvdO6ZDnwox9e0Y7Y2l7MqmHpltl1BSps4mHQrg=;
+        b=XbI2dVpsQC0cN9/XObORP7B2utE/tgliJMgFY6a5nq/e9gTTy09Booe7LKy8LJTIp/
+         45f9oomBvTB5zl3+ERETy15NSiblPZZDu3+UJ1KhKmS93qRaxTrECyqXUVepE2ENpWp0
+         +RUCb9jWp72wR47J30EtvxOXziru2QQCmILVmpTisLAHoYAR92qbu1kAEKn9/QxOJ9rv
+         nNuXMMdAY3da7jl40DU1r5gHO2NCSzzHjTH0x4isKt0RlOpPKhdodEDx+ImdQtTv1N4p
+         AfHd+JtzcByMLDbyc8kQs8U9qDP6dUdlV3k/atwJ5DWjzAAXJZn3ySU3A+IOdEK3jKEr
+         7XuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KI5XuvdO6ZDnwox9e0Y7Y2l7MqmHpltl1BSps4mHQrg=;
+        b=5X72ZqyQiyS+r/36UsTrJ9Lb4KDES7du4LcmLWDMoN++i5YgNCAOuR5m6v8K6dw7eF
+         PWY+S8UfjVwXqTJlG8IP0g9gjNkUO6weVrRlJAfm1DVS0GQsHPiliIrqo2AMyrEeNrlR
+         5DHdyt1Ug+yHApEu8+DrqnWN8MeBQu3cXVNMv/bD3n5uQ4i0G3SuI1NmXl5Soqgkt2Q8
+         1R0jmqv0PHGbVj/ld4dKduK7g773dC9aYNFDQ1g8x4BXLwu3LSHrpbWv6aTZkl+kqSY+
+         ghVu/kRBvdhM20w76pv4HLhEV6N+4ADI2w8voONpVwbAMpBl/fCZR78knq4MmEw2/82L
+         IBpA==
+X-Gm-Message-State: AOAM531j2z1wd3Ql3npRK4b/5F6KrUiMEx6O1SfquS/0GGvzX35BRmpg
+        8UpcIoNXlP4mBcOHbLIE3CNRjdl8csU/Bgrxm3KSvA==
+X-Google-Smtp-Source: ABdhPJwg7B/UD3b5TW+3Ba/fNZ84Xpg8atnnaqpKWOsbztk9CghJXsJBlGBS3xsY/Uq2o5L8/ZPhGuq+ea4II9vXC5g=
+X-Received: by 2002:ac2:483b:: with SMTP id 27mr22930494lft.644.1632234015940;
+ Tue, 21 Sep 2021 07:20:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4EB3D825-264D-447A-8C55-FA0CE8BC31F6@chromium.org>
+References: <20210914164727.3007031-1-pgonda@google.com> <20210914164727.3007031-5-pgonda@google.com>
+ <CAA03e5EtxED=9C8tL8hwstHBMbj6nzDwA87yMfK9kk5BUTqF2w@mail.gmail.com>
+In-Reply-To: <CAA03e5EtxED=9C8tL8hwstHBMbj6nzDwA87yMfK9kk5BUTqF2w@mail.gmail.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 21 Sep 2021 08:20:04 -0600
+Message-ID: <CAMkAt6oBHLPcXvaeAtHp+Tmt5BKwNDZd-jvDf2+BY=_2-=VJ-Q@mail.gmail.com>
+Subject: Re: [PATCH 4/4 V8] selftest: KVM: Add intra host migration tests
+To:     Marc Orr <marcorr@google.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 06:24:07AM -0700, Kees Cook wrote:
-> 
-> 
-> On September 21, 2021 4:02:50 AM PDT, sxwjean@me.com wrote:
-> >From: Xiongwei Song <sxwjean@gmail.com>
+On Wed, Sep 15, 2021 at 11:28 AM Marc Orr <marcorr@google.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 9:47 AM Peter Gonda <pgonda@google.com> wrote:
 > >
-> >Hello,
+> > Adds testcases for intra host migration for SEV and SEV-ES. Also adds
+> > locking test to confirm no deadlock exists.
 > >
-> >The two patches are to use generic code for randomization of virtual
-> >address of x86. Since the basic code logic of x86 is same as generic
-> >code, so no need to implement these functions on x86, please see the
-> >details in comments of patch 2.
-> 
-> Hi!
-> 
-> The other patches do not seem to have arrived; I only see 0/2.
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > Reviewed-by: Marc Orr <marcorr@google.com>
+> > Cc: Marc Orr <marcorr@google.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > Cc: kvm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >  tools/testing/selftests/kvm/Makefile          |   1 +
+> >  .../selftests/kvm/x86_64/sev_vm_tests.c       | 203 ++++++++++++++++++
+> >  2 files changed, 204 insertions(+)
+> >  create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> >
+> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > index c103873531e0..44fd3566fb51 100644
+> > --- a/tools/testing/selftests/kvm/Makefile
+> > +++ b/tools/testing/selftests/kvm/Makefile
+> > @@ -72,6 +72,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+> >  TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
+> >  TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
+> >  TEST_GEN_PROGS_x86_64 += x86_64/vmx_pi_mmio_test
+> > +TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
+> >  TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+> >  TEST_GEN_PROGS_x86_64 += demand_paging_test
+> >  TEST_GEN_PROGS_x86_64 += dirty_log_test
+> > diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > new file mode 100644
+> > index 000000000000..ec3bbc96e73a
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
+> > @@ -0,0 +1,203 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <linux/kvm.h>
+> > +#include <linux/psp-sev.h>
+> > +#include <stdio.h>
+> > +#include <sys/ioctl.h>
+> > +#include <stdlib.h>
+> > +#include <errno.h>
+> > +#include <pthread.h>
+> > +
+> > +#include "test_util.h"
+> > +#include "kvm_util.h"
+> > +#include "processor.h"
+> > +#include "svm_util.h"
+> > +#include "kselftest.h"
+> > +#include "../lib/kvm_util_internal.h"
+> > +
+> > +#define SEV_POLICY_ES 0b100
+> > +
+> > +#define NR_MIGRATE_TEST_VCPUS 4
+> > +#define NR_MIGRATE_TEST_VMS 3
+> > +#define NR_LOCK_TESTING_THREADS 3
+> > +#define NR_LOCK_TESTING_ITERATIONS 10000
+> > +
+> > +static void sev_ioctl(int vm_fd, int cmd_id, void *data)
+> > +{
+> > +       struct kvm_sev_cmd cmd = {
+> > +               .id = cmd_id,
+> > +               .data = (uint64_t)data,
+> > +               .sev_fd = open_sev_dev_path_or_exit(),
+> > +       };
+> > +       int ret;
+> > +
+> > +       ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
+> > +       TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
+> > +                   "%d failed: return code: %d, errno: %d, fw error: %d",
+> > +                   cmd_id, ret, errno, cmd.error);
+> > +}
+> > +
+> > +static struct kvm_vm *sev_vm_create(bool es)
+> > +{
+> > +       struct kvm_vm *vm;
+> > +       struct kvm_sev_launch_start start = { 0 };
+> > +       int i;
+> > +
+> > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > +       sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
+> > +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
+> > +               vm_vcpu_add(vm, i);
+> > +       if (es)
+> > +               start.policy |= SEV_POLICY_ES;
+> > +       sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
+> > +       if (es)
+> > +               sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
+> > +       return vm;
+> > +}
+>
+> I should've suggested this in my original review. But is it worth
+> moving `sev_vm_create()` and `sev_ioctl()` into the broader selftests
+> library, so others can leverage this function to write selftests?
 
-They were only sent to the list for some weird raisin. Operator error
-perhaps.
+This function isn't fully complete. It doesn't get to launch_finish,
+i.e. it only goes far enough for copyless migration ioctls to work. I
+think this would be a good expansion but could happen in follow up
+series, thoughts?
+
+>
+> > +
+> > +static struct kvm_vm *__vm_create(void)
+> > +{
+> > +       struct kvm_vm *vm;
+> > +       int i;
+> > +
+> > +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > +       for (i = 0; i < NR_MIGRATE_TEST_VCPUS; ++i)
+> > +               vm_vcpu_add(vm, i);
+> > +
+> > +       return vm;
+> > +}
+> > +
+> > +static int __sev_migrate_from(int dst_fd, int src_fd)
+> > +{
+> > +       struct kvm_enable_cap cap = {
+> > +               .cap = KVM_CAP_VM_MIGRATE_PROTECTED_VM_FROM,
+> > +               .args = { src_fd }
+> > +       };
+> > +
+> > +       return ioctl(dst_fd, KVM_ENABLE_CAP, &cap);
+> > +}
+> > +
+> > +
+> > +static void sev_migrate_from(int dst_fd, int src_fd)
+> > +{
+> > +       int ret;
+> > +
+> > +       ret = __sev_migrate_from(dst_fd, src_fd);
+> > +       TEST_ASSERT(!ret, "Migration failed, ret: %d, errno: %d\n", ret, errno);
+> > +}
+> > +
+> > +static void test_sev_migrate_from(bool es)
+> > +{
+> > +       struct kvm_vm *src_vm;
+> > +       struct kvm_vm *dst_vms[NR_MIGRATE_TEST_VMS];
+> > +       int i;
+> > +
+> > +       src_vm = sev_vm_create(es);
+> > +       for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+> > +               dst_vms[i] = __vm_create();
+> > +
+> > +       /* Initial migration from the src to the first dst. */
+> > +       sev_migrate_from(dst_vms[0]->fd, src_vm->fd);
+> > +
+> > +       for (i = 1; i < NR_MIGRATE_TEST_VMS; i++)
+> > +               sev_migrate_from(dst_vms[i]->fd, dst_vms[i - 1]->fd);
+> > +
+> > +       /* Migrate the guest back to the original VM. */
+> > +       sev_migrate_from(src_vm->fd, dst_vms[NR_MIGRATE_TEST_VMS - 1]->fd);
+> > +
+> > +       kvm_vm_free(src_vm);
+> > +       for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+> > +               kvm_vm_free(dst_vms[i]);
+> > +}
+> > +
+> > +struct locking_thread_input {
+> > +       struct kvm_vm *vm;
+> > +       int source_fds[NR_LOCK_TESTING_THREADS];
+> > +};
+> > +
+> > +static void *locking_test_thread(void *arg)
+> > +{
+> > +       int i, j;
+> > +       struct locking_thread_input *input = (struct locking_test_thread *)arg;
+> > +
+> > +       for (i = 0; i < NR_LOCK_TESTING_ITERATIONS; ++i) {
+> > +               j = i % NR_LOCK_TESTING_THREADS;
+> > +               __sev_migrate_from(input->vm->fd, input->source_fds[j]);
+> > +       }
+> > +
+> > +       return NULL;
+> > +}
+> > +
+> > +static void test_sev_migrate_locking(void)
+> > +{
+> > +       struct locking_thread_input input[NR_LOCK_TESTING_THREADS];
+> > +       pthread_t pt[NR_LOCK_TESTING_THREADS];
+> > +       int i;
+> > +
+> > +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i) {
+> > +               input[i].vm = sev_vm_create(/* es= */ false);
+> > +               input[0].source_fds[i] = input[i].vm->fd;
+> > +       }
+> > +       for (i = 1; i < NR_LOCK_TESTING_THREADS; ++i)
+> > +               memcpy(input[i].source_fds, input[0].source_fds,
+> > +                      sizeof(input[i].source_fds));
+> > +
+> > +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+> > +               pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
+> > +
+> > +       for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+> > +               pthread_join(pt[i], NULL);
+> > +}
+> > +
+> > +static void test_sev_migrate_parameters(void)
+> > +{
+> > +       struct kvm_vm *sev_vm, *sev_es_vm, *vm_no_vcpu, *vm_no_sev,
+> > +               *sev_es_vm_no_vmsa;
+> > +       int ret;
+> > +
+> > +       sev_vm = sev_vm_create(/* es= */ false);
+> > +       sev_es_vm = sev_vm_create(/* es= */ true);
+> > +       vm_no_vcpu = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > +       vm_no_sev = __vm_create();
+> > +       sev_es_vm_no_vmsa = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> > +       sev_ioctl(sev_es_vm_no_vmsa->fd, KVM_SEV_ES_INIT, NULL);
+> > +       vm_vcpu_add(sev_es_vm_no_vmsa, 1);
+> > +
+> > +
+> > +       ret = __sev_migrate_from(sev_vm->fd, sev_es_vm->fd);
+> > +       TEST_ASSERT(
+> > +               ret == -1 && errno == EINVAL,
+> > +               "Should not be able migrate to SEV enabled VM. ret: %d, errno: %d\n",
+> > +               ret, errno);
+> > +
+> > +       ret = __sev_migrate_from(sev_es_vm->fd, sev_vm->fd);
+> > +       TEST_ASSERT(
+> > +               ret == -1 && errno == EINVAL,
+> > +               "Should not be able migrate to SEV-ES enabled VM. ret: %d, errno: %d\n",
+> > +               ret, errno);
+> > +
+> > +       ret = __sev_migrate_from(vm_no_vcpu->fd, sev_es_vm->fd);
+> > +       TEST_ASSERT(
+> > +               ret == -1 && errno == EINVAL,
+> > +               "SEV-ES migrations require same number of vCPUS. ret: %d, errno: %d\n",
+> > +               ret, errno);
+>
+> How do we know that this failed because `vm_no_vcpu` has no vCPUs or
+> because it's not a SEV-ES VM?
+
+Actually with V8 we only migrate to none SEV(-ES)? enabled guests.
+
+>
+> > +
+> > +       ret = __sev_migrate_from(vm_no_vcpu->fd, sev_es_vm_no_vmsa->fd);
+> > +       TEST_ASSERT(
+> > +               ret == -1 && errno == EINVAL,
+> > +               "SEV-ES migrations require UPDATE_VMSA. ret %d, errno: %d\n",
+> > +               ret, errno);
+>
+> Same question. How do we know why this failed? `sev_es_vm_no_vmsa` did
+> not have any vCPUs added. Would it be cleaner to add an additional
+> param to `sev_vm_create()` to skip calling UPDATE_VMSA? Then,
+> `sev_es_vm_no_vmsa` can be created from `sev_vm_create()` and it's
+> obvious to the read that the VMs are identical except for this aspect.
+>
+> > +
+> > +       ret = __sev_migrate_from(vm_no_vcpu->fd, vm_no_sev->fd);
+> > +       TEST_ASSERT(ret == -1 && errno == EINVAL,
+> > +                   "Migrations require SEV enabled. ret %d, errno: %d\n", ret,
+> > +                   errno);
+>
+> `vm_no_sev` has vCPUs. Therefore, how do we know why this failed --
+> (a) differing vCPU counts or (b) no SEV?
+
+Ditto we require dst to be none SEV enabled.
+
+>
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +       test_sev_migrate_from(/* es= */ false);
+> > +       test_sev_migrate_from(/* es= */ true);
+> > +       test_sev_migrate_locking();
+> > +       test_sev_migrate_parameters();
+> > +       return 0;
+> > +}
+> > --
+> > 2.33.0.309.g3052b89438-goog
+> >
