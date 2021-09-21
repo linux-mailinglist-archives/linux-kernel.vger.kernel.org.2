@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEE5412DEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C200F412DF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhIUEhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 00:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhIUEhC (ORCPT
+        id S229716AbhIUElZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 00:41:25 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:59391 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhIUElU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 00:37:02 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C0C061574;
-        Mon, 20 Sep 2021 21:35:34 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id z14-20020a17090a8b8e00b0019cc29ceef1so1072843pjn.1;
-        Mon, 20 Sep 2021 21:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EUTLBzAnCWX0F3Dgus2ou8/Lo1MoK62EjQVc8oyVbHM=;
-        b=Q2YenMXQCLnT/cunHkHMgK6REWgufE4nuDTsR6CrPSOBHITrQM8hHKgnyli9Cf23Sz
-         +oGzuEaK6o8tA4neCD681JblVu3tQcsfsKPeEp8znVXSvy3S/DBvw5fQpR0UbDAjlt+d
-         VKCT+iXCX8t+N8b4SL4RH4qggGzxFoNSyGOjp0XpZNaImjEWWPsBQYvKH4j0SWMXs4kd
-         QUT/DCSfpScszcFS9XbM/LFOoohhd+bqo0Yla3bkJ1DVLR7ane3HCNxltUmNBqyXJhC6
-         DyMMTBK2t8osS29swZcPTa06+Poj/SkbrXLjjBinsPoVK0Jpkt6bHB6LHu5K3ZReoIhV
-         Z9OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EUTLBzAnCWX0F3Dgus2ou8/Lo1MoK62EjQVc8oyVbHM=;
-        b=q9THbCf8sj2S9AO5l9v719EIdeUkeCwDhg555HehNsNJ/zrL4AT2s3WsfADN6nJTNb
-         dtnSA9p/dcae/U5cl8+8sk0eP3/Y8L/VCNS7J6Hj4uCZVTFL/WA2rvOokm9q1YTH7vxl
-         X133PXF2re6AsSc8aX1MjHVkmCmOrqfu0coE502bosorrwWoaImpIX/td4MLT+WM8o0g
-         khGiXW0c3I921d9JM/PA7OOCsZrDGFsymSrHEiJuNswnQeDu+bm2HNPZZRqVq2EUWm+J
-         6C1cfVJB5v55x8cq+DKMK/ceYQQ2DQU92pR8L7lsmt9yR+j7MynM2G/cztNLDZD/P9tq
-         A0hQ==
-X-Gm-Message-State: AOAM531byfmwI1XYY6fAzf0k4ACmRFgZDmEown4eramYDeBQtfWQ6OaZ
-        p2O/f9WAC5jRsxQbdrmSJVk=
-X-Google-Smtp-Source: ABdhPJxNZXowpZtbN3hOxjtLGCmzZz/apO015JEF6i/z1tbhSuHx7CsEhkfQXvsdpQm74nOGPcNqnA==
-X-Received: by 2002:a17:90b:1a92:: with SMTP id ng18mr2960352pjb.218.1632198934126;
-        Mon, 20 Sep 2021 21:35:34 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a5b4:f272:6a63:5b57])
-        by smtp.gmail.com with ESMTPSA id x21sm6791036pfa.186.2021.09.20.21.35.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 21:35:33 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 21:35:30 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Ping Cheng <pinglinux@gmail.com>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        "Tobita, Tatsunosuke" <tatsunosuke.tobita@wacom.com>,
-        linux-input <linux-input@vger.kernel.org>, linux-imx@nxp.com,
-        kernel@pengutronix.de, Tatsunosuke Tobita <junkpainting@gmail.com>,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v10 05/12] Input: wacom_i2c - Read the descriptor values
-Message-ID: <YUlhEj/+gzrQLG8u@google.com>
-References: <20210829091925.190-1-alistair@alistair23.me>
- <20210829091925.190-7-alistair@alistair23.me>
- <YS1DGuTTAEKAd2Yr@google.com>
- <PA4PR07MB7407FE9FE271191AC52F7EA387CE9@PA4PR07MB7407.eurprd07.prod.outlook.com>
- <YTcBOskPYjbv4q61@google.com>
- <CAF8JNh+PcYuaLL=ToS0hOT62YbVmMWY9BCT-CGx_x+AkKuO_Tw@mail.gmail.com>
- <YThQUtE757b/ExR4@google.com>
- <CAF8JNhJL_AzqnpzPw5PRR1xczhMBscxwLHMN7tE2EGRH8PHu4A@mail.gmail.com>
+        Tue, 21 Sep 2021 00:41:20 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.west.internal (Postfix) with ESMTP id 01FA52B01422;
+        Tue, 21 Sep 2021 00:39:51 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 21 Sep 2021 00:39:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=I4ve/cgxK4c8BY7+UtD8bEL+nk
+        Zo9i2k6Rhodknqgww=; b=E61X9XFXPJOOQayHDvUcuo+rTPfjF/ky5zk3Mi4hS2
+        rVVK7HKI5BQweODHKuu2SNklSikLEnAOIzatUf1x7kuwKzatQtG8tUPknIs5tEwC
+        WeIgCgSwgZnqaYJajBac1iUb5AEU7Crh7uNRm4PudjOuvyrWKcwmt9GooSEqsKH9
+        CYmYdY9A5VMxgX62Qu87Jsm9OC9KHz5PIv8rCwVpdF8khFJoT9I/55qqnn1HRQT8
+        GQPGdPZRlM4kemArr9OEUtxrC47/24fL2tFGdsL4y9rYZ8UUsMYUxWenQrbWKH/w
+        GMqT7P2AKDB/oK7+vfBqLNGXOajv2TfAVNMWd2Ap72gA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=I4ve/cgxK4c8BY7+U
+        tD8bEL+nkZo9i2k6Rhodknqgww=; b=QY39RzHwtcUTsQe560mXBFfewJazNxmHD
+        kwLUpf7ulzx9P9K3cbWHYtxi73rS8UXVYnkpWgoNnUWYVwmBe5MIKYeoPJqwYS7p
+        8vdPnFh/xwbXc/Y0lcfECT9cswW4rB3WpfzGetDElmk99o6KkJywz3cZZ/0q/QdQ
+        TOT14YNDOEY4N5PeZ6qzRHueeixC8eUkNUKd/Gg8yDHzkXjBgdahpO2UkJFXDtKV
+        bhpxE91z17KsYiSiBa9KZrXRv1b30oKbhiFR4j9MdF/lrOkveu8Po4QdJY5VRFur
+        Q/jpmVZwhK+fYOmEguV54k4krU1zeC/MYZDeXMEY0Yw1zCpbTogsw==
+X-ME-Sender: <xms:FmJJYZHJLT_T9fV3dqW3bn9m2U46-eGylFh4XlKuzQXB_3YE8gqlxQ>
+    <xme:FmJJYeU0OeEl9zSWJOabAYrzoNaha1yRsl6ZE8cCPK2NpZFfuU-tv5XvBJb-KbBj-
+    bR0YyIfbpkgG96sgg>
+X-ME-Received: <xmr:FmJJYbKbXZvDlhXv7C8ptlPjqRKPl3orZ4pXxhhk09hj8_genBMP718FbOqfRUpDvoX8pAvKaZbliGvmUvhI_zCcMW6dY7EueWDqSrYWDlzhZrBJpPe8Pa3_2mNKuo_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeifedgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepieetheduveelhfdvvdejleeuhfelteevhe
+    ffgfeitdefgeekjeefieevgfehhefgnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurh
+    gvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:FmJJYfGiuGlE5cw--FLcNStViYGe8Uy1h9DQ4UQTwmfdb66xrBaeeA>
+    <xmx:FmJJYfWqcVZH0UBaIn9YnzwLehPcyxlDMEUPUf-0McBBRXb6O-4wXQ>
+    <xmx:FmJJYaOEwH6J_x2IEnl145O3Y_kw28D3KNxTrG4gxdHtfVTs1-ViLA>
+    <xmx:F2JJYYPknL0ldam98KQi0LPq5Ky-KgSwjxjyJmQM9K7vP2J_MHVekGZfzYw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 21 Sep 2021 00:39:45 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-leds@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     clg@kaod.org, robh+dt@kernel.org, joel@jms.id.au, pavel@ucw.cz,
+        linus.walleij@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com
+Subject: [PATCH 0/2] leds: pca955x: Expose GPIOs for all pins
+Date:   Tue, 21 Sep 2021 14:09:34 +0930
+Message-Id: <20210921043936.468001-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF8JNhJL_AzqnpzPw5PRR1xczhMBscxwLHMN7tE2EGRH8PHu4A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ping,
+Hello,
 
-On Fri, Sep 17, 2021 at 01:43:18PM -0700, Ping Cheng wrote:
-> Hi Dmitry,
-> 
-> On Tue, Sep 7, 2021 at 10:55 PM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> >
-> > > > >
-> > > > > Yes, our firmware supports HID over I2C.  However, some of our
-> > > > > customers often do not want to use HID to handle our hardware; even
-> > > > > they don't install the generic HID driver neither.  In such case, we
-> > > > > need to distinguish what generation of our device customer's has. And
-> > > > > to do so, we check I2C HID descriptor even though the driver is not
-> > > > > working with HID driver components, but this one.  That is why I2C HID
-> > > > > descriptor is used there. It is called, but the situation with this
-> > > > > driver is not supposed to work as a HID device.
-> > > >
-> > > > I would like to understand better why the customers do not want to use
-> > > > HID.
-> > >
-> > >
-> > > Those customers normally run embedded Linux. Their hardwares have very
-> > > specific use cases. They don't need to support any other HID devices except
-> > > the Wacom i2c device.
-> > >
-> > > >
-> > > There needs to be a _very_ strong reason to essentially duplicate
-> > > > HID layer in a vendor driver and I inclined to say that such customers
-> > >
-> > > would need to patch their kernels themselves.
-> > >
-> > > They most likely don't want to duplicate HID layer. They just don't need
-> > > most of the HID layer code.
-> >
-> > They just need touchscreen support. Plus stylus support. And maybe
-> > battery support. And maybe something else down the road... And they need
-> > to introduce DT and ACPI descriptors to be able to mould the behavior to
-> > platform needs. Which is pretty much the purpose of HID layer.
-> 
-> I see your point.
-> 
-> > > wacom_i2c simplifies their deployment and
-> > > testing process. Most of those customers are very small companies...
-> >
-> > And now please continue this train of thoughts and consider every touch
-> > vendor. Wacom is not unique. We have Elan, Cypress, Weida, Goodix, etc.
-> > etc. Vendor drivers were acceptable before we had I2C standard, but now
-> > it is much better for everyone to share the efforts and use HID instead
-> > of replicating it for every vendor.
-> 
-> And I agree with you that we should share our efforts on the main tasks.
-> 
-> However, with the same token of sharing efforts, I see the benefit of
-> merging this set of patches upstream. From the version number we can
-> tell the patchset has gone through at least 10 rounds of review and
-> update. Alistair has put a lot of effort to get this far (Thank you
-> Alistair for your time and effort!).
+This is a rework of a Rube Goldberg-inspired RFC I posted previously:
 
-I am sorry, but the fact that a developer spent a lot of time writing
-code can not be used as a justification for merging said code.
+https://lore.kernel.org/lkml/20210723075858.376378-1-andrew@aj.id.au/
 
-> A few community developers have
-> also reviewed the patches. This set of patches thoroughly touched all
-> parts of the components that related to an input i2c driver, which is
-> much better than the original version. This patchset would be a great
-> starting point for vendors to create their out of tree drivers, when
-> necessary. It would also offer vendors a clear picture of what
-> components they need to change/update to make their i2c input device
-> work under kernel input subsystem.
+This time around there's a lot less Rube - the series:
 
-And they can do that by looking at the mailing list archive and they can
-also follow this discussion and see why what they are doing is quite
-wrong. I mean, why would they stop at dropping HID only? Why not bypass
-I2C system as well and poke at the I2C controller directly. Skip PCI as
-well?
+1. Contains no (ab)use of pinctrl
+2. Always exposes all pins as GPIOs
+3. Internally tracks the active pins
 
-> 
-> So, merging the patchset will benefit more people and preserve the
-> effort that went into the patchset so far. If you like, you can add a
-> comment in the patch mentioning that future effort should be directed
-> to the i2c-hid subsystem, etc...
+Without these patches the driver limits the number of pins exposed on
+the gpiochip to the number of pins specified as GPIO in the devicetree,
+but doesn't map between the GPIO and pin number spaces. The result is
+that specifying offset or interleaved GPIOs in the devicetree gives
+unexpected behaviour in userspace.
 
-No, we should not merge the patch set that we agreed is wrong in its
-approach. Maybe if I (and other community reviewers) realized that the
-device was HID compliant we could stop this effort earlier, but
-unfortunately it did not happen, so effort was wasted, but this happens
-sometimes.
+By always exposing all pins as GPIOs the patches resolve the lack of
+mapping between GPIO offsets and pins on the package in the driver by
+ensuring we always have a 1-to-1 mapping.
 
-Thanks.
+The issue is primarily addressed by patch 1/2. Patch 2/2 makes it
+possible to not expose any pins as LEDs (and therefore make them all
+accessible as GPIOs). This has a follow-on effect of allowing the driver
+to bind to a device instantiated at runtime without requiring a
+description in the devicetree.
 
+I've tested the series under qemu to inspect the various interactions
+between LEDs vs GPIOs as well as conflicting GPIO requests.
+
+Please review!
+
+Andrew
+
+Andrew Jeffery (2):
+  leds: pca955x: Make the gpiochip always expose all pins
+  leds: pca955x: Allow zero LEDs to be specified
+
+ drivers/leds/leds-pca955x.c | 65 +++++++++++++++++++------------------
+ 1 file changed, 34 insertions(+), 31 deletions(-)
+
+
+base-commit: 239f32b4f161c1584cd4b386d6ab8766432a6ede
 -- 
-Dmitry
+2.30.2
+
