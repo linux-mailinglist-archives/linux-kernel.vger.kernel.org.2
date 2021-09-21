@@ -2,43 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97F8413625
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEB5413629
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234054AbhIUP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:27:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56026 "EHLO mail.kernel.org"
+        id S234033AbhIUP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:27:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233853AbhIUP1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:27:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1150661186;
-        Tue, 21 Sep 2021 15:25:55 +0000 (UTC)
+        id S233853AbhIUP11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:27:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4BC3611EF;
+        Tue, 21 Sep 2021 15:25:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632237956;
-        bh=eyjTinIjeXPa0AJBKtnyfN91AZdFFxdTY14CTjIc1z4=;
+        s=k20201202; t=1632237959;
+        bh=MMbO/dp99d6AGhgnvypPqLozrpUzaCRHRwEsnb7xVcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AhrcU4h4aLg7A2EytJTjpJEM09a6pqMyRT8ED0GB6up/+6EATWA+8nVai4ssH4+BW
-         kpVKSdI/4K4qd3SsPAibowc6tMgWg/aoJbX2rC8AAEoz/cvcfLnyrlrEHHjrujKmNg
-         phgcbYmsbbdTa4QPO2UrDifELAm8bgunxIHpcuI/puDKuUInqh9GGq+KIlFGcAnzgB
-         30OZU+RZqvy6DBHWLd1am79ZGWNvnqxffTaEPvb23fMlVsKimxfeJ4MrPpihJmsE2z
-         BhhZ9YKDCvJC3ORqhXyyrASOapxUeTOV4kp8E+JBPpx0WBsyedUiinpNZPWhAIvJ+W
-         ErXv+eq+mTlVQ==
+        b=Zj/glYkLeYHvNm4rJBXMrstUrYxzgtl5fQlmUpnsy/JVmXmyeYK/ARNQ9YmJBZ8wb
+         vS5g+AFFbz75mhq4UwHC+/hwt0oiva/SEPuekzCsNIiEL+AL5nMzx25vuFjHTQFehC
+         CmxwdOlXJSJTdqdq8LDAkvE6Ysa0DBqwjOgEhRjfWElrM00vdezmOre3oPCWrBV41C
+         IYYduHHmDocdWnYUI7IsdsPDEj7bsbxoi2x9A5NJzcC+HWaPzJjhlHSqjlQ22yBwhc
+         O7yKp+VN79dbtryyel+kEnR8p7S3qiSd+iy+r3EGXhI6/XwuSyW5hSa9xWV1rt90LF
+         P0KGMrYaZhb8Q==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        devicetree@vger.kernel.org, Apurva Nandan <a-nandan@ti.com>,
-        linux-spi@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
-        Richard Weinberger <richard@nod.at>
-Cc:     Mark Brown <broonie@kernel.org>, michael@walle.cc
-Subject: Re: (subset) [PATCH v2 0/2] dt-bindings: mtd: spi-nand: Convert to DT schema
-Date:   Tue, 21 Sep 2021 16:25:07 +0100
-Message-Id: <163223675481.32536.11593084094057981568.b4-ty@kernel.org>
+To:     Shawn Guo <shawnguo@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl: Constify static snd_soc_ops
+Date:   Tue, 21 Sep 2021 16:25:08 +0100
+Message-Id: <163223651320.32236.13916304424900961086.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210920142713.129295-1-a-nandan@ti.com>
-References: <20210920142713.129295-1-a-nandan@ti.com>
+In-Reply-To: <20210920193947.10237-1-rikard.falkeborn@gmail.com>
+References: <20210920193947.10237-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,25 +51,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 19:57:11 +0530, Apurva Nandan wrote:
-> Series to convert spi-nand.txt binding to YAML format and also fix up
-> snps-dw-apb-ssi for related dt_schema errors.
+On Mon, 20 Sep 2021 21:39:47 +0200, Rikard Falkeborn wrote:
+> These are only assigned to the ops field in the snd_soc_dai_link struct
+> which is a pointer to const struct snd_soc_ops. Make them const to allow
+> the compiler to put them in read-only memory.
 > 
-> Changes in v2:
-> - Fixed dtschema erros in snps-dw-apb-ssi.
-> - Improved additionalProperties, reg, and compatible fields in
->   spi-nand.yaml.
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[2/2] dt-bindings: snps,dw-apb-ssi: Use 'flash' node name instead of 'spi-flash' in example
-      commit: d7a48e27b38a94bf73c973c236461234610256d5
+[1/1] ASoC: fsl: Constify static snd_soc_ops
+      commit: 815b55e1101f074e737c084e996d086dcb454399
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
