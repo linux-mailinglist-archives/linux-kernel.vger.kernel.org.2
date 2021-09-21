@@ -2,94 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB938413DFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45210413E03
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhIUXXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhIUXXn (ORCPT
+        id S230176AbhIUXaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:30:13 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:37434 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhIUXaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:23:43 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAEBC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:22:15 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id y4so1043164pfe.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SrgpsGNJ8rqjyV4/EJo88O9IIQbG0UxIB/O/sCFEHCQ=;
-        b=Aek6S4Ex4HL+FlRX8wezQ0nSn8PZPLVSwGFM6Tuf5Vb5PRgM0t3QLU9WUHFeTsdzAU
-         QtJBZLxCtSTzHjvsrBDZHuAtRs8M/UcTtn16UVPyICkA/9SmSo6/wgDRXNjilfk6+22r
-         W51t+bozYpGIBCS76o+pBdu3BTXYTvAYrWg54kKw/zUklVknkRQaSR+HYh+NPP+yi8y9
-         Yb/gjfeOPPT4vB//YCwqd+j/uNNgvnBzGOO9gtxuEZPi7zBRKotpsZHqTtUaIjyqVYgT
-         sIUYBMdsmRG8oPPacCtBAXZP+CTj2FLeluAQ6fbuqzgy0II1EfOxhsPqM2kyF7AdcmHW
-         W4uA==
+        Tue, 21 Sep 2021 19:30:12 -0400
+Received: by mail-oi1-f170.google.com with SMTP id w206so1664585oiw.4;
+        Tue, 21 Sep 2021 16:28:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SrgpsGNJ8rqjyV4/EJo88O9IIQbG0UxIB/O/sCFEHCQ=;
-        b=OOTYTbA9PfQWM1tddoctRJvKNt69jKxj6ZGE/ZAAoLhK9XcvL0BYqc2GxlvZNpjyCV
-         9oiA/XdgDq8bIKNn7NbHoDuW8B9fgdzmK6SXKAyUh5he+iBGOmTiQts2E3aBKMWm6wm8
-         MIxtNu2X0SxYvAxwKzGDFCyaDdHfJowdAz/mDBizs21BhuoXEYQ1uNm0zHmPGk0IINrH
-         5Q30/GW0G8rqUY1JXv3DMuPbyJRf4HT6YOQ42eSlO87bjEqtXC/dRWTAa6VeuWVO119Y
-         zmeN0a22D6X1o8te0tCAnEqR/OybozvkZ4SFbnlivST526A4ZsYqzsxc3JNRzqAZlUMo
-         pQ9A==
-X-Gm-Message-State: AOAM532XqzWcXbWSrr7iorbLMcy3lx5O34L23zxYS97NfwrDgAxyY6K0
-        /T6C3JE4PVOpGfCRW1Nq+szkJg==
-X-Google-Smtp-Source: ABdhPJztKWJhnn4ll+uIjZV6ppsKBX5LhsnC09hXPT7pT0HwfgdemziHQj0i0h1tKYzjFbRFxZd+Gw==
-X-Received: by 2002:a63:bf07:: with SMTP id v7mr30381034pgf.333.1632266534266;
-        Tue, 21 Sep 2021 16:22:14 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id gp11sm3483849pjb.2.2021.09.21.16.22.13
+        bh=mX4MyVarQHbsDS0fNboD+/UTeSysNDkSYI8gpVmRhho=;
+        b=UjNc0TZruiP1OlH5S7MYt5aTAn455/zeF9Lo9R0tx/nd9T9bXaD2HEYNIpJzPgoqWO
+         uqWCa7TjO9lU4d8VIai0A6fMVAFqzDneINMEJbUlj5QisLflUscw48noCuhWqLzncRHM
+         priPc5aY10dYwkLM+Y9XAAqovJQWOddN4MrsShBdlQ4wPV4YGCkSJdVPUBCrvKvFG+vN
+         KkvJLOM7xN79hlLL02nXh8nijhXg1sgji/UatoDSVnUNr4u19690qE0jBge5CCUVTxNG
+         BafmmbhpVFvkI5kAVpwIthnAhS6uEyhhcRlu3EKErjskZTlyEdQJCbepUHvPzhJuVJnO
+         XotA==
+X-Gm-Message-State: AOAM532/Upper8bHeD+1zNqu5c48C6EC8g07zyEBrUdUZGhgcmVBCb3Y
+        X2dxbSPYmUVUQD5HZbWs7w==
+X-Google-Smtp-Source: ABdhPJzm9I2oIccwmAK23kHxFcQ3g5TOILqQ06YApuPouuQc3JzPm7k0LC5fRK5xJ+R+Bcem6eUglA==
+X-Received: by 2002:a05:6808:690:: with SMTP id k16mr5826558oig.43.1632266923035;
+        Tue, 21 Sep 2021 16:28:43 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v14sm125678ook.2.2021.09.21.16.28.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 16:22:13 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 23:22:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Cc:     peterz@infradead.org, pbonzini@redhat.com, bp@alien8.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kan.liang@linux.intel.com, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        like.xu.linux@gmail.com, boris.ostrvsky@oracle.com,
-        Like Xu <like.xu@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH V10 01/18] perf/core: Use static_call to optimize
- perf_guest_info_callbacks
-Message-ID: <YUppIQxphCUK6ZLS@google.com>
-References: <20210806133802.3528-1-lingshan.zhu@intel.com>
- <20210806133802.3528-2-lingshan.zhu@intel.com>
- <YSfykbECnC6J02Yk@google.com>
- <186c330e-be42-4c49-545c-8f73573b5869@intel.com>
+        Tue, 21 Sep 2021 16:28:42 -0700 (PDT)
+Received: (nullmailer pid 3490436 invoked by uid 1000);
+        Tue, 21 Sep 2021 23:28:41 -0000
+Date:   Tue, 21 Sep 2021 18:28:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        ohad@wizery.com, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        mpubbise@codeaurora.org, kuabhs@chromium.org,
+        Rakesh Pillai <pillair@qti.qualcomm.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: remoteproc: qcom: adsp: Convert
+ binding to YAML
+Message-ID: <YUpqqezV3NYCihdE@robh.at.kernel.org>
+References: <1631811353-503-1-git-send-email-pillair@codeaurora.org>
+ <1631811353-503-2-git-send-email-pillair@codeaurora.org>
+ <CAE-0n52t_1GGsFfDnrnwTx7j8RFdFLqZ2EGQY84D3UMbTeG69g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <186c330e-be42-4c49-545c-8f73573b5869@intel.com>
+In-Reply-To: <CAE-0n52t_1GGsFfDnrnwTx7j8RFdFLqZ2EGQY84D3UMbTeG69g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021, Zhu, Lingshan wrote:
+On Thu, Sep 16, 2021 at 11:24:10PM -0700, Stephen Boyd wrote:
+> Quoting Rakesh Pillai (2021-09-16 09:55:51)
+> > diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> > new file mode 100644
+> > index 0000000..051da43
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
+> > @@ -0,0 +1,267 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/remoteproc/qcom,hexagon-v56.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Hexagon v56 Peripheral Image Loader
+> > +
+> > +maintainers:
+> > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> > +
+> > +description:
+> > +  This document defines the binding for a component that loads and boots firmware
+> > +  on the Qualcomm Technology Inc. Hexagon v56 core.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - qcom,qcs404-cdsp-pil
+> > +      - qcom,sdm845-adsp-pil
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +    description:
+> > +      The base address and size of the qdsp6ss register
+> > +
+> > +  interrupts-extended:
+> > +    minItems: 5
+> > +    items:
+> > +      - description: Watchdog interrupt
+> > +      - description: Fatal interrupt
+> > +      - description: Ready interrupt
+> > +      - description: Handover interrupt
+> > +      - description: Stop acknowledge interrupt
+> > +
+> > +  interrupt-names:
+> > +    minItems: 5
+> > +    items:
+> > +      - const: wdog
+> > +      - const: fatal
+> > +      - const: ready
+> > +      - const: handover
+> > +      - const: stop-ack
+> > +
+> > +  clocks:
+> > +    minItems: 7
+> > +    maxItems: 8
+> > +    description:
+> > +      List of phandles and clock specifier pairs for the Hexagon,
+> > +      per clock-names below.
+> > +
+> > +  clock-names:
+> > +    minItems: 7
+> > +    maxItems: 8
+> > +
+> > +  power-domains:
+> > +    minItems: 1
+> > +    items:
+> > +      - description: CX power domain
+> > +
+> > +  resets:
+> > +    minItems: 1
+> > +    maxItems: 2
+> > +    description:
+> > +      reference to the list of resets for the Hexagon.
+> > +
+> > +  reset-names:
+> > +    minItems: 1
+> > +    maxItems: 2
+> > +
+> > +  memory-region:
+> > +    maxItems: 1
+> > +    description: Reference to the reserved-memory for the Hexagon core
+> > +
+> > +  qcom,halt-regs:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +    description:
+> > +      Phandle reference to a syscon representing TCSR followed by the
+> > +      three offsets within syscon for q6, modem and nc halt registers.
+> > +
+> > +  qcom,smem-states:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +    description: States used by the AP to signal the Hexagon core
+> > +    items:
+> > +      - description: Stop the modem
+> > +
+> > +  qcom,smem-state-names:
+> > +    $ref: /schemas/types.yaml#/definitions/string-array
+> > +    description: The names of the state bits used for SMP2P output
+> > +    items:
+> > +      - const: stop
+> > +
+> > +  glink-edge:
+> > +    type: object
+> > +    description:
+> > +      Qualcomm G-Link subnode which represents communication edge, channels
+> > +      and devices related to the ADSP.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts-extended
+> > +  - interrupt-names
+> > +  - clocks
+> > +  - clock-names
+> > +  - power-domains
+> > +  - qcom,halt-regs
+> > +  - memory-region
+> > +  - qcom,smem-states
+> > +  - qcom,smem-state-names
 > 
-> 
-> On 8/27/2021 3:59 AM, Sean Christopherson wrote:
-> > TL;DR: Please don't merge this patch, it's broken and is also built on a shoddy
-> >         foundation that I would like to fix.
-> Hi Sean,Peter, Paolo
-> 
-> I will send out an V11 which drops this patch since it's buggy, and Sean is
-> working on fix this.
-> Does this sound good?
+> Is there some way to make sure that 'resets' and 'reset-names' is
+> present when the compatible that defines them is used and not required
+> otherwise?
 
-Works for me, thanks!
+Yes, plenty of examples of that.
+
+> 
+> > +
+> > +additionalProperties: false
+> > +
+> > +allOf:
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - qcom,sdm845-adsp-pil
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: XO clock
+> > +            - description: SWAY clock
+> > +            - description: LPASS AHBS AON clock
+> > +            - description: LPASS AHBM AON clock
+> > +            - description: QDSP6SS XO clock
+> > +            - description: QDSP6SS SLEEP clock
+> > +            - description: QDSP6SS CORE clock
+> > +        clock-names:
+> > +          items:
+> > +            - const: xo
+> > +            - const: sway_cbcr
+> > +            - const: lpass_ahbs_aon_cbcr
+> > +            - const: lpass_ahbm_aon_cbcr
+> > +            - const: qdsp6ss_xo
+> > +            - const: qdsp6ss_sleep
+> > +            - const: qdsp6ss_core
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - qcom,qcs404-cdsp-pil
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: XO clock
+> > +            - description: SWAY clock
+> > +            - description: TBU clock
+> > +            - description: BIMC clock
+> > +            - description: AHB AON clock
+> > +            - description: Q6SS SLAVE clock
+> > +            - description: Q6SS MASTER clock
+> > +            - description: Q6 AXIM clock
+> > +        clock-names:
+> > +          items:
+> > +            - const: xo
+> > +            - const: sway
+> > +            - const: tbu
+> > +            - const: bimc
+> > +            - const: ahb_aon
+> > +            - const: q6ss_slave
+> > +            - const: q6ss_master
+> > +            - const: q6_axim
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - qcom,sc7280-wpss-pil
+> 
+> This should be documented above in the compatible list?
+> 
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: GCC WPSS AHB BDG Master clock
+> > +            - description: GCC WPSS AHB clock
+> > +            - description: GCC WPSS RSCP clock
+> > +        clock-names:
+> > +          items:
+> > +            - const: gcc_wpss_ahb_bdg_mst_clk
+> > +            - const: gcc_wpss_ahb_clk
+> > +            - const: gcc_wpss_rscp_clk
+> 
+> Is the 'gcc_wpss' prefix important? It would be shorter if it wasn't
+> there.
+
+Yes, and adding this new platform should be a separate patch.
+
+Rob
