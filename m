@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6ED41339B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8CA4133B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhIUM4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:56:12 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51728 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232667AbhIUM4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:56:07 -0400
-Received: from zn.tnic (p200300ec2f0d0600f4996d443fa85fcf.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:600:f499:6d44:3fa8:5fcf])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 46FEE1EC0298;
-        Tue, 21 Sep 2021 14:54:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632228874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hZ7yxBVSWH21LOuOd2ow1m9BReyxD+pdLNk3tjWtt4g=;
-        b=QASWuh6RdRkpA0LAaYaPhIJvLhaVZ2ici0IxlRxwCS/ouu8ti51xV8dExeVbLhVxveiljk
-        98P3emQVKTBiP8qqaHik3OQBCEzhzYM5cYi7UXe462n6pN2+B+DUvtqOeoyBmVf3tcUcc8
-        9SKW8H64cSA4GH1lz9E0o4TPwp9cPbI=
-Date:   Tue, 21 Sep 2021 14:54:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
+        id S232871AbhIUNGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:06:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53386 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232842AbhIUNGK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:06:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D69021FED6;
+        Tue, 21 Sep 2021 13:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632229480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=hl/MOmvXomLoOTDJpYFB1eX0OKjWBWw5KeY0f7BZBk8=;
+        b=DDAn3qOj3hI0wsKV+6nC7kwpEoKuHTKIVo5QpbT/czkSEyqcAejn81xt4A/suCV0oxFEmo
+        Cn0pouydQemRsd5QaLfWJwxS7TpPEqOzRGwkOr1NxIRaR9LnAwtCDmsgS/XIUHI0U0t4Mu
+        X++nb53QCf8CzcKprEebYeluK4pye/4=
+Received: from g78.suse.de (unknown [10.163.24.38])
+        by relay2.suse.de (Postfix) with ESMTP id BE194A3B85;
+        Tue, 21 Sep 2021 13:04:39 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
+        linux-api@vger.kernel.org, linux-aio@kvack.org,
+        y2038@lists.linaro.org, Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [RFC PATCH 2/8] x86: add CPU field to struct thread_info
-Message-ID: <YUnWBJekSa5Vx1I9@zn.tnic>
-References: <20210914121036.3975026-1-ardb@kernel.org>
- <20210914121036.3975026-3-ardb@kernel.org>
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        linux-kernel@vger.kernel.org, ltp@lists.linux.it
+Subject: [PATCH] aio: Wire up compat_sys_io_pgetevents_time64 for x86
+Date:   Tue, 21 Sep 2021 14:01:27 +0100
+Message-Id: <20210921130127.24131-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210914121036.3975026-3-ardb@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 02:10:30PM +0200, Ard Biesheuvel wrote:
-> The CPU field will be moved back into thread_info even when
-> THREAD_INFO_IN_TASK is enabled, so add it back to x86's definition of
-> struct thread_info.
-> 
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/x86/include/asm/thread_info.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> index cf132663c219..ebec69c35e95 100644
-> --- a/arch/x86/include/asm/thread_info.h
-> +++ b/arch/x86/include/asm/thread_info.h
-> @@ -57,6 +57,9 @@ struct thread_info {
->  	unsigned long		flags;		/* low level flags */
->  	unsigned long		syscall_work;	/* SYSCALL_WORK_ flags */
->  	u32			status;		/* thread synchronous flags */
-> +#ifdef CONFIG_SMP
-> +	u32			cpu;		/* current CPU */
-> +#endif
->  };
->  
->  #define INIT_THREAD_INFO(tsk)			\
-> -- 
+The LTP test io_pgetevents02 fails in 32bit compat mode because an
+nr_max of -1 appears to be treated as a large positive integer. This
+causes pgetevents_time64 to return an event. The test expects the call
+to fail and errno to be set to EINVAL.
 
-Acked-by: Borislav Petkov <bp@suse.de>
+Using the compat syscall fixes the issue.
 
+Fixes: 7a35397f8c06 ("io_pgetevents: use __kernel_timespec")
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+---
+ arch/x86/entry/syscalls/syscall_32.tbl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index 960a021d543e..0985d8333368 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -420,7 +420,7 @@
+ 412	i386	utimensat_time64	sys_utimensat
+ 413	i386	pselect6_time64		sys_pselect6			compat_sys_pselect6_time64
+ 414	i386	ppoll_time64		sys_ppoll			compat_sys_ppoll_time64
+-416	i386	io_pgetevents_time64	sys_io_pgetevents
++416	i386	io_pgetevents_time64	sys_io_pgetevents		compat_sys_io_pgetevents_time64
+ 417	i386	recvmmsg_time64		sys_recvmmsg			compat_sys_recvmmsg_time64
+ 418	i386	mq_timedsend_time64	sys_mq_timedsend
+ 419	i386	mq_timedreceive_time64	sys_mq_timedreceive
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
