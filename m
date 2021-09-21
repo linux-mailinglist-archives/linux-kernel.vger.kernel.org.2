@@ -2,106 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CAE413156
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3140413159
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhIUKMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbhIUKMB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:12:01 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87267C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:10:32 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id k2-20020adfc702000000b0016006b2da9bso3332808wrg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=+aOzJl+IOHEzliD/59W8D7vvkFuM5qZHbYDQFSYPXT0=;
-        b=aFGoLLrFkaG1Jv4QLHaJkF6I3uEoq4A5AJzdm69l+j3q/5szCUvpqk9ZBSpifegZh7
-         7mIN1MOkeF95mNesAfw2+ILFm7i3Kt9YsMHs5CI0eED0o5koHyQnW6Uq9U0f1iH9johY
-         mvSiUClnJeCiqROBHKO51gLbqDHgUYsrqn2TmtZEuNckaKHqkdMD85zsmEVrAT8aASQU
-         eUHxu0Qp8wOoFHuNFe2UyGkFC/qUwXTeerJNNKW/c+P+uzILzp4NrET0Ozjz5L73lFG6
-         BXfwgGS9ZVeotQ1x1+5LnibZ0TmWgtFQvB/s5jMaYE8qH50/tMfYBpeqMXmb7jf960FS
-         8VTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+aOzJl+IOHEzliD/59W8D7vvkFuM5qZHbYDQFSYPXT0=;
-        b=Ahv1CM1rtxhttP8mVIePmsaT6t8xq3NCOeSRHl/pMKnx98QMP5XbMJfE3A8zi1ItZa
-         RLN4CMTZA+N3RjmyshDVB1TdSymb0035kB4FzM8n/skopCgDwq5tHivMD6Nmu6vtDsX+
-         Uc+ietA9qEHq8l101aUg2XafmwjIZjoq3Nm4RRrQ4MQj2V51xkScuS1+XfoUEyOvJMKR
-         +AWc3SDrxDOl4RHJgFG6hItne4dnUnWeWEAxrnWy0IFWc6aGpMkCbUdG0nAyvPJmMTSP
-         VhFTxnWe+xT2RJYFI/PkYqBg1xR5SrS70KnyC2hzGgglEWy2+LiVV3UG9xIZ08b06DIN
-         DlbA==
-X-Gm-Message-State: AOAM531NlDMmzjsDlBEgXsazsLoxxtrC2YPg256Ft/aO4d/zCvzjQi1m
-        0IN9qMz+uZbENz9DaZjCo0cuHXct4A==
-X-Google-Smtp-Source: ABdhPJys3pVww4ZkhI5lNJvpGxC7FpDSW8fdyC3vE/S9sO05lABxATNp5/Fu8r8Y8OsHyFWVo/Rz/kH4aw==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:dd03:c280:4625:60db])
- (user=elver job=sendgmr) by 2002:adf:ea90:: with SMTP id s16mr34027049wrm.235.1632219031088;
- Tue, 21 Sep 2021 03:10:31 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 12:10:14 +0200
-In-Reply-To: <20210921101014.1938382-1-elver@google.com>
-Message-Id: <20210921101014.1938382-5-elver@google.com>
-Mime-Version: 1.0
-References: <20210921101014.1938382-1-elver@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2 5/5] kfence: add note to documentation about skipping
- covered allocations
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S231679AbhIUKNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:13:05 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:41279 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232130AbhIUKMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:12:47 -0400
+Received: from [192.168.178.35] (unknown [88.130.155.181])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 53A2761E64760;
+        Tue, 21 Sep 2021 12:11:17 +0200 (CEST)
+Subject: Re: [PATCH v3] lib/zlib_inflate/inffast: Check config in C to avoid
+ unused function warning
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20210920084332.5752-1-pmenzel@molgen.mpg.de>
+ <YUishGbHeaDMJDj+@archlinux-ax161>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <d00bb831-211e-0c7b-2734-1ed7769af2ef@molgen.mpg.de>
+Date:   Tue, 21 Sep 2021 12:11:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YUishGbHeaDMJDj+@archlinux-ax161>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a note briefly mentioning the new policy about "skipping currently
-covered allocations if pool close to full." Since this has a notable
-impact on KFENCE's bug-detection ability on systems with large uptimes,
-it is worth pointing out the feature.
+Dear Linux folks,
 
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Rewrite.
----
- Documentation/dev-tools/kfence.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools/kfence.rst
-index 0fbe3308bf37..d45f952986ae 100644
---- a/Documentation/dev-tools/kfence.rst
-+++ b/Documentation/dev-tools/kfence.rst
-@@ -269,6 +269,17 @@ tail of KFENCE's freelist, so that the least recently freed objects are reused
- first, and the chances of detecting use-after-frees of recently freed objects
- is increased.
- 
-+If pool utilization reaches 75% (default) or above, to reduce the risk of the
-+pool eventually being fully occupied by allocated objects yet ensure diverse
-+coverage of allocations, KFENCE limits currently covered allocations of the
-+same source from further filling up the pool. The "source" of an allocation is
-+based on its partial allocation stack trace. A side-effect is that this also
-+limits frequent long-lived allocations (e.g. pagecache) of the same source
-+filling up the pool permanently, which is the most common risk for the pool
-+becoming full and the sampled allocation rate dropping to zero. The threshold
-+at which to start limiting currently covered allocations can be configured via
-+the boot parameter ``kfence.skip_covered_thresh`` (pool usage%).
-+
- Interface
- ---------
- 
--- 
-2.33.0.464.g1972c5931b-goog
+Am 20.09.21 um 17:45 schrieb Nathan Chancellor:
+> On Mon, Sep 20, 2021 at 10:43:33AM +0200, Paul Menzel wrote:
+>> Building Linux for ppc64le with Ubuntu clang version 12.0.0-3ubuntu1~21.04.1
+>> shows the warning below.
+>>
+>>      arch/powerpc/boot/inffast.c:20:1: warning: unused function 'get_unaligned16' [-Wunused-function]
+>>      get_unaligned16(const unsigned short *p)
+>>      ^
+>>      1 warning generated.
+>>
+>> Fix it, by moving the check from the preprocessor to C, so the compiler
+>> sees the use.
+>>
+>> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> 
+>> ---
+>> v2: Use IS_ENABLED
+>> v3: Use if statement over ternary operator as requested by Christophe
+>>
+>>   lib/zlib_inflate/inffast.c | 13 ++++++-------
+>>   1 file changed, 6 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/lib/zlib_inflate/inffast.c b/lib/zlib_inflate/inffast.c
+>> index f19c4fbe1be7..2843f9bb42ac 100644
+>> --- a/lib/zlib_inflate/inffast.c
+>> +++ b/lib/zlib_inflate/inffast.c
+>> @@ -253,13 +253,12 @@ void inflate_fast(z_streamp strm, unsigned start)
+>>   
+>>   			sfrom = (unsigned short *)(from);
+>>   			loops = len >> 1;
+>> -			do
+>> -#ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+>> -			    *sout++ = *sfrom++;
+>> -#else
+>> -			    *sout++ = get_unaligned16(sfrom++);
+>> -#endif
+>> -			while (--loops);
+>> +			do {
+>> +			    if (IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
+>> +				*sout++ = *sfrom++;
+>> +			    else
+>> +				*sout++ = get_unaligned16(sfrom++);
+>> +			} while (--loops);
+>>   			out = (unsigned char *)sout;
+>>   			from = (unsigned char *)sfrom;
+>>   		    } else { /* dist == 1 or dist == 2 */
+>> -- 
+>> 2.33.0
 
+Just for the record,
+
+I compared both object files by running `objdump -d`, and the result is 
+the same.
+
+The binary differed (`vbindiff`), but I guess this is due to the 
+increased revision (`make bindeb-pkg`).
+
+without a change (Linus’ current master):
+
+0000 0B50: 00 00 00 00 00 00 00 00  1F 01 00 00 36 00 00 00  ........ 
+....6...
+                                      ^
+0000 0B60: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ........ 
+........
+0000 0B70: 00 00 00 00 00 00 00 00  29 01 00 00 32 00 00 00  ........ 
+)...2...
+                                      ^
+
+v2 (ternary operator):
+
+0000 0B50: 00 00 00 00 00 00 00 00  1C 01 00 00 36 00 00 00  ........ 
+....6...
+0000 0B60: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ........ 
+........
+0000 0B70: 00 00 00 00 00 00 00 00  26 01 00 00 32 00 00 00  ........ 
+&...2...
+
+v3 (if-else statement):
+
+0000 0B50: 00 00 00 00 00 00 00 00  1E 01 00 00 36 00 00 00  ........ 
+....6...
+0000 0B60: 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  ........ 
+........
+0000 0B70: 00 00 00 00 00 00 00 00  28 01 00 00 32 00 00 00  ........ 
+(...2...
+
+
+Kind regards,
+
+Paul
