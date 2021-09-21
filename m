@@ -2,139 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368B74133DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B363A4133E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhIUNPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:15:23 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52625 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhIUNPW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:15:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632230034; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=qruw8g+PWJV0WRCjaAI8RXGWWjmuKapoRvx8jO4ZMmo=;
- b=s2tFVMjBFuMZfEd6Do/rGFX75Lwe89PNWGevUeEUYyafvrcd6M28R9vt6enTlWOQF6WoUj5H
- qe86cEuDOJhS/hnrqiy07MbK8luqfxenh/+dbVhDbT0z3hn7nKYKAdvmAIp2ppSggKS41EO4
- heYeLWFmuqc/MOusuKC5J488jL8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6149da8965c3cc8c633c0e21 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 13:13:45
- GMT
-Sender: jeyr=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4FA0FC43616; Tue, 21 Sep 2021 13:13:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jeyr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 72DFDC4338F;
-        Tue, 21 Sep 2021 13:13:44 +0000 (UTC)
+        id S233010AbhIUNRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231658AbhIUNRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:17:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47369611BD
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632230132;
+        bh=iZqPsCMg2X8Aef7G1+KUsPh8b0qsPVUuFvS5wZqe3BM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RiHl2+YmmS2iTLX8VB3ByxLW7a5rCW/rzAKFF3JQNG2I5c+o1rlvkMdZcx8yu+NYY
+         ODGdkpsj9NigjFKSquD3f1TK/6DAx9ANUla+72pXsJvnLVDkLzjtHKYIoNGK+VbAPx
+         HPSkUfRo94MOglM9BUe1mrAlwq/a9PFs7JRJeyIVi9T68Jh7QT+PWDF2Tyo7hLKaRg
+         e4CYVXHpzp0hhmOo0SeCJP57AlAf7kLOsCk1STARc1EIHFiX7q/bq2HV0+PZ4Yxug9
+         3te0MpviijLkigJ3MASCBp8NCC9BnoujMHda+v2RCIgFcZ9opLC/HLB9/6N/AwfHKc
+         URI+tHkN+Qd8Q==
+Received: by mail-ed1-f54.google.com with SMTP id v5so72613395edc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:15:32 -0700 (PDT)
+X-Gm-Message-State: AOAM5317oHIp6ReReW9Po5DH4BdUIc3YEneHgT1pJkjtCx1IPiPQv8nW
+        Wy+sGywsA/eFeE3k8dYUm4fGHe70k0orYxjBWg==
+X-Google-Smtp-Source: ABdhPJzaQNMtEpU87qL4MJS8buFNHtKvHR7CLm3B8cBLx5LTsELv+5n4wF+8USFNS/0L8V+CNT/arQ73tExqtgeNbFA=
+X-Received: by 2002:a17:907:995a:: with SMTP id kl26mr35090782ejc.6.1632230052399;
+ Tue, 21 Sep 2021 06:14:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Sep 2021 18:43:44 +0530
-From:   jeyr@codeaurora.org
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH v3] misc: fastrpc: fix improper packet size calculation
-In-Reply-To: <YUnSt9B4hAe3y2k2@kroah.com>
-References: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
- <YUnHbiQDZK/+tTAp@kroah.com>
- <9c5c13a393b64a4527f7be7ca42734d2@codeaurora.org>
- <YUnSt9B4hAe3y2k2@kroah.com>
-Message-ID: <df24334190f8b7cb517e440bee8f2784@codeaurora.org>
-X-Sender: jeyr@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210808234733.14782-1-chunkuang.hu@kernel.org>
+ <CAAOTY_9LstZegE_Gyibov5tLo5eEqiPfoAcnyj_uoS=8xLLhnA@mail.gmail.com> <CAFqH_53M2OO8DpkPa3L7cwppVRYiUgEDjrLjK7JJNgKgxnQpVA@mail.gmail.com>
+In-Reply-To: <CAFqH_53M2OO8DpkPa3L7cwppVRYiUgEDjrLjK7JJNgKgxnQpVA@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 21 Sep 2021 21:14:01 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__4ZKf8YwJWMHkiZRjbcnDuf4tcVPO=AG1V3pv9_-4bVw@mail.gmail.com>
+Message-ID: <CAAOTY__4ZKf8YwJWMHkiZRjbcnDuf4tcVPO=AG1V3pv9_-4bVw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] CMDQ refinement of Mediatek DRM driver
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-21 18:10, Greg KH wrote:
-> On Tue, Sep 21, 2021 at 06:03:42PM +0530, jeyr@codeaurora.org wrote:
->> On 2021-09-21 17:22, Greg KH wrote:
->> > On Tue, Sep 21, 2021 at 05:18:15PM +0530, Jeya R wrote:
->> > > The buffer list is sorted and this is not being considered while
->> > > calculating packet size. This would lead to improper copy length
->> > > calculation for non-dmaheap buffers which would eventually cause
->> > > sending improper buffers to DSP.
->> > >
->> > > Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke
->> > > method")
->> > > Signed-off-by: Jeya R <jeyr@codeaurora.org>
->> > > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> >
->> > Does this also need to go to the stable kernels?
->> Yes, this needs to go to stable kernels also as this fixes a potential 
->> issue
->> which is easily reproducible.
-> 
-> 
-> 
->> 
->> >
->> > > ---
->> > > Changes in v3:
->> > > - relocate patch change list
->> > >
->> > > Changes in v2:
->> > > - updated commit message to proper format
->> > > - added fixes tag to commit message
->> > > - removed unnecessary variable initialization
->> > > - removed length check during payload calculation
->> > >
->> > >  drivers/misc/fastrpc.c | 10 ++++++----
->> > >  1 file changed, 6 insertions(+), 4 deletions(-)
->> > >
->> > > diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
->> > > index beda610..69d45c4 100644
->> > > --- a/drivers/misc/fastrpc.c
->> > > +++ b/drivers/misc/fastrpc.c
->> > > @@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct
->> > > fastrpc_invoke_ctx *ctx)
->> > >  static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx,
->> > > int metalen)
->> > >  {
->> > >  	u64 size = 0;
->> > > -	int i;
->> > > +	int oix;
->> >
->> > What does "oix" stand for?  What was wrong with i?
->> It is just a general convention we use. "oix" is used to iterate 
->> through
->> sorted overlap buffer list and use "i" to get corresponding unsorted 
->> list
->> index. We follow the same convention at other places also, for 
->> example:
->> fastrpc_get_args function.
-> 
-> That is the only place it is used in all of the whole kernel tree.  It
-> is not a normal variable for a loop, so who is "we" here?
-The convention was followed for the same file(fastrpc.c). As part of 
-fastrpc_get_args
-function, while iterating through sorted buffer list, oix is used as 
-index and to
-get unsorted index "raix", it is using "i". Just following the same way 
-here to
-have better understanding. Please let me know if this is a concern, it 
-can be updated
-to "i", "j" etc.
+Hi, Enric:
 
--- Thanks
-> 
-> thanks,
-> 
-> greg k-h
+Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=
+=8821=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:36=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> Hi Chun-Kuang,
+>
+> (again without html format, sorry for the noise)
+>
+> Missatge de Chun-Kuang Hu <chunkuang.hu@kernel.org> del dia dj., 12
+> d=E2=80=99ag. 2021 a les 2:13:
+> >
+> > Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B48=E6=9C=
+=889=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=887:47=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+> > >
+> > > These refinements include using standard mailbox callback interface,
+> > > timeout detection, and a fixed cmdq_handle.
+> >
+> > For this series, applied to mediatek-drm-next [1].
+> >
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.=
+git/log/?h=3Dmediatek-drm-next
+> >
+>
+> These patches seem to break the display on the Acer Chromebook R 13
+> (MT8173) in the current mainline. After running a bisection it pointed
+> me to the following commit
+>
+> commit f4be17cd5b14dd73545b0e014a63ebe9ab5ef837
+> Author: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Date:   Sun Jul 4 15:36:48 2021 +0800
+>
+>     drm/mediatek: Remove struct cmdq_client
+>
+> Reverting this patch alone is not trivial, so I ended up reverting the
+> full series, and I can confirm that reverting the full series makes
+> the display work again.
+
+I think you could not just revert "drm/mediatek: Remove struct
+cmdq_client", you should also revert the patches after it, such as
+
+"drm/mediatek: Clear pending flag when cmdq packet is done"
+"drm/mediatek: Add cmdq_handle in mtk_crtc"
+"drm/mediatek: Detect CMDQ execution timeout"
+
+If "drm/mediatek: Remove struct cmdq_client" is the patch cause
+display abnormal, I think you could compare code w/ and w/o this
+patch. Focus on the value accuracy, such as cmdq_cl and cmdq_chan. And
+focus on the flow accuracy, such as mtk_drm_crtc_update_config() and
+ddp_cmdq_cb(). If this could not find the problem, I think the latest
+way is to break this patch into small patches, changes little in each
+small patches and we could finally find out the problem.
+
+Regards,
+Chun-Kuang.
+
+>
+> Unfortunately, after the merge window, different things broke for this
+> device, and I didn't finish isolating them, and it is not clear to me
+> yet whether the logs I'm getting are useful for this specific issue or
+> not. Basically with this series merged the kernel seems to be stuck,
+> and the display is not working. Latest message is
+>
+> [   12.329173] mtk-iommu 10205000.iommu: Partial TLB flush timed out,
+> falling back to full flush
+>
+> Without the series, the kernel goes far and display works, however
+> there are other issues affecting the cros-ec, but I think that's
+> another issue.
+>
+> I'll try to dig a bit more, but, meanwhile, if you have any idea
+> please let me know.
+>
+> Thanks,
+>  Enric
+>
+>
+> > Regards,
+> > Chun-Kuang.
+> >
+> > >
+> > > Changes in v2:
+> > > 1. Define mtk_drm_cmdq_pkt_create() and mtk_drm_cmdq_pkt_destroy()
+> > >    when CONFIG_MTK_CMDQ is reachable.
+> > >
+> > > Chun-Kuang Hu (4):
+> > >   drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb
+> > >   drm/mediatek: Remove struct cmdq_client
+> > >   drm/mediatek: Detect CMDQ execution timeout
+> > >   drm/mediatek: Add cmdq_handle in mtk_crtc
+> > >
+> > >  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 110 ++++++++++++++++++++--=
+--
+> > >  1 file changed, 91 insertions(+), 19 deletions(-)
+> > >
+> > > --
+> > > 2.25.1
+> > >
