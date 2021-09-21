@@ -2,221 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1162413600
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E069413604
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbhIUPRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:17:12 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56643 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233974AbhIUPRJ (ORCPT
+        id S233963AbhIUPS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233932AbhIUPSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:17:09 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 488EC2B01343;
-        Tue, 21 Sep 2021 11:15:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 21 Sep 2021 11:15:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=6b4bk+5E8OPLQowTL7kis4IonQ7
-        Cljxm8kY9KOSGcPs=; b=rZpPfzSs7Jb93FbC2bda9KAVNQiNL2itKHeoUk8QtO4
-        nBfNouIRbOzCMVOAwkrqCbiRklbBDXzt8fYbjKQZJfyE9hSK51MlaU1k5BJaJXPA
-        QZZR/dVzp3MOBxZ5qYKUSOI69UU3h29jXS3yjzXBmZGSJZTjHYBU5b2i3OSy+klS
-        chgd3LZghrfSzga9MfaLMGDUX0ZaSh19tyL2gJvrARA07G7SChyQc49zg4XwITuP
-        CXaUtQYayrE5+G2ytoWthiJ1n0BgJPvgnC9/YeRKN/xvI9qn0y6/INe28jrtq/pJ
-        mvmkt8Gdmazj4rO4+C1yfGutYlOPFXdIofAaxB1aqHg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=6b4bk+
-        5E8OPLQowTL7kis4IonQ7Cljxm8kY9KOSGcPs=; b=eD37gPlHJgVovesHO5uuoI
-        N+uyLl/5gkfFL+fAr9k/5/pPL22rUsUuC42Rc+oLsbhLUzjJg7b8/rz4mhocY0t0
-        DHJzv3Eqvjgy/z1l3bI9huge0JjW1aKY3Q+41QinCs2WZ69gNO4YEglkqfNIiEWp
-        5GJOOSDEINUb1ZcqDgJg1AvyPfO0+rSai5FH7gW8XXTH4SR7h5HV5QH8mRUxwpVu
-        7ZSiviVPb27RxoUI42QbIDk9qeEaa9cA05RSIw/QTzPd5Hv9aF3n7uRYCaZCZMWM
-        wN4iwnuC2/CBh0dzpReBoPgbiFFTIm5SOpwzl5kzOhWMN/bNAK1E9pWcAcCUmjAg
-        ==
-X-ME-Sender: <xms:GfdJYWj23d-WWr7-03IMMcrguH72liZ2gH2LFAiJ6cEd87yRrELBpg>
-    <xme:GfdJYXB2uVxuBAPPAF0VODCp299Dt3gVF4xRMuc6AYApy3wuaqY4NVj4yOjbP9F04
-    0b8B5YsTVdZTg>
-X-ME-Received: <xmr:GfdJYeFlAGI7Ex5XjdIALQ1e2C9lS0fcXrBfam4RgwGvGhF7spZ1I-4NelFazSDbcZrjhJqw34qpkeU-ouLVk8gIXlfCl8br>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeigedgkeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
-    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:GfdJYfTyAmQvuuIDWQI2AWOEymz5RJ-Jd7ikExPO1vXs4R5rTaEXWA>
-    <xmx:GfdJYTxuvAi44xJQBv5O75YkTfZayUXMB33vqLerFN0RGRzz4_ZAug>
-    <xmx:GfdJYd5zeyuqfYBFrouN67lG3N9yIfDV-Qm9nn0dPBcKRErBvu2fOQ>
-    <xmx:GvdJYUqgEQUA-OnCpFXRTg9Ob23CIAB-EkAa70v175uT6bPdPRJYGDQOaCs>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Sep 2021 11:15:37 -0400 (EDT)
-Date:   Tue, 21 Sep 2021 17:15:35 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>, Len Baker <len.baker@gmx.com>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Prefer struct_size over
- open coded arithmetic
-Message-ID: <YUn3F9HtgrpN9sSM@kroah.com>
-References: <20210918150500.21530-1-len.baker@gmx.com>
- <202109192246.B438B42EF@keescook>
- <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
+        Tue, 21 Sep 2021 11:18:54 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896B5C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:17:26 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id t4so13630831plo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aXP49dUwOr4wFV77A1ODYn77RlAJY5JxxIiiVfkrBUk=;
+        b=gjzLdJnT5P9WLtW0MYPb/jAJ5Ct9/IjeS5rsfWjlML+N0YenRVQ/wZXJn9sp6q37gj
+         Lq4gT1uhIBTVGhoxVH27m96br5Rfr5BLCp/821HMZr6ysxSBYtRcHjc0BdCgKp3qd3Yk
+         qorTV4N45MA2owHVCRjQEjDrroLmwYR9TtSq67+Js9ZhVI94zfXkkIpmVPbv5ImMjSJT
+         k/IW2V/s0JSLj26cFn9aOLmGL3e2kaQ3qLh9pICQxKQbPqiKPb7Bq20AWhsU1Nus8aUf
+         5vUVGbl0RvEBuv/WyWzrxG347EiPS0JB392shMwhFA87YqChFkyzr1XMGMo90fr3GdX0
+         bfWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aXP49dUwOr4wFV77A1ODYn77RlAJY5JxxIiiVfkrBUk=;
+        b=KKgw+0qm8aN+zVit1rV73h/mMF1VvmGa1ZLCRbrixuAd6mVZY78idp1ynqNq3/sNzS
+         y8dvYp7PhYKZM/5X5VsvPbjfJBnTcRogeW5pobiN9v4UFdvxLJfuq2MvIbY921Kb564D
+         L+FpW/uq4rAdP4Ou/cDWDjotPys+BzRb/cD7i3B2xz002Q9ZELQt8+rPsWvcpNyKu8/S
+         eV26sizy00Age1Sjag59209nMbIAernIdwvIcncOIxvDB5oWRWbm7W5fz3rgJlyVzwYC
+         6PYapv0o0HpXE5cNixQj/NSQU/GoFZxoqIPPB4K5YOSENy7PS8cdDXGC0n9QdO1Inp7b
+         +kPw==
+X-Gm-Message-State: AOAM531DYxRs4wfSsbagLCDOBH9pfTY0FFVbIcGiRFSfq6/dbUQGu4Bu
+        wXyzdNmVlcJI2jqf7lumeBeh3g==
+X-Google-Smtp-Source: ABdhPJwNlEkhqcvzuBKRtW/l8+F1+HElaAXf2tk/df9UArqVyxlYnXnNna7yBrSxURRhZ3iht5miVA==
+X-Received: by 2002:a17:90a:428f:: with SMTP id p15mr5953127pjg.75.1632237445962;
+        Tue, 21 Sep 2021 08:17:25 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id j25sm17323352pff.34.2021.09.21.08.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 08:17:23 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 09:17:21 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     suzuki.poulose@arm.com, coresight@lists.linaro.org,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coresight: Don't immediately close events that are run
+ on invalid CPU/sink combos
+Message-ID: <20210921151721.GA2059841@p14s>
+References: <20210921130231.386095-1-james.clark@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
+In-Reply-To: <20210921130231.386095-1-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 03:46:23PM +0200, Hans de Goede wrote:
-> Hi,
+On Tue, Sep 21, 2021 at 02:02:31PM +0100, James Clark wrote:
+> When a traced process runs on a CPU that can't reach the selected sink,
+> the event will be stopped with PERF_HES_STOPPED. This means that even if
+> the process migrates to a valid CPU, tracing will not resume.
 > 
-> On 9/20/21 7:58 AM, Kees Cook wrote:
-> > On Sat, Sep 18, 2021 at 05:05:00PM +0200, Len Baker wrote:
-> >> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> >> and Conventions" documentation [1], size calculations (especially
-> >> multiplication) should not be performed in memory allocator (or similar)
-> >> function arguments due to the risk of them overflowing. This could lead
-> >> to values wrapping around and a smaller allocation being made than the
-> >> caller was expecting. Using those allocations could lead to linear
-> >> overflows of heap memory and other misbehaviors.
-> >>
-> >> So, switch to flexible array member in the struct attribute_set_obj and
-> >> refactor the code accordingly to use the struct_size() helper instead of
-> >> the argument "size + count * size" in the kzalloc() function.
-> >>
-> >> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> >>
-> >> Signed-off-by: Len Baker <len.baker@gmx.com>
-> >> ---
-> >>  drivers/platform/x86/thinkpad_acpi.c | 8 +++-----
-> >>  1 file changed, 3 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> >> index 50ff04c84650..ed0b01ead796 100644
-> >> --- a/drivers/platform/x86/thinkpad_acpi.c
-> >> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> >> @@ -1008,7 +1008,7 @@ struct attribute_set {
-> >>
-> >>  struct attribute_set_obj {
-> >>  	struct attribute_set s;
-> >> -	struct attribute *a;
-> >> +	struct attribute *a[];
-> >>  } __attribute__((packed));
-> > 
-> > Whoa. I have so many questions... :)
-> > 
-> >>
-> >>  static struct attribute_set *create_attr_set(unsigned int max_members,
-> >> @@ -1020,13 +1020,11 @@ static struct attribute_set *create_attr_set(unsigned int max_members,
-> >>  		return NULL;
-> >>
-> >>  	/* Allocates space for implicit NULL at the end too */
-> >> -	sobj = kzalloc(sizeof(struct attribute_set_obj) +
-> >> -		    max_members * sizeof(struct attribute *),
-> >> -		    GFP_KERNEL);
-> >> +	sobj = kzalloc(struct_size(sobj, a, max_members + 1), GFP_KERNEL);
-> > 
-> > Whoa, this needs a lot more detail in the changelog if this is actually
-> > correct. The original code doesn't seem to match the comment? (Where is
-> > the +1?) So is this also a bug-fix?
+> This can be reproduced (on N1SDP) by using taskset to start the process
+> on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
+> CPU 2):
 > 
-> Kees, at first I thought you were spot-on with this comment, but the
-> truth is more subtle. struct attribute_set_obj was:
+>   taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
 > 
-> struct attribute_set_obj {
->         struct attribute_set s;
->         struct attribute *a;
-> } __attribute__((packed));
+> This produces a single 0 length AUX record, and then no more trace:
 > 
-> Another way of looking at this, which makes things more clear is as:
+>   0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
 > 
-> struct attribute_set_obj {
->         struct attribute_set s;
->         struct attribute *a[1];
-> } __attribute__((packed));
+> After the fix, the same command produces normal AUX records. The perf
+> self test "89: Check Arm CoreSight trace data recording and synthesized
+> samples" no longer fails intermittently. This was because the taskset in
+> the test is after the fork, so there is a period where the task is
+> scheduled on a random CPU rather than forced to a valid one.
 > 
-> So the sizeof(struct attribute_set_obj) in the original kzalloc call
-> included room for 1 "extra" pointer which is reserved for the terminating
-> NULL pointer.
+> Specifically selecting an invalid CPU will still result in a failure to
+> open the event because it will never produce trace:
 > 
-> Changing the struct to:
+>   ./perf record -C 2 -e cs_etm/@tmc_etf0/
+>   failed to mmap with 12 (Cannot allocate memory)
 > 
-> struct attribute_set_obj {
->         struct attribute_set s;
->         struct attribute *a[];
-> } __attribute__((packed));
+> The only scenario that has changed is if the CPU mask has a valid CPU
+> sink combo in it.
 > 
-> Is equivalent to changing it to:
+> Testing
+> =======
 > 
-> struct attribute_set_obj {
->         struct attribute_set s;
->         struct attribute *a[0];
-> } __attribute__((packed));
+> * Coresight self test passes consistently:
+>   ./perf test Coresight
 > 
-> So the change in the struct declaration reduces the sizeof(struct attribute_set_obj)
-> by the size of 1 pointer, making the +1 necessary.
+> * CPU wide mode still produces trace:
+>   ./perf record -e cs_etm// -a
 > 
-> So AFAICT there is actually no functional change here.
+> * Invalid -C options still fail to open:
+>   ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
+>   failed to mmap with 12 (Cannot allocate memory)
 > 
-> Still I will hold off merging this until we agree on this :)
+> * Migrating a task to a valid sink/CPU now produces trace:
+>   taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
+> 
+> * If the task remains on an invalid CPU, no trace is emitted:
+>   taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
+>  1 file changed, 22 insertions(+), 5 deletions(-)
 
-First off, why is a single driver doing so many odd things with
-attribute groups?  Why not just use them the way that the rest of the
-kernel does?  Why does this driver need this special handling and no one
-else does?
+Very interesting corner case - and I like your solution.  Arnaldo, please
+consider.
 
-I think the default way of handling if an attribute is enabled or not,
-should suffice here, and make things much simpler overall as all of this
-crazy attribute handling can just be removed.
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Bonus would also be that I think it would fix the race conditions that
-happen when trying to create attributes after the device is bound to the
-driver that I think the existing driver has today.
-
-> > (I see the caller uses +2? Why? It seems to be using each of hotkey_attributes,
-> > plus 1 more attr, plus a final NULL?)
 > 
-> The +2 is actually for 2 extra attributes (making the total number
-> of extra attributes +3 because the sizeof(struct attribute_set_obj)
-> already includes 1 extra). 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index 8ebd728d3a80..79346f0f0e0b 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
+>  	 * sink from this ETM. We can't do much in this case if
+>  	 * the sink was specified or hinted to the driver. For
+>  	 * now, simply don't record anything on this ETM.
+> +	 *
+> +	 * As such we pretend that everything is fine, and let
+> +	 * it continue without actually tracing. The event could
+> +	 * continue tracing when it moves to a CPU where it is
+> +	 * reachable to a sink.
+>  	 */
+>  	if (!cpumask_test_cpu(cpu, &event_data->mask))
+> -		goto fail_end_stop;
+> +		goto out;
+>  
+>  	path = etm_event_cpu_path(event_data, cpu);
+>  	/* We need a sink, no need to continue without one */
+> @@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
+>  	if (coresight_enable_path(path, CS_MODE_PERF, handle))
+>  		goto fail_end_stop;
+>  
+> -	/* Tell the perf core the event is alive */
+> -	event->hw.state = 0;
+> -
+>  	/* Finally enable the tracer */
+>  	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+>  		goto fail_disable_path;
+>  
+> +out:
+> +	/* Tell the perf core the event is alive */
+> +	event->hw.state = 0;
+>  	/* Save the event_data for this ETM */
+>  	ctxt->event_data = event_data;
+> -out:
+>  	return;
+>  
+>  fail_disable_path:
+> @@ -517,6 +521,19 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>  	if (WARN_ON(!event_data))
+>  		return;
+>  
+> +	/*
+> +	 * Check if this ETM was allowed to trace, as decided at
+> +	 * etm_setup_aux(). If it wasn't allowed to trace, then
+> +	 * nothing needs to be torn down other than outputting a
+> +	 * zero sized record.
+> +	 */
+> +	if (handle->event && (mode & PERF_EF_UPDATE) &&
+> +	    !cpumask_test_cpu(cpu, &event_data->mask)) {
+> +		event->hw.state = PERF_HES_STOPPED;
+> +		perf_aux_output_end(handle, 0);
+> +		return;
+> +	}
+> +
+>  	if (!csdev)
+>  		return;
+>  
+> -- 
+> 2.28.0
 > 
-> FWIW these 2 extra attributes are for devices with a
-> a physical rfkill on/off switch and for the device being
-> a convertible capable of reporting laptop- vs tablet-mode.
-
-Again, using the default way to show (or not show) attributes should
-solve this issue.  Why not just use that instead?
-
-> >>  	if (!sobj)
-> >>  		return NULL;
-> >>  	sobj->s.max_members = max_members;
-> >> -	sobj->s.group.attrs = &sobj->a;
-> >> +	sobj->s.group.attrs = sobj->a;
-> >>  	sobj->s.group.name = name;
-> > 
-> > The caller also never sets a name?
-> 
-> attribute_group.name may be NULL, I don't know
-> of (m)any drivers which actual set this to non NULL.
-
-It is used by some, that is how you can put all of the attributes in a
-subdirectory automatically.  No idea if that's needed here...
-
-All attributes for this driver are documented in Documentation/ABI/,
-right? :)
-
-thanks,
-
-greg k-h
