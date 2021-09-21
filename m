@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B5F412B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA73412D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347273AbhIUCUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:20:08 -0400
-Received: from ozlabs.org ([203.11.71.1]:60137 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230145AbhIUCLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:11:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632190204;
-        bh=a3cUIv0cFlgM60XQqhckvEnF+VTAPa9qbJSBXzctUew=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dQ+CdJrJKVxhya6ZJ+kPpJGhLSKwem4Z/lF6SSB0T0whNhnDdDDBR6z+3veqEMhDc
-         U4QeMx1OY4RXoVTlqxaS1Il/rLY0+JxgrHTEs1auj5n3sITY8Ie2Q5QHI0P9gmZ5SR
-         qpMQHs91W4AHYjna4SRumlH09PwOoHPO+dre4G/40MjA4MK29LnWtUS2HbHfk+9ZQO
-         bDT0zVUhniSc20xzV0Gd4lS8kClAbFpcnSptxKgACg0sVWzEy3WNsmE7aqNhDqp3jA
-         QYwDRQH08q9e9ik8+fPlfkWtoDlm3Z8cwzmXMVgg0PEVcqZGN4aPlHXZULXvdRG4eU
-         p2NWIH0N4qzQA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HD4d84Dqwz9sR4;
-        Tue, 21 Sep 2021 12:10:04 +1000 (AEST)
-Date:   Tue, 21 Sep 2021 12:10:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in Linus' tree
-Message-ID: <20210921121003.3cac20c5@canb.auug.org.au>
+        id S1347755AbhIUC4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351606AbhIUCkG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 22:40:06 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54663C08E9AC;
+        Mon, 20 Sep 2021 19:16:29 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id u8so23935592lff.9;
+        Mon, 20 Sep 2021 19:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bklc5LnpHbXXRZG1hQdUHVP8Fhs6SyMfJaYgRp3O//E=;
+        b=dsm+JAsusa9xNL32okfaioo2aQiS0BiadMNz2FsHDp4+QLFvhoqOtZD2YVdfKQa7JJ
+         7STYnQPwVTnDXCgGt+S/ckrydR/yId4oG8qMJ2JiRP2H1GTMMmYI0bxP0LtiW8zTzA63
+         6OIks84cyz5jmCMphJy9tqgSq2ooXxjs1GVEs+hSauO5dLdjFXJ71uvdXqZoeMdAtQSu
+         C/ciiqyA1BFQmJnpmSnm9vmzYHldMU+aAG98k1K3rDVb14bnkQVkB9dSff2yw5Lk1Dj8
+         F1HyMHHa8w09chMVw9dReBuFUR+NsQtgYPV4mMMCsLI1bhJuZOOXfOfCIm2RprYtD5xu
+         lmcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bklc5LnpHbXXRZG1hQdUHVP8Fhs6SyMfJaYgRp3O//E=;
+        b=IE999Vk1PVQtgayOLHgkKAljAbzRQqYQ/5O9gZYVJU5GWlszfkEm+pPeBYgJQzrqux
+         hE0RybDy2/wLJ3E+4QjxmP/oKcx9aBG27borDBWminWbVl4LEIYC3Ch0Dl9ko1Je1qor
+         lnCzMioBBwquLZw5ZrV4OLitMUURVZFL3h/6bKpl9YfyCPqYC1RKI6YPfA3VuBBXS5l+
+         cos0R9TODmmxIx9CoasYgBtxWKqMdvnCnC2j9v0HhMnErT1UQ60fOBDllO5oSTvsdW1c
+         irvzhP785ktolgfXCsIpMeuEtb7jxa5C7RhBqM6ezk7ObI6+6rrCgEmg7yyKQtzKTCXy
+         Tofg==
+X-Gm-Message-State: AOAM531knN+ZZIUTQtWNwfXu4T/RHLwDtUZQp/hK20hvJULCnKcA5Kzb
+        azbNMbZmrdmP1+BrtcWMp2vv/oEl58meZsJASM323RTr
+X-Google-Smtp-Source: ABdhPJyzjfrt4j2H+fAlrXP+MgZcR4mnt936HzL/meXUT4p6FFtd+99NoogxeE2WrucliHMlrGKm83XD00j7mCVYiqQ=
+X-Received: by 2002:ac2:44b6:: with SMTP id c22mr7348048lfm.601.1632190587579;
+ Mon, 20 Sep 2021 19:16:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/npQHd+6GqU9GyVpncn1yOcJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
+ <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
+In-Reply-To: <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 20 Sep 2021 21:16:16 -0500
+Message-ID: <CAH2r5ms0P9r6N_Tqw02TtpmHXaiJejdQgL2Rur1GMP=tyr0CMg@mail.gmail.com>
+Subject: Re: [GIT PULL] ksmbd server security fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/npQHd+6GqU9GyVpncn1yOcJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 20, 2021 at 5:46 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, Sep 19, 2021 at 7:22 AM Steve French <smfrench@gmail.com> wrote:
+> >
+> > 3 ksmbd fixes: including an important security fix for path
+> > processing, and a missing buffer overflow check, and a trivial fix for
+> > incorrect header inclusion
+> >
+> > There are three additional patches (and also a patch to improve
+> > symlink checks) for other buffer overflow cases that are being
+> > reviewed and tested.
+>
+> Note that if you are working on a path basis, you should really take a
+> look at our vfs lookup_flags, and LOOKUP_BENEATH in particular.
 
-Hi all,
+This was also something that Ralph brought up, and Namjae is looking
+at now.
 
-In commit
+> The way to deal with '..' and symlinks is not to try to figure it out
+> yourself. You'll get it wrong, partly because the races with rename
+> are quite interesting. The VFS layer knows how to limit pathname
+> lookup to the particular directory you started in these days.
+>
+> Of course, that is only true for the actual path lookup functions.
+> Once you start doing things manually one component at a time yourself,
+> you're on your own.
 
-  345e1ae0c6ba ("afs: Fix missing put on afs_read objects and missing get o=
-n the key therein")
+Agreed.  Also FYI I removed the "ksmbd: Use LOOKUP_NO_SYMLINKS"
+changeset from for-next (I left the first two buffer validation changesets
+in, since those have been reviewed), since Namjae is working on
+an updated version following your suggestion (and others' review feedback).
 
-Fixes tag
+-- 
+Thanks,
 
-  Fixes: f7605fa869cf ("afs: Fix leak of afs_read objects")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Sorry, I could not find the intended commit :-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/npQHd+6GqU9GyVpncn1yOcJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFJPvsACgkQAVBC80lX
-0GyT0QgApPk3VJE8SiOw6Ysxy2t1pI8DJqM2sFf4BqHy2Ss98Z+WDZXGJoixxB5J
-97sZcaERqu8/qVNrqMBQn6NYnYByOOaPf0dgxpPFYDRIk+73qRyDorH5LbWVn6GD
-TLXj6RcsAmnH8KfAMxVohsJLRmDLOgtUZzBcHBVZd6c5MW4dfSRC1iqWe4wSpxuU
-7+O8neopSmEQrt9bWYn0MBwhCaJ1H+YScRHRxT/VyhpWikvh8fbdtE/kulQz8ohV
-MVzs5kzi54reMmY8rrjoIAXvMq5b4bCPEbwkMIsBPnGnPDk8eR06okP7SnAzf7HO
-UBfbLdkmPSoYitEVIr3nw811f/JTUg==
-=5Uve
------END PGP SIGNATURE-----
-
---Sig_/npQHd+6GqU9GyVpncn1yOcJ--
+Steve
