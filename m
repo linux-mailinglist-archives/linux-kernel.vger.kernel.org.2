@@ -2,223 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D6A413700
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186E4413701
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhIUQKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:10:10 -0400
-Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:62133 "EHLO
-        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231727AbhIUQKH (ORCPT
+        id S233913AbhIUQLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231727AbhIUQLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:10:07 -0400
-Received: from pps.filterd (m0127842.ppops.net [127.0.0.1])
-        by mx0b-002c1b01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LBnW2i015313;
-        Tue, 21 Sep 2021 09:08:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version;
- s=proofpoint20171006; bh=O3TOG6K1XwJdhplE7ctg2WQs6qMpwmK7E7OHN49R+Rs=;
- b=YLsaixkB6z7lu5KM0koND8r9bMidwXFzcmJrBHnS8agP5pBhRxJ1WHQuJ5KycRPWyJFj
- 4YeRKvaQJ8o5onJmKc5zeSB0WUPxND5kMAAoCnfalFsubwxqYngWn2Nq+SWDtElYEpNg
- zONrVujHKYqPdfNEBC4OEA9DlkwnTcd0aNHETbbMuJdgWZ2elirUwyhjJlq6x3jqJhRx
- yyp/lNrNfIeb6PswwfNRwoKjVQcYwSYLLHtg/XDKW25TSnJ12lmOfohP8M591uBDM7yQ
- Dmo9R+b8RVlQem7PzXSz9Na0RZiWAq6MZPXhRrfYVxDfhNS1tOt5CG4WxiiE9UraQWG4 Qw== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by mx0b-002c1b01.pphosted.com with ESMTP id 3b7ev1rjh1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 09:08:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OWjxE7A1AFOoXM0scE5auBds6HhN6q0rcMEPnWQGen0qCiRxi0LJ6KWkKGtr2czcWhxz5XI8m6nDFTrzzA1AXxL2xPbvdr38Zxc6n7EYGmIZU1dvr1sjbcfnK+KHuLAl7c6Kn1CPf3fgjm+3IENf93BdGme62Vyae+afyFyJdSt97HCKa+hvMtTidj34KBwQpv1oVaSMPF3LD2x/ksuIHSII0Zc9hOkOyPnIvm3JJMA5CvCxamixzD6bACfH1AlarM6ESCbO96KEOHNBq5X6cmRkDsDa06tnkFUaDdtkNS8uv0LKrhbZ9qPZ9tdcMqztA5pCFz649vy4+4JQgP0rbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=O3TOG6K1XwJdhplE7ctg2WQs6qMpwmK7E7OHN49R+Rs=;
- b=WAeg5ZM5XqwcmJeN13TT98phqCi4llsfVGg/r/A82vB3nY8WD+YmcgEd45tobWzUDE5seMkMZTxbW+DHy90VRuwvcKju4WQQ8r/msbuJJXYoAjIN4ep7l6HWBggcrn5B0qCt2mvJjEDn7mrUIcg6pp5F+/pY+aunnCZ6JrT8EryTo5aZL6CcbB5PgzSTI/VKJ4+f0GwmXwHZVbg3GtjYzXk6BImy6TTmz6xUS4ZCO7YMn8Wqbmi6mMmCswaVZBQVCIJfnt3dqRorUvl1j/wSh1QjKKzNYgYVvuAtk43sbpPZ49M4Z6V9M7WcXVRm3MzKu0vaq9K0zMw+glrCHwEGjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com (2603:10b6:5:79::13) by
- DM6PR02MB6906.namprd02.prod.outlook.com (2603:10b6:5:257::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4523.18; Tue, 21 Sep 2021 16:08:29 +0000
-Received: from DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::6da5:2da0:efd2:e90e]) by DM6PR02MB5578.namprd02.prod.outlook.com
- ([fe80::6da5:2da0:efd2:e90e%7]) with mapi id 15.20.4523.019; Tue, 21 Sep 2021
- 16:08:29 +0000
-From:   Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "david@redhat.com" <david@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <flosch@nutanix.com>,
-        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
-        Jonathan Davies <jond@nutanix.com>
-Subject: Re: [PATCH v2 1/1] Documentation: update pagemap with shmem
- exceptions
-Thread-Topic: [PATCH v2 1/1] Documentation: update pagemap with shmem
- exceptions
-Thread-Index: AQHXrj+D4T8obcdGHUe6vvWc8xL+VautSQuAgADmeYCAAGf/AIAAEdEA
-Date:   Tue, 21 Sep 2021 16:08:29 +0000
-Message-ID: <C983908F-7AF4-410B-90FF-DB4B9A06E917@nutanix.com>
-References: <20210920164931.175411-1-tiberiu.georgescu@nutanix.com>
- <20210920164931.175411-2-tiberiu.georgescu@nutanix.com>
- <YUjb91tWhd/YAgQW@t490s> <F6A49621-C7A4-4643-95C2-F47B02F132D2@nutanix.com>
- <YUn0ikP4Gip3Yc6L@t490s>
-In-Reply-To: <YUn0ikP4Gip3Yc6L@t490s>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ba72d92b-ae2e-4aaf-6b07-08d97d1a0d7b
-x-ms-traffictypediagnostic: DM6PR02MB6906:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR02MB6906FCE8DDF09C90A08A6960E6A19@DM6PR02MB6906.namprd02.prod.outlook.com>
-x-proofpoint-crosstenant: true
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: E+4J6rQJ7/dTK7z8j+IPXjGStVFSTMCoKlUz6InaAxBUmt1FjL7LvUr/awKU6PIuyElpnb2jpLFAALYNxNWkhYwhlK4F5XfrkOxljQTwEIEcOrCVl+EQhiFPUsYvAxVtBzxhPTTWya08dLzRMg4QO0C/s97BQ/ogmlW5O0Ny1x16UmfWKQ4jepZc8SoEL0ELvUGKJIzhtl3AfRVtdGaMmZvqcDi/RQMQ+tsOyor5Il/AvxyR1n+/4gZdsqm6LYhlSYdLNPh9aMkNp+C4WisizOAQp1shZ8EIuu50zqxClrtocoLBspC6we+Q67Ho3d7mwLDGCAtNF1I+ijmTPmpC0siFKQeFwBq8FbJmMZMD2EJNHXL+aMNGXujiGcrDg0CaXNNzbue2LZ/R+1HmxFPG2FrW1xGSvYoKu71RfBqkawjwDOAyX3ncWsIg5/LfqlS1P1xPXKp3kqVW3PYy7Aa35HOUyuz5wL/6kprP+O45wJPIo67RusxZy8ZJz15VpeRMjcL6lvTwgr3RKHXGcHcLCka07hnnr+ShXoGAKHM5oYBMaKzJnlq9Vpqumvn5telf2HBzOUcE76k+mTm5bAA3R2GBbYV2apLfTE57iDivXom3z70viZloNI4UfIKXt+hm092Jt58hYgLFiTw3RmIW9GcmhzENkxK0PpFWXqDnf75Rpjlt8MmAH89B7yE1Y5l4zYtdIz46SDRaEUIs6kFPrvAp2osSLFqPxF9izKmHHDFYvONINQo6no0SdsANXmNHEutfU4tHRYrkTyf7jlG6C8xmoqwQUfgb+Ri+UnqMHXpFF6Oboq5+LN+10MOTgcfE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5578.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(54906003)(38100700002)(66446008)(8936002)(508600001)(86362001)(6506007)(38070700005)(5660300002)(4326008)(107886003)(316002)(83380400001)(122000001)(53546011)(44832011)(8676002)(66946007)(6916009)(76116006)(6512007)(186003)(33656002)(26005)(91956017)(71200400001)(2906002)(966005)(2616005)(6486002)(66476007)(36756003)(64756008)(66556008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EKhDkBOWm2ArfZuHLtGxNEpk8h8QCf1AjSI5y56CYynf7rSW2xlxWtyF8Tkb?=
- =?us-ascii?Q?Y1lAxq95FrOoLBUCkB2GtuMl9VNAUdAekr+7dRRWlMKoDJk9TECbw5LRdt4s?=
- =?us-ascii?Q?O6uWIFccUCtTNswIUDBRCT73F6xFWeVBUfaNsYNfjhai0Lm2lvI647M/pjgR?=
- =?us-ascii?Q?Zhsz6lFzBUYMPp3hYLOB2L/wMy6iTGiIkzSxX/hyF9obRpwNYMeNRHFyVoHw?=
- =?us-ascii?Q?gU7RP10uEayIOua0B95VXsRa/KUAGblBE+1RGq179BNvsHGT4dWBvDaALXCN?=
- =?us-ascii?Q?ayK1Ay4OpKVyaGCyLleImsEAqPe95H4QkPebOC7C8EuoiAgKETdiuGAQJknP?=
- =?us-ascii?Q?xewRhV0M5pVwp61hiMKkU6Mmn3deHuNic1YF9VsS/e6bdxw/+DcuzcMVm5Au?=
- =?us-ascii?Q?m9BV/4fZ76LDlnLF3ilEFalqW0uh9QL1Yo1reN6miestks/T4K4xWWEGnayz?=
- =?us-ascii?Q?PE/QyweuiOBDyVb8jBMEGCJXcq45dlPgrPVcb/6sLnEE4sNLqN+Qg/Dca/L8?=
- =?us-ascii?Q?fXbRTr/KEc8g86qf/1zz1/X7ft86bdBb56sZ6OX5hbDukcppwUVUmED7Wg48?=
- =?us-ascii?Q?oUZq4SNXvyd8PnLCKiFvDOmpU3V/TPmOzvZUSE+6tbryx3GuX9pFZsg/ALBB?=
- =?us-ascii?Q?VQ3+PCp4RR7ltCtoonhUUSkWSHn5AOMdwqjdezHctIRNIwkj2WkIHKVBMUZK?=
- =?us-ascii?Q?6+2R7adPVWnHjznxIs0Xb/b0n9UDRMl/HPoz8YMNLoTHOL+smh8Uc2IvODAr?=
- =?us-ascii?Q?MgjU6tTnWdKcj6OWHZ070c5VSzALyOdjkZMFdNAwZQLvHtH4jwAlyGDlwfgn?=
- =?us-ascii?Q?l6VeBMZ8HyIa6tPFGG8sXm2pFdTBSRgOU6oWEgjDBq9MUDl8yz9qgPWVmYsQ?=
- =?us-ascii?Q?EqbnksEjyvpLk4uLUinbjL+ZR5mz+d3xewax0L0X3zv/miBvRtxIZTvaKdZR?=
- =?us-ascii?Q?MWtBEX5/Pl09k42jQXLmB9noEJ/BkYnJypOkEF7TieA93QskuN+YZaG55plE?=
- =?us-ascii?Q?OzriQi93XvUJUptvgvzm2Pr41qTJM1k7pELHZk5IoG5iG1U8HKpCUwFNLeEQ?=
- =?us-ascii?Q?7h2nUCYr8kC24AnxoiKBgSJGkdFsbOCL4f0JRxYTCKslRXs3SY6Tkxyg+GTc?=
- =?us-ascii?Q?lLutxO05CQK65zO6ZNVe6tOEw2hqPtbtCvVfgqaJ5S2Sqfke1QVH0FGpd3PN?=
- =?us-ascii?Q?Tza/YyTQ5/eKb/RqtJ1g70dE2UfM9GM1rqlyErbps4LX354EgFYTHqrG9/Vr?=
- =?us-ascii?Q?Fd7jOSI7QfdLpgAUEa8p9lheBJYHHKTwxtJFJ/p4OIdJwTZXz5lzTmWgv/jL?=
- =?us-ascii?Q?YZJZwMHVOm9o+uYU1OiczWAk?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3C3F40A8DD3AD84FA1709450D1D8DE81@namprd02.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 21 Sep 2021 12:11:20 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09580C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:09:52 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id u18so39035410wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:09:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n/dUevHsiLdE2irKaS1K4eioH3NiOV8sQVgnvAoo5Ko=;
+        b=mfU91cRuSYxoetgBDYjcRxoyjxzZNOhzDWtY9d0TYAAmHG0KE/ijeHoF7573yNouyH
+         RkVW0cPEEr6cTRAn0+3XYADRMFj0hG7QpVeZQyPRKy6yWxP9rSdhTwYK6A7qjsqioj0I
+         DL1dMhbzXj1kHxEulMNRKhALT3iaSxiJg3zSBt4NGDbGRSztkRW2NwzVHKOh6C1+ir2q
+         lOKAenY5YLo+A5ur2WYBK95yVMjqo+DZLGY3onk8smssehg0eg9KB0dEl6TSvukBb1eG
+         Nu+77/ytnWeV1lqlaLwQeSvXNbJHVE1MDxw0OvymIuiRf4Kej3stGYgUA/TxbY4KENe8
+         Gl8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n/dUevHsiLdE2irKaS1K4eioH3NiOV8sQVgnvAoo5Ko=;
+        b=KQ+QMoPAZXDaEmXCWWX1+bhs9tEFls92qrgrh7PRVsX7qNle93IUZIUVPPen0ynF4n
+         jRKNBwwcaDIHitUszk02DigWdd8bH1KA3RkSmUBIU+Rhj0L776SXMruZMhQBwchCvpqq
+         HkqnVy4H0Yj8U6E5/EtH1AKlEQb3mCkyQwqtb5U8cQyUAzi4efRuc+vAHfAHDNwYI+Nq
+         8FdMoE/6/Yzfuq61sOwAfypp7kpX7Cf+VovDl0fsscsXw9xV3/aVGn5aTcNSNZuu9B7P
+         QQZeDqsjuMkNr0mlTlUv/9s134hDezQlG258InWbRO02DQ5hQhGqKJPN0c1m+UvObnuh
+         1ALQ==
+X-Gm-Message-State: AOAM530oS+ajglxAdVU0tkcF+xynQeOF66qUZT8t7PQL48sPUoPBsYXi
+        HJ4h/5z/3jxNlXe+RrFQ3s/krA==
+X-Google-Smtp-Source: ABdhPJxBu+3YJh8avIZrTawiYkjU/W2b+1aQMbVujqjUbPyuv6hyDWne+bNnYKVD0hbLSVljVhUkuA==
+X-Received: by 2002:a05:600c:1c26:: with SMTP id j38mr5732706wms.12.1632240590526;
+        Tue, 21 Sep 2021 09:09:50 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id c4sm13205218wrt.23.2021.09.21.09.09.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 09:09:50 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:09:28 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Vivek Gautam <vivek.gautam@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, joro@8bytes.org,
+        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
+        eric.auger@redhat.com, kevin.tian@intel.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
+Subject: Re: [PATCH RFC v1 09/11] iommu/virtio: Implement sva bind/unbind
+ calls
+Message-ID: <YUoDuOg0pVw8GGOl@myrica>
+References: <20210423095147.27922-1-vivek.gautam@arm.com>
+ <20210423095147.27922-10-vivek.gautam@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5578.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba72d92b-ae2e-4aaf-6b07-08d97d1a0d7b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2021 16:08:29.7979
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6jD5s2pcZmNfv17zNTc5Y4fRBp6Gy2E0fy+mYvaRJi01nM5M8PvppQE8jus6N3QNPm6POluMICgFwKz6yeCPvp+F1i38dhBIAHKSd+AE1Sk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6906
-X-Proofpoint-GUID: GZNnUS6pg0WgUCsIoTwpM_ODm2rHguHP
-X-Proofpoint-ORIG-GUID: GZNnUS6pg0WgUCsIoTwpM_ODm2rHguHP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-21_04,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210423095147.27922-10-vivek.gautam@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 23, 2021 at 03:21:45PM +0530, Vivek Gautam wrote:
+> SVA bind and unbind implementations will allow to prepare translation
+> context with CPU page tables that can be programmed into host iommu
+> hardware to realize shared address space utilization between the CPU
+> and virtualized devices using virtio-iommu.
+> 
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> ---
+>  drivers/iommu/virtio-iommu.c      | 199 +++++++++++++++++++++++++++++-
+>  include/uapi/linux/virtio_iommu.h |   2 +
+>  2 files changed, 199 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index 250c137a211b..08f1294baeab 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -14,6 +14,9 @@
+>  #include <linux/interval_tree.h>
+>  #include <linux/iommu.h>
+>  #include <linux/io-pgtable.h>
+> +#include <linux/mm.h>
+> +#include <linux/mmu_context.h>
+> +#include <linux/mmu_notifier.h>
+>  #include <linux/module.h>
+>  #include <linux/of_iommu.h>
+>  #include <linux/of_platform.h>
+> @@ -28,6 +31,7 @@
+>  #include <uapi/linux/virtio_iommu.h>
+>  #include "iommu-pasid-table.h"
+>  #include "iommu-sva-lib.h"
+> +#include "io-pgtable-arm.h"
 
-> On 21 Sep 2021, at 16:04, Peter Xu <peterx@redhat.com> wrote:
->=20
-> Hi, Tiberiu,
->=20
-> On Tue, Sep 21, 2021 at 08:52:32AM +0000, Tiberiu Georgescu wrote:
->> I tested it some more, and it still looks like the mincore() syscall con=
-siders pages
->> in the swap cache as "in memory". This is how I tested:
->>=20
->> 1. Create a cgroup with 1M limit_in_bytes, and allow swapping
->> 2. mmap 1024 pages (both shared and private present the same behaviour)
->> 3. write to all pages in order
->> 4. compare mincore output with pagemap output
->>=20
->> This is an example of a usual mincore output in this scenario, shortened=
- for
->> coherency (4x8 instead of 16x64):
->> 00000000
->> 00000000
->> 00001110   <- this bugs me
->> 01111111
->>=20
->> The last 7 bits are definitely marking pages present in memory, but ther=
-e are
->> some other bits set a little earlier. When comparing this output with th=
-e pagemap,
->> indeed, there are 7 consecutive pages present, and the rest of them are
->> swapped, including those 3 which are marked as present by mincore.
->> At this point, I can only assume the bits in between are on the swap cac=
-he.
->>=20
->> If you have another explanation, please share it with me. In the meanwhi=
-le,
->> I will rework the doc patch, and see if there is any other way to differ=
-entiate
->> clearly between the three types of pages. If not, I guess we'll stick to
->> mincore() and a best-effort 5th step.
->=20
-> IIUC it could be because of that the pages are still in swap cache, so
-> mincore() will return 1 for them too.
+Is this used here?
 
-That is my assumption as well.
->=20
-> What swap device are you using?  I'm wildly guessing you're not using fro=
-ntswap
-> like zram.  If that's the case, would you try zram?  That should flush th=
-e page
-> synchronously iiuc, then all the "suspecious 1s" will go away above.
+>  
+>  #define MSI_IOVA_BASE			0x8000000
+>  #define MSI_IOVA_LENGTH			0x100000
+> @@ -41,6 +45,7 @@ DEFINE_XARRAY_ALLOC1(viommu_asid_xa);
+>  
+>  static DEFINE_MUTEX(sva_lock);
+>  static DEFINE_MUTEX(iopf_lock);
+> +static DEFINE_MUTEX(viommu_asid_lock);
+>  
+>  struct viommu_dev_pri_work {
+>  	struct work_struct		work;
+> @@ -88,10 +93,22 @@ struct viommu_mapping {
+>  struct viommu_mm {
+>  	int				pasid;
+>  	u64				archid;
+> +	struct viommu_sva_bond		*bond;
+>  	struct io_pgtable_ops		*ops;
+>  	struct viommu_domain		*domain;
+>  };
+>  
+> +struct viommu_sva_bond {
+> +	struct iommu_sva		sva;
+> +	struct mm_struct		*mm;
+> +	struct iommu_psdtable_mmu_notifier	*viommu_mn;
+> +	struct list_head		list;
+> +	refcount_t			refs;
+> +};
+> +
+> +#define sva_to_viommu_bond(handle) \
+> +	container_of(handle, struct viommu_sva_bond, sva)
+> +
+>  struct viommu_domain {
+>  	struct iommu_domain		domain;
+>  	struct viommu_dev		*viommu;
+> @@ -136,6 +153,7 @@ struct viommu_endpoint {
+>  	bool				pri_supported;
+>  	bool				sva_enabled;
+>  	bool				iopf_enabled;
+> +	struct list_head		bonds;
+>  };
+>  
+>  struct viommu_ep_entry {
+> @@ -1423,14 +1441,15 @@ static int viommu_attach_pasid_table(struct viommu_endpoint *vdev,
+>  
+>  		pst_cfg->iommu_dev = viommu->dev->parent;
+>  
+> +		mutex_lock(&viommu_asid_lock);
+>  		/* Prepare PASID tables info to allocate a new table */
+>  		ret = viommu_prepare_pst(vdev, pst_cfg, fmt);
+>  		if (ret)
+> -			return ret;
+> +			goto err_out_unlock;
+>  
+>  		ret = iommu_psdtable_alloc(tbl, pst_cfg);
+>  		if (ret)
+> -			return ret;
+> +			goto err_out_unlock;
+>  
+>  		pst_cfg->iommu_dev = viommu->dev->parent;
+>  		pst_cfg->fmt = PASID_TABLE_ARM_SMMU_V3;
+> @@ -1452,6 +1471,7 @@ static int viommu_attach_pasid_table(struct viommu_endpoint *vdev,
+>  			if (ret)
+>  				goto err_free_ops;
+>  		}
+> +		mutex_unlock(&viommu_asid_lock);
+>  	} else {
+>  		/* TODO: otherwise, check for compatibility with vdev. */
+>  		return -ENOSYS;
+> @@ -1467,6 +1487,8 @@ static int viommu_attach_pasid_table(struct viommu_endpoint *vdev,
+>  err_free_psdtable:
+>  	iommu_psdtable_free(tbl, &tbl->cfg);
+>  
+> +err_out_unlock:
+> +	mutex_unlock(&viommu_asid_lock);
+>  	return ret;
+>  }
+>  
+> @@ -1706,6 +1728,7 @@ static struct iommu_device *viommu_probe_device(struct device *dev)
+>  	vdev->dev = dev;
+>  	vdev->viommu = viommu;
+>  	INIT_LIST_HEAD(&vdev->resv_regions);
+> +	INIT_LIST_HEAD(&vdev->bonds);
+>  	dev_iommu_priv_set(dev, vdev);
+>  
+>  	if (viommu->probe_size) {
+> @@ -1755,6 +1778,175 @@ static int viommu_of_xlate(struct device *dev, struct of_phandle_args *args)
+>  	return iommu_fwspec_add_ids(dev, args->args, 1);
+>  }
+>  
+> +static u32 viommu_sva_get_pasid(struct iommu_sva *handle)
+> +{
+> +	struct viommu_sva_bond *bond = sva_to_viommu_bond(handle);
+> +
+> +	return bond->mm->pasid;
+> +}
+> +
+> +static void viommu_mmu_notifier_free(struct mmu_notifier *mn)
+> +{
+> +	kfree(mn_to_pstiommu(mn));
+> +}
+> +
+> +static struct mmu_notifier_ops viommu_mmu_notifier_ops = {
+> +	.free_notifier		= viommu_mmu_notifier_free,
 
-Correct, I was not using frontswap.
->=20
-> To do that, you may need to firstly turn off your current swap:
->=20
->        # swapoff -a
->=20
-> Then to configure zram you need:
->=20
->        # modprobe zram
->        # echo 4G > /sys/block/zram0/disksize
->        # mkswap --label zram0 /dev/zram0
->        # swapon --priority 100 /dev/zram0
->=20
-> Quotting from here:
->=20
->        https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__wiki.archli=
-nux.org_title_Improving-5Fperformance-23zram-5For-5Fzswap&d=3DDwIBaQ&c=3Ds8=
-83GpUCOChKOHiocYtGcg&r=3DrRM5dtWOv0DNo5dDxZ2U16jl4WAw6ql5szOKa9cu_RA&m=3DXW=
-zLVqSSl8CSEcw2x6sUmspJhiUJei2gq6GTiaky8hk&s=3Dk3BDgO9LN63Nn3vxorlc41MlUYzOU=
-N0efajz4lol-k8&e=3D=20
->=20
-> Then you can try run the same test program again.
+.invalidate_range and .release will be needed as well, to keep up to date
+with changes to the address space
 
-Thanks, it worked!
+> +};
+> +
+> +/* Allocate or get existing MMU notifier for this {domain, mm} pair */
+> +static struct iommu_psdtable_mmu_notifier *
+> +viommu_mmu_notifier_get(struct viommu_domain *vdomain, struct mm_struct *mm,
+> +			u32 asid_bits)
+> +{
+> +	int ret;
+> +	struct iommu_psdtable_mmu_notifier *viommu_mn;
+> +	struct iommu_pasid_table *tbl = vdomain->pasid_tbl;
+> +
+> +	list_for_each_entry(viommu_mn, &tbl->mmu_notifiers, list) {
+> +		if (viommu_mn->mn.mm == mm) {
+> +			refcount_inc(&viommu_mn->refs);
+> +			return viommu_mn;
+> +		}
+> +	}
+> +
+> +	mutex_lock(&viommu_asid_lock);
+> +	viommu_mn = iommu_psdtable_alloc_shared(tbl, mm, &viommu_asid_xa,
+> +						asid_bits);
+> +	mutex_unlock(&viommu_asid_lock);
+> +	if (IS_ERR(viommu_mn))
+> +		return ERR_CAST(viommu_mn);
+> +
+> +	refcount_set(&viommu_mn->refs, 1);
+> +	viommu_mn->cookie = vdomain;
+> +	viommu_mn->mn.ops = &viommu_mmu_notifier_ops;
+> +
+> +	ret = mmu_notifier_register(&viommu_mn->mn, mm);
+> +	if (ret)
+> +		goto err_free_cd;
+> +
+> +	ret = iommu_psdtable_write(tbl, &tbl->cfg, mm->pasid,
+> +				   viommu_mn->vendor.cd);
+> +	if (ret)
+> +		goto err_put_notifier;
+> +
+> +	list_add(&viommu_mn->list, &tbl->mmu_notifiers);
+> +	return viommu_mn;
+> +
+> +err_put_notifier:
+> +	/* Frees viommu_mn */
+> +	mmu_notifier_put(&viommu_mn->mn);
+> +err_free_cd:
+> +	iommu_psdtable_free_shared(tbl, &viommu_asid_xa, viommu_mn->vendor.cd);
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +static void
+> +viommu_mmu_notifier_put(struct iommu_psdtable_mmu_notifier *viommu_mn)
+> +{
+> +	struct mm_struct *mm = viommu_mn->mn.mm;
+> +	struct viommu_domain *vdomain = viommu_mn->cookie;
+> +	struct iommu_pasid_table *tbl = vdomain->pasid_tbl;
+> +	u16 asid = viommu_mn->vendor.cd->asid;
+> +
+> +	if (!refcount_dec_and_test(&viommu_mn->refs))
+> +		return;
+> +
+> +	list_del(&viommu_mn->list);
+> +	iommu_psdtable_write(tbl, &tbl->cfg, mm->pasid, NULL);
+> +
+> +	/*
+> +	 * If we went through clear(), we've already invalidated, and no
+> +	 * new TLB entry can have been formed.
+> +	 */
+> +	if (!viommu_mn->cleared)
+> +		iommu_psdtable_flush_tlb(tbl, vdomain, asid);
+> +
+> +	/* Frees smmu_mn */
+> +	mmu_notifier_put(&viommu_mn->mn);
+> +	iommu_psdtable_free_shared(tbl, &viommu_asid_xa, viommu_mn->vendor.cd);
+> +}
+> +
+> +static struct iommu_sva *
+> +__viommu_sva_bind(struct device *dev, struct mm_struct *mm)
+> +{
+> +	int ret;
+> +	struct viommu_sva_bond *bond;
+> +	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+> +	struct viommu_domain *vdomain = to_viommu_domain(domain);
+> +	struct viommu_endpoint *vdev = dev_iommu_priv_get(dev);
+> +	struct virtio_iommu_probe_table_format *desc = vdev->pgtf;
+> +
+> +	if (!vdev || !vdev->sva_enabled)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	/* If bind() was already called for this {dev, mm} pair, reuse it. */
+> +	list_for_each_entry(bond, &vdev->bonds, list) {
+> +		if (bond->mm == mm) {
+> +			refcount_inc(&bond->refs);
+> +			return &bond->sva;
+> +		}
+> +	}
+> +
+> +	bond = kzalloc(sizeof(*bond), GFP_KERNEL);
+> +	if (!bond)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	/* Allocate a PASID for this mm if necessary */
+> +	ret = iommu_sva_alloc_pasid(mm, 1, (1U << vdev->pasid_bits) - 1);
+> +	if (ret)
+> +		goto err_free_bond;
+> +
+> +	bond->mm = mm;
+> +	bond->sva.dev = dev;
+> +	refcount_set(&bond->refs, 1);
+> +
+> +	bond->viommu_mn = viommu_mmu_notifier_get(vdomain, mm, desc->asid_bits);
+> +	if (IS_ERR(bond->viommu_mn)) {
+> +		ret = PTR_ERR(bond->viommu_mn);
+> +		goto err_free_pasid;
+> +	}
+> +
+> +	list_add(&bond->list, &vdev->bonds);
+> +	return &bond->sva;
+> +
+> +err_free_pasid:
+> +	iommu_sva_free_pasid(mm);
+> +err_free_bond:
+> +	kfree(bond);
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +/* closely follows arm_smmu_sva_bind() */
+> +static struct iommu_sva *viommu_sva_bind(struct device *dev,
+> +					 struct mm_struct *mm, void *drvdata)
+> +{
+> +	struct iommu_sva *handle;
+> +
+> +	mutex_lock(&sva_lock);
+> +	handle = __viommu_sva_bind(dev, mm);
+> +	mutex_unlock(&sva_lock);
+> +	return handle;
+> +}
+> +
+> +void viommu_sva_unbind(struct iommu_sva *handle)
+> +{
+> +	struct viommu_sva_bond *bond = sva_to_viommu_bond(handle);
+> +	struct viommu_endpoint *vdev = dev_iommu_priv_get(handle->dev);
+> +
+> +	if (vdev->pri_supported)
+> +		iopf_queue_flush_dev(handle->dev);
+> +
+> +	mutex_lock(&sva_lock);
+> +	if (refcount_dec_and_test(&bond->refs)) {
+> +		list_del(&bond->list);
+> +		viommu_mmu_notifier_put(bond->viommu_mn);
+> +		iommu_sva_free_pasid(bond->mm);
+> +		kfree(bond);
+> +	}
+> +	mutex_unlock(&sva_lock);
+> +}
+> +
+>  static bool viommu_endpoint_iopf_supported(struct viommu_endpoint *vdev)
+>  {
+>  	/* TODO: support Stall model later */
+> @@ -1960,6 +2152,9 @@ static struct iommu_ops viommu_ops = {
+>  	.dev_feat_enabled	= viommu_dev_feature_enabled,
+>  	.dev_enable_feat	= viommu_dev_enable_feature,
+>  	.dev_disable_feat	= viommu_dev_disable_feature,
+> +	.sva_bind		= viommu_sva_bind,
+> +	.sva_unbind		= viommu_sva_unbind,
+> +	.sva_get_pasid		= viommu_sva_get_pasid,
+>  };
+>  
+>  static int viommu_init_vqs(struct viommu_dev *viommu)
+> diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> index 88a3db493108..c12d9b6a7243 100644
+> --- a/include/uapi/linux/virtio_iommu.h
+> +++ b/include/uapi/linux/virtio_iommu.h
+> @@ -122,6 +122,8 @@ struct virtio_iommu_req_attach_pst_arm {
+>  #define VIRTIO_IOMMU_PGTF_ARM_HPD0		(1ULL << 41)
+>  #define VIRTIO_IOMMU_PGTF_ARM_EPD1		(1 << 23)
+>  
+> +#define VIRTIO_IOMMU_PGTF_ARM_IPS_SHIFT		32
+> +#define VIRTIO_IOMMU_PGTF_ARM_IPS_MASK		0x7
 
-Hmmm, so if we put emphasis on the accuracy of swap info, or accuracy in
-general, we need to use frontswap. Otherwise, mincore() could suffer from
-race conditions, and mark pages in the swap cache as being present.
+Probably not the right place for this change
 
-Do you reckon this info (frontswap for mincore) should be present in
-the pagemap docs? I wouldn't want to bloat the section either.
+Thanks,
+Jean
 
-Kind regards,
-Tibi
-
+>  #define VIRTIO_IOMMU_PGTF_ARM_TG0_SHIFT		14
+>  #define VIRTIO_IOMMU_PGTF_ARM_TG0_MASK		0x3
+>  #define VIRTIO_IOMMU_PGTF_ARM_SH0_SHIFT		12
+> -- 
+> 2.17.1
+> 
