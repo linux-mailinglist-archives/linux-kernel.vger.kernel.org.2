@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F84F413016
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A15413018
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhIUIT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 04:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhIUIT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:19:57 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FEEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:18:29 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id i23so36683523wrb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nNVr+7Y3y0DjrwtJDXXuwygIO9f2oy/hZH+WtVNESd0=;
-        b=wh+sim1Zg6DC6668hwXycB8Dyk/tZS7ZXwtfBWceYu6QVs0o4Opzx6VZxvwiHZlAEA
-         tps08+EK9AepLKtndlNIkswpBeoyg8RljktaQHSkzUiMPN4HfIvMD6bhZ8BLRWWRk6Oe
-         pNcoQ4H98LXnyB6NuFzEui8UU74+9JLcvDoaoUCuNYuaUwtS8gtVkl0W600Y4K16Mpg+
-         jw5fYR+Sx0OgNA8bW1H553LidGwULO43ERxbq+3mWVMA7N68xPrabyIy3JBvWMGLs7HN
-         Haj7NHF93cDl7DGOq3sCTgjm8891XRki4Sujc4ZWFekx0Qs0WdlPJ8nt4VDG/R9ZWB7k
-         aNCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nNVr+7Y3y0DjrwtJDXXuwygIO9f2oy/hZH+WtVNESd0=;
-        b=l6sglKQiB5Xt6Wh0w6JQdwV/XyfupgZs+VwKoipILI05pUHlG44aVZ6+xvmfdHMI7R
-         Ag/WIOqDwLdIY+iZbaad9wa7KSg/n6/QlR40MSbhDaUbCKnDhTzxprlZoEP7rJRTFSn0
-         S7rkufhFLezP1FD+1RMkezDQ3U3yitd5jTAA9dOsLFFK/g/N/uQFoqdP95Uow0P4w1GZ
-         LVTXFHebv4kzyaKFloFZmuQuGvD9e2zhpRtm9HD3aF/9Aa5KWuBeH6bzLwjfxvHyKyDN
-         J/g2MagV6NKZn2exsXYmDPnIVB9eBVeKNR0gUHGaVJ+rS8BBt/ePnVVU3VDm+jkvSy3M
-         v6Dg==
-X-Gm-Message-State: AOAM533rzm5Cn/sd2g9DCciuj18DBfdrUoCxpiOt4odl/+88k8pOMuX4
-        LJwWL1Gk/nAXvLBmHaleNxNqsLGQ7JLZJw==
-X-Google-Smtp-Source: ABdhPJwRjVdNHhTPUc8PqFcM0ueenx5C6EDv8QgXwM59Ary8kojlg28OQkgEpgIs9zyANEgUQxxaSA==
-X-Received: by 2002:a7b:ce06:: with SMTP id m6mr3173294wmc.85.1632212308066;
-        Tue, 21 Sep 2021 01:18:28 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id b188sm2028749wmd.39.2021.09.21.01.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 01:18:27 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 09:18:25 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v1 3/4] pinctrl: samsung: change PINCTRL_EXYNOS default
- config logic
-Message-ID: <YUmVUSYIQ+K4UWK/@google.com>
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <20210920190350.3860821-4-willmcvicker@google.com>
- <e178ae7b-6956-94f5-535b-067e1915c5fb@canonical.com>
+        id S231151AbhIUIUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:20:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230421AbhIUIUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 04:20:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91DCF61019
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:19:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632212356;
+        bh=le6j7xmd/yCscuro1jGjBBfgcgdTXgx2DPvrOBijSBo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lyaqTa6i6fLlxmYX45JMuYN88GgGnd7LEi9y41tzJk5WcJc4oUcG2UOSfpeoyNiBA
+         xt1A1EF9rYs+MwZrmS0ULEotpUAU7rSapFfYWWvX3KaNgmVdCUvI+lTR+F6rplthEE
+         g6IbqJCqeUcSscy0j/Fvp5vrT85Fg1GF7ldEp3I9skdXCHCdEZeURwCVG5AeMnJvrh
+         +Rh5LOnOMaxKb/gk/xDPUJX1jvEds6rPOXLJuWdFk+6agSdZ1Dam1Q8Xv8/eXKlNiW
+         hNuzg2OP85unETAtGfwqQriLo25gQ5w8vIVVSOtxr9++ziB6ACvOt2g0koRGuCM/r9
+         ITuZlz2HT9KwQ==
+Received: by mail-wr1-f53.google.com with SMTP id w17so28535872wrv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:19:16 -0700 (PDT)
+X-Gm-Message-State: AOAM5303baKHOyeDXMjXPvcvRoN8mv/HZJ0kam5P9zbzur8NraV6gbqM
+        +tAasXxCYBcqofPLjL36pgSDKm2jtdReYSE/VBE=
+X-Google-Smtp-Source: ABdhPJxv1O0dtgWOE2xOt8BbTGoWVDHppPI/Nb+VWZUvA1xKsdwJNnipM49JsMgHQZCGodY7jmDKQbA9FA3ts6/+6YQ=
+X-Received: by 2002:a5d:6a08:: with SMTP id m8mr567322wru.336.1632212355202;
+ Tue, 21 Sep 2021 01:19:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e178ae7b-6956-94f5-535b-067e1915c5fb@canonical.com>
+References: <20210920121208.54732-1-arnd@kernel.org> <CAHk-=wi=CZ_fsUwDQCBbgPB4MTFx1ywgyERjFb7DNUk9Pix_Nw@mail.gmail.com>
+In-Reply-To: <CAHk-=wi=CZ_fsUwDQCBbgPB4MTFx1ywgyERjFb7DNUk9Pix_Nw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 21 Sep 2021 10:18:59 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a03VTsdALMORVSWvAY9J8dS=wQjvhf=M0hXGqLLxDYHsQ@mail.gmail.com>
+Message-ID: <CAK8P3a03VTsdALMORVSWvAY9J8dS=wQjvhf=M0hXGqLLxDYHsQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC v2] qnx: avoid -Wstringop-overread warning, again
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Anders Larsen <al@alarsen.net>, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
+On Mon, Sep 20, 2021 at 7:26 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Mon, Sep 20, 2021 at 5:12 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > +               /*
+> > +                * work around gcc-11.x using the first field it observes
+> > +                * to determing the actual length
+> > +                * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
+> > +                */
+> > +               char __empty[0];
+> > +               char de_name[];
+>
+> Ugh. That looks _really_ hacky.
+>
+> It sounds like we can avoid the gcc bug if we just always use
+> "de->de_name[]". Then we don't need to depend on magical behavior
+> about one particular gcc version and a strange empty array in front of
+> it.
+>
+> IOW, something like the attached simpler thing that just does that
+> "always use de_name[]" and has a comment about why we don't do the
+> natural thing
 
-> On 20/09/2021 21:03, Will McVicker wrote:
-> > Switching the default config logic of PINCTRL_EXYNOS to use "default
-> > y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select the config.
-> > This gives vendors the flexibility to disable the config or modularize
-> > it in the presence of a generic kernel.
-> 
-> Reasoning is incorrect. This is an essential driver which CANNOT be
-> disabled for any kernel having ARCH_EXYNOS or ARCH_S5PV210. You are
-> trying to prepare it for some out-of-tree code? Please, upstream your
-> code instead.
+Yes, your patch is much nicer than my attempt. I checked it overnight
+and it addresses all the randconfig issues I found.
 
-No additional code is required to build a generic kernel.  The only
-difference would be a vendor's defconfig/fragment.
+> Also, just what version of gcc is the broken one? You say "gcc-11",
+> but I certainly don't see it with _my_ version of gcc-11, so can we
+> (just for that comment) document more precisely what version you have
+> (or possibly what config you use to trigger it).
 
-The aim of this set is to provide more flexibility around how driver
-symbols can be configured via Kconfig.  Currently if ARCH_EXYNOS
-(which is required if we wish to provide SERIAL_SAMSUNG as an option)
-is enabled it blindly enables lots of symbols without recourse.
+I'm using the gcc-11.1.0 that I uploaded to
+https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.1.0/
 
-> > Verified this change doesn't effect the .config.
-> > 
-> > Signed-off-by: Will McVicker <willmcvicker@google.com>
-> > ---
-> >  arch/arm64/Kconfig.platforms    | 1 -
-> >  drivers/pinctrl/samsung/Kconfig | 1 +
-> >  2 files changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-> > index 6a006490c9b9..a884e5da8b0f 100644
-> > --- a/arch/arm64/Kconfig.platforms
-> > +++ b/arch/arm64/Kconfig.platforms
-> > @@ -93,7 +93,6 @@ config ARCH_EXYNOS
-> >  	bool "ARMv8 based Samsung Exynos SoC family"
-> >  	select HAVE_S3C_RTC if RTC_CLASS
-> >  	select PINCTRL
-> > -	select PINCTRL_EXYNOS
-> >  	select PM_GENERIC_DOMAINS if PM
-> >  	help
-> >  	  This enables support for ARMv8 based Samsung Exynos SoC family.
-> > diff --git a/drivers/pinctrl/samsung/Kconfig b/drivers/pinctrl/samsung/Kconfig
-> > index dfd805e76862..483acb8ac1f6 100644
-> > --- a/drivers/pinctrl/samsung/Kconfig
-> > +++ b/drivers/pinctrl/samsung/Kconfig
-> > @@ -12,6 +12,7 @@ config PINCTRL_EXYNOS
-> >  	bool "Pinctrl common driver part for Samsung Exynos SoCs"
-> >  	depends on OF_GPIO
-> >  	depends on ARCH_EXYNOS || ARCH_S5PV210 || COMPILE_TEST
-> > +	default y if ARCH_EXYNOS
-> 
-> default ARCH_EXYNOS || ARCH_S5PV210
-> ... and update all mach Kconfigs.
-> 
-> >  	select PINCTRL_SAMSUNG
-> >  	select PINCTRL_EXYNOS_ARM if ARM && (ARCH_EXYNOS || ARCH_S5PV210)
-> >  	select PINCTRL_EXYNOS_ARM64 if ARM64 && ARCH_EXYNOS
-> > 
-> 
-> 
-> Best regards,
-> Krzysztof
+The gcc bug is still open and currently targets gcc-11.3. To make it
+worse, this is definitely configuration dependent, and I do not see it
+in an allmodconfig build, but only certain randconfig builds. I originally
+had a simpler patch myself and also found that this did not fully
+address all kernel configs.
+gcc-10.x and early do not show the problem, I think the warning
+was only introduced in 11.1.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+https://pastebin.com/raw/fXmNiute is a .config for x86 that showed the
+problem for me on 5.15-rc2 but not with your new patch.
+
+       Arnd
