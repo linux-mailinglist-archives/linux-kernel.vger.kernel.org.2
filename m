@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3904132A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84774132A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhIULgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:36:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232428AbhIULg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:36:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEC37611BD;
-        Tue, 21 Sep 2021 11:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632224098;
-        bh=sehRHxD9BDUzvJQZIvimsT0DW3NtntLvpVz/b1t5Rx0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XBnkq1UHynKf3iAJ4s6MrTsipEQb2lb0Q9ruHLh8F+a9/gGZluY/NROkFuuNSklPD
-         IrjtoBLWArqd7tTQYPUGOyWGHF1mEnew5xd/AK/vbzLDYb5DYqPgDg4ZNz1BrkzG/O
-         RGDKi7cXGbHSXxw4I59n89DHGtLfIF5o+aQbcYn1wWMRleWIK+i/BXcKat9MUBy9fx
-         7XKbOiRkm0GXME3AqukKed3REJq3limSrb89mfpLzSiMqWda3Rovtf87j6j8A+MfC+
-         PdSjjZCigVKG+DDluo3tPoI1igaZG2sh4y4D+LYf/OLBkRYFl02n/N/fav7A+Op0Nl
-         Sm6kv+e1Mcqzg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mSe37-0002Tm-AN; Tue, 21 Sep 2021 13:34:58 +0200
-Date:   Tue, 21 Sep 2021 13:34:57 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] USB: serial: cp210x: use usb_control_msg_recv()
- and usb_control_msg_send()
-Message-ID: <YUnDYWWhEUpnMq7R@hovoldconsulting.com>
-References: <20210801203122.3515-1-himadrispandya@gmail.com>
- <20210801203122.3515-3-himadrispandya@gmail.com>
+        id S232475AbhIULhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:37:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48499 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232208AbhIULhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:37:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632224134; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cGtg6sM/Pztpuwc61IIb+ChO3/4hJgIWDYxCjVI2BuM=;
+ b=Uhsc87bfPPWAXAkS6e5voqbFYj3rDQyDA+79rhFJa/zBY3+TV4U7eaY0DP6kRVSedmHLgNvR
+ aymbht2reQ/U8Hp8tcNWJgSOefiwkMB+rWJDYLfIhvk1JoysqofeyrSeKp4pJ8JCIRwiebok
+ uCW47GKly8Apv16sY4YjAxNLhPY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6149c385507800c880c76473 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 11:35:33
+ GMT
+Sender: jeyr=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6F501C43617; Tue, 21 Sep 2021 11:35:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jeyr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9A38C4338F;
+        Tue, 21 Sep 2021 11:35:29 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801203122.3515-3-himadrispandya@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 21 Sep 2021 17:05:29 +0530
+From:   jeyr@codeaurora.org
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH] [PATCH v2] misc: fastrpc: fix improper packet size
+ calculation
+In-Reply-To: <YUnCw4uCSd1O7QX0@kroah.com>
+References: <1632221847-987-1-git-send-email-jeyr@codeaurora.org>
+ <YUnCw4uCSd1O7QX0@kroah.com>
+Message-ID: <c4b294b251ed5ae4d7062edebcb397c1@codeaurora.org>
+X-Sender: jeyr@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:01:18AM +0530, Himadri Pandya wrote:
-> The new wrapper functions for usb_control_msg() can accept data from
-> stack with robust error checks.
-
-Please rephrase the "robust error checks" along the lines of "treats
-short reads as an error".
-
-> Hence use the wrappers with stack
-> variables for usb transfer buffers to save kernel memory.
-
-Again, you're not saving memory here, just moving the allocation.
-
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
-> Changes in v2:
->  - Drop unrelated style fixes
-> ---
->  drivers/usb/serial/cp210x.c | 107 ++++++++++--------------------------
->  1 file changed, 30 insertions(+), 77 deletions(-)
+On 2021-09-21 17:02, Greg KH wrote:
+> On Tue, Sep 21, 2021 at 04:27:27PM +0530, Jeya R wrote:
+>> The buffer list is sorted and this is not being considered while
+>> calculating packet size. This would lead to improper copy length
+>> calculation for non-dmaheap buffers which would eventually cause
+>> sending improper buffers to DSP.
+>> 
+>> Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke 
+>> method")
+>> Signed-off-by: Jeya R <jeyr@codeaurora.org>
+>> 
+>> Changes in v2:
+>> - updated commit message to proper format
+>> - added fixes tag to commit message
+>> - removed unnecessary variable initialization
+>> - removed length check during payload calculation
+>> ---
+>>  drivers/misc/fastrpc.c | 10 ++++++----
+>>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index 3c80bfbf3bec..b73581fc1768 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -628,29 +628,18 @@ static int cp210x_read_reg_block(struct usb_serial_port *port, u8 req,
->  {
->  	struct usb_serial *serial = port->serial;
->  	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
-> -	void *dmabuf;
->  	int result;
->  
-> -	dmabuf = kmalloc(bufsize, GFP_KERNEL);
-> -	if (!dmabuf)
-> -		return -ENOMEM;
-> -
-> -	result = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
-> -			req, REQTYPE_INTERFACE_TO_HOST, 0,
-> -			port_priv->bInterfaceNumber, dmabuf, bufsize,
-> -			USB_CTRL_SET_TIMEOUT);
-> -	if (result == bufsize) {
-> -		memcpy(buf, dmabuf, bufsize);
-> -		result = 0;
-> -	} else {
-> +	result = usb_control_msg_recv(serial->dev, 0, req,
-> +				      REQTYPE_INTERFACE_TO_HOST, 0,
-> +				      port_priv->bInterfaceNumber, buf,
-> +				      bufsize, USB_CTRL_SET_TIMEOUT,
-> +				      GFP_KERNEL);
-> +	if (result) {
->  		dev_err(&port->dev, "failed get req 0x%x size %d status: %d\n",
->  				req, bufsize, result);
-
-This will also no longer log the length of short reads. Please at least
-mention it in the commit message.
-
-> -		if (result >= 0)
-> -			result = -EIO;
->  	}
->  
-> -	kfree(dmabuf);
-> -
->  	return result;
->  }
-
-Johan
+> The "Changes" need to go below the --- line, as the documentation 
+> states
+> to do.
+> 
+> thanks,
+> 
+> greg k-h
+Thanks Greg for your comment. Will resend PATCH 2 to address this.
