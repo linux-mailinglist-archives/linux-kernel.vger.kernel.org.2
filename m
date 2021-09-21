@@ -2,337 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81184139D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9873D4139D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbhIUSPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhIUSPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:15:23 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ACEC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:13:55 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id p23-20020a05620a22f700b003d5ac11ac5cso354382qki.15
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:13:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=RT4koZ5R+CdVTEeIOFkU+1hJ09JrE/e1nNnAMwPspPY=;
-        b=cUz1z22sEN2xfK2JbxCX00E5p3QYtq31fmNaYrLH0oqFVdam147QHI815uZ2IljOxB
-         Bquf17gb9GXBA6Ap494cxOJtYty7qKQo3YeLUdtdYHGT+d7wvfqxsUnP5sk1UeGcBJhZ
-         OgmFrBwYqPfdC6TqPSJWrTs4MZpwzYb4GZY4xfbcYDbqkToOdJrMMN+/EYCjD1vAPVhl
-         qaZJlIqpK3xEUXUzVEU1r9nC918OxwyNTd3O5IRrnPJDny5e5TRUw8mlk1ci46/KfI1+
-         xTBROMIpTzDRmhOljp17HJcofyK5O8aIdt8Otn+hqo+jWArUDnWFndQTFU8hwjPk8nS+
-         p1Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=RT4koZ5R+CdVTEeIOFkU+1hJ09JrE/e1nNnAMwPspPY=;
-        b=3hF/K9bwcORVetac1S0n5fGu8gW7Wez6GOjnqXM1gaUXWAvOUTtJPd+sGbyMTSPNUH
-         zkEnp7NX504wAJ9RNzXo77Bfw7QaR/E7Ms7yn/8eQ5HxMHSVEt+d7NEoGuDvKLfftIQU
-         Nvoex1LvyC+umjQ8RUxsu2LxjHESBuUA5h/85s0TCgTEyr7MjbP51BdhoQQeMDTx168p
-         VD0wPml++3w/6xFu0mmVelHBJmyad96nImdtcIa8c0ZimPpmbwuVdnEMB017NVEN/QEe
-         Bei1aOxtgWOQ+yMBFRgl6rfmWC2WhZybfMFhAmkO3KXBUV8PnObCQlJIK/kFv/alyOJ3
-         S55Q==
-X-Gm-Message-State: AOAM5336srrFI6OBzN6IRzfyWfJE5Ep7wFALxDdfvxbk1wXPhZCwLH+E
-        Gq+VL2TP3IGUxizYBlkUyRJz9+PNPZOZ
-X-Google-Smtp-Source: ABdhPJxeP/bmF6YChX9+qeBhL1OOwWfORBVJFswdF7lfcWklf6KI0/sJ2UMWK2B4Qzpj6lnL9B45Xx/ouS9N
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:dffa:819a:f0e2:47e])
- (user=irogers job=sendgmr) by 2002:a05:6214:13ee:: with SMTP id
- ch14mr32977260qvb.43.1632248034123; Tue, 21 Sep 2021 11:13:54 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 11:13:49 -0700
-Message-Id: <20210921181349.199780-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2] perf evlist: Remove group option.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232582AbhIUSQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:16:22 -0400
+Received: from mail-dm6nam11on2080.outbound.protection.outlook.com ([40.107.223.80]:13217
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232465AbhIUSQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 14:16:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e6Ba3xMKYTGe3j0xhJ94cS1Z0jCy0VUuUyDJ7jhU8qy9Z116GWwFQTi503mNLvPbi3QAQeKvk2wEovUGjc6at+nWruZ+RyoOqKM7F/CShHHUI4W5PgUjOoaBm7LruxSPn6K+RH/iscGIJ59AEAzYCsYqPvNYGzlP//jLtThHEg1BOVNc6IULmTTQwSnbh5/WPpZbHBFMspL34j1cbsm4NzNx8hP9oeTUZZXEL6x1jETXMdiSOjQVfGhG5EZerYQpC/HVOpPMKIdct2MjZeSwUl1K2Sq+44hbfL+EMq9EtkMD1NvvHTKF/EoPJj+qrAWdjQXFqSF+3LemIpzycZs7bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=B7eOnOE1zer9H3RTtVACkTXlYjm2KkDrCxNS6v5SHG8=;
+ b=YQPl/KL+mBHqzcuQ1mgcVF+e8/hSTS9jjoqyn6TmU2BHjd5KVZGNpeaVCJnK6XajsHzQidLNwIN2pTj+8yf7o+9uA26HZjtGfoYuP7HIIAsEqWB3++yOOtb5d2e0I8kmpsoKuKOSh6eyKj5j/KMC70K692agDtIu8s+eYQ/zmsA/062tpFV/Bpo/RJEufWclCOLFiA5e4HgEd6fUrzMRQlpoGCjPBTaWoWKvs1i2Fpg5l/kaoPIGBAeZnZMHmZMN2q/8oY4zrVAmxU5Ha+iA/gGdHIXfbiW99sdcEr9JkJVpUbuMZqgkP7Jlll5counhnPlXPS5GtGde5SBiF225Dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B7eOnOE1zer9H3RTtVACkTXlYjm2KkDrCxNS6v5SHG8=;
+ b=fiJdipoxaB9psBlzIpxet3nlIsYWZKUPb26dL9GfjT8G5ccXKXH/YPPqWdN6dKclLGCus5yyuzULNttPZ4Qaw1I+fzs9Wt7EqclnU35HE2CR8LPxp0jQQauMKmQAOzFDav7r1g0/79wlKLvQZc3hqEMB8oV1GOU5ka9+dFHAQD88nhnNQ7uIDMu3zqVP31mHATEjvEAg+AtOihhaizmWEcagW53yiTBg2Y0+gc7WuAkvI+Qx6aQsr9KfCL61nOImIJaYMNfAzx0j8PtZM0XfWpJlU+fKJoBkWz6OFRb4NdGGqC0tkYTulQBQUSA5r5TY9ZUyz9HI8FF50xv/0vEfWw==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5538.namprd12.prod.outlook.com (2603:10b6:208:1c9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
+ 2021 18:14:50 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Tue, 21 Sep 2021
+ 18:14:50 +0000
+Date:   Tue, 21 Sep 2021 15:14:48 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     alex.williamson@redhat.com, hch@lst.de, jasowang@redhat.com,
+        joro@8bytes.org, jean-philippe@linaro.org, kevin.tian@intel.com,
+        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
+        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
+        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
+        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
+        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
+        robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        david@gibson.dropbear.id.au, nicolinc@nvidia.com
+Subject: Re: [RFC 16/20] vfio/type1: Export symbols for dma [un]map code
+ sharing
+Message-ID: <20210921181448.GA327412@nvidia.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-17-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210919063848.1476776-17-yi.l.liu@intel.com>
+X-ClientProxiedBy: MN2PR02CA0025.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::38) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR02CA0025.namprd02.prod.outlook.com (2603:10b6:208:fc::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 18:14:49 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mSkI4-003Xav-70; Tue, 21 Sep 2021 15:14:48 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc05f923-e110-40a1-38d9-08d97d2bb369
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5538:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5538329E076B4F4A4D984083C2A19@BL0PR12MB5538.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L0PjB5TQ/VjW2svakaT5jqEQ7CzBMmAePAQRKz91+UJOxw8IPeEUb6U8QEEDbiC4PcdEFgQ0lvGjNu40KtiuhRwyo7FhChcy/PBVGfZjfnWifKmuW6DlroYxsZWFROfXyTvlFsYQTmOd00jpgnHoJNwK7eTH6TkSQJ04ZNapp3+aBGNINxQBIEC6oJNXHl/td1vQSC7aMM5CAhVEwub0jgIWUoYtIOeYaqSO5dlZcUHU2DIELJU5b5ydgfFy6hU5lgIWzH4XLOlahY4nfy0lpt24SxDeTLJDyBR+yyuqa+Kl6AllNkYiofKnMvE6BNwCKGW27a1XPb1StyNndjKJVTb4DJiBtYXqx+xGWZLdYaW2PstzjCrvAEp0xoOg3z/ebBdl4O79SwNwBVs/P7SAsMpj755/U7ksYItlmB9XXGcDegHKvqYXMfXNlWxtoOV3xhFOV9HCQu8pSEFfx0adWCni4GFAsp1Ooi9KjZGGBoQ2exfR+ILI4QuwPKBVlbAgx/C+2ccLYnZdOIvPOg/GCdflUGWzJcu3NdHNemtl2C2cZy9kayKuqFFAfR8cdQT9Ai5+9LZRVFc99G3AQKMycc3Rsg3c9wFx7Z+XxdIx2Ws7ItHEutYSkBDswm7h4o4cehkP4YffaTA7n9s7XCbVP+P4M4phRBhwlVgg64XfXDX6EECjcelxi0YGn+vaRfxs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(7416002)(66946007)(107886003)(426003)(8676002)(2906002)(6916009)(33656002)(36756003)(9746002)(8936002)(4326008)(9786002)(186003)(83380400001)(38100700002)(66556008)(86362001)(508600001)(26005)(316002)(1076003)(5660300002)(66476007)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yj+smsLV5bIdOm+bFURN31lvkuto3yZ2LL4yGHeoGAU7JwYK4AqjYu5f0lEi?=
+ =?us-ascii?Q?AtqJQ7M6pgCvtKMxHQFYQpldUpR0BtFe5s+GabaCitQfbVfoRn65vUs9ttW1?=
+ =?us-ascii?Q?uYmzUIMvJQoKud3ltPdkZroUWUAU2N5I5drjxjQbb+0aYx9D+zKD603w7z2D?=
+ =?us-ascii?Q?q/NAZ5f/UuHnFUHm7yVZq3UAlZEVx8PMIGSayk06Vd2j/u36fegHdl2EaXRg?=
+ =?us-ascii?Q?u+xSriS87S7q7M+MgxM/2B9uJCjrgT/+UrCHArcJQtwjT4Hbb9ZMKCLgxSxD?=
+ =?us-ascii?Q?+CRZXB47rzSiDtDPGzDQ6lNzqAL1/Q+lZWGgScMQ0gNKkXLPbg3ECTRGebXK?=
+ =?us-ascii?Q?QZokx/inrbHBTqX9hnoMrLk57KhtGv6vm76yc/O7oxvPkZ18dX1wPkA0X5ms?=
+ =?us-ascii?Q?+rdrktXV3LJhcEIV+qu1RGJRxua3bwUHgxW30qs+jX3KO9OHRj9yIyolVEcX?=
+ =?us-ascii?Q?9wVq1MjcYchjJ6VeHvq1/ZXTFY5KQFJ9t42gsm/RuvB2V7Ai6PxqpnzcUB5T?=
+ =?us-ascii?Q?/S3uPzaXXh/7xObg03kD2BS/UB3O6zNKu9UIOQbgpJN15kq2fqDrzUqhdYbU?=
+ =?us-ascii?Q?tDV8ydVrR6rZbX2gjzE8E9++l+nGswAC5UiwFUejkOQTbWDAybhvGGCYly1f?=
+ =?us-ascii?Q?cRl1yX2/SSVy6h/5ndIdJ+VAM5RD7edG7PnsTtbOswPhiEF4WMtV+ujkvKDi?=
+ =?us-ascii?Q?fsTgVGYK73YiMqqQZ5HERrkcEe8Tn/xxeHifZkDOQlrPnSbSTZ9eUGw0gRZi?=
+ =?us-ascii?Q?xSuso13enjwGlnHYt2W8924d1bU4hVtnCck0Uq/9UwvPKL7ZJOWB3VgGIj+2?=
+ =?us-ascii?Q?g4D6IyycIAUF6hnmzzhO921HyNJehUolxzh7h5GGNzyvBkc4JdIIw/iFUvR2?=
+ =?us-ascii?Q?m9CNPU8hA4dJ+WjBTYMu5wa94CNiNKozuP7bg9a35imL9Ai3qJhUQoo9i6g4?=
+ =?us-ascii?Q?5/z2tf5jDVzW68uwx6GXle39G1ZmbAPxhop4eQ2J0KR90jAhkHLGk8uU8j4G?=
+ =?us-ascii?Q?BSDYSmYYNe5OkKd1TDHJDbFgFZZKOPd1svj5cB/YJLJdrCS/hhPnCYoCnnIb?=
+ =?us-ascii?Q?j4Q5RyUBLHo3rGBaCjWHABTKZ8OHnDU7xo3Wrl0Gdp7rSpHudegGkmBGgsv1?=
+ =?us-ascii?Q?5o8Bo52jBv/4uPu8Wo4IjHamCnNRxk2WSmq35niK4iKDU+IIZwX69PZe5C34?=
+ =?us-ascii?Q?0ubdgIZ5iV0ArtHRaJSjICFCHeXZeavBYlkfzIBxHu3qRh5gLVF9kb17WODY?=
+ =?us-ascii?Q?r9fldEvofAqUn2LShh0hON2TwHiP7tITb4YjprSTGTsMNhMXIXsAi1zem/nq?=
+ =?us-ascii?Q?yGp0LbccbYYUb8volaJnfHX/?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc05f923-e110-40a1-38d9-08d97d2bb369
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 18:14:50.1448
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aPNPXEe05aq/uj3L8EscYw5jod/flg0H97q78+qnioWQXgU1T6XI2X62Ow1iJpib
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5538
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The group option predates grouping events using curly braces added in
-commit 89efb029502d ("perf tools: Add support to parse event group syntax")
-The --group option was retained for legacy support (in August 2012) but
-keeping it adds complexity.
+On Sun, Sep 19, 2021 at 02:38:44PM +0800, Liu Yi L wrote:
+> [HACK. will fix in v2]
+> 
+> There are two options to impelement vfio type1v2 mapping semantics in
+> /dev/iommu.
+> 
+> One is to duplicate the related code from vfio as the starting point,
+> and then merge with vfio type1 at a later time. However vfio_iommu_type1.c
+> has over 3000LOC with ~80% related to dma management logic, including:
 
-v2. is a rebase.
+I can't really see a way forward like this. I think some scheme to
+move the vfio datastructure is going to be necessary.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/Documentation/perf-record.txt |  4 ----
- tools/perf/Documentation/perf-top.txt    |  7 ++-----
- tools/perf/builtin-record.c              |  2 --
- tools/perf/builtin-stat.c                |  6 ------
- tools/perf/builtin-top.c                 |  2 --
- tools/perf/tests/attr/README             |  2 --
- tools/perf/tests/attr/test-record-group  | 22 ----------------------
- tools/perf/tests/attr/test-stat-group    | 17 -----------------
- tools/perf/util/evlist.c                 |  2 +-
- tools/perf/util/evlist.h                 |  2 --
- tools/perf/util/python.c                 |  8 --------
- tools/perf/util/record.c                 |  7 -------
- tools/perf/util/record.h                 |  1 -
- 13 files changed, 3 insertions(+), 79 deletions(-)
- delete mode 100644 tools/perf/tests/attr/test-record-group
- delete mode 100644 tools/perf/tests/attr/test-stat-group
+> - the dma map/unmap metadata management
+> - page pinning, and related accounting
+> - iova range reporting
+> - dirty bitmap retrieving
+> - dynamic vaddr update, etc.
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index f1079ee7f2ec..6e27b7227562 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -236,10 +236,6 @@ OPTIONS
- 	Also, by adding a comma, the number of mmap pages for AUX
- 	area tracing can be specified.
- 
----group::
--	Put all events in a single event group.  This precedes the --event
--	option and remains only for backward compatibility.  See --event.
--
- -g::
- 	Enables call-graph (stack chain/backtrace) recording for both
- 	kernel space and user space.
-diff --git a/tools/perf/Documentation/perf-top.txt b/tools/perf/Documentation/perf-top.txt
-index 9898a32b8d9c..67a1c65c8ebb 100644
---- a/tools/perf/Documentation/perf-top.txt
-+++ b/tools/perf/Documentation/perf-top.txt
-@@ -50,9 +50,6 @@ Default is to monitor all CPUS.
- --count-filter=<count>::
- 	Only display functions with more events than this.
- 
----group::
--        Put the counters into a counter group.
--
- --group-sort-idx::
- 	Sort the output by the event at the index n in group. If n is invalid,
- 	sort by the first event. It can support multiple groups with different
-@@ -312,10 +309,10 @@ use '-e e1 -e e2 -G foo,foo' or just use '-e e1 -e e2 -G foo'.
- 
- 		perf top -e cycles,probe:icmp_rcv --switch-on=probe:icmp_rcv
- 
--	   Alternatively one can ask for --group and then two overhead columns
-+	   Alternatively one can ask for a group and then two overhead columns
-            will appear, the first for cycles and the second for the switch-on event.
- 
--		perf top --group -e cycles,probe:icmp_rcv --switch-on=probe:icmp_rcv
-+		perf top -e '{cycles,probe:icmp_rcv}' --switch-on=probe:icmp_rcv
- 
- 	This may be interesting to measure a workload only after some initialization
- 	phase is over, i.e. insert a perf probe at that point and use the above
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index b3509d9d20cc..6eab7d059599 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -2487,8 +2487,6 @@ static struct option __record_options[] = {
- 	OPT_CALLBACK(0, "mmap-flush", &record.opts, "number",
- 		     "Minimal number of bytes that is extracted from mmap data pages (default: 1)",
- 		     record__mmap_flush_parse),
--	OPT_BOOLEAN(0, "group", &record.opts.group,
--		    "put the counters into a counter group"),
- 	OPT_CALLBACK_NOOPT('g', NULL, &callchain_param,
- 			   NULL, "enables call-graph recording" ,
- 			   &record_callchain_opt),
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index f6e87b7be5fa..f0f51e6966ac 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -180,7 +180,6 @@ static bool			topdown_run			= false;
- static bool			smi_cost			= false;
- static bool			smi_reset			= false;
- static int			big_num_opt			=  -1;
--static bool			group				= false;
- static const char		*pre_cmd			= NULL;
- static const char		*post_cmd			= NULL;
- static bool			sync_run			= false;
-@@ -800,9 +799,6 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 		child_pid = evsel_list->workload.pid;
- 	}
- 
--	if (group)
--		evlist__set_leader(evsel_list);
--
- 	if (affinity__setup(&affinity) < 0)
- 		return -1;
- 
-@@ -1192,8 +1188,6 @@ static struct option stat_options[] = {
- #endif
- 	OPT_BOOLEAN('a', "all-cpus", &target.system_wide,
- 		    "system-wide collection from all CPUs"),
--	OPT_BOOLEAN('g', "group", &group,
--		    "put the counters into a counter group"),
- 	OPT_BOOLEAN(0, "scale", &stat_config.scale,
- 		    "Use --no-scale to disable counter scaling for multiplexing"),
- 	OPT_INCR('v', "verbose", &verbose,
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index a3ae9176a83e..bd3704432376 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1472,8 +1472,6 @@ int cmd_top(int argc, const char **argv)
- 			    "dump the symbol table used for profiling"),
- 	OPT_INTEGER('f', "count-filter", &top.count_filter,
- 		    "only display functions with more events than this"),
--	OPT_BOOLEAN(0, "group", &opts->group,
--			    "put the counters into a counter group"),
- 	OPT_BOOLEAN('i', "no-inherit", &opts->no_inherit,
- 		    "child tasks do not inherit counters"),
- 	OPT_STRING(0, "sym-annotate", &top.sym_filter, "symbol name",
-diff --git a/tools/perf/tests/attr/README b/tools/perf/tests/attr/README
-index a36f49fb4dbe..f538272af57b 100644
---- a/tools/perf/tests/attr/README
-+++ b/tools/perf/tests/attr/README
-@@ -47,7 +47,6 @@ Following tests are defined (with perf commands):
-   perf record -g kill                           (test-record-graph-default)
-   perf record --call-graph dwarf kill		(test-record-graph-dwarf)
-   perf record --call-graph fp kill              (test-record-graph-fp)
--  perf record --group -e cycles,instructions kill (test-record-group)
-   perf record -e '{cycles,instructions}' kill   (test-record-group1)
-   perf record -e '{cycles/period=1/,instructions/period=2/}:S' kill (test-record-group2)
-   perf record -D kill                           (test-record-no-delay)
-@@ -61,6 +60,5 @@ Following tests are defined (with perf commands):
-   perf stat -d kill                             (test-stat-detailed-1)
-   perf stat -dd kill                            (test-stat-detailed-2)
-   perf stat -ddd kill                           (test-stat-detailed-3)
--  perf stat --group -e cycles,instructions kill (test-stat-group)
-   perf stat -e '{cycles,instructions}' kill     (test-stat-group1)
-   perf stat -i -e cycles kill                   (test-stat-no-inherit)
-diff --git a/tools/perf/tests/attr/test-record-group b/tools/perf/tests/attr/test-record-group
-deleted file mode 100644
-index 14ee60fd3f41..000000000000
---- a/tools/perf/tests/attr/test-record-group
-+++ /dev/null
-@@ -1,22 +0,0 @@
--[config]
--command = record
--args    = --no-bpf-event --group -e cycles,instructions kill >/dev/null 2>&1
--ret     = 1
--
--[event-1:base-record]
--fd=1
--group_fd=-1
--sample_type=327
--read_format=4
--
--[event-2:base-record]
--fd=2
--group_fd=1
--config=1
--sample_type=327
--read_format=4
--mmap=0
--comm=0
--task=0
--enable_on_exec=0
--disabled=0
-diff --git a/tools/perf/tests/attr/test-stat-group b/tools/perf/tests/attr/test-stat-group
-deleted file mode 100644
-index e15d6946e9b3..000000000000
---- a/tools/perf/tests/attr/test-stat-group
-+++ /dev/null
-@@ -1,17 +0,0 @@
--[config]
--command = stat
--args    = --group -e cycles,instructions kill >/dev/null 2>&1
--ret     = 1
--
--[event-1:base-stat]
--fd=1
--group_fd=-1
--read_format=3|15
--
--[event-2:base-stat]
--fd=2
--group_fd=1
--config=1
--disabled=0
--enable_on_exec=0
--read_format=3|15
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 5f92319ce258..2e11d82d15e0 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -224,7 +224,7 @@ int __evlist__set_tracepoints_handlers(struct evlist *evlist,
- 	return err;
- }
- 
--void evlist__set_leader(struct evlist *evlist)
-+static void evlist__set_leader(struct evlist *evlist)
- {
- 	perf_evlist__set_leader(&evlist->core);
- }
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 97bfb8d0be4f..f92460729d6b 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -201,8 +201,6 @@ void evlist__set_selected(struct evlist *evlist, struct evsel *evsel);
- int evlist__create_maps(struct evlist *evlist, struct target *target);
- int evlist__apply_filters(struct evlist *evlist, struct evsel **err_evsel);
- 
--void evlist__set_leader(struct evlist *evlist);
--
- u64 __evlist__combined_sample_type(struct evlist *evlist);
- u64 evlist__combined_sample_type(struct evlist *evlist);
- u64 evlist__combined_branch_type(struct evlist *evlist);
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index 8feef3a05af7..9cd79513eebb 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -1109,14 +1109,6 @@ static PyObject *pyrf_evlist__open(struct pyrf_evlist *pevlist,
- 				   PyObject *args, PyObject *kwargs)
- {
- 	struct evlist *evlist = &pevlist->evlist;
--	int group = 0;
--	static char *kwlist[] = { "group", NULL };
--
--	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOii", kwlist, &group))
--		return NULL;
--
--	if (group)
--		evlist__set_leader(evlist);
- 
- 	if (evlist__open(evlist) < 0) {
- 		PyErr_SetFromErrno(PyExc_OSError);
-diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-index bff669b615ee..9e694db7c7ee 100644
---- a/tools/perf/util/record.c
-+++ b/tools/perf/util/record.c
-@@ -99,13 +99,6 @@ void evlist__config(struct evlist *evlist, struct record_opts *opts, struct call
- 	bool use_comm_exec;
- 	bool sample_id = opts->sample_id;
- 
--	/*
--	 * Set the evsel leader links before we configure attributes,
--	 * since some might depend on this info.
--	 */
--	if (opts->group)
--		evlist__set_leader(evlist);
--
- 	if (evlist->core.cpus->map[0] < 0)
- 		opts->no_inherit = true;
- 
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index 68f471d9a88b..d71dee9ce41c 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -13,7 +13,6 @@ struct option;
- 
- struct record_opts {
- 	struct target target;
--	bool	      group;
- 	bool	      inherit_stat;
- 	bool	      no_buffering;
- 	bool	      no_inherit;
--- 
-2.33.0.464.g1972c5931b-goog
+All of this needs to be part of the iommufd anyhow..
 
+> The alternative is to consolidate type1v2 logic in /dev/iommu immediately,
+> which requires converting vfio_iommu_type1 to be a shim driver. 
+
+Another choice is the the datastructure coulde move and the two
+drivers could share its code and continue to exist more independently
+
+Jason
