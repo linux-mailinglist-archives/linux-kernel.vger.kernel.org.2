@@ -2,101 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86E1412DA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F36412DA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhIUECQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 00:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhIUECK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 00:02:10 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A481C061574;
-        Mon, 20 Sep 2021 21:00:42 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso1552593pjb.3;
-        Mon, 20 Sep 2021 21:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xFCBnQVx7npXDlKdoLeZ/0OzLiroLMQUu5YtCtK5R/A=;
-        b=Q4FRE//aZyBLPYmYSgYNOZh5Wem2OHElLIbESwDWTnksykkSqx+p3fhl98yDO9jB6r
-         Aw85l1zm/jISGVoFK30gMtQ3GoEvJnFKQIKN4z1D8QF+3Zal2pPsCcKtFed+laOU6XJ3
-         xPvIhBswDJNfd6smnd4X6ua3sFLnihk5jXtVUA73GRulGujkm2CnYJZsrIJyx0JLJoIq
-         K58/n8TaLSwejRqonGUYFkqPPpHXyfQ3/W6Elu/6lIGASIYFLatVoYEmrGqya8cURKXw
-         nXV95KPqP5CmpzY/E7qFoGEZ+CETN/wyD4WIeX1sZFoP6QO0/lRnGbQd4/sP5E3GV1EK
-         A8rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xFCBnQVx7npXDlKdoLeZ/0OzLiroLMQUu5YtCtK5R/A=;
-        b=I9nW3U2puHCxSdsvkAPn2TMlxlSrOYbDJ12+JrpbQc0AYQg3u/ZLKmG01xu8Yq/5iJ
-         FjcKjWC1nT4+D+YgALcAbNkFyDd7UaYZ6xzxOGrfOXGyFUQnWiXhSS2lK3MQLHLOWEG9
-         krr96incj9yLx1/bxAPTgz4hZQP+3D/YaeMRkIvwS9ZBssjG0VayNzpJOMW6//ZLMca6
-         fPB1KwMWhr24lzCIjAW6hA/QY56aIw5qH6EP4MO/JInv/k7QbjcKHCZsJ1C4vPGR1vOE
-         WXS4nQLNEFutTxAbsvWDBntGUj6eAM6ZPJfZp8dQWUzVfqISRK7Ce0T0BlNN5ejjI6BR
-         G2mw==
-X-Gm-Message-State: AOAM531llbwgvLv4l1Dq3ALiNupVf3zMs56hOzRTdL48hZ20Xj5gUP2Z
-        doMSoyOnN7KL5kzyrNq4nUU=
-X-Google-Smtp-Source: ABdhPJyvmmWmg+W05WZ/0c4SOltqO7vYIWdarVbkMT82paHNLIuqXJmk5YpfjVsY0ndE0/sXZkgdBA==
-X-Received: by 2002:a17:902:7e4b:b0:13d:b90d:cdc1 with SMTP id a11-20020a1709027e4b00b0013db90dcdc1mr4477092pln.72.1632196842000;
-        Mon, 20 Sep 2021 21:00:42 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a5b4:f272:6a63:5b57])
-        by smtp.gmail.com with ESMTPSA id u10sm15780695pfn.147.2021.09.20.21.00.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 21:00:41 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 21:00:38 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Paul Mackerras <paulus@samba.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
- compat_ioctl
-Message-ID: <YUlY5pQQWf2P2fKn@google.com>
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091134.17426-7-jslaby@suse.cz>
+        id S232349AbhIUEFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 00:05:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39467 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229934AbhIUEF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 00:05:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632197039; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=kEkqeGXMJQxV/+/TJfXOrWeipK4ag54CqEyWxmSVgZ4=;
+ b=u80axSlqbChhANj587yxCtuPOS7rf/WOa60/bawl10jusElVKHhSWR1w7GDJa2w/PRIJGGnJ
+ DkLGDjFiqtr/x/QQk9D1I02X5cX0zRhKjqXVy13jba7TYDbbZsyDWL7MXBqnmyipgy5sve8Q
+ cft0kbKFfnbCtmsz5XaslmWLbsk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 614959afec62f57c9a1b76e1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 04:03:59
+ GMT
+Sender: rajpat=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 90088C43617; Tue, 21 Sep 2021 04:03:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajpat)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E0A98C4338F;
+        Tue, 21 Sep 2021 04:03:57 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914091134.17426-7-jslaby@suse.cz>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 21 Sep 2021 09:33:57 +0530
+From:   rajpat@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, mka@chromium.org, dianders@chromium.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V8 4/8] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+In-Reply-To: <CAE-0n51JdKDSDKhbhQSbF5w=cn5iQ_uRDG0-NMR+FPdGkuX4UA@mail.gmail.com>
+References: <1631872087-24416-1-git-send-email-rajpat@codeaurora.org>
+ <1631872087-24416-5-git-send-email-rajpat@codeaurora.org>
+ <CAE-0n51JdKDSDKhbhQSbF5w=cn5iQ_uRDG0-NMR+FPdGkuX4UA@mail.gmail.com>
+Message-ID: <aca568eb87d0f3b95fcf35f956613f4f@codeaurora.org>
+X-Sender: rajpat@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On 2021-09-21 01:12, Stephen Boyd wrote:
+> Quoting Rajesh Patil (2021-09-17 02:48:03)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 2fbcb0a..a2a4d7e 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -536,24 +536,444 @@
+>>                 qupv3_id_0: geniqup@9c0000 {
+>>                         compatible = "qcom,geni-se-qup";
+>>                         reg = <0 0x009c0000 0 0x2000>;
+>> -                       clock-names = "m-ahb", "s-ahb";
+>>                         clocks = <&gcc GCC_QUPV3_WRAP_0_M_AHB_CLK>,
+>>                                  <&gcc GCC_QUPV3_WRAP_0_S_AHB_CLK>;
+>> +                       clock-names = "m-ahb", "s-ahb";
+>>                         #address-cells = <2>;
+>>                         #size-cells = <2>;
+>>                         ranges;
+>> +                       iommus = <&apps_smmu 0x123 0x0>;
+>>                         status = "disabled";
+>> 
+>> +                       qup_opp_table: qup-opp-table {
+> 
+> Sorry to mislead you. I see now why it can't be here. qeniqup has
+> address cells and size cells not equal to zero, which means that every
+> child node of qeniqup should have a reg property. So this OPP table
+> needs to be moved to the root again (ugh).
 
-On Tue, Sep 14, 2021 at 11:11:25AM +0200, Jiri Slaby wrote:
-> diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
-> index 17eb8f2aa48d..55e91d0e70ec 100644
-> --- a/drivers/input/serio/serport.c
-> +++ b/drivers/input/serio/serport.c
-> @@ -207,8 +207,8 @@ static void serport_set_type(struct tty_struct *tty, unsigned long type)
->   * serport_ldisc_ioctl() allows to set the port protocol, and device ID
->   */
->  
-> -static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
-> -			       unsigned int cmd, unsigned long arg)
-> +static int serport_ldisc_ioctl(struct tty_struct *tty, unsigned int cmd,
-> +		unsigned long arg)
+Okay
 
-Can we please keep arguments aligned as they were? Otherwise
+> 
+>> +                               compatible = "operating-points-v2";
+>> +
+>> +                               opp-75000000 {
+>> +                                       opp-hz = /bits/ 64 <75000000>;
+>> +                                       required-opps = 
+>> <&rpmhpd_opp_low_svs>;
+>> +                               };
+>> +
+>> +                               opp-100000000 {
+>> +                                       opp-hz = /bits/ 64 
+>> <100000000>;
+>> +                                       required-opps = 
+>> <&rpmhpd_opp_svs>;
+>> +                               };
+>> +
+>> +                               opp-128000000 {
+>> +                                       opp-hz = /bits/ 64 
+>> <128000000>;
+>> +                                       required-opps = 
+>> <&rpmhpd_opp_nom>;
+>> +                               };
+>> +                       };
+>> +
+>> +                       i2c0: i2c@980000 {
+>> +                               compatible = "qcom,geni-i2c";
+>> +                               reg = <0 0x00980000 0 0x4000>;
+>> +                               clocks = <&gcc 
+>> GCC_QUPV3_WRAP0_S0_CLK>;
+>> +                               clock-names = "se";
+>> +                               pinctrl-names = "default";
+> [...]
+>> 
+>>                 cnoc2: interconnect@1500000 {
+>> @@ -1574,11 +1994,311 @@
+>>                                 function = "qspi_data";
+> [...]
+>> +
+>> +                       qup_spi0_cs_gpio: qup-spi0-cs_gpio {
+> 
+> Please make it "qup_spi0_cs_gpio: qup-spi0-cs-gpio" as node names 
+> should
+> have dashes instead of underscores.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Okay
 
-Thanks.
-
--- 
-Dmitry
+> 
+>> +                               pins = "gpio3";
