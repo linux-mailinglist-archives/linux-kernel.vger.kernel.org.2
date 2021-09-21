@@ -2,164 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11856412B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB52412B39
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244776AbhIUCJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
+        id S245691AbhIUCLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237486AbhIUBy7 (ORCPT
+        with ESMTP id S238278AbhIUB5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:54:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CCAC0313FF;
-        Mon, 20 Sep 2021 17:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dFAUFg/mX5umZGWtfy03pLeHbDGj6EjlCd5lUAE3GFQ=; b=dObeiqsndcF+lNoh24bcIlQ0Z4
-        8K6tr6/HQqzHejW7tcCx2uFWkOSwSDGccUZUOO2HSbtwyHL2bzieHlxL/ZHYYKEk4p9CFnO8yXcPK
-        f/HQ2/ZQdndlnXyIUJdZ0aJXLTxz6QwLUg1BzKdC6l5F015c1tMcwzAgGVNaIhiqeaim5LUH14T5q
-        SfrB2JGYzUuVFRpexD44YBdIJt19FFXMuXQ78E+NFAQjPzOw2KYPs158O36UwjUA4HwZgR9XHQuYE
-        ogpEbh3JR5+EHuSxOJT6kAbYkYcwK3PhKk2oYu4rhbOLPFOZheHL/NsJp3sMZeprOIKrHIsh9/J3J
-        bDfWazSw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSTFv-003Nm8-F2; Tue, 21 Sep 2021 00:03:27 +0000
-Date:   Mon, 20 Sep 2021 17:03:27 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Tejun Heo <tj@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>, jeyu@kernel.org,
-        shuah <shuah@kernel.org>, Randy Dunlap <rdunlap@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>, yzaikin@google.com,
-        Nathan Chancellor <nathan@kernel.org>, ojeda@kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        vitor@massaru.org, elver@google.com,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        rf@opensource.cirrus.com,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        David Laight <David.Laight@aculab.com>, bvanassche@acm.org,
-        jolsa@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        trishalfonso@google.com, andreyknvl@gmail.com,
-        Jiri Kosina <jikos@kernel.org>, mbenes@suse.com,
-        Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, lizefan.x@bytedance.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        senozhatsky@chromium.org, Christoph Hellwig <hch@lst.de>,
-        Joe Perches <joe@perches.com>, hkallweit1@gmail.com,
-        Jens Axboe <axboe@kernel.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-spdx@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        copyleft-next@lists.fedorahosted.org
-Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
-Message-ID: <YUkhTxhgPWRxMMJo@bombadil.infradead.org>
-References: <20210918050430.3671227-1-mcgrof@kernel.org>
- <20210918050430.3671227-10-mcgrof@kernel.org>
- <CAPcyv4i0xEwMQ5kSK-xGroV7aZr3j1YNrGMVLiLMr3U8nFCMKA@mail.gmail.com>
- <YUj6TrGbqlNI0OGC@bombadil.infradead.org>
- <CAPcyv4jFaNTfpKq6hQsFrWXTwHz-wG+5K4m-hmsPeteLX4p5AQ@mail.gmail.com>
+        Mon, 20 Sep 2021 21:57:19 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3516C0EFE5C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:23:59 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id b20so15887807lfv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:23:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AMUVr7DkvpmTXdSi2JZi7lCtvJpc0T3IJBPwa04G+8s=;
+        b=JYtb5uTktSfe7uW6Wq47SPkUvNdKE4yiymISnkxWJP5nXo/AWtdXqY/uLca18Fx3ie
+         QinU4bkyBG7t64eXElx+zOoTgQQLvAFkCZ/sGg26Ck3DAzR+5RzMG9QD5rarYx5OyXhT
+         3mpSCEliq2RGi+yBaBeFlletzequb29CG4GZk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AMUVr7DkvpmTXdSi2JZi7lCtvJpc0T3IJBPwa04G+8s=;
+        b=5JpdSPyFY+JMPXlHngCP5NXvPbcmUmNk1OTEDac3oFVtbyk7shVJNapBwR/qWtuSIS
+         HV1kKLLjhiQVMa+IljPWUQvvQ64Y3PkVIrw9471/W3L+c14+IdE3n3b0uBee80Gq9AvR
+         +cuYNoQhh0lbZx8kbdbEnRWfnjYsuo36myScVA9Uf3xCqo+zqGC1Awc/HmTAuXJJdTqv
+         WUG1Icl7/agD60teBqp8/WMbIYZurNOri0No1XdYeIEVSNBT2duutDsmSH3kpYvhwlNN
+         B/c9hTGpfoa1xlddko9dGtiLYVe7G44nFvrpbBZcxh0r7K2SG8o0hjUS3GDOExVTnOv7
+         jueg==
+X-Gm-Message-State: AOAM533UNh3wlrSH3Gpat9Kk4i+EXZ4+I/mjZQpNg+kq3nNv8TP3gvUT
+        c4t3U8P7thfvQDcw8e8dUh7xSoq8eOkZ6ITiIKg=
+X-Google-Smtp-Source: ABdhPJyilyD5iWyr3BAQJfwxzCN6uJDALfbzpuLx5hhJFy6hQwlF8L3+McXJHPcftBJ96ayRqZHUxg==
+X-Received: by 2002:a19:750e:: with SMTP id y14mr20580226lfe.680.1632183837539;
+        Mon, 20 Sep 2021 17:23:57 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id p1sm1927927ljn.130.2021.09.20.17.23.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 17:23:55 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id e15so35689696lfr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:23:54 -0700 (PDT)
+X-Received: by 2002:a05:6512:b8f:: with SMTP id b15mr8879781lfv.655.1632183834712;
+ Mon, 20 Sep 2021 17:23:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jFaNTfpKq6hQsFrWXTwHz-wG+5K4m-hmsPeteLX4p5AQ@mail.gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20210907212347.1977686-1-minchan@kernel.org> <CAHk-=wh2_yEuAC5=9VWefK+0JD9pAKf8qL-vpSmS7MtLA8SZEA@mail.gmail.com>
+ <YUkeOB3GfK6KO8KG@google.com>
+In-Reply-To: <YUkeOB3GfK6KO8KG@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 20 Sep 2021 17:23:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgr+xHSgita2Q-HD2CPx5dfgY2jhnLwjk7Gtuv+bOxipA@mail.gmail.com>
+Message-ID: <CAHk-=wgr+xHSgita2Q-HD2CPx5dfgY2jhnLwjk7Gtuv+bOxipA@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: fs: invalidate bh_lrus for only cold path
+To:     Minchan Kim <minchan@kernel.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     zhengjun.xing@intel.com, Andrew Morton <akpm@linux-foundation.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Oliver Sang <oliver.sang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        John Dias <joaodias@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:55:10PM -0700, Dan Williams wrote:
-> On Mon, Sep 20, 2021 at 2:17 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Mon, Sep 20, 2021 at 01:52:21PM -0700, Dan Williams wrote:
-> > > On Fri, Sep 17, 2021 at 10:05 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > > This deadlock was first reported with the zram driver, however the live
-> > > > patching folks have acknowledged they have observed this as well with
-> > > > live patching, when a live patch is removed. I was then able to
-> > > > reproduce easily by creating a dedicated selftests.
-> > > >
-> > > > A sketch of how this can happen follows:
-> > > >
-> > > > CPU A                              CPU B
-> > > >                                    whatever_store()
-> > > > module_unload
-> > > >   mutex_lock(foo)
-> > > >                                    mutex_lock(foo)
-> > > >    del_gendisk(zram->disk);
-> > > >      device_del()
-> > > >        device_remove_groups()
-> > >
-> > > This flow seems possible to trigger with:
-> > >
-> > >    echo $dev > /sys/bus/$bus/drivers/$driver/unbind
-> > >
-> > > I am missing why module pinning
-> >
-> > The aspect of try_module_get() which comes to value to prevent the
-> > deadlock is it ensures kernfs ops do not run once exit is on the way.
-> >
-> > > is part of the solution when it's the
-> > > device_del() path that is racing?
-> >
-> > But its not, the device_del() path will yield until the kernfs op
-> > completes. It is fine to wait there.
-> >
-> > The deadlock happens if a module exit routine uses a lock which is
-> > also used on a sysfs op. If the lock was first held by module exit,
-> > and module exit is waiting for the kernfs op to complete, and the
-> > kernfs op is waiting to hold the same lock then the exit will wait
-> > forever.
-> >
-> > > Module removal is just a more coarse
-> > > grained way to trigger unbind => device_del().
-> >
-> > Right, but the device_del() path is not sharing a lock with the sysfs op.
-> 
-> The deadlock in the example comes from holding a lock over
-> device_del() [...]
+On Mon, Sep 20, 2021 at 4:50 PM Minchan Kim <minchan@kernel.org> wrote:
+>
+> I have no idea why I couldn't find the reply from lore.kernel.org/lkml/
+> The message id was 89e2b66b-c706-c020-bff5-b815dcd5c461@intel.com
+> in the thread(https://lore.kernel.org/lkml/20210520083144.GD14190@xsang-OptiPlex-9020/)
 
-No sorry, that is my mistake not making it clear that the mutex held
-in the example is on module exit. Or any lock for that matter. That is
-these locks are driver specific.
+Hmm. That message-id isn't found anywhere.
 
-> > > Isn't the above a bug
-> > > in the driver, not missing synchronization in kernfs?
-> >
-> > We can certainly take the position as an alternative:
-> >
-> >   "thou shalt not use a lock on exit which is also used on a syfs op"
-> >
-> > However that seems counter intuitive, specially if we can resolve the
-> > issue easily with a try_module_get().
-> 
-> Again, I don't see how try_module_get() can affect the ABBA failure
-> case of holding a lock over device_del() that is also held inside
-> sysfs op.
+Maybe it was sent just to you personally?
 
-It is not device_del(), it is on module exit. Sorry for this not being
-clear before. I'll fix the commit log to make it clearer. The subject
-at least was clear but I think the example could be clearer.
+[ Goes off and looks ]
 
-  Luis
+Nope, I can see it in my mails too, and yeah, I see
+
+  To: Minchan Kim <minchan@kernel.org>, kernel test robot
+<oliver.sang@intel.com>
+  Cc: Linus Torvalds <torvalds@linux-foundation.org>, Chris
+Goldsworthy <cgoldswo@codeaurora.org>, Laura Abbott
+<labbott@kernel.org>, David Hildenbrand <david@redhat.com>, John Dias
+<joaodias@google.com>, Matthew Wilcox <willy@infradead.org>, Michal
+Hocko <mhocko@suse.com>, Suren Baghdasaryan <surenb@google.com>,
+Vlastimil Babka <vbabka@suse.cz>, Andrew Morton
+<akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>,
+lkp@lists.01.org, lkp@intel.com
+  References: <20210520083144.GD14190@xsang-OptiPlex-9020>
+<YKasEeXCr9R5yzCr@google.com>
+  From: "Xing, Zhengjun" <zhengjun.xing@intel.com>
+  Message-ID: <89e2b66b-c706-c020-bff5-b815dcd5c461@intel.com>
+
+but lore has no idea about it:
+
+  https://lore.kernel.org/all/89e2b66b-c706-c020-bff5-b815dcd5c461@intel.com/
+
+just says "Message-ID <89e2b66b-c706-c020-bff5-b815dcd5c461@intel.com>
+not found".
+
+Strange.
+
+Something presumably caused the list to drop that email.
+
+           Linus
