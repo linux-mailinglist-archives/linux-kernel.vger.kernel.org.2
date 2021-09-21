@@ -2,375 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014E14134C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917884134BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhIUNsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbhIUNsQ (ORCPT
+        id S233385AbhIUNr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:47:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233382AbhIUNrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:48:16 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD90C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:46:48 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id e16so19536454pfc.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3dgEToUkGxOHqX3/8SA99luUGcFjgq3sXJi2/1T33dk=;
-        b=wPUMzCAdbXQTw/v8Q/2qy+Gx1d3oBLqm222RKSj4V6nYInrrjG/sBqGONGqv8I0z+S
-         4HCnV44F4AeTgdXhVXMlR6HRFEJ34kYpq2OlD5l2bjflIA8HK0WWvSu/ZzIT26yM/73D
-         LTngfQQLLJAdgB5dH/z0dxmrO0ulmRwb2b17uLLJcH0tvC+c7Oe+yAGEk0276rpX/i4Y
-         gUWeVMBkaGUQgw7YMyCi/aXD1bGe4DMpwmwap1NZiouArL+emLO/a9Q7H/tKvvQulwnd
-         90h2c8KTrqy+1IGyd//0gBc0ujEx4Lk5GhEz0WG/w2wwT3mIbB0JfJyEuVskm2iutdwW
-         1TTg==
+        Tue, 21 Sep 2021 09:47:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632231987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JvAmThRyy+RUTWUi/6d03wzJkG7ApoxnCwQT7lVpJIU=;
+        b=asfj9Bh0QAQexJ6ou7rb54xrCq3IdjF9eAvZTixLN+6pmgaexMpP2Dqq97a1RN5eifQbUt
+        sMxB2GT0wHKvMWhWVlfbrayl7eVRsirRWTY/vqGM9uC2c1xmMbLDYmNWLeXhwfTUzFZZEa
+        46OqU3dtbhQpB2azGuQV2tRbdvvUd2Q=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-1AFiEbMOPemyG3RdTZ5XOA-1; Tue, 21 Sep 2021 09:46:25 -0400
+X-MC-Unique: 1AFiEbMOPemyG3RdTZ5XOA-1
+Received: by mail-ed1-f72.google.com with SMTP id e7-20020a50d4c7000000b003d871ecccd8so5140358edj.18
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:46:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3dgEToUkGxOHqX3/8SA99luUGcFjgq3sXJi2/1T33dk=;
-        b=ZtA/KXL9gQAgS1FrznvBGHe+7AiOC5NTuulOz8HkfiEWnKkWC2tsM2XWUwCXvjMAYA
-         t/sH1jYGPmZc2IxWN9/tj8XFs/X/VolbJ50y2MUSSdW6rSLaUZ3bpW+dePGxTz/sCNJq
-         Mdk9ZSnJIGbJDnDpnC2fCoVHD13raH7p2Zw26nHxhx4h1ymayAIW4B6y5fT5RAVe0XB0
-         WUj5ASx/nSyK5szGH7dA6GK6bZFFN9TcOk5ae+Qs/VWs8NVY2Lf5/NgoGv7jZxVYK2iX
-         XoYxV6ltXdeqHuT7GnV6nstBuWI7wOP+tPDl4SGE3iz03HHQut2ooqrXGQQQn35C4Mm+
-         76Jg==
-X-Gm-Message-State: AOAM532XTaVwac+QYjf0kuAV7MCY6HgoyZrgyPYCkB4DVOx8K+tlY4B8
-        YQRgYktHgkJFhcf+Z/g+UasVMk/I+UrvWvQdzC91Bg==
-X-Google-Smtp-Source: ABdhPJwjIGiaRyBvoXSmYWLHW94MYF9O4AYhcpuM0QOOngp95yo9jbY+4rsMeTADAW3PYqWNmuZ5n0OEek81eJPLRg0=
-X-Received: by 2002:a63:1a64:: with SMTP id a36mr28098103pgm.225.1632232007904;
- Tue, 21 Sep 2021 06:46:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JvAmThRyy+RUTWUi/6d03wzJkG7ApoxnCwQT7lVpJIU=;
+        b=13/+hCD61siSIl8+yX8OeK0L8YRZ49OUg2LVoXZIeD6Y7vhTx1VhI09wO68Y18NiOk
+         Ynx6+J+atXUBMwbWCetMkNzBECxr5Z5FGeucAYM978lOKoWK2NxL0y6TuGnJYQldeeJn
+         CgG8g/iFhOwCEQaiYlFVtnvK74nGA2jgaKuk+S5VU3d44R+FQdkbIhhXJCF2S6z84rbk
+         /4dlSHt7mZedUX5XttAx9jJkvc7X9c/srjXfLYBYXR5elTPB6Mmfd6ekaUJZrmBmY473
+         /TyhAnVW7okaRqt+ZMAPP5NRIG74Lwd735wSJ1bLcar5Z0Dlmh+xrBgDxvayezbgK68H
+         p7hQ==
+X-Gm-Message-State: AOAM533RvwESJsFluXa2QF1oqTTmsxWBxjG72DI0nK+9WpAh13QPlXM/
+        7QYrXLI+LGv0g0e9FIiHf5EEyqfyQ67EIP3i4vV9BM3EMw29Y/MWaDvUxhMsNT6kR7Gi5GWb5Wt
+        ftt0X3+FdK+W7XaB3I5JEBfd+nD5KV7g0wG3M7NuSOdMEeSq2senxHClru+Wf1Drg/uy0/+oWUX
+        1y
+X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr35686288edc.348.1632231984310;
+        Tue, 21 Sep 2021 06:46:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxuMWC72gfkEbgCU16//CHfsCXwFHzIUTYNM/BMn7rMOz+GwSGYe5QXo4U0pKFB0Mb8mGLHOw==
+X-Received: by 2002:a05:6402:42d4:: with SMTP id i20mr35686260edc.348.1632231984096;
+        Tue, 21 Sep 2021 06:46:24 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id z18sm8468335edq.29.2021.09.21.06.46.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 06:46:23 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Prefer struct_size over open
+ coded arithmetic
+To:     Kees Cook <keescook@chromium.org>, Len Baker <len.baker@gmx.com>
+Cc:     Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210918150500.21530-1-len.baker@gmx.com>
+ <202109192246.B438B42EF@keescook>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
+Date:   Tue, 21 Sep 2021 15:46:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210917034815.80264-1-songmuchun@bytedance.com>
- <20210917034815.80264-2-songmuchun@bytedance.com> <CAGsJ_4y8mZh4RNaY-JQHa5Sr+Tv3HingV42jwK9KoJ+0m=w87A@mail.gmail.com>
- <CAMZfGtVmhHGNizHsdJXygigm84Z72B3wtUYxpT1XW3GpWh1AWQ@mail.gmail.com>
- <CAMZfGtVy7rh4p4bNu3GgX0hvPGupSLkJtfOtQuQRfDgf7ZqcYQ@mail.gmail.com> <CAGsJ_4x-pmqG08wkpty8zM19jptHCktHjbNFqdbHUQkusncAvw@mail.gmail.com>
-In-Reply-To: <CAGsJ_4x-pmqG08wkpty8zM19jptHCktHjbNFqdbHUQkusncAvw@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 21 Sep 2021 21:46:06 +0800
-Message-ID: <CAMZfGtX7vmmO5CzcJAdxa6bRsqz6J48ZdXZ19pGmks_o-3g2bg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v2 1/4] mm: hugetlb: free the 2nd vmemmap page
- associated with each HugeTLB page
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202109192246.B438B42EF@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 8:11 PM Barry Song <21cnbao@gmail.com> wrote:
->
-> On Tue, Sep 21, 2021 at 10:23 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > On Sat, Sep 18, 2021 at 6:06 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > On Sat, Sep 18, 2021 at 12:39 PM Barry Song <21cnbao@gmail.com> wrote:
-> > > >
-> > > > On Sat, Sep 18, 2021 at 12:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > > >
-> > > > > Currently, we only free 6 vmemmap pages associated with a 2MB HugeTLB
-> > > > > page. However, we can remap all tail vmemmap pages to the page frame
-> > > > > mapped to with the head vmemmap page. Finally, we can free 7 vmemmap
-> > > > > pages for a 2MB HugeTLB page. It is a fine gain (e.g. we can save
-> > > > > extra 2GB memory when there is 1TB HugeTLB pages in the system
-> > > > > compared with the current implementation).
-> > > > >
-> > > > > But the head vmemmap page is not freed to the buddy allocator and all
-> > > > > tail vmemmap pages are mapped to the head vmemmap page frame. So we
-> > > > > can see more than one struct page struct with PG_head (e.g. 8 per 2 MB
-> > > > > HugeTLB page) associated with each HugeTLB page. We should adjust
-> > > > > compound_head() to make it returns the real head struct page when the
-> > > > > parameter is the tail struct page but with PG_head flag.
-> > > > >
-> > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > > ---
-> > > > >  Documentation/admin-guide/kernel-parameters.txt |  2 +-
-> > > > >  include/linux/page-flags.h                      | 75 +++++++++++++++++++++++--
-> > > > >  mm/hugetlb_vmemmap.c                            | 60 +++++++++++---------
-> > > > >  mm/sparse-vmemmap.c                             | 21 +++++++
-> > > > >  4 files changed, 126 insertions(+), 32 deletions(-)
-> > > > >
-> > > > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > > > index bdb22006f713..a154a7b3b9a5 100644
-> > > > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > > > @@ -1606,7 +1606,7 @@
-> > > > >                         [KNL] Reguires CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > > > >                         enabled.
-> > > > >                         Allows heavy hugetlb users to free up some more
-> > > > > -                       memory (6 * PAGE_SIZE for each 2MB hugetlb page).
-> > > > > +                       memory (7 * PAGE_SIZE for each 2MB hugetlb page).
-> > > > >                         Format: { on | off (default) }
-> > > > >
-> > > > >                         on:  enable the feature
-> > > > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> > > > > index 8e1d97d8f3bd..7b1a918ebd43 100644
-> > > > > --- a/include/linux/page-flags.h
-> > > > > +++ b/include/linux/page-flags.h
-> > > > > @@ -184,13 +184,64 @@ enum pageflags {
-> > > > >
-> > > > >  #ifndef __GENERATING_BOUNDS_H
-> > > > >
-> > > > > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> > > > > +extern bool hugetlb_free_vmemmap_enabled;
-> > > > > +
-> > > > > +/*
-> > > > > + * If the feature of freeing some vmemmap pages associated with each HugeTLB
-> > > > > + * page is enabled, the head vmemmap page frame is reused and all of the tail
-> > > > > + * vmemmap addresses map to the head vmemmap page frame (furture details can
-> > > > > + * refer to the figure at the head of the mm/hugetlb_vmemmap.c).  In other
-> > > > > + * word, there are more than one page struct with PG_head associated with each
-> > > > > + * HugeTLB page.  We __know__ that there is only one head page struct, the tail
-> > > > > + * page structs with PG_head are fake head page structs.  We need an approach
-> > > > > + * to distinguish between those two different types of page structs so that
-> > > > > + * compound_head() can return the real head page struct when the parameter is
-> > > > > + * the tail page struct but with PG_head.
-> > > > > + *
-> > > > > + * The page_head_if_fake() returns the real head page struct iff the @page may
-> > > > > + * be fake, otherwise, returns the @page if it cannot be a fake page struct.
-> > > > > + */
-> > > > > +static __always_inline const struct page *page_head_if_fake(const struct page *page)
-> > > > > +{
-> > > > > +       if (!hugetlb_free_vmemmap_enabled)
-> > > > > +               return page;
-> > > > > +
-> > > > > +       /*
-> > > > > +        * Only addresses aligned with PAGE_SIZE of struct page may be fake head
-> > > > > +        * struct page. The alignment check aims to avoid access the fields (
-> > > > > +        * e.g. compound_head) of the @page[1]. It can avoid touch a (possibly)
-> > > > > +        * cold cacheline in some cases.
-> > > > > +        */
-> > > > > +       if (IS_ALIGNED((unsigned long)page, PAGE_SIZE) &&
-> > > > > +           test_bit(PG_head, &page->flags)) {
-> > > > > +               /*
-> > > > > +                * We can safely access the field of the @page[1] with PG_head
-> > > > > +                * because the @page is a compound page composed with at least
-> > > > > +                * two contiguous pages.
-> > > > > +                */
-> > > > > +               unsigned long head = READ_ONCE(page[1].compound_head);
-> > > > > +
-> > > > > +               if (likely(head & 1))
-> > > > > +                       return (const struct page *)(head - 1);
-> > > > > +       }
-> > > > > +
-> > > > > +       return page;
-> > > > > +}
-> > > > > +#else
-> > > > > +static __always_inline const struct page *page_head_if_fake(const struct page *page)
-> > > > > +{
-> > > > > +       return page;
-> > > > > +}
-> > > > > +#endif
-> > > > > +
-> > > > >  static inline unsigned long _compound_head(const struct page *page)
-> > > > >  {
-> > > > >         unsigned long head = READ_ONCE(page->compound_head);
-> > > > >
-> > > > >         if (unlikely(head & 1))
-> > > > >                 return head - 1;
-> > > > > -       return (unsigned long)page;
-> > > > > +       return (unsigned long)page_head_if_fake(page);
-> > > >
-> > > > hard to read. page_head_if_fake,  what is the other side of
-> > > > page_head_if_not_fake?
-> > >
-> > > 1) return itself if the @page is not a fake head page.
-> > > 2) return head page if @page is a fake head page.
-> > >
-> > > So I want to express that page_head_if_fake returns a
-> > > head page only and only if the parameter of @page is a
-> > > fake head page. Otherwise, it returns itself.
-> > >
-> > > > I would expect something like
-> > > > page_to_page_head()
-> > > > or
-> > > > get_page_head()
-> > > >
-> > >
-> > > Those names seem to be not appropriate as well, because
-> > > its functionality does not make sure it can return a head
-> > > page. If the parameter is a head page, it definitely
-> > > returns a head page, otherwise, it may return itself which
-> > > may be a tail page.
-> > >
-> > > From this point of view, I still prefer page_head_if_fake.
-> > >
-> > > > Anyway, I am not quite sure what is the best name. but page_head_if_fake(page)
-> > > > sounds odd to me. just like the things have two sides, but if_fake  presents
-> > > > one side only.
-> > >
-> > > If others have any ideas, comments are welcome.
-> > >
-> > > >
-> > > > >  }
-> > > > >
-> > > > >  #define compound_head(page)    ((typeof(page))_compound_head(page))
-> > > > > @@ -225,12 +276,14 @@ static inline unsigned long _compound_head(const struct page *page)
-> > > > >
-> > > > >  static __always_inline int PageTail(struct page *page)
-> > > > >  {
-> > > > > -       return READ_ONCE(page->compound_head) & 1;
-> > > > > +       return READ_ONCE(page->compound_head) & 1 ||
-> > > > > +              page_head_if_fake(page) != page;
-> > > >
-> > > > i would expect a wrapper like:
-> > > > page_is_fake_head()
-> > >
-> > > Good point. Will do.
-> > >
-> > > >
-> > > > and the above page_to_page_head() can leverage the wrapper.
-> > > > here too.
-> > > >
-> > > > >  }
-> > > > >
-> > > > >  static __always_inline int PageCompound(struct page *page)
-> > > > >  {
-> > > > > -       return test_bit(PG_head, &page->flags) || PageTail(page);
-> > > > > +       return test_bit(PG_head, &page->flags) ||
-> > > > > +              READ_ONCE(page->compound_head) & 1;
-> > > >
-> > > > hard to read. could it be something like the below?
-> > > > return PageHead(page) || PageTail(page);
-> > > >
-> > > > or do we really need to change this function? even a fake head still has
-> > > > the true test_bit(PG_head, &page->flags), though it is not a real head, it
-> > > > is still a pagecompound, right?
-> > >
-> > > Right. PageCompound() can not be changed.  It is odd but
-> > > efficient because calling page_head_if_fake is eliminated.
-> > > So I select performance not readability. I'm not sure if it's
-> > > worth it.
-> >
-> > In order to improve readability, I'll introduce 3 helpers as follows.
-> >
-> > 1) page_head_or_fake(), which returns true for the head page
-> >    or fake head page.
-> > 2) page_head_is_fake(), which returns true for fake head page.
-> > 3) page_tail_not_fake_head(), which returns true for the tail page
-> >    except the fake head page.
-> >
-> > In the end, PageHead(), PageTail() and PageCompound() become
-> > the following.
-> >
-> > static __always_inline int PageHead(struct page *page)
-> > {
-> >     return page_head_or_fake(page) && !page_head_is_fake(page);
-> > }
-> >
-> > static __always_inline int PageTail(struct page *page)
-> > {
-> >     return page_tail_not_fake_head(page) || page_head_is_fake(page);
-> > }
-> >
-> > static __always_inline int PageCompound(struct page *page)
-> > {
-> >     return page_head_or_fake(page) || page_tail_not_fake_head(page);
-> > }
-> >
-> > Do those look more readable?
-> >
->
-> still not good enough. After a second thought, page_head_if_fake seems
-> to have the best performance though this function returns an odd value.
-> i just made a little bit refine on your code in doc:
+Hi,
 
-Right. page_head_if_fake is the choice for performance.
+On 9/20/21 7:58 AM, Kees Cook wrote:
+> On Sat, Sep 18, 2021 at 05:05:00PM +0200, Len Baker wrote:
+>> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+>> and Conventions" documentation [1], size calculations (especially
+>> multiplication) should not be performed in memory allocator (or similar)
+>> function arguments due to the risk of them overflowing. This could lead
+>> to values wrapping around and a smaller allocation being made than the
+>> caller was expecting. Using those allocations could lead to linear
+>> overflows of heap memory and other misbehaviors.
+>>
+>> So, switch to flexible array member in the struct attribute_set_obj and
+>> refactor the code accordingly to use the struct_size() helper instead of
+>> the argument "size + count * size" in the kzalloc() function.
+>>
+>> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+>>
+>> Signed-off-by: Len Baker <len.baker@gmx.com>
+>> ---
+>>  drivers/platform/x86/thinkpad_acpi.c | 8 +++-----
+>>  1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+>> index 50ff04c84650..ed0b01ead796 100644
+>> --- a/drivers/platform/x86/thinkpad_acpi.c
+>> +++ b/drivers/platform/x86/thinkpad_acpi.c
+>> @@ -1008,7 +1008,7 @@ struct attribute_set {
+>>
+>>  struct attribute_set_obj {
+>>  	struct attribute_set s;
+>> -	struct attribute *a;
+>> +	struct attribute *a[];
+>>  } __attribute__((packed));
+> 
+> Whoa. I have so many questions... :)
+> 
+>>
+>>  static struct attribute_set *create_attr_set(unsigned int max_members,
+>> @@ -1020,13 +1020,11 @@ static struct attribute_set *create_attr_set(unsigned int max_members,
+>>  		return NULL;
+>>
+>>  	/* Allocates space for implicit NULL at the end too */
+>> -	sobj = kzalloc(sizeof(struct attribute_set_obj) +
+>> -		    max_members * sizeof(struct attribute *),
+>> -		    GFP_KERNEL);
+>> +	sobj = kzalloc(struct_size(sobj, a, max_members + 1), GFP_KERNEL);
+> 
+> Whoa, this needs a lot more detail in the changelog if this is actually
+> correct. The original code doesn't seem to match the comment? (Where is
+> the +1?) So is this also a bug-fix?
 
->
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 2c0d11e71e26..240c2fca13c7 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -197,8 +197,9 @@ extern bool hugetlb_free_vmemmap_enabled;
->   * compound_head() can return the real head page struct when the parameter is
->   * the tail page struct but with PG_head.
->   *
-> - * The page_head_if_fake() returns the real head page struct iff the @page may
-> - * be fake, otherwise, returns the @page if it cannot be a fake page struct.
-> + * The page_head_if_fake() returns the real head page struct if the @page is
-> + * fake page_head, otherwise, returns @page which can either be a true page_
-> + * head or tail.
->   */
+Kees, at first I thought you were spot-on with this comment, but the
+truth is more subtle. struct attribute_set_obj was:
 
-Good annotation.
+struct attribute_set_obj {
+        struct attribute_set s;
+        struct attribute *a;
+} __attribute__((packed));
 
->  static __always_inline const struct page *page_head_if_fake(const
-> struct page *page)
->  {
-> @@ -226,6 +227,12 @@ static __always_inline const struct page
-> *page_head_if_fake(const struct page *p
->
->         return page;
->  }
-> +
-> +static __always_inline const struct page *page_is_fake_head(const
-> struct page *page)
-> +{
-> +       return page_head_if_fake(page) != page;
-> +}
-> +
->  #else
->  static __always_inline const struct page *page_head_if_fake(const
-> struct page *page)
->  {
-> @@ -247,7 +254,7 @@ static inline unsigned long _compound_head(const
-> struct page *page)
->  static __always_inline int PageTail(struct page *page)
->  {
->         return READ_ONCE(page->compound_head) & 1 ||
-> -              page_head_if_fake(page) != page;
-> +              page_is_fake_head(page);
->  }
+Another way of looking at this, which makes things more clear is as:
 
-Yeah, this makes PageTail more readable. In your previous thread,
-you proposed that why not use PageTail in PageCompound directly
-to improve code readability. So I want to introduce 2 more helpers
-besides page_is_fake_head().
+struct attribute_set_obj {
+        struct attribute_set s;
+        struct attribute *a[1];
+} __attribute__((packed));
 
-static __always_inline int page_tail_not_fake_head(struct page *page)
-{
-    return READ_ONCE(page->compound_head) & 1;
-}
+So the sizeof(struct attribute_set_obj) in the original kzalloc call
+included room for 1 "extra" pointer which is reserved for the terminating
+NULL pointer.
 
-static __always_inline int page_head_or_fake(struct page *page)
-{
-    return test_bit(PG_head, &page->flags);
-}
+Changing the struct to:
 
-Then PageTail() and PageCompound() change to the following.
+struct attribute_set_obj {
+        struct attribute_set s;
+        struct attribute *a[];
+} __attribute__((packed));
 
-static __always_inline int PageTail(struct page *page)
-{
-    return page_tail_not_fake_head(page) || page_is_fake_head(page);
-}
+Is equivalent to changing it to:
 
-static __always_inline int PageCompound(struct page *page)
-{
-    return page_head_or_fake(page) || page_tail_not_fake_head(page);
-}
+struct attribute_set_obj {
+        struct attribute_set s;
+        struct attribute *a[0];
+} __attribute__((packed));
 
-From the point of names of helpers, they act as self-annotation.
-So I think PageTail and PageCompound become readable
-as well. But you said "still not good enough". Is it because of
-the names of helpers or introducing more complexity?
+So the change in the struct declaration reduces the sizeof(struct attribute_set_obj)
+by the size of 1 pointer, making the +1 necessary.
 
-Thanks.
+So AFAICT there is actually no functional change here.
+
+Still I will hold off merging this until we agree on this :)
+
+> (I see the caller uses +2? Why? It seems to be using each of hotkey_attributes,
+> plus 1 more attr, plus a final NULL?)
+
+The +2 is actually for 2 extra attributes (making the total number
+of extra attributes +3 because the sizeof(struct attribute_set_obj)
+already includes 1 extra). 
+
+FWIW these 2 extra attributes are for devices with a
+a physical rfkill on/off switch and for the device being
+a convertible capable of reporting laptop- vs tablet-mode.
+
+>>  	if (!sobj)
+>>  		return NULL;
+>>  	sobj->s.max_members = max_members;
+>> -	sobj->s.group.attrs = &sobj->a;
+>> +	sobj->s.group.attrs = sobj->a;
+>>  	sobj->s.group.name = name;
+> 
+> The caller also never sets a name?
+
+attribute_group.name may be NULL, I don't know
+of (m)any drivers which actual set this to non NULL.
+
+> Why is struct attribute_set_obj marked as __packed?
+
+I have no clue, this seems completely unnecessary.
+
+Len Baker can you submit a separate patch removing the useless
+__packed ?
+
+Regards,
+
+Hans
+
