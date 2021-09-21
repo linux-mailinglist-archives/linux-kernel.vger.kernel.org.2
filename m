@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101F34130AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 11:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9AE4130BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 11:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhIUJWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 05:22:35 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52381 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhIUJWe (ORCPT
+        id S231394AbhIUJ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 05:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhIUJ0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 05:22:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632216066; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=OMY3JiSinJsecAd6FsgSgZC/tu3ABFVOkx6GKyh9kOA=; b=wHU+zhzxoIjTpg6aBjoIKCR1jCwgJ+IQf4bYUtfvX958IiYnUtf7RVs6OzUD/6gAcDAqaqE6
- GccE7Wowjb36O4iZLeDd6jc0zMEB5ylejyKgOsKpJcz6HPdzI0lUJsps2jAUFii2pYxMeCQy
- mx7mk/wate7EOtPc2X745bC3RZc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6149a3d7507800c8804db63f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 09:20:23
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62615C4361B; Tue, 21 Sep 2021 09:20:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D5C3BC4338F;
-        Tue, 21 Sep 2021 09:20:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D5C3BC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Soeren Moch <smoch@web.de>,
-        =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-rockchip\@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>
-Subject: Re: [BUG] Re: [PATCH] brcmfmac: use ISO3166 country code and 0 rev as fallback
-References: <20210425110200.3050-1-shawn.guo@linaro.org>
-        <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
-        <20210908010057.GB25255@dragon>
-        <100f5bef-936c-43f1-9b3e-a477a0640d84@web.de>
-        <20210909022033.GC25255@dragon>
-        <56e9a81a-4e05-cf5e-a8df-782ac75fdbe6@web.de>
-        <20210912015137.GD25255@dragon>
-Date:   Tue, 21 Sep 2021 12:20:13 +0300
-In-Reply-To: <20210912015137.GD25255@dragon> (Shawn Guo's message of "Sun, 12
-        Sep 2021 09:51:38 +0800")
-Message-ID: <87pmt2uvxu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 21 Sep 2021 05:26:04 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8E3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 02:24:35 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id i25so79585400lfg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 02:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=9/WkdH8I7SISzvTO/uk8FQH2z0Yov9Zen7PU8kYoFrw=;
+        b=MisqEEqXJOUA+Z/R4bTfS7NjnvQ8epYW8aDprDNsCCGLr6y2DxtT6CJdF8ZS7mAGAq
+         mxd09ociga+xAxC7yRcQYZbOMaY0sdr08J88DJmdk4XVyB9/SMc1Ic9+q2NeA4yQSRPt
+         gy+vz5MQdgnQjX52OZuekMyH2GyIkJBc3UapiyxGwnzjTYkMzVNzHRRqzPBYMK5sAn2C
+         nF2i7UbsElwTF42lF/B9LGP3a23grzl8AMAbMyfiFps0ZT+o6tyZvYDpnb4OkgInjW2O
+         h5At3ZHlrIO980Pf5IpgL6oKO/RWiByAqkrVA8Dk3f5M1qcMMTShvGwsy3hQ9PObTTMg
+         OyYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=9/WkdH8I7SISzvTO/uk8FQH2z0Yov9Zen7PU8kYoFrw=;
+        b=UedWL3AJbyg4sYghjh9Pa9qT5sDUyhPpOtTymOivm1rRP8G0L789i8giq2x/GgU2Oz
+         fqeSJsXwEO//f0nakRmxlbnEA4eClwd+VfVNxZK4t2jOEQ6lGafPXffUEqUZvFwD5rAA
+         9GLAkMx4L0pYO61Ewu9g3HSc+BQKc1rt/xcSE2f25nBgLpypOaigQorQI084Qbp5ItwS
+         RtYF+RVczqNg3de8RUEDusM0LZCIGVvP3okKTj6PNZvuoPgRXKp+DmgFlVlzp5jL+L7d
+         fVfuFNPVAiVrs2coGHNJL+PoNSMgCX/j8KiLAqPiKev99h0UGj2rKOUBjZdnDiyQ7ErW
+         VAfQ==
+X-Gm-Message-State: AOAM532qPG3wJKbde38UF+bz6Haj5pQGpr8u80GBQak/mapulfLEYXFn
+        sWXMtOOk/MCPGOk+uEtBcGYBnc9wVthOhZwrpM8=
+X-Google-Smtp-Source: ABdhPJyRTWk4TtGCUjZ909rDVRYViyMFIGUOS2Zq6x+Od69nMwOnQwQjTk9wf+VQ7jXaux24rcbDRKj4R/Ww5NdQkH8=
+X-Received: by 2002:a2e:131a:: with SMTP id 26mr26416519ljt.46.1632216274047;
+ Tue, 21 Sep 2021 02:24:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:a2e:7507:0:0:0:0:0 with HTTP; Tue, 21 Sep 2021 02:24:33
+ -0700 (PDT)
+Reply-To: mussaomra2017@gmail.com
+From:   omra musa <allianceoffice2017@gmail.com>
+Date:   Tue, 21 Sep 2021 09:24:33 +0000
+Message-ID: <CAN+bYYeB4UNYGSHm5VMxVA5MKa+Laxig7SrzEyOG909YxXskwA@mail.gmail.com>
+Subject: I NEED YOUR URGENT RESPOND.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shawn Guo <shawn.guo@linaro.org> writes:
+From Mr Omra Musa
+Bank Of Africa (B.O.A)
+Burkina Faso Ouagadougou
 
->> Is this not the usual DT policy, that missing optional properties should
->> not prevent a device to work, that old dtbs should still work when new
->> properties are added?
->> 
->> I'm not sure what's the best way forward. A plain revert of this patch
->> would at least bring back wifi support for RockPro64 devices with
->> existing dtbs. Maybe someone else has a better proposal how to proceed.
->
-> Go ahead to revert if we do not hear a better solution, I would say.
+My Dear Friend,
 
-Yes, please do send a revert. And remember to explain the regression in
-the commit log.
+Please I want you to read this letter very carefully and I must
+apologize for barging this message into your mail box without any
+formal introduction due to the urgency and confidential of this issue
+and I know that this message will come to you as a surprise. Please
+this is not a joke and I will not like you to joke with it.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+I am Mr Omra Musa Manager in Bank Of Africa (B.O.A) Ouagadougou,
+Burkina Faso. I Hoped that you will not expose or betray this trust
+and confident that I am about to establish with you for the mutual
+benefit of you and I. This fund was deposited in our bank by Mr.
+Kattan Azmal from Jordan who died in a plane crash in 2000 Tbm 700
+aircraft on 31st July with his wife and the whole crew on board.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+I need your urgent assistance in transferring the sum of ($15) million
+USD into your account within 14 working banking days. This money has
+been deposited for years in our Bank without claim due to the owner of
+this fund died along with his entire family in an air crash since July
+31st 2000.
+
+The reason why i contacted you is that after the bank audit in 24th of
+November, we found out that this fund has remained unclaimed since the
+death of the deceased costumer.
+
+I want our bank to release this fund to you as the nearest person to
+our deceased customer while i come over to your country to share this
+fund with you as soon as you confirm this fund into your account and
+ask me to come over. I don't want the money to go into our Bank
+treasure as an abandoned fund. So this is the reason why i contacted
+you so that our bank will release this money to you as the next of kin
+to the deceased customer. Please I would like you to keep this
+proposal as a top secret and delete it if you are not interesting.
+
+Upon the receipt of your reply and indication of your capability, i
+will give you full details on how the business will be executed and
+also note that you will have 50% of the above mentioned sum if you
+agree to handle this business with me while 50% be for me, Because i
+don't want anyone here in our bank to know my involvement until you
+confirm this fund into your account and ask me to come over for the
+sharing as I indicated.
+
+I am looking forward to hear from you immediately for further information
+
+THE REQUESTED INFORMATIONS BELOW
+==================================
+1. FULL NAME..............
+2. TELEPHONE NUMBERS/MOBILE/FAX.......
+3. YOUR AGE......
+4. YOUR SEX.........
+5. YOUR OCCUPATION........
+6. YOUR COUNTRY AND CITY......
+7. YOUR HOME ADDRESS........
+8. MARITAL STATUS............
+
+Sincerely,
+Mr Omra Musa
+
+You can reply to my private email address at mussaomra2017@gmail.com
