@@ -2,112 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13165412E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759C4412E80
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhIUGG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbhIUGG0 (ORCPT
+        id S229784AbhIUGJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:09:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43956 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhIUGI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:06:26 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A5CC061574;
-        Mon, 20 Sep 2021 23:04:58 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id z14-20020a17090a8b8e00b0019cc29ceef1so1203252pjn.1;
-        Mon, 20 Sep 2021 23:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=0hrfuautjSsu8HUc15tPzwvjHVHf8IlFa6RtMmxHcxg=;
-        b=B87f0IjTgIWrI7BwdLPIHCMDroen2ZoCFphLEUY+X/fWIeTS37v17v43kHEM4amJ2h
-         Z0AMLODiBWJYvZ6S9//TwLJYtIfRBAEfUbIs5VQos46Pepmxltg6Bom1EfLO2zuIXAoz
-         3nvNiKFNYhX/F7jL/hciS0TvwTZbfNGCmxe5Nmg+gS+xNj8OhkNtrR7stHlBy/aOkhol
-         Z+vL5jKk4Rg3IdKDIsfRKu0JmJGoOzMBnhlhDT3Ox6E/Lxy1tP8Ys58fGu0f0BtkSt2T
-         BQTSHtNOCDSSIMOHCnmMqf3iTyd3HJfx9CUnXAOP9VyUel9P/WPh/IGlxVRzJkY6dPKf
-         q6CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0hrfuautjSsu8HUc15tPzwvjHVHf8IlFa6RtMmxHcxg=;
-        b=Mf/PUGQe6wkibqt06j3hBDDl8KSxtAPc8J54hKcYNF8RH7n1pv1OYdvX69/MTRJj71
-         pJAOkAE58j9Uh+uzLtWjY7FLAbeH9YfplOE5JJjhyWh88iiElTgz0KN8j+oDtLksH6Ip
-         oq6Kb99v6uX8gOgn8Ux8z1vmW0n5XqSr09pgLgt11KZmtnHX7gy1/sn0zMugFUvqmFnB
-         /tLd7CpprCWd5rIbIjCkij7tstfQAjKjMgbJNucUuSGozlXZBZSV7aSWqTfFDP8DbxYy
-         JxC5xFRCnz72m1p+GUMTrQM5tJKera61EM9N08Ca/BQGyhhZv004T+aZ9O3bdwiEDoRW
-         Dr3Q==
-X-Gm-Message-State: AOAM5315WCVBBekpqm3PrEhK5zKrDmpN/A7poi5AjiUKSjYZ4+97TOMi
-        8KiyrKBR3V1VK4CxrnDxK1U=
-X-Google-Smtp-Source: ABdhPJywZ1P6K5VK1vI4W8ivYf1n1wIa89I/qc3dh/evhIm5dgAPcFTveEqrUztxAH0Xv2JFjHbfsw==
-X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id h3-20020a170902f703b029012c0982c9aemr26103779plo.20.1632204298152;
-        Mon, 20 Sep 2021 23:04:58 -0700 (PDT)
-Received: from u18.mshome.net ([167.220.238.132])
-        by smtp.gmail.com with ESMTPSA id x8sm15725900pfm.8.2021.09.20.23.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 23:04:57 -0700 (PDT)
-From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammad Falak R Wani <falakreyaz@gmail.com>
-Subject: [PATCH] libbpf: Use sysconf to simplify libbpf_num_possible_cpus
-Date:   Tue, 21 Sep 2021 11:34:34 +0530
-Message-Id: <20210921060434.26732-1-falakreyaz@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 21 Sep 2021 02:08:58 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 23F031FE5E;
+        Tue, 21 Sep 2021 06:07:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632204449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EMk+GC3syGEDD553AiTSALMMtJS88qIkMD4XQpesw/U=;
+        b=BPOzHiGi7qbpQI4YeMZ+YMIH5PQfWTjB8ZPY+sw9YgrPLJWpacvvq6Vl2raYXH45sR6UmK
+        3zR0PwIrVKC4MMQZ7Kpzh4xYPpyLT/ZXYoF9O1GI+dcwXOYqrzntzA6U2ops6i8IrIB57w
+        vJLXrK9h7rLFjD4DDRLFOfuq3szsW/A=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9A9A13B93;
+        Tue, 21 Sep 2021 06:07:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id a3XpM6B2SWEwZQAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 21 Sep 2021 06:07:28 +0000
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+References: <20210917130123.1764493-1-andr2000@gmail.com>
+ <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
+ <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
+ <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
+ <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+ <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+ <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
+ <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+Message-ID: <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com>
+Date:   Tue, 21 Sep 2021 08:07:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify libbpf_num_possible_cpus by using sysconf(_SC_NPROCESSORS_CONF)
-instead of parsing a file.
-This patch is a part of libbpf-1.0 milestone.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8
+Content-Type: multipart/mixed; boundary="HJdGdPYCV6JJoHpoUhOSa2P0UnPvIQRni";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+ Stefano Stabellini <sstabellini@kernel.org>
+Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+ "julien@xen.org" <julien@xen.org>, "jbeulich@suse.com" <jbeulich@suse.com>,
+ Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
+ Oleksandr Andrushchenko <andr2000@gmail.com>
+Message-ID: <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+References: <20210917130123.1764493-1-andr2000@gmail.com>
+ <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
+ <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
+ <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
+ <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+ <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+ <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
+ <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
+In-Reply-To: <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
 
-Reference: https://github.com/libbpf/libbpf/issue/383
+--HJdGdPYCV6JJoHpoUhOSa2P0UnPvIQRni
+Content-Type: multipart/mixed;
+ boundary="------------D23FCEDD6DEB2FBE19FCAC30"
+Content-Language: en-US
 
-Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
----
- tools/lib/bpf/libbpf.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+This is a multi-part message in MIME format.
+--------------D23FCEDD6DEB2FBE19FCAC30
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index da65a1666a5e..1d730b08ee44 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10765,25 +10765,15 @@ int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz)
- 
- int libbpf_num_possible_cpus(void)
- {
--	static const char *fcpu = "/sys/devices/system/cpu/possible";
- 	static int cpus;
--	int err, n, i, tmp_cpus;
--	bool *mask;
-+	int tmp_cpus;
- 
- 	tmp_cpus = READ_ONCE(cpus);
- 	if (tmp_cpus > 0)
- 		return tmp_cpus;
- 
--	err = parse_cpu_mask_file(fcpu, &mask, &n);
--	if (err)
--		return libbpf_err(err);
--
--	tmp_cpus = 0;
--	for (i = 0; i < n; i++) {
--		if (mask[i])
--			tmp_cpus++;
--	}
--	free(mask);
-+	tmp_cpus = sysconf(_SC_NPROCESSORS_CONF);
-+	/* sysconf sets errno; no need to use libbpf_err */
- 
- 	WRITE_ONCE(cpus, tmp_cpus);
- 	return tmp_cpus;
--- 
-2.17.1
+On 21.09.21 07:51, Oleksandr Andrushchenko wrote:
+>=20
+> On 21.09.21 08:20, Juergen Gross wrote:
+>> On 21.09.21 01:16, Stefano Stabellini wrote:
+>>> On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
+>>>> On 20.09.21 14:30, Juergen Gross wrote:
+>>>>> On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
+>>>>>> Hello, Stefano!
+>>>>>>
+>>>>>> On 18.09.21 00:45, Stefano Stabellini wrote:
+>>>>>>> Hi Oleksandr,
+>>>>>>>
+>>>>>>> Why do you want to enable pciback on ARM? Is it only to "disable"=
+ a PCI
+>>>>>>> device in Dom0 so that it can be safely assigned to a DomU?
+>>>>>> Not only that
+>>>>>>>
+>>>>>>> I am asking because actually I don't think we want to enable the =
+PV PCI
+>>>>>>> backend feature of pciback on ARM, right? That would clash with t=
+he PCI
+>>>>>>> assignment work you have been doing in Xen. They couldn't both wo=
+rk at
+>>>>>>> the same time.
+>>>>>> Correct, it is not used
+>>>>>>>
+>>>>>>> If we only need pciback to "park" a device in Dom0, wouldn't it b=
+e
+>>>>>>> possible and better to use pci-stub instead?
+>>>>>>
+>>>>>> Not only that, so pci-stub is not enough
+>>>>>>
+>>>>>> The functionality which is implemented by the pciback and the tool=
+stack
+>>>>>> and which is relevant/missing/needed for ARM:
+>>>>>>
+>>>>>> 1. pciback is used as a database for assignable PCI devices, e.g. =
+xl
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 pci-assignable-{add|remove|list} manipu=
+lates that list. So, whenever the
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 toolstack needs to know which PCI devic=
+es can be passed through it reads
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 that from the relevant sysfs entries of=
+ the pciback.
+>>>>>>
+>>>>>> 2. pciback is used to hold the unbound PCI devices, e.g. when pass=
+ing through
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 a PCI device it needs to be unbound fro=
+m the relevant device driver and bound
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 to pciback (strictly speaking it is not=
+ required that the device is bound to
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 pciback, but pciback is again used as a=
+ database of the passed through PCI
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 devices, so we can re-bind the devices =
+back to their original drivers when
+>>>>>>  =C2=A0=C2=A0 =C2=A0=C2=A0 guest domain shuts down)
+>>>>>>
+>>>>>> 3. Device reset
+>>>>>>
+>>>>>> We have previously discussed on xen-devel ML possible solutions to=
+ that as from the
+>>>>>> above we see that pciback functionality is going to be only partia=
+lly used on Arm.
+>>>>>>
+>>>>>> Please see [1] and [2]:
+>>>>>>
+>>>>>> 1. It is not acceptable to manage the assignable list in Xen itsel=
+f
+>>>>>>
+>>>>>> 2. pciback can be split into two parts: PCI assignable/bind/reset =
+handling and
+>>>>>> the rest like vPCI etc.
+>>>>>>
+>>>>>> 3. pcifront is not used on Arm
+>>>>>
+>>>>> It is neither in x86 PVH/HVM guests.
+>>>> Didn't know that, thank you for pointing
+>>>>>
+>>>>>> So, limited use of the pciback is one of the bricks used to enable=
+ PCI passthrough
+>>>>>> on Arm. It was enough to just re-structure the driver and have it =
+run on Arm to achieve
+>>>>>> all the goals above.
+>>>>>>
+>>>>>> If we still think it is desirable to break the pciback driver into=
+ "common" and "pcifront specific"
+>>>>>> parts then it can be done, yet the patch is going to be the very f=
+irst brick in that building.
+>>>>>
+>>>>> Doing this split should be done, as the pcifront specific part coul=
+d be
+>>>>> omitted on x86, too, in case no PV guests using PCI passthrough hav=
+e to
+>>>>> be supported.
+>>>> Agree, that the final solution should have the driver split
+>>>>>
+>>>>>> So, I think this patch is still going to be needed besides which d=
+irection we take.
+>>>>>
+>>>>> Some kind of this patch, yes. It might look different in case the s=
+plit
+>>>>> is done first.
+>>>>>
+>>>>> I don't mind doing it in either sequence.
+>>>>>
+>>>> With this patch we have Arm on the same page as the above mentioned =
+x86 guests,
+>>>>
+>>>> e.g. the driver has unused code, but yet allows Arm to function now.=
 
+>>>>
+>>>> At this stage of PCI passthrough on Arm it is yet enough. Long term,=
+ when
+>>>>
+>>>> the driver gets split, Arm will benefit from that split too, but unf=
+ortunately I do not
+>>>>
+>>>> have enough bandwidth for that piece of work at the moment.
+>>>
+>>> That's fair and I don't want to scope-creep this simple patch asking =
+for
+>>> an enormous rework. At the same time I don't think we should enable t=
+he
+>>> whole of pciback on ARM because it would be erroneous and confusing.
+>=20
+> As the first stage before the driver is split or ifdef's used - can we =
+take the patch
+> as is now? In either way we chose this needs to be done, e.g. enable co=
+mpiling
+> for other architectures and common code move.
+
+Fine with me in principle. I need to take a more thorough look
+at the patch, though.
+
+>=20
+>>>
+>>> I am wonder if there is a simple:
+>>>
+>>> if (!xen_pv_domain())
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0 return;
+>>>
+>>> That we could add in a couple of places in pciback to stop it from
+>>> initializing the parts we don't care about. Something along these lin=
+es
+>>> (untested and probably incomplete).
+>>>
+>>> What do you guys think?
+>>
+>> Uh no, not in this way, please. This will kill pci passthrough on x86
+>> with dom0 running as PVH. I don't think this is working right now, but=
+
+>> adding more code making it even harder to work should be avoided.
+>>
+>>> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciba=
+ck/xenbus.c
+>>> index da34ce85dc88..991ba0a9b359 100644
+>>> --- a/drivers/xen/xen-pciback/xenbus.c
+>>> +++ b/drivers/xen/xen-pciback/xenbus.c
+>>> @@ -15,6 +15,7 @@
+>>>  =C2=A0 #include <xen/xenbus.h>
+>>>  =C2=A0 #include <xen/events.h>
+>>>  =C2=A0 #include <xen/pci.h>
+>>> +#include <xen/xen.h>
+>>>  =C2=A0 #include "pciback.h"
+>>>  =C2=A0 =C2=A0 #define INVALID_EVTCHN_IRQ=C2=A0 (-1)
+>>> @@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_=
+device *dev,
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct xenbus_device_id *id)
+>>>  =C2=A0 {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err =3D 0;
+>>> -=C2=A0=C2=A0=C2=A0 struct xen_pcibk_device *pdev =3D alloc_pdev(dev)=
+;
+>>> +=C2=A0=C2=A0=C2=A0 struct xen_pcibk_device *pdev;
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 if (!xen_pv_domain())
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>>  =C2=A0 +=C2=A0=C2=A0=C2=A0 pdev =3D alloc_pdev(dev);
+>>
+>> This hunk isn't needed, as with bailing out of xen_pcibk_xenbus_regist=
+er
+>> early will result in xen_pcibk_xenbus_probe never being called.
+>>
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pdev =3D=3D NULL) {
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D -ENOM=
+EM;
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xenbus_dev_fa=
+tal(dev, err,
+>>> @@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly xen=
+_pcibk_backend;
+>>>  =C2=A0 =C2=A0 int __init xen_pcibk_xenbus_register(void)
+>>>  =C2=A0 {
+>>> +=C2=A0=C2=A0=C2=A0 if (!xen_pv_domain())
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> +
+>>
+>> Use #ifdef CONFIG_X86 instead.
+>=20
+> The title of this patch says that we want to allow this driver for othe=
+r archs
+> and now we want to introduce "#ifdef CONFIG_X86" which doesn't sound
+> right with that respect. Instead, we may want having something like a
+> dedicated gate for this, e.g. "#ifdef CONFIG_XEN_PCIDEV_BACKEND_SUPP_PV=
+"
+> or something which is architecture agnostic.
+
+Something like that, yes. But I'd rather use CONFIG_XEN_PCIDEV_BACKEND
+acting as this gate and introduce CONFIG_XEN_PCI_STUB for the stub
+functionality needed on Arm. XEN_PCIDEV_BACKEND would depend on X86 and
+select XEN_PCI_STUB, while on Arm XEN_PCI_STUB could be configured if
+wanted. The splitting of the driver can still be done later.
+
+> Gating also means that we are not thinking about splitting the backend =
+driver into
+> two different ones, e.g. one for "common" code and one for PV stuff.
+> Otherwise this ifdefery won't be needed.
+
+I just wanted to avoid the xen_pv_domain() tests creeping in, as
+they are wrong IMO.
+
+
+Juergen
+
+--------------D23FCEDD6DEB2FBE19FCAC30
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------D23FCEDD6DEB2FBE19FCAC30--
+
+--HJdGdPYCV6JJoHpoUhOSa2P0UnPvIQRni--
+
+--DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFJdqAFAwAAAAAACgkQsN6d1ii/Ey80
+lAf/ag3+BoLQ5HT8A5VbqdaqsjYmqkN/wxhA5YhgRadB54IBkZ4K+bB+lbIfFKnSO2cVoB9JFdvf
+AiPTc8Urmyigf/3s9GeJzUxfseJ7CoxiiH+aW6KcOmPvGb/dHii/oylqt/EHwKIeY/r41F9OX1AX
+W2ksbdxBbD94bFWhddBMjHURsHbQskdhzeK66E77MKKBr48TOFha+ibsxrbMFqDFEQEF5Z2Ree5j
+c+onWJI9PXFJmnPCbeqYw4VIht55u2SR0j9fOtBTo95Ni4MPR3YctL+zZ8lfn8mu1apUrT6ddNXv
+0OmdXxv8bP7ldl17FUE0OVeZZTI9kUvjZIZZUZWBIQ==
+=C9P/
+-----END PGP SIGNATURE-----
+
+--DlvyvRDyKovEmV7DXh8WfVHTPRjI52Ka8--
