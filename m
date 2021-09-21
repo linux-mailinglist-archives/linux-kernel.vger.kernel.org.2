@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF15E412E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D2A412E51
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhIUFu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 01:50:56 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:61138 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhIUFuz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 01:50:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632203367; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=wVVoFUw4tdLcj7GekZ6OmjzAKrX0b/ozYb0puAytqdE=; b=E021Avw7ynSxxusNgG+Rbmsbrts7tWULRhzVHKa14lyvHuCFSYp7O58i8HKdtA/1Zp7Lf55N
- CQY65dx7IOXxCJdhjIuRPgR3Lnw2Mx6ivO6LeHkFKzgANU/ts1E/z9bipiaHFYRcA4A3RS7Z
- BaR9WRzvRimJ6T0gl6SSTbcoqL4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6149725ae0f78151d6e5186d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 05:49:14
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 559D8C43460; Tue, 21 Sep 2021 05:49:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D52E9C4338F;
-        Tue, 21 Sep 2021 05:49:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D52E9C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
-Cc:     linux-wireless@vger.kernel.org,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Siva Rebbagondla <siva8118@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] rsi: fix startup and P2P mode
-References: <1630337206-12410-1-git-send-email-martin.fuzzey@flowbird.group>
-Date:   Tue, 21 Sep 2021 08:49:05 +0300
-In-Reply-To: <1630337206-12410-1-git-send-email-martin.fuzzey@flowbird.group>
-        (Martin Fuzzey's message of "Mon, 30 Aug 2021 17:26:43 +0200")
-Message-ID: <875yuuwka6.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S229668AbhIUFwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 01:52:06 -0400
+Received: from mout.gmx.net ([212.227.17.21]:45923 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhIUFwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 01:52:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632203412;
+        bh=+ziCyTMtmaAHMGXAw5lJ58Wa1DnJRuM4E8YVHPJWQrg=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=bGw//5DpQ++5ncY7F6gcWioNdbXvF8WG+ftqzLDDpGluU8otAhL/U3OmvR1UuYy7b
+         H2F2Yr340l6g5RwKokz+2vN+IWDrQDkBoM0g5blKyNG2zftGH1QPSRApTnkIJJb1oy
+         LdluEkfYWhSdg9u6S1fOshXM0pya+lDezBSnJwsc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.219.33]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSKu0-1mHSsW0caO-00SgsT; Tue, 21
+ Sep 2021 07:50:12 +0200
+Message-ID: <7e9545b069f19f0e5c57c53d4633c508009e796c.camel@gmx.de>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to
+ nr_running
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 21 Sep 2021 07:50:07 +0200
+In-Reply-To: <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+         <20210920142614.4891-3-mgorman@techsingularity.net>
+         <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.0 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Fje87h5xhcsoNQ7Rhsy6hvIBvsrt3yDLYM8APiXO5YnP8Bm/pYC
+ rHeHJh63Rw7mS84P3ZVD4UFgfgtGYu9ixVXs66V7mQXqDQb8IQRGR9E2HRRekPIjK1o28Wr
+ UAFL7GFXXCa2qsGuKshcCi+WtsXhc/sfglFaJEapTrZQyQhN2/bt+OmumtB+MUOcDIe9VMQ
+ cFicszLsZfAxjufds1Z+w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bM2y5YUkeQI=:2qj2aTa4ldBMq91aG8v6aJ
+ JbRdKKLtddBDI+0Vu9R+yVrZCCgTGCX+80DG2zLqv0SOJm4o4DfXpOXIQrxQhvNYhn36Z0fVJ
+ 4NmC9U/L+B68RKDjky5Fmw3oDih0Bybil5IPIHIGIpq5xlkTz6DWwFawldgZRpkR6b9DjyUxi
+ I6h20gv8yIC7x7i13RrWy/zVgcRyeHczRz5xJskNTyd6mY7m7So+Px3hKTOvJa64tUD5dQDUV
+ O82/z8kjhL84SoCF71s/RzkNbdVQ+TIVWJrDmZDlXEB1ZSxeNIurLf/HRZMDcOVkbS2dTpu5F
+ FfwhBLX844E4hnuk6sIRQjWN9LFGFU8GCOnUAWiMi2wrPBB9uQe4P3JbQjc3ZO5NEbQnx6jlA
+ ukV0zms4OwV8AGnq7hCF0170E1KZAJ8sKnrcRayfNMiZ0jag1DPrF8h4CMq/MTSkScSyHCqPb
+ Wi9dS/KF3nvxsa5jyMvVztf54wa7YN+9CI3kx4LDLa+axDdXUVeW+3eXLg7+K5UpvdlbLHueg
+ MkUik8eV3heGZdMFUTrgeSN4VEcwDPQHRsZHV4v6EnlCR9+6i6sitpq25HoyN2QW2nkvR7XaD
+ H8ihO+LVCI847mSzUgJ9gjLpPUI0F61O3r4kpXE0tGXHAk75yju6eUaLzy7gmHWuajgbv+GfD
+ uOV69W9gBKxkCPuf1FRk55tvKYOYPoBdrbdGo7/RaaZwqBTjTywdV8rPzzzN/HD3+udSAbx1v
+ hnVDe4dtCXyvWzrMgwa66v65LTi3aa4WJWg80tKfk9/zHCs0D4uY/Ruc/I1eNfJyKVueYjGR5
+ rGPv1qemFd6hhwDPeXLcS3ivruN8+WPt7AjpL4wEiK1bZMZHgjHf05UinH45gQtSiggUv/D3c
+ BN+7LOiC1MXIf40M7kFIckjLocFc1Vf/hzu962tnEeENr7YcoImiF1n9k8RDVCIPtSXin264j
+ 9uNJKYkt6k5a4YP+s7jmsERiwqFEJk0IKjGYWT7BSHL72WHKkDzMhb2gKMYAKroEOtSeLugmm
+ HcQxNCGaKYGnsnzphZfx+KSjrWZvkobKifOsb1IqlyFXVJKRfuRRRumOhrVeZM7B3eeQgOhMP
+ AGE74lorCRJAFA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Martin Fuzzey <martin.fuzzey@flowbird.group> writes:
-
-> This series fixes an occasional startup failure when BT
-> coexistence is enabled and makes P2P mode work
-> (the two are unrelated but sending as a series since the same files
-> are modified).
+On Tue, 2021-09-21 at 05:52 +0200, Mike Galbraith wrote:
+> On Mon, 2021-09-20 at 15:26 +0100, Mel Gorman wrote:
 >
-> Tested on RS9116 in P2P client mode against an Android phone (S8, Android 9)
 >
-> For an unknown reason GO mode does not work against the phone but it
-> does work against a second RS9116 device.
-> In this case Android does not send a response to the 3rd WPA handshake
-> packet. It is difficult to debug this without the phone wpa_supplicant
-> logs which I don't have.
+> The scaled up tweakables on my little quad desktop box:
+> sched_nr_latency =3D 8
+> sched_wakeup_granularity =3D 4ms
+> sched_latency =3D 24ms
 >
-> Regression tested OK for STA and AP modes.
->
-> V2:
->   * rebase against wireless-drivers-next
->   * add cc: stable to patches 2 & 3
->
-> Martin Fuzzey (3):
->   rsi: fix occasional initialisation failure with BT coex
->   rsi: fix key enabled check causing unwanted encryption for vap_id > 0
->   rsi: fix rate mask set leading to P2P failure
+> Due to the FAIR_SLEEPERS feature, a task can only receive a max of
+> sched_latency/2 sleep credit, ie the delta between waking sleeper and
+> current is clipped to a max of 12 virtual ms, so the instant our
+> preempt threshold reaches 12.000ms, by human booboo or now 3 runnable
+> tasks with this change, wakeup preemption is completely disabled, or?
 
-BTW thanks for the outstanding cover letter and commit logs in the
-patches, it was so easy for me to understand the background and the
-level of testing these patches have had. If everyone would write their
-patches like this my job would be a lot easier :)
+I just dug up a now ancient artifact testcase allegedly distilled from
+a real application's control thread sometime back in the dark ages, and
+granularity >=3D latency/2 still does turn off wakeup preemption.
 
-I'm going to use this patchset as an example in the submittingpatches
-wiki page.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+	-Mike
