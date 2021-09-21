@@ -2,75 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D301413A18
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F0413A14
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbhIUSbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbhIUSa7 (ORCPT
+        id S233086AbhIUS27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:28:59 -0400
+Received: from gateway22.websitewelcome.com ([192.185.46.234]:31169 "EHLO
+        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232951AbhIUS25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:30:59 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAE2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:29:30 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id g41so1353929lfv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H8Wo2U3fZZPbINkKPHgF5f7NF214eZln9lkI6++RKwQ=;
-        b=EIj/r7YAOR4TxSFqtc0XezwotcPykhRbz8ISMtniL5l072qU1Z+ERmN3lveAjpoBK0
-         vSgcUkbcqqBXAZCFZNe3AVHSJwdMknvcYAjd2iAijfzGnKDG2GUJZZjDgZg9jD4mpEB0
-         lNvDtdHeZPcdYBwgF++ZjBvmBuxqm3SANvk/lvAZ4/NpGHCaGQ3eFo4x181/HgQUJEs5
-         FIzysxC6YjCspxjPwnernK1SypdP416uUtU369zSvSiJsTFYVGFGJYCXxHYX9OBbfCVd
-         nZt7hJD7RE6HLgXfXiVRneeBxZQ7Afw06UDaMBDrmRvi1cQz2SLpZg28DdCBRgO+mE3Y
-         1cZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H8Wo2U3fZZPbINkKPHgF5f7NF214eZln9lkI6++RKwQ=;
-        b=tDj3jf0QjYC31L8W3AYw+S+mCEwGvo0NO6387meYOs2KzT5lZxbDCLBOiROJAim4rq
-         fMuTefc/SsYPxKUZCG4aEOO8JIUSVTbmmy4R3GWIUiHZb8tqYrRHdCQaregHTbZDKax7
-         LLyyQ+2NRVi5PCZl+T0hFNeyYaqU3sfiu+wbbGiSUiyh03iMGHGPfVAh/afBPyc634aA
-         Ce1MnJN3sS/d0G5QL2xp5oVsHIklLYEmN1JUSQB5G07TOl2sQhRRQ4Lie3iskCsHYfn3
-         BVuDKyAks8IgZ+DE9KchqTOzDJHrioTiSGnMlIAhNrzm9j1yNN7K5+9JOjVXfN+H93AV
-         hCJw==
-X-Gm-Message-State: AOAM530GXESsBcjarfZEBPl2ZZ/77MhhcU5kQU+4Lq+dBuB2ZtZGeBRk
-        qFleYH7DCSuZLo0O42cbVxZqjKZ5ZcyC+i/jIj8HJovk4KI=
-X-Google-Smtp-Source: ABdhPJxiJW0IlyMzcIpmX7lPi/2jCIPM5++vLf0SHJS3hopPHH2k7+Pp1sHDHM2f5OBfm+DHHjqBilrIupGH3UYqDkY=
-X-Received: by 2002:a05:6512:3c92:: with SMTP id h18mr23624483lfv.656.1632248969067;
- Tue, 21 Sep 2021 11:29:29 -0700 (PDT)
+        Tue, 21 Sep 2021 14:28:57 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id B6E7A48EF7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:26:48 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id SkTgmovBXcEL1SkTgmSpoN; Tue, 21 Sep 2021 13:26:48 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=/dj7s67eUkkTGvtArxjq5kIQaqJk5zQlj2EZsb9EvXo=; b=CtuNvfEow+zACbdw8ZfOWssMzl
+        0bHsT+p1GmSL1VqJrs09WJhuaZJFffasqXANF3MxH/Y4vLRVAEfim4Hda6s3LFYYoqhJQasLwSEHH
+        DnHqRTKkEsAZXT1YIspdXGmROyBPTsmUpORTmA+AIUXgBk9/nA5NNMTbh6P4bTqI0hcsQwjAakWzD
+        0VVGEufBvFHAp1mO+BleA1MK2ovX3ZymnIAiXDa8UhPO3m9ttBqHSOfjVRRcNb3AH43DNysaEvG9N
+        Jivx1sdQ3ViLwRtEhZnR21ANBPuHuoBsGqUA4ZRMzDhb+YlB0Qdvz7n1EKXXVNYvHvTBDOnHlxAzw
+        BkPouv8w==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:36388 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mSkTg-000c67-5M; Tue, 21 Sep 2021 13:26:48 -0500
+Subject: Re: [PATCH] assoc_array: Avoid open coded arithmetic in allocator
+ arguments
+To:     Len Baker <len.baker@gmx.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210919110913.39386-1-len.baker@gmx.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <c7bc0092-96e5-9be8-1987-00689ef9cab8@embeddedor.com>
+Date:   Tue, 21 Sep 2021 13:30:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210920103335.243-1-caihuoqing@baidu.com>
-In-Reply-To: <20210920103335.243-1-caihuoqing@baidu.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 21 Sep 2021 20:29:18 +0200
-Message-ID: <CACRpkdZHUpHj8eWc21tYPFwA7BpWdj-dS-sbzxgoi=n02jctbA@mail.gmail.com>
-Subject: Re: [PATCH v2] Input: cyttsp - Make use of the helper function dev_err_probe()
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Input <linux-input@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210919110913.39386-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mSkTg-000c67-5M
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:36388
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 12:33 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
->
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On 9/19/21 06:09, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kmalloc() and kzalloc() functions.
+> 
+> Also, take the opportunity to refactor the memcpy() calls to use the
+> struct_size() and flex_array_size() helpers.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Yours,
-Linus Walleij
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+I'll add this to my -next tree.
+
+Thanks
+--
+Gustavo
+
+> ---
+>  lib/assoc_array.c | 22 ++++++++++------------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/lib/assoc_array.c b/lib/assoc_array.c
+> index 04c98799c3ba..079c72e26493 100644
+> --- a/lib/assoc_array.c
+> +++ b/lib/assoc_array.c
+> @@ -741,8 +741,7 @@ static bool assoc_array_insert_into_terminal_node(struct assoc_array_edit *edit,
+>  	keylen = round_up(diff, ASSOC_ARRAY_KEY_CHUNK_SIZE);
+>  	keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
+> 
+> -	new_s0 = kzalloc(sizeof(struct assoc_array_shortcut) +
+> -			 keylen * sizeof(unsigned long), GFP_KERNEL);
+> +	new_s0 = kzalloc(struct_size(new_s0, index_key, keylen), GFP_KERNEL);
+>  	if (!new_s0)
+>  		return false;
+>  	edit->new_meta[2] = assoc_array_shortcut_to_ptr(new_s0);
+> @@ -849,8 +848,8 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
+>  		keylen = round_up(diff, ASSOC_ARRAY_KEY_CHUNK_SIZE);
+>  		keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
+> 
+> -		new_s0 = kzalloc(sizeof(struct assoc_array_shortcut) +
+> -				 keylen * sizeof(unsigned long), GFP_KERNEL);
+> +		new_s0 = kzalloc(struct_size(new_s0, index_key, keylen),
+> +				 GFP_KERNEL);
+>  		if (!new_s0)
+>  			return false;
+>  		edit->new_meta[1] = assoc_array_shortcut_to_ptr(new_s0);
+> @@ -864,7 +863,7 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
+>  		new_n0->parent_slot = 0;
+> 
+>  		memcpy(new_s0->index_key, shortcut->index_key,
+> -		       keylen * sizeof(unsigned long));
+> +		       flex_array_size(new_s0, index_key, keylen));
+> 
+>  		blank = ULONG_MAX << (diff & ASSOC_ARRAY_KEY_CHUNK_MASK);
+>  		pr_devel("blank off [%zu] %d: %lx\n", keylen - 1, diff, blank);
+> @@ -899,8 +898,8 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
+>  		keylen = round_up(shortcut->skip_to_level, ASSOC_ARRAY_KEY_CHUNK_SIZE);
+>  		keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
+> 
+> -		new_s1 = kzalloc(sizeof(struct assoc_array_shortcut) +
+> -				 keylen * sizeof(unsigned long), GFP_KERNEL);
+> +		new_s1 = kzalloc(struct_size(new_s1, index_key, keylen),
+> +				 GFP_KERNEL);
+>  		if (!new_s1)
+>  			return false;
+>  		edit->new_meta[2] = assoc_array_shortcut_to_ptr(new_s1);
+> @@ -913,7 +912,7 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
+>  		new_n0->slots[sc_slot] = assoc_array_shortcut_to_ptr(new_s1);
+> 
+>  		memcpy(new_s1->index_key, shortcut->index_key,
+> -		       keylen * sizeof(unsigned long));
+> +		       flex_array_size(new_s1, index_key, keylen));
+> 
+>  		edit->set[1].ptr = &side->back_pointer;
+>  		edit->set[1].to = assoc_array_shortcut_to_ptr(new_s1);
+> @@ -1490,13 +1489,12 @@ int assoc_array_gc(struct assoc_array *array,
+>  		shortcut = assoc_array_ptr_to_shortcut(cursor);
+>  		keylen = round_up(shortcut->skip_to_level, ASSOC_ARRAY_KEY_CHUNK_SIZE);
+>  		keylen >>= ASSOC_ARRAY_KEY_CHUNK_SHIFT;
+> -		new_s = kmalloc(sizeof(struct assoc_array_shortcut) +
+> -				keylen * sizeof(unsigned long), GFP_KERNEL);
+> +		new_s = kmalloc(struct_size(new_s, index_key, keylen),
+> +				GFP_KERNEL);
+>  		if (!new_s)
+>  			goto enomem;
+>  		pr_devel("dup shortcut %p -> %p\n", shortcut, new_s);
+> -		memcpy(new_s, shortcut, (sizeof(struct assoc_array_shortcut) +
+> -					 keylen * sizeof(unsigned long)));
+> +		memcpy(new_s, shortcut, struct_size(new_s, index_key, keylen));
+>  		new_s->back_pointer = new_parent;
+>  		new_s->parent_slot = shortcut->parent_slot;
+>  		*new_ptr_pp = new_parent = assoc_array_shortcut_to_ptr(new_s);
+> --
+> 2.25.1
+> 
