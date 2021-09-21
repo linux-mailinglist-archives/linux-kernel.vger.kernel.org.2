@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D24413AA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BE2413AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbhIUTXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S234459AbhIUT0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:26:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhIUTXa (ORCPT
+        with ESMTP id S229915AbhIUT0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:23:30 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1CEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:22:01 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id a14so351791qvb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:22:01 -0700 (PDT)
+        Tue, 21 Sep 2021 15:26:38 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14866C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:25:10 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a591700b001976d2db364so396585pji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=byXBBhU5G/dX1Qqhyk4gN1a19PMCtYNKaaSGr1kUrRs=;
-        b=EvZDvB7LmA2IyY4MVygYFtKioK1bGvZ7061aL7ddxooaWOmRENaPeREb4wxcFr8o0L
-         r8k1lvp8GelOqDb2pSAG84OdjcFCBVurNdFmj4kOQolcQqYNb7a4KGwkM4a2UjFpQvQh
-         AzGEcH3A8/R5pbUoahh+Pt5hpeF+YilcZd0LRGc75lEGnCyn0zQ5v0aNTXgWCsa5nHl7
-         lzOK9L8Ve/TCsty1YKz/vsk5QhMG07apoaHp+rLL7tAFy5D7azMw3nzbyOffNezRexik
-         7/KDQ6TncKupQTxUqgbGpWJ7JWfJ/dDt2vZyqJ+aj265kyu3VAIHt1nE/1ydJXq6gj7C
-         06Hw==
+        bh=B/sF6vDBPQtENY4PnJ/8XwK3HbUXNlrJIJQBSSE9vbI=;
+        b=fWbX0xDo8U2ZnatPjBX47UgYg0iqOdULfaRNfdpJXUzsFOqbQPBZ5ulMrwJn54SyKw
+         2Ens85w8fQYitomjl4iqqi4CFhLAL1jdYyn70mbZqZmmGFB0sJZyrMDrtioTEtAg27iB
+         ITkv3xNUTLfyvrkKZhPXpUccMJ9rYy/u9iJfTrabLsop51SSGrgfQ6hYp56r61tdp07s
+         xT+JJCdAG5MeIKSbvQfMURQQPQz0ROVosg4sMZ+Nqy9DxuZitSI4NUVliJYCAFK41vjm
+         DjvpEE2KClktTISKx5zsWcdt7GedXa4QuiHE4dozH6Jol3VKPo0epJHXqiZkOlvzWyYf
+         0BGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=byXBBhU5G/dX1Qqhyk4gN1a19PMCtYNKaaSGr1kUrRs=;
-        b=2JK7jwTmYrE5sOA9OqnHA/IqkWKQMRoCSx/il0vwAOtZYPk7myWjyWIujKEX/3rpM3
-         oMkusLaPV48Gw6iUufSbmEnKnhoO/7WQuzxsjjC5Jo5cdDn92T9mVE+2Xqw2ibDbtSl9
-         lHqoYnJWEQ9CKfA8//ZwZaoXWxGXJo6djGDgKrMlnhazuAvQgK+Qf9L78nKEWCwwL3g+
-         8zX4BFjdN6+2cfbmlkAhgLCIpEvaOwTYEyJakON6ijf4Qw3CE9pTAHUcSD8z1DJXx6ju
-         njLyIoTar50i3PPaN7298IVMTllPpBTpIx8zpadyjHScTKEdMlkblFblcY1cvMO2qAoD
-         c/NA==
-X-Gm-Message-State: AOAM530NiWiaTLGUzI8owLkfHW8dwn8M+ajBZnFamcMg2D5klK/5CQzt
-        BH/hoTjDAQ30K71MNoWSola+Z5/QCvZUv2yJmkzaPg==
-X-Google-Smtp-Source: ABdhPJz0Ho4THpSF6Nj2Jumm1CHq2QVYwNJy96vcGeI9zidjQ36kqZjuY4DLLpqKFcUtFsKwPNotMvEe3JVnKXoyq88=
-X-Received: by 2002:ad4:5591:: with SMTP id e17mr32824080qvx.50.1632252120925;
- Tue, 21 Sep 2021 12:22:00 -0700 (PDT)
+        bh=B/sF6vDBPQtENY4PnJ/8XwK3HbUXNlrJIJQBSSE9vbI=;
+        b=Owzcj+/s15GS5x6MseNp3s1k/hYxWIYNksaL1floO4w+PEDqosFELVxhBwsnlsUvBu
+         jhmVCGwrkU5D6wPKBXp8e88KAoWs9Kj50kzyCuqIqBCBW/whHiVW5EUXYjFsm/9swB/v
+         KxVBiKfcxq6x9o4VYua7eSmKfXooQD/22GtRRoCKvkYuBwun32W2en4T3jUnls1ACSEt
+         tXMOCmwrsXcwvxUKYZ0WqGNZHsbitmxSocuNrG6Kt5dB8CYvFLXYr4zMQKDaZ+CKt9jg
+         iX8SyLcr/LTzezq+CV2ygaM5ad3bTXTHzZnS/NkGRbTRF9yqTBUMmAhfl7zaNsSjlze9
+         zCiw==
+X-Gm-Message-State: AOAM530YxmjNauxiuyQzBiybtvookAT4DJFuclZPxOOPX0f15SkFqhHL
+        ydiJ6UFOJml9rhk4kMOJ6IlrcDI6D6hHm2LKoxXuUw==
+X-Google-Smtp-Source: ABdhPJzPH6XI7yR49/WYhgC3n5ZArm2hEgxUmQbfig+Y9g9qnDKrm4QAEW97NTxx7V92t4PQxePz1VE8Tg+VrJIqOuM=
+X-Received: by 2002:a17:90b:4b51:: with SMTP id mi17mr7088788pjb.120.1632252309287;
+ Tue, 21 Sep 2021 12:25:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-5-mkoutny@suse.com>
- <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
- <20210914092207.GA23743@blackbody.suse.cz> <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
- <CAKfTPtC5+4gf_R0bAVHe+0Fw6dQYQ_a-f529H9s4KLpm40X9Ng@mail.gmail.com> <CAFpoUr3APdFordH+1XjHPWP5FtKuQBAXSRTt4arruMkQcx2ufg@mail.gmail.com>
-In-Reply-To: <CAFpoUr3APdFordH+1XjHPWP5FtKuQBAXSRTt4arruMkQcx2ufg@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Tue, 21 Sep 2021 20:21:50 +0100
-Message-ID: <CAFpoUr1S4N1g_pP2d9_EMFn3zuwQejsxkBbCd5LTQ-KuwOXbLQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
+References: <20210921150345.2221634-1-pgonda@google.com> <20210921150345.2221634-2-pgonda@google.com>
+In-Reply-To: <20210921150345.2221634-2-pgonda@google.com>
+From:   Nathan Tempelman <natet@google.com>
+Date:   Tue, 21 Sep 2021 12:24:58 -0700
+Message-ID: <CAKiEG5rTnZNAyTZLR+JAbcQ=Hr8Nz5NQQjMRxc1Kvsu9-6RMUA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: SEV: Update svm_vm_copy_asid_from for SEV-ES
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 21, 2021 at 8:03 AM Peter Gonda <pgonda@google.com> wrote:
+>
+> For mirroring SEV-ES the mirror VM will need more then just the ASID.
+> The FD and the handle are required to all the mirror to call psp
+> commands. The mirror VM will need to call KVM_SEV_LAUNCH_UPDATE_VMSA to
+> setup its vCPUs' VMSAs for SEV-ES.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Nathan Tempelman <natet@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Steve Rutherford <srutherford@google.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/x86/kvm/svm/sev.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 75e0b21ad07c..08c53a4e060e 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1715,8 +1715,7 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>  {
+>         struct file *source_kvm_file;
+>         struct kvm *source_kvm;
+> -       struct kvm_sev_info *mirror_sev;
+> -       unsigned int asid;
+> +       struct kvm_sev_info source_sev, *mirror_sev;
+>         int ret;
+>
+>         source_kvm_file = fget(source_fd);
+> @@ -1739,7 +1738,8 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>                 goto e_source_unlock;
+>         }
+>
+> -       asid = to_kvm_svm(source_kvm)->sev_info.asid;
+> +       memcpy(&source_sev, &to_kvm_svm(source_kvm)->sev_info,
+> +              sizeof(source_sev));
+>
+>         /*
+>          * The mirror kvm holds an enc_context_owner ref so its asid can't
+> @@ -1759,8 +1759,16 @@ int svm_vm_copy_asid_from(struct kvm *kvm, unsigned int source_fd)
+>         /* Set enc_context_owner and copy its encryption context over */
+>         mirror_sev = &to_kvm_svm(kvm)->sev_info;
+>         mirror_sev->enc_context_owner = source_kvm;
+> -       mirror_sev->asid = asid;
+>         mirror_sev->active = true;
+> +       mirror_sev->asid = source_sev.asid;
+> +       mirror_sev->fd = source_sev.fd;
+> +       mirror_sev->es_active = source_sev.es_active;
+> +       mirror_sev->handle = source_sev.handle;
+> +       /*
+> +        * Do not copy ap_jump_table. Since the mirror does not share the same
+> +        * KVM contexts as the original, and they may have different
+> +        * memory-views.
+> +        */
+>
+>         mutex_unlock(&kvm->lock);
+>         return 0;
+> --
+> 2.33.0.464.g1972c5931b-goog
+>
+Looks good. Thanks for doing this Peter.
 
-With the changes in PATCH 1 of this series [0], I think this logic needs to be
-updated as well (or correct me if I am wrong). Did a quick look now,
-and it looks
-like there are some conflicts with the linus' tree when applying the
-series as well,
-but didn't look that deep into what caused it (for ref I tested on v5.15-rc2).
-
-Not sure how you want to structure this patch series as all the patches kinda
-depend on each other, since you sent the updated one separately (and I
-am fairly new
-to kernel development, so I have no idea), while patch 1 is fixing a
-"real" issue
-that we probably want to get fixed as soon as possible.
-
-
-[0]: https://lore.kernel.org/lkml/20210917153037.11176-1-mkoutny@suse.com/
-
-Thanks
-Odin
+Reviewed-by: Nathan Tempelman <natet@google.com>
