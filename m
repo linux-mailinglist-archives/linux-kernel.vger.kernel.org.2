@@ -2,112 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE82413A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09700413A92
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhIUTNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45968 "EHLO
+        id S234339AbhIUTPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhIUTM5 (ORCPT
+        with ESMTP id S229913AbhIUTPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:12:57 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3024C061574;
-        Tue, 21 Sep 2021 12:11:28 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id q26so42237120wrc.7;
-        Tue, 21 Sep 2021 12:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oeXwuLKI4VPOt84PTF274pbXZwoHrnhHwnv+XDzjYhQ=;
-        b=aEQCyBeXl9uud7znHNRy0g9EcOsfmBR6DIOd3+jjX3vqBzq2T0vhYFDPjDehm7P+wY
-         NyPZHuv27vgkE2lw6Sh+s/MuU1nk1crwuKuEOpgB43k6HAen1biMJq2sVB79cq9VVSi/
-         4hPD6yWlzYLf+Y/RvKQ0klneKRegaqBJ1nge11c1hNS/Wfg2HVyJ1WtKNDPu+7EmIhD5
-         0mc8PCvBzqHRAaf9mDifD+2+jrB0cayBnogCAE9mo/4xJivzddMjMU5wtcaMbIDYsxog
-         2ntlcusgSD0iZBvdbH5/HqTCju4977/uOlMvaMZEMsOfrQTvQz5D8fcYSj0U3PcXdEcP
-         DVlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oeXwuLKI4VPOt84PTF274pbXZwoHrnhHwnv+XDzjYhQ=;
-        b=W1CLYMmTl2yjOmotF0aLmpqA04yiw+fm1jO44JJ+ykUrNoAGXIHaj/sNy/rBzVuBAK
-         CXprwa0mwtqTevffR0YCHS7rlb4djR3e9aa2XKv90Sj9lZ03A/NyhLHeXyLb45eSD9ok
-         IykXizs96OCMCu/MnHOrc3Ew+q4W4sLFCQs+rAQgHjR0tXS1CAuvpyCZXprN72iHYn1b
-         pEwgxPuQPZ+syF+15MrDsMw/GpSEDMCBrsVWAsPjekUfOHFVIEKWc60VQ9ls8o8QJ6lK
-         oEQuYyKyLono1zgPU9YiD0pf7WDz+Zs9VWvRuKYDeRELrofuCqeMQqRmIyPTGrwk5tjI
-         mZOg==
-X-Gm-Message-State: AOAM530HB2rd38BOKgkXoivMrVBTGugElIRMws+nlNRze/uT5gI+3k2U
-        c3kyF3whf7UVg40GNtbQPpFX8+6uYds=
-X-Google-Smtp-Source: ABdhPJwSxqZkIskvNA31B/yxld8hwX7RTQCYLYdBBO52tnUsA6tkh4kVXj8aNvy3HLXCWh0sEXU1Dg==
-X-Received: by 2002:adf:f6c7:: with SMTP id y7mr37407342wrp.44.1632251487296;
-        Tue, 21 Sep 2021 12:11:27 -0700 (PDT)
-Received: from ?IPv6:2003:c7:8f4e:664:d2c3:5468:e139:48d7? (p200300c78f4e0664d2c35468e13948d7.dip0.t-ipconnect.de. [2003:c7:8f4e:664:d2c3:5468:e139:48d7])
-        by smtp.gmail.com with ESMTPSA id c185sm4244308wma.8.2021.09.21.12.11.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 12:11:26 -0700 (PDT)
-Subject: Re: [PATCH] Update min() to min_t()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210921055246.GA11535@matrix-ESPRIMO-P710>
- <YUl1067kvLA5KkGC@kroah.com>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Message-ID: <a6185b27-a461-84e4-1301-485b88cddd02@gmail.com>
-Date:   Tue, 21 Sep 2021 21:11:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 15:15:34 -0400
+Received: from wp441.webpack.hosteurope.de (wp441.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:85d2::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B09C061574;
+        Tue, 21 Sep 2021 12:14:05 -0700 (PDT)
+Received: from [2a03:7846:b79f:101:21c:c4ff:fe1f:fd93] (helo=valdese.nms.ulrich-teichert.org); authenticated
+        by wp441.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1mSlDF-000156-KC; Tue, 21 Sep 2021 21:13:53 +0200
+Received: from valdese.nms.ulrich-teichert.org (localhost [127.0.0.1])
+        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Debian-8+deb9u1) with ESMTPS id 18LJDp1x031137
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 21:13:52 +0200
+Received: (from ut@localhost)
+        by valdese.nms.ulrich-teichert.org (8.15.2/8.15.2/Submit) id 18LJDnXp031134;
+        Tue, 21 Sep 2021 21:13:49 +0200
+Message-Id: <202109211913.18LJDnXp031134@valdese.nms.ulrich-teichert.org>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+To:     torvalds@linux-foundation.org (Linus Torvalds)
+Date:   Tue, 21 Sep 2021 21:13:49 +0200 (CEST)
+Cc:     krypton@ulrich-teichert.org (Ulrich Teichert),
+        mcree@orcon.net.nz (Michael Cree),
+        linux@roeck-us.net (Guenter Roeck),
+        rth@twiddle.net (Richard Henderson),
+        ink@jurassic.park.msu.ru (Ivan Kokshaysky),
+        mattst88@gmail.com (Matt Turner),
+        James.Bottomley@hansenpartnership.com (James E . J . Bottomley),
+        deller@gmx.de (Helge Deller),
+        davem@davemloft.net (David S . Miller),
+        kuba@kernel.org (Jakub Kicinski),
+        linux-alpha@vger.kernel.org (alpha),
+        geert@linux-m68k.org (Geert Uytterhoeven),
+        linux-kernel@vger.kernel.org (Linux Kernel Mailing List),
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org (Netdev),
+        linux-sparse@vger.kernel.org (Sparse Mailing-list)
+In-Reply-To: <CAHk-=wibRWoy4-ZkSVXUoGsUw5wKovPvRhS7r6VM+_GeBYZw1A@mail.gmail.com>
+From:   Ulrich Teichert <krypton@ulrich-teichert.org>
+X-Mailer: ELM [version 2.5 PL8]
 MIME-Version: 1.0
-In-Reply-To: <YUl1067kvLA5KkGC@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;ut@ulrich-teichert.org;1632251645;99896d52;
+X-HE-SMSGID: 1mSlDF-000156-KC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 8:04 AM, Greg KH wrote:
-> On Tue, Sep 21, 2021 at 07:52:46AM +0200, Philipp Hortmann wrote:
->> diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
->> index 2dc58766273a..d87deee3e26e 100644
->> --- a/drivers/usb/usb-skeleton.c
->> +++ b/drivers/usb/usb-skeleton.c
->> @@ -363,7 +363,7 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
->>   	int retval = 0;
->>   	struct urb *urb = NULL;
->>   	char *buf = NULL;
->> -	size_t writesize = min(count, (size_t)MAX_TRANSFER);
->> +	size_t writesize = min_t(size_t, count, MAX_TRANSFER);
->>   
->>   	dev = file->private_data;
->>   
->> -- 
->> 2.25.1
->>
-> 
-> Has anyone actually built this driver in a while?
-> 
-> thanks,
-> 
-> greg k-h
-> 
 Hi,
 
-I have build and loaded the driver. To me this seems OK.
+[del]
+> > The main trouble is that my system has only 64MB of memory and the smallest
+> > kernel image with all drivers I need was about 105MB big.
+> 
+> Are you sure you aren't looking at some debug image?
+> 
+> I just tried building something based on your Jensen config (lots of
+> new questions, you sent your old config from 4.18.0-rc5 time), and I
+> get
+> 
+>   [torvalds@ryzen linux]$ ll -h arch/alpha/boot/vmlinux*
+>   -rwxr-xr-x. 1 torvalds torvalds 5.4M Sep 20 11:32 arch/alpha/boot/vmlinux
+>   -rw-r--r--. 1 torvalds torvalds 2.3M Sep 20 11:32 arch/alpha/boot/vmlinux.gz
+> 
+> so yeah, it's not exactly tiny, but at 5.4MB it's certainly not 105MB.
 
-dmesg from loading:
-usb_skeleton: loading out-of-tree module taints kernel.
-usb_skeleton: module verification failed: signature and/or required key 
-missing - tainting kernel
-usbcore: registered new interface driver skeleton
+Right, I had DEBUG_INFO set. Stupid me. Now it looks much better:
 
-dmesg from unloading:
-usbcore: deregistering interface driver skeleton
+valdese:~/soft/linux/kernel-git> ls -lh arch/alpha/boot/vmlinux*
+-rwxr-xr-x 1 ut ut 6.4M Sep 21 18:12 arch/alpha/boot/vmlinux*
+-rw-r--r-- 1 ut ut 3.0M Sep 21 18:12 arch/alpha/boot/vmlinux.gz
 
-Used kernel 5.15.0-rc1+
+But it still dies before the first message from the kernel shows up.
 
-Bye Philipp
+[del]
+> It would be very interesting to hear whether this all still boots. I
+> do think people still occasionally boot-test some other alpha
+> configurations, but maybe not.
 
+I'm sure that other Alpha configurations are still working, but the
+Jensen is a bit special. So far I know it's the only Alpha which needs
+aboot and not milo as second stage bootloader. aboot itself seems to
+be OK, as I can boot the ancient kernel just fine, but when I'm trying
+to boot other kernels, I'm coming as far as:
 
+aboot: loading compressed vmlinux-5-15-rc2
+
+and that's it. I don't think I have to do something special with the
+compressed image and according to https://tldp.org/HOWTO/SRM-HOWTO/aboot.html
+I don't have to. But why do I have the feeling I am doing something
+fundamentally wrong? Was there something with a different kernel
+jumping in point or a special build option? I remember something like
+that, but can't grasp it nor find it on the web.
+
+I would try the SRM bootimage (make bootimage), but the build is broken:
+
+valdese:~/soft/linux/kernel-git> make -j8 ARCH=alpha CROSS_COMPILE=alpha-linux- bootimage
+...
+  SYSMAP  System.map
+  AS      arch/alpha/boot/head.o
+  CC      arch/alpha/boot/stdio.o
+  HOSTCC  arch/alpha/boot/tools/objstrip
+arch/alpha/boot/stdio.c: In function ‘vsprintf’:
+arch/alpha/boot/stdio.c:249:10: warning: this statement may fall through [-Wimplicit-fallthrough=]
+    flags |= LARGE;
+          ^
+arch/alpha/boot/stdio.c:250:3: note: here
+   case 'x':
+   ^~~~
+arch/alpha/boot/tools/objstrip.c: In function ‘main’:
+arch/alpha/boot/tools/objstrip.c:151:36: warning: implicit declaration of function ‘str_has_prefix’ [-Wimplicit-function-declaration]
+     if (elf->e_ident[0] == 0x7f && str_has_prefix((char *)elf->e_ident + 1, "ELF")) {
+                                    ^~~~~~~~~~~~~~
+arch/alpha/boot/tools/objstrip.c:191:52: warning: format ‘%lx’ expects argument of type ‘long unsigned int’, but argument 5 has type ‘long long unsigned int’ [-Wformat=]
+      fprintf(stderr, "%s: extracting %#016lx-%#016lx (at %lx)\n",
+                                                    ^
+arch/alpha/boot/tools/objstrip.c:200:12: error: ‘struct exec’ has no member named ‘fh’
+  if (!(aout->fh.f_flags & COFF_F_EXEC)) {
+            ^~
+arch/alpha/boot/tools/objstrip.c:206:10: error: ‘struct exec’ has no member named ‘fh’
+  if (aout->fh.f_opthdr != sizeof(aout->ah)) {
+          ^~
+arch/alpha/boot/tools/objstrip.c:206:38: error: ‘struct exec’ has no member named ‘ah’
+  if (aout->fh.f_opthdr != sizeof(aout->ah)) {
+                                      ^~
+arch/alpha/boot/tools/objstrip.c:218:17: error: ‘struct exec’ has no member named ‘ah’
+  fil_size = aout->ah.tsize + aout->ah.dsize;
+                 ^~
+arch/alpha/boot/tools/objstrip.c:218:34: error: ‘struct exec’ has no member named ‘ah’
+  fil_size = aout->ah.tsize + aout->ah.dsize;
+                                  ^~
+arch/alpha/boot/tools/objstrip.c:219:28: error: ‘struct exec’ has no member named ‘ah’
+  mem_size = fil_size + aout->ah.bsize;
+                            ^~
+arch/alpha/boot/tools/objstrip.c:223:22: error: ‘struct exec’ has no member named ‘ah’
+       prog_name, aout->ah.text_start,
+                      ^~
+arch/alpha/boot/tools/objstrip.c:224:11: error: ‘struct exec’ has no member named ‘ah’
+       aout->ah.text_start + fil_size, offset);
+           ^~
+scripts/Makefile.host:95: recipe for target 'arch/alpha/boot/tools/objstrip' failed
+
+Was that the target used to get bootable CDROMs? Could that be broken since
+the move from aout to ELF? Ugh, sorry for raising so much trouble,
+
+CU,
+Uli
+-- 
+Dipl. Inf. Ulrich Teichert|e-mail: Ulrich.Teichert@gmx.de | Listening to:
+Stormweg 24               |Eat Lipstick: Dirty Little Secret, The Baboon Show:
+24539 Neumuenster, Germany|Work Work Work, The Bellrays: Bad Reaction
