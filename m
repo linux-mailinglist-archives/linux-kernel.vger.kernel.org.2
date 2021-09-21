@@ -2,147 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495A14134FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB47F413502
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhIUOGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:06:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48892 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbhIUOGh (ORCPT
+        id S233510AbhIUOHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:07:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40638 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233448AbhIUOHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:06:37 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632233107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 21 Sep 2021 10:07:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A1EFF2014A;
+        Tue, 21 Sep 2021 14:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632233139;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
-        b=fNNNVdBGg+ZulgR/yTyHw3OPyblYrJkTcS+WFxAIGwuHX+/NhHihA1O68bezkykOCH6+rP
-        aj+KRbIMVXK9+xwWRlXdETmYdGguenGbIWi31gR4OhHxo2zW+2VEp/jQgT8VyWV58ThUGY
-        si7riMahz8V4dyLV6FikLL9e5gU0JO/7nPfRKywDNfUYHNmY8BkYgTmFmZXM9V6pPpAT+Y
-        Qm6ZDXbTrrKF4vLUdhquYJWlJEX7F+p6Frt7rEKWjvw8eh0QXWIY3OTObCyZTihXAz1tyv
-        RQwBUaTe8Qiw5Wy3Hf1RylvujyscQHgWKWfIXwSOOj92v2GGSG5taAmDGHqtRg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632233107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=E557MN5H/z8gMR1F1UOzgrMHbd/CGDwH5EaTlthnE2Q=;
+        b=v7PwXdhSncGdSn0M9Iq8A3YFGWARdPt3gbuo815jkU+soPK31djxrG92ITY9NNfKHraOal
+        rA0KcBFdcdl+5Y1KKvi4EktFSrFglCPD3Fb2n9F4GBSa7dAmN4068mz/iwksfh1R8oErRg
+        3GNQHficINR3MCbjv/JZLme3g1KsVzk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632233139;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iRZkhuB3q8eWn+Q+IH85cvsi1BXsI2A4fpszlFgTJUU=;
-        b=/92k433iTx4+5yQA3qLenYPKHol2U3cD80NQ9hfx8ufaAt0X5/KFSHo2ByKulagfN2n12I
-        p3DTEu1QJXtWH+BQ==
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 3/4] rcu/nocb: Protect NOCB state via local_lock()
- under PREEMPT_RT
-In-Reply-To: <20210811201354.1976839-4-valentin.schneider@arm.com>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
-Date:   Tue, 21 Sep 2021 16:05:07 +0200
-Message-ID: <874kae6n3g.ffs@tglx>
+        bh=E557MN5H/z8gMR1F1UOzgrMHbd/CGDwH5EaTlthnE2Q=;
+        b=PKvj/vdOw6eDti9HjiU84sIJYlLtvn8+PLaYrxEPOXszzqowYIXPaJNymb5oe/3evCNwNm
+        kVstYJmGCMCSJDBQ==
+Received: from g78 (unknown [10.163.24.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id DCD40A3B84;
+        Tue, 21 Sep 2021 14:05:38 +0000 (UTC)
+References: <20210921130127.24131-1-rpalethorpe@suse.com>
+ <CAK8P3a29ycNqOC_pD-UUtK37jK=Rz=nik=022Q1XtXr6-o6tuA@mail.gmail.com>
+User-agent: mu4e 1.4.15; emacs 27.2
+From:   Richard Palethorpe <rpalethorpe@suse.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-aio <linux-aio@kvack.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>
+Subject: Re: [PATCH] aio: Wire up compat_sys_io_pgetevents_time64 for x86
+Reply-To: rpalethorpe@suse.de
+In-reply-to: <CAK8P3a29ycNqOC_pD-UUtK37jK=Rz=nik=022Q1XtXr6-o6tuA@mail.gmail.com>
+Date:   Tue, 21 Sep 2021 15:05:38 +0100
+Message-ID: <87o88mkor1.fsf@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valentin,
+Hello Arnd,
 
-On Wed, Aug 11 2021 at 21:13, Valentin Schneider wrote:
-> Running v5.13-rt1 on my arm64 Juno board triggers:
->
-> [    0.156302] =============================
-> [    0.160416] WARNING: suspicious RCU usage
-> [    0.172409] kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
-> [    0.260328] rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
-> [    0.264537] rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
-> [    0.267786] rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
->
-> In this case, this is the RCU core kthread accessing the local CPU's
-> rdp. Before that, rcu_cpu_kthread() invokes local_bh_disable().
->
-> Under !CONFIG_PREEMPT_RT (and rcutree.use_softirq=0), this ends up
-> incrementing the preempt_count, which satisfies the "local non-preemptible
-> read" of rcu_rdp_is_offloaded().
->
-> Under CONFIG_PREEMPT_RT however, this becomes
->
->   local_lock(&softirq_ctrl.lock)
->
-> which, under the same config, is migrate_disable() + rt_spin_lock(). As
-> pointed out by Frederic, this is not sufficient to safely access an rdp's
-> offload state, as the RCU core kthread can be preempted by a kworker
-> executing rcu_nocb_rdp_offload() [1].
->
-> Introduce a local_lock to serialize an rdp's offload state while the rdp's
-> associated core kthread is executing rcu_core().
+Arnd Bergmann <arnd@arndb.de> writes:
 
-Yes, sure. But I don't think that local_lock is required at all.
+> On Tue, Sep 21, 2021 at 3:01 PM Richard Palethorpe <rpalethorpe@suse.com> wrote:
+>>
+>> The LTP test io_pgetevents02 fails in 32bit compat mode because an
+>> nr_max of -1 appears to be treated as a large positive integer. This
+>> causes pgetevents_time64 to return an event. The test expects the call
+>> to fail and errno to be set to EINVAL.
+>>
+>> Using the compat syscall fixes the issue.
+>>
+>> Fixes: 7a35397f8c06 ("io_pgetevents: use __kernel_timespec")
+>> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+>
+> Thanks a lot for finding this, indeed there is definitely a mistake that
+> this function is defined and not used, but I don't yet see how it would
+> get to the specific failure you report.
+>
+> Between the two implementations, I can see a difference in the
+> handling of the signal mask, but that should only affect architectures
+> with incompatible compat_sigset_t, i.e. big-endian or
+> _COMPAT_NSIG_WORDS!=_NSIG_WORDS, and the latter is
+> never true for currently supported architectures. On x86, there is
+> no difference in the sigset at all.
+>
+> The negative 'nr' and 'min_nr' arguments that you list as causing
+> the problem /should/ be converted by the magic
+> SYSCALL_DEFINE6() definition. If this is currently broken, I would
+> expect other syscalls to be affected as well.
 
-The point is that the two places where this actually matters invoke
-rcu_rdp_is_offloaded() just at the top of the function outside of the
-anyway existing protection sections. Moving it into the sections which
-already provide the required protections makes it just work for both RT
-and !RT.
+That is what I thought, but I couldn't think of another explanation for
+it.
 
-Thanks,
+>
+> Have you tried reproducing this on non-x86 architectures? If I
+> misremembered how the compat conversion in SYSCALL_DEFINE6()
+> works, then all architectures that support CONFIG_COMPAT have
+> to be fixed.
+>
+>          Arnd
 
-        tglx
----
+No, but I suppose I can try it on ARM or PowerPC. I suppose printing the
+arguments would be a good idea too.
 
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	unsigned long mask;
--	bool needwake = false;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-+	bool offloaded, needwake = false;
- 	struct rcu_node *rnp;
- 
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
- 	rnp = rdp->mynode;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	offloaded = rcu_rdp_is_offloaded(rdp);
- 	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
- 	    rdp->gpwrap) {
- 
-@@ -2446,7 +2446,7 @@ static void rcu_do_batch(struct rcu_data
- 	int div;
- 	bool __maybe_unused empty;
- 	unsigned long flags;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-+	bool offloaded;
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count = 0;
-@@ -2472,6 +2472,7 @@ static void rcu_do_batch(struct rcu_data
- 	rcu_nocb_lock(rdp);
- 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
- 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
-+	offloaded = rcu_rdp_is_offloaded(rdp);
- 	div = READ_ONCE(rcu_divisor);
- 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
- 	bl = max(rdp->blimit, pending >> div);
+-- 
+Thank you,
+Richard.
