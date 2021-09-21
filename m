@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19969412D9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08DA412D9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhIUEAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 00:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhIUEAm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 00:00:42 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BCDC061574;
-        Mon, 20 Sep 2021 20:59:15 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id s11so19479909pgr.11;
-        Mon, 20 Sep 2021 20:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kJuxCA+lr9aQqZZBT5ST0vvzTYsVU9ziB3RzbVagWdY=;
-        b=Zn7eGmlQ2ODCP6PbCnG87aTNmNcU9IQZudac1EfAt7dKL8YcLe+9f+nlnOEE/kmIyL
-         5ldZV6Jr77aLr7D2CmIqb3yd9e5oYOxBLbwwdD/FcoYiDruTd5vQBz+ez333TGmrWq+Y
-         pOBGeFOh3RbbjrsPZDybbugkuvkFA7WJXlZJASPcRogD7BdxlJDT5oaRDM5eF4job5vn
-         /lFlLIJtwIhdx1JBUSE0CCVkgIJ/BFPIgCEkNw1+Y0l6zMxsqv5teWXKE4NkiP1h6U3f
-         vmg0NBRqUx01wO2+BiqjB5amg0BNf7KCgsfRTQH6fjLL3QWn/VQEK9Fc6IKrYp+hWMdD
-         cA9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kJuxCA+lr9aQqZZBT5ST0vvzTYsVU9ziB3RzbVagWdY=;
-        b=uu50vEBOHy1rKsfzQm4j0NGMrX9Njvki/eJWoXAnGjo5D8Kwa4GxGHyM5phQs4FTPU
-         aNyRk3jTIxQXISX6hUovuw0N2SLV1Kdep0mJi5Xb3q6Jg4DrtFNRWORoDyZfEUMtQiex
-         1pBo/Yq4x+BqOsiJ7MFNvUYw9KsumHhXig8Li1jpicWJnV1/TFJb4ywKfgN6UirnJPKC
-         RSJDWaUAkantJR7cguYJN4AIRsO0suT1Le2BkQ1+vXZ98HM8pNNlIk2uzGLj8MSa70VX
-         uTJ3sXyDlQLsQqOeogZGWfANCqGJrIDcGvu4cWyYEvkpAdHgYi2P7o+bZOuAJoETUVWT
-         LZZw==
-X-Gm-Message-State: AOAM532qjcZ+ZSZLDMA2BR0+vkQ2zesrPQ9a5Fsk3jrglPhcV0tHWUv3
-        ukwcs9i8C9Zr8sgOTuHc9TE=
-X-Google-Smtp-Source: ABdhPJytZlhnayh07mqRDvv42PYDgjOF+j7pVNZCzv3Yjcmxur5gjwgsGchuhhyucaUnA38ZdzIk4g==
-X-Received: by 2002:a63:720d:: with SMTP id n13mr26275111pgc.470.1632196754368;
-        Mon, 20 Sep 2021 20:59:14 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a5b4:f272:6a63:5b57])
-        by smtp.gmail.com with ESMTPSA id k3sm795327pjg.43.2021.09.20.20.59.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 20:59:13 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 20:59:10 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH 04/16] tty: make tty_ldisc_ops::hangup return void
-Message-ID: <YUlYjs+lYhPDSHGe@google.com>
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091134.17426-4-jslaby@suse.cz>
+        id S231869AbhIUEBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 00:01:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231208AbhIUEBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 00:01:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1516B611C5;
+        Tue, 21 Sep 2021 03:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632196779;
+        bh=7OFVjzBNfyXXNiMg++zl6W4YbQ+GkChXNDPM6C4fm5Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n3XB9+ugrNqVsTPmuetwR6tFfbxIb+a2Z7toWMqN0Dy+j2Cbd7wAA1OEPwy8tAEbZ
+         ZjOua8+cY72aS72AP8eojwewsPQkKUXi2TtXcnk2kUzalmAKD01uRtWYX+3OA8Gepk
+         B87YzxW/IBbfeVyitYV3IaTEAdLqdcLDfGb17WGpYDIka9EhrHUme/0D12blfxBtCu
+         eJPWLehJsL7qkqgkblKCHlkbCjcuZ/ek106F5zZEGKWvfpWeQoNGGFGljGLDpsIpv1
+         OlBIdUGF7H3tJPgr997lQ9+w/Fo16rZSiWOXwAFb2KxZM19MDil9rGz75CswVKOYZB
+         7O9rHggfmZiQA==
+Date:   Mon, 20 Sep 2021 20:59:33 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, efault@gmx.de,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
+        Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
+        <marmarek@invisiblethingslab.com>
+Subject: Re: [PATCH v2] x86/setup: call early_reserve_memory() earlier
+Message-ID: <YUlYpWhGCxpJ9diw@archlinux-ax161>
+References: <20210920120421.29276-1-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210914091134.17426-4-jslaby@suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920120421.29276-1-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 11:11:22AM +0200, Jiri Slaby wrote:
-> The documentation says that the return value of tty_ldisc_ops::hangup
-> hook is ignored. And it really is, so there is no point for its return
-> type to be int. Switch it to void and all the hooks too.
+On Mon, Sep 20, 2021 at 02:04:21PM +0200, Juergen Gross wrote:
+> Commit a799c2bd29d19c565 ("x86/setup: Consolidate early memory
+> reservations") introduced early_reserve_memory() to do all needed
+> initial memblock_reserve() calls in one function. Unfortunately the
+> call of early_reserve_memory() is done too late for Xen dom0, as in
+> some cases a Xen hook called by e820__memory_setup() will need those
+> memory reservations to have happened already.
 > 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Wolfgang Grandegger <wg@grandegger.com>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> Move the call of early_reserve_memory() before the call of
+> e820__memory_setup() in order to avoid such problems.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: a799c2bd29d19c565 ("x86/setup: Consolidate early memory reservations")
+> Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+
+I had issues on an AMD Ryzen 3 4300G based system with v1. v2 does not
+trigger any boot issues on that same machine or an Intel i5-4210U based
+system that I also test with.
+
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->  Documentation/driver-api/serial/tty.rst | 2 +-
->  drivers/input/serio/serport.c           | 3 +--
-
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-Thanks.
-
--- 
-Dmitry
+> V2:
+> - update comment (Jan Beulich, Boris Petkov)
+> - move call down in setup_arch() (Mike Galbraith)
+> ---
+>  arch/x86/kernel/setup.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 79f164141116..40ed44ead063 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -830,6 +830,20 @@ void __init setup_arch(char **cmdline_p)
+>  
+>  	x86_init.oem.arch_setup();
+>  
+> +	/*
+> +	 * Do some memory reservations *before* memory is added to memblock, so
+> +	 * memblock allocations won't overwrite it.
+> +	 *
+> +	 * After this point, everything still needed from the boot loader or
+> +	 * firmware or kernel text should be early reserved or marked not RAM in
+> +	 * e820. All other memory is free game.
+> +	 *
+> +	 * This call needs to happen before e820__memory_setup() which calls the
+> +	 * xen_memory_setup() on Xen dom0 which relies on the fact that those
+> +	 * early reservations have happened already.
+> +	 */
+> +	early_reserve_memory();
+> +
+>  	iomem_resource.end = (1ULL << boot_cpu_data.x86_phys_bits) - 1;
+>  	e820__memory_setup();
+>  	parse_setup_data();
+> @@ -876,18 +890,6 @@ void __init setup_arch(char **cmdline_p)
+>  
+>  	parse_early_param();
+>  
+> -	/*
+> -	 * Do some memory reservations *before* memory is added to
+> -	 * memblock, so memblock allocations won't overwrite it.
+> -	 * Do it after early param, so we could get (unlikely) panic from
+> -	 * serial.
+> -	 *
+> -	 * After this point everything still needed from the boot loader or
+> -	 * firmware or kernel text should be early reserved or marked not
+> -	 * RAM in e820. All other memory is free game.
+> -	 */
+> -	early_reserve_memory();
+> -
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+>  	/*
+>  	 * Memory used by the kernel cannot be hot-removed because Linux
+> -- 
+> 2.26.2
+> 
+> 
