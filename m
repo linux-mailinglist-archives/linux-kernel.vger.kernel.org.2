@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C0F413AB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29A3413AB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhIUT34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:29:56 -0400
-Received: from linderud.dev ([163.172.10.146]:36962 "EHLO linderud.pw"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231304AbhIUT3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:29:55 -0400
-Received: from linderud.pw (localhost [127.0.0.1])
-        by linderud.pw (Postfix) with ESMTP id 5A9B7C032A;
-        Tue, 21 Sep 2021 21:27:53 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.5-pre1 (2020-06-20) on velox
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.5-pre1
-Received: from localhost (host-37-191-241-102.lynet.no [37.191.241.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: morten)
-        by linderud.pw (Postfix) with ESMTPSA id 1206BC001C;
-        Tue, 21 Sep 2021 21:27:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linderud.pw;
-        s=linderud; t=1632252473;
-        bh=0GqyYMQkXphc8kPn1Om1uqRbo2dbuCAEQIAmDaGZnPc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=DvbI4uZ2GGwJM7jz99iiU/H9cQ7deSnqx7286T7FmIUK+8MtyVjM23cFUFPQfJIhC
-         VLuUX74csW/y7nnK/9thz70X5jJYYQDjVx+ewsTi50i7bUCcQaWWl/d+NUMqreGcA9
-         Ex5jhtJoPzVBCap1zEXVcjFyCYKPuYii5mBUe12Ftsrax1V1gsrjMYxLoS1LGwI4fb
-         DwQ9vqYHFS+0hvooYH27qXWVdpygiKlDFd9OW4cH/bUQ5IsYOLcmOj4a3Gatl4TMDf
-         BUz8FL7WdrmWC+dQy4AGnClrgt+vs4Zb9IdhDB0quKRNHgUMWgKM8oE3JxgHToKt2z
-         +BNXsJ9CS5lZzfuOqTBJFtd/n6zsUNtM3KaSHJn2kdObH3d1UT60w5jF+l75GrU/Lz
-         MXEnJUDY3obRCu6KvFN98tyb2Kz4ESK7gOGOYDSud/B40ODadNyewsRSO9QUc0oEAr
-         NSrZavWfHRSmFqBJTNoyoWV9LQtYAcYC5ZKD+8vCCje4Z+i8lUsp0LC4eeLeEZZNrJ
-         ydTnV07iGnzNarryzXc6ewkrzMyfWNzmIONSfE3revI1nBG97WGg/hrG4cOcBMIP4v
-         ZZB4TigNxKYYsNJ4n9f4F8EOjJDgU+yMb2/1ekmtg45yYOr/c4RblPfebeoIC+FOXa
-         dZDsAzLNX2y3zbNKrUZzV1KM=
-Date:   Tue, 21 Sep 2021 21:27:51 +0200
-From:   Morten Linderud <morten@linderud.pw>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Oleksandr Natalenko <oleksandr@natalenko.name>
-Subject: Re: [PATCH] tpm/eventlog: Don't abort tpm_read_log on faulty ACPI
- config
-Message-ID: <20210921192751.3ukruxkzukzfw5xl@anathema>
-References: <20210920203447.4124005-1-morten@linderud.pw>
- <896a0773cac953ae2f35ba08af65a598aa71942d.camel@kernel.org>
+        id S232249AbhIUT3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231304AbhIUT3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:29:47 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E69C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:28:19 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id c21so776691edj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0gRmMl3ATKMwqytANP/bGvh926ut0U/W4MmekIp4BdU=;
+        b=a11YL0Ng5emaJ3g6CV3iyFHFoD9QHsGNitdmgIaEuUGCpK6F36173WgPa6n1cP/pdA
+         H47OX35q9mlJQPqNPxk7l2ZADJpYCwfJaLdMFqPUWfsSIj4fo0yi8dY7SebN6jnpUogP
+         gPJSkuugJej9CV/vUe3x2HAibgjkzDOVPdbcoPVfwGeBePWdaioKr8oZA0nhzqAzPm79
+         IPn3tN9Z0mgcWwkqaGGm6PGqfxGu8LU3548fgymWKO+b2IXwj6LaAGuAGeEzSK9e+XFH
+         9W6AJTheq9Z1h/Z1a9MXYrGzKgB6hSkEC6phKJyBEp+g7pCDu9fdRDqYzFJUsD8buCM4
+         kBUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0gRmMl3ATKMwqytANP/bGvh926ut0U/W4MmekIp4BdU=;
+        b=YFFci3zxD6QZn8fQLWd18GHo45lxLTEWeTOy5hY/+F20nntnnnKdK37F3fMEpb+oxn
+         9kqpUJfKmMn2g2wumvdPCIbXImhowqMp7Xvr449QWsWjQBE/4FS0ET+7uW7V9/pkZ2+B
+         giXDZNjq/MgQQgrUMwZyWSJCINwAPhEpOVfmTfVG+3laSDwNi6MW7OgwOxcpcgznaLVb
+         OX7DMrayHnH4+sv0Hg5j2f12X4kVTnXh241Hbosn8iZeXUle2qgT07b36lfKFQJdIR/A
+         X1lYXHbaXj2mdcogHJDf+PQLoDI5M2Jvpds5QdHcH8l98vf6eQmKPoLDABO6WtwsPMzr
+         SkXw==
+X-Gm-Message-State: AOAM531DK6VKC84CJaBOtCj0ssGeuELa4pa4nx3b32LoT6S6t3ZD9bEX
+        AfQ3w0pV/VefG0hdKXb122QcPZ1SeHwoE08zZu8=
+X-Google-Smtp-Source: ABdhPJwH5FKh4ezoVaP46HatD6aNGuB1kNtTvLNwYTxxWCb//BZ3ATo7gO+0oKXqSq0bXcWKgU/Z7ccqa/6+JyTbH7g=
+X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr35812674ejb.408.1632252497689;
+ Tue, 21 Sep 2021 12:28:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <896a0773cac953ae2f35ba08af65a598aa71942d.camel@kernel.org>
+References: <20210920203735.675-1-linux.amoon@gmail.com> <CAFBinCB682kFB47=K5-Pod5cbrnNTtKdAj3i8PHrxj8VxOH8FA@mail.gmail.com>
+ <CANAwSgRtZoAmMO-WtRBX4W4pTkmzJKH1zc=6-99Py-d_4cOR0w@mail.gmail.com>
+In-Reply-To: <CANAwSgRtZoAmMO-WtRBX4W4pTkmzJKH1zc=6-99Py-d_4cOR0w@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 21 Sep 2021 21:28:06 +0200
+Message-ID: <CAFBinCBXv7YVHy7SECrmTwTM+9zwU3KSF6U613fjoi+JQRdOnA@mail.gmail.com>
+Subject: Re: [PATCHv2] regulator: pwm-regulator: Make use of the helper
+ function dev_err_probe()
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 09:58:11PM +0300, Jarkko Sakkinen wrote:
-> On Mon, 2021-09-20 at 22:34 +0200, Morten Linderud wrote:
-> > Some vendors report faulty values in the acpi TPM2 table. This causes
-> 
-> Nit: ACPI (not acpi)
-> 
-> > the function to abort with EIO and essentially short circuits the
-> > tpm_read_log function as we never even attempt to read the EFI
-> > configuration table for a log.
-> 
-> Nit: tpm_read_log()
-> 
-> > This changes the condition to only look for a positive return value,
-> > else hands over the eventlog discovery to the EFI configuration table
-> 
-> "hands over" -> "fallback"
-> 
-> > which should hopefully work better.
-> 
-> Please write in imperative form, e.g. "Change...", or perhaps in this
-> case "Look...". 
-> 
-> Hopes are somewhat irrelevant, in the context of a commit message.
-> 
-> > It's unclear to me if there is a better solution to this then just
-> > failing. However, I do not see any clear reason why we can't properly
-> > fallback to the EFI configuration table.
-> 
-> Neither hopes nor doubts help us :-)
-> 
-> Because the commit message did not discuss any of the code changes
-> that were done it is very hard to say much anything of this yet.
+Hi Anand,
 
-Thanks for the review! First kernel patch so all feedback is welcome :)
+On Tue, Sep 21, 2021 at 9:21 PM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> > > -                       dev_err(&pdev->dev, "Failed to get PWM: %d\n", ret);
+> > > -               return ret;
+> > > +               return dev_err_probe(&pdev->dev, PTR_ERR(drvdata->pwm),
+> > > +                                    "Failed to register regulator %s\n",
+> > The message here should still be similar to the original one since the
+> > actual problem is that we could not get a reference to the PWM
+> > controller. At this point we are not trying to register the
+> > pwm-regulator yet.
+> >
+>
+> Yep, Typo I mixed up the logs completely.
+> it should be  "Failed to get PWM, deferring probe"
+I think it should only be "Failed to get PWM" only - without "deferring probe".
+If the PWM is missing in .dts (which is not valid but might happen for
+someone who's creating a new .dts) then the "deferring probe" part is
+not correct as the error code is not -EPROBE_DEFER (it may be -ENOENT
+instead - or similar).
 
-The code change is essentially just relaxing the return value for the ACPI log
-lookup. I'm not quite sure what is missing from the commit message in that
-regard? Is the second paragraph insufficient?
 
-> There's also one corner case that was not discussed in the commit
-> message.
-> 
-> The historical reason for not using TPM2 file is that old TPM2's
-> did not have that feature. You have to ensure that legacy hardware
-> does not break.
-
-This should only relax the cases where an error which is not ENODEV is returned.
-Legacy hardware that return ENODEV because the table doesn't exist, or is
-missing the log start and length, should be unaffected by this change.
-
-> /Jarkko
-
-Cheers!
-
--- 
-Morten Linderud
-PGP: 9C02FF419FECBE16
+Best regards,
+Martin
