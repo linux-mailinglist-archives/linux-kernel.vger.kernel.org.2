@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8ADC412F13
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 966C1412F1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhIUHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
+        id S230131AbhIUHMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhIUHK3 (ORCPT
+        with ESMTP id S230026AbhIUHMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:10:29 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069C7C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:08:49 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id u15so36201607wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Cyc6wAvsiYvYVdHCei88zIBgag7U9mJqxcUyH3r1CWM=;
-        b=EQ6/tvjLOGJ2R/hFuNnnTCnC3AcN5Ge1Dz3gKT8j2pYOuibo305AQJBZ28DeSmOwey
-         kgy2cyVUs/8oOsaprC3nuq2fBpukx47phqrIvU2glPkoMWq6t2gzOWSs0Mn+9RwHiJN+
-         lwvpXENzFUrZYGWwtwbWjOxPsO5d32qtFdDIca8DcC8yUYzTKLm63eiTUO0iUM/NkMiG
-         OzuWjrwmGZWqvOiP7z+RCa6OI/vzA19wb+zFsyJeiYrIVOOEepCGECJ4jmHQ61b9k+8p
-         pATfcSEH8tYyMdeTvkMn76kTisaNd4zYTqVyTA7j7Ir+87DSM8yr6SBWe01TN3GpzQ+T
-         VlNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Cyc6wAvsiYvYVdHCei88zIBgag7U9mJqxcUyH3r1CWM=;
-        b=dXfYQtDYzp754fatX5aKG6z7Uy3hE/1fpYcCAjwXGY6ywL/jxFXHSB4wAnCANNKsmN
-         NgTq//VIljpa/60ZJ0bsRRiLlNbkR/X0w29v8Va0T5Tolg/d+iR+ekAuo7l4/D6xJcis
-         D/TytGfu4T9DE9VobD5FqL4FsYH/NHSGzlC9kG641aTkrcC4azMrVs+ZByHH9CtK9lTl
-         QSqFK5XVzYNFE1tJgMhecV6OObFKtC1cNBCqWfRmeku4R+0mQ2e2gM6sRSZIrC3f6Ax5
-         n5WXNB4iMbkdMjxdZSzebWECAm68nG0B8N0MivAyl/wmP/7mrmlx96pXoSTnjerZm2c7
-         CPyg==
-X-Gm-Message-State: AOAM532Y4WLCCYOM9PJ4cOMceCyjOZYAf8w6XiNaCzla9PYxrF3pNUVp
-        1sDt2K7zFKZQBfveUXcH4VL2IQ==
-X-Google-Smtp-Source: ABdhPJyPQ/o1Rh01pdww1XQiFIlGSq+2ub4xW3Lao90e3fivXN469GPYJVCY/MaD/ditL/22MZeDcw==
-X-Received: by 2002:a1c:28b:: with SMTP id 133mr2886271wmc.14.1632208127619;
-        Tue, 21 Sep 2021 00:08:47 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id g22sm1654479wmp.39.2021.09.21.00.08.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 00:08:47 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 08:08:44 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Will McVicker <willmcvicker@google.com>
+        Tue, 21 Sep 2021 03:12:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7A8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zj/GFoSMQz8sn7CsnxniTcTWZHfPlBP4UVX5tHlobmk=; b=LEYzG6RMtthcacgKpDHkVEipqE
+        mhYTo5dJabv69szHK6qKojnmxOsHuRzWRZBeuFnFFJWHlUM4SP0T7nvmjxSwLxK55FiiGU0Rjss67
+        R5msZZ3YE4szz1ZWbuSwBXI5Wj9aDjAGz3kn9M+7/qZInfZ21Ic4ib0pJ+YgEePskLE3G8LPafdGK
+        fQpfu8obfxv/fJJaQUIkWVB0qsqRa1s7aMr+OOaHuLqITJ7WTZNj+0a8fkovhOYkqAqs4wn0at3kT
+        7PtIsHzTaHNilx+32vDA5hWVwLg7/7C/KYoc4OdiAJasJfVm1RKUpm/zSDwiHIZZpGQAG0nZsu+hN
+        G3e46bfA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSZtv-003aWM-3u; Tue, 21 Sep 2021 07:09:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7A6EB3004B2;
+        Tue, 21 Sep 2021 09:09:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5279F2C3EE3ED; Tue, 21 Sep 2021 09:09:10 +0200 (CEST)
+Date:   Tue, 21 Sep 2021 09:09:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
-Message-ID: <YUmE/LqlFCiongfn@google.com>
-References: <20210920190350.3860821-1-willmcvicker@google.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        christophe.leroy@csgroup.eu
+Subject: Re: [PATCH 2/4] arm64: implement support for static call trampolines
+Message-ID: <YUmFFvZCb2yXn3os@hirez.programming.kicks-ass.net>
+References: <20210920233237.90463-1-frederic@kernel.org>
+ <20210920233237.90463-3-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210920190350.3860821-1-willmcvicker@google.com>
+In-Reply-To: <20210920233237.90463-3-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021, Will McVicker wrote:
+On Tue, Sep 21, 2021 at 01:32:35AM +0200, Frederic Weisbecker wrote:
 
-> This patch series tries to address the issue of ARCH_EXYNOS force selecting
-> a handful of drivers without allowing the vendor to override any of the
-> default configs. This takes away from the flexibilty of compiling a generic
-> kernel with exynos kernel modules. For example, it doesn't allow vendors to
-> modularize these drivers out of the core kernel in order to share a generic
-> kernel image across multiple devices that require device-specific kernel
-> modules.
-> 
-> To address this without impacting the existing behavior, this series
-> switches the default config logic for the offending configs to use "default
-> y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
-> verified that these patches do not impact the default aarch64 .config.
-> 
-> Will McVicker (4):
->   clk: samsung: change COMMON_CLK_SAMSUNG default config logic
->   soc: samsung: change SOC_SAMSUNG default config logic
->   pinctrl: samsung: change PINCTRL_EXYNOS default config logic
->   rtc: change HAVE_S3C_RTC default config logic
-> 
->  arch/arm64/Kconfig.platforms    | 7 -------
->  drivers/clk/samsung/Kconfig     | 1 +
->  drivers/pinctrl/samsung/Kconfig | 1 +
->  drivers/rtc/Kconfig             | 1 +
->  drivers/soc/samsung/Kconfig     | 4 ++++
->  5 files changed, 7 insertions(+), 7 deletions(-)
+> +#define __ARCH_DEFINE_STATIC_CALL_TRAMP(name, target)			    \
+> +	asm("	.pushsection	.static_call.text, \"ax\"		\n" \
+> +	    "	.align		3					\n" \
+> +	    "	.globl		" STATIC_CALL_TRAMP_STR(name) "		\n" \
+> +	    STATIC_CALL_TRAMP_STR(name) ":				\n" \
+> +	    "	hint 	34	/* BTI C */				\n" \
+> +	    "	adrp	x16, 1f						\n" \
+> +	    "	ldr	x16, [x16, :lo12:1f]				\n" \
+> +	    "	cbz	x16, 0f						\n" \
+> +	    "	br	x16						\n" \
+> +	    "0:	ret							\n" \
+> +	    "	.popsection						\n" \
+> +	    "	.pushsection	.rodata, \"a\"				\n" \
+> +	    "	.align		3					\n" \
+> +	    "1:	.quad		" target "				\n" \
+> +	    "	.popsection						\n")
 
-For all patches in the series:
+So I like what Christophe did for PPC32:
 
-Reviewed-by: Lee Jones <lee.jones@linaro.org>
+  https://lkml.kernel.org/r/6ec2a7865ed6a5ec54ab46d026785bafe1d837ea.1630484892.git.christophe.leroy@csgroup.eu
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Where he starts with an unconditional jmp and uses that IFF the offset
+fits and only does the data load when it doesn't. Ard, woulnd't that
+also make sense on ARM64? I'm thinking most in-kernel function pointers
+would actually fit, it's just the module muck that gets to have too
+large pointers, no?
+
+> +#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
+> +	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, #func)
+> +
+> +#define ARCH_DEFINE_STATIC_CALL_NULL_TRAMP(name)			\
+> +	__ARCH_DEFINE_STATIC_CALL_TRAMP(name, "0x0")
