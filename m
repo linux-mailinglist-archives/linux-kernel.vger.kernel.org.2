@@ -2,86 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C02413B79
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C52A413B80
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234919AbhIUUgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbhIUUgp (ORCPT
+        id S234939AbhIUUiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:38:15 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:36760 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234921AbhIUUiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:36:45 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C22C061574;
-        Tue, 21 Sep 2021 13:35:15 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id u22so1020506oie.5;
-        Tue, 21 Sep 2021 13:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=satRlZlie+Jg84wkBEE/ou7KcRSCGk1DvmV3kkfAHnY=;
-        b=bose9jK5M/4LYVQtcd9XsixOSSQgYogApQU3sIGOp9s9evQG4U46UnyUzP4fm6CUej
-         AifrVT7455MgFVg6oLD0SCovAVFhxwxfFcj2sedneNkPk1mYnjTpcD0qPofP9zCts59X
-         zJVr/88gpxG+tLzjvFvLOKiI/6c+/FaBOj+GI7bIyZ9dnXNQ0LTfDJr/ufz3O3uqVqTl
-         X9lCwvl3tq/J3kC6yqxJEvsheeEI4SgZfH6SMoqayCTfWcFSd11AS9STt5fgD4JV65qY
-         UfjuXyGlclkdn8bWPHGhgv9xr6B7mpFqn9wX96qHRj0B15Q7xoziWpLvTurH2fH0cLtI
-         BHeA==
+        Tue, 21 Sep 2021 16:38:14 -0400
+Received: by mail-oi1-f181.google.com with SMTP id y201so1050813oie.3;
+        Tue, 21 Sep 2021 13:36:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=satRlZlie+Jg84wkBEE/ou7KcRSCGk1DvmV3kkfAHnY=;
-        b=iTFrev8MXVQYL+f6oNLv880sFYGJmTW24Q01+lBFNUUdQLnuKkGP99OGf2OQy812bb
-         9fVbZQDJlYpkIPjaAJrnW9flJVlumWkpAOU2BLZThvDelI2OpBck+k+V4Kw1hf4/C+7H
-         FEp6VYmI4lSNRbDou6/ijujXPtaXHMXq+S6ZkK1fhSYogfvqlPQrR65mZXj5izB1FLbK
-         R7RU9Agm1fQE03A81EBmbku/V9pjRidEcc+id4MW+90kSQbaELZWup9oeZMWHAks4FVt
-         E549pwxBAdoPb2bVw3T7334fGqpwAptqdM+MzIpR9iZJH0kqzsypr/SCIbRvTGBsGil9
-         et/Q==
-X-Gm-Message-State: AOAM5320vcjUAMu3mtqz9iAKGiQ39urcSfVKlYiHLP5TXUGoeYCkOuEN
-        Xner9O3aXOX+LSjURTgXZMOS1z8z3mM=
-X-Google-Smtp-Source: ABdhPJyFjoED1xPBQlQTbT0k+pY1R6I6cR2FYYvn4zhj1IyQgoFvMZcFIF/sbgq0c+qEJo/wFrBqIw==
-X-Received: by 2002:aca:1004:: with SMTP id 4mr5213263oiq.162.1632256514822;
-        Tue, 21 Sep 2021 13:35:14 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j10sm13170oiw.32.2021.09.21.13.35.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=74OhYUyeQYysi/TzRlJJ051fes4I/adprkYFLTi5Sdw=;
+        b=PEmfxGR2vC8ZC//3Nsi+rcK3BDGVjQ5PsAGM8SXIOSTFHICk/mYSSm1AhKiF4TT6Af
+         lQJC7k1N0M0/21F2B0AALtYvqAOHuXobowoqJd5Gyuv7RY/7qCmGqGb6qIxPSBr7/w6Z
+         CtZkKhhda9IkfLRqBn3UStMzhyyN36XnvVq+tap6IV0S70jzvmdKp5MFmmulXAhsajUS
+         RGmnwGIlm2Od90d5jfSW1Lxtgns8Nmz3MgeHxfGDBIbhtOqx+c8bZQsCByQVJN6dL9LC
+         hljnPzT603bTMxXUFI7bRAn9faQSt1hOeZa5vImId2i2xkgdN180soT1tCJzRWF0zoda
+         /n3Q==
+X-Gm-Message-State: AOAM533+rgVFv0H6GC48HHIqCrAYOogW8R0eSoUugwNjvXxJtaV6+WWE
+        7EstX4+mT2iee6DWVDdxNQ==
+X-Google-Smtp-Source: ABdhPJzpj/fzNJ7BMj74jnTQOWdAXExqWcupsGQA5m5n6ary5zeQWefviZyc6aAk8QOZVNYAsL3+Tg==
+X-Received: by 2002:a05:6808:1481:: with SMTP id e1mr5210840oiw.5.1632256605224;
+        Tue, 21 Sep 2021 13:36:45 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id v19sm16599oic.31.2021.09.21.13.36.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 13:35:14 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 21 Sep 2021 13:35:13 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/168] 5.14.7-rc1 review
-Message-ID: <20210921203513.GG2363301@roeck-us.net>
-References: <20210920163921.633181900@linuxfoundation.org>
+        Tue, 21 Sep 2021 13:36:44 -0700 (PDT)
+Received: (nullmailer pid 3285894 invoked by uid 1000);
+        Tue, 21 Sep 2021 20:36:42 -0000
+Date:   Tue, 21 Sep 2021 15:36:42 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Ikjoon Jang <ikjn@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, youlin.pei@mediatek.com,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        devicetree@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        linux-kernel@vger.kernel.org, yi.kuo@mediatek.com,
+        anan.sun@mediatek.com, Tomasz Figa <tfiga@chromium.org>,
+        ming-fan.chen@mediatek.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>, srv_heupstream@mediatek.com,
+        linux-mediatek@lists.infradead.org,
+        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
+        anthony.huang@mediatek.com, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v4 02/13] dt-bindings: memory: mediatek: Add mt8195 smi
+ sub common
+Message-ID: <YUpCWib8Tpf0wfif@robh.at.kernel.org>
+References: <20210914113703.31466-1-yong.wu@mediatek.com>
+ <20210914113703.31466-3-yong.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920163921.633181900@linuxfoundation.org>
+In-Reply-To: <20210914113703.31466-3-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 06:42:18PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.7 release.
-> There are 168 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, 14 Sep 2021 19:36:52 +0800, Yong Wu wrote:
+> Add the binding for smi-sub-common. The SMI block diagram like this:
 > 
-> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
-> Anything received after that time might be too late.
+>         IOMMU
+>          |  |
+>       smi-common
+>   ------------------
+>   |      ....      |
+>  larb0           larb7   <-max is 8
+> 
+> The smi-common connects with smi-larb and IOMMU. The maximum larbs number
+> that connects with a smi-common is 8. If the engines number is over 8,
+> sometimes we use a smi-sub-common which is nearly same with smi-common.
+> It supports up to 8 input and 1 output(smi-common has 2 output)
+> 
+> Something like:
+> 
+>         IOMMU
+>          |  |
+>       smi-common
+>   ---------------------
+>   |      |          ...
+> larb0  sub-common   ...   <-max is 8
+>       -----------
+>        |    |    ...   <-max is 8 too.
+>      larb2 larb5
+> 
+> We don't need extra SW setting for smi-sub-common, only the sub-common has
+> special clocks need to enable when the engines access dram.
+> 
+> If it is sub-common, it should have a "mediatek,smi" phandle to point to
+> its smi-common. meanwhile the sub-common only has one gals clock.
+> 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+> change note: add "else mediatek,smi: false".
+> ---
+>  .../mediatek,smi-common.yaml                  | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
 > 
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Reviewed-by: Rob Herring <robh@kernel.org>
