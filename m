@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85111413126
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B8841312B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbhIUKFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:05:45 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38226 "EHLO gloria.sntech.de"
+        id S231792AbhIUKFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:05:53 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:38234 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhIUKFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:05:39 -0400
+        id S231587AbhIUKFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:05:40 -0400
 Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=phil.lan)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1mScdC-0001rd-Fv; Tue, 21 Sep 2021 12:04:06 +0200
+        id 1mScdC-0001rd-RH; Tue, 21 Sep 2021 12:04:06 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, Daniel Vetter <daniel@ffwll.ch>,
-        Sandy Huang <hjc@rock-chips.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>
-Subject: Re: [PATCH] drm/rockchip: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Tue, 21 Sep 2021 12:03:32 +0200
-Message-Id: <163221857584.2031971.6000201413622226231.b4-ty@sntech.de>
+To:     hjc@rock-chips.com, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org, daniel@ffwll.ch,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie
+Subject: Re: [PATCH] drm/rockchip: dsi: Fix duplicate included linux/phy/phy.h
+Date:   Tue, 21 Sep 2021 12:03:33 +0200
+Message-Id: <163221857584.2031971.9461320682192946569.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210831135721.4726-1-caihuoqing@baidu.com>
-References: <20210831135721.4726-1-caihuoqing@baidu.com>
+In-Reply-To: <1629454729-108701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1629454729-108701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -36,15 +36,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 21:57:21 +0800, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
+On Fri, 20 Aug 2021 18:18:49 +0800, Jiapeng Chong wrote:
+> Clean up the following includecheck warning:
+> 
+> ./drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c: linux/phy/phy.h is
+> included more than once.
 
 Applied, thanks!
 
-[1/1] drm/rockchip: Make use of the helper function devm_platform_ioremap_resource()
-      commit: 61735698103fafb5bc0df4ab208fc140c27cabc6
+[1/1] drm/rockchip: dsi: Fix duplicate included linux/phy/phy.h
+      commit: d90def98f90fb166191f19b41620e1a54b6dac75
 
 Best regards,
 -- 
