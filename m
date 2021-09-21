@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95174135CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFFA4135D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhIUPFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S233882AbhIUPHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233799AbhIUPFk (ORCPT
+        with ESMTP id S233809AbhIUPHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:05:40 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FDFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:04:12 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id 5so13553208plo.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:04:11 -0700 (PDT)
+        Tue, 21 Sep 2021 11:07:13 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEC6C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:05:44 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id t10so76239108lfd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U5sHi8cjj306oaDb/RAXcVkT6LaUnwyG2i0jV8EMZXU=;
-        b=14iJ+UOQEeWmwBidYb3ZlxxSmCpFBa3g6iXvn7L0ljJoEGakHlSEYQSufQV3/pWn7k
-         RmXmNZoOrX2e/qhdKKODpeJg288zZawoWQ5Z3ZQLfbCTHhyrt8FDA8PhA3O0HcK1bD6J
-         yUcmupu7CrDazE/5BqnZFO3TkN4L9ho2BmIU8+xEuXblGAYF32fghkbl5PekXw/k2+mE
-         MnQjDB8mKe0PmNLzNJitE8kc/zhzXDkVF7X9NoDW1h08qWh4w1x54GXhSGQ7z33PR6qk
-         oRqjS6nE+5Z/Q+uaDF4TQ/vV1b8aitFLwAxS36E3Mh2vsNOxOfc8zwIxrYUvg01yEaK4
-         2u/A==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aRK25cZbHHtlQKavhU/T9/6jGV0iBTcTONyhOsAYBmY=;
+        b=am7IEocc9YZgVOfwglWFP7qU3HRHIDFdEY7/6iVrw3nBX4AN0QxJcPORozT0JcXZd3
+         X3DouWAu6xRb4Y/CKD62V/RwVGwqBvqbWnUz7FEcko+fyqpZSbwHvD4vLPuFdIpv3ONm
+         wjRohBQR48FUAQorBiB4gTtYNZz19Qamw+lcNrw9us4NBvU4zi8MbkIAFDY1nQDeZBDT
+         NJpv7eGl1T1p5HLTfawuBfmif8afkEsGEiMwtb+8VHEbLV4JR4IPzajP2UYBaLPScr2m
+         JQ59dIG7nOprPeCxyQ8xuizIleLUbGiDwEovP/jvKQBgFPjO1HC2YQ4XCwVnNDN3wklf
+         +kXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=U5sHi8cjj306oaDb/RAXcVkT6LaUnwyG2i0jV8EMZXU=;
-        b=U6HxwkmVSt23y7i/l32+Gdk/MA9jdy/zxgxu/o0nVRG/TvrsohFwe3ihwGM33YiPjd
-         6GM14ZyPVTEiLayNiuKTZmiW4sppBcV2xnbNsGa1tBuUW+BzxIepRXT1S/x/rV5okbRp
-         +VUJn5r0EndRDz2x4Mgf3beA1DCzakkHtMOzZNQz6/ENLq+fwmOl5qs7513JopXh8rTH
-         mKsNS0Hpd9AVG2aOl7T60k7OPsgfEUA6LUxpf+6UM0LybRFqzyoRujMQH6njNmx+StMj
-         A3LkYmcly7axySCHYcYH2+Bb+XVvcpFOJaz4u9eVOw2yi+LEdkeBJUIV+wH1aq/ieXQI
-         o/Wg==
-X-Gm-Message-State: AOAM5328tSunnXW19Li8Ag7m5QUPEZBojcAJsd5sgtVV66Y9dFll1De4
-        fkcPjOrwMusXUGj8CqcJlaCngw==
-X-Google-Smtp-Source: ABdhPJyW5gW8ge2xfEG0UWnF9Yt+QwvDwtXjhnnktAGJe72JUfUp0V0dPz6+uQuDx7TpYQsDz6PgBQ==
-X-Received: by 2002:a17:902:edc7:b0:13b:86dc:c9d7 with SMTP id q7-20020a170902edc700b0013b86dcc9d7mr27789483plk.88.1632236651341;
-        Tue, 21 Sep 2021 08:04:11 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id n205sm17776069pfd.38.2021.09.21.08.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 08:04:10 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 08:04:10 -0700 (PDT)
-X-Google-Original-Date: Tue, 21 Sep 2021 08:04:01 PDT (-0700)
-Subject:     Re: [PATCH v2] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
-In-Reply-To: <163221552907.1876143.10392170678364292267.b4-ty@sntech.de>
-CC:     Arnd Bergmann <arnd@arndb.de>, hjc@rock-chips.com, heiko@sntech.de,
-        kernel-team@android.com, dri-devel@lists.freedesktop.org,
-        geert+renesas@glider.be, airlied@linux.ie,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, daniel@ffwll.ch
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     heiko@sntech.de
-Message-ID: <mhng-4c5264da-5502-4947-b32d-e9008a79ee90@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aRK25cZbHHtlQKavhU/T9/6jGV0iBTcTONyhOsAYBmY=;
+        b=vr/4QKFDi+37bjYaqb/sVSuUZ2nwPcH8ojeqLsrukF7JMw4qGF3c8/FxJRyGFhP6Nb
+         /tWOawUF2VqU+dy16fNgKU3ZI3dEwfhLEveZynsLTtMx76igZKedRrN7jpscomovVaPK
+         W0iCeAsWaOt4DSJ0roLjaMc5gBYm0TYAMkPHVwv9OMm9xnz26QlUmbjQw1AoJMCNrWB6
+         SdKefNYMplJmTbLyAcXH93+LEGuiAO0p4n5AXYFADzE9+tqUsnSxHRskDV6/ldkDUbWP
+         JoKmCC+FCakxaLrsLuRMPNzAS85AeIWAdKR4v9wACxjTI+0wVMVgs0uKJpSmks0l4oEG
+         pcbA==
+X-Gm-Message-State: AOAM533Ls9EdRSSa9VD9GilQLCIsANBO+nhqV960ZrDzR5ecl0OYIkw0
+        HOxvberW1kYr7YgaUerKIJNrzaa3XPp16iqpDcW2Yw==
+X-Google-Smtp-Source: ABdhPJy03MZ6PsLXxCBphy/9l6XP4QH8/9qvAfZ204QqRfRejxpeFjCFsK/aSNT6EEPDl+bwgfy3kxdmW9PyHfEy9uI=
+X-Received: by 2002:ac2:43b1:: with SMTP id t17mr22629712lfl.373.1632236672432;
+ Tue, 21 Sep 2021 08:04:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210914171551.3223715-1-pgonda@google.com> <YUDcvRB3/QOXSi8H@google.com>
+ <CAMkAt6opZoFfW_DiyJUREBAtd8503C6j+ZbjS9YL3z+bhqHR8Q@mail.gmail.com>
+ <YUDsy4W0/FeIEJDr@google.com> <CAMkAt6r9W=bTzLkojjAuc5VpwJnSzg7+JUp=rnK-jO88hSKmxw@mail.gmail.com>
+ <YUDuv1aTauPz9aqo@google.com> <8d58d4cb-bc0b-30a9-6218-323c9ffd1037@redhat.com>
+ <CAMkAt6oPijfkPjT4ARpVmXfdczChf2k3ACBwK0YZeuGOxMAE8Q@mail.gmail.com>
+ <9feed4e4-937e-2f11-bb56-0da5959c7dbd@redhat.com> <CAKiEG5oirC30Ga=mrzKq24mkwSYvbzMw9AVfL6epVG4O0EZE7A@mail.gmail.com>
+ <CAKiEG5qJZ0kk-dZLLp853K634+hTFUEGDtzpQiGxqgoYqP+QAw@mail.gmail.com>
+In-Reply-To: <CAKiEG5qJZ0kk-dZLLp853K634+hTFUEGDtzpQiGxqgoYqP+QAw@mail.gmail.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 21 Sep 2021 09:04:20 -0600
+Message-ID: <CAMkAt6oFWtt8OTkLRHmQE7gxmGcQhBw=zhzLB7j-qziLSU8eAw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SEV: Disable KVM_CAP_VM_COPY_ENC_CONTEXT_FROM for SEV-ES
+To:     Nathan Tempelman <natet@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steve Rutherford <srutherford@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021 02:12:17 PDT (-0700), heiko@sntech.de wrote:
-> On Fri, 10 Sep 2021 20:43:18 -0700, Palmer Dabbelt wrote:
->> cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
->> unused function warning is triggered undner !PM_SLEEP.  This marks the
->> function as possibly unused, to avoid triggering compiler warnings.
+On Thu, Sep 16, 2021 at 1:00 PM Nathan Tempelman <natet@google.com> wrote:
 >
-> Applied, thanks!
->
-> [1/1] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
->       commit: f7c57a4566115657c16fd6603b6ef8a21bae5194
+> On Thu, Sep 16, 2021 at 11:08 AM Nathan Tempelman <natet@google.com> wrote:
+> >
+> > On Wed, Sep 15, 2021 at 3:33 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > >
+> > > On 15/09/21 18:10, Peter Gonda wrote:
+> > > > svm_vm_copy_asid_from() {
+> > > >
+> > > >     asid = to_kvm_svm(source_kvm)->sev_info.asid;
+> > > > + handle = to_kvm_svm(source_kvm)->sev_info.handle;
+> > > > + fd = to_kvm_svm(source_kvm)->sev_info.fd;
+> > > > + es_active = to_kvm_svm(source_kvm)->sev_info.es_active;
+> > > >
+> > > > ...
+> > > >
+> > > >      /* Set enc_context_owner and copy its encryption context over */
+> > > >      mirror_sev = &to_kvm_svm(kvm)->sev_info;
+> > > >      mirror_sev->enc_context_owner = source_kvm;
+> > > >      mirror_sev->asid = asid;
+> > > >      mirror_sev->active = true;
+> > > > +  mirror_sev->handle = handle;
+> > > > +  mirror_sev->fd = fd;
+> > > > + mirror_sev->es_active = es_active;
+> > > >
+> > > > Paolo would you prefer a patch to enable ES mirroring or continue with
+> > > > this patch to disable it for now?
+> > >
+> > > If it's possible to enable it, it would be better.  The above would be a
+> > > reasonable patch for 5.15-rc.
+> > >
+> > > Paolo
 
-I'm not quite sure where that lives, but is it applied on top of 
-something or is it merged from the tag?  Like I said a bit below this in 
-the original patch, this has started to break the build for me and I'd 
-like to pull it in as soon as possible.
+Sounds good, sent a 2 patch series this morning.
+
+> > >
+> >
+> > +1. We don't have any immediate plans for sev-es, but it would be nice
+> > to have while we're here. But if you want to make the trivial fix I
+> > can come along and do it later.
+>
+> +Steve Rutherford
