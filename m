@@ -2,248 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83921412EBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0764E412ED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhIUGnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:43:01 -0400
-Received: from rn-mailsvcp-ppex-lapp44.apple.com ([17.179.253.48]:51966 "EHLO
-        rn-mailsvcp-ppex-lapp44.apple.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229788AbhIUGm7 (ORCPT
+        id S230000AbhIUGy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:54:26 -0400
+Received: from mx0b-0039f301.pphosted.com ([148.163.137.242]:18884 "EHLO
+        mx0b-0039f301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229864AbhIUGyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:42:59 -0400
-X-Greylist: delayed 7365 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Sep 2021 02:42:59 EDT
-Received: from pps.filterd (rn-mailsvcp-ppex-lapp44.rno.apple.com [127.0.0.1])
-        by rn-mailsvcp-ppex-lapp44.rno.apple.com (8.16.1.2/8.16.1.2) with SMTP id 18L4ao8T013367;
-        Mon, 20 Sep 2021 21:38:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=cc : from : subject :
- to : message-id : date : mime-version : content-type :
- content-transfer-encoding; s=20180706;
- bh=S4U9re3F2Mbh/Pkuydk3z4vcCN13N9hiDA8wPV2znSs=;
- b=h/BOQFKHLOik6fD6lekP1VYVWPLkcSY99c6ZImdASgEXEVwXYGn0DRBn8o+Gtm6UEvr+
- w9FUWEaSwws19z/5fPAzDu5+8Pg3DZRTCr3b33aR0yff3pDDtbN3hOInoajrP9WHGeEV
- 8TjLoRjykv/dn1KhOa0t0kJwwrIeXdPH4SiuavQ+pR2rNP4CdR2fJMclgKY/HgalwSjc
- eiZoa9xnOBhHrxrFixmQaex5mdCTiOW/UKCe3fRr+DJ36BrA5xlS7hE2oVkreZMj6JAy
- PQ1/SDo4rjk9/GchRHi18ukd+6GC6bILP2fws1P4Uxh/bNSRMdzLltpQ9M1BDyFShgMe Lw== 
-Received: from ma-mailsvcp-mta-lapp04.corp.apple.com (ma-mailsvcp-mta-lapp04.corp.apple.com [10.226.18.136])
-        by rn-mailsvcp-ppex-lapp44.rno.apple.com with ESMTP id 3b5bmb2j3d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Mon, 20 Sep 2021 21:38:42 -0700
-Received: from ma-mailsvcp-mmp-lapp01.apple.com
- (ma-mailsvcp-mmp-lapp01.apple.com [17.32.222.14])
- by ma-mailsvcp-mta-lapp04.corp.apple.com
- (Oracle Communications Messaging Server 8.1.0.9.20210415 64bit (built Apr 15
- 2021))
- with ESMTPS id <0QZR00ENTOWHZZ10@ma-mailsvcp-mta-lapp04.corp.apple.com>; Mon,
- 20 Sep 2021 21:38:41 -0700 (PDT)
-Received: from process_milters-daemon.ma-mailsvcp-mmp-lapp01.apple.com by
- ma-mailsvcp-mmp-lapp01.apple.com
- (Oracle Communications Messaging Server 8.1.0.9.20210415 64bit (built Apr 15
- 2021)) id <0QZR00M00OBA4K00@ma-mailsvcp-mmp-lapp01.apple.com>; Mon,
- 20 Sep 2021 21:38:41 -0700 (PDT)
-X-Va-A: 
-X-Va-T-CD: d5b3a1fcc7da27abb9160183583a5404
-X-Va-E-CD: 3e89611b360c530842f7aca1f508208c
-X-Va-R-CD: 2aafdd1a66914cad20b8966d251bd628
-X-Va-CD: 0
-X-Va-ID: 54147b7f-437f-406b-97ce-95bcdc1ca2e5
-X-V-A:  
-X-V-T-CD: d5b3a1fcc7da27abb9160183583a5404
-X-V-E-CD: 3e89611b360c530842f7aca1f508208c
-X-V-R-CD: 2aafdd1a66914cad20b8966d251bd628
-X-V-CD: 0
-X-V-ID: 25b70092-addd-4b82-aaf8-7a74e1b939f8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-21_01:2021-09-20,2021-09-21 signatures=0
-Received: from Vishnus-iPro.lan (unknown [17.168.70.206])
- by ma-mailsvcp-mmp-lapp01.apple.com
- (Oracle Communications Messaging Server 8.1.0.9.20210415 64bit (built Apr 15
- 2021)) with ESMTPSA id <0QZR00U7AOWGHR00@ma-mailsvcp-mmp-lapp01.apple.com>;
- Mon, 20 Sep 2021 21:38:41 -0700 (PDT)
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Vishnu Rangayyan <vishnu.rangayyan@apple.com>
-Subject: [PATCH] fs: fix for core dumping of a process getting oom-killed
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Message-id: <9aec4002-754c-ca6d-7caf-9de6e8c31dd7@apple.com>
-Date:   Mon, 20 Sep 2021 23:38:40 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8; format=flowed
-Content-language: en-US
-Content-transfer-encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-20_10:2021-09-20,2021-09-20 signatures=0
+        Tue, 21 Sep 2021 02:54:20 -0400
+X-Greylist: delayed 7252 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Sep 2021 02:54:19 EDT
+Received: from pps.filterd (m0174681.ppops.net [127.0.0.1])
+        by mx0b-0039f301.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18L3x58l003773;
+        Tue, 21 Sep 2021 04:51:41 GMT
+Received: from eur02-he1-obe.outbound.protection.outlook.com (mail-he1eur02lp2057.outbound.protection.outlook.com [104.47.5.57])
+        by mx0b-0039f301.pphosted.com with ESMTP id 3b77eyr4ky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 04:51:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CltyVyTAc/rm9nlTXsGK5wsHqX2+D7a7Ft8QwiRefObKjXtt3nmm1rAELIK+2vyuhy55HIMDmmkjNZOhXXykpcSuRNCuzHKE4CbnwPibnZe6F4ShTBrihrlEfSUxiMAQp/u5+Dy/FTzsQii6SbHUvAGqEuQrmOjSTq7ykuZDErmKTCmIcCJa8pOtGz2wdVmHeCdnXJK3YSmBhYjYJZAD+t3yX0hFZ4SVIDJmZqRYYfHJvAuzDpOavh8m+iAbMQHSTAGpLy/fSo50U0oyVG/BrssG10uh1qj2ge3oYWBvC5hAJkbSyAbpNlmu0lwTBbdNsXkfPqxYgEYkV+SG9n17tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=e2i7coYjAxsTKODWtb7nzDIwyq0Lp0Youc4nyHsfs3U=;
+ b=GsYpb3iboNW0XdnTNxT7U9PMPcHeQEHGNmPyCV+yLAWZnO+u3TZOlCEk8XDKIzm3hUk3FL056Z8bCUw0RhUmLsrXVVyEHsjoofSn7S9xuYn52PZuJgKtgLMryq88HTU1YPzQc4mIbt8jIsEcgaD8Y8xs0wo21g2DB0bTIhjKPtp02/xZQ1khdeW8acMyR+WbtHwMtRysT3cRouIgq8PEKozl0X8DBQ/Eb+l9OIvBBO+x5dI0TmiJ2X1Jh8hFlUJwyAIHZagv2jP235rIf37JdcG4fl1mziGn6guqZ+dovZAyLCnVkRNCW07HdOyfdsyEM/T3qlJH2m42eYI//BvOeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
+ dkim=pass header.d=epam.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e2i7coYjAxsTKODWtb7nzDIwyq0Lp0Youc4nyHsfs3U=;
+ b=IjvMHIzSHmO2TimlFn4b15RFETQnDwExBa0rJjpaFU2SNbwIr8aFZdwE5GpSpepArnrtujPkPH6/JVuB1dIRLDbGrL00eBHRsJcbNgxMdos6bF8MGY/G7Se0QwGQbhfzrgY6fSazz+pE6Kmsi31Kbp0kClWvfbNfuJ5qQneSnMxRGfaqOyCIrFNdsPFkZ5Ya1ZCvhpTL++Y/Hsljlw9BIQ7e5MJiB4u6WG199TIbzypQA0rpXQFJNZrZnLrIQ/eyC9mP4600HAcIvUFIFGPDBlKt+NM744Mgg3+ttLfSt5GlFUViMdGj8LYNwtZez/XBY0HvhYW1yxWMNJeRG5YGtw==
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com (2603:10a6:20b:153::17)
+ by AM0PR0302MB3283.eurprd03.prod.outlook.com (2603:10a6:208:12::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
+ 2021 04:51:37 +0000
+Received: from AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::70f5:8ba9:da74:8994]) by AM0PR03MB6324.eurprd03.prod.outlook.com
+ ([fe80::70f5:8ba9:da74:8994%3]) with mapi id 15.20.4523.018; Tue, 21 Sep 2021
+ 04:51:37 +0000
+From:   Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>
+CC:     Juergen Gross <jgross@suse.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+Thread-Topic: [PATCH] xen-pciback: allow compiling on other archs than x86
+Thread-Index: AQHXq8QnOfGIukpGqE2hMWXmS9bdmKuow0KAgAOkhICAAGZ9AIAAAmOAgADCywCAAF25gA==
+Date:   Tue, 21 Sep 2021 04:51:36 +0000
+Message-ID: <ddb3a17a-1fd2-7108-20ad-73487a308954@epam.com>
+References: <20210917130123.1764493-1-andr2000@gmail.com>
+ <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
+ <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
+ <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
+ <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+ <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+In-Reply-To: <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=epam.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e0149047-d499-4902-a4bc-08d97cbb7e65
+x-ms-traffictypediagnostic: AM0PR0302MB3283:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR0302MB328374DE12AD380A6041593BE7A19@AM0PR0302MB3283.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2Mfjo5m4dmQL9mrGMODX1qxa4TN74MliVUQoDKZ1gMe2PSWAJ4RGV1h4BgL0Zv899VbiLdAzxSSa1uoHKPmCB9uLmY4U8BS3lCXfVKtRswr5L4YJMtObglHXq39qpOZ0bdBOZzjkgwvzT3UlBJKSi9XtNzq7wZjEqs6EITynToQEuNE6NbNpP5IT3w72Jz+w7zgjDcxsPYSCbwJLSuFsBt8hnqv701i6t5Vif8NJd1Y7i4woD0b8H+4SbVj1OnjbNJyIh0VYp1vDscbaxmEkzj5K/7veV8oH17K0fOm2AGx/072ckFLdCe/pu6J/+zDAC868uLmTECY+p2QcT3Ic+miTyXoO3EXMmWX3qbeQnZRwiqw2moA+9+FGQFZImExgES8zb/qTdQjKHTh6yAgn2+xrRpQtA9F0Qv7K5VNaNB7Oqeou5qCTphCz7MPEIolkds8THKONH6hk3WpW0/rCjNn8PUFaw6DR2e+UwUT8oKialJSycgVKdsRmtGZ3+0HS9SLsr5JTH/B2I2G+Biz7UfIYNKGDCv7HOpE5A8/QakthxUxdKvBAkkr8nMo+OiMaGRW82ttsPuwh1RSKkDxmtRvJpxumtxal0UbRvehsN+HO1Hn7D280S3XBMXk817HNC6m7o2i/LfjeqKiaPjPSNib1QMVtXYtSyGQjqASl3xl8Hcy1w0StMxENH0q7QAeNZGzNajPDztQrch1DoVzApiIGcV/UHIVUZ1PKteEmkid3Xf8Z4A75o+Noi+z7GSX3
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB6324.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(6506007)(36756003)(2616005)(38100700002)(71200400001)(86362001)(38070700005)(31696002)(66946007)(8676002)(83380400001)(55236004)(122000001)(508600001)(6486002)(6512007)(66476007)(4326008)(31686004)(5660300002)(64756008)(186003)(8936002)(66446008)(66556008)(2906002)(54906003)(26005)(316002)(6916009)(91956017)(76116006)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eDFzbzMrWlFraENOTmV1YnZIT2tlMEJ2L21xdWFwUGl2UG1ZM2pHb2JFbCti?=
+ =?utf-8?B?cVRwQVN5T1YyQU1Jb1g5aGpWVjFsbzFDVFYzTjR3UkhqZVpmMytPeUVEdi82?=
+ =?utf-8?B?VUplb1ZaUlFjenVBdTJ1Q0g1bW8yZngyOEUrQ0F1ZXdlbTRpdGQ1ZFZnZ0w5?=
+ =?utf-8?B?eHQ4bUtZNU1Cemh5bzlwZndLS2JueXNaWkhzaFkvU0Rvc1QzMG9NNDVJM2xi?=
+ =?utf-8?B?WTZlQ3JTV25kYisrNUE0djM5SUxuMk5kY2dGdlZvWVMvNDA0RThrOWs2TFRD?=
+ =?utf-8?B?WkJlVVU2aE14UXNGSG1LQng1NjdRUWZqWlNHY0FnempJUno1MFEvNEhiblNx?=
+ =?utf-8?B?QlVabG9yMVF6bWI0UjZRcVhOK0EzejhnS0RKb2xUYmc3V1Y2NVhzM3E5cndE?=
+ =?utf-8?B?WVNOMG41V1pTL0cvWHZXRFdNaG5oRW5LRStleHE2S3lGTU9wRnMwTDZrdlpR?=
+ =?utf-8?B?R3ZmQlc2MVZTZG93Z1Q1QXBBcFhtaDliVElNUjNQYVpldWw5NUpuQ1RwVDFp?=
+ =?utf-8?B?MlRZaVk4Ty9aZ3F5a3FoR1R4NGY0UE9idXQ4cUlzeFZ2R3FEMEw3aGt1cFJD?=
+ =?utf-8?B?THQyRGN4ZkNzbnhMWTRZRlNjS3VDS2N3c0J4dzRLNE5SakVNTWo4NW1EZWo3?=
+ =?utf-8?B?N3FkM3JnSVU2L1FVZ20ybVhKMlFRMkIyU1dNRmtBdWVMN2ZKUHEwV285R2U5?=
+ =?utf-8?B?SUFRdFhyZ0tPL2t6VlZNVWY2bVRqNmxNQU5Ia3dyRGlDdER2dlNJTGVFUXVt?=
+ =?utf-8?B?cS82d2g5a1hmQmV3U0I0VEltNHE4TXpsMTEwOUE2RE1JL2tnYUdzcHRNSmw5?=
+ =?utf-8?B?YXNSdHJjUHdLVDBEam96d1ZqVkRyYnJtOFZVbHJrMW1iRHJjQnU4QmUzajlP?=
+ =?utf-8?B?YUwrd0NmT1puUEtTRGhCR0NTM2IxVG45YWJnM3FVbDFyODg2LzhiS0RIcDFk?=
+ =?utf-8?B?Mnp6bzJmclFxdWlkNWtuMGNwQ3V0Q2J5R0lIRmR4Z1IxRHEwU1FCTitLRFhl?=
+ =?utf-8?B?NDRFMlplL1ppMURoamZaNkh4WURJRGxlMk4wdlh1K1hIRkdzQkJvQVRja0tx?=
+ =?utf-8?B?SGpjZURscGRmUUtjZ1pTdDhKVnRGUytRTmtiWjU3eUpaalFrRjZKWUlxZ0V6?=
+ =?utf-8?B?UGNBMWdaZjJPZ0RtcVhiZHNKYU55a2tzb2dNK3l0ZitwWUlnSEd4WGhzNmJk?=
+ =?utf-8?B?T3ozWi9zUjFPM3hva3MwUVN4YUc4RG9yYmZzU0wydE1kUFZ5elZlZEtIN1I1?=
+ =?utf-8?B?YzREZXRGdk84MVlkRW5pa0pHNG5CRDBTSE0vWTVNaWJMbEx3NGcwZTRsS3cz?=
+ =?utf-8?B?bzVYUlJiQk1xblVoUm9VSnZ3V29TTWxKckl0ZllhT2p0NUJ2K3E4MEloOTdF?=
+ =?utf-8?B?M2xBaTV5WUZBNkNGcHMzN3JxY0VkMEl4VXQ2TnhudnZTWjlCYTh3RHJ2dkZ4?=
+ =?utf-8?B?aWpNTkU5SjdyaDRkWTlsbHdRUFJ5aCtuZHJxajFYOGtiMXFweU4wMjhmeXZZ?=
+ =?utf-8?B?VHhPY24vUWFXNHE3OEYyUEUzYmhnbzhkTStrSllYSVV4eU9Dam1kcjFHc3d6?=
+ =?utf-8?B?SWpkZ3pheW5BUExBdFRReWJHZ0xrdlk4RHlJZGNsdXFGaFB4U2owSkQrL2h4?=
+ =?utf-8?B?V2VacVBReTh6N2Rid3o0aU00UDlRalROckRHODE5clJFdU9YZklETGFETktT?=
+ =?utf-8?B?MThSRWd2QTFFRjJxbDFFdTB2QlFNV29kdC8vOUVjY2dWTU9pb0VUU285Z3o4?=
+ =?utf-8?B?RzhmMzB4ZG8wQlEzU1F0dWhJTkMxYVJPN0lRclRadERibG5MMkt0OStjQ2F2?=
+ =?utf-8?B?c2Jtcmd5N0piS2p2TGtGUT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F7099075499B774FBB326C4296F2DDFB@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: epam.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB6324.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0149047-d499-4902-a4bc-08d97cbb7e65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2021 04:51:36.9989
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wko66i4g+e5VRgHkowaoZTKrjvBMg8Z4AcY95SS0X4I+nlsMM1gcct6XuqQLTJU0gt0+lcVAh4ySOkXEtgDbLJRjU6o3QjDKN+xWodb/WOze16uKGW7u7DXWY/lguSyp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0302MB3283
+X-Proofpoint-GUID: QqEUktIZuMdPN-HuPWwSX3ViTU6BYD7D
+X-Proofpoint-ORIG-GUID: QqEUktIZuMdPN-HuPWwSX3ViTU6BYD7D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_01,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ clxscore=1015 suspectscore=0 lowpriorityscore=0 mlxscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109210028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Processes inside a memcg that get core dumped when there is less memory
-available in the memcg can have the core dumping interrupted by the 
-oom-killer.
-We saw this with qemu processes inside a memcg, as in this trace below.
-The memcg was not out of memory when the core dump was triggered.
-
-[201169.028782] qemu-kata-syste invoked oom-killer: 
-gfp_mask=0x101c4a(GFP_NOFS|__GFP_HIGHMEM|__GFP_HARDWALL|__GFP_MOVABLE|__GFP_WRITE), 
-order=0, oom_score_adj=-100
-[201169.028785] CPU: 3 PID: 1887079 Comm: qemu-kata-syste Kdump: loaded 
-Tainted: P W O 5.4.77-7.el7pie #1
-[201169.028786] Call Trace:
-[201169.028794] dump_stack+0x8f/0xd0
-[201169.028797] dump_header+0x4a/0x1d8
-[201169.028799] oom_kill_process.cold.33+0xb/0x10
-[201169.028800] out_of_memory+0x199/0x460
-[201169.028804] mem_cgroup_out_of_memory+0xbe/0xd0
-[201169.028805] try_charge+0x789/0x800
-[201169.028807] mem_cgroup_try_charge+0x6a/0x190
-[201169.028809] __add_to_page_cache_locked+0x29d/0x2f0
-[201169.028812] ? scan_shadow_nodes+0x30/0x30
-[201169.028813] add_to_page_cache_lru+0x4a/0xc0
-[201169.028814] pagecache_get_page+0x101/0x220
-[201169.028816] grab_cache_page_write_begin+0x1f/0x40
-[201169.028818] iomap_write_begin.constprop.31+0x1b6/0x330
-[201169.028819] ? iomap_write_end+0x240/0x240
-[201169.028822] ? xfs_file_iomap_begin+0x387/0x5d0
-[201169.028823] ? iomap_write_end+0x240/0x240
-[201169.028824] iomap_write_actor+0x92/0x170
-[201169.028825] ? iomap_write_end+0x240/0x240
-[201169.028826] iomap_apply+0xba/0x130
-[201169.028827] ? iomap_write_end+0x240/0x240
-[201169.028828] iomap_file_buffered_write+0x61/0x80
-[201169.028829] ? iomap_write_end+0x240/0x240
-[201169.028831] xfs_file_buffered_aio_write+0xca/0x320
-[201169.028832] new_sync_write+0x11b/0x1b0
-[201169.028833] __kernel_write+0x4f/0xf0
-[201169.028834] dump_emit+0x91/0xc0
-[201169.028837] elf_core_dump+0x818/0x9a0
-[201169.028839] do_coredump+0x52b/0xb0b
-[201169.028842] get_signal+0x134/0x820
-[201169.028844] do_signal+0x36/0x5d0
-[201169.028845] ? do_send_specific+0x66/0x80
-[201169.028847] ? audit_filter_inodes+0x2e/0x100
-[201169.028848] ? audit_filter_syscall.constprop.19+0x2c/0xd0
-[201169.028850] do_syscall_64+0x1aa/0x58e
-[201169.028852] ? trace_hardirqs_off_thunk+0x1a/0x30
-[201169.028854] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[201169.028856] RIP: 0033:0x7fdf0bbd73d7
-[201169.028857] Code: 02 00 00 85 f6 75 34 b8 ba 00 00 00 0f 05 89 c1 64 
-89 04 25 d0 02 00 00 89 c6 48 63 d7 48 63 f6 48 63 f9 b8 ea 00 00 00 0f 
-05 <48> 3d 00 f0 ff ff 77 1e f3 c3 0f 1f 80 00 00 00 00 85 c9 7f db 89
-[201169.028858] RSP: 002b:00007fff9b56a018 EFLAGS: 00000202 ORIG_RAX: 
-00000000000000ea
-[201169.028860] RAX: 0000000000000000 RBX: 00007fdf20d7b000 RCX: 
-00007fdf0bbd73d7
-[201169.028860] RDX: 0000000000000006 RSI: 00000000001ccb67 RDI: 
-00000000001ccb67
-[201169.028861] RBP: 00007fdf0bd2be00 R08: 0000000000000000 R09: 
-0000556728a30390
-[201169.028861] R10: 0000000000000008 R11: 0000000000000202 R12: 
-0000556727115cb5
-[201169.028862] R13: 0000556727115e20 R14: 00005567277fe700 R15: 
-0000556727806701
-[201169.028863] memory: usage 12218368kB, limit 12218368kB, failcnt 1728013
-[201169.028864] memory+swap: usage 12218368kB, limit 9007199254740988kB, 
-failcnt 0
-[201169.028864] kmem: usage 154424kB, limit 9007199254740988kB, failcnt 0
-[201169.028880] 
-oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=podacfa3d53-2068-4b61-a754-fa21968b4201,mems_allowed=0-1,oom_memcg=/kubepods/burstable/podacfa3d53-2068-4b61-a754-fa21968b4201,task_memcg=/kubepods/burstable/podacfa3d53-2068-4b61-a754-fa21968b4201,task=qemu-kata-syste,pid=1887079,uid=0
-[201169.028888] Memory cgroup out of memory: Killed process 1887079 
-(qemu-kata-syste) total-vm:13598556kB, anon-rss:39836kB, 
-file-rss:8712kB, shmem-rss:12017992kB, UID:0 pgtables:24204kB 
-oom_score_adj:-100
-[201169.045201] oom_reaper: reaped process 1887079 (qemu-kata-syste), 
-now anon-rss:0kB, file-rss:28kB, shmem-rss:12018016kB
-
-This change adds an fsync only for regular file core dumps based on a 
-configurable limit core_sync_bytes placed alongside other core dump 
-params and defaults the limit to (an arbitrary value) of 128KB.
-Setting core_sync_bytes to zero disables the sync.
-
-Cc: stable@vger.kernel.org
-Reported-by: Eric Ernst <eric_ernst@apple.com>
-Signed-off-by: Vishnu Rangayyan <vrangayyan@apple.com>
----
-  fs/coredump.c            | 9 +++++++++
-  include/linux/binfmts.h  | 1 +
-  include/linux/coredump.h | 1 +
-  kernel/sysctl.c          | 7 +++++++
-  4 files changed, 18 insertions(+)
-
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 3224dee44d30..187813704533 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -54,6 +54,7 @@
-
-  int core_uses_pid;
-  unsigned int core_pipe_limit;
-+unsigned int core_sync_bytes = 131072; /* sync core file every so many 
-bytes */
-  char core_pattern[CORENAME_MAX_SIZE] = "core";
-  static int core_name_size = CORENAME_MAX_SIZE;
-
-@@ -866,6 +867,14 @@ static int __dump_emit(struct coredump_params 
-*cprm, const void *addr, int nr)
-         n = __kernel_write(file, addr, nr, &pos);
-         if (n != nr)
-                 return 0;
-+       if (file->f_inode && S_ISREG(file->f_inode->i_mode)) {
-+               cprm->not_synced += n;
-+               if (cprm->not_synced >= core_sync_bytes &&
-+                   core_sync_bytes) {
-+                       generic_file_fsync(file, 0, pos - 1, 0);
-+                       cprm->not_synced = 0;
-+               }
-+       }
-         file->f_pos = pos;
-         cprm->written += n;
-         cprm->pos += n;
-diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-index 049cf9421d83..588d8f240715 100644
---- a/include/linux/binfmts.h
-+++ b/include/linux/binfmts.h
-@@ -84,6 +84,7 @@ struct coredump_params {
-         struct file *file;
-         unsigned long limit;
-         unsigned long mm_flags;
-+       loff_t not_synced;
-         loff_t written;
-         loff_t pos;
-         loff_t to_skip;
-diff --git a/include/linux/coredump.h b/include/linux/coredump.h
-index 78fcd776b185..2f65e2f10118 100644
---- a/include/linux/coredump.h
-+++ b/include/linux/coredump.h
-@@ -17,6 +17,7 @@ struct core_vma_metadata {
-  extern int core_uses_pid;
-  extern char core_pattern[];
-  extern unsigned int core_pipe_limit;
-+extern unsigned int core_sync_bytes;
-
-  /*
-   * These are the only things you should do on a core-file: use only these
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 083be6af29d7..89b54e9ca963 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1948,6 +1948,13 @@ static struct ctl_table kern_table[] = {
-                 .mode           = 0644,
-                 .proc_handler   = proc_dointvec,
-         },
-+       {
-+               .procname       = "core_sync_bytes",
-+               .data           = &core_sync_bytes,
-+               .maxlen         = sizeof(unsigned int),
-+               .mode           = 0644,
-+               .proc_handler   = proc_dointvec,
-+       },
-  #endif
-  #ifdef CONFIG_PROC_SYSCTL
-         {
--- 
-2.25.1
-
+SGksIFN0ZWZhbm8hDQoNCk9uIDIxLjA5LjIxIDAyOjE2LCBTdGVmYW5vIFN0YWJlbGxpbmkgd3Jv
+dGU6DQo+IE9uIE1vbiwgMjAgU2VwIDIwMjEsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3Rl
+Og0KPj4gT24gMjAuMDkuMjEgMTQ6MzAsIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+Pj4gT24gMjAu
+MDkuMjEgMDc6MjMsIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOg0KPj4+PiBIZWxsbywg
+U3RlZmFubyENCj4+Pj4NCj4+Pj4gT24gMTguMDkuMjEgMDA6NDUsIFN0ZWZhbm8gU3RhYmVsbGlu
+aSB3cm90ZToNCj4+Pj4+IEhpIE9sZWtzYW5kciwNCj4+Pj4+DQo+Pj4+PiBXaHkgZG8geW91IHdh
+bnQgdG8gZW5hYmxlIHBjaWJhY2sgb24gQVJNPyBJcyBpdCBvbmx5IHRvICJkaXNhYmxlIiBhIFBD
+SQ0KPj4+Pj4gZGV2aWNlIGluIERvbTAgc28gdGhhdCBpdCBjYW4gYmUgc2FmZWx5IGFzc2lnbmVk
+IHRvIGEgRG9tVT8NCj4+Pj4gTm90IG9ubHkgdGhhdA0KPj4+Pj4gSSBhbSBhc2tpbmcgYmVjYXVz
+ZSBhY3R1YWxseSBJIGRvbid0IHRoaW5rIHdlIHdhbnQgdG8gZW5hYmxlIHRoZSBQViBQQ0kNCj4+
+Pj4+IGJhY2tlbmQgZmVhdHVyZSBvZiBwY2liYWNrIG9uIEFSTSwgcmlnaHQ/IFRoYXQgd291bGQg
+Y2xhc2ggd2l0aCB0aGUgUENJDQo+Pj4+PiBhc3NpZ25tZW50IHdvcmsgeW91IGhhdmUgYmVlbiBk
+b2luZyBpbiBYZW4uIFRoZXkgY291bGRuJ3QgYm90aCB3b3JrIGF0DQo+Pj4+PiB0aGUgc2FtZSB0
+aW1lLg0KPj4+PiBDb3JyZWN0LCBpdCBpcyBub3QgdXNlZA0KPj4+Pj4gSWYgd2Ugb25seSBuZWVk
+IHBjaWJhY2sgdG8gInBhcmsiIGEgZGV2aWNlIGluIERvbTAsIHdvdWxkbid0IGl0IGJlDQo+Pj4+
+PiBwb3NzaWJsZSBhbmQgYmV0dGVyIHRvIHVzZSBwY2ktc3R1YiBpbnN0ZWFkPw0KPj4+PiBOb3Qg
+b25seSB0aGF0LCBzbyBwY2ktc3R1YiBpcyBub3QgZW5vdWdoDQo+Pj4+DQo+Pj4+IFRoZSBmdW5j
+dGlvbmFsaXR5IHdoaWNoIGlzIGltcGxlbWVudGVkIGJ5IHRoZSBwY2liYWNrIGFuZCB0aGUgdG9v
+bHN0YWNrDQo+Pj4+IGFuZCB3aGljaCBpcyByZWxldmFudC9taXNzaW5nL25lZWRlZCBmb3IgQVJN
+Og0KPj4+Pg0KPj4+PiAxLiBwY2liYWNrIGlzIHVzZWQgYXMgYSBkYXRhYmFzZSBmb3IgYXNzaWdu
+YWJsZSBQQ0kgZGV2aWNlcywgZS5nLiB4bA0KPj4+PiAgwqAgwqDCoCBwY2ktYXNzaWduYWJsZS17
+YWRkfHJlbW92ZXxsaXN0fSBtYW5pcHVsYXRlcyB0aGF0IGxpc3QuIFNvLCB3aGVuZXZlciB0aGUN
+Cj4+Pj4gIMKgIMKgwqAgdG9vbHN0YWNrIG5lZWRzIHRvIGtub3cgd2hpY2ggUENJIGRldmljZXMg
+Y2FuIGJlIHBhc3NlZCB0aHJvdWdoIGl0IHJlYWRzDQo+Pj4+ICDCoCDCoMKgIHRoYXQgZnJvbSB0
+aGUgcmVsZXZhbnQgc3lzZnMgZW50cmllcyBvZiB0aGUgcGNpYmFjay4NCj4+Pj4NCj4+Pj4gMi4g
+cGNpYmFjayBpcyB1c2VkIHRvIGhvbGQgdGhlIHVuYm91bmQgUENJIGRldmljZXMsIGUuZy4gd2hl
+biBwYXNzaW5nIHRocm91Z2gNCj4+Pj4gIMKgIMKgwqAgYSBQQ0kgZGV2aWNlIGl0IG5lZWRzIHRv
+IGJlIHVuYm91bmQgZnJvbSB0aGUgcmVsZXZhbnQgZGV2aWNlIGRyaXZlciBhbmQgYm91bmQNCj4+
+Pj4gIMKgIMKgwqAgdG8gcGNpYmFjayAoc3RyaWN0bHkgc3BlYWtpbmcgaXQgaXMgbm90IHJlcXVp
+cmVkIHRoYXQgdGhlIGRldmljZSBpcyBib3VuZCB0bw0KPj4+PiAgwqAgwqDCoCBwY2liYWNrLCBi
+dXQgcGNpYmFjayBpcyBhZ2FpbiB1c2VkIGFzIGEgZGF0YWJhc2Ugb2YgdGhlIHBhc3NlZCB0aHJv
+dWdoIFBDSQ0KPj4+PiAgwqAgwqDCoCBkZXZpY2VzLCBzbyB3ZSBjYW4gcmUtYmluZCB0aGUgZGV2
+aWNlcyBiYWNrIHRvIHRoZWlyIG9yaWdpbmFsIGRyaXZlcnMgd2hlbg0KPj4+PiAgwqAgwqDCoCBn
+dWVzdCBkb21haW4gc2h1dHMgZG93bikNCj4+Pj4NCj4+Pj4gMy4gRGV2aWNlIHJlc2V0DQo+Pj4+
+DQo+Pj4+IFdlIGhhdmUgcHJldmlvdXNseSBkaXNjdXNzZWQgb24geGVuLWRldmVsIE1MIHBvc3Np
+YmxlIHNvbHV0aW9ucyB0byB0aGF0IGFzIGZyb20gdGhlDQo+Pj4+IGFib3ZlIHdlIHNlZSB0aGF0
+IHBjaWJhY2sgZnVuY3Rpb25hbGl0eSBpcyBnb2luZyB0byBiZSBvbmx5IHBhcnRpYWxseSB1c2Vk
+IG9uIEFybS4NCj4+Pj4NCj4+Pj4gUGxlYXNlIHNlZSBbMV0gYW5kIFsyXToNCj4+Pj4NCj4+Pj4g
+MS4gSXQgaXMgbm90IGFjY2VwdGFibGUgdG8gbWFuYWdlIHRoZSBhc3NpZ25hYmxlIGxpc3QgaW4g
+WGVuIGl0c2VsZg0KPj4+Pg0KPj4+PiAyLiBwY2liYWNrIGNhbiBiZSBzcGxpdCBpbnRvIHR3byBw
+YXJ0czogUENJIGFzc2lnbmFibGUvYmluZC9yZXNldCBoYW5kbGluZyBhbmQNCj4+Pj4gdGhlIHJl
+c3QgbGlrZSB2UENJIGV0Yy4NCj4+Pj4NCj4+Pj4gMy4gcGNpZnJvbnQgaXMgbm90IHVzZWQgb24g
+QXJtDQo+Pj4gSXQgaXMgbmVpdGhlciBpbiB4ODYgUFZIL0hWTSBndWVzdHMuDQo+PiBEaWRuJ3Qg
+a25vdyB0aGF0LCB0aGFuayB5b3UgZm9yIHBvaW50aW5nDQo+Pj4+IFNvLCBsaW1pdGVkIHVzZSBv
+ZiB0aGUgcGNpYmFjayBpcyBvbmUgb2YgdGhlIGJyaWNrcyB1c2VkIHRvIGVuYWJsZSBQQ0kgcGFz
+c3Rocm91Z2gNCj4+Pj4gb24gQXJtLiBJdCB3YXMgZW5vdWdoIHRvIGp1c3QgcmUtc3RydWN0dXJl
+IHRoZSBkcml2ZXIgYW5kIGhhdmUgaXQgcnVuIG9uIEFybSB0byBhY2hpZXZlDQo+Pj4+IGFsbCB0
+aGUgZ29hbHMgYWJvdmUuDQo+Pj4+DQo+Pj4+IElmIHdlIHN0aWxsIHRoaW5rIGl0IGlzIGRlc2ly
+YWJsZSB0byBicmVhayB0aGUgcGNpYmFjayBkcml2ZXIgaW50byAiY29tbW9uIiBhbmQgInBjaWZy
+b250IHNwZWNpZmljIg0KPj4+PiBwYXJ0cyB0aGVuIGl0IGNhbiBiZSBkb25lLCB5ZXQgdGhlIHBh
+dGNoIGlzIGdvaW5nIHRvIGJlIHRoZSB2ZXJ5IGZpcnN0IGJyaWNrIGluIHRoYXQgYnVpbGRpbmcu
+DQo+Pj4gRG9pbmcgdGhpcyBzcGxpdCBzaG91bGQgYmUgZG9uZSwgYXMgdGhlIHBjaWZyb250IHNw
+ZWNpZmljIHBhcnQgY291bGQgYmUNCj4+PiBvbWl0dGVkIG9uIHg4NiwgdG9vLCBpbiBjYXNlIG5v
+IFBWIGd1ZXN0cyB1c2luZyBQQ0kgcGFzc3Rocm91Z2ggaGF2ZSB0bw0KPj4+IGJlIHN1cHBvcnRl
+ZC4NCj4+IEFncmVlLCB0aGF0IHRoZSBmaW5hbCBzb2x1dGlvbiBzaG91bGQgaGF2ZSB0aGUgZHJp
+dmVyIHNwbGl0DQo+Pj4+IFNvLCBJIHRoaW5rIHRoaXMgcGF0Y2ggaXMgc3RpbGwgZ29pbmcgdG8g
+YmUgbmVlZGVkIGJlc2lkZXMgd2hpY2ggZGlyZWN0aW9uIHdlIHRha2UuDQo+Pj4gU29tZSBraW5k
+IG9mIHRoaXMgcGF0Y2gsIHllcy4gSXQgbWlnaHQgbG9vayBkaWZmZXJlbnQgaW4gY2FzZSB0aGUg
+c3BsaXQNCj4+PiBpcyBkb25lIGZpcnN0Lg0KPj4+DQo+Pj4gSSBkb24ndCBtaW5kIGRvaW5nIGl0
+IGluIGVpdGhlciBzZXF1ZW5jZS4NCj4+Pg0KPj4gV2l0aCB0aGlzIHBhdGNoIHdlIGhhdmUgQXJt
+IG9uIHRoZSBzYW1lIHBhZ2UgYXMgdGhlIGFib3ZlIG1lbnRpb25lZCB4ODYgZ3Vlc3RzLA0KPj4N
+Cj4+IGUuZy4gdGhlIGRyaXZlciBoYXMgdW51c2VkIGNvZGUsIGJ1dCB5ZXQgYWxsb3dzIEFybSB0
+byBmdW5jdGlvbiBub3cuDQo+Pg0KPj4gQXQgdGhpcyBzdGFnZSBvZiBQQ0kgcGFzc3Rocm91Z2gg
+b24gQXJtIGl0IGlzIHlldCBlbm91Z2guIExvbmcgdGVybSwgd2hlbg0KPj4NCj4+IHRoZSBkcml2
+ZXIgZ2V0cyBzcGxpdCwgQXJtIHdpbGwgYmVuZWZpdCBmcm9tIHRoYXQgc3BsaXQgdG9vLCBidXQg
+dW5mb3J0dW5hdGVseSBJIGRvIG5vdA0KPj4NCj4+IGhhdmUgZW5vdWdoIGJhbmR3aWR0aCBmb3Ig
+dGhhdCBwaWVjZSBvZiB3b3JrIGF0IHRoZSBtb21lbnQuDQo+IFRoYXQncyBmYWlyIGFuZCBJIGRv
+bid0IHdhbnQgdG8gc2NvcGUtY3JlZXAgdGhpcyBzaW1wbGUgcGF0Y2ggYXNraW5nIGZvcg0KPiBh
+biBlbm9ybW91cyByZXdvcmsuIEF0IHRoZSBzYW1lIHRpbWUgSSBkb24ndCB0aGluayB3ZSBzaG91
+bGQgZW5hYmxlIHRoZQ0KPiB3aG9sZSBvZiBwY2liYWNrIG9uIEFSTSBiZWNhdXNlIGl0IHdvdWxk
+IGJlIGVycm9uZW91cyBhbmQgY29uZnVzaW5nLg0KPg0KPiBJIGFtIHdvbmRlciBpZiB0aGVyZSBp
+cyBhIHNpbXBsZToNCj4NCj4gaWYgKCF4ZW5fcHZfZG9tYWluKCkpDQo+ICAgICAgcmV0dXJuOw0K
+Pg0KPiBUaGF0IHdlIGNvdWxkIGFkZCBpbiBhIGNvdXBsZSBvZiBwbGFjZXMgaW4gcGNpYmFjayB0
+byBzdG9wIGl0IGZyb20NCj4gaW5pdGlhbGl6aW5nIHRoZSBwYXJ0cyB3ZSBkb24ndCBjYXJlIGFi
+b3V0LiBTb21ldGhpbmcgYWxvbmcgdGhlc2UgbGluZXMNCj4gKHVudGVzdGVkIGFuZCBwcm9iYWJs
+eSBpbmNvbXBsZXRlKS4NCj4NCj4gV2hhdCBkbyB5b3UgZ3V5cyB0aGluaz8NCg0KSSB0aGluayB0
+aGF0IGl0IG5lZWRzIHRvIGJlIGFuIGFkZGl0aW9uYWwgcGF0Y2ggYW5kIHRoZSBQViBjaGVjayBz
+ZWVtcw0KDQpyZWFzb25hYmxlIHRvIG1lLiBXZSBuZWVkIHRvIGNoZWNrIGlmIGdhdGluZyBvbmx5
+IHBhcnQgb2YgdGhlIGluaXRpYWxpemF0aW9uDQoNCndpdGggeGVuX3B2X2RvbWFpbiBpcyBqdXN0
+IGVub3VnaCwgZS5nLiBpZiB0aGUgcmVzdCBvZiB0aGUgY29kZSBpcyBvayB0aGF0DQoNCnNvbWV0
+aGluZyB3YXMgbm90IGluaXRpYWxpemVkIGFuZCB3b24ndCBiZSB0b3VjaGVkIGF0IHJ1bi10aW1l
+Lg0KDQpMZXQncyBzZWUgd2hhdCBvdGhlciB0aGluayBhYm91dCB0aGUgYXBwcm9hY2gNCg0KPg0K
+Pg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy94ZW4veGVuLXBjaWJhY2sveGVuYnVzLmMgYi9kcml2
+ZXJzL3hlbi94ZW4tcGNpYmFjay94ZW5idXMuYw0KPiBpbmRleCBkYTM0Y2U4NWRjODguLjk5MWJh
+MGE5YjM1OSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy94ZW4veGVuLXBjaWJhY2sveGVuYnVzLmMN
+Cj4gKysrIGIvZHJpdmVycy94ZW4veGVuLXBjaWJhY2sveGVuYnVzLmMNCj4gQEAgLTE1LDYgKzE1
+LDcgQEANCj4gICAjaW5jbHVkZSA8eGVuL3hlbmJ1cy5oPg0KPiAgICNpbmNsdWRlIDx4ZW4vZXZl
+bnRzLmg+DQo+ICAgI2luY2x1ZGUgPHhlbi9wY2kuaD4NCj4gKyNpbmNsdWRlIDx4ZW4veGVuLmg+
+DQo+ICAgI2luY2x1ZGUgInBjaWJhY2suaCINCj4gICANCj4gICAjZGVmaW5lIElOVkFMSURfRVZU
+Q0hOX0lSUSAgKC0xKQ0KPiBAQCAtNjg1LDggKzY4NiwxMiBAQCBzdGF0aWMgaW50IHhlbl9wY2li
+a194ZW5idXNfcHJvYmUoc3RydWN0IHhlbmJ1c19kZXZpY2UgKmRldiwNCj4gICAJCQkJY29uc3Qg
+c3RydWN0IHhlbmJ1c19kZXZpY2VfaWQgKmlkKQ0KPiAgIHsNCj4gICAJaW50IGVyciA9IDA7DQo+
+IC0Jc3RydWN0IHhlbl9wY2lia19kZXZpY2UgKnBkZXYgPSBhbGxvY19wZGV2KGRldik7DQo+ICsJ
+c3RydWN0IHhlbl9wY2lia19kZXZpY2UgKnBkZXY7DQo+ICsNCj4gKwlpZiAoIXhlbl9wdl9kb21h
+aW4oKSkNCj4gKwkJcmV0dXJuIDA7DQo+ICAgDQo+ICsJcGRldiA9IGFsbG9jX3BkZXYoZGV2KTsN
+Cj4gICAJaWYgKHBkZXYgPT0gTlVMTCkgew0KPiAgIAkJZXJyID0gLUVOT01FTTsNCj4gICAJCXhl
+bmJ1c19kZXZfZmF0YWwoZGV2LCBlcnIsDQo+IEBAIC03NDMsNiArNzQ4LDkgQEAgY29uc3Qgc3Ry
+dWN0IHhlbl9wY2lia19iYWNrZW5kICpfX3JlYWRfbW9zdGx5IHhlbl9wY2lia19iYWNrZW5kOw0K
+PiAgIA0KPiAgIGludCBfX2luaXQgeGVuX3BjaWJrX3hlbmJ1c19yZWdpc3Rlcih2b2lkKQ0KPiAg
+IHsNCj4gKwlpZiAoIXhlbl9wdl9kb21haW4oKSkNCj4gKwkJcmV0dXJuIDA7DQo+ICsNCj4gICAJ
+eGVuX3BjaWJrX2JhY2tlbmQgPSAmeGVuX3BjaWJrX3ZwY2lfYmFja2VuZDsNCj4gICAJaWYgKHBh
+c3N0aHJvdWdoKQ0KPiAgIAkJeGVuX3BjaWJrX2JhY2tlbmQgPSAmeGVuX3BjaWJrX3Bhc3N0aHJv
+dWdoX2JhY2tlbmQ7DQo+IEBAIC03NTIsNSArNzYwLDcgQEAgaW50IF9faW5pdCB4ZW5fcGNpYmtf
+eGVuYnVzX3JlZ2lzdGVyKHZvaWQpDQo+ICAgDQo+ICAgdm9pZCBfX2V4aXQgeGVuX3BjaWJrX3hl
+bmJ1c191bnJlZ2lzdGVyKHZvaWQpDQo+ICAgew0KPiArCWlmICgheGVuX3B2X2RvbWFpbigpKQ0K
+PiArCQlyZXR1cm47DQo+ICAgCXhlbmJ1c191bnJlZ2lzdGVyX2RyaXZlcigmeGVuX3BjaWJrX2Ry
+aXZlcik7DQo+ICAgfQ==
