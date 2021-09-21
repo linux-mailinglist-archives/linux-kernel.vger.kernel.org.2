@@ -2,464 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8345D412ED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A75412ED6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhIUGvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:51:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53862 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhIUGvL (ORCPT
+        id S229960AbhIUGxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhIUGxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:51:11 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CF79E220BD;
-        Tue, 21 Sep 2021 06:49:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632206982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RS230kpcC4MLuTfJwKjFSNbCj73nsDuLNPRcJtOkj1s=;
-        b=ht89Qr5QkFKFdGNFcKq7RI9aQZEwPm58xQOdqr3vDgKAwVGLJdsVxMWzlwuDGJ86dwE6rv
-        bq7BC6c3w+TeaisqEkouZqoYITm2Mlx7LdQ+3Z1Q10KVCUoYBuz35C/0ClJaHRgTiU5rgs
-        HzilKAcRSLdAkCwRTTWmO7D/5LBge7k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AE2713B97;
-        Tue, 21 Sep 2021 06:49:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YgKpIIaASWEtdQAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 21 Sep 2021 06:49:42 +0000
-Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-References: <20210917130123.1764493-1-andr2000@gmail.com>
- <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
- <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
- <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
- <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
- <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
- <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
- <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
- <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com>
- <a9b98bc4-4c8a-2e7e-6abf-3a68025059c4@epam.com>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <bb9fa2a8-9cc2-d83c-3659-c66b37781470@suse.com>
-Date:   Tue, 21 Sep 2021 08:49:42 +0200
+        Tue, 21 Sep 2021 02:53:24 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7256AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:51:56 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id m3so74977385lfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PmUxxAm5ITAvyghfA6bZRCHhMyqlvP3QCz/768ov8hk=;
+        b=L81ihPf8T/6RIYGvnE/E9n7EHP7Hd3sCSeIqlj3OiJeqRcQzr8dejHXnCAI5Fo6+pX
+         Q+1IN5cltLOKdviNX24mROUyqLgXPTKwu/+ORjVMGAEXnMEDrTcSH7gQofpjwWgpjoHn
+         YAM66EmWr4XOqMOZvjC7qnGTjkd7DFe/FzkFQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PmUxxAm5ITAvyghfA6bZRCHhMyqlvP3QCz/768ov8hk=;
+        b=VIfLa12mwLt0NJQgaqlR++3BIuYZ3igECkQuVY+hvNYYlMaCyKoU+bV0v0aDNlo34h
+         RKFqBM0axQ7KFSQmDLh5DT1BF7QaLxZGyoEG9sQWdTPvqDpenEPbyNZHTDUmQi1MKrcP
+         Y1i0vgRWLdOvz4BhAWby8M3GvJE8CQVJ16/iFEbsfm7WoJeOPeEdPvg/uu5ekjJ/hHVE
+         gumCwkFt03dM/eiMDj1OGaX2sMOz2Ydbin0nyFya7/MROtYzbi9nn66OUil/Bc2F3prD
+         WxcdU4KEGrL7e25VU0uIcMZfbbacoO0Mj1GGXqm477lxvVop/r7pdG1CLF574d5SYFpr
+         jerw==
+X-Gm-Message-State: AOAM530GaAVOd8X5P2uF048kVWKvfO60+HxS9jHV8+ziEbJc+9zAajco
+        5TRnsGjRnw9j1zCNasy/knuTCQ==
+X-Google-Smtp-Source: ABdhPJx205uFeWJsT1qKB3UGV8PqKxzeu5VH/UsdWQwaniWffUyNryustBoKw+e7i87dFLYJ5skltg==
+X-Received: by 2002:ac2:4bc1:: with SMTP id o1mr15740974lfq.597.1632207114820;
+        Mon, 20 Sep 2021 23:51:54 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id l23sm1442544lfe.159.2021.09.20.23.51.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 23:51:54 -0700 (PDT)
+Subject: Re: [PATCH 1/2] overflow: Implement size_t saturating arithmetic
+ helpers
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Keith Busch <kbusch@kernel.org>, Len Baker <len.baker@gmx.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210920180853.1825195-1-keescook@chromium.org>
+ <20210920180853.1825195-2-keescook@chromium.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <aa42ebfa-03b8-93fa-e036-a7507397d0dc@rasmusvillemoes.dk>
+Date:   Tue, 21 Sep 2021 08:51:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <a9b98bc4-4c8a-2e7e-6abf-3a68025059c4@epam.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="wsuxArFoeRkbtGgBU1fF54AKz0F7tz7qQ"
+In-Reply-To: <20210920180853.1825195-2-keescook@chromium.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---wsuxArFoeRkbtGgBU1fF54AKz0F7tz7qQ
-Content-Type: multipart/mixed; boundary="XacVIrZmUkb7pecLSR0D6hRuZnByoOX7A";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
- Stefano Stabellini <sstabellini@kernel.org>
-Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
- "julien@xen.org" <julien@xen.org>, "jbeulich@suse.com" <jbeulich@suse.com>,
- Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
- Oleksandr Andrushchenko <andr2000@gmail.com>
-Message-ID: <bb9fa2a8-9cc2-d83c-3659-c66b37781470@suse.com>
-Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
-References: <20210917130123.1764493-1-andr2000@gmail.com>
- <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
- <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
- <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
- <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
- <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
- <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
- <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com>
- <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com>
- <a9b98bc4-4c8a-2e7e-6abf-3a68025059c4@epam.com>
-In-Reply-To: <a9b98bc4-4c8a-2e7e-6abf-3a68025059c4@epam.com>
+On 20/09/2021 20.08, Kees Cook wrote:
 
---XacVIrZmUkb7pecLSR0D6hRuZnByoOX7A
-Content-Type: multipart/mixed;
- boundary="------------CD70FE0AF5754356184F6F62"
-Content-Language: en-US
+> + * Internal logic for size_mul(). Takes variable names from UNIQUE_ID
+> + * so that the local variables here will never collide with other local
+> + * variables (for example, with itself).
+> + */
+> +#define __size_mul(factor1, factor2, __factor1, __factor2, __product)	\
+> +({									\
+> +	size_t __product;						\
+> +	size_t __factor1 = (factor1);					\
+> +	size_t __factor2 = (factor2);					\
+> +	if (check_mul_overflow(__factor1, __factor2, &__product))	\
+> +		__product = SIZE_MAX;					\
+> +	__product;							\
+> +})
+> +
 
-This is a multi-part message in MIME format.
---------------CD70FE0AF5754356184F6F62
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Why can't this just be a static inline taking and returning size_ts,
+avoiding all the unique_id ritual and triple layers of macros?
 
-On 21.09.21 08:38, Oleksandr Andrushchenko wrote:
->=20
-> On 21.09.21 09:07, Juergen Gross wrote:
->> On 21.09.21 07:51, Oleksandr Andrushchenko wrote:
->>>
->>> On 21.09.21 08:20, Juergen Gross wrote:
->>>> On 21.09.21 01:16, Stefano Stabellini wrote:
->>>>> On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
->>>>>> On 20.09.21 14:30, Juergen Gross wrote:
->>>>>>> On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
->>>>>>>> Hello, Stefano!
->>>>>>>>
->>>>>>>> On 18.09.21 00:45, Stefano Stabellini wrote:
->>>>>>>>> Hi Oleksandr,
->>>>>>>>>
->>>>>>>>> Why do you want to enable pciback on ARM? Is it only to "disabl=
-e" a PCI
->>>>>>>>> device in Dom0 so that it can be safely assigned to a DomU?
->>>>>>>> Not only that
->>>>>>>>>
->>>>>>>>> I am asking because actually I don't think we want to enable th=
-e PV PCI
->>>>>>>>> backend feature of pciback on ARM, right? That would clash with=
- the PCI
->>>>>>>>> assignment work you have been doing in Xen. They couldn't both =
-work at
->>>>>>>>> the same time.
->>>>>>>> Correct, it is not used
->>>>>>>>>
->>>>>>>>> If we only need pciback to "park" a device in Dom0, wouldn't it=
- be
->>>>>>>>> possible and better to use pci-stub instead?
->>>>>>>>
->>>>>>>> Not only that, so pci-stub is not enough
->>>>>>>>
->>>>>>>> The functionality which is implemented by the pciback and the to=
-olstack
->>>>>>>> and which is relevant/missing/needed for ARM:
->>>>>>>>
->>>>>>>> 1. pciback is used as a database for assignable PCI devices, e.g=
-=2E xl
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 pci-assignable-{add|remove|list=
-} manipulates that list. So, whenever the
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 toolstack needs to know which P=
-CI devices can be passed through it reads
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 that from the relevant sysfs en=
-tries of the pciback.
->>>>>>>>
->>>>>>>> 2. pciback is used to hold the unbound PCI devices, e.g. when pa=
-ssing through
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 a PCI device it needs to be unb=
-ound from the relevant device driver and bound
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 to pciback (strictly speaking i=
-t is not required that the device is bound to
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 pciback, but pciback is again u=
-sed as a database of the passed through PCI
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 devices, so we can re-bind the =
-devices back to their original drivers when
->>>>>>>>  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 guest domain shuts down)
->>>>>>>>
->>>>>>>> 3. Device reset
->>>>>>>>
->>>>>>>> We have previously discussed on xen-devel ML possible solutions =
-to that as from the
->>>>>>>> above we see that pciback functionality is going to be only part=
-ially used on Arm.
->>>>>>>>
->>>>>>>> Please see [1] and [2]:
->>>>>>>>
->>>>>>>> 1. It is not acceptable to manage the assignable list in Xen its=
-elf
->>>>>>>>
->>>>>>>> 2. pciback can be split into two parts: PCI assignable/bind/rese=
-t handling and
->>>>>>>> the rest like vPCI etc.
->>>>>>>>
->>>>>>>> 3. pcifront is not used on Arm
->>>>>>>
->>>>>>> It is neither in x86 PVH/HVM guests.
->>>>>> Didn't know that, thank you for pointing
->>>>>>>
->>>>>>>> So, limited use of the pciback is one of the bricks used to enab=
-le PCI passthrough
->>>>>>>> on Arm. It was enough to just re-structure the driver and have i=
-t run on Arm to achieve
->>>>>>>> all the goals above.
->>>>>>>>
->>>>>>>> If we still think it is desirable to break the pciback driver in=
-to "common" and "pcifront specific"
->>>>>>>> parts then it can be done, yet the patch is going to be the very=
- first brick in that building.
->>>>>>>
->>>>>>> Doing this split should be done, as the pcifront specific part co=
-uld be
->>>>>>> omitted on x86, too, in case no PV guests using PCI passthrough h=
-ave to
->>>>>>> be supported.
->>>>>> Agree, that the final solution should have the driver split
->>>>>>>
->>>>>>>> So, I think this patch is still going to be needed besides which=
- direction we take.
->>>>>>>
->>>>>>> Some kind of this patch, yes. It might look different in case the=
- split
->>>>>>> is done first.
->>>>>>>
->>>>>>> I don't mind doing it in either sequence.
->>>>>>>
->>>>>> With this patch we have Arm on the same page as the above mentione=
-d x86 guests,
->>>>>>
->>>>>> e.g. the driver has unused code, but yet allows Arm to function no=
-w.
->>>>>>
->>>>>> At this stage of PCI passthrough on Arm it is yet enough. Long ter=
-m, when
->>>>>>
->>>>>> the driver gets split, Arm will benefit from that split too, but u=
-nfortunately I do not
->>>>>>
->>>>>> have enough bandwidth for that piece of work at the moment.
->>>>>
->>>>> That's fair and I don't want to scope-creep this simple patch askin=
-g for
->>>>> an enormous rework. At the same time I don't think we should enable=
- the
->>>>> whole of pciback on ARM because it would be erroneous and confusing=
-=2E
->>>
->>> As the first stage before the driver is split or ifdef's used - can w=
-e take the patch
->>> as is now? In either way we chose this needs to be done, e.g. enable =
-compiling
->>> for other architectures and common code move.
->>
->> Fine with me in principle. I need to take a more thorough look
->> at the patch, though.
-> Of course
->>
->>>
->>>>>
->>>>> I am wonder if there is a simple:
->>>>>
->>>>> if (!xen_pv_domain())
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
->>>>>
->>>>> That we could add in a couple of places in pciback to stop it from
->>>>> initializing the parts we don't care about. Something along these l=
-ines
->>>>> (untested and probably incomplete).
->>>>>
->>>>> What do you guys think?
->>>>
->>>> Uh no, not in this way, please. This will kill pci passthrough on x8=
-6
->>>> with dom0 running as PVH. I don't think this is working right now, b=
-ut
->>>> adding more code making it even harder to work should be avoided.
->>>>
->>>>> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pci=
-back/xenbus.c
->>>>> index da34ce85dc88..991ba0a9b359 100644
->>>>> --- a/drivers/xen/xen-pciback/xenbus.c
->>>>> +++ b/drivers/xen/xen-pciback/xenbus.c
->>>>> @@ -15,6 +15,7 @@
->>>>>  =C2=A0=C2=A0 #include <xen/xenbus.h>
->>>>>  =C2=A0=C2=A0 #include <xen/events.h>
->>>>>  =C2=A0=C2=A0 #include <xen/pci.h>
->>>>> +#include <xen/xen.h>
->>>>>  =C2=A0=C2=A0 #include "pciback.h"
->>>>>  =C2=A0=C2=A0 =C2=A0 #define INVALID_EVTCHN_IRQ=C2=A0 (-1)
->>>>> @@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbu=
-s_device *dev,
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct xenbus_device_id =
-*id)
->>>>>  =C2=A0=C2=A0 {
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err =3D 0;
->>>>> -=C2=A0=C2=A0=C2=A0 struct xen_pcibk_device *pdev =3D alloc_pdev(de=
-v);
->>>>> +=C2=A0=C2=A0=C2=A0 struct xen_pcibk_device *pdev;
->>>>> +
->>>>> +=C2=A0=C2=A0=C2=A0 if (!xen_pv_domain())
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>>>  =C2=A0=C2=A0 +=C2=A0=C2=A0=C2=A0 pdev =3D alloc_pdev(dev);
->>>>
->>>> This hunk isn't needed, as with bailing out of xen_pcibk_xenbus_regi=
-ster
->>>> early will result in xen_pcibk_xenbus_probe never being called.
->>>>
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pdev =3D=3D NULL) {
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D=
- -ENOMEM;
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 xenbu=
-s_dev_fatal(dev, err,
->>>>> @@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly x=
-en_pcibk_backend;
->>>>>  =C2=A0=C2=A0 =C2=A0 int __init xen_pcibk_xenbus_register(void)
->>>>>  =C2=A0=C2=A0 {
->>>>> +=C2=A0=C2=A0=C2=A0 if (!xen_pv_domain())
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>>> +
->>>>
->>>> Use #ifdef CONFIG_X86 instead.
->>>
->>> The title of this patch says that we want to allow this driver for ot=
-her archs
->>> and now we want to introduce "#ifdef CONFIG_X86" which doesn't sound
->>> right with that respect. Instead, we may want having something like a=
+> -static inline __must_check size_t array_size(size_t a, size_t b)
+> -{
+> -	size_t bytes;
+> -
+> -	if (check_mul_overflow(a, b, &bytes))
+> -		return SIZE_MAX;
+> -
+> -	return bytes;
+> -}
+> +#define array_size(a, b)	size_mul(a, b)
 
->>> dedicated gate for this, e.g. "#ifdef CONFIG_XEN_PCIDEV_BACKEND_SUPP_=
-PV"
->>> or something which is architecture agnostic.
->>
->> Something like that, yes. But I'd rather use CONFIG_XEN_PCIDEV_BACKEND=
+For example, it could be the very function that you remove here and then
+add a compat alias. IDGI, if you want that functionality by another
+name, just rename array_size, or let size_mul be a #define for array_size.
 
->> acting as this gate and introduce CONFIG_XEN_PCI_STUB for the stub
->> functionality needed on Arm. XEN_PCIDEV_BACKEND would depend on X86 an=
-d
->> select XEN_PCI_STUB, while on Arm XEN_PCI_STUB could be configured if
->> wanted. The splitting of the driver can still be done later.
->=20
-> Hm, pciback is now compiled when CONFIG_XEN_PCIDEV_BACKEND=C2=A0 is ena=
-bled
-> and we want to skip some parts of its code when CONFIG_XEN_PCI_STUB is =
-set.
-> So, I imagine that for x86 we just enable CONFIG_XEN_PCIDEV_BACKEND and=
- the
-> driver compiles in its current state. For Arm we enable both CONFIG_XEN=
-_PCIDEV_BACKEND
-> and CONFIG_XEN_PCI_STUB, so part of the driver is not compiled.
+And we don't have a size_add, but that could just as well be a static
+inline that has the __must_check itself.
 
-No, I'd rather switch to compiling xen-pciback when CONFIG_XEN_PCI_STUB
-is set and compile only parts of it when CONFIG_XEN_PCIDEV_BACKEND is
-not set (this will be the case on Arm).
+Not that I can see that the __must_check matters much for these anyway;
+if anybody does
 
-This is another step in the right direction preparing the split.
+  size_mul(foo, bar);
 
-But as said before, this is not a requirement by me to take your patch.
+that's just a statement with no side effects, so probably the compiler
+would warn anyway, or at least nobody can then go on to do anything
+"wrong". Unlike the check_*_overflow(), which have the (possibly
+wrapped) result in a output-pointer and the "did it overflow" as the
+return value, so you can do
 
+  check_mul_overflow(a, b, &d);
+  do_stuff_with(d);
 
-Juergen
+were it not for the __must_check wrapper.
 
---------------CD70FE0AF5754356184F6F62
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+[Reminder: __must_check is a bit of a misnomer, the attribute is really
+warn_unused_result, and there's no requirement that the result is part
+of the controlling expression of an if() or while() - just passing the
+result on directly to some other function counts as a "use", which is
+indeed what we do with the size wrappers.]
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------CD70FE0AF5754356184F6F62--
-
---XacVIrZmUkb7pecLSR0D6hRuZnByoOX7A--
-
---wsuxArFoeRkbtGgBU1fF54AKz0F7tz7qQ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFJgIYFAwAAAAAACgkQsN6d1ii/Ey/k
-Kgf/R/E+OrRH+RURLkU1IS1biQYiccgDO1Uw79AiM8/I9qsk/yl6FSV+duIl/k0UNGQQa8il8/F3
-I7ZZOyCuJdYvEszG29YZk4p40pP4gzwn/H7Omy9F0WoeGRZIFda1AHqY6EvAn61TO/GFaMYxO/Gw
-oyELfp2VI9NG6j1gFBEVMYaMsZpc+CIoOWmGWm1iWPbFOjTUqnwIkxlW3DASJ0E6aMRVfn6ZYZ2x
-eDLZx2quqhLfzhzqbeV+qhwNAZ8SdHxa0JyjDJL9n8sAuBTxvX2XfuiXCKATcmcAIEZYR6sabwZB
-oaJdMfl6K1JwXrss980rTJkaZi+JovMbKx6RYaDCpg==
-=mPy5
------END PGP SIGNATURE-----
-
---wsuxArFoeRkbtGgBU1fF54AKz0F7tz7qQ--
+Rasmus
