@@ -2,136 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F61E412D70
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7230412D71
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhIUDcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 23:32:05 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:39580 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhIUDQs (ORCPT
+        id S236760AbhIUDcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 23:32:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47228 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232386AbhIUD1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 23:16:48 -0400
-Received: by mail-io1-f70.google.com with SMTP id x12-20020a056602160c00b005d61208080cso7136795iow.6
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 20:15:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UGDltsKFn3WBC2qKQfBx2EDI2C1CKkNHqWrORPiYZuA=;
-        b=d0ugXXJRzDo3PsZUm53Y2r1aiEOoruzfZP8FAGrrkHwNvHtjpT8yR5YIo4FRcbu3hs
-         /HGBufWzK9seQ01/e8HpRABFuncu7CK42qGwWkb9DJpV5R5gz0HFbC0eDW9MZTz8lO6N
-         TSCkkQhbFDKQYjpjbOrqIak3QTHVnzmPhYHvxRDw78b1TnF+oaytB/lbwbe7dj1BpmIt
-         PbBk02TP8G3kQ92OeU1hLZQDU0roFVgdYyeucNli1Qnh8G2H6DwaA9dYIobGg1SBL8JY
-         o/t/X9uAc1xv+WvvBq89r7VYf1HbH9iz335aWu65BSbFAoAWRO8mPgXZoEaYFScoE5db
-         5Uxg==
-X-Gm-Message-State: AOAM533c+ASAqXgfQg75u397sq/ux9UvE0eU5UBV1qTVKBY/WS/NMN+D
-        GKEBlw2taCSmSWUonMMk3MEQABDC/RNFFPRlKOknEsUseijR
-X-Google-Smtp-Source: ABdhPJzdhOJALIrq9pS1PxXXwQdSBfXqHOpnrVqXuPvGcMdyUiNrB/kIFihgqtGhuD3HTJY4zET7vQczExD8IMRfmRSNnFcBkwOW
+        Mon, 20 Sep 2021 23:27:31 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18L0rCnq016418;
+        Mon, 20 Sep 2021 23:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=TL+GlalNIK+3zibfx+nL1dORUR5W26SmgFjpn2woVJs=;
+ b=QTp2rjHH/p29DQcBLn6fn8BzKlp8uUnGSbo9KW9JYPG2Y6wHJPqm9ax7GbZyCDAgTY0q
+ Rnkg0OZ+C3oKcsgvvMSPYxtEnq9mz0lvqHO9H4CJaV/fBWcecKABCovFExGHB6r9063/
+ RNus3bm54PI2DrfFEpd+aZ0lR9fknzWSi7JhJuNWBXkRV8oxVxJKrH1Xkdk1UBJnEg9e
+ KtHUeBlQGlUnfb5ssFDu6W2sOsn46OtDYpwDYrbn8WQfswKZD0F2OEXECmW/tMk93ufB
+ nGr3biSxUwRSIaqNEyNW3gb5V0CwqhUXGq5paeYVC7m+sbfHCFRJFlSiYi3HjZjE+bJz eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b7587thut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 23:25:59 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18L3Mu50021877;
+        Mon, 20 Sep 2021 23:25:59 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3b7587thuc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Sep 2021 23:25:59 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18L3BJFL006177;
+        Tue, 21 Sep 2021 03:25:56 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3b57r9eyjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 03:25:56 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18L3PqYq24117532
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Sep 2021 03:25:53 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5DA54C04A;
+        Tue, 21 Sep 2021 03:25:52 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 26E824C052;
+        Tue, 21 Sep 2021 03:25:52 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.4.199])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 21 Sep 2021 03:25:52 +0000 (GMT)
+Date:   Tue, 21 Sep 2021 05:25:48 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bfu@redhat.com,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
+Message-ID: <20210921052548.4eea231f.pasic@linux.ibm.com>
+In-Reply-To: <878rzrh86c.fsf@redhat.com>
+References: <20210915215742.1793314-1-pasic@linux.ibm.com>
+        <87pmt8hp5o.fsf@redhat.com>
+        <20210916151835.4ab512b2.pasic@linux.ibm.com>
+        <87mtobh9xn.fsf@redhat.com>
+        <20210920003935.1369f9fe.pasic@linux.ibm.com>
+        <88b514a4416cf72cda53a31ad2e15c13586350e4.camel@linux.ibm.com>
+        <878rzrh86c.fsf@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9693:: with SMTP id m19mr21387858ion.72.1632194120200;
- Mon, 20 Sep 2021 20:15:20 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 20:15:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bd3a8005cc78ce14@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in blk_mq_hw_sysfs_release
-From:   syzbot <syzbot+a10a3d280be23be45d04@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: XjDuFQpeAfPOVtWuR6W62JpRyGZKfIda
+X-Proofpoint-ORIG-GUID: uf7iz-HTos6Z6VXiEOn7AkZE6YX7MiMM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-20_11,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 phishscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109210017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 20 Sep 2021 12:07:23 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-syzbot found the following issue on:
+> On Mon, Sep 20 2021, Vineeth Vijayan <vneethv@linux.ibm.com> wrote:
+> 
+> > On Mon, 2021-09-20 at 00:39 +0200, Halil Pasic wrote:  
+> >> On Fri, 17 Sep 2021 10:40:20 +0200
+> >> Cornelia Huck <cohuck@redhat.com> wrote:
+> >>   
+> > ...snip...  
+> >> > > 
+> >> > > Thanks, if I find time for it, I will try to understand this
+> >> > > better and
+> >> > > come back with my findings.
+> >> > >    
+> >> > > > > * Can virtio_ccw_remove() get called while !cdev->online and 
+> >> > > > >   virtio_ccw_online() is running on a different cpu? If yes,
+> >> > > > > what would
+> >> > > > >   happen then?      
+> >> > > > 
+> >> > > > All of the remove/online/... etc. callbacks are invoked via the
+> >> > > > ccw bus
+> >> > > > code. We have to trust that it gets it correct :) (Or have the
+> >> > > > common
+> >> > > > I/O layer maintainers double-check it.)
+> >> > > >     
+> >> > > 
+> >> > > Vineeth, what is your take on this? Are the struct ccw_driver
+> >> > > virtio_ccw_remove and the virtio_ccw_online callbacks mutually
+> >> > > exclusive. Please notice that we may initiate the onlining by
+> >> > > calling ccw_device_set_online() from a workqueue.
+> >> > > 
+> >> > > @Conny: I'm not sure what is your definition of 'it gets it
+> >> > > correct'...
+> >> > > I doubt CIO can make things 100% foolproof in this area.    
+> >> > 
+> >> > Not 100% foolproof, but "don't online a device that is in the
+> >> > progress
+> >> > of going away" seems pretty basic to me.
+> >> >   
+> >> 
+> >> I hope Vineeth will chime in on this.  
+> > Considering the online/offline processing, 
+> > The ccw_device_set_offline function or the online/offline is handled
+> > inside device_lock. Also, the online_store function takes care of
+> > avoiding multiple online/offline processing. 
+> >
+> > Now, when we consider the unconditional remove of the device,
+> > I am not familiar with the virtio_ccw driver. My assumptions are based
+> > on how CIO/dasd drivers works. If i understand correctly, the dasd
+> > driver sets different flags to make sure that a device_open is getting
+> > prevented while the the device is in progress of offline-ing.   
+> 
+> Hm, if we are invoking the online/offline callbacks under the device
+> lock already, 
 
-HEAD commit:    85c698863c15 net/ipv4/tcp_minisocks.c: remove superfluous ..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13d9d3e7300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
-dashboard link: https://syzkaller.appspot.com/bug?extid=a10a3d280be23be45d04
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bd98f7300000
+I believe we have a misunderstanding here. I believe that Vineeth is
+trying to tell us, that online_store_handle_offline() and
+online_store_handle_offline() are called under the a device lock of
+the ccw device. Right, Vineeth?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a10a3d280be23be45d04@syzkaller.appspotmail.com
+Conny, I believe, by online/offline callbacks, you mean
+virtio_ccw_online() and virtio_ccw_offline(), right?
 
-------------[ cut here ]------------
-ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
-WARNING: CPU: 0 PID: 3816 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-CPU: 0 PID: 3816 Comm: syz-executor.0 Not tainted 5.15.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd c0 39 e4 89 4c 89 ee 48 c7 c7 c0 2d e4 89 e8 ef e3 14 05 <0f> 0b 83 05 35 09 91 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc9000a6770f0 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000000
-RDX: ffff88805b3db900 RSI: ffffffff815dbd88 RDI: fffff520014cee10
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815d5b2e R11: 0000000000000000 R12: ffffffff898de180
-R13: ffffffff89e43440 R14: ffffffff8164bae0 R15: 1ffff920014cee29
-FS:  00007fee66b3a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f362471f3a0 CR3: 00000000272af000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- debug_object_assert_init lib/debugobjects.c:895 [inline]
- debug_object_assert_init+0x1f4/0x2e0 lib/debugobjects.c:866
- debug_timer_assert_init kernel/time/timer.c:739 [inline]
- debug_assert_init kernel/time/timer.c:784 [inline]
- try_to_del_timer_sync+0x6d/0x110 kernel/time/timer.c:1229
- del_timer_sync+0x138/0x1b0 kernel/time/timer.c:1382
- cleanup_srcu_struct+0x14c/0x2f0 kernel/rcu/srcutree.c:379
- blk_mq_hw_sysfs_release+0x147/0x190 block/blk-mq-sysfs.c:40
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x540 lib/kobject.c:753
- blk_mq_release+0x259/0x430 block/blk-mq.c:3094
- blk_release_queue+0x2a7/0x4a0 block/blk-sysfs.c:823
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x540 lib/kobject.c:753
- __blk_mq_alloc_disk+0x12e/0x160 block/blk-mq.c:3142
- nbd_dev_add+0x3be/0xb90 drivers/block/nbd.c:1716
- nbd_genl_connect+0x11f3/0x1930 drivers/block/nbd.c:1884
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
- genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fee673e4739
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fee66b3a188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fee674e9038 RCX: 00007fee673e4739
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000007
-RBP: 00007fee6743ecc4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fee674e9038
-R13: 00007ffe3695106f R14: 00007fee66b3a300 R15: 0000000000022000
+But the thing is that virtio_ccw_online() may get called (and is
+typically called, AFAICT) with no locks held via:
+virtio_ccw_probe() --> async_schedule(virtio_ccw_auto_online, cdev)
+-*-> virtio_ccw_auto_online(cdev) --> ccw_device_set_online(cdev) -->
+virtio_ccw_online()
+
+Furthermore after a closer look, I believe because we don't take
+a reference to the cdev in probe, we may get virtio_ccw_auto_online()
+called with an invalid pointer (the pointer is guaranteed to be valid
+in probe, but because of async we have no guarantee that it will be
+called in the context of probe).
+
+Shouldn't we take a reference to the cdev in probe? BTW what is the
+reason for the async?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> how would that affect the remove callback?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I believe dev->bus->remove(dev) is called by 
+bus_remove_device() with the device lock held. I.e. I believe that means
+that virtio_ccw_remove() is called with the ccw devices device lock
+held. Vineeth can you confirm that?
+
+
+The thing is, both virtio_ccw_remove() and virtio_ccw_offline() are
+very similar, with the notable exception that offline assumes we are
+online() at the moment, while remove() does the same only if it
+decides based on vcdev && cdev->online that we are online.
+
+
+> Shouldn't they
+> be serialized under the device lock already? I think we are fine.
+
+AFAICT virtio_ccw_remove() and virtio_ccw_offline() are serialized
+against each other under the device lock. And also against
+virtio_ccw_online() iff it was initiated via the sysfs, and not via
+the auto-online mechanism.
+
+Thus I don't think we are fine at the moment.
+
+> 
+> For dasd, I think they also need to deal with the block device
+> lifetimes. For virtio-ccw, we are basically a transport that does not
+> know about devices further down the chain (that are associated with the
+> virtio device, whose lifetime is tied to online/offline processing.) I'd
+> presume that the serialization above would be enough.
+> 
+
+I don't know about dasd that much. For the reasons stated above, I don't
+think the serialization we have right now is entirely sufficient.
+
+Regards,
+Halil
