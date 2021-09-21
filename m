@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95A1413589
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F227413591
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbhIUOoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        id S233710AbhIUOsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbhIUOoV (ORCPT
+        with ESMTP id S233747AbhIUOrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:44:21 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA761C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DGmMlpMUOkTm4vKPa5AEfE6wFxS3ZaoVAuAsiouoBDs=; b=i9Tw3ddTfL/uisviclxGr07dZc
-        HxtkqOTnD4r9N9lLOO+xX4gwRfSReCkhZB9gjFIykZI0RlZxO4P+pC4l1o2ha2HDUrypVLpXQrB/C
-        nQYkdcNvLlN7/BLiNnfK4Tf+kbskciQiUl8skyQQO7c5OEjItLxV3+X1MR8R/eSi4Mc6ydtwGFCR7
-        osRlydbOnmYlOwNhayYpLYxh8YKoDlgqJ1DND/g9L5fgsLTFW7PPl+KdaKx2tlB41lk5yb8lMy0Ug
-        GxwLHU5WMuamwXA1rwnZvWZsq0R8ibYtbdte0I4wrzfTOYiGZObHT8LIDf2KQK9TUZtjKd1l33ze+
-        1NA1Qi5Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSgxv-004mZ4-P5; Tue, 21 Sep 2021 14:41:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96310300252;
-        Tue, 21 Sep 2021 16:41:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7B9892659EB7C; Tue, 21 Sep 2021 16:41:45 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 16:41:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     sxwjean@me.com
-Cc:     x86@kernel.org, linux-mm@kvack.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, luto@kernel.org,
-        krisman@collabora.com, chang.seok.bae@intel.com,
-        viro@zeniv.linux.org.uk, nivedita@alum.mit.edu,
-        adobriyan@gmail.com, oleg@redhat.com, sblbir@amazon.com,
-        axboe@kernel.dk, laijs@linux.alibaba.com,
-        dave.hansen@linux.intel.com, akpm@linux-foundation.org,
-        arnd@arndb.de, davem@davemloft.net, keescook@chromium.org,
-        kim.phillips@amd.com, yazen.ghannam@amd.com, dave@stgolabs.net,
-        metze@samba.org, elver@google.com, ebiederm@xmission.com,
-        christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH RESEND 2/2] x86/mm: Randomize va with generic
- arch_pick_mmap_layout()
-Message-ID: <YUnvKV0Qf6zhiasz@hirez.programming.kicks-ass.net>
-References: <20210921143414.70723-1-sxwjean@me.com>
- <20210921143414.70723-3-sxwjean@me.com>
+        Tue, 21 Sep 2021 10:47:22 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6C0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:45:53 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id v22so70456834edd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3UQshi3eC1CKDj9DpZic1/oFHuAGOMwFKYcnq7T63EM=;
+        b=OG5vn4UI5RWsGMr1kSBoNDGRlRw2LXTlKq1DIf6AmZWN+iVXzm/Zsh6yK8A8TzdWlU
+         eun6yrJyMN2FIzGmOwTJ+YDEc6+8+5mHRCYi0FRDW68A3fFoSCuausFEcdkOstSog478
+         OciPCf84A316/tJS3mVuouFRQzqoWKtOtWpoGXwwkz/xJ6ZNkyDZvsB+XN8GkdE1tW+B
+         dy1J/+uwBYgz0bvk/EkLDZkHaNOylom1ZzYHydImFgppnlFYiZTfgdsotWRKI4OwEs3/
+         33WfNod4J1xK3YyTysiBNEIFuObRT0TfbkuGbREhsr1XR/lWIGap1X18RvqenhSOvevj
+         xzgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3UQshi3eC1CKDj9DpZic1/oFHuAGOMwFKYcnq7T63EM=;
+        b=xr4bRY+0E4IFX+JL+/NFjTtJfFUd6WapawakAIi6SsDFhS7//xoI0z7nHRlLMxeGG9
+         gjdl+Qhlz7oUmI9IcX+pGqTo/AjCPyaYDAFfi8sRN3waL9kTQx1q0f/AnZtRzb8hr1qR
+         FY4LlEkK5s0Kcxd8enofo0dVt12knkWUhM5oQcfK6105ijoCrRFhh7YotVi+LvoMaFtI
+         GjE+oiw+bGCw+AoJQdTqHwJ4YNbwHxbOdhDTA4aWNm5HLM70tyfIwkWpympXUiz4xusE
+         QqMijIONh46oufHKHn7v2BNKr9tk+7n/QMLIZ65wJWu5oKayqoE6VPaNDBmkL1CBopMi
+         4sKg==
+X-Gm-Message-State: AOAM531PQvi7yYo5moDN+B0se8zxY4PTmDZ/IFiIQ0LoQvdSXUPFm1Sa
+        chFhduJRJfAKS3pue2cvOExqBVukwW++wQaQuGiDsy45IA==
+X-Google-Smtp-Source: ABdhPJy9s3S5skeCDh7vuYtu4bb3p3FjHSjnXBc6dLAhH2npPXxat6uok6Ikcn1ihgxmvttcAijBDQf3pwZyJ4FMb3I=
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr35691132edc.362.1632235394068;
+ Tue, 21 Sep 2021 07:43:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921143414.70723-3-sxwjean@me.com>
+References: <20210921111750.6f7bd218@canb.auug.org.au>
+In-Reply-To: <20210921111750.6f7bd218@canb.auug.org.au>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 21 Sep 2021 10:43:04 -0400
+Message-ID: <CAHC9VhTFp6uj+bBhiEhvd2v346qOLx-t0bs=mv==8rCY5Zq+jg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the selinux tree with Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Eugene Syromiatnikov <esyr@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 10:34:14PM +0800, sxwjean@me.com wrote:
-> diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
-> index 7516e4199b3c..c697e377644d 100644
-> --- a/arch/x86/include/asm/compat.h
-> +++ b/arch/x86/include/asm/compat.h
-> @@ -151,6 +151,11 @@ struct compat_shmid64_ds {
->  	compat_ulong_t __unused5;
->  };
->  
-> +static inline int is_compat_task(void)
-> +{
-> +	return IS_ENABLED(CONFIG_COMPAT) && test_thread_flag(TIF_32BIT);
-> +}
-> +
+On Mon, Sep 20, 2021 at 9:17 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the selinux tree got a conflict in:
+>
+>   fs/io-wq.c
+>
+> between commit:
+>
+>   dd47c104533d ("io-wq: provide IO_WQ_* constants for IORING_REGISTER_IOWQ_MAX_WORKERS arg items")
+>
+> from Linus' tree and commit:
+>
+>   5bd2182d58e9 ("audit,io_uring,io-wq: add some basic audit support to io_uring")
+>
+> from the selinux tree.
 
-This is still fundamentally broken for x86. x86 doesn't have compat
-tasks, the granularity is at syscall at best.
+Thanks Stephen.
+
+I noticed the same thing while doing some additional testing yesterday
+and applied a very similar patch to my testing kernel.  I'll be sure
+to mention this to Linus when I send this up during the next merge
+window.
+
+-- 
+paul moore
+www.paul-moore.com
