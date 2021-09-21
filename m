@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A847A4131B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2495C4131B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhIUKgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231975AbhIUKgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:36:14 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:40763 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231823AbhIUKgM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Sep 2021 06:36:12 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:25330 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231823AbhIUKgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:36:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632220482; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=p4JNkd3L2vIMEV9xY9yD46hmbqQPTnQlbKnuVphVbqI=; b=xNPschyMGB2k2WkCNT4/Vh4nBRxuh8Baz5WJkD2TDkOD9i+pbkY/TpdNfo7F+ZlCxPktP4Tg
- HzXtWm/wawDeeHuSQLjiinYYplV9AEmBBBmi7xS3O/kVL3BTB/w4WV7DOa0+kGtEiXQYiYF0
- kArlkcuIB0ljuTriAIxDdQvgX3E=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6149b541bd6681d8ed43d32d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 10:34:41
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F1B56C4360C; Tue, 21 Sep 2021 10:34:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2134C4338F;
-        Tue, 21 Sep 2021 10:34:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B2134C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
-        clew@codeaurora.org, sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V5 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
-Date:   Tue, 21 Sep 2021 16:04:27 +0530
-Message-Id: <1632220467-27410-1-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1632220484; x=1663756484;
+  h=from:subject:to:references:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=Rx31vdd/RrSmlgTJVbNEqNylEl36VLncaM1cWWQr0L0=;
+  b=kg5BbN4zjr87SdLijGNeuKgdcEkmuuJBj3NjSsE0v9TiSLbhvSqTsvxL
+   8SaPu1kLIqOg8KTtw6A4OcZIq/Z2D2TDgeB3/teseiDcBIQg/k4+2La6y
+   UNjoscurc0Xw2vDTReoAB+9stoV5NM2eymZ5pKEX1JEAJSIdUXtdz+y8L
+   vzUJOrXclvAlofHLkZSipYUQTEJOCY3KlxmA/VIEhNGjh3UyG1vzCmUKq
+   7sJZaZaOayz/6fIbwuaDgMGB6Tk1TQNyJscKfAtpNil5OX2igClOaAL41
+   TtTdm+wHQjnOHDbwkHuglsondOBGh+X1qUpm0jwfASXrZKgP5cySMlNRY
+   Q==;
+IronPort-SDR: 40fZUBVLdVuEt+lsKbSQ6u5TBklpIcSqNwohDedZnHykZKO5DLOYZh/YhZcSncZ2RBobQiO8cv
+ 4U6vjJgFv5kvSBlwObCEyqmZiHwNmaqizw9VuX6neoOqeCVdHsejGMb+TAXVMEk0CglLgaqAp1
+ NXjE/wEjQwxCLxxe531fJEDIxfCX8mqTgulsCA1UrZQqnKtz6MZtucf/w0Ru9zJsw9Mivv6pEk
+ pfJ6oM6Sip4ou+dsE/eXIrhrCsfNwj2H1OZsi5h/9gZgNODJyGwISU3nIivTeAFOhCrvVQVByL
+ BZZM3ahEDTFUKUv6WRYZ7cU+
+X-IronPort-AV: E=Sophos;i="5.85,310,1624345200"; 
+   d="scan'208";a="137340616"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Sep 2021 03:34:44 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 21 Sep 2021 03:34:43 -0700
+Received: from [10.171.246.85] (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Tue, 21 Sep 2021 03:34:41 -0700
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [PATCH 1/2] ARM: at91: dts: sama5d29: Add dtsi file for sama5d29
+To:     Hari Prasath <Hari.PrasathGE@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        <robh@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux@armlinux.org.uk>
+References: <20210812140758.28273-1-Hari.PrasathGE@microchip.com>
+Organization: microchip
+Message-ID: <37ffc77b-5164-ead0-f162-bf31d2cfaa83@microchip.com>
+Date:   Tue, 21 Sep 2021 12:34:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210812140758.28273-1-Hari.PrasathGE@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remote susbsystems notify fatal crash throught smp2p interrupt.
-When remoteproc crashes it can cause soc to come out of low power
-state and may not allow again to enter in low power state until
-crash is handled.
+On 12/08/2021 at 16:07, Hari Prasath wrote:
+> A new dtsi file for sama5d29 SoC is added which basically inherits the sama5d2
+> dtsi with the mac controller compatible property updated.
+> 
+> Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
 
-Mark smp2p interrupt wakeup capable so that interrupt handler is
-executed and remoteproc crash can be handled in system  resume path.
-This patch marks interrupt wakeup capable but keeps wakeup disabled
-by default. User space can enable it based on its requirement for
-wakeup from suspend.
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+And added to our at91-dt branch for 5.16.
 
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/smp2p.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Best regards,
+    Nicolas
 
-diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-index 2df4883..38585a7 100644
---- a/drivers/soc/qcom/smp2p.c
-+++ b/drivers/soc/qcom/smp2p.c
-@@ -14,6 +14,7 @@
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
- #include <linux/regmap.h>
- #include <linux/soc/qcom/smem.h>
- #include <linux/soc/qcom/smem_state.h>
-@@ -538,9 +539,26 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
- 		goto unwind_interfaces;
- 	}
- 
-+	/*
-+	 * Treat smp2p interrupt as wakeup source, but keep it disabled
-+	 * by default. User space can decide enabling it depending on its
-+	 * use cases. For example if remoteproc crashes and device wants
-+	 * to handle it immediatedly (e.g. to not miss phone calls) it can
-+	 * enable wakeup source from user space, while other devices which
-+	 * do not have proper autosleep feature may want to handle it with
-+	 * other wakeup events (e.g. Power button) instead waking up immediately.
-+	 */
-+	device_set_wakeup_capable(&pdev->dev, true);
-+
-+	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
-+	if (ret)
-+		goto set_wake_irq_fail;
- 
- 	return 0;
- 
-+set_wake_irq_fail:
-+	dev_pm_clear_wake_irq(&pdev->dev);
-+
- unwind_interfaces:
- 	list_for_each_entry(entry, &smp2p->inbound, node)
- 		irq_domain_remove(entry->domain);
-@@ -565,6 +583,8 @@ static int qcom_smp2p_remove(struct platform_device *pdev)
- 	struct qcom_smp2p *smp2p = platform_get_drvdata(pdev);
- 	struct smp2p_entry *entry;
- 
-+	dev_pm_clear_wake_irq(&pdev->dev);
-+
- 	list_for_each_entry(entry, &smp2p->inbound, node)
- 		irq_domain_remove(entry->domain);
- 
+> ---
+>   arch/arm/boot/dts/sama5d29.dtsi | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/sama5d29.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/sama5d29.dtsi b/arch/arm/boot/dts/sama5d29.dtsi
+> new file mode 100644
+> index 000000000000..e8cc73c0619f
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/sama5d29.dtsi
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * sama5d29.dtsi - Device Tree Include file for SAMA5D29 SoC of the SAMA5D2
+> + * family.
+> + *
+> + *  Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
+> + *
+> + *  Author: Hari Prasath <Hari.PrasathGE@microchip.com>
+> + *
+> + */
+> +
+> +#include "sama5d2.dtsi"
+> +
+> +&macb0 {
+> +compatible = "atmel,sama5d29-gem";
+> +};
+> 
+
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Nicolas Ferre
