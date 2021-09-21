@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7314413D7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15CC413D86
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbhIUWYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S235956AbhIUW2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbhIUWYM (ORCPT
+        with ESMTP id S229804AbhIUW2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:24:12 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7BBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:22:43 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id e8-20020a0cf348000000b0037a350958f2so6767799qvm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:22:43 -0700 (PDT)
+        Tue, 21 Sep 2021 18:28:37 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8F8C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:27:08 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id bk29so2690056qkb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=fe6asXWFzX1XFZzq1x4wsBW8hMTSeHYjNsqHVsCHq7g=;
-        b=eV+o7MHP7TJ1wHQqCm2Wyy5n+IVG3LKtSt+UgnoNnssmXw3fD0cefPXnelgq+GjVjr
-         9g2hKWvcT6KUhIKypS3wC+X2NLUqbxUgLQR19KNtifP2rjqKyR6MXfYtUCH5/7QswDxf
-         FOyLvSgu1SgP/xkZYIUffAaQ7zeFu85jIXz8vchCoJu5QIuscL4HPLnEqgX34hHtDWMA
-         xrTIHe/h9QmhXMbrbQkNoklcocbevjzN6q0aDxhtulnOO9ApjUqn+pRM44+YdHHEb1ee
-         2L4nQWKAeliciloIFeM553LJHMQvjZTnA/Q+IJHnh5eAVzCDELMxtKFLAZLw7x5OUTOp
-         u/vw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w/NniegAPsrqQovylT0x9NdPmzuMLuCowwMM3/4Onrw=;
+        b=ghpssHVgObsePZG2YaoSQ2quCtUJuEd+tpwL75F4+ZiQHCroqi5rVSH2ZqzuJPKDyE
+         miQF0K4xr278cH3ExdUkk7Kew9L0K1HdsgX1dhdCizJxDByC9ZylYWb7lMVnwOPwHK9G
+         WmQReFJ1UZxLZLt2WnU+bf3PwrEIWEfcMGnBtPtW9w+vIilWCiAGXvhB7wZGSzoifFeP
+         BKP261L03zHAU4mK0No44udA4T9V/oVsFItOWAU8WZAB89A7BEeEjCehQ/aEhJ/fstbi
+         30nFWBr7aifNRAa8U9mptzSxjfS4zQ7Cbi345F6RzpMaocweM5q1G0SYPhoOCK+z+/BB
+         1SSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=fe6asXWFzX1XFZzq1x4wsBW8hMTSeHYjNsqHVsCHq7g=;
-        b=MCQccAtg+eaOKIl3xKn4LWGjEOcO/SPHdWy82R6gh+OHeOiJYDPKKd1np1hTds4N/0
-         xQU1C49i9/be4LZJ9AckmeMPbowhbPhh2y1xMZ8ts1ukRzCYKCAqsujaHWyNK2pxOvBc
-         u0HJmf/eTYDilbEGSJ9IwCsVTxjDE0HYVKX3WbXOUYU8ZHjt/4jUNRHspGrH5XYvyyl9
-         6UuRS6MBsQA+whHO+mpPx7Rb33dEZgHpga8z4VH57waBxT2Qv6inPXa2FCuZqP7D33iy
-         w3bV+44rh02N3a9RDtRwzMRUqSNFpGuqB2CTj9crbbNRhydOX5YhXdEs+snZ1NOJrpnZ
-         8nyg==
-X-Gm-Message-State: AOAM5317N3GvNpb3dgjDFqDVUOkSIH39RvomQjwNtVfC/N46Vn+PQ0ss
-        5PobzgbPVGqvignyd6rblhNKenzBciw=
-X-Google-Smtp-Source: ABdhPJx8/aQldYVlTK2IJCFfsX+ImwbCtnIVcIzBZCgyIrvMxEU+TrcEbmTAAYdj+46Ml9lwoGi29S9f6xs=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:b022:92d6:d37b:686c])
- (user=seanjc job=sendgmr) by 2002:a25:ad25:: with SMTP id y37mr40583994ybi.407.1632262962301;
- Tue, 21 Sep 2021 15:22:42 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 21 Sep 2021 15:22:31 -0700
-In-Reply-To: <20210921222231.518092-1-seanjc@google.com>
-Message-Id: <20210921222231.518092-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210921222231.518092-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH 2/2] KVM: arm64: Depend on HAVE_KVM => OF instead of directly
- on OF
-From:   Sean Christopherson <seanjc@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w/NniegAPsrqQovylT0x9NdPmzuMLuCowwMM3/4Onrw=;
+        b=xJIUQXd1+uEo+iefLKNl1st5Pat2poe9DQNhI548MptuTxoKdX99FWQn1gsChfxSWT
+         UaRUSm3ddqhe3YdqZdsfE8b32BHa2EfdbFGz4Gi0GRhLg4sfuzRpFP4myIJ8FfYLKBNs
+         7hy9y4Ci2NsMcTCZa+/agDt3t7HaqfAn8e6m76WgltOuJlLTJWwNWp7z9rjN9lHTrf8V
+         LLGxa8qox65oUm1f7xClhjZdwOCiWvtk9kRiAZgGN0/y4xdzRofLdrYb9zfd1OWcDsz8
+         ay/9UQzh2ibZD9JRFwWJTNg6qK0ztqR0KBmc1BB/xFErqDtvynxMOeu+x1SyL62JYnbx
+         FOQA==
+X-Gm-Message-State: AOAM5332VhKn0lHer5E/WCnm62QY69RGJgAbme1iYLCOhIOa3Z/nqNrR
+        q3sOYe1vx+pE4HG/pzvAy2Od0YTq97SgiLlN96cCxA==
+X-Google-Smtp-Source: ABdhPJxcziC4sfd1j8S82m5DEO1q33o86vhq5rhsTYZKiMFbaEe6ncY4ZucVAUPhAY3Ew7XWld4rers0+g8ztdMSLYA=
+X-Received: by 2002:a25:6543:: with SMTP id z64mr5960602ybb.486.1632263227316;
+ Tue, 21 Sep 2021 15:27:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJZ5v0h11ts69FJh7LDzhsDs=BT2MrN8Le8dHi73k9dRKsG_4g@mail.gmail.com>
+ <YUaPcgc03r/Dw0yk@lunn.ch> <YUoFFXtWFAhLvIoH@kroah.com> <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch> <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch> <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+ <YUpIgTqyrDRXMUyC@lunn.ch> <CAGETcx_50KQuj0L+MCcf2Se8kpFfZwJBKP0juh_T7w+ZCs2p+g@mail.gmail.com>
+ <YUpW9LIcrcok8rBa@lunn.ch>
+In-Reply-To: <YUpW9LIcrcok8rBa@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 21 Sep 2021 15:26:31 -0700
+Message-ID: <CAGETcx_CNyKU-tXT+1_089MpVHQaBoNiZs6K__MrRXzWSi6P8g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select HAVE_KVM if the KVM dependency is met (OF / Open Firmware), and
-make KVM depend on HAVE_KVM instead of directly on OF.  This fixes the
-oddity where arm64 configs can end up with KVM=y and HAVE_KVM=n, and will
-hopefully prevent breakage if there are future users of HAVE_KVM.
+On Tue, Sep 21, 2021 at 3:04 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Tue, Sep 21, 2021 at 02:54:47PM -0700, Saravana Kannan wrote:
+> > On Tue, Sep 21, 2021 at 2:03 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> > >
+> > > > There are cases where the children try to probe too quickly (before
+> > > > the parent has had time to set up all the resources it's setting up)
+> > > > and the child defers the probe. Even Andrew had an example of that
+> > > > with some ethernet driver where the deferred probe is attempted
+> > > > multiple times wasting time and then it eventually succeeds.
+> > >
+> > > And i prefer an occasional EPROBE_DEFER over a broken Ethernet switch,
+> > > which is the current state. I'm happy to see optimisations, but not at
+> > > the expense of breaking working stuff.
+> >
+> > Right, but in that case, the long term solution should be to make
+> > changes so we don't expect the child to be bound as soon as it's
+> > added. Not disable the optimization. Agree?
+>
+> Maybe. Lets see how you fix what is currently broken. At the moment, i
+> don't care too much about the long term solution. The current quick
+> fix for stable does not seem to be making any progress. So we need the
+> real fix now, to unbreak what is currently broken, then we can think
+> about the long term.
 
-Note, arm64 unconditionally selects OF, and has always done so (see
-commit 8c2c3df31e3b ("arm64: Build infrastructure").  Keep the somewhat
-pointless HAVE_KVM dependency on OF to document that KVM requires Open
-Firmware support.
+Wait, what's the difference between a real fix vs a long term fix? To
+me those are the same.
 
-No functional change intended.
+I agree that having DSA be broken till we have the final fix isn't
+good. Especially because DSA is complicated and the over eager gen PHY
+driver makes it even harder to fix it quickly.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/arm64/Kconfig     | 1 +
- arch/arm64/kvm/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+Merging this patch gives an exception to DSA, while we figure out a
+good fix. It also makes sure more drivers don't get merged with the
+same assumptions (because fw_devlink=on won't give them the
+exception).
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b5b13a932561..38c0f36a5ed4 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -187,6 +187,7 @@ config ARM64
- 	select HAVE_GCC_PLUGINS
- 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
- 	select HAVE_IRQ_TIME_ACCOUNTING
-+	select HAVE_KVM if OF
- 	select HAVE_NMI
- 	select HAVE_PATA_PLATFORM
- 	select HAVE_PERF_EVENTS
-diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
-index c50f75cf76fe..e1e400bd8de5 100644
---- a/arch/arm64/kvm/Kconfig
-+++ b/arch/arm64/kvm/Kconfig
-@@ -20,7 +20,7 @@ if VIRTUALIZATION
- 
- menuconfig KVM
- 	bool "Kernel-based Virtual Machine (KVM) support"
--	depends on OF
-+	depends on HAVE_KVM
- 	select MMU_NOTIFIER
- 	select PREEMPT_NOTIFIERS
- 	select HAVE_KVM_CPU_RELAX_INTERCEPT
--- 
-2.33.0.464.g1972c5931b-goog
+Greg/Rafael, can we merge this please while we figure out a fix for
+DSA/PHY. It's a non-trivial problem to solve because PHYs need some
+kind of driver "match rating".
 
+-Saravana
