@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E97412E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D257412E65
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhIUFyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 01:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
+        id S229802AbhIUFzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 01:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhIUFyR (ORCPT
+        with ESMTP id S229590AbhIUFzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 01:54:17 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4C6C061574;
-        Mon, 20 Sep 2021 22:52:50 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id i23so35751657wrb.2;
-        Mon, 20 Sep 2021 22:52:49 -0700 (PDT)
+        Tue, 21 Sep 2021 01:55:35 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C29C061574;
+        Mon, 20 Sep 2021 22:54:07 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i4so77534455lfv.4;
+        Mon, 20 Sep 2021 22:54:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=L66QhiZcUuwlRKorNm9Yc4Tr9VadEmevichCsHyMvjU=;
-        b=lU46H28yfT0WqL1Ub2F2Dkq6JhjkVZTECeGntQqTHMLgvQkhu3Iey/mdXXTpBr+W46
-         YaCXwn8ftw75hs29QrdQFMxE3WuQgCcFIwz9DaDN6zIm4caRTMB5h49np1iIQ6kyeBNO
-         aVBhjR7jRTbzdubwFTiE7kgmJ3tbmjocBh1tpahTIlpjDUl4NNTRtL9me3j660UfR9q7
-         0Llp6Vz7ZTtCLOJAgUavQrfchCb7NPrhI5lY1gOtg1KCY8CeFZXT9nF5H+ra0nu+ihOg
-         IVw4gn3AxJb+y0RTx/WBtW2BsDLx/g095+j/02pzChkOUcfHk23PmsLCs8G1AyXOnQRt
-         Iu2g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bpUkPJQXkk9fBNIxLOKTcbXhkHoX6oXTQwo24b2XE1M=;
+        b=CS3Et8KOOV57xk5PhR6sFVWcizWSm/W05z/gI/FvHjtBdxmlz9UbAP+NQwpwdxtIZq
+         HB19wnN+gJu5dr9XpRcZ1ObJX/CxPCUPUx5WWSE2yvw+R73et2lmN1AKGREs4HO2v1fQ
+         oJ/GZzOAFPho/zQ9se0r+MCBqnfKRAJR+DZjuaGsUbKF5+tqOIh8Sjz9Jnt15rc6JZon
+         TABDYC4htGCJgoETF22MvazJWdc1Q3DI6/7XV+B8/97vToXjOfwK/le1yHhQnaG4Eos2
+         VHosyOiA4cujW05SXN9+Ac/gtpEdE3PANwIE90Azp42J7b7IXq4YMpykLAdB5FqPR461
+         +Rmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=L66QhiZcUuwlRKorNm9Yc4Tr9VadEmevichCsHyMvjU=;
-        b=Peg88PHG8tSuI5wm35422CXSg/WjSOx5Te6zqQdQhRi8kSdNecQXzzhe4yxqqz+DQw
-         YS+pAnC62pnPgrYcdYcXBc9/mnrl+dCyBwhSTcue7gP15flw05+WUokNSJQ0vq42Et4A
-         D+qGLVI0YkrytRxy3S2PbTayFvF9P81NlLbsftRuP+2DJISN89WoXVtdEy8XaszUM7Ar
-         eEfy6m54iQnkyNmipLmnXTckkuzif6zppfHRFrMYJ9YeIFoFQVvKZLQEZZdJRGs4EPpo
-         UXFImjmT77/jgyjIwsHnl0zoiBfGbLMq+3GFXyyU+rATldZLm3V5Q2F4M90kzd2aTKix
-         yHvw==
-X-Gm-Message-State: AOAM5304K0Ry68FbNFqtwkN6jO+2dlCWD2QTZCIjwg83IDmjbp3RjLNF
-        9/iihpdkDQqEnQ2lCyuznJF9AbVs2r8=
-X-Google-Smtp-Source: ABdhPJwPzZ0TmdPyNHqt6C1ICdsIICxZ3w1bvAH6leVeLVMsvnEmLCSVs1UpnyA3DW5CE+nwCdvrGQ==
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr2605869wmp.52.1632203568672;
-        Mon, 20 Sep 2021 22:52:48 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p200300c78f4e0664ac59f2d108a8bc41.dip0.t-ipconnect.de. [2003:c7:8f4e:664:ac59:f2d1:8a8:bc41])
-        by smtp.gmail.com with ESMTPSA id d2sm17897251wrc.32.2021.09.20.22.52.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 22:52:48 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 07:52:46 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Update min() to min_t()
-Message-ID: <20210921055246.GA11535@matrix-ESPRIMO-P710>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bpUkPJQXkk9fBNIxLOKTcbXhkHoX6oXTQwo24b2XE1M=;
+        b=4/KxijOpQE+MkmN3WM9h5BRtz+Rf0laoB+T0Mx0uzsMZvpsXJipVuXCuG9TFLJp7B9
+         CTnIARE6LlYTNIvQdmhufs6aWx8KASKJoK0zkMrJxzSdvy/PVddAHm2aJEt1ucP1NC3t
+         KpoMgWXFntvW1qQL8kSc2jsA1VMM3EYGFKynrUTDKzl3AgBe7Sna8lD1msouzM1tM351
+         VU8AW/VLVsALB6iQWBY+k7d+xa3ONr4tZbX1T1p3yd07jf33XK9tmm0JWhSFuDZiGXkA
+         i7FnD8Qp0dwauK67JxO7TrXsXA3MFIVY6xvs9SBl/gIO/CFqw/KfQzxzBY3Fs7R7Klt1
+         rI8w==
+X-Gm-Message-State: AOAM532nMGvWB2pDjjW0hdns0fuArtB17OPNgcXWLY8n7eclUz4RWUbf
+        LbULOyMm3/HMHDHEy7H0OdfljqkotS/yLibDfMU=
+X-Google-Smtp-Source: ABdhPJwrKvNOA6hoU9pJ2xyCVuHPZ7QAlv6lM0knDKsuFO6gALL2+emOzohvo+cGzSMXmXHkqEd+W9DG3SlbSHH2W6E=
+X-Received: by 2002:a2e:1645:: with SMTP id 5mr7543404ljw.123.1632203645190;
+ Mon, 20 Sep 2021 22:54:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210810051602.3067384-1-mcgrof@kernel.org> <20210810051602.3067384-2-mcgrof@kernel.org>
+In-Reply-To: <20210810051602.3067384-2-mcgrof@kernel.org>
+From:   Lucas De Marchi <lucas.de.marchi@gmail.com>
+Date:   Mon, 20 Sep 2021 22:53:53 -0700
+Message-ID: <CAKi4VAKa7LKXdRmA7epgbkUZw2wpUz19JYYdZ35mPCxSL_W_kw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] libkmod: add a library notice log level print
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
+        linux-modules <linux-modules@vger.kernel.org>,
+        live-patching@vger.kernel.org, fstests@vger.kernel.org,
+        linux-block@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
+        Jessica Yu <jeyu@kernel.org>, osandov@fb.com,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the checkpatch.pl warning:
-WARNING: min() should probably be min_t(size_t, count, MAX_TRANSFER)
-+	size_t writesize = min(count, (size_t)MAX_TRANSFER);
+On Mon, Aug 9, 2021 at 11:56 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> When you use pass the -v argument to modprobe we bump
+> the log level from the default modprobe log level of
+> LOG_WARNING (4) to LOG_NOTICE (5), however the library
+> only has avaiable to print:
+>
+>  #define DBG(ctx, arg...) kmod_log_cond(ctx, LOG_DEBUG, ## arg)
+>  #define INFO(ctx, arg...) kmod_log_cond(ctx, LOG_INFO, ## arg)
+>  #define ERR(ctx, arg...) kmod_log_cond(ctx, LOG_ERR, ## arg)
+>
+> LOG_INFO (6) however is too high of a level for it to be
+> effective at printing anything when modprobe -v is passed.
+> And so the only way in which modprobe -v can trigger the
+> library to print a verbose message is to use ERR() but that
+> always prints something and we don't want that in some
+> situations.
+>
+> We need to add a new log level macro which uses LOG_NOTICE (5)
+> for a "normal but significant condition" which users and developers
+> can use to look underneath the hood to confirm if a situation is
+> happening.
+>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  libkmod/libkmod-internal.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/libkmod/libkmod-internal.h b/libkmod/libkmod-internal.h
+> index 398af9c..2e5e1bc 100644
+> --- a/libkmod/libkmod-internal.h
+> +++ b/libkmod/libkmod-internal.h
+> @@ -25,10 +25,12 @@ static _always_inline_ _printf_format_(2, 3) void
+>  #  else
+>  #    define DBG(ctx, arg...) kmod_log_null(ctx, ## arg)
+>  #  endif
+> +#  define NOTICE(ctx, arg...) kmod_log_cond(ctx, LOG_NOTICE, ## arg)
+>  #  define INFO(ctx, arg...) kmod_log_cond(ctx, LOG_INFO, ## arg)
+>  #  define ERR(ctx, arg...) kmod_log_cond(ctx, LOG_ERR, ## arg)
+>  #else
+>  #  define DBG(ctx, arg...) kmod_log_null(ctx, ## arg)
+> +#  define NOTICE(ctx, arg...) kmod_log_cond(ctx, LOG_NOTICE, ## arg)
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
- drivers/usb/usb-skeleton.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+did you mean kmod_log_null()?
 
-diff --git a/drivers/usb/usb-skeleton.c b/drivers/usb/usb-skeleton.c
-index 2dc58766273a..d87deee3e26e 100644
---- a/drivers/usb/usb-skeleton.c
-+++ b/drivers/usb/usb-skeleton.c
-@@ -363,7 +363,7 @@ static ssize_t skel_write(struct file *file, const char *user_buffer,
- 	int retval = 0;
- 	struct urb *urb = NULL;
- 	char *buf = NULL;
--	size_t writesize = min(count, (size_t)MAX_TRANSFER);
-+	size_t writesize = min_t(size_t, count, MAX_TRANSFER);
- 
- 	dev = file->private_data;
- 
--- 
-2.25.1
+Lucas De Marchi
 
+>  #  define INFO(ctx, arg...) kmod_log_null(ctx, ## arg)
+>  #  define ERR(ctx, arg...) kmod_log_null(ctx, ## arg)
+>  #endif
+> --
+> 2.30.2
+>
