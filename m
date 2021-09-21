@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911CB413027
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEDC413031
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhIUI3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 04:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbhIUI33 (ORCPT
+        id S231226AbhIUIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:34:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47268 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhIUIeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:29:29 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36C0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:28:01 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id w17so28598368wrv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 01:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T0XmoJFziofhO8Y+h0Rn94pKP5fmr2HqBsNSUgjyYvw=;
-        b=5yroY8A5VZDD+FHjsZDG2Bp0VN/9NCmZ6ph34jSWwEsJDuCD1esKUGD45vE+WgS4Nx
-         nLpmPK+HWxt4q0gKN2U73YMOnjSK+nmWRAOe5rrwvsVTm3YVJfv3Uk7Ft/ySqP8hex+L
-         f1zgm40Kj0wD1HVJ/tqQEXWaO2g7jPTnpIsyC00BZBbdt1+5/r0+9IfMD8B0NR2OFV4N
-         pz5rhxCmqkUUs9JHgj0UnqMfPvOUro47Byxx/qxy4BLAKotV6L/T/FwekBK8Wdm1LwTf
-         IBIWoRX0nibMYi74t7oqbGH47mAj6G8IqCq4nOm+sVQjejoCmL+E3DfESpMyX7jXmi3L
-         PQww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=T0XmoJFziofhO8Y+h0Rn94pKP5fmr2HqBsNSUgjyYvw=;
-        b=S1BE5TM8nXx1c2A9h9bOaateojEsk3IEKuhwbHSGze3YJP//SwBgrwJqNDvga+adn3
-         2GkEkOU069iwffQreOOnHWCwyE9VzgCawTbGc5VbCQal+CpLahK4fo1YJ7wbQgxpRjZY
-         Sbm3b/lHjGurxuJ8fojGZZohO08ydFbIm+kK0RsmqwF8m9EExOUT1I58w/7cNvXoT0HU
-         vXIVgNRVXws7CmTu/3z/b2FeNghEduxOLOuWZxwbyigWdy5lgLZx8aIyOPBzaE2U5Zl/
-         rlq15T7DSiOdgoX0D6rVp/W0kS1PVAknnIOpHs5wmots12LAoU2put9PY68/wcVYCMuu
-         /s1w==
-X-Gm-Message-State: AOAM530wwxzL4R8RUQOn/z2w80/Dq9TZpJuITH9gvg9sTHD/smCO5N4K
-        uia0BTjFy7+c83bT/6oD1vDHRK0U05v2Ap7E
-X-Google-Smtp-Source: ABdhPJzdYtgEvUpitsO9NiVEWZkguYTXll2eKVobKG1pSehamwA8kyXtDfgNoQVbS8fawSppRasMdQ==
-X-Received: by 2002:a1c:1b10:: with SMTP id b16mr3190466wmb.194.1632212879919;
-        Tue, 21 Sep 2021 01:27:59 -0700 (PDT)
-Received: from [192.168.1.10] (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
-        by smtp.gmail.com with ESMTPSA id m4sm22493531wrx.81.2021.09.21.01.27.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 01:27:59 -0700 (PDT)
-Subject: Re: [PATCH] drm: bridge: it66121: Added it66121 chip external screen
- status judgment
-To:     Yunlongli <liyunlonga@uniontech.com>, ple@baylibre.com,
-        a.hajda@samsung.com, robert.foss@linaro.org, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210921075401.24926-1-liyunlonga@uniontech.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <13a71cec-06ef-d4d1-948e-c62d4c91d80f@baylibre.com>
-Date:   Tue, 21 Sep 2021 10:27:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 04:34:07 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632213157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=AaU/gPbcWTPTFafa4pRjg6uugKbP7Uqa8J30ZOGD9EU=;
+        b=v5YnLc7AqnUdJz5b9XLuHIl6VO6U/PlOaQTRZ8lHWLAVHD2EDnErVtGwmwCmaaSUjfk6Wx
+        agQAquqZJic3VZuQF78XWd/xE/+AzDZx3Wy4d2poc6tWyJP9BxwBabG6kWXb/s0bLGbqep
+        ES87nY2cSFHi9AKOC8nMR4XVR1qrMeitRRgmxXzEaxc6yNE6NE4KZ1hZQrKpkXCPCJ8am8
+        dZd6YmM/WYsGjvlMxV1tt5NzLDvRsSooO7M1mF0yRfNz3fBQllHS7dOIg8uJvFGrSLuUUV
+        /Pgy7CivLwaq9lVbG6AeyzceQyulGlDEkHzYIQTr4HFnB7aG3GTnSMsHEWr7PA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632213157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=AaU/gPbcWTPTFafa4pRjg6uugKbP7Uqa8J30ZOGD9EU=;
+        b=Kt0f3KnieOBogln1dx3PEKUi1rciS0LweQRwFz1xEtG6mmS+Mjmh2QMpGXvyz/sQHGmN38
+        JtBgxfp88nFTEUAg==
+To:     John Johansen <john.johansen@canonical.com>
+Cc:     James Morris <jmorris@namei.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: apparmor: WARNING: suspicious RCU usage
+Date:   Tue, 21 Sep 2021 10:32:37 +0200
+Message-ID: <877dfa72hm.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20210921075401.24926-1-liyunlonga@uniontech.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 21/09/2021 09:54, Yunlongli wrote:
-> In the actual tests,  the IT66121 chip sometimes misjudged whether
-> it had an external screen, so, reference the it66121_user_guid.pdf
-> about Audio/Video data is stable or not A typical initialization
-> of HDMI link should be based on interrupt signal and appropriate
-> register probing. Recommended flow is detailed in IT66121
-> Programming Guide. Simply put, the microcontroller should monitor
-> the HPD status first. Upon valid HPD event, move on to check
-> RxSENDetect register to see if the receiver chip is ready for
-> further handshaking. When RxSENDetect is asserted, start reading EDID
-> data through DDC channels and carry on the rest of the handshaking
-> subsequently.If the micro-controller makes no use of the interrupt
-> signal as well as the above-mentioned status  registers, the link
-> establishment might fail. Please do follow the suggested
-> initialization flow recommended in IT66121 Programming Guide.
-> So, I add the IT66121_SYS_STATUS_SENDECTECT register status detection.
+Running with CONFIG_PROVE_RCU_LIST triggers the following splat:
 
-Ok, the RxSENDetect is the "rx-sense" detection bit as described in the same doc:
+[    6.805926] =============================
+[    6.806848] WARNING: suspicious RCU usage
+[    6.807738] 5.15.0-rc2+ #24 Tainted: G            E    
+[    6.808860] -----------------------------
+[    6.809734] security/apparmor/include/lib.h:191 RCU-list traversed in non-reader section!!
+[    6.811508] 
+               other info that might help us debug this:
 
-Receiver detection circuit reports the presence or absence of an active termination at the TMDS Clock Channel (RxSENDetect)
+[    6.811516] 
+               rcu_scheduler_active = 2, debug_locks = 1
+[    6.811527] 2 locks held by apparmor_parser/1897:
+[    6.811530]  #0: ffff88885f139450 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0x68/0xe0
+[    6.816110]  #1: ffff8881000578a0 (&ns->lock){+.+.}-{3:3}, at: aa_replace_profiles+0x16d/0x11e0
+[    6.817418] 
+               stack backtrace:
+[    6.818086] CPU: 38 PID: 1897 Comm: apparmor_parser Tainted: G            E     5.15.0-rc2+ #24
+[    6.819359] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+[    6.820536] Call Trace:
+[    6.820918]  dump_stack_lvl+0x57/0x72
+[    6.821499]  __lookupn_profile+0x193/0x1a0
+[    6.822461]  aa_replace_profiles+0x395/0x11e0
+[    6.823448]  policy_update+0x13f/0x240
+[    6.824326]  profile_replace+0xb1/0x120
+[    6.825213]  vfs_write+0xe4/0x3b0
+[    6.826027]  ksys_write+0x68/0xe0
+[    6.826576]  do_syscall_64+0x3b/0x90
+[    6.827099]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-The usage of the rx-sense signal in hpd_detect() is not clear because this would break detection of "Fake" EDID dongles or idle monitors.
+which is pretty obvious because aa_replace_profile() invokes:
 
-The dw-hdmi handles the rx-sense, but only to power-on/off the HDMI TX, but only returns the HPD status to DRM without the RX SENSE state,
-so it only saves power and doesn't change anything on DRM HPD detection.
+    __lookup_replace()
+      __lookup_profile()
+        __strn_find_child()
+          __policy_strn_find()
+            list_for_each_entry_rcu()  <- Splat
 
-So not sure if we should merge this as-is.
+The code is "correct" as this is the writer side and holding ns->lock,
+but it's incorrect to use list_for_each_entry_rcu() without being in a
+read side critical section unless it is properly annotated.
 
-Neil
+Same problem in the same function vs. __lookup_parent() and there are
+more issues of that sort, e.g. vs. __lookup_profile() in
+aa_remove_profiles().
 
-> 
-> Signed-off-by: Yunlongli <liyunlonga@uniontech.com>
-> ---
->  drivers/gpu/drm/bridge/ite-it66121.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> index 2f2a09adb4bc..9ed4fa298d11 100644
-> --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> @@ -523,7 +523,7 @@ static bool it66121_is_hpd_detect(struct it66121_ctx *ctx)
->  	if (regmap_read(ctx->regmap, IT66121_SYS_STATUS_REG, &val))
->  		return false;
->  
-> -	return val & IT66121_SYS_STATUS_HPDETECT;
-> +	return ((val & IT66121_SYS_STATUS_HPDETECT) && (val & IT66121_SYS_STATUS_SENDECTECT));
->  }
->  
->  static int it66121_bridge_attach(struct drm_bridge *bridge,
-> 
+Thanks,
 
+        tglx
