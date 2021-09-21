@@ -2,76 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B4B413779
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E75413771
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233841AbhIUQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        id S234464AbhIUQWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhIUQXh (ORCPT
+        with ESMTP id S234677AbhIUQWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:23:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EF0C061574;
-        Tue, 21 Sep 2021 09:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9/YVI0YfDL2V4vcHeVmIRPEOUQt1TJerDuRFTwKveSE=; b=AVS/5IVt0MCm2i6EdN5eEegLQo
-        y4M1Ea3I0Vii+1zNHmWuCVaMY72NHXxis7XkhIug7SJCSHUJk6gUwX7A8DwjBMrKyoJg7iAWec7OC
-        HV8Bc4tHIM5Of2fmfhIQZarEfk/f5KLKmSpSHBZMvTO76TzWlHhIGnj6i9Auoi4vhN/NizQVQWbuu
-        NFnOYCQZOkgB4KEHzmWWgP/FY3zHJ2D1EBKX3oTEh2sojbj7wjNEpernXSyfyw6Bsjk5hqJXdBAiZ
-        J8zqJb6fNxwgSxO/qnWezM10SOUMPPTyYKldhdco+ZnmPf69EFrzyWdoIzYGrL7WRGt88kWkIMxb0
-        MCgeNkCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSiS6-003xNv-8T; Tue, 21 Sep 2021 16:18:00 +0000
-Date:   Tue, 21 Sep 2021 17:17:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        John Garry <john.garry@huawei.com>,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [RFC v2 PATCH] mm, sl[au]b: Introduce lockless cache
-Message-ID: <YUoFfrQBmOdPEKpJ@casper.infradead.org>
-References: <20210920154816.31832-1-42.hyeyoo@gmail.com>
- <YUkErK1vVZMht4s8@casper.infradead.org>
- <20210921154239.GA5092@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+        Tue, 21 Sep 2021 12:22:24 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D880C06124C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:19:26 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id q11so40906995wrr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NKVGrhptbQ2tPiSL11nU0NzuroCFSqGvZwC9U+FzQXo=;
+        b=cnPF/ciB+iDSyvwxImERVYo6y1riM5QaBbXOBdYqlfMOBn5DmGuMeNMjPqpvQQxwd/
+         Sl/cTDYIdhOAI8hvMLemRECUrCA4vYkmVS7GznZvY026VR1ny7iCWWXwPOAuLuJRBtA4
+         LdrslU2N3CzM1oixg0AR5CvGCZ317KZUj7vBbauKP2HZLnY2JUqUkYpcR0WMjydZapDp
+         GYbE9VZR1oYOKfXG6j4RUgzTP0708tHOl5zNRh/cHf0v45UJZSmZrvbYuqZV7yN0GuOd
+         +269i8WMxbA1c7J373jf9HJlZYx1Q0vNzFIx5JvtoU1wbL7pwVVr5HLYDzH614iNqdLu
+         VimA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NKVGrhptbQ2tPiSL11nU0NzuroCFSqGvZwC9U+FzQXo=;
+        b=JmslX4MyyR9V/iLoa+bauB9OgP1gdJF+6TYqhNlLzLy5wQuyJs3D3h3xpTBGtYZrko
+         Q+gCyaUr2FExQyMSbc8zy8buk81ncXTH9Zz4QFZo56C2CKDWfIEWoN2SV+Jo7P9id/UF
+         CkRm+0GxLMkZzk/6qc4L0Z3EVbGpzSgAJfsZmSAK6Qxzem5FBy9d81Hc2Ny2obPcFXMF
+         kJTXMfktPViSnroEGSl89nliAX3ag+BbdmQjlWWiDbyxCucCoV8j2FqZJXZv+9jwgwX/
+         3wtir0/P6qH1SCB+y5gugd3zE9HI0YQLHnxag9fkfuANhxZwCKGCECS0gKNnIbfifBnP
+         YWgg==
+X-Gm-Message-State: AOAM532FIFuIXZZMxw1Rr5FmXoTk3Qym4WF61v+tHQ6xR0g6NGwMs+0m
+        K8OlAZlbnUd7GkOF9poNBPVhyuuLhiZQ2kIRAiEXyA==
+X-Google-Smtp-Source: ABdhPJyyuA1e+uumxVvmaTLP0O0qfCPf138r+ak1Oej8DfIhZDRDI8CkWwglj8dr+zecAMd163VXykg5wFi3e1WUQwk=
+X-Received: by 2002:a05:6000:124b:: with SMTP id j11mr36621327wrx.147.1632241164364;
+ Tue, 21 Sep 2021 09:19:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921154239.GA5092@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+References: <20210903161405.1861312-1-dlatypov@google.com>
+In-Reply-To: <20210903161405.1861312-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Wed, 22 Sep 2021 00:19:12 +0800
+Message-ID: <CABVgOSmJBpAcVOTxF1FZptUL4+bcLzBPieSDmfMVtkCuCQ6ouA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: better handling of quasi-bool args (--json, --raw_output)
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 03:42:39PM +0000, Hyeonggon Yoo wrote:
-> > > +	/* slowpath */
-> > > +	cache->size = kmem_cache_alloc_bulk(s, gfpflags,
-> > > +			KMEM_LOCKLESS_CACHE_QUEUE_SIZE, cache->queue);
-> > 
-> > Go back to the Bonwick paper and look at the magazine section again.
-> > You have to allocate _half_ the size of the queue, otherwise you get
-> > into pathological situations where you start to free and allocate
-> > every time.
-> 
-> I want to ask you where idea of allocating 'half' the size of queue came from.
-> the paper you sent does not work with single queue(magazine). Instead,
-> it manages pool of magazines.
-> 
-> And after reading the paper, I see managing pool of magazine (where M is
-> an boot parameter) is valid approach to reduce hitting slowpath.
+On Sat, Sep 4, 2021 at 12:14 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Problem:
+>
+> What does this do?
+> $ kunit.py run --json
+> Well, it runs all the tests and prints test results out as JSON.
+>
+> And next is
+> $ kunit.py run my-test-suite --json
+> This runs just `my-test-suite` and prints results out as JSON.
+>
+> But what about?
+> $ kunit.py run --json my-test-suite
+> This runs all the tests and stores the json results in a "my-test-suite"
+> file.
+>
+> Why:
+> --json, and now --raw_output are actually string flags. They just have a
+> default value. --json in particular takes the name of an output file.
+>
+> It was intended that you'd do
+> $ kunit.py run --json=my_output_file my-test-suite
+> if you ever wanted to specify the value.
+>
+> Workaround:
+> It doesn't seem like there's a way to make
+> https://docs.python.org/3/library/argparse.html only accept arg values
+> after a '='.
+>
+> I believe that `--json` should "just work" regardless of where it is.
+> So this patch automatically rewrites a bare `--json` to `--json=stdout`.
+>
+> That makes the examples above work the same way.
+> Add a regression test that can catch this for --raw_output.
+>
+> Fixes: 6a499c9c42d0 ("kunit: tool: make --raw_output support only showing kunit output")
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
+Thanks! This definitely is a real issue that we need to fix: it's been
+sheer luck that I haven't hit it several times.
 
-Bonwick uses two magazines per cpu; if both are empty, one is replaced
-with a full one.  If both are full, one is replaced with an empty one.
-Our slab implementation doesn't provide magazine allocation, but it does
-provide bulk allocation.  So translating the Bonwick implementation to
-our implementation, we need to bulk-allocate or bulk-free half of the
-array at any time.
+I do think the implementation here is both hacky, and requires a
+little bit more Python knowledge than I'm personally super comfortable
+with. The comments are good, though, which makes me reasonably content
+that I could work with it if I had to.
+
+Additionally, it produces a mypy warning:
+tools/testing/kunit/kunit.py:207: error: Incompatible return value
+type (got "Iterator[str]", expected "Sequence[str]")
+
+Regardless, this works very well from the user point of view, so it's:
+Tested-by: David Gow <davidgow@google.com>
+
+Thanks,
+-- David
+
+>  tools/testing/kunit/kunit.py           | 24 ++++++++++++++++++++++--
+>  tools/testing/kunit/kunit_tool_test.py |  8 ++++++++
+>  2 files changed, 30 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index 5a931456e718..95d62020e4f2 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+>
+>  from collections import namedtuple
+>  from enum import Enum, auto
+> -from typing import Iterable
+> +from typing import Iterable, Sequence
+>
+>  import kunit_config
+>  import kunit_json
+> @@ -186,6 +186,26 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+>                                 exec_result.elapsed_time))
+>         return parse_result
+>
+> +# Problem:
+> +# $ kunit.py run --json
+> +# works as one would expect and prints the parsed test results as JSON.
+> +# $ kunit.py run --json suite_name
+> +# would *not* pass suite_name as the filter_glob and print as json.
+> +# argparse will consider it to be another way of writing
+> +# $ kunit.py run --json=suite_name
+> +# i.e. it would run all tests, and dump the json to a `suite_name` file.
+> +# So we hackily automatically rewrite --json => --json=stdout
+> +pseudo_bool_flag_defaults = {
+> +               '--json': 'stdout',
+> +               '--raw_output': 'kunit',
+> +}
+> +def massage_argv(argv: Sequence[str]) -> Sequence[str]:
+> +       def massage_arg(arg: str) -> str:
+> +               if arg not in pseudo_bool_flag_defaults:
+> +                       return arg
+> +               return  f'{arg}={pseudo_bool_flag_defaults[arg]}'
+> +       return map(massage_arg, argv)
+> +
+>  def add_common_opts(parser) -> None:
+>         parser.add_argument('--build_dir',
+>                             help='As in the make command, it specifies the build '
+> @@ -303,7 +323,7 @@ def main(argv, linux=None):
+>                                   help='Specifies the file to read results from.',
+>                                   type=str, nargs='?', metavar='input_file')
+>
+> -       cli_args = parser.parse_args(argv)
+> +       cli_args = parser.parse_args(massage_argv(argv))
+>
+>         if get_kernel_root_path():
+>                 os.chdir(get_kernel_root_path())
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 619c4554cbff..1edcc8373b4e 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -408,6 +408,14 @@ class KUnitMainTest(unittest.TestCase):
+>                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+>                         self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+>
+> +       def test_run_raw_output_does_not_take_positional_args(self):
+> +               # --raw_output is a string flag, but we don't want it to consume
+> +               # any positional arguments, only ones after an '='
+> +               self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
+> +               kunit.main(['run', '--raw_output', 'filter_glob'], self.linux_source_mock)
+> +               self.linux_source_mock.run_kernel.assert_called_once_with(
+> +                       args=None, build_dir='.kunit', filter_glob='filter_glob', timeout=300)
+> +
+>         def test_exec_timeout(self):
+>                 timeout = 3453
+>                 kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
+>
+> base-commit: a9c9a6f741cdaa2fa9ba24a790db8d07295761e3
+> --
+> 2.33.0.153.gba50c8fa24-goog
+>
