@@ -2,255 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD68413278
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359DF41327C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhIUL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:28:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhIUL2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:28:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2079560F9D;
-        Tue, 21 Sep 2021 11:26:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632223617;
-        bh=thTsSyjy0WHn4NbXtqXy6nh03zyFo2cWhYxlI9OW1Rs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fOtq3hkgP3b8AGRo4t4evjqkQhJFrUHnsr2bu+euVmaYneBbAJh26KXFIgN7NyNUk
-         mE92Ww2BEICSpxQ+Gyq548DHeEk76spLvCzOxkuLW9CKPjobL/NyDjEXfN8k+1Fdpn
-         jRfyvUncOT66SPB/K4USxXuLbGVj7VKx8Bug5FsiAlrf+ez2cWB/KNOVLMhRZHjBSR
-         z2KgYF3jBuROPH0GQqexjewca4HxDCmemGbQXU+PLrvwdWSyeiiW5O5bdPdkUcenlR
-         xhWgUczaL9L5rPUnBaH2cvwXlIEQnAsrt9LTLRMLT5zhv4j2jCHGPH8bBOXVf9JvqY
-         QuVKH3Sx1965Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mSdvL-0002R4-VV; Tue, 21 Sep 2021 13:26:56 +0200
-Date:   Tue, 21 Sep 2021 13:26:55 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Himadri Pandya <himadrispandya@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] USB: serial: ch314: use usb_control_msg_recv()
- and usb_control_msg_send()
-Message-ID: <YUnBf3Z9WJaP/2fo@hovoldconsulting.com>
-References: <20210801203122.3515-1-himadrispandya@gmail.com>
- <20210801203122.3515-2-himadrispandya@gmail.com>
+        id S232381AbhIUL3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:29:07 -0400
+Received: from mail-dm6nam11on2049.outbound.protection.outlook.com ([40.107.223.49]:49889
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229474AbhIUL3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:29:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ivV1drM9VHDq8T1c26PElO0Thdp+YFZ1l/Nzd5hZzePtaEzsUonhTHZTvCMeiei0UAywOMz03a28OfKE0UFDi72t6sPQW2gfPXZ8gIlG2YN6bLrfjVO28Rb9DU0zw8CeQNQJfrOFEEAGdM4Tb3c3kHsW88vOBBemuzh9Oyar33OhqNSNAA678CaJYVuPT5UHEm6xSzldtKBOf7lX9lau/lhp2o0qc/g5mHqfvpMkFYWwD0d4AC8Ud5Ea3EDcQJb/SRjSlKd9e/rnQRzO+QcVXjFzOG1htZTO4qJo8pyWw05SyQaluAb0J4Z5QXN0CEKXktTk4wkl/6bpV8fKm4xxdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=gLgBtsa3wJ8t/xKjueaEyvy68Tw8OHCzmqn1dq+7GDE=;
+ b=lC6L9B30HcYRYp+LSqFiUntXfZxnbouwRmoaqDDIYE8k1ak1/Jxt3lCSQQGmPrDfJLfHQn3SCZVtRVavxLTAmcVXoLPT2Z3rthVrwN1g7WJAmlR+1VjDn2WL+WiG3ZJgVrf2AVZT6R7A4R/ROUcvzmSNgn7W/2CHdduYkl98ROldyxVZfhfXFiJ53+QUUxzNSRERAOUxtecZSwCIEu88tPIzPBRiop2bvLh+cKFEAmOrzJ823vcCXOwMDtITh5NCOIz76CDADQq57Qt3rJAqeNO9wrwHAEiJ7YVq9RhIfOC+JmrSXR7AvIEuAzNxDDDe8bro/PQxczyqu8CFIPONEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gLgBtsa3wJ8t/xKjueaEyvy68Tw8OHCzmqn1dq+7GDE=;
+ b=k8Uj26192tY6fnDLQv2D4MeuhA2y7qCd+qGVX7CIA1n08nPrRxXeI8h7EBUWq8dJFX7le2r7SrFDy6g/TE7o2TUTulKNa5WkiUWa1/aLmtXeRH6VagpFzIV2DKItYPqO+31nEQMKt3H2kprFKliK+4O4OizsZEVuhDJir8G5sbdr6xDuLViBqIz7sNrf/W2/93eT6bTaz89YPH4CXP6eHCA/pFzvzCLokCjLPfMqU+pz4EzOOu/gFmwXHAimXDd9fscwUffiE8EDfT9gp+OWNJpfUqpkB+0NGQpcPA6tMnDyG8i2s4qE7TXzqwZ4ykcZeQEWZs2Q8xrZE24ge9qkMg==
+Received: from DM6PR11CA0056.namprd11.prod.outlook.com (2603:10b6:5:14c::33)
+ by DM4PR12MB5246.namprd12.prod.outlook.com (2603:10b6:5:399::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
+ 2021 11:27:36 +0000
+Received: from DM6NAM11FT031.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:14c:cafe::24) by DM6PR11CA0056.outlook.office365.com
+ (2603:10b6:5:14c::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Tue, 21 Sep 2021 11:27:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ DM6NAM11FT031.mail.protection.outlook.com (10.13.172.203) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 11:27:35 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 21 Sep
+ 2021 11:27:35 +0000
+Received: from dhcp-10-19-66-63.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 21 Sep 2021 04:27:31 -0700
+From:   Bitan Biswas <bbiswas@nvidia.com>
+To:     <krzysztof.kozlowski@canonical.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>,
+        <jassisinghbrar@gmail.com>, <p.zabel@pengutronix.de>
+CC:     <skomatineni@nvidia.com>, <broonie@kernel.org>,
+        <linus.walleij@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Bitan Biswas <bbiswas@nvidia.com>
+Subject: [PATCH V1 0/3] Add tegra header license and dt-bindings Copyright
+Date:   Tue, 21 Sep 2021 04:27:13 -0700
+Message-ID: <20210921112716.3007-1-bbiswas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210801203122.3515-2-himadrispandya@gmail.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56a16d45-63bb-41d8-d7e5-08d97cf2cfc7
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5246:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB524635BB54471BC503DF5543D7A19@DM4PR12MB5246.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tItkWY0gTYxbOdV7/TMI+/eYS0M5SHDpIdxACaam5+5OsMtrDHlsZ0bYNDgwg8tXvZfbACau8hUW4gfw+r7hJ9NmkIKlQp1lDCOK6RtyLKNorprTlQ56btbXOc7EhDvtbrWVEai8awAbEAuFGwSpub65VR6Yrk7PUavUilJH5XazEb3s5GMrSZE5QlRIXpR/LRWfG/4KxqDSUvpwIRx9LOICMm6zbZItpNisCMwn/ZUNqXfgCzlHOMT+BP+RSzxfvb3LoybQ2yq8V8zr5xQV2i9tU3Fqh8y/NeVCoFaV+X9BIs3aN2M+ICuLhFV4cymc/OP5XpeaW+eG9TH2FWTB5ho9ij6hWkFk4Vvpi1VMUuty82YO1zK1pE7E5Nuj2CkAD20w4Amk+0NYDigDOKuG0nIBobuGV/HOE+rSUd2A1DTqJDW5PjmgnUfmurK1XHNTJh38IGRTt8mX5fUXK7A+zFbr84CTXkJ2+9HvdeozlRMECz5kf/ow9a8QhMSn51yjSReD7jhQCHDWNm1MBkDTn4n5cEY/uEnMdq5DmZci1GWMLQP+aY8ELiH8Y/TZkI89EquL38VxZJBzN8CCPwZuE+cVRwrXOEAtAOdltLYpvWtCHwxcL3C03w0N1tQBGLxdLvGwuhSc/EM+wt+rUEpzUzLITZJhAwmui+w32Udq//Dk5RFo4gV9vec5SP/roidVmpse5yISU0nXfiW4MSGydA==
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(336012)(70206006)(47076005)(5660300002)(356005)(8936002)(83380400001)(508600001)(1076003)(70586007)(7696005)(426003)(82310400003)(36860700001)(36756003)(36906005)(186003)(54906003)(110136005)(26005)(316002)(2906002)(107886003)(7636003)(4326008)(8676002)(6666004)(2616005)(86362001)(7416002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 11:27:35.8466
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56a16d45-63bb-41d8-d7e5-08d97cf2cfc7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT031.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5246
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:01:17AM +0530, Himadri Pandya wrote:
-> usb_control_msg_send/recv are new wrapper functions for usb_control_msg()
-> that have proper error checks for short read/writes.
+Few Tegra header file are missing license text.
+Some Tegra dt-bindings header do not have Copyright.
+Add license and Copyright for such Tegra header files.
 
-There no need for any special handling of short writes. Testing against
-against negative errno is all that's needed.
+Bitan Biswas (3):
+  dt-bindings: tegra: memory,bpmp-thermal: add SPDX license
+  trace: events: tegra_apb_dma: add SPDX license identifier
+  dt-bindings: tegra: clock,memory,thermal: add header Copyright
 
-> These functions
-> can also accept data buffer on stack. Hence use these functions to have
-> more robust error checks, and to reduce kernel memory usage for usb
-> messages.
+ include/dt-bindings/clock/tegra114-car.h            | 4 ++++
+ include/dt-bindings/clock/tegra124-car-common.h     | 4 ++++
+ include/dt-bindings/clock/tegra124-car.h            | 4 ++++
+ include/dt-bindings/clock/tegra186-clock.h          | 6 ++++++
+ include/dt-bindings/clock/tegra20-car.h             | 4 ++++
+ include/dt-bindings/clock/tegra210-car.h            | 4 ++++
+ include/dt-bindings/clock/tegra30-car.h             | 4 ++++
+ include/dt-bindings/gpio/tegra-gpio.h               | 4 ++++
+ include/dt-bindings/gpio/tegra186-gpio.h            | 4 ++++
+ include/dt-bindings/mailbox/tegra186-hsp.h          | 4 ++++
+ include/dt-bindings/memory/tegra114-mc.h            | 6 ++++++
+ include/dt-bindings/memory/tegra124-mc.h            | 6 ++++++
+ include/dt-bindings/memory/tegra186-mc.h            | 7 +++++++
+ include/dt-bindings/memory/tegra194-mc.h            | 7 +++++++
+ include/dt-bindings/memory/tegra210-mc.h            | 6 ++++++
+ include/dt-bindings/memory/tegra30-mc.h             | 6 ++++++
+ include/dt-bindings/pinctrl/pinctrl-tegra-xusb.h    | 6 ++++++
+ include/dt-bindings/reset/tegra124-car.h            | 4 ++++
+ include/dt-bindings/reset/tegra210-car.h            | 4 ++++
+ include/dt-bindings/thermal/tegra124-soctherm.h     | 4 ++++
+ include/dt-bindings/thermal/tegra186-bpmp-thermal.h | 5 +++++
+ include/dt-bindings/thermal/tegra194-bpmp-thermal.h | 5 +++++
+ include/trace/events/tegra_apb_dma.h                | 1 +
+ 23 files changed, 109 insertions(+)
 
-I'd rephrase this along the lines of "to simplify error handling for
-short reads".
+-- 
+2.17.1
 
-Also, you're not reducing kernel memory usage, you're just moving the
-allocation to be handled by the wrapper instead.
-
-> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-> ---
-> Changes in v2:
->  - Fix callers of ch341_control_out() and ch341_control_in()
->  - Remove label "out"
->  - Remove an unnecessary assignment statement
-> ---
->  drivers/usb/serial/ch341.c | 97 ++++++++++++--------------------------
->  1 file changed, 29 insertions(+), 68 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/ch341.c b/drivers/usb/serial/ch341.c
-> index 2db917eab799..c6f7ff9ca8ae 100644
-> --- a/drivers/usb/serial/ch341.c
-> +++ b/drivers/usb/serial/ch341.c
-> @@ -113,10 +113,10 @@ static int ch341_control_out(struct usb_device *dev, u8 request,
->  	dev_dbg(&dev->dev, "%s - (%02x,%04x,%04x)\n", __func__,
->  		request, value, index);
->  
-> -	r = usb_control_msg(dev, usb_sndctrlpipe(dev, 0), request,
-> -			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
-> -			    value, index, NULL, 0, DEFAULT_TIMEOUT);
-> -	if (r < 0)
-> +	r = usb_control_msg_send(dev, 0, request,
-> +				 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
-> +				 value, index, NULL, 0, DEFAULT_TIMEOUT, GFP_KERNEL);
-> +	if (r)
->  		dev_err(&dev->dev, "failed to send control message: %d\n", r);
->  
->  	return r;
-
-Since ch341_control_out() does not take a data buffer argument, there's
-no need to use the new helper which only adds an extra function call.
-
-Note that this function already return 0 on success or a negative errno
-on errors.
-
-> @@ -131,23 +131,13 @@ static int ch341_control_in(struct usb_device *dev,
->  	dev_dbg(&dev->dev, "%s - (%02x,%04x,%04x,%u)\n", __func__,
->  		request, value, index, bufsize);
->  
-> -	r = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0), request,
-> -			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
-> -			    value, index, buf, bufsize, DEFAULT_TIMEOUT);
-> -	if (r < (int)bufsize) {
-> -		if (r >= 0) {
-> -			dev_err(&dev->dev,
-> -				"short control message received (%d < %u)\n",
-> -				r, bufsize);
-
-You're also removing this error message. It should at least be
-mentioned somewhere that short reads will now simply be reported as
--EREMOTEIO with no indication of how short the transfer was.
-
-That's usually just fine, but I'm currently dealing with another driver
-where a short read can be used to differentiate between device types as
-an example.
-
-> -			r = -EIO;
-> -		}
-> -
-> -		dev_err(&dev->dev, "failed to receive control message: %d\n",
-> -			r);
-> -		return r;
-> -	}
-> +	r = usb_control_msg_recv(dev, 0, request,
-> +				 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
-> +				 value, index, buf, bufsize, DEFAULT_TIMEOUT, GFP_KERNEL);
-> +	if (r)
-> +		dev_err(&dev->dev, "failed to receive control message: %d\n", r);
->  
-> -	return 0;
-> +	return r;
->  }
->  
->  #define CH341_CLKRATE		48000000
-> @@ -287,23 +277,19 @@ static int ch341_set_handshake(struct usb_device *dev, u8 control)
->  static int ch341_get_status(struct usb_device *dev, struct ch341_private *priv)
->  {
->  	const unsigned int size = 2;
-> -	char *buffer;
-> +	u8 buffer[2];
->  	int r;
->  	unsigned long flags;
->  
-> -	buffer = kmalloc(size, GFP_KERNEL);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
->  	r = ch341_control_in(dev, CH341_REQ_READ_REG, 0x0706, 0, buffer, size);
-> -	if (r < 0)
-> +	if (r)
->  		goto out;
->  
->  	spin_lock_irqsave(&priv->lock, flags);
->  	priv->msr = (~(*buffer)) & CH341_BITS_MODEM_STAT;
->  	spin_unlock_irqrestore(&priv->lock, flags);
->  
-> -out:	kfree(buffer);
-> +out:
->  	return r;
-
-Just return r in the error path above and drop the label.
-
->  }
->  
-> @@ -312,21 +298,17 @@ out:	kfree(buffer);
->  static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
->  {
->  	const unsigned int size = 2;
-> -	char *buffer;
-> +	u8 buffer[2];
->  	int r;
->  
-> -	buffer = kmalloc(size, GFP_KERNEL);
-> -	if (!buffer)
-> -		return -ENOMEM;
-> -
->  	/* expect two bytes 0x27 0x00 */
->  	r = ch341_control_in(dev, CH341_REQ_READ_VERSION, 0, 0, buffer, size);
-> -	if (r < 0)
-> +	if (r)
->  		goto out;
->  	dev_dbg(&dev->dev, "Chip version: 0x%02x\n", buffer[0]);
->  
->  	r = ch341_control_out(dev, CH341_REQ_SERIAL_INIT, 0, 0);
-> -	if (r < 0)
-> +	if (r)
->  		goto out;
->  
->  	r = ch341_set_baudrate_lcr(dev, priv, priv->baud_rate, priv->lcr);
-> @@ -335,7 +317,7 @@ static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
->  
->  	r = ch341_set_handshake(dev, priv->mcr);
->  
-> -out:	kfree(buffer);
-> +out:
->  	return r;
->  }
-
-Same here (even if you need to touch the other error paths).
-
-> @@ -647,23 +613,19 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
->  	struct ch341_private *priv = usb_get_serial_port_data(port);
->  	int r;
->  	uint16_t reg_contents;
-> -	uint8_t *break_reg;
-> +	uint8_t break_reg[2];
->  
->  	if (priv->quirks & CH341_QUIRK_SIMULATE_BREAK) {
->  		ch341_simulate_break(tty, break_state);
->  		return;
->  	}
->  
-> -	break_reg = kmalloc(2, GFP_KERNEL);
-> -	if (!break_reg)
-> -		return;
-> -
-> -	r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG,
-> -			ch341_break_reg, 0, break_reg, 2);
-> -	if (r < 0) {
-> +	r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG, ch341_break_reg, 0,
-> +			     break_reg, 2);
-
-Drop this unrelated style change (which creates a line > 80 chars too).
-
-> +	if (r) {
->  		dev_err(&port->dev, "%s - USB control read error (%d)\n",
->  				__func__, r);
-> -		goto out;
-> +		return;
->  	}
->  	dev_dbg(&port->dev, "%s - initial ch341 break register contents - reg1: %x, reg2: %x\n",
->  		__func__, break_reg[0], break_reg[1]);
-> @@ -681,11 +643,10 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
->  	reg_contents = get_unaligned_le16(break_reg);
->  	r = ch341_control_out(port->serial->dev, CH341_REQ_WRITE_REG,
->  			ch341_break_reg, reg_contents);
-> -	if (r < 0)
-> +	if (r)
->  		dev_err(&port->dev, "%s - USB control write error (%d)\n",
->  				__func__, r);
-> -out:
-> -	kfree(break_reg);
-> +	return;
-
-No need for return at the end of a void function.
-
->  }
->  
->  static int ch341_tiocmset(struct tty_struct *tty,
-
-Johan
