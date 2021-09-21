@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1FB412F54
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1379412F56
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhIUHY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhIUHY5 (ORCPT
+        id S230224AbhIUHZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:25:28 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36912
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230136AbhIUHZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:24:57 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C364C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:29 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id u18so34537053wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E97PWu1QJ5hdQHmoBSfMiWuxBrgHJJjYxk0uU7J2ovA=;
-        b=yQR5s4TC77kehL4CL25xRK6A5CmqCDmqjYv5vKcOB6OmYAKyKxI1JRGNxNbphDZT1F
-         GrORsk46jhreY6HXTXONjFtFKTsgzfDqCMKb+5NW5sW7oX5sqk+X5d177JPd815kS/Oe
-         OZXawrXYiXvOYwWTen/fQfO1oJYkzQTFeOi0vsMSFnOrBG9UXARTnK/O13B7S9EOuW78
-         IoxSFnl1G1aeo5DkxIJ+e/WuVTqrfKolzZpvpB+Sbgsr3xof3VXLHVTy0QkOU8mXlnW7
-         79r9/VZDuh089EymDcemhjWMISOLg94M1OnJiC0krmTBm5XNPoBNsMJaDrMh51FiXWAb
-         VP9A==
+        Tue, 21 Sep 2021 03:25:25 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 165CA3F32A
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:23:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632209037;
+        bh=FaHcDpk+u1VpWt5lbH8rjwnBsNSsw93jdeErzZSXmg0=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=BZl8mZnyi5Yq4N8T7f43iRmSjP3STi84eNkGzG7qsmYItgCP18CQLa5jBH4TOEIkJ
+         m+eqOWBq3/SXJN7yvPQoEVbzjB3mHahlGtm7JOOBinCGbkx1/PdeL28ndiZiSoNt5Q
+         6L9pa2LED8FpIiYQNgwZgd8K0ojyZ5NG4zeB6XUcZSa0oeLIumyi03Rc5AiJ1rVF/X
+         mp3U9q25yU1GWDU3bCqejh06Cse8mx+vpff9pe5Ap6f8uLZI22NHTZFkWj+Ru8isBQ
+         cO+++DBUKeKJva7gLa2+Pv4iqPhAQgCp9y8OZRVmSLaBJYnQnyNt/cJCgm1Ego+ahn
+         xxnAlY6gowtVw==
+Received: by mail-wr1-f69.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so8051023wrt.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E97PWu1QJ5hdQHmoBSfMiWuxBrgHJJjYxk0uU7J2ovA=;
-        b=I9LEbufIU+aF8NvINx/EYbha5+y4FmvsEuDrrEDs7Z1YvbzH7NQ6dS4jPYoNLl3/au
-         Z17pRWHnpQY6amrkWVW9FKVJpvrILLkdxn9CK3EJjOYbEz1KHS26mkSLdL35lSWlhKVT
-         04c3/jLjosnZl9/5QHzuDeWjRZHAGuvnXauzqXFpIX88jlWe0ZV9B7bXEh0RrF6asecQ
-         NYNSTgToznpIegexpG5BvjyZNswZ7p3xqUgSjGlgS7zoRapARunFvEl22opfsG9lA+lv
-         PJOHyDClM+lk84wdqdpm8SFc2gfMwdJB95VtlnKPTiGvs0HnlXQ8XS8Fhsw7ob1xiQgg
-         eoIg==
-X-Gm-Message-State: AOAM532xQNNjr/XVJWX1n4a9J+cmYixZ4hJ7lyhQBgnR582B1WRPtDil
-        ij0ekyz+87XR0/dwhCOg+CwdxQ==
-X-Google-Smtp-Source: ABdhPJyPP4WobqDOrLMj2ZP+kjgLUqYmCqgy43N+dLV6Id1U1Y3D+Xugng5+ZIAd4qHZ8jUxjMgx4g==
-X-Received: by 2002:a5d:4803:: with SMTP id l3mr33269067wrq.61.1632209008019;
-        Tue, 21 Sep 2021 00:23:28 -0700 (PDT)
-Received: from localhost.localdomain (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
-        by smtp.gmail.com with ESMTPSA id o19sm9725878wrg.60.2021.09.21.00.23.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 00:23:27 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     Anand Moon <linux.amoon@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        devicetree@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>
-Subject: Re: [PATCHv2 0/3] Fix the pwm regulator supply properties
-Date:   Tue, 21 Sep 2021 09:23:26 +0200
-Message-Id: <163220899063.36285.13600700816269701023.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210919202918.3556-1-linux.amoon@gmail.com>
-References: <20210919202918.3556-1-linux.amoon@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FaHcDpk+u1VpWt5lbH8rjwnBsNSsw93jdeErzZSXmg0=;
+        b=B55MzYiZ+vmArmjJlyGePXIlduS604jt4bjG9BNlQclJ+3FcSPrDJqS14eOTkKCEHR
+         U30RLSwRqf/9TecLWtLfhobQPODZiDfH1qIOH0ghr8NEFtbNHQ2RiTn+cW93J47wdbM5
+         LTGbZSQmenSDnkqsb6ugzqo1TwW4JNTzoPwjjTP138NWRtcbB8kREvrtvpYsBJd5pN21
+         4T8aMO/qVRRMl/KaOPBitXsInMC1Dbcl7g93Yl78uKPcBkDmHfDmviGkuksToCRPWypN
+         qhtRTvNhm1CNDOvZCLnza5zwHiFW/UlIeNMM1CJ3tIfcOEvwhEt+sp3kPt7rLsZoehd6
+         BOrA==
+X-Gm-Message-State: AOAM532KidneYL925HL0w60QwyrcrwBB71Y2ETA2aSFe3IB4loMUxh+m
+        dIWWbQG/ngd7wiJ8vpdMJpSBc1cdoe7WdfPJF5yF/BRErebj5d6ol19q1a7wxVhDoQXz5feIClv
+        6cmBtOzYsJ5USelq+kURGDT77eXZ6vMTAP/iWqzVgyA==
+X-Received: by 2002:a5d:6503:: with SMTP id x3mr33696774wru.76.1632209036701;
+        Tue, 21 Sep 2021 00:23:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIt6Xvm6FM45NoflFQPUnxuEX7g4Z3WCiYjoS2cooa5lMLDgpEqp+kpteu59gYfReRS0VpXQ==
+X-Received: by 2002:a5d:6503:: with SMTP id x3mr33696759wru.76.1632209036525;
+        Tue, 21 Sep 2021 00:23:56 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id x5sm2367351wmk.32.2021.09.21.00.23.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 00:23:56 -0700 (PDT)
+Subject: Re: [PATCH v1 2/4] soc: samsung: change SOC_SAMSUNG default config
+ logic
+To:     Will McVicker <willmcvicker@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20210920190350.3860821-1-willmcvicker@google.com>
+ <20210920190350.3860821-3-willmcvicker@google.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <2b48a41a-9130-b4cc-40d3-0bc7930ac76a@canonical.com>
+Date:   Tue, 21 Sep 2021 09:23:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920190350.3860821-3-willmcvicker@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 20/09/2021 21:03, Will McVicker wrote:
+> Switch the default logic to enable SOC_SAMSUNG and it's sub-configs to
+> be enabled by default via "default y if ARCH_EXYNOS" versus being
+> selected by the ARCH_EXYNOS config directly. This allows vendors to
+> disable these configs if they wish and provides additional flexibility
+> to modularize them in the presence of a generic kernel.
 
-On Sun, 19 Sep 2021 20:29:08 +0000, Anand Moon wrote:
-> Changes PWM supply properties help fix internal link of PWM to
-> main 12V supply as per the shematics.
+This is not true. Vendors cannot disable these options as they are not
+visible. Although I understand that Arnd prefers this way and I do not
+object it, but your explanation is incorrect.
 > 
-> V1: https://lkml.org/lkml/2021/6/29/288
+> There are no .config differences with this change. The configs
+> SOC_SAMSUNG, EXYNOS_CHIPID, EXYNOS_PM_DOMAINS, and EXYNOS_PMU still
+> remain enabled by default.
 > 
-> Thanks
-> -Anand
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
+> ---
+>  arch/arm64/Kconfig.platforms | 4 ----
+>  drivers/soc/samsung/Kconfig  | 4 ++++
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> [...]
+> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+> index 3a66ed43088d..6a006490c9b9 100644
+> --- a/arch/arm64/Kconfig.platforms
+> +++ b/arch/arm64/Kconfig.platforms
+> @@ -91,14 +91,10 @@ config ARCH_BRCMSTB
+>  
+>  config ARCH_EXYNOS
+>  	bool "ARMv8 based Samsung Exynos SoC family"
+> -	select EXYNOS_CHIPID
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
+This will conflict with:
+https://lore.kernel.org/linux-samsung-soc/CAGOxZ50i6URzUQ7o7V4m7MR=2TqSeD6qx5fQaQDs+5nEq4fa2A@mail.gmail.com/T/#t
 
-[1/3] arm64: dts: meson-g12a: Fix the pwm regulator supply properties
-      https://git.kernel.org/amlogic/c/085675117ecf5e02c4220698fd549024ec64ad2c
-[2/3] arm64: dts: meson-g12b: Fix the pwm regulator supply properties
-      https://git.kernel.org/amlogic/c/62183863f708c2464769e0d477c8ce9f3d326feb
-[3/3] arm64: dts: meson-sm1: Fix the pwm regulator supply properties
-      https://git.kernel.org/amlogic/c/0b26fa8a02c2834f1fa8a206a285b9f84c4ad764
+Build on top of it, please.
 
--- 
-Neil
+
+Best regards,
+Krzysztof
