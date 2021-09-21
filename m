@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA73412D23
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4A1412B9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347755AbhIUC4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351606AbhIUCkG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:40:06 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54663C08E9AC;
-        Mon, 20 Sep 2021 19:16:29 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id u8so23935592lff.9;
-        Mon, 20 Sep 2021 19:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bklc5LnpHbXXRZG1hQdUHVP8Fhs6SyMfJaYgRp3O//E=;
-        b=dsm+JAsusa9xNL32okfaioo2aQiS0BiadMNz2FsHDp4+QLFvhoqOtZD2YVdfKQa7JJ
-         7STYnQPwVTnDXCgGt+S/ckrydR/yId4oG8qMJ2JiRP2H1GTMMmYI0bxP0LtiW8zTzA63
-         6OIks84cyz5jmCMphJy9tqgSq2ooXxjs1GVEs+hSauO5dLdjFXJ71uvdXqZoeMdAtQSu
-         C/ciiqyA1BFQmJnpmSnm9vmzYHldMU+aAG98k1K3rDVb14bnkQVkB9dSff2yw5Lk1Dj8
-         F1HyMHHa8w09chMVw9dReBuFUR+NsQtgYPV4mMMCsLI1bhJuZOOXfOfCIm2RprYtD5xu
-         lmcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bklc5LnpHbXXRZG1hQdUHVP8Fhs6SyMfJaYgRp3O//E=;
-        b=IE999Vk1PVQtgayOLHgkKAljAbzRQqYQ/5O9gZYVJU5GWlszfkEm+pPeBYgJQzrqux
-         hE0RybDy2/wLJ3E+4QjxmP/oKcx9aBG27borDBWminWbVl4LEIYC3Ch0Dl9ko1Je1qor
-         lnCzMioBBwquLZw5ZrV4OLitMUURVZFL3h/6bKpl9YfyCPqYC1RKI6YPfA3VuBBXS5l+
-         cos0R9TODmmxIx9CoasYgBtxWKqMdvnCnC2j9v0HhMnErT1UQ60fOBDllO5oSTvsdW1c
-         irvzhP785ktolgfXCsIpMeuEtb7jxa5C7RhBqM6ezk7ObI6+6rrCgEmg7yyKQtzKTCXy
-         Tofg==
-X-Gm-Message-State: AOAM531knN+ZZIUTQtWNwfXu4T/RHLwDtUZQp/hK20hvJULCnKcA5Kzb
-        azbNMbZmrdmP1+BrtcWMp2vv/oEl58meZsJASM323RTr
-X-Google-Smtp-Source: ABdhPJyzjfrt4j2H+fAlrXP+MgZcR4mnt936HzL/meXUT4p6FFtd+99NoogxeE2WrucliHMlrGKm83XD00j7mCVYiqQ=
-X-Received: by 2002:ac2:44b6:: with SMTP id c22mr7348048lfm.601.1632190587579;
- Mon, 20 Sep 2021 19:16:27 -0700 (PDT)
+        id S1347601AbhIUCVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:21:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344291AbhIUCUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 22:20:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 946B461245;
+        Tue, 21 Sep 2021 02:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632190750;
+        bh=Z+11tE516+e0V1bcSE+sqc/byA+rMuk9RbFhyqq7PYk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d90ZZKy8uQqKCKsdlcPvk8V+Wg37YRYMGkKcES9+Dp7tMmqpK2DNANFneNOaJcTI2
+         b4ZDwbRcpjJEi59AMJct89FFTyI2XQW4U9OVG94kCpYOwKDtoGxIhrZlFEkfukoQmJ
+         LVcx4Of36Y+mtMne9kJFCnfjgN6NS0kQnG+SRqLlC01hSPA4UAKh2FaFK8hmeTPGr4
+         u4KgNPsbR2urWO0se7ZrGB+6/jd1GfpBe2FRo9FVU6f1MJIb8X2jCdbh8Sv1pDd+Hl
+         i4qvy5Uyr2VqLXN8sv0VpTZHYtbCOGjhcAZDU/DJTWaGXnZQbwKgVg+ZCO8QyLw+Wy
+         Mqc3qkth7VV4g==
+Date:   Tue, 21 Sep 2021 05:19:06 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
+Message-ID: <YUlBGk2Mq3iYhtku@unreal>
+References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
+ <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <CAH2r5mvu5wTcgoR-EeXLcoZOvhEiMR0Lfmwt6gd1J1wvtTLDHA@mail.gmail.com>
- <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
-In-Reply-To: <CAHk-=wi6_m_d88kx7wWYQS+waEk6hv5szwFYvy2PjP1naj87Hw@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Mon, 20 Sep 2021 21:16:16 -0500
-Message-ID: <CAH2r5ms0P9r6N_Tqw02TtpmHXaiJejdQgL2Rur1GMP=tyr0CMg@mail.gmail.com>
-Subject: Re: [GIT PULL] ksmbd server security fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Namjae Jeon <linkinjeon@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 5:46 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, Sep 19, 2021 at 7:22 AM Steve French <smfrench@gmail.com> wrote:
-> >
-> > 3 ksmbd fixes: including an important security fix for path
-> > processing, and a missing buffer overflow check, and a trivial fix for
-> > incorrect header inclusion
-> >
-> > There are three additional patches (and also a patch to improve
-> > symlink checks) for other buffer overflow cases that are being
-> > reviewed and tested.
->
-> Note that if you are working on a path basis, you should really take a
-> look at our vfs lookup_flags, and LOOKUP_BENEATH in particular.
+On Mon, Sep 20, 2021 at 02:04:07PM -0700, Jakub Kicinski wrote:
+> On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:
+> > On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > 
+> > > devlink_register() can't fail and always returns success, but all drivers
+> > > are obligated to check returned status anyway. This adds a lot of boilerplate
+> > > code to handle impossible flow.
+> > > 
+> > > Make devlink_register() void and simplify the drivers that use that
+> > > API call.  
+> > 
+> > Unlike unused functions bringing back error handling may be
+> > non-trivial. I'd rather you deferred such cleanups until you're 
+> > ready to post your full rework and therefore give us some confidence 
+> > the revert will not be needed.
+> 
+> If you disagree you gotta repost, new devlink_register call got added
+> in the meantime.
 
-This was also something that Ralph brought up, and Namjae is looking
-at now.
+This is exactly what I afraid, new devlink API users are added faster
+than I can cleanup them.
 
-> The way to deal with '..' and symlinks is not to try to figure it out
-> yourself. You'll get it wrong, partly because the races with rename
-> are quite interesting. The VFS layer knows how to limit pathname
-> lookup to the particular directory you started in these days.
->
-> Of course, that is only true for the actual path lookup functions.
-> Once you start doing things manually one component at a time yourself,
-> you're on your own.
+For example, let's take a look on newly added ipc_devlink_init(), it is
+called conditionally "if (stage == IPC_MEM_EXEC_STAGE_BOOT) {". How can
+it be different stage if we are in driver .probe() routine?
 
-Agreed.  Also FYI I removed the "ksmbd: Use LOOKUP_NO_SYMLINKS"
-changeset from for-next (I left the first two buffer validation changesets
-in, since those have been reviewed), since Namjae is working on
-an updated version following your suggestion (and others' review feedback).
+They also introduced devlink_sio.devlink_read_pend and
+devlink_sio.read_sem to protect from something that right position of
+devlink_register() will fix. I also have serious doubts that their
+current protection is correct, once they called to devlink_params_publish()
+the user can crash the system, because he can access the parameters before
+they initialized their protection.
 
--- 
-Thanks,
+So yes, I disagree. We will need to make sure that devlink_register()
+can't fail and it will make life easier for everyone (no need to unwind)
+while we put that command  being last in probe sequence.
 
-Steve
+If I repost, will you take it? I don't want to waste anyone time if it
+is not.
+
+Thanks
