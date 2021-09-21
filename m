@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF5C4137B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C7B4137B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhIUQll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:41:41 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:12173 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIUQlj (ORCPT
+        id S229573AbhIUQm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:42:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59554 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhIUQmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:41:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632242402;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=O59OMJ7jgr0cc2k0rt+xGJpk+MfxqU0dBMMc8r48QcQ=;
-    b=poG6h4706jl6ObZS4sshaluwzoDngoH29I5ZE4pvRpaj/FiJ15RSTzsDz+sMLIOHmS
-    ODoUTLyLojOM25x+WzJuQ4wzVXiHBC0ZWIMd5cq45Vnb2ZgjgfiKUbugmtgdEvL5jRv6
-    zLENmfcwzWWQFV3a4AoJbT+TwzxrAij09d0EZfsClYf8qFqsUqlwjpd2caJbDHYS18LS
-    vvrMtWArVhSaOMXJFSpCoEMO4/OEcmGOhPSbtJdBVBHbSqqYjjt8G3/Qda5ExujVMI8y
-    nId5CqDtMw49J3IpZx8beGiC3PR7R0zzPMLZDN9OP3G46LJtF8qDmhbAKkmBJLqyRWDV
-    CGAA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NIGH/jrwDOpYIw="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8LGe28Mt
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 21 Sep 2021 18:40:02 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
-Date:   Tue, 21 Sep 2021 18:40:01 +0200
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Suman Anna <s-anna@ti.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7C582E1F-13F6-4432-AE99-FF9B7EE9B06D@goldelico.com>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
- <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
- <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
- <YUmOGFUFONR/ynfW@atomide.com> <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Tony Lindgren <tony@atomide.com>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Tue, 21 Sep 2021 12:42:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 12CFF2217A;
+        Tue, 21 Sep 2021 16:41:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1632242485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y9/p8UT6XMNyd/8OKyW671IeFdUR2a1ME2bzSTT0Uaw=;
+        b=IRaI7Sop8R0IUfhVkJtQBCHmbLiGjy36ZuVEP5ygv1Xm9I9+SpYjd27VylKbwrZRZae0at
+        uz8Que0alKaogm0WE7kgUOzTD4ONQdDaYBbBbBCmzJCnHwqgns3V3eIS+Eq3heOWRupRab
+        Bz3NmaukG9Nh3aYxLKybPxFHZ8mtnsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1632242485;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y9/p8UT6XMNyd/8OKyW671IeFdUR2a1ME2bzSTT0Uaw=;
+        b=KNCm8PafKIQyPfmcUJjMb2zIrWnMk2D7TbKpOxfAQK4ZbbBuN2vX9qPmZghVZYvoUWxsQF
+        oNC7WZXgwnfgauAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id B2223A3B90;
+        Tue, 21 Sep 2021 16:41:24 +0000 (UTC)
+Date:   Tue, 21 Sep 2021 18:41:24 +0200
+Message-ID: <s5h35px98zv.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        gushengxian <gushengxian@yulong.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usx2y: Prefer struct_size over open coded arithmetic
+In-Reply-To: <20210919133727.44694-1-len.baker@gmx.com>
+References: <20210919133727.44694-1-len.baker@gmx.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matti, Tony,
+On Sun, 19 Sep 2021 15:37:27 +0200,
+Len Baker wrote:
+> 
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> In this case this is not actually dynamic size: all the operands
+> involved in the calculation are constant values. However it is better to
+> refactor this anyway, just to keep the open-coded math idiom out of
+> code.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + size * count" in the kzalloc() function.
+> 
+> Also, take the opportunity to refactor the declaration variables to make
+> it more easy to read.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-> Am 21.09.2021 um 18:07 schrieb Suman Anna <s-anna@ti.com>:
->=20
-> Hi Matti, Tony,
->=20
-> On 9/21/21 2:47 AM, Tony Lindgren wrote:
->> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
->>> Finally, adding the udelay(100); (as Tony suggested) at the end of =
-the
->>> omap_reset_deassert() did make the oops go away even when pruss_tm =
-was
->>> enabled. I don't know what would be a proper fix though.
->=20
-> I have been able to boot v5.15-rc1 just fine on my BBB without any =
-additional
-> changes [1].
+Thanks, applied.
 
-Same for me with a v5.15-rc1 based kernel.
 
-> May I ask what is your BBB board version? My board is rev.A5C.
-
-I have an Rev B6 with EXP41 display attached. I think Matti reported a =
-Rev C board?
-
-> I vaguely remember from all those years ago when I first enabled PRUSS =
-on AM335x
-> that some earlier BBB versions had some issues around PRUSS.
-
-What I am not using is PRUSS so it may (or may not) be disabled in =
-CONFIG.
-
-BR,
-Nikolaus=
+Takashi
