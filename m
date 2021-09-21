@@ -2,135 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0954C4136DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD184136DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234357AbhIUQAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:00:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234329AbhIUQAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:00:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B83C61090;
-        Tue, 21 Sep 2021 15:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632239947;
-        bh=MBdwhTmywQnQabtIak3fC2dXUw2SZCLuf7QB3uKAk2U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTUK3RLOnpvyUdrBajnRxOW36VZ/aQrmLIbt/uzyjCrxMO98i5jY0nnSR4eIzVuHt
-         Q7+hCwV7c/9l3Jsd/rU3BY1mmS0T2q2Z9vuN0OrgVGGVD1ybnrDZHpm1JNbfKKJZec
-         ZIcURCGA2QrwiPL0CMaQqmTc2ARdaQbTkUKIyhaU=
-Date:   Tue, 21 Sep 2021 17:59:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] drivers/acpi: Introduce Platform Firmware Runtime
- Update device driver
-Message-ID: <YUoBSRrAyaHOCNHb@kroah.com>
-References: <cover.1631802162.git.yu.c.chen@intel.com>
- <90d270c031401430445cb2c4ba1b9b0c265cf9d4.1631802163.git.yu.c.chen@intel.com>
+        id S234382AbhIUQBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234369AbhIUQBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:01:15 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271FBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:59:47 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id t8so40729028wrq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AtZyyTP986q5izPT5lFbv6cJ5CVeOkj7bVUgoAF+aPE=;
+        b=qn8z1Wbkql8CqtKixkOZJfHbzjeuBbinRO0kMwKxCb0qOIrbleyJ5e2P2YBme9hhQd
+         npB+D2tprMu7tQ9xPboAPoUxLWvzYj0qtGUdZWjjnX/QACr4MJjk9P6kaSN/NVT4vhSo
+         C9ODmI/mHhyqcDhULh3v0wjFyt8Uu/Elftxsz4cTyqK6mkROt3VFsJtokj4kXciRUZfX
+         OsxZgAgRk2Z8USr6T+8L0LP7KNak3SelmLNRb6o1DuePBxyc0FGr/ZG6/wccXWQhCKg4
+         fu5VLgQA3b/YaW/POQ2oM8m7kG1gdwq9KHKIwzfrYAYUI2CMm+Wbw7X6yS6nTTRLRwEq
+         3kZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AtZyyTP986q5izPT5lFbv6cJ5CVeOkj7bVUgoAF+aPE=;
+        b=uGJOt+fIVvsqW3MifORQRMi4Bvqf6Fw1XQZ3376bc7iTZL4slumGV4o/XdiK3aMsee
+         DqRDKF8zM/GlwDpEBiby3QMLj6SG8cnInsulcHlR1syJKGpdf9qmVwqjgwmxnokFiWNa
+         8T4ABSAZp8lBwK64lDsAQwyysNUw/cXXN1ut/dhN3R0d+8NF2NgoC8eQ4jB1DGwlV6Ct
+         s8+ac/n26w8ftPLga1gGQ53chnRJLjBWajFW1puLJxwPrveKBflb3hg0QHMhEjizi/HE
+         SLktAZyDQGMsxoCs7k872w+AkPfa8Wb0ARfc7UE/wg1C+OedCxSsPY+kr3xmQ+D2mMvD
+         2MTw==
+X-Gm-Message-State: AOAM533lDvzjT97Gj17m2rqkniP5uRQulx2zYuqtEt4+2UnXuzX2zAbM
+        wfCGbg0qIFx5YuDW1ag9b0Qyog==
+X-Google-Smtp-Source: ABdhPJwaROKNZrdKnelWS30U+Qu/Ae+90Y3oEspXKLXzr2302zCcSxHLGjrCndLcOXgApQye9wguvg==
+X-Received: by 2002:a5d:4f91:: with SMTP id d17mr36130015wru.285.1632239985681;
+        Tue, 21 Sep 2021 08:59:45 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id o1sm2799031wmq.26.2021.09.21.08.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 08:59:45 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 16:59:23 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Vivek Gautam <vivek.gautam@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, joro@8bytes.org,
+        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
+        eric.auger@redhat.com, kevin.tian@intel.com,
+        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
+Subject: Re: [PATCH RFC v1 02/11] iommu/virtio: Maintain a list of endpoints
+ served by viommu_dev
+Message-ID: <YUoBW13+CvIljUgc@myrica>
+References: <20210423095147.27922-1-vivek.gautam@arm.com>
+ <20210423095147.27922-3-vivek.gautam@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <90d270c031401430445cb2c4ba1b9b0c265cf9d4.1631802163.git.yu.c.chen@intel.com>
+In-Reply-To: <20210423095147.27922-3-vivek.gautam@arm.com>
+X-TUID: +1WeLErnK1xS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 12:02:18AM +0800, Chen Yu wrote:
-> Introduce the pfru_update driver which can be used for Platform Firmware
-> Runtime code injection and driver update. The user is expected to provide
-> the update firmware in the form of capsule file, and pass it to the driver
-> via ioctl. Then the driver would hand this capsule file to the Platform
-> Firmware Runtime Update via the ACPI device _DSM method. At last the low
-> level Management Mode would do the firmware update.
+On Fri, Apr 23, 2021 at 03:21:38PM +0530, Vivek Gautam wrote:
+> Keeping a record of list of endpoints that are served by the virtio-iommu
+> device would help in redirecting the requests of page faults to the
+> correct endpoint device to handle such requests.
 > 
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> ---
+>  drivers/iommu/virtio-iommu.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index 50039070e2aa..c970f386f031 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -48,6 +48,7 @@ struct viommu_dev {
+>  	spinlock_t			request_lock;
+>  	struct list_head		requests;
+>  	void				*evts;
+> +	struct list_head		endpoints;
 
-Where is the userspace code that uses this ioctl and has tested it out
-to verify it works properly?  A link to that in the changelog would be
-great to have.
+As we're going to search by ID, an xarray or rb_tree would be more
+appropriate than a list
 
-> +static void dump_update_result(struct pfru_updated_result *result)
-> +{
-> +	pr_debug("Update result:\n");
-> +	pr_debug("Status:%d\n", result->status);
-> +	pr_debug("Extended Status:%d\n", result->ext_status);
-> +	pr_debug("Authentication Time Low:%lld\n", result->low_auth_time);
-> +	pr_debug("Authentication Time High:%lld\n", result->high_auth_time);
-> +	pr_debug("Execution Time Low:%lld\n", result->low_exec_time);
-> +	pr_debug("Execution Time High:%lld\n", result->high_exec_time);
+>  
+>  	/* Device configuration */
+>  	struct iommu_domain_geometry	geometry;
+> @@ -115,6 +116,12 @@ struct viommu_endpoint {
+>  	void				*pgtf;
+>  };
+>  
+> +struct viommu_ep_entry {
+> +	u32				eid;
+> +	struct viommu_endpoint		*vdev;
+> +	struct list_head		list;
+> +};
 
-Why not dev_dbg()?  Same for all pr_* calls in this "driver".
+No need for a separate struct, I think you can just add the list head and
+id into viommu_endpoint.
 
-
-> +static long pfru_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> +{
-> +	void __user *p;
-> +	int ret = 0, rev;
 > +
-> +	p = (void __user *)arg;
+>  struct viommu_request {
+>  	struct list_head		list;
+>  	void				*writeback;
+> @@ -573,6 +580,7 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
+>  	size_t probe_len;
+>  	struct virtio_iommu_req_probe *probe;
+>  	struct virtio_iommu_probe_property *prop;
+> +	struct viommu_ep_entry *ep;
+>  	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>  	struct viommu_endpoint *vdev = dev_iommu_priv_get(dev);
+>  
+> @@ -640,6 +648,18 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
+>  		prop = (void *)probe->properties + cur;
+>  		type = le16_to_cpu(prop->type) & VIRTIO_IOMMU_PROBE_T_MASK;
+>  	}
+> +	if (ret)
+> +		goto out_free;
 > +
-> +	switch (cmd) {
-> +	case PFRU_IOC_SET_REV:
-> +		if (copy_from_user(&rev, p, sizeof(unsigned int)))
-> +			return -EFAULT;
-> +		if (!pfru_valid_revid(rev))
-> +			return -EFAULT;
-> +		pfru_dev->rev_id = rev;
-> +		break;
-> +	case PFRU_IOC_STAGE:
-> +		ret = start_acpi_update(START_STAGE);
-> +		break;
-> +	case PFRU_IOC_ACTIVATE:
-> +		ret = start_acpi_update(START_ACTIVATE);
-> +		break;
-> +	case PFRU_IOC_STAGE_ACTIVATE:
-> +		ret = start_acpi_update(START_STAGE_ACTIVATE);
-> +		break;
-> +	default:
-> +		ret = -ENOIOCTLCMD;
-
-Wrong value :(
-
-
-
-> +		break;
+> +	ep = kzalloc(sizeof(*ep), GFP_KERNEL);
+> +	if (!ep) {
+> +		ret = -ENOMEM;
+> +		goto out_free;
 > +	}
+> +	ep->eid = probe->endpoint;
+> +	ep->vdev = vdev;
 > +
-> +	return ret;
-> +}
-> +
-> +#ifdef CONFIG_COMPAT
-> +static long compat_pfru_ioctl(struct file *filep, unsigned int cmd,
-> +			      unsigned long arg)
-> +{
-> +	return pfru_ioctl(filep, cmd, arg);
-> +}
-> +#endif
+> +	list_add(&ep->list, &viommu->endpoints);
 
-Why is this compat ioctl needed at all?
+This should be in viommu_probe_device() (viommu_probe_endpoint() is only
+called if F_PROBE is negotiated). I think we need a lock for this
+list/xarray
 
-> +static struct miscdevice pfru_misc_dev = {
-> +	.minor = MISC_DYNAMIC_MINOR,
-> +	.name = "pfru_update",
-> +	.nodename = "pfru/update",
+Thanks,
+Jean
 
-Why is this in a subdirectory?  What requires this?  Why not just
-"pfru"?
-
-thanks,
-
-greg k-h
+>  
+>  out_free:
+>  	kfree(probe);
+> @@ -1649,6 +1669,7 @@ static int viommu_probe(struct virtio_device *vdev)
+>  	viommu->dev = dev;
+>  	viommu->vdev = vdev;
+>  	INIT_LIST_HEAD(&viommu->requests);
+> +	INIT_LIST_HEAD(&viommu->endpoints);
+>  
+>  	ret = viommu_init_vqs(viommu);
+>  	if (ret)
+> -- 
+> 2.17.1
+> 
