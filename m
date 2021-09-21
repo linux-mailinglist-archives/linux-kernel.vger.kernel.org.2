@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2173541360A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B97741360B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbhIUPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:22:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53824 "EHLO mail.kernel.org"
+        id S233986AbhIUPWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhIUPWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:22:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23FAA60F6D;
-        Tue, 21 Sep 2021 15:20:38 +0000 (UTC)
+        id S232704AbhIUPW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:22:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C04360F6D;
+        Tue, 21 Sep 2021 15:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632237638;
-        bh=WvJINhXcisUZky+HUN9DxgfI9FXGZMjUYALHdqdsI54=;
+        s=korg; t=1632237660;
+        bh=p8GxsjLMAWzJgEzZyJz8W9RjaO+JnWtFIUgbDcG+KpY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C9Etw3YtCOWVw9JzdGgLkkidUQJqj78YNO0MHYMvVWqv58rO0GTMuE1tWD4MyhWJy
-         +71NUacvJfBvgBdZpp02JiXZXoc+/HtcolUs5uztcIGUA780GZ9cyyWLgvKjpQGp1s
-         YuTkcsGAMnqYQDhQXem6YbirKQJB8mvsiHp8o2oM=
-Date:   Tue, 21 Sep 2021 17:20:34 +0200
+        b=wleWj54G9Yk5lr/L5BtBswf4SabM3tlyPl/6msteH/lmHno2G5vqZmcJYnYhEvT0a
+         vyEI1LCY/28vCtRRZK1rGn1Oh0ElPR6VR1Duz8xsuzv5Z5Lsyku2WU5nteyAKXC7eI
+         buc7/awPlttb8IbpRo498Vi9D98TUrc6Q69hbW8c=
+Date:   Tue, 21 Sep 2021 17:20:57 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     "Longpeng(Mike)" <longpeng2@huawei.com>
 Cc:     andraprs@amazon.com, lexnv@amazon.com, alcioa@amazon.com,
@@ -28,33 +28,35 @@ Cc:     andraprs@amazon.com, lexnv@amazon.com, alcioa@amazon.com,
         kamal@canonical.com, pbonzini@redhat.com, sgarzare@redhat.com,
         stefanha@redhat.com, vkuznets@redhat.com,
         ne-devel-upstream@amazon.com
-Subject: Re: [PATCH v2 1/4] nitro_enclaves: merge contiguous physical memory
- regions
-Message-ID: <YUn4Qq/vrqRai/FB@kroah.com>
+Subject: Re: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
+ functionality
+Message-ID: <YUn4WTDbU72tcyNY@kroah.com>
 References: <20210921151039.1502-1-longpeng2@huawei.com>
- <20210921151039.1502-2-longpeng2@huawei.com>
+ <20210921151039.1502-4-longpeng2@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921151039.1502-2-longpeng2@huawei.com>
+In-Reply-To: <20210921151039.1502-4-longpeng2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:10:36PM +0800, Longpeng(Mike) wrote:
-> There can be cases when there are more memory regions that need to be
-> set for an enclave than the maximum supported number of memory regions
-> per enclave. One example can be when the memory regions are backed by 2
-> MiB hugepages (the minimum supported hugepage size).
-> 
-> Let's merge the adjacent regions if they are physical contiguous. This
-> way the final number of memory regions is less than before merging and
-> could potentially avoid reaching maximum.
+On Tue, Sep 21, 2021 at 11:10:38PM +0800, Longpeng(Mike) wrote:
+> Add test framework for the misc functionality.
+
+What is "the misc functionality"?
+
 > 
 > Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
 > ---
->  drivers/virt/nitro_enclaves/ne_misc_dev.c | 87 ++++++++++++++++++++-----------
->  1 file changed, 58 insertions(+), 29 deletions(-)
-> 
+>  drivers/virt/nitro_enclaves/Kconfig        |  8 ++++++++
+>  drivers/virt/nitro_enclaves/ne_misc_dev.c  | 27 +++++++++++++++++++++++++++
+>  drivers/virt/nitro_enclaves/ne_misc_test.c | 17 +++++++++++++++++
+>  3 files changed, 52 insertions(+)
+>  create mode 100644 drivers/virt/nitro_enclaves/ne_misc_test.c
 
 What changed from v1?
+
+thanks,
+
+greg k-h
