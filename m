@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485E1413DC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140A4413DCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbhIUW6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
+        id S229600AbhIUXEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhIUW6a (ORCPT
+        with ESMTP id S229482AbhIUXEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:58:30 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABEAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:57:01 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so781967pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bqpSXa1bC3SUh8grq2uEmyOAGunLA8G1syV0zRquB/0=;
-        b=j2T/acSaeDxamzvs+PwEfV0JMg2R6ljc5aUzX/ln6BbTzr5bIx/fqRx+tXVkCs7p7n
-         S1+whhJBhQiQ03XMiIE5yilr9rGq8K1DhXUT8ky4uU+p3l5Ov3qGUcoH9oG/1lF9cITp
-         hBp9mBFBUu01Jsoc23lqYRRDMZldkf4La5mozqTbkU6z8GAaqjdaaOyDucTxoYxROmjz
-         vq1FxlIrnSgX6BIvvsEo6q3CCKrAkovm7cYQYuoA3mIq1+gN/QXNr6OSl2e0WxYV6oTR
-         MOOgfkoyrtuxX3h3KbVun6/kk9XJf3V2N0OP6qPuLg7UoWRS3jsuSMVYlPlKHMADMmuU
-         QJ9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bqpSXa1bC3SUh8grq2uEmyOAGunLA8G1syV0zRquB/0=;
-        b=FT7gWRKkHAbD7kp4gGMbQ3KwPm24Xe4Z6mIW3wsN2NBDRv7OU2YjnQcZr/AwiIGbjs
-         aVPji9U/zSN8443cDHm905YcUwhxNFgH8ZwkSRTvbXq92r975mMQI2RDIn1VpaZsSf0g
-         RyqetTxN4iB8D2YraCignXa6LVc2BMo5kD7kmo3n0f+DRIx7juOJgafijlgLzntAq6St
-         3vI1vXfBlI8erg7Xs+Gt97GofHQKlN7H//LwkReEg+9ULJj/hWnIUOqq91EpdMWLfwAn
-         o9bTrUwiAepwthxr9iDqrI3DBHzc8C+pBBEwjHpDsnYJ/KYyViwbTRTKfKZsgSCBlbRY
-         wCFw==
-X-Gm-Message-State: AOAM533en/d5610DDX38fSkCgkHvuvZQj1dX+2eN5Ts20TEQ2avqcwZL
-        04XtS7Jt4i+vjQS/lNUEiPuPAA==
-X-Google-Smtp-Source: ABdhPJwH6i7qtp/ZQcEIFzsXeukFyZKSJJdooX6PnRSRf7g3owTSBpnjmqWZrEn0avut5YOuh+B4hA==
-X-Received: by 2002:a17:90a:198b:: with SMTP id 11mr7744685pji.209.1632265020574;
-        Tue, 21 Sep 2021 15:57:00 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id i19sm178028pfo.101.2021.09.21.15.56.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 15:56:59 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 22:56:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, xudong.hao@intel.com
-Subject: Re: [KVM]  816be9e9be: kernel-selftests.kvm.smm_test.fail
-Message-ID: <YUpjOO3bq/SMFN7A@google.com>
-References: <20210912155933.GI25450@xsang-OptiPlex-9020>
+        Tue, 21 Sep 2021 19:04:10 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28AAC061574;
+        Tue, 21 Sep 2021 16:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1632265357;
+        bh=ymkPjnU1iq2vcqk7dsvjMfR8hRZQlMoT7JF3z1PetJU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q56ktUbwEKYtVmowgZZW/WUQHt5kLmVk3k4QybXKPLa40XrNbQI3mVN7dhPS4ROCT
+         jfPyRjzd7va+wcwvE3FwcFoTQYb6nItkhs/a9qtU5eQS5S1LPnrC/qBBwAWq/QouQQ
+         p/KKNzKHxkVCgDXDjpW8Rr6jM5lccKJCiqq/vCQBNrLYWDeJZDrR01Ov24riDfgvaq
+         ByodyDZy+bTNMHIc4VSuqxUPixgzcn62V/ZyOaIyvQ4QZ8+51gIhFa65EHXnVBxtGR
+         un5nESsCttpo4O1acrstvVohRQubiHYz5SQYEJra5KvYSp6tgQzLDriJHhm5xOhY7h
+         bHvXgrDhp5QnQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HDcQP1f3Xz9sW4;
+        Wed, 22 Sep 2021 09:02:37 +1000 (AEST)
+Date:   Wed, 22 Sep 2021 09:02:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the qcom tree
+Message-ID: <20210922090235.2a626af6@canb.auug.org.au>
+In-Reply-To: <20210921082438.26550938@canb.auug.org.au>
+References: <20210921082438.26550938@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210912155933.GI25450@xsang-OptiPlex-9020>
+Content-Type: multipart/signed; boundary="Sig_/jHfeLy=S=8+KO_ZFx=NbscC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with gcc-9):
-> 
-> commit: 816be9e9be8d2e19dcea35fbec06f00cd5749fed ("KVM: nVMX: Don't evaluate "emulation required" on nested VM-Exit")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> 
-> in testcase: kernel-selftests
-> version: kernel-selftests-x86_64-d0cba0d1-1_20210907
-> with following parameters:
-> 
-> 	group: kvm
-> 	ucode: 0xe2
-> 
-> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
-> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
-> 
-> 
-> on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 28G memory
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> 
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
+--Sig_/jHfeLy=S=8+KO_ZFx=NbscC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Maxim has a fix in the works.
+Hi all,
+
+On Tue, 21 Sep 2021 08:24:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> In commit
+>=20
+>   33c4296d99ef ("arm64: dts: qcom: sc7280: fix display port phy reg prope=
+rty")
+
+This is now commit 1a5968e5b7de.
+
+> Fixes tag
+>=20
+>   Fixes: 9886e8fd8438 ("arm64: dts: qcom: sc7280: Add USB related nodes")
+>=20
+> has these problem(s):
+>=20
+>   - Target SHA1 does not exist
+>=20
+> Maybe you meant
+>=20
+> Fixes: bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
+
+Surely if you are going to rebase the tree anyway, you can fix this up
+:-(
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/jHfeLy=S=8+KO_ZFx=NbscC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFKZIsACgkQAVBC80lX
+0GzE8Qf/Wl0mNabVOQia88CpnXxTk57zeHM+DKz808bvBz6WlMdzMID+pnwxG5UV
+UzN+Wq/8qBIviJEQhO2WtmqmJUaegKPQMXAaGEXSBR61NPz/pfjedo61LFOQ3Cww
+tpRvpfHFsPGIsy2omWrW/ZYHCXRNqLnh8RUHIebmchJ+Bf1btJWn0RhHaKoXkh72
+W6dwt7q6biHKGJOnBlPQAwvweNGRTj3kUoTocq0pdz1SQ+scNFhTQT/VySNEUWE4
+exsBksiAhr6w8ZqfdeBjHvRFwxNmAwMdG/GiEkrwjUWBwK1d61HKnGjUed2rJpdZ
+DJhUAgpan6oeVYJRF/GJrKgrLwRpeQ==
+=jCvi
+-----END PGP SIGNATURE-----
+
+--Sig_/jHfeLy=S=8+KO_ZFx=NbscC--
