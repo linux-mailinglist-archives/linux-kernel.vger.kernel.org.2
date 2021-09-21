@@ -2,205 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519C9413137
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB9041313A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhIUKHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:07:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:60068 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231521AbhIUKGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:06:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2614106F;
-        Tue, 21 Sep 2021 03:05:19 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4C3F3F59C;
-        Tue, 21 Sep 2021 03:05:17 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 11:05:12 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Harb Abdulhamid <harb@amperecomputing.com>
-Subject: Re: [PATCH v2] Revert "ACPI: Add memory semantics to
- acpi_os_map_memory()"
-Message-ID: <20210921100512.GA28390@lpieralisi>
-References: <20210910122820.26886-1-justin.he@arm.com>
- <20210910143223.6705-1-justin.he@arm.com>
- <CAMj1kXG6Gu=g8P902NB2b+OvzqwJQPqQewYX5UwMiXALYAFkDw@mail.gmail.com>
- <20210916160827.GA4525@lpieralisi>
- <20210920170055.GA13861@lpieralisi>
- <CAJZ5v0iee2j=NoPFpNstEZYJXWvFYfv22hK7QeH6+kdP6+MhLw@mail.gmail.com>
+        id S231744AbhIUKHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:07:07 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:46545 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231551AbhIUKHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:07:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1632218733; x=1663754733;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=MHtIQu5ARkIuxurd1Etbo6+zjrTtcCwrKQl7eXgFkCU=;
+  b=PDJ4IpvrCqaPjYibiHv1ynztb3FTJ9nN9fYFa2oi0D0vJewl4iaQyZAb
+   qeYSyFphxluNuNkus/5inEpK/Wwm0MMjdaljWF5/pNBkJAIUHEyZOk++l
+   COE8dpvFAqhubsAMhOlTG+rsaSqBAcXwij/DII0SyCzUY/IbM7Z8OV1jY
+   yd5pD57VRMrkQx0kde29Sud46r6tPRziCkpmtomuEg7lpieUH5YJbDJI3
+   roddmYsFXLQVI6r++lrdNQ2kfK1s4HIGq81hbMx8g1oDA9hQ+HC1P7yPL
+   940OsAlJhZpbyk/DR9NHkGiW+CnunB94ACmKt/PZ6ON/jPW2fNcbX0WWX
+   w==;
+IronPort-SDR: n+Mv+AX2wBoujDv0Q+/avb8grPugCG6V0Scl7eySYJUaAQauNvNsNk0WnJDkH5htL6UN9854L4
+ qlDePNe9ZxpBDfL9N54/86DieZzJRfgkJc/zeFhxp7NP1YS7BQNT1ie7vFme3kEzzueMnfSsf1
+ 9FoTMAyeKe6kL4dQRfS3wMda7okwJxDGUIVqbHwhiB5G9XAw/lz+lvyqTE39QWWE+l1KQt5oo8
+ NdPtLxUt860FvopWCI548wtZLQU2zKWRqn6g2mR8o5p3vZsJXFREK7Inl7el5Dm2bvZIT0hJhe
+ siBcrxdP3VacpB1BOC2PV/hM
+X-IronPort-AV: E=Sophos;i="5.85,310,1624345200"; 
+   d="scan'208";a="144954812"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Sep 2021 03:05:32 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 21 Sep 2021 03:05:32 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
+ Transport; Tue, 21 Sep 2021 03:05:31 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=khdMxG1xbG7rdERdrmFAvHaukK17Jf/QZEYg0mVTizedtOoIcwMmMml5ymuqNg8B7BUwHWryOV13uzs3fA6TN1K/Apo+wOHXWa3Fq5oSNSO0g8TGKhSEJGQSt9BLK+SDWzd/MYDoFBKF/YiTELu+dOr5Fxkt6RzW+UspR4T3knS9JmnBqhm2UBh4rXJptC0UOAnvXxyr1eeUX+vjhWk/SEMGWN5nNDCE1y8lC6hA9IlOH0qfEwT92yyV01DGPHEtfyLMtxLCDkRtqGim/MqrGGzIxS098JCbz5CDCbPvAKMPojBAW4Y7ERDyFItJsHecwwsxdzVkGDOJQSq4ac3HUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=MHtIQu5ARkIuxurd1Etbo6+zjrTtcCwrKQl7eXgFkCU=;
+ b=kEDCoVe5ovkeDSPBBJhsQeHhraYP+YnHTSIeZ+cNGgl9wVFCKDic6hgb6Y6DlGhWZld3SGi+6PAcEwgs/5NHtUY/klaFdH/EJM2al8zMVZ8O1ieGO1Fr5XF6NepBG23l8yO7YxzMZVJr1736xJcMWFwCO3o8hVCynjATzy0330qPNJoY8YgavBlzA+DhgOaRyDFS4JTAqcjr5EOk1Dp11NH67a1OYqM2jng2Hcaqpsvm4UumepX+ImLut1DPARmoyIxBSLlvLlBTrwD1AXaP8hWmBef3/3IVw1FE43eLPJgELhuAwo2MEGBHRErqESNsbvePwxebU2Eyz1WZ57/ZjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MHtIQu5ARkIuxurd1Etbo6+zjrTtcCwrKQl7eXgFkCU=;
+ b=LzelMsjBSFqG+8PVPnyGkRA5FgHSBjIHqLqzORKkRzMvpoyFeUD5Qt8jq6yV/g12T6FHqmqB2yWMhu6u1ZKryYo+ler22SXhM6qacxH5YWHGgUw6VKBYsmsrRag0bqecxOLV31atx+2tqNZYGoKfc5UemtCr3Eup74hbyDOAEac=
+Received: from CO1PR11MB5154.namprd11.prod.outlook.com (2603:10b6:303:95::7)
+ by MW3PR11MB4521.namprd11.prod.outlook.com (2603:10b6:303:55::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
+ 2021 10:05:30 +0000
+Received: from CO1PR11MB5154.namprd11.prod.outlook.com
+ ([fe80::c02e:ee5e:8da8:b99e]) by CO1PR11MB5154.namprd11.prod.outlook.com
+ ([fe80::c02e:ee5e:8da8:b99e%7]) with mapi id 15.20.4523.019; Tue, 21 Sep 2021
+ 10:05:30 +0000
+From:   <Conor.Dooley@microchip.com>
+To:     <krzysztof.kozlowski@canonical.com>, <ulf.hansson@linaro.org>,
+        <robh+dt@kernel.org>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <geert@linux-m68k.org>, <yamada.masahiro@socionext.com>,
+        <piotrs@cadence.com>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v3 3/6] riscv: dts: microchip: fix board compatible
+Thread-Topic: [PATCH v3 3/6] riscv: dts: microchip: fix board compatible
+Thread-Index: AQHXrjGBE+j4P7jIgEKKZtGhx9XcE6uuRAaA
+Date:   Tue, 21 Sep 2021 10:05:29 +0000
+Message-ID: <6091f8ac-1482-ee5b-b5a4-3917ab8b7fba@microchip.com>
+References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
+ <20210920150807.164673-3-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920150807.164673-3-krzysztof.kozlowski@canonical.com>
+Accept-Language: en-IE, en-US
+Content-Language: en-IE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+authentication-results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none
+ header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 21d02ddf-e615-4227-aa4e-08d97ce757bd
+x-ms-traffictypediagnostic: MW3PR11MB4521:
+x-microsoft-antispam-prvs: <MW3PR11MB4521B29A926A19EB7D81E17F98A19@MW3PR11MB4521.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XurNaMj9RC6nNbe4T5pfp+cbrPesog70VEmhlarrkHkkJYFbUBrGNvqQqy5hG07iPw+JTayygkYPeYFu89X66MkwTr/McFqDknW0TUB/3QXNWL+FIgMjnls2ymskTsFCX4bIZYeTKHj2HCOxgV8WXFl9tYMePPGWuGeUEVptkYVmIsj4Q3tq3XKexdlL5+Lx7jnwii9hA7Z2YTogYy89dPQy6kvEPgvHEzgvsBz39PDlMGQIszabnPcbmCQnmaxSwfylYuZ9Y6boGP3IfVO/k7Sh7OjftT5x/jIfnIw19AObbXGb+J3xGfrRIAIOOYSWLBvFZUdNAYfshKRAUYpNtdbxmVD4q9t6Fui5CUCX9fzNVWcr2mAINcXNLQD3uu06PCRMtRjwYo10VcVCgMyXD7B/VmHtMU4QgPdksnlI/RYXXv5ZFlorOKO/R4Cli1wy/AeYa9wnLi5MHiX4G7p/5W+VKVHlJT4+cYUyadKoCDzPBSQ88TMySceGfAVwuColKeZtuVk0gyJb6EVe4EEAcZRLIuCDUNLDUjgO+usW4ZaGYMUn6lbz0Ku3fj1PhjrCmdBz8dy4t+PsKDU6IvvZI8Mhgy/7o8iHu5N6dRL/91HCfY0YijCgsA2Ef8CmTKudP3Y+i9GY9KaSL+3165tcVvHKQCvKDD55qjBhB1NdASeDk4QKoRZwMJPJcsBlht1p0gHsUDdWPcH+7oYPpu4ble89zer4WaPaPC6DlgaVOnVtC33NrPfO5PQh6sIVq6JOojW3c9lmM80do9/C3rau7zfQKDIufj85kQaZ0AfokNs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5154.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66556008)(66446008)(5660300002)(6486002)(508600001)(38100700002)(122000001)(36756003)(8936002)(31686004)(66946007)(66476007)(2616005)(186003)(921005)(110136005)(38070700005)(86362001)(6512007)(316002)(53546011)(91956017)(71200400001)(76116006)(26005)(83380400001)(7416002)(6506007)(64756008)(2906002)(31696002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZEZ5c24rRWYxb2dTdFdMYUU4RnpGL09EUktBOEQvMkpVTGJ3UHBnS2F4ei9W?=
+ =?utf-8?B?ajBUUEVFVk1EQ04xKzJWWTVPV3hoalJ2VDJaK2ZTSWpzeFpMbStNZm45OTJn?=
+ =?utf-8?B?U0YyWngxL2JZbzNsV29SdzFnNFdlN0VJNTMyVnVka2lCQ2lVMkpjSlF4ZXQx?=
+ =?utf-8?B?YXRObXJtNkNrZ0ZpUCszRGZ6bEk3WllORDh6d25NcWxsV0R2ejQ2Sm45YlJi?=
+ =?utf-8?B?a2pDRzROd2RHcjNVWUd5VG15T29vN3h1QzJzRjA5TDk1eGRSL0hpYUxXUW9H?=
+ =?utf-8?B?Y2hhTHkzQ0Y1YWlpa2RndGhZUGJLMjNPb3hEOWpiN0J5TlN2OUU1ZjlIR01a?=
+ =?utf-8?B?NXFhZHkxUVZRcG1FaDE0YTZJZkgrNmU2b1lYdXVvTFJ4UU94akd5QmU3a05m?=
+ =?utf-8?B?dUkvdUxnMVQ3Y0d3UzFuRVBjNEtkTDFhUFhKOU1MUGU4OHZXS2JSSVBsc2Z3?=
+ =?utf-8?B?cVUrcm5iVDhVU2Z3OS8wTkV4ZjYxQjhVMmZTdnR6aGtWbDZwU1dMcU9pN28z?=
+ =?utf-8?B?TFlpMXE5dWhiRkRtSnJEVjk1elArM3ZXb1pabWowTDIrc2pYaHlxMlFTN3NY?=
+ =?utf-8?B?b1ZzR0o3bkdFU0s2U3NyU1o0c1B6QVY5VGZSRVJ4eGJEeGpDVzAwOUU4WStZ?=
+ =?utf-8?B?M1o1UE1takFZc0JxdnpDM1ZTMGlwa01rNEFJcWdYNURQUkllY0hFKzlXZm5B?=
+ =?utf-8?B?N1JsMkszUkZVV2l4VUdLQ1U0Z2dGTXpjODRUeU5SZTlraFZHaXJyUzU5VlpZ?=
+ =?utf-8?B?d2JITUlCY3IrMllKcVEreWkvc2R6UGhDWklsSHZwOFpKdytOeE1TalBoODNt?=
+ =?utf-8?B?elJKOXhTcEk2RXY0dEY0R2xzRyswTHhpL29hTWQ2WjRZZVgveFB0bVRFdWJq?=
+ =?utf-8?B?L1hBRVJaKzE3dnB2dVEweEN4Sy9VNGZUcFlZSitmMVI3eGxzRGt2OVJFZkFy?=
+ =?utf-8?B?cEVmS0xrUUlXNVduUFNuZkZmMnlIcVI5U1NmT0xYMGFVNkJqaWRCMERkek9t?=
+ =?utf-8?B?em9scG10aVAvNFYvWWZMN3Q2endIcE1DRWVZZWdxbDVqb3lZenVLUjNhWUNP?=
+ =?utf-8?B?RFE2eVZzb280SjJ6NUxTYWF5V2U1TlRYWUt2dmllcFVHdjNuUlJDVEV4d2N1?=
+ =?utf-8?B?ZVBYUU1Nd2xsZmdKSUwyT05ocC9XS3dIa1ZvTHRLc01yS3lvMnVPR2kvVHVp?=
+ =?utf-8?B?Yk12UmMxZDJQMi8zZGNVcnI3aHRJK3NqOHdCUkZwSExDNHh1TTNJeE1tQlJB?=
+ =?utf-8?B?MHFiWVc2KzRRaHFWQ0VLY2o5NTFOWU5qZjNXQVFtR2ovaGcwUXYxOVBUZlgz?=
+ =?utf-8?B?VDZZVEc4VVBpQ0g5YTNlbndHcjczVjR5ZVhIakViV1l6c05yeEs2M3M0NUN4?=
+ =?utf-8?B?RStuTFN6QkhPaFYrcXlCcWpHVW1kZ0hwZGZOcG9MZStPQldyMnJUYTU0eC9Y?=
+ =?utf-8?B?VDUxZlV3UU1lcjYzM0lvZXJiMTF1cmU1ZUJNVnloVnhqYUFIUndiQ0RLMjJ5?=
+ =?utf-8?B?T1RNVjRLQXBCNXlDNndORnRFR004Unc5UVl1YVJrUzRFUGFKbXhFdnMyUXdm?=
+ =?utf-8?B?aHRVamgxK2N3MytCRDRSK0FORTMyUWhHbVgvMkhTTk9xUVdGOFlINGZ1aHpK?=
+ =?utf-8?B?cm8rNDZxc1c5QmJaYTJjcStpU296ZnkrbzBQUUFETFRWZnd6eTdRVThmYXFX?=
+ =?utf-8?B?ditRcUVwTXdpeURrVkhVNWtvRDFsRE5LVTBERDFhc045TW9idHoyN2IrMUx2?=
+ =?utf-8?Q?DnJKR/yohk1BNCkZTU=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B2B1282FF43CD749B8BF0436BD5AE255@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0iee2j=NoPFpNstEZYJXWvFYfv22hK7QeH6+kdP6+MhLw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5154.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21d02ddf-e615-4227-aa4e-08d97ce757bd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2021 10:05:29.8912
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZT++ontP/LXuHneZMUlVrqzSrJDIfHYOF90+WgcVgIvlKt+dIGFum624dtNZhhiI4ZsI6h96WYCw7ZdbQqnhVSa9b0lXxImN/4ErwXRfxto=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4521
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 07:32:56PM +0200, Rafael J. Wysocki wrote:
-> On Mon, Sep 20, 2021 at 7:03 PM Lorenzo Pieralisi
-> <lorenzo.pieralisi@arm.com> wrote:
-> >
-> > On Thu, Sep 16, 2021 at 05:08:27PM +0100, Lorenzo Pieralisi wrote:
-> > > On Fri, Sep 10, 2021 at 07:28:49PM +0200, Ard Biesheuvel wrote:
-> > > > On Fri, 10 Sept 2021 at 16:32, Jia He <justin.he@arm.com> wrote:
-> > > > >
-> > > > > This reverts commit 437b38c51162f8b87beb28a833c4d5dc85fa864e.
-> > > > >
-> > > > > After this commit, a boot panic is alway hit on an Ampere EMAG server
-> > > > > with call trace as follows:
-> > > > >  Internal error: synchronous external abort: 96000410 [#1] SMP
-> > > > >  Modules linked in:
-> > > > >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.14.0+ #462
-> > > > >  Hardware name: MiTAC RAPTOR EV-883832-X3-0001/RAPTOR, BIOS 0.14 02/22/2019
-> > > > >  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > > > [...snip...]
-> > > > >  Call trace:
-> > > > >   acpi_ex_system_memory_space_handler+0x26c/0x2c8
-> > > > >   acpi_ev_address_space_dispatch+0x228/0x2c4
-> > > > >   acpi_ex_access_region+0x114/0x268
-> > > > >   acpi_ex_field_datum_io+0x128/0x1b8
-> > > > >   acpi_ex_extract_from_field+0x14c/0x2ac
-> > > > >   acpi_ex_read_data_from_field+0x190/0x1b8
-> > > > >   acpi_ex_resolve_node_to_value+0x1ec/0x288
-> > > > >   acpi_ex_resolve_to_value+0x250/0x274
-> > > > >   acpi_ds_evaluate_name_path+0xac/0x124
-> > > > >   acpi_ds_exec_end_op+0x90/0x410
-> > > > >   acpi_ps_parse_loop+0x4ac/0x5d8
-> > > > >   acpi_ps_parse_aml+0xe0/0x2c8
-> > > > >   acpi_ps_execute_method+0x19c/0x1ac
-> > > > >   acpi_ns_evaluate+0x1f8/0x26c
-> > > > >   acpi_ns_init_one_device+0x104/0x140
-> > > > >   acpi_ns_walk_namespace+0x158/0x1d0
-> > > > >   acpi_ns_initialize_devices+0x194/0x218
-> > > > >   acpi_initialize_objects+0x48/0x50
-> > > > >   acpi_init+0xe0/0x498
-> > > > >
-> > > > > As mentioned by Lorenzo:
-> > > > >   "We are forcing memory semantics mappings to PROT_NORMAL_NC, which
-> > > > >   eMAG does not like at all and I'd need to understand why. It looks
-> > > > >   like the issue happen in SystemMemory Opregion handler."
-> > > > >
-> > > > > Hence just revert it before everything is clear.
-> > > > >
-> > > >
-> > > > Can we try to find the root cause first? -rc1 is not even out yet, and
-> > > > reverting it now means we can not resubmit it until the next merge
-> > > > window.
-> > >
-> > > I am waiting to debug this on an eMAG but I noticed something that
-> > > I wanted to bring up.
-> > >
-> > > SystemMemory Operation region handler - ie
-> > >
-> > > acpi_ex_system_memory_space_handler()
-> > >
-> > > maps the Operation Region (that AFAICS is MMIO, it is _not_ memory)
-> > > with acpi_os_map_memory() and I believe that's what is causing this
-> > > bug.
-> > >
-> > > On the other hand, acpi_os_map_generic_address(), to handle spaceid
-> > > ACPI_ADR_SPACE_SYSTEM_MEMORY, uses acpi_os_map_iomem() that is more
-> > > in line with my expectations.
-> >
-> > Hi Rafael,
-> >
-> > I wanted to ask please if you have any insights on why
-> >
-> > (1) acpi_ex_system_memory_space_handler()
-> > (2) acpi_os_map_generic_address()
-> >
-> > Use two different calls to map memory for the _same_ address space ID
-> > (SystemMemory).
-> >
-> > (3) acpi_os_map_memory()
-> > vs
-> > (4) acpi_os_map_iomem()
-> 
-> I don't really have a good answer here.
-> 
-> On x86 this doesn't really matter and that's where
-> acpi_ex_system_memory_space_handler() was first introduced.  It is not
-> only used for IOMEM (there are SystemMemory operation regions in RAM),
-> but since it may be in IOMEM, it should assume so.
-> 
-> > I am struggling to understand why (1) uses (3) ("memory semantics") when
-> > (2) uses (4) - it is actually unclear how the distinction between
-> > the two mapping APIs is to be drawn and on what basis one should
-> > choose which one to use.
-> >
-> > I am still waiting to grab some HW to debug this report but the issue
-> > here is that we are mapping an OpRegion SystemMemory with (3) in the
-> > memory space handler and given the patch we are reverting we end up
-> > mapping the operation region with normal non-cacheable memory attributes
-> > that probably the physical address range behind the OpRegion does not
-> > support.
-> 
-> If that is the case, there needs to be a mechanism to decide what kind
-> of mapping to use for SystemMemory operation regions based on the type
-> of physical memory the address range in question is located in.
-
-Thank you Rafael. The mechanism we are currently relying on is the EFI
-memory map but if the Opregion address is not described there then we
-are left with a default choice to make (theoretically I may also parse
-all _CRS in the namespace to find whether a resource include the
-Opregion and I may infer attributes from the _CRS resource entry).
-
-Maybe we should update the ACPI specs to enforce it; with current
-firmware the idea of using the OS expected *usage* of memory (ie
-memory vs IO) described by the mapping function prototype can't work
-as this revert shows (even though it would be better if I manage
-to find what the precise issue is).
-
-We can't map something with specific attributes if we don't know
-whether the physical address space backing the region supports it.
-
-I am left with little choice: I assume the best thing I could do
-to fix the original bug is to use ioremap_* in acpi_data_show()
-instead of acpi_os_map/unmap_memory() to map that memory with
-specific attributes (for BERT error regions, they must be RAM
-so, _hopefully_, we know it can be mapped with eg normal memory
-mappings).
-
-Thoughts ?
-
-Thanks a lot,
-Lorenzo
-
-> > > Question is: is the mapping in acpi_ex_system_memory_space_handler()
-> > > wrong (and should be patched with acpi_os_map_iomem() ?)
-> > >
-> > > On x86 this should not change a thing, on ARM it would.
-> > >
-> > > I don't think it is right to map SystemMemory Operation regions with
-> > > memory semantics but on the other hand, other than the EFI memory map,
-> > > there is nothing we can do to determine what a SystemMemory Operation
-> > > region address space actually represents.
-> > >
-> > > Thoughts ? Before embarking on patching
-> > >
-> > > acpi_ex_system_memory_space_handler()
-> > >
-> > > I want to make sure my understanding of the SystemMemory space is
-> > > correct, comments welcome.
-> > >
-> > > I will pinpoint the trigger for this bug shortly and before doing
-> > > anything else.
-> > >
-> > > Thanks,
-> > > Lorenzo
+T24gMjAvMDkvMjAyMSAxNjowOCwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToNCj4gRVhURVJO
+QUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5
+b3Uga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+DQo+IEFjY29yZGluZyB0byBiaW5kaW5ncywg
+dGhlIGNvbXBhdGlibGUgbXVzdCBpbmNsdWRlIG1pY3JvY2hpcCxtcGZzLiAgVGhpcw0KPiBmaXhl
+cyBkdGJzX2NoZWNrIHdhcm5pbmc6DQo+DQo+ICAgIGFyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9j
+aGlwL21pY3JvY2hpcC1tcGZzLWljaWNsZS1raXQuZHQueWFtbDogLzogY29tcGF0aWJsZTogWydt
+aWNyb2NoaXAsbXBmcy1pY2ljbGUta2l0J10gaXMgdG9vIHNob3J0DQo+DQo+IFNpZ25lZC1vZmYt
+Ynk6IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAY2Fub25pY2FsLmNv
+bT4NCj4NCj4gLS0tDQo+DQo+IENoYW5nZXMgc2luY2UgdjE6DQo+IDEuIFVzZSBtaWNyb2NoaXAs
+bXBmcyBmb3IgbWljcm9jaGlwLW1wZnMuZHRzaSwgc3VnZ2VzdGVkIGJ5IEdlZXJ0Lg0KPiAtLS0N
+Cj4gICBhcmNoL3Jpc2N2L2Jvb3QvZHRzL21pY3JvY2hpcC9taWNyb2NoaXAtbXBmcy1pY2ljbGUt
+a2l0LmR0cyB8IDIgKy0NCj4gICBhcmNoL3Jpc2N2L2Jvb3QvZHRzL21pY3JvY2hpcC9taWNyb2No
+aXAtbXBmcy5kdHNpICAgICAgICAgICB8IDIgKy0NCj4gICAyIGZpbGVzIGNoYW5nZWQsIDIgaW5z
+ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2FyY2gvcmlzY3Yv
+Ym9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hpcC1tcGZzLWljaWNsZS1raXQuZHRzIGIvYXJjaC9y
+aXNjdi9ib290L2R0cy9taWNyb2NoaXAvbWljcm9jaGlwLW1wZnMtaWNpY2xlLWtpdC5kdHMNCj4g
+aW5kZXggM2IwNGVmMTdlOGRhLi4wN2YxZjNjYWI2ODYgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcmlz
+Y3YvYm9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hpcC1tcGZzLWljaWNsZS1raXQuZHRzDQo+ICsr
+KyBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hpcC1tcGZzLWljaWNsZS1r
+aXQuZHRzDQo+IEBAIC0xMCw3ICsxMCw3IEBADQo+DQo+ICAgLyB7DQo+ICAgICAgICAgIG1vZGVs
+ID0gIk1pY3JvY2hpcCBQb2xhckZpcmUtU29DIEljaWNsZSBLaXQiOw0KPiAtICAgICAgIGNvbXBh
+dGlibGUgPSAibWljcm9jaGlwLG1wZnMtaWNpY2xlLWtpdCI7DQo+ICsgICAgICAgY29tcGF0aWJs
+ZSA9ICJtaWNyb2NoaXAsbXBmcy1pY2ljbGUta2l0IiwgIm1pY3JvY2hpcCxtcGZzIjsNCj4NCj4g
+ICAgICAgICAgYWxpYXNlcyB7DQo+ICAgICAgICAgICAgICAgICAgZXRoZXJuZXQwID0gJmVtYWMx
+Ow0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9yaXNjdi9ib290L2R0cy9taWNyb2NoaXAvbWljcm9jaGlw
+LW1wZnMuZHRzaSBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hpcC1tcGZz
+LmR0c2kNCj4gaW5kZXggOTM3MzBhZmU2YzU4Li41MDg0YjkzMTg4ZjAgMTAwNjQ0DQo+IC0tLSBh
+L2FyY2gvcmlzY3YvYm9vdC9kdHMvbWljcm9jaGlwL21pY3JvY2hpcC1tcGZzLmR0c2kNCj4gKysr
+IGIvYXJjaC9yaXNjdi9ib290L2R0cy9taWNyb2NoaXAvbWljcm9jaGlwLW1wZnMuZHRzaQ0KPiBA
+QCAtNyw3ICs3LDcgQEAgLyB7DQo+ICAgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDI+Ow0KPiAg
+ICAgICAgICAjc2l6ZS1jZWxscyA9IDwyPjsNCj4gICAgICAgICAgbW9kZWwgPSAiTWljcm9jaGlw
+IE1QRlMgSWNpY2xlIEtpdCI7DQo+IC0gICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAsbXBm
+cy1pY2ljbGUta2l0IjsNCj4gKyAgICAgICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxtcGZzIjsN
+Cj4NCj4gICAgICAgICAgY2hvc2VuIHsNCj4gICAgICAgICAgfTsNCj4gLS0NCj4gMi4zMC4yDQo+
+DQpSZXZpZXdlZC1ieTogQ29ub3IgRG9vbGV5PGNvbm9yLmRvb2xleUBtaWNyb2NoaXAuY29tPg0K
+DQo=
