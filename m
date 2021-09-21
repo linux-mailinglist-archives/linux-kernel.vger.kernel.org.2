@@ -2,232 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7C2413E21
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5C8413E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhIUXvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhIUXvu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:51:50 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985C2C061574;
-        Tue, 21 Sep 2021 16:50:21 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id c7so3609253qka.2;
-        Tue, 21 Sep 2021 16:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3pBdD6hrMTmywMpC16GHqHBzp8LFNfLUt8n19YiipuE=;
-        b=j98HoVhGODFy30aSZxYuX/CaYVRRgrLXGPZZcL3+5TEMk0kxZ9rEUZ5VzStdEt0IGw
-         3GdBetANKHrXw0Bg13KgU9vZfOKAKCK8ysvqoLeq2CE8u8xSqc/YIrNHWmSlqDbYFesa
-         fd4+CZ0W6h3HDeC+g6xK4UlALy3rQ5FspPWvw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3pBdD6hrMTmywMpC16GHqHBzp8LFNfLUt8n19YiipuE=;
-        b=vslkV3CsHe4z0JIxkIbXwCPK09gGvwaUmWUbLqAR73qmBtYd6UusMWoGwbBy5UvdEG
-         au1VHoSleK34TopmxsEv/Y761l7pMnhgYDIIqYhMrvAcKNjMuSUhXkbEvqRZQlCdtrgq
-         ntgut/BpmamBy1dkP1Sz9AFpCZ7XvHexF1Wc5lGUn7Uzhd1gVPtnR8X+TH4YgDUqE4kY
-         oeR/UKPtRVDEfQPJMRPldwGf3g8kwQS7eoTstMBkvddieIo6mEluzuVEv5tn3VBclu7F
-         XVn+GoNDJYqbhCzeTas3LQEBX5VpJi9iLq7tYOrUSGVeCmqSp0WRvjNvNXWtEDFYDXwE
-         HN6Q==
-X-Gm-Message-State: AOAM532Y+4IqssVI40nYb9579QkNcomVs2ojo8fWlkE+D/slYCI3NWwP
-        AmQha6KXXjiUKxoQ1K2KtWGKtUbXrkMg1b3h6CE=
-X-Google-Smtp-Source: ABdhPJzmNaG8eSfVVVJ//FXKvDj4/vyLvQR0ArS164V3qTiwONEwO8r07klh3oIBYs3tiqkXwlfH9eLZGel8VCFwWKo=
-X-Received: by 2002:a37:6596:: with SMTP id z144mr18531657qkb.292.1632268220710;
- Tue, 21 Sep 2021 16:50:20 -0700 (PDT)
+        id S231172AbhIUXwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:52:15 -0400
+Received: from mga07.intel.com ([134.134.136.100]:34912 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhIUXwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:52:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="287156721"
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="287156721"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 16:50:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
+   d="scan'208";a="436049920"
+Received: from adkuncha-mobl2.amr.corp.intel.com (HELO [10.251.2.103]) ([10.251.2.103])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 16:50:45 -0700
+Subject: Re: [PATCH v5 2/7] x86/sgx: Add infrastructure to identify SGX EPC
+ pages
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210827195543.1667168-1-tony.luck@intel.com>
+ <20210917213836.175138-1-tony.luck@intel.com>
+ <20210917213836.175138-3-tony.luck@intel.com>
+ <ccb678fc-25b8-dcd6-ffaa-267865c66ea5@intel.com>
+ <eeeb51049e894a70b40013ec18a9fa65@intel.com>
+ <8c39b812-b77a-7d63-2d82-f1c0401a5f16@intel.com>
+ <YUpvVK1C4y66Cj2Q@agluck-desk2.amr.corp.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3d6b0136-dcaa-e0c0-a830-68a012222b19@intel.com>
+Date:   Tue, 21 Sep 2021 16:50:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210921061149.1091163-1-steve@sk2.org>
-In-Reply-To: <20210921061149.1091163-1-steve@sk2.org>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 21 Sep 2021 23:50:08 +0000
-Message-ID: <CACPK8XeH55MGGPHEXXq1jmeQHQYuOfEuDYTbQiG6SWhwgLd7Sw@mail.gmail.com>
-Subject: Re: [PATCH] mm: Remove HARDENED_USERCOPY_FALLBACK
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUpvVK1C4y66Cj2Q@agluck-desk2.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 09:50, Stephen Kitt <steve@sk2.org> wrote:
->
-> This has served its purpose and is no longer used. All usercopy
-> violations appear to have been handled by now, any remaining
-> instances (or new bugs) will cause copies to be rejected.
->
-> This isn't a direct revert of commit 2d891fbc3bb6 ("usercopy: Allow
-> strict enforcement of whitelists"); since usercopy_fallback is
-> effectively 0, the fallback handling is removed too.
->
-> This also removes the usercopy_fallback module parameter on
-> slab_common.
->
-> Link: https://github.com/KSPP/linux/issues/153
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/powerpc/configs/skiroot_defconfig |  1 -
+On 9/21/21 4:48 PM, Luck, Tony wrote:
+> 
+> # name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
+> 
+> So I think this means that I have (9950 - 9800) * 584 = 87600 more bytes
+> allocated. Maybe that's a lot? But percentage-wise is seems in the
+> noise. E.g. We allocate one "struct sgx_epc_page" for each SGX page.
+> On my system I have 4GB of SGX EPC, so around 32 MB of these structures.
 
-For the defconfig change:
+100k for 4GB of EPC is certainly in the noise as far as I'm concerned.
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-Cheers,
-
-Joel
-
->  include/linux/slab.h                   |  2 --
->  mm/slab.c                              | 13 -------------
->  mm/slab_common.c                       |  8 --------
->  mm/slub.c                              | 14 --------------
->  security/Kconfig                       | 14 --------------
->  6 files changed, 52 deletions(-)
->
-> diff --git a/arch/powerpc/configs/skiroot_defconfig b/arch/powerpc/configs/skiroot_defconfig
-> index b806a5d3a695..c3ba614c973d 100644
-> --- a/arch/powerpc/configs/skiroot_defconfig
-> +++ b/arch/powerpc/configs/skiroot_defconfig
-> @@ -275,7 +275,6 @@ CONFIG_NLS_UTF8=y
->  CONFIG_ENCRYPTED_KEYS=y
->  CONFIG_SECURITY=y
->  CONFIG_HARDENED_USERCOPY=y
-> -# CONFIG_HARDENED_USERCOPY_FALLBACK is not set
->  CONFIG_HARDENED_USERCOPY_PAGESPAN=y
->  CONFIG_FORTIFY_SOURCE=y
->  CONFIG_SECURITY_LOCKDOWN_LSM=y
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 0c97d788762c..5b21515afae0 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -142,8 +142,6 @@ struct mem_cgroup;
->  void __init kmem_cache_init(void);
->  bool slab_is_available(void);
->
-> -extern bool usercopy_fallback;
-> -
->  struct kmem_cache *kmem_cache_create(const char *name, unsigned int size,
->                         unsigned int align, slab_flags_t flags,
->                         void (*ctor)(void *));
-> diff --git a/mm/slab.c b/mm/slab.c
-> index d0f725637663..4d826394ffcb 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -4207,19 +4207,6 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
->             n <= cachep->useroffset - offset + cachep->usersize)
->                 return;
->
-> -       /*
-> -        * If the copy is still within the allocated object, produce
-> -        * a warning instead of rejecting the copy. This is intended
-> -        * to be a temporary method to find any missing usercopy
-> -        * whitelists.
-> -        */
-> -       if (usercopy_fallback &&
-> -           offset <= cachep->object_size &&
-> -           n <= cachep->object_size - offset) {
-> -               usercopy_warn("SLAB object", cachep->name, to_user, offset, n);
-> -               return;
-> -       }
-> -
->         usercopy_abort("SLAB object", cachep->name, to_user, offset, n);
->  }
->  #endif /* CONFIG_HARDENED_USERCOPY */
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index a4a571428c51..925b00c1d4e8 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -37,14 +37,6 @@ LIST_HEAD(slab_caches);
->  DEFINE_MUTEX(slab_mutex);
->  struct kmem_cache *kmem_cache;
->
-> -#ifdef CONFIG_HARDENED_USERCOPY
-> -bool usercopy_fallback __ro_after_init =
-> -               IS_ENABLED(CONFIG_HARDENED_USERCOPY_FALLBACK);
-> -module_param(usercopy_fallback, bool, 0400);
-> -MODULE_PARM_DESC(usercopy_fallback,
-> -               "WARN instead of reject usercopy whitelist violations");
-> -#endif
-> -
->  static LIST_HEAD(slab_caches_to_rcu_destroy);
->  static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work);
->  static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3f96e099817a..77f53e76a3c3 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4125,7 +4125,6 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
->  {
->         struct kmem_cache *s;
->         unsigned int offset;
-> -       size_t object_size;
->         bool is_kfence = is_kfence_address(ptr);
->
->         ptr = kasan_reset_tag(ptr);
-> @@ -4158,19 +4157,6 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
->             n <= s->useroffset - offset + s->usersize)
->                 return;
->
-> -       /*
-> -        * If the copy is still within the allocated object, produce
-> -        * a warning instead of rejecting the copy. This is intended
-> -        * to be a temporary method to find any missing usercopy
-> -        * whitelists.
-> -        */
-> -       object_size = slab_ksize(s);
-> -       if (usercopy_fallback &&
-> -           offset <= object_size && n <= object_size - offset) {
-> -               usercopy_warn("SLUB object", s->name, to_user, offset, n);
-> -               return;
-> -       }
-> -
->         usercopy_abort("SLUB object", s->name, to_user, offset, n);
->  }
->  #endif /* CONFIG_HARDENED_USERCOPY */
-> diff --git a/security/Kconfig b/security/Kconfig
-> index 0ced7fd33e4d..d9698900c9b7 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -163,20 +163,6 @@ config HARDENED_USERCOPY
->           or are part of the kernel text. This kills entire classes
->           of heap overflow exploits and similar kernel memory exposures.
->
-> -config HARDENED_USERCOPY_FALLBACK
-> -       bool "Allow usercopy whitelist violations to fallback to object size"
-> -       depends on HARDENED_USERCOPY
-> -       default y
-> -       help
-> -         This is a temporary option that allows missing usercopy whitelists
-> -         to be discovered via a WARN() to the kernel log, instead of
-> -         rejecting the copy, falling back to non-whitelisted hardened
-> -         usercopy that checks the slab allocation size instead of the
-> -         whitelist size. This option will be removed once it seems like
-> -         all missing usercopy whitelists have been identified and fixed.
-> -         Booting with "slab_common.usercopy_fallback=Y/N" can change
-> -         this setting.
-> -
->  config HARDENED_USERCOPY_PAGESPAN
->         bool "Refuse to copy allocations that span multiple pages"
->         depends on HARDENED_USERCOPY
->
-> base-commit: 368094df48e680fa51cedb68537408cfa64b788e
-> --
-> 2.30.2
->
+Thanks for checking this.
