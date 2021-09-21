@@ -2,116 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58879412FE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FE7412FF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhIUIKJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 04:10:09 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:52379 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhIUIKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:10:08 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MUok5-1mJcZC1Csb-00QgVF; Tue, 21 Sep 2021 10:08:39 +0200
-Received: by mail-wr1-f43.google.com with SMTP id t8so29588364wri.1;
-        Tue, 21 Sep 2021 01:08:39 -0700 (PDT)
-X-Gm-Message-State: AOAM531O3Bu8Xsc1krB8Y3q5vCx+SAhQZ9GshjuaAeQTTV3sg2nIzC0b
-        IZGqldQ2SKT50mhX7SrmD//2WiH8Ibs8C2qtpf0=
-X-Google-Smtp-Source: ABdhPJy6gNp3mnAgyb/iPHvO2OC6clNZlGkHnTCwBMBfOS6i3DFhHXtaQsZqW3ibIVTDOgQQF2uucpdNu1A4eKHz32Y=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr2382016wro.411.1632211718939;
- Tue, 21 Sep 2021 01:08:38 -0700 (PDT)
+        id S231147AbhIUIMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:12:23 -0400
+Received: from mail-eopbgr40102.outbound.protection.outlook.com ([40.107.4.102]:8292
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231135AbhIUIMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 04:12:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lMuoR/yvgZoLxaredLzWAC/7LfesmHTjSmnoaQgZCc5TMc6L4W3gL3F0UpvMnwWvUyxFF4yGFyDnF7amgehR/2OYjLBpMAW35nNG+vWO5R9Y5wA3VFPOcE04EVxyW1rV3Xjta5UebMWd67bT2UEUaSo3mNTjOUoaPxj4w+CEfIAmsExgdWOCIA+9cMDa8zPv3QYTnf4iaxKRJDh7Kf+43hwujQlQF4XLGGiFCjlPSgV5T5dlTM6qQYBx2r8nFqSwjP9BzAmEXomClxSublZawZkuGVceshgNFSkmx6A+yebCXfQ0oH8dU1C4K0WpVE43U8yWrx284lSUJz+QNhipjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=0RqIt98EVpki+D1WognAsp2n8lZGEc7npZQahLEkhqc=;
+ b=aY5m3DSRhurPVO249pQBFRYpE+odvhl7YGIXZ1sJv4abXhbjR7/RmWWrslV8Ifqo5zhR1u7mkodaEKCO2dYlDCFZeFFldhU5d81j9pZ33lEVCTTGdixmVfyVD5qQ4QdGuXy08alVQbsQZ9IBH6wlBHHEVqww8+MuC+GLvhIatu0ow3tMBHcRHfHLOCwgKPihxTRxASHuZIxJViyq8c1W2w01hqWURNSBP+/IEarmG3MNeFBwevIFA1Y6OyKISqqdGOsfPt5uGjBCC6RaSgghtJI1IznTmTOQT9zAZMKex9sZAl9TRIJSHemMgVPaPs0J2QEpXQuwOC0rV0PIw6Tenw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0RqIt98EVpki+D1WognAsp2n8lZGEc7npZQahLEkhqc=;
+ b=NKt9Q/D2bGd5VgQfFYy0cHWIir27KQHjdS1FIozYDWOEHJUS1cdMEPr5zyxGGGmm/NAcEn6WpFC+5HHYx+xMovMnkXdcBwHR9N/xu+T5xVkVCbnc2RV3Z1la8h+keGsFfaCFu17tl1d3Lgnk1pDd3bTbGcdquzk50T92xnj26Os=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB6PR0201MB2454.eurprd02.prod.outlook.com (2603:10a6:4:34::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 21 Sep
+ 2021 08:10:52 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::35c9:1008:f5af:55a]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::35c9:1008:f5af:55a%4]) with mapi id 15.20.4523.018; Tue, 21 Sep 2021
+ 08:10:52 +0000
+Subject: Re: [PATCH] ASoC: pcm512x: Mend accesses to the I2S_1 and I2S_2
+ registers
+From:   Peter Rosin <peda@axentia.se>
+To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Kirill Marinushkin <kmarinushkin@birdec.com>,
+        Mark Brown <broonie@kernel.org>
+References: <2d221984-7a2e-7006-0f8a-ffb5f64ee885@axentia.se>
+ <ae4b25f1-2b2c-d937-e23d-0f7d23bdf0c4@gmail.com>
+ <815cbba4-60d6-8d97-c483-146c2f7c3912@axentia.se>
+ <7537b141-0ef1-fb44-7e02-27b4dd1e772b@gmail.com>
+ <d9850534-df41-a6b3-48e2-34823f5866e9@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <27f903d9-a74e-182e-b715-4124cf666f45@axentia.se>
+Date:   Tue, 21 Sep 2021 10:10:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <d9850534-df41-a6b3-48e2-34823f5866e9@axentia.se>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HE1PR0502CA0007.eurprd05.prod.outlook.com
+ (2603:10a6:3:e3::17) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
- <20210917061040.2270822-2-alistair.francis@opensource.wdc.com> <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
-In-Reply-To: <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 21 Sep 2021 10:08:22 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
-Message-ID: <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
- 64-bit time_t
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:2yF3PfTcmCw/0IsZGBaRWPlj+IyCqMBI9CMPm79Q8KL/6PWQNo9
- Q6LCo0fJITzs+lxJO9kzln0lfLXo0yaCv3Zlm+tHbhZVMYgz+foXCkR89UenROLJ6OuOsZ5
- vF+nr+8aYJ6TwO1u+GZQrIPkpUd2ssI1GFxplKeRQrv1vNA3fyuYF61Y5Q/InADiotHilTe
- 9qhDO+IWqlqcVOiNwU30Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ePN22AnODOg=:cBr3hn4Wi3cbzGIiKUDsZN
- fwb3KrAmwoPq/FgFsC3UOYZz+EuCUMqMuO5YODB+GZ2fykVq8sBtqtaeeTDsWvyE5R++7ZfNH
- ZkabrmgHpUEN68Ooo+j3a2XLf13Tvi3ruDc7mbVwkUK+g54xDbQKpLnCG5L+LDP4Vy0on+kB2
- kXogpGzWyZaf7sXr/reZr8L3p+YoDKDRnTnKZ/htxqqvnP+QjJ6N9ZN55JkUpvtaVNUpd7RWn
- imPJa+QArdHl55tH1h1QmW/lztpLbHXGDvUTV57x4/jEX7x/HV8evYIcEaG/6VgtLmUAjI7/F
- Ze1UrAbbddllgNZ83Nxv6y6cLUGuXkp2ohUT3U6taGFEMdWnGokpA3SGrtoz2bp2bW/v2I8KZ
- 8KT8Hi5trlkI1EPtaTpxQHm04Gt7smBaC0Vvl9aifjifNUIOXLssXKU2wf+Vld7M8Qc4rlzql
- 7l/P6fLgRLuz/NvCO/42HVsfnV/A0yC/WVCUyEBSrkJ2WKSbyfETs/vwVUNmPL4eVCfzL2p+u
- XEgDPc1OwTvrn/NU380AwM8Mj7+EKmFqqGr3l+Fmy75O1kBbjZqzTrVtqSwBWhGva0UoIqAsQ
- ttr9ynx58EOGa8KvmU6rHY/7t4QPKF18d12Nx50Po9Rmaq6vF6aRMdDmr9hU6ks2gUYp3UhK3
- lgS5rnxxdVQB3dfDi4o9pF8HXVafL2RBiRm7mEpEa9MobIdSUSE7xzCeP5R+OBkKhEjUD0Xb4
- nEuen2i+YFBw1pSy8aZHF5Bu26ZgtCnePZZHTcmCW2w0YhQhXjBg7K3+nN2A3QmbteqxDKE/A
- I32UC2mDBSKBggPvYpj7dE/o12s47wsEeS3R8Y6vUugeyhmRJTpe9tHjF1tdJrutvUDy2acgG
- X+IdfDVN31T5JlMABIfw==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (185.178.140.238) by HE1PR0502CA0007.eurprd05.prod.outlook.com (2603:10a6:3:e3::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Tue, 21 Sep 2021 08:10:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: efefcdee-56f2-43f1-2a9e-08d97cd7545a
+X-MS-TrafficTypeDiagnostic: DB6PR0201MB2454:
+X-Microsoft-Antispam-PRVS: <DB6PR0201MB2454BE15E25473A143279938BCA19@DB6PR0201MB2454.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5HvFcEnDZP4GqXgNQL92cjEQjMEKUI0k5XrBC6nmos79RGu+7ry3qi5v7VO4w6e8PKBSk59f4oCsZDEWjPESh8n2FWHwcwX9OBWnHoeDqX+935XGuh8K8wHN6AxBfF5JK1jDR8viv24jH3FEfpMmOq87HGPDLtdL36uCR/B8qo5l7MvLjkO3biKILXn0s4sUC496R5PvSB15y/OPbkVuRh4949fghRW1fNSYn+zCftwIDwcNdTgdBbmjzfMHA0jBeg9gWl9ypWAvg1TbCQP2g+XyRJnrcZxU1xnt8MeTwhOgPktnrTVUf0GEiKtdb4i4emzYxoufC7g35zUdrZ2+quZnlY/SqzrGtX099QpdGnz4JLfPDjxwnVvEv/moxkClXgNB0aPDeeYA9XFT0nS50tvTu69aJKCjkbey6xrm3Uox3OLrhhBYPBXSIhtfhU6yJ8FrALDlcbP75vpUlpfHAWLEhWbymfZSL1OrbwGzFs918WQWe4WmmsSBfBBe5wvxesWCVy6HpqD4uaHAZ9WjQyBuXyDbrR9VrOgO5XIL6IlQp7Mfs39M83r4Ow663I2GoI26MKqbqIxNAN8EmhWG+QniT5oomBhIqRnrFzgN/nWIJbo9vfC7IhsGapgWoMKy6rnkJmgH2aol09d2dI/4czsKdPNnNAcEX5Wq6OOkB3ak9NGBEJrHxQ1WzUJlHwD/i4Upzb1e+JfNBQzWb4mNhEULHDxrVGaHz4ExjK0PuCo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(376002)(39840400004)(136003)(36756003)(186003)(86362001)(66476007)(31696002)(66556008)(8936002)(66946007)(38100700002)(316002)(2906002)(6486002)(5660300002)(16576012)(8676002)(508600001)(31686004)(26005)(36916002)(83380400001)(54906003)(4326008)(956004)(2616005)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHhHTkY4NzBLb3JuQWhuazJLblNMWWhuVDltMkJhRXl5VHB2YU52ZXZCL21K?=
+ =?utf-8?B?WlJWWmQ0UEVrTVppYkI2WTdrN2k1Z2RrcWtjclRJQkRpMUdFRWpHMmhsWlpt?=
+ =?utf-8?B?VVNJdDdHYldRNW4xVHZ1ZnNtM3BHZjFQdW5rcE1KQ1M5OURMYzJFOHlleDFN?=
+ =?utf-8?B?bDQ2VFV2SzA4cm1POFYvNVNtR3hFOE5Ld0NRNDRHNkVOOFUvM3FTRStKRzVP?=
+ =?utf-8?B?S1VONkJBVDRUVFhpQllhVXdLSUV5a01tY3didkFMUlR3dXpZRlljbG5iMVF1?=
+ =?utf-8?B?M2N5ajkwNzJvMnVYVTFaU0hBNUxmNEY0RE1Yelp0RTBmYzBjOHppb2dkMlpP?=
+ =?utf-8?B?bkpQMTNtSFBucUNtaERzSEllU2EycWprbFpSTi9xQ0RjamxXUUd4eXorRlRo?=
+ =?utf-8?B?SlAvTERxWG9yV0lGUzN4b2ZCRHNsQWw0dXBNVmtaUlJJc0l3UmpkcERCOTM3?=
+ =?utf-8?B?NENyUTh6L0hLUVhOWUI4VWJodlZETytFMXF4cFNKd2gzRzd0ZUM1YUtUYXZt?=
+ =?utf-8?B?ZHJvdUlBMGFuV2ZFV2VRdjQ0UTBKSmM3dVFzNnlRMklYOEcxaXQyR0xJS2VZ?=
+ =?utf-8?B?OW5PeUZoVTdVNkJ2NHErWlpEUUs4ck80ODc3Wno0akxQbGFYRjBEbmNlSm1H?=
+ =?utf-8?B?dCt2akJ5b09PMmg2THZscjJkWjlGTzUrR2FMUHYyV2FqQXBzQ2JyMGVHeUJH?=
+ =?utf-8?B?Z2pjeUtONzlvSUNXRFVPSldqTHVDNVJkQ2w4UnltemtyM1BHM2FiV3BFUkRp?=
+ =?utf-8?B?WEg5M0hsc3BKSE5HYlJrWnRna1RjMUdIR3Ixd0RCcEN4N0wrSFpraVA5YW95?=
+ =?utf-8?B?NTJqYnU1dXRoR1cxZU1WRUpXOTNiTGJWTDlRcUthQlhGQk9Ic0pDQ2h1L0xt?=
+ =?utf-8?B?VTJJcHM5UnBmOWlQRmo2Qkk0Nzl0VGRkenZyanFSa29JYWV2OGZRcWNDNXlV?=
+ =?utf-8?B?aVFOTWR0Q3N4cFZQaGlZdDhkR0N1OUVKWE9PVGhQVThvL0Nob3g2MnozaUVQ?=
+ =?utf-8?B?R29GTWlvaG55S2kxNkU5aytQKzV1MnlQdHE0a0IwUzg0OGFWTmZHQVkxSGJF?=
+ =?utf-8?B?VXcySnR6WGU0TERTS1l6YWFzVUtRTzFNczBkZHhyWktqb1hWdHhhN3Y5MlBH?=
+ =?utf-8?B?ZkMrSDhmUU4vQUJrbERhWXVOQmd4RzY1QU5xeDE0UzdDNkVwR2tQZEx1dktZ?=
+ =?utf-8?B?V0o5bnNUbkp5ckZ4WGFLZXBuaGlTUkdXTUw3bDk4QlBNaEY5YVJiOURRTFZw?=
+ =?utf-8?B?L1ZtRGU5SS9NdUtSQy9IMWVUb3RHSjNZSjY0RnJpRGhLVlFmbXlOZElFaDB1?=
+ =?utf-8?B?THlpQnFET200dVo2Ly9nN0JLQkRCTTFZeDI0WHZqWWp1UEJwUHZNTUFLaWVO?=
+ =?utf-8?B?eFM0SVEzNTR6dGhQQndkRUd6VWw1OHBhbTZxcTRSTzlQWkpWK0krS1NiU2sy?=
+ =?utf-8?B?aXpabDlkTXY4dW1ra0gxajNvNG9SK0tSYkpEejNEVlByYTlmaXh3OG5MT1VV?=
+ =?utf-8?B?MitNQ1p2TjZOZ2NjT1l6RnhwVlVEMFE1OTI2Y3RrbDQ5S09nQTBQSFU4WCsx?=
+ =?utf-8?B?L0psbU1wN3RxK0ptd2xGTHQwblY4b2U2SjgxUm1xSGgraUVnVkVwKzRWYnJa?=
+ =?utf-8?B?SlZzRGpHakJBaENxbS91NEJvQnFjRzQrNTBNSVFseEtYTDFnSEhTNk1MSW9G?=
+ =?utf-8?B?N2wycGJxTkxMRmtoZW5NQ0ZFakVXS1JxaW9WSC9KUjlaUjVvanJKUUYySzRm?=
+ =?utf-8?Q?Z/sUNbI1zcQNx5vI8zaX0Rdmhz1wAAXEA7k674G?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: efefcdee-56f2-43f1-2a9e-08d97cd7545a
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 08:10:52.5843
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4ll8FGFL1E+p+C4/6WnXYG9NW4O44pnnbTji5G4yX0awon9AZjrF6FXeXOStdF55
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0201MB2454
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 12:47 AM André Almeida
-<andrealmeid@collabora.com> wrote:
->
-> #if defined(__i386__) || __TIMESIZE == 32
-> # define NR_gettime64 __NR_clock_gettime64
-> #else
-> # define NR_gettime64 __NR_clock_gettime
-> #endif
->
-> struct timespec64 {
->         long long tv_sec;       /* seconds */
->         long long tv_nsec;      /* nanoseconds */
-> };
->
-> int gettime64(clock_t clockid, struct timespec64 *tv)
-> {
->         return syscall(NR_gettime64, clockid, tv);
-> }
->
-> Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
-> __NR_futex for 64bit arch.
+>> Can you try the attached patch w/o without the defaults for i2s_1/2?
+>> Not even compile tested...
+> 
+> [added a couple of underscores]
+> 
+> I get this early during boot/probe
+> [    1.506291] pcm512x 0-004c: pcm512x_set_fmt: failed to read I2S_1: -16
+> [    1.512905] pcm512x 0-004c: pcm512x_set_fmt: failed to read PLL_EN: -16
+> [    1.519517] pcm512x 0-004c: Failed to set data format: -16
+> [    1.525045] pcm512x 0-004c: Failed to set data offset: -16
+> 
+> and then this later, triggered from userspace when an app opens
+> the device
+> [   14.620344] pcm512x 0-004c: pcm512x_hw_params: I2S_1: 0x2
+> 
+> So, reading *can* work.
 
-This is still broken when you disable CONFIG_COMPAT_32BIT_TIME,
-which disables all system calls that take time32 arguments.
+I added some traces and verified that accesses to I2S_1/2 fail (as do
+PLL_EN accesses) when the chip is in Powerdown mode (pcm512x_suspend
+has set the RQPD bit in the POWER register), which it is when
+pcm512x_set_fmt runs. During pcm512x_hw_params the chip is in Standby
+mode instead (pcm512x_resume has cleared the RQPD bit, but the RQST
+bit is set).
 
-> This might be a simpler solution to the problem that you are facing but
-> I'm not entirely sure. Also, futex's selftests do use the timeout
-> argument and I think that they also won't compile in 32-bit RISC-V, so
-> maybe we can start from there so we can actually test the timeout
-> argument and check if it's working.
+So, my patch seems wrong, and the I2S_1/2 accesses instead need to
+move to some point where the chip is not in Powerdown mode.
 
-I would love to see the wrapper that Alistair wrote as part of some kernel
-uapi header provided to user space. futex is used by tons of applications,
-and we never had a library abstraction for it, so everyone has to do these
-by hand, and they all get them slightly wrong in different ways.
+Or, is the problem that pcm512x_set_fmt is called while the codec is
+suspended and the chip thus is in Powerdown mode? Because, that
+seems problematic to me?
 
-We normally don't do this in kernel headers, but I think the benefits
-would be far greater compared to today's situation.
-
-      Arnd
+Cheers,
+Peter
