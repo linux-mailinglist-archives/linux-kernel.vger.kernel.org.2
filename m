@@ -2,172 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C107D41377A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B5E413769
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbhIUQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:23:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:36116 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233948AbhIUQXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:23:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52BD4113E;
-        Tue, 21 Sep 2021 09:22:26 -0700 (PDT)
-Received: from [10.57.95.67] (unknown [10.57.95.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34BBC3F718;
-        Tue, 21 Sep 2021 09:22:25 -0700 (PDT)
-Subject: Re: [PATCH] coresight: Don't immediately close events that are run on
- invalid CPU/sink combos
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210921130231.386095-1-james.clark@arm.com>
- <20210921151721.GA2059841@p14s>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <2d1326ea-a60c-8723-28a4-891a5478846f@arm.com>
-Date:   Tue, 21 Sep 2021 17:22:23 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S234579AbhIUQV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:21:28 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3849 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234798AbhIUQVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:21:00 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HDRQN2PlBz67Cqk;
+        Wed, 22 Sep 2021 00:17:00 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 21 Sep 2021 18:19:28 +0200
+Received: from [10.47.82.229] (10.47.82.229) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 21 Sep
+ 2021 17:19:28 +0100
+Subject: Re: [PATCH] iommu/arm-smmu-v3: poll cmdq until it has space
+To:     Fernand Sieber <sieberf@amazon.com>, <will@kernel.org>,
+        <robin.murphy@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
+References: <20210921114338.1144521-1-sieberf@amazon.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c1c10203-ffd3-25f9-f2c6-9cee3458aac9@huawei.com>
+Date:   Tue, 21 Sep 2021 17:22:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20210921151721.GA2059841@p14s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210921114338.1144521-1-sieberf@amazon.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.82.229]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 16:17, Mathieu Poirier wrote:
-> On Tue, Sep 21, 2021 at 02:02:31PM +0100, James Clark wrote:
->> When a traced process runs on a CPU that can't reach the selected sink,
->> the event will be stopped with PERF_HES_STOPPED. This means that even if
->> the process migrates to a valid CPU, tracing will not resume.
->>
->> This can be reproduced (on N1SDP) by using taskset to start the process
->> on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
->> CPU 2):
->>
->>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
->>
->> This produces a single 0 length AUX record, and then no more trace:
->>
->>    0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
->>
->> After the fix, the same command produces normal AUX records. The perf
->> self test "89: Check Arm CoreSight trace data recording and synthesized
->> samples" no longer fails intermittently. This was because the taskset in
->> the test is after the fork, so there is a period where the task is
->> scheduled on a random CPU rather than forced to a valid one.
->>
->> Specifically selecting an invalid CPU will still result in a failure to
->> open the event because it will never produce trace:
->>
->>    ./perf record -C 2 -e cs_etm/@tmc_etf0/
->>    failed to mmap with 12 (Cannot allocate memory)
->>
->> The only scenario that has changed is if the CPU mask has a valid CPU
->> sink combo in it.
->>
->> Testing
->> =======
->>
->> * Coresight self test passes consistently:
->>    ./perf test Coresight
->>
->> * CPU wide mode still produces trace:
->>    ./perf record -e cs_etm// -a
->>
->> * Invalid -C options still fail to open:
->>    ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
->>    failed to mmap with 12 (Cannot allocate memory)
->>
->> * Migrating a task to a valid sink/CPU now produces trace:
->>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
->>
->> * If the task remains on an invalid CPU, no trace is emitted:
->>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>   .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
->>   1 file changed, 22 insertions(+), 5 deletions(-)
+On 21/09/2021 12:43, Fernand Sieber wrote:
+>   	do {
+
+I didn't follow the full logic of this change yet ...
+
+>   		llq->val = READ_ONCE(cmdq->q.llq.val);
+> -		if (!queue_full(llq))
+> +		if (!queue_has_space(llq, n))
+
+But is the polarity really correct? That is, if we don't have space, 
+then exit with success (the function to check for space).
+
+>   			break;
 > 
-> Very interesting corner case - and I like your solution.  Arnaldo, please
-> consider.
-> 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
+> +		/*
+> +		 * We must return here even if there's no space, because the producer
+> +		 * having moved forward could mean that the last thread observing the
+> +		 * SMMU progress has allocated space in the cmdq and moved on, leaving
+> +		 * us in this waiting loop with no other thread updating
+> +		 * llq->state->val.
 
-PS: This is for coresight driver, I can pick this up. Otherwise,
+what is llq->state->val?
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> +		 */
+> +		if (llq->prod != prod)
+> +			return -EAGAIN;
+> +
+>   		ret = queue_poll(&qp);
 
-
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
->> index 8ebd728d3a80..79346f0f0e0b 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
->> @@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
->>   	 * sink from this ETM. We can't do much in this case if
->>   	 * the sink was specified or hinted to the driver. For
->>   	 * now, simply don't record anything on this ETM.
->> +	 *
->> +	 * As such we pretend that everything is fine, and let
->> +	 * it continue without actually tracing. The event could
->> +	 * continue tracing when it moves to a CPU where it is
->> +	 * reachable to a sink.
->>   	 */
->>   	if (!cpumask_test_cpu(cpu, &event_data->mask))
->> -		goto fail_end_stop;
->> +		goto out;
->>   
->>   	path = etm_event_cpu_path(event_data, cpu);
->>   	/* We need a sink, no need to continue without one */
->> @@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
->>   	if (coresight_enable_path(path, CS_MODE_PERF, handle))
->>   		goto fail_end_stop;
->>   
->> -	/* Tell the perf core the event is alive */
->> -	event->hw.state = 0;
->> -
->>   	/* Finally enable the tracer */
->>   	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
->>   		goto fail_disable_path;
->>   
->> +out:
->> +	/* Tell the perf core the event is alive */
->> +	event->hw.state = 0;
->>   	/* Save the event_data for this ETM */
->>   	ctxt->event_data = event_data;
->> -out:
->>   	return;
->>   
->>   fail_disable_path:
->> @@ -517,6 +521,19 @@ static void etm_event_stop(struct perf_event *event, int mode)
->>   	if (WARN_ON(!event_data))
->>   		return;
->>   
->> +	/*
->> +	 * Check if this ETM was allowed to trace, as decided at
->> +	 * etm_setup_aux(). If it wasn't allowed to trace, then
->> +	 * nothing needs to be torn down other than outputting a
->> +	 * zero sized record.
->> +	 */
->> +	if (handle->event && (mode & PERF_EF_UPDATE) &&
->> +	    !cpumask_test_cpu(cpu, &event_data->mask)) {
->> +		event->hw.state = PERF_HES_STOPPED;
->> +		perf_aux_output_end(handle, 0);
->> +		return;
->> +	}
->> +
->>   	if (!csdev)
->>   		return;
->>   
->> -- 
->> 2.28.0
->>
-
+Thanks,
+John
