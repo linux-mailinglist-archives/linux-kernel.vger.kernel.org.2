@@ -2,105 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2099413AF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C98C413AF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbhIUTtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234617AbhIUTsz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:48:55 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCA0C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:47:26 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id g16so164866wrb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YAxHuRHm7WfK6bNik1ywIBpJsescet2i7txnxF2Aqf0=;
-        b=VaUSB+G5i7MxEC1NU5ctqQF4GfLXIHpHcsb47g290mR+P//Lrq61NxgxaWVSVCabaa
-         2TCgKQkvVP5XORobC+0eaJ2g6tKHAGbSYxNSGDnwIZb3FdrxjNnhXbGKf5wFHrClCF+Y
-         MlfWd/fXpqL9+dFTGHX5Yr6w7Ytus7zhxigdj27BTz3i4WUuPoZg5w6n9SPzgNLJjx1Z
-         WHM5srEvoPfZt62TJEsfIh8qQhlZYQRmDMFg7bUjwFTMQYdqQgjBVdZhYHT1iB/UA/ap
-         fR6wBfu4LdcpbR//W0LFXOCHVpYSG9mcKK9ABc24QKHID7c64AcwtP7w8Km92jz0jOIm
-         cS1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YAxHuRHm7WfK6bNik1ywIBpJsescet2i7txnxF2Aqf0=;
-        b=GkWRKh8xSvnlJvyH06pQGho+JAb6QqTCQuD6FEHoSUrwx5B1kkX8m1T2ifcaTeJy1W
-         l0nw+niNSOogJRbWDuOIOLBULjEO4h2jw+XCxh9ljC/s4dJLaXH+lymiVJNA68piBl2/
-         TwteD4GowZqNW0sUeAmgcngIjQD/98mqyuPqeTOXBgrvOUsnmyDuUX3Q71OwJnWkGiJb
-         M+t0WVUBnK/DJ5Qpatm8U5XLjcFr6JNTczm9x1lg5sTtBLUoyFL5RHjGMRiZr23Hvb+8
-         RSt/Oa2w7zAqngCr1zo4LFmXjS5aKD1479f085bDkwpggy982Lr29yUPXI+YpIerXMHU
-         UHrA==
-X-Gm-Message-State: AOAM5331BebLVNttdqouL0jvFeIZkg39O1iuvRfULSH/njmBq/F7xdZJ
-        buHSRjzHf0PYn3aCsBImYzI=
-X-Google-Smtp-Source: ABdhPJyElFp1acBjmLJYQr8aJci7+tL3R8CDUq0tU/ZKz1XYvXDEtbkcjFSX9gUM59/gIzN96r0fag==
-X-Received: by 2002:a05:6000:1809:: with SMTP id m9mr38380557wrh.396.1632253645190;
-        Tue, 21 Sep 2021 12:47:25 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cde])
-        by smtp.gmail.com with ESMTPSA id s13sm3891243wmc.47.2021.09.21.12.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 12:47:24 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 4/8] staging: r8188eu: remove write-only fields from struct dm_priv
-Date:   Tue, 21 Sep 2021 21:46:54 +0200
-Message-Id: <20210921194658.10654-5-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210921194658.10654-1-straube.linux@gmail.com>
-References: <20210921194658.10654-1-straube.linux@gmail.com>
+        id S234661AbhIUTs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:48:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232971AbhIUTs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:48:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05CD661090;
+        Tue, 21 Sep 2021 19:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632253617;
+        bh=Vd72d03O7vyO6/ntGqgJQ7bBsZ/+rDIvCZUgBZtoU0c=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=C8uJtnAm4Mq5eVYm0dKWWTUGx2AeG8B82zVLfuy2KOCgkLZ5SA+lo4Y+XxLYxvwga
+         dmbG0hTRc60XBHH79QvT96Fe0f2OyLJVbO6iZwojfwHYAS5+S9MOburXbR3KUmtRyz
+         ZTLhpPs3Sookcyfmj5CQsFtmfn5ncYl9je8Ep3+WGxK8TyW+rEFFrMRJvPRm60qV19
+         B3y1LYEP2o3/WbT3LAuCp+pCgpYtaDj5EW/mH2eodVKriTDimPRT2yZwZBsJ3DY/7Y
+         oHTk2DY4kys5tlZeU0oWKja/kCA8CFYOiNVbEVsylZHB0Ceq44zQEXQqy49Q6YcsaV
+         OmyoUm24wQ+YQ==
+Message-ID: <5d0b85ed3d70ce75033a7f546ad6a3c0bec32271.camel@kernel.org>
+Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        dave.hansen@linux.intel.com, yang.zhong@intel.com
+Date:   Tue, 21 Sep 2021 22:46:55 +0300
+In-Reply-To: <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
+References: <20210920125401.2389105-1-pbonzini@redhat.com>
+         <20210920125401.2389105-2-pbonzini@redhat.com>
+         <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fields bDynamicTxPowerEnable and LastDTPLvl of struct dm_priv
-are set but never used. Remove them.
+On Tue, 2021-09-21 at 22:44 +0300, Jarkko Sakkinen wrote:
+> Even to a Linux guest, since EPC should stil be represented in the state =
+that
+> matches the hardware.  It'd be essentially a corrupted state, even if the=
+re was
+> measures to resist this. Windows guests failing is essentially a side-eff=
+ect
+> of an issue, not an issue in the Windows guests.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/odm.c             | 2 --
- drivers/staging/r8188eu/include/rtl8188e_dm.h | 2 --
- 2 files changed, 4 deletions(-)
+Ugh, typos, sorry. Even to a Linux guest it would be illegit what I was mea=
+ning
+to say...
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index c691a6a90fa9..555060bdfdd9 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -1183,8 +1183,6 @@ void odm_DynamicTxPowerInit(struct odm_dm_struct *pDM_Odm)
- 	struct adapter *Adapter = pDM_Odm->Adapter;
- 	struct hal_data_8188e	*pHalData = GET_HAL_DATA(Adapter);
- 	struct dm_priv	*pdmpriv = &pHalData->dmpriv;
--	pdmpriv->bDynamicTxPowerEnable = false;
--	pdmpriv->LastDTPLvl = TxHighPwrLevel_Normal;
- 	pdmpriv->DynamicTxHighPowerLvl = TxHighPwrLevel_Normal;
- }
- 
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_dm.h b/drivers/staging/r8188eu/include/rtl8188e_dm.h
-index 3ead20b321a9..2209975c0b2d 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_dm.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_dm.h
-@@ -29,8 +29,6 @@ struct	dm_priv {
- 	int	LastMinUndecoratedPWDBForDM;
- 
- 	/* for High Power */
--	u8 bDynamicTxPowerEnable;
--	u8 LastDTPLvl;
- 	u8 DynamicTxHighPowerLvl;/* Tx Power Control for Near/Far Range */
- 	u8	PowerIndex_backup[6];
- };
--- 
-2.33.0
+/Jarkko
 
