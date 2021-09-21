@@ -2,88 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C974F413249
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3DC41324C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbhIULNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:13:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232192AbhIULNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:13:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06D6F60EC0;
-        Tue, 21 Sep 2021 11:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632222732;
-        bh=yyXhUn58lpN8Nc0YGD1K+xedQdRickg/qG3CoTgTXjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nBLlbnASKOEDfs+fPWH1yuBYrswejvtWMO/OWVRyY+UubhdPyN6vh0rYJJDYjxPeP
-         UmE91P2HcZM3n1Lzw4W4YlgjuRN1v0osSiSpP1MBqDjnR/X1y96/b8J2V8CrsIRJen
-         bJYYFDkI4rkv1yTkV4bwDk2nHOCLOBCclcAXOgH6GAuXyIQCZc1NDfCddZ2dEwDo8C
-         bGzz5ejsuwpAeHYqowsr2UHJ4VxNFf6r/hcHXi6GwWUoy4eTFyxBHcGbe6Lc34/5fu
-         lmnftTtUc51J2xA7qlp3uL33Lg8d32dFqmc+XsdlWr4cBrr94ogeiVubcI1PuPmLke
-         PDgHXOzmAhIWQ==
-Date:   Tue, 21 Sep 2021 12:11:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Kirill Marinushkin <kmarinushkin@birdec.com>
-Subject: Re: [PATCH] ASoC: pcm512x: Mend accesses to the I2S_1 and I2S_2
- registers
-Message-ID: <20210921111128.GA4203@sirena.org.uk>
-References: <2d221984-7a2e-7006-0f8a-ffb5f64ee885@axentia.se>
- <ae4b25f1-2b2c-d937-e23d-0f7d23bdf0c4@gmail.com>
- <815cbba4-60d6-8d97-c483-146c2f7c3912@axentia.se>
- <YUj9LqNTH6A4CQcj@sirena.org.uk>
- <8ee31fd2-3fbe-f5da-a030-c6b677c7f398@axentia.se>
+        id S232322AbhIULOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:14:12 -0400
+Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:41251 "EHLO
+        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232305AbhIULOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:14:07 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id E5CA51C4DFC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:12:36 +0100 (IST)
+Received: (qmail 18735 invoked from network); 21 Sep 2021 11:12:36 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 21 Sep 2021 11:12:36 -0000
+Date:   Tue, 21 Sep 2021 12:12:34 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Linux-MM <linux-mm@kvack.org>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] mm/vmscan: Throttle reclaim until some writeback
+ completes if congested
+Message-ID: <20210921111234.GQ3959@techsingularity.net>
+References: <20210920085436.20939-1-mgorman@techsingularity.net>
+ <20210920085436.20939-2-mgorman@techsingularity.net>
+ <163217994752.3992.5443677201798473600@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <8ee31fd2-3fbe-f5da-a030-c6b677c7f398@axentia.se>
-X-Cookie: Quack!
+In-Reply-To: <163217994752.3992.5443677201798473600@noble.neil.brown.name>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 21, 2021 at 09:19:07AM +1000, NeilBrown wrote:
+> On Mon, 20 Sep 2021, Mel Gorman wrote:
+> >  
+> > +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page);
+> > +static inline void acct_reclaim_writeback(struct page *page)
+> > +{
+> > +	pg_data_t *pgdat = page_pgdat(page);
+> > +
+> > +	if (atomic_read(&pgdat->nr_reclaim_throttled))
+> > +		__acct_reclaim_writeback(pgdat, page);
+> 
+> The first thing __acct_reclaim_writeback() does is repeat that
+> atomic_read().
+> Should we read it once and pass the value in to
+> __acct_reclaim_writeback(), or is that an unnecessary
+> micro-optimisation?
+> 
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think it's a micro-optimisation but I can still do it.
 
-On Tue, Sep 21, 2021 at 08:37:28AM +0200, Peter Rosin wrote:
+> 
+> > +/*
+> > + * Account for pages written if tasks are throttled waiting on dirty
+> > + * pages to clean. If enough pages have been cleaned since throttling
+> > + * started then wakeup the throttled tasks.
+> > + */
+> > +void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page)
+> > +{
+> > +	unsigned long nr_written;
+> > +	int nr_throttled = atomic_read(&pgdat->nr_reclaim_throttled);
+> > +
+> > +	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
+> > +	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
+> > +		READ_ONCE(pgdat->nr_reclaim_start);
+> > +
+> > +	if (nr_written > SWAP_CLUSTER_MAX * nr_throttled)
+> > +		wake_up_interruptible_all(&pgdat->reclaim_wait);
+> 
+> A simple wake_up() could be used here.  "interruptible" is only needed
+> if non-interruptible waiters should be left alone.  "_all" is only needed
+> if there are some exclusive waiters.  Neither of these apply, so I think
+> the simpler interface is best.
+> 
 
-> I expected it to just work to mark the register as readable and do
-> without the default value (i.e. the way it was before my patch). What
-> I don't understand is why regmap returns -EBUSY in that case. That
-> doesn't make sense to me. Perhaps that -EBUSY is propagated from the
-> I2C layer, but in that case, why is it then ok to do a write to
-> another register at the same spot in the code? So, why -EBUSY?
+You're right.
 
-Actually one thing that can trigger this now I think about it is
-attempting to access a volatile register when the device is in cache
-only mode for power management reasons - if the device is in cache only
-mode then you can't do a hardware read so volatile registers become
-inaccessible.
+> 
+> > +}
+> > +
+> >  /* possible outcome of pageout() */
+> >  typedef enum {
+> >  	/* failed to write page out, page is locked */
+> > @@ -1412,9 +1453,8 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+> >  
+> >  		/*
+> >  		 * The number of dirty pages determines if a node is marked
+> > -		 * reclaim_congested which affects wait_iff_congested. kswapd
+> > -		 * will stall and start writing pages if the tail of the LRU
+> > -		 * is all dirty unqueued pages.
+> > +		 * reclaim_congested. kswapd will stall and start writing
+> > +		 * pages if the tail of the LRU is all dirty unqueued pages.
+> >  		 */
+> >  		page_check_dirty_writeback(page, &dirty, &writeback);
+> >  		if (dirty || writeback)
+> > @@ -3180,19 +3220,20 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >  		 * If kswapd scans pages marked for immediate
+> >  		 * reclaim and under writeback (nr_immediate), it
+> >  		 * implies that pages are cycling through the LRU
+> > -		 * faster than they are written so also forcibly stall.
+> > +		 * faster than they are written so forcibly stall
+> > +		 * until some pages complete writeback.
+> >  		 */
+> >  		if (sc->nr.immediate)
+> > -			congestion_wait(BLK_RW_ASYNC, HZ/10);
+> > +			reclaim_throttle(pgdat, VMSCAN_THROTTLE_WRITEBACK, HZ/10);
+> >  	}
+> >  
+> >  	/*
+> >  	 * Tag a node/memcg as congested if all the dirty pages
+> >  	 * scanned were backed by a congested BDI and
+> 
+> "congested BDI" doesn't mean anything any more.  Is this a good time to
+> correct that comment.
+> This comment seems to refer to the test
+> 
+>       sc->nr.dirty && sc->nr.dirty == sc->nr.congested)
+> 
+> a few lines down.  But nr.congested is set from nr_congested which
+> counts when inode_write_congested() is true - almost never - and when 
+> "writeback and PageReclaim()".
+> 
+> Is that last test the sign that we are cycling through the LRU to fast?
+> So the comment could become:
+> 
+>    Tag a node/memcg as congested if all the dirty page were
+>    already marked for writeback and immediate reclaim (counted in
+>    nr.congested).
+> 
+> ??
+> 
+> Patch seems to make sense to me, but I'm not expert in this area.
+> 
 
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
+Comments updated.
 
------BEGIN PGP SIGNATURE-----
+Diff on top looks like
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFJvd8ACgkQJNaLcl1U
-h9CJKQf+OegzluneiRTJmiVh6LiL5bpcPOvlcoNyjQ9V7XuKD3L0HAt3Us2w4Uz1
-zf61Wc7v3L50DjZ/bcEvPceanzWn2NjRwQCxHX9PTskwEAMGig5ydmm4rMBfWk6F
-hZFCefunu2I5armlczsLCuvPPmvIeE0fOk1/t4Ha92c4ifxyFWoB2uoe/bxLNxzH
-KhhHYssXI1D142G5khsfTMkzWNOIOIecjUuaQsTCO/AgdxO5K120c81ZzFJlVcKu
-GG2UcJSi3Qt4XAmfDqRgpO3r2E4DiI/8ZwPW/LZkZHkBwXvBYaOqM0ueYDTSF+Ny
-sam8UqO9TDsZC674q0fTaBS5mj+xoQ==
-=ztW7
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
+diff --git a/mm/internal.h b/mm/internal.h
+index e25b3686bfab..90764d646e02 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -34,13 +34,15 @@
+ 
+ void page_writeback_init(void);
+ 
+-void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page);
++void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
++						int nr_throttled);
+ static inline void acct_reclaim_writeback(struct page *page)
+ {
+ 	pg_data_t *pgdat = page_pgdat(page);
++	int nr_throttled = atomic_read(&pgdat->nr_reclaim_throttled);
+ 
+-	if (atomic_read(&pgdat->nr_reclaim_throttled))
+-		__acct_reclaim_writeback(pgdat, page);
++	if (nr_throttled)
++		__acct_reclaim_writeback(pgdat, page, nr_throttled);
+ }
+ 
+ vm_fault_t do_swap_page(struct vm_fault *vmf);
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b58ea0b13286..2dc17de91d32 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1034,10 +1034,10 @@ reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
+  * pages to clean. If enough pages have been cleaned since throttling
+  * started then wakeup the throttled tasks.
+  */
+-void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page)
++void __acct_reclaim_writeback(pg_data_t *pgdat, struct page *page,
++							int nr_throttled)
+ {
+ 	unsigned long nr_written;
+-	int nr_throttled = atomic_read(&pgdat->nr_reclaim_throttled);
+ 
+ 	__inc_node_page_state(page, NR_THROTTLED_WRITTEN);
+ 	nr_written = node_page_state(pgdat, NR_THROTTLED_WRITTEN) -
+@@ -3228,9 +3228,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 	}
+ 
+ 	/*
+-	 * Tag a node/memcg as congested if all the dirty pages
+-	 * scanned were backed by a congested BDI and
+-	 * non-kswapd tasks will stall on reclaim_throttle.
++	 * Tag a node/memcg as congested if all the dirty pages were marked
++	 * for writeback and immediate reclaim (counted in nr.congested).
+ 	 *
+ 	 * Legacy memcg will stall in page writeback so avoid forcibly
+ 	 * stalling in reclaim_throttle().
+@@ -3241,8 +3240,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 		set_bit(LRUVEC_CONGESTED, &target_lruvec->flags);
+ 
+ 	/*
+-	 * Stall direct reclaim for IO completions if underlying BDIs
+-	 * and node is congested. Allow kswapd to continue until it
++	 * Stall direct reclaim for IO completions if the lruvec is
++	 * node is congested. Allow kswapd to continue until it
+ 	 * starts encountering unqueued dirty pages or cycling through
+ 	 * the LRU too quickly.
+ 	 */
+@@ -4427,7 +4426,7 @@ void wakeup_kswapd(struct zone *zone, gfp_t gfp_flags, int order,
+ 
+ 	trace_mm_vmscan_wakeup_kswapd(pgdat->node_id, highest_zoneidx, order,
+ 				      gfp_flags);
+-	wake_up_interruptible(&pgdat->kswapd_wait);
++	wake_up_all(&pgdat->kswapd_wait);
+ }
+ 
+ #ifdef CONFIG_HIBERNATION
