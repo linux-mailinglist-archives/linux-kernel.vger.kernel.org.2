@@ -2,163 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25154131B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A847A4131B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhIUKfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:35:41 -0400
-Received: from muru.com ([72.249.23.125]:35568 "EHLO muru.com"
+        id S231971AbhIUKgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:36:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:25330 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232076AbhIUKfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:35:34 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 11D6E812F;
-        Tue, 21 Sep 2021 10:34:31 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] serial: 8250_omap: Drop the use of pm_runtime_irq_safe()
-Date:   Tue, 21 Sep 2021 13:33:46 +0300
-Message-Id: <20210921103346.64824-7-tony@atomide.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210921103346.64824-1-tony@atomide.com>
-References: <20210921103346.64824-1-tony@atomide.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231823AbhIUKgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:36:10 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632220482; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=p4JNkd3L2vIMEV9xY9yD46hmbqQPTnQlbKnuVphVbqI=; b=xNPschyMGB2k2WkCNT4/Vh4nBRxuh8Baz5WJkD2TDkOD9i+pbkY/TpdNfo7F+ZlCxPktP4Tg
+ HzXtWm/wawDeeHuSQLjiinYYplV9AEmBBBmi7xS3O/kVL3BTB/w4WV7DOa0+kGtEiXQYiYF0
+ kArlkcuIB0ljuTriAIxDdQvgX3E=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6149b541bd6681d8ed43d32d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 10:34:41
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F1B56C4360C; Tue, 21 Sep 2021 10:34:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2134C4338F;
+        Tue, 21 Sep 2021 10:34:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B2134C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, swboyd@chromium.org,
+        clew@codeaurora.org, sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>,
+        Andy Gross <agross@kernel.org>
+Subject: [PATCH V5 1/1] soc: qcom: smp2p: Add wakeup capability to SMP2P IRQ
+Date:   Tue, 21 Sep 2021 16:04:27 +0530
+Message-Id: <1632220467-27410-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We already have the serial layer RX wake path fixed for power management.
-We no longer allow deeper idle states unless the kernel console has been
-detached, and we require that the RX wakeirq is configured.
+Remote susbsystems notify fatal crash throught smp2p interrupt.
+When remoteproc crashes it can cause soc to come out of low power
+state and may not allow again to enter in low power state until
+crash is handled.
 
-For TX path, we may have the serial port autoidled, and need to wake it
-up before writing to it. With the serial_core prep_tx() changes, we can
-finally drop the dependency to pm_runtime_irq_safe() for 8250_omap driver.
+Mark smp2p interrupt wakeup capable so that interrupt handler is
+executed and remoteproc crash can be handled in system  resume path.
+This patch marks interrupt wakeup capable but keeps wakeup disabled
+by default. User space can enable it based on its requirement for
+wakeup from suspend.
 
-To drop pm_runtime_irq_safe(), we remove all PM runtime calls from the
-interrupt context. If we ever see an interrupt for an idled port, we just
-bail out. We now also need to restore the port context with interrupts
-disabled to prevent interrupts from happening while restoring the port.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
 ---
- drivers/tty/serial/8250/8250_omap.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ drivers/soc/qcom/smp2p.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -134,6 +134,7 @@ struct omap8250_priv {
- 	bool rx_dma_broken;
- 	bool throttled;
- 	unsigned int allow_rpm:1;
-+	unsigned int clocks_off:1;
- };
- 
- struct omap8250_dma_params {
-@@ -621,6 +622,9 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 	unsigned int iir, lsr;
- 	int ret;
- 
-+	if (priv->clocks_off)
-+		return IRQ_NONE;
-+
- #ifdef CONFIG_SERIAL_8250_DMA
- 	if (up->dma) {
- 		ret = omap_8250_dma_handle_irq(port);
-@@ -628,7 +632,6 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 	}
- #endif
- 
--	serial8250_rpm_get(up);
- 	lsr = serial_port_in(port, UART_LSR);
- 	iir = serial_port_in(port, UART_IIR);
- 	ret = serial8250_handle_irq(port, iir);
-@@ -662,8 +665,6 @@ static irqreturn_t omap8250_irq(int irq, void *dev_id)
- 		schedule_delayed_work(&up->overrun_backoff, delay);
+diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
+index 2df4883..38585a7 100644
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -14,6 +14,7 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_wakeirq.h>
+ #include <linux/regmap.h>
+ #include <linux/soc/qcom/smem.h>
+ #include <linux/soc/qcom/smem_state.h>
+@@ -538,9 +539,26 @@ static int qcom_smp2p_probe(struct platform_device *pdev)
+ 		goto unwind_interfaces;
  	}
  
--	serial8250_rpm_put(up);
--
- 	return IRQ_RETVAL(ret);
- }
- 
-@@ -1191,13 +1192,9 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
- 	unsigned char status;
- 	u8 iir;
- 
--	serial8250_rpm_get(up);
--
- 	iir = serial_port_in(port, UART_IIR);
--	if (iir & UART_IIR_NO_INT) {
--		serial8250_rpm_put(up);
-+	if (iir & UART_IIR_NO_INT)
- 		return IRQ_HANDLED;
--	}
- 
- 	spin_lock(&port->lock);
- 
-@@ -1226,7 +1223,6 @@ static int omap_8250_dma_handle_irq(struct uart_port *port)
- 
- 	uart_unlock_and_check_sysrq(port);
- 
--	serial8250_rpm_put(up);
- 	return 1;
- }
- 
-@@ -1420,8 +1416,6 @@ static int omap8250_probe(struct platform_device *pdev)
- 	if (!of_get_available_child_count(pdev->dev.of_node))
- 		pm_runtime_set_autosuspend_delay(&pdev->dev, -1);
- 
--	pm_runtime_irq_safe(&pdev->dev);
--
- 	pm_runtime_get_sync(&pdev->dev);
- 
- 	omap_serial_fill_features_erratas(&up, priv);
-@@ -1637,6 +1631,8 @@ static int omap8250_runtime_suspend(struct device *dev)
- 		omap_8250_rx_dma_flush(up);
- 
- 	priv->latency = PM_QOS_CPU_LATENCY_DEFAULT_VALUE;
-+	priv->clocks_off = 1;
++	/*
++	 * Treat smp2p interrupt as wakeup source, but keep it disabled
++	 * by default. User space can decide enabling it depending on its
++	 * use cases. For example if remoteproc crashes and device wants
++	 * to handle it immediatedly (e.g. to not miss phone calls) it can
++	 * enable wakeup source from user space, while other devices which
++	 * do not have proper autosleep feature may want to handle it with
++	 * other wakeup events (e.g. Power button) instead waking up immediately.
++	 */
++	device_set_wakeup_capable(&pdev->dev, true);
 +
- 	schedule_work(&priv->qos_work);
++	ret = dev_pm_set_wake_irq(&pdev->dev, irq);
++	if (ret)
++		goto set_wake_irq_fail;
  
  	return 0;
-@@ -1646,13 +1642,18 @@ static int omap8250_runtime_resume(struct device *dev)
- {
- 	struct omap8250_priv *priv = dev_get_drvdata(dev);
- 	struct uart_8250_port *up;
-+	struct uart_port *port;
-+	unsigned long flags;
  
- 	/* In case runtime-pm tries this before we are setup */
- 	if (!priv)
- 		return 0;
- 
- 	up = serial8250_get_port(priv->line);
-+	port = &up->port;
- 
-+	/* Restore state with interrupts disabled */
-+	spin_lock_irqsave(&port->lock, flags);
- 	if (omap8250_lost_context(up))
- 		omap8250_restore_regs(up);
- 
-@@ -1660,6 +1661,9 @@ static int omap8250_runtime_resume(struct device *dev)
- 		omap_8250_rx_dma(up);
- 
- 	priv->latency = priv->calc_latency;
-+	priv->clocks_off = 0;
-+	spin_unlock_irqrestore(&port->lock, flags);
++set_wake_irq_fail:
++	dev_pm_clear_wake_irq(&pdev->dev);
 +
- 	schedule_work(&priv->qos_work);
- 	return 0;
- }
+ unwind_interfaces:
+ 	list_for_each_entry(entry, &smp2p->inbound, node)
+ 		irq_domain_remove(entry->domain);
+@@ -565,6 +583,8 @@ static int qcom_smp2p_remove(struct platform_device *pdev)
+ 	struct qcom_smp2p *smp2p = platform_get_drvdata(pdev);
+ 	struct smp2p_entry *entry;
+ 
++	dev_pm_clear_wake_irq(&pdev->dev);
++
+ 	list_for_each_entry(entry, &smp2p->inbound, node)
+ 		irq_domain_remove(entry->domain);
+ 
 -- 
-2.33.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
