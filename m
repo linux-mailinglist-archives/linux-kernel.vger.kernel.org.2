@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D494A413685
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5316C4136B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234177AbhIUPxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:53:08 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:40720 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIUPxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:53:07 -0400
-Received: by mail-wr1-f44.google.com with SMTP id q26so40563397wrc.7;
-        Tue, 21 Sep 2021 08:51:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=SGlNyJc163VHCvQP8ZebJ632wDd/T7gsno9Azu96zu4=;
-        b=0EFjw1sBfoEThUFC0K4kus4xqDy88zI0tl3EDRYK8BTGwK8O2umzS3N+StsERZnQ1x
-         r6jvyxAF5nBcxVZPTrfngat/uA1Hs8oCLCKFOvDElYFk1lw91WIuDf5/oELLMguIm4bl
-         ag7R3QatQwcSlOJTHEkY4m+Od6SWET4he65R1H07YCDCKp5WqOWNZadv0YJeOW3ZaDUu
-         X9YTpuunOkvDxSfU8sKvrcqZehvGPO/ePhpIaIUrPwHPezyofS0U97Aml9h3A1yZ6HPp
-         Wp4DFXZ3K3YdaY+K4rkgLMFeiniUxIyzuChqWeE1iB1A/xHHFtyFQmiKaYqqWA3jAk7v
-         6QJA==
-X-Gm-Message-State: AOAM531dtyq8MkRdv2JlgbSVozCq477f+pAXG0SNkz5QqH6IwcPEq0x6
-        fuIIOl5lt610eAD4amr8UdA=
-X-Google-Smtp-Source: ABdhPJyya/h/DxldyRTL4NEizyEIHfA+enxOKuJ5mY0wnU5nDP4p5OXndeVdOtUKspVUvt7KO1d2nw==
-X-Received: by 2002:a05:6000:2cf:: with SMTP id o15mr35907174wry.364.1632239497492;
-        Tue, 21 Sep 2021 08:51:37 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id z12sm19515035wro.75.2021.09.21.08.51.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 08:51:37 -0700 (PDT)
-Message-ID: <e3473e69-777b-8b96-c3ae-54cfbdbdb9a2@kernel.org>
-Date:   Tue, 21 Sep 2021 17:51:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
- compat_ioctl
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Paul Mackerras <paulus@samba.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091134.17426-7-jslaby@suse.cz> <YUlY5pQQWf2P2fKn@google.com>
- <9049e956-2865-7309-2eaf-aa4516ab28d6@kernel.org>
- <YUnDtTEzex5/z90J@kroah.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <YUnDtTEzex5/z90J@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S234338AbhIUPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:54:30 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:50686 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234231AbhIUPyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:54:09 -0400
+Received: from kleverstation.intra.ispras.ru (unknown [10.10.2.220])
+        by mail.ispras.ru (Postfix) with ESMTPS id E5DCC40D3BFF;
+        Tue, 21 Sep 2021 15:52:34 +0000 (UTC)
+From:   Nadezda Lutovinova <lutovinova@ispras.ru>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Marc Hulsman <m.hulsman@tudelft.nl>,
+        Rudolf Marek <r.marek@assembler.cz>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: [PATCH v2 1/3] hwmon: (w83791d) Fix NULL pointer dereference by removing unnecessary structure field
+Date:   Tue, 21 Sep 2021 18:51:51 +0300
+Message-Id: <20210921155153.28098-1-lutovinova@ispras.ru>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210811181844.GB3138792@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 09. 21, 13:36, Greg KH wrote:
-> On Tue, Sep 21, 2021 at 12:52:38PM +0200, Jiri Slaby wrote:
->> On 21. 09. 21, 6:00, Dmitry Torokhov wrote:
->>> Hi Jiri,
->>>
->>> On Tue, Sep 14, 2021 at 11:11:25AM +0200, Jiri Slaby wrote:
->>>> diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
->>>> index 17eb8f2aa48d..55e91d0e70ec 100644
->>>> --- a/drivers/input/serio/serport.c
->>>> +++ b/drivers/input/serio/serport.c
->>>> @@ -207,8 +207,8 @@ static void serport_set_type(struct tty_struct *tty, unsigned long type)
->>>>     * serport_ldisc_ioctl() allows to set the port protocol, and device ID
->>>>     */
->>>> -static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
->>>> -			       unsigned int cmd, unsigned long arg)
->>>> +static int serport_ldisc_ioctl(struct tty_struct *tty, unsigned int cmd,
->>>> +		unsigned long arg)
->>>
->>> Can we please keep arguments aligned as they were? Otherwise
->>
->> Fixed, thanks. Likely, I will send a follow-up -- depending if Greg drops or
->> keeps these in the tree.
-> 
-> Up to you.  I can drop them all now if you want to resend a v2 with all
-> of the aggregate acks, or you can send a follow-up set on top of these.
+If driver read val value sufficient for 
+(val & 0x08) && (!(val & 0x80)) && ((val & 0x7) == ((val >> 4) & 0x7))
+from device then Null pointer dereference occurs. 
+(It is possible if tmp = 0b0xyz1xyz, where same literals mean same numbers)
+Also lm75[] does not serve a purpose anymore after switching to
+devm_i2c_new_dummy_device() in w83791d_detect_subclients().
 
-What about if you keep everything up to (and incl.)
-   tty: remove file from n_tty_ioctl_helper
-(i.e. the patch 06/16, the one before this one)? If that works for you, 
-I will send v2 of the rest w/ collected acks. If it doesn't, I prefer 
-sending a complete v2 (incl. collected acks).
+The patch fixes possible NULL pointer dereference by removing lm75[].
 
-thanks,
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+---
+v2: 
+ - split one file per patch 
+ - remove lm75[] instead of adding checking  
+---
+ drivers/hwmon/w83791d.c | 32 ++++++++++++++------------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/hwmon/w83791d.c b/drivers/hwmon/w83791d.c
+index 37b25a1474c4..b4eae45859c1 100644
+--- a/drivers/hwmon/w83791d.c
++++ b/drivers/hwmon/w83791d.c
+@@ -273,9 +273,6 @@ struct w83791d_data {
+ 	char valid;			/* !=0 if following fields are valid */
+ 	unsigned long last_updated;	/* In jiffies */
+ 
+-	/* array of 2 pointers to subclients */
+-	struct i2c_client *lm75[2];
+-
+ 	/* volts */
+ 	u8 in[NUMBER_OF_VIN];		/* Register value */
+ 	u8 in_max[NUMBER_OF_VIN];	/* Register value */
+@@ -1257,7 +1254,6 @@ static const struct attribute_group w83791d_group_fanpwm45 = {
+ static int w83791d_detect_subclients(struct i2c_client *client)
+ {
+ 	struct i2c_adapter *adapter = client->adapter;
+-	struct w83791d_data *data = i2c_get_clientdata(client);
+ 	int address = client->addr;
+ 	int i, id;
+ 	u8 val;
+@@ -1280,21 +1276,21 @@ static int w83791d_detect_subclients(struct i2c_client *client)
+ 	}
+ 
+ 	val = w83791d_read(client, W83791D_REG_I2C_SUBADDR);
++
++	if (!(val & 0x88) && (val & 0x7) == ((val >> 4) & 0x7)) {
++		dev_err(&client->dev,
++			"duplicate addresses 0x%x, use force_subclient\n",
++				0x48 + (val & 0x7));
++		return -ENODEV;
++	}
++
+ 	if (!(val & 0x08))
+-		data->lm75[0] = devm_i2c_new_dummy_device(&client->dev, adapter,
+-							  0x48 + (val & 0x7));
+-	if (!(val & 0x80)) {
+-		if (!IS_ERR(data->lm75[0]) &&
+-				((val & 0x7) == ((val >> 4) & 0x7))) {
+-			dev_err(&client->dev,
+-				"duplicate addresses 0x%x, "
+-				"use force_subclient\n",
+-				data->lm75[0]->addr);
+-			return -ENODEV;
+-		}
+-		data->lm75[1] = devm_i2c_new_dummy_device(&client->dev, adapter,
+-							  0x48 + ((val >> 4) & 0x7));
+-	}
++		devm_i2c_new_dummy_device(&client->dev, adapter,
++						0x48 + (val & 0x7));
++
++	if (!(val & 0x80))
++		devm_i2c_new_dummy_device(&client->dev, adapter,
++						0x48 + ((val >> 4) & 0x7));
+ 
+ 	return 0;
+ }
 -- 
-js
+2.17.1
+
