@@ -2,178 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A739A412E29
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B65F412E4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbhIUFWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 01:22:53 -0400
-Received: from relay.sw.ru ([185.231.240.75]:36384 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229528AbhIUFWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 01:22:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=k2wEloV+gDUmpEy0mWyhFLWFK1xSjbaF8EJQW1Uahrc=; b=A2uB0Wpldjhr4Vc52
-        YVUjgm4pK1wNxVIZCrvkaM02N2lcOvtaYpUN80eNlnzavQv4LeVQJqroKJRecCQ9ORGyEOMA0U7HX
-        wBJZBpqK092aBtQ7eYBDtqQMZD/PV+2hSlmXAH0em24V8BA97hLvmXYYMrAKz9UCCzdbPnU0SpRVc
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mSYDT-002fYJ-DS; Tue, 21 Sep 2021 08:21:15 +0300
-Subject: Re: [PATCH net v8] skb_expand_head() adjust skb->truesize incorrectly
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     Christoph Paasch <christoph.paasch@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
-References: <20210920111259.18f9cc01@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <be927ca4-6fd7-ce89-e472-bb1e5a0dc2a9@virtuozzo.com>
-Message-ID: <45b3cb13-8c6e-25a3-f568-921ab6f1ca8f@virtuozzo.com>
-Date:   Tue, 21 Sep 2021 08:21:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229665AbhIUFqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 01:46:34 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:32972 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229590AbhIUFqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 01:46:33 -0400
+Received: from BC-Mail-Ex17.internal.baidu.com (unknown [172.31.51.11])
+        by Forcepoint Email with ESMTPS id 7568760FAF5DC17078C8;
+        Tue, 21 Sep 2021 13:28:30 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex17.internal.baidu.com (172.31.51.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 21 Sep 2021 13:28:30 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 21 Sep 2021 13:28:29 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/3] iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+Date:   Tue, 21 Sep 2021 13:28:12 +0800
+Message-ID: <20210921052821.91-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <be927ca4-6fd7-ce89-e472-bb1e5a0dc2a9@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex13.internal.baidu.com (172.31.51.53) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 12:41 AM, Vasily Averin wrote:
-> Christoph Paasch reports [1] about incorrect skb->truesize
-> after skb_expand_head() call in ip6_xmit.
-> This may happen because of two reasons:
-> - skb_set_owner_w() for newly cloned skb is called too early,
-> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
-> In this case sk->sk_wmem_alloc should be adjusted too.
-> 
-> [1] https://lkml.org/lkml/2021/8/20/1082
-> 
-> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
-> Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
-> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
-> v8: clone non-wmem skb
-> V7 (from kuba@):
->     shift more magic into helpers,
->     follow Eric's advice and don't inherit non-wmem skbs for now
-> v6: fixed delta,
->     improved comments
-> v5: fixed else condition, thanks to Eric
->     reworked update of expanded skb,
->     added corresponding comments
-> v4: decided to use is_skb_wmem() after pskb_expand_head() call
->     fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
-> v3: removed __pskb_expand_head(),
->     added is_skb_wmem() helper for skb with wmem-compatible destructors
->     there are 2 ways to use it:
->      - before pskb_expand_head(), to create skb clones
->      - after successfull pskb_expand_head() to change owner on extended skb.
-> v2: based on patch version from Eric Dumazet,
->     added __pskb_expand_head() function, which can be forced
->     to adjust skb->truesize and sk->sk_wmem_alloc.
-> ---
->  include/net/sock.h |  1 +
->  net/core/skbuff.c  | 33 +++++++++++++++++++++------------
->  net/core/sock.c    |  8 ++++++++
->  3 files changed, 30 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 95b2577..173d58c 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
->  			     gfp_t priority);
->  void __sock_wfree(struct sk_buff *skb);
->  void sock_wfree(struct sk_buff *skb);
-> +bool is_skb_wmem(const struct sk_buff *skb);
->  struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
->  			     gfp_t priority);
->  void skb_orphan_partial(struct sk_buff *skb);
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f931176..4b49f63 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1804,30 +1804,39 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
->  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->  {
->  	int delta = headroom - skb_headroom(skb);
-> +	int osize = skb_end_offset(skb);
-> +	struct sock *sk = skb->sk;
->  
->  	if (WARN_ONCE(delta <= 0,
->  		      "%s is expecting an increase in the headroom", __func__))
->  		return skb;
->  
-> +	delta = SKB_DATA_ALIGN(delta);
->  	/* pskb_expand_head() might crash, if skb is shared */
-> -	if (skb_shared(skb)) {
-> +	if (skb_shared(skb) || !is_skb_wmem(skb)) {
->  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->  
-> -		if (likely(nskb)) {
-> -			if (skb->sk)
-> -				skb_set_owner_w(nskb, skb->sk);
-> -			consume_skb(skb);
-> -		} else {
-> -			kfree_skb(skb);
-> -		}
-> +		if (unlikely(!nskb))
-> +			goto fail;
-> +
-> +		if (sk)
-> +			skb_set_owner_w(nskb, sk);
-> +		consume_skb(skb);
->  		skb = nskb;
->  	}
-> -	if (skb &&
-> -	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> -		kfree_skb(skb);
-> -		skb = NULL;
-> +	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC))
-> +		goto fail;
-> +
-> +	if (sk) {
-sock_edemux check is still required here too.
-> +		delta = skb_end_offset(skb) - osize;
-> +		refcount_add(delta, &sk->sk_wmem_alloc);
-> +		skb->truesize += delta;
->  	}
->  	return skb;
-> +
-> +fail:
-> +	kfree_skb(skb);
-> +	return NULL;
->  }
->  EXPORT_SYMBOL(skb_expand_head);
->  
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 950f1e7..6cbda43 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
->  }
->  EXPORT_SYMBOL(skb_set_owner_w);
->  
-> +bool is_skb_wmem(const struct sk_buff *skb)
-> +{
-> +	return skb->destructor == sock_wfree ||
-> +	       skb->destructor == __sock_wfree ||
-> +	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
-> +}
-> +EXPORT_SYMBOL(is_skb_wmem);
-> +
->  static bool can_skb_orphan_partial(const struct sk_buff *skb)
->  {
->  #ifdef CONFIG_TLS_DEVICE
-> 
+The NXP i.MX 8QuadXPlus SOC has a new ADC IP. These patches add
+driver support for this ADC.
+
+dt-bindings: iio: adc:
+v1->v2:
+        *Fix some indentation issues.
+        *Mark status as okay.
+        *Change clock2 source.
+v3->v4:
+        *Remove 'status' from examples.
+        *Remove unused 'state'.
+        *Remove interrupts-parent.
+        *Change num of address/size-cells from 1 to 2.
+v4->v5:
+        *Remove unused properties
+
+iio: imx8qxp-adc:
+v1->v2:
+	*Squash patches 1, 2, 3, and 5 into a single patch.
+	*Add device specific prefix.
+	*Remove the brackets around individual numbers.
+	*Make use of FIELD_PREP() and FIELD_GET().
+	*Remove a lot of cache values.
+	*Replace mlock with adc->lock.
+	*Move adc->value read from isr to the completion.
+	*Set pm_runtime_disable/_put_noidle() before adc_disable.
+	*Add error handler-err_disable_reg/err_unprepare_clk.
+v2->v3:
+	*Add "return 0" to adc_runtime_resume().
+v3->v4:
+	*Sort header file declarations in alphabetical order.
+	*Remove explicitly cast from "void *".
+	*Make use of dev_err_probe().
+	*Add some blank lines to help readability.
+v4->v5:
+	*Update commit message.
+	*Remove unused headers.
+	*Wrap imx8qxp_adc_read_raw() at a shorter line length that helps readability.
+	*Deal with clock/regulator in probe/remove().
+	*Use ADC_DRIVER_NAME instead of dev_name(dev).
+	*Don't use dev_error_probe() without returning -PROBE_DEFER.
+
+v1 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-4-caihuoqing@baidu.com/
+v3 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210907015724.1377-1-caihuoqing@baidu.com/
+v4 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210912071334.1745-1-caihuoqing@baidu.com/
+
+Cai Huoqing (3):
+  iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+  iio: imx8qxp-adc: dt-bindings: iio: adc: Add binding documentation for
+     NXP IMX8QXP ADC
+  MAINTAINERS: Add the driver info of the NXP IMX8QXP
+
+ .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     |  78 +++
+ MAINTAINERS                                   |   7 +
+ drivers/iio/adc/Kconfig                       |  10 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/imx8qxp-adc.c                 | 492 ++++++++++++++++++
+ 5 files changed, 588 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+ create mode 100644 drivers/iio/adc/imx8qxp-adc.c
+
+-- 
+2.25.1
 
