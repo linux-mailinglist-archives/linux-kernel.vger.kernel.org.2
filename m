@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B641D412B30
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D00412B31
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245217AbhIUCKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        id S245286AbhIUCKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238062AbhIUB5D (ORCPT
+        with ESMTP id S238068AbhIUB5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 21:57:03 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3245CC06B66A
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:09 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id e22-20020a05620a209600b003d5ff97bff7so158150071qka.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:09 -0700 (PDT)
+        Mon, 20 Sep 2021 21:57:04 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21904C06B66C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:11 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id u22-20020a05620a455600b004333191e844so57095311qkp.14
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 17:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=hB1u/1U7FVrwJRpX8vQCTsPiyuWdnEtzgh8L/+VT5Qw=;
-        b=WoAhVbZLjlFRzVrS8pcCW/UkTgcCHABwERWL7df6mCwj0v5eNci4Ld509z01PeU+ea
-         qTmt/SHj803jnMZh/GTzCWBxC6x1NJJ2sq6VuiNMwpVoZ7x0CqHO3aVCdKr8FYc7ib4s
-         ehYBewljs2ivKAaOq5CvuwCz72uINos7zC6MuOR7c9S5eLhJGZeteCbr5OnK536uaMry
-         hzl3nZKK+LYJJR8gVXewgn3K6nAQbIknVAaJS3aZd+IUTnkgkIq2MrOQOaRzQ+UZxtIr
-         eUdZP+L2f5EMSlrNHs8f/x7LOXw/orw9kB1C6NPSdvAOa5ey0VOWM336trEGvPHKL3u2
-         s0Ng==
+        bh=qy6jnuw2GHlynPgzbk2CZqujQi44xwunFVHUnFWapBw=;
+        b=atMRoGvtJcJ4uvVqbduvJvc99n3a9PyUuCDbBDOizbGTnbkFKk6asmcxJsiMzmVIkr
+         /va1+9qWt0uDCdW3jVw64vHTYpuB5p6JIPj1XY0+AG296sVHW1Ztyv4c24XYh5ixF5yH
+         FL6svOJFw1OFkiX09Mmf1FNyb+jY4ZFB+yzhPWNKRSzeoAMBXxnJ5UzpAHtoERnBfm16
+         C4Wi1MeCivz7mrM6Mkuda8SacLpZQsENqYigvBfEzK5WhxjcZh1kUzlQWvhf7kzoUGGn
+         HasvrTgPLXLMR8Ou2lGPnjZqNWvNyS8bmNy4EUgkkBOE5lPLl8TBxAHiHWXyP5/JIdjI
+         p0ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=hB1u/1U7FVrwJRpX8vQCTsPiyuWdnEtzgh8L/+VT5Qw=;
-        b=u/N80L+AiIrlKexYf7GTsE97T6W9KYpbixCVeDii0XwTgTdCINuCHTAcga17GWvg5S
-         Ta8jNvszLTLMDrQt09mSGuSk+rPe5qxuCWng77/CqfgbYlCjocmwVjp22613yFZsT/WL
-         NsPPs13ZctuqHz7e0opKdd8NEUZKI+y1pN3WMW3ZTN+pmfhsnYx9vZN5ousCYUXbF/Tq
-         e2Ma6V6Lbpt6Be+jkcUhBpr34LMoCWJTqymM3dgIP5Cr2oFmJ4GPxd+tYGUILm6X1wqD
-         LKkThLV92iUoxUP4KSWsWUOIvcfcVA/SrIl4jEoHz5VzfkUwSlTC6BUmdscJoCpHr5rk
-         5oCg==
-X-Gm-Message-State: AOAM532ASyMOW9dtbcvTOn//VpI0SNWRbRYcaHuNYYejtW/iT9gltQug
-        pWCYqrMFIIzOG6aSEEi1/x76On8Kq2w=
-X-Google-Smtp-Source: ABdhPJzvtZ/5YByftSpZCQBoBJ6K6ul8seXX6G2+C5UF1vnC35TqXWTP69EI6GrqME15ApX7ks3YQ++mU2Q=
+        bh=qy6jnuw2GHlynPgzbk2CZqujQi44xwunFVHUnFWapBw=;
+        b=L6UMLQQk0fsXMbjVMYb9y/u+5Gwsi6QPoxAx/uqYtCq+EPIJ2kNxe6gHk/3QVjUytu
+         XUlNBnb6bHGHFIMMYFkzYb/8oa5411bq9zQX+VF/FIr1DAPJttIzrulwaDWZ002qtJoS
+         +6sX5ySDP0qaLqo9sU7zFvexQZtK7KjLH0xYEy6gqbVeg2NHywLE2faRk56f/Qcw5QE2
+         mGwkmHYaVj1xnn5zplZ8gofm4fdnd53Kt1PtUv3DShrVfPwu4D+il2Ib//wlOraCtiWz
+         3+7SB0WVmFc25SwpDENjFAvP/LkhykdOwhNPFU2B14+fTytWfTGofEmLS0rCsEd4UeLE
+         P8gg==
+X-Gm-Message-State: AOAM532LerfTI6s4EZWHAIXtIRUIXGhJqL3vYhn1R7mkIBi9BaDnPKbp
+        VotnvEm/w1t9GJm7y/aflBAIhGbNMK8=
+X-Google-Smtp-Source: ABdhPJyYy20E1PWeG4X2h35A3S9jwhu/QptShKwhi30DqtfKV4bWTw4znqUXz6Hlngh+2RzvST3vobdsvdU=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e430:8766:b902:5ee3])
- (user=seanjc job=sendgmr) by 2002:a05:6214:3ca:: with SMTP id
- ce10mr27837999qvb.12.1632182588340; Mon, 20 Sep 2021 17:03:08 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:12ee:: with SMTP id
+ w14mr28258154qvv.52.1632182590355; Mon, 20 Sep 2021 17:03:10 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 20 Sep 2021 17:02:54 -0700
+Date:   Mon, 20 Sep 2021 17:02:55 -0700
 In-Reply-To: <20210921000303.400537-1-seanjc@google.com>
-Message-Id: <20210921000303.400537-2-seanjc@google.com>
+Message-Id: <20210921000303.400537-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210921000303.400537-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2 01/10] KVM: x86: Mark all registers as avail/dirty at vCPU creation
+Subject: [PATCH v2 02/10] KVM: x86: Clear KVM's cached guest CR3 at RESET/INIT
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -66,65 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark all registers as available and dirty at vCPU creation, as the vCPU has
-obviously not been loaded into hardware, let alone been given the chance to
-be modified in hardware.  On SVM, reading from "uninitialized" hardware is
-a non-issue as VMCBs are zero allocated (thus not truly uninitialized) and
-hardware does not allow for arbitrary field encoding schemes.
+Explicitly zero the guest's CR3 and mark it available+dirty at RESET/INIT.
+Per Intel's SDM and AMD's APM, CR3 is zeroed at both RESET and INIT.  For
+RESET, this is a nop as vcpu is zero-allocated.  For INIT, the bug has
+likely escaped notice because no firmware/kernel puts its page tables root
+at PA=0, let alone relies on INIT to get the desired CR3 for such page
+tables.
 
-On VMX, backing memory for VMCSes is also zero allocated, but true
-initialization of the VMCS _technically_ requires VMWRITEs, as the VMX
-architectural specification technically allows CPU implementations to
-encode fields with arbitrary schemes.  E.g. a CPU could theoretically store
-the inverted value of every field, which would result in VMREAD to a
-zero-allocated field returns all ones.
-
-In practice, only the AR_BYTES fields are known to be manipulated by
-hardware during VMREAD/VMREAD; no known hardware or VMM (for nested VMX)
-does fancy encoding of cacheable field values (CR0, CR3, CR4, etc...).  In
-other words, this is technically a bug fix, but practically speakings it's
-a glorified nop.
-
-Failure to mark registers as available has been a lurking bug for quite
-some time.  The original register caching supported only GPRs (+RIP, which
-is kinda sorta a GPR), with the masks initialized at ->vcpu_reset().  That
-worked because the two cacheable registers, RIP and RSP, are generally
-speaking not read as side effects in other flows.
-
-Arguably, commit aff48baa34c0 ("KVM: Fetch guest cr3 from hardware on
-demand") was the first instance of failure to mark regs available.  While
-_just_ marking CR3 available during vCPU creation wouldn't have fixed the
-VMREAD from an uninitialized VMCS bug because ept_update_paging_mode_cr0()
-unconditionally read vmcs.GUEST_CR3, marking CR3 _and_ intentionally not
-reading GUEST_CR3 when it's available would have avoided VMREAD to a
-technically-uninitialized VMCS.
-
-Fixes: aff48baa34c0 ("KVM: Fetch guest cr3 from hardware on demand")
-Fixes: 6de4f3ada40b ("KVM: Cache pdptrs")
-Fixes: 6de12732c42c ("KVM: VMX: Optimize vmx_get_rflags()")
-Fixes: 2fb92db1ec08 ("KVM: VMX: Cache vmcs segment fields")
-Fixes: bd31fe495d0d ("KVM: VMX: Add proper cache tracking for CR0")
-Fixes: f98c1e77127d ("KVM: VMX: Add proper cache tracking for CR4")
-Fixes: 5addc235199f ("KVM: VMX: Cache vmcs.EXIT_QUALIFICATION using arch avail_reg flags")
-Fixes: 8791585837f6 ("KVM: VMX: Cache vmcs.EXIT_INTR_INFO using arch avail_reg flags")
+Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/x86.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/x86.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 86539c1686fa..e77a5bf2d940 100644
+index e77a5bf2d940..2cb38c67ed43 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -10656,6 +10656,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	int r;
+@@ -10899,6 +10899,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
+ 	kvm_rip_write(vcpu, 0xfff0);
  
- 	vcpu->arch.last_vmentry_cpu = -1;
-+	vcpu->arch.regs_avail = ~0;
-+	vcpu->arch.regs_dirty = ~0;
- 
- 	if (!irqchip_in_kernel(vcpu->kvm) || kvm_vcpu_is_reset_bsp(vcpu))
- 		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
++	vcpu->arch.cr3 = 0;
++	kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
++
+ 	/*
+ 	 * CR0.CD/NW are set on RESET, preserved on INIT.  Note, some versions
+ 	 * of Intel's SDM list CD/NW as being set on INIT, but they contradict
 -- 
 2.33.0.464.g1972c5931b-goog
 
