@@ -2,224 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F34A412E53
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78FC412E57
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbhIUFw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 01:52:26 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:47841 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229441AbhIUFwZ (ORCPT
+        id S229728AbhIUFx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 01:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhIUFx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 01:52:25 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4E11C5C0071;
-        Tue, 21 Sep 2021 01:50:57 -0400 (EDT)
-Received: from imap46 ([10.202.2.96])
-  by compute4.internal (MEProxy); Tue, 21 Sep 2021 01:50:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=l2a30VSKC5LGozrAonmhRzd4StHF
-        Us08tyB9C9xJV4c=; b=r2Tft5SxlSZ+nvTMpBXYdzCaj/7oNWMcCQz9oKLQPiNE
-        J5mmzlJfHFoOtkZU8kTDbTw+pO0vq8gOVHZUj0ZVDvwiaNPXlyk2QpETMJ5XKQAV
-        olcQZuvAce5s0j0zUdnSN+JB5TrfqcSq4RN92jUt1YOpfcQdmAf/PWrdhcw9OIsO
-        ZDVuMroAZ9uNqw1lV6g1aksQcFKLwRxrxVaGksmT3i3c0yRWtNbQmB3LYWE4hkFj
-        ezQYosb20qHqTNv0f/XLo8Nrbzv1E2lH0cd6DkVzKu3i90rWIcNgZ3Sc73xLrlas
-        TT/s2tt4g1mLhu0xfF21rGEYoPIptP86Kyq0Gm8v5g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=l2a30V
-        SKC5LGozrAonmhRzd4StHFUs08tyB9C9xJV4c=; b=NP9eB8RhnSglE91aniL1CG
-        WQCokYmK77cbU1DQQAwr+3EvSgmNjDkKMaVd9Ir7d0ge/Qnqe0u6UDM0FiHmvr3g
-        Pxw3qX8ItEVE5kLZwI7dXgoqSaCdeJHcLyNeXkqxgKi3F4F58ia3m6Qez6RY5MBn
-        sqLc7JaUS3GqAOTbhytFKDP5kVuIoPmWKczWPIz8IwDWXzIwRLPjMNW2b3cvBXz2
-        +rxeuHOQ7JbW1RHGrtQ69989gZcvPDCsmrAUZe3/cj7oBiuyp+tQ0xaaqhdA5L3B
-        fCFUYQDfOiGDTqPJZgNE12hdF2Diocm+ZFJXmAE+KFnMBnJVJg1SAWhTo8ch1J6w
-        ==
-X-ME-Sender: <xms:wHJJYXskBMUaWt2H6mRhZBta_p5nGbt7yrwVHa1jJBGsGCcuv1jwOA>
-    <xme:wHJJYYcm5C6XTOVLCevLEhuxC8BtlJ2Lmk0IU-cEJNmrbufb4POyWmEK2Qs_xVorj
-    awJXdcjcpjT8SieBg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeifedguddttdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefofgggkfgjfhffhffv
-    ufgtsehttdertderredtnecuhfhrohhmpedflfhohhhnucfvhhhomhhsohhnfdcuoehjoh
-    hhnhesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrihhlrdgtohhmrdgruheqnecuggft
-    rfgrthhtvghrnhepueelvddugeefjeekueeitefhgefhkeetheduhffgvdfgudefvefgie
-    evkeeljeelnecuffhomhgrihhnpehgihhthhhusgdrihhopdhkvghrnhgvlhdrohhrghen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjohhhnh
-    esjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrihhlrdgtohhmrdgruh
-X-ME-Proxy: <xmx:wXJJYawJln-D8Z2DvoQl23jVuCkLCLm5nWHgWJjtMKHSm3g-LGp19w>
-    <xmx:wXJJYWMSBncvqMwOG5Txy7Kyoqw2Mo2IgG9bHyCOpi0OZU9BefwXxw>
-    <xmx:wXJJYX-KoitkT65P9U7fqlI86sb7lGjf5x6Z6LwqlMYVMw4VKzV8xQ>
-    <xmx:wXJJYaab5UROruYFoluGuTDNvJ_FTw_QwiINTwYqLgaQb1Y9L0QHRA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id EDA6F1EE0068; Tue, 21 Sep 2021 01:50:56 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1291-gc66fc0a3a2-fm-20210913.001-gc66fc0a3
-Mime-Version: 1.0
-Message-Id: <77b11bf7-3003-483f-b91e-bd93576eaae1@www.fastmail.com>
-In-Reply-To: <169d3f36-4297-32a3-3d23-824989625b26@linaro.org>
-References: <20210608190327.22071-1-vadym.kochan@plvision.eu>
- <20210608190327.22071-2-vadym.kochan@plvision.eu>
- <43023500-dd6a-5180-057e-cecc1f1b6500@linaro.org>
- <20210616123356.GA9951@plvision.eu>
- <fea907ed-06ce-5c82-667d-d11f3e902616@linaro.org>
- <vrcxh2zgsnl841.fsf@plvision.eu>
- <7e6d75ed-cebc-597f-7062-34261d184968@linaro.org>
- <vrcxh2pmt3bl4h.fsf@plvision.eu>
- <0e471789-fe29-b747-5153-75c9b4616c7f@linaro.org>
- <vrcxh2o88nbias.fsf@plvision.eu>
- <1da03714-8f23-1004-e89a-891e4599e04a@linaro.org>
- <vrcxh2mto7bfcb.fsf@plvision.eu>
- <1e146349-9fef-972b-9084-577f02d5168b@linaro.org>
- <vrcxh2lf3rbcjc.fsf@plvision.eu>
- <169d3f36-4297-32a3-3d23-824989625b26@linaro.org>
-Date:   Tue, 21 Sep 2021 05:50:36 +0000
-From:   "John Thomson" <john@johnthomson.fastmail.com.au>
-To:     "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
-        "Vadym Kochan" <vadym.kochan@plvision.eu>
-Cc:     "Rob Herring" <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "Robert Marko" <robert.marko@sartura.hr>
-Subject: Re: [PATCH v2 1/3] nvmem: core: introduce cells parser
-Content-Type: text/plain
+        Tue, 21 Sep 2021 01:53:27 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0C5C061574;
+        Mon, 20 Sep 2021 22:51:59 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i4so77517366lfv.4;
+        Mon, 20 Sep 2021 22:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xglXQZeaLjpmUmpIXkt4X5ZZq8DlETABa0SEfcACxlA=;
+        b=c+as/OVscRWXx61L/O6SYawqHdzoWAXS7Y0w2FtvnkLeS/ZHScB2vkizB1M5VFFDAq
+         7HXqay36117dURzYK4HWLmOXm2q/UluEazL6COee4yhPwBxo9m3kOHwgUPaNFWqbwmGj
+         iK5kK385b/cUmijYPeVtShwwsdosOtpjpwSCrEEeII50ixgKzjH5mMZqq36/t+Ai0DS+
+         nj4ucjrKKEOb8CbKKq6ul2tRpcIuUlna/PpdP911Irsz7vHWiJEow7n6SzIbYBlT9poq
+         9UF8UAWaiTjQ8OHCQO/8T6t38Z/FYH/EkPeOq4w2mMXAcz6ZrflJu57wy+7cnMwY6uYO
+         hpmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xglXQZeaLjpmUmpIXkt4X5ZZq8DlETABa0SEfcACxlA=;
+        b=mAJrv7ov4lNzBIt2odwlPyJWpv8xL75vcQsBBc659qI9lM8vR+0lSYITgWApTfBtS2
+         NRf00skkyOPcGBsyTcx/dSGkEKi7PqnkwKPE3xypuHxXpw2H0iH3CwSyzwfQ5k9QrMhK
+         IzXVyaoM/nwfWEifcPPFj0W8uhWVnveEAYiqugzH4Chs7p7uRdynX8GZZHsAjiKZsbFt
+         FskOIa3xSwKUAVLv3CzijuQTFQ98xR4Zh5Xqy6AvX/KHEakN6ROJcgJdT+XGLm/p8xt0
+         dfz3m0AkLkwofA6hY1pJmqxwrW7ZuLZrZF+BtHz3Nr+gyINZmskmXG9TaShOyJaJr1jC
+         fbrA==
+X-Gm-Message-State: AOAM532EFj0YPu6rNTuqM8OtiOvltu3NTLHgxCiTrVmh1CvwhsjJNcPD
+        Ylb5VfKeqtZdt6A/hJcUVD83/ROtnRKXN9NRpvU=
+X-Google-Smtp-Source: ABdhPJysH4yBw6yw+y5ndoNNQA5gYKSyFWwGu7s/LIkvT2rq1MRDbLNhjBvx/5Wz+PxgYrCZT/Jn6f8i+rk/PKI/gbk=
+X-Received: by 2002:a05:6512:12c8:: with SMTP id p8mr6269890lfg.40.1632203518088;
+ Mon, 20 Sep 2021 22:51:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210810051602.3067384-1-mcgrof@kernel.org> <YUIwKUXc7YbVAqut@bombadil.infradead.org>
+In-Reply-To: <YUIwKUXc7YbVAqut@bombadil.infradead.org>
+From:   Lucas De Marchi <lucas.de.marchi@gmail.com>
+Date:   Mon, 20 Sep 2021 22:51:46 -0700
+Message-ID: <CAKi4VAKbN31hqfg5EHZO=T_Hdkv3uhzarFLuEZO4b5Zm+TF77Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] kmod: add patient module removal support
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Lucas De Marchi <lucas.demarchi@intel.com>,
+        linux-modules <linux-modules@vger.kernel.org>,
+        live-patching@vger.kernel.org, fstests@vger.kernel.org,
+        linux-block@vger.kernel.org, hare@suse.de, dgilbert@interlog.com,
+        Jessica Yu <jeyu@kernel.org>, osandov@fb.com,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021, at 13:40, Srinivas Kandagatla wrote:
-> On 20/09/2021 14:29, Vadym Kochan wrote:
->> 
->> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> writes:
->> 
->>> On 20/09/2021 13:29, Vadym Kochan wrote:
->>>>
->>>> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> writes:
->>>>
->>>>> On 20/09/2021 12:25, Vadym Kochan wrote:
->>>>>>>> Or, treat cells with length "0" in a special way and allow to update
->>>>>>>> cell info later.you can update irrespective of the length, as long as this is done
->>>>>>> before register.
->>>>>>>
->>>>>>>
->>>>>>>>> };
->>>>>>>>>
->>>>>>>>> some_dev_node {
->>>>>>>>> 	compatible = "xxx";
->>>>>>>>> 	nvmem-cells = <&mac_address>;
->>>>>>>>> 	nvmem-cell-names = "mac-address";
->>>>>>>>> };
->>>>>>>>>
->>>>>>>>> == CODE ==
->>>>>>>>> ret = of_get_mac_address(dev->of_node, base_mac);
->>>>>>>>> ==========
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> If you notice the mac_address node reg is 0.
->>>>>>>>> This node "reg" property should be updated ( using of_update_property())
->>>>>>>>> by nvmem-provider driver while tlv parsing and by matching the node name
->>>>>>>>> with tlv name.
->>>>>>>>>
->>>>>>>> I assume parser driver can just invoke add_cell_table (with may be
->>>>>>>> by adding 'bool update' field to the cell_info struct) and core.c will just
->>>>>>>> update existing cells parsed from OF.
->>>>>>>>
->>>>>>> Lets keep the core code clean for now, I would expect the provider
->>>>>>> driver along with parser function to do update the nodes.
->>>>>>>
->>>>>>> --srini
->>>>>>>
->>>>>> core.c sequence:
->>>>>>
->>>>>> 1) after cells parsed from OF:
->>>>>>
->>>>>> 2) lookup the parser
->>>>>>
->>>>>> 3) parser->cells_parse(ctx, table)
->>>>>>
->>>>>> 3.a) update existing cells matched by name from table
->>>>>>
->>>>>> 4) parser->cells_clean(ctx, table)
->>>>>> /* to free cell's_info allocated by the parser driver */
->>>>>>
->>>>>> as alternative way, I think it would be more generic to
->>>>>> provide nvmem-provider.h API to update the existing cell info,
->>>>>> however it makes sense only when cells were parsed
->>>>>> by the cell parser, in the other situations the
->>>>>> cell should be well defined.
->>>>>>
->>>>>> with this approach the parser driver will be just called
->>>>>> via parser->cells_parse(ctx) and will call nvmem_cell_info_update()
->>>>>> for each parsed cells.
->>>>>
->>>>> TBH, This is an over kill.
->>>>>
->>>>> In nvmem provider driver probe you can parse the tlv data and update the
->>>>> dt nodes before nvmem register.
->>>>>
->>>>> rest of the code should just work as it is.
->>>>>
->>>>> --srini
->>>>
->>>> You mean to parse TLV in the particular nvmem provider driver (for
->>>> example in at24 driver) ? If so, then it will not allow to parse
->>>> this TLV format from the other kinds of nvmem.
->>>
->>> Why not?
->>>
->> 
->> Well, I think that nvmem driver and TLV parsing should somehow be
->> de-coupled from each other like block devices and FS does. BUT,
->> in case this TLV data will be used only on at24 devices then
->> may be it is OK.
->> 
+On Wed, Sep 15, 2021 at 10:41 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
 >
-> It has to be decoupled yes, which could be at any level with simple 
-> library function to a infrastructure level..
+> *Friendly poke*
+
+Sorry for the delay. Let me take a look in detail tomorrow.
+
+Lucas De Marchi
+
+
 >
-> In this case with few or single users, doing with an additional 
-> infrastructure is a bit of over kill IMO.
->
->
-> --srini
->>> Can you also tell us which other nvmem providers are you going to test
->>> this on?
->>>
->> 
->> Currently I can test only on at24 devices. From the:
->> 
->> https://opencomputeproject.github.io/onie/design-spec/hw_requirements.html
->> 
->> "
->> Each ONIE system must include non-volatile storage which contains vital
->> product data assigned by the manufacturer. The non-volatile storage
->> could take the form of an EEPROM, a NOR-flash sector, a NAND-flash
->> sector or any other non-volatile storage medium.
->> "
->> 
->> I am not aware about other nvmem devices which are used for existing
->> ONIE supported boards.
->> 
->>> As long as you represent this parsing function as some library function,
->>> I do not see any issue.
->>> If any exported symbol is available for this then any nvmem provider
->>> could use it.
->>>
->>> --srini
->>>
-
-Hi Srinivas,
-
-Can I note here that I would like to parse
-TLV data from an SPI-NOR device to NVMEM cells.
-The same general use case (getting mac-address from OEM data).
-
-Was planning to base my work on this series, as well as
-https://lore.kernel.org/all/20210908100257.17833-1-qiangqing.zhang@nxp.com/
-(thanks for pointing that out Srinivas)
-
-Cheers,
--- 
-  John Thomson
+>   Luis
