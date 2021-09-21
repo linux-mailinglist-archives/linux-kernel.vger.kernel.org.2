@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D69E41355A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C5A413555
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbhIUObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233519AbhIUObV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:31:21 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64178C061574;
-        Tue, 21 Sep 2021 07:29:52 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y28so80176524lfb.0;
-        Tue, 21 Sep 2021 07:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WCNKwsAyHNtvWyuyUEt95scCqIAWLGx1TnGxilaAev0=;
-        b=MudXVZjp8K69x/6TdRNJbQNjthXm4K00PypWcBb8X03iBnWMe9VPdLli/duLtwrNGP
-         rV4uBXJNOG2g5KVjHHVZSFYidCAer7K68uxdCrTlz5iYvxdbtitzCKsutQza9TZMx0uh
-         IO09ubFZjfW24lJVHkfVpjs7EZor64FvkvSnOLVbF6pZzQpl9ouPvNaVSHtqN0PM1hoV
-         Zgk4biSK8D4/7Tf8M6zmG42bj0IjD6ovYWCMivxfMCEPM+ydVU0CkNOjq4JhevzQlkW/
-         U8L2vuAkTkMhnoiwgBr5stESWJmnbHVqBS3h1E/iQSAbSblM4ZeSvssFB1MfqRSyy5LC
-         V2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WCNKwsAyHNtvWyuyUEt95scCqIAWLGx1TnGxilaAev0=;
-        b=pnj5NKwiZlGuS8tX9PF/q0G444YC9dB4tuLsbmHYaWRbyezN3edjX5t0NlJwXN5+6C
-         /2EHuRbqkYC8Ntkm3okVQMUTiCUv0BPVA3pe7gGI6+o2IWMesEq0Gs8ORzFsW30smWxV
-         0cdrOzFrs+eWXl8kXTxCyXTOsBsABDHdMyXGSR5Ql2CW8MgmZn4fbU/72iMZrXsTuoHk
-         8mboBG5s+Zi7tugF0D0orpxoxCqxxN4id+38/Ibrno2nMoS5GnSodbPKrn9M1jUE5aTb
-         pL/bl0/h8Wh4Ga/HwPZ+OzZorUE4du2vHRu3JO+Fdh7Ca5snCF0Yph2WKl+DkHEFLUT4
-         tvSQ==
-X-Gm-Message-State: AOAM533jeDY6ip2vKdqryctwORa8ohpCj8hR5rpisQqFEDqWBnSQZfrO
-        U1jv6zDdmSW/gGvZBziJRly9yIaN/1g=
-X-Google-Smtp-Source: ABdhPJxXTSJt/ZlSFJtAYESfI97fqxJGpEjO1h4Xb5m6rggdWGrVPuS5jMxXV65Fxd9zAtxJd2xSnQ==
-X-Received: by 2002:ac2:5fb2:: with SMTP id s18mr23064668lfe.580.1632234562226;
-        Tue, 21 Sep 2021 07:29:22 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id v14sm2152646lji.32.2021.09.21.07.29.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 07:29:21 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 17:29:19 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the ntfs3 tree
-Message-ID: <20210921142919.ahfrtqcu7lpenzsz@kari-VirtualBox>
-References: <20210921083158.261517da@canb.auug.org.au>
- <3320944d-8fac-0a22-ee38-f08974fcaed7@paragon-software.com>
+        id S233625AbhIUObE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:31:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233153AbhIUObD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 10:31:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0130860F9E;
+        Tue, 21 Sep 2021 14:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632234575;
+        bh=+q0nyoy14NpCMbCk22ZohNdkmTGzVKRFk54BDAGZFB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GSLdu4vjepDKelCtaa09WRuFRfIGN2pZ/txaQk76P59Pgn4Zin1syuBCs+NuecGGw
+         RII0uRfWRCoC+RphppaN+seywlqzmIsiad8+Hrt5RP6zfQyOH648gYFlLcoHp6DP7y
+         2BQJZy4paAiISaETaPgnjROxcuKiY0KUoCy8teJw=
+Date:   Tue, 21 Sep 2021 16:29:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Petr Nechaev <petr.nechaev@cogentembedded.com>
+Subject: Re: [PATCH v2] usb: gadget: storage: add support for media larger
+ than 2T
+Message-ID: <YUnsSxUERYj/oXTO@kroah.com>
+References: <20210914151329.GD155245@rowland.harvard.edu>
+ <20210914200917.24767-1-nikita.yoush@cogentembedded.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3320944d-8fac-0a22-ee38-f08974fcaed7@paragon-software.com>
+In-Reply-To: <20210914200917.24767-1-nikita.yoush@cogentembedded.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 04:50:02PM +0300, Konstantin Komarov wrote:
+On Tue, Sep 14, 2021 at 11:09:17PM +0300, Nikita Yushchenko wrote:
+> This adds support for READ_CAPACITY(16), READ(16) and WRITE(16)
+> commands, and fixes READ_CAPACITY command to return 0xffffffff if
+> media size does not fit in 32 bits.
 > 
+> This makes f_mass_storage to export a 16T disk array correctly.
 > 
-> On 21.09.2021 01:31, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > In commit
-> > 
-> >   0412016e4807 ("fs/ntfs3: Fix wrong error message $Logfile -> $UpCase")
-> > 
-> > Fixes tag
-> > 
-> >   Fixes: 203c2b3a406a ("fs/ntfs3: Add initialization of super block")
-> > 
-> > has these problem(s):
-> > 
-> >   - Target SHA1 does not exist
-> > 
-> > Maybe you meant
-> > 
-> > Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
-> > 
+> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+> ---
+>  drivers/usb/gadget/function/f_mass_storage.c | 87 ++++++++++++++++++--
+>  1 file changed, 80 insertions(+), 7 deletions(-)
 > 
-> Hello.
-> 
-> You are right, correct SHA is 82cae269cfa9.
-> Sorry, I've missed this while applying patch.
 
-Sorry also from my part.
+Hi,
 
-> As far as I know there is no way to fix this now -
-> commit is already in linux-next.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-But these things needs fixing. Rebase is needed.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
