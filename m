@@ -2,98 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C99413674
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A41841367C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbhIUPtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:49:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:35474 "EHLO foss.arm.com"
+        id S234223AbhIUPul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234031AbhIUPtF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:49:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19BFA113E;
-        Tue, 21 Sep 2021 08:47:37 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D7233F718;
-        Tue, 21 Sep 2021 08:47:36 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 16:47:31 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH linux-next v2] arm64: PCI: Introduce pcibios_free_irq()
- helper function
-Message-ID: <20210921154731.GA2756@lpieralisi>
-References: <20210826060406.12571-1-yajun.deng@linux.dev>
+        id S229804AbhIUPuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:50:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B3B061183;
+        Tue, 21 Sep 2021 15:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632239352;
+        bh=SYPIsUeB0QpNl9iOqz8TrUCBGO94e+noRg1ECZdTJME=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UaaVRIqswzz+NS3S8fQEaKMO9RtdOXsyeprnTEIheXJKQGHNj08P7eyrd/PQOFBCR
+         AN5tBBs86O+nP3GdbvOj2N+vfIACcMw2gY7GyzZmcnfLHUMHWEqqTO8tVeryaAcPBC
+         wa3PUemimJFndCXNOCuGMsRHqw57UEYG+Vl8QmekwFARdVX0/7ufVsMqf8T+9g7Szp
+         diWZkbbph3gXn35UaYmr5cUyleLHlYXnKdZMqMkRG/D9zQZoy6oFBj2a59MNnxAHRK
+         YIYKWUHNZvNhOBYpWGFXq5g7hiH0GMlpMxwr02jYDVngebiKxCzBjK5YB3wvzgzdsQ
+         QI6X04sAKlF5w==
+Received: by mail-qt1-f178.google.com with SMTP id x9so6771427qtv.0;
+        Tue, 21 Sep 2021 08:49:12 -0700 (PDT)
+X-Gm-Message-State: AOAM530DTdfrLatLheUDRErjR0q716Etht84WYtht7AKXxWF0VYHTMnt
+        NVdMaemE2/1nYxdiR7t9kXytp6X1M9drt3Q8/zI=
+X-Google-Smtp-Source: ABdhPJxkbOxqy1A7fvfdyNFD5npSBw9ZclgHN9SR+lhraCwiqhyTzn8pzClLHqd6Gjl1VdDdZRtbIZxWA0QsI3m+TXk=
+X-Received: by 2002:ac8:4113:: with SMTP id q19mr29065258qtl.108.1632239341024;
+ Tue, 21 Sep 2021 08:49:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826060406.12571-1-yajun.deng@linux.dev>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210917194709.3562413-1-mcgrof@kernel.org> <20210917194709.3562413-10-mcgrof@kernel.org>
+ <c70dcb03e27e43c5b5311e184357df39@AcuMS.aculab.com>
+In-Reply-To: <c70dcb03e27e43c5b5311e184357df39@AcuMS.aculab.com>
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Tue, 21 Sep 2021 08:48:49 -0700
+X-Gmail-Original-Message-ID: <CAB=NE6WjupsJFwsj94sC_j3gcYn2Qo0sx1=tMv=WUZ83jq_DFw@mail.gmail.com>
+Message-ID: <CAB=NE6WjupsJFwsj94sC_j3gcYn2Qo0sx1=tMv=WUZ83jq_DFw@mail.gmail.com>
+Subject: Re: [PATCH v7 09/12] sysfs: fix deadlock race with module removal
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "tj@kernel.org" <tj@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "nathan@kernel.org" <nathan@kernel.org>,
+        "ojeda@kernel.org" <ojeda@kernel.org>,
+        "vitor@massaru.org" <vitor@massaru.org>,
+        "elver@google.com" <elver@google.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "glider@google.com" <glider@google.com>,
+        "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "trishalfonso@google.com" <trishalfonso@google.com>,
+        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
+        "jikos@kernel.org" <jikos@kernel.org>,
+        "mbenes@suse.com" <mbenes@suse.com>,
+        "ngupta@vflare.org" <ngupta@vflare.org>,
+        "sergey.senozhatsky.work@gmail.com" 
+        <sergey.senozhatsky.work@gmail.com>,
+        "reinette.chatre@intel.com" <reinette.chatre@intel.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "kw@linux.com" <kw@linux.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "senozhatsky@chromium.org" <senozhatsky@chromium.org>,
+        "hch@lst.de" <hch@lst.de>, "joe@perches.com" <joe@perches.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-spdx@vger.kernel.org" <linux-spdx@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "copyleft-next@lists.fedorahosted.org" 
+        <copyleft-next@lists.fedorahosted.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:04:06PM +0800, Yajun Deng wrote:
-> pcibios_alloc_irq() will be called in pci_device_probe(), but there
-> hasn't pcibios_free_irq() in arm64 architecture correspond it.
-> pcibios_free_irq() is an empty weak function in drivers/pci/pci-driver.c.
+On Tue, Sep 21, 2021 at 1:24 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Luis Chamberlain
+> > Sent: 17 September 2021 20:47
+> >
+> > When sysfs attributes use a lock also used on module removal we can
+> > race to deadlock. This happens when for instance a sysfs file on
+> > a driver is used, then at the same time we have module removal call
+> > trigger. The module removal call code holds a lock, and then the sysfs
+> > file entry waits for the same lock. While holding the lock the module
+> > removal tries to remove the sysfs entries, but these cannot be removed
+> > yet as one is waiting for a lock. This won't complete as the lock is
+> > already held. Likewise module removal cannot complete, and so we deadlock.
+>
+> Isn't the real problem the race between a sysfs file action and the
+> removal of the sysfs node?
 
-"pcibios_alloc_irq() is a weak function called to allocate IRQs for
-a device in pci_device_probe(); arm64 implements it with
-ACPI specific code to enable IRQs for a device.
+Nope, that is taken care of by kernfs.
 
-When a device is removed (pci_device_remove()) the pcibios_free_irq()
-counterpart is called.
+> This isn't really related to module unload - except that may
+> well remove some sysfs nodes.
 
-Current arm64 code does not implement a pcibios_free_irq() function,
-and therefore, the weak empty stub is executed, which means that the
-IRQ for a device are not properly disabled when a device is removed.
+Nope, the issue is a deadlock that can happen due to a shared lock on
+module removal and a driver sysfs operation.
 
-Add an arm64 pcibios_free_irq() to undo the actions carried out in
-pcibios_alloc_irq()."
+> This is the same problem as removing any other kind of driver callback.
+> There are three basic solutions:
+> 1) Use a global lock - not usually useful.
+> 2) Have the remove call sleep until any callbacks are complete.
+> 3) Have the remove just request removal and have a final
+>    callback (from a different context).
 
-This is a stub commit log. Then you need to describe the bug you
-are fixing (if any, or it is just code inspection ?)
+Kernfs already does a sort of combination of 1) and 2) but 1) is using
+atomic reference counts.
 
-> So add pcibios_free_irq() for correspond it. This will be called
-> in pci_device_remove().
-> 
-> ====================
-> v2: remove the change in pcibios_alloc_irq(), and modify the commit log.
-> ====================
+> If the remove can sleep (as in 2) then there is a requirement
+> on the driver code to not hold any locks across the 'remove'
+> that can be acquired during the callbacks.
 
-Don't add versioning in the commit log, it does not belong here.
+And this is the part that kernfs has no control over since the removal
+and sysfs operation are implementation specific.
 
-I don't think we should send this to stable kernels straight away,
-it is best to make sure we are not triggering any regressions first.
+> Now, for sysfs, you probably only want to sleep the remove code
+> while a read/write is in progress - not just because the node
+> is open.
+> That probably requires marking an open node 'invalid' and
+> deferring delete to close.
 
-Lorenzo
+This is already done by kernfs.
 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  arch/arm64/kernel/pci.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-> index 2276689b5411..6ffd92126f65 100644
-> --- a/arch/arm64/kernel/pci.c
-> +++ b/arch/arm64/kernel/pci.c
-> @@ -29,6 +29,13 @@ int pcibios_alloc_irq(struct pci_dev *dev)
->  
->  	return 0;
->  }
-> +
-> +void pcibios_free_irq(struct pci_dev *dev)
-> +{
-> +	if (!acpi_disabled)
-> +		acpi_pci_irq_disable(dev);
-> +}
-> +
->  #endif
->  
->  /*
-> -- 
-> 2.32.0
-> 
+> None of this requires a reference count on the module.
+
+You are missing the point to the other aspect of the try_module_get(),
+it lets you also check if module exit has been entered. By using
+try_module_get() you let the module exit trump proceeding with an
+operation, therefore also preventing any potential use of a shared
+lock on module exit and the driver specific sysfs operation.
+
+  Luis
