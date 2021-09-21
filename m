@@ -2,151 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473054133AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D4D4133C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhIUNEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:04:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:33316 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhIUNEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:04:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB37B106F;
-        Tue, 21 Sep 2021 06:02:43 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.50.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C29E03F59C;
-        Tue, 21 Sep 2021 06:02:41 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     suzuki.poulose@arm.com, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org
-Cc:     James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] coresight: Don't immediately close events that are run on invalid CPU/sink combos
-Date:   Tue, 21 Sep 2021 14:02:31 +0100
-Message-Id: <20210921130231.386095-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
+        id S232920AbhIUNKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:10:20 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:41850 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232344AbhIUNKT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:10:19 -0400
+Received: by mail-ot1-f46.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso21257129ota.8;
+        Tue, 21 Sep 2021 06:08:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VxkNFPBC461YfQgocr3vAKBRyMLGM7PbdciNNlGgvoQ=;
+        b=nFvHGDNpcqFpsyJAOrgxxvq6rceJ+26Cc6Ft3SSdQ43ORVFz+ycalqF4aDohX5y1UO
+         kS/mRKxCRVy2X4AeTh51L1qPDlQ7nPbBxCZvyQfX09bWgcYt35xjNbRxZ/0HaeEDJWQ1
+         7HTEzpmL+udikZnKIhBgZ7ITGOmTE6XpP4CM4RKKyuVfAbOpP36IVGuOWKxOr+IT3VZv
+         FldVKgPpSj0W7SlN1Gpq0/mzwvii07KCVdt6cPfQ+f4JPw6goTR7erRh30cofb3UvBYV
+         KaX60/zCvlxqKgjibJkoN2y0W9NB4UnLFlh4BvaxFi4wlrsPOCR2JD1xz36VxvylMIbF
+         BOvg==
+X-Gm-Message-State: AOAM533cF1IODpgV9xcpdP+Uskvo9hMBbyc31ycJkK5SvyLTZpKKGfc2
+        hB/+9PBZmnkAeASzY1UI1grkhcxpTWaqnovHXG/+LhIv
+X-Google-Smtp-Source: ABdhPJy2lq2k9wr64rRinyx/OmSeoNOiP1icCASohpi+LrzO1geQDEpVRb3a/EXOsGBfCNvC1YkFnAxRrSc5LuaIDgo=
+X-Received: by 2002:a9d:4d93:: with SMTP id u19mr25968827otk.86.1632229730204;
+ Tue, 21 Sep 2021 06:08:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210916170054.136790-1-krzysztof.kozlowski@canonical.com>
+ <20210916170054.136790-2-krzysztof.kozlowski@canonical.com> <f78523c5-df88-a768-3b9a-d542bbd73a1c@redhat.com>
+In-Reply-To: <f78523c5-df88-a768-3b9a-d542bbd73a1c@redhat.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 21 Sep 2021 15:08:39 +0200
+Message-ID: <CAJZ5v0gBZUrvX+w2oz-tmvDrHz_tFvzyzVGe4iz2wc3-V_9qPg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] acpi: pnp: remove duplicated BRI0A49 and BDP3336 entries
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Matan Ziv-Av <matan@svgalib.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a traced process runs on a CPU that can't reach the selected sink,
-the event will be stopped with PERF_HES_STOPPED. This means that even if
-the process migrates to a valid CPU, tracing will not resume.
+On Tue, Sep 21, 2021 at 2:52 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 9/16/21 7:00 PM, Krzysztof Kozlowski wrote:
+> > BRI0A49 and BDP3336 are already on the list.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>
+> Thanks, patch looks good to me:
+>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>
+> Rafael, I've picked up 1/2 since that applies to a drivers/platform/x86
+> driver. I'll leave picking this one up to you.
 
-This can be reproduced (on N1SDP) by using taskset to start the process
-on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
-CPU 2):
+I'll pick it up, thanks!
 
-  taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
 
-This produces a single 0 length AUX record, and then no more trace:
-
-  0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
-
-After the fix, the same command produces normal AUX records. The perf
-self test "89: Check Arm CoreSight trace data recording and synthesized
-samples" no longer fails intermittently. This was because the taskset in
-the test is after the fork, so there is a period where the task is
-scheduled on a random CPU rather than forced to a valid one.
-
-Specifically selecting an invalid CPU will still result in a failure to
-open the event because it will never produce trace:
-
-  ./perf record -C 2 -e cs_etm/@tmc_etf0/
-  failed to mmap with 12 (Cannot allocate memory)
-
-The only scenario that has changed is if the CPU mask has a valid CPU
-sink combo in it.
-
-Testing
-=======
-
-* Coresight self test passes consistently:
-  ./perf test Coresight
-
-* CPU wide mode still produces trace:
-  ./perf record -e cs_etm// -a
-
-* Invalid -C options still fail to open:
-  ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
-  failed to mmap with 12 (Cannot allocate memory)
-
-* Migrating a task to a valid sink/CPU now produces trace:
-  taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
-
-* If the task remains on an invalid CPU, no trace is emitted:
-  taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
-
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
- 1 file changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-index 8ebd728d3a80..79346f0f0e0b 100644
---- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-+++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-@@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	 * sink from this ETM. We can't do much in this case if
- 	 * the sink was specified or hinted to the driver. For
- 	 * now, simply don't record anything on this ETM.
-+	 *
-+	 * As such we pretend that everything is fine, and let
-+	 * it continue without actually tracing. The event could
-+	 * continue tracing when it moves to a CPU where it is
-+	 * reachable to a sink.
- 	 */
- 	if (!cpumask_test_cpu(cpu, &event_data->mask))
--		goto fail_end_stop;
-+		goto out;
- 
- 	path = etm_event_cpu_path(event_data, cpu);
- 	/* We need a sink, no need to continue without one */
-@@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
- 	if (coresight_enable_path(path, CS_MODE_PERF, handle))
- 		goto fail_end_stop;
- 
--	/* Tell the perf core the event is alive */
--	event->hw.state = 0;
--
- 	/* Finally enable the tracer */
- 	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
- 		goto fail_disable_path;
- 
-+out:
-+	/* Tell the perf core the event is alive */
-+	event->hw.state = 0;
- 	/* Save the event_data for this ETM */
- 	ctxt->event_data = event_data;
--out:
- 	return;
- 
- fail_disable_path:
-@@ -517,6 +521,19 @@ static void etm_event_stop(struct perf_event *event, int mode)
- 	if (WARN_ON(!event_data))
- 		return;
- 
-+	/*
-+	 * Check if this ETM was allowed to trace, as decided at
-+	 * etm_setup_aux(). If it wasn't allowed to trace, then
-+	 * nothing needs to be torn down other than outputting a
-+	 * zero sized record.
-+	 */
-+	if (handle->event && (mode & PERF_EF_UPDATE) &&
-+	    !cpumask_test_cpu(cpu, &event_data->mask)) {
-+		event->hw.state = PERF_HES_STOPPED;
-+		perf_aux_output_end(handle, 0);
-+		return;
-+	}
-+
- 	if (!csdev)
- 		return;
- 
--- 
-2.28.0
-
+> > ---
+> >  drivers/acpi/acpi_pnp.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/drivers/acpi/acpi_pnp.c b/drivers/acpi/acpi_pnp.c
+> > index 8f2dc176bb41..ffdcfcd4a10d 100644
+> > --- a/drivers/acpi/acpi_pnp.c
+> > +++ b/drivers/acpi/acpi_pnp.c
+> > @@ -156,8 +156,6 @@ static const struct acpi_device_id acpi_pnp_device_ids[] = {
+> >       {"BRI0A49"},            /* Boca Complete Ofc Communicator 14.4 Data-FAX */
+> >       {"BRI1400"},            /* Boca Research 33,600 ACF Modem */
+> >       {"BRI3400"},            /* Boca 33.6 Kbps Internal FD34FSVD */
+> > -     {"BRI0A49"},            /* Boca 33.6 Kbps Internal FD34FSVD */
+> > -     {"BDP3336"},            /* Best Data Products Inc. Smart One 336F PnP Modem */
+> >       {"CPI4050"},            /* Computer Peripherals Inc. EuroViVa CommCenter-33.6 SP PnP */
+> >       {"CTL3001"},            /* Creative Labs Phone Blaster 28.8 DSVD PnP Voice */
+> >       {"CTL3011"},            /* Creative Labs Modem Blaster 28.8 DSVD PnP Voice */
+> >
+>
