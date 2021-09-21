@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C0E4132AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E6B4132BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbhIULhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:37:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232341AbhIULhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:37:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B37E61184;
-        Tue, 21 Sep 2021 11:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632224184;
-        bh=zWZf2YfsXIWdXNp7ZoylUgLi722Ht+rt6qA4OZk5bu4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UpY7XDOXPp6iGWj5JN5TxJLpOTaKKXgJ909BSopPbJF+Ow4wDYtIKu0Y5W8QXQFPG
-         HEFG5RX00HtM/Og1GaITeHa/ctRYWMtF56pRXR4P6udEf2/NGVOIoYfUAqIJYntQ1n
-         YDyimCKgh9i4lVnR3HP0Rdp7/xa9ZJe3rZYjqsvY=
-Date:   Tue, 21 Sep 2021 13:36:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Paul Mackerras <paulus@samba.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
- compat_ioctl
-Message-ID: <YUnDtTEzex5/z90J@kroah.com>
-References: <20210914091134.17426-1-jslaby@suse.cz>
- <20210914091134.17426-7-jslaby@suse.cz>
- <YUlY5pQQWf2P2fKn@google.com>
- <9049e956-2865-7309-2eaf-aa4516ab28d6@kernel.org>
+        id S232424AbhIULmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:42:25 -0400
+Received: from mail-vs1-f54.google.com ([209.85.217.54]:43969 "EHLO
+        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232386AbhIULmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:42:22 -0400
+Received: by mail-vs1-f54.google.com with SMTP id n17so19204386vsr.10;
+        Tue, 21 Sep 2021 04:40:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bOlfZTrSii7Nb14rl9dZd76xYIBrclWvgXtZcJh0XvM=;
+        b=oXivQnx3c3N7ZaGmzhlOGE+RN4ji6nIuRM1zJaGRXlBpVWeGk2wjJkwAhUjezUhe0D
+         n8M6mjXFZ2C64eWvnT63QZA1ccwZas7vyJ00DPDLFAHuPLtZLwTl4jT2irtxrgsqMgJP
+         H0ncqJTeHlkFy0Z/D5OwYk2yfepdwGlNbAR2Rcr8YFAc0CT9Nb1f6qYO+VuBz4gUXXCu
+         t31gnft4C6iMWwhnE5gq23FhOc4jbuANtJhHJvKyteh4OJ5bbouhqhVfuXGlhKZFE23N
+         5xLeoTBThieRPc8m6/CSEngZVKYOtP5RWIqpm7p+k7JeMvu3M5a3A3AWJ9b8rjvwm0tB
+         lG2Q==
+X-Gm-Message-State: AOAM531yGCOYYjR0ZmJdls7sCKrBlGhG0ZwH8Z2dLvwo8iIKiw4MM3fn
+        SKXIO/+qwRqdsRtMezxB2QhU1DdheibyGNIl3Yk=
+X-Google-Smtp-Source: ABdhPJwiN7fv8zkCxGRdSiJIiixTxoRHMRXiLr8T19X9+fGqcKipwyfkQQaXHbvVsTR6Cg4anMFHRjlYU50G8LO/Lys=
+X-Received: by 2002:a67:f147:: with SMTP id t7mr13834174vsm.41.1632224444687;
+ Tue, 21 Sep 2021 04:40:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9049e956-2865-7309-2eaf-aa4516ab28d6@kernel.org>
+References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 21 Sep 2021 13:40:33 +0200
+Message-ID: <CAMuHMdU7HHEHAcn=vPqAPYPkgeywKqb-rL6YmDRH0+4XNw8CuA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] dt-bindings: mmc: cdns: document Microchip MPFS
+ MMC/SDHCI controller
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 12:52:38PM +0200, Jiri Slaby wrote:
-> On 21. 09. 21, 6:00, Dmitry Torokhov wrote:
-> > Hi Jiri,
-> > 
-> > On Tue, Sep 14, 2021 at 11:11:25AM +0200, Jiri Slaby wrote:
-> > > diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
-> > > index 17eb8f2aa48d..55e91d0e70ec 100644
-> > > --- a/drivers/input/serio/serport.c
-> > > +++ b/drivers/input/serio/serport.c
-> > > @@ -207,8 +207,8 @@ static void serport_set_type(struct tty_struct *tty, unsigned long type)
-> > >    * serport_ldisc_ioctl() allows to set the port protocol, and device ID
-> > >    */
-> > > -static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
-> > > -			       unsigned int cmd, unsigned long arg)
-> > > +static int serport_ldisc_ioctl(struct tty_struct *tty, unsigned int cmd,
-> > > +		unsigned long arg)
-> > 
-> > Can we please keep arguments aligned as they were? Otherwise
-> 
-> Fixed, thanks. Likely, I will send a follow-up -- depending if Greg drops or
-> keeps these in the tree.
+Hi Krzysztof,
 
-Up to you.  I can drop them all now if you want to resend a v2 with all
-of the aggregate acks, or you can send a follow-up set on top of these.
+Thanks for your patch!
 
-Your choice.
+On Mon, Sep 20, 2021 at 5:09 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
 
-thanks,
+Actually it's the SoC .dtsi
 
-greg k-h
+> without any additional vendor compatible:
+>
+>   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible:0: 'cdns,sd4hc' is not one of ['socionext,uniphier-sd4hc']
+>   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: mmc@20008000: compatible: ['cdns,sd4hc'] is too short
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+With the above fixed:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
