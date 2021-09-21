@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79817412F2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B948412F38
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhIUHSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        id S230150AbhIUHTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhIUHSv (ORCPT
+        with ESMTP id S230012AbhIUHTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:18:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FBDC061574;
-        Tue, 21 Sep 2021 00:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cZ0+SAeUdSwmUy7goGl8UyjWIcPnUe9n7SlJ/+MlqLs=; b=n3uyWO0niUIIsLEi9RXHc0EBj/
-        QTSfGVuHTBK9UuyCD6/k2Zg9iys9F72G/O2CHOBUBwkmSEWy4hdztDuv6UCin7v75xy08Mi2igJni
-        kNFh5ANva/tbSLhCUd8hDvhiyFP51OSGM+oZGImPo25m9vjp684eOOTEpsP8VGPfZPB8zxyJcKAKF
-        YZMx688tSUEuVq2Eur4JirVcNYcp3G5SwTaHMOmGnaiMih0ryHu4+b8FRiEJ1L0gY12YnUP3QbEdG
-        Fm5ETIWLGIMaVYfACYejImtRb37VPXOqHMmD5Oo8jVBguiOPS6jqX7kQvxScEGUtAiveDniIcAPCX
-        oM1BeDDQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSa1b-004i4b-QI; Tue, 21 Sep 2021 07:17:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 392C0300274;
-        Tue, 21 Sep 2021 09:17:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22C822C3EE3EE; Tue, 21 Sep 2021 09:17:07 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 09:17:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Mel Gorman <mgorman@suse.de>, x86@kernel.org
-Subject: Re: [tip: sched/core] sched: Make struct sched_statistics
- independent of fair sched class
-Message-ID: <YUmG8+96zgScrfqm@hirez.programming.kicks-ass.net>
-References: <20210905143547.4668-3-laoar.shao@gmail.com>
- <163179357090.25758.13267982301302997472.tip-bot2@tip-bot2>
- <20210921061727.GA24828@kili>
+        Tue, 21 Sep 2021 03:19:41 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76E1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:18:10 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id i23so36269764wrb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YGEAbHXSaoOeSKdNUKSp2eDYtuE34vb7kZvCNCg8WS0=;
+        b=sh8yMuDbDOGoxzO4ADI0dGLvuU735gfVv5A15gwgb7x87zmV/oPf3DLR4Qpw+yc+R6
+         3YD9KmSeCB74S7Vlm1P4MsvWG4zrDSqp4NUiNTfh/FvhZzLfeVgTUeFlRsVH9dktUcIB
+         BDyxMD654sBYoOo93aMIGyEAM3H1gwp2Evt+KDAycCh8NSSjOsnU8XRnQ2JW1SzcRhhC
+         BXU2tLDvW0TcvdDjMAQz8iQibd7+cXmtmpviuKqw49lywbiGll8djnkgpR6GdW4gXDMc
+         PDbUokAXjWtNBdnh9lNxO0gxtdbJWqzSnJh/JSVdQw2F0kQ2sDAFfZJf/zFCm5ybUJLR
+         PNnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YGEAbHXSaoOeSKdNUKSp2eDYtuE34vb7kZvCNCg8WS0=;
+        b=5ebtdpcdxi9LeS4a/ymheQX6492JEY6TXb8pGCOVke2xUknuMqBmCVados5N8RAvSC
+         ZV3RgdkVtWQWuko2oH4co2wWj380ExY//TNUobdJOUD1kfS5sUKsqKOgXe5Ph3pH28IY
+         FU8njC8Ylq/cIF41CFHOySoZOBmi5OQURZvFK7bygfvFfs8fTVdkwo7NSR6Pl7cwYlCU
+         lEzpaUZCub9eI6+pRUtrUcyWDY3ZasbxzYymLpLqZbBtVxRkzBQR5SY0Qx3rIlPX8wth
+         T61CTTDxLlAhI6nfdJvtsaEyO4tfUXkk7sTRHdMZtMd8Db8+C5oasD8YqeNDfvm7Qc3g
+         TOIA==
+X-Gm-Message-State: AOAM532iwvU8oTzaqVhuGcFTFX5hH4QvZo7satD+q1leYcPiSzgcJaNo
+        v4aEiGmM+sHVKTI0L5vnZR2F0w==
+X-Google-Smtp-Source: ABdhPJwLKYS+Orv3H6DcPfO7ccXZ7yofYe1iBGfAMWonW7ouj8YancroCtZRVfWUkd3W8gGe5ERJ1A==
+X-Received: by 2002:a05:6000:1379:: with SMTP id q25mr32495090wrz.280.1632208689229;
+        Tue, 21 Sep 2021 00:18:09 -0700 (PDT)
+Received: from localhost.localdomain (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
+        by smtp.gmail.com with ESMTPSA id w9sm1786918wmc.19.2021.09.21.00.18.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 00:18:08 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     tony@atomide.com
+Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/1] ARM: dts: dra7: enable BB2D module
+Date:   Tue, 21 Sep 2021 09:18:06 +0200
+Message-Id: <20210921071807.30978-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210921061727.GA24828@kili>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 09:17:27AM +0300, Dan Carpenter wrote:
-> On Thu, Sep 16, 2021 at 11:59:30AM -0000, tip-bot2 for Yafang Shao wrote:
-> > @@ -11424,7 +11441,7 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
-> >  		if (!cfs_rq)
-> >  			goto err;
-> >  
-> > -		se = kzalloc_node(sizeof(struct sched_entity),
-> > +		se = kzalloc_node(sizeof(struct sched_entity_stats),
-> 
-> This wasn't there in the original patch and it causes a Smatch warning
+The DRA7 & variant SoCs contains a BB2D module which is a Vivante GC320 2D accelerator.
 
-What original patch? It's part of the v4 posting.
+This patchset adds the GPU node and enables it by default.
 
-> because "se" is declared as a "sched_entity" but it's allocating a
-> larger "sched_entity_stats" which contains a sched_entity.
+This is a follow-up of [1] & [2] but:
+- using the vivante,gc bindings only
+- using ti,sysc instead of hwmod
 
-Yep, on purpose.
+Changes since v1 at [3]:
+- removed status property of bb2d node
+- removed enable patches for different platforms
+- fixed bb2d size format
 
-> To me, ideally, we would update the type of se.
+[1] https://lore.kernel.org/linux-arm-kernel/20161118024436.13447-1-robertcnelson@gmail.com/
+[2] https://lore.kernel.org/linux-arm-kernel/20161118024436.13447-1-robertcnelson@gmail.com/
+[3] https://lore.kernel.org/r/20210920125306.12347-1-narmstrong@baylibre.com
 
-That's a lot of churn for very little gain. I can rewrite it like:
+Gowtham Tammana (1):
+  ARM: dts: dra7: add entry for bb2d module
 
-	struct sched_entity_stats *ses = kzalloc_node(sizeof(*ses),...);
-	se = &ses->se;
+ arch/arm/boot/dts/dra7.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-If that makes smatch happy. It's the exact same thing tho because we
-force ses->se to be at 0 offset.
+-- 
+2.25.1
+
