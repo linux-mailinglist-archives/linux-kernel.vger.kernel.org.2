@@ -2,156 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D1E4136E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7F74136E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhIUQCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:02:50 -0400
-Received: from mail-sn1anam02on2084.outbound.protection.outlook.com ([40.107.96.84]:8527
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234371AbhIUQCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:02:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CYUTLfib/yzknwnI+4/0bg/73Xeo+Y0bd9PwjMxeW9HyUT22gaS5L/5kb3JtYid+XomSlnerSwml9nO87jDOMNJAeC64p3KJWWjPFKEynpixRMXGaqOytmVYclYm09he+x7W6zjoiyJRXSdBNWuI/GPHIzQJg8Qhc+Nep/BZvnDdH+uvpxj0/6S+4SEuf1r/zNFdeop+1YOvU0ISq8683DPLyt3Ipemf0oce9n7P8NDdc4PsllauZ2nCucn5XCEyhLaAU0ulgSHVl6Xg0E3NY/YNTTdsPa8zfBkSNHe3DkqMydtaPVO7XTcqaS66ECNTDorAyp6Z7T3QQo6LPUyzkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=4KCg8xZvRSPwOAsK6g3o5r1M7Me2ABMEwv9BdnK8zZ4=;
- b=fFX2v0HVOYF1MRc9DQRwYkMb3KMCbJJQHQTCum4Q1bFbicRQeSbsv+Qwz3nK68+dlTkwec7D7JO07Z8gIhkqv/dTMx7uk5XFZzxbZEtdEyaebdbIrRkBF3DVx4uZCJnKQofz3CsaOVe4mPaEEQ1KKgspZtOY1GNZfoanX6//vrN3ROoRqMZv2U5F+zCkfVrZu6OQjhXY5NLYT2Omh/Ky2a8bq/Sd0R6BZpwfoXKXxwEI5muFqYsXCMcLoh9lTUrqYYF98og8faR4scWNU8DpjpnfcgC/lmi/w1Dnxtku0CIcWIU0xAF20B/hReSK2AitkPkGoI14zU49grSxZg4VIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4KCg8xZvRSPwOAsK6g3o5r1M7Me2ABMEwv9BdnK8zZ4=;
- b=a9occCHF2VgAJmnVa612Xu4Vy8lyvt3HycHLeJSgWV073QVX1C0MZlo0qM3kO3atj8/mlyPIGND9vBvZs0uxwjsntz7VSGCAf7wlTxKaSILs/3JVjL6DufbVlsIN+W4i35fZh+8YAGogCp3/JQ9CIGNx98lDpNZJCqGiPARCFxg3UtwBOv5ut90ubM66rwtXa5TZXv/v+66ud6KAr+oWBPVPuwsLDAs7aOTJkw7D4bdYqazBn0cOoO+DKHFhLun0kDbHDGoKdUuwkXoVwEjLwDI0x8+5xb5Z4KFrN9ash52EMu3haTt2/JRvT1efl7AXYo3z1kSs7IO4CWIZDjXMdA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5157.namprd12.prod.outlook.com (2603:10b6:208:308::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
- 2021 16:01:10 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Tue, 21 Sep 2021
- 16:01:10 +0000
-Date:   Tue, 21 Sep 2021 13:01:08 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, hch@lst.de, jasowang@redhat.com,
-        joro@8bytes.org, jean-philippe@linaro.org, kevin.tian@intel.com,
-        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
-        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
-        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        david@gibson.dropbear.id.au, nicolinc@nvidia.com
-Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Message-ID: <20210921160108.GO327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-4-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919063848.1476776-4-yi.l.liu@intel.com>
-X-ClientProxiedBy: BL0PR02CA0074.namprd02.prod.outlook.com
- (2603:10b6:208:51::15) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S234260AbhIUQED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234197AbhIUQEC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:04:02 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD79C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:02:34 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id n71so8482513iod.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hLKvecr7rVDv4E5rFe3ar/63VqLQrIXucEIO2M9I4t8=;
+        b=HTv0g8JFV4VYzaYPYW+h2sTqr/myWOJeCcTCbkbR7Q8b9rDWU7AdrnoQEhzwDf21B1
+         olE/Pi/Fv04FDKuQoXhdjReyIhzaeAZQVUzw4B39OFQrO/iUFQcdxCt6rTH9qvToBk24
+         /vA9SSGB9PCJKZGIDW7U8WbLZCAVyNDakk0zg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hLKvecr7rVDv4E5rFe3ar/63VqLQrIXucEIO2M9I4t8=;
+        b=nQtcRqvgB2r1Uq4d9yLX34lMFnY+GvTU2U5kIJKxiqf7MqS6Uo/P0ETrAJJ9JvdOls
+         8e7cqwTlQP9qubVeTUZgMUZ4xMec0SsmLL1okh0SiH7iTwXKUuOeWYwPwQFn/lkzJgYY
+         TD9aVeKUsqq0b+1rfu3hR75lLWn09jvF+bs9WMGqHRVnTGwx7jmwvhUe520tsEKM1OuC
+         WwQmiUW8CQN1reOyH2Idw0YSs2R6Wf53kQTCCU0f4s0bluP4dn0T9XgGprSAQeWLLuJh
+         hEHMAtyTshBo4I2I9Mn6vPFEECiUPbZEkAeMjmgGP+9LkvwefHI6YY9Czbq+FICGQxQw
+         mn0A==
+X-Gm-Message-State: AOAM532BqAn8Q7AqBMRWgUNBjHV0jqNC4R9rCngePpC8Xlh04bpzACgE
+        DRWcUDJPeI8xLnkdynCKtrFrEFIeBXarbw==
+X-Google-Smtp-Source: ABdhPJwVGJh+RkQXxiLNXPMg39w0C78GKLDvOlynccMukRGOOLjclw1fmlGwn08bIq3P0fzeP6Wrng==
+X-Received: by 2002:a6b:2bce:: with SMTP id r197mr600912ior.212.1632240153316;
+        Tue, 21 Sep 2021 09:02:33 -0700 (PDT)
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
+        by smtp.gmail.com with ESMTPSA id 12sm5286889ilq.23.2021.09.21.09.02.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 09:02:32 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id h20so23228317ilj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:02:32 -0700 (PDT)
+X-Received: by 2002:a92:c8c3:: with SMTP id c3mr21290506ilq.165.1632240152306;
+ Tue, 21 Sep 2021 09:02:32 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0074.namprd02.prod.outlook.com (2603:10b6:208:51::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 16:01:09 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mSiCi-003VOb-24; Tue, 21 Sep 2021 13:01:08 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8fcdc693-925b-48d2-66b6-08d97d1906f8
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5157:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB515773B99C90C20FD2E2D34FC2A19@BL1PR12MB5157.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o0xI5jCip69jlEILGCdrQ8t7aiwIx+BrJt1c+6RSXZuubtvxes7i2ARY/W0C+wZq1J5FD5TBySS0fcZEsPV7HqiQQ/S22Cqct6xYTJ+ZCde8sCgAzYDUAWPkXwlRw7Bh/l/2tpFR+c19cRQLHViXqpc1FMC5KGwmq5760syNsep0nzmiY8OtkjburcBFes7rXlSbzbgDnuEai2MT7PQbfVwjKXwUd/vXO/xmIPdH1uTfn8eLv9S0AVudEPgytnrY8X/mYprnytrZ8UktAODz1Cr3aVFfkll79+LzBCKwt+bhm5V+KexD3am4M9JmdCA1DWb3froEDDAJqGminZ0XKz821VnqJF6HbtGPqvw5JzwHkyQfG0NjB94Y6+6oxLY7hw0PVcShrB1kaZkghxIee8RhW1vFwbgeJi98GwSfb+j7XfTATi+6Qh3XKXQSL1swDlQC8WYKcWuji9kgHz302kwn+INr4mhShppa5ZxDTjmapYoaQjToNp0hcfJmMXKDp/C1Zg0dXgpC+lJvBQaahxGP7egFXLxlJihc6IwRyTaqwMoA0fBBdlku49ispdwEhsikAwK7U/q6D7Ry4l6z81RZp1mNOikaLydcofiPHVAupvaU6WaKyF+XrvqmWirqRQ5XJANDejW9+4DmJTONmhVqWrrm3qNb19TNS1Hg+haijgbQKoZavvGG0LOgAJQz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(508600001)(8936002)(426003)(66476007)(83380400001)(33656002)(66946007)(36756003)(8676002)(86362001)(66556008)(2616005)(6916009)(4326008)(2906002)(107886003)(5660300002)(186003)(7416002)(26005)(9746002)(9786002)(316002)(38100700002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vIYu8EQVSFT6HxhCSlW0OcqpVw/TJKGJY7KIqcqrNCBXQTiohctCZFzfaPLZ?=
- =?us-ascii?Q?S3gWYRWJfXqSOd5Bu1RRyMTJczSl/KjkSEexdhX1iW9gLp5+yeYBZkbtv1uU?=
- =?us-ascii?Q?1fBvZWfDzncwXhAP4QyzzFOgtoOvhlD9YfRKPEdF94thAw9u8cRlM/IH+46D?=
- =?us-ascii?Q?lziyB7hXW4Fj13LrapMRiK/m9iKhvGZ2wsMKNdPUgtV1H/lGTmYioS06m9Gl?=
- =?us-ascii?Q?1SzUpOOzaTRgF6guSm7lYI206MApiavR1MNju0H49vgJVEwQWyJ0KajBGLTl?=
- =?us-ascii?Q?i80Y8LXskROm3L2YY64/F6xIbHJF30Tav8twOwUP3OOstcTS8IrDj30g1NUh?=
- =?us-ascii?Q?wveOtEM5HpYzEWqcUnO6aLZhLXn2a3f5WBpVrG82cJ7XhF/6BiMrdlQEXiAz?=
- =?us-ascii?Q?UPvAbrNCfDRr0LkpI3on25V84aNacONmBhgjxf7W4O9QvcBDAuV3hN1vPUTu?=
- =?us-ascii?Q?HvN4KIeU9Ru/qTC52IvGlfEJoBlfSPYKCPWKamxfguK/n0cmyDitZD0Vcdm8?=
- =?us-ascii?Q?OrEGv7g6NlUCo7oymCUKyPCp/HZC6TDGsOAH1vzr4z3GiW5T8IpYPFNPdVDI?=
- =?us-ascii?Q?IBvuX7/ipoGDZSKMCpdqRkGRq1Ihcm8Nactsbr9ePVWTZNRoYfH3DsZNjhCw?=
- =?us-ascii?Q?EJDe0/LWMttKMz5MO2ojKj64jNu4hnn3QWttNewNmvp8NPtpJPADLBURduqA?=
- =?us-ascii?Q?ve+6zt8juh01CpjIbAIEkDGAYBssxs1C1DlPne/4Yrc/iOB0vQLNnpjuerdb?=
- =?us-ascii?Q?Z74jI6x3OXhmeF0swKufn8bT1iT6QN6LfPcfKmlfGjVul/RWpovYchAYEnh8?=
- =?us-ascii?Q?YEjODOX9Cm8qI356cfz7Fr3kZB5UAaa6RvCtl+bSFPGEQMQfIuq5y3mdn6Ue?=
- =?us-ascii?Q?6CvtTRgpMoBNA/iwh2FKX3byuVi4fMIPjoX41/huu6wz/K+oV03mjFEmCLsn?=
- =?us-ascii?Q?BTFys1N8nSBgkoyOdOPGxtDT2cOD4IvxXIoMEHLx4eid3RiUU42nlnWEd8C9?=
- =?us-ascii?Q?GboOBawEaujKJSeaFW0ssd2Ye8ihuibRRpT/VKOKj+aDTf9Zuhb954xZyVc9?=
- =?us-ascii?Q?2CwjPDdFpYxJ/36tiH9pNDGoJX33tWk3EYgNqhvDZ18O83DUl9vSQZ1yOAgB?=
- =?us-ascii?Q?SaSVBuTRPl2TN7v3HP5w7O5EIelMK2qxqBYXXiiaOOz0GbOK+Oy9k6Wu65LI?=
- =?us-ascii?Q?Go2UkzeV2Q75TIb7LwAx0J/+x8DXdHIkAmzT9S8xAxSSDlx7mtWf6rMNXt54?=
- =?us-ascii?Q?q7/e2gqEE/Cp5Utq8MeJZ/w2oA7HVaY2KIjU3X/4ICvtNNVQeXNSCbJH0p4L?=
- =?us-ascii?Q?mH3qkqHO6lrkf9BWkFQHgq2i?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fcdc693-925b-48d2-66b6-08d97d1906f8
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 16:01:09.8723
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 65MI4CsnxXef+BXfqH1jNZfHh7NU6lyVQvVHnvek7m3Hn8HpoCvhoOLByGbcjEv1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5157
+References: <20210918102058.v5.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
+ <20210918102058.v5.2.Ifcb5df5de5b1cead7c99e0f37b044ef5cfc69eda@changeid>
+In-Reply-To: <20210918102058.v5.2.Ifcb5df5de5b1cead7c99e0f37b044ef5cfc69eda@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 21 Sep 2021 09:02:20 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VgQWLmPEFBv=Ufnm8Gc4srRUd15GNbSrL-pYBGysCYqw@mail.gmail.com>
+Message-ID: <CAD=FV=VgQWLmPEFBv=Ufnm8Gc4srRUd15GNbSrL-pYBGysCYqw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] drm/bridge: parade-ps8640: Add support for AUX channel
+To:     Philip Chen <philipchen@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 02:38:31PM +0800, Liu Yi L wrote:
-> With /dev/vfio/devices introduced, now a vfio device driver has three
-> options to expose its device to userspace:
-> 
-> a)  only legacy group interface, for devices which haven't been moved to
->     iommufd (e.g. platform devices, sw mdev, etc.);
-> 
-> b)  both legacy group interface and new device-centric interface, for
->     devices which supports iommufd but also wants to keep backward
->     compatibility (e.g. pci devices in this RFC);
-> 
-> c)  only new device-centric interface, for new devices which don't carry
->     backward compatibility burden (e.g. hw mdev/subdev with pasid);
+Hi,
 
-We shouldn't have 'b'? Where does it come from?
+On Sat, Sep 18, 2021 at 10:21 AM Philip Chen <philipchen@chromium.org> wrote:
+>
+> +static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
+> +                                  struct drm_dp_aux_msg *msg)
+> +{
+> +       struct ps8640 *ps_bridge = aux_to_ps8640(aux);
+> +       struct regmap *map = ps_bridge->regmap[PAGE0_DP_CNTL];
+> +       struct device *dev = &ps_bridge->page[PAGE0_DP_CNTL]->dev;
+> +
+> +       unsigned int len = msg->size;
 
-> This patch introduces vfio_[un]register_device() helpers for the device
-> drivers to specify the device exposure policy to vfio core. Hence the
-> existing vfio_[un]register_group_dev() become the wrapper of the new
-> helper functions. The new device-centric interface is described as
-> 'nongroup' to differentiate from existing 'group' stuff.
+nit: usually no blank lines in the variable definition section.
 
-Detect what the driver supports based on the ops it declares. There
-should be a function provided through the ops for the driver to bind
-to the iommufd.
 
->  One open about how to organize the device nodes under /dev/vfio/devices/.
-> This RFC adopts a simple policy by keeping a flat layout with mixed devname
-> from all kinds of devices. The prerequisite of this model is that devnames
-> from different bus types are unique formats:
+> +       base = PAGE0_SWAUX_ADDR_7_0;
+> +       addr_len[PAGE0_SWAUX_ADDR_7_0 - base] = msg->address;
+> +       addr_len[PAGE0_SWAUX_ADDR_15_8 - base] = msg->address >> 8;
+> +       addr_len[PAGE0_SWAUX_ADDR_23_16 - base] = (msg->address >> 16) &
+> +                                                 SWAUX_ADDR_19_16_MASK;
+> +       addr_len[PAGE0_SWAUX_ADDR_23_16 - base] |= (msg->request << 4) &
+> +                                                  SWAUX_CMD_MASK;
 
-This isn't reliable, the devname should just be vfio0, vfio1, etc
+optional nit: Probably you could get rid of the mask for the request.
+After all, you're storing it to a thing that's a byte (so bits above
+bit 7 will implicitly be masked) and you're left shifting by 4 (so
+bits 0-3 will implicitly be masked) so this just makes it uglier. ;-)
 
-The userspace can learn the correct major/minor by inspecting the
-sysfs.
+optional nit: In theory you could also get rid of the
+SWAUX_ADDR_19_16_MASK and if you really wanted to you could error
+check that the address wasn't bigger than 20-bits since giving an
+error for an invalid address would actually be better than silently
+masking it anyway...
 
-This whole concept should disappear into the prior patch that adds the
-struct device in the first place, and I think most of the code here
-can be deleted once the struct device is used properly.
 
-Jason
+> +       if (len && (request == DP_AUX_NATIVE_READ ||
+> +                   request == DP_AUX_I2C_READ)) {
+> +               /* Read from the internal FIFO buffer */
+> +               for (i = 0; i < len; i++) {
+> +                       ret = regmap_read(map, PAGE0_SWAUX_RDATA,
+> +                                         (unsigned int *)(buf + i));
+
+The cast to "unsigned int *" looks wrong to me. You can't just cast
+like this for a number of reasons. Go back to reading into a local
+variable and copy the byte into your buffer.
+
+
+Other than the regmap_read() this looks fine to me. If you send a v6
+with that fixed I'll plan to wait a day or two and then apply it with
+Sam's tags.
+
+-Doug
