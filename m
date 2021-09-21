@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F36941354E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC126413552
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbhIUOaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbhIUOaI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:30:08 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4F3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:28:39 -0700 (PDT)
-Received: from [192.168.1.111] (91-158-153-130.elisa-laajakaista.fi [91.158.153.130])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A5F822BA;
-        Tue, 21 Sep 2021 16:28:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1632234517;
-        bh=YfXp04HKBXQlKS++vdq6OqS5xUMWCLP0iVA5zAB44l0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sZ3N0Va3F24EunkXY8ddYihjHAvGLO/ufcGs0jj/Z3UBisS8rGPyel3jgcZEmcIi5
-         MId3ngPGpJvb+B1Vk7z6pzX15HGL1yUEXz0HttWoRc1MQsLJytvKW+Engh/sPTRg5L
-         etStZ/csenlkKM3HNY/PiAYRcuTCViI+59USemj8=
-Subject: Re: [PATCH 0/3] drm/omap: add crtc properties
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210921141654.66550-1-narmstrong@baylibre.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Message-ID: <44ecbd74-b125-6f96-316f-c79dfc052af2@ideasonboard.com>
-Date:   Tue, 21 Sep 2021 17:28:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233608AbhIUOae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233601AbhIUOaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 10:30:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A36B60FA0;
+        Tue, 21 Sep 2021 14:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632234527;
+        bh=QYMMJltkcZK3rnYmumC87Yj+YbVxjSFLRfFSl4eUxCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lW/3LNlEf1rPA6jEa0YtNMWDCtPLAR2HkWyI3XWrCO8uov2736CdlndLv4B7fOILh
+         gomcgcTPq3zI5bn1d59K4y9i4oy8pMLGbuObdqlb0cQF7E40Q+YaHePgKlV6U3RITU
+         kjyiGVij88Jk6/syR5ubylT3sQS0xvnGdTN56NQQ=
+Date:   Tue, 21 Sep 2021 16:28:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ramona Alexandra Nechita <ramona.nechita@analog.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: host: Updated MAX3421 to MAX3421E in Kconfig
+Message-ID: <YUnsGZLTS6eBtQBz@kroah.com>
+References: <20210915110937.17647-1-ramona.nechita@analog.com>
 MIME-Version: 1.0
-In-Reply-To: <20210921141654.66550-1-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915110937.17647-1-ramona.nechita@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
-
-On 21/09/2021 17:16, Neil Armstrong wrote:
-> This patchset adds the following CRTC properties:
-> - background color
-> - transparency keying property
-> - alpha blender on DSS3
+On Wed, Sep 15, 2021 at 02:09:37PM +0300, Ramona Alexandra Nechita wrote:
+> MAX3421 is supposed to be MAX3421E, Kconfig was modified
+> accordingly.
 > 
-> Tomi Valkeinen (3):
->    drm/omap: add crtc background property
->    drm/omap: add crtc transparency key property
->    drm/omap: add alpha blender property
+> Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
+> ---
+>  drivers/usb/host/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> index 79b2e79dddd0..0ffa77163ae0 100644
+> --- a/drivers/usb/host/Kconfig
+> +++ b/drivers/usb/host/Kconfig
+> @@ -372,7 +372,7 @@ config USB_FOTG210_HCD
+>  	  module will be called fotg210-hcd.
+>  
+>  config USB_MAX3421_HCD
+> -	tristate "MAX3421 HCD (USB-over-SPI) support"
+> +	tristate "MAX3421E HCD (USB-over-SPI) support"
+>  	depends on USB && SPI
+>  	---help---
+>  	  The Maxim MAX3421E chip supports standard USB 2.0-compliant
+> -- 
+> 2.25.1
+> 
 
-Nack, these don't comply with DRM uAPI rules. That's why I never sent 
-them upstream.
+Please use the latest version of the kernel to send patches against.
+Can you please update your tree and resubmit this so that it can be
+applied "cleanly"?
 
-https://www.kernel.org/doc/html/latest/gpu/drm-uapi.html#open-source-userspace-requirements
+thanks,
 
-  Tomi
+greg k-h
