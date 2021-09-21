@@ -2,160 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93EC413C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8715D413C76
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhIUVb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbhIUVbX (ORCPT
+        id S235205AbhIUVcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:32:00 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:36448 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235066AbhIUVbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:31:23 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3C2C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:29:54 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id me1so520620pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LSn/kFygvp1Gc7LYRPSl9USN2eKVUYYqQK80C4S3HbY=;
-        b=btxgeKmkbIeI+ZpOc6VlwSC4J1M0NxXCmAKO/nawCIYSv8cbGywGkAH3QCnwAqLAUI
-         IOyxlnQF3u2reCho4aOS27m8AURN66z+f1gzEN4gfB+N1/w2JLIXtC4yGrRdYBUrXdWC
-         Vx/SNzr0zgBg66Mt5tqVTWXtqNRo1cMW1HRk7P6/aIgQitN5dojnf/rmx3fJsNEBiKh4
-         2oG4JdRFZ1cCImM5O4stFWaGUi4+BBk4LEDc8ZYoSTyQQ09FyLfXbzxkQRIwj2f3Y1ux
-         qkOUO+HshbP+1GDpYX5TBWF68F9+FWvzry5+DIxEzwl/5EC5N4EFZsnTQtNpn8FiRBGK
-         Np7A==
+        Tue, 21 Sep 2021 17:31:53 -0400
+Received: by mail-oi1-f182.google.com with SMTP id y201so1258123oie.3;
+        Tue, 21 Sep 2021 14:30:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=LSn/kFygvp1Gc7LYRPSl9USN2eKVUYYqQK80C4S3HbY=;
-        b=6Qt6dgIXa+Mild77VDbI34apY5/npAscuQFLkLJhEdwnd5excyitSfE/0Ds1nJ2nTE
-         HI7l/0RBegeMTERvLlyS75T6o31zrvhq+5hmb6Xzg9fpfdl1bdGk+CrSeZZF7aryVV0Z
-         FtXtec4ru+Sxutx/OYjHA4RxupHRwarnjaYEHABxO3MwP9KRS1tSgb+jfw0P2a+Puxae
-         +r+rwLMgN3JR2mM0s2z6d5pO1C3UC717QiPpT/cyh0zq7+uYuSY462VZxjifw4J0NzGf
-         lfdJYjzpjh4hCLgvO2YPR60GnK9d8f9PNuk7mMwUdFP7VZNqREOiTA0+KVADnv6P2QFJ
-         rE9Q==
-X-Gm-Message-State: AOAM531HvrNYfhpP15BWO/Bf5zcxC1C3Ck8I7oZwsoYcShOm3+24DLj3
-        xkT+8+HFKyXsf063r4Mo/Sd8Uw==
-X-Google-Smtp-Source: ABdhPJzMgcR9UgCsbvPuA/02v4FkJblQW9htJs47A2YRdbvRMs4AQG7O660EDIsBZdZMmGrIa23JJg==
-X-Received: by 2002:a17:902:bf42:b0:13d:b79f:a893 with SMTP id u2-20020a170902bf4200b0013db79fa893mr8518959pls.1.1632259793364;
-        Tue, 21 Sep 2021 14:29:53 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w142sm103618pfc.47.2021.09.21.14.29.52
+        bh=qOUqyvLIqpAcRVLX2RVvyvruhXG3SDZlFXYRj/WyI+A=;
+        b=h74xsFjTl9M2p83G46LPcHNQfnlFnHOGIgevwJa/71dEdRnzGaWr+f3QtzKINDqC9b
+         G+vY2OLKWET4eNYvY/jm0JzNTJ4rHgIbJFZyPFgIRZPhzFFYAt/H5mpSRuWYqq5oyBO0
+         qszt5haO1Ls6YqzsHxCctjelzLY91V/tjVUBv/3oZtnpGxXYlNWh4rsqGQuLcuJcLsLE
+         ESS6lUYkizzvE8SUQcqBN5733J1Bj4BkuG9C8irakjy3EfCWp7cUm8u2TmMpyjiqT1EL
+         6Mmzoz3QI6XCHO5T3VTH2EPP0FZdZTT1j7jMjafsfR9+IQNVnY7Yu9/R15RWhfMs548R
+         zbow==
+X-Gm-Message-State: AOAM533FOMpRJDZAHogjnfYNnKD9N2Jyk0GzTQcKovxfpc3nIpMYC5ta
+        WVnrTRbj+N3s/Bg6ZKiCzQ==
+X-Google-Smtp-Source: ABdhPJx6mPka25mxnHJIqTy73LHD/zGaxTKelTzEk9vwTLT4TPPlzOHlBDhTD1mDL3ETYJK8xfsxPQ==
+X-Received: by 2002:aca:ba44:: with SMTP id k65mr5445250oif.131.1632259824589;
+        Tue, 21 Sep 2021 14:30:24 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id 14sm43086otl.50.2021.09.21.14.30.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:29:52 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 21:29:48 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v2 05/13] perf: Force architectures to opt-in to guest
- callbacks
-Message-ID: <YUpOzFW3K3iJAoWa@google.com>
-References: <20210828003558.713983-1-seanjc@google.com>
- <20210828003558.713983-6-seanjc@google.com>
- <20210828194752.GC4353@worktop.programming.kicks-ass.net>
- <8ee13a69-f2c4-2413-2d6c-b6c0a559286e@redhat.com>
+        Tue, 21 Sep 2021 14:30:24 -0700 (PDT)
+Received: (nullmailer pid 3356286 invoked by uid 1000);
+        Tue, 21 Sep 2021 21:30:22 -0000
+Date:   Tue, 21 Sep 2021 16:30:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4] arm64: zynqmp: Add support for Xilinx Kria SOM board
+Message-ID: <YUpO7j1kDJ2kmvsW@robh.at.kernel.org>
+References: <ed0e6aa670ac59eabbabe7552883416248ad6c89.1631697878.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8ee13a69-f2c4-2413-2d6c-b6c0a559286e@redhat.com>
+In-Reply-To: <ed0e6aa670ac59eabbabe7552883416248ad6c89.1631697878.git.michal.simek@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021, Paolo Bonzini wrote:
-> On 28/08/21 21:47, Peter Zijlstra wrote:
-> > > +config HAVE_GUEST_PERF_EVENTS
-> > > +	bool
-> > 	depends on HAVE_KVM
+On Wed, Sep 15, 2021 at 11:24:58AM +0200, Michal Simek wrote:
+> There are couple of revisions of SOMs (k26) and associated carrier cards
+> (kv260).
+> SOM itself has two major versions:
+> sm-k26 - SOM with EMMC
+> smk-k26 - SOM without EMMC used on starter kit with preprogrammed firmware
+> in QSPI.
 > 
-> It won't really do anything, since Kconfig does not detects conflicts
-> between select' and 'depends on' clauses.
+> SOMs are describing only devices available on the SOM or connections which
+> are described in specification (for example UART, fwuen).
+> 
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+> 
+> Changes in v4:
+> - Remove ina260 and usb5744 nodes
+> - Remove compatible string from overlays
+> 
+> Changes in v3:
+> - Fix led node name
+> - Fix compatible string for xlnx,zynqmp-sk-kv260-revA/Y/Z
+> - Fix headers alignment
+> - Move USB3 PHY properties from DWC3 node to USB node - reported by Manish
+>   Narani
+> - Change dtb names generated with dtbo
+> - Fix emmc comment style
+> 
+> Changes in v2:
+> - Use sugar syntax - reported by Geert
+> - Update copyright years
+> - Fix SD3.0 comment alignment
+> - Remove one newline from Makefile
+> 
+> https://www.xilinx.com/products/som/kria.html
+> Based on
+> https://lore.kernel.org/r/cover.1628244703.git.michal.simek@xilinx.com
+> 
+> ---
+>  .../devicetree/bindings/arm/xilinx.yaml       |  16 +
+>  arch/arm64/boot/dts/xilinx/Makefile           |  13 +
+>  .../boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts  | 315 ++++++++++++++++++
+>  .../boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts  | 298 +++++++++++++++++
+>  .../boot/dts/xilinx/zynqmp-sm-k26-revA.dts    | 289 ++++++++++++++++
+>  .../boot/dts/xilinx/zynqmp-smk-k26-revA.dts   |  21 ++
+>  6 files changed, 952 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revA.dts
+>  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sck-kv-g-revB.dts
+>  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dts
+>  create mode 100644 arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dts
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
+> index a0b1ae6e3e71..4dc0e0195974 100644
+> --- a/Documentation/devicetree/bindings/arm/xilinx.yaml
+> +++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
+> @@ -116,6 +116,22 @@ properties:
+>            - const: xlnx,zynqmp-zcu111
+>            - const: xlnx,zynqmp
+>  
+> +      - description: Xilinx Kria SOMs
+> +        items:
+> +          - const: xlnx,zynqmp-sm-k26-rev1
+> +          - const: xlnx,zynqmp-sm-k26-revB
+> +          - const: xlnx,zynqmp-sm-k26-revA
+> +          - const: xlnx,zynqmp-sm-k26
+> +          - const: xlnx,zynqmp
+> +
+> +      - description: Xilinx Kria SOMs (starter)
+> +        items:
+> +          - const: xlnx,zynqmp-smk-k26-rev1
+> +          - const: xlnx,zynqmp-smk-k26-revB
+> +          - const: xlnx,zynqmp-smk-k26-revA
+> +          - const: xlnx,zynqmp-smk-k26
+> +          - const: xlnx,zynqmp
+> +
+>  additionalProperties: true
+>  
+>  ...
+> diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
+> index 083ed52337fd..4e159540d031 100644
+> --- a/arch/arm64/boot/dts/xilinx/Makefile
+> +++ b/arch/arm64/boot/dts/xilinx/Makefile
+> @@ -17,3 +17,16 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revA.dtb
+>  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu104-revC.dtb
+>  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu106-revA.dtb
+>  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zcu111-revA.dtb
+> +
+> +dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA.dtb
+> +dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA.dtb
+> +
+> +sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
+> +sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
+> +smk-k26-revA-sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
+> +smk-k26-revA-sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
 
-It does throw a WARN, though the build doesn't fail.
+I assume there is some value in these being overlays? I probably asked 
+that already too, but don't remember. Please explain in the commit 
+message so we capture that.
 
-WARNING: unmet direct dependencies detected for HAVE_GUEST_PERF_EVENTS
-  Depends on [n]: HAVE_KVM [=n] && HAVE_PERF_EVENTS [=y]
-  Selected by [y]:
-  - ARM64 [=y]
-
-WARNING: unmet direct dependencies detected for HAVE_GUEST_PERF_EVENTS
-  Depends on [n]: HAVE_KVM [=n] && HAVE_PERF_EVENTS [=y]
-  Selected by [y]:
-  - ARM64 [=y]
-
-WARNING: unmet direct dependencies detected for HAVE_GUEST_PERF_EVENTS
-  Depends on [n]: HAVE_KVM [=n] && HAVE_PERF_EVENTS [=y]
-  Selected by [y]:
-  - ARM64 [=y]
-
-> Rather, should the symbol be selected by KVM, instead of ARM64 and X86?
-
-By KVM, you mean KVM in arm64 and x86, correct?  Because HAVE_GUEST_PERF_EVENTS
-should not be selected for s390, PPC, or MIPS.
-
-Oh, and Xen also uses the callbacks on x86, which means the HAVE_KVM part is
-arguabably wrong, even though it's guaranteed to be true for the XEN_PV case.
-I'll drop that dependency and send out a separate series to clean up the arm64
-side of HAVE_KVM.
-
-The reason I didn't bury HAVE_GUEST_PERF_EVENTS under KVM (and XEN_PV) is that
-there are number of references to the callbacks throught perf and I didn't want
-to create #ifdef hell.
-
-But I think I figured out a not-awful solution.  If there are wrappers+stubs for
-the guest callback users, then the new Kconfig can be selected on-demand instead
-of unconditionally by arm64 and x86.  That has the added bonus of eliminating
-the relevant code paths for !KVM (and !XEN_PV on x86), with or without static_call.
-It also obviates the needs for __KVM_WANT_GUEST_PERF_EVENTS or whatever I called
-that thing.
-
-It more or less requires defining the static calls in generic perf, but I think
-that actually ends up being good thing as it consolidates more code without
-introducing more #ifdefs.  The diffstats for the static_call() conversions are
-also quite nice.
-
- include/linux/perf_event.h | 28 ++++++----------------------
- kernel/events/core.c       | 15 +++++++++++++++
- 2 files changed, 21 insertions(+), 22 deletions(-)
-
-I'll try to get a new version out today or tomorrow.
+> +
+> +dtb-$(CONFIG_ARCH_ZYNQMP) += sm-k26-revA-sck-kv-g-revA.dtb
+> +dtb-$(CONFIG_ARCH_ZYNQMP) += sm-k26-revA-sck-kv-g-revB.dtb
+> +dtb-$(CONFIG_ARCH_ZYNQMP) += smk-k26-revA-sm-k26-revA-sck-kv-g-revA.dtb
+> +dtb-$(CONFIG_ARCH_ZYNQMP) += smk-k26-revA-sm-k26-revA-sck-kv-g-revB.dtb
