@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08E5413C81
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CB4413C89
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhIUVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
+        id S235453AbhIUVfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhIUVes (ORCPT
+        with ESMTP id S235405AbhIUVfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:34:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED47FC061574;
-        Tue, 21 Sep 2021 14:33:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZajkgWCi0yDRNW6H+n3ZFs1aW16iYhABZhxg/AoBYvw=; b=s5rg++9t1nqEFcw5oLCBxYRfeK
-        NIbToqlfdAOBSouhSQTRtcCE7get7605g8ZAdPRdavXQMRFHJNcyBU6B5ReVWEKgPyi8qj1E7R++s
-        5u1VEnytviDQa4z42NjFNkizc140FUNrBWz6s2hU31c1ywS29ulGrdR8/olvORJ64VyobMT+54BeN
-        zfbclzEzYdVd8/hp9kYvV5Vlknv1qm3tH76aGU+G3yXnRcTHDu/CtEpPIrwv7GhFpiuuITBLAOTpV
-        B0agmJDalimch/Pxgv6Wc4jgOn0reNU5h7n3GYqdE7F+MtL1UDO7/XOxTwVOZJ658lStkqR46ZUTv
-        9x42J6wA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54718)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mSnO7-000368-Jj; Tue, 21 Sep 2021 22:33:15 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mSnO5-0003dF-Er; Tue, 21 Sep 2021 22:33:13 +0100
-Date:   Tue, 21 Sep 2021 22:33:13 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
-Message-ID: <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
-References: <20210920163915.757887582@linuxfoundation.org>
- <20210920163918.373775935@linuxfoundation.org>
- <20210921212837.GA29170@duo.ucw.cz>
+        Tue, 21 Sep 2021 17:35:31 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBCEC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:34:02 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i4so3194278lfv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=onYH57UKgRX2y9FA652B6Jil/Y6sRo6kbtM4byaxFbk=;
+        b=eBVF3W3VBl8/Kcc3edgbmiaMz5aGtiFcsghvZhSejZhbmeEyK5UQw/1PFkiQyXYHaG
+         ep1Qe79XGKoddakjbluJzSSdU6e7ItIa/VyOBVU9ai0Bymzz3iDJtyFjRD39EIPM25vz
+         4qz0qSZamNXJd68fq5IJpTDDpau43+mSfg2XWhoKoGxbOFiuRtiRYE7GfxGmSUDaHEJg
+         E7kAQREHoi4We6KjgT1K6PZUTHBzzEa/WGaKq/wElm+NwA9Dj3BI08sAZJBTPlkJn2D7
+         eFgy10WdV1zv/1WS3CBekNlpT18oJkYC++DPHzSZnogr5FAXrL71q6vwYz/oJyJkBY1z
+         HMkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=onYH57UKgRX2y9FA652B6Jil/Y6sRo6kbtM4byaxFbk=;
+        b=rQ9X5pXdtBGlccVgufcAr9V9JEELbI24xYdBPPQ1UZ+VTcNj8gXoQ9z2e/C4BMrXcO
+         OJ1oJb4S+sUQ9n5hhkxm49s4IH9MHh0SZu5IPYK+Y5ShPCBqOUy7Ued29Zp1KVTu1DGP
+         SpGknplF4/0QkAr3fLwJBiX+nxvThGt69Kfo4p4HT5BK0lwqfhUtd1X+MZKflK3tGHsZ
+         biR6ZKw8khLoZqYyUCWrCxr5ncZt8BapM7JC2ljV9vPp6AD1Hk6uCRB2Yye1jgQZ980J
+         b3LI0Nbgrf76r5bf/htd0iOvTRVl8wWcGS82LaWBIAo76bS5epAAaCQFhel1AF3mn/Qo
+         j3Bw==
+X-Gm-Message-State: AOAM532xBdmLVQMGDsJqmpblTRdDKl0zrKRcIymWmkFG6OJ+0LNwijsG
+        8SJaw7uoCgQwEqmNwSCKFzzAgA==
+X-Google-Smtp-Source: ABdhPJwdW58yGabAJZgobn6vaDrfqJrmQRLjEbi4LByZcJNYEBlALvg49HirVUieAeO4lwAN455DSA==
+X-Received: by 2002:a05:6512:3096:: with SMTP id z22mr19350411lfd.167.1632260040535;
+        Tue, 21 Sep 2021 14:34:00 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id t14sm16618lfp.15.2021.09.21.14.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 14:34:00 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 3890410305C; Wed, 22 Sep 2021 00:34:01 +0300 (+03)
+Date:   Wed, 22 Sep 2021 00:34:01 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
+ cc_platform_has()
+Message-ID: <20210921213401.i2pzaotgjvn4efgg@box.shutemov.name>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <367624d43d35d61d5c97a8b289d9ddae223636e9.1631141919.git.thomas.lendacky@amd.com>
+ <20210920192341.maue7db4lcbdn46x@box.shutemov.name>
+ <77df37e1-0496-aed5-fd1d-302180f1edeb@amd.com>
+ <YUoao0LlqQ6+uBrq@zn.tnic>
+ <20210921212059.wwlytlmxoft4cdth@box.shutemov.name>
+ <YUpONYwM4dQXAOJr@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921212837.GA29170@duo.ucw.cz>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <YUpONYwM4dQXAOJr@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:28:37PM +0200, Pavel Machek wrote:
-> Hi!
+On Tue, Sep 21, 2021 at 11:27:17PM +0200, Borislav Petkov wrote:
+> On Wed, Sep 22, 2021 at 12:20:59AM +0300, Kirill A. Shutemov wrote:
+> > I still believe calling cc_platform_has() from __startup_64() is totally
+> > broken as it lacks proper wrapping while accessing global variables.
 > 
-> > Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver broke
-> > when moving the incorrect handling of mac link state out of mac_config().
-> > This reason this breaks is because the stmmac's WoL is handled by the MAC
-> > rather than the PHY, and phylink doesn't cater for that scenario.
-> > 
-> > This patch adds the necessary phylink code to handle suspend/resume events
-> > according to whether the MAC still needs a valid link or not. This is the
-> > barest minimum for this support.
-> 
-> This adds functions that end up being unused in 5.10. AFAICT we do not
-> need this in 5.10.
+> Well, one of the issues on the AMD side was using boot_cpu_data too
+> early and the Intel side uses it too. Can you replace those checks with
+> is_tdx_guest() or whatever was the helper's name which would check
+> whether the the kernel is running as a TDX guest, and see if that helps?
 
-It needs to be backported to any kernel that also has
-"net: stmmac: fix MAC not working when system resume back with WoL active"
-backported to. From what I can tell, the fixes line in that commit
-refers to a commit (46f69ded988d) in v5.7-rc1.
-
-If "net: stmmac: fix MAC not working when system resume back with WoL
-active" is not being backported to 5.10, then there is no need to
-backport this patch.
-
-As I'm not being copied on the stmmac commit, I've no idea which kernels
-this patch should be backported to.
+There's no need in Intel check this early. Only AMD need it. Maybe just
+opencode them?
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+ Kirill A. Shutemov
