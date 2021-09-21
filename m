@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73566413B2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE58413B38
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbhIUUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:21:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50872 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234023AbhIUUVR (ORCPT
+        id S234715AbhIUUYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:24:04 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:33622 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230348AbhIUUYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:21:17 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632255587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vz7syRUN5sOPwLSCYUbNIMEsi/R8b4KCW0BzfDAPCcc=;
-        b=Sf9kJ8F6bEpGkCkxYVZGemVx+bK63FHeiLTxvZyHUTnoC7XuxpxUV7Ph+HtegzCwp5uq4D
-        cWVbqwxqXTmdDCPWsfTNHFf+MV8RO3fv5wsyXWu+fL2bqNiKa1tm0cY5jnJKG1+In/mLiM
-        MMD8T7J2lS2hJddf+s/Ccgw5u8w6CqP6QcG0JXJkGfHPgKyFxcwj0MTN0u/lEFY06rULAS
-        I4tTlJYBFWTCJv9le1meDqyrMh8Qq5Np2uqxdHbWXUqcRudYQxdMFw/nqUwJKzbaweucli
-        cO97nILeRe6RCL1e53AWnVBvzUJH9t91akGfKWf8qwM7IY+ldC2hJE0jsIp6PA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632255587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vz7syRUN5sOPwLSCYUbNIMEsi/R8b4KCW0BzfDAPCcc=;
-        b=tOvQKv/XPYCfTewSYn+SettAP7SzvcJxhKAHw16af75OfyfT5EbbVaO2gQkQ+l6KCioBgk
-        uV8iuATHODDNYkBQ==
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+d6c75f383e01426a40b4@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, Waiman Long <llong@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [syzbot] WARNING in __init_work
-In-Reply-To: <163224949689.3714697.17466968510780664239@swboyd.mtv.corp.google.com>
-References: <000000000000423e0a05cc0ba2c4@google.com>
- <20210915161457.95ad5c9470efc70196d48410@linux-foundation.org>
- <163175937144.763609.2073508754264771910@swboyd.mtv.corp.google.com>
- <87sfy07n69.ffs@tglx>
- <163224949689.3714697.17466968510780664239@swboyd.mtv.corp.google.com>
-Date:   Tue, 21 Sep 2021 22:19:46 +0200
-Message-ID: <87v92t65r1.ffs@tglx>
+        Tue, 21 Sep 2021 16:24:03 -0400
+Received: by mail-ot1-f53.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso327363otu.0;
+        Tue, 21 Sep 2021 13:22:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BXxN/Tsfx5bmrn6IRFt7LP7UFNWkTcdd8J3Fel3tlCM=;
+        b=01KSvepbxz2IJYO0BUsC3OLSWsrrQVywTEaC0tPGUuk70gCuHmmD974g25HAz3dAfS
+         zi0PW2t/w6P7G7EGyJB3oAQ2ZCBYwYuSm9orA14r6ZYkCJ32vzC3n02UPYojq8dAD1vb
+         Z4T4r6v5yv3qQiOz0PmZq4MKflA/lEKpTJ1j1FlwmydmTKc+VkyM1BtT0lIA6iZ4CzHz
+         GMaQcSIfksWc1/s2uD6rMBD6Ti3B4+IrpvJEqJC0BkirY9yJB8QdeYpEBolFuRS16GLC
+         ztDgx154Yf0Ih9dut6NFszAYQD5/AJc9CMMNkRLJ49vQTvIla7eaUiqJhGuOgPslRGio
+         8/Xw==
+X-Gm-Message-State: AOAM533zYW2Su55UrPw/Fukbqtb7u0nPTaGZb07qf5iPLjXGJ6P1bAih
+        QtNCawkZhFeO83+5FzysSw==
+X-Google-Smtp-Source: ABdhPJzsEROHqcVPN+E7NmlIWG2PVc84xkEcMet/kB8kZAxVLmgiNTCM5aut56npYcGtdZVPAjAlXg==
+X-Received: by 2002:a9d:6398:: with SMTP id w24mr26957420otk.140.1632255754431;
+        Tue, 21 Sep 2021 13:22:34 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id k8sm21966oom.20.2021.09.21.13.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 13:22:33 -0700 (PDT)
+Received: (nullmailer pid 3266694 invoked by uid 1000);
+        Tue, 21 Sep 2021 20:22:31 -0000
+Date:   Tue, 21 Sep 2021 15:22:31 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] dt-bindings: iio: magnetometer: asahi-kasei,ak8975 add
+ vid reg
+Message-ID: <YUo/BzWUBQArrMkS@robh.at.kernel.org>
+References: <20210913181949.83179-1-david@ixit.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210913181949.83179-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen,
+On Mon, 13 Sep 2021 20:19:49 +0200, David Heidelberg wrote:
+> Driver and device-tree also use vid-supply regulator.
+> 
+> Fixes: 7e000fbff7a0 ("dt-bindings: iio: magnetometer: ak8975: convert format to yaml, add maintainer")
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  .../bindings/iio/magnetometer/asahi-kasei,ak8975.yaml        | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
-On Tue, Sep 21 2021 at 11:38, Stephen Boyd wrote:
-> Quoting Thomas Gleixner (2021-09-19 05:41:18)
->> Even if debug objects would support objects on irq stacks, the above is
->> still bogus. But it does not and will not because the operations here
->> have to be fully synchronous:
->> 
->>     init() -> queue() or arm() -> wait() -> destroy()
->> 
->> because you obviously cannot queue work or arm a timer which are on stack
->> and then leave the function without waiting for the operation to complete.
->
-> Is there some way to make it more obvious that initializing a timer or
-> work on the stack in an irq context is a NONO because we can't wait for
-> it? Maybe some sort of debugobjects call to might_sleep() when it's
-> being told the object is on the stack, or throwing a might_sleep() into
-> the initialization of any stack based timer or workqueue, or both?
-
-Let me have a look.
+Acked-by: Rob Herring <robh@kernel.org>
