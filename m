@@ -2,59 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98C413AF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FD5413AFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhIUTs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232971AbhIUTs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05CD661090;
-        Tue, 21 Sep 2021 19:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632253617;
-        bh=Vd72d03O7vyO6/ntGqgJQ7bBsZ/+rDIvCZUgBZtoU0c=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=C8uJtnAm4Mq5eVYm0dKWWTUGx2AeG8B82zVLfuy2KOCgkLZ5SA+lo4Y+XxLYxvwga
-         dmbG0hTRc60XBHH79QvT96Fe0f2OyLJVbO6iZwojfwHYAS5+S9MOburXbR3KUmtRyz
-         ZTLhpPs3Sookcyfmj5CQsFtmfn5ncYl9je8Ep3+WGxK8TyW+rEFFrMRJvPRm60qV19
-         B3y1LYEP2o3/WbT3LAuCp+pCgpYtaDj5EW/mH2eodVKriTDimPRT2yZwZBsJ3DY/7Y
-         oHTk2DY4kys5tlZeU0oWKja/kCA8CFYOiNVbEVsylZHB0Ceq44zQEXQqy49Q6YcsaV
-         OmyoUm24wQ+YQ==
-Message-ID: <5d0b85ed3d70ce75033a7f546ad6a3c0bec32271.camel@kernel.org>
-Subject: Re: [PATCH 1/2] x86: sgx_vepc: extract sgx_vepc_remove_page
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        dave.hansen@linux.intel.com, yang.zhong@intel.com
-Date:   Tue, 21 Sep 2021 22:46:55 +0300
-In-Reply-To: <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
-References: <20210920125401.2389105-1-pbonzini@redhat.com>
-         <20210920125401.2389105-2-pbonzini@redhat.com>
-         <060cfbbaa2c7a1a0643584aa79e6d6f3ab7c8f64.camel@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S234801AbhIUTtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234714AbhIUTs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:48:56 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFA4C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:47:27 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id t8so214784wri.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Z5mAXIxdQ3ZHOcZa3/XgL8+waFFw5ZKFjk5I33+w7UY=;
+        b=Qgpq8DP/jGL+dyqlRelcUb+X5NEG/GP8R4MIynmZFu9Lv5GBs0nXrKQSS635jEKDLr
+         TNlqFwYXAO69QYz+trt2j7sW9rcyPVmJV90YJUp7L2Qzr/aC5TF3B9/r5wKk6rJpNU10
+         LKIhtduN9OXAu2qNSqJb054V1CG/ykf7Magsp7RaS+MOGUJEVGli6K/4VaYRvwTdc68g
+         d8pABr9AngClTNdU0kair1BWvJwLYJ5k8U5Cgd7vVEM86CFnGtHNDQNHhf5rRRSczdZv
+         pxuuoeTiKbQRzr35mqXGnwetBfB9F5QHY3UtjVSwfxC7PTCao+LwgP0jmZukOkO9m2HG
+         L17Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Z5mAXIxdQ3ZHOcZa3/XgL8+waFFw5ZKFjk5I33+w7UY=;
+        b=qJb0QLmihxnWcrN782v/MjbYUuuinB2HQLkHOi1UP16u3oU2Ocb94jYYSygYvyhstj
+         cx1/14rsl9VZycfOfTmP6vqq05l1KerjiC8vgffe1SuzWfeATCvU68BVwo+gxgzjKPQY
+         on7phdEVSl8+SOZyQaxfCJ4Hbdtrj5iKiyBLLQ80DGFAE7304FGe4vSVQ3hSq6ghckxz
+         Cf7XQSucRhPvpkMkWn9lqddWKN1zUcGSh4neHLzBBv5Gqxtp9OhucNBTU3yHMtGy2vcQ
+         L/331tsHUkkOmCB7nPkQALYprQicik1eYjNM1rL7NSDDuMvs8qqDYOML5Zu/2snJ6Dms
+         mfrw==
+X-Gm-Message-State: AOAM533tPl2l3GLKYP0+K8bPMouR4h6yc6vNRw4dKblHXn1SkoJkHAKM
+        /KT61MbQU7nvTi/d4zX/jNk=
+X-Google-Smtp-Source: ABdhPJyq7GRTP3Z5CbL05GI02YZI33qYuFblBXPF4l5dqGoX1PEAhcXOD0Ap8R2RCIo5Or4VL0J0lw==
+X-Received: by 2002:adf:fc0e:: with SMTP id i14mr36978452wrr.173.1632253646165;
+        Tue, 21 Sep 2021 12:47:26 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cde])
+        by smtp.gmail.com with ESMTPSA id s13sm3891243wmc.47.2021.09.21.12.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 12:47:25 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 5/8] staging: r8188eu: remove PowerIndex_backup from struct dm_priv
+Date:   Tue, 21 Sep 2021 21:46:55 +0200
+Message-Id: <20210921194658.10654-6-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210921194658.10654-1-straube.linux@gmail.com>
+References: <20210921194658.10654-1-straube.linux@gmail.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-21 at 22:44 +0300, Jarkko Sakkinen wrote:
-> Even to a Linux guest, since EPC should stil be represented in the state =
-that
-> matches the hardware.  It'd be essentially a corrupted state, even if the=
-re was
-> measures to resist this. Windows guests failing is essentially a side-eff=
-ect
-> of an issue, not an issue in the Windows guests.
+The field PowerIndex_backup of struct dm_priv is not used, remove it.
 
-Ugh, typos, sorry. Even to a Linux guest it would be illegit what I was mea=
-ning
-to say...
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/r8188eu/include/rtl8188e_dm.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-/Jarkko
+diff --git a/drivers/staging/r8188eu/include/rtl8188e_dm.h b/drivers/staging/r8188eu/include/rtl8188e_dm.h
+index 2209975c0b2d..bfe300730c16 100644
+--- a/drivers/staging/r8188eu/include/rtl8188e_dm.h
++++ b/drivers/staging/r8188eu/include/rtl8188e_dm.h
+@@ -30,7 +30,6 @@ struct	dm_priv {
+ 
+ 	/* for High Power */
+ 	u8 DynamicTxHighPowerLvl;/* Tx Power Control for Near/Far Range */
+-	u8	PowerIndex_backup[6];
+ };
+ 
+ void rtl8188e_init_dm_priv(struct adapter *adapt);
+-- 
+2.33.0
 
