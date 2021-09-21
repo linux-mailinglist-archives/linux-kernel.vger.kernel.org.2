@@ -2,166 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B4A412EBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED6A412EC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhIUGoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:44:08 -0400
-Received: from mail-am6eur05on2105.outbound.protection.outlook.com ([40.107.22.105]:58336
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229862AbhIUGoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:44:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WRtYJFbm8jyDAWODi+TpxF7GqahmoRZtpScFT5lopX/UdQ0jiC3T3QnhaCkzbyuqZfjxO/ZtDaOBKT/gzma8Uoph9OFqQdIDDVdf8YX3e/Tqkf7v2ssTxbyfAXA98uH0ce14WB82mW4pvEGS1LvQfkN5eCy7UW30g/XaxOsSbL5Braun7beWUxy0c5VkTnBncrZbrHbtxzTSipAk/mMZCUCPMeU+oFdy7KRyME+sc3YkATCODH5feyEUhqPkHG6lY5HjK+fcFYIB2Anaj6yTSBhFhE2cXI0QGzLNecOl/QDEmsO0WFZ8R+VHYrNhtznIJUXWRum+mjnSF9fTFQFLRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=MWqKg8PoPrYEa+WND5ZLsilXi6+jlfoo7nD5rBel4bQ=;
- b=U3ELvUWUI9NHEk/ybQJ/bwstqwJ2H/dL8A9UxMMo+7VO+yTxHjEAPAge4a+T3h7bxO8jJh7wwTPVrK+/OBKiLD299zZQmL4U/Rdo2OzKzd4DUh1QYMjEteOPrzLNjyeqRQvgGV5nAm87etq2YcRttCKg5lfHaVx8od5w4uTc25JnxGpccaGPb23Tn3u4TWXn+xHgza9LnxUvLZCeHcvb8xc4bSOXCkHdjGwjYecdE5O7ZbMvHJFtHBRe64ppsGdy2GV+pdP1IDZtLXkCz6dxKAAykQda+9j2nTBy3kQz7gdFcJamhzQfGo2zyolyAbbdTkbIX8NT52eCQ4h1gI2Ejg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MWqKg8PoPrYEa+WND5ZLsilXi6+jlfoo7nD5rBel4bQ=;
- b=ZcTDiYxRUqWUdpdYokeWhuancjCNBlBtxZJJfT/bpeB8yB+WGzUnD244AByBkpNratxDqNKPWDT5I55nRkOZu8Qb2agX3AHNTZvwP2Xa6ZWjCRYm2AoOCbygDGDolm7nMsQksH8UxsXBDkEb+xDkLcaLG7qk5oYplX0uILa5GZ4=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=kontron.de;
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
- by AM4PR1001MB1250.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:200:8d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.16; Tue, 21 Sep
- 2021 06:42:37 +0000
-Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e51f:c969:4825:8fc5]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e51f:c969:4825:8fc5%7]) with mapi id 15.20.4544.013; Tue, 21 Sep 2021
- 06:42:37 +0000
-Message-ID: <5d5fd917-a330-21b9-f8c1-25792a0f11e9@kontron.de>
-Date:   Tue, 21 Sep 2021 08:42:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: imx8mm board crash in drivers/usb/chipidea/ci_hdrc_imx.c
-Content-Language: en-US
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Heiko Thiery <heiko.thiery@gmail.com>,
-        Peter Chen <peter.chen@nxp.com>, Jun Li <jun.li@nxp.com>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <CAEyMn7YqrRttqvJzJLA+yVo6WtBZww6QcXT12MMCi+bhjP4pTg@mail.gmail.com>
- <CAEyMn7ZhBfG7703YMr=EDQyf5mHDkLyET5iNqdXDOpJy9ti+rQ@mail.gmail.com>
- <CAOMZO5CZKdc=AmG1eds9Oy_uwqXDWLwPXk74phCDWdjrzkRC4A@mail.gmail.com>
- <CAEyMn7YaQbLoVy_5Rb+hiwhEj-kbnmCwb0B_soa+Kf0D6iH6oA@mail.gmail.com>
- <CAOMZO5CGuKQ0yVyoD86G3KnxoBd2fq+uCTTLoqVR-13Y5a-36Q@mail.gmail.com>
- <CAEyMn7bN247-J=Qz-k3LZMVYb8pdYSP3BSCsNE9yyvfDfmdK0g@mail.gmail.com>
- <CAOMZO5DEg81E23QBpsv44BxytEhNNoXy-r5BbnubUJTERzWYLQ@mail.gmail.com>
- <CAEyMn7Yvc_tck=Hd8GE1a7uO8nRsrkdJ7b_jL6EY0-U6b=TjoQ@mail.gmail.com>
- <039c9214-423f-0f62-f6d2-6f2c969512fa@kontron.de>
- <CAOMZO5A4x_v8wtGyDjLdMg_hS1=UZH3LV-e+Dyz=spmSaLyAaw@mail.gmail.com>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <CAOMZO5A4x_v8wtGyDjLdMg_hS1=UZH3LV-e+Dyz=spmSaLyAaw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3P191CA0036.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:102:55::11) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:157::14)
+        id S229941AbhIUGpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhIUGpa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 02:45:30 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC188C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:44:02 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id y1so5770872plk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qeCXjIpYXsAnaU3oxGDbt64MrBlL7kjozPkuT7rdTbo=;
+        b=z8sUMUbXBQB5gz7JBeFuGBuwWdyT/cHU6HdETGdu021UiSt9gbRTlheHerpAb+kVeQ
+         IND1zux0JBXQPqSmoMiD2wf+bo4XOoXvOPLRBEvfgpn0Eq1MWEwa4HAZ4LCZur5i7cYb
+         id8e3YP91xYJ4+slyeyRZ2+shnBUOfcbohwenmuQg7HHNP33AMStCOxF93lNjLPe61nM
+         O9pRPpjPDzEw3EoVH42F9HmJvO2LiVUxjKEnInpvq6+InJwy7XPJbdY1g8JdKwW+PNmT
+         EAFrWyBDpnbYkh1Mmvb7h81ZblFjXM9yBSQSetRBrFVBeUG4N4AWLBaexFX6rCiEDBA8
+         4HoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qeCXjIpYXsAnaU3oxGDbt64MrBlL7kjozPkuT7rdTbo=;
+        b=ymdGN/96anKSYPHSSroDQ8iSWsbLSDdPLdw7ih7UTy46pfB7OjpsDMmW/ADC7QNzBT
+         f9un8qqS/0VHJuosOI01yiNBJj4dI6hydgGRpBy0ODODH4WsHyKZqzAxlmMWs8SQWjp2
+         /nxYrE6+j4NZ1JHc5TygZJNY489Jdu/MA5lc9J7u7FrDj2t6431rZzuUdv6sv3zg93Ed
+         3LWijrWdcXmjXg7OO/lz83C9J6p207bNiS/r2wrJNUadjL3IEEKteatw9J8BKHWxbKWz
+         IAL68e6eMTSfjZKP/h6BbK60U8sf3h4knez54pK1D7/oSOM8bLEh3L3j9UuEcifs8MTw
+         zXdQ==
+X-Gm-Message-State: AOAM530V6udD/L8KCZba0p8VrGU3OmZhTc9uGmVGuMn13nxW1/IXkLJj
+        7U6JD0KwcznUqjpbi/NXkQxldUYa7S5KU8S1wQICpw==
+X-Google-Smtp-Source: ABdhPJzXk2k8y4lEGZiR4eKEM2G5e6sWT451zy4UiuYGJJintr+5EdqX9twlQpMlysUcMfhsPFNXzaTPFoBhERiF4qk=
+X-Received: by 2002:a17:90b:4f8a:: with SMTP id qe10mr3495963pjb.5.1632206642403;
+ Mon, 20 Sep 2021 23:44:02 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [192.168.10.40] (89.244.183.176) by PR3P191CA0036.EURP191.PROD.OUTLOOK.COM (2603:10a6:102:55::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.17 via Frontend Transport; Tue, 21 Sep 2021 06:42:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: af550eab-9f46-4444-78b0-08d97ccaff7e
-X-MS-TrafficTypeDiagnostic: AM4PR1001MB1250:
-X-Microsoft-Antispam-PRVS: <AM4PR1001MB1250B1F6895B0639D3D2D9C6E9A19@AM4PR1001MB1250.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2wMLyp48yFqkp8wryEMcPwi17o5Dw82GZlvNjLMWENGmSpqsabVY0gWYu924h3HB8fmPGV8wIRvUatF6rrjtRUdLb8qAPQXzJWQwE5DsWPD8no0DBZPiiKpVlJyp/bJgVP21aV6ktyLsQOH2AFQQ35nQ6jTGPAji39nA57gpBrobRmsMIvM6ld2XCNHzI2QRtilN7Ao6/9PHU29qSUBvfu9t4fKNYcxZ1oabNZG4UZOnA+80857T7JTTDXfZtGu2ZdA58stIYqbOYHdg2IN0Q1wsMdQoMtyqM3vdf1VnkSaybUcNwqlJ/PUHRtbahTlyRJbqJGmFzEchnWxjNsEno02U+8dr0tajHdt/LMFfdLjgiSQyMfdy0Y85JvQwczDpP7XAVHA55g1M172vSX6jmyKjR2g9jwtvHmF/d1kWLYwn38XM0pt7pUMnw0W0ZT3niKOFvR/hanWH3QSTh1jxCb2fz6L/n13YdqldL5WW6kUJ4qFq+jlAgk4rywe7LKqBYyAQa4C7LDhs7hkzgqGsERTkGp7SVJ/rKkqTnD+2CgZ6rQnFG/Nt6CPPJUD/js8khWw6CiwXLgKjzlp0EGvIugQeewLgr47mqJN1eHk8UDz7wxkMSQdAoliFQVt9MIUPTwkz92eqty6OdytqHZxrodzIiOMPZ6rKyWxzitTmSkmdKbEILrev7HPuku2K1ucEt5NGyF+z3K78O4fSw93NsFnLhYy8nHiJks6u1BF0yNj+dmCtG7rWaYes6tviKyQj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(186003)(6916009)(38100700002)(5660300002)(956004)(53546011)(86362001)(4326008)(6486002)(508600001)(31696002)(36756003)(7416002)(2616005)(66476007)(2906002)(66556008)(66946007)(83380400001)(16576012)(8936002)(44832011)(8676002)(54906003)(316002)(31686004)(32563001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGg0KzEzUWlBL1pBWnJhVnlDZk9uaDRHQUE5U2ZtY2VtVFJlV3dZSTFIQzdZ?=
- =?utf-8?B?RERBZlpVM2gyOWVZNTJraktNRmFJRTVZZGZTamVuVURacTRZdzhBTnh1a1lK?=
- =?utf-8?B?cWNzR0NjQjlJVDhCNTZYL0VGajJIK3dBQ2RRQklvczVVY2hFV05CSS9lVUYw?=
- =?utf-8?B?aWpDcVFzb3lFM3R5aEQ0YkVpeGVXSUNCelJyYmVVYi9wRjFDRWp1TmNvR2J5?=
- =?utf-8?B?aFFKM09MRjNMN1Fib2I4SDlSYXh4YnpPOG8zQ0szRDFIMGFQQ3FIRTRRYXFR?=
- =?utf-8?B?SDh6Nnl6YVNCTnZkZXkvSFVxaE1yeUk0Q25rdkd5dmx2ZHlMZDlhK1pJRUJu?=
- =?utf-8?B?VVdnMVJUT1VtUzRhdWVqOUY4K20xSlhHMnhkYmI4RE9USGlkaWtHcHhpdzNO?=
- =?utf-8?B?UUJRSEF4Rkl2dHhCenZ3VEZZSURYNnZBNmc2bHEyYVEwbFAwRzhoZ3BLS2da?=
- =?utf-8?B?cjk3NkNLMmFhaStMWnE0NERXYW82ZWRJZG1NTjJHM204S2Rid2RzeW1zTGw1?=
- =?utf-8?B?MWEyclVFZmthWDBsVjkweDFrYTNoSkdtT3g1TnN3VndPQTVocU45aHVENlFn?=
- =?utf-8?B?SVI3MG8vL0JSMUpENFlPSndTcFVucTJoMlNmVTB3MFVYUmIwV3c5MjdHZTRP?=
- =?utf-8?B?M2lUdFQ4M3B0UzFrTlNIRVN4U0VjSVhVNWtoWitmZ2NjQ3lLdnJDMUhjSXRW?=
- =?utf-8?B?TEZvdU5RRVMvSjdzNlZGcE5HanNCd1ZvZ3lOWGdWTVVkRHlUTHFkTEhod21Z?=
- =?utf-8?B?NUZjY3JqNTV0QWZOSFRha3EzTkJjcGFneVhBWXRGSU9YOXp0M0RCQ0xCb3Vm?=
- =?utf-8?B?aHVHZVo2a1o2RHpIbXNMUW1ZeGY1b3krdXNXSWNOMUJPdEowTGFhZUU3TWVY?=
- =?utf-8?B?TEpQdWZKSElDR3FyV3VFcVFmbll2Mm1pOGh3UTR1UWNIVUxqYWNGZWIwOUth?=
- =?utf-8?B?bUpWNExvWS9OK1RFZDk3RFloT3A1NE1SaldnUER0UDBsNjU0WWZxZFhmVVVM?=
- =?utf-8?B?UFUwcFROU01PZS9FVWNFbzAzUy9ZQVdpS21RMi81MlVUb2N6WFgxWFlEelkz?=
- =?utf-8?B?akhzTGF5NzBVT0NTZ09ZWTh0clFMd0t6Vkt4ZWR0ejBGTFVRaWpnNy9Tak9x?=
- =?utf-8?B?aS9QNGxDZ2xLajdzQmtlT1oxVnJPWXh5Mmh4YUNEV1Z3NER1Nzl5aEU1dVNZ?=
- =?utf-8?B?Z01tbXJwUjB4bHBOMklzSkswanZnOENyTWN3N2xhRk10Ri9peVVHUjV4bjBN?=
- =?utf-8?B?Mm9ZZm5kdzVBdlV4OTRLekxJQnlmdWdib1c5d1haSVJZTVYzOUp0UHFMSmV2?=
- =?utf-8?B?ZHQ3Wnc1OHFONHVFNDJ2ZVFPK0UxUUxKNDIxcmxOeFNtaGhOSjVqR0hYZG56?=
- =?utf-8?B?M08yNXVxTVlLdlNqUmM4UGFjdkZyUDQycU9Fci9YN1FHWTVpVUZqMTRhVDFI?=
- =?utf-8?B?RW4yYTlHUE9xZS9KVWpBNHhJWmtaRERYY3lsQUFXVkFDK0c5ZnBUUnZjUHdH?=
- =?utf-8?B?OXcvbTg0TWdOck11K0VCRVFtcWxsWFZZT0VibEV5QXZnUkdGYnVGTldiVHVT?=
- =?utf-8?B?cFpuWWdVTjk4a05ZR2ZPT3ZpSEJSaGpuN0pLbzhnN3pKZjNQOC9QcGg3VDNK?=
- =?utf-8?B?L1ZSWHdNdUQ3czJCTjdEZVk3SG1oOTY0bjRPaU1GWEswRlZYTjRxekt5QjVM?=
- =?utf-8?B?NUJZb2dUNXlvekwrK3dCa2ZhaWJFSGdkZ2NUM2xkYnUwN0VEbWQwMHFhaXE4?=
- =?utf-8?Q?pdjhm0cSlA+1U/oCABJxu0zOmkoXpjZQHqKDJLE?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: af550eab-9f46-4444-78b0-08d97ccaff7e
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 06:42:36.8838
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fBaOJQLLrFpaAIScvKZMif2L8g79K0uGdyFEbMlwOeu8hgE8mLdeLAjavClHnVIXXLKQNuI11EYMfCzr8zDOcvpZfJGQCyzii/MF38MFGy8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR1001MB1250
+References: <20210917034815.80264-1-songmuchun@bytedance.com>
+ <20210917034815.80264-2-songmuchun@bytedance.com> <CAGsJ_4y8mZh4RNaY-JQHa5Sr+Tv3HingV42jwK9KoJ+0m=w87A@mail.gmail.com>
+ <CAMZfGtVmhHGNizHsdJXygigm84Z72B3wtUYxpT1XW3GpWh1AWQ@mail.gmail.com>
+In-Reply-To: <CAMZfGtVmhHGNizHsdJXygigm84Z72B3wtUYxpT1XW3GpWh1AWQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 21 Sep 2021 14:43:20 +0800
+Message-ID: <CAMZfGtWpE+1Pap0X2RLHmrtjOze7iS8dYJF1k-9j2D8X7WtZ0Q@mail.gmail.com>
+Subject: Re: [PATCH RESEND v2 1/4] mm: hugetlb: free the 2nd vmemmap page
+ associated with each HugeTLB page
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        Chen Huang <chenhuang5@huawei.com>,
+        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+On Sat, Sep 18, 2021 at 6:06 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Sat, Sep 18, 2021 at 12:39 PM Barry Song <21cnbao@gmail.com> wrote:
+> >
+> > On Sat, Sep 18, 2021 at 12:08 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > Currently, we only free 6 vmemmap pages associated with a 2MB HugeTLB
+> > > page. However, we can remap all tail vmemmap pages to the page frame
+> > > mapped to with the head vmemmap page. Finally, we can free 7 vmemmap
+> > > pages for a 2MB HugeTLB page. It is a fine gain (e.g. we can save
+> > > extra 2GB memory when there is 1TB HugeTLB pages in the system
+> > > compared with the current implementation).
+> > >
+> > > But the head vmemmap page is not freed to the buddy allocator and all
+> > > tail vmemmap pages are mapped to the head vmemmap page frame. So we
+> > > can see more than one struct page struct with PG_head (e.g. 8 per 2 MB
+> > > HugeTLB page) associated with each HugeTLB page. We should adjust
+> > > compound_head() to make it returns the real head struct page when the
+> > > parameter is the tail struct page but with PG_head flag.
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> > >  Documentation/admin-guide/kernel-parameters.txt |  2 +-
+> > >  include/linux/page-flags.h                      | 75 +++++++++++++++++++++++--
+> > >  mm/hugetlb_vmemmap.c                            | 60 +++++++++++---------
+> > >  mm/sparse-vmemmap.c                             | 21 +++++++
+> > >  4 files changed, 126 insertions(+), 32 deletions(-)
+> > >
+> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > > index bdb22006f713..a154a7b3b9a5 100644
+> > > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > > @@ -1606,7 +1606,7 @@
+> > >                         [KNL] Reguires CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > >                         enabled.
+> > >                         Allows heavy hugetlb users to free up some more
+> > > -                       memory (6 * PAGE_SIZE for each 2MB hugetlb page).
+> > > +                       memory (7 * PAGE_SIZE for each 2MB hugetlb page).
+> > >                         Format: { on | off (default) }
+> > >
+> > >                         on:  enable the feature
+> > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > > index 8e1d97d8f3bd..7b1a918ebd43 100644
+> > > --- a/include/linux/page-flags.h
+> > > +++ b/include/linux/page-flags.h
+> > > @@ -184,13 +184,64 @@ enum pageflags {
+> > >
+> > >  #ifndef __GENERATING_BOUNDS_H
+> > >
+> > > +#ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+> > > +extern bool hugetlb_free_vmemmap_enabled;
+> > > +
+> > > +/*
+> > > + * If the feature of freeing some vmemmap pages associated with each HugeTLB
+> > > + * page is enabled, the head vmemmap page frame is reused and all of the tail
+> > > + * vmemmap addresses map to the head vmemmap page frame (furture details can
+> > > + * refer to the figure at the head of the mm/hugetlb_vmemmap.c).  In other
+> > > + * word, there are more than one page struct with PG_head associated with each
+> > > + * HugeTLB page.  We __know__ that there is only one head page struct, the tail
+> > > + * page structs with PG_head are fake head page structs.  We need an approach
+> > > + * to distinguish between those two different types of page structs so that
+> > > + * compound_head() can return the real head page struct when the parameter is
+> > > + * the tail page struct but with PG_head.
+> > > + *
+> > > + * The page_head_if_fake() returns the real head page struct iff the @page may
+> > > + * be fake, otherwise, returns the @page if it cannot be a fake page struct.
+> > > + */
+> > > +static __always_inline const struct page *page_head_if_fake(const struct page *page)
+> > > +{
+> > > +       if (!hugetlb_free_vmemmap_enabled)
+> > > +               return page;
+> > > +
+> > > +       /*
+> > > +        * Only addresses aligned with PAGE_SIZE of struct page may be fake head
+> > > +        * struct page. The alignment check aims to avoid access the fields (
+> > > +        * e.g. compound_head) of the @page[1]. It can avoid touch a (possibly)
+> > > +        * cold cacheline in some cases.
+> > > +        */
+> > > +       if (IS_ALIGNED((unsigned long)page, PAGE_SIZE) &&
+> > > +           test_bit(PG_head, &page->flags)) {
+> > > +               /*
+> > > +                * We can safely access the field of the @page[1] with PG_head
+> > > +                * because the @page is a compound page composed with at least
+> > > +                * two contiguous pages.
+> > > +                */
+> > > +               unsigned long head = READ_ONCE(page[1].compound_head);
+> > > +
+> > > +               if (likely(head & 1))
+> > > +                       return (const struct page *)(head - 1);
+> > > +       }
+> > > +
+> > > +       return page;
+> > > +}
+> > > +#else
+> > > +static __always_inline const struct page *page_head_if_fake(const struct page *page)
+> > > +{
+> > > +       return page;
+> > > +}
+> > > +#endif
+> > > +
+> > >  static inline unsigned long _compound_head(const struct page *page)
+> > >  {
+> > >         unsigned long head = READ_ONCE(page->compound_head);
+> > >
+> > >         if (unlikely(head & 1))
+> > >                 return head - 1;
+> > > -       return (unsigned long)page;
+> > > +       return (unsigned long)page_head_if_fake(page);
+> >
+> > hard to read. page_head_if_fake,  what is the other side of
+> > page_head_if_not_fake?
+>
+> 1) return itself if the @page is not a fake head page.
+> 2) return head page if @page is a fake head page.
+>
+> So I want to express that page_head_if_fake returns a
+> head page only and only if the parameter of @page is a
+> fake head page. Otherwise, it returns itself.
+>
+> > I would expect something like
+> > page_to_page_head()
+> > or
+> > get_page_head()
+> >
+>
+> Those names seem to be not appropriate as well, because
+> its functionality does not make sure it can return a head
+> page. If the parameter is a head page, it definitely
+> returns a head page, otherwise, it may return itself which
+> may be a tail page.
+>
+> From this point of view, I still prefer page_head_if_fake.
 
-On 20.09.21 22:50, Fabio Estevam wrote:
-> Hi Frieder,
-> 
-> On Mon, Sep 20, 2021 at 11:26 AM Frieder Schrempf
-> <frieder.schrempf@kontron.de> wrote:
-> 
->> Commit ed5a419bb019 ("usb: chipidea: imx: "fsl,usbphy" phandle is not
->> mandatory now") explains, that the core driver already covers reading
->> the "phys" property (see ci_hdrc_probe()):
->>
->>   Since the chipidea common code support get the USB PHY phandle from
->>   "phys", the glue layer is not mandatory to get the "fsl,usbphy"
->>   phandle any more.
->>
->> This seems to be the reason why ci_hdrc_imx_probe() doesn't return any
->> error in case "fsl,usbphy" is not set. It expects that the core will
->> handle data->phy = NULL and already checks for a "phys" property.
-> 
-> chipidea core populates ci->usb_phy when phys is used.
-> 
-> The charger detection function only checks data->usb_phy, so they
-> don't see ci->usb_phy that was populated by the chipidea core.
-> 
-> We could change the signature of all charger detection functions to
-> receive struct ci_hdrc *ci, but that will be a huge patch that will
-> probably not meet
-> the stable requirements, so I think to minimally fix stable we should
-> go with the proposed fix I suggested.
+After some thinking, I figured out 2 names.
 
-Ok, thanks for the explanation. I agree. Would you mind sending the fix
-as formal patch?
+page_head_if_fake() always returns a head page if the parameter
+of @page is not a compound page or its ->flags has PG_head set
+(you can think the head page is itself if the page is not a compound
+page). All the callers of it already guarantee this. It means it has to
+return a head page unless the @page is a tail page (except fake
+head page). So I propose two names as follows.
 
-Thanks
-Frieder
+1) page_head_unless_tail
+2) page_head_filter_fake
+
+The former means it always returns a head page unless the
+caller passes a tail page as a parameter. The latter means
+it always returns a head page but filtering out the fake head
+page. The former is inspired by get_page_unless_zero.
+
+What do you think?
+
+Thanks.
+
+>
+> > Anyway, I am not quite sure what is the best name. but page_head_if_fake(page)
+> > sounds odd to me. just like the things have two sides, but if_fake  presents
+> > one side only.
+>
+> If others have any ideas, comments are welcome.
+>
+> >
+> > >  }
+> > >
+> > >  #define compound_head(page)    ((typeof(page))_compound_head(page))
+> > > @@ -225,12 +276,14 @@ static inline unsigned long _compound_head(const struct page *page)
+> > >
+> > >  static __always_inline int PageTail(struct page *page)
+> > >  {
+> > > -       return READ_ONCE(page->compound_head) & 1;
+> > > +       return READ_ONCE(page->compound_head) & 1 ||
+> > > +              page_head_if_fake(page) != page;
+> >
+> > i would expect a wrapper like:
+> > page_is_fake_head()
+>
+> Good point. Will do.
+>
+> >
+> > and the above page_to_page_head() can leverage the wrapper.
+> > here too.
+> >
+> > >  }
+> > >
+> > >  static __always_inline int PageCompound(struct page *page)
+> > >  {
+> > > -       return test_bit(PG_head, &page->flags) || PageTail(page);
+> > > +       return test_bit(PG_head, &page->flags) ||
+> > > +              READ_ONCE(page->compound_head) & 1;
+> >
+> > hard to read. could it be something like the below?
+> > return PageHead(page) || PageTail(page);
+> >
+> > or do we really need to change this function? even a fake head still has
+> > the true test_bit(PG_head, &page->flags), though it is not a real head, it
+> > is still a pagecompound, right?
+>
+> Right. PageCompound() can not be changed.  It is odd but
+> efficient because calling page_head_if_fake is eliminated.
+> So I select performance not readability. I'm not sure if it's
+> worth it.
+>
+> Thanks.
