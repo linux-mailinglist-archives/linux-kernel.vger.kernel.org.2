@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5D341311D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A47641311E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhIUKDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:03:48 -0400
-Received: from muru.com ([72.249.23.125]:35486 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231565AbhIUKDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:03:13 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 4BC868520;
-        Tue, 21 Sep 2021 10:02:11 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Kevin Hilman <khilman@baylibre.com>,
-        Nishanth Menon <nm@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 9/9] bus: ti-sysc: Drop legacy quirk flag for sham
-Date:   Tue, 21 Sep 2021 13:01:15 +0300
-Message-Id: <20210921100115.59865-10-tony@atomide.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210921100115.59865-1-tony@atomide.com>
-References: <20210921100115.59865-1-tony@atomide.com>
+        id S231538AbhIUKE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:04:57 -0400
+Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:38825 "EHLO
+        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230160AbhIUKEy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:04:54 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id A21F21C59C9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:03:25 +0100 (IST)
+Received: (qmail 18526 invoked from network); 21 Sep 2021 10:03:25 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 21 Sep 2021 10:03:25 -0000
+Date:   Tue, 21 Sep 2021 11:03:23 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched/fair: Remove redundant lookup of rq in
+ check_preempt_wakeup
+Message-ID: <20210921100323.GL3959@techsingularity.net>
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-2-mgorman@techsingularity.net>
+ <CAKfTPtBTL+KTJdEWv=-6OF8mFvnWUQ1PWKufzhKOASzMcUbnww@mail.gmail.com>
+ <20210921075309.GK3959@techsingularity.net>
+ <YUmV/7puqVrYPfyL@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YUmV/7puqVrYPfyL@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need for the legacy flag any longer for gpio as the omap-sham
-driver has been fixed to not rely on pm_runtime_irq_safe().
+On Tue, Sep 21, 2021 at 10:21:19AM +0200, Peter Zijlstra wrote:
+> On Tue, Sep 21, 2021 at 08:53:09AM +0100, Mel Gorman wrote:
+> > On Tue, Sep 21, 2021 at 09:21:16AM +0200, Vincent Guittot wrote:
+> > > On Mon, 20 Sept 2021 at 16:26, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > > >
+> > > > The rq for curr is read during the function preamble, remove the
+> > > > redundant lookup.
+> > > >
+> > > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > > > ---
+> > > >  kernel/sched/fair.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index ff69f245b939..038edfaaae9e 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -7190,7 +7190,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+> > > >         if (cse_is_idle != pse_is_idle)
+> > > >                 return;
+> > > >
+> > > > -       update_curr(cfs_rq_of(se));
+> > > > +       update_curr(cfs_rq);
+> > > 
+> > > se can have been modified by find_matching_se(&se, &pse)
+> > > 
+> > 
+> > I still expected the cfs_rq to be the same, particularly given that the
+> > context is about preempting the current task on a runqueue. Is that
+> > wrong?
+> 
+> Yes. There's a cfs_rq for every se. What we do in find_matching_se() is
+> walk up the hiarachy until both are in the same cfs_rq, otherwse we
+> cannot compare them.
+> 
+> Fundamentally this means the effective cfs_rq also changes.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/bus/ti-sysc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Ok, thanks. I'll read into this more but the patch is dead.
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1539,8 +1539,6 @@ struct sysc_revision_quirk {
- 
- static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	/* These drivers need to be fixed to not use pm_runtime_irq_safe() */
--	SYSC_QUIRK("sham", 0, 0x100, 0x110, 0x114, 0x40000c03, 0xffffffff,
--		   SYSC_QUIRK_LEGACY_IDLE),
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x00000046, 0xffffffff,
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x00000052, 0xffffffff,
-@@ -1679,6 +1677,7 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("sdio", 0, 0, 0x10, -ENODEV, 0x40202301, 0xffff0ff0, 0),
- 	SYSC_QUIRK("sdio", 0, 0x2fc, 0x110, 0x114, 0x31010000, 0xffffffff, 0),
- 	SYSC_QUIRK("sdma", 0, 0, 0x2c, 0x28, 0x00010900, 0xffffffff, 0),
-+	SYSC_QUIRK("sham", 0, 0x100, 0x110, 0x114, 0x40000c03, 0xffffffff, 0),
- 	SYSC_QUIRK("slimbus", 0, 0, 0x10, -ENODEV, 0x40000902, 0xffffffff, 0),
- 	SYSC_QUIRK("slimbus", 0, 0, 0x10, -ENODEV, 0x40002903, 0xffffffff, 0),
- 	SYSC_QUIRK("smartreflex", 0, -ENODEV, 0x24, -ENODEV, 0x00000000, 0xffffffff, 0),
 -- 
-2.33.0
+Mel Gorman
+SUSE Labs
