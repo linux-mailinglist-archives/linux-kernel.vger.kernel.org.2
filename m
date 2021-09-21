@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B387413322
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B99413324
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbhIUMHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbhIUMHV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:07:21 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85581C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 05:05:53 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id dj4so17651860edb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 05:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xfe3bOlJREdRlDYQSkahNkZhic31PCfsBl45d4Acbtw=;
-        b=E7BZnIfZAZXhXKyiPV8+r2Oh1It1ZFz5XH+Q42ixRxiJUjdH1s8pj9o59QjCQvMdQG
-         xKXcw+ngKaii6YDfWfHnhsq+WbWQkc/4fS6L1sAuMc0662hlk8xufxzWnzBH5gzBfXRI
-         KlXgPmPelFFbZK6yVajVD46p0ZpSt6yTWYGou7unsPJIWB1qU8z6ccE052DiZsDt/hCK
-         u5hY1gNcLfWZCQ1hsoAaOASpE/xGGXgVs4dJXe9T0ujpasvo5v2+KjAIR3dHNpIQOUEc
-         T6dqhzBaWOS2ssVyn9h+E+5Si0CRyzZZ9vENdQ8OVq0PGD2NlRGnayVj51wyrg7AyxQW
-         V+vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xfe3bOlJREdRlDYQSkahNkZhic31PCfsBl45d4Acbtw=;
-        b=icAqmkBZXbpQfhwfPYe4Rv0rO3+vBklpr1I/tF0sGWY4OHpZvjgjmdKQWiuO4ihWOV
-         IgOr6xDPsX2K9MioLmJfXgr/uSWSPbtUpT03GP0lTKB/cMdQJLbN5pjMWwpIUZs6aKZ9
-         KMg92/kKMR490Zz4hPXwOAP9a+P58ukgv/vnTTumcdsWdvffJoZHvCK37F9yv1oyC3TP
-         Y5LrImEdfCPIVc86dcR4TpulZnYze0lkrfnP7es1VyobBp/S0Kkb8zlhsIwK+CD5i0a1
-         C+2El7yqDgMfq+KEJoRAq3jKrbDOPfrqeDfkm4EJVvSKJb+7o5H4lAuZdXds8UUEXs2y
-         Nyfw==
-X-Gm-Message-State: AOAM5322SI+XDtoiqAOVYdMQWd7qcyf5TfBf04sy+9NEfNc7qrK5f6++
-        toAOSKYSY7U8+yAEc0LfhwE8g0Qb+5xS90+vrB0=
-X-Google-Smtp-Source: ABdhPJy+tVSHOM3W444dgviG+Y8irqd/hvHpO8ueOW6VZezViHNFeZsyul8R+3LXGicD324Hvn084oRrRWULZ340xg0=
-X-Received: by 2002:a17:906:c014:: with SMTP id e20mr25789249ejz.166.1632225918924;
- Tue, 21 Sep 2021 05:05:18 -0700 (PDT)
+        id S232443AbhIUMIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:08:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230160AbhIUMIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:08:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E0A66126A;
+        Tue, 21 Sep 2021 12:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632225996;
+        bh=qnWTodEwspkSMdWf5XON5Ep7daBqF5kbGbudj8UJ3BM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AqKDYakbUVbx323nFcNrRgWy01h3JK7NhWkadTqGI2CjV4jpJ1GWL97jA4orZZzAH
+         XUIZuG5H+2+GtcxT5b2qT+uCdJa7SEBUN2LigkTvwpHm7xnqlCzrWXVM4zyiq3d/fy
+         pD1nF0rp8CyvUG8OxbFloC/QGB8iJDTbLHhlyh1yg4dno4mfgMgHOPm0GhTCh9IqnV
+         9tqnYqbdFGteLVIQUlEGX6b9nEcp+XzfpWgphtvwG4SzxpsYDwDvkga0iA1YGPeLBf
+         GAK6jZeK0iVdleRljCp+OCFHp6MUXO3a9TxpP/52YLnqnnecas2EICZcztf8Kn6jUT
+         2qHogEKNYd3qQ==
+Received: by mail-oi1-f172.google.com with SMTP id s69so21824002oie.13;
+        Tue, 21 Sep 2021 05:06:36 -0700 (PDT)
+X-Gm-Message-State: AOAM532QWmGJ1HlvITAHiOoLhkNvjLJmlCuTLB6UpRKl+LeD1yTgJgm0
+        uydPRnPnJsZlE9aD6TqmOiK1gEexDmXcUm3T+GI=
+X-Google-Smtp-Source: ABdhPJx1x7wQ2+Ve4iSZCDQmmYVEepXxo/5KRhWVQj/N//ixUTMX6irYoXDtuXoK84SNkd7MjELWyQDwt9BfbsPbMro=
+X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr1242229oiu.33.1632225995730;
+ Tue, 21 Sep 2021 05:06:35 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a17:906:a005:0:0:0:0 with HTTP; Tue, 21 Sep 2021 05:05:15
- -0700 (PDT)
-Reply-To: godwinwallace56@gmail.com
-From:   "Godwin Wallace." <yanming728@gmail.com>
-Date:   Tue, 21 Sep 2021 05:05:15 -0700
-Message-ID: <CACFsD_rsc39LL-o3XVcSh20iDEdTN=NKwaA6vyBHWGS8S0gqVw@mail.gmail.com>
-Subject: URGENT RESPOND NEEDED .
-To:     undisclosed-recipients:;
+References: <20210914121036.3975026-1-ardb@kernel.org> <20210914135527.GC30247@C02TD0UTHF1T.local>
+In-Reply-To: <20210914135527.GC30247@C02TD0UTHF1T.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 21 Sep 2021 14:06:24 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGPcHwdSjy-doB09LBLvrXtqYT4dyxE5hU=D=2m8Fg8zg@mail.gmail.com>
+Message-ID: <CAMj1kXGPcHwdSjy-doB09LBLvrXtqYT4dyxE5hU=D=2m8Fg8zg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/8] Move task_struct::cpu back into thread_info
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Hello.
+On Tue, 14 Sept 2021 at 15:55, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> On Tue, Sep 14, 2021 at 02:10:28PM +0200, Ard Biesheuvel wrote:
+> > Commit c65eacbe290b ("sched/core: Allow putting thread_info into
+> > task_struct") mentions that, along with moving thread_info into
+> > task_struct, the cpu field is moved out of the former into the latter,
+> > but does not explain why.
+>
+> From what I recall of talking to Andy around that time, when converting
+> arm64 over, the theory was that over time we'd move more and more out of
+> thread_info and into task_struct or thread_struct, until task_struct
+> supplanted thread_info entirely, and that all became generic.
+>
+> I think the key gain there was making things more *generic*, and there
+> are other ways we could do that in future without moving more into
+> task_struct (e.g. with a geenric thread_info and arch_thread_info inside
+> that).
+>
+> With that in mind, and given the diffstat, I think this is worthwhile.
+>
+> FWIW, for the series:
+>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+>
 
-This is a personal email directed to you for your consideration alone.
+Thanks.
 
-I request that it remain and be treated as such only.
-
-My name is Godwin Wallace. I'm a Belgian/British Citizen and Attorney.
-I have an interesting business proposal for you that will be of
-immense benefit to both of us, although this may be hard for you to
-believe, we stand to gain 9.7 Million Dollars between us in a matter
-of weeks. This is fully legal and 100% genuine. I need you to signify
-your interest by replying to my email. Most importantly, I need you to
-keep whatever information between us confidential even if you decide
-not to go along with me. I will make more details available to you on
-receipt of your positive response.
-
-Regards,
-
-Godwin Wallace.
+Any comments on this from the various arch maintainers? Especially
+power, as Christophe seems happy with this but there are 3 different
+patches affecting power that need a maintainer ack.
