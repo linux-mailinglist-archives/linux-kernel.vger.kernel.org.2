@@ -2,114 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535854137CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEAC4137D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhIUQvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:51:04 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33818 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhIUQvD (ORCPT
+        id S229905AbhIUQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229918AbhIUQxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:51:03 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18LGnGQW048428;
-        Tue, 21 Sep 2021 11:49:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632242956;
-        bh=5sR0X35KqvIMpdZXLvw3Z+eHAOwkL/IG6K26vF3GlXw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=F7m/hMPgwlLMLknt3ACiVdNL7+B6suVjxLIUuAc1e/pqFWuZOtKqPSsTr9rrL7w3Y
-         MOuDR231/I88X2U84zvRwo7p+F4KVVJfOkO0ju4OzB7ZDuWhDc/wIPeuCeCxMY/SXk
-         dClMIZeiHubKKZPuRfv67JGEbDekZAGqHT94xxjM=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18LGnG4b088954
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 21 Sep 2021 11:49:16 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
- Sep 2021 11:49:16 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 21 Sep 2021 11:49:16 -0500
-Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18LGnFtV095643;
-        Tue, 21 Sep 2021 11:49:15 -0500
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Tony Lindgren <tony@atomide.com>
-CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com>
- <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
- <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
- <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
- <YUmOGFUFONR/ynfW@atomide.com> <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
- <7C582E1F-13F6-4432-AE99-FF9B7EE9B06D@goldelico.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <8314761b-b8b9-76f6-5541-08258d2aae56@ti.com>
-Date:   Tue, 21 Sep 2021 11:49:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 12:53:10 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D80C061767
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:51:41 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i4so184393lfv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnVNJWxdJp/O3yNbbRJ7mIEi/fwxJdU+PF6KUrC9rVE=;
+        b=1OTLWhIAZbw98TXwD1Gw/0gnV9IeA5sInhq86eCw9rH28Kbkiby2P26MPUY9DRxksS
+         zlbL/p3GesEAjDdOaksgIZQAA0WwGATzjmt/mXlTfbFHjmPmFeX1uwfsbRy2K3N7Wkxy
+         gV/xFk+5MOFhhvqS254pfPNL+/wxlTmx9pf/fen67K0zC2XO1kVbBHW+MhyK3WYVfL1X
+         UakBHRuKYs5bXOQlr2sHsxnNQBp7PUfH0guzUQoDW78HpcPcHgCOTRjZ4CJmrKJfTZws
+         LvK6Qo6dIdQcCf68YaB7EPCuGpsw5sauXQTAqmS5LIjCS2opMw7dg2rH/7VNrwXZZt5A
+         ywfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnVNJWxdJp/O3yNbbRJ7mIEi/fwxJdU+PF6KUrC9rVE=;
+        b=LlyWQwgK67N611Frj1+zg1as6AqJiYyvMTbMhnmeJUq39nmTKi4Nqt3zQ09GrsEjEl
+         RYFyPzd3kz1o7GDTOny0dLx6DCyeKIUD1k0Li5PRje6mA5Dvoz2YdXDUICMyrE/TT7Qq
+         qvgy0QPkQsHsMhH0Lp/i64ttHrPo4qIFD9zKey0A7dbWpUImFdEPnfWalDHBYX7e69/1
+         zm/QfNDU5u7+2dI7FQ4bQ/56crgS4ZSSRQzwKOdNOr898YaFUDXgWNkZ0a7WgYWTcl6f
+         xv/fK+bWJdV93tmcCqktVRXbYMHok8wohpnqXVzTVklH/G/mik4uiBkQ8ISBAbC2u+SQ
+         Jc3g==
+X-Gm-Message-State: AOAM5336T/pIEFVZWGvP438kb1TVvk6YCNkq7Mok0vcmrZ0gAFOpYqRC
+        05UxwzBt3w80IgPC7zWbZXoYnA==
+X-Google-Smtp-Source: ABdhPJwnhhw2d4dOMygsgFPi1GNVXIA1X4Ce9E8R+xk6bsFj+gkQwNLHwXyhfzOHXlWrbz/ZBuXqEg==
+X-Received: by 2002:a2e:5049:: with SMTP id v9mr23584503ljd.128.1632243099506;
+        Tue, 21 Sep 2021 09:51:39 -0700 (PDT)
+Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
+        by smtp.gmail.com with ESMTPSA id bt38sm1559955lfb.269.2021.09.21.09.51.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 09:51:39 -0700 (PDT)
+From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH] staging: most: dim2: force fcnt=3 on Renesas GEN3
+Date:   Tue, 21 Sep 2021 19:51:30 +0300
+Message-Id: <20210921165130.24178-1-nikita.yoush@cogentembedded.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <7C582E1F-13F6-4432-AE99-FF9B7EE9B06D@goldelico.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 11:40 AM, H. Nikolaus Schaller wrote:
-> Hi Matti, Tony,
-> 
->> Am 21.09.2021 um 18:07 schrieb Suman Anna <s-anna@ti.com>:
->>
->> Hi Matti, Tony,
->>
->> On 9/21/21 2:47 AM, Tony Lindgren wrote:
->>> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
->>>> Finally, adding the udelay(100); (as Tony suggested) at the end of the
->>>> omap_reset_deassert() did make the oops go away even when pruss_tm was
->>>> enabled. I don't know what would be a proper fix though.
->>
->> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
->> changes [1].
-> 
-> Same for me with a v5.15-rc1 based kernel.
-> 
->> May I ask what is your BBB board version? My board is rev.A5C.
-> 
-> I have an Rev B6 with EXP41 display attached. I think Matti reported a Rev C board?
-> 
->> I vaguely remember from all those years ago when I first enabled PRUSS on AM335x
->> that some earlier BBB versions had some issues around PRUSS.
-> 
-> What I am not using is PRUSS so it may (or may not) be disabled in CONFIG.
+Per Renesas datasheet, MLBC0 register's fcnt field in the embedded
+dim2 module must be never set to value different from 3.
 
-Hi Nikolaus,
+Enforce that, via an optional field in struct dim2_platform_data.
 
-Irrespective of whether you enable PRUSS configs or not (it's not enabled by
-default), the ti-sysc bus driver performs a enable and disable sequence during
-it's probe of the pruss_tm target-module. The module quirks are applied using
-the SYSC revision register value.
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+---
+ drivers/staging/most/dim2/dim2.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-The module will be disabled by the time you get to the console, and thereafter
-the enabling of PRUSS IP is done through pm_runtime API when the pruss module is
-probed.
+diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
+index 093ef9a2b291..d90284d79621 100644
+--- a/drivers/staging/most/dim2/dim2.c
++++ b/drivers/staging/most/dim2/dim2.c
+@@ -108,6 +108,7 @@ struct dim2_hdm {
+ struct dim2_platform_data {
+ 	int (*enable)(struct platform_device *pdev);
+ 	void (*disable)(struct platform_device *pdev);
++	u8 fcnt;
+ };
+ 
+ #define iface_to_hdm(iface) container_of(iface, struct dim2_hdm, most_iface)
+@@ -731,7 +732,7 @@ static int dim2_probe(struct platform_device *pdev)
+ 	struct dim2_hdm *dev;
+ 	struct resource *res;
+ 	int ret, i;
+-	u8 hal_ret;
++	u8 dev_fcnt, hal_ret;
+ 	int irq;
+ 
+ 	enum { MLB_INT_IDX, AHB0_INT_IDX };
+@@ -770,8 +771,10 @@ static int dim2_probe(struct platform_device *pdev)
+ 
+ 	dev->disable_platform = pdata ? pdata->disable : NULL;
+ 
+-	dev_info(&pdev->dev, "sync: num of frames per sub-buffer: %u\n", fcnt);
+-	hal_ret = dim_startup(dev->io_base, dev->clk_speed, fcnt);
++	dev_fcnt = pdata && pdata->fcnt ? pdata->fcnt : fcnt;
++	dev_info(&pdev->dev, "sync: num of frames per sub-buffer: %u\n",
++		 dev_fcnt);
++	hal_ret = dim_startup(dev->io_base, dev->clk_speed, dev_fcnt);
+ 	if (hal_ret != DIM_NO_ERROR) {
+ 		dev_err(&pdev->dev, "dim_startup failed: %d\n", hal_ret);
+ 		ret = -ENODEV;
+@@ -1047,9 +1050,19 @@ static void rcar_m3_disable(struct platform_device *pdev)
+ enum dim2_platforms { FSL_MX6, RCAR_H2, RCAR_M3 };
+ 
+ static struct dim2_platform_data plat_data[] = {
+-	[FSL_MX6] = { .enable = fsl_mx6_enable, .disable = fsl_mx6_disable },
+-	[RCAR_H2] = { .enable = rcar_h2_enable, .disable = rcar_h2_disable },
+-	[RCAR_M3] = { .enable = rcar_m3_enable, .disable = rcar_m3_disable },
++	[FSL_MX6] = {
++		.enable = fsl_mx6_enable,
++		.disable = fsl_mx6_disable,
++	},
++	[RCAR_H2] = {
++		.enable = rcar_h2_enable,
++		.disable = rcar_h2_disable,
++	},
++	[RCAR_M3] = {
++		.enable = rcar_m3_enable,
++		.disable = rcar_m3_disable,
++		.fcnt = 3,
++	},
+ };
+ 
+ static const struct of_device_id dim2_of_match[] = {
+-- 
+2.20.1
 
-regards
-Suman
