@@ -2,179 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3199F413A0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210F9413A13
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhIUS0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:26:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41112 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232890AbhIUS0s (ORCPT
+        id S233042AbhIUS2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232951AbhIUS2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:26:48 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LHClbs018413;
-        Tue, 21 Sep 2021 14:25:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=yUCduo/+FNeUPxDRhu1f5vXQoveIvMutiZCSsB7+WSE=;
- b=bMaBaV8ffDypiiCsgH0z473+w7HnQHrCmYut2IjbPv6C1jPWHgL49mE19ENLQwJvgnb+
- cZXdj2V/wH+xB1Ewlvo61qj1MDC9wvpjewceaQb9p/hhCYjSuWLb3p+u90+d1MaE4hgN
- z2ev261u+8NnaZH6C8xtx0r8VxXOJDMfi8KsUhAUM2nBPU/YHGnN5LiDQs43T+gETlTn
- xQPdrOT15fkWSrzy82sO4rSeQGVPEnViP/zT35nNvqnB6SBCVNBF1zf0JSj4i235dmk4
- vRwH4ILAzu0N8AHxnNksWlosnby3y5K4gV8FhDGcr2uJQyR9D3YDTbgdfaQsWRIsrstS Gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b7kkg9fjj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 14:25:18 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18LIKGCC002051;
-        Tue, 21 Sep 2021 14:25:17 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3b7kkg9fhs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 14:25:17 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18LIHHa4029307;
-        Tue, 21 Sep 2021 18:25:14 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 3b57r9fe0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Sep 2021 18:25:14 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18LIPA7a2753116
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Sep 2021 18:25:11 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B865B52057;
-        Tue, 21 Sep 2021 18:25:10 +0000 (GMT)
-Received: from li-748c07cc-28e5-11b2-a85c-e3822d7eceb3.ibm.com (unknown [9.171.53.36])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 19E8152077;
-        Tue, 21 Sep 2021 18:25:10 +0000 (GMT)
-Message-ID: <f4dc7040554fd7e9c7067aab2213b3639cfc6987.camel@linux.ibm.com>
-Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
-From:   Vineeth Vijayan <vneethv@linux.ibm.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        linux-s390@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bfu@redhat.com,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-Date:   Tue, 21 Sep 2021 20:25:09 +0200
-In-Reply-To: <20210921185222.246b15bb.pasic@linux.ibm.com>
-References: <20210915215742.1793314-1-pasic@linux.ibm.com>
-         <87pmt8hp5o.fsf@redhat.com> <20210916151835.4ab512b2.pasic@linux.ibm.com>
-         <87mtobh9xn.fsf@redhat.com> <20210920003935.1369f9fe.pasic@linux.ibm.com>
-         <88b514a4416cf72cda53a31ad2e15c13586350e4.camel@linux.ibm.com>
-         <878rzrh86c.fsf@redhat.com> <20210921052548.4eea231f.pasic@linux.ibm.com>
-         <05b1ac0e4aa4a1c7df1a8994c898630e9b2e384d.camel@linux.ibm.com>
-         <20210921185222.246b15bb.pasic@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0Ci8AMH7zOq2wX571aPN8cNde7Yq4fRB
-X-Proofpoint-ORIG-GUID: 0iig0ErpBc7Z_dJZR9LRPPvSFK2wT6FU
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 21 Sep 2021 14:28:20 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602CBC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:26:51 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id w1so23854843ilv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aIAwjoyqZOQgLyB/HfPgsMnh+X9W5oz1oq4yBUHKI9E=;
+        b=jzSWPHHWdg6/T2XFMBtYdmEyJq3e/SuFWIfwNR6dmxqZC9edwDT+EqSkSGgOqMN2AL
+         nt+rkZwUeXRAVd+Fr6HYBfuC+/kO7LAq9vtcWmkEuir9IHbq6e511FqFZGHIkmdb/niH
+         q5yt5OJ4S/Aq0Hk28XceO8a3+E0nwJfjweegjZF9n8Y28aYOTuOaWGsfYCLm44tfxLHC
+         LQTmJ0MctJfkaDEk2kik5xAYVZICUHfThX4/4+ngigp/Z9eUYRYXNkoNe/GBJkEZBMgr
+         Q3qyth8UB5xeEtPuVxtOsLkb3VRqWyugedJU40EZJ2ymHo2GdM6FJ9BpOQyvlH21Fh9Z
+         5Mag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aIAwjoyqZOQgLyB/HfPgsMnh+X9W5oz1oq4yBUHKI9E=;
+        b=VMXUTncRhQAVsP0iiTbleNgGA336goZciS8jvddk0njlaoSLOcvZ84SPfX70v33/IL
+         JtDg0WxKgGYydTP56vbRL/shNNu9CgiHY0L9rzdlSgYG0mcGy3HfmuGxpev3ySVqoiSk
+         4E78Qxcn3AftaOHK46rDgH1K7KWMpukVm/UxFAwtzT0cIHzN3wTJDa2RAp5OYUFPZ3IQ
+         I65ApLoK7yBV7pRJQiP3w5QHqI1FDN/KABfwMR03aD1UGxhDK8q79QqGmHOinsTGr6qJ
+         AHMPh9eE0543m2xN24nyaIR/b063tGWp+3YzPK6zoJzBhuj1RLqts77rgy7jOSPLMJIv
+         MepQ==
+X-Gm-Message-State: AOAM532gvIcAHEKnSE7DWfI12BOdar5dOXPvQI3I9fohuW4djNi5hZHJ
+        0yFH2oSZULSfF+meGl5ECj0JMcwPzvh0f9edlyz++Q==
+X-Google-Smtp-Source: ABdhPJyyGhiWSc0MI8yMRYcV7DheCrh8Ap/YzlNY5R6XZxuT4TFBSl3Eont0d5Knysn/4110iYh0yOL/nwiPFiEYTcQ=
+X-Received: by 2002:a92:db0b:: with SMTP id b11mr22413467iln.275.1632248810601;
+ Tue, 21 Sep 2021 11:26:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-21_05,2021-09-20_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
- phishscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109210107
+References: <20210921163323.944352-1-axelrasmussen@google.com> <YUoaDr2wsW8wtk5Z@t490s>
+In-Reply-To: <YUoaDr2wsW8wtk5Z@t490s>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Tue, 21 Sep 2021 11:26:14 -0700
+Message-ID: <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-21 at 18:52 +0200, Halil Pasic wrote:
-> > > > lock already,   
-> > > 
-> > > I believe we have a misunderstanding here. I believe that Vineeth
-> > > is
-> > > trying to tell us, that online_store_handle_offline() and
-> > > online_store_handle_offline() are called under the a device lock
-> > > of
-> > > the ccw device. Right, Vineeth?  
-> > Yes. I wanted to bring-out both the scenario.The
-> > set_offline/_online()
-> > calls and the unconditional-remove call.
-> 
-> I don't understand the paragraph above. I can't map the terms
-> set_offline/_online() and unconditional-remove call to chunks of
-> code.
-> :( 
-online_store() function can be used to set_online/set_offline manually
-from the sysfs entry.
-And an unconditional-remove call, for CIO, starts with a CRW which
-indicates there is a subchannel_event which needs to be taken care.
-This sch_event() (in device.c) then try to find the reason for this CRW
-and act accordingly. This would lead to device_del and end up calling
-the remove function of the driver.
+On Tue, Sep 21, 2021 at 10:44 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> Hi, Axel,
+>
+> On Tue, Sep 21, 2021 at 09:33:21AM -0700, Axel Rasmussen wrote:
+> > diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+> > index 10ab56c2484a..2366caf90435 100644
+> > --- a/tools/testing/selftests/vm/userfaultfd.c
+> > +++ b/tools/testing/selftests/vm/userfaultfd.c
+> > @@ -79,10 +79,6 @@ static int test_type;
+> >  #define ALARM_INTERVAL_SECS 10
+> >  static volatile bool test_uffdio_copy_eexist = true;
+> >  static volatile bool test_uffdio_zeropage_eexist = true;
+> > -/* Whether to test uffd write-protection */
+> > -static bool test_uffdio_wp = false;
+> > -/* Whether to test uffd minor faults */
+> > -static bool test_uffdio_minor = false;
+>
+> IMHO it's not a fault to have these variables; they're still the fastest way to
+> do branching.  It's just that in some cases we should set them to "false"
+> rather than "true", am I right?
+>
+> How about we just set them properly in set_test_type?  Say, we can fetch the
+> feature bits in set_test_type rather than assuming it's only related to the
+> type of memory.
 
-> > For the set_online The virtio_ccw_online() also invoked with
-> > ccwlock
-> > held. (ref: ccw_device_set_online)
-> 
-> I don't think virtio_ccw_online() is invoked with the ccwlock held. I
-> think we call virtio_ccw_online() in this line:
-> https://elixir.bootlin.com/linux/v5.15-rc2/source/drivers/s390/cio/device.c#L394
-> and we have released the cdev->ccwlock literally 2 lines above.
-My bad. I overlooked it! 
-> 
-> 
-> > > Conny, I believe, by online/offline callbacks, you mean
-> > > virtio_ccw_online() and virtio_ccw_offline(), right?
-> > > 
-> > > But the thing is that virtio_ccw_online() may get called (and is
-> > > typically called, AFAICT) with no locks held via:
-> > > virtio_ccw_probe() --> async_schedule(virtio_ccw_auto_online,
-> > > cdev)
-> > > -*-> virtio_ccw_auto_online(cdev) --> ccw_device_set_online(cdev)
-> > > -->
-> > > virtio_ccw_online()
-> > > 
-> > > Furthermore after a closer look, I believe because we don't take
-> > > a reference to the cdev in probe, we may get
-> > > virtio_ccw_auto_online()
-> > > called with an invalid pointer (the pointer is guaranteed to be
-> > > valid
-> > > in probe, but because of async we have no guarantee that it will
-> > > be
-> > > called in the context of probe).
-> > > 
-> > > Shouldn't we take a reference to the cdev in probe?  
-> > We just had a quick look at the virtio_ccw_probe() function.
-> > Did you mean to have a get_device() during the probe() and
-> > put_device()
-> > just after the virtio_ccw_auto_online() ?
-> 
-> Yes, that would ensure that cdev pointer is still valid when
-> virtio_ccw_auto_online() is executed, and that things are cleaned up
-> properly, I guess. But I'm not 100% sure about all the interactions.
-> AFAIR ccw_device_set_online(cdev) would bail out if !drv. But then
-> we have the case where we already assigned it to a new driver (e.g.
-> vfio for dasd).
-> 
-> BTW I believe if we have a problem here, the dasd driver has the same
-> problem as well. The code looks very, very similar.
-You are right about that. I am trying to recreate that issue with DASD
-now. And working on the patch as well.
-> 
-> And shouldn't this auto-online be common CIO functionality? What is
-> the
-> reason the char devices don't seem to have it?
-I am not sure about that. I dont understand why it should be a CIO
-functionality. 
-> 
-> Regards,
-> Halil
+We could do that, but it would require opening a userfaultfd, issuing
+a UFFDIO_API ioctl, and getting the feature bits in set_test_type. And
+then I guess just closing the UFFD again, as we aren't yet setting up
+for any particular test. To me, it seemed "messier" than this
+approach.
 
+Another thing to consider is, for the next patch we don't just want to
+know "does this kernel support $FEATURE in general?" but also "is
+$FEATURE supported for this particular memory region I've
+registered?", and we can't have a single global answer to that. It
+seemed a bit cleaner to me to write the code as if I was dealing with
+that case, and then re-use the infrastructure I'd built for patch 2/3.
+
+Basically, I didn't initially have a goal of getting rid of these
+variables, but it ended up being the cleanest way (IMHO).
+
+Just trying to explain the thinking. :) In the end, I think it's a
+stylistic choice and don't feel super strongly about it, either way
+could work. So, I can change it if you or others do feel strongly.
+
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
