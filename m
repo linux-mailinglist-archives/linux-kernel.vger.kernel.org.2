@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7861041359C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB6641359F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbhIUOvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbhIUOvi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:51:38 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CE0C061574;
-        Tue, 21 Sep 2021 07:50:09 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 16:50:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1632235807;
-        bh=HVjDwY3TCzwDBv32KPIGLsUQZWFrfWErmGlbPLXnjeo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lI661zFUSBSuibdyMJanQmYB+xU6QJzPb2CWZUzlHjMwPUdQxw7FRTWp32l/sK9sD
-         sLAyANhiH1BNw7iKrs15lH3mn+f5AmHL3FGc07a3i461k9/lhD0jHTTMzebK2Hje36
-         AdCR+HCtoeeEMRFKYSLKotEbHGtp+Zq7aTAaZeC0=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] backlight: propagate errors from get_brightness()
-Message-ID: <b25975d3-f417-4cba-92d1-35c93d37e1e6@t-8ch.de>
-References: <20210907124751.6404-1-linux@weissschuh.net>
+        id S233758AbhIUOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:53:06 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54178 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233689AbhIUOxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 10:53:03 -0400
+Received: from zn.tnic (p200300ec2f0d060045983051645feb8a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:600:4598:3051:645f:eb8a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F0F071EC0298;
+        Tue, 21 Sep 2021 16:51:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632235890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0tySSr94j0qUYtXGolsce93msuCdyyz2sqwhXQ9+Bes=;
+        b=EJQOmTG5tVchKBo5DTrA4Ye/B7/qnkYFKoZYsbAmqoVHquC1gOD6Ue85L5Nk3mPnbCuSt+
+        XVWyfwqisvYxlyGp7A6hlETsfCrCo6HVdwIeRZyKKlb5XqbO9Bv2Gp9Jpgo71EmXD8loCC
+        MhyUvHntAC/Z2r8QmsoXEED+q8Q8DSU=
+Date:   Tue, 21 Sep 2021 16:51:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ashish Kalra <ashish.kalra@amd.com>,
+        Steve Rutherford <srutherford@google.com>, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brijesh.singh@amd.com, dovmurik@linux.ibm.com, tobin@linux.ibm.com,
+        jejb@linux.ibm.com, dgilbert@redhat.com
+Subject: Re: [PATCH v6 1/5] x86/kvm: Add AMD SEV specific Hypercall3
+Message-ID: <YUnxa2gy4DzEI2uY@zn.tnic>
+References: <cover.1629726117.git.ashish.kalra@amd.com>
+ <6fd25c749205dd0b1eb492c60d41b124760cc6ae.1629726117.git.ashish.kalra@amd.com>
+ <CABayD+fnZ+Ho4qoUjB6YfWW+tFGUuftpsVBF3d=-kcU0-CEu0g@mail.gmail.com>
+ <YUixqL+SRVaVNF07@google.com>
+ <20210921095838.GA17357@ashkalra_ubuntu_server>
+ <YUnjEU+1icuihmbR@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210907124751.6404-1-linux@weissschuh.net>
+In-Reply-To: <YUnjEU+1icuihmbR@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-07T14:47+0200, Thomas Weißschuh wrote:
-> backlight.h documents "struct backlight_ops->get_brightness()" to return
-> a negative errno on failure.
-> So far these errors have not been handled in the backlight core.
-> This leads to negative values being exposed through sysfs although only
-> positive values are documented to be reported.
+On Tue, Sep 21, 2021 at 01:50:09PM +0000, Sean Christopherson wrote:
+> apply_alternatives() is a generic helper that can work on any struct alt_instr
+> array, e.g. KVM_HYPERCALL can put its alternative into a different section that's
+> patched as soon as the VMM is identified.
 
-> [..]
+Where exactly in the boot process you wanna move it?
 
-Friendly ping.
+As Ashish says, you need the boot_cpu_data bits properly set before it
+runs.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
