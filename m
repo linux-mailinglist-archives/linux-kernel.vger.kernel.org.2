@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49354413AAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C0F413AB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbhIUT1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:27:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42794 "EHLO mail.kernel.org"
+        id S234497AbhIUT34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:29:56 -0400
+Received: from linderud.dev ([163.172.10.146]:36962 "EHLO linderud.pw"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234468AbhIUT1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:27:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 398CE60F4C;
-        Tue, 21 Sep 2021 19:26:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632252361;
-        bh=gGIhMAmCiHVg6l+Obun1FAFw2n73LYtkgb74XwI5GXo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iS4FFbo85tBSxnEJaAxSWAGOzpOY0OQ6V97nR3oXqpfS54h1kcqXpr9zzxnsSlv/X
-         w8Nx+nwQo8cEPVccCXqmdo7MNb+fDxCRBpVZ99a0PG9hUKE2+uvW+0vxu/fXlMFM4A
-         bIv3PXyl0wpe3Q0np0ZhFjvmYLcXsO1mfjkU0nAH0rqGyyqegCGctJf5rP14hi3QwC
-         Ij4ba/O4atXloVfruSoMV8EZ2NcHhLOkCpz/Wb8TNgXdS9XruzglKvm8GxVsgP3TI9
-         xXdTWx9+Om+mNfrZ4eloRvFHZYUk58ZRW7ic9J1kTjr7oIBRX10SD2EuIZoEeI1OEj
-         VuvWhbXu+APeA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E5E25410A1; Tue, 21 Sep 2021 16:25:58 -0300 (-03)
-Date:   Tue, 21 Sep 2021 16:25:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf daemon: Avoid msan warnings on send_cmd
-Message-ID: <YUoxxkBQvMHNqHXo@kernel.org>
-References: <20210617055554.1917997-1-irogers@google.com>
- <CAP-5=fUzNak==X63zWDkMTsU8UYBACOtevED3ZR4Thruc0cWWg@mail.gmail.com>
+        id S231304AbhIUT3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:29:55 -0400
+Received: from linderud.pw (localhost [127.0.0.1])
+        by linderud.pw (Postfix) with ESMTP id 5A9B7C032A;
+        Tue, 21 Sep 2021 21:27:53 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.5-pre1 (2020-06-20) on velox
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.5-pre1
+Received: from localhost (host-37-191-241-102.lynet.no [37.191.241.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: morten)
+        by linderud.pw (Postfix) with ESMTPSA id 1206BC001C;
+        Tue, 21 Sep 2021 21:27:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linderud.pw;
+        s=linderud; t=1632252473;
+        bh=0GqyYMQkXphc8kPn1Om1uqRbo2dbuCAEQIAmDaGZnPc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=DvbI4uZ2GGwJM7jz99iiU/H9cQ7deSnqx7286T7FmIUK+8MtyVjM23cFUFPQfJIhC
+         VLuUX74csW/y7nnK/9thz70X5jJYYQDjVx+ewsTi50i7bUCcQaWWl/d+NUMqreGcA9
+         Ex5jhtJoPzVBCap1zEXVcjFyCYKPuYii5mBUe12Ftsrax1V1gsrjMYxLoS1LGwI4fb
+         DwQ9vqYHFS+0hvooYH27qXWVdpygiKlDFd9OW4cH/bUQ5IsYOLcmOj4a3Gatl4TMDf
+         BUz8FL7WdrmWC+dQy4AGnClrgt+vs4Zb9IdhDB0quKRNHgUMWgKM8oE3JxgHToKt2z
+         +BNXsJ9CS5lZzfuOqTBJFtd/n6zsUNtM3KaSHJn2kdObH3d1UT60w5jF+l75GrU/Lz
+         MXEnJUDY3obRCu6KvFN98tyb2Kz4ESK7gOGOYDSud/B40ODadNyewsRSO9QUc0oEAr
+         NSrZavWfHRSmFqBJTNoyoWV9LQtYAcYC5ZKD+8vCCje4Z+i8lUsp0LC4eeLeEZZNrJ
+         ydTnV07iGnzNarryzXc6ewkrzMyfWNzmIONSfE3revI1nBG97WGg/hrG4cOcBMIP4v
+         ZZB4TigNxKYYsNJ4n9f4F8EOjJDgU+yMb2/1ekmtg45yYOr/c4RblPfebeoIC+FOXa
+         dZDsAzLNX2y3zbNKrUZzV1KM=
+Date:   Tue, 21 Sep 2021 21:27:51 +0200
+From:   Morten Linderud <morten@linderud.pw>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
+Subject: Re: [PATCH] tpm/eventlog: Don't abort tpm_read_log on faulty ACPI
+ config
+Message-ID: <20210921192751.3ukruxkzukzfw5xl@anathema>
+References: <20210920203447.4124005-1-morten@linderud.pw>
+ <896a0773cac953ae2f35ba08af65a598aa71942d.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fUzNak==X63zWDkMTsU8UYBACOtevED3ZR4Thruc0cWWg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <896a0773cac953ae2f35ba08af65a598aa71942d.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 21, 2021 at 10:45:45AM -0700, Ian Rogers escreveu:
-> On Wed, Jun 16, 2021 at 10:55 PM Ian Rogers <irogers@google.com> wrote:
+On Tue, Sep 21, 2021 at 09:58:11PM +0300, Jarkko Sakkinen wrote:
+> On Mon, 2021-09-20 at 22:34 +0200, Morten Linderud wrote:
+> > Some vendors report faulty values in the acpi TPM2 table. This causes
 > 
-> > As a full union is always sent, ensure all bytes of the union are
-> > initialized with memset to avoid msan warnings of use of uninitialized
-> > memory.
-> >
-> > An example warning from the daemon test:
-> >
-> > Uninitialized bytes in __interceptor_write at offset 71 inside
-> > [0x7ffd98da6280, 72)
-> > ==11602==WARNING: MemorySanitizer: use-of-uninitialized-value
-> >     #0 0x5597edccdbe4 in ion tools/lib/perf/lib.c:18:6
-> >     #1 0x5597edccdbe4 in writen tools/lib/perf/lib.c:47:9
-> >     #2 0x5597ed221d30 in send_cmd tools/perf/builtin-daemon.c:1376:22
-> >     #3 0x5597ed21b48c in cmd_daemon tools/perf/builtin-daemon.c
-> >     #4 0x5597ed1d6b67 in run_builtin tools/perf/perf.c:313:11
-> >     #5 0x5597ed1d6036 in handle_internal_command tools/perf/perf.c:365:8
-> >     #6 0x5597ed1d6036 in run_argv tools/perf/perf.c:409:2
-> >     #7 0x5597ed1d6036 in main tools/perf/perf.c:539:3
-> >
-> > SUMMARY: MemorySanitizer: use-of-uninitialized-value
-> > tools/lib/perf/lib.c:18:6 in ion
-> > Exiting
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> >
+> Nit: ACPI (not acpi)
 > 
-> This one appears to still be outstanding. Ping.
+> > the function to abort with EIO and essentially short circuits the
+> > tpm_read_log function as we never even attempt to read the EFI
+> > configuration table for a log.
+> 
+> Nit: tpm_read_log()
+> 
+> > This changes the condition to only look for a positive return value,
+> > else hands over the eventlog discovery to the EFI configuration table
+> 
+> "hands over" -> "fallback"
+> 
+> > which should hopefully work better.
+> 
+> Please write in imperative form, e.g. "Change...", or perhaps in this
+> case "Look...". 
+> 
+> Hopes are somewhat irrelevant, in the context of a commit message.
+> 
+> > It's unclear to me if there is a better solution to this then just
+> > failing. However, I do not see any clear reason why we can't properly
+> > fallback to the EFI configuration table.
+> 
+> Neither hopes nor doubts help us :-)
+> 
+> Because the commit message did not discuss any of the code changes
+> that were done it is very hard to say much anything of this yet.
 
-Thanks, applied.
+Thanks for the review! First kernel patch so all feedback is welcome :)
 
-- Arnaldo
+The code change is essentially just relaxing the return value for the ACPI log
+lookup. I'm not quite sure what is missing from the commit message in that
+regard? Is the second paragraph insufficient?
 
+> There's also one corner case that was not discussed in the commit
+> message.
+> 
+> The historical reason for not using TPM2 file is that old TPM2's
+> did not have that feature. You have to ensure that legacy hardware
+> does not break.
+
+This should only relax the cases where an error which is not ENODEV is returned.
+Legacy hardware that return ENODEV because the table doesn't exist, or is
+missing the log start and length, should be unaffected by this change.
+
+> /Jarkko
+
+Cheers!
+
+-- 
+Morten Linderud
+PGP: 9C02FF419FECBE16
