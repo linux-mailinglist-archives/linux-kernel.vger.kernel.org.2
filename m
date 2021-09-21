@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626FA4129CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 02:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4ED4129F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 02:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235844AbhIUAIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 20:08:47 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9186 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233475AbhIUAGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 20:06:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10113"; a="220064862"
-X-IronPort-AV: E=Sophos;i="5.85,309,1624345200"; 
-   d="scan'208";a="220064862"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 17:05:19 -0700
-X-IronPort-AV: E=Sophos;i="5.85,309,1624345200"; 
-   d="scan'208";a="473985725"
-Received: from nkhakpas-mobl.amr.corp.intel.com ([10.212.134.160])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2021 17:05:19 -0700
-Date:   Mon, 20 Sep 2021 17:05:19 -0700 (PDT)
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     Tim Gardner <tim.gardner@canonical.com>
-cc:     mptcp@lists.linux.dev,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        id S233555AbhIUAbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 20:31:51 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.130]:44930 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230376AbhIUA3u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 20 Sep 2021 20:29:50 -0400
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id 3A86611F6D
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 19:05:51 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id STIFmLGJBjSwzSTIFmoR9U; Mon, 20 Sep 2021 19:05:51 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dIZWTLeUsAcg6awfj+mJ/VeStP2PiXGKlLzxmy7BCEg=; b=qpP925gQr2CunCsqGZ8nBoNddT
+        hr+cP5UbxRC/JdtHMH18vJFzQPaDHnc1j6KxxAZx9VdRj/JJSUjAt+qkohtGh5+zvKZXqkYvERaB+
+        sTI/RQMyUXv2x2Lc5X6WdXMggxnU7QXGzBdXHuhztlY2lkYiMr3pN0oFJ3HgruRuSkxpjreftedGn
+        yx93FeU7vWW6WhBGiaHGPCsj1m/ehyiyVZIaCJItH8dPpvc6cQjhQEquiXCnxJunJ1deZ4/I+/UH2
+        gXwrqPuWtIUz3JKZJHkMievNK4+NcezwXqsiLZmYj/GfA2KrJhzCY+T1rDUpOwRlukQ7z3HaL/t4S
+        KdGsoAqg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33874 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1mSTIE-000eHV-PB; Mon, 20 Sep 2021 19:05:50 -0500
+Subject: Re: [PATCH] afs: Prefer struct_size over open coded arithmetic
+To:     Len Baker <len.baker@gmx.com>, David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-afs@lists.infradead.org, linux-hardening@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] mptcp: Avoid NULL dereference in
- mptcp_getsockopt_subflow_addrs()
-In-Reply-To: <20210920154232.15494-1-tim.gardner@canonical.com>
-Message-ID: <149982aa-720-35be-4866-39259b92884d@linux.intel.com>
-References: <20210920154232.15494-1-tim.gardner@canonical.com>
+References: <20210919094432.30510-1-len.baker@gmx.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <8664159c-b986-64b0-13d1-b2739deb159d@embeddedor.com>
+Date:   Mon, 20 Sep 2021 19:09:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
+In-Reply-To: <20210919094432.30510-1-len.baker@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1mSTIE-000eHV-PB
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.9]) [187.162.31.110]:33874
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 18
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021, Tim Gardner wrote:
-
-> Coverity complains of a possible NULL dereference in
-> mptcp_getsockopt_subflow_addrs():
->
-> 861        } else if (sk->sk_family == AF_INET6) {
->    	3. returned_null: inet6_sk returns NULL. [show details]
->    	4. var_assigned: Assigning: np = NULL return value from inet6_sk.
-> 862                const struct ipv6_pinfo *np = inet6_sk(sk);
->
-> Fix this by checking for NULL.
->
-> Cc: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> Cc: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: mptcp@lists.linux.dev
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
->
-> [ I'm not at all sure this is the right thing to do since the final result is to
-> return garbage to user space in mptcp_getsockopt_subflow_addrs(). Is this one
-> of those cases where inet6_sk() can't fail ?]
-
-Hi Tim -
-
-Thanks for noticing this and proposing a fix.
-
-As you commented, this isn't the right change to merge since 
-mptcp_getsockopt_subflow_addrs() would copy garbage.
-
-This block of code already checks that CONFIG_IPV6 is enabled, so the 
-question is whether sk_fullsock() would return false because the subflow 
-is in TCP_TIME_WAIT or TCP_NEW_SYN_RECV. The caller is iterating over 
-sockets in the MPTCP socket's conn_list, which does not contain 
-request_socks (so there are no sockets in the TCP_NEW_SYN_RECV state).
-
-TCP subflow sockets are normally removed from the conn_list before they 
-are closed by their parent MPTCP socket, but I need to double-check for 
-corner cases. I created a github issue to track this: 
-https://github.com/multipath-tcp/mptcp_net-next/issues/231
 
 
-Thanks,
+On 9/19/21 04:44, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+> 
+> So, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + size * count" in the kzalloc() function.
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
 
-Mat
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
+Thanks
+--
+Gustavo
 
 > ---
-> net/mptcp/sockopt.c | 3 +++
-> 1 file changed, 3 insertions(+)
->
-> diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
-> index 8137cc3a4296..c89f2bedce79 100644
-> --- a/net/mptcp/sockopt.c
-> +++ b/net/mptcp/sockopt.c
-> @@ -861,6 +861,9 @@ static void mptcp_get_sub_addrs(const struct sock *sk, struct mptcp_subflow_addr
-> 	} else if (sk->sk_family == AF_INET6) {
-> 		const struct ipv6_pinfo *np = inet6_sk(sk);
->
-> +		if (!np)
-> +			return;
-> +
-> 		a->sin6_local.sin6_family = AF_INET6;
-> 		a->sin6_local.sin6_port = inet->inet_sport;
->
-> -- 
-> 2.33.0
->
->
-
---
-Mat Martineau
-Intel
+>  fs/afs/security.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/afs/security.c b/fs/afs/security.c
+> index 3c7a8fc4f93f..7c6a63a30394 100644
+> --- a/fs/afs/security.c
+> +++ b/fs/afs/security.c
+> @@ -219,8 +219,7 @@ void afs_cache_permit(struct afs_vnode *vnode, struct key *key,
+>  	 * yet.
+>  	 */
+>  	size++;
+> -	new = kzalloc(sizeof(struct afs_permits) +
+> -		      sizeof(struct afs_permit) * size, GFP_NOFS);
+> +	new = kzalloc(struct_size(new, permits, size), GFP_NOFS);
+>  	if (!new)
+>  		goto out_put;
+> 
+> --
+> 2.25.1
+> 
