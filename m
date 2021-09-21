@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA3641337B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E495413380
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhIUMnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S232784AbhIUMnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:43:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232704AbhIUMnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:43:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4112F61100;
-        Tue, 21 Sep 2021 12:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632228104;
-        bh=4Rvx3u9HCP441RTjiHrvCRRwauhtSwEWIhzMrD3GJIk=;
+        id S232736AbhIUMnu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:43:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0426760EE7;
+        Tue, 21 Sep 2021 12:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632228142;
+        bh=EMxygGM6U7YA+7YzpB5RU9rW+gLxjvTNxnpYC1hUmq8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JlKXwDIBNap74zCnEhXMgxiublDocy3uzTUFXF4wLpkIwOPwYBPfMaNnn9Y1ZZQ3q
-         J0+wP0eLaD0JCaF/D11G8ZLrORPgtDWoh3fURT1q3UQJfA6udsu9wBHOid32rFbSxZ
-         HcWM44BghlLd+aIM6vvTA/pu4P+I5TYegDDvmI3dOmrsS1RxCc0u9YGoJ1Y1zmST5t
-         iOnA65shHi6DbkZI2p91BRWr/Qs+l0Ry+uXLpzKfmer8aSjVegtXyJFNW7WF+xu5F8
-         4qhJJo2gFWn8v5M7BrtT+IqOVLQuO+5Btr8vmBvAWiZnYTD7lokhhHo726gYslrqqT
-         1MDNBpxoR6aFw==
-Date:   Tue, 21 Sep 2021 13:41:39 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+e6bda7e03e329ed0b1db@syzkaller.appspotmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] upstream test error: WARNING in __do_kernel_fault
-Message-ID: <20210921124138.GA13537@willie-the-truck>
-References: <000000000000f8d56e05cb50a541@google.com>
- <CACT4Y+YLEUuuNQ+2TOEevwNRvPHp-wT4W+dXAdKds_kf+upQbQ@mail.gmail.com>
+        b=Mscxw2WvV+lrjSIs94oLU9esgOvV4HtGmr6LkBrrMwIJ41TTn5m1PzbSkjANmX7ge
+         DNseszACbOhfqjlg5wifYqa8nbDe5XMQAKzMvcFZjIcWVxZNSvbcSj80crLj/8UKtz
+         +0KBceRuM2Ibw8J9ksedDcC+kBSeqTycLMU1Ffek=
+Date:   Tue, 21 Sep 2021 14:42:14 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 000/175] 4.9.283-rc1 review
+Message-ID: <YUnTJg58SRVGMu5u@kroah.com>
+References: <20210920163918.068823680@linuxfoundation.org>
+ <20210921121010.GA1043608@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+YLEUuuNQ+2TOEevwNRvPHp-wT4W+dXAdKds_kf+upQbQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210921121010.GA1043608@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 10:20:40AM +0200, Dmitry Vyukov wrote:
-> On Mon, 6 Sept 2021 at 11:55, syzbot
-> <syzbot+e6bda7e03e329ed0b1db@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    f1583cb1be35 Merge tag 'linux-kselftest-next-5.15-rc1' of ..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=17756315300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=5fe535c85e8d7384
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e6bda7e03e329ed0b1db
-> > compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> > userspace arch: arm64
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+e6bda7e03e329ed0b1db@syzkaller.appspotmail.com
+On Tue, Sep 21, 2021 at 05:10:10AM -0700, Guenter Roeck wrote:
+> On Mon, Sep 20, 2021 at 06:40:49PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.9.283 release.
+> > There are 175 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> +Will, you added this WARNING in 42f91093b04333.
-> This now crashes periodically on syzbot.
+> drivers/net/ethernet/ibm/ibmvnic.c: In function ‘handle_login_rsp’:
+> drivers/net/ethernet/ibm/ibmvnic.c:2530:15: error: ‘struct ibmvnic_adapter’ has no member named ‘failover_pending’; did you mean ‘failover’?
+>   if (adapter->failover_pending) {
+>                ^~~~~~~~~~~~~~~~
+>                failover
+> drivers/net/ethernet/ibm/ibmvnic.c:2531:12: error: ‘struct ibmvnic_adapter’ has no member named ‘init_done_rc’
+> 
+> drivers/net/ethernet/ibm/ibmvnic.c:2532:14: error: ‘netdev’ undeclared (first use in this function); did you mean ‘net_eq’?
+>    netdev_dbg(netdev, "Failover pending, ignoring login response\n");
+>               ^
+> include/linux/dynamic_debug.h:142:37: note: in definition of macro ‘dynamic_netdev_dbg’
 
-I'm still inclined to chalk this one down to a QEMU bug. We're not seeing it
-anywhere else, and last time you looked at it I seem to remember that it
-depended upon QEMU configuration [1].
+Thanks for this, offending patch is now dropped from the 4.9 and 4.14
+queues.  I'll push out a new -rc2 with this removed now.
 
-Will
+thanks,
 
-[1] https://lore.kernel.org/all/CAAeHK+wDz8aSLyjq1b=q3+HG9aJXxwYR6+gN_fTttMN5osM5gg@mail.gmail.com/
+greg k-h
