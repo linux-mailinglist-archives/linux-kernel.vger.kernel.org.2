@@ -2,73 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02154413B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D65413B98
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhIUUmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:42:10 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:43765 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhIUUmJ (ORCPT
+        id S235010AbhIUUob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhIUUo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:42:09 -0400
-Received: by mail-ot1-f50.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so238965otb.10;
-        Tue, 21 Sep 2021 13:40:40 -0700 (PDT)
+        Tue, 21 Sep 2021 16:44:27 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD1EC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:42:58 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id x2so271016ilm.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:42:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=saxUeZkyfD8m3fLKWMGCvCKIEI/yO8iAXU931aRd5WU=;
+        b=a72tCTH63AUXKla3GIb4KeGSIsIWtDIubA+z5EzCcwxLDDbfnCgdBjTJyUsDvcdQry
+         DZJhI1zU83c96zRsUlhCrIvj0nW/+wM/r9UVJ174IDqNBdk125De1bw8QMcRG+mNMBKk
+         lpEZV3vIRucuELPKJ3KLp9lByezvSKMgH5fPo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lIsMkc1Ru4Hy+3XDmUohr+N44VuUIeGdNclPrsd8TlE=;
-        b=js48BTPV+vp5Zleqz4tK4Ayi5xVY/Nsk0AJKiLpWcnF+jj8KP2FvN9+tWoH9Wr+0U/
-         LAi5PGzACHa9OV9k9uvv3aJhGXjhSx4WFeot5ExBckU6WHTRUv18vfudh6arorGvSAFo
-         HEIbpOxD5g3bWQSnJC0wZeONgAZuiuq3P8ywgpInxK+TsaWUFozvjgrHBNSIa+FsGO7j
-         weq0aoVeBC9QfQXp+l8umjFD/evDLMQLPxOsv/RNZhMcDJSNBAV+rXRBQFTAiE0bk2Qy
-         I+DRALw7sMWc/NrSpAbHB3o2RpgtECC2cLLo8i9hiYtFcMgDERjb5HKabr2hNEZPmlRi
-         l8Zg==
-X-Gm-Message-State: AOAM532NfCsBaKDeC8vXDH+w4+cQzobcX2AbYkLVSs/uNY+8wTm82/rY
-        2d+qy0S+J6QYVwaXBUi//A==
-X-Google-Smtp-Source: ABdhPJxkU1UAKTiSDKIIDMi5tHNRusRT64dD5UXCiQJ1rdrAm9DpC0NNzmKgqwE0+YNysku5MAzNGA==
-X-Received: by 2002:a9d:4b85:: with SMTP id k5mr5955996otf.103.1632256840367;
-        Tue, 21 Sep 2021 13:40:40 -0700 (PDT)
-Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
-        by smtp.gmail.com with ESMTPSA id c5sm17580otb.35.2021.09.21.13.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 13:40:39 -0700 (PDT)
-Received: (nullmailer pid 3291297 invoked by uid 1000);
-        Tue, 21 Sep 2021 20:40:38 -0000
-Date:   Tue, 21 Sep 2021 15:40:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     krzysztof.kozlowski@canonical.com, nm@ti.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        nsekhar@ti.com, linux-omap@vger.kernel.org, robh+dt@kernel.org,
-        miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
-        lokeshvutla@ti.com, grygorii.strashko@ti.com, tony@atomide.com
-Subject: Re: [PATCH v4 4/8] dt-bindings: memory-controllers: Introduce
- ti,gpmc-child
-Message-ID: <YUpDRkZqQjmfKZgz@robh.at.kernel.org>
-References: <20210914122705.15421-1-rogerq@kernel.org>
- <20210914122705.15421-5-rogerq@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=saxUeZkyfD8m3fLKWMGCvCKIEI/yO8iAXU931aRd5WU=;
+        b=IvtML0d7DoMooQLt21SkDlhwab4CgIt7hnPqFW/a0Y9bU4Oa/pmm2TLRt1PVHzmG1A
+         lVO85JAy3OvGElVyYBiPiqCnd1MHzTFqe+thBj6511ICDHpkyjy5hCCN3HPmvc02EpSP
+         f/LSkZ9w1mXI2yZfa+f9a9vU/oy6mboE53IQ4JMcvScp2D+B+TLrLaRZ05fYaYNbOsfh
+         tpLZlkQBz8brJ/ZihUXgUIklYWKgx2E4DbsQal1fcUEJJBRqpCAjLALCOwN3YNHeOlHD
+         PhaV6Z8dRl1C5dV8kO59+C2CiMjAAndJQrxnm17lamKu8WihSGeRyE4m0nalMuEhYxvE
+         YdlQ==
+X-Gm-Message-State: AOAM533ZVy2236XspbX0jKHLe0vVdEzxCw8w/2S4eWDqV2ob6FY5884B
+        Wtd7HwaTnsBFBBVsg4yO8Z+TSLSic6estOkEqyk=
+X-Google-Smtp-Source: ABdhPJzU5xVhRD7Ifoon3omZyJrwBjXFAfMI4ynOku/Bm3BsjkUh+GQ0D1Unvtu9HYu5jxpcrPEcSA==
+X-Received: by 2002:a05:6e02:d02:: with SMTP id g2mr23002021ilj.69.1632256977745;
+        Tue, 21 Sep 2021 13:42:57 -0700 (PDT)
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
+        by smtp.gmail.com with ESMTPSA id f14sm11848ilk.29.2021.09.21.13.42.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 13:42:55 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id a15so436147iot.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 13:42:55 -0700 (PDT)
+X-Received: by 2002:a05:6638:1b2:: with SMTP id b18mr1732593jaq.95.1632256974780;
+ Tue, 21 Sep 2021 13:42:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914122705.15421-5-rogerq@kernel.org>
+References: <CAHk-=wibRWoy4-ZkSVXUoGsUw5wKovPvRhS7r6VM+_GeBYZw1A@mail.gmail.com>
+ <202109211913.18LJDnXp031134@valdese.nms.ulrich-teichert.org>
+In-Reply-To: <202109211913.18LJDnXp031134@valdese.nms.ulrich-teichert.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 21 Sep 2021 13:42:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgricy21sU_rBue-MVNdj-uvCRr=Fn+9K-bBD0x5tCvYg@mail.gmail.com>
+Message-ID: <CAHk-=wgricy21sU_rBue-MVNdj-uvCRr=Fn+9K-bBD0x5tCvYg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Introduce and use absolute_pointer macro
+To:     Ulrich Teichert <krypton@ulrich-teichert.org>
+Cc:     Michael Cree <mcree@orcon.net.nz>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 15:27:01 +0300, Roger Quadros wrote:
-> This binding is meant for the child nodes of the TI GPMC node. The node
-> represents any device connected to the GPMC bus. It may be a Flash chip,
-> RAM chip or Ethernet controller, etc. These properties are meant for
-> configuring the GPMC settings/timings and will accompany the bindings
-> supported by the respective device.
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
->  .../memory-controllers/ti,gpmc-child.yaml     | 245 ++++++++++++++++++
->  1 file changed, 245 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc-child.yaml
-> 
+On Tue, Sep 21, 2021 at 12:14 PM Ulrich Teichert
+<krypton@ulrich-teichert.org> wrote:
+>
+> Right, I had DEBUG_INFO set. Stupid me. Now it looks much better:
+>
+> valdese:~/soft/linux/kernel-git> ls -lh arch/alpha/boot/vmlinux*
+> -rwxr-xr-x 1 ut ut 6.4M Sep 21 18:12 arch/alpha/boot/vmlinux*
+> -rw-r--r-- 1 ut ut 3.0M Sep 21 18:12 arch/alpha/boot/vmlinux.gz
+>
+> But it still dies before the first message from the kernel shows up.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Ok. That's a nasty situation to debug, and it's where things like "git
+bisect" are really useful just to narrow things down.
+
+... which isn't an option here. Too bad.
+
+I also assume thete is no virtual environment that looks like a Jensen
+that would help debug this. Which all makes it a bit nasty to try to
+even guess at what goes wrong.
+
+> I don't think I have to do something special with the
+> compressed image and according to https://tldp.org/HOWTO/SRM-HOWTO/aboot.=
+html
+> I don't have to.
+
+Yeah, it's more than two decades since I used an alpha, so I'm afraid
+I can't help outside of the "let's make it compile again" thing.
+
+It could easily be that the Jensen required that SRM bootimage, but
+it's so long ago that I really don't remember at all.
+
+> I would try the SRM bootimage (make bootimage), but the build is broken:
+
+Well, that looks like something that should be fixed, and that I might look=
+ at.
+
+> arch/alpha/boot/tools/objstrip.c:191:52: warning: format =E2=80=98%lx=E2=
+=80=99 expects argument of type =E2=80=98long unsigned int=E2=80=99, but ar=
+gument 5 has type =E2=80=98long long unsigned int=E2=80=99 [-Wformat=3D]
+>       fprintf(stderr, "%s: extracting %#016lx-%#016lx (at %lx)\n",
+>                                                     ^
+> arch/alpha/boot/tools/objstrip.c:200:12: error: =E2=80=98struct exec=E2=
+=80=99 has no member named =E2=80=98fh=E2=80=99
+>   if (!(aout->fh.f_flags & COFF_F_EXEC)) {
+
+This looks like the "make bootimage" thing was never designed to work
+in a cross-build environment. I think.
+
+Because it looks like what happens is that when you cross-compile, it
+gets the x86-64 'struct exec', and then everything goes sideways.
+
+> Was that the target used to get bootable CDROMs? Could that be broken sin=
+ce
+> the move from aout to ELF? Ugh, sorry for raising so much trouble,
+
+No, this is lovely. It would be really nice to get that Jensen target
+working, if only because of silly historical reasons.
+
+I'll see if I can get around to this.
+
+              Linus
