@@ -2,179 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C77412FF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37404412FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 10:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhIUIMv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 04:12:51 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:64253 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhIUIMh (ORCPT
+        id S231177AbhIUIMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 04:12:55 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:37189 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231149AbhIUIMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 04:12:37 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 0337A24000F;
-        Tue, 21 Sep 2021 08:11:05 +0000 (UTC)
-Date:   Tue, 21 Sep 2021 10:11:05 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Nuno Sa <Nuno.Sa@analog.com>
-Subject: Re: [PATCH v2 15/16] iio: adc: max1027: Add support for external
- triggers
-Message-ID: <20210921101105.02f2fae9@xps13>
-In-Reply-To: <20210920184338.0a9c5863@jic23-huawei>
-References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
-        <20210902211437.503623-16-miquel.raynal@bootlin.com>
-        <20210905171046.1681482d@jic23-huawei>
-        <20210915121832.7766fdd7@xps13>
-        <20210918181308.1b41cc3a@jic23-huawei>
-        <20210920103739.069ee8b2@xps13>
-        <20210920184338.0a9c5863@jic23-huawei>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 21 Sep 2021 04:12:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632211884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4DEfjy8i3majxxWRX69gfYnq7AfsHgE+0qIFCaUyk8=;
+        b=E+aqtBhVIddgLXym5o/krGWW7RMR/bMXherR1Xa6Quao49L56XTquqYmbivgg6ezE0skjz
+        upIcYY7BwZQQWQbW4SHaJn757M+7gXbpWVwqtU23LOwKTKTkfGbTnQ4ic+/6IYTFqLItVf
+        GOBtpjy5bFhkIai+7SKj+wWmntpnKZk=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2105.outbound.protection.outlook.com [104.47.18.105])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-1-IIj35TnaO_GnjHAXRa2YKg-2; Tue, 21 Sep 2021 10:11:23 +0200
+X-MC-Unique: IIj35TnaO_GnjHAXRa2YKg-2
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H3eWvomNzQPz7UInTvPpt3TV8/uUKAvkBiQ7CINIEAiaQ9zHM7pDU7NViFRwFrxR/8P1bzUngGTM7HIQnjH3IYbkXhx8gBhBGkCgP2N9//cC5hrYYKGBztho66FP3Nw4N7thMUReCK379HCxgWxiJJn4HhMOd9cE50Qh9OckS7PsG5RGYEL5UMDrcBc848K7fNcjUTruKoMp760wEQmK8JeeRErBUlyaA82Xy/gNKskfYVkkxbMQqcRdEHmC6ONzKPztIXkU5nsHZ+tHEEKjgzrH7xWbRvMNEn6Z1JB+FV8yR/wXgYOh7UPc9EVaPafiV6nqwgaolwwiGXG0FIclFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=q4DEfjy8i3majxxWRX69gfYnq7AfsHgE+0qIFCaUyk8=;
+ b=C1BJ6PquMPSCR9wReG3akAIduEsN4m2GWuzOXyXy9xdMpRxytGOisxsD+eytzYKUs3Bk6R45aU4m3mmjxkTVaNX6WTKW4mq1H7lztdbK/9HzNTV9HnNGiGaVNe7nKBX1JI0mwhPTv8nyz5BK3JYnemb7UenNGXJoxny1FadhNNe/7n2meULrwoNangnw8ebRyBRSI/bB83JYepsuL4BqPFQaEidIm43NOugdks1yFeQOoMU19bqxnTVbcIupSU084/V3IuTQayYQ9RJapVMtvDiZIi3ZowIz8qomPf45BrnhviCA3udrrBdcn6s4Zfe166tUSlH63bLPsm2ByXpFDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB7152.eurprd04.prod.outlook.com (2603:10a6:800:12b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 21 Sep
+ 2021 08:11:18 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4523.018; Tue, 21 Sep 2021
+ 08:11:18 +0000
+Subject: Re: [PATCH] x86/xen: remove unneeded preempt_disable() from
+ xen_irq_enable()
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210921070226.32021-1-jgross@suse.com>
+ <99e6cf1d-ce6a-83e5-2e43-12f6c1a89f3f@suse.com>
+ <599f4e20-a25d-6cd0-ced5-f2deaf997535@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <6305dfb1-15bc-ce4b-cbf7-d44ef5c0456d@suse.com>
+Date:   Tue, 21 Sep 2021 10:11:16 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <599f4e20-a25d-6cd0-ced5-f2deaf997535@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR0P264CA0227.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1e::23) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR0P264CA0227.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 08:11:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7d6095ff-2796-4f89-e21e-08d97cd76398
+X-MS-TrafficTypeDiagnostic: VI1PR04MB7152:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB71525C5F1FD42250C1EA80C5B3A19@VI1PR04MB7152.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ojROy3FgOMDxO6SI1kQi8nnpzENpcLinDsQpSlt9VGleDHJAkq4rZPkYpDFqGJQuE2+crXxoY2uyaKLr0N1D1D51uBQnQ0p9FIK4UaUS+gGDwyZD3zILEdzgWa7NouMHzqL9tBnHKkCG4/zAANj9mtvXBtcGy6NPti1KzXFIpoe9brP73gPamfEJd1PvTBdzu3TAcIcq1KjCtPfm1xLPAKpf4suwF9P6pSDYmyO7od6Uh1fn5917QkxFpDQvw+ITvHwc/UsMR0XbKKZceJay81vHYKxbDnuRG7IB7O3R2OCx2FKkHWEvuHsWeUeA+jNrAWK/yeFOr5u/bwgZsiMmQMpdzFqa75zBKolz/bPSQJ7BbBmX3uiWLWt/dnYy4LOHzoIKPtEiRIH7u4fKFrbWKxRNgDRGuo7GrWmz8XH4vAeWbdH0jbb8jPiSXDrPwGHcmhKRfdhy6rXoLhTOiZho0IH1uPV4/kYStnQATlitdoBAtC610Wluh3grPxe1Rv1C/CKL7djzWaxiEg7bHqB1PEpul5vnKCzn+hsZNLNwoKwcY5uF+wrfAMP089DhPU1nTkMhkwBlevSebs/1XTbtVEySMi87T9MuaNy7HnuR1ge5SjwQaoHzI99k5+uA1mzlKBbNYzrhnNsJEU06UcAgN0SZMuFyp2jznlcTh1xxLzc7QyZjpNSh8CNjiM+5YP1IkWPqVHC7u2+1QOsxHoa8MNPddijOvcilo+bDeS7CuYs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6636002)(16576012)(31686004)(37006003)(54906003)(316002)(38100700002)(6486002)(2906002)(83380400001)(26005)(36756003)(8936002)(186003)(6862004)(53546011)(4326008)(2616005)(31696002)(956004)(86362001)(66946007)(66556008)(66476007)(508600001)(8676002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1JDYzlvbEJDMHZNNVFzWTZLYkpFNk5VbDNIWmpmRk5BUVhCYld1SGNiSDd4?=
+ =?utf-8?B?bFNlRE13K2VLL3JGNjd5bjYvYjJBbm9CS2gzSHp1cXl4WmIzNmxDV1doTTEr?=
+ =?utf-8?B?bGVCTjFSVWJCbk1xN3FhR1poT0ttZEk4Ylh2TFhvS0xvZzJ0YUNaSDBSemc0?=
+ =?utf-8?B?ZDlqR1VYWjFPMTRYT0M5ZDRxZ3NaOXdoUVBNbFFaNXI0RmFZekNhY0RiamdH?=
+ =?utf-8?B?N29GNUtHSk9pR3ZrVkNDQnA2dVhNdi8vMFZLK0RpZXR1dTdBMFI5cHIyNXRq?=
+ =?utf-8?B?Tnk1eWxoa3RtTXExVVIwRjFoUnJRaUpKVDQydUlJNUNqRGNrQ3B1OFF1eDF5?=
+ =?utf-8?B?V3lhYVVPRWk0MldpRDdyNVhZWTM0ay9OUnlFYW5mbkxVN0Q1aXlPeU00V2xB?=
+ =?utf-8?B?NUlEbW1pUXVES1dtWTUvMWFjeVU5aWpIYy8xaC9qTlBvd1NxejlzdW81L2tM?=
+ =?utf-8?B?TlZqUC9pdytYWWQxaGt4VmlCNUFEdVdacVZNU3p1eHVYZnRqRFdSbmZYSDRO?=
+ =?utf-8?B?Ui95amdUQ3VWUXc4ZjNHWlJaOHdKbEp2L1FocEZFT3hBc1ZSNGlrN01sZlc0?=
+ =?utf-8?B?bm9ZeWdQZTB2bWtrbk1KUmhRbW01M1REblJBclZ4MDZsMGFiWUo1SCt0cmE4?=
+ =?utf-8?B?MU5mRGhxRk9yTmpYSnlpaCtXZnAyeld4czBjNXBML2tHWU9DMnlqM0VFQmww?=
+ =?utf-8?B?cGRsWmlBZWhEaTRkNk0ydjQzZUZ0ckRUY3lkMWErWU9xdHE4dkhNUmFVK0lS?=
+ =?utf-8?B?NkU1T3JtbmUySFJqeG5PdXozUjJ0U2xJa21DVEtHUFgzMVR0d2pFa25BT3Av?=
+ =?utf-8?B?TkYvSjZubUxMUDE3QWRCamg0bWZVTERCVGV4RkdpTkM2SHhBREFEVlRRc1B5?=
+ =?utf-8?B?Nk8wZlVwUERoUzE4TWxEdDhhSWtya0VFRzVuY25sV2tTZk11UGJoZWZtOUZL?=
+ =?utf-8?B?dkc5Mzd4MTAreEdSU2FXTTlYalptK2FyVUlTMFNqaUVPRzIyTkRsT1lNN1V0?=
+ =?utf-8?B?emRPRk9seVdMVUxlMkFnUTUzQkNDYlF4TW5SalZkSWV3bXVxUU1xN1cwc1Zy?=
+ =?utf-8?B?TXVPSzIwa2xIM1hrOEg4c1JzRXZnVGMwb3pxVHBYeFdxMkVIQzdUMWMwbVdT?=
+ =?utf-8?B?MnhUR3NYWERZYy9XelR6WjdlczAwcDZzZ2p2Z1paVFNuYTFhQkxmQTRmNzdM?=
+ =?utf-8?B?bmJlVkNUMlpwbFpqRVhuTk93N29OYWlqR3A0cEVISlBwU2ViK2grdFhZbE5W?=
+ =?utf-8?B?UVlRMWdFWlRHLzh6TXJzeWZ2aVg1Q2txZXB1U3ZWaVBMOEtLQm9GT1BvSkRY?=
+ =?utf-8?B?VENqYjdZd2E2S3lvclBVbGp5WXdmQ0Fpc2g3MktRNlJERm53ZkdRb2hQYVhP?=
+ =?utf-8?B?aFpXM1lwbzczdWd0UWJwZHVGN1JHUndNR1Vud0pHY2FvYWd3bEVjbjFlU0tR?=
+ =?utf-8?B?ajdXTmtUNllTSnA2UHlVTkpPN0kvOWtleEdvVkJtYzZabUpZZlE1dnlSQ0tT?=
+ =?utf-8?B?Vy80WkpGN1dTSXIxU29hSG9yVHlFUDhBNXFKS0hxYmo2amtKQjIxTmVjLzBB?=
+ =?utf-8?B?MEp6NDV6dGMvSDZMdWJMSW1OQUVMVDV0RmdUQ1NGSWQ5T0Z6U1lEVFAxdFpz?=
+ =?utf-8?B?RFFud1RhMWJYc1N2SDdrM3dPL1pZWmhHekZLc1BWakl2U000OUFRU0h0U2dZ?=
+ =?utf-8?B?ekVnakozMGo1QUltdGdTTnU2cXVxN1FDWmlvOFRDMTNYTGQ2eE01aHluSUE3?=
+ =?utf-8?Q?H8uyPgvi4Hv7x6xKV64Tt/I0zbjA8f1Cu6aIyfU?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d6095ff-2796-4f89-e21e-08d97cd76398
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 08:11:18.1461
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HwE+hrgPnN352yJ+5qQVGcWkSy3VpA+m4sZxPvB5p9MSnyqViZ9i1ZJtPsiY9zICex1ZxuJR4LIfyoXKxrfbkA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
-
-jic23@kernel.org wrote on Mon, 20 Sep 2021 18:43:38 +0100:
-
-> On Mon, 20 Sep 2021 10:37:39 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On 21.09.2021 09:58, Juergen Gross wrote:
+> On 21.09.21 09:53, Jan Beulich wrote:
+>> On 21.09.2021 09:02, Juergen Gross wrote:
+>>> --- a/arch/x86/xen/irq.c
+>>> +++ b/arch/x86/xen/irq.c
+>>> @@ -57,24 +57,20 @@ asmlinkage __visible void xen_irq_enable(void)
+>>>   {
+>>>   	struct vcpu_info *vcpu;
+>>>   
+>>> -	/*
+>>> -	 * We may be preempted as soon as vcpu->evtchn_upcall_mask is
+>>> -	 * cleared, so disable preemption to ensure we check for
+>>> -	 * events on the VCPU we are still running on.
+>>> -	 */
+>>> -	preempt_disable();
+>>> -
+>>>   	vcpu = this_cpu_read(xen_vcpu);
+>>>   	vcpu->evtchn_upcall_mask = 0;
+>>>   
+>>> -	/* Doesn't matter if we get preempted here, because any
+>>> -	   pending event will get dealt with anyway. */
+>>> +	/*
+>>> +	 * Now preemption could happen, but this is only possible if an event
+>>> +	 * was handled, so missing an event due to preemption is not
+>>> +	 * possible at all.
+>>> +	 * The worst possible case is to be preempted and then check events
+>>> +	 * pending on the old vcpu, but this is not problematic.
+>>> +	 */
+>>
+>> I agree this isn't problematic from a functional perspective, but ...
+>>
+>>>   	barrier(); /* unmask then check (avoid races) */
+>>>   	if (unlikely(vcpu->evtchn_upcall_pending))
+>>>   		xen_force_evtchn_callback();
+>>
+>> ... is a stray call here cheaper than ...
+>>
+>>> -
+>>> -	preempt_enable();
+>>
+>> ... the preempt_{dis,en}able() pair?
 > 
-> > Hi Jonathan,
-> > 
-> > jic23@kernel.org wrote on Sat, 18 Sep 2021 18:13:08 +0100:
-> >   
-> > > On Wed, 15 Sep 2021 12:18:32 +0200
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >     
-> > > > Hi Jonathan, Nuno,
-> > > > 
-> > > > jic23@kernel.org wrote on Sun, 5 Sep 2021 17:10:46 +0100:
-> > > >       
-> > > > > On Thu,  2 Sep 2021 23:14:36 +0200
-> > > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > > >         
-> > > > > > So far the driver only supported to use the hardware cnvst trigger. This
-> > > > > > was purely a software limitation.
-> > > > > > 
-> > > > > > The IRQ handler is already registered as being a poll function and thus
-> > > > > > can be called upon external triggering. In this case, a new conversion
-> > > > > > must be started, and one must wait for the data to be ready before
-> > > > > > reading the samples.
-> > > > > > 
-> > > > > > As the same handler can be called from different places, we check the
-> > > > > > value of the current IRQ with the value of the registered device
-> > > > > > IRQ. Indeed, the first step is to get called with a different IRQ number
-> > > > > > than ours, this is the "pullfunc" version which requests a new          
-> > > > > 
-> > > > > pullfunc?
-> > > > >         
-> > > > > > conversion. During the execution of the handler, we will wait for the
-> > > > > > EOC interrupt to happen. This interrupt is handled by the same
-> > > > > > helper. This time the IRQ number is the one we registered, we can in
-> > > > > > this case call complete() to unlock the primary handler and return. The
-> > > > > > primary handler continues executing by retrieving the data normally and
-> > > > > > finally returns.          
-> > > > > 
-> > > > > Interesting to use the irq number..
-> > > > > 
-> > > > > I'm a little nervous about how this has ended up structured.
-> > > > > I'm not 100% sure my understanding of how you've done it is correct.
-> > > > > 
-> > > > > We should have the following situation:
-> > > > > 
-> > > > > IRQ IN
-> > > > >   |
-> > > > >   v
-> > > > > Trigger IRQ / EOC IRQ  (this is the spi->irq)  (currently iio_trigger_generic_data_poll_ready)
-> > > > >   |              |
-> > > > >   ---------      v
-> > > > >   |        |   complete
-> > > > >   v        v
-> > > > > TrigH1    (TrigH2)   (these are the IRQs below the irq_chip IIO uses to demux triggers)
-> > > > > 
-> > > > > 
-> > > > > So when using it's own trigger we are using an internal interrupt
-> > > > > tree burried inside the IIO core.  When using it only as an EOC interrupt we shouldn't
-> > > > > be anywhere near that internal interrupt chip.
-> > > > > 
-> > > > > So I'm surprised the IRQ matches with the spi->irq as 
-> > > > > those trigH1 and trigH2 will have their own IRQ numbers.
-> > > > > 
-> > > > > For reference I think your architecture is currently
-> > > > > 
-> > > > > IRQ IN
-> > > > >   |
-> > > > >   v
-> > > > >   Trigger IRQ
-> > > > >   |
-> > > > >   v
-> > > > >  TRIG H1
-> > > > >  Either fills the buffer or does the completion.
-> > > > > 
-> > > > > I am a little confused how this works with an external trigger because the Trig H1 interrupt
-> > > > > should be disabled unless we are using the trigger.  That control isn't exposed to the
-> > > > > driver at all.
-> > > > > 
-> > > > > Is my understanding right or have I gotten confused somewhere?        
-> > > > 
-> > > > I think the confusion comes from the fact that in the
-> > > > current implementation, Trigger IRQ and EOC IRQ handlers are the same.
-> > > > This comes from a possible misunderstanding in the previous review,
-> > > > where I understood that you and Nuno wanted to keep using
-> > > > iio_trigger_generic_data_rdy_poll() hand have a single handler in the
-> > > > driver (which I think is far from optimal). I can try to split that
-> > > > handler again to have two distinct paths.      
-> > > That is the right thing to do.  The split should be done a little differently
-> > > than you have it in v3. I've added comments to that patch.
-> > > 
-> > > Data ready triggers are always a little messy because we end up with a split that
-> > > is:
-> > > 
-> > > Trigger side -  Interrupt comes in here...
-> > > 
-> > > --------- GENERIC IIO HANDLING ----- Take the trigger and routes it to the device code --- 
-> > > 
-> > > Device side - We do the data reading here.
-> > > 
-> > > The reason for this is that we may well have other devices using the same trigger
-> > > and we want to keep the model looking the same for all devices.
-> > > 
-> > > A push into an iio buffer should always be on the device side of that boundary.    
-> > 
-> > This is much clearer, I think I have got the main idea.
-> > 
-> > However I have a question that is specific to the current situation. In
-> > the case of this particular device, I don't really understand how
-> > another device could use the same trigger than the hardware one,
-> > because we have no indication of the trigger being latched. When we get
-> > the information the data is already in the FIFO, this means we get the
-> > information much later than when the hardware transitioned to indicate
-> > a conversion request. Is it that in your model, we should be able to
-> > use the EOC IRQ handler to trigger another IIO device, even though
-> > this implies an additional delay?  
+> The question is if a stray call in case of preemption (very unlikely)
+> is cheaper than the preempt_{dis|en}able() pair on each IRQ enabling.
 > 
-> It's not ideal, but sometimes it is better to have somewhat consistent
-> 'synchronization' between multiple devices.  You are correct that anything
-> else using a data ready trigger will be a bit late - but the frequencies
-> will at least be matched.  Not great but the best possible under these
-> circumstances.
-> 
-> If it's possible to use a truely shared hardware trigger that is obviously
-> better than you can do here.
+> I'm quite sure removing the preempt_*() calls will be a net benefit.
 
-Ok. This was definitely a part of the puzzle that I missed in the first
-place, making harder the understanding (and the interest) of the driver
-vs. core split.
+Well, yes, I agree. It would have been nice if the description pointed
+out the fact that preemption kicking in precisely here is very unlikely.
+But perhaps that's considered rather obvious ... The issue I'm having
+is with the prior comments: They indicated that preemption happening
+before the "pending" check would be okay, _despite_ the
+preempt_{dis,en}able() pair. One could view this as an indication that
+this pair was put there for another reason (e.g. to avoid the stray
+calls). But it may of course also be that the comment simply was stale.
 
-Cheers,
-Miquèl
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+
+Jan
+
