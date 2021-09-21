@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB5A4135E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B164135E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhIUPLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:11:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59523 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231196AbhIUPLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:11:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632237008; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=RE3NuWcxFmHpZ009ctLHnSwnb6JLqP07uvXyBMNf1CM=;
- b=RsDKyUITFrUFAGUj1RebsfRVvJZl/jJLaqfaP7uNF0d6y5B1f7IFVSuhKxhsII2sDJL0zE1S
- bv63qQjZ8mx6VkNEqCHfbuZKAo8WiYI/vb5aZ8xgCa3h9k33kdZSjUV30T66lhktB4/QMY2j
- AmDRIeEK2OR1h5f5OJ2LafxEQZI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6149f5caec62f57c9a238231 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 15:10:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B84E3C43616; Tue, 21 Sep 2021 15:10:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0D24C4338F;
-        Tue, 21 Sep 2021 15:09:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B0D24C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S233984AbhIUPMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:12:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9749 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233854AbhIUPMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:12:17 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDPwc6l7MzWMJR;
+        Tue, 21 Sep 2021 23:09:36 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 21 Sep 2021 23:10:45 +0800
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Tue, 21 Sep 2021 23:10:45 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <andraprs@amazon.com>, <lexnv@amazon.com>, <alcioa@amazon.com>
+CC:     <linux-kernel@vger.kernel.org>, <arei.gonglei@huawei.com>,
+        <gregkh@linuxfoundation.org>, <kamal@canonical.com>,
+        <pbonzini@redhat.com>, <sgarzare@redhat.com>,
+        <stefanha@redhat.com>, <vkuznets@redhat.com>,
+        <ne-devel-upstream@amazon.com>,
+        "Longpeng(Mike)" <longpeng2@huawei.com>
+Subject: [PATCH v2 0/4] merge contiguous physical memory regions
+Date:   Tue, 21 Sep 2021 23:10:35 +0800
+Message-ID: <20210921151039.1502-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/3] zd1211rw: remove duplicate USB device ID
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210917092108.19497-1-krzysztof.kozlowski@canonical.com>
-References: <20210917092108.19497-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Pontus Fuchs <pontus.fuchs@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Helmut Schaa <helmut.schaa@googlemail.com>,
-        Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zd1211-devs@lists.sourceforge.net,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210921151001.B84E3C43616@smtp.codeaurora.org>
-Date:   Tue, 21 Sep 2021 15:10:01 +0000 (UTC)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
+Hi guys,
 
-> The device 0x07b8,0x6001 is already on the list as zd1211 chip. Wiki
-> https://wireless.wiki.kernel.org/en/users/Drivers/zd1211rw/devices
-> confirms it is also zd1211, not the zd1211b.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+This patchset try to merge the contiguous physical memory regions when
+set user memory regions, you can see message in PATCH 1 for details.
+Please review when you free, thank!
 
-3 patches applied to wireless-drivers-next.git, thanks.
+Changes v1 -> v2:
+  - update the commit message as Andra's suggestion  [Andra]
+  - remove TODO completely in ne_set_user_memory_region_ioctl  [Andra]
+  - extract the physical memory regions setup into individual
+    function
+  - add kunit tests  [Andra]
 
-e142bd910f53 zd1211rw: remove duplicate USB device ID
-b7cca318d7ca ar5512: remove duplicate USB device ID
-60fe1f8dcd3c rt2x00: remove duplicate USB device ID
+Longpeng(Mike) (4):
+  nitro_enclaves: merge contiguous physical memory regions
+  nitro_enclaves: sanity check the physical region during setting
+  nitro_enclaves: add test framework for the misc functionality
+  nitro_enclaves: add kunit tests for physical contiguous region merging
+
+ drivers/virt/nitro_enclaves/Kconfig        |   8 ++
+ drivers/virt/nitro_enclaves/ne_misc_dev.c  | 160 ++++++++++++++++++++---------
+ drivers/virt/nitro_enclaves/ne_misc_test.c |  63 ++++++++++++
+ 3 files changed, 182 insertions(+), 49 deletions(-)
+ create mode 100644 drivers/virt/nitro_enclaves/ne_misc_test.c
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210917092108.19497-1-krzysztof.kozlowski@canonical.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+1.8.3.1
 
