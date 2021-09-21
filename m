@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3480413CB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0FC413CA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235564AbhIUVmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:42:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235138AbhIUVmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:42:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC17B61159;
-        Tue, 21 Sep 2021 21:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632260434;
-        bh=ws7c32By7Yah23i6ZVsT0SmTg7GkCW7FLFsyG2F4VNg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tvYpKN0QFACI2HAXPapSOhijBgvMZd5DU/o8KQR/I0laAVURKvQxh66ZWJpIkdFC4
-         5AjHqqtQOxZC3Z7VL42UCMibIVOyHGvWYbTbXHb83V3SdL3301+5En++zOjdZ2fhSR
-         RbpqajjK5Lto2dp3N4RbRYOP3BgcMCUiQMlp/jS2BmQamkwMAewYP7W1OUfawGmPjo
-         0AMzZmnzAayGqlzIfYt81We68TjvD5ppI06qcB68LTonJTt0tTYZ+MgV8P0NDAmNCt
-         blRDE0rllXX4EUWFA6sLns4DMPpxkr4CRa8QzK6/iPVv6YncHzZ7EoAciaOonj9mZQ
-         UxcVWLhphMc7A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH] random: Document add_hwgenerator_randomness() with other input functions
-Date:   Tue, 21 Sep 2021 22:39:19 +0100
-Message-Id: <20210921213919.31875-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S235488AbhIUVlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:41:18 -0400
+Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:33938 "EHLO
+        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234424AbhIUVlQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:41:16 -0400
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+        id 88C64F40B68; Tue, 21 Sep 2021 23:39:43 +0200 (CEST)
+From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To:     linux-crypto@vger.kernel.org
+Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Ash Logan <ash@heyquark.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 0/4] crypto: nintendo-aes - add a new AES driver
+Date:   Tue, 21 Sep 2021 23:39:26 +0200
+Message-Id: <20210921213930.10366-1-linkmauve@linkmauve.fr>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1063; h=from:subject; bh=ws7c32By7Yah23i6ZVsT0SmTg7GkCW7FLFsyG2F4VNg=; b=owGbwMvMwMWocq27KDak/QLjabUkhkSvgHstXjYs4q/XVC+vufLWPH6P31nZfRvnrbEqkZB8bur8 akZqJ6MxCwMjF4OsmCLL2mcZq9LDJbbOfzT/FcwgViaQKQxcnAIwkcJ09v+5nc2xGUf0/Pe1HPFm4j EPNxfL5VLxYVs8eynj9OipD5kL3y8Kbwg+ECr+bM0nW0uLqyoKjtG9a9hTd+fe/tjNYMfSl3UjMXxl +qs3/ro59u+dir6KPF7jfXzbAp2LG1c27rvwMF2rWtnt69XS1Bb/Ip1vjGY9Lm8Pmn5vFvBpyhbI1H K/kXlN8E+oo0/7pl+K1qWLdjyeqZFV0HTCxs+S60PrzBnWbesvy+kek5fjlnyXnzC3uPOgaO58ERZ2 iTyB75Nv/PZqN1oXG1izU3ndfRm1BbwmjKtTjaavcr+2du7dOcUNzDv4H+RHiL6N/L63/7ZMn8HnYr sPnzrWh3bt2vLWeoY/T69ewqWlAA==
-X-Developer-Key: i=broonie@kernel.org; a=openpgp; fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The section at the top of random.c which documents the input functions
-available does not document add_hwgenerator_randomness() which might lead
-a reader to overlook it. Add a brief note about it.
+This engine implements AES in CBC mode, using 128-bit keys only.  It is
+present on both the Wii and the Wii U, and is apparently identical in
+both consoles.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/char/random.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+The hardware is capable of firing an interrupt when the operation is
+done, but this driver currently uses a busy loop, I’m not too sure
+whether it would be preferable to switch, nor how to achieve that.
 
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 605969ed0f96..456a4f43d935 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -228,6 +228,14 @@
-  * particular randomness source.  They do this by keeping track of the
-  * first and second order deltas of the event timings.
-  *
-+ * There is also an interface for true hardware RNGs:
-+ *
-+ *	void add_hwgenerator_randomness(const char *buffer, size_t count,
-+ *				size_t entropy);
-+ *
-+ * This will credit entropy as specified by the caller, if the entropy
-+ * pool is full it will block until more entropy is needed.
-+ *
-  * Ensuring unpredictability at system startup
-  * ============================================
-  *
+It also supports a mode where no operation is done, and thus could be
+used as a DMA copy engine, but I don’t know how to expose that to the
+kernel or whether it would even be useful.
+
+In my testing, on a Wii U, this driver reaches 80.7 MiB/s, while the
+aes-generic driver only reaches 30.9 MiB/s, so it is a quite welcome
+speedup.
+
+This driver was written based on reversed documentation, see:
+https://wiibrew.org/wiki/Hardware/AES
+
+Emmanuel Gil Peyrot (4):
+  crypto: nintendo-aes - add a new AES driver
+  dt-bindings: nintendo-aes: Document the Wii and Wii U AES support
+  powerpc: wii.dts: Expose the AES engine on this platform
+  powerpc: wii_defconfig: Enable AES by default
+
+ .../bindings/crypto/nintendo-aes.yaml         |  34 +++
+ arch/powerpc/boot/dts/wii.dts                 |   7 +
+ arch/powerpc/configs/wii_defconfig            |   4 +-
+ drivers/crypto/Kconfig                        |  11 +
+ drivers/crypto/Makefile                       |   1 +
+ drivers/crypto/nintendo-aes.c                 | 273 ++++++++++++++++++
+ 6 files changed, 329 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/crypto/nintendo-aes.yaml
+ create mode 100644 drivers/crypto/nintendo-aes.c
+
 -- 
-2.20.1
+2.33.0
 
