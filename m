@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD07A413DC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485E1413DC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhIUW6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
+        id S230510AbhIUW6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhIUW56 (ORCPT
+        with ESMTP id S230352AbhIUW6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:57:58 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48501C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:56:29 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so749014otq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:56:29 -0700 (PDT)
+        Tue, 21 Sep 2021 18:58:30 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABEAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:57:01 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so781967pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LH+ETmo9LWgYNAgeVSdVN+z5zfF4ODKn/ZsciZKx+D0=;
-        b=oZPPuE6RkDzEC7Eby8dVBKnnQcfe3GUZXQVXioFiHWTtaFwbL2ZkDELgXP5PNZraKQ
-         2yfwFG32TSE9n3TLMIcOuGze3qS9tOr6xS42ORATuUiiCpcKeebenXxgjiqxRXGPJ0FR
-         3wuyc4ysM+2cgDVW3QnzLZhcsm/iOQt6fbVsxOMRgy1hlwD44Nzfr/v3wv8DP7sIE0bu
-         4b+TLH14vinVQWyb8/XicBvW56h7UbbEBLswCffjOXPigmiBejSdoLZvkCE7eX2cvQKh
-         1VW6yTZvEMmnwVec9DqDk3EcnLmWbEYuMnkwBd5mfRn3/8sJGHQuHzHAmQAGLoUME7TF
-         C0uA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bqpSXa1bC3SUh8grq2uEmyOAGunLA8G1syV0zRquB/0=;
+        b=j2T/acSaeDxamzvs+PwEfV0JMg2R6ljc5aUzX/ln6BbTzr5bIx/fqRx+tXVkCs7p7n
+         S1+whhJBhQiQ03XMiIE5yilr9rGq8K1DhXUT8ky4uU+p3l5Ov3qGUcoH9oG/1lF9cITp
+         hBp9mBFBUu01Jsoc23lqYRRDMZldkf4La5mozqTbkU6z8GAaqjdaaOyDucTxoYxROmjz
+         vq1FxlIrnSgX6BIvvsEo6q3CCKrAkovm7cYQYuoA3mIq1+gN/QXNr6OSl2e0WxYV6oTR
+         MOOgfkoyrtuxX3h3KbVun6/kk9XJf3V2N0OP6qPuLg7UoWRS3jsuSMVYlPlKHMADMmuU
+         QJ9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LH+ETmo9LWgYNAgeVSdVN+z5zfF4ODKn/ZsciZKx+D0=;
-        b=HOtU6HU4HVMcZ3luO0ASIC0JJpM8/RqgxmXhb/q+r8+Dk3M2eKiUSrBWi0dy7uq1Fn
-         xCsYTKXFqzfr+WCUV6gGGvKNmmVt7docMNOTzl+BcVlBrCsdkWmRsKLgm25az198xLgq
-         UZH79AHb23t8sROJgV5zooIRdP3neGxSapQzepukEMbP+MygMPgeerGLDJWph1GXlNA4
-         +POtFwNyvfYV1E/tiEF0wJRlPPETXDO/hgk1cf3q0mz4f+Z4y4TUtgsz78WgZVVznUAH
-         hBn4MyLaoJnRlkckIj++gqL5qMC67/9YZ8EBMbkJsZmc7sYhJyAjyw+VQ0/Wv5JEYsPM
-         ocVg==
-X-Gm-Message-State: AOAM5333fzguCpow3auqe1odyMKJfNlISLtzQOSLwb1DwzKveatC/YIF
-        77dz62AwVewvCDxC6SSNhhFwLg==
-X-Google-Smtp-Source: ABdhPJwgdBqevp3sdsmAeRFmqLBb0Kz22xgrazQEEXPESLmkIJ4Y4h5N9Lzp8jxmlAv2SOV1/lSCPw==
-X-Received: by 2002:a05:6830:128d:: with SMTP id z13mr7525542otp.19.1632264988628;
-        Tue, 21 Sep 2021 15:56:28 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z1sm118174ooj.25.2021.09.21.15.56.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bqpSXa1bC3SUh8grq2uEmyOAGunLA8G1syV0zRquB/0=;
+        b=FT7gWRKkHAbD7kp4gGMbQ3KwPm24Xe4Z6mIW3wsN2NBDRv7OU2YjnQcZr/AwiIGbjs
+         aVPji9U/zSN8443cDHm905YcUwhxNFgH8ZwkSRTvbXq92r975mMQI2RDIn1VpaZsSf0g
+         RyqetTxN4iB8D2YraCignXa6LVc2BMo5kD7kmo3n0f+DRIx7juOJgafijlgLzntAq6St
+         3vI1vXfBlI8erg7Xs+Gt97GofHQKlN7H//LwkReEg+9ULJj/hWnIUOqq91EpdMWLfwAn
+         o9bTrUwiAepwthxr9iDqrI3DBHzc8C+pBBEwjHpDsnYJ/KYyViwbTRTKfKZsgSCBlbRY
+         wCFw==
+X-Gm-Message-State: AOAM533en/d5610DDX38fSkCgkHvuvZQj1dX+2eN5Ts20TEQ2avqcwZL
+        04XtS7Jt4i+vjQS/lNUEiPuPAA==
+X-Google-Smtp-Source: ABdhPJwH6i7qtp/ZQcEIFzsXeukFyZKSJJdooX6PnRSRf7g3owTSBpnjmqWZrEn0avut5YOuh+B4hA==
+X-Received: by 2002:a17:90a:198b:: with SMTP id 11mr7744685pji.209.1632265020574;
+        Tue, 21 Sep 2021 15:57:00 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i19sm178028pfo.101.2021.09.21.15.56.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 15:56:28 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Naina Mehta <nainmeht@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH] soc: qcom: llcc: Disable MMUHWT retention
-Date:   Tue, 21 Sep 2021 17:56:27 -0500
-Message-Id: <163226178548.611555.13438992886720395824.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210921055942.30600-1-saiprakash.ranjan@codeaurora.org>
-References: <20210921055942.30600-1-saiprakash.ranjan@codeaurora.org>
+        Tue, 21 Sep 2021 15:56:59 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 22:56:56 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, xudong.hao@intel.com
+Subject: Re: [KVM]  816be9e9be: kernel-selftests.kvm.smm_test.fail
+Message-ID: <YUpjOO3bq/SMFN7A@google.com>
+References: <20210912155933.GI25450@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210912155933.GI25450@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sep 2021 11:29:42 +0530, Sai Prakash Ranjan wrote:
-> From: Naina Mehta <nainmeht@codeaurora.org>
-> 
-> Disable MMUHWT retention for SC7280 as done for other platforms
-> to avoid more power burn.
+On Sun, Sep 12, 2021, kernel test robot wrote:
 > 
 > 
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 816be9e9be8d2e19dcea35fbec06f00cd5749fed ("KVM: nVMX: Don't evaluate "emulation required" on nested VM-Exit")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: kernel-selftests
+> version: kernel-selftests-x86_64-d0cba0d1-1_20210907
+> with following parameters:
+> 
+> 	group: kvm
+> 	ucode: 0xe2
+> 
+> test-description: The kernel contains a set of "self tests" under the tools/testing/selftests/ directory. These are intended to be small unit tests to exercise individual code paths in the kernel.
+> test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
+> 
+> 
+> on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 28G memory
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
 
-Applied, thanks!
-
-[1/1] soc: qcom: llcc: Disable MMUHWT retention
-      commit: 81ec1ab4fc0d52a380f65ce32437a78be35cbc56
-
-Best regards,
--- 
-Bjorn Andersson <bjorn.andersson@linaro.org>
+Maxim has a fix in the works.
