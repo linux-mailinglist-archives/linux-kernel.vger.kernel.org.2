@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425C0413D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F667413D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235937AbhIUWCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
+        id S235854AbhIUWE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234138AbhIUWCk (ORCPT
+        with ESMTP id S234138AbhIUWEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:02:40 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E026EC061574;
-        Tue, 21 Sep 2021 15:01:10 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id r5so1819630edi.10;
-        Tue, 21 Sep 2021 15:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wZRlJKVUEaKoiATTeMhFAUP9e2IswQR8T2RRZ+vhS3Y=;
-        b=oZxf3681MFqhPBu+V5CFmtxCB8e3TgZG815ynPuhsInkw5lkg3mhuc9DvPPsuLiQIa
-         N9fTOVJOhq5852+P6f/y0Aojsl33hV313KFXj6+rf65rzFoAe3nACGjpT9lSvlVqbYaE
-         zmIj2dVP0AZpaUy834Fe80J7JmuxtemJaAF6jFw6ivzNrpr0hIt2jfu1ENdJblY9pg0d
-         acuy8qCAsiOciGFpWU2w8FnxoUuqHqJasj0/+PlULvYgjtzwN4KgjTnv7LeaSfiDrZB1
-         yMEcYji19URkwZFuE5cjvfAJILMly4B7JnZw8pukGlDYlTe2tT2oCRx7z4Q9UX3kXlHj
-         p7Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wZRlJKVUEaKoiATTeMhFAUP9e2IswQR8T2RRZ+vhS3Y=;
-        b=aOZGa860MMZnxDTP7i82+owO5dgLS/kl9omgp088OTcPJfsUipOgTA41GNx0x5xcsZ
-         5ZbG+USzLu2cpk1BLdvSWtOuaZqcFL7vlYUHoXmFU8GYnqI7qgni6gZO/I+HNWIEiB9H
-         UgQlVSSYAfuUMLMf20SB/4IAeYHrvdHcDtyDCfRA+BgLno47XtHpFROYSOOtvdMwCc6p
-         5zLgBDQ39TF7uW6sW69LJ9voH/wfw8QsOoEjjx4vO3tQv8NhPafICK6rYUMszkQ3ez/1
-         5vhdjx0HUBBHPJTMrbAjuLbq0vW4IHg1c/HHeXvDYwD7k6wjXRSBxdsHjO9FVyX0n3Sd
-         IZ6Q==
-X-Gm-Message-State: AOAM532Mw0nzTZU6RPuQ5yiQI1BbvsNAv00EIQ87tjsGGVCPQKVj4nOg
-        D5WNIP0wgdWZyvaAEygUtcmlOkn+WymrkxmlFhIRn1Hza724Lw==
-X-Google-Smtp-Source: ABdhPJwoRuFtRJyvlmjEy8j1ySn6114OTo0xvMrZBWDLpKe5qdhHtY4Vt7IFBT5SaohKJwQhSePdI4eoTHN9aI9j9rQ=
-X-Received: by 2002:a17:906:608e:: with SMTP id t14mr38091512ejj.441.1632261669195;
- Tue, 21 Sep 2021 15:01:09 -0700 (PDT)
+        Tue, 21 Sep 2021 18:04:25 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEAEC061574;
+        Tue, 21 Sep 2021 15:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=FU6MY8NmNybF1VNxHGRHG+itNOVLUqsfTUSxIQnDAr4=; b=UwPAWmgFstTetbHhj4I61Tc2DJ
+        YDFbU4oW+MDi34a7Nt5wKwhbJQHFMCpFXx2V808JPTjLmNsp962/CeQ1oVxJMGlPjXLNwmmZDx4bx
+        9mLPMdXqUswgRC2BMNJg+hTOnMs7j6/WxBftgGHyHdzIbmbL/k7xw4s4vgMuQ8Z7i6W1B8xHRKoJU
+        Br8+JBsKiuAq7+Y3j7GQxRFRjzHF97PIhWcLMpLmqqCCzdHGh9GqAAUsCMaJrCLuMttp01iV4rOGs
+        LhIzz09XH0JW3FnJsqncaxeSOr8EaIocyWXiM2kFLp9MrYcS+XtQrk76ap4wLKBQWIPmpdYtUH3u7
+        x69taE0g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54722)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mSnqn-00038s-UG; Tue, 21 Sep 2021 23:02:53 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mSnqm-0003eY-RF; Tue, 21 Sep 2021 23:02:52 +0100
+Date:   Tue, 21 Sep 2021 23:02:52 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
+Message-ID: <YUpWjKZyqHImRaix@shell.armlinux.org.uk>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163918.373775935@linuxfoundation.org>
+ <20210921212837.GA29170@duo.ucw.cz>
+ <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
+ <20210921214528.GA30221@duo.ucw.cz>
 MIME-Version: 1.0
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com> <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com> <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com> <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com> <YUmOGFUFONR/ynfW@atomide.com>
- <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com> <CAEf4M_B1vam_ykRZmQ5++QArC-=+yooRg25BrQXKE5nk8AtqbA@mail.gmail.com>
- <40077cea-1f5e-de67-58dd-7fae0f63678d@ti.com>
-In-Reply-To: <40077cea-1f5e-de67-58dd-7fae0f63678d@ti.com>
-From:   Robert Nelson <robertcnelson@gmail.com>
-Date:   Tue, 21 Sep 2021 17:00:43 -0500
-Message-ID: <CAOCHtYjMO1XjLRGxP1GMFudXh3meNQB2F44z_NRaFUnX=Fb+Mw@mail.gmail.com>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Drew Fustini <pdp7pdp7@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210921214528.GA30221@duo.ucw.cz>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 4:54 PM Suman Anna <s-anna@ti.com> wrote:
->
-> On 9/21/21 3:29 PM, Drew Fustini wrote:
-> > On Tue, Sep 21, 2021 at 9:09 AM Suman Anna <s-anna@ti.com> wrote:
-> >>
-> >> Hi Matti, Tony,
-> >>
-> >> On 9/21/21 2:47 AM, Tony Lindgren wrote:
-> >>> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
-> >>>> Finally, adding the udelay(100); (as Tony suggested) at the end of the
-> >>>> omap_reset_deassert() did make the oops go away even when pruss_tm was
-> >>>> enabled. I don't know what would be a proper fix though.
-> >>
-> >> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
-> >> changes [1].
-> >>
-> >> May I ask what is your BBB board version? My board is rev.A5C.
-> >
-> > That rev is quite old [1].  Would you be able to try a Rev C?  It has
-> > been in production since around 2014 with the move from 2GB to 4GB
-> > eMMC.
->
-> I don't have any rev.C boards handy to try.
->
-> I am curious to see if there is some correlation between failures and board
-> versions. I see that there is a minor processor change to AM3358 from rev.B
-> onwards compared to the AM3359 that I would have on my board. PRU-ICSS IP would
-> be present and supported on both though.
+On Tue, Sep 21, 2021 at 11:45:28PM +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > > > Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver broke
+> > > > when moving the incorrect handling of mac link state out of mac_config().
+> > > > This reason this breaks is because the stmmac's WoL is handled by the MAC
+> > > > rather than the PHY, and phylink doesn't cater for that scenario.
+> > > > 
+> > > > This patch adds the necessary phylink code to handle suspend/resume events
+> > > > according to whether the MAC still needs a valid link or not. This is the
+> > > > barest minimum for this support.
+> > > 
+> > > This adds functions that end up being unused in 5.10. AFAICT we do not
+> > > need this in 5.10.
+> > 
+> > It needs to be backported to any kernel that also has
+> > "net: stmmac: fix MAC not working when system resume back with WoL active"
+> > backported to. From what I can tell, the fixes line in that commit
+> > refers to a commit (46f69ded988d) in v5.7-rc1.
+> > 
+> > If "net: stmmac: fix MAC not working when system resume back with WoL
+> > active" is not being backported to 5.10, then there is no need to
+> > backport this patch.
+> 
+> Agreed.
+> 
+> > As I'm not being copied on the stmmac commit, I've no idea which kernels
+> > this patch should be backported to.
+> 
+> AFAICT "net: stmmac: fix MAC not working when..." is not queued for
+> 5.10.68-rc1 or 5.14.7-rc1.
 
-Rev B vs Rev C shouldn't matter..  I don't think I even have a Rev
-"B".. A6A, B, to C* was done very quickly at CIrcuitCo at that time..
+Okay, this is madness. What is going on with stable's patch selection?
+The logic seems completely reversed.
 
-https://elinux.org/Beagleboard:BeagleBoneBlack#Revision_B
+"net: phylink: Update SFP selected interface on advertising changes"
+does not have a Fixes tag, and is not a fix in itself, yet has been
+picked up by the stable team. It lays the necessary work for its
+counter-part patch, which is...
 
-"This version moves to the AM3358BZCZ100 processor as we are no longer
-able to get the limited production version of the AM3359AZCZ100."
+"net: stmmac: fix system hang caused by eee_ctrl_timer during
+suspend/resume" _has_ a Fixes tag, but has *not* been picked up by
+the stable team.
 
-I'm assuming the AM3358 had the pru enabled..
+It seems there's something very wrong process-wise here. Why would
+a patch _without_ a Fixes line and isn't a fix in itself be picked
+out for stable backport when patches with a Fixes line are ignored?
 
-Regards,
---
-Robert Nelson
-https://rcn-ee.com/
+Not unless the stable plan is to apply "net: phylink: Update SFP
+selected interface on advertising changes" and then sometime later
+apply "net: stmmac: fix system hang caused by eee_ctrl_timer during
+suspend/resume". No idea.
+
+It all seems very weird and the process seems broken to me.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
