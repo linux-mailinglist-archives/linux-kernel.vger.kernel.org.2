@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696214132BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA614132C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhIULnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:43:40 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45658 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbhIULnj (ORCPT
+        id S232599AbhIULn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:43:59 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:40637 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232439AbhIULn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:43:39 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 5D9E91F41E17
-Subject: Re: [PATCH] platform/chrome: cros_ec_proto: Fix check_features ret
- val
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-References: <20210916014632.2662612-1-pmalani@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <f6860aa6-b541-b03d-da8d-333661a8322f@collabora.com>
-Date:   Tue, 21 Sep 2021 13:42:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 21 Sep 2021 07:43:58 -0400
+Received: by mail-ua1-f41.google.com with SMTP id g16so13237607uam.7;
+        Tue, 21 Sep 2021 04:42:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bdpYVMEOAHnNRkmR0T8flhT/zcYkeLeqbkwxnc5Ce/A=;
+        b=oRkMxyNiOKJz/dUK8vJW0vJcSacEbuX+ErqIwShI94tkzWHf1awEwAEqKHlFQTzIkU
+         GlmTKTDgQa35/tDzYLHr8BjeAOg2FhGIM9jqaIVg/9xfr1EVdX5+CtYHE+U0ODzPRR4B
+         Mqzxq9NJ3LiujK2E1avfzmaYO6IuCvn1f6NqUfnzcTb4RxgLvrZ5VXskNLa3gYkvDzWu
+         G/v9gLz2aHUzQvh++BgHX4gRGHPSNPBM7qO2qhXi7CkefldgClbaWFAFgKSOf/motX/o
+         ue6SsLZv1SWyKtMfG4ipvmzu/H/cnQVue+R0CjgfoXegxW7gquWqhOnw/LptcEv3PVcW
+         Zhzw==
+X-Gm-Message-State: AOAM531yvUP5eQvhFzQMY3hmFqbfZKFOxaByRtHEzh4va+5C1+TAoc+3
+        PpT/wQwSkrCVe93NPrtRhIbkGTZT8CnAzAemeO4V767w
+X-Google-Smtp-Source: ABdhPJz660eJ8xFUWw21pLpoUoGUDUdkLS+vBfnrRwGe4YQC/sE0pLYK6sPltWQcEv22OrTdq3COoRkKQwR/vpyKOic=
+X-Received: by 2002:ab0:6ec9:: with SMTP id c9mr17013019uav.114.1632224550054;
+ Tue, 21 Sep 2021 04:42:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210916014632.2662612-1-pmalani@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com> <20210920150807.164673-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210920150807.164673-2-krzysztof.kozlowski@canonical.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 21 Sep 2021 13:42:19 +0200
+Message-ID: <CAMuHMdXH2rKKWmMF9PT3V54kiyO9qOJXEUwYYm9UunXdG3Vbjw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] riscv: dts: microchip: drop duplicated nodes
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
+On Mon, Sep 20, 2021 at 5:09 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> The DTSI file defines soc node and address/size cells, so there is no
+> point in duplicating it in DTS file.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Thank you for the patch. Just one comment below ...
+(from v1)
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-On 16/9/21 3:46, Prashant Malani wrote:
-> The kerneldoc for cros_ec_check_features() states that it returns 1 or 0
-> depedending on whether a feature is supported or not, but it instead
-> returns a negative error number in one case, and a non-1 bitmask in
-> other cases.
-> 
-> Since all call-sites only check for a 1 or 0 return value, update
-> the function to return boolean values.
-> 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_proto.c     | 12 +++++++-----
->  include/linux/platform_data/cros_ec_proto.h |  2 +-
->  2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-> index a7404d69b2d3..a34cf58c5ef7 100644
-> --- a/drivers/platform/chrome/cros_ec_proto.c
-> +++ b/drivers/platform/chrome/cros_ec_proto.c
-> @@ -808,9 +808,9 @@ EXPORT_SYMBOL(cros_ec_get_host_event);
->   *
->   * Call this function to test whether the ChromeOS EC supports a feature.
->   *
-> - * Return: 1 if supported, 0 if not
-> + * Return: true if supported, false if not (or if an error was encountered).
->   */
-> -int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
-> +bool cros_ec_check_features(struct cros_ec_dev *ec, int feature)
->  {
->  	struct cros_ec_command *msg;
->  	int ret;
-> @@ -818,8 +818,10 @@ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
->  	if (ec->features[0] == -1U && ec->features[1] == -1U) {
->  		/* features bitmap not read yet */
->  		msg = kzalloc(sizeof(*msg) + sizeof(ec->features), GFP_KERNEL);
-> -		if (!msg)
-> -			return -ENOMEM;
-> +		if (!msg) {
-> +			dev_err(ec->dev, "failed to allocate memory to get EC features\n");
+Gr{oetje,eeting}s,
 
-In case of failure you will be noticed by the allocator, prints after
-[k|v][m|z|c]alloc() functions are not needed, so I think you can just return
-false here.
+                        Geert
 
-Other than that the patch looks good to me.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Thanks,
-  Enric
-
-> +			return false;
-> +		}
->  
->  		msg->command = EC_CMD_GET_FEATURES + ec->cmd_offset;
->  		msg->insize = sizeof(ec->features);
-> @@ -839,7 +841,7 @@ int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
->  		kfree(msg);
->  	}
->  
-> -	return ec->features[feature / 32] & EC_FEATURE_MASK_0(feature);
-> +	return !!(ec->features[feature / 32] & EC_FEATURE_MASK_0(feature));
->  }
->  EXPORT_SYMBOL_GPL(cros_ec_check_features);
->  
-> diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-> index 02599687770c..55844ece0b32 100644
-> --- a/include/linux/platform_data/cros_ec_proto.h
-> +++ b/include/linux/platform_data/cros_ec_proto.h
-> @@ -227,7 +227,7 @@ int cros_ec_get_next_event(struct cros_ec_device *ec_dev,
->  
->  u32 cros_ec_get_host_event(struct cros_ec_device *ec_dev);
->  
-> -int cros_ec_check_features(struct cros_ec_dev *ec, int feature);
-> +bool cros_ec_check_features(struct cros_ec_dev *ec, int feature);
->  
->  int cros_ec_get_sensor_count(struct cros_ec_dev *ec);
->  
-> 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
