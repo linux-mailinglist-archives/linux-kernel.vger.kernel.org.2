@@ -2,196 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA914413672
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0477A41365D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbhIUPsd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 11:48:33 -0400
-Received: from foo.stuge.se ([212.116.89.98]:43270 "EHLO foo.stuge.se"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234182AbhIUPsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:48:32 -0400
-X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Sep 2021 11:48:31 EDT
-Received: (qmail 19290 invoked by uid 1000); 21 Sep 2021 15:40:21 -0000
-Message-ID: <20210921154021.19289.qmail@stuge.se>
-Date:   Tue, 21 Sep 2021 15:40:20 +0000
-From:   Peter Stuge <peter@stuge.se>
-To:     Alec Brown <alec.r.brown@oracle.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Cc:     "coreboot@coreboot.org" <coreboot@coreboot.org>,
-        "grub-devel@gnu.org" <grub-devel@gnu.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "systemd-devel@lists.freedesktop.org" 
-        <systemd-devel@lists.freedesktop.org>,
-        "trenchboot-devel@googlegroups.com" 
-        <trenchboot-devel@googlegroups.com>,
-        "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        Aleksandr Burmashev <alexander.burmashev@oracle.com>,
-        "allen.cryptic@gmail.com" <allen.cryptic@gmail.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "btrotter@gmail.com" <btrotter@gmail.com>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        "dpsmith@apertussolutions.com" <dpsmith@apertussolutions.com>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        "frowand.list@gmail.com" <frowand.list@gmail.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "hun@n-dimensional.de" <hun@n-dimensional.de>,
-        "james.dutton@gmail.com" <james.dutton@gmail.com>,
-        "javierm@redhat.com" <javierm@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        "jwerner@chromium.org" <jwerner@chromium.org>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        "krystian.hebel@3mdeb.com" <krystian.hebel@3mdeb.com>,
-        "leif@nuviainc.co m" <leif@nuviainc.com>,
-        "lukasz.hawrylko@intel.com" <lukasz.hawrylko@intel.com>,
-        "luto@amacapital.net" <luto@amacapital.net>,
-        "michal.zygowski@3mdeb.com" <michal.zygowski@3mdeb.com>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "mtottenh@akamai.com" <mtottenh@akamai.com>,
-        "phcoder@gmail.com" <phcoder@gmail.com>,
-        "piotr.krol@3mdeb.com" <piotr.krol@3mdeb.com>,
-        "pjones@redhat.com" <pjones@redhat.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "roger.pau@citrix.com" <roger.pau@citrix.com>,
-        Ross Philipson <ross.philipson@oracle.com>,
-        "sjg@chromium.org" <sjg@chromium.org>,
-        "trini@konsulko.com" <trini@konsulko.com>,
-        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
-        "ulrich.windl@rz.uni-regensburg.de" 
-        <ulrich.windl@rz.uni-regensburg.de>,
-        "wvervoorn@eltan.com" <wvervoorn@eltan.com>,
-        "rharwood@redhat.com" <rharwood@redhat.com>
-Subject: Re: [SPECIFICATION RFC v3] The firmware and bootloader log
- specification
+        id S234150AbhIUPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229613AbhIUPnB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:43:01 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7868FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:41:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i25so83978976lfg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:41:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q5ZjvlclnOLefKJUciH/41eaKTuf2oeVM14/tctcfHk=;
+        b=WAtzyCe5WGtijPUGvRi94F/d74XLgpaTeM3I9SyJeVvDgv27xzam2rqeMHc3M/6F9o
+         ObDpjtJQ7zMy9DmdvysMIbDE9KwSUMhZlGKlmzhuJBfyxSsgmt1NVpenIzlj/Xxyv4/I
+         8p0CuY63IGjBJVi+pENOA39cL/acy1HeogBao=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q5ZjvlclnOLefKJUciH/41eaKTuf2oeVM14/tctcfHk=;
+        b=EF/SaWjOTSeDtBj2VBl94EqavO8oqyjIqPuV7zJa6IN18QKLWWlfMwp7/+wuuS8PCX
+         N3nVN8gbvLyupdQgPUmyfwW/ZShXkP1mpuqJQQpr86/Qn1PLw58lJ2Udx5AcS6c4Rcgf
+         pI8cS8azrwboQHNBzE12xsA4NP4LmqNRFlBq5U49+nbyaSkgEf8/Dyadxtxb83QbRfsM
+         puC34WsF8D5I5r9ZwHLpeUJNlf3lnPD0NYvI74VvJnFEtLbzruvPkAiOcfhiGAVff06x
+         /I06wPxQWQJ3z46EEsQ5+2KxfgP+rtiKmQBb4B6uiUvyzQEgZhW13smyK0Vr1iBd/ZcI
+         B7uw==
+X-Gm-Message-State: AOAM532nwl5d7fo9Ls1+sHH02lodW3TUp3tFcvmp23S7tP5lwKzF4kCt
+        gxe30uq6PouujP2m+JLxnfbMDGx1XHpc8+OOaQ0=
+X-Google-Smtp-Source: ABdhPJyCixQuQTRHj7fKdB2/893l4UbfxRNXQeopXCF2Fd139w5DCftL/oGSKiYnQzPXAgl8+S3gEw==
+X-Received: by 2002:a05:6512:c20:: with SMTP id z32mr13500939lfu.590.1632238869500;
+        Tue, 21 Sep 2021 08:41:09 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id w3sm1546366lfu.147.2021.09.21.08.41.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 08:41:09 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id i4so83684796lfv.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:41:09 -0700 (PDT)
+X-Received: by 2002:a05:651c:1250:: with SMTP id h16mr9831360ljh.68.1632238839995;
+ Tue, 21 Sep 2021 08:40:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <A7F710D3-5148-4E92-9E3D-5D850AD0245F@gmx.de>
- <DM6PR10MB2986A960E859A744FDC3875ABCDE9@DM6PR10MB2986.namprd10.prod.outlook.com>
+References: <20210920121208.54732-1-arnd@kernel.org> <CAHk-=wi=CZ_fsUwDQCBbgPB4MTFx1ywgyERjFb7DNUk9Pix_Nw@mail.gmail.com>
+ <CAK8P3a03VTsdALMORVSWvAY9J8dS=wQjvhf=M0hXGqLLxDYHsQ@mail.gmail.com> <2955101.xlVK0Xs8nM@alarsen.net>
+In-Reply-To: <2955101.xlVK0Xs8nM@alarsen.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 21 Sep 2021 08:40:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgaaUgz58Avt_W=7mAsp1DSoLh79mkcGASa-OUbPmjvVQ@mail.gmail.com>
+Message-ID: <CAHk-=wgaaUgz58Avt_W=7mAsp1DSoLh79mkcGASa-OUbPmjvVQ@mail.gmail.com>
+Subject: Re: [PATCH] [RFC v2] qnx: avoid -Wstringop-overread warning, again
+To:     Anders Larsen <al@alarsen.net>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alec Brown wrote:
-> Below is how the layout of these logs would store their data.
-> 
-> bf_log_header:
->                +-------------------+
-> u32            | version           |
-> u32            | size              |
-> u8[64]         | producer          |
-> u8[64]         | log_format        |
-> u64            | flags             |
-> u64            | next_bflh_addr    |
-> u64            | log_addr          |
-> u32            | log_size          |
->                +-------------------+
+On Tue, Sep 21, 2021 at 8:15 AM Anders Larsen <al@alarsen.net> wrote:
+>
+> they are available at the same offsets in struct qnx4_link_info as well, so
+> wouldn't it be even simpler to just always use the fields of the latter
+> structure?
 
-I suggest to include a .magic at least in bf_log_header and an
-.xor_checksum or .crc32 only in bf_log_header.
+I'd rather use that third "clearly neither" structure member, just to
+clarify what is going on.
 
-.magic doubles as endianess indicator when the structures are
-stored on movable media. (Pick an asymmetric magic bit pattern!)
+Yes, we could just always use the bigger structure, but then we'd
+actually access a "link entry" even when it really isn't a link entry.
 
-I suggest renaming .next_bflh_addr to .next_log_header and .log_addr
-to .log_buffer_addr.
+Now we can have that bogus entry and the big comment that says exactly
+why we use the bogus entry, and it's clear that the "name" we use is
+not necessarily a link entry or an inode entry, it's that special
+union with a big comment about a gcc bug above it..
 
-I suggest to remove .size and .log_size:
+Anyway, I committed my patch that Arnd had tested, with a slightly
+expanded comment. I'm sure yours would have compiled cleanly too.
 
-The rationale for .size is "to allow for backward compatibility" but
-that seems redundant thanks to .version.
-
-.log_size can be calculated from the subordinate data and is thus
-mostly an unneccessary source of potential inconsistency.
-
-
-> bf_log_buffer:
->                +-------------------+
-> u32            | version           |
-> u32            | size              |
-> u8[64]         | producer          |
-> u32            | next_msg_off      |
-> bf_log_msg[l]  | msgs              |
->                +-------------------+
-
-I suggest replacing .size and .next_msg_off with .messages containing l:
-
-.size can then be calculated from .messages; again, reliably avoiding
-inconsistency between .size and .next_msg_off.
-
-Allocated size doesn't seem useful if writers must anyway maintain state
-containing the starting address. If writers must be allowed to be completely
-stateless then maybe at least rename .size to .allocated_size and see below
-for discovery.
-
-Having .messages also eliminates the need for an end-of-messages marker
-when the allocated space is not yet filled.
-
-
-> bf_log_msg:
->                +-------------------+
-> u32            | size              |
-> u64            | ts_nsec           |
-> u32            | level             |
-> u32            | facility          |
-> u32            | msg_off           |
-> u8[n]          | type              |
-> u8[m]          | msg               |
->                +-------------------+
-
-It seems inconsistent that log_header.size and log_msg.size cover only
-the respective struct itself while log_buffer.size also covers all
-subordinate messages. Skipping all .size in this version fixes that.
-
-And log_msg.size is not very useful since both .type and .msg have variable
-length; it's not possible to access .msg without scanning .type. Please at
-a minimum add .type_size but better yet replace .size with .type_size and
-.msg_size.
-
-
-> There is still the outstanding issue of how the logs will be sent to the OS. If
-> UEFI is used, we can use config tables. If ACPI or Device Tree is used, we can
-> use bf_log_header.next_bflh_addr to present the logs. If none of these platforms
-> are used, it becomes a lot trickier to solve this issue.
-> 
-> Any suggestions are much appreciated and will be taken into consideration.
-
-Having bf_log_header.magic and some bf_log_header.$checksum, a strict rule
-for bf_log_header start address granularity and a strict maximum offset
-for the first header from top and/or bottom of memory allows to quickly
-discover a log in memory without explicit handover.
-
-
-> LPC System Boot and Security Micro-conference on the 22nd of September
-> at 7:50 AM PDT (14:50 UTC).
-
-Have fun! :)
-
-
-Heinrich Schuchardt wrote:
-> We already the EFI_TCG2_PROTOCOL and RFC 5424 (The syslog protocol).
-> Why do we need to start from scratch?
-
-That's a good question. I guess noone wants to settle for a standard
-from somewhere else. ;)
-
-I wouldn't mind if log_msg was a syslog transport, but I can understand
-if that's rejected because syslog messages require a lot of parsing for
-presentation while Alec's proposal seems focused on efficiency and simplicity.
-
-It's also nice to be able to strictly mandate UTF-8 for all fields.
-(RFC 5424 allows MSG to be anything.)
-
-
-Kind regards
-
-//Peter
+           Linus
