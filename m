@@ -2,287 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955DA413BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A474413BAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbhIUUpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:45:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235049AbhIUUph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:45:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EA8E61156;
-        Tue, 21 Sep 2021 20:44:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632257048;
-        bh=Ck7yVJFIXzTFvAFx0p96/tMpeKNlfNntmCEPNWDueOg=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=fvCrNTLnkeVpEZENUSbcIL3JRM/o/OG+6d9GKn5LIoXiDA6Gf8ZSe4X222Vfl1kRf
-         BsfiSEbG24XluNMRo9/FWlVjdeP8umRwX8wCowvRDbkAdUp/irjqBrW/EMhjmYLxQa
-         /gjOh8GquvqcaUfiGi6uMUikfkcgpi01u7o5AuLopaY7CNjLOiorGSMCrSXTJB73rT
-         qxUs6EBdM/vNyglAZ+/LRS7pIJ6KLTmMFfWJwjuzADzOco2JOJ8PbY4Ne5balbfLO1
-         AYFMFZpcI/ugwREgOLPHqTq0NFEHcyMcxvelcmVNVVjLHyD6Hc7oqUbA0Es/0WDyPW
-         mdCNQdNpDBBHQ==
-Date:   Tue, 21 Sep 2021 13:44:06 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "julien@xen.org" <julien@xen.org>,
-        "jbeulich@suse.com" <jbeulich@suse.com>,
-        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
-        Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
-In-Reply-To: <48a2ef20-02ad-99e4-a8f5-fa144692aadc@epam.com>
-Message-ID: <alpine.DEB.2.21.2109211340470.17979@sstabellini-ThinkPad-T480s>
-References: <20210917130123.1764493-1-andr2000@gmail.com> <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s> <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com> <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com> <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
- <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s> <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com> <82e55df9-74d3-6365-ab29-2bdfc4b74a1f@epam.com> <9b4962de-61ef-44dc-ffca-c54dd7990c6a@suse.com> <a9b98bc4-4c8a-2e7e-6abf-3a68025059c4@epam.com>
- <bb9fa2a8-9cc2-d83c-3659-c66b37781470@suse.com> <0b83aa77-aef0-0d98-cc0b-cf5f9c7599bd@epam.com> <111389e7-855d-0023-092c-f3e8bc57f4af@suse.com> <48a2ef20-02ad-99e4-a8f5-fa144692aadc@epam.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S235057AbhIUUqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:46:49 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:38811 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhIUUqq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 16:46:46 -0400
+Received: by mail-oi1-f175.google.com with SMTP id u22so1058699oie.5;
+        Tue, 21 Sep 2021 13:45:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zpy6wlQMyxZRii14nKzfROrLUS3Znsn0Gu8ZUDhspq8=;
+        b=uox2kCvC6tIfFhz6VoWWBi1O6QKh+ld5JsUzLJNAq172X9YEZ1WzefG0GrVLOVejo3
+         NlQRTr12qj6y9IDusoV80R5z7DkAk9O2DhqisFL5Nq9n3/7xIgYFjoq3IUnZu47vcFfg
+         lf3f4XmEAbFiGUvgInKJXZD9N8pRjQwnraV+sg87QSbsoDinIm3H7hMkaxL9EcOFf29e
+         ZEohyD8Ev0Z73HSE/iNpyXqe3wL6t9e2l6vBqjBo/aQKCONQQP5FCg0OGJNT6jTzcrJq
+         /mrTX0pDtbLpB5nv1X9UIEnGZAWnU6PWsBIelnOAD1kZ0fzMysiJunfAJHSmScJZMLd3
+         iNtg==
+X-Gm-Message-State: AOAM531rRh28GqPPs64yJpqN5P7ZR1z8MoUZN6pp4WyUBV5GtySuvw8f
+        psJxlhWop6VIiooZRvgfQw==
+X-Google-Smtp-Source: ABdhPJyMoya3BEsqcEIje9TIzlBPUkeGKtV/fbfz2dCjpCa1tMJ0e7mFAl7SQ6FLcs/Qdl5gaTf2iQ==
+X-Received: by 2002:a05:6808:bcb:: with SMTP id o11mr5243912oik.168.1632257117121;
+        Tue, 21 Sep 2021 13:45:17 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id 10sm19774otw.53.2021.09.21.13.45.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 13:45:16 -0700 (PDT)
+Received: (nullmailer pid 3297343 invoked by uid 1000);
+        Tue, 21 Sep 2021 20:45:14 -0000
+Date:   Tue, 21 Sep 2021 15:45:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     tony@atomide.com, grygorii.strashko@ti.com, nm@ti.com,
+        lokeshvutla@ti.com, nsekhar@ti.com,
+        krzysztof.kozlowski@canonical.com, miquel.raynal@bootlin.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 6/8] dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
+Message-ID: <YUpEWslQSEbppnBk@robh.at.kernel.org>
+References: <20210914122705.15421-1-rogerq@kernel.org>
+ <20210914122705.15421-7-rogerq@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-722727834-1632257047=:17979"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914122705.15421-7-rogerq@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Sep 14, 2021 at 03:27:03PM +0300, Roger Quadros wrote:
+> Convert gpmc-onenand.txt to ti,gpmc-onenand.yaml.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  .../devicetree/bindings/mtd/gpmc-onenand.txt  | 48 -----------
+>  .../bindings/mtd/ti,gpmc-onenand.yaml         | 81 +++++++++++++++++++
+>  2 files changed, 81 insertions(+), 48 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+>  create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+> deleted file mode 100644
+> index e9f01a963a0a..000000000000
+> --- a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+> +++ /dev/null
+> @@ -1,48 +0,0 @@
+> -Device tree bindings for GPMC connected OneNANDs
+> -
+> -GPMC connected OneNAND (found on OMAP boards) are represented as child nodes of
+> -the GPMC controller with a name of "onenand".
+> -
+> -All timing relevant properties as well as generic gpmc child properties are
+> -explained in a separate documents - please refer to
+> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+> -
+> -Required properties:
+> -
+> - - compatible:		"ti,omap2-onenand"
+> - - reg:			The CS line the peripheral is connected to
+> - - gpmc,device-width:	Width of the ONENAND device connected to the GPMC
+> -			in bytes. Must be 1 or 2.
+> -
+> -Optional properties:
+> -
+> - - int-gpios:		GPIO specifier for the INT pin.
+> -
+> -For inline partition table parsing (optional):
+> -
+> - - #address-cells: should be set to 1
+> - - #size-cells: should be set to 1
+> -
+> -Example for an OMAP3430 board:
+> -
+> -	gpmc: gpmc@6e000000 {
+> -		compatible = "ti,omap3430-gpmc";
+> -		ti,hwmods = "gpmc";
+> -		reg = <0x6e000000 0x1000000>;
+> -		interrupts = <20>;
+> -		gpmc,num-cs = <8>;
+> -		gpmc,num-waitpins = <4>;
+> -		#address-cells = <2>;
+> -		#size-cells = <1>;
+> -
+> -		onenand@0 {
+> -			compatible = "ti,omap2-onenand";
+> -			reg = <0 0 0>; /* CS0, offset 0 */
+> -			gpmc,device-width = <2>;
+> -
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -
+> -			/* partitions go here */
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+> new file mode 100644
+> index 000000000000..42149a9c3a8d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+> @@ -0,0 +1,81 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/ti,gpmc-onenand.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OneNAND over Texas Instruments GPMC bus.
+> +
+> +maintainers:
+> +  - Tony Lindgren <tony@atomide.com>
+> +  - Roger Quadros <rogerq@kernel.org>
+> +
+> +description:
+> +  GPMC connected OneNAND (found on OMAP boards) are represented
+> +  as child nodes of the GPMC controller.
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,omap2-onenand
+> +
+> +  reg:
+> +    items:
+> +      - description: |
+> +          Chip Select number, register offset and size of
+> +          OneNAND register window.
+> +
+> +  "#address-cells": true
+> +
+> +  "#size-cells": true
+> +
+> +  int-gpios:
+> +    description: GPIO specifier for the INT pin.
+> +
+> +patternProperties:
+> +  "@[0-9a-f]+$":
+> +    $ref: "/schemas/mtd/partitions/partition.yaml"
+> +
+> +allOf:
+> +  - $ref: "/schemas/memory-controllers/ti,gpmc-child.yaml"
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpmc: memory-controller@6e000000 {
+> +      compatible = "ti,omap3430-gpmc";
+> +      reg = <0x6e000000 0x02d0>;
+> +      interrupts = <20>;
+> +      gpmc,num-cs = <8>;
+> +      gpmc,num-waitpins = <4>;
+> +      clocks = <&l3s_clkctrl>;
+> +      clock-names = "fck";
+> +      #address-cells = <2>;
+> +      #size-cells = <1>;
+> +
+> +      ranges = <0 0 0x01000000 0x01000000>,   /* 16 MB for OneNAND */
+> +               <1 0 0x02000000 0x01000000>;   /* 16 MB for smc91c96 */
+> +
+> +      onenand@0,0 {
+> +        compatible = "ti,omap2-onenand";
+> +        reg = <0 0 0x20000>;    /* CS0, offset 0, IO size 128K */
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        partition@0 {
+> +          label = "bootloader";
+> +          reg = <0x00000000 0x00100000>;
+> +        };
+> +
+> +        partition@1 {
 
---8323329-722727834-1632257047=:17979
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+partition@100000
 
-On Tue, 21 Sep 2021, Oleksandr Andrushchenko wrote:
-> On 21.09.21 10:09, Juergen Gross wrote:
-> > On 21.09.21 09:00, Oleksandr Andrushchenko wrote:
-> >>
-> >> On 21.09.21 09:49, Juergen Gross wrote:
-> >>> On 21.09.21 08:38, Oleksandr Andrushchenko wrote:
-> >>>>
-> >>>> On 21.09.21 09:07, Juergen Gross wrote:
-> >>>>> On 21.09.21 07:51, Oleksandr Andrushchenko wrote:
-> >>>>>>
-> >>>>>> On 21.09.21 08:20, Juergen Gross wrote:
-> >>>>>>> On 21.09.21 01:16, Stefano Stabellini wrote:
-> >>>>>>>> On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
-> >>>>>>>>> On 20.09.21 14:30, Juergen Gross wrote:
-> >>>>>>>>>> On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
-> >>>>>>>>>>> Hello, Stefano!
-> >>>>>>>>>>>
-> >>>>>>>>>>> On 18.09.21 00:45, Stefano Stabellini wrote:
-> >>>>>>>>>>>> Hi Oleksandr,
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Why do you want to enable pciback on ARM? Is it only to "disable" a PCI
-> >>>>>>>>>>>> device in Dom0 so that it can be safely assigned to a DomU?
-> >>>>>>>>>>> Not only that
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> I am asking because actually I don't think we want to enable the PV PCI
-> >>>>>>>>>>>> backend feature of pciback on ARM, right? That would clash with the PCI
-> >>>>>>>>>>>> assignment work you have been doing in Xen. They couldn't both work at
-> >>>>>>>>>>>> the same time.
-> >>>>>>>>>>> Correct, it is not used
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> If we only need pciback to "park" a device in Dom0, wouldn't it be
-> >>>>>>>>>>>> possible and better to use pci-stub instead?
-> >>>>>>>>>>>
-> >>>>>>>>>>> Not only that, so pci-stub is not enough
-> >>>>>>>>>>>
-> >>>>>>>>>>> The functionality which is implemented by the pciback and the toolstack
-> >>>>>>>>>>> and which is relevant/missing/needed for ARM:
-> >>>>>>>>>>>
-> >>>>>>>>>>> 1. pciback is used as a database for assignable PCI devices, e.g. xl
-> >>>>>>>>>>>          pci-assignable-{add|remove|list} manipulates that list. So, whenever the
-> >>>>>>>>>>>          toolstack needs to know which PCI devices can be passed through it reads
-> >>>>>>>>>>>          that from the relevant sysfs entries of the pciback.
-> >>>>>>>>>>>
-> >>>>>>>>>>> 2. pciback is used to hold the unbound PCI devices, e.g. when passing through
-> >>>>>>>>>>>          a PCI device it needs to be unbound from the relevant device driver and bound
-> >>>>>>>>>>>          to pciback (strictly speaking it is not required that the device is bound to
-> >>>>>>>>>>>          pciback, but pciback is again used as a database of the passed through PCI
-> >>>>>>>>>>>          devices, so we can re-bind the devices back to their original drivers when
-> >>>>>>>>>>>          guest domain shuts down)
-> >>>>>>>>>>>
-> >>>>>>>>>>> 3. Device reset
-> >>>>>>>>>>>
-> >>>>>>>>>>> We have previously discussed on xen-devel ML possible solutions to that as from the
-> >>>>>>>>>>> above we see that pciback functionality is going to be only partially used on Arm.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Please see [1] and [2]:
-> >>>>>>>>>>>
-> >>>>>>>>>>> 1. It is not acceptable to manage the assignable list in Xen itself
-> >>>>>>>>>>>
-> >>>>>>>>>>> 2. pciback can be split into two parts: PCI assignable/bind/reset handling and
-> >>>>>>>>>>> the rest like vPCI etc.
-> >>>>>>>>>>>
-> >>>>>>>>>>> 3. pcifront is not used on Arm
-> >>>>>>>>>>
-> >>>>>>>>>> It is neither in x86 PVH/HVM guests.
-> >>>>>>>>> Didn't know that, thank you for pointing
-> >>>>>>>>>>
-> >>>>>>>>>>> So, limited use of the pciback is one of the bricks used to enable PCI passthrough
-> >>>>>>>>>>> on Arm. It was enough to just re-structure the driver and have it run on Arm to achieve
-> >>>>>>>>>>> all the goals above.
-> >>>>>>>>>>>
-> >>>>>>>>>>> If we still think it is desirable to break the pciback driver into "common" and "pcifront specific"
-> >>>>>>>>>>> parts then it can be done, yet the patch is going to be the very first brick in that building.
-> >>>>>>>>>>
-> >>>>>>>>>> Doing this split should be done, as the pcifront specific part could be
-> >>>>>>>>>> omitted on x86, too, in case no PV guests using PCI passthrough have to
-> >>>>>>>>>> be supported.
-> >>>>>>>>> Agree, that the final solution should have the driver split
-> >>>>>>>>>>
-> >>>>>>>>>>> So, I think this patch is still going to be needed besides which direction we take.
-> >>>>>>>>>>
-> >>>>>>>>>> Some kind of this patch, yes. It might look different in case the split
-> >>>>>>>>>> is done first.
-> >>>>>>>>>>
-> >>>>>>>>>> I don't mind doing it in either sequence.
-> >>>>>>>>>>
-> >>>>>>>>> With this patch we have Arm on the same page as the above mentioned x86 guests,
-> >>>>>>>>>
-> >>>>>>>>> e.g. the driver has unused code, but yet allows Arm to function now.
-> >>>>>>>>>
-> >>>>>>>>> At this stage of PCI passthrough on Arm it is yet enough. Long term, when
-> >>>>>>>>>
-> >>>>>>>>> the driver gets split, Arm will benefit from that split too, but unfortunately I do not
-> >>>>>>>>>
-> >>>>>>>>> have enough bandwidth for that piece of work at the moment.
-> >>>>>>>>
-> >>>>>>>> That's fair and I don't want to scope-creep this simple patch asking for
-> >>>>>>>> an enormous rework. At the same time I don't think we should enable the
-> >>>>>>>> whole of pciback on ARM because it would be erroneous and confusing.
-> >>>>>>
-> >>>>>> As the first stage before the driver is split or ifdef's used - can we take the patch
-> >>>>>> as is now? In either way we chose this needs to be done, e.g. enable compiling
-> >>>>>> for other architectures and common code move.
-> >>>>>
-> >>>>> Fine with me in principle. I need to take a more thorough look
-> >>>>> at the patch, though.
-> >>>> Of course
-> >>>>>
-> >>>>>>
-> >>>>>>>>
-> >>>>>>>> I am wonder if there is a simple:
-> >>>>>>>>
-> >>>>>>>> if (!xen_pv_domain())
-> >>>>>>>>         return;
-> >>>>>>>>
-> >>>>>>>> That we could add in a couple of places in pciback to stop it from
-> >>>>>>>> initializing the parts we don't care about. Something along these lines
-> >>>>>>>> (untested and probably incomplete).
-> >>>>>>>>
-> >>>>>>>> What do you guys think?
-> >>>>>>>
-> >>>>>>> Uh no, not in this way, please. This will kill pci passthrough on x86
-> >>>>>>> with dom0 running as PVH. I don't think this is working right now, but
-> >>>>>>> adding more code making it even harder to work should be avoided.
-> >>>>>>>
-> >>>>>>>> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
-> >>>>>>>> index da34ce85dc88..991ba0a9b359 100644
-> >>>>>>>> --- a/drivers/xen/xen-pciback/xenbus.c
-> >>>>>>>> +++ b/drivers/xen/xen-pciback/xenbus.c
-> >>>>>>>> @@ -15,6 +15,7 @@
-> >>>>>>>>      #include <xen/xenbus.h>
-> >>>>>>>>      #include <xen/events.h>
-> >>>>>>>>      #include <xen/pci.h>
-> >>>>>>>> +#include <xen/xen.h>
-> >>>>>>>>      #include "pciback.h"
-> >>>>>>>>        #define INVALID_EVTCHN_IRQ  (-1)
-> >>>>>>>> @@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_device *dev,
-> >>>>>>>>                      const struct xenbus_device_id *id)
-> >>>>>>>>      {
-> >>>>>>>>          int err = 0;
-> >>>>>>>> -    struct xen_pcibk_device *pdev = alloc_pdev(dev);
-> >>>>>>>> +    struct xen_pcibk_device *pdev;
-> >>>>>>>> +
-> >>>>>>>> +    if (!xen_pv_domain())
-> >>>>>>>> +        return 0;
-> >>>>>>>>      +    pdev = alloc_pdev(dev);
-> >>>>>>>
-> >>>>>>> This hunk isn't needed, as with bailing out of xen_pcibk_xenbus_register
-> >>>>>>> early will result in xen_pcibk_xenbus_probe never being called.
-> >>>>>>>
-> >>>>>>>>          if (pdev == NULL) {
-> >>>>>>>>              err = -ENOMEM;
-> >>>>>>>>              xenbus_dev_fatal(dev, err,
-> >>>>>>>> @@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly xen_pcibk_backend;
-> >>>>>>>>        int __init xen_pcibk_xenbus_register(void)
-> >>>>>>>>      {
-> >>>>>>>> +    if (!xen_pv_domain())
-> >>>>>>>> +        return 0;
-> >>>>>>>> +
-> >>>>>>>
-> >>>>>>> Use #ifdef CONFIG_X86 instead.
-> >>>>>>
-> >>>>>> The title of this patch says that we want to allow this driver for other archs
-> >>>>>> and now we want to introduce "#ifdef CONFIG_X86" which doesn't sound
-> >>>>>> right with that respect. Instead, we may want having something like a
-> >>>>>> dedicated gate for this, e.g. "#ifdef CONFIG_XEN_PCIDEV_BACKEND_SUPP_PV"
-> >>>>>> or something which is architecture agnostic.
-> >>>>>
-> >>>>> Something like that, yes. But I'd rather use CONFIG_XEN_PCIDEV_BACKEND
-> >>>>> acting as this gate and introduce CONFIG_XEN_PCI_STUB for the stub
-> >>>>> functionality needed on Arm. XEN_PCIDEV_BACKEND would depend on X86 and
-> >>>>> select XEN_PCI_STUB, while on Arm XEN_PCI_STUB could be configured if
-> >>>>> wanted. The splitting of the driver can still be done later.
-> >>>>
-> >>>> Hm, pciback is now compiled when CONFIG_XEN_PCIDEV_BACKEND is enabled
-> >>>> and we want to skip some parts of its code when CONFIG_XEN_PCI_STUB is set.
-> >>>> So, I imagine that for x86 we just enable CONFIG_XEN_PCIDEV_BACKEND and the
-> >>>> driver compiles in its current state. For Arm we enable both CONFIG_XEN_PCIDEV_BACKEND
-> >>>> and CONFIG_XEN_PCI_STUB, so part of the driver is not compiled.
-> >>>
-> >>> No, I'd rather switch to compiling xen-pciback when CONFIG_XEN_PCI_STUB
-> >>> is set and compile only parts of it when CONFIG_XEN_PCIDEV_BACKEND is
-> >>> not set (this will be the case on Arm).
-> >>
-> >> But this will require that the existing kernel configurations out there have to additionally define CONFIG_XEN_PCI_STUB to get what they had before with simply enabling CONFIG_XEN_PCIDEV_BACKEND. My point was that it is probably desirable not to break
-> >> the things while doing the split/re-work.
-> >
-> > By letting XEN_PCIDEV_BACKEND select XEN_PCI_STUB this won't happen.
-> Indeed
-> >
-> >> I also thought that "compile only parts of it when CONFIG_XEN_PCIDEV_BACKEND is not set"
-> >> may have more code gated rather than with gating unwanted code with CONFIG_XEN_PCI_STUB.
-> >> I am not quite sure about this though.
-> >
-> > This would be a very weird semantics of XEN_PCI_STUB, as the stub part
-> > is needed on X86 and on Arm.
-> >
-> > Gating could even be done with Stefano's patch just by replacing his
-> > "!xen_pv_domain()" tests with "!IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND)".
-> 
-> Makes sense.
-> 
-> Another question if we do not want the code to be compiled or not executed?
-> 
-> If the later then we can define something like:
-> 
-> bool need_pv_part(void)
-> 
-> {
-> 
->      return IS_ENABLED(CONFIG_XEN_PCIDEV_BACKEND);
-> 
-> }
-> 
-> and then just use need_pv_part() for the checks where it is needed.
-> 
-> This allows avoiding multiple ifdef's through the code
+With that,
 
-This is even better.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-For my clarity, Oleksandr, are you OK with adding a few need_pv_part()
-checks through the code as part of this series so that the PV PCI
-backend is not initialized?
-
-I don't have a good test environment ready for this, so I cannot really
-volunteer myself.
-
-I would prefer if we made this change as part of this series so that the
-PV PCI backend features doesn't get enabled on ARM, not even temporarily.
---8323329-722727834-1632257047=:17979--
+> +          label = "config";
+> +          reg = <0x00100000 0x002c0000>;
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.17.1
+> 
+> 
