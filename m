@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA00413132
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FC9413121
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbhIUKGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:06:14 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38244 "EHLO gloria.sntech.de"
+        id S231563AbhIUKFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:05:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231635AbhIUKFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:05:41 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mScdE-0001rd-Hx; Tue, 21 Sep 2021 12:04:08 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Andy Yan <andy.yan@rock-chips.com>, Alex Bee <knaerzche@gmail.com>,
-        Sandy Huang <hjc@rock-chips.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-rockchip@lists.infradead.org,
+        id S229833AbhIUKFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:05:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B6760E9B;
+        Tue, 21 Sep 2021 10:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632218642;
+        bh=wOy6b7vGPISeEG0LPcHEKi+NseEtuJC3LnPNLORtWIg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=phojlOPBV6Ek+gVlVy5miq8fI8N3nHGunLNdGeTNCAHLSM2b8Hzz+NdkxfOb4Yvd5
+         93TVYTFIJ5Z2cNJNL53sX0JcoSDwZeWbw6MnuimbPJxfvOugFUyMXO+uCABSAr44IY
+         +ZOcIJWRo7QChZbHgHLvNQPa9JQFEASwYG5CCi7TxzbJXZqLqhufTVnzXMTgSdd5qY
+         wbBtZuBEjRFbQUA4cgMcsIG9G42jSnvTuZBZQejccESEFn9c1r8wUOQZ7lAJ94qnZR
+         dbV+dNaOu+9lp845xJQELrIQC+s2Ie9kOg16LNW2jhSCtjyfwDznaT19O0S1hE7Km1
+         qkpRk7l7+F53g==
+Subject: Re: [PATCH v2 0/3] soc: samsung: exynos-chipid: be a module!
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org,
-        Jonathan McDowell <noodles@earth.li>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        David Airlie <airlied@linux.ie>
-Subject: Re: [PATCH] drm/rockchip: handle non-platform devices in rockchip_drm_endpoint_is_subdriver
-Date:   Tue, 21 Sep 2021 12:03:38 +0200
-Message-Id: <163221857584.2031971.6026620150373954389.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210914150756.85190-1-knaerzche@gmail.com>
-References: <20210914150756.85190-1-knaerzche@gmail.com>
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Pankaj Dubey <pankaj.dubey@samsung.com>
+References: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <4aee1b0d-91a1-75ac-d2b7-6dab3d7a301f@kernel.org>
+Date:   Tue, 21 Sep 2021 12:03:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210919093114.35987-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 17:07:56 +0200, Alex Bee wrote:
-> As discussed at [1] rockchip_drm_endpoint_is_subdriver will currently always
-> return -ENODEV for non-platform-devices (e.g. external i2c bridges), what
-> makes them never being considered in rockchip_rgb_init.
+On 19.09.2021 11:31, Krzysztof Kozlowski wrote:
+> Krzysztof Kozlowski (3):
+>    soc: samsung: exynos-chipid: avoid soc_device_to_device()
+>    soc: samsung: exynos-chipid: convert to a module
+>    soc: samsung: exynos-chipid: do not enforce built-in
 > 
-> As suggested at [1] this additionally adds a of_device_is_available for
-> the node found, which will work for both platform and non-platform devices.
-> Also we can return early for non-platform-devices if they are enabled,
-> as rockchip_sub_drivers contains exclusively platform-devices.
-> 
-> [...]
+>   arch/arm/mach-exynos/Kconfig         |  1 -
+>   drivers/soc/samsung/Kconfig          |  4 +++-
+>   drivers/soc/samsung/Makefile         |  3 ++-
+>   drivers/soc/samsung/exynos-chipid.c  | 14 +++++++++++---
+>   drivers/soc/samsung/exynos5422-asv.c |  1 +
 
-Applied, thanks!
 
-[1/1] drm/rockchip: handle non-platform devices in rockchip_drm_endpoint_is_subdriver
-      commit: 37825e07ab413187e1ea078bc33dcdb835008be2
+For the series:
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
+Tested-by: Sylwester Nawrocki <snawrocki@kernel.org>
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+I just verified Odroid-XU4 is still booting without the driver
+and with the driver as a module. Thanks.
+
