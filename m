@@ -2,405 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66375413CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D4B413CF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235645AbhIUVtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234813AbhIUVtK (ORCPT
+        id S235658AbhIUVvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:51:20 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42574 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235527AbhIUVvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:49:10 -0400
-Received: from mail-oo1-xc4a.google.com (mail-oo1-xc4a.google.com [IPv6:2607:f8b0:4864:20::c4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8D6C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:47:41 -0700 (PDT)
-Received: by mail-oo1-xc4a.google.com with SMTP id f2-20020a4a2202000000b0028c8a8074deso231854ooa.20
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=HmPUo7NP84irG+fpbG/9RGxaqmMyeDRhG4gEokC1TiU=;
-        b=PWm6HO7VNfgOGGz8s2UmG7/ruYnSj98+qJ6XhjtSE02dBcbgXmoAvLE07O+zKH5Yqh
-         QFin2LgemJShzHUlpJd835AdDJhsleAWY93PexfgRlpbJ6ycDZQHiicZaok9PjH9ii4F
-         ez2OmbzVM4pW4ZN8dXIC9p8BevvD47dfXmF6vqJZGuRiLyFtLIxoW2k8XXdVay7QmCoa
-         8Z7K5wo9qmUdR3qlHiJuI3M61oWRRE1P/fvs4KXASXPVwgCU/cHRkRsWGRx2eNVGJU7+
-         Zgz9yni/oZHNkqwNMC8lw1A+Yz4KZ5Vs2yFT0xdf1dmuuATezv8BpzP5uP8UDiphrk5J
-         Rf0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=HmPUo7NP84irG+fpbG/9RGxaqmMyeDRhG4gEokC1TiU=;
-        b=WDUDbOw2deHAzK30BNbdXCQMGiyU9ClJIazf34Yw/b5/zVZ12/IciyCA/bo+GYpW9D
-         2xHCr+UPKjGP/V9e8FvILriZJlXlIkYce8flEoHnuvTCFHSfJMuhbi2pyEB6VHqmdOuc
-         rOXOcso/MEBMV8AJRE2anGr7OsrHvuXuqttlGEX/+7YZAbFTTvKbC+iqjJw+kkN56VyB
-         ziRSZYGgSXIwTar78QPA1ag2N9/pyYryqTvhkj37Mnv6l0fOVVo6VSR2TxR+S55+iZOc
-         Z1dvdX1CU0kbsahcWO/xgRRaOyOIvh48lkYoMr2PCv1eocbc6xRYTTID5wdgRRY4osy0
-         d9qQ==
-X-Gm-Message-State: AOAM533CBlkPgJk3ZLkjQ/8eRpJVXi7QPSNcQs4R37R19JCKTv5P9ejl
-        PL0dcXAJ/fZ7cJ8cMOFe6KbJUWsjRaCngA==
-X-Google-Smtp-Source: ABdhPJztfHXMNM3813FeExLvw4XPSZsY2Bse4pN4NA/CaCvAZgE7gwqOxMNfSajxKHhJcP0I+BAiRB+ZsaBsBA==
-X-Received: from mmandlik.mtv.corp.google.com ([2620:15c:202:201:98fb:b541:26ee:9c8a])
- (user=mmandlik job=sendgmr) by 2002:a25:1d86:: with SMTP id
- d128mr41342099ybd.406.1632260849068; Tue, 21 Sep 2021 14:47:29 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 14:47:10 -0700
-Message-Id: <20210921144640.v3.1.Ib31940aba2253e3f25cbca09a2d977d27170e163@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v3] bluetooth: Fix Advertisement Monitor Suspend/Resume
-From:   Manish Mandlik <mmandlik@google.com>
-To:     marcel@holtmann.org, luiz.dentz@gmail.com
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org,
-        Manish Mandlik <mmandlik@google.com>,
-        Archie Pusaka <apusaka@google.com>,
-        Miao-chen Chou <mcchou@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 21 Sep 2021 17:51:15 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18LLnbOk034521;
+        Tue, 21 Sep 2021 16:49:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632260977;
+        bh=qmFLuf8btJCpkABZQ3txkEnQak00qK8uLJahKxWnQjA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=GwuPbp2ybGVHuAGF60WXCNN1nWvYfoyiuoFHtX+hSSmyCSH7SgbiKF5zaYayN2lGF
+         o5XmiSv57OifNiMrymuztHkRZIt22lmO9e6TulWS+bf3HoXPLyJWhqPoHHsrSUn91h
+         gnwZ6Xh/VEEKihBs2VPFyzwbZ/wC1VS3WG7fnJec=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18LLnbrv049877
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Sep 2021 16:49:37 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
+ Sep 2021 16:49:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 21 Sep 2021 16:49:36 -0500
+Received: from [10.250.37.219] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18LLnaPk123879;
+        Tue, 21 Sep 2021 16:49:36 -0500
+Subject: Re: beaglebone black boot failure Linux v5.15.rc1
+To:     Drew Fustini <pdp7pdp7@gmail.com>
+CC:     Tony Lindgren <tony@atomide.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        Paul Barker <paul.barker@sancloud.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
+ <YUQyQgFAOFnBlcdP@atomide.com>
+ <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
+ <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com>
+ <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
+ <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com>
+ <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
+ <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com>
+ <YUmOGFUFONR/ynfW@atomide.com> <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
+ <CAEf4M_B1vam_ykRZmQ5++QArC-=+yooRg25BrQXKE5nk8AtqbA@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <40077cea-1f5e-de67-58dd-7fae0f63678d@ti.com>
+Date:   Tue, 21 Sep 2021 16:49:36 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CAEf4M_B1vam_ykRZmQ5++QArC-=+yooRg25BrQXKE5nk8AtqbA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During system suspend, advertisement monitoring is disabled by setting
-the=C2=A0HCI_VS_MSFT_LE_Set_Advertisement_Filter_Enable to False. This
-disables the monitoring during suspend, however, if the controller is
-monitoring a device, it sends HCI_VS_MSFT_LE_Monitor_Device_Event to
-indicate that the monitoring has been stopped for that particular
-device. This event may occur after suspend depending on the
-low_threshold_timeout and peer device advertisement frequency, which
-causes early wake up.
+On 9/21/21 3:29 PM, Drew Fustini wrote:
+> On Tue, Sep 21, 2021 at 9:09 AM Suman Anna <s-anna@ti.com> wrote:
+>>
+>> Hi Matti, Tony,
+>>
+>> On 9/21/21 2:47 AM, Tony Lindgren wrote:
+>>> * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
+>>>> Finally, adding the udelay(100); (as Tony suggested) at the end of the
+>>>> omap_reset_deassert() did make the oops go away even when pruss_tm was
+>>>> enabled. I don't know what would be a proper fix though.
+>>
+>> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
+>> changes [1].
+>>
+>> May I ask what is your BBB board version? My board is rev.A5C.
+> 
+> That rev is quite old [1].  Would you be able to try a Rev C?  It has
+> been in production since around 2014 with the move from 2GB to 4GB
+> eMMC.
 
-Right way to disable the monitoring for suspend is by removing all the
-monitors before suspend and re-monitor after resume to ensure no events
-are received=C2=A0during suspend. This patch fixes this suspend/resume issu=
-e.
+I don't have any rev.C boards handy to try.
 
-Following tests are performed:
-- Add monitors before suspend and make sure DeviceFound gets triggered
-- Suspend the system and verify that all monitors are removed by kernel
-  but not Released by bluetoothd
-- Wake up and verify that all monitors are added again and DeviceFound
-  gets triggered
+I am curious to see if there is some correlation between failures and board
+versions. I see that there is a minor processor change to AM3358 from rev.B
+onwards compared to the AM3359 that I would have on my board. PRU-ICSS IP would
+be present and supported on both though.
 
-Signed-off-by: Manish Mandlik <mmandlik@google.com>
-Reviewed-by: Archie Pusaka <apusaka@google.com>
-Reviewed-by: Miao-chen Chou <mcchou@google.com>
----
+regards
+Suman
 
-Changes in v3:
-- Updated the msft_{suspend/resume} function names
-
-Changes in v2:
-- Updated the Reviewd-by names
-
- net/bluetooth/hci_request.c |  15 +++--
- net/bluetooth/msft.c        | 117 +++++++++++++++++++++++++++++++-----
- net/bluetooth/msft.h        |   5 ++
- 3 files changed, 116 insertions(+), 21 deletions(-)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index 47fb665277d4..25eeca3ab495 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1281,21 +1281,24 @@ static void suspend_req_complete(struct hci_dev *hd=
-ev, u8 status, u16 opcode)
- 	}
- }
-=20
--static void hci_req_add_set_adv_filter_enable(struct hci_request *req,
--					      bool enable)
-+static void hci_req_prepare_adv_monitor_suspend(struct hci_request *req,
-+						bool suspending)
- {
- 	struct hci_dev *hdev =3D req->hdev;
-=20
- 	switch (hci_get_adv_monitor_offload_ext(hdev)) {
- 	case HCI_ADV_MONITOR_EXT_MSFT:
--		msft_req_add_set_filter_enable(req, enable);
-+		if (suspending)
-+			msft_suspend(hdev);
-+		else
-+			msft_resume(hdev);
- 		break;
- 	default:
- 		return;
- 	}
-=20
- 	/* No need to block when enabling since it's on resume path */
--	if (hdev->suspended && !enable)
-+	if (hdev->suspended && suspending)
- 		set_bit(SUSPEND_SET_ADV_FILTER, hdev->suspend_tasks);
- }
-=20
-@@ -1362,7 +1365,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, en=
-um suspended_state next)
- 		}
-=20
- 		/* Disable advertisement filters */
--		hci_req_add_set_adv_filter_enable(&req, false);
-+		hci_req_prepare_adv_monitor_suspend(&req, true);
-=20
- 		/* Prevent disconnects from causing scanning to be re-enabled */
- 		hdev->scanning_paused =3D true;
-@@ -1404,7 +1407,7 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, en=
-um suspended_state next)
- 		/* Reset passive/background scanning to normal */
- 		__hci_update_background_scan(&req);
- 		/* Enable all of the advertisement filters */
--		hci_req_add_set_adv_filter_enable(&req, true);
-+		hci_req_prepare_adv_monitor_suspend(&req, false);
-=20
- 		/* Unpause directed advertising */
- 		hdev->advertising_paused =3D false;
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index 21b1787e7893..255cffa554ee 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -94,11 +94,14 @@ struct msft_data {
- 	__u16 pending_add_handle;
- 	__u16 pending_remove_handle;
- 	__u8 reregistering;
-+	__u8 suspending;
- 	__u8 filter_enabled;
- };
-=20
- static int __msft_add_monitor_pattern(struct hci_dev *hdev,
- 				      struct adv_monitor *monitor);
-+static int __msft_remove_monitor(struct hci_dev *hdev,
-+				 struct adv_monitor *monitor, u16 handle);
-=20
- bool msft_monitor_supported(struct hci_dev *hdev)
- {
-@@ -154,7 +157,7 @@ static bool read_supported_features(struct hci_dev *hde=
-v,
- }
-=20
- /* This function requires the caller holds hdev->lock */
--static void reregister_monitor_on_restart(struct hci_dev *hdev, int handle=
-)
-+static void reregister_monitor(struct hci_dev *hdev, int handle)
- {
- 	struct adv_monitor *monitor;
- 	struct msft_data *msft =3D hdev->msft_data;
-@@ -182,6 +185,69 @@ static void reregister_monitor_on_restart(struct hci_d=
-ev *hdev, int handle)
- 	}
- }
-=20
-+/* This function requires the caller holds hdev->lock */
-+static void remove_monitor_on_suspend(struct hci_dev *hdev, int handle)
-+{
-+	struct adv_monitor *monitor;
-+	struct msft_data *msft =3D hdev->msft_data;
-+	int err;
-+
-+	while (1) {
-+		monitor =3D idr_get_next(&hdev->adv_monitors_idr, &handle);
-+		if (!monitor) {
-+			/* All monitors have been removed */
-+			msft->suspending =3D false;
-+			hci_update_background_scan(hdev);
-+			return;
-+		}
-+
-+		msft->pending_remove_handle =3D (u16)handle;
-+		err =3D __msft_remove_monitor(hdev, monitor, handle);
-+
-+		/* If success, return and wait for monitor removed callback */
-+		if (!err)
-+			return;
-+
-+		/* Otherwise free the monitor and keep removing */
-+		hci_free_adv_monitor(hdev, monitor);
-+		handle++;
-+	}
-+}
-+
-+/* This function requires the caller holds hdev->lock */
-+void msft_suspend(struct hci_dev *hdev)
-+{
-+	struct msft_data *msft =3D hdev->msft_data;
-+
-+	if (!msft)
-+		return;
-+
-+	if (msft_monitor_supported(hdev)) {
-+		msft->suspending =3D true;
-+		/* Quitely remove all monitors on suspend to avoid waking up
-+		 * the system.
-+		 */
-+		remove_monitor_on_suspend(hdev, 0);
-+	}
-+}
-+
-+/* This function requires the caller holds hdev->lock */
-+void msft_resume(struct hci_dev *hdev)
-+{
-+	struct msft_data *msft =3D hdev->msft_data;
-+
-+	if (!msft)
-+		return;
-+
-+	if (msft_monitor_supported(hdev)) {
-+		msft->reregistering =3D true;
-+		/* Monitors are removed on suspend, so we need to add all
-+		 * monitors on resume.
-+		 */
-+		reregister_monitor(hdev, 0);
-+	}
-+}
-+
- void msft_do_open(struct hci_dev *hdev)
- {
- 	struct msft_data *msft =3D hdev->msft_data;
-@@ -214,7 +280,7 @@ void msft_do_open(struct hci_dev *hdev)
- 		/* Monitors get removed on power off, so we need to explicitly
- 		 * tell the controller to re-monitor.
- 		 */
--		reregister_monitor_on_restart(hdev, 0);
-+		reregister_monitor(hdev, 0);
- 	}
- }
-=20
-@@ -382,8 +448,7 @@ static void msft_le_monitor_advertisement_cb(struct hci=
-_dev *hdev,
-=20
- 	/* If in restart/reregister sequence, keep registering. */
- 	if (msft->reregistering)
--		reregister_monitor_on_restart(hdev,
--					      msft->pending_add_handle + 1);
-+		reregister_monitor(hdev, msft->pending_add_handle + 1);
-=20
- 	hci_dev_unlock(hdev);
-=20
-@@ -420,13 +485,25 @@ static void msft_le_cancel_monitor_advertisement_cb(s=
-truct hci_dev *hdev,
- 	if (handle_data) {
- 		monitor =3D idr_find(&hdev->adv_monitors_idr,
- 				   handle_data->mgmt_handle);
--		if (monitor)
-+
-+		if (monitor && monitor->state =3D=3D ADV_MONITOR_STATE_OFFLOADED)
-+			monitor->state =3D ADV_MONITOR_STATE_REGISTERED;
-+
-+		/* Do not free the monitor if it is being removed due to
-+		 * suspend. It will be re-monitored on resume.
-+		 */
-+		if (monitor && !msft->suspending)
- 			hci_free_adv_monitor(hdev, monitor);
-=20
- 		list_del(&handle_data->list);
- 		kfree(handle_data);
- 	}
-=20
-+	/* If in suspend/remove sequence, keep removing. */
-+	if (msft->suspending)
-+		remove_monitor_on_suspend(hdev,
-+					  msft->pending_remove_handle + 1);
-+
- 	/* If remove all monitors is required, we need to continue the process
- 	 * here because the earlier it was paused when waiting for the
- 	 * response from controller.
-@@ -445,7 +522,8 @@ static void msft_le_cancel_monitor_advertisement_cb(str=
-uct hci_dev *hdev,
- 	hci_dev_unlock(hdev);
-=20
- done:
--	hci_remove_adv_monitor_complete(hdev, status);
-+	if (!msft->suspending)
-+		hci_remove_adv_monitor_complete(hdev, status);
- }
-=20
- static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev *hde=
-v,
-@@ -578,15 +656,15 @@ int msft_add_monitor_pattern(struct hci_dev *hdev, st=
-ruct adv_monitor *monitor)
- 	if (!msft)
- 		return -EOPNOTSUPP;
-=20
--	if (msft->reregistering)
-+	if (msft->reregistering || msft->suspending)
- 		return -EBUSY;
-=20
- 	return __msft_add_monitor_pattern(hdev, monitor);
- }
-=20
- /* This function requires the caller holds hdev->lock */
--int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
--			u16 handle)
-+static int __msft_remove_monitor(struct hci_dev *hdev,
-+				 struct adv_monitor *monitor, u16 handle)
- {
- 	struct msft_cp_le_cancel_monitor_advertisement cp;
- 	struct msft_monitor_advertisement_handle_data *handle_data;
-@@ -594,12 +672,6 @@ int msft_remove_monitor(struct hci_dev *hdev, struct a=
-dv_monitor *monitor,
- 	struct msft_data *msft =3D hdev->msft_data;
- 	int err =3D 0;
-=20
--	if (!msft)
--		return -EOPNOTSUPP;
--
--	if (msft->reregistering)
--		return -EBUSY;
--
- 	handle_data =3D msft_find_handle_data(hdev, monitor->handle, true);
-=20
- 	/* If no matched handle, just remove without telling controller */
-@@ -619,6 +691,21 @@ int msft_remove_monitor(struct hci_dev *hdev, struct a=
-dv_monitor *monitor,
- 	return err;
- }
-=20
-+/* This function requires the caller holds hdev->lock */
-+int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
-+			u16 handle)
-+{
-+	struct msft_data *msft =3D hdev->msft_data;
-+
-+	if (!msft)
-+		return -EOPNOTSUPP;
-+
-+	if (msft->reregistering || msft->suspending)
-+		return -EBUSY;
-+
-+	return __msft_remove_monitor(hdev, monitor, handle);
-+}
-+
- void msft_req_add_set_filter_enable(struct hci_request *req, bool enable)
- {
- 	struct hci_dev *hdev =3D req->hdev;
-diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
-index 8018948c5975..27d73f82b9de 100644
---- a/net/bluetooth/msft.h
-+++ b/net/bluetooth/msft.h
-@@ -24,6 +24,8 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_=
-monitor *monitor,
- 			u16 handle);
- void msft_req_add_set_filter_enable(struct hci_request *req, bool enable);
- int msft_set_filter_enable(struct hci_dev *hdev, bool enable);
-+void msft_suspend(struct hci_dev *hdev);
-+void msft_resume(struct hci_dev *hdev);
- bool msft_curve_validity(struct hci_dev *hdev);
-=20
- #else
-@@ -59,6 +61,9 @@ static inline int msft_set_filter_enable(struct hci_dev *=
-hdev, bool enable)
- 	return -EOPNOTSUPP;
- }
-=20
-+void msft_suspend(struct hci_dev *hdev) {}
-+void msft_resume(struct hci_dev *hdev) {}
-+
- static inline bool msft_curve_validity(struct hci_dev *hdev)
- {
- 	return false;
---=20
-2.33.0.464.g1972c5931b-goog
+> 
+> Thanks,
+> Drew
+> [1] https://elinux.org/Beagleboard:BeagleBoneBlack#Revision_A5C
+> 
 
