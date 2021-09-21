@@ -2,207 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B98413775
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C107D41377A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234816AbhIUQWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234486AbhIUQW2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:22:28 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7BDC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:20:05 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id t7so7666251wrw.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=078yoIIes6XudmrA4ndvhJcU0cqJ5ibZSu/SRqkDGds=;
-        b=LD7Xem73lecJCrN4VziR5KcEWxK5iCEy6tqZaK5KCA9LB0VCuJchCA0iT98pdeX3zG
-         WCDjpZYupCOQz9C2hEONtTu7PinvrJFwHqLMpE+jyDBrQe5s8VITYlFWygdOR15gX//b
-         dRgBFxrZENPcbUyM1VT+x7LIla20YSnzht1ryfdiAivrI5ne2O9XD3pLMGWU1CMxhJQO
-         qaStlXjXQGtdMiGiQU0Bvo9pT0pCo3+kz9eY1y45vXvgVuuc4QqQnt50IAPxgQ+1LO+X
-         eh1CaAjN/kP2/L7zxJW/mNQQLYjL9EUpL4A6//mtFzgoYCe6gODwctowDPBBCnA0qmjq
-         hyOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=078yoIIes6XudmrA4ndvhJcU0cqJ5ibZSu/SRqkDGds=;
-        b=uIYAoIgwhrXwOavVDBcS5Kukq9TlAjp+c0mzL53QY+ClItibvHFDsMx0CSlQnwUeWn
-         jhyGTI5ki9UP6KXQHv24LAj0LFSa8zBZNVBixVBS5rtPyRBdQOwPDeXCCVZf3NCJIsbh
-         27rSXCy7yCNKTtVjPup/J/djmi6QX3uYQnJ953odH1rKriLUGkqA+gK+/SF+GZXEHQYR
-         kYTFaWEul6beF/qg7qFIC/0ZNpb2lin6D/95ib1mGq9v0C1gP+RSJ96TOaayfvjyakzV
-         QQarpVIgltbldhuSzpZUMeJ1gJADWwCKf4rVA9s/gXAr1WlSjrvZa2XBSgKP9vKc8y0Q
-         R6mA==
-X-Gm-Message-State: AOAM531VnIYMKly6krMv2kNc3O7zJSurrVOPX92yPm84E7gOsca0g97S
-        buK8frecXQsSfqwketoccVp6bAz6bD4gRyk7mfs1SlBGFVBkaA==
-X-Google-Smtp-Source: ABdhPJxaDiXULVbh/F82K9ZFKKGTEq6b50WBbTfis9z0VqZVmbdS3XARCUgkO9Ie6hE4+J0O81R8wqC5QZUZpUwtI8E=
-X-Received: by 2002:adf:d1e9:: with SMTP id g9mr24352051wrd.200.1632241203757;
- Tue, 21 Sep 2021 09:20:03 -0700 (PDT)
+        id S234313AbhIUQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:23:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:36116 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233948AbhIUQXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:23:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52BD4113E;
+        Tue, 21 Sep 2021 09:22:26 -0700 (PDT)
+Received: from [10.57.95.67] (unknown [10.57.95.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34BBC3F718;
+        Tue, 21 Sep 2021 09:22:25 -0700 (PDT)
+Subject: Re: [PATCH] coresight: Don't immediately close events that are run on
+ invalid CPU/sink combos
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210921130231.386095-1-james.clark@arm.com>
+ <20210921151721.GA2059841@p14s>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <2d1326ea-a60c-8723-28a4-891a5478846f@arm.com>
+Date:   Tue, 21 Sep 2021 17:22:23 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210916223903.1592541-1-dlatypov@google.com>
-In-Reply-To: <20210916223903.1592541-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 22 Sep 2021 00:19:52 +0800
-Message-ID: <CABVgOSk3K5PGii7uMBpqRRxgVZpxPX19CMn8cYp_782T1ycZig@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: make --raw_output only support showing kunit output
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210921151721.GA2059841@p14s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 6:39 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Commit 6a499c9c42d0 ("kunit: tool: make --raw_output support only
-> showing kunit output") made --raw_output a string-typed argument.
-> Passing --raw_output=kunit would make it only show KUnit-related output
-> and not everything.
->
-> However, converting it to a string-typed argument had side effects.
->
-> These calls used to work:
-> $ kunit.py run --raw_output
-> $ kunit.py run --raw_output suite_filter
-> $ kunit.py run suite_filter --raw_output
->
-> But now the second is actually parsed as
-> $ kunit.py run --raw_output=suite_filter
->
-> So the order you add in --raw_output now matters and command lines that
-> used to work might not anymore.
->
-> Change --raw_output back to a boolean flag, but change its behavior to
-> match that of the former --raw_output=kunit.
-> The assumption is that this is what most people wanted to see anyways.
->
-> To get the old behavior, users can simply do:
-> $ kunit.py run >/dev/null; cat .kunit/test.log
-> They don't have any easy way of getting the --raw_output=kunit behavior.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
->
-> Meta: this is an alternative to
-> https://lore.kernel.org/linux-kselftest/20210903161405.1861312-1-dlatypov@google.com/
->
-> I'd slightly prefer that approach, but if we're fine with giving up the
-> old --raw_output semantics entirely, this would be cleaner.
-> I'd also assume that most people would prefer the new semantics, but I'm
-> not sure of that.
->
-> ---
+On 21/09/2021 16:17, Mathieu Poirier wrote:
+> On Tue, Sep 21, 2021 at 02:02:31PM +0100, James Clark wrote:
+>> When a traced process runs on a CPU that can't reach the selected sink,
+>> the event will be stopped with PERF_HES_STOPPED. This means that even if
+>> the process migrates to a valid CPU, tracing will not resume.
+>>
+>> This can be reproduced (on N1SDP) by using taskset to start the process
+>> on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
+>> CPU 2):
+>>
+>>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
+>>
+>> This produces a single 0 length AUX record, and then no more trace:
+>>
+>>    0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
+>>
+>> After the fix, the same command produces normal AUX records. The perf
+>> self test "89: Check Arm CoreSight trace data recording and synthesized
+>> samples" no longer fails intermittently. This was because the taskset in
+>> the test is after the fork, so there is a period where the task is
+>> scheduled on a random CPU rather than forced to a valid one.
+>>
+>> Specifically selecting an invalid CPU will still result in a failure to
+>> open the event because it will never produce trace:
+>>
+>>    ./perf record -C 2 -e cs_etm/@tmc_etf0/
+>>    failed to mmap with 12 (Cannot allocate memory)
+>>
+>> The only scenario that has changed is if the CPU mask has a valid CPU
+>> sink combo in it.
+>>
+>> Testing
+>> =======
+>>
+>> * Coresight self test passes consistently:
+>>    ./perf test Coresight
+>>
+>> * CPU wide mode still produces trace:
+>>    ./perf record -e cs_etm// -a
+>>
+>> * Invalid -C options still fail to open:
+>>    ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
+>>    failed to mmap with 12 (Cannot allocate memory)
+>>
+>> * Migrating a task to a valid sink/CPU now produces trace:
+>>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
+>>
+>> * If the task remains on an invalid CPU, no trace is emitted:
+>>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>   .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
+>>   1 file changed, 22 insertions(+), 5 deletions(-)
+> 
+> Very interesting corner case - and I like your solution.  Arnaldo, please
+> consider.
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
 
-Thanks. I'm happy with either approach, but this is the one I properly
-understand. If you'd rather push the other one, I agree that it's
-better from a user perspective, so I'm okay with that: it's just a bit
-beyond my comfort zone Python-hacks wise.
+PS: This is for coresight driver, I can pick this up. Otherwise,
 
-If we do go with this one, and I need the whole output, just running
-the UML 'linux' binary is another option, which I've used in the past.
-That's a bit trickier for qemu though: maybe there's some benefit in
-having a --dry-run option for kunit.py run which just prints the
-command used to execute the kernel. That's obviously beyond the scope
-of this, though.
-
-Regardless, this is
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
 
->  Documentation/dev-tools/kunit/kunit-tool.rst |  7 -------
->  tools/testing/kunit/kunit.py                 | 12 +++---------
->  tools/testing/kunit/kunit_tool_test.py       | 13 ++++++-------
->  3 files changed, 9 insertions(+), 23 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kunit/kunit-tool.rst b/Documentation/dev-tools/kunit/kunit-tool.rst
-> index ae52e0f489f9..03404746f1f6 100644
-> --- a/Documentation/dev-tools/kunit/kunit-tool.rst
-> +++ b/Documentation/dev-tools/kunit/kunit-tool.rst
-> @@ -114,13 +114,6 @@ results in TAP format, you can pass the ``--raw_output`` argument.
->
->         ./tools/testing/kunit/kunit.py run --raw_output
->
-> -The raw output from test runs may contain other, non-KUnit kernel log
-> -lines. You can see just KUnit output with ``--raw_output=kunit``:
-> -
-> -.. code-block:: bash
-> -
-> -       ./tools/testing/kunit/kunit.py run --raw_output=kunit
-> -
->  If you have KUnit results in their raw TAP format, you can parse them and print
->  the human-readable summary with the ``parse`` command for kunit_tool. This
->  accepts a filename for an argument, or will read from standard input.
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index 5a931456e718..3626a56472b5 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -115,13 +115,7 @@ def parse_tests(request: KunitParseRequest) -> KunitResult:
->                                               'Tests not Parsed.')
->
->         if request.raw_output:
-> -               output: Iterable[str] = request.input_data
-> -               if request.raw_output == 'all':
-> -                       pass
-> -               elif request.raw_output == 'kunit':
-> -                       output = kunit_parser.extract_tap_lines(output)
-> -               else:
-> -                       print(f'Unknown --raw_output option "{request.raw_output}"', file=sys.stderr)
-> +               output = kunit_parser.extract_tap_lines(request.input_data)
->                 for line in output:
->                         print(line.rstrip())
->
-> @@ -256,8 +250,8 @@ def add_exec_opts(parser) -> None:
->
->  def add_parse_opts(parser) -> None:
->         parser.add_argument('--raw_output', help='If set don\'t format output from kernel. '
-> -                           'If set to --raw_output=kunit, filters to just KUnit output.',
-> -                           type=str, nargs='?', const='all', default=None)
-> +                           'It will only show output from KUnit.',
-> +                           action='store_true')
->         parser.add_argument('--json',
->                             nargs='?',
->                             help='Stores test results in a JSON, and either '
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 619c4554cbff..55ed3dac31ee 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -399,14 +399,13 @@ class KUnitMainTest(unittest.TestCase):
->                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
->                         self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
->
-> -       def test_run_raw_output_kunit(self):
-> +       def test_run_raw_output_does_not_take_positional_args(self):
-> +               # --raw_output might eventually support an argument, but we don't want it
-> +               # to consume any positional arguments, only ones after an '='.
->                 self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
-> -               kunit.main(['run', '--raw_output=kunit'], self.linux_source_mock)
-> -               self.assertEqual(self.linux_source_mock.build_reconfig.call_count, 1)
-> -               self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
-> -               for call in self.print_mock.call_args_list:
-> -                       self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
-> -                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
-> +               kunit.main(['run', '--raw_output', 'filter_glob'], self.linux_source_mock)
-> +               self.linux_source_mock.run_kernel.assert_called_once_with(
-> +                       args=None, build_dir='.kunit', filter_glob='filter_glob', timeout=300)
->
->         def test_exec_timeout(self):
->                 timeout = 3453
->
-> base-commit: 316346243be6df12799c0b64b788e06bad97c30b
-> --
-> 2.33.0.464.g1972c5931b-goog
->
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> index 8ebd728d3a80..79346f0f0e0b 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>> @@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
+>>   	 * sink from this ETM. We can't do much in this case if
+>>   	 * the sink was specified or hinted to the driver. For
+>>   	 * now, simply don't record anything on this ETM.
+>> +	 *
+>> +	 * As such we pretend that everything is fine, and let
+>> +	 * it continue without actually tracing. The event could
+>> +	 * continue tracing when it moves to a CPU where it is
+>> +	 * reachable to a sink.
+>>   	 */
+>>   	if (!cpumask_test_cpu(cpu, &event_data->mask))
+>> -		goto fail_end_stop;
+>> +		goto out;
+>>   
+>>   	path = etm_event_cpu_path(event_data, cpu);
+>>   	/* We need a sink, no need to continue without one */
+>> @@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
+>>   	if (coresight_enable_path(path, CS_MODE_PERF, handle))
+>>   		goto fail_end_stop;
+>>   
+>> -	/* Tell the perf core the event is alive */
+>> -	event->hw.state = 0;
+>> -
+>>   	/* Finally enable the tracer */
+>>   	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+>>   		goto fail_disable_path;
+>>   
+>> +out:
+>> +	/* Tell the perf core the event is alive */
+>> +	event->hw.state = 0;
+>>   	/* Save the event_data for this ETM */
+>>   	ctxt->event_data = event_data;
+>> -out:
+>>   	return;
+>>   
+>>   fail_disable_path:
+>> @@ -517,6 +521,19 @@ static void etm_event_stop(struct perf_event *event, int mode)
+>>   	if (WARN_ON(!event_data))
+>>   		return;
+>>   
+>> +	/*
+>> +	 * Check if this ETM was allowed to trace, as decided at
+>> +	 * etm_setup_aux(). If it wasn't allowed to trace, then
+>> +	 * nothing needs to be torn down other than outputting a
+>> +	 * zero sized record.
+>> +	 */
+>> +	if (handle->event && (mode & PERF_EF_UPDATE) &&
+>> +	    !cpumask_test_cpu(cpu, &event_data->mask)) {
+>> +		event->hw.state = PERF_HES_STOPPED;
+>> +		perf_aux_output_end(handle, 0);
+>> +		return;
+>> +	}
+>> +
+>>   	if (!csdev)
+>>   		return;
+>>   
+>> -- 
+>> 2.28.0
+>>
+
