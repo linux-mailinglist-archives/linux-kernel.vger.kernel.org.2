@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EA141331D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B7D41331F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhIUMGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhIUMGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:06:18 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B5FC061574;
-        Tue, 21 Sep 2021 05:04:50 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id dj4so17643215edb.5;
-        Tue, 21 Sep 2021 05:04:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PjlwybJCIOyk6kI6/r4pWXearyUORkl4g3ybUpCst+U=;
-        b=SarQDHmPNdFnpBy4YkSR+ypw2KsJep6A9+qzjAn/vgdJW93JKYhtRSjuTDzfZoFK5/
-         fhrLc7HQs2lOMlFuPQXW4ZJoXUpTUzWSQI4Yba7ndZUddOOWr7slJs6LKCBOdu5e+V3S
-         OoQSyajjadng/LTRJVDdH26WPJUhJljiO1MFmg/+ik5PtwZUV+TWb3yAgUJPvRSuAOSe
-         Mr1c6QgTlug65gzSrnCJPjh9yLre/uk7ajgPUthJY/Ti6E9F8lPjf7vJh9ABdsmrsWkC
-         bQN8a/Nfi2yNZZYj4O7MkkffT5QTRuQ+NsztZrGYtbKLbSPSFnMqUOg8N7+VgtGc9da1
-         k3Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PjlwybJCIOyk6kI6/r4pWXearyUORkl4g3ybUpCst+U=;
-        b=NKQG5YKuzOajR66+DunQiKSUI7g7eVVWG/zCvrF51TD9luY3UnkbmngtLUOJHepKnx
-         XpuIg1gK8CiU0K6pOdtlwnwkI2EtO2cs8aR0E2+ss5qICqZOZH2V8xaEw8/1jhjm59Uo
-         IiwaiH6zoRPzjh/Ji09RSUgOei85dWhja75WFbJcD63vzJwCXs+vJwH/iVfMuIqd2TVm
-         aqiDRc7zysNeIGD1AQr+KjFFMJkev33nll2jO4C32fuMmkOZVFVFHwzxuc1Let3f+asU
-         joIGSSyy+4vDWXtioGFpvSFLDfl/V/P8AL/bH8fp/7owr96/p45FDCHu7aFiDDLZvlZw
-         PGGA==
-X-Gm-Message-State: AOAM530zRC31zs1OkmtvQ5hI61opJqC8CoWosc2xvlHw/vOUtUbBwnWH
-        USlk9MbKJHJSoetrpPzre6jwoNg7v5OsOMNdmbQ=
-X-Google-Smtp-Source: ABdhPJz3raeyYe4OAKqhiP0XFxXtjQmAUm8g/XPotRYQ96GojP9JjYyw+85vTb3EQpXDDX96JOCmAN6FKYGc8wnWk2o=
-X-Received: by 2002:a17:906:90c9:: with SMTP id v9mr32849608ejw.356.1632225856357;
- Tue, 21 Sep 2021 05:04:16 -0700 (PDT)
+        id S231823AbhIUMGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:06:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231715AbhIUMG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:06:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD1E661283;
+        Tue, 21 Sep 2021 12:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632225900;
+        bh=DG9JNZQFvl7efc4nexOO4fg+5WMfNAZoucbjG4viZJY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NKhQ//8opxeA0g5NaMvTusKd95Jeh1r3yoFaq76nUvQR1KiwDblmo04KsiciTCHgr
+         CO9zM6Vmo3427l7xLk7VtbvdwMvcOEZWiPDrWkOClAMDn2/mYya9nkPx2opqSZVVkg
+         BjPAkkO+6RNgzmnQzHpn8YDYc+APYvooJUQWDVAH+vXIaSeOw4VA4iAKzPEzbR/14W
+         pgUbAzg0CSDsV//1+s4rOvobBn7TVroQPaeyz+u5fnd+yLSEJ0ZadPpI0Hm1i+kChu
+         Kf9O+YeCNKHVapXKthvVwD/iHWK9lDIeNGMCiAj5HIgnbEq1fajR4Z0NlgEANVAP96
+         wrkUzx53d4JhA==
+Received: by mail-ot1-f49.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so27952153otq.7;
+        Tue, 21 Sep 2021 05:05:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530UfzC9gJbU8SU2CkBh7qrjHetVxnzjW/NB0qvPQHs9W0HcWW8N
+        c1ZsJZeM1u4vznuUi7eGK/FmFDxgk9MpnXUzV5M=
+X-Google-Smtp-Source: ABdhPJxUqmu5iQVr6fZ3TQM6eziNelFJiJn18TFwtwwTecybfc/0teebK58ixSK16CBCXGG0Y5zoMsZaVGfK1lcWdYI=
+X-Received: by 2002:a05:6830:3189:: with SMTP id p9mr22365233ots.147.1632225899996;
+ Tue, 21 Sep 2021 05:04:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210921103346.64824-1-tony@atomide.com>
-In-Reply-To: <20210921103346.64824-1-tony@atomide.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 21 Sep 2021 15:03:39 +0300
-Message-ID: <CAHp75Vef_Y8M9RmpCvfpo9OWC4Nt3rzV7S9esJBcub_5DZQj1Q@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Get rid of pm_runtime_irq_safe() for 8250_omap
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-2-ardb@kernel.org>
+ <YUNXfWKZ7XYvw2EK@arm.com>
+In-Reply-To: <YUNXfWKZ7XYvw2EK@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 21 Sep 2021 14:04:48 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFkJtVaT2CjigZHLT+AAjmCzU1OgTg+QS-ttJxmejGkRQ@mail.gmail.com>
+Message-ID: <CAMj1kXFkJtVaT2CjigZHLT+AAjmCzU1OgTg+QS-ttJxmejGkRQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/8] arm64: add CPU field to struct thread_info
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:S390" <linux-s390@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 1:34 PM Tony Lindgren <tony@atomide.com> wrote:
+On Thu, 16 Sept 2021 at 16:41, Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
-> Hi,
+> On Tue, Sep 14, 2021 at 02:10:29PM +0200, Ard Biesheuvel wrote:
+> > The CPU field will be moved back into thread_info even when
+> > THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
+> > struct thread_info.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 >
-> Here are patches to get rid of pm_runtime_irq_safe() for the 8250_omap
-> driver.
->
-> For removing the pm_runtime_irq_safe() usage, serial TX is the last
-> remaining issue. We deal with TX by waking up the port and returning 0
-> bytes written from write_room() and write() if the port is not available
-> because of PM runtime autoidle.
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
-of the PM
-
->
-> This series also removes the dependency to Andy's pending generic serial
-> layer PM runtime patches, and hopefully makes that work a bit easier :)
-
-
-Thank you, Tony, very much! The series looks to me in a good
-condition, hence, FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Regards,
->
-> Tony
->
->
-> Tony Lindgren (6):
->   n_tty: Start making use of -EAGAIN returned from
->     process_output_block()
->   tty: n_gsm: Don't ignore write return value in gsmld_output()
->   serial: core: Add new prep_tx for power management
->   serial: 8250: Implement prep_tx for power management
->   serial: 8250_omap: Require a valid wakeirq for deeper idle states
->   serial: 8250_omap: Drop the use of pm_runtime_irq_safe()
->
->  Documentation/driver-api/serial/driver.rst |  9 ++++++
->  drivers/tty/n_gsm.c                        |  5 ++-
->  drivers/tty/n_tty.c                        |  8 +++--
->  drivers/tty/serial/8250/8250_omap.c        | 36 +++++++++++++++-------
->  drivers/tty/serial/8250/8250_port.c        | 24 +++++++++++++++
->  drivers/tty/serial/serial_core.c           | 23 ++++++++++++++
->  include/linux/serial_core.h                |  1 +
->  7 files changed, 90 insertions(+), 16 deletions(-)
->
-> --
-> 2.33.0
-
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks. I take it this applies to patch #5 as well?
