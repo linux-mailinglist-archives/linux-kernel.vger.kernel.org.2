@@ -2,82 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFFF413C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F058413C13
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbhIUVMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:12:39 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:45965 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbhIUVM0 (ORCPT
+        id S235296AbhIUVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235334AbhIUVMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:12:26 -0400
-Received: by mail-oi1-f173.google.com with SMTP id v10so1070922oic.12;
-        Tue, 21 Sep 2021 14:10:57 -0700 (PDT)
+        Tue, 21 Sep 2021 17:12:42 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F57C061574;
+        Tue, 21 Sep 2021 14:11:13 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id c7so2278631qka.2;
+        Tue, 21 Sep 2021 14:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zCsTnszozcMWakwvCPgZXXhNyKNOkSlqncLZKwtc/cs=;
+        b=Wo0ChhyKDc641UkRQXImePyH7Kca90qJ0M+wVAZehOGrSvyqhqySnh5pwDSXOk0Sid
+         099qlb+GgA+Md5pIc2x9t8aAAXPPYV8seX2/g14ugartmaCaY7UuYkfBBQU0ISzOBTeT
+         dwKLp1d9X5/q+QaLSRww/e1Q0VptwWRZjKF4D76F4dl7Myuxa5yrPy063I0Go8wsdgjg
+         75FZY2e3HkRR10Ma9X5+jUyJSe1jfC4N9Jlam2kripRtLC+/ltKOmAqvRfUekbMu4wWS
+         w+WvRBaMCqN/MVo0MNiKpmYeBv43z859ecs5sj1JGolhDF/e8XTKR5nCe9HnEVy3FFhz
+         JWeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jIz2G48SF2XThdMGQsfeQUy2tCLoDKrmydgjbV43nOk=;
-        b=QpJ0ARP+wALZvRtftGIdnz/AqNsLle1AH8XngMUkV/iOQkorCyKU8RB0D2/9S7/LbK
-         P5a52gpa0lWu3JrY5heZu+o9Rz2UXKzg8fPItGltX30IK/5Wscdq4PtqZXOh/+MpWQ55
-         yA0TcpfD+W3SfmrAhj5J+S9NBB4kYIuOYjVu0UcVXl+YLYBviZKQCKDzk//VLKBR43xz
-         bDbn4CGGqcXkBbCSZ3bQXoDAaJeM/v+cQk4JYy8X5JUWZK+cgJJK7qttjjhFQFWXc2hP
-         avzAWoLUZ98KA9M89YpP1QUmF4BNat+1W1pzZ5pS3BwkZFP0aOK97kC8JDjFdsuWVMoZ
-         7lrg==
-X-Gm-Message-State: AOAM532oGVXmqOfiad3dzichOdsK4LwI31N86uMLEc5dM+mcf4fQVjpm
-        xmBYRDsHvj98hs11SpckYg==
-X-Google-Smtp-Source: ABdhPJzVxcUKtkEaMTuDtJmU/GqAZYe5OyjA58+NTxsyuCgjp7qZKhxVm2JNoJ6jbd2cdujwTNJ7/Q==
-X-Received: by 2002:aca:eb83:: with SMTP id j125mr107354oih.47.1632258656807;
-        Tue, 21 Sep 2021 14:10:56 -0700 (PDT)
-Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
-        by smtp.gmail.com with ESMTPSA id s24sm35233oic.34.2021.09.21.14.10.55
+        bh=zCsTnszozcMWakwvCPgZXXhNyKNOkSlqncLZKwtc/cs=;
+        b=nj7mqf+7MITyBP7yJ1R7cCgFp0xG2368riFcDtnU1Ic5hRS51+8L9pMsTGBrwARvEr
+         /NflbTLwQKqoL8QWZfLHGADYuk2IZn7qoxtatitintkLYD25g3ZR3XOhr2/2XYAt9Msj
+         NRYrC2BxXyQrQXQRhDOkGAuSqzawYTo8XLjHdLswBp3f+ymIqwxBHy5qfSO3NCy29XvH
+         3mHSx/VrqU3feRLcVaPX4fW6rXIk+WsL6FwWXLBZNsvcYgp2FFvWAQ6zMJsXuxSRPXrI
+         G5NNlQiUsaLVYZYRJcAnmYGrXeNs9Z2L0REFUortBbQf1CAKxjuRCHQnxHknUETAvmvg
+         Je5Q==
+X-Gm-Message-State: AOAM5302ibAzP4q+AXNQdJ8dSdjgwkFiQyETvKKM0dcV6rQueJpsT//k
+        xy6/xNbtciv3dGI6EF2KRw==
+X-Google-Smtp-Source: ABdhPJwawa4dME/5/GH0r/McBHz9A74FW3KWI/lcJzN9mewwiCovRyE/eKFXpxKF9RWNgIO1YdwFzA==
+X-Received: by 2002:ae9:efc9:: with SMTP id d192mr15818686qkg.366.1632258672543;
+        Tue, 21 Sep 2021 14:11:12 -0700 (PDT)
+Received: from moria.home.lan (c-73-219-103-14.hsd1.vt.comcast.net. [73.219.103.14])
+        by smtp.gmail.com with ESMTPSA id m21sm131906qka.69.2021.09.21.14.11.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:10:56 -0700 (PDT)
-Received: (nullmailer pid 3331030 invoked by uid 1000);
-        Tue, 21 Sep 2021 21:10:55 -0000
-Date:   Tue, 21 Sep 2021 16:10:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-clk@vger.kernel.org, Amit Pundir <amit.pundir@linaro.org>,
-        Tom Gall <tom.gall@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/6] dt-bindings: clock: Add bindings definitions for
- Exynos850 CMU
-Message-ID: <YUpKX+0nZNTvLUgH@robh.at.kernel.org>
-References: <20210914155607.14122-1-semen.protsenko@linaro.org>
- <20210914155607.14122-5-semen.protsenko@linaro.org>
+        Tue, 21 Sep 2021 14:11:11 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:11:09 -0400
+From:   Kent Overstreet <kent.overstreet@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folio discussion recap
+Message-ID: <YUpKbWDYqRB6eBV+@moria.home.lan>
+References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210914155607.14122-5-semen.protsenko@linaro.org>
+In-Reply-To: <YUpC3oV4II+u+lzQ@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sep 2021 18:56:05 +0300, Sam Protsenko wrote:
-> Clock controller driver is designed to have separate instances for each
-> particular CMU. So clock IDs in this bindings header also start from 1
-> for each CMU.
+On Tue, Sep 21, 2021 at 09:38:54PM +0100, Matthew Wilcox wrote:
+> On Tue, Sep 21, 2021 at 03:47:29PM -0400, Johannes Weiner wrote:
+> > and so the justification for replacing page with folio *below* those
+> > entry points to address tailpage confusion becomes nil: there is no
+> > confusion. Move the anon bits to anon_page and leave the shared bits
+> > in page. That's 912 lines of swap_state.c we could mostly leave alone.
 > 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  include/dt-bindings/clock/exynos850.h | 72 +++++++++++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 include/dt-bindings/clock/exynos850.h
-> 
+> Your argument seems to be based on "minimising churn".  Which is certainly
+> a goal that one could have, but I think in this case is actually harmful.
+> There are hundreds, maybe thousands, of functions throughout the kernel
+> (certainly throughout filesystems) which assume that a struct page is
+> PAGE_SIZE bytes.  Yes, every single one of them is buggy to assume that,
+> but tracking them all down is a never-ending task as new ones will be
+> added as fast as they can be removed.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Yet it's only file backed pages that are actually changing in behaviour right
+now - folios don't _have_ to be the tool to fix that elsewhere, for anon, for
+network pools, for slab.
+
+> > The anon_page->page relationship may look familiar too. It's a natural
+> > type hierarchy between superclass and subclasses that is common in
+> > object oriented languages: page has attributes and methods that are
+> > generic and shared; anon_page and file_page encode where their
+> > implementation differs.
+> > 
+> > A type system like that would set us up for a lot of clarification and
+> > generalization of the MM code. For example it would immediately
+> > highlight when "generic" code is trying to access type-specific stuff
+> > that maybe it shouldn't, and thus help/force us refactor - something
+> > that a shared, flat folio type would not.
+> 
+> If you want to try your hand at splitting out anon_folio from folio
+> later, be my guest.  I've just finished splitting out 'slab' from page,
+> and I'll post it later.  I don't think that splitting anon_folio from
+> folio is worth doing, but will not stand in your way.  I do think that
+> splitting tail pages from non-tail pages is worthwhile, and that's what
+> this patchset does.
+
+Eesh, we can and should hold ourselves to a higher standard in our technical
+discussions.
+
+Let's not let past misfourtune (and yes, folios missing 5.15 _was_ unfortunate
+and shouldn't have happened) colour our perceptions and keep us from having
+productive working relationships going forward. The points Johannes is bringing
+up are valid and pertinent and deserve to be discussed.
+
+If you're still trying to sell folios as the be all, end all solution for
+anything using compound pages, I think you should be willing to make the
+argument that that really is the _right_ solution - not just that it was the one
+easiest for you to implement.
+
+Actual code might make this discussion more concrete and clearer. Could you post
+your slab conversion?
