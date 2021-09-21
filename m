@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF4D413C6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6816E413C71
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbhIUV3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:29:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235066AbhIUV3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:29:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6885560E05;
-        Tue, 21 Sep 2021 21:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632259698;
-        bh=u5KDp5z7CNOMtmug5vUpsYUjL+QlsT/yr8SkHYUNkzA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=k5/YG+yIhh+2Lmbf7o19vG38h1Ui+/ljTE8INnNZUhwDqxRBEaKYNGqz4ovOw2qC6
-         oW0K574xRPFLgi6j7219P63O7HYnSLn+J4ER9euN7lliQZKglCHW13+OMIrfmd3CFr
-         HHKTkvDLZFueAOZsNP6wwOWlr6FyTApV4NHsK/lfJa49eF2m8S699Y/ZYHVOwhwdtK
-         puOJB6MSGQmkw7cTiME9Fp8D7hVJ5ZObWvmueFr7vGvlqZ3P0Z1c/NEo9XypkQkxd0
-         4ZYXP9p6xLS12/zTcnhNl1VS4N0us1PEu/e7H5zmrbvocDsRUV2yXEUes8jbWHt91J
-         pBDQPbTK+dH5A==
-Message-ID: <bba7e537fd9197a92358640ebb0aef365984cebc.camel@kernel.org>
-Subject: Re: [PATCH v5 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tony Luck <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Cathy Zhang <cathy.zhang@intel.com>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 22 Sep 2021 00:28:16 +0300
-In-Reply-To: <20210917213836.175138-2-tony.luck@intel.com>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
-         <20210917213836.175138-1-tony.luck@intel.com>
-         <20210917213836.175138-2-tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S235390AbhIUVaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:30:09 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45534 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235066AbhIUVaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:30:07 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7162F1C0B76; Tue, 21 Sep 2021 23:28:37 +0200 (CEST)
+Date:   Tue, 21 Sep 2021 23:28:37 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
+Message-ID: <20210921212837.GA29170@duo.ucw.cz>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163918.373775935@linuxfoundation.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+Content-Disposition: inline
+In-Reply-To: <20210920163918.373775935@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-17 at 14:38 -0700, Tony Luck wrote:
-> SGX EPC pages go through the following life cycle:
+
+--PNTmBPCT7hxwcZjr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver bro=
+ke
+> when moving the incorrect handling of mac link state out of mac_config().
+> This reason this breaks is because the stmmac's WoL is handled by the MAC
+> rather than the PHY, and phylink doesn't cater for that scenario.
 >=20
->         DIRTY ---> FREE ---> IN-USE --\
->                     ^                 |
->                     \-----------------/
->=20
-> Recovery action for poison for a DIRTY or FREE page is simple. Just
-> make sure never to allocate the page. IN-USE pages need some extra
-> handling.
->=20
-> It would be good to use the sgx_epc_page->owner field as an indicator
-> of where an EPC page is currently in that cycle (owner !=3D NULL means
-> the EPC page is IN-USE). But there is one caller, sgx_alloc_va_page(),
-> that calls with NULL.
->=20
-> Since there are multiple uses of the "owner" field with different types
-> change the sgx_epc_page structure to define an anonymous union with
-> each of the uses explicitly called out.
+> This patch adds the necessary phylink code to handle suspend/resume events
+> according to whether the MAC still needs a valid link or not. This is the
+> barest minimum for this support.
 
-But it's still always a pointer.
+This adds functions that end up being unused in 5.10. AFAICT we do not
+need this in 5.10.
 
-And not only that, but two alternative fields in that union have *exactly* =
-the
-same type, so it's kind of artifically representing the problem more comple=
-x
-than it really is.
+Best regards,
+								Pavel
 
-I'm not just getting, why all this complexity, and not a few casts instead?
 
-I neither get the rename of "owner" to "private". It serves very little val=
-ue.
-I'm not saying that "owner" is best name ever but it's not *that* confusing
-either. That I'm sure that it is definitely not very productive to rename i=
-t.
+> +++ b/include/linux/phylink.h
+> @@ -446,6 +446,9 @@ void phylink_mac_change(struct phylink *, bool up);
+>  void phylink_start(struct phylink *);
+>  void phylink_stop(struct phylink *);
+> =20
+> +void phylink_suspend(struct phylink *pl, bool mac_wol);
+> +void phylink_resume(struct phylink *pl);
+> +
+>  void phylink_ethtool_get_wol(struct phylink *, struct ethtool_wolinfo *);
+>  int phylink_ethtool_set_wol(struct phylink *, struct ethtool_wolinfo *);
 
-Also there was still this "dirty". We could use ((void *)-1), which was als=
-o
-suggested for earlier revisions.
 
-/Jarkko
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
+--PNTmBPCT7hxwcZjr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUpOhQAKCRAw5/Bqldv6
+8locAJ9DhHBYbh7xMHQhEo+x6kC4HRvZhQCfdY/0GTWDdKSunFC/EFTxWKmc/uw=
+=c5Bh
+-----END PGP SIGNATURE-----
+
+--PNTmBPCT7hxwcZjr--
