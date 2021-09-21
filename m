@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B99413324
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12124413326
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhIUMIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:08:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59888 "EHLO mail.kernel.org"
+        id S232561AbhIUMIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:08:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230160AbhIUMIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:08:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E0A66126A;
-        Tue, 21 Sep 2021 12:06:36 +0000 (UTC)
+        id S232515AbhIUMIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:08:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D8F360F43;
+        Tue, 21 Sep 2021 12:06:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632225996;
-        bh=qnWTodEwspkSMdWf5XON5Ep7daBqF5kbGbudj8UJ3BM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AqKDYakbUVbx323nFcNrRgWy01h3JK7NhWkadTqGI2CjV4jpJ1GWL97jA4orZZzAH
-         XUIZuG5H+2+GtcxT5b2qT+uCdJa7SEBUN2LigkTvwpHm7xnqlCzrWXVM4zyiq3d/fy
-         pD1nF0rp8CyvUG8OxbFloC/QGB8iJDTbLHhlyh1yg4dno4mfgMgHOPm0GhTCh9IqnV
-         9tqnYqbdFGteLVIQUlEGX6b9nEcp+XzfpWgphtvwG4SzxpsYDwDvkga0iA1YGPeLBf
-         GAK6jZeK0iVdleRljCp+OCFHp6MUXO3a9TxpP/52YLnqnnecas2EICZcztf8Kn6jUT
-         2qHogEKNYd3qQ==
-Received: by mail-oi1-f172.google.com with SMTP id s69so21824002oie.13;
-        Tue, 21 Sep 2021 05:06:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532QWmGJ1HlvITAHiOoLhkNvjLJmlCuTLB6UpRKl+LeD1yTgJgm0
-        uydPRnPnJsZlE9aD6TqmOiK1gEexDmXcUm3T+GI=
-X-Google-Smtp-Source: ABdhPJx1x7wQ2+Ve4iSZCDQmmYVEepXxo/5KRhWVQj/N//ixUTMX6irYoXDtuXoK84SNkd7MjELWyQDwt9BfbsPbMro=
-X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr1242229oiu.33.1632225995730;
- Tue, 21 Sep 2021 05:06:35 -0700 (PDT)
+        s=k20201202; t=1632226001;
+        bh=splY08tv2Ba0Wf51sxfKsm7eB0Z4ABs5Pw2cCaiPjyU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZIsj8k/soU9Lm2COKGpAsVPg2TvRtfZpb2K/iXz+8hHHFVFtsKB4GeLGn49Hy/6T/
+         7yTVj7vU1A9dDV88zrjNACX897aMmTZQ6XdpDd8bpvnjfBSiUhnSOfI73u2wG6ntGo
+         FLxmbI5l55CcCwJhHGmKLdp1/e+xxi5GPNtJ9HIqA0oHzXgWPM8o+dABiKV/obLzq8
+         KYMSQFRETu5tgrj/hmGGHq67LitvAVa+VwP9OwnfH+y3cS7gONvPpYvq8WOZTaxCun
+         S6T6Sh/rAdfIqLrdMkXcGV66DOJhZRD9mBLnPApq925XtZUbWScoTozYUUGOA6WD7X
+         WWXzi/Im5qpiw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mSeXn-0004lp-1v; Tue, 21 Sep 2021 14:06:39 +0200
+Date:   Tue, 21 Sep 2021 14:06:39 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] USB: serial: f81232: use usb_control_msg_recv()
+ and usb_control_msg_send()
+Message-ID: <YUnKzz1Cwsc9hT++@hovoldconsulting.com>
+References: <20210801203122.3515-1-himadrispandya@gmail.com>
+ <20210801203122.3515-4-himadrispandya@gmail.com>
 MIME-Version: 1.0
-References: <20210914121036.3975026-1-ardb@kernel.org> <20210914135527.GC30247@C02TD0UTHF1T.local>
-In-Reply-To: <20210914135527.GC30247@C02TD0UTHF1T.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 21 Sep 2021 14:06:24 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGPcHwdSjy-doB09LBLvrXtqYT4dyxE5hU=D=2m8Fg8zg@mail.gmail.com>
-Message-ID: <CAMj1kXGPcHwdSjy-doB09LBLvrXtqYT4dyxE5hU=D=2m8Fg8zg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] Move task_struct::cpu back into thread_info
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801203122.3515-4-himadrispandya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Sept 2021 at 15:55, Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Sep 14, 2021 at 02:10:28PM +0200, Ard Biesheuvel wrote:
-> > Commit c65eacbe290b ("sched/core: Allow putting thread_info into
-> > task_struct") mentions that, along with moving thread_info into
-> > task_struct, the cpu field is moved out of the former into the latter,
-> > but does not explain why.
->
-> From what I recall of talking to Andy around that time, when converting
-> arm64 over, the theory was that over time we'd move more and more out of
-> thread_info and into task_struct or thread_struct, until task_struct
-> supplanted thread_info entirely, and that all became generic.
->
-> I think the key gain there was making things more *generic*, and there
-> are other ways we could do that in future without moving more into
-> task_struct (e.g. with a geenric thread_info and arch_thread_info inside
-> that).
->
-> With that in mind, and given the diffstat, I think this is worthwhile.
->
-> FWIW, for the series:
->
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
->
+On Mon, Aug 02, 2021 at 02:01:19AM +0530, Himadri Pandya wrote:
+> New wrapper functions usb_control_msg_send/recv accept stack variables
+> for usb message buffer and eliminate the need of creating temporary dma
+> buffers. The wrappers also have proper error checks for short
+> read/writes. Hence use the wrappers instead of using usb_control_msg()
+> directly.
+> 
+> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
 
-Thanks.
+I amended the commit message as follows when applying this one:
 
-Any comments on this from the various arch maintainers? Especially
-power, as Christophe seems happy with this but there are 3 different
-patches affecting power that need a maintainer ack.
+ USB: serial: f81232: use usb_control_msg_recv() and usb_control_msg_send()
+    
+    The new wrapper functions usb_control_msg_send/recv accept stack
+    variables for USB message buffers and eliminate the need of manually
+    allocating temporary DMA buffers. The read wrapper also treats short
+    reads as errors. Hence use the wrappers instead of using
+    usb_control_msg() directly.
+    
+    Note that the conversion of f81534a_ctrl_set_register() adds an extra an
+    extra allocation and memcpy for every retry. Since this function is
+    called rarely and retries are hopefully rare, the overhead should be
+    acceptable.
+    
+    Also note that short reads are now logged as -EREMOTEIO instead of
+    indicating the amount of data read.
+
+Johan
