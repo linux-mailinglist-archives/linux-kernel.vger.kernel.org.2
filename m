@@ -2,126 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187724135C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95174135CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhIUPFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        id S233880AbhIUPFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbhIUPFX (ORCPT
+        with ESMTP id S233799AbhIUPFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:05:23 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57459C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:03:53 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id bi14-20020a05620a318e00b00432f0915dd6so117186667qkb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:03:53 -0700 (PDT)
+        Tue, 21 Sep 2021 11:05:40 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FDFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:04:12 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id 5so13553208plo.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:04:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=GIfCLH5ByXyE5OlyMkygyHkkDqaZzo0Y6ZcGzOkxcjM=;
-        b=nVhiK/GpBtOXB21+2y1Z5/mIgNi/PJLMHvMmYkPSJCUONZSiXYTy4R2MYYs8CZlxkW
-         CUQwR5cFuCMVxXnfEc61HeMSySMnwFDogvYg5ie3AuBTVk+eWXupS+O5+a8MGvW4qXl0
-         +ASR8ngsa5zHO7kvT7V+BVRHyd6gVcP3TVX4QckPchkEq3ry+VUXeXjX+4Y+elhDi91V
-         +72WNrD1t+y4O0xgDgvl6PjQjnHsq7TuyvC6eWBSqmMc8hlTUZw5N7UdzHVSvLInrYQF
-         d1AQ+skxMoPxuZOqgtm+o4AZqLXq8PTEUgjjNfstsMg/RZbQr/QTu9GI+geMGFJt2GiN
-         QIXg==
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U5sHi8cjj306oaDb/RAXcVkT6LaUnwyG2i0jV8EMZXU=;
+        b=14iJ+UOQEeWmwBidYb3ZlxxSmCpFBa3g6iXvn7L0ljJoEGakHlSEYQSufQV3/pWn7k
+         RmXmNZoOrX2e/qhdKKODpeJg288zZawoWQ5Z3ZQLfbCTHhyrt8FDA8PhA3O0HcK1bD6J
+         yUcmupu7CrDazE/5BqnZFO3TkN4L9ho2BmIU8+xEuXblGAYF32fghkbl5PekXw/k2+mE
+         MnQjDB8mKe0PmNLzNJitE8kc/zhzXDkVF7X9NoDW1h08qWh4w1x54GXhSGQ7z33PR6qk
+         oRqjS6nE+5Z/Q+uaDF4TQ/vV1b8aitFLwAxS36E3Mh2vsNOxOfc8zwIxrYUvg01yEaK4
+         2u/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=GIfCLH5ByXyE5OlyMkygyHkkDqaZzo0Y6ZcGzOkxcjM=;
-        b=udLrAlox+JGWIXYFvOZxOr1Ba3+/bkOV3/pe+WETJ+L3+Qyqw2vLXhC0lKvXd6zz3K
-         KuVXM5Z9BGKn83p0xHQSlA8a+FvFYN32rPHz/YuyvcTX8zwLcO7/ov/TLL/zC6mJIUWA
-         HKdIDc7OdLBsaQPoL2IFivkTYsqGjDcF0QWs2K/eumE7neE4Ai/MMyCAftFRt1wprvTp
-         MisNNiAiqPmC2F06XsIdLeoZ/U5oVmx4TwHfxPGmCFsS5p+/l1M28O7/M8pHXLsEtAux
-         ngW9igLSKqOlreCcEcya6itC9VWsOhD8Z8bmYKvPaX2weJ0QhkYclfB+/b8rz3p2bE1I
-         /YuQ==
-X-Gm-Message-State: AOAM5305+ksemSN5Sgu5K9NeWhHv8FPvDw62SmLtS7ulIPpaDHli3RlU
-        LviNzMesOG+XWq/Cuj+yL7ob+S3Pp/o=
-X-Google-Smtp-Source: ABdhPJwCi+e3ST0kkgoPvto/H7JxNar7/O+1VULp0nXGElHq8yDYFuvofnKtYEs/kkCQjOZvde9gPRCGui4=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:784b:c8dc:f1c:ecde])
- (user=pgonda job=sendgmr) by 2002:a25:ae64:: with SMTP id g36mr39999087ybe.26.1632236632524;
- Tue, 21 Sep 2021 08:03:52 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 08:03:45 -0700
-In-Reply-To: <20210921150345.2221634-1-pgonda@google.com>
-Message-Id: <20210921150345.2221634-3-pgonda@google.com>
-Mime-Version: 1.0
-References: <20210921150345.2221634-1-pgonda@google.com>
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH 2/2] KVM: SEV: Allow launch vmsa from mirror VM
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
-        Nathan Tempelman <natet@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=U5sHi8cjj306oaDb/RAXcVkT6LaUnwyG2i0jV8EMZXU=;
+        b=U6HxwkmVSt23y7i/l32+Gdk/MA9jdy/zxgxu/o0nVRG/TvrsohFwe3ihwGM33YiPjd
+         6GM14ZyPVTEiLayNiuKTZmiW4sppBcV2xnbNsGa1tBuUW+BzxIepRXT1S/x/rV5okbRp
+         +VUJn5r0EndRDz2x4Mgf3beA1DCzakkHtMOzZNQz6/ENLq+fwmOl5qs7513JopXh8rTH
+         mKsNS0Hpd9AVG2aOl7T60k7OPsgfEUA6LUxpf+6UM0LybRFqzyoRujMQH6njNmx+StMj
+         A3LkYmcly7axySCHYcYH2+Bb+XVvcpFOJaz4u9eVOw2yi+LEdkeBJUIV+wH1aq/ieXQI
+         o/Wg==
+X-Gm-Message-State: AOAM5328tSunnXW19Li8Ag7m5QUPEZBojcAJsd5sgtVV66Y9dFll1De4
+        fkcPjOrwMusXUGj8CqcJlaCngw==
+X-Google-Smtp-Source: ABdhPJyW5gW8ge2xfEG0UWnF9Yt+QwvDwtXjhnnktAGJe72JUfUp0V0dPz6+uQuDx7TpYQsDz6PgBQ==
+X-Received: by 2002:a17:902:edc7:b0:13b:86dc:c9d7 with SMTP id q7-20020a170902edc700b0013b86dcc9d7mr27789483plk.88.1632236651341;
+        Tue, 21 Sep 2021 08:04:11 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id n205sm17776069pfd.38.2021.09.21.08.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 08:04:10 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 08:04:10 -0700 (PDT)
+X-Google-Original-Date: Tue, 21 Sep 2021 08:04:01 PDT (-0700)
+Subject:     Re: [PATCH v2] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
+In-Reply-To: <163221552907.1876143.10392170678364292267.b4-ty@sntech.de>
+CC:     Arnd Bergmann <arnd@arndb.de>, hjc@rock-chips.com, heiko@sntech.de,
+        kernel-team@android.com, dri-devel@lists.freedesktop.org,
+        geert+renesas@glider.be, airlied@linux.ie,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, daniel@ffwll.ch
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     heiko@sntech.de
+Message-ID: <mhng-4c5264da-5502-4947-b32d-e9008a79ee90@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A mirrored SEV-ES VM will need to call KVM_SEV_LAUNCH_UPDATE_VMSA to
-setup its vCPUs and add them to the SEV-ES VM. Since they need to be
-measured and their VMSAs encrypted. Also allow the guest status check
-and debugging commands since they do not change any guest state.
+On Tue, 21 Sep 2021 02:12:17 PDT (-0700), heiko@sntech.de wrote:
+> On Fri, 10 Sep 2021 20:43:18 -0700, Palmer Dabbelt wrote:
+>> cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
+>> unused function warning is triggered undner !PM_SLEEP.  This marks the
+>> function as possibly unused, to avoid triggering compiler warnings.
+>
+> Applied, thanks!
+>
+> [1/1] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
+>       commit: f7c57a4566115657c16fd6603b6ef8a21bae5194
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Nathan Tempelman <natet@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Steve Rutherford <srutherford@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-
----
- arch/x86/kvm/svm/sev.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 08c53a4e060e..9cb6e30d6ae4 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1501,6 +1501,20 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	return sev_issue_cmd(kvm, SEV_CMD_RECEIVE_FINISH, &data, &argp->error);
- }
- 
-+static bool cmd_allowed_from_miror(u32 cmd_id)
-+{
-+	/*
-+	 * Allow mirrors VM to call KVM_SEV_LAUNCH_UPDATE_VMSA to enable SEV-ES
-+	 * active mirror VMs. Also allow the debugging and status commands.
-+	 */
-+	if (cmd_id == KVM_SEV_LAUNCH_UPDATE_VMSA ||
-+	    cmd_id == KVM_SEV_GUEST_STATUS || cmd_id == KVM_SEV_DBG_DECRYPT ||
-+	    cmd_id == KVM_SEV_DBG_ENCRYPT)
-+		return true;
-+
-+	return false;
-+}
-+
- int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
- {
- 	struct kvm_sev_cmd sev_cmd;
-@@ -1517,8 +1531,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
- 
- 	mutex_lock(&kvm->lock);
- 
--	/* enc_context_owner handles all memory enc operations */
--	if (is_mirroring_enc_context(kvm)) {
-+	/* Only the enc_context_owner handles some memory enc operations. */
-+	if (is_mirroring_enc_context(kvm) &&
-+	    !cmd_allowed_from_miror(sev_cmd.id)) {
- 		r = -EINVAL;
- 		goto out;
- 	}
--- 
-2.33.0.464.g1972c5931b-goog
-
+I'm not quite sure where that lives, but is it applied on top of 
+something or is it merged from the tag?  Like I said a bit below this in 
+the original patch, this has started to break the build for me and I'd 
+like to pull it in as soon as possible.
