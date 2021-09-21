@@ -2,128 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8514135FA
+	by mail.lfdr.de (Postfix) with ESMTP id 860254135FB
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhIUPRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:17:03 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:35267 "EHLO pegase2.c-s.fr"
+        id S233949AbhIUPRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:17:05 -0400
+Received: from mail.alarsen.net ([144.76.18.233]:51866 "EHLO mail.alarsen.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233905AbhIUPRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:17:02 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HDQ3T2Bvzz9sTJ;
-        Tue, 21 Sep 2021 17:15:33 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SGxHaHHzvTVd; Tue, 21 Sep 2021 17:15:33 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HDQ3Q5y23z9sSt;
-        Tue, 21 Sep 2021 17:15:30 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B8DD48B765;
-        Tue, 21 Sep 2021 17:15:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GLz8YS2uY4_Y; Tue, 21 Sep 2021 17:15:30 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.127])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29C6D8B763;
-        Tue, 21 Sep 2021 17:15:30 +0200 (CEST)
-Subject: Re: [PATCH v4 1/3] powerpc/bitops: Use immediate operand when
- possible
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <db9d01d5c543c5add4b2beadb03d39e99c7ada2c.1632126669.git.christophe.leroy@csgroup.eu>
- <20210920212303.GZ1583@gate.crashing.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <917987b7-48fd-d2f6-cbe4-7f7442cf86de@csgroup.eu>
-Date:   Tue, 21 Sep 2021 17:15:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233924AbhIUPRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:17:03 -0400
+Received: from oscar.alarsen.net (unknown [IPv6:fd8b:531:bccf:96:5122:9a9:28f5:243d])
+        by joe.alarsen.net (Postfix) with ESMTPS id 0EFD518018A;
+        Tue, 21 Sep 2021 17:15:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alarsen.net; s=joe;
+        t=1632237334; bh=Xc8kufFZafE7aLPr2mFQk3CJmK8fqwpsdRVSZda3cYM=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=i0z6gnApfMDOv56D5YZ2ggWExPoxQGXR69Cnq/XFdAta0OTQDAddQGlGFeuJtrPLJ
+         qJ5kYjjqJpoIPg6U4EikuDwzRwebqyCrxWQO399cpWm10HKq2bxdoMcpYFGNG2dq1U
+         sNeNooruOwOtF56uXZtxKCYwrVV7L3ekRCCRcBlo=
+Received: from oscar.localnet (localhost [IPv6:::1])
+        by oscar.alarsen.net (Postfix) with ESMTP id 0397A27C04DA;
+        Tue, 21 Sep 2021 17:15:34 +0200 (CEST)
+From:   Anders Larsen <al@alarsen.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] [RFC v2] qnx: avoid -Wstringop-overread warning, again
+Date:   Tue, 21 Sep 2021 17:15:33 +0200
+Message-ID: <2955101.xlVK0Xs8nM@alarsen.net>
+In-Reply-To: <CAK8P3a03VTsdALMORVSWvAY9J8dS=wQjvhf=M0hXGqLLxDYHsQ@mail.gmail.com>
+References: <20210920121208.54732-1-arnd@kernel.org> <CAHk-=wi=CZ_fsUwDQCBbgPB4MTFx1ywgyERjFb7DNUk9Pix_Nw@mail.gmail.com> <CAK8P3a03VTsdALMORVSWvAY9J8dS=wQjvhf=M0hXGqLLxDYHsQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210920212303.GZ1583@gate.crashing.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr-FR
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="nextPart52656314.epeZYTENiI"
+Content-Transfer-Encoding: 7Bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multi-part message in MIME format.
+
+--nextPart52656314.epeZYTENiI
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Tuesday, 2021-09-21 10:18 Arnd Bergmann wrote:
+> On Mon, Sep 20, 2021 at 7:26 PM Linus Torvalds 
+<torvalds@linux-foundation.org> wrote:
+> > It sounds like we can avoid the gcc bug if we just always use
+> > "de->de_name[]". Then we don't need to depend on magical behavior
+> > about one particular gcc version and a strange empty array in front of
+> > it.
+> >
+> > IOW, something like the attached simpler thing that just does that
+> > "always use de_name[]" and has a comment about why we don't do the
+> > natural thing
+
+well, the code in question actually does not use anything from struct 
+qnx4_inode_entry except di_fname and di_status;
+they are available at the same offsets in struct qnx4_link_info as well, so 
+wouldn't it be even simpler to just always use the fields of the latter 
+structure?
+
+Like in the attached patch which replaces b7213ffa0e58?
+($me feeling bad for reverting Linus' patch!)
+
+That way, the compiler should never see any access to the (shorter) 
+qnx4_inode_entry.di_fname
+
+BTW, in the process I noticed that fs/qnx4/namei.c was missed by 663f4deca76 
+back in 2013 and so is still calling strlen() on untrusted data; the second 
+part of the patch takes care of that.
+
+> > Also, just what version of gcc is the broken one? You say "gcc-11",
+> > but I certainly don't see it with _my_ version of gcc-11, so can we
+> > (just for that comment) document more precisely what version you have
+> > (or possibly what config you use to trigger it).
+> 
+> I'm using the gcc-11.1.0 that I uploaded to
+> https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/11.1.0/
+
+I don't have that compiler version, so obviously I couldn't test if the patch 
+solves the problem.
+
+Cheers
+Anders
+
+--nextPart52656314.epeZYTENiI
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="patch.diff"
+
+ fs/qnx4/dir.c   | 18 ++++++++----------
+ fs/qnx4/namei.c | 34 +++++++++++++++-------------------
+ 2 files changed, 23 insertions(+), 29 deletions(-)
+
+diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
+index a6ee23aadd28..45b0262c6fac 100644
+--- a/fs/qnx4/dir.c
++++ b/fs/qnx4/dir.c
+@@ -20,7 +20,6 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
+ 	struct inode *inode = file_inode(file);
+ 	unsigned int offset;
+ 	struct buffer_head *bh;
+-	struct qnx4_inode_entry *de;
+ 	struct qnx4_link_info *le;
+ 	unsigned long blknum;
+ 	int ix, ino;
+@@ -39,26 +38,25 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
+ 		ix = (ctx->pos >> QNX4_DIR_ENTRY_SIZE_BITS) % QNX4_INODES_PER_BLOCK;
+ 		for (; ix < QNX4_INODES_PER_BLOCK; ix++, ctx->pos += QNX4_DIR_ENTRY_SIZE) {
+ 			offset = ix * QNX4_DIR_ENTRY_SIZE;
+-			de = (struct qnx4_inode_entry *) (bh->b_data + offset);
+-			if (!de->di_fname[0])
++			le = (struct qnx4_link_info *) (bh->b_data + offset);
++			if (!le->dl_fname[0])
+ 				continue;
+-			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
++			if (!(le->dl_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 				continue;
+-			if (!(de->di_status & QNX4_FILE_LINK))
++			if (!(le->dl_status & QNX4_FILE_LINK))
+ 				size = QNX4_SHORT_NAME_MAX;
+ 			else
+ 				size = QNX4_NAME_MAX;
+-			size = strnlen(de->di_fname, size);
+-			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
+-			if (!(de->di_status & QNX4_FILE_LINK))
++			size = strnlen(le->dl_fname, size);
++			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, le->dl_fname));
++			if (!(le->dl_status & QNX4_FILE_LINK))
+ 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
+ 			else {
+-				le  = (struct qnx4_link_info*)de;
+ 				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
+ 					QNX4_INODES_PER_BLOCK +
+ 					le->dl_inode_ndx;
+ 			}
+-			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
++			if (!dir_emit(ctx, le->dl_fname, size, ino, DT_UNKNOWN)) {
+ 				brelse(bh);
+ 				return 0;
+ 			}
+diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
+index 8d72221735d7..75ff330ce5e0 100644
+--- a/fs/qnx4/namei.c
++++ b/fs/qnx4/namei.c
+@@ -26,28 +26,26 @@
+ static int qnx4_match(int len, const char *name,
+ 		      struct buffer_head *bh, unsigned long *offset)
+ {
+-	struct qnx4_inode_entry *de;
+-	int namelen, thislen;
++	struct qnx4_link_info *le;
++	int namelen;
+ 
+ 	if (bh == NULL) {
+ 		printk(KERN_WARNING "qnx4: matching unassigned buffer !\n");
+ 		return 0;
+ 	}
+-	de = (struct qnx4_inode_entry *) (bh->b_data + *offset);
++	le = (struct qnx4_link_info *) (bh->b_data + *offset);
+ 	*offset += QNX4_DIR_ENTRY_SIZE;
+-	if ((de->di_status & QNX4_FILE_LINK) != 0) {
++	if ((le->dl_status & QNX4_FILE_LINK) != 0) {
+ 		namelen = QNX4_NAME_MAX;
+ 	} else {
+ 		namelen = QNX4_SHORT_NAME_MAX;
+ 	}
+-	thislen = strlen( de->di_fname );
+-	if ( thislen > namelen )
+-		thislen = namelen;
+-	if (len != thislen) {
++	namelen = strnlen( le->dl_fname, namelen );
++	if (len != namelen) {
+ 		return 0;
+ 	}
+-	if (strncmp(name, de->di_fname, len) == 0) {
+-		if ((de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)) != 0) {
++	if (strncmp(name, le->dl_fname, len) == 0) {
++		if ((le->dl_status & (QNX4_FILE_USED|QNX4_FILE_LINK)) != 0) {
+ 			return 1;
+ 		}
+ 	}
+@@ -55,7 +53,7 @@ static int qnx4_match(int len, const char *name,
+ }
+ 
+ static struct buffer_head *qnx4_find_entry(int len, struct inode *dir,
+-	   const char *name, struct qnx4_inode_entry **res_dir, int *ino)
++	   const char *name, struct qnx4_link_info **res_dir, int *ino)
+ {
+ 	unsigned long block, offset, blkofs;
+ 	struct buffer_head *bh;
+@@ -73,7 +71,7 @@ static struct buffer_head *qnx4_find_entry(int len, struct inode *dir,
+ 				continue;
+ 			}
+ 		}
+-		*res_dir = (struct qnx4_inode_entry *) (bh->b_data + offset);
++		*res_dir = (struct qnx4_link_info *) (bh->b_data + offset);
+ 		if (qnx4_match(len, name, bh, &offset)) {
+ 			*ino = block * QNX4_INODES_PER_BLOCK +
+ 			    (offset / QNX4_DIR_ENTRY_SIZE) - 1;
+@@ -95,21 +93,19 @@ static struct buffer_head *qnx4_find_entry(int len, struct inode *dir,
+ struct dentry * qnx4_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+ {
+ 	int ino;
+-	struct qnx4_inode_entry *de;
+-	struct qnx4_link_info *lnk;
++	struct qnx4_link_info *le;
+ 	struct buffer_head *bh;
+ 	const char *name = dentry->d_name.name;
+ 	int len = dentry->d_name.len;
+ 	struct inode *foundinode = NULL;
+ 
+-	if (!(bh = qnx4_find_entry(len, dir, name, &de, &ino)))
++	if (!(bh = qnx4_find_entry(len, dir, name, &le, &ino)))
+ 		goto out;
+ 	/* The entry is linked, let's get the real info */
+-	if ((de->di_status & QNX4_FILE_LINK) == QNX4_FILE_LINK) {
+-		lnk = (struct qnx4_link_info *) de;
+-		ino = (le32_to_cpu(lnk->dl_inode_blk) - 1) *
++	if ((le->dl_status & QNX4_FILE_LINK) == QNX4_FILE_LINK) {
++		ino = (le32_to_cpu(le->dl_inode_blk) - 1) *
+                     QNX4_INODES_PER_BLOCK +
+-		    lnk->dl_inode_ndx;
++		    le->dl_inode_ndx;
+ 	}
+ 	brelse(bh);
+ 
+
+--nextPart52656314.epeZYTENiI--
 
 
-Le 20/09/2021 à 23:23, Segher Boessenkool a écrit :
-> Hi!
-> 
-> On Mon, Sep 20, 2021 at 10:31:17AM +0200, Christophe Leroy wrote:
->> Today we get the following code generation for bitops like
->> set or clear bit:
->>
->> 	c0009fe0:	39 40 08 00 	li      r10,2048
->> 	c0009fe4:	7c e0 40 28 	lwarx   r7,0,r8
->> 	c0009fe8:	7c e7 53 78 	or      r7,r7,r10
->> 	c0009fec:	7c e0 41 2d 	stwcx.  r7,0,r8
->>
->> 	c000d568:	39 00 18 00 	li      r8,6144
->> 	c000d56c:	7c c0 38 28 	lwarx   r6,0,r7
->> 	c000d570:	7c c6 40 78 	andc    r6,r6,r8
->> 	c000d574:	7c c0 39 2d 	stwcx.  r6,0,r7
->>
->> Most set bits are constant on lower 16 bits, so it can easily
->> be replaced by the "immediate" version of the operation. Allow
->> GCC to choose between the normal or immediate form.
-> 
-> You can also handle the second sixteen bits (the "shifted" half), by
-> using oris etc.  The "%eN" output modifier prints an "s" for this:
->    /* If the low 16 bits are 0, but some other bit is set, write 's'.  */
-> But this doesn't handle non-constant arguments, so you're likely better
-> off using what you have noe.
-> 
->> For clear bits, on 32 bits 'rlwinm' can be used instead of 'andc' for
->> when all bits to be cleared are consecutive.
-> 
-> Or when all you want to keep are consecutive (you do handle that now :-) )
-> 
->> On 64 bits we don't have any equivalent single operation for clearing,
->> single bits or a few bits, we'd need two 'rldicl' so it is not
->> worth it, the li/andc sequence is doing the same.
-> 
-> You can use rlwinm whenever you want to clear all top 32 bits.
-> 
-> A sometimes nice idiom is  ori x,x,N ; xori x,x,N  to clear the bits N
-> (or oris/xoris).  But it's two insns no matter what (but no spare
-> register is needed).
 
-Could be a candidate for a follow-up change if someone want to focus on 
-PPC64.
-
-> 
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
->> +static inline unsigned long test_and_clear_bits(unsigned long mask, volatile unsigned long *_p)
->> +{
->> +	unsigned long old, t;
->> +	unsigned long *p = (unsigned long *)_p;
->> +
->> +	if (IS_ENABLED(CONFIG_PPC32) &&
->> +	    __builtin_constant_p(mask) && is_rlwinm_mask_valid(mask)) {
-> 
-> is_rlwinm_mask_valid(~mask)?  So that test_and_clear_bits(0, ...) will
-> work with rlwinm, and test_and_clear_bits(0xffffffff, ...) will not make
-> gas scream bloody murder ("illegal bitmask").  Tha mask you pass to the
-> instruction is ~mask after all.
-
-Ok, fixed in v5.
-
-> 
-> Looks great except that one nit.  Thanks :-)
-> 
-> Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
-
-Thanks
-
-Christophe
