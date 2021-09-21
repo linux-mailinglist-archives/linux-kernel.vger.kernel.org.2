@@ -2,105 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02A7413E0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD46E413E12
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhIUXfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhIUXfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:35:43 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546F8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:34:14 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id u18so761287pgf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CLwXFb9bh237p3NLMPDDN3QcXe2KmKQWVOAqgszlTS8=;
-        b=ZvuPio6qyfipioiP/dvGdAsdJVc+VUAkgK2fA/9fKTi893FzD+/qJT1K/0XuvIF7X8
-         5Ci6Nj/XWd3iJCThByjK2fo0cqpDqERIE3PCv/LgArpAkqmf80Mlae+qWWJo6x5JyHKa
-         VQnECUX7tTC9EY+jo/uOG8Itd3jZixAT3pNOLdICTqpK4H+TmjmL1sV3bpHizrFX5+RK
-         mlptqnXrh0TxAMAiWCrjP9OgYeGd6wV+RifJ+nxvtJETCsvHzxtEvI/Bsc9De0BwyBtQ
-         bIifOxXSXdx9nQ35PERkINo2ExXvJIC+K9wYXVs8vb1bpSf44QabIrApjQsBuuK+cYc6
-         4fQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CLwXFb9bh237p3NLMPDDN3QcXe2KmKQWVOAqgszlTS8=;
-        b=aJ9Pu0bFlLs8st1v2fcmWOQTTe1rYYe4LEJXZA/gLMzfrJLSkmIemJtCTyM+xfQrm/
-         ynpjLMhaBcQkubSq50FhvYhZ/tKjmgVb82b+PD4Lwr5V+G73e6TtVm9t8hX3zHoWrTrm
-         FOCAD7HjhpaSDlVDCWtxIgpEzGFI0u/CXYSQz449/xwtcDuhIP4fyt2pVytIShinhDVR
-         Rz1maNPdSktzkqQZpagYK9cHjBTlXT6WKB21W8Si/i4ta/ge7d93BiUmYl5eE40dumS0
-         EMqvp/RIb4Z20B6xtiH16sHjTeY3tiutlL6dpXvl2nrQTj0s/g3oFe70u19ud0c4jlQ+
-         x5FA==
-X-Gm-Message-State: AOAM532kUB1XbRZo3lsYIGo51wkJmJh7lDWOGCW1ogQowiR9KUramHZS
-        /TYEtCgZA3gFJJDlmUrlZj7TNA==
-X-Google-Smtp-Source: ABdhPJyeyei+KC0c9FO+SEEq5fFZ0WoTeeAjimEYskFd5/X3mugtX1W01HtIQmxapsWcTaEdUsmHZA==
-X-Received: by 2002:aa7:9282:0:b0:3e2:800a:b423 with SMTP id j2-20020aa79282000000b003e2800ab423mr32998153pfa.21.1632267253615;
-        Tue, 21 Sep 2021 16:34:13 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id g3sm161923pjm.22.2021.09.21.16.34.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 16:34:12 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 23:34:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Marco Elver <elver@google.com>,
-        syzbot <syzbot+d08efd12a2905a344291@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Subject: Re: [syzbot] upstream test error: KFENCE: use-after-free in
- kvm_fastop_exception
-Message-ID: <YUpr8Vu8xqCDwkE8@google.com>
-References: <000000000000d6b66705cb2fffd4@google.com>
- <CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com>
- <CANpmjNMq=2zjDYJgGvHcsjnPNOpR=nj-gQ43hk2mJga0ES+wzQ@mail.gmail.com>
- <CACT4Y+Y1c-kRk83M-qiFY40its+bP3=oOJwsbSrip5AB4vBnYA@mail.gmail.com>
+        id S230335AbhIUXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:38:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230216AbhIUXh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:37:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CAAB6115A;
+        Tue, 21 Sep 2021 23:36:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632267390;
+        bh=SdAclgW8rsWgIlhdwVa7bbKYbLTEIxPOEyfgqzy5CLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLemCllyQAnw7VN1/IYQUh0a6/PfTrQSEnTc7763xoAw45YjX80FefVcxQMKsS+eV
+         FUERvTNl4GCnO18raNIQ3xTud0NLBBeF4jIIXw2VZUybeNKZDwjcMNJLfgsZ3q7zmp
+         zUPLsYgmtFl35liRWWbJVjaAcDoPVqdTzT0i5CrfR4K99NuvJWZTHj841jc4PX1Ih4
+         zYteNPi8vWegtNE44UHsj4hyBT9AyBYDirRt+inhhm4wzF2nkoLOKzqbG4A5c0e5jY
+         v9UtCo2JlBbHkVHfW+gNFd4o+AOuAzu4jU/pVNBkoAxUAbFkC9XB3aXGz5MMEAFYUF
+         R0Yot4RbcGqmQ==
+Date:   Wed, 22 Sep 2021 01:36:27 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
+Message-ID: <20210921233627.GA100318@lothringen>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-4-valentin.schneider@arm.com>
+ <874kae6n3g.ffs@tglx>
+ <87pmt163al.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+Y1c-kRk83M-qiFY40its+bP3=oOJwsbSrip5AB4vBnYA@mail.gmail.com>
+In-Reply-To: <87pmt163al.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021, Dmitry Vyukov wrote:
-> On Fri, 17 Sept 2021 at 13:04, Marco Elver <elver@google.com> wrote:
-> > > So it looks like in both cases the top fault frame is just wrong. But
-> > > I would assume it's extracted by arch-dependent code, so it's
-> > > suspicious that it affects both x86 and arm64...
-> > >
-> > > Any ideas what's happening?
-> >
-> > My suspicion for the x86 case is that kvm_fastop_exception is related
-> > to instruction emulation and the fault occurs in an emulated
-> > instruction?
+On Tue, Sep 21, 2021 at 11:12:50PM +0200, Thomas Gleixner wrote:
+> Valentin reported warnings about suspicious RCU usage on RT kernels. Those
+> happen when offloading of RCU callbacks is enabled:
 > 
-> Why would the kernel emulate a plain MOV?
-> 2a:   4c 8b 21                mov    (%rcx),%r12
+>   WARNING: suspicious RCU usage
+>   5.13.0-rt1 #20 Not tainted
+>   -----------------------------
+>   kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
 > 
-> And it would also mean a broken unwind because the emulated
-> instruction is in __d_lookup, so it should be in the stack trace.
+>   rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
+>   rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
+>   rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+> 
+> The reason is that rcu_rdp_is_offloaded() is invoked without one of the
+> required protections on RT enabled kernels because local_bh_disable() does
+> not disable preemption on RT.
+> 
+> Valentin proposed to add a local lock to the code in question, but that's
+> suboptimal in several aspects:
+> 
+>   1) local locks add extra code to !RT kernels for no value.
+> 
+>   2) All possible callsites have to audited and amended when affected
+>      possible at an outer function level due to lock nesting issues.
+> 
+>   3) As the local lock has to be taken at the outer functions it's required
+>      to release and reacquire them in the inner code sections which might
+>      voluntary schedule, e.g. rcu_do_batch().
+> 
+> Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
+> rcu_rdp_is_offloaded() in the variable declaration section right at the top
+> of the functions. But the actual usage of the result is either within a
+> section which provides the required protections or after such a section.
+> 
+> So the obvious solution is to move the invocation into the code sections
+> which provide the proper protections, which solves the problem for RT and
+> does not have any impact on !RT kernels.
 
-kvm_fastop_exception is a red herring.  It's indeed related to emulation, and
-while MOV emulation is common in KVM, that emulation is for KVM guests not for
-the host kernel where this splat occurs (ignoring the fact that the "host" is
-itself a guest).
+You also need to consider rcu_segcblist_completely_offloaded(). There
+are two users:
 
-kvm_fastop_exception is out-of-line fixup, and certainly shouldn't be reachable
-via d_lookup.  It's also two instruction, XOR+RET, neither of which are in the
-code stream.
+1) The first chunk using it in rcu_core() checks if there is a need to
+accelerate the callback and that can happen concurrently with nocb
+manipulations on the cblist. Concurrent (de-)offloading could mess
+up with the locking state but here is what we can do:
 
-IIRC, the unwinder gets confused when given an IP that's in out-of-line code,
-e.g. exception fixup like this.  If you really want to find out what code blew
-up, you might be able to objdump -D the kernel and search for unique, matching
-disassembly, e.g. find "jmpq   0xf86d288c" and go from there.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index bce848e50512..3e56a1a4af03 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2728,9 +2728,10 @@ static __latent_entropy void rcu_core(void)
+ 
+ 	/* No grace period and unregistered callbacks? */
+ 	if (!rcu_gp_in_progress() &&
+-	    rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
++	    rcu_segcblist_is_enabled(&rdp->cblist)) {
+ 		rcu_nocb_lock_irqsave(rdp, flags);
+-		if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
++		if (!rcu_segcblist_completely_offloaded(&rdp->cblist) &&
++		    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+ 			rcu_accelerate_cbs_unlocked(rnp, rdp);
+ 		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 	}
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 305cf6aeb408..64d615be3346 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -449,10 +449,9 @@ static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
+ static void __init rcu_organize_nocb_kthreads(void);
+ #define rcu_nocb_lock_irqsave(rdp, flags)				\
+ do {									\
++	local_irq_save(flags);						\
+ 	if (!rcu_segcblist_is_offloaded(&(rdp)->cblist))		\
+-		local_irq_save(flags);					\
+-	else								\
+-		raw_spin_lock_irqsave(&(rdp)->nocb_lock, (flags));	\
++		raw_spin_lock(&(rdp)->nocb_lock);			\
+ } while (0)
+ #else /* #ifdef CONFIG_RCU_NOCB_CPU */
+ #define rcu_nocb_lock_irqsave(rdp, flags) local_irq_save(flags)
+
+
+Doing the local_irq_save() before checking that the segcblist is offloaded
+protect that state from being changed (provided we lock the local rdp). Then we
+can safely manipulate cblist, whether locked or unlocked.
+
+2) The actual call to rcu_do_batch(). If we are preempted between
+rcu_segcblist_completely_offloaded() and rcu_do_batch() with a deoffload in
+the middle, we miss the callback invocation. Invoking rcu_core by the end of
+deoffloading process should solve that.
+
+> 
+> Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  kernel/rcu/tree.c |    7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
+>  {
+>  	unsigned long flags;
+>  	unsigned long mask;
+> -	bool needwake = false;
+> -	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+> +	bool offloaded, needwake = false;
+>  	struct rcu_node *rnp;
+>  
+>  	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
+>  	rnp = rdp->mynode;
+>  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> +	offloaded = rcu_rdp_is_offloaded(rdp);
+>  	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
+>  	    rdp->gpwrap) {
+
+BTW Paul, if we happen to switch to non-NOCB (deoffload) some time after
+rcu_report_qs_rdp(), it's possible that the rcu_accelerate_cbs()
+that was supposed to be handled by nocb kthreads on behalf of
+rcu_core() -> rcu_report_qs_rdp() would not happen. At least not until
+we invoke rcu_core() again. Not sure how much harm that could cause.
+
+> @@ -2446,7 +2446,7 @@ static void rcu_do_batch(struct rcu_data
+>  	int div;
+>  	bool __maybe_unused empty;
+>  	unsigned long flags;
+> -	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+> +	bool offloaded;
+>  	struct rcu_head *rhp;
+>  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
+>  	long bl, count = 0;
+> @@ -2472,6 +2472,7 @@ static void rcu_do_batch(struct rcu_data
+>  	rcu_nocb_lock(rdp);
+>  	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+>  	pending = rcu_segcblist_n_cbs(&rdp->cblist);
+> +	offloaded = rcu_rdp_is_offloaded(rdp);
+
+offloaded is also checked later in rcu_do_batch(), after irqrestore. In
+fact that should even become a rcu_segcblist_completely_offloaded() check
+there because if there are still pending callbacks while we are de-offloading,
+rcu_core() should be invoked. Hmm but that might be a remote rcu_core...
+
+Anyway I guess we could live with some of those races with invoking rcu core on the
+target after deoffloading.
+
+I guess I should cook a series to handle all these issues one by one, then
+probably we can live without a local_lock().
+
+Thanks.
+
+
+
+>  	div = READ_ONCE(rcu_divisor);
+>  	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
+>  	bl = max(rdp->blimit, pending >> div);
