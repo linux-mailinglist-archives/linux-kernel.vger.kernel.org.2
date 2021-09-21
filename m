@@ -2,204 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A5F413376
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A2A413379
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhIUMm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbhIUMmm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:42:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27070C061574;
-        Tue, 21 Sep 2021 05:41:14 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 12:41:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632228072;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0HVbJmzHww44Zw2t5bfgpsHe3tqAsNFEnu6l/08NgLI=;
-        b=Yt7mnfSP9uD4TZJwIqrDPSYrBkqzbyMa7IFJcmg351HZA0s4ES9jOnfbxnAC8wFno7xm9h
-        /Bz75fHN1vMrQ1OBh2koT/fv833/bIlvFqPDM62UI4aLaLs/iYqxuyWQeKV3lGTLKdpEX2
-        RfGn2x18Q/PNUzW5il3/w4jplTrVuZkKpQI9zkkAq0BZQCMESCg3xIIDPdpmks4lkhSlnG
-        WxBCJZZdQa2Jpm6g78PLz2fjIzJb05LdWdYZMuU0H+GXBsf0uDIXSo7Xy3VhHhxTGQamZT
-        ZPQ9Ip1oEAyj7Km71lf4zmnzQ9v8RBHL431DDhuqZaCDTyzWijVaEFnthLcuug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632228072;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0HVbJmzHww44Zw2t5bfgpsHe3tqAsNFEnu6l/08NgLI=;
-        b=Xx3f8E5lJ1e6wIXlEwJasT90+v+28WPiMnATZY7fPPRJ5VHyWpscz3jZ545kf8QoO4Ay93
-        3Lb9tb/jJ2+AyxBg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/iopl: Fake iopl(3) CLI/STI usage
-Cc:     Ondrej Zary <linux@zary.sk>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@kernel.org,
-        #@tip-bot2.tec.linutronix.de, v5.5+@tip-bot2.tec.linutronix.de,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210918090641.GD5106@worktop.programming.kicks-ass.net>
-References: <20210918090641.GD5106@worktop.programming.kicks-ass.net>
+        id S232844AbhIUMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232838AbhIUMnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:43:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 785EA60249;
+        Tue, 21 Sep 2021 12:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632228093;
+        bh=KctZ37/K53xgz2KFk6mwt+AcFiMxEwJaw677ODdeatY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rpttbj55Oat4YnDVWW5MjLLzhuvkstSB0F1tt0FOVWs8PLkFptAFh8smRIxm7ux4a
+         aRU9rUtp/sjV9dZW5/nEfGEKDtTqsGx/QreDQUwFli+24H5+kUyLxEbFavIVddBrGS
+         kJT5RRJGyBjA8DT5gH8/0zQs7HTy5D2PRYA9nIQnM5Atud1+j0Vi60wO86d13oeFvU
+         qdZ2wnfIclxPCcmcGxifM3yd7jpx801M0JJ/+d/T0EDVUVSnmVoNRCNfXoanbS3fA/
+         o1kOVK/7P8vnjEQ3DffQAeNoAmvPwobOPxqBKvbMIYPBtK71iWfjltoUqsAvzmJeMS
+         2b91sgnvUFH7A==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mSf5Y-000561-7f; Tue, 21 Sep 2021 14:41:32 +0200
+Date:   Tue, 21 Sep 2021 14:41:32 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] USB: serial: kl5kusb105: use
+ usb_control_msg_recv() and usb_control_msg_send()
+Message-ID: <YUnS/Chgat7vNHO7@hovoldconsulting.com>
+References: <20210801203122.3515-1-himadrispandya@gmail.com>
+ <20210801203122.3515-7-himadrispandya@gmail.com>
 MIME-Version: 1.0
-Message-ID: <163222807153.25758.3224358452608053857.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801203122.3515-7-himadrispandya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+On Mon, Aug 02, 2021 at 02:01:22AM +0530, Himadri Pandya wrote:
+> The wrappers usb_control_msg_send/recv eliminate the need of allocating
+> dma buffers for usb message. They also impose proper error checks on the
+> return value of usb_control_msg() to handle short read/write. Hence use
+> the wrappers and remove dma allocations.
+> 
+> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> ---
+> Changes in v2:
+>  - Fix the caller of klsi_105_chg_port_settings()
+>  - Drop unnecessary use of the wrappers
 
-Commit-ID:     b968e84b509da593c50dc3db679e1d33de701f78
-Gitweb:        https://git.kernel.org/tip/b968e84b509da593c50dc3db679e1d33de701f78
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 17 Sep 2021 11:20:04 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 21 Sep 2021 13:52:18 +02:00
+Now applied with an amended commit message:
 
-x86/iopl: Fake iopl(3) CLI/STI usage
+    USB: serial: kl5kusb105: use usb_control_msg_recv() and usb_control_msg_send()
+    
+    The wrappers usb_control_msg_send/recv eliminate the need of
+    manually allocating DMA buffers for USB messages. They also treat
+    short reads as an error. Hence use the wrappers and remove DMA
+    allocations.
+    
+    Note that short reads are now logged as -EREMOTEIO instead of the amount
+    of data read.
 
-Since commit c8137ace5638 ("x86/iopl: Restrict iopl() permission
-scope") it's possible to emulate iopl(3) using ioperm(), except for
-the CLI/STI usage.
+I've applied all but the first two patches in the series now. Would you
+mind respinning those two?
 
-Userspace CLI/STI usage is very dubious (read broken), since any
-exception taken during that window can lead to rescheduling anyway (or
-worse). The IOPL(2) manpage even states that usage of CLI/STI is highly
-discouraged and might even crash the system.
-
-Of course, that won't stop people and HP has the dubious honour of
-being the first vendor to be found using this in their hp-health
-package.
-
-In order to enable this 'software' to still 'work', have the #GP treat
-the CLI/STI instructions as NOPs when iopl(3). Warn the user that
-their program is doing dubious things.
-
-Fixes: a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
-Reported-by: Ondrej Zary <linux@zary.sk>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@kernel.org # v5.5+
-Link: https://lkml.kernel.org/r/20210918090641.GD5106@worktop.programming.kicks-ass.net
----
- arch/x86/include/asm/insn-eval.h |  1 +-
- arch/x86/include/asm/processor.h |  1 +-
- arch/x86/kernel/process.c        |  1 +-
- arch/x86/kernel/traps.c          | 33 +++++++++++++++++++++++++++++++-
- arch/x86/lib/insn-eval.c         |  2 +-
- 5 files changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/insn-eval.h b/arch/x86/include/asm/insn-eval.h
-index 91d7182..4ec3613 100644
---- a/arch/x86/include/asm/insn-eval.h
-+++ b/arch/x86/include/asm/insn-eval.h
-@@ -21,6 +21,7 @@ int insn_get_modrm_rm_off(struct insn *insn, struct pt_regs *regs);
- int insn_get_modrm_reg_off(struct insn *insn, struct pt_regs *regs);
- unsigned long insn_get_seg_base(struct pt_regs *regs, int seg_reg_idx);
- int insn_get_code_seg_params(struct pt_regs *regs);
-+int insn_get_effective_ip(struct pt_regs *regs, unsigned long *ip);
- int insn_fetch_from_user(struct pt_regs *regs,
- 			 unsigned char buf[MAX_INSN_SIZE]);
- int insn_fetch_from_user_inatomic(struct pt_regs *regs,
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 9ad2aca..577f342 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -518,6 +518,7 @@ struct thread_struct {
- 	 */
- 	unsigned long		iopl_emul;
- 
-+	unsigned int		iopl_warn:1;
- 	unsigned int		sig_on_uaccess_err:1;
- 
- 	/*
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 1d9463e..f2f733b 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -132,6 +132,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	frame->ret_addr = (unsigned long) ret_from_fork;
- 	p->thread.sp = (unsigned long) fork_frame;
- 	p->thread.io_bitmap = NULL;
-+	p->thread.iopl_warn = 0;
- 	memset(p->thread.ptrace_bps, 0, sizeof(p->thread.ptrace_bps));
- 
- #ifdef CONFIG_X86_64
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index a588009..f3f3034 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -528,6 +528,36 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
- 
- #define GPFSTR "general protection fault"
- 
-+static bool fixup_iopl_exception(struct pt_regs *regs)
-+{
-+	struct thread_struct *t = &current->thread;
-+	unsigned char byte;
-+	unsigned long ip;
-+
-+	if (!IS_ENABLED(CONFIG_X86_IOPL_IOPERM) || t->iopl_emul != 3)
-+		return false;
-+
-+	if (insn_get_effective_ip(regs, &ip))
-+		return false;
-+
-+	if (get_user(byte, (const char __user *)ip))
-+		return false;
-+
-+	if (byte != 0xfa && byte != 0xfb)
-+		return false;
-+
-+	if (!t->iopl_warn && printk_ratelimit()) {
-+		pr_err("%s[%d] attempts to use CLI/STI, pretending it's a NOP, ip:%lx",
-+		       current->comm, task_pid_nr(current), ip);
-+		print_vma_addr(KERN_CONT " in ", ip);
-+		pr_cont("\n");
-+		t->iopl_warn = 1;
-+	}
-+
-+	regs->ip += 1;
-+	return true;
-+}
-+
- DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- {
- 	char desc[sizeof(GPFSTR) + 50 + 2*sizeof(unsigned long) + 1] = GPFSTR;
-@@ -553,6 +583,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
- 	tsk = current;
- 
- 	if (user_mode(regs)) {
-+		if (fixup_iopl_exception(regs))
-+			goto exit;
-+
- 		tsk->thread.error_code = error_code;
- 		tsk->thread.trap_nr = X86_TRAP_GP;
- 
-diff --git a/arch/x86/lib/insn-eval.c b/arch/x86/lib/insn-eval.c
-index a1d24fd..eb3ccff 100644
---- a/arch/x86/lib/insn-eval.c
-+++ b/arch/x86/lib/insn-eval.c
-@@ -1417,7 +1417,7 @@ void __user *insn_get_addr_ref(struct insn *insn, struct pt_regs *regs)
- 	}
- }
- 
--static int insn_get_effective_ip(struct pt_regs *regs, unsigned long *ip)
-+int insn_get_effective_ip(struct pt_regs *regs, unsigned long *ip)
- {
- 	unsigned long seg_base = 0;
- 
+Thanks,
+Johan
