@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718E7413791
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FE0413797
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhIUQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:31:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49812 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229465AbhIUQbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:31:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632241815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cvXMhGakfRvwam1AwXwENHJLraWpPC0CvrXKzv+4e2g=;
-        b=B2/v4P9xwRaZMn7dRhy4YiFz+XWspsAv5Nv8U3O9+hgVQBQrcoQGU7XRiLxYQRTgCnOnbp
-        vPGMT91l1yEToyW0WkJIukVUmXLNb0+2IapkxJLuYNqi0Xmd28xl38edWPAuWFkaEtcpnR
-        6q+jrkikzLHvZ+wWzY/2WB9HCMlRXVE=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-1guuNCgKNtSch7tms6NeeA-1; Tue, 21 Sep 2021 12:30:14 -0400
-X-MC-Unique: 1guuNCgKNtSch7tms6NeeA-1
-Received: by mail-qv1-f69.google.com with SMTP id ci14-20020a056214054e00b0037a75ff56f9so228624191qvb.23
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:30:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cvXMhGakfRvwam1AwXwENHJLraWpPC0CvrXKzv+4e2g=;
-        b=LKHcSGAcKJl5x0HgcxEaeuj9L1q6qZ0l2A9R3VHMAQSoEdSLUjXXiUDX+aO1ZUVVrO
-         wyZOTm4MiALwrTZFlifCNKt5TdMrr4eWcJnIx66FZKrwUw0mqpqNdhfATURHmY8UZfBm
-         4pPZjdIXSN6gyNgKV60IPRr9pGXz8Lt2YaTbBYiW2WP2XPBtJ+K2DKcqBcAGSVXqFmHY
-         Pp/sG3U4273+eY+pOKFpDRL4lMljPaLOXyP3fX8D2EGLByfbZ5vLo0C5ovAiFIihtEUc
-         pb7kxaRjhsVfynu4FvA4bFGmf0gjn8a9lvdtzeoKGzjgG2CD+/IAH/4yhQ7NvdTf1gd1
-         ZwyQ==
-X-Gm-Message-State: AOAM531twRDJfOy877lPZOonr7DWnT+/TiEW1JF1KWxE9Vw0MlvLereW
-        0IffCzQ1qjZyxMoLg1zcgxi2dZOApfALSKHYwPt0UdIrk8k7rKrWZe5y4KnVYkmTWAc+cdTco/Y
-        2ZzVgbA9Xb4Bwl/k0u9kuZDEU
-X-Received: by 2002:a37:a152:: with SMTP id k79mr4734852qke.358.1632241814341;
-        Tue, 21 Sep 2021 09:30:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwA/BiE/VLlRf8pfn0lR/MXGfaprXd3avo4u1T1KPZaeFF4KcokyiBLbt3MnRhkYORRG/A1NA==
-X-Received: by 2002:a37:a152:: with SMTP id k79mr4734811qke.358.1632241814099;
-        Tue, 21 Sep 2021 09:30:14 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id r10sm9339894qkk.95.2021.09.21.09.30.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 09:30:13 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 12:30:11 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "david@redhat.com" <david@redhat.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <flosch@nutanix.com>,
-        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
-        Jonathan Davies <jond@nutanix.com>
-Subject: Re: [PATCH v2 1/1] Documentation: update pagemap with shmem
- exceptions
-Message-ID: <YUoIk247W1Sbt6Lf@t490s>
-References: <20210920164931.175411-1-tiberiu.georgescu@nutanix.com>
- <20210920164931.175411-2-tiberiu.georgescu@nutanix.com>
- <YUjb91tWhd/YAgQW@t490s>
- <F6A49621-C7A4-4643-95C2-F47B02F132D2@nutanix.com>
- <YUn0ikP4Gip3Yc6L@t490s>
- <C983908F-7AF4-410B-90FF-DB4B9A06E917@nutanix.com>
+        id S230045AbhIUQdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:33:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:36256 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229448AbhIUQdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:33:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 232C0113E;
+        Tue, 21 Sep 2021 09:31:37 -0700 (PDT)
+Received: from [10.57.95.67] (unknown [10.57.95.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50F653F718;
+        Tue, 21 Sep 2021 09:31:35 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Add Coresight support for RB5 board
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>
+References: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <07bba970-2315-4284-cd3e-d69a3028a406@arm.com>
+Date:   Tue, 21 Sep 2021 17:31:34 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <C983908F-7AF4-410B-90FF-DB4B9A06E917@nutanix.com>
+In-Reply-To: <1631515214-13653-1-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 04:08:29PM +0000, Tiberiu Georgescu wrote:
-> Hmmm, so if we put emphasis on the accuracy of swap info, or accuracy in
-> general, we need to use frontswap. Otherwise, mincore() could suffer from
-> race conditions, and mark pages in the swap cache as being present.
+Hi Tao
 
-IMHO it's not a race condition, but by design.
-
-Quotting again from the mincore() man page:
-
-       The vec argument must point to an array containing at least
-       (length+PAGE_SIZE-1) / PAGE_SIZE bytes.  On return, the least
-       significant bit of each byte will be set if the corresponding page is
-       currently resident in memory, and be clear otherwise.
-
-I think "within swap cache" does mean that it still resides in memory, so it's
-not violating what it's designed to me, at least from the manpage.
-
+On 13/09/2021 07:40, Tao Zhang wrote:
+> This series adds Coresight support for SM8250 Soc on RB5 board.
+> It is composed of two elements.
+> a) Add ETM PID for Kryo-5XX.
+> b) Add coresight support to DTS for RB5.
 > 
-> Do you reckon this info (frontswap for mincore) should be present in
-> the pagemap docs? I wouldn't want to bloat the section either.
+> This series applies to coresight/next
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> 
 
-I don't think the type of swap matters in this document, but imho mentioning
-mincore() as the alternative to fetch swap is still meaningful as that's what's
-missing for pagemap right now on shmem typed memories.
+Please could you mention what has changed since the previous version
+in the cover letter ?
 
-Even if it cannot identify some cases between "page presents", "page stays in
-page cache", or "page stays in swap cache", it'll still be good enough to me.
+Kind regards
+Suzuki
 
-Thanks,
-
--- 
-Peter Xu
+> Tao Zhang (2):
+>    coresight: etm4x: Add ETM PID for Kryo-5XX
+>    arm64: dts: qcom: sm8250: Add Coresight support
+> 
+>   arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      | 442 +++++++++++++++++-
+>   .../coresight/coresight-etm4x-core.c          |   1 +
+>   2 files changed, 439 insertions(+), 4 deletions(-)
+> 
 
