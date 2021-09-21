@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8CD41366D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62352413671
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbhIUPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:46:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39770 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbhIUPqK (ORCPT
+        id S234151AbhIUPsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:48:18 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52437 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234211AbhIUPrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:46:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 68D4D20165;
-        Tue, 21 Sep 2021 15:44:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632239081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nWfIiRk8SwvJHkqqWpNtD+lexrjS+OYHtMwGR8knjjw=;
-        b=DUz7+j2qlyD7dfx4dJY69O9WrXBoB0KARXL6nfiFfLqC27G4lhBbOg2iFFJ1/Q0LKQRPLO
-        T6swjazRz8feOf8EiWCl+Ct6oBLdnCDrwQtQ6pATyfCo+kS6paAp7pSTAhBVOnkERHQ0r4
-        3imdo1LZdgG1FO15ijNt4AbUrtkbyCk=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 31F16A3B88;
-        Tue, 21 Sep 2021 15:44:40 +0000 (UTC)
-Date:   Tue, 21 Sep 2021 17:44:38 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Chen Jun <chenjun102@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, feng.tang@intel.com,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH] mm: Fix the uninitialized use in
- overcommit_policy_handler
-Message-ID: <YUn95tAEvHEsT6R+@dhcp22.suse.cz>
-References: <20210921140301.9058-1-chenjun102@huawei.com>
+        Tue, 21 Sep 2021 11:47:15 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 88B752B013BA;
+        Tue, 21 Sep 2021 11:45:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 21 Sep 2021 11:45:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=68Ez9kJNOEr/C+egNL3CEoXa9GE
+        O4jmpwrJs9DLpLDg=; b=b8Xq/u2P2r2mU/sMeJ+g7E1UIIBCj7fudf6fVi2NqUW
+        gFRfZELr2enVCh6DjaMetTI4G0sFgTfFRDu1L8oE+kOjoeO8nDgZNjrL8O4ruERY
+        QQ9pgh/7833+n/+vJy/xB5WvKBQ3yEIODA3ewTf+o7oK0YXRWOYpLXgAhuhn8a0Q
+        S8BT9ddw4wuCRnTUW7rnPOKH1pyDeZMLivhpWWvfehamINIQ6Yf2/sAMZvgqqWom
+        tTksrBhLNdeThVqgHs6oy0nHdOzGMffxqopCZVR5x+dt32LxZ6ZWF/2Hu3hY+0kx
+        P+xAqNi8RA3IqmEJB0K50sfPYXw4qXUUHyfk5rMe+vA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=68Ez9k
+        JNOEr/C+egNL3CEoXa9GEO4jmpwrJs9DLpLDg=; b=Ls6G5GkOc5MBBotV22r9Uo
+        NWjeD1Cwgy7h4PrJJwdCk9xSIpvSspXJn/lK3ole7H8+uLSJuslCV9wfeuzauKAn
+        1ilALdzmqL5nY+PTYKicPlSOrfhay6pAI7CQ0CPDh3KDQtbs5xS50gvAyhoVsQ7k
+        3BXPHQH6fup08FQIGLCYgYl0lOHz5FX6h5LQEzE5bQWpMi0otBBId/dRG905seJG
+        PT72pP7GWElLvcZi01iEbsJZXvUPhyVAy+KMm+/8bvd2N2mPlS11LTXjQSzF6TU/
+        zX6Z5uER4cM2L0IRV6d6WL0CSKUFS34W4dKOihzmrw9fJCSReNW/9T3OxJlw+RnA
+        ==
+X-ME-Sender: <xms:J_5JYSe6D7aaoRNo-_lyZPJQXJcLtD3RsmmkG7frh-Js6XfEx60alQ>
+    <xme:J_5JYcNo21un18096Ck-eSIEDCKAR8z1-KjzRBfHAuKRCMe67LZpEoNxht5PNtgGP
+    OQ7tOtrS96k9w>
+X-ME-Received: <xmr:J_5JYTglr-G_PY_M4IOwYlpO80oVXdNshkJA_XRaL2uiG9NF0zAbp7Cau9jIq3m6MWw7alqv_wislBOpmA7RP10BWbX6XHEk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeigedgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:J_5JYf-Uhpe58UIWGYofA7myYYpdIgQx5HGpMYZo3PhIdLcuHA8IkQ>
+    <xmx:J_5JYetOgieNVo6mNCisN27dFF55aw0up_BluX1kQqO-1zfnvEAfrQ>
+    <xmx:J_5JYWFY7fAUYmYGLo07sDXpHxwKJpnVPzUYtoigI05IgxbyByZQjg>
+    <xmx:Kf5JYZlJ8GNH98916Fl08WrKH5ydkjqhrCM6fBTyUWh6JZunx9wTPGrKPho>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 21 Sep 2021 11:45:43 -0400 (EDT)
+Date:   Tue, 21 Sep 2021 17:45:41 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>, Len Baker <len.baker@gmx.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Prefer struct_size over
+ open coded arithmetic
+Message-ID: <YUn+Jfx9a+Ad1PsK@kroah.com>
+References: <20210918150500.21530-1-len.baker@gmx.com>
+ <202109192246.B438B42EF@keescook>
+ <ba427967-cb1b-58a8-ec93-bd5ae89f58f8@redhat.com>
+ <YUn3F9HtgrpN9sSM@kroah.com>
+ <725ac392-642b-f57d-a286-d662eaa7d2a2@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921140301.9058-1-chenjun102@huawei.com>
+In-Reply-To: <725ac392-642b-f57d-a286-d662eaa7d2a2@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21-09-21 14:03:01, Chen Jun wrote:
-> An unexpected value of /proc/sys/vm/panic_on_oom we will get,
-> after running the following program
+On Tue, Sep 21, 2021 at 05:38:39PM +0200, Hans de Goede wrote:
+> > All attributes for this driver are documented in Documentation/ABI/,
+> > right? :)
 > 
-> int main()
-> {
->     int fd = open("/proc/sys/vm/panic_on_oom", O_RDWR)
->     write(fd, "1", 1);
->     write(fd, "2", 1);
->     close(fd);
-> }
-> 
-> write(fd, "2", 1) will pass *ppos = 1 to proc_dointvec_minmax.
-> proc_dointvec_minmax will return 0 without setting new_policy.
-> 
-> t.data = &new_policy;
-> ret = proc_dointvec_minmax(&t, write, buffer, lenp, ppos)
->       -->do_proc_dointvec
->          -->__do_proc_dointvec
->               if (write) {
->                 if (proc_first_pos_non_zero_ignore(ppos, table))
->                   goto out;
->
-> sysctl_overcommit_memory = new_policy;
-> 
-> so sysctl_overcommit_memory will be set to an uninitialized value.
+> I'm not sure if all attributes are documented, but a lot of them
+> (including all recently added ones) are documented in:
+> Documentation/admin-guide/laptops/thinkpad-acpi.rst
 
-The overcommit_policy_handler (ab)use of proc_dointvec_minmax is really
-an odd one. It is not really great that proc_dointvec_minmax cannot
-really tell whether the value has been changed but likely nobody really
-needed that so far.
+They should also go into Documentation/ABI/ which is where sysfs files
+are documented.  We are working on tools that make parsing that easier,
+so it would be good to keep them out of other random documentation
+files whenever possible.
 
-I strongly suspect the intention was to do all the follow up handling
-before making the new mode visible to others. Maybe this can be changed
-so that the handler doesn't really need to do any hops.
+thanks,
 
-Your fix is an easier part I would just initialize the to -1 so that we
-can tell nothing has been done the handler can bail out without any
-follow up work.
--- 
-Michal Hocko
-SUSE Labs
+greg k-h
