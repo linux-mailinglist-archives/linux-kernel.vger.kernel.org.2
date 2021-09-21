@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935914132CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31D14132D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbhIULsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:48:04 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:42704 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbhIULsB (ORCPT
+        id S232499AbhIULuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:50:02 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:49423 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232467AbhIULt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:48:01 -0400
-Received: by mail-vs1-f43.google.com with SMTP id z62so19881811vsz.9;
-        Tue, 21 Sep 2021 04:46:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32w66s9nGR0myw/PUWAuk6HxhY9nPwbFGQyXVEOk8kc=;
-        b=vswgv3C2lwiwBcw/LgivXjxOlqnkLHHX16ieDTDh82XktAnPhWs6ZrOUoRURwo8/fX
-         11OyVtRhoxF0a7qnYB0zvqeIHBEqOrASTC+lqjgwdK0ieCJS/ciKO2Apt8SsaH8QvHhS
-         QYej185oSumpFbHGpQ+xz7mi8g5Q3lMVFjPsdFS7LSgnMuKl5JvmJW8ECcH3d+X9t9mR
-         WyJXVzPpoRcl9a4IPX5CNH8YxX7eB/05guZTeU+8R4T0q/qyiExl7Zktg/0XJoX70VVA
-         lNuDXUCgcKitSudLAdcmBWD5s9vkpeT3ffLe0TCQ1CJlP3/8GNE9RCyUEIx0lBjtnWnr
-         eXRA==
-X-Gm-Message-State: AOAM530B0edRiXuec3DsPH3t2/iGUz0uvEN4YzOh+kMa1n8XS/JDbIXr
-        hCY6XHkmlLPPZErlVxPWX+qCJIxGJ2Iz+Rr91cg=
-X-Google-Smtp-Source: ABdhPJye1i8aFM/j00ORdKt9DIgrNHrCPlMSCXq8HNDzH1ddHulVLAIUqAuRnCTX57TKQLrpNhL5Jrdhn4r9BvG/rjA=
-X-Received: by 2002:a67:2c58:: with SMTP id s85mr2943626vss.35.1632224793210;
- Tue, 21 Sep 2021 04:46:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920150807.164673-1-krzysztof.kozlowski@canonical.com> <20210920150807.164673-3-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210920150807.164673-3-krzysztof.kozlowski@canonical.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Sep 2021 13:46:22 +0200
-Message-ID: <CAMuHMdWFhHgT0vqcZnZ4kaMs3jSYtVM4asEkMv3T-xdadiimAQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] riscv: dts: microchip: fix board compatible
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 21 Sep 2021 07:49:59 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2021 04:48:31 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2021 04:48:30 -0700
+X-QCInternal: smtphost
+Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 21 Sep 2021 17:18:19 +0530
+Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
+        id 48434425A; Tue, 21 Sep 2021 17:18:18 +0530 (IST)
+From:   Jeya R <jeyr@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: [PATCH v3] misc: fastrpc: fix improper packet size calculation
+Date:   Tue, 21 Sep 2021 17:18:15 +0530
+Message-Id: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+The buffer list is sorted and this is not being considered while
+calculating packet size. This would lead to improper copy length
+calculation for non-dmaheap buffers which would eventually cause
+sending improper buffers to DSP.
 
-On Mon, Sep 20, 2021 at 5:09 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> According to bindings, the compatible must include microchip,mpfs.  This
-> fixes dtbs_check warning:
->
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: /: compatible: ['microchip,mpfs-icicle-kit'] is too short
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
+Signed-off-by: Jeya R <jeyr@codeaurora.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+Changes in v3:
+- relocate patch change list
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Changes in v2:
+- updated commit message to proper format
+- added fixes tag to commit message
+- removed unnecessary variable initialization
+- removed length check during payload calculation
 
-> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> @@ -10,7 +10,7 @@
->
->  / {
->         model = "Microchip PolarFire-SoC Icicle Kit";
-> -       compatible = "microchip,mpfs-icicle-kit";
-> +       compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
->
->         aliases {
->                 ethernet0 = &emac1;
-> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> index 93730afe6c58..5084b93188f0 100644
-> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> @@ -7,7 +7,7 @@ / {
->         #address-cells = <2>;
->         #size-cells = <2>;
->         model = "Microchip MPFS Icicle Kit";
+ drivers/misc/fastrpc.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Note that "model" should be "Microchip PolarFire SoC"
-(with/without a hyphen? seems like the occurrence in
- microchip-mpfs-icicle-kit.dts is the only one with a hyphen)
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index beda610..69d45c4 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
+ static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, int metalen)
+ {
+ 	u64 size = 0;
+-	int i;
++	int oix;
+ 
+ 	size = ALIGN(metalen, FASTRPC_ALIGN);
+-	for (i = 0; i < ctx->nscalars; i++) {
++	for (oix = 0; oix < ctx->nbufs; oix++) {
++		int i = ctx->olaps[oix].raix;
++
+ 		if (ctx->args[i].fd == 0 || ctx->args[i].fd == -1) {
+ 
+-			if (ctx->olaps[i].offset == 0)
++			if (ctx->olaps[oix].offset == 0)
+ 				size = ALIGN(size, FASTRPC_ALIGN);
+ 
+-			size += (ctx->olaps[i].mend - ctx->olaps[i].mstart);
++			size += (ctx->olaps[oix].mend - ctx->olaps[oix].mstart);
+ 		}
+ 	}
+ 
+-- 
+2.7.4
 
-> -       compatible = "microchip,mpfs-icicle-kit";
-> +       compatible = "microchip,mpfs";
->
->         chosen {
->         };
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
