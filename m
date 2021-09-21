@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667784134DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2267F4134DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbhIUNyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:54:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27264 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233160AbhIUNyD (ORCPT
+        id S233436AbhIUNym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:54:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10144 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233182AbhIUNyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:54:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632232353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V0zAq0x+oqzBpgunFTqnsA/mjDvVGVJTfSNQG5aaHl4=;
-        b=Y2wbzX+xXlAZPDs9yIQMb77vXlV2yau+gHsQKyP9rMcQ4Qc7eeLFUdcrS0k0r3ZWX8VMq4
-        zuFuAa4BKdZBKc3kXv4ODhbB9qRk9cLUow6GM4D7/uePRojQxVSGpwaqMwip+cpiijJHMu
-        BYuFNkCis+TCyGlX83xCIFm3KqcgWx4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-318-fEOCiu4aM3-1nOf9uI1Rvw-1; Tue, 21 Sep 2021 09:52:32 -0400
-X-MC-Unique: fEOCiu4aM3-1nOf9uI1Rvw-1
-Received: by mail-wr1-f72.google.com with SMTP id h5-20020a5d6885000000b0015e21e37523so8870737wru.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:52:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=V0zAq0x+oqzBpgunFTqnsA/mjDvVGVJTfSNQG5aaHl4=;
-        b=l8m8Cg3RZf47LS1zWQgsJ8MYOMUClHYjFWk0xwjJCNeq2y5fpXKn9PXyAZPQXMARZh
-         UXO/qrZNEfffEfpGzwp4Dv7xD2pcFkWZhxnpSTb2MeXMmqP4XPyzP/hP3Kzv/8TyAH0w
-         0OtaptldrM0gxckozHZ1y72dvFEBXTzhl0UBQOrisouatQAbZ16VkXk4wGXd63IvBei3
-         5tbvjS137o0XoUyMhIfjBh7Uk7MXdn/gjC6znnTQUddj00JsJkq6Xbzk8PzH2DnnzB2Y
-         N6EQpkTqweRGQ/pfVDhqf0ApjPl8tBTQ80qjM+XfIBFhIiHGzDm9M60rQjMzvh0q0o6U
-         pU8A==
-X-Gm-Message-State: AOAM53104BpbpuF4KoJGuwXBVKTOgd5dVx9N9T3SZtqhQSuybrXJGVvl
-        EtIhIfSz4o9LkiLCWhvhPON4J/MfbBZRUWtWaDTKPtiFqMboe1HngYR2B5mJ3IATWqmvhlJ1Cd0
-        lJUxVBpUfT5JwgwDJYuvP+f4N
-X-Received: by 2002:a5d:64ab:: with SMTP id m11mr32878899wrp.343.1632232351223;
-        Tue, 21 Sep 2021 06:52:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqNngkbqDMiHzQQklz3eCjHb4+L2IXwXQtwQ4UV/2L86vZDwomrKKd2RNX5DwoTklZM8hAcw==
-X-Received: by 2002:a5d:64ab:: with SMTP id m11mr32878879wrp.343.1632232351058;
-        Tue, 21 Sep 2021 06:52:31 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g25sm3701252wrc.88.2021.09.21.06.52.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 06:52:30 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH v2 02/10] KVM: x86: Clear KVM's cached guest CR3 at
- RESET/INIT
-In-Reply-To: <20210921000303.400537-3-seanjc@google.com>
-References: <20210921000303.400537-1-seanjc@google.com>
- <20210921000303.400537-3-seanjc@google.com>
-Date:   Tue, 21 Sep 2021 15:52:29 +0200
-Message-ID: <878rzq9gte.fsf@vitty.brq.redhat.com>
+        Tue, 21 Sep 2021 09:54:41 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LD9YrJ023358;
+        Tue, 21 Sep 2021 09:52:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=EJG/CDR2q0qBio4xJw4+XDBGA3e1T+kZ2BhtujGohqU=;
+ b=OX47MZyfEe9bVM9MFKxv1s8QvdvY9iRkSnhg7UaPio8SgRbfMlzowlLYIfqDDKg8GyiZ
+ SJxBGXzpCHdfgDE0g1mnML4KOZy7vRSoobS4PRyjT1USwlNKQA6we01zkJAuvUhOln5M
+ Ed0lIUS7YhyO1vVv+1uzUmjD68vnSq6wwUWIVa37HFiQ4MTcvBg1Sa6vvw8aGUEmEMJ8
+ o+pywtQrWcFQOWoPJtYD8b683NjE3UOt6eFENw7Ru7h10AghCDFAPAvv1Uc8ZaZIzRGF
+ 3Z5+tEO4SK2B+Bngq6E09bHJK+/h+31H7rfxFOePmm/TNjkVP7dcmbGcesLTkTUQRCK4 Ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b7f69ambd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 09:52:57 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18LDAOIt028826;
+        Tue, 21 Sep 2021 09:52:56 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b7f69amax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 09:52:56 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18LDhBiV006104;
+        Tue, 21 Sep 2021 13:52:55 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma04dal.us.ibm.com with ESMTP id 3b57rax7u6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 13:52:55 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18LDqspB39911842
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Sep 2021 13:52:54 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 46EC8AE06A;
+        Tue, 21 Sep 2021 13:52:54 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 321D7AE068;
+        Tue, 21 Sep 2021 13:52:50 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.43.82.215])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Sep 2021 13:52:49 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH 5/8] hugetlb: document the demote sysfs interfaces
+In-Reply-To: <20210816224953.157796-6-mike.kravetz@oracle.com>
+References: <20210816224953.157796-1-mike.kravetz@oracle.com>
+ <20210816224953.157796-6-mike.kravetz@oracle.com>
+Date:   Tue, 21 Sep 2021 19:22:47 +0530
+Message-ID: <87bl4m9gsw.fsf@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0k0bnVnbB0LS0_TUvr9DncwHIw4HtLCL
+X-Proofpoint-ORIG-GUID: LaEMchr76khInJAkdHFxfn6RVNsPRWY5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_01,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 adultscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109210083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Mike Kravetz <mike.kravetz@oracle.com> writes:
 
-> Explicitly zero the guest's CR3 and mark it available+dirty at RESET/INIT.
-> Per Intel's SDM and AMD's APM, CR3 is zeroed at both RESET and INIT.  For
-> RESET, this is a nop as vcpu is zero-allocated.  For INIT, the bug has
-> likely escaped notice because no firmware/kernel puts its page tables root
-> at PA=0, let alone relies on INIT to get the desired CR3 for such page
-> tables.
+> Describe demote and demote_size interfaces.
 >
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > ---
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  Documentation/admin-guide/mm/hugetlbpage.rst | 29 ++++++++++++++++++--
+>  1 file changed, 27 insertions(+), 2 deletions(-)
 >
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e77a5bf2d940..2cb38c67ed43 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10899,6 +10899,9 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->  	kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
->  	kvm_rip_write(vcpu, 0xfff0);
+> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> index 8abaeb144e44..902059a0257b 100644
+> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> @@ -234,8 +234,12 @@ will exist, of the form::
 >  
-> +	vcpu->arch.cr3 = 0;
-> +	kvm_register_mark_dirty(vcpu, VCPU_EXREG_CR3);
+>  	hugepages-${size}kB
+>  
+> -Inside each of these directories, the same set of files will exist::
+> +Inside each of these directories, the set of files contained in ``/proc``
+> +will exist.  In addition, two additional interfaces for demoting huge
+> +pages will exist::
+>  
+> +        demote
+> +        demote_size
+>  	nr_hugepages
+>  	nr_hugepages_mempolicy
+>  	nr_overcommit_hugepages
+> @@ -243,7 +247,28 @@ Inside each of these directories, the same set of files will exist::
+>  	resv_hugepages
+>  	surplus_hugepages
+>  
+> -which function as described above for the default huge page-sized case.
+> +The demote interfaces provide the ability to split a huge page into
+> +smaller huge pages.  For example, the x86 architecture supports both
+> +1GB and 2MB huge pages sizes.  A 1GB huge page can be split into 512
+> +2MB huge pages.  The demote interfaces are:
+> +
+> +demote_size
+> +        is the size of demoted pages.  When a page is demoted a corresponding
+> +        number of huge pages of demote_size will be created.  For huge pages
+> +        of the smallest supported size (2MB on x86), demote_size will be the
+> +        system page size (PAGE_SIZE).  If demote_size is the system page size
+> +        then demoting a page will simply free the huge page.  demote_size is
+> +        a read only interface.
 
-kvm_register_mark_dirty() is redundant here as PATCH1 does
+That is an alternate interface for nr_hugepages. Will it be better to
+return EINVAL on write to 'demote' file below
+/sys/kernel/mm/hugepages/hugepages-2048kB ?
 
-      vcpu->arch.regs_avail = ~0;
-      vcpu->arch.regs_dirty = ~0;
+Or may be not expose demote possibility within 2M hugepage directory at all?
 
-just a few lines above. The dependency is, however, implicit and this
-patch is marked for stable@ (well, PATCH1 has 8 Fixes: tags so I'd
-expect it to get picked by everyone too, especially by robots) and
-flipping two bits is cheap.
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
 > +
->  	/*
->  	 * CR0.CD/NW are set on RESET, preserved on INIT.  Note, some versions
->  	 * of Intel's SDM list CD/NW as being set on INIT, but they contradict
-
--- 
-Vitaly
-
+> +demote
+> +        is used to demote a number of huge pages.  A user with root privileges
+> +        can write to this file.  It may not be possible to demote the
+> +        requested number of huge pages.  To determine how many pages were
+> +        actually demoted, compare the value of nr_hugepages before and after
+> +        writing to the demote interface.  demote is a write only interface.
+> +
+> +The interfaces which are the same as in ``/proc`` function as described
+> +above for the default huge page-sized case.
+>  
+>  .. _mem_policy_and_hp_alloc:
+>  
+> -- 
+> 2.31.1
