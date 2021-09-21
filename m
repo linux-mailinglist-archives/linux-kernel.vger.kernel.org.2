@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BFE4137E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7790F4137E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhIURAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
+        id S229490AbhIUQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhIURAI (ORCPT
+        with ESMTP id S229732AbhIUQ7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:00:08 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05F4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:58:39 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id g14so85945pfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:58:39 -0700 (PDT)
+        Tue, 21 Sep 2021 12:59:54 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E317CC061574;
+        Tue, 21 Sep 2021 09:58:25 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id s11so21308567pgr.11;
+        Tue, 21 Sep 2021 09:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UKEwcbJEyUP0PqyzuU1jDgKq63XLBjLh4Ta6kc0XTvE=;
-        b=PUqZB0dLwluGdzZQ4zV6cjuxUbh0c2kg+B3SeVT/lrJ1XbYCAhKV1VZtrAdLXONOxW
-         nUcSGGIpjRpDvyVsZZDn4irjNUynHXB4c3UNObGKO95LknN+ZmW45CfUsc06Dm6+//kM
-         OWnstcShvsSnaXvXOzSiKaw+XfhxnsKo9DnQp8+THp5oY8z0AvLBMgqUGGUmxikPJ69C
-         DpdA591UCBC4s6bvd6HNkrHdzcReEk3jeJR5Jw91cBAwjpDMGjikq93/DJ3pLoQiCj9o
-         fGpIbX+H1/o9R0yhAIyIiW15ycbzc5feAFJXQOfLzeQg0UorYhHbmKOz5f51Vt5HoYAg
-         JQlA==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CETVK6ds2+pVBiYyRDYkGHOQ2Xi8265HXP1w2IsOw/s=;
+        b=fXw07H7h/S09+jhMew/WRu/2l5CgTYmLbhvhhhUDFApMwO4chkFXboY8pr/pk4vc+m
+         G/9Qfye2GpmREPTP4cjHHtFo1FkY5P/O0nIfZN1czk2PeViG+gMjnUyLO0Iiu1+8d/FN
+         B2kQ3deBVaOyS08uPowNavm3ZwxZkmD/34yUjs8hauBwemPbtYVjBSYEMSbruyMbDmE1
+         eLC1+nyscLCj+5jYUf2I3cTKTCHT+2r/wMpUSvmXYa7uxs2mvGJwTNY5BHMxmbQ3AOVC
+         pffiA5G01ZR65F0aU56ZvX6uCSMyu+zjJKVRFWI9QZCW6WVd3W9gMwK+RrqWjT5+OhrO
+         cDww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=UKEwcbJEyUP0PqyzuU1jDgKq63XLBjLh4Ta6kc0XTvE=;
-        b=jizNvjnOEydIK9Q93E7fj5Ge63RnOfSfEEePZyhnyF3bSHiwM48HB2bRrV6wWOC+42
-         FdVx4F5uqyqsNZAk6BB23mUl2gX0jzYaueJOYGI7/0jzM4ghBuu2KbOG6WSWXtHqgZR5
-         lQvltJyI3De0fC2iq3FpliAuIgJ/g9AUydpVuHeZDjqdynNrYcjmTSA0voWysV7wM3RR
-         mJBkWgUauw3OqSRjZNgGDkbYk6TaxSMFEdCMFPjmJ4bn/XfJDQhPXn4wf3VWQeiIfrzm
-         mnvPf6J7gUKCh4ZGQW3QToWGvIFbGoUAo2Uud8Qt5RJMbzu/nxkqF7hvP0rYXIxBuSsb
-         z5Yw==
-X-Gm-Message-State: AOAM532izuZB1tVvXNBiPAsCN3FlLi69I3QaDBHvafQgGvlqVPmV8kJx
-        zxdspageuUssghJsMBWC2XyBlbYkvlw=
-X-Google-Smtp-Source: ABdhPJz6Y8VTto6N/f8XpSs196/Bx/hN5/wj5eYVotLR+BYvB69rKLFBGf/tchVE93j8JiRzHpHVCQ==
-X-Received: by 2002:aa7:97b2:0:b0:439:14a9:2bf5 with SMTP id d18-20020aa797b2000000b0043914a92bf5mr31535117pfq.45.1632243519433;
-        Tue, 21 Sep 2021 09:58:39 -0700 (PDT)
-Received: from sultan-box.localdomain ([204.152.215.247])
-        by smtp.gmail.com with ESMTPSA id h6sm18237584pfr.121.2021.09.21.09.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 09:58:39 -0700 (PDT)
-Sender: Sultan Alsawaf <sultan.kerneltoast@gmail.com>
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-X-Google-Original-From: Sultan Alsawaf
-To:     sultan@kerneltoast.com
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@suse.de, mhocko@suse.com,
-        rientjes@google.com
-Subject: [PATCH v2] mm: Mark the OOM reaper thread as freezable
-Date:   Tue, 21 Sep 2021 09:57:58 -0700
-Message-Id: <20210921165758.6154-1-sultan@kerneltoast.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210918233920.9174-1-sultan@kerneltoast.com>
-References: <20210918233920.9174-1-sultan@kerneltoast.com>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CETVK6ds2+pVBiYyRDYkGHOQ2Xi8265HXP1w2IsOw/s=;
+        b=kWyKrRCxRoSQIXAg40lMiz+Mn8xlt6Lx+DZeS5bJD/P7mv8vIYT/4VkUz7eTDIzxyM
+         3HEcNkejQAPimTgJFw5ta0BCWN7fD7m38fgCOYV5oPOJMdEhh3M2M6vz+zk2cgYP4ACj
+         wUy0W8LQMrKzJ9NQnGLSch4hJjjNA/Muj/wbOEgSRgm7E2RqR1y3znmovEW4rYItj5F/
+         gYPXOCA9LbJ5Ed6GtDQSxv5gRCBGSgPdcmjaTmifss3xJqhl8iyz7rFSNdh/uTpuhr7X
+         oMQkkg81kID/fSgAx1JYwx8jb0D74rzQEBiKAFTkqFMLUSstpBwKyP97ALLhDz0ly+VR
+         8kMA==
+X-Gm-Message-State: AOAM532YI3/rnqJ3ZNRJdgK+qITMxdVRkqmOwfSX5YRwq2ERkfqempQq
+        6zbEmeV0fhHFFA083mjary+MUBEnw9o=
+X-Google-Smtp-Source: ABdhPJze7D4radWbj3gJfRezAW0+9jYJ4S4t0zu2sEjS24I8fdxSUMmEJzGOSP6MfeGf+evY9zUCkA==
+X-Received: by 2002:a63:3f85:: with SMTP id m127mr1129533pga.140.1632243504964;
+        Tue, 21 Sep 2021 09:58:24 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id s2sm3480683pjs.56.2021.09.21.09.58.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 09:58:24 -0700 (PDT)
+Subject: Re: [PATCH 5.14 000/168] 5.14.7-rc1 review
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210920163921.633181900@linuxfoundation.org>
+ <ca3953f8-e3a9-e3a9-d318-0f84ba96db12@gmail.com>
+Message-ID: <b420c3e8-9adb-ddbc-9eef-5961469c8865@gmail.com>
+Date:   Tue, 21 Sep 2021 09:58:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <ca3953f8-e3a9-e3a9-d318-0f84ba96db12@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sultan Alsawaf <sultan@kerneltoast.com>
+On 9/20/21 11:54 AM, Florian Fainelli wrote:
+> On 9/20/21 9:42 AM, Greg Kroah-Hartman wrote:
+>>
+>> Rafał Miłecki <rafal@milecki.pl>
+>>     net: dsa: b53: Set correct number of ports in the DSA struct
+> 
+> (same comment as for 5.10)
+> 
+> This patch will cause an out of bounds access on two platforms that use
+> the b53 driver, you would need to wait for this commit:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=02319bf15acf54004216e40ac9c171437f24be24
+> 
+> to land in Linus' tree and then you can also take Rafal's b53 change.
+> This is applicable to both the 5.14 and 5.10 trees and any tree where
+> this change would be back ported to in between.
+> 
+> Thank you!
 
-The OOM reaper alters user address space which might theoretically alter
-the snapshot if reaping is allowed to happen after the freezer quiescent
-state. To this end, the reaper kthread uses wait_event_freezable() while
-waiting for any work so that it cannot run while the system freezes.
+With the updated tag pointing to:
 
-However, the current implementation doesn't respect the freezer because
-all kernel threads are created with the PF_NOFREEZE flag, so they are
-automatically excluded from freezing operations. This means that the OOM
-reaper can race with system snapshotting if it has work to do while the
-system is being frozen.
+commit c25893599ebc571ecb26074f1338ac0c642078e4 (HEAD,
+linux-stable-rc/linux-5.14.y)
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Tue Sep 21 08:59:04 2021 +0200
 
-Fix this by adding a set_freezable() call which will clear the
-PF_NOFREEZE flag and thus make the OOM reaper visible to the freezer.
+    Linux 5.14.7-rc1
 
-Please note that the OOM reaper altering the snapshot this way is mostly
-a theoretical concern and has not been observed in practice.
 
-Fixes: aac453635549 ("mm, oom: introduce oom reaper")
-Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/oom_kill.c | 2 ++
- 1 file changed, 2 insertions(+)
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 831340e7ad8b..46a742b57735 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -641,6 +641,8 @@ static void oom_reap_task(struct task_struct *tsk)
- 
- static int oom_reaper(void *unused)
- {
-+	set_freezable();
-+
- 	while (true) {
- 		struct task_struct *tsk = NULL;
- 
+Thanks Greg!
 -- 
-2.33.0
-
+Florian
