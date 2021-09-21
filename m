@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78E3413AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D24413AA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhIUTXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
+        id S234439AbhIUTXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhIUTXN (ORCPT
+        with ESMTP id S229915AbhIUTXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:23:13 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529F6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:21:44 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id v24so558212eda.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:21:44 -0700 (PDT)
+        Tue, 21 Sep 2021 15:23:30 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1CEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:22:01 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id a14so351791qvb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=uged.al; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CoizIjqkQkAgXO3NanmUI7a4z4Mg4O/HFwzVnIRa9bA=;
-        b=L4Dq7fxn+T5CnRWjI2RzQxbBMPmM/uJPBGd1OH6JHrHqcDodPJRB7rVWREZn/NMDx5
-         kvQ9wgp9tp4se1p5dxYmvfMC/rLxgofi19rrgBti+gXm3P6CGdUeRVDwQD+OCEVGzV/m
-         HYyv+0K/E6P6shH08Di8bhjwK2q9p8yE/Vhuj50rkmEsNmPt6hTHfd4qVz7mXfpOJpNL
-         18KdaM+jBKiPMmTWUuCOPxKsO1Ceqz3xW4v+/hLMij67QCFyseY3abu3zFf3n0boGNq7
-         TVhHbbZOPCJpwkem989BAeTmUUBmweed4AH6fldPEAYXrTtl2PTaTTNfrm763ZLF729U
-         Q2aA==
+        bh=byXBBhU5G/dX1Qqhyk4gN1a19PMCtYNKaaSGr1kUrRs=;
+        b=EvZDvB7LmA2IyY4MVygYFtKioK1bGvZ7061aL7ddxooaWOmRENaPeREb4wxcFr8o0L
+         r8k1lvp8GelOqDb2pSAG84OdjcFCBVurNdFmj4kOQolcQqYNb7a4KGwkM4a2UjFpQvQh
+         AzGEcH3A8/R5pbUoahh+Pt5hpeF+YilcZd0LRGc75lEGnCyn0zQ5v0aNTXgWCsa5nHl7
+         lzOK9L8Ve/TCsty1YKz/vsk5QhMG07apoaHp+rLL7tAFy5D7azMw3nzbyOffNezRexik
+         7/KDQ6TncKupQTxUqgbGpWJ7JWfJ/dDt2vZyqJ+aj265kyu3VAIHt1nE/1ydJXq6gj7C
+         06Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CoizIjqkQkAgXO3NanmUI7a4z4Mg4O/HFwzVnIRa9bA=;
-        b=2U5fzTZ/Wgp6zzwnp+Kxfvt/1MFWDEq+mKf1gNTl0xFUrFT45b55g+lN5yzUcKT2L0
-         jPWbooL2o74wWRCuXE/LJm38biCA5KcYiV65McsODQ6w9/Mqvw5MH52oqV4JPZIJi7PZ
-         5CBNt4SZtQW+awohl7mLL1gFDBPPVFYcyLtejJd6b4FErNIPWs7g7HENPBv5ohJOhegG
-         0qOtghcgki5AAafiCwMhgx1VlB8jWNJANAnhQVbGBfbedhDtRJWJ+NaHqKzt4XL79k8Q
-         /2lTMT5qNui6+CN77tQvrtp9XPxBOkrqdPsUZw1TqgSk0MT8I2WfK1zveqEj1IOrwTHv
-         sDZg==
-X-Gm-Message-State: AOAM533NYYMCO5D5UBR23W+mKhECGL5fkviMtkIBVpE8lWDgarKu5m0W
-        gSZ6Ege1mcGC3ALf63yjCi4pXN+q4Wtu8RbIRYU=
-X-Google-Smtp-Source: ABdhPJyjeX9akdEf/RuGH/Q17gt5cyRtdcyppYt3wLVuxPcQ1tZjaAft84WEeGuffcm8zyVLfvWSyMIRng0kLQAYcrs=
-X-Received: by 2002:a17:906:85d8:: with SMTP id i24mr36091538ejy.451.1632252102971;
- Tue, 21 Sep 2021 12:21:42 -0700 (PDT)
+        bh=byXBBhU5G/dX1Qqhyk4gN1a19PMCtYNKaaSGr1kUrRs=;
+        b=2JK7jwTmYrE5sOA9OqnHA/IqkWKQMRoCSx/il0vwAOtZYPk7myWjyWIujKEX/3rpM3
+         oMkusLaPV48Gw6iUufSbmEnKnhoO/7WQuzxsjjC5Jo5cdDn92T9mVE+2Xqw2ibDbtSl9
+         lHqoYnJWEQ9CKfA8//ZwZaoXWxGXJo6djGDgKrMlnhazuAvQgK+Qf9L78nKEWCwwL3g+
+         8zX4BFjdN6+2cfbmlkAhgLCIpEvaOwTYEyJakON6ijf4Qw3CE9pTAHUcSD8z1DJXx6ju
+         njLyIoTar50i3PPaN7298IVMTllPpBTpIx8zpadyjHScTKEdMlkblFblcY1cvMO2qAoD
+         c/NA==
+X-Gm-Message-State: AOAM530NiWiaTLGUzI8owLkfHW8dwn8M+ajBZnFamcMg2D5klK/5CQzt
+        BH/hoTjDAQ30K71MNoWSola+Z5/QCvZUv2yJmkzaPg==
+X-Google-Smtp-Source: ABdhPJz0Ho4THpSF6Nj2Jumm1CHq2QVYwNJy96vcGeI9zidjQ36kqZjuY4DLLpqKFcUtFsKwPNotMvEe3JVnKXoyq88=
+X-Received: by 2002:ad4:5591:: with SMTP id e17mr32824080qvx.50.1632252120925;
+ Tue, 21 Sep 2021 12:22:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920203735.675-1-linux.amoon@gmail.com> <CAFBinCB682kFB47=K5-Pod5cbrnNTtKdAj3i8PHrxj8VxOH8FA@mail.gmail.com>
-In-Reply-To: <CAFBinCB682kFB47=K5-Pod5cbrnNTtKdAj3i8PHrxj8VxOH8FA@mail.gmail.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Wed, 22 Sep 2021 00:51:32 +0530
-Message-ID: <CANAwSgRtZoAmMO-WtRBX4W4pTkmzJKH1zc=6-99Py-d_4cOR0w@mail.gmail.com>
-Subject: Re: [PATCHv2] regulator: pwm-regulator: Make use of the helper
- function dev_err_probe()
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
+References: <20210819175034.4577-1-mkoutny@suse.com> <20210819175034.4577-5-mkoutny@suse.com>
+ <CAKfTPtCAxksmsR6DJuAoSZ7XTon+gesyic36EHL-nQk0LiHWQg@mail.gmail.com>
+ <20210914092207.GA23743@blackbody.suse.cz> <CAKfTPtDw6_iMxGyCK8vrwgV-zMyHtNKBksxs3OpbpK=houzp2g@mail.gmail.com>
+ <CAKfTPtC5+4gf_R0bAVHe+0Fw6dQYQ_a-f529H9s4KLpm40X9Ng@mail.gmail.com> <CAFpoUr3APdFordH+1XjHPWP5FtKuQBAXSRTt4arruMkQcx2ufg@mail.gmail.com>
+In-Reply-To: <CAFpoUr3APdFordH+1XjHPWP5FtKuQBAXSRTt4arruMkQcx2ufg@mail.gmail.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Tue, 21 Sep 2021 20:21:50 +0100
+Message-ID: <CAFpoUr1S4N1g_pP2d9_EMFn3zuwQejsxkBbCd5LTQ-KuwOXbLQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Phil Auld <pauld@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Hi,
 
-On Tue, 21 Sept 2021 at 11:04, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> Hi Anand,
->
-> On Mon, Sep 20, 2021 at 10:38 PM Anand Moon <linux.amoon@gmail.com> wrote:
-> >
-> > devm_pwm_get() can return -EPROBE_DEFER if the pwm regulator is not
-> > ready yet. Use dev_err_probe() for pwm regulator resources
-> > to indicate the deferral reason when waiting for the
-> > resource to come up.
-> >
-> > Fixes: 0cd71b9a43ad ("regulator: pwm: Don't warn on probe deferral")
-> Personally I consider this as an improvement (having the deferral
-> reason show up in debugfs), not a bugfix.
-> Because of that I would drop the Fixes tag.
-> Let's wait on other people's opinions though.
->
-Ok will drop this in the next version.
+With the changes in PATCH 1 of this series [0], I think this logic needs to be
+updated as well (or correct me if I am wrong). Did a quick look now,
+and it looks
+like there are some conflicts with the linus' tree when applying the
+series as well,
+but didn't look that deep into what caused it (for ref I tested on v5.15-rc2).
 
-> [...]
-> > -                       dev_err(&pdev->dev, "Failed to get PWM: %d\n", ret);
-> > -               return ret;
-> > +               return dev_err_probe(&pdev->dev, PTR_ERR(drvdata->pwm),
-> > +                                    "Failed to register regulator %s\n",
-> The message here should still be similar to the original one since the
-> actual problem is that we could not get a reference to the PWM
-> controller. At this point we are not trying to register the
-> pwm-regulator yet.
->
+Not sure how you want to structure this patch series as all the patches kinda
+depend on each other, since you sent the updated one separately (and I
+am fairly new
+to kernel development, so I have no idea), while patch 1 is fixing a
+"real" issue
+that we probably want to get fixed as soon as possible.
 
-Yep, Typo I mixed up the logs completely.
-it should be  "Failed to get PWM, deferring probe"
+
+[0]: https://lore.kernel.org/lkml/20210917153037.11176-1-mkoutny@suse.com/
 
 Thanks
--Anand
->
-> Best regards,
-> Martin
+Odin
