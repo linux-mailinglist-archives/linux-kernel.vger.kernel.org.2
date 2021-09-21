@@ -2,124 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08DA412D9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16A1412D9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhIUEBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 00:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
+        id S232085AbhIUEBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 00:01:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhIUEBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 00:01:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1516B611C5;
-        Tue, 21 Sep 2021 03:59:36 +0000 (UTC)
+        id S231913AbhIUEBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 00:01:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0165611C7;
+        Tue, 21 Sep 2021 03:59:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632196779;
-        bh=7OFVjzBNfyXXNiMg++zl6W4YbQ+GkChXNDPM6C4fm5Q=;
+        s=k20201202; t=1632196785;
+        bh=jmk/uZuqLkoXagm8ygt7aBAsovLbk9vXbJTPG+BlsQ0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n3XB9+ugrNqVsTPmuetwR6tFfbxIb+a2Z7toWMqN0Dy+j2Cbd7wAA1OEPwy8tAEbZ
-         ZjOua8+cY72aS72AP8eojwewsPQkKUXi2TtXcnk2kUzalmAKD01uRtWYX+3OA8Gepk
-         B87YzxW/IBbfeVyitYV3IaTEAdLqdcLDfGb17WGpYDIka9EhrHUme/0D12blfxBtCu
-         eJPWLehJsL7qkqgkblKCHlkbCjcuZ/ek106F5zZEGKWvfpWeQoNGGFGljGLDpsIpv1
-         OlBIdUGF7H3tJPgr997lQ9+w/Fo16rZSiWOXwAFb2KxZM19MDil9rGz75CswVKOYZB
-         7O9rHggfmZiQA==
-Date:   Mon, 20 Sep 2021 20:59:33 -0700
+        b=W84U9qGt1u0u62msL4AyGa+4gd4nFAUPEYylZh7owRwU/p7k1hgbFlGthx5ASx1PQ
+         3HVaURkUD4RKQ49rvQv+OGqwpKPUWI8MRnlykyK2+RW2jb6qeOqXF71p216G/Rqy+v
+         M70yhHmk7lCh2SSnf/WmJhJnqhiEnnp79HHyBX2jA9r5XewJ7OGuIlAu4iWPgr0NUe
+         qA4m9t8nBgNVxJ5wGCrwvcX5AkwVvTr4r3PoJZlhhlNLDT8wOAlAkT2t6CJomuXszu
+         gVpifXIl4+vBeu6L0U8pggl7RaL1boTaRui0iykOFMi1w8UcaQpeR0U1CFjsztQooP
+         ghxR7vM3zFxXg==
+Date:   Mon, 20 Sep 2021 20:59:40 -0700
 From:   Nathan Chancellor <nathan@kernel.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, efault@gmx.de,
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Mike Galbraith <efault@gmx.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= 
-        <marmarek@invisiblethingslab.com>
-Subject: Re: [PATCH v2] x86/setup: call early_reserve_memory() earlier
-Message-ID: <YUlYpWhGCxpJ9diw@archlinux-ax161>
-References: <20210920120421.29276-1-jgross@suse.com>
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        marmarek@invisiblethingslab.com, Juergen Gross <jgross@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, x86@kernel.org
+Subject: Re: [tip: x86/urgent] x86/setup: Call early_reserve_memory() earlier
+Message-ID: <YUlYrLG4rLwWw1ge@archlinux-ax161>
+References: <20210914094108.22482-1-jgross@suse.com>
+ <163178944634.25758.17304720937855121489.tip-bot2@tip-bot2>
+ <4422257385dbee913eb5270bda5fded7fbb993ab.camel@gmx.de>
+ <YUdwMm9ncgNuuN4f@zn.tnic>
+ <YUkPsjUUtRewyOn3@archlinux-ax161>
+ <YUlTlsVB7gJUVNT0@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210920120421.29276-1-jgross@suse.com>
+In-Reply-To: <YUlTlsVB7gJUVNT0@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:04:21PM +0200, Juergen Gross wrote:
-> Commit a799c2bd29d19c565 ("x86/setup: Consolidate early memory
-> reservations") introduced early_reserve_memory() to do all needed
-> initial memblock_reserve() calls in one function. Unfortunately the
-> call of early_reserve_memory() is done too late for Xen dom0, as in
-> some cases a Xen hook called by e820__memory_setup() will need those
-> memory reservations to have happened already.
+On Tue, Sep 21, 2021 at 05:38:40AM +0200, Borislav Petkov wrote:
+> On Mon, Sep 20, 2021 at 03:48:18PM -0700, Nathan Chancellor wrote:
+> > Could auto-latest get updated too so that it does not show up in -next?
+> > I just spent a solid chunk of my day bisecting a boot failure on one of
+> > my test boxes on -next down to this change, only to find out it was
+> > already reported :/
 > 
-> Move the call of early_reserve_memory() before the call of
-> e820__memory_setup() in order to avoid such problems.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: a799c2bd29d19c565 ("x86/setup: Consolidate early memory reservations")
-> Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+> Sorry about that - commit is zapped from tip/master and tip/auto-latest.
 
-I had issues on an AMD Ryzen 3 4300G based system with v1. v2 does not
-trigger any boot issues on that same machine or an Intel i5-4210U based
-system that I also test with.
+Thank you!
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+> But your effort hasn't been in vain - you have a box which triggers this
+> boot issue and I haven't found one yet.
+> 
+> Can you please test on that exact test box whether the new version of
+> that commit works?
+> 
+> That one:
+> 
+> https://lkml.kernel.org/r/20210920120421.29276-1-jgross@suse.com
+> 
+> It would be much appreciated.
 
-> ---
-> V2:
-> - update comment (Jan Beulich, Boris Petkov)
-> - move call down in setup_arch() (Mike Galbraith)
-> ---
->  arch/x86/kernel/setup.c | 26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 79f164141116..40ed44ead063 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -830,6 +830,20 @@ void __init setup_arch(char **cmdline_p)
->  
->  	x86_init.oem.arch_setup();
->  
-> +	/*
-> +	 * Do some memory reservations *before* memory is added to memblock, so
-> +	 * memblock allocations won't overwrite it.
-> +	 *
-> +	 * After this point, everything still needed from the boot loader or
-> +	 * firmware or kernel text should be early reserved or marked not RAM in
-> +	 * e820. All other memory is free game.
-> +	 *
-> +	 * This call needs to happen before e820__memory_setup() which calls the
-> +	 * xen_memory_setup() on Xen dom0 which relies on the fact that those
-> +	 * early reservations have happened already.
-> +	 */
-> +	early_reserve_memory();
-> +
->  	iomem_resource.end = (1ULL << boot_cpu_data.x86_phys_bits) - 1;
->  	e820__memory_setup();
->  	parse_setup_data();
-> @@ -876,18 +890,6 @@ void __init setup_arch(char **cmdline_p)
->  
->  	parse_early_param();
->  
-> -	/*
-> -	 * Do some memory reservations *before* memory is added to
-> -	 * memblock, so memblock allocations won't overwrite it.
-> -	 * Do it after early param, so we could get (unlikely) panic from
-> -	 * serial.
-> -	 *
-> -	 * After this point everything still needed from the boot loader or
-> -	 * firmware or kernel text should be early reserved or marked not
-> -	 * RAM in e820. All other memory is free game.
-> -	 */
-> -	early_reserve_memory();
-> -
->  #ifdef CONFIG_MEMORY_HOTPLUG
->  	/*
->  	 * Memory used by the kernel cannot be hot-removed because Linux
-> -- 
-> 2.26.2
-> 
-> 
+Sure thing. I tested both of my test systems and added a tested-by tag
+to that thread. Glad to hear it was not in vain :)
+
+Cheers,
+Nathan
