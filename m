@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD148412D91
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19969412D9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 05:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhIUDz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 23:55:59 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:56395 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhIUDzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 23:55:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632196462;
-        bh=0BzMHsy1hpymZlL6NJ8oZ6u/HRveT4hYBexymK9AGfM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MGgS250hdua+NRRuQrftB+Qh4HlkjFi5NHcmww/oshONsaVHQQpxx2NSIPDTgKnSY
-         IANijUNI9RGlj0C+vf89g5yNHdOhLRSiHSMc+niwE7Bnbo8e8gTuBQsQ4ifpHy8djq
-         vrotX/0h9l1qBsSqq2vT5IIRle0jUhqdPTz+x9wrrtfMmwVPA5kYo4bRXSPFcRv2DE
-         gtv40k4oSRT3SoKI/f5q+f1nKUH5jFpIJNzpl44grAI+MIIWv+OQBgWfn2cEoC3318
-         cLlQ2mxu6m2UvYFpiUEdZUwO7zUsCk4Gc0C3/g9DOA9thHqTlekKU+g0UGtGRZp1iN
-         45Mz+QYF662RA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HD6xV3NXPz9ssP;
-        Tue, 21 Sep 2021 13:54:22 +1000 (AEST)
-Date:   Tue, 21 Sep 2021 13:54:21 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Matthew Wilcox <willy@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the folio tree with the fscache tree
-Message-ID: <20210921135421.13eac778@canb.auug.org.au>
+        id S229760AbhIUEAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 00:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhIUEAm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 00:00:42 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BCDC061574;
+        Mon, 20 Sep 2021 20:59:15 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id s11so19479909pgr.11;
+        Mon, 20 Sep 2021 20:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kJuxCA+lr9aQqZZBT5ST0vvzTYsVU9ziB3RzbVagWdY=;
+        b=Zn7eGmlQ2ODCP6PbCnG87aTNmNcU9IQZudac1EfAt7dKL8YcLe+9f+nlnOEE/kmIyL
+         5ldZV6Jr77aLr7D2CmIqb3yd9e5oYOxBLbwwdD/FcoYiDruTd5vQBz+ez333TGmrWq+Y
+         pOBGeFOh3RbbjrsPZDybbugkuvkFA7WJXlZJASPcRogD7BdxlJDT5oaRDM5eF4job5vn
+         /lFlLIJtwIhdx1JBUSE0CCVkgIJ/BFPIgCEkNw1+Y0l6zMxsqv5teWXKE4NkiP1h6U3f
+         vmg0NBRqUx01wO2+BiqjB5amg0BNf7KCgsfRTQH6fjLL3QWn/VQEK9Fc6IKrYp+hWMdD
+         cA9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kJuxCA+lr9aQqZZBT5ST0vvzTYsVU9ziB3RzbVagWdY=;
+        b=uu50vEBOHy1rKsfzQm4j0NGMrX9Njvki/eJWoXAnGjo5D8Kwa4GxGHyM5phQs4FTPU
+         aNyRk3jTIxQXISX6hUovuw0N2SLV1Kdep0mJi5Xb3q6Jg4DrtFNRWORoDyZfEUMtQiex
+         1pBo/Yq4x+BqOsiJ7MFNvUYw9KsumHhXig8Li1jpicWJnV1/TFJb4ywKfgN6UirnJPKC
+         RSJDWaUAkantJR7cguYJN4AIRsO0suT1Le2BkQ1+vXZ98HM8pNNlIk2uzGLj8MSa70VX
+         uTJ3sXyDlQLsQqOeogZGWfANCqGJrIDcGvu4cWyYEvkpAdHgYi2P7o+bZOuAJoETUVWT
+         LZZw==
+X-Gm-Message-State: AOAM532qjcZ+ZSZLDMA2BR0+vkQ2zesrPQ9a5Fsk3jrglPhcV0tHWUv3
+        ukwcs9i8C9Zr8sgOTuHc9TE=
+X-Google-Smtp-Source: ABdhPJytZlhnayh07mqRDvv42PYDgjOF+j7pVNZCzv3Yjcmxur5gjwgsGchuhhyucaUnA38ZdzIk4g==
+X-Received: by 2002:a63:720d:: with SMTP id n13mr26275111pgc.470.1632196754368;
+        Mon, 20 Sep 2021 20:59:14 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a5b4:f272:6a63:5b57])
+        by smtp.gmail.com with ESMTPSA id k3sm795327pjg.43.2021.09.20.20.59.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 20:59:13 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 20:59:10 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 04/16] tty: make tty_ldisc_ops::hangup return void
+Message-ID: <YUlYjs+lYhPDSHGe@google.com>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091134.17426-4-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rz/pi.tYV_5ktpC4kYtjCMJ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914091134.17426-4-jslaby@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rz/pi.tYV_5ktpC4kYtjCMJ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Sep 14, 2021 at 11:11:22AM +0200, Jiri Slaby wrote:
+> The documentation says that the return value of tty_ldisc_ops::hangup
+> hook is ignored. And it really is, so there is no point for its return
+> type to be int. Switch it to void and all the hooks too.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Wolfgang Grandegger <wg@grandegger.com>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> ---
+>  Documentation/driver-api/serial/tty.rst | 2 +-
+>  drivers/input/serio/serport.c           | 3 +--
 
-Hi all,
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Today's linux-next merge of the folio tree got a conflict in:
+Thanks.
 
-  fs/cachefiles/rdwr.c
-
-between commit:
-
-  405f4ff7f8a3 ("fscache: Remove the old I/O API")
-
-from the fscache tree and commit:
-
-  2e96a1a81b3f ("mm/filemap: Convert page wait queues to be folios")
-
-from the folio tree.
-
-I fixed it up (the former removed the file, so I did that) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rz/pi.tYV_5ktpC4kYtjCMJ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFJV20ACgkQAVBC80lX
-0GwR1QgAoE8m/H1eN4UfrZi9P2FyQdbKUgHwj46WPo955gIERDoIivLoBfAmvy6X
-GP/UuhxaDXH+Jn/RToZOCwNTHU4Ah0U9HJQ+1rQRuRGHGNz93HRu5eRhgOQU61sz
-u3tBw0F7gCZQHaGYcQ/1YLjfvEJAKWWUL9xOatO48Vv0y+VUjWKphPZVSFjpHU+G
-QOATCqaJmjvWvGMAcxKC8JdqfhlfC5NtGS07ACNO/AAid6dcWY7AUAe1CW074vX2
-IyWHt0BCfeOMXlVJZYvbKgNY8FM53yXydz+jZ8OQ0HfVgmEQLjISwQ3t98LjOzSZ
-3/r0CuC4IgI8SnJV3Raewcr616qdBA==
-=mlnV
------END PGP SIGNATURE-----
-
---Sig_/rz/pi.tYV_5ktpC4kYtjCMJ--
+-- 
+Dmitry
