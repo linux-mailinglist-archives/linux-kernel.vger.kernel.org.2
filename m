@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1FF4132AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C0E4132AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhIULhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhIULhX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:37:23 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF57C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 04:35:55 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id x124so5635518oix.9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 04:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y/NtL1eqdessLJJ7QAgmdSlgwRQ9C8fMojdqN92nFPU=;
-        b=RcIeDxNz16hCkRCahO6aJoeYtQN4Ebe55P/m5406fDQxt64VMzUraHbWyBqK/6ufh4
-         BNdPjU8lfKcmJV8oAdZqN4DyfcEBHJcdKHltk3Puk7isGHcBiWWKrbjuAzKfzxEMkf6z
-         WK+CiSzWw0lkE7oMDxdZqr/xcGDbh66EE5ONRlrQCS6gqjLdEzgfeo6wBxMbyB31Z6yE
-         wk6vUIoajrv7uHtvEzlRlCYoSCMbfzEC0cWLVF1ntmleky3Dz8fNFFSpHiHyeX02womR
-         IzpCdjeT+ZlvQ9V0+WnPv6vHkSSd0gn8w3PlY3UTIqiviaOOly4K8xBNJYN5xhpND6Kh
-         MFYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y/NtL1eqdessLJJ7QAgmdSlgwRQ9C8fMojdqN92nFPU=;
-        b=BcDupYbiiDnvcke9razJwUx2IFbdx4nOcz/hBinzPJISoAyg185O2tmGZ96OBAinxo
-         YXRUO3mAbtEKkOfcYhZcSX5o4OlL1F70nDieow/LgYJ6sb+zEVOkZQvcswGqvZk7/Dam
-         fg7tcPVZuPASnLEGEpEIfiKzVcVSMDcqEG56HGNWlIuh6tIrDudDZiPbOWbxdLrBwga5
-         jSKXgZ72gdZQeW84M2+6ZbmNDfjd+BkY0N5lluz4Fk5tPlClHGADX4X6Y4C/oJSN/G1V
-         +wwQrTJi9a1S+ba8gCZ/mIZp4cb+Xz8BCNNgYbvdp7vdXSC1WVW/PPRuqGn66XQuGMgv
-         7eNw==
-X-Gm-Message-State: AOAM533yR2Avyecz/KLmy655dzzCHjZhBTc2CRbdYfPbALqYqGq1Ib9c
-        +h4porABp9rVKh71yceT+rgxvkhrzgHDit+hE0RCyg==
-X-Google-Smtp-Source: ABdhPJzC6ci1Dmx4ZzdOTG1OUQaNGftnP651SqaVwyJyYzS8AAG/+opo9hgOGWhtcljKstsEHUdVRsqjXvqiknzrXVw=
-X-Received: by 2002:aca:4344:: with SMTP id q65mr3351129oia.70.1632224154781;
- Tue, 21 Sep 2021 04:35:54 -0700 (PDT)
+        id S232543AbhIULhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:37:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232341AbhIULhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:37:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B37E61184;
+        Tue, 21 Sep 2021 11:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632224184;
+        bh=zWZf2YfsXIWdXNp7ZoylUgLi722Ht+rt6qA4OZk5bu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UpY7XDOXPp6iGWj5JN5TxJLpOTaKKXgJ909BSopPbJF+Ow4wDYtIKu0Y5W8QXQFPG
+         HEFG5RX00HtM/Og1GaITeHa/ctRYWMtF56pRXR4P6udEf2/NGVOIoYfUAqIJYntQ1n
+         YDyimCKgh9i4lVnR3HP0Rdp7/xa9ZJe3rZYjqsvY=
+Date:   Tue, 21 Sep 2021 13:36:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH 07/16] tty: remove file from tty_ldisc_ops::ioctl and
+ compat_ioctl
+Message-ID: <YUnDtTEzex5/z90J@kroah.com>
+References: <20210914091134.17426-1-jslaby@suse.cz>
+ <20210914091134.17426-7-jslaby@suse.cz>
+ <YUlY5pQQWf2P2fKn@google.com>
+ <9049e956-2865-7309-2eaf-aa4516ab28d6@kernel.org>
 MIME-Version: 1.0
-References: <20210921101014.1938382-1-elver@google.com> <20210921101014.1938382-4-elver@google.com>
- <CACT4Y+Z6Rss3+oiN5bcKHYeQgG=nZ9VDqwrhOS4VUZ=_a5NoBw@mail.gmail.com>
-In-Reply-To: <CACT4Y+Z6Rss3+oiN5bcKHYeQgG=nZ9VDqwrhOS4VUZ=_a5NoBw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 21 Sep 2021 13:35:42 +0200
-Message-ID: <CANpmjNPuW47hwmLm=RXr6sXSzvAmz0_vo3m9UGgUbT_CQ=oSgg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] kfence: limit currently covered allocations when
- pool nearly full
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Jann Horn <jannh@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9049e956-2865-7309-2eaf-aa4516ab28d6@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 13:05, Dmitry Vyukov <dvyukov@google.com> wrote:
-[...]
-> > +/*
-> > + * Adds (or subtracts) count @val for allocation stack trace hash
-> > + * @alloc_stack_hash from Counting Bloom filter.
-> > + */
-> > +static void alloc_covered_add(u32 alloc_stack_hash, int val)
-> > +{
-> > +       int i;
-> > +
-> > +       if (!alloc_stack_hash)
-> > +               return;
->
-> Nice!
-> I like the hash seed, non-evicting cache and that threshold become a
-> command line parameter.
->
-> This check is the only place I don't understand. What's special about
-> alloc_stack_hash == 0? I see that even double-free's won't call this
-> with 0.
+On Tue, Sep 21, 2021 at 12:52:38PM +0200, Jiri Slaby wrote:
+> On 21. 09. 21, 6:00, Dmitry Torokhov wrote:
+> > Hi Jiri,
+> > 
+> > On Tue, Sep 14, 2021 at 11:11:25AM +0200, Jiri Slaby wrote:
+> > > diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
+> > > index 17eb8f2aa48d..55e91d0e70ec 100644
+> > > --- a/drivers/input/serio/serport.c
+> > > +++ b/drivers/input/serio/serport.c
+> > > @@ -207,8 +207,8 @@ static void serport_set_type(struct tty_struct *tty, unsigned long type)
+> > >    * serport_ldisc_ioctl() allows to set the port protocol, and device ID
+> > >    */
+> > > -static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
+> > > -			       unsigned int cmd, unsigned long arg)
+> > > +static int serport_ldisc_ioctl(struct tty_struct *tty, unsigned int cmd,
+> > > +		unsigned long arg)
+> > 
+> > Can we please keep arguments aligned as they were? Otherwise
+> 
+> Fixed, thanks. Likely, I will send a follow-up -- depending if Greg drops or
+> keeps these in the tree.
 
-Indeed, it's no longer required (I think it was in a previous version
-I played with). At this point, it should only be true if jhash()
-returns 0 for something, and in that case might not even want the
-check.
+Up to you.  I can drop them all now if you want to resend a v2 with all
+of the aggregate acks, or you can send a follow-up set on top of these.
 
-I can also remove the unnecessary "meta->alloc_stack_hash = 0;" in
-kfence_guarded_free().
+Your choice.
 
-Unless I hear otherwise, I'll remove the unneeded code (and send a v3
-of this series in a few days).
+thanks,
+
+greg k-h
