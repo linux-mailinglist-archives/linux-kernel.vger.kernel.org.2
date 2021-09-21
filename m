@@ -2,217 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD46E413E12
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EA1413E16
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhIUXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230216AbhIUXh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:37:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CAAB6115A;
-        Tue, 21 Sep 2021 23:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632267390;
-        bh=SdAclgW8rsWgIlhdwVa7bbKYbLTEIxPOEyfgqzy5CLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MLemCllyQAnw7VN1/IYQUh0a6/PfTrQSEnTc7763xoAw45YjX80FefVcxQMKsS+eV
-         FUERvTNl4GCnO18raNIQ3xTud0NLBBeF4jIIXw2VZUybeNKZDwjcMNJLfgsZ3q7zmp
-         zUPLsYgmtFl35liRWWbJVjaAcDoPVqdTzT0i5CrfR4K99NuvJWZTHj841jc4PX1Ih4
-         zYteNPi8vWegtNE44UHsj4hyBT9AyBYDirRt+inhhm4wzF2nkoLOKzqbG4A5c0e5jY
-         v9UtCo2JlBbHkVHfW+gNFd4o+AOuAzu4jU/pVNBkoAxUAbFkC9XB3aXGz5MMEAFYUF
-         R0Yot4RbcGqmQ==
-Date:   Wed, 22 Sep 2021 01:36:27 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210921233627.GA100318@lothringen>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
- <87pmt163al.ffs@tglx>
+        id S230415AbhIUXi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230317AbhIUXi6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:38:58 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03510C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:37:30 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so849085pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 16:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qIRPwBi35DByL5nNagL4hpGfYXpq07J7mvCHes4E2I8=;
+        b=CagL4ypNs0iUa6oSr82NtUCcM5afk3tpeB8sZw/NJ2O4nCzEvz6X/w/zpg2BofRyva
+         3ouHVYLoXloUnknXzDRHbkUfL/Y2/KzBuAtgYAm5fcGpL70SKzDWkbwoKqgBSjKgKWFR
+         7x9f1PPXKYYZ3hHmt9RkRBRow7JIi6mipiPOI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qIRPwBi35DByL5nNagL4hpGfYXpq07J7mvCHes4E2I8=;
+        b=vwZK88f8iWCOycDH8CxYx7tMtNvIAXTy4Z7i0/rrv9wkwfwowO1m52VfDtr5PofrUU
+         Y9QMeFJ2FWcV93GONOGWWAd2bfG/tG/l2exlMF9ppVsxBw0JuFAs7qU3yehi7VjY2LGE
+         xxuolZ/SXoKR8zBjFYPtu40JfAJkIo9oLja/HVDn4Io3QchNHcU5JR65zc1T30PL4oaS
+         xuo+LwvX502ik5J5KCjUHB7cRvUI65ol2aOsgKPzOQ1+jbpEctRkC2tOYuYlHCCEdnTA
+         +IujsMGnqvKCuRczF2PtXOVwJZvGGTNhpPP8Dcz/HsgHwvcK/qKfO1zP9ao+cfrk3xkj
+         oT+A==
+X-Gm-Message-State: AOAM530JjifVC1/pW5oBz4e/diHaV3x8CNeoRnPdkpHzYYuufF322WRV
+        zHDS60Bs9GncxOFyPWZp3iZ1og==
+X-Google-Smtp-Source: ABdhPJxmuqnu/uYqodXX1f0kq7Os+jTCYEhXE+TvL4n6MzbS8CErhdU/aNilFR3PjarfxZ9bqn16kQ==
+X-Received: by 2002:a17:902:6bc1:b0:137:10b6:972f with SMTP id m1-20020a1709026bc100b0013710b6972fmr29321530plt.69.1632267449413;
+        Tue, 21 Sep 2021 16:37:29 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o15sm229255pfg.14.2021.09.21.16.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 16:37:28 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 16:37:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, apw@canonical.com,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, dwaipayanray1@gmail.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Joe Perches <joe@perches.com>, Linux-MM <linux-mm@kvack.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        mm-commits@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [patch 9/9] mm/vmalloc: add __alloc_size attributes for better
+ bounds checking
+Message-ID: <202109211630.2D00627@keescook>
+References: <20210909200948.090d4e213ca34b5ad1325a7e@linux-foundation.org>
+ <20210910031046.G76dQvPhV%akpm@linux-foundation.org>
+ <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pmt163al.ffs@tglx>
+In-Reply-To: <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:12:50PM +0200, Thomas Gleixner wrote:
-> Valentin reported warnings about suspicious RCU usage on RT kernels. Those
-> happen when offloading of RCU callbacks is enabled:
+On Fri, Sep 10, 2021 at 10:23:48AM -0700, Linus Torvalds wrote:
+> On Thu, Sep 9, 2021 at 8:10 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> >
+> > +__alloc_size(1)
+> >  extern void *vmalloc(unsigned long size);
+> [...]
 > 
->   WARNING: suspicious RCU usage
->   5.13.0-rt1 #20 Not tainted
->   -----------------------------
->   kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+> All of these are added in the wrong place - inconsistent with the very
+> compiler documentation the patches add.
 > 
->   rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
->   rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
->   rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+> The function attributes are generally added _after_ the function,
+> although admittedly we've been quite confused here before.
 > 
-> The reason is that rcu_rdp_is_offloaded() is invoked without one of the
-> required protections on RT enabled kernels because local_bh_disable() does
-> not disable preemption on RT.
+> But the very compiler documentation you point to in the patch that
+> adds these macros gives that as the examples both for gcc and clang:
 > 
-> Valentin proposed to add a local lock to the code in question, but that's
-> suboptimal in several aspects:
+> + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alloc_005fsize-function-attribute
+> + * clang: https://clang.llvm.org/docs/AttributeReference.html#alloc-size
 > 
->   1) local locks add extra code to !RT kernels for no value.
+> and honestly I think that is the preferred format because this is
+> about the *function*, not about the return type.
 > 
->   2) All possible callsites have to audited and amended when affected
->      possible at an outer function level due to lock nesting issues.
-> 
->   3) As the local lock has to be taken at the outer functions it's required
->      to release and reacquire them in the inner code sections which might
->      voluntary schedule, e.g. rcu_do_batch().
-> 
-> Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
-> rcu_rdp_is_offloaded() in the variable declaration section right at the top
-> of the functions. But the actual usage of the result is either within a
-> section which provides the required protections or after such a section.
-> 
-> So the obvious solution is to move the invocation into the code sections
-> which provide the proper protections, which solves the problem for RT and
-> does not have any impact on !RT kernels.
+> Do both placements work? Yes.
 
-You also need to consider rcu_segcblist_completely_offloaded(). There
-are two users:
+I'm cleaning this up now, and have discovered that the reason for the
+before-function placement is consistency with static inlines. If I do this:
 
-1) The first chunk using it in rcu_core() checks if there is a need to
-accelerate the callback and that can happen concurrently with nocb
-manipulations on the cblist. Concurrent (de-)offloading could mess
-up with the locking state but here is what we can do:
+static __always_inline void * kmalloc(size_t size, gfp_t flags) __alloc_size(1)
+{
+	...
+}
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index bce848e50512..3e56a1a4af03 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2728,9 +2728,10 @@ static __latent_entropy void rcu_core(void)
- 
- 	/* No grace period and unregistered callbacks? */
- 	if (!rcu_gp_in_progress() &&
--	    rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
-+	    rcu_segcblist_is_enabled(&rdp->cblist)) {
- 		rcu_nocb_lock_irqsave(rdp, flags);
--		if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
-+		if (!rcu_segcblist_completely_offloaded(&rdp->cblist) &&
-+		    !rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
- 			rcu_accelerate_cbs_unlocked(rnp, rdp);
- 		rcu_nocb_unlock_irqrestore(rdp, flags);
- 	}
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index 305cf6aeb408..64d615be3346 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -449,10 +449,9 @@ static void rcu_lockdep_assert_cblist_protected(struct rcu_data *rdp);
- static void __init rcu_organize_nocb_kthreads(void);
- #define rcu_nocb_lock_irqsave(rdp, flags)				\
- do {									\
-+	local_irq_save(flags);						\
- 	if (!rcu_segcblist_is_offloaded(&(rdp)->cblist))		\
--		local_irq_save(flags);					\
--	else								\
--		raw_spin_lock_irqsave(&(rdp)->nocb_lock, (flags));	\
-+		raw_spin_lock(&(rdp)->nocb_lock);			\
- } while (0)
- #else /* #ifdef CONFIG_RCU_NOCB_CPU */
- #define rcu_nocb_lock_irqsave(rdp, flags) local_irq_save(flags)
+GCC is very angry:
 
+./include/linux/slab.h:519:1: error: attributes should be specified before the declarator in a function definition
+  519 | static __always_inline void *kmalloc_large(size_t size, gfp_t flags) __alloc_size(1)
+      | ^~~~~~
 
-Doing the local_irq_save() before checking that the segcblist is offloaded
-protect that state from being changed (provided we lock the local rdp). Then we
-can safely manipulate cblist, whether locked or unlocked.
+It's happy if I treat it as a "return type attribute" in the ordering,
+though:
 
-2) The actual call to rcu_do_batch(). If we are preempted between
-rcu_segcblist_completely_offloaded() and rcu_do_batch() with a deoffload in
-the middle, we miss the callback invocation. Invoking rcu_core by the end of
-deoffloading process should solve that.
+static __always_inline void * __alloc_size(1) kmalloc(size_t size, gfp_t flags)
 
-> 
-> Reported-by: Valentin Schneider <valentin.schneider@arm.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  kernel/rcu/tree.c |    7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
->  {
->  	unsigned long flags;
->  	unsigned long mask;
-> -	bool needwake = false;
-> -	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-> +	bool offloaded, needwake = false;
->  	struct rcu_node *rnp;
->  
->  	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
->  	rnp = rdp->mynode;
->  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> +	offloaded = rcu_rdp_is_offloaded(rdp);
->  	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
->  	    rdp->gpwrap) {
+I'll do that unless you have a preference for somewhere else...
 
-BTW Paul, if we happen to switch to non-NOCB (deoffload) some time after
-rcu_report_qs_rdp(), it's possible that the rcu_accelerate_cbs()
-that was supposed to be handled by nocb kthreads on behalf of
-rcu_core() -> rcu_report_qs_rdp() would not happen. At least not until
-we invoke rcu_core() again. Not sure how much harm that could cause.
+-Kees
 
-> @@ -2446,7 +2446,7 @@ static void rcu_do_batch(struct rcu_data
->  	int div;
->  	bool __maybe_unused empty;
->  	unsigned long flags;
-> -	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-> +	bool offloaded;
->  	struct rcu_head *rhp;
->  	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
->  	long bl, count = 0;
-> @@ -2472,6 +2472,7 @@ static void rcu_do_batch(struct rcu_data
->  	rcu_nocb_lock(rdp);
->  	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
->  	pending = rcu_segcblist_n_cbs(&rdp->cblist);
-> +	offloaded = rcu_rdp_is_offloaded(rdp);
-
-offloaded is also checked later in rcu_do_batch(), after irqrestore. In
-fact that should even become a rcu_segcblist_completely_offloaded() check
-there because if there are still pending callbacks while we are de-offloading,
-rcu_core() should be invoked. Hmm but that might be a remote rcu_core...
-
-Anyway I guess we could live with some of those races with invoking rcu core on the
-target after deoffloading.
-
-I guess I should cook a series to handle all these issues one by one, then
-probably we can live without a local_lock().
-
-Thanks.
-
-
-
->  	div = READ_ONCE(rcu_divisor);
->  	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
->  	bl = max(rdp->blimit, pending >> div);
+-- 
+Kees Cook
