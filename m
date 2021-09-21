@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D457413B5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E43413B60
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbhIUUbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        id S234836AbhIUUc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhIUUbF (ORCPT
+        with ESMTP id S234881AbhIUUcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:31:05 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5ABC061574;
-        Tue, 21 Sep 2021 13:29:36 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id 42so222171uak.11;
-        Tue, 21 Sep 2021 13:29:36 -0700 (PDT)
+        Tue, 21 Sep 2021 16:32:25 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01B0C061574;
+        Tue, 21 Sep 2021 13:30:56 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso196166otb.11;
+        Tue, 21 Sep 2021 13:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K+xoUoHNLWwQxNlICe7S0Bso4TmLrF3Y5Y9/zLM7GtA=;
-        b=ZSiyT13qRPnoccslyJ87Nq8ZohgDjViWUSJaaFKTU84pW9R4NoE2BOykFhFPP1KdyF
-         LJ5ZhbAUhc2EXo+rk0AXlFNij/CH091WCjvGbL184sR0JqSsLq2g3VMAcTsxu3T+FfPS
-         12cIIv5f4A8UtCMyZSGrYbhev+Ork54G3CMQrLOPs7RfbC/vWSP5M2MpNbYEhRsfLInS
-         XTIRKzMu+Ch3TxWMaoAfGsqfRZ/3X3qHg5aztR/j9+D9XBrI8M+pulhgEDUcWnfteKrQ
-         ZmeHF3HljHhF6M56TChcoYeq+B7oYiGNq0T5n9sq+Qmut2Z54FLvveDJWC/eTVqj0lY9
-         xacg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EOMsRLdmoMaeDR6S/ee7HhNCT9A3nkqMSet3H6BfwIU=;
+        b=gNRJKr1QUvsEYEKpR2zpKskgLATjVWdeOjqi89bi88YNfrI+t4vmk6WZ0qO45aTPZZ
+         YjfQRblHduJAlEq+AZwek97gqoE6N+GrcEebAPj7KmQLi5R/H85IqzUWQ62jZd3k3uUq
+         QF6cn/SyNCEIoabCW+SGa7VbvR4lbSuVhqJ4P3cDFpGgrDwosA9onYz5VfWXveFLbCsn
+         qypweYRuqydc/2ye2cf9az9hkRLZIbjYoEl9H6Wqodb+SJ76qL92MUPT93hq6vZlGBxF
+         M15jYwJDwpKsSHLCZQ91FEbEl5dRLFZ3eK/8CwahwrN8KIX1voWAjf1ogM2xETaqbYyN
+         I05g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K+xoUoHNLWwQxNlICe7S0Bso4TmLrF3Y5Y9/zLM7GtA=;
-        b=aVtZEfQzNtNfYwDnX1n80IB7iohJzxacrh2aZxy5W+fsxXoSHUiHPXT04sLvSZu9kA
-         gYmeVxA78b0c4jWFHvD+LFF1B/MmJ3sI77Kxa8I81UBWRAxfhuxLcqyhIfrnpzHwsu1+
-         Gvu2LC6PVv61Rb+E8Dky/TLrMgOCWyn+tKPi2UzIr2u5UDvJH3zN0LDf7iS7LwNlvBPc
-         4qe6KMTOas4EA5nkoDdZjcdnJOzf6BwUbI0K9n6oL2p243NgqoSdbf25kw/mQwNW8sGb
-         DP0HidKy9/9UIDrtrqKS23FUyg3Lua3eaRn80rzmhIVALBdw0xj/9avQ7fc2g2WEscxV
-         wjMg==
-X-Gm-Message-State: AOAM533BAfLhqS41hl1WuodMxf5rzCyULslkAmR9bm7ilIsySq5NU7s4
-        p9jm0GGF8/uaZM7LVqrx/fTQQO1fehrI4s3WxIu5jkcw/X4=
-X-Google-Smtp-Source: ABdhPJwKlDQsxNdmBpncw45lnYHrUpZ8vGxaQWi988wkSFP6Mkcy/vz7WGu1FJtowhnKHAmvR3K3KKqQnM+zU44r1Hk=
-X-Received: by 2002:a05:6130:325:: with SMTP id ay37mr19533245uab.88.1632256176026;
- Tue, 21 Sep 2021 13:29:36 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=EOMsRLdmoMaeDR6S/ee7HhNCT9A3nkqMSet3H6BfwIU=;
+        b=TsobN8rivbfhzn0LbnHJSQyqIae37EPF2M+aRzBYthm/MFKryWChJPY/Dc9YVnOK75
+         V1hqIBdggrr96RFGvz2mJFxkS7qPYCwxta0DLMVDklicbPOGexO+qVftebsFal05hNCu
+         cd1nLL5oezB8hBKQUVUz+i980ckjSoX/j/4QisjBsR5VKZNIYhWIW7oPYMfEUteftcar
+         2cMsnZxh+3b/ZMWGcn9wTBEDYdTwDPUpNk2W9EgWiuPTsO4OvoQdFZWoug2Hqm1d+UOc
+         NVOmTmKgASh+qziaLyYBXVRi2BBKwwoR5J58XKDJwtOyImNRZyWa8nsdl6O78A+0rJmf
+         i2DA==
+X-Gm-Message-State: AOAM532xjrmg2oZ21EluzrcRgeMOiUdo3x2sPbP7Cnh2XfjSUxZZqSlb
+        z0jrIXWrYT6AehoPIEDzMjA=
+X-Google-Smtp-Source: ABdhPJzOxVAWomQrvj1TDL0o+voxYCA31gPVeUog9fx3mJniULGwDWmaCpNua0N1FSTeX5QCr6Z+pQ==
+X-Received: by 2002:a05:6830:359:: with SMTP id h25mr6412899ote.48.1632256256181;
+        Tue, 21 Sep 2021 13:30:56 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d21sm22406ooh.43.2021.09.21.13.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 13:30:55 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 21 Sep 2021 13:30:54 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 000/133] 4.4.284-rc1 review
+Message-ID: <20210921203054.GA2363301@roeck-us.net>
+References: <20210920163912.603434365@linuxfoundation.org>
 MIME-Version: 1.0
-References: <120a0ca4-28c7-5a7b-f1ab-2015c8817bda@fi.rohmeurope.com>
- <YUQyQgFAOFnBlcdP@atomide.com> <0679a5bb-88d1-077d-6107-d5f88ef60dbf@fi.rohmeurope.com>
- <8f3963ca-ff09-b876-ae9e-433add242de2@ti.com> <331ab81e-cd42-7e9b-617a-fde4c773c07a@ti.com>
- <615b6fec-6c62-4a97-6d0c-d2e5a5d1ccb2@fi.rohmeurope.com> <dab93132-2e5a-78f2-4313-fc541ea36a10@ti.com>
- <36785ccf-57b4-eaf1-cfc0-b024857f7694@gmail.com> <YUmOGFUFONR/ynfW@atomide.com>
- <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
-In-Reply-To: <cce97271-11d2-cc1a-a0fc-c8e8b4482329@ti.com>
-From:   Drew Fustini <pdp7pdp7@gmail.com>
-Date:   Tue, 21 Sep 2021 13:29:24 -0700
-Message-ID: <CAEf4M_B1vam_ykRZmQ5++QArC-=+yooRg25BrQXKE5nk8AtqbA@mail.gmail.com>
-Subject: Re: beaglebone black boot failure Linux v5.15.rc1
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210920163912.603434365@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 9:09 AM Suman Anna <s-anna@ti.com> wrote:
->
-> Hi Matti, Tony,
->
-> On 9/21/21 2:47 AM, Tony Lindgren wrote:
-> > * Matti Vaittinen <mazziesaccount@gmail.com> [210920 08:23]:
-> >> Finally, adding the udelay(100); (as Tony suggested) at the end of the
-> >> omap_reset_deassert() did make the oops go away even when pruss_tm was
-> >> enabled. I don't know what would be a proper fix though.
->
-> I have been able to boot v5.15-rc1 just fine on my BBB without any additional
-> changes [1].
->
-> May I ask what is your BBB board version? My board is rev.A5C.
+On Mon, Sep 20, 2021 at 06:41:18PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.284 release.
+> There are 133 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
+> 
 
-That rev is quite old [1].  Would you be able to try a Rev C?  It has
-been in production since around 2014 with the move from 2GB to 4GB
-eMMC.
+Build results:
+	total: 160 pass: 160 fail: 0
+Qemu test results:
+	total: 339 pass: 339 fail: 0
 
-Thanks,
-Drew
-[1] https://elinux.org/Beagleboard:BeagleBoneBlack#Revision_A5C
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
