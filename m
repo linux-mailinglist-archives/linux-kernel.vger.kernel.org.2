@@ -2,144 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2FD412D20
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAC6412B8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 04:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352921AbhIUCzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Sep 2021 22:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242050AbhIUCh3 (ORCPT
+        id S1347159AbhIUCTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Sep 2021 22:19:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29611 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244820AbhIUCJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:37:29 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8960AC061366;
-        Mon, 20 Sep 2021 18:48:54 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id q11so34645922wrr.9;
-        Mon, 20 Sep 2021 18:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XsbOPmeOKB/570fbfbzFbflSwEFMGZGM2JzXwh8J1SQ=;
-        b=pssQgPnotXBLiLGXJUuGMURrg1xKMcKmrpCXmtAcY2GYBOzsCuKP+xX11XK2r2aiLT
-         MjV2jXi6JjNruUvbh7FQaHBmXMfJKoxj/JTGPltimWzKuR5aJRVPYMH28yXgvjuFKwKO
-         lml2O1C26GGPYHORcYSoIqEUYkKG+2Dw50rUyyv7e7/O9sNvtgrlXdBB041iTPl+sZFl
-         hQ+O1qQnZBmGHa7XiXrJXv1uQ7f6Z99qqJa8eZSqHk6aE/C9XC9RACMVoPwSv0qZ9CVl
-         SJD3uZGlreym4GSclGdAmG/R+qNc9beDSzHcX4zP32TCqC+rJ9O06qp0NaYw3tR4BoPN
-         fizg==
+        Mon, 20 Sep 2021 22:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632190075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=P0kxhnvVXGqL/DkgQ0Xhuo7zEcFhuLSYFgkrJ0v2bY8=;
+        b=KRLl3CEEq5//U+1dni2S90am3gJf9SJWQNwRsdIUrH88E8a5qJ3TWmsLJnw5WvXWVwRBrr
+        D9YVysuqw8ExjP/TJT9ETirMjhNBzqbMH6jqC7SETOvRCiMHMz4ENsFR4Cop7lIq74tDpJ
+        ERxqpLfPdtw4s6+APxV+jfgus9FF+AM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-8gszQrBjPMK-9eBi_7jmuw-1; Mon, 20 Sep 2021 22:07:53 -0400
+X-MC-Unique: 8gszQrBjPMK-9eBi_7jmuw-1
+Received: by mail-wr1-f72.google.com with SMTP id i16-20020adfded0000000b001572ebd528eso7563397wrn.19
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 19:07:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XsbOPmeOKB/570fbfbzFbflSwEFMGZGM2JzXwh8J1SQ=;
-        b=dNyLeKNtJcmufAAXLzdObSR28da2lClG9iSFlXq7cLFDXX3WE7QrxbMPU0EVjf4Oi5
-         MoDHYImSsdcSKHHvxuefE46iZLZ7YAknGQ/elUPi6oAWMaMN6P+/Nhf6iFSnrVW3b4jk
-         anmmwoblnAg5kR4qMfXNbYI904/7JeesAjE2UYc030Tk7yn2JuOMRUY9ggN8RqTgIJrf
-         sJTEcm9d/bvaIKfjQWUGeWemYoSjyXvGVSejsMaJuUz6tFQKdB0uw7zbcwDZpePoyuu+
-         J5JT7Zs7B0bcQrErAOZKcAkJuAKQ4T3CYMONRzle0D/wAERzQyfMlc9LOidtF1yUBpDe
-         ELYw==
-X-Gm-Message-State: AOAM5310dsiUCJ2g7BsO3ln3ta5nTpy6S/2cIVldA3WiGKWZAolsmXHI
-        7RQy/I7+FwxUQvcZf2tJves8/3kX1XuyONyEE7o=
-X-Google-Smtp-Source: ABdhPJwY/pTvSi440fBtEY6yKwYEz81tNiEbE21xK0cTxa5Gyw8yPp6zppGev3v5wMUQOilFGAoPhpOa/lHkhMwxf1o=
-X-Received: by 2002:a5d:5610:: with SMTP id l16mr32093271wrv.102.1632188933081;
- Mon, 20 Sep 2021 18:48:53 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=P0kxhnvVXGqL/DkgQ0Xhuo7zEcFhuLSYFgkrJ0v2bY8=;
+        b=3UhEqRn5GLPFbw75REQw0MHq4qZPPdvm5E9n2pzZCN3CgOGMAP+bxYjMiVgCY7ALrT
+         8/lM52WbjgSyBucJmBlFPuEo8paFJUhG3B+vUYrIlHzWAhWt/OTl1yP/gCnKuReGLGq8
+         U6DerAfKY6nppC1YTwevSRCxIGQiGjYHU2v1FhZaqJWIW10nPlsCC5FG1+I2zey5S2aZ
+         y7RCuZlnfseazNGsecu21HUbfHRwNkWyZHE8ZpxuPv7HJoK0wcWWrbq5F3pu/WHJRpAT
+         ekqWAlrEcGHG43HxTSFShnn3QGAriusdDAwf8Gs77dmeunKBY7WtXqbbHe3nfDILqlQU
+         Z1Ug==
+X-Gm-Message-State: AOAM530zwI05DfIG/Dtp/MqCE90e1TIVrLxKKDK3QmEiSSpdqC7jqSGr
+        YJse9/aL0ebBLAVe80TUnoyQppi6zen7yetpNrBO+oeFCXUh+R5VIJIJMCp5LYwbqP5GTKMc+6E
+        cb1qkSYOCkySOzjTS1PnLemmrDeAC/9cJuPQ0GZs5
+X-Received: by 2002:a5d:59a6:: with SMTP id p6mr31897323wrr.142.1632190072362;
+        Mon, 20 Sep 2021 19:07:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrRzQplbk6pECz7R+jDK45fgzj2acrfM2YcTeVeurs7f31ushctXVBKRv9j3sozVJ/z6cTUf1MM8JcQ4F1Rfo=
+X-Received: by 2002:a5d:59a6:: with SMTP id p6mr31897316wrr.142.1632190072226;
+ Mon, 20 Sep 2021 19:07:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210920174713.4998-1-l4stpr0gr4m@gmail.com> <20210920135027.5ec63a05@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210920135027.5ec63a05@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Kangmin Park <l4stpr0gr4m@gmail.com>
-Date:   Tue, 21 Sep 2021 10:48:40 +0900
-Message-ID: <CAKW4uUxperg41z8Lu5QYsS-YEGt1anuD1CuiUqXC0ANFqJBosQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next] Introducing lockless cache built on top of
- slab allocator
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210920181647.22156-1-tim.gardner@canonical.com>
+In-Reply-To: <20210920181647.22156-1-tim.gardner@canonical.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Tue, 21 Sep 2021 04:07:41 +0200
+Message-ID: <CACO55ts0kJaHr0QTzqy5r9Gq4vbV=8bMokuVHSCAqMVEOKAgDw@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/ga102: Free resources on error in ga102_chan_new()
+To:     Tim Gardner <tim.gardner@canonical.com>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 9=EC=9B=94 21=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 5:50, J=
-akub Kicinski <kuba@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+On Mon, Sep 20, 2021 at 8:17 PM Tim Gardner <tim.gardner@canonical.com> wrote:
 >
-> On Tue, 21 Sep 2021 02:47:13 +0900 Kangmin Park wrote:
-> > It is just introducing and proof of concept.
-> > The patch code is based on other RFC patches. So, the code is not
-> > correct yet, it is just simple proof of concept.
-> >
-> > Recently block layer implemented percpu, lockless cache on the top
-> > of slab allocator. It can be used for IO polling.
-> >
-> > Link: https://lwn.net/Articles/868070/
-> > Link: https://www.spinics.net/lists/linux-block/msg71964.html
-> >
-> > It gained some IOPS increase (performance increased by about 10%
-> > on the block layer).
-> >
-> > And there are attempts to implement the percpu, lockless cache.
-> >
-> > Link: https://lore.kernel.org/linux-mm/20210920154816.31832-1-42.hyeyoo=
-@gmail.com/T/#u
-> >
-> > If this cache is implemented successfully,
-> > how about use this cache to allocate skb instead of kmem_cache_alloc_bu=
-lk()
-> > in napi_skb_cache_get()?
-> >
-> > I want your comment/opinion.
+> Coverity complains of a resource leak in ga102_chan_new():
 >
-> Please take a look at skb cache in struct napi_alloc_cache.
-> That should be your target here.
+> CID 119637 (#7 of 7): Resource leak (RESOURCE_LEAK)
+> 13. leaked_storage: Variable chan going out of scope leaks the storage it points to.
+> 190                return ret;
+>
+> Fix this by freeing 'chan' in the error path.
 >
 
-Oh, thanks for the advice.
-I'll send you a v2 patch to replace/improve napi_alloc_cache
-when progress is made in implementing the lockless cache.
+yeah, this is actually a false positive. I ran your patch through
+kasan and got a use-after-free as we deallocate the passed in pointer
+after calling the function pointer to the new function. One might
+argue that the programming style isn't the best and we should be
+explicit about freeing memory though.
 
-Best Regards,
-Kangmin Park
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Karol Herbst <kherbst@redhat.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> ---
+>  .../gpu/drm/nouveau/nvkm/engine/fifo/ga102.c  | 20 ++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c
+> index f897bef13acf..4dbdfb53e65f 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/ga102.c
+> @@ -175,19 +175,21 @@ ga102_chan_new(struct nvkm_device *device,
+>                 }
+>         }
+>
+> -       if (!chan->ctrl.runl)
+> -               return -ENODEV;
+> +       if (!chan->ctrl.runl) {
+> +               ret = -ENODEV;
+> +               goto free_chan;
+> +       }
+>
+>         chan->ctrl.chan = nvkm_rd32(device, chan->ctrl.runl + 0x004) & 0xfffffff0;
+>         args->token = nvkm_rd32(device, chan->ctrl.runl + 0x008) & 0xffff0000;
+>
+>         ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->mthd);
+>         if (ret)
+> -               return ret;
+> +               goto free_chan;
+>
+>         ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->inst);
+>         if (ret)
+> -               return ret;
+> +               goto free_chan;
+>
+>         nvkm_kmap(chan->inst);
+>         nvkm_wo32(chan->inst, 0x010, 0x0000face);
+> @@ -209,11 +211,11 @@ ga102_chan_new(struct nvkm_device *device,
+>
+>         ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->user);
+>         if (ret)
+> -               return ret;
+> +               goto free_chan;
+>
+>         ret = nvkm_memory_new(device, NVKM_MEM_TARGET_INST, 0x1000, 0x1000, true, &chan->runl);
+>         if (ret)
+> -               return ret;
+> +               goto free_chan;
+>
+>         nvkm_kmap(chan->runl);
+>         nvkm_wo32(chan->runl, 0x00, 0x80030001);
+> @@ -228,10 +230,14 @@ ga102_chan_new(struct nvkm_device *device,
+>
+>         ret = nvkm_vmm_join(vmm, chan->inst);
+>         if (ret)
+> -               return ret;
+> +               goto free_chan;
+>
+>         chan->vmm = nvkm_vmm_ref(vmm);
+>         return 0;
+> +
+> +free_chan:
+> +       kfree(chan);
+> +       return ret;
+>  }
+>
+>  static const struct nvkm_device_oclass
+> --
+> 2.33.0
+>
 
-> > Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
-> > ---
-> >  net/core/skbuff.c | 14 +++++++++-----
-> >  1 file changed, 9 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 7c2ab27fcbf9..f9a9deca423d 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -170,11 +170,15 @@ static struct sk_buff *napi_skb_cache_get(void)
-> >       struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
-> >       struct sk_buff *skb;
-> >
-> > -     if (unlikely(!nc->skb_count))
-> > -             nc->skb_count =3D kmem_cache_alloc_bulk(skbuff_head_cache=
-,
-> > -                                                   GFP_ATOMIC,
-> > -                                                   NAPI_SKB_CACHE_BULK=
-,
-> > -                                                   nc->skb_cache);
-> > +     if (unlikely(!nc->skb_count)) {
-> > +             /* kmem_cache_alloc_cached should be changed to return th=
-e size of
-> > +              * the allocated cache
-> > +              */
-> > +             nc->skb_cache =3D kmem_cache_alloc_cached(skbuff_head_cac=
-he,
-> > +                                                     GFP_ATOMIC | SLB_=
-LOCKLESS_CACHE);
-> > +             nc->skb_count =3D this_cpu_ptr(skbuff_head_cache)->size;
-> > +     }
-> > +
-> >       if (unlikely(!nc->skb_count))
-> >               return NULL;
-> >
