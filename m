@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1495D413D4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59547413D54
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235902AbhIUWH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:07:26 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:41652 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbhIUWHX (ORCPT
+        id S235930AbhIUWHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:07:55 -0400
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:33743 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232406AbhIUWHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:07:23 -0400
-Received: by mail-ot1-f54.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso566061ota.8;
-        Tue, 21 Sep 2021 15:05:54 -0700 (PDT)
+        Tue, 21 Sep 2021 18:07:54 -0400
+Received: by mail-oo1-f53.google.com with SMTP id i26-20020a4ad09a000000b002a9d58c24f5so215114oor.0;
+        Tue, 21 Sep 2021 15:06:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7+0BIaFq4Mufw+X4fwjiZnjy2FpSNbaPobDYC/KM1Is=;
-        b=w21f7JDctkCRAQxB32HtlS+1fK3vvG3aFIJnpqezJnOy5RZDTOtnLvs/I8oLcMlj+5
-         HG1AwbFyQjiw5h17iUAPrIUXfVv/mveeUSWHeKuts8nEida5vd/Q7kLffCLEHPEa/gbk
-         djEKxx3pUjNIiNbk+DfqrtFZyEtxWlno9Ktx0uoV60v9xX+aD2rv1jl80cQ/1mh8UymA
-         FOEqDw78/6EDm4wQkinCwdrK+Zd6fpQoOkffeEppbixcCE5ESLy7kU9KJQBQmfZvM+Ig
-         lAlTpk05g46dByHLORbLjvkbZVvO+6Hkc7FY7ZrsVigSPVkEaV961NDZgjgtFNI/QQg6
-         DUUA==
-X-Gm-Message-State: AOAM530YBv4/d6OlvHoPjF8gEnU0GPYnnZO5d8hsIXyBSGL91hr3e7Sv
-        hQ8fytXamt9Celj0Rqkr81hx9Qj2JA==
-X-Google-Smtp-Source: ABdhPJwKDcKaJILJ1PXGaD/2XKWWnaSZ32BAg/HfHXwC6LLJTAk4Ytxo36oo6DoC3Fp/YcwgJr7jRg==
-X-Received: by 2002:a05:6830:788:: with SMTP id w8mr29151985ots.235.1632261954474;
-        Tue, 21 Sep 2021 15:05:54 -0700 (PDT)
+        bh=xHhRIIUIVe4BU6tEKxwGDGNrL6FdBJkZsrqzx4paFoE=;
+        b=rru0OyINCKJAhDlf6olNTnZKG3ONdgsq2qxQ68Oodlkjtl6lCGwZPHz+JImY6QfOnk
+         bbYnqVI5hf6gtvoPsk2Qrw5ewFfy2OKYu58pxfUqKKHT92QoWHZFOJQf6S97aMuDiRIo
+         Cfyps2XVBFGE8V0cgmtnERkBKxkJi1bB58X9JOVOAjARcWMmVch5kd2JK5wRK0ODhdmm
+         R2IRHn9rrTUjqo5qF4b5cDesv9HIKudlcNBo99dGaJ+jCHQ1vxM/Ot+GwfDgBEHr2R6G
+         G0IGBBjP6LzR70ChPwk3P1jvTAoYOoq9nnSVgjab1blUl3ASafLjzzJRO+z+DMB2y+M2
+         aumA==
+X-Gm-Message-State: AOAM530Q3+tuV+YCjdKVa54yPmRzCYTT9hTP4nlQJRhdL5qkGflH0PBz
+        +t2sTG0281uCSE7GO/PREg==
+X-Google-Smtp-Source: ABdhPJz1OlHnb1z8d/iGF75Z//cODBXSLGoe9UgvjAteyP20z1WWFJn/YfB7tooGgBbiXfc0yc3Kfg==
+X-Received: by 2002:a4a:d883:: with SMTP id b3mr10818052oov.82.1632261985086;
+        Tue, 21 Sep 2021 15:06:25 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q31sm57076otv.57.2021.09.21.15.05.53
+        by smtp.gmail.com with ESMTPSA id 21sm77039oix.1.2021.09.21.15.06.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 15:05:53 -0700 (PDT)
-Received: (nullmailer pid 3381606 invoked by uid 1000);
-        Tue, 21 Sep 2021 22:05:51 -0000
-Date:   Tue, 21 Sep 2021 17:05:51 -0500
+        Tue, 21 Sep 2021 15:06:24 -0700 (PDT)
+Received: (nullmailer pid 3382395 invoked by uid 1000);
+        Tue, 21 Sep 2021 22:06:22 -0000
+Date:   Tue, 21 Sep 2021 17:06:22 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     kenchappa.demakkanavar@intel.com
-Cc:     furong.zhou@intel.com, dinguyen@kernel.org,
-        kris.pan@linux.intel.com, mgross@linux.intel.com, will@kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        kris.pan@intel.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, mark.gross@intel.com
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm: Add Thunder Bay bindings
-Message-ID: <YUpXP3vdxHwaMIX9@robh.at.kernel.org>
-References: <1631771898-18702-1-git-send-email-kenchappa.demakkanavar@intel.com>
- <1631771898-18702-3-git-send-email-kenchappa.demakkanavar@intel.com>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     rjw@rjwysocki.net, sidgup@codeaurora.org, ohad@wizery.com,
+        agross@kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        mka@chromium.org, swboyd@chromium.org, devicetree@vger.kernel.org,
+        dianders@chromium.org, robh+dt@kernel.org,
+        linux-remoteproc@vger.kernel.org, rishabhb@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, ulf.hansson@linaro.org
+Subject: Re: [PATCH v7 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
+ property
+Message-ID: <YUpXXjpM4kwH0pTC@robh.at.kernel.org>
+References: <1631800770-371-1-git-send-email-sibis@codeaurora.org>
+ <1631800770-371-3-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1631771898-18702-3-git-send-email-kenchappa.demakkanavar@intel.com>
+In-Reply-To: <1631800770-371-3-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sep 2021 11:28:17 +0530, kenchappa.demakkanavar@intel.com wrote:
-> From: "Kenchappa, Demakkanavar" <kenchappa.demakkanavar@intel.com>
+On Thu, 16 Sep 2021 19:29:19 +0530, Sibi Sankar wrote:
+> The load state power-domain, used by the co-processors to notify the
+> Always on Subsystem (AOSS) that a particular co-processor is up/down,
+> suffers from the side-effect of changing states during suspend/resume.
+> However the co-processors enter low-power modes independent to that of
+> the application processor and their states are expected to remain
+> unaltered across system suspend/resume cycles. To achieve this behavior
+> let's drop the load state power-domain and replace them with the qmp
+> property for all SoCs supporting low power mode signalling.
 > 
-> Document Intel Movidius SoC code-named Thunder Bay, along with the
-> Thunder Bay Full and Prime configuration board.
+> Due to the current broken load state implementation, we can afford the
+> binding breakage that ensues and the remoteproc functionality will remain
+> the same when using newer kernels with older dtbs.
 > 
-> Add maintainers for the new Intel Movidius SoC code-named Thunder Bay.
-> 
-> Signed-off-by: Kris, Pan <kris.pan@intel.com>
-> Signed-off-by: Kenchappa, Demakkanavar <kenchappa.demakkanavar@intel.com>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  .../devicetree/bindings/arm/intel,thunderbay.yaml  | 27 ++++++++++++++++++++++
->  MAINTAINERS                                        |  5 ++++
->  2 files changed, 32 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/intel,thunderbay.yaml
+> 
+> v7:
+>  * Set "qcom,qmp" property to false for unsupported devices. [Rob]
+> 
+>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 54 ++++++++++------------
+>  1 file changed, 24 insertions(+), 30 deletions(-)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
