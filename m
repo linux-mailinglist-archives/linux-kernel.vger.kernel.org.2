@@ -2,509 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D162C4136FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D6A413700
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhIUQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231727AbhIUQJe (ORCPT
+        id S234231AbhIUQKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:10:10 -0400
+Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:62133 "EHLO
+        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231727AbhIUQKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:09:34 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3468CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:08:06 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t18so40750914wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b9ayZN/31+YJCtPuFwl2kU4KlsDWXPcoXAZudGxGmkE=;
-        b=DuTlqIELBcGgf37jsY8ukVZk5Fk1L8Yv7fME3/uVBv2BV0R5CE3HH+dF19Z6gGDqGD
-         fYBEVlNicATgh6arOapOe1LFNbDsfic1cz7Fynn/pWt6XrvfcAg50tr/07zbEbwR1Fvi
-         J/4hDrmHbboyPx2XYhwpZ54RNEuhu15dFtQafVYSW2EWCBWlk+KTCnGJc3QCQJN2rCQN
-         gYRy4ijGnKm6mzxf/eQUoAzhvAEzcHlkQQaH+tifKMG8cVByB6fCEYRx+j2Tq0lvrnbT
-         2N38zuj/FQMEeRmTjT1IMFxKjy3cBZ00aF01+UzXcA2bgo+erpC4ZXIXg4r7sAKdGALI
-         UJqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b9ayZN/31+YJCtPuFwl2kU4KlsDWXPcoXAZudGxGmkE=;
-        b=OQXXC7I19zFPa+025JmANfxv9qSPaQsLEVDOUjlRMM9Bw9FfllxRM7l+Hil3NJTxh+
-         WYv0FeKswP8PvDUCRk86StgevGsP1dJ4egktvr69du98mdr21nw+SD8Gtyqhgr87HYck
-         S01VFrgIDjdYKsqAm849zgj6T459Wk0/jh4UYSaV2v3oMBW/bM1TL83F8hUXsQpqSQrX
-         rzYQw+Wl3zqOqDqJE3iJKQem3SdFtvmFmNDzFQ6brlYoZTfwfB1KNHroL84b/9kXX0L5
-         P6t9D4P7GrTWQn3X7eXzSgG2F1d3lMYhTu9B+/ypA3sOcECbtN+p5QdHW6cilNYZrAzc
-         6aVw==
-X-Gm-Message-State: AOAM531BqtspbJDMNw8gp3KbDwC+E8nuIB923X+W99XmlHGf20Ffgo1R
-        YUSptvIDYqnlhEgoTRUmTzCvMg==
-X-Google-Smtp-Source: ABdhPJw1Eh516Iqqx9GmwH6vXri7X153H2N0zgCSBKTK5AVeIfT+nPMR0g1LJE13anrDSDQ5KxfNCQ==
-X-Received: by 2002:a05:6000:105:: with SMTP id o5mr35717468wrx.413.1632240484578;
-        Tue, 21 Sep 2021 09:08:04 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id d2sm19541616wrc.32.2021.09.21.09.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 09:08:04 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 17:07:42 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Vivek Gautam <vivek.gautam@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        virtualization@lists.linux-foundation.org, joro@8bytes.org,
-        will.deacon@arm.com, mst@redhat.com, robin.murphy@arm.com,
-        eric.auger@redhat.com, kevin.tian@intel.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        Lorenzo.Pieralisi@arm.com, shameerali.kolothum.thodi@huawei.com
-Subject: Re: [PATCH RFC v1 08/11] iommu/arm-smmu-v3: Implement shared context
- alloc and free ops
-Message-ID: <YUoDTv0bhbfcu4MS@myrica>
-References: <20210423095147.27922-1-vivek.gautam@arm.com>
- <20210423095147.27922-9-vivek.gautam@arm.com>
+        Tue, 21 Sep 2021 12:10:07 -0400
+Received: from pps.filterd (m0127842.ppops.net [127.0.0.1])
+        by mx0b-002c1b01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LBnW2i015313;
+        Tue, 21 Sep 2021 09:08:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version;
+ s=proofpoint20171006; bh=O3TOG6K1XwJdhplE7ctg2WQs6qMpwmK7E7OHN49R+Rs=;
+ b=YLsaixkB6z7lu5KM0koND8r9bMidwXFzcmJrBHnS8agP5pBhRxJ1WHQuJ5KycRPWyJFj
+ 4YeRKvaQJ8o5onJmKc5zeSB0WUPxND5kMAAoCnfalFsubwxqYngWn2Nq+SWDtElYEpNg
+ zONrVujHKYqPdfNEBC4OEA9DlkwnTcd0aNHETbbMuJdgWZ2elirUwyhjJlq6x3jqJhRx
+ yyp/lNrNfIeb6PswwfNRwoKjVQcYwSYLLHtg/XDKW25TSnJ12lmOfohP8M591uBDM7yQ
+ Dmo9R+b8RVlQem7PzXSz9Na0RZiWAq6MZPXhRrfYVxDfhNS1tOt5CG4WxiiE9UraQWG4 Qw== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by mx0b-002c1b01.pphosted.com with ESMTP id 3b7ev1rjh1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 09:08:31 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OWjxE7A1AFOoXM0scE5auBds6HhN6q0rcMEPnWQGen0qCiRxi0LJ6KWkKGtr2czcWhxz5XI8m6nDFTrzzA1AXxL2xPbvdr38Zxc6n7EYGmIZU1dvr1sjbcfnK+KHuLAl7c6Kn1CPf3fgjm+3IENf93BdGme62Vyae+afyFyJdSt97HCKa+hvMtTidj34KBwQpv1oVaSMPF3LD2x/ksuIHSII0Zc9hOkOyPnIvm3JJMA5CvCxamixzD6bACfH1AlarM6ESCbO96KEOHNBq5X6cmRkDsDa06tnkFUaDdtkNS8uv0LKrhbZ9qPZ9tdcMqztA5pCFz649vy4+4JQgP0rbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=O3TOG6K1XwJdhplE7ctg2WQs6qMpwmK7E7OHN49R+Rs=;
+ b=WAeg5ZM5XqwcmJeN13TT98phqCi4llsfVGg/r/A82vB3nY8WD+YmcgEd45tobWzUDE5seMkMZTxbW+DHy90VRuwvcKju4WQQ8r/msbuJJXYoAjIN4ep7l6HWBggcrn5B0qCt2mvJjEDn7mrUIcg6pp5F+/pY+aunnCZ6JrT8EryTo5aZL6CcbB5PgzSTI/VKJ4+f0GwmXwHZVbg3GtjYzXk6BImy6TTmz6xUS4ZCO7YMn8Wqbmi6mMmCswaVZBQVCIJfnt3dqRorUvl1j/wSh1QjKKzNYgYVvuAtk43sbpPZ49M4Z6V9M7WcXVRm3MzKu0vaq9K0zMw+glrCHwEGjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from DM6PR02MB5578.namprd02.prod.outlook.com (2603:10b6:5:79::13) by
+ DM6PR02MB6906.namprd02.prod.outlook.com (2603:10b6:5:257::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.18; Tue, 21 Sep 2021 16:08:29 +0000
+Received: from DM6PR02MB5578.namprd02.prod.outlook.com
+ ([fe80::6da5:2da0:efd2:e90e]) by DM6PR02MB5578.namprd02.prod.outlook.com
+ ([fe80::6da5:2da0:efd2:e90e%7]) with mapi id 15.20.4523.019; Tue, 21 Sep 2021
+ 16:08:29 +0000
+From:   Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "david@redhat.com" <david@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <flosch@nutanix.com>,
+        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
+        Jonathan Davies <jond@nutanix.com>
+Subject: Re: [PATCH v2 1/1] Documentation: update pagemap with shmem
+ exceptions
+Thread-Topic: [PATCH v2 1/1] Documentation: update pagemap with shmem
+ exceptions
+Thread-Index: AQHXrj+D4T8obcdGHUe6vvWc8xL+VautSQuAgADmeYCAAGf/AIAAEdEA
+Date:   Tue, 21 Sep 2021 16:08:29 +0000
+Message-ID: <C983908F-7AF4-410B-90FF-DB4B9A06E917@nutanix.com>
+References: <20210920164931.175411-1-tiberiu.georgescu@nutanix.com>
+ <20210920164931.175411-2-tiberiu.georgescu@nutanix.com>
+ <YUjb91tWhd/YAgQW@t490s> <F6A49621-C7A4-4643-95C2-F47B02F132D2@nutanix.com>
+ <YUn0ikP4Gip3Yc6L@t490s>
+In-Reply-To: <YUn0ikP4Gip3Yc6L@t490s>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nutanix.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ba72d92b-ae2e-4aaf-6b07-08d97d1a0d7b
+x-ms-traffictypediagnostic: DM6PR02MB6906:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR02MB6906FCE8DDF09C90A08A6960E6A19@DM6PR02MB6906.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: E+4J6rQJ7/dTK7z8j+IPXjGStVFSTMCoKlUz6InaAxBUmt1FjL7LvUr/awKU6PIuyElpnb2jpLFAALYNxNWkhYwhlK4F5XfrkOxljQTwEIEcOrCVl+EQhiFPUsYvAxVtBzxhPTTWya08dLzRMg4QO0C/s97BQ/ogmlW5O0Ny1x16UmfWKQ4jepZc8SoEL0ELvUGKJIzhtl3AfRVtdGaMmZvqcDi/RQMQ+tsOyor5Il/AvxyR1n+/4gZdsqm6LYhlSYdLNPh9aMkNp+C4WisizOAQp1shZ8EIuu50zqxClrtocoLBspC6we+Q67Ho3d7mwLDGCAtNF1I+ijmTPmpC0siFKQeFwBq8FbJmMZMD2EJNHXL+aMNGXujiGcrDg0CaXNNzbue2LZ/R+1HmxFPG2FrW1xGSvYoKu71RfBqkawjwDOAyX3ncWsIg5/LfqlS1P1xPXKp3kqVW3PYy7Aa35HOUyuz5wL/6kprP+O45wJPIo67RusxZy8ZJz15VpeRMjcL6lvTwgr3RKHXGcHcLCka07hnnr+ShXoGAKHM5oYBMaKzJnlq9Vpqumvn5telf2HBzOUcE76k+mTm5bAA3R2GBbYV2apLfTE57iDivXom3z70viZloNI4UfIKXt+hm092Jt58hYgLFiTw3RmIW9GcmhzENkxK0PpFWXqDnf75Rpjlt8MmAH89B7yE1Y5l4zYtdIz46SDRaEUIs6kFPrvAp2osSLFqPxF9izKmHHDFYvONINQo6no0SdsANXmNHEutfU4tHRYrkTyf7jlG6C8xmoqwQUfgb+Ri+UnqMHXpFF6Oboq5+LN+10MOTgcfE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB5578.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(54906003)(38100700002)(66446008)(8936002)(508600001)(86362001)(6506007)(38070700005)(5660300002)(4326008)(107886003)(316002)(83380400001)(122000001)(53546011)(44832011)(8676002)(66946007)(6916009)(76116006)(6512007)(186003)(33656002)(26005)(91956017)(71200400001)(2906002)(966005)(2616005)(6486002)(66476007)(36756003)(64756008)(66556008)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EKhDkBOWm2ArfZuHLtGxNEpk8h8QCf1AjSI5y56CYynf7rSW2xlxWtyF8Tkb?=
+ =?us-ascii?Q?Y1lAxq95FrOoLBUCkB2GtuMl9VNAUdAekr+7dRRWlMKoDJk9TECbw5LRdt4s?=
+ =?us-ascii?Q?O6uWIFccUCtTNswIUDBRCT73F6xFWeVBUfaNsYNfjhai0Lm2lvI647M/pjgR?=
+ =?us-ascii?Q?Zhsz6lFzBUYMPp3hYLOB2L/wMy6iTGiIkzSxX/hyF9obRpwNYMeNRHFyVoHw?=
+ =?us-ascii?Q?gU7RP10uEayIOua0B95VXsRa/KUAGblBE+1RGq179BNvsHGT4dWBvDaALXCN?=
+ =?us-ascii?Q?ayK1Ay4OpKVyaGCyLleImsEAqPe95H4QkPebOC7C8EuoiAgKETdiuGAQJknP?=
+ =?us-ascii?Q?xewRhV0M5pVwp61hiMKkU6Mmn3deHuNic1YF9VsS/e6bdxw/+DcuzcMVm5Au?=
+ =?us-ascii?Q?m9BV/4fZ76LDlnLF3ilEFalqW0uh9QL1Yo1reN6miestks/T4K4xWWEGnayz?=
+ =?us-ascii?Q?PE/QyweuiOBDyVb8jBMEGCJXcq45dlPgrPVcb/6sLnEE4sNLqN+Qg/Dca/L8?=
+ =?us-ascii?Q?fXbRTr/KEc8g86qf/1zz1/X7ft86bdBb56sZ6OX5hbDukcppwUVUmED7Wg48?=
+ =?us-ascii?Q?oUZq4SNXvyd8PnLCKiFvDOmpU3V/TPmOzvZUSE+6tbryx3GuX9pFZsg/ALBB?=
+ =?us-ascii?Q?VQ3+PCp4RR7ltCtoonhUUSkWSHn5AOMdwqjdezHctIRNIwkj2WkIHKVBMUZK?=
+ =?us-ascii?Q?6+2R7adPVWnHjznxIs0Xb/b0n9UDRMl/HPoz8YMNLoTHOL+smh8Uc2IvODAr?=
+ =?us-ascii?Q?MgjU6tTnWdKcj6OWHZ070c5VSzALyOdjkZMFdNAwZQLvHtH4jwAlyGDlwfgn?=
+ =?us-ascii?Q?l6VeBMZ8HyIa6tPFGG8sXm2pFdTBSRgOU6oWEgjDBq9MUDl8yz9qgPWVmYsQ?=
+ =?us-ascii?Q?EqbnksEjyvpLk4uLUinbjL+ZR5mz+d3xewax0L0X3zv/miBvRtxIZTvaKdZR?=
+ =?us-ascii?Q?MWtBEX5/Pl09k42jQXLmB9noEJ/BkYnJypOkEF7TieA93QskuN+YZaG55plE?=
+ =?us-ascii?Q?OzriQi93XvUJUptvgvzm2Pr41qTJM1k7pELHZk5IoG5iG1U8HKpCUwFNLeEQ?=
+ =?us-ascii?Q?7h2nUCYr8kC24AnxoiKBgSJGkdFsbOCL4f0JRxYTCKslRXs3SY6Tkxyg+GTc?=
+ =?us-ascii?Q?lLutxO05CQK65zO6ZNVe6tOEw2hqPtbtCvVfgqaJ5S2Sqfke1QVH0FGpd3PN?=
+ =?us-ascii?Q?Tza/YyTQ5/eKb/RqtJ1g70dE2UfM9GM1rqlyErbps4LX354EgFYTHqrG9/Vr?=
+ =?us-ascii?Q?Fd7jOSI7QfdLpgAUEa8p9lheBJYHHKTwxtJFJ/p4OIdJwTZXz5lzTmWgv/jL?=
+ =?us-ascii?Q?YZJZwMHVOm9o+uYU1OiczWAk?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3C3F40A8DD3AD84FA1709450D1D8DE81@namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210423095147.27922-9-vivek.gautam@arm.com>
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB5578.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba72d92b-ae2e-4aaf-6b07-08d97d1a0d7b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Sep 2021 16:08:29.7979
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6jD5s2pcZmNfv17zNTc5Y4fRBp6Gy2E0fy+mYvaRJi01nM5M8PvppQE8jus6N3QNPm6POluMICgFwKz6yeCPvp+F1i38dhBIAHKSd+AE1Sk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6906
+X-Proofpoint-GUID: GZNnUS6pg0WgUCsIoTwpM_ODm2rHguHP
+X-Proofpoint-ORIG-GUID: GZNnUS6pg0WgUCsIoTwpM_ODm2rHguHP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_04,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 03:21:44PM +0530, Vivek Gautam wrote:
-> Implementing the alloc_shared_cd and free_shared_cd in cd-lib, and
-> start using them for arm-smmu-v3-sva implementation.
-> 
-> Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
-> ---
->  .../arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c      | 71 ++++++++--------
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 83 ++++++++-----------
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  1 -
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   | 14 ----
->  4 files changed, 73 insertions(+), 96 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c
-> index 537b7c784d40..b87829796596 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-cd-lib.c
-> @@ -285,16 +285,14 @@ static bool arm_smmu_free_asid(struct xarray *xa, void *cookie_cd)
->   * descriptor is using it, try to replace it.
->   */
->  static struct arm_smmu_ctx_desc *
-> -arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
-> +arm_smmu_share_asid(struct iommu_pasid_table *tbl, struct mm_struct *mm,
-> +		    struct xarray *xa, u16 asid, u32 asid_bits)
 
-xa and asid_bits could be stored in some arch-specific section of the
-iommu_pasid_table struct. Other table drivers wouldn't need those
-arguments.
+> On 21 Sep 2021, at 16:04, Peter Xu <peterx@redhat.com> wrote:
+>=20
+> Hi, Tiberiu,
+>=20
+> On Tue, Sep 21, 2021 at 08:52:32AM +0000, Tiberiu Georgescu wrote:
+>> I tested it some more, and it still looks like the mincore() syscall con=
+siders pages
+>> in the swap cache as "in memory". This is how I tested:
+>>=20
+>> 1. Create a cgroup with 1M limit_in_bytes, and allow swapping
+>> 2. mmap 1024 pages (both shared and private present the same behaviour)
+>> 3. write to all pages in order
+>> 4. compare mincore output with pagemap output
+>>=20
+>> This is an example of a usual mincore output in this scenario, shortened=
+ for
+>> coherency (4x8 instead of 16x64):
+>> 00000000
+>> 00000000
+>> 00001110   <- this bugs me
+>> 01111111
+>>=20
+>> The last 7 bits are definitely marking pages present in memory, but ther=
+e are
+>> some other bits set a little earlier. When comparing this output with th=
+e pagemap,
+>> indeed, there are 7 consecutive pages present, and the rest of them are
+>> swapped, including those 3 which are marked as present by mincore.
+>> At this point, I can only assume the bits in between are on the swap cac=
+he.
+>>=20
+>> If you have another explanation, please share it with me. In the meanwhi=
+le,
+>> I will rework the doc patch, and see if there is any other way to differ=
+entiate
+>> clearly between the three types of pages. If not, I guess we'll stick to
+>> mincore() and a best-effort 5th step.
+>=20
+> IIUC it could be because of that the pages are still in swap cache, so
+> mincore() will return 1 for them too.
 
-More a comment for the parent series: it may be clearer to give a
-different prefix to functions in this file (arm_smmu_cd_, pst_arm_?).
-Reading this patch I'm a little confused by what belongs in the IOMMU
-driver and what is done by this library. (I also keep reading 'tbl' as
-'tlb'. Maybe we could make it 'table' since that doesn't take a lot more
-space)
+That is my assumption as well.
+>=20
+> What swap device are you using?  I'm wildly guessing you're not using fro=
+ntswap
+> like zram.  If that's the case, would you try zram?  That should flush th=
+e page
+> synchronously iiuc, then all the "suspecious 1s" will go away above.
 
->  {
->  	int ret;
->  	u32 new_asid;
->  	struct arm_smmu_ctx_desc *cd;
-> -	struct arm_smmu_device *smmu;
-> -	struct arm_smmu_domain *smmu_domain;
-> -	struct iommu_pasid_table *tbl;
->  
-> -	cd = xa_load(&arm_smmu_asid_xa, asid);
-> +	cd = xa_load(xa, asid);
->  	if (!cd)
->  		return NULL;
->  
-> @@ -306,12 +304,8 @@ arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
->  		return cd;
->  	}
->  
-> -	smmu_domain = container_of(cd, struct arm_smmu_domain, s1_cfg.cd);
-> -	smmu = smmu_domain->smmu;
-> -	tbl = smmu_domain->tbl;
-> -
-> -	ret = xa_alloc(&arm_smmu_asid_xa, &new_asid, cd,
-> -		       XA_LIMIT(1, (1 << smmu->asid_bits) - 1), GFP_KERNEL);
-> +	ret = xa_alloc(xa, &new_asid, cd, XA_LIMIT(1, (1 << asid_bits) - 1),
-> +		       GFP_KERNEL);
->  	if (ret)
->  		return ERR_PTR(-ENOSPC);
->  	/*
-> @@ -325,48 +319,52 @@ arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
->  	 * be some overlap between use of both ASIDs, until we invalidate the
->  	 * TLB.
->  	 */
-> -	ret = iommu_psdtable_write(tbl, &tbl->cfg, 0, cd);
-> +	ret = arm_smmu_write_ctx_desc(&tbl->cfg, 0, cd);
->  	if (ret)
->  		return ERR_PTR(-ENOSYS);
->  
->  	/* Invalidate TLB entries previously associated with that context */
-> -	iommu_psdtable_flush_tlb(tbl, smmu_domain, asid);
-> +	iommu_psdtable_flush_tlb(tbl, tbl->cookie, asid);
->  
-> -	xa_erase(&arm_smmu_asid_xa, asid);
-> +	xa_erase(xa, asid);
->  	return NULL;
->  }
->  
-> -struct arm_smmu_ctx_desc *
-> -arm_smmu_alloc_shared_cd(struct iommu_pasid_table *tbl, struct mm_struct *mm)
-> +static struct iommu_psdtable_mmu_notifier *
-> +arm_smmu_alloc_shared_cd(struct iommu_pasid_table *tbl, struct mm_struct *mm,
-> +			 struct xarray *xa, u32 asid_bits)
->  {
->  	u16 asid;
->  	int err = 0;
->  	u64 tcr, par, reg;
->  	struct arm_smmu_ctx_desc *cd;
->  	struct arm_smmu_ctx_desc *ret = NULL;
-> +	struct iommu_psdtable_mmu_notifier *pst_mn;
->  
->  	asid = arm64_mm_context_get(mm);
->  	if (!asid)
->  		return ERR_PTR(-ESRCH);
->  
-> +	pst_mn = kzalloc(sizeof(*pst_mn), GFP_KERNEL);
-> +	if (!pst_mn) {
-> +		err = -ENOMEM;
-> +		goto out_put_context;
-> +	}
-> +
->  	cd = kzalloc(sizeof(*cd), GFP_KERNEL);
->  	if (!cd) {
->  		err = -ENOMEM;
-> -		goto out_put_context;
-> +		goto out_free_mn;
->  	}
->  
->  	refcount_set(&cd->refs, 1);
->  
-> -	mutex_lock(&arm_smmu_asid_lock);
-> -	ret = arm_smmu_share_asid(mm, asid);
-> +	ret = arm_smmu_share_asid(tbl, mm, xa, asid, asid_bits);
->  	if (ret) {
-> -		mutex_unlock(&arm_smmu_asid_lock);
->  		goto out_free_cd;
->  	}
->  
-> -	err = xa_insert(&arm_smmu_asid_xa, asid, cd, GFP_KERNEL);
-> -	mutex_unlock(&arm_smmu_asid_lock);
-> -
-> +	err = xa_insert(xa, asid, cd, GFP_KERNEL);
->  	if (err)
->  		goto out_free_asid;
->  
-> @@ -406,21 +404,26 @@ arm_smmu_alloc_shared_cd(struct iommu_pasid_table *tbl, struct mm_struct *mm)
->  	cd->asid = asid;
->  	cd->mm = mm;
->  
-> -	return cd;
-> +	pst_mn->vendor.cd = cd;
-> +	return pst_mn;
->  
->  out_free_asid:
-> -	iommu_psdtable_free_asid(tbl, &arm_smmu_asid_xa, cd);
-> +	arm_smmu_free_asid(xa, cd);
->  out_free_cd:
->  	kfree(cd);
-> +out_free_mn:
-> +	kfree(pst_mn);
->  out_put_context:
->  	arm64_mm_context_put(mm);
->  	return err < 0 ? ERR_PTR(err) : ret;
->  }
->  
-> -void arm_smmu_free_shared_cd(struct iommu_pasid_table *tbl,
-> -			     struct arm_smmu_ctx_desc *cd)
-> +static void arm_smmu_free_shared_cd(struct iommu_pasid_table *tbl,
-> +				    struct xarray *xa, void *cookie)
+Correct, I was not using frontswap.
+>=20
+> To do that, you may need to firstly turn off your current swap:
+>=20
+>        # swapoff -a
+>=20
+> Then to configure zram you need:
+>=20
+>        # modprobe zram
+>        # echo 4G > /sys/block/zram0/disksize
+>        # mkswap --label zram0 /dev/zram0
+>        # swapon --priority 100 /dev/zram0
+>=20
+> Quotting from here:
+>=20
+>        https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__wiki.archli=
+nux.org_title_Improving-5Fperformance-23zram-5For-5Fzswap&d=3DDwIBaQ&c=3Ds8=
+83GpUCOChKOHiocYtGcg&r=3DrRM5dtWOv0DNo5dDxZ2U16jl4WAw6ql5szOKa9cu_RA&m=3DXW=
+zLVqSSl8CSEcw2x6sUmspJhiUJei2gq6GTiaky8hk&s=3Dk3BDgO9LN63Nn3vxorlc41MlUYzOU=
+N0efajz4lol-k8&e=3D=20
+>=20
+> Then you can try run the same test program again.
 
-Could we pass a struct iommu_psdtable_mmu_notifier, since that's what
-alloc_shared() returns?
+Thanks, it worked!
 
->  {
-> -	if (iommu_psdtable_free_asid(tbl, &arm_smmu_asid_xa, cd)) {
-> +	struct arm_smmu_ctx_desc *cd = cookie;
-> +
-> +	if (iommu_psdtable_free_asid(tbl, xa, cd)) {
->  		/* Unpin ASID */
->  		arm64_mm_context_put(cd->mm);
->  		kfree(cd);
-> @@ -428,11 +431,13 @@ void arm_smmu_free_shared_cd(struct iommu_pasid_table *tbl,
->  }
->  
->  struct iommu_vendor_psdtable_ops arm_cd_table_ops = {
-> -	.alloc	 = arm_smmu_alloc_cd_tables,
-> -	.free	 = arm_smmu_free_cd_tables,
-> -	.prepare = arm_smmu_prepare_cd,
-> -	.write	 = arm_smmu_write_ctx_desc,
-> -	.free_asid = arm_smmu_free_asid,
-> +	.alloc		= arm_smmu_alloc_cd_tables,
-> +	.free		= arm_smmu_free_cd_tables,
-> +	.prepare	= arm_smmu_prepare_cd,
-> +	.write		= arm_smmu_write_ctx_desc,
-> +	.free_asid	= arm_smmu_free_asid,
-> +	.alloc_shared	= arm_smmu_alloc_shared_cd,
-> +	.free_shared	= arm_smmu_free_shared_cd,
->  };
->  
->  struct iommu_pasid_table *
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> index da35d4cc0c1e..ef28d0c409da 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> @@ -13,23 +13,12 @@
->  #include "../../io-pgtable-arm.h"
->  #include "../../iommu-pasid-table.h"
->  
-> -struct arm_smmu_mmu_notifier {
-> -	struct mmu_notifier		mn;
-> -	struct arm_smmu_ctx_desc	*cd;
-> -	bool				cleared;
-> -	refcount_t			refs;
-> -	struct list_head		list;
-> -	struct arm_smmu_domain		*domain;
-> -};
-> -
-> -#define mn_to_smmu(mn) container_of(mn, struct arm_smmu_mmu_notifier, mn)
-> -
->  struct arm_smmu_bond {
-> -	struct iommu_sva		sva;
-> -	struct mm_struct		*mm;
-> -	struct arm_smmu_mmu_notifier	*smmu_mn;
-> -	struct list_head		list;
-> -	refcount_t			refs;
-> +	struct iommu_sva			sva;
-> +	struct mm_struct			*mm;
-> +	struct iommu_psdtable_mmu_notifier	*smmu_mn;
-> +	struct list_head			list;
-> +	refcount_t				refs;
->  };
->  
->  #define sva_to_bond(handle) \
-> @@ -41,20 +30,22 @@ static void arm_smmu_mm_invalidate_range(struct mmu_notifier *mn,
->  					 struct mm_struct *mm,
->  					 unsigned long start, unsigned long end)
->  {
-> -	struct arm_smmu_mmu_notifier *smmu_mn = mn_to_smmu(mn);
-> -	struct arm_smmu_domain *smmu_domain = smmu_mn->domain;
-> +	struct iommu_psdtable_mmu_notifier *smmu_mn = mn_to_pstiommu(mn);
-> +	struct arm_smmu_domain *smmu_domain = smmu_mn->cookie;
-> +	struct arm_smmu_ctx_desc *cd = smmu_mn->vendor.cd;
->  	size_t size = end - start + 1;
->  
->  	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_BTM))
-> -		arm_smmu_tlb_inv_range_asid(start, size, smmu_mn->cd->asid,
-> +		arm_smmu_tlb_inv_range_asid(start, size, cd->asid,
->  					    PAGE_SIZE, false, smmu_domain);
->  	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, start, size);
->  }
->  
->  static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->  {
-> -	struct arm_smmu_mmu_notifier *smmu_mn = mn_to_smmu(mn);
-> -	struct arm_smmu_domain *smmu_domain = smmu_mn->domain;
-> +	struct iommu_psdtable_mmu_notifier *smmu_mn = mn_to_pstiommu(mn);
-> +	struct arm_smmu_domain *smmu_domain = smmu_mn->cookie;
-> +	struct arm_smmu_ctx_desc *cd = smmu_mn->vendor.cd;
->  	struct iommu_pasid_table *tbl = smmu_domain->tbl;
->  
->  	mutex_lock(&sva_lock);
-> @@ -69,7 +60,7 @@ static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->  	 */
->  	iommu_psdtable_write(tbl, &tbl->cfg, mm->pasid, &quiet_cd);
+Hmmm, so if we put emphasis on the accuracy of swap info, or accuracy in
+general, we need to use frontswap. Otherwise, mincore() could suffer from
+race conditions, and mark pages in the swap cache as being present.
 
-Another comment for the parent series: I'd prefer making this a
-"iommu_psdtable_quiesce()" call, instead of passing "quiet_cd" between
-driver and library. Because that won't work if the SMMU driver is a module
-or disabled - build of virtio-iommu will probably fail since quiet_cd will
-be undefined. We could make the library built-in and move quiet_cd there,
-but an explicit library call seems cleaner.
+Do you reckon this info (frontswap for mincore) should be present in
+the pagemap docs? I wouldn't want to bloat the section either.
 
->  
-> -	iommu_psdtable_flush_tlb(tbl, smmu_domain, smmu_mn->cd->asid);
-> +	iommu_psdtable_flush_tlb(tbl, smmu_domain, cd->asid);
+Kind regards,
+Tibi
 
-We can directly call arm_smmu_tlb_inv* here. iommu_psdtable_flush_tlb()
-should only be called from the library. But with the previous comment,
-this invalidation would move to the library.
-
->  	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, 0, 0);
->  
->  	smmu_mn->cleared = true;
-> @@ -78,7 +69,7 @@ static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
->  
->  static void arm_smmu_mmu_notifier_free(struct mmu_notifier *mn)
->  {
-> -	kfree(mn_to_smmu(mn));
-> +	kfree(mn_to_pstiommu(mn));
->  }
->  
->  static struct mmu_notifier_ops arm_smmu_mmu_notifier_ops = {
-> @@ -88,63 +79,59 @@ static struct mmu_notifier_ops arm_smmu_mmu_notifier_ops = {
->  };
->  
->  /* Allocate or get existing MMU notifier for this {domain, mm} pair */
-> -static struct arm_smmu_mmu_notifier *
-> +static struct iommu_psdtable_mmu_notifier *
->  arm_smmu_mmu_notifier_get(struct arm_smmu_domain *smmu_domain,
->  			  struct mm_struct *mm)
->  {
->  	int ret;
-> -	struct arm_smmu_ctx_desc *cd;
-> -	struct arm_smmu_mmu_notifier *smmu_mn;
-> +	struct iommu_psdtable_mmu_notifier *smmu_mn;
-> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
->  	struct iommu_pasid_table *tbl = smmu_domain->tbl;
->  
-> -	list_for_each_entry(smmu_mn, &smmu_domain->mmu_notifiers, list) {
-> +	list_for_each_entry(smmu_mn, &tbl->mmu_notifiers, list) {
->  		if (smmu_mn->mn.mm == mm) {
->  			refcount_inc(&smmu_mn->refs);
->  			return smmu_mn;
->  		}
->  	}
->  
-> -	cd = arm_smmu_alloc_shared_cd(tbl, mm);
-> -	if (IS_ERR(cd))
-> -		return ERR_CAST(cd);
-> -
-> -	smmu_mn = kzalloc(sizeof(*smmu_mn), GFP_KERNEL);
-> -	if (!smmu_mn) {
-> -		ret = -ENOMEM;
-> -		goto err_free_cd;
-> -	}
-> +	mutex_lock(&arm_smmu_asid_lock);
-> +	smmu_mn = iommu_psdtable_alloc_shared(tbl, mm, &arm_smmu_asid_xa,
-> +					      smmu->asid_bits);
-> +	mutex_unlock(&arm_smmu_asid_lock);
-> +	if (IS_ERR(smmu_mn))
-> +		return ERR_CAST(smmu_mn);
->  
->  	refcount_set(&smmu_mn->refs, 1);
-> -	smmu_mn->cd = cd;
-> -	smmu_mn->domain = smmu_domain;
-> +	smmu_mn->cookie = smmu_domain;
->  	smmu_mn->mn.ops = &arm_smmu_mmu_notifier_ops;
->  
->  	ret = mmu_notifier_register(&smmu_mn->mn, mm);
-> -	if (ret) {
-> -		kfree(smmu_mn);
-> +	if (ret)
->  		goto err_free_cd;
-> -	}
->  
-> -	ret = iommu_psdtable_write(tbl, &tbl->cfg, mm->pasid, cd);
-> +	ret = iommu_psdtable_write(tbl, &tbl->cfg, mm->pasid,
-> +				   smmu_mn->vendor.cd);
-
-Pass smmu_mn here, and let the library code get the cd (to allow for other
-pasid table implementations)
-
->  	if (ret)
->  		goto err_put_notifier;
->  
-> -	list_add(&smmu_mn->list, &smmu_domain->mmu_notifiers);
-> +	list_add(&smmu_mn->list, &tbl->mmu_notifiers);
-
-I'd keep the mmu_notifiers list in domain if the library doesn't use it
-for anything.
-
-That made me wonder whether the whole of arm_smmu_mmu_notifer_get/put()
-could move to the library, since the virtio-iommu version seems to be the
-same. They probably belong in iommu-sva-lib but we can revisit that when
-there are more users.
-
-Thanks,
-Jean
-
->  	return smmu_mn;
->  
->  err_put_notifier:
->  	/* Frees smmu_mn */
->  	mmu_notifier_put(&smmu_mn->mn);
->  err_free_cd:
-> -	arm_smmu_free_shared_cd(tbl, cd);
-> +	iommu_psdtable_free_shared(tbl, &arm_smmu_asid_xa, smmu_mn->vendor.cd);
->  	return ERR_PTR(ret);
->  }
->  
-> -static void arm_smmu_mmu_notifier_put(struct arm_smmu_mmu_notifier *smmu_mn)
-> +static void
-> +arm_smmu_mmu_notifier_put(struct iommu_psdtable_mmu_notifier *smmu_mn)
->  {
->  	struct mm_struct *mm = smmu_mn->mn.mm;
-> -	struct arm_smmu_ctx_desc *cd = smmu_mn->cd;
-> -	struct arm_smmu_domain *smmu_domain = smmu_mn->domain;
-> +	struct arm_smmu_ctx_desc *cd = smmu_mn->vendor.cd;
-> +	struct arm_smmu_domain *smmu_domain = smmu_mn->cookie;
->  	struct iommu_pasid_table *tbl = smmu_domain->tbl;
->  
->  	if (!refcount_dec_and_test(&smmu_mn->refs))
-> @@ -164,7 +151,7 @@ static void arm_smmu_mmu_notifier_put(struct arm_smmu_mmu_notifier *smmu_mn)
->  
->  	/* Frees smmu_mn */
->  	mmu_notifier_put(&smmu_mn->mn);
-> -	arm_smmu_free_shared_cd(tbl, cd);
-> +	iommu_psdtable_free_shared(tbl, &arm_smmu_asid_xa, cd);
->  }
->  
->  static struct iommu_sva *
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index bbc4dc75de72..e55567b4d2f4 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -1987,7 +1987,6 @@ static struct iommu_domain *arm_smmu_domain_alloc(unsigned type)
->  	mutex_init(&smmu_domain->init_mutex);
->  	INIT_LIST_HEAD(&smmu_domain->devices);
->  	spin_lock_init(&smmu_domain->devices_lock);
-> -	INIT_LIST_HEAD(&smmu_domain->mmu_notifiers);
->  
->  	return &smmu_domain->domain;
->  }
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> index 13ff024ab0d5..8a689b4316ac 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> @@ -737,8 +737,6 @@ struct arm_smmu_domain {
->  
->  	struct list_head		devices;
->  	spinlock_t			devices_lock;
-> -
-> -	struct list_head		mmu_notifiers;
->  };
->  
->  static inline struct arm_smmu_domain *to_smmu_domain(struct iommu_domain *dom)
-> @@ -773,10 +771,6 @@ struct iommu_sva *arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm,
->  void arm_smmu_sva_unbind(struct iommu_sva *handle);
->  u32 arm_smmu_sva_get_pasid(struct iommu_sva *handle);
->  void arm_smmu_sva_notifier_synchronize(void);
-> -struct arm_smmu_ctx_desc *
-> -arm_smmu_alloc_shared_cd(struct iommu_pasid_table *tbl, struct mm_struct *mm);
-> -void arm_smmu_free_shared_cd(struct iommu_pasid_table *tbl,
-> -			     struct arm_smmu_ctx_desc *cd);
->  #else /* CONFIG_ARM_SMMU_V3_SVA */
->  static inline bool arm_smmu_sva_supported(struct arm_smmu_device *smmu)
->  {
-> @@ -832,13 +826,5 @@ static inline u32 arm_smmu_sva_get_pasid(struct iommu_sva *handle)
->  }
->  
->  static inline void arm_smmu_sva_notifier_synchronize(void) {}
-> -struct arm_smmu_ctx_desc *
-> -arm_smmu_alloc_shared_cd(struct iommu_pasid_table *tbl, struct mm_struct *mm)
-> -{
-> -	return ERR_PTR(-EINVAL);
-> -}
-> -
-> -static inline void arm_smmu_free_shared_cd(struct iommu_pasid_table *tbl,
-> -					   struct arm_smmu_ctx_desc *cd) {}
->  #endif /* CONFIG_ARM_SMMU_V3_SVA */
->  #endif /* _ARM_SMMU_V3_H */
-> -- 
-> 2.17.1
-> 
