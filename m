@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A990F413929
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AAE413934
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhIURwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:52:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28907 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231839AbhIURwc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:52:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632246663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5tw38aQ342cTbcJn0n2v27W7fz1pROVSgYA+iYbHIIs=;
-        b=hoxzCgchFN8yQN/RfsJrzA9u/W4yytz2SO/FQd/4QvbCjU1pgVzaPiJfRNYBy7NrOpDgAV
-        DO2BMXuI5dEc8lfp1BjcC6QE4ccB/qyRbKnTuRMz2xe3KN4IJuCql8gwC09IarJnqTZiCK
-        EEtKi/hFK0lR0DeeQpM5DWU+E0LKTLM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-Xyaw7gypMQm0boPi4Z5M8w-1; Tue, 21 Sep 2021 13:51:02 -0400
-X-MC-Unique: Xyaw7gypMQm0boPi4Z5M8w-1
-Received: by mail-ed1-f69.google.com with SMTP id o23-20020a509b17000000b003d739e2931dso18156465edi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:51:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5tw38aQ342cTbcJn0n2v27W7fz1pROVSgYA+iYbHIIs=;
-        b=vPsP7LWJ4dY+b4cAEG7+PUs92CmiXwNppgsvQhTW4NZcbn9U+fgP4fFz7V9mBT/+vB
-         WN0DuVa4y6bPCBp99BzVKMAfI3vUT2Lo6H8K9pR09iPr4iZTl/qj6Oag31vOuT3Y8AXd
-         otIGY9/5eKqhOQnrfkp0RZbWG4ZEoRBKuCc2Jfloy8F0hQC+U5z4eFUO6mG4XJtdD3bk
-         5AbNvZrIvB1ewc4kTR9PbaDgiY62swVIDdMkbawiAPlykA3s82xGAzboIHFwtw6cy+aY
-         t6AHjX/WKB3yM24utpSAgLm9wnPVQZyWfofc6WaPZ352rWXyF5VUFSaMshZ9o3QjaAk3
-         FoXg==
-X-Gm-Message-State: AOAM532j81oZx8Fg1l6C/slG8mPTCzVe13qvJ1v8Kmo6r28BkPAUQOzr
-        1JvfywAMj9hRYsQxMcvrQE7uVRPvZDbCn5C5fKb0VzAfVQAeXY0PK3hHdxZoLyFSnkaGYwjt1DI
-        XOXV8CzLb6GJRgd+4BDj61bNDtONUP5e38OQhggxe3XRkypG29sxrLa1IUSySFA5nQ9xuVFPRj7
-        F6
-X-Received: by 2002:a17:906:60c2:: with SMTP id f2mr35146341ejk.531.1632246660528;
-        Tue, 21 Sep 2021 10:51:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1Rc9rLuX+xwLhLcPc+OCmunsre8pR9hj516mc2mmdpdkBpNARQZZY+XrWUahPkQ0TA9Dj0A==
-X-Received: by 2002:a17:906:60c2:: with SMTP id f2mr35146327ejk.531.1632246660342;
-        Tue, 21 Sep 2021 10:51:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 6sm7881530ejx.82.2021.09.21.10.50.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 10:50:59 -0700 (PDT)
-Subject: Re: [PATCH] KVM: do not shrink halt_poll_ns below grow_start
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Suleiman Souhlal <suleiman@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210902031100.252080-1-senozhatsky@chromium.org>
- <YUFPcphBWO8bz7Lk@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d76452b5-fd30-f418-ff4f-de10dfa831a7@redhat.com>
-Date:   Tue, 21 Sep 2021 19:50:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YUFPcphBWO8bz7Lk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S231793AbhIURx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 13:53:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231153AbhIURxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 13:53:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9BF60F6B;
+        Tue, 21 Sep 2021 17:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1632246716;
+        bh=pwvK+ahMREGGQzGaiM5/q6mz0KnvrF5UKb1ZkCF9P3E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r73YLvfDHRUTeOKgJ6aT3t5bfX8XmG8wkcnKbQY2O2MvwWUR8xn+vLivXyRKxPdtj
+         ggI/Zpb44arEE65ZMFAaugbbD3odV00+vEUuAVvkXOtjX0sxMfeNZezpT0ze8rp7m+
+         hgwaECfL1jKtaHvrKpPx7qMHiPWvTegQALrzsf+M=
+Date:   Tue, 21 Sep 2021 10:51:55 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     frederic@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, tglx@linutronix.de, cl@linux.com,
+        peterz@infradead.org, juri.lelli@redhat.com, mingo@redhat.com,
+        mtosatti@redhat.com, nilal@redhat.com, mgorman@suse.de,
+        ppandit@redhat.com, williams@redhat.com, bigeasy@linutronix.de,
+        anna-maria@linutronix.de, linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH 0/6] mm: Remote LRU per-cpu pagevec cache/per-cpu page
+ list drain support
+Message-Id: <20210921105155.73961c904b1f3bb5a40912c6@linux-foundation.org>
+In-Reply-To: <20210921161323.607817-1-nsaenzju@redhat.com>
+References: <20210921161323.607817-1-nsaenzju@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/09/21 03:42, Sergey Senozhatsky wrote:
-> On (21/09/02 12:11), Sergey Senozhatsky wrote:
->> grow_halt_poll_ns() ignores values between 0 and
->> halt_poll_ns_grow_start (10000 by default). However,
->> when we shrink halt_poll_ns we may fall way below
->> halt_poll_ns_grow_start and endup with halt_poll_ns
->> values that don't make a lot of sense: like 1 or 9,
->> or 19.
->>
->> VCPU1 trace (halt_poll_ns_shrink equals 2):
->>
->> VCPU1 grow 10000
->> VCPU1 shrink 5000
->> VCPU1 shrink 2500
->> VCPU1 shrink 1250
->> VCPU1 shrink 625
->> VCPU1 shrink 312
->> VCPU1 shrink 156
->> VCPU1 shrink 78
->> VCPU1 shrink 39
->> VCPU1 shrink 19
->> VCPU1 shrink 9
->> VCPU1 shrink 4
->>
->> Mirror what grow_halt_poll_ns() does and set halt_poll_ns
->> to 0 as soon as new shrink-ed halt_poll_ns value falls
->> below halt_poll_ns_grow_start.
-> 
-> Gentle ping.
-> 
-> 	-ss
-> 
+On Tue, 21 Sep 2021 18:13:18 +0200 Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
 
-Queued, thanks.
+> This series introduces an alternative locking scheme around mm/swap.c's per-cpu
+> LRU pagevec caches and mm/page_alloc.c's per-cpu page lists which will allow
+> for remote CPUs to drain them. Currently, only a local CPU is permitted to
+> change its per-cpu lists, and it's expected to do so, on-demand, whenever a
+> process demands it (by means of queueing an drain task on the local CPU). Most
+> systems will handle this promptly, but it'll cause problems for NOHZ_FULL CPUs
+> that can't take any sort of interruption without breaking their functional
+> guarantees (latency, bandwidth, etc...). Having a way for these processes to
+> remotely drain the lists themselves will make co-existing with isolated CPUs
+> possible, at the cost of more constraining locks.
+> 
+> Fortunately for non-NOHZ_FULL users, the alternative locking scheme and remote
+> drain code are conditional to a static key which is disabled by default. This
+> guarantees minimal functional or performance regressions. The feature will only
+> be enabled if NOHZ_FULL's initialization process was successful.
 
-Paolo
+That all looks pretty straightforward.  Obvious problems are:
+
+- Very little test coverage for the spinlocked code paths.  Virtually
+  all test setups will be using local_lock() and the code path you care
+  about will go untested.
+
+  I hope that whoever does test the spinlock version will be running
+  full debug kernels, including lockdep.  Because adding a spinlock
+  where the rest of the code expects local_lock might introduce
+  problems.
+
+  A fix for all of this would be to enable the spin_lock code paths
+  to be tested more widely.  Perhaps you could add a boot-time kernel
+  parameter (or, not as good, a Kconfig thing) which forces the use of
+  the spinlock code even on non-NOHZ_FULL systems.
+
+  Or perhaps this debug/testing mode _should_ be enabled by Kconfig,
+  so kernel fuzzers sometimes turn it on.
+
+  Please have a think about all of this?
+
+- Maintainability.  Few other MM developers will think about this new
+  spinlocked mode much, and they are unlikely to runtime test the
+  spinlock mode.  Adding the force-spinlocks-mode-on knob will help
+  with this.
+
 
