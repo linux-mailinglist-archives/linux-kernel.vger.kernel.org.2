@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9373B413AA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E024413AA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhIUTWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:22:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230497AbhIUTWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:22:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A3A61166;
-        Tue, 21 Sep 2021 19:20:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632252040;
-        bh=q7cife23GK/op9HiZn/PW1l3DptbjfCu7Z7qN8lqqmI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DlnU/SggKF1xUzGIMk7bj2Ha0jbqJKQwafZx7/EGhtrsqWJJkjJvhzx1O7LgIqWBM
-         OeOxE7TkpO74osd09pC8Vn/Bv5AkMHIwIRN7g3NgZ/GCi2Ne/szw8elZVp4Al69Hqt
-         3iMJjb3WgXxKEQ0KoKQl9i7ipeRQ0zpBLLt6Pmrh4DMFVsidrrt205rwyjCcPCTnvS
-         pTbs9THHF2dtrTsLgprETdbQehtvkMTlXWpG6oVJBzzhXeO68Lpvm0kUECUSI+OXzl
-         OqbuqEYPWZ65/HaZjq6o9tSVTU3y1tMGFE2YR+hWTTZlgkcO8eYk79Vy8R2T69nwIA
-         QRrR8c5txiQSQ==
-Date:   Tue, 21 Sep 2021 15:20:38 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>,
-        Lukas Hannen <lukas.hannen@opensource.tttech-industrial.com>
-Subject: Re: [PATCH 5.14 298/334] time: Handle negative seconds correctly in
- timespec64_to_ns()
-Message-ID: <YUowhlVfLiLWE8K/@sashalap>
-References: <20210913131113.390368911@linuxfoundation.org>
- <20210913131123.500712780@linuxfoundation.org>
- <CAK8P3a0z5jE=Z3Ps5bFTCFT7CHZR1JQ8VhdntDJAfsUxSPCcEw@mail.gmail.com>
- <874kak9moe.ffs@tglx>
- <YURQ4ZFDJ8E9MJZM@kroah.com>
- <87sfy38p1o.ffs@tglx>
- <YUSyKQwdpfSTbQ4H@kroah.com>
- <87ee9n80gz.ffs@tglx>
- <YUYJ8WeOzPVwj16y@kroah.com>
- <YUibLGZAVgqiyCUq@sashalap>
+        id S234417AbhIUTWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:22:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38973 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229915AbhIUTWv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 15:22:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632252082;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yTp5nZl5FP2S4p5cUtShACrTS3ff7K6W1gpGjotFl+0=;
+        b=EcUrosvIB+wWWhgtC7zp2zvbdvl3S2Ou+VZ0FwxawhxjEeFC0ymjKenaPrM64eLRvCZJys
+        8SUZmUbyTaK5/F2klCjeTa9pF5kvLRWpN9KG09adXfAgt8BINSDowa4iKkRIDQJ42UFE+z
+        oc3Z+L/4FypjEp4eEHpz1Fg74HzJmks=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-GK-ELhDbMDe0UdcVPyT4Mg-1; Tue, 21 Sep 2021 15:21:21 -0400
+X-MC-Unique: GK-ELhDbMDe0UdcVPyT4Mg-1
+Received: by mail-qk1-f198.google.com with SMTP id ay30-20020a05620a179e00b00433294fbf97so2586358qkb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:21:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yTp5nZl5FP2S4p5cUtShACrTS3ff7K6W1gpGjotFl+0=;
+        b=rbUHzJSLV1uHl5v3/HR79U2/fWdB+PRrBNMYEJkfbcfI5WRA28bbRcLoSng/NjUCN9
+         iEzS3pfhw6zszeZVvRZJIXHmKeL+p9GsXm2QXfYod+20oZlzXze2Gv8i4VadCdn4dUHc
+         IhM6woievx1QG7r4XN9KwvPjaNB8lm3i0V9SEc2J9YpX9c4kkNiGPGS4pyOPsi+5bAlL
+         bMGejxNHnBMzWWUc18XxWtRoYQpWbL8oV+lLYi6TGexCx8qe/WFHcJnzMHftSCXKRvUn
+         1p//ojB/kB5aT5vwYVsxYXKOfGBObqm2hfEe+/opCMIOGwT+Nvitcssfyn9ufBmNGXqZ
+         7d3w==
+X-Gm-Message-State: AOAM5324Fb+WY/2O3rGEPxVkkiqmVCl13AHvNim7wuPZYSGpSJeCx6HJ
+        0vfvYY5+YR0uwq3ZaQDwTeO12pZUQcCAUbzpMLuth24hExfow52t82oi/XDZSb6XYcsyXfdxBDT
+        53uBI73+pA4LqL9BQEAq8PMX1
+X-Received: by 2002:a0c:b391:: with SMTP id t17mr8884817qve.35.1632252081320;
+        Tue, 21 Sep 2021 12:21:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCxg/1fWoiiV7evbw5NzE0whd7BvYgpUL/aAEXYfn2sAz+T6HT6pVp513PoQzhTVefWS6UXA==
+X-Received: by 2002:a0c:b391:: with SMTP id t17mr8884784qve.35.1632252081010;
+        Tue, 21 Sep 2021 12:21:21 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id a9sm14623542qkk.82.2021.09.21.12.21.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 12:21:20 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 15:21:19 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
+Message-ID: <YUowr6phZU4v7dds@t490s>
+References: <20210921163323.944352-1-axelrasmussen@google.com>
+ <YUoaDr2wsW8wtk5Z@t490s>
+ <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YUibLGZAVgqiyCUq@sashalap>
+In-Reply-To: <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:31:08AM -0400, Sasha Levin wrote:
->On Sat, Sep 18, 2021 at 05:46:57PM +0200, Greg Kroah-Hartman wrote:
->>On Fri, Sep 17, 2021 at 09:29:32PM +0200, Thomas Gleixner wrote:
->>>Greg,
->>>
->>>On Fri, Sep 17 2021 at 17:20, Greg Kroah-Hartman wrote:
->>>> On Fri, Sep 17, 2021 at 12:38:43PM +0200, Thomas Gleixner wrote:
->>>>> Nah. I try to pay more attention. I'm not against AUTOSEL per se, but
->>>>> could we change the rules slightly?
->>>>>
->>>>> Any change which is selected by AUTOSEL and lacks a Cc: stable@... is
->>>>> put on hold until acked by the maintainer unless it is a prerequisite
->>>>> for applying a stable tagged fix?
->>>>>
->>>>> This can be default off and made effective on maintainer request.
->>>>>
->>>>> Hmm?
->>>>
->>>> The whole point of the AUTOSEL patches are for the huge numbers of
->>>> subsystems where maintainers and developers do not care about the stable
->>>> trees at all, and so they do not mark patches to be backported.  So
->>>> requireing an opt-in like this would defeat the purpose.
->>>>
->>>> We do allow the ability to take files/subsystems out of the AUTOSEL
->>>> process as there are many maintainers that do do this right and get
->>>> annoyed when patches are picked that they feel shouldn't have.  That's
->>>> the best thing we can do for stuff like this.
->>>
->>>I guess I was not able to express myself correctly. What I wanted to say
->>>is:
->>>
->>>  1) Default is AUTOSEL
->>>
->>>  2) Maintainer can take files/subsystems out of AUTOSEL completely
->>>
->>>     Exists today
->>>
->>>  3) Maintainer allows AUTOSEL, but anything picked from files/subsystems
->>>     without a stable tag requires an explicit ACK from the maintainer
->>>     for the backport.
->>>
->>>     Is new and I would be the first to opt-in :)
->>>
->>>My rationale for #3 is that even when being careful about stable tags,
->>>it happens that one is missing. Occasionaly AUTOSEL finds one of those
->>>in my subsystems which I appreciate.
->>>
->>>Does that make more sense now?
->>
->>Ah, yes, that makes much more sense, sorry for the confusion.
->>
->>Sasha, what do you think?  You are the one that scripts all of this, not
->>me :)
->
->I could give it a go. It adds some complexity here but is probably worth
->it to avoid issues.
->
->Let me think about the best way to go about it.
+On Tue, Sep 21, 2021 at 11:26:14AM -0700, Axel Rasmussen wrote:
+> On Tue, Sep 21, 2021 at 10:44 AM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > Hi, Axel,
+> >
+> > On Tue, Sep 21, 2021 at 09:33:21AM -0700, Axel Rasmussen wrote:
+> > > diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+> > > index 10ab56c2484a..2366caf90435 100644
+> > > --- a/tools/testing/selftests/vm/userfaultfd.c
+> > > +++ b/tools/testing/selftests/vm/userfaultfd.c
+> > > @@ -79,10 +79,6 @@ static int test_type;
+> > >  #define ALARM_INTERVAL_SECS 10
+> > >  static volatile bool test_uffdio_copy_eexist = true;
+> > >  static volatile bool test_uffdio_zeropage_eexist = true;
+> > > -/* Whether to test uffd write-protection */
+> > > -static bool test_uffdio_wp = false;
+> > > -/* Whether to test uffd minor faults */
+> > > -static bool test_uffdio_minor = false;
+> >
+> > IMHO it's not a fault to have these variables; they're still the fastest way to
+> > do branching.  It's just that in some cases we should set them to "false"
+> > rather than "true", am I right?
+> >
+> > How about we just set them properly in set_test_type?  Say, we can fetch the
+> > feature bits in set_test_type rather than assuming it's only related to the
+> > type of memory.
+> 
+> We could do that, but it would require opening a userfaultfd, issuing
+> a UFFDIO_API ioctl, and getting the feature bits in set_test_type. And
+> then I guess just closing the UFFD again, as we aren't yet setting up
+> for any particular test. To me, it seemed "messier" than this
+> approach.
+> 
+> Another thing to consider is, for the next patch we don't just want to
+> know "does this kernel support $FEATURE in general?" but also "is
+> $FEATURE supported for this particular memory region I've
+> registered?", and we can't have a single global answer to that.
 
-So I'm thinking of yet another patch series that would go out, but
-instead of AUTOSEL it'll be tagged with "MANUALSEL". It would work the
-exact same way as AUTOSEL, without the final step of queueing up the
-commits into the stable trees.
+Could I ask why?  For each run, the memory type doesn't change, isn't it?  Then
+I think the capability it should support is a constant?
 
-Thomas, do you want to give it a go? Want to describe how I filter for
-commits you'd be taking care of? In the past I'd grep a combo of paths
-and committers (i.e. net/ && davem@), but you have your hands in too
-many things :)
+Btw, note that "open an uffd, detect features, close uffd quickly" during setup
+phase is totally fine to me just for probing the capabilities, and instead of
+thinking it being messy I see it a very clean approach..
+
+> It seemed a bit cleaner to me to write the code as if I was dealing with that
+> case, and then re-use the infrastructure I'd built for patch 2/3.
+
+I didn't comment on patch 2, but I had the same confusion - aren't all these
+information constant after we settle the hardware, the kernel and the memory
+type to test?
+
+> 
+> Basically, I didn't initially have a goal of getting rid of these
+> variables, but it ended up being the cleanest way (IMHO).
+> 
+> Just trying to explain the thinking. :) In the end, I think it's a
+> stylistic choice and don't feel super strongly about it, either way
+> could work. So, I can change it if you or others do feel strongly.
+
+I have no strong opinion as long as the code works (which I trust you on :).
+We can keep it in Andrew's queue unless you do feel the other way is better.
+
+Thanks,
 
 -- 
-Thanks,
-Sasha
+Peter Xu
+
