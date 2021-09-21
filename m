@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B229412F43
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB03B412F48
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhIUHVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:21:34 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36752
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230071AbhIUHVc (ORCPT
+        id S230143AbhIUHWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhIUHWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:21:32 -0400
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A1A1140262
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:20:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632208802;
-        bh=AEgBA3R77w9KryrrVCKS+IcMBHSWWQYQcCPJfI9REUY=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=q5I2OKK/BHIgeadXIt4B504ihWDnqoms3PgcGZQGSft7i44IlbxsDlXvkhVjJFIW3
-         mzYuofJjMvriDGreAPnbacsXV4600h+II6SoC0/cUriDo8/BwzS1MsBO4ZYx1WoBRY
-         Hhiz/tJZjvxtjhGvANGJlRhJ/ZPg4lKfqDYZ6sYHyc267AUtnWybwqolIxF49/bRVf
-         lYGazccFPhBDNT5/WgSwoDgG70BJdUuJOV58O8soOlGA4x2ifxfz2Vbb4dVsBor53I
-         PeZHGG2I7TKlyOocxsFvmTY7QOZVuO5RA0wJ7vMhnXmk2OGAhpLM5q87yNT9wrvMBU
-         JYcuEZT4dxsQQ==
-Received: by mail-wr1-f69.google.com with SMTP id c15-20020a5d4ccf000000b0015dff622f39so8027736wrt.21
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:20:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        Tue, 21 Sep 2021 03:22:37 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E682C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:21:08 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id w29so36262538wra.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=AEgBA3R77w9KryrrVCKS+IcMBHSWWQYQcCPJfI9REUY=;
-        b=06FTt+tXbv20igJ9gMsZPsupPYNQ2n+Th1bEYV2w1rOB2SEpd8LmJScQh2V+8Y689z
-         3uQAOJpG+IlkPaAmsATfNb/sYgqHCcit7gRJnyadSoqGt2402ucAgluRcTdXAyqc5bzT
-         kl9NMMp47Y6V9Mb/ybuSQoDX1KH1eMcqpZkr2OwdHfRAfkDy5p/hWEKPOTznLkAnrXRC
-         H/kzmOhTcPS80Wu8iMYbuueDkATN9SOCe3bm7ApAoGuAUg/Ui/8PfXkhKQ8c8WWQzbnE
-         YClZtmcATBwwN4ju685BJvig0DDjYVyJ5Xt+mw5+WzAGQ5m1DGG6+MtBwJ50RwZArrCg
-         kUXA==
-X-Gm-Message-State: AOAM533bQ/kCxZFLYeSPTkg3Bf94H5F86pi7tnacnQfRbH85XicJ/2lN
-        uoG+eL/L638xHSX+yfQSg2BIk5uLbbniduCA1K84UwglPZyaxomFFozCWiHuXmyReh2/+otTeOa
-        Gcz4DAKs9ptUVOe8tomF7GLeAzcM7TK6SB6FTwzdW5g==
-X-Received: by 2002:a7b:c750:: with SMTP id w16mr2977700wmk.128.1632208802084;
-        Tue, 21 Sep 2021 00:20:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzO5jz1FEI8gyX7GyxtVi5eDjZZJeMMrwVlptuHEN5O7i5u5mvto6Hcns9xoz5xze1ScI9CPA==
-X-Received: by 2002:a7b:c750:: with SMTP id w16mr2977671wmk.128.1632208801861;
-        Tue, 21 Sep 2021 00:20:01 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id u5sm3543492wrg.57.2021.09.21.00.20.00
+        bh=e9lJls9x4Ir3Og0tsCxemcW1jUDuoRfpiScVUmuJYNs=;
+        b=4o+4O73eYK9bMb4Fnk+vy9cFbL0G26TLFn+vItPOnLqaOCHIUQdahny+5V97crEcUV
+         bUn7xnxEVYgaT+PSVTU9WixGDjvYpwFkxQrmg7KlJkHkrs5X4kdoPPNX2gm0A0Ltrtsh
+         8ixNu0sMryS7jtRPFOvlrYW6e0i/CBXQtyj8VkeQVRT9cbd12gQ4bH2rP7lASKIpGtzI
+         nSkDxmoipXgdzMn8t9U3jndTGFEJ3VYNk4w4eS75MhfVNtnp0xDF1tuO44mrgavHaHWl
+         qQ4qh7fYtNmRRbMmoCyv3ftbXdrbMOMRFXhxPT+tquakPZaoEZcdzQ9wKlBhlceVioJS
+         SYHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=e9lJls9x4Ir3Og0tsCxemcW1jUDuoRfpiScVUmuJYNs=;
+        b=4BOREIh/9DCHxsxQrHCoAfSywnte7D9eCWRkG868qORG6cABU36jsyXay5OCTdMWk0
+         FeQCBoX5RuBlwN2VKBqKBIpkdMvPzylHliD7skSwTf/2tyrY9Wcj/+ubvSZTUijknjFj
+         qAf/VbebD+HOpICeFD5JCSlhDOvGFiw1m4CWantzXHkcM384Tgt0OLv9YiaNKd0t334p
+         o1DVLhN1FFMPp8WzOcrspOWTBejNB/k6500ypbkZoFhyx1gwUp01f4sVK8uD8PqEaLbX
+         K7bBBXE9mQ1gtToVtimcAEUDcNXckr46rVtM6Tq3jiseegJuo8ADEICeCQmQP4NmORbt
+         iKDA==
+X-Gm-Message-State: AOAM532VXLCZ4NuLkgtsMDw81LTPoDnStNFcYXdRu/B2r8uX87886r1K
+        l+mzKQ59t28H+95KGbu0yyj0hg==
+X-Google-Smtp-Source: ABdhPJzELYbJ8jy1mwr1UoPKsoHlMwAbLOQHyrlZPvZHTluI+64PrlGi9gxNT1kbI1txsk+x490UTQ==
+X-Received: by 2002:a05:6000:154e:: with SMTP id 14mr19634849wry.53.1632208866904;
+        Tue, 21 Sep 2021 00:21:06 -0700 (PDT)
+Received: from [192.168.1.10] (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
+        by smtp.gmail.com with ESMTPSA id z133sm2247263wmc.45.2021.09.21.00.21.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 00:20:01 -0700 (PDT)
-Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
-To:     Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-References: <20210920190350.3860821-1-willmcvicker@google.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
-Date:   Tue, 21 Sep 2021 09:19:59 +0200
+        Tue, 21 Sep 2021 00:21:06 -0700 (PDT)
+Subject: Re: [PATCHv2 0/3] Fix the pwm regulator supply properties
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Anand Moon <linux.amoon@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        devicetree@vger.kernel.org
+References: <20210919202918.3556-1-linux.amoon@gmail.com>
+ <CAFBinCBK02mnf6nEGFi+ZLUX4irAHL720ujms8NJxRe_NZC6PQ@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <d0d03e85-85d9-eb23-b57d-e8482475181e@baylibre.com>
+Date:   Tue, 21 Sep 2021 09:21:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210920190350.3860821-1-willmcvicker@google.com>
+In-Reply-To: <CAFBinCBK02mnf6nEGFi+ZLUX4irAHL720ujms8NJxRe_NZC6PQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -86,39 +77,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 21:03, Will McVicker wrote:
-> This patch series tries to address the issue of ARCH_EXYNOS force selecting
-> a handful of drivers without allowing the vendor to override any of the
-> default configs. This takes away from the flexibilty of compiling a generic
-> kernel with exynos kernel modules. For example, it doesn't allow vendors to
-> modularize these drivers out of the core kernel in order to share a generic
-> kernel image across multiple devices that require device-specific kernel
-> modules.
+On 20/09/2021 22:13, Martin Blumenstingl wrote:
+> On Sun, Sep 19, 2021 at 10:29 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> [...]
+>> Anand Moon (3):
+>>   arm64: dts: meson-g12a: Fix the pwm regulator supply properties
+>>   arm64: dts: meson-g12b: Fix the pwm regulator supply properties
+>>   arm64: dts: meson-sm1: Fix the pwm regulator supply properties
+> all three get my:
+> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> 
+> Thanks for working on this!
+> I haven't runtime tested the patches but I expect that they will work
+> in the same way that the Meson8/8b/8m2 patches with the same change
+> did.
+> 
+> Neil, some of these boards are covered by Kernel CI.
+> I suggest queueing the patches in v5.16/dt64 and then seeing if
+> there's any feedback from the auto-builders.
 
-You do not address the issue in these patches. The problem you describe
-is that drivers are not modules and you are not changing them into modules.
+Acked !
+
+Neil
 
 > 
-> To address this without impacting the existing behavior, this series
-> switches the default config logic for the offending configs to use "default
-> y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
-> verified that these patches do not impact the default aarch64 .config.
-
-Yep, this is what you did but it does not match the described problem.
-You are not solving it but doing something else.
-
 > 
-> Will McVicker (4):
->   clk: samsung: change COMMON_CLK_SAMSUNG default config logic
->   soc: samsung: change SOC_SAMSUNG default config logic
->   pinctrl: samsung: change PINCTRL_EXYNOS default config logic
->   rtc: change HAVE_S3C_RTC default config logic
+> Best regards,
+> Martin
 > 
 
-
-I received only two patches from this set. Please resend following
-get_maintainers.pl script.
-
-
-Best regards,
-Krzysztof
