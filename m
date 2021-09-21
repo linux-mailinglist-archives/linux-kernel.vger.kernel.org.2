@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B1F413371
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31105413377
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhIUMl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhIUMly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:41:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 687CF60EE4;
-        Tue, 21 Sep 2021 12:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632228025;
-        bh=vnQtIdfALMpaBJcqOxeMIYV1/XVbzBlFUwV0+5xXDHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hfPgZ+/hwaSovUFOgATGC1QVqr0Yk4QLB+UyjmRiqLffZ/bMb5VWnk5gOEmLo7/08
-         Mf3/7gM15uwnogJtmCwqIQUkdUB6zVZS7U9rR7deLGGf1ulpxTeHvtTN9zbOpFzXf2
-         UnJCniKlAP37Krjbg1woMn77MpZHsCqPKjXjKNIk=
-Date:   Tue, 21 Sep 2021 14:40:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     jeyr@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH v3] misc: fastrpc: fix improper packet size calculation
-Message-ID: <YUnSt9B4hAe3y2k2@kroah.com>
-References: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
- <YUnHbiQDZK/+tTAp@kroah.com>
- <9c5c13a393b64a4527f7be7ca42734d2@codeaurora.org>
+        id S232807AbhIUMnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232739AbhIUMmm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:42:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277B8C061575;
+        Tue, 21 Sep 2021 05:41:14 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 12:41:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1632228070;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VDNaOAyLhe9F+PINkX4Wt383OyDkPDiSbUSXnaD34JY=;
+        b=QTNjf8VrFllbtkJBB7QvWBvE1bafB/CzTJ+zTsC+sj1cDFP+lLMY53hblDtisOWm3UAxkO
+        hvBgp8VY+pHG+0cUnDBUKQhuMNXwLaQLgqhgWXqITdpHSYENsms0WbE9czdC69O5QI23Yi
+        e2e959K8dlmDaOm8g7o/NcZ1QB/kPy9un5wvFgHq+BCYx811yHGAKFZBCKvikbw6uIpw2Z
+        rQYyGIJyhTg5T2QMmQIir+iW758qopdkdfjRoxrnq3n2Eguo4fHfeJOHibQ1tdeOerueBX
+        msvXlueRERIF/0GC5J8dFO4/d6Znghq7YpNevFfs5n2vawNxMFyrVOlSI2vvbA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1632228070;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VDNaOAyLhe9F+PINkX4Wt383OyDkPDiSbUSXnaD34JY=;
+        b=/CH9REiwrCLt8Yy/U7MJ+UJgeYx8D9diuYsMcUlQJ8gQuCg3DRQjL4aeGMQvd8Hq6hpa6f
+        5YdUhUveJsw6W8CQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] x86: Increase exception stack sizes
+Cc:     Michael Wang <yun.wang@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net>
+References: <YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c5c13a393b64a4527f7be7ca42734d2@codeaurora.org>
+Message-ID: <163222806918.25758.2617878698069891903.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 06:03:42PM +0530, jeyr@codeaurora.org wrote:
-> On 2021-09-21 17:22, Greg KH wrote:
-> > On Tue, Sep 21, 2021 at 05:18:15PM +0530, Jeya R wrote:
-> > > The buffer list is sorted and this is not being considered while
-> > > calculating packet size. This would lead to improper copy length
-> > > calculation for non-dmaheap buffers which would eventually cause
-> > > sending improper buffers to DSP.
-> > > 
-> > > Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke
-> > > method")
-> > > Signed-off-by: Jeya R <jeyr@codeaurora.org>
-> > > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > 
-> > Does this also need to go to the stable kernels?
-> Yes, this needs to go to stable kernels also as this fixes a potential issue
-> which is easily reproducible.
+The following commit has been merged into the x86/core branch of tip:
 
+Commit-ID:     7fae4c24a2b84a66c7be399727aca11e7a888462
+Gitweb:        https://git.kernel.org/tip/7fae4c24a2b84a66c7be399727aca11e7a888462
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 15 Sep 2021 16:19:46 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 21 Sep 2021 13:57:43 +02:00
 
+x86: Increase exception stack sizes
 
-> 
-> > 
-> > > ---
-> > > Changes in v3:
-> > > - relocate patch change list
-> > > 
-> > > Changes in v2:
-> > > - updated commit message to proper format
-> > > - added fixes tag to commit message
-> > > - removed unnecessary variable initialization
-> > > - removed length check during payload calculation
-> > > 
-> > >  drivers/misc/fastrpc.c | 10 ++++++----
-> > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> > > index beda610..69d45c4 100644
-> > > --- a/drivers/misc/fastrpc.c
-> > > +++ b/drivers/misc/fastrpc.c
-> > > @@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct
-> > > fastrpc_invoke_ctx *ctx)
-> > >  static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx,
-> > > int metalen)
-> > >  {
-> > >  	u64 size = 0;
-> > > -	int i;
-> > > +	int oix;
-> > 
-> > What does "oix" stand for?  What was wrong with i?
-> It is just a general convention we use. "oix" is used to iterate through
-> sorted overlap buffer list and use "i" to get corresponding unsorted list
-> index. We follow the same convention at other places also, for example:
-> fastrpc_get_args function.
+It turns out that a single page of stack is trivial to overflow with
+all the tracing gunk enabled. Raise the exception stacks to 2 pages,
+which is still half the interrupt stacks, which are at 4 pages.
 
-That is the only place it is used in all of the whole kernel tree.  It
-is not a normal variable for a loop, so who is "we" here?
+Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net
+---
+ arch/x86/include/asm/page_64_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
-
-greg k-h
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index a8d4ad8..e9e2c3b 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -15,7 +15,7 @@
+ #define THREAD_SIZE_ORDER	(2 + KASAN_STACK_ORDER)
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+ 
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
+ 
+ #define IRQ_STACK_ORDER (2 + KASAN_STACK_ORDER)
