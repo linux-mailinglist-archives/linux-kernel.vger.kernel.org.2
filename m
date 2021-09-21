@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21C0413D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEF9413D7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhIUWVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
+        id S235539AbhIUWYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbhIUWVa (ORCPT
+        with ESMTP id S232122AbhIUWYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:21:30 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EF8C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:20:02 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id 134so656399iou.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:20:02 -0700 (PDT)
+        Tue, 21 Sep 2021 18:24:08 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8886C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:22:38 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id 62-20020aed2044000000b002a6aa209efaso3576459qta.18
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:22:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HWLoAInOLCehVyUDdEFgyA0aq8c1810nqg999R8oxfU=;
-        b=aj3QxekWfRi3uAdc5lpdDn6FoYAedJ8FsTjBDvBCDWRjEzt/JQ6p7imxAG/DApK+mF
-         2gagVt3X8luIoitRLXSKRYVwLgSznNVpaZyG8m/4FCGZweCBBZsIAUvT7PdIPZbU8wN1
-         mfAQEwrxhepXNPQuDT3ppCtjQk9jPR2TpYAss=
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=Q20iEess0fifQ1UuQbXOXFqiUUzry/ZTlIcm76UAWxM=;
+        b=JfW08WvwR5NppuckDbGBjuYm/qfKFPNTAZMbHjE/W+axyhP3dc87K2dMjwCziGbrNR
+         5Qhg0J8NmGL98SrOSvD9+8fWKrNBvaBv4Bb712hBTDXdcAkjRaecIZM3yTmnh/YCLd1j
+         j4567Vp0WodpV5fuJ38h92olkRvx4Hh61wgCKUVTrypmncIQgF7Ri1gQk00SQi/HSyow
+         FU9+od8W/IBrgXjkjHAVl9RVO+lIOxAvuEQlvTwimT1f12eK4eJcULYfQ+OhzITQA4SX
+         BCUUCMylJy5CnztKQ+q2PhL/PAPjBBJ/v0LuXubz46t0KKEapi2MizSOXqYgukZgXHs/
+         NGAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HWLoAInOLCehVyUDdEFgyA0aq8c1810nqg999R8oxfU=;
-        b=p5Bec16lI2Fg0XthCe0v/uQfH3H/1aVOu01Uq4u3voW2LdJlUNKO4R6QXhPKmM/Dig
-         s9G7GS+dczMwhy/VpUzT6ciUqr3n2+k599MYjtTfDL77i/MXjmK9wXvPLjWuufWStBhd
-         vZ/jg6Pwe45+uxld8axRsOsgywcAW38x8wyc4yZ7vj6CBC40DTqFt15E482kaGa0wzTV
-         pXJnaM4VTSZ/klO1NTpeVamCmoEeqUmWMgSZHGzCjnznR55wg547At54AjBW6N3BGqA7
-         MLCAke1tDCgQJ0YTzOebgSkkGk+iE5xAHOeFzC9RrYBZtT4Gz3RlJpdlpLZh8eGXYnES
-         twrw==
-X-Gm-Message-State: AOAM533PRMsAmypi5lviDWLLZD+mlKOn4OJUequKTObBGaK12kJDmydH
-        GX06xpxpuP+1zxPiYREsDMgpmJgTBRSE7g==
-X-Google-Smtp-Source: ABdhPJxp37XG6wQThaz/AIe3qdzZ7aHlMAj7bVdchW+0Ylfj1wca3DpK7GVrGLsUc2NYbeAlF8Qlag==
-X-Received: by 2002:a05:6602:3c5:: with SMTP id g5mr1945321iov.42.1632262801163;
-        Tue, 21 Sep 2021 15:20:01 -0700 (PDT)
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
-        by smtp.gmail.com with ESMTPSA id d10sm107465ilu.54.2021.09.21.15.20.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 15:20:00 -0700 (PDT)
-Received: by mail-il1-f169.google.com with SMTP id w1so546603ilv.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:20:00 -0700 (PDT)
-X-Received: by 2002:a05:6e02:1b0c:: with SMTP id i12mr20195314ilv.27.1632262799686;
- Tue, 21 Sep 2021 15:19:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210920225801.227211-1-robdclark@gmail.com> <20210920225801.227211-4-robdclark@gmail.com>
-In-Reply-To: <20210920225801.227211-4-robdclark@gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 21 Sep 2021 15:19:48 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WGmk6UY2MA4=y4gaM4G66t-qxuLtAZvUahzwg8YsLv=g@mail.gmail.com>
-Message-ID: <CAD=FV=WGmk6UY2MA4=y4gaM4G66t-qxuLtAZvUahzwg8YsLv=g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=Q20iEess0fifQ1UuQbXOXFqiUUzry/ZTlIcm76UAWxM=;
+        b=ruDiwTjSQwEs4DsNNG63qbWDRvHqC6lYVmRXD05tCsyRDD6ANHvaRWXOQ8SkCc8mCB
+         5XBpWKvMtOsZ2aWjVWMc8zAv7VkU7/m6Tsqev9XgzGvsXDgPQMmoJ2KnYDHNyk3URQHc
+         hLJO5Yu0lT23bku7ue8JzokD046iJaQcpeTeogyzj8e65xDKg7opqe10V3j9STZ2poc4
+         OifCB369zFjAJcIECTlmb1vEeJeWAyZaVxtJ77U/fDcNUu50QFVLUhuQwuhvFnuJYMKY
+         wfG9OLyw9rWtv+otw0lFFPDajw/yqDLWKBGiGUBK99YrNOzBhHmkLEtkvDPC9ajRFi29
+         S3+A==
+X-Gm-Message-State: AOAM530s0T9gFJrVQv93SagiHv7jy6gPauHCCU0Zl7alAZBf1skBiuws
+        +3q+JEK2I9t3CD2se++5WOWcdWkjgfE=
+X-Google-Smtp-Source: ABdhPJyWLleGn2Q9uDNlTmU74iPlGeJ9AoH7VeL2KdOBb7ybZB1A31L8xwxPOwizMhE7GlKn0cZbRD9sBg8=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:b022:92d6:d37b:686c])
+ (user=seanjc job=sendgmr) by 2002:a25:ea51:: with SMTP id o17mr38809433ybe.192.1632262957862;
+ Tue, 21 Sep 2021 15:22:37 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 21 Sep 2021 15:22:29 -0700
+Message-Id: <20210921222231.518092-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH 0/2] KVM: arm64: Clean up CONFIG_KVM vs CONFIG_HAVE_KVM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix an oddity where arm64 can end up with KVM=y and HAVE_KVM=n.  This
+doesn't cause problems today as no generic code that supports arm64 uses
+HAVE_KVM, but that may not always be the case, e.g. I stumbled across this
+when exploring hiding perf's guest callbacks behind HAVE_KVM=y.
 
-On Mon, Sep 20, 2021 at 3:53 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> From: Rob Clark <robdclark@chromium.org>
->
-> Slightly awkward to fish out the display_info when we aren't creating
-> own connector.  But I don't see an obvious better way.
->
-> v2: Remove error return with NO_CONNECTOR flag
->
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 39 ++++++++++++++++++++-------
->  1 file changed, 29 insertions(+), 10 deletions(-)
+Sean Christopherson (2):
+  KVM: arm64: Unconditionally include generic KVM's Kconfig
+  KVM: arm64: Depend on HAVE_KVM => OF instead of directly on OF
 
-This seems fine to me:
+ arch/arm64/Kconfig     | 1 +
+ arch/arm64/kvm/Kconfig | 9 ++-------
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+-- 
+2.33.0.464.g1972c5931b-goog
 
-...if you would like me to apply patch #2 / #3 to drm-misc-next then
-please yell.
-
--Doug
