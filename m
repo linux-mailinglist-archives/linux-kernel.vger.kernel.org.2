@@ -2,167 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24E0413270
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD68413278
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 13:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhIULVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 07:21:41 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44114
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232229AbhIULVk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 07:21:40 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id DAC4A3FE05
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632223211;
-        bh=MjesVevkYIqX1GQ7DanAgbDwI571QgAHXDgwfVLZUzk=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=OyUhrziLcDFlH7MmAr5uOEFZZUXtAIS77FEtEKNx+Vkm11az0J54tFv0LRJ9wT9DN
-         HJOL+H8xohwKPPqqTVr/P7lOwUt8ZHxsQdwRxNjey+IvVlo0JfTEpy3j/Z8oib3rq9
-         r6FMcZG/VDN+iSqFsyHng/DDAonB7BSnE79jHRaChgckDWXsEC0m6Yy7E2v6mR1WFm
-         KTs4DqMvwtser2kMDRI4C4NBRsNz/rscu7IMytNaMdrKWU3zxeaEUlbdnr5Y5blH+T
-         BrtAtNs85LD4L1kHBKSdBu3v8gfwKeG8CKWt9OpqwRzysuF+qa5cnnqVrqD5AFwleK
-         H6qUJcFsJkvdA==
-Received: by mail-ed1-f70.google.com with SMTP id w24-20020a056402071800b003cfc05329f8so18761593edx.19
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 04:20:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MjesVevkYIqX1GQ7DanAgbDwI571QgAHXDgwfVLZUzk=;
-        b=1xqKKdV4WnPu1J67ksfafFN9FaSjxA6bxDW6VNfSyWUMaqWIRE0YrI69qnW4qT2GnI
-         T+cQt4OdKl5U6NFtH3k1h08dOO58MxJeRuF8oW7IuR+Qy3pzr+eQdYBp8dR8bqqm7AgX
-         U2DpxhMQ284VMTWUw8rzfDT6526Hn+zeyRQs+/L6c78ZzptmyJnyj6B20og37tJ5rWvB
-         OMNvgnQayHfOFDSOcES0jZsA5WaM0zhKc6vZ4b1ck07R4XRP6vtsqD9mHBSPVRBDswVt
-         1f/5XVTdc8Cq0ZEsiuTfcAa2txyavi/3XAuOYgKL2Nqg+SBRcLCJFD5tgqbFMO0/HIbG
-         OTCw==
-X-Gm-Message-State: AOAM530p3ov/Z48eP/b2vpn/pXvP+YYratIuVH96uXYTk4IlETJV7HBD
-        Ln6VoqXU9oEslJOwWql36BaCtAQuy57JMW3XshvnlugcJKN/hYFsjbcP4qudYEXPEo7QZNUIM2l
-        Jl11jwrhE9DuADs8GOzBlsiNbe5XMuynf2/bhHSE++zL6LMfYdydtB/FdUg==
-X-Received: by 2002:a17:906:8981:: with SMTP id gg1mr34363649ejc.95.1632223211456;
-        Tue, 21 Sep 2021 04:20:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzy1Zml1lG/L7siYipoWZFKyg+Vw32nqM/rZd7PNcGFYuxpgdmkEWCLjGp8N6QGPtYWTGqstZeGuhBNqGpURJw=
-X-Received: by 2002:a17:906:8981:: with SMTP id gg1mr34363627ejc.95.1632223211220;
- Tue, 21 Sep 2021 04:20:11 -0700 (PDT)
+        id S232345AbhIUL21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:28:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231956AbhIUL2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 07:28:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2079560F9D;
+        Tue, 21 Sep 2021 11:26:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632223617;
+        bh=thTsSyjy0WHn4NbXtqXy6nh03zyFo2cWhYxlI9OW1Rs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fOtq3hkgP3b8AGRo4t4evjqkQhJFrUHnsr2bu+euVmaYneBbAJh26KXFIgN7NyNUk
+         mE92Ww2BEICSpxQ+Gyq548DHeEk76spLvCzOxkuLW9CKPjobL/NyDjEXfN8k+1Fdpn
+         jRfyvUncOT66SPB/K4USxXuLbGVj7VKx8Bug5FsiAlrf+ez2cWB/KNOVLMhRZHjBSR
+         z2KgYF3jBuROPH0GQqexjewca4HxDCmemGbQXU+PLrvwdWSyeiiW5O5bdPdkUcenlR
+         xhWgUczaL9L5rPUnBaH2cvwXlIEQnAsrt9LTLRMLT5zhv4j2jCHGPH8bBOXVf9JvqY
+         QuVKH3Sx1965Q==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mSdvL-0002R4-VV; Tue, 21 Sep 2021 13:26:56 +0200
+Date:   Tue, 21 Sep 2021 13:26:55 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Himadri Pandya <himadrispandya@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] USB: serial: ch314: use usb_control_msg_recv()
+ and usb_control_msg_send()
+Message-ID: <YUnBf3Z9WJaP/2fo@hovoldconsulting.com>
+References: <20210801203122.3515-1-himadrispandya@gmail.com>
+ <20210801203122.3515-2-himadrispandya@gmail.com>
 MIME-Version: 1.0
-References: <20210921053356.1705833-1-alexandre.ghiti@canonical.com> <CAAhSdy07KzQnTH+ad4esxtfhogzpXQagY8KeDkq1Kc81-Z33Yw@mail.gmail.com>
-In-Reply-To: <CAAhSdy07KzQnTH+ad4esxtfhogzpXQagY8KeDkq1Kc81-Z33Yw@mail.gmail.com>
-From:   Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Date:   Tue, 21 Sep 2021 13:20:00 +0200
-Message-ID: <CA+zEjCsFG31kcM89B6LfP32Kh7WTHxzU6zvxigmKrDheKkU2fQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers: mfd: da9063: Add restart notifier implementation
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210801203122.3515-2-himadrispandya@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I chose a priority lower than the one you proposed in your SRST series
-(https://lkml.org/lkml/2021/6/9/620).
+On Mon, Aug 02, 2021 at 02:01:17AM +0530, Himadri Pandya wrote:
+> usb_control_msg_send/recv are new wrapper functions for usb_control_msg()
+> that have proper error checks for short read/writes.
 
-Alex
+There no need for any special handling of short writes. Testing against
+against negative errno is all that's needed.
 
-On Tue, Sep 21, 2021 at 12:17 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Tue, Sep 21, 2021 at 11:04 AM Alexandre Ghiti
-> <alexandre.ghiti@canonical.com> wrote:
-> >
-> > The SiFive Unmatched board uses the da9063 PMIC for reset: add a restart
-> > notifier that will execute a small i2c sequence allowing to reset the
-> > board.
-> >
-> > The original implementation comes from Marcus Comstedt and Anders Montonen
-> > (https://forums.sifive.com/t/reboot-command/4721/28).
-> >
-> > Signed-off-by: Alexandre Ghiti <alexandre.ghiti@canonical.com>
-> > ---
-> >  drivers/mfd/da9063-core.c       | 25 +++++++++++++++++++++++++
-> >  include/linux/mfd/da9063/core.h |  3 +++
-> >  2 files changed, 28 insertions(+)
-> >
-> > diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c
-> > index df407c3afce3..c87b8d611f20 100644
-> > --- a/drivers/mfd/da9063-core.c
-> > +++ b/drivers/mfd/da9063-core.c
-> > @@ -20,6 +20,7 @@
-> >  #include <linux/mutex.h>
-> >  #include <linux/mfd/core.h>
-> >  #include <linux/regmap.h>
-> > +#include <linux/reboot.h>
-> >
-> >  #include <linux/mfd/da9063/core.h>
-> >  #include <linux/mfd/da9063/registers.h>
-> > @@ -158,6 +159,18 @@ static int da9063_clear_fault_log(struct da9063 *da9063)
-> >         return ret;
-> >  }
-> >
-> > +static int da9063_restart_notify(struct notifier_block *this,
-> > +                                unsigned long mode, void *cmd)
-> > +{
-> > +       struct da9063 *da9063 = container_of(this, struct da9063, restart_handler);
-> > +
-> > +       regmap_write(da9063->regmap, DA9063_REG_PAGE_CON, 0x00);
-> > +       regmap_write(da9063->regmap, DA9063_REG_CONTROL_F, 0x04);
-> > +       regmap_write(da9063->regmap, DA9063_REG_CONTROL_A, 0x68);
-> > +
-> > +       return NOTIFY_DONE;
-> > +}
-> > +
-> >  int da9063_device_init(struct da9063 *da9063, unsigned int irq)
-> >  {
-> >         int ret;
-> > @@ -197,6 +210,18 @@ int da9063_device_init(struct da9063 *da9063, unsigned int irq)
-> >                 }
-> >         }
-> >
-> > +       da9063->restart_handler.notifier_call = da9063_restart_notify;
-> > +       da9063->restart_handler.priority = 128;
->
-> How was this priority value chosen ?
->
-> I mean, we will be having SBI SRST as well so we should choose
-> a priority value lower than what we choose for SBI SRST handler.
->
-> Regards,
-> Anup
->
-> > +       ret = register_restart_handler(&da9063->restart_handler);
-> > +       if (ret) {
-> > +               dev_err(da9063->dev, "Failed to register restart handler\n");
-> > +               return ret;
-> > +       }
-> > +
-> > +       devm_add_action(da9063->dev,
-> > +                       (void (*)(void *))unregister_restart_handler,
-> > +                       &da9063->restart_handler);
-> > +
-> >         return ret;
-> >  }
-> >
-> > diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/core.h
-> > index fa7a43f02f27..1b20c498e340 100644
-> > --- a/include/linux/mfd/da9063/core.h
-> > +++ b/include/linux/mfd/da9063/core.h
-> > @@ -85,6 +85,9 @@ struct da9063 {
-> >         int             chip_irq;
-> >         unsigned int    irq_base;
-> >         struct regmap_irq_chip_data *regmap_irq;
-> > +
-> > +       /* Restart */
-> > +       struct notifier_block restart_handler;
-> >  };
-> >
-> >  int da9063_device_init(struct da9063 *da9063, unsigned int irq);
-> > --
-> > 2.30.2
-> >
+> These functions
+> can also accept data buffer on stack. Hence use these functions to have
+> more robust error checks, and to reduce kernel memory usage for usb
+> messages.
+
+I'd rephrase this along the lines of "to simplify error handling for
+short reads".
+
+Also, you're not reducing kernel memory usage, you're just moving the
+allocation to be handled by the wrapper instead.
+
+> Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+> ---
+> Changes in v2:
+>  - Fix callers of ch341_control_out() and ch341_control_in()
+>  - Remove label "out"
+>  - Remove an unnecessary assignment statement
+> ---
+>  drivers/usb/serial/ch341.c | 97 ++++++++++++--------------------------
+>  1 file changed, 29 insertions(+), 68 deletions(-)
+> 
+> diff --git a/drivers/usb/serial/ch341.c b/drivers/usb/serial/ch341.c
+> index 2db917eab799..c6f7ff9ca8ae 100644
+> --- a/drivers/usb/serial/ch341.c
+> +++ b/drivers/usb/serial/ch341.c
+> @@ -113,10 +113,10 @@ static int ch341_control_out(struct usb_device *dev, u8 request,
+>  	dev_dbg(&dev->dev, "%s - (%02x,%04x,%04x)\n", __func__,
+>  		request, value, index);
+>  
+> -	r = usb_control_msg(dev, usb_sndctrlpipe(dev, 0), request,
+> -			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> -			    value, index, NULL, 0, DEFAULT_TIMEOUT);
+> -	if (r < 0)
+> +	r = usb_control_msg_send(dev, 0, request,
+> +				 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> +				 value, index, NULL, 0, DEFAULT_TIMEOUT, GFP_KERNEL);
+> +	if (r)
+>  		dev_err(&dev->dev, "failed to send control message: %d\n", r);
+>  
+>  	return r;
+
+Since ch341_control_out() does not take a data buffer argument, there's
+no need to use the new helper which only adds an extra function call.
+
+Note that this function already return 0 on success or a negative errno
+on errors.
+
+> @@ -131,23 +131,13 @@ static int ch341_control_in(struct usb_device *dev,
+>  	dev_dbg(&dev->dev, "%s - (%02x,%04x,%04x,%u)\n", __func__,
+>  		request, value, index, bufsize);
+>  
+> -	r = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0), request,
+> -			    USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> -			    value, index, buf, bufsize, DEFAULT_TIMEOUT);
+> -	if (r < (int)bufsize) {
+> -		if (r >= 0) {
+> -			dev_err(&dev->dev,
+> -				"short control message received (%d < %u)\n",
+> -				r, bufsize);
+
+You're also removing this error message. It should at least be
+mentioned somewhere that short reads will now simply be reported as
+-EREMOTEIO with no indication of how short the transfer was.
+
+That's usually just fine, but I'm currently dealing with another driver
+where a short read can be used to differentiate between device types as
+an example.
+
+> -			r = -EIO;
+> -		}
+> -
+> -		dev_err(&dev->dev, "failed to receive control message: %d\n",
+> -			r);
+> -		return r;
+> -	}
+> +	r = usb_control_msg_recv(dev, 0, request,
+> +				 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> +				 value, index, buf, bufsize, DEFAULT_TIMEOUT, GFP_KERNEL);
+> +	if (r)
+> +		dev_err(&dev->dev, "failed to receive control message: %d\n", r);
+>  
+> -	return 0;
+> +	return r;
+>  }
+>  
+>  #define CH341_CLKRATE		48000000
+> @@ -287,23 +277,19 @@ static int ch341_set_handshake(struct usb_device *dev, u8 control)
+>  static int ch341_get_status(struct usb_device *dev, struct ch341_private *priv)
+>  {
+>  	const unsigned int size = 2;
+> -	char *buffer;
+> +	u8 buffer[2];
+>  	int r;
+>  	unsigned long flags;
+>  
+> -	buffer = kmalloc(size, GFP_KERNEL);
+> -	if (!buffer)
+> -		return -ENOMEM;
+> -
+>  	r = ch341_control_in(dev, CH341_REQ_READ_REG, 0x0706, 0, buffer, size);
+> -	if (r < 0)
+> +	if (r)
+>  		goto out;
+>  
+>  	spin_lock_irqsave(&priv->lock, flags);
+>  	priv->msr = (~(*buffer)) & CH341_BITS_MODEM_STAT;
+>  	spin_unlock_irqrestore(&priv->lock, flags);
+>  
+> -out:	kfree(buffer);
+> +out:
+>  	return r;
+
+Just return r in the error path above and drop the label.
+
+>  }
+>  
+> @@ -312,21 +298,17 @@ out:	kfree(buffer);
+>  static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
+>  {
+>  	const unsigned int size = 2;
+> -	char *buffer;
+> +	u8 buffer[2];
+>  	int r;
+>  
+> -	buffer = kmalloc(size, GFP_KERNEL);
+> -	if (!buffer)
+> -		return -ENOMEM;
+> -
+>  	/* expect two bytes 0x27 0x00 */
+>  	r = ch341_control_in(dev, CH341_REQ_READ_VERSION, 0, 0, buffer, size);
+> -	if (r < 0)
+> +	if (r)
+>  		goto out;
+>  	dev_dbg(&dev->dev, "Chip version: 0x%02x\n", buffer[0]);
+>  
+>  	r = ch341_control_out(dev, CH341_REQ_SERIAL_INIT, 0, 0);
+> -	if (r < 0)
+> +	if (r)
+>  		goto out;
+>  
+>  	r = ch341_set_baudrate_lcr(dev, priv, priv->baud_rate, priv->lcr);
+> @@ -335,7 +317,7 @@ static int ch341_configure(struct usb_device *dev, struct ch341_private *priv)
+>  
+>  	r = ch341_set_handshake(dev, priv->mcr);
+>  
+> -out:	kfree(buffer);
+> +out:
+>  	return r;
+>  }
+
+Same here (even if you need to touch the other error paths).
+
+> @@ -647,23 +613,19 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
+>  	struct ch341_private *priv = usb_get_serial_port_data(port);
+>  	int r;
+>  	uint16_t reg_contents;
+> -	uint8_t *break_reg;
+> +	uint8_t break_reg[2];
+>  
+>  	if (priv->quirks & CH341_QUIRK_SIMULATE_BREAK) {
+>  		ch341_simulate_break(tty, break_state);
+>  		return;
+>  	}
+>  
+> -	break_reg = kmalloc(2, GFP_KERNEL);
+> -	if (!break_reg)
+> -		return;
+> -
+> -	r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG,
+> -			ch341_break_reg, 0, break_reg, 2);
+> -	if (r < 0) {
+> +	r = ch341_control_in(port->serial->dev, CH341_REQ_READ_REG, ch341_break_reg, 0,
+> +			     break_reg, 2);
+
+Drop this unrelated style change (which creates a line > 80 chars too).
+
+> +	if (r) {
+>  		dev_err(&port->dev, "%s - USB control read error (%d)\n",
+>  				__func__, r);
+> -		goto out;
+> +		return;
+>  	}
+>  	dev_dbg(&port->dev, "%s - initial ch341 break register contents - reg1: %x, reg2: %x\n",
+>  		__func__, break_reg[0], break_reg[1]);
+> @@ -681,11 +643,10 @@ static void ch341_break_ctl(struct tty_struct *tty, int break_state)
+>  	reg_contents = get_unaligned_le16(break_reg);
+>  	r = ch341_control_out(port->serial->dev, CH341_REQ_WRITE_REG,
+>  			ch341_break_reg, reg_contents);
+> -	if (r < 0)
+> +	if (r)
+>  		dev_err(&port->dev, "%s - USB control write error (%d)\n",
+>  				__func__, r);
+> -out:
+> -	kfree(break_reg);
+> +	return;
+
+No need for return at the end of a void function.
+
+>  }
+>  
+>  static int ch341_tiocmset(struct tty_struct *tty,
+
+Johan
