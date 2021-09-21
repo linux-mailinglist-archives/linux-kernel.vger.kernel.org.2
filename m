@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEAC4137D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD2E4137D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhIUQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbhIUQxK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:53:10 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D80C061767
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:51:41 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id i4so184393lfv.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TnVNJWxdJp/O3yNbbRJ7mIEi/fwxJdU+PF6KUrC9rVE=;
-        b=1OTLWhIAZbw98TXwD1Gw/0gnV9IeA5sInhq86eCw9rH28Kbkiby2P26MPUY9DRxksS
-         zlbL/p3GesEAjDdOaksgIZQAA0WwGATzjmt/mXlTfbFHjmPmFeX1uwfsbRy2K3N7Wkxy
-         gV/xFk+5MOFhhvqS254pfPNL+/wxlTmx9pf/fen67K0zC2XO1kVbBHW+MhyK3WYVfL1X
-         UakBHRuKYs5bXOQlr2sHsxnNQBp7PUfH0guzUQoDW78HpcPcHgCOTRjZ4CJmrKJfTZws
-         LvK6Qo6dIdQcCf68YaB7EPCuGpsw5sauXQTAqmS5LIjCS2opMw7dg2rH/7VNrwXZZt5A
-         ywfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TnVNJWxdJp/O3yNbbRJ7mIEi/fwxJdU+PF6KUrC9rVE=;
-        b=LlyWQwgK67N611Frj1+zg1as6AqJiYyvMTbMhnmeJUq39nmTKi4Nqt3zQ09GrsEjEl
-         RYFyPzd3kz1o7GDTOny0dLx6DCyeKIUD1k0Li5PRje6mA5Dvoz2YdXDUICMyrE/TT7Qq
-         qvgy0QPkQsHsMhH0Lp/i64ttHrPo4qIFD9zKey0A7dbWpUImFdEPnfWalDHBYX7e69/1
-         zm/QfNDU5u7+2dI7FQ4bQ/56crgS4ZSSRQzwKOdNOr898YaFUDXgWNkZ0a7WgYWTcl6f
-         xv/fK+bWJdV93tmcCqktVRXbYMHok8wohpnqXVzTVklH/G/mik4uiBkQ8ISBAbC2u+SQ
-         Jc3g==
-X-Gm-Message-State: AOAM5336T/pIEFVZWGvP438kb1TVvk6YCNkq7Mok0vcmrZ0gAFOpYqRC
-        05UxwzBt3w80IgPC7zWbZXoYnA==
-X-Google-Smtp-Source: ABdhPJwnhhw2d4dOMygsgFPi1GNVXIA1X4Ce9E8R+xk6bsFj+gkQwNLHwXyhfzOHXlWrbz/ZBuXqEg==
-X-Received: by 2002:a2e:5049:: with SMTP id v9mr23584503ljd.128.1632243099506;
-        Tue, 21 Sep 2021 09:51:39 -0700 (PDT)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id bt38sm1559955lfb.269.2021.09.21.09.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 09:51:39 -0700 (PDT)
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] staging: most: dim2: force fcnt=3 on Renesas GEN3
-Date:   Tue, 21 Sep 2021 19:51:30 +0300
-Message-Id: <20210921165130.24178-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.30.2
+        id S229958AbhIUQxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:53:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:36440 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229971AbhIUQxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 12:53:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFD57113E;
+        Tue, 21 Sep 2021 09:51:37 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.23.155])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BD7C3F718;
+        Tue, 21 Sep 2021 09:51:36 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 17:51:34 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] upstream test error: KASAN: invalid-access Read in
+ __entry_tramp_text_end
+Message-ID: <20210921165134.GE35846@C02TD0UTHF1T.local>
+References: <000000000000a3cf8605cb2a1ec0@google.com>
+ <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+aS6w1gFuMVY1fnAG0Yp0XckQTM+=tUHkOuxHUy2mkxrg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per Renesas datasheet, MLBC0 register's fcnt field in the embedded
-dim2 module must be never set to value different from 3.
+Hi Dmitry,
 
-Enforce that, via an optional field in struct dim2_platform_data.
+The good news is that the bad unwind is a known issue, the bad news is
+that we don't currently have a way to fix it (and I'm planning to talk
+about this at the LPC "objtool on arm64" talk this Friday).
 
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
- drivers/staging/most/dim2/dim2.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+More info below: the gist is we can produce spurious entries at an
+exception boundary, but shouldn't miss a legitimate value, and there's a
+plan to make it easier to spot when entries are not legitimate.
 
-diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
-index 093ef9a2b291..d90284d79621 100644
---- a/drivers/staging/most/dim2/dim2.c
-+++ b/drivers/staging/most/dim2/dim2.c
-@@ -108,6 +108,7 @@ struct dim2_hdm {
- struct dim2_platform_data {
- 	int (*enable)(struct platform_device *pdev);
- 	void (*disable)(struct platform_device *pdev);
-+	u8 fcnt;
- };
- 
- #define iface_to_hdm(iface) container_of(iface, struct dim2_hdm, most_iface)
-@@ -731,7 +732,7 @@ static int dim2_probe(struct platform_device *pdev)
- 	struct dim2_hdm *dev;
- 	struct resource *res;
- 	int ret, i;
--	u8 hal_ret;
-+	u8 dev_fcnt, hal_ret;
- 	int irq;
- 
- 	enum { MLB_INT_IDX, AHB0_INT_IDX };
-@@ -770,8 +771,10 @@ static int dim2_probe(struct platform_device *pdev)
- 
- 	dev->disable_platform = pdata ? pdata->disable : NULL;
- 
--	dev_info(&pdev->dev, "sync: num of frames per sub-buffer: %u\n", fcnt);
--	hal_ret = dim_startup(dev->io_base, dev->clk_speed, fcnt);
-+	dev_fcnt = pdata && pdata->fcnt ? pdata->fcnt : fcnt;
-+	dev_info(&pdev->dev, "sync: num of frames per sub-buffer: %u\n",
-+		 dev_fcnt);
-+	hal_ret = dim_startup(dev->io_base, dev->clk_speed, dev_fcnt);
- 	if (hal_ret != DIM_NO_ERROR) {
- 		dev_err(&pdev->dev, "dim_startup failed: %d\n", hal_ret);
- 		ret = -ENODEV;
-@@ -1047,9 +1050,19 @@ static void rcar_m3_disable(struct platform_device *pdev)
- enum dim2_platforms { FSL_MX6, RCAR_H2, RCAR_M3 };
- 
- static struct dim2_platform_data plat_data[] = {
--	[FSL_MX6] = { .enable = fsl_mx6_enable, .disable = fsl_mx6_disable },
--	[RCAR_H2] = { .enable = rcar_h2_enable, .disable = rcar_h2_disable },
--	[RCAR_M3] = { .enable = rcar_m3_enable, .disable = rcar_m3_disable },
-+	[FSL_MX6] = {
-+		.enable = fsl_mx6_enable,
-+		.disable = fsl_mx6_disable,
-+	},
-+	[RCAR_H2] = {
-+		.enable = rcar_h2_enable,
-+		.disable = rcar_h2_disable,
-+	},
-+	[RCAR_M3] = {
-+		.enable = rcar_m3_enable,
-+		.disable = rcar_m3_disable,
-+		.fcnt = 3,
-+	},
- };
- 
- static const struct of_device_id dim2_of_match[] = {
--- 
-2.20.1
+On Fri, Sep 17, 2021 at 05:03:48PM +0200, Dmitry Vyukov wrote:
+> > Call trace:
+> >  dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
+> >  show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
+> >  print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
+> >  __kasan_report mm/kasan/report.c:442 [inline]
+> >  kasan_report+0x134/0x380 mm/kasan/report.c:459
+> >  __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
+> >  do_bad_area arch/arm64/mm/fault.c:466 [inline]
+> >  do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
+> >  do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
+> >  el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
+> >  el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
+> >  el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
+> >  __entry_tramp_text_end+0xdfc/0x3000
+> 
+> /\/\/\/\/\/\/\
+> 
+> This is broken unwind on arm64. d_lookup statically calls __d_lookup,
+> not __entry_tramp_text_end (which is not even a function).
+> See the following thread for some debugging details:
+> https://lore.kernel.org/lkml/CACT4Y+ZByJ71QfYHTByWaeCqZFxYfp8W8oyrK0baNaSJMDzoUw@mail.gmail.com/
 
+The problem here is that our calling convention (AAPCS64) only allows us
+to reliably unwind at function call boundaries, where the state of both
+the Link Register (LR/x30) and Frame Pointer (FP/x29) are well-defined.
+Within a function, we don't know whether to start unwinding from the LR
+or FP, and we currently start from the LR, which can produce spurious
+entries (but ensures we don't miss anything legitimte).
+
+In the short term, I have a plan to make the unwinder indicate when an
+entry might not be legitimate, with the usual stackdump code printing an
+indicator like '?' on x86.
+
+In the longer term, we might be doing things with objtool or asking for
+some toolchain help such that we can do better in these cases.
+
+Thanks,
+Mark.
