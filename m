@@ -2,91 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A265413BB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B1D413BB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 22:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235058AbhIUUr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 16:47:58 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:33520 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234465AbhIUUr5 (ORCPT
+        id S235087AbhIUUsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 16:48:55 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:33766 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235083AbhIUUsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 16:47:57 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 9EE88FAB5D4;
-        Wed, 22 Sep 2021 06:46:22 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mSmej-00FAQB-3k; Wed, 22 Sep 2021 06:46:21 +1000
-Date:   Wed, 22 Sep 2021 06:46:21 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/5] Remove dependency on congestion_wait in mm/
-Message-ID: <20210921204621.GY2361455@dread.disaster.area>
-References: <20210920085436.20939-1-mgorman@techsingularity.net>
+        Tue, 21 Sep 2021 16:48:50 -0400
+Received: by mail-ot1-f41.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso420374otu.0;
+        Tue, 21 Sep 2021 13:47:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ngLxYzAUznjWSLFmvKia/nTu1IkrbcVJEhriv6IKScU=;
+        b=DaaoGGSKaR24c6+gg1LTg/68YTdOMC3ZZ66PJzZfVZqgJgJ/E45sfi+4vM7L7S4elx
+         jQ8AAWYtrisdX3hvtq2XhqR/tnr2gI3yLxhX3Lwb4kO5VnnZlhKn/ww90CyD5amY21i6
+         USMVznhJ7x363O7wMnV018haSl8uvhz16wDc0srrsMfLEGLxqet6l3PWpxQExQx8aGb5
+         x8FMwRiLvNLPp6lqjc3y9zYaYWRaUWVOBnN0KR8POD20gaJuNIAIsIf7qtONU7JZ3V3j
+         bG7G5hD49dn6g9x7zcY3d7wHU5xjr+FKyiMMP/BrT6wBKUK3+32zjOhRtTspU3Y2+zY4
+         +mbw==
+X-Gm-Message-State: AOAM530YrdKv1Oj1uPA5YVR+e/47TsqtCFTSO8afhsw0wSv3YfG0TN62
+        AI39n+pSiO8b1qxOnyfLE/fG8RTbBA==
+X-Google-Smtp-Source: ABdhPJyxA75ILu4OIkNdfN8D3bBIqHF+zc2A+ALEEcje+US3CUJMYK5KMX0DOFOZSqk3dr4qD52SqQ==
+X-Received: by 2002:a9d:724a:: with SMTP id a10mr27075485otk.323.1632257240826;
+        Tue, 21 Sep 2021 13:47:20 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id j10sm18834oiw.32.2021.09.21.13.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 13:47:20 -0700 (PDT)
+Received: (nullmailer pid 3300155 invoked by uid 1000);
+        Tue, 21 Sep 2021 20:47:18 -0000
+Date:   Tue, 21 Sep 2021 15:47:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     grygorii.strashko@ti.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, nsekhar@ti.com, tony@atomide.com,
+        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
+        krzysztof.kozlowski@canonical.com, robh+dt@kernel.org,
+        linux-mtd@lists.infradead.org, lokeshvutla@ti.com, nm@ti.com
+Subject: Re: [PATCH v4 7/8] dt-bindings: memory-controllers: ti,gpmc: Convert
+ to yaml
+Message-ID: <YUpE1mBqElmjv+wV@robh.at.kernel.org>
+References: <20210914122705.15421-1-rogerq@kernel.org>
+ <20210914122705.15421-8-rogerq@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920085436.20939-1-mgorman@techsingularity.net>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=Eazbco4TDQp801Hdg9MA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210914122705.15421-8-rogerq@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 09:54:31AM +0100, Mel Gorman wrote:
-> Cc list similar to "congestion_wait() and GFP_NOFAIL" as they're loosely
-> related.
+On Tue, 14 Sep 2021 15:27:04 +0300, Roger Quadros wrote:
+> Convert omap-gpmc.txt to ti,gpmc.yaml.
 > 
-> This is a prototype series that removes all calls to congestion_wait
-> in mm/ and deletes wait_iff_congested. It's not a clever
-> implementation but congestion_wait has been broken for a long time
-> (https://lore.kernel.org/linux-mm/45d8b7a6-8548-65f5-cccf-9f451d4ae3d4@kernel.dk/).
-> Even if it worked, it was never a great idea. While excessive
-> dirty/writeback pages at the tail of the LRU is one possibility that
-> reclaim may be slow, there is also the problem of too many pages being
-> isolated and reclaim failing for other reasons (elevated references,
-> too many pages isolated, excessive LRU contention etc).
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  .../bindings/memory-controllers/omap-gpmc.txt | 157 ----------------
+>  .../bindings/memory-controllers/ti,gpmc.yaml  | 172 ++++++++++++++++++
+>  2 files changed, 172 insertions(+), 157 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
 > 
-> This series replaces the reclaim conditions with event driven ones
-> 
-> o If there are too many dirty/writeback pages, sleep until a timeout
->   or enough pages get cleaned
-> o If too many pages are isolated, sleep until enough isolated pages
->   are either reclaimed or put back on the LRU
-> o If no progress is being made, let direct reclaim tasks sleep until
->   another task makes progress
-> 
-> This has been lightly tested only and the testing was useless as the
-> relevant code was not executed. The workload configurations I had that
-> used to trigger these corner cases no longer work (yey?) and I'll need
-> to implement a new synthetic workload. If someone is aware of a realistic
-> workload that forces reclaim activity to the point where reclaim stalls
-> then kindly share the details.
 
-Got a git tree pointer so I can pull it into a test kernel so I can
-see what impact it has on behaviour before I try to make sense of
-the code?
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Reviewed-by: Rob Herring <robh@kernel.org>
