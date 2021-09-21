@@ -2,148 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2D8413A00
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3199F413A0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhIUSWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:22:40 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34222
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233373AbhIUSWU (ORCPT
+        id S232985AbhIUS0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:26:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41112 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232890AbhIUS0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:22:20 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5D2FD4027C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632248450;
-        bh=s1x0s0nZoSfkDljorxbVXRoxNOeXqYSIOV8lCyGgV/M=;
-        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=OuMq8TuW98drYQVUd6qIyfwLIV+l0aD1dljAtR9Qgrut7WqnGE7qjLMfn9gS0Uz2q
-         7k8akZJm8/yItZ1RAYIpdAjDeGzxA3NUOv9XTMgGSOb+NmwR/AhRSRZIrGpdDFQD+H
-         YkowoHGlYv7UHc0JcZHQHATJbnDj47YTSjydUa3HPxPwPvEYs+piTLxdwFtFEEXqWm
-         gmPDfcr7rfrgfYBwwZS8WmIqY37yFNB201YUgMOnSVkwRZjzUmojCzGU+lJauHbb3I
-         PlyVsoC5n5Ad7+6plKI5trJrzbgieb3p48CdU9GggF+iaiRkt0g8jme6xawxj4EIfr
-         RkbeDiWD1LJLw==
-Received: by mail-wr1-f70.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so9558639wrt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:20:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=s1x0s0nZoSfkDljorxbVXRoxNOeXqYSIOV8lCyGgV/M=;
-        b=Feg+n/LN++B5RyH9YHtQfijdxvawAD4f6hf31AmiB5q6a9bDdiodj7A9vtEGznljwX
-         HPcyJ3NReNzPx3odUeWRfW8DDIQ6cxtszAP4gAo3GNOcmzpPFpDFkLBzUwj4x6G5slpx
-         ntrV8m2JPkUwxFPGQ+ZUlpNVlEQQ1YIZGloXQJlUMWjmgwA8ghzL6EGhCT63arTOSutD
-         CwfIcR+sQpYuJLPemZQrWGSbZ2PGtopmuSYSAP4EMVnA9euQ1i1BLl53licU3v7nTsjV
-         yE6TYXFJTRYgAcTUiYBIohGnhsMdomm5NAnUClLZTiyDoM5m+Q3nsQLDqq4Zu+/Mu+C+
-         G/yA==
-X-Gm-Message-State: AOAM532+4Je7gyCsrBCBN1yl9Ov+yvJ/W92OwbKinRIAUoo7LUiTKH/J
-        Bfi8z7T3Y3qU8bvlelCoYkfSSQTrsvajXqd0dfSV0UUPF8lpArm8bUK+HdTYSDc4PRXSamqTuWf
-        7V7ER7ELGvVZUhPbHeNwV9vxNPG5qHJse/UEcMkCtcQ==
-X-Received: by 2002:a1c:7714:: with SMTP id t20mr6116127wmi.163.1632248450029;
-        Tue, 21 Sep 2021 11:20:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzFXWldxf5QmNutieh/xiyRvCC3i4k/pd4YG3SgGB01SyUaFQH3M57JkcGsRr4RuTJRGTbMw==
-X-Received: by 2002:a1c:7714:: with SMTP id t20mr6116109wmi.163.1632248449844;
-        Tue, 21 Sep 2021 11:20:49 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id l124sm3715171wml.8.2021.09.21.11.20.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 11:20:49 -0700 (PDT)
-To:     Will McVicker <willmcvicker@google.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc@vger.kernel.org
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <20210920190350.3860821-3-willmcvicker@google.com>
- <2b48a41a-9130-b4cc-40d3-0bc7930ac76a@canonical.com>
- <YUmVj80m/rEC2mT7@google.com>
- <CABYd82a4OwxHNUUmUtBmTpSvWLu-f4sepHMF49kPQtWLU3MkDA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH v1 2/4] soc: samsung: change SOC_SAMSUNG default config
- logic
-Message-ID: <ad2de848-8fce-f275-25de-83a886243645@canonical.com>
-Date:   Tue, 21 Sep 2021 20:20:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 14:26:48 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18LHClbs018413;
+        Tue, 21 Sep 2021 14:25:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=yUCduo/+FNeUPxDRhu1f5vXQoveIvMutiZCSsB7+WSE=;
+ b=bMaBaV8ffDypiiCsgH0z473+w7HnQHrCmYut2IjbPv6C1jPWHgL49mE19ENLQwJvgnb+
+ cZXdj2V/wH+xB1Ewlvo61qj1MDC9wvpjewceaQb9p/hhCYjSuWLb3p+u90+d1MaE4hgN
+ z2ev261u+8NnaZH6C8xtx0r8VxXOJDMfi8KsUhAUM2nBPU/YHGnN5LiDQs43T+gETlTn
+ xQPdrOT15fkWSrzy82sO4rSeQGVPEnViP/zT35nNvqnB6SBCVNBF1zf0JSj4i235dmk4
+ vRwH4ILAzu0N8AHxnNksWlosnby3y5K4gV8FhDGcr2uJQyR9D3YDTbgdfaQsWRIsrstS Gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b7kkg9fjj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 14:25:18 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18LIKGCC002051;
+        Tue, 21 Sep 2021 14:25:17 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b7kkg9fhs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 14:25:17 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18LIHHa4029307;
+        Tue, 21 Sep 2021 18:25:14 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 3b57r9fe0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 18:25:14 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18LIPA7a2753116
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Sep 2021 18:25:11 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B865B52057;
+        Tue, 21 Sep 2021 18:25:10 +0000 (GMT)
+Received: from li-748c07cc-28e5-11b2-a85c-e3822d7eceb3.ibm.com (unknown [9.171.53.36])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 19E8152077;
+        Tue, 21 Sep 2021 18:25:10 +0000 (GMT)
+Message-ID: <f4dc7040554fd7e9c7067aab2213b3639cfc6987.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio/s390: fix vritio-ccw device teardown
+From:   Vineeth Vijayan <vneethv@linux.ibm.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bfu@redhat.com,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Date:   Tue, 21 Sep 2021 20:25:09 +0200
+In-Reply-To: <20210921185222.246b15bb.pasic@linux.ibm.com>
+References: <20210915215742.1793314-1-pasic@linux.ibm.com>
+         <87pmt8hp5o.fsf@redhat.com> <20210916151835.4ab512b2.pasic@linux.ibm.com>
+         <87mtobh9xn.fsf@redhat.com> <20210920003935.1369f9fe.pasic@linux.ibm.com>
+         <88b514a4416cf72cda53a31ad2e15c13586350e4.camel@linux.ibm.com>
+         <878rzrh86c.fsf@redhat.com> <20210921052548.4eea231f.pasic@linux.ibm.com>
+         <05b1ac0e4aa4a1c7df1a8994c898630e9b2e384d.camel@linux.ibm.com>
+         <20210921185222.246b15bb.pasic@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0Ci8AMH7zOq2wX571aPN8cNde7Yq4fRB
+X-Proofpoint-ORIG-GUID: 0iig0ErpBc7Z_dJZR9LRPPvSFK2wT6FU
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <CABYd82a4OwxHNUUmUtBmTpSvWLu-f4sepHMF49kPQtWLU3MkDA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-21_05,2021-09-20_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 mlxlogscore=999 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109210107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 19:45, Will McVicker wrote:
-> On Tue, Sep 21, 2021 at 1:19 AM Lee Jones <lee.jones@linaro.org> wrote:
->>
->> On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
->>
->>> On 20/09/2021 21:03, Will McVicker wrote:
->>>> Switch the default logic to enable SOC_SAMSUNG and it's sub-configs to
->>>> be enabled by default via "default y if ARCH_EXYNOS" versus being
->>>> selected by the ARCH_EXYNOS config directly. This allows vendors to
->>>> disable these configs if they wish and provides additional flexibility
->>>> to modularize them in the presence of a generic kernel.
->>>
->>> This is not true. Vendors cannot disable these options as they are not
->>> visible.
->>
->> Good point, well made.
->>
->>> Although I understand that Arnd prefers this way and I do not
->>> object it, but your explanation is incorrect.
+On Tue, 2021-09-21 at 18:52 +0200, Halil Pasic wrote:
+> > > > lock already,   
+> > > 
+> > > I believe we have a misunderstanding here. I believe that Vineeth
+> > > is
+> > > trying to tell us, that online_store_handle_offline() and
+> > > online_store_handle_offline() are called under the a device lock
+> > > of
+> > > the ccw device. Right, Vineeth?  
+> > Yes. I wanted to bring-out both the scenario.The
+> > set_offline/_online()
+> > calls and the unconditional-remove call.
 > 
-> Thanks Krzysztof for the reviews! I'm sorry I missed the whole "hidden
-> configs" part. I'll upload the series to include the fix that refactos
-> the Samsung SoC drivers menuconfig which will address that and allow
-> one to enable/disable those configs. I'm going to hold off though
-> until we hash out the rest of the discussion in the cover letter
-> email.
+> I don't understand the paragraph above. I can't map the terms
+> set_offline/_online() and unconditional-remove call to chunks of
+> code.
+> :( 
+online_store() function can be used to set_online/set_offline manually
+from the sysfs entry.
+And an unconditional-remove call, for CIO, starts with a CRW which
+indicates there is a subchannel_event which needs to be taken care.
+This sch_event() (in device.c) then try to find the reason for this CRW
+and act accordingly. This would lead to device_del and end up calling
+the remove function of the driver.
 
-No, please first read our discussions, including Lee's and Geert's
-comments. The drivers should not be converted to modules or made visible
-if such configuration does not work. If it works, please describe your
-testing setup.
+> > For the set_online The virtio_ccw_online() also invoked with
+> > ccwlock
+> > held. (ref: ccw_device_set_online)
+> 
+> I don't think virtio_ccw_online() is invoked with the ccwlock held. I
+> think we call virtio_ccw_online() in this line:
+> https://elixir.bootlin.com/linux/v5.15-rc2/source/drivers/s390/cio/device.c#L394
+> and we have released the cdev->ccwlock literally 2 lines above.
+My bad. I overlooked it! 
+> 
+> 
+> > > Conny, I believe, by online/offline callbacks, you mean
+> > > virtio_ccw_online() and virtio_ccw_offline(), right?
+> > > 
+> > > But the thing is that virtio_ccw_online() may get called (and is
+> > > typically called, AFAICT) with no locks held via:
+> > > virtio_ccw_probe() --> async_schedule(virtio_ccw_auto_online,
+> > > cdev)
+> > > -*-> virtio_ccw_auto_online(cdev) --> ccw_device_set_online(cdev)
+> > > -->
+> > > virtio_ccw_online()
+> > > 
+> > > Furthermore after a closer look, I believe because we don't take
+> > > a reference to the cdev in probe, we may get
+> > > virtio_ccw_auto_online()
+> > > called with an invalid pointer (the pointer is guaranteed to be
+> > > valid
+> > > in probe, but because of async we have no guarantee that it will
+> > > be
+> > > called in the context of probe).
+> > > 
+> > > Shouldn't we take a reference to the cdev in probe?  
+> > We just had a quick look at the virtio_ccw_probe() function.
+> > Did you mean to have a get_device() during the probe() and
+> > put_device()
+> > just after the virtio_ccw_auto_online() ?
+> 
+> Yes, that would ensure that cdev pointer is still valid when
+> virtio_ccw_auto_online() is executed, and that things are cleaned up
+> properly, I guess. But I'm not 100% sure about all the interactions.
+> AFAIR ccw_device_set_online(cdev) would bail out if !drv. But then
+> we have the case where we already assigned it to a new driver (e.g.
+> vfio for dasd).
+> 
+> BTW I believe if we have a problem here, the dasd driver has the same
+> problem as well. The code looks very, very similar.
+You are right about that. I am trying to recreate that issue with DASD
+now. And working on the patch as well.
+> 
+> And shouldn't this auto-online be common CIO functionality? What is
+> the
+> reason the char devices don't seem to have it?
+I am not sure about that. I dont understand why it should be a CIO
+functionality. 
+> 
+> Regards,
+> Halil
 
-All these drivers are *necessary* for a multiplatform kernel supporting
-Exynos platforms, therefore disabling them does not make any sense (if
-you support Exynos platform). If your kernel does not support Exynos
-platform, just do not select ARCH_EXYNOS and problem disappears because
-none of these drivers will be visible and selected.
-
-Unless you describe here some out-of-tree kernel which wants
-ARCH_EXYNOS, because vendor did not upstream it's code, but you do not
-want existing Exynos upstream drivers. We do not support such
-configuration. Please push your lovely vendor to work with upstream.
-That's the only solution.
-
-It's the third time this abuse re-usage of ARCH_EXYNOS appears and the
-same as before - the vendor does not like to upstream stuff. There are
-few guys trying to upstream recent Samsung SoC support by themself (ping
-me for contacts if you would like to participate) but the one party
-which should be doing it - the lovely vendor - does not actually
-participate and instead sends ridiculous patches like this one here...
-or like this [1] [2].
-
-Nope, please work with upstreaming SoC support, instead of abusing
-ARCH_EXYNOS for out of tree code from the vendor.
-
-[1]
-https://lore.kernel.org/linux-samsung-soc/001001d5a03d$05de1f70$119a5e50$@samsung.com/
-
-[2]
-https://lore.kernel.org/linux-usb/20210303022628.6540-1-taehyun.cho@samsung.com/
-
-Best regards,
-Krzysztof
