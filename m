@@ -2,74 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559844135DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB704135E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233861AbhIUPKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:10:12 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:58678 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233851AbhIUPKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:10:11 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 0BB7CF40B68; Tue, 21 Sep 2021 17:08:37 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 17:08:37 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] HID: wiiu-drc: Add a driver for the Wii U gamepad
-Message-ID: <20210921150837.ingexwsauvxgluca@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
- <20210519085924.1636-1-linkmauve@linkmauve.fr>
+        id S233892AbhIUPLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:11:40 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:46493 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233904AbhIUPLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:11:36 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HDPx92Fgrz9sSw;
+        Tue, 21 Sep 2021 17:10:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gyOIDSOs_Hi8; Tue, 21 Sep 2021 17:10:05 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HDPx80S2Jz9sSt;
+        Tue, 21 Sep 2021 17:10:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EF2748B770;
+        Tue, 21 Sep 2021 17:10:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id BOAq07tiBhft; Tue, 21 Sep 2021 17:10:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.127])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95E428B763;
+        Tue, 21 Sep 2021 17:10:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 18LF9rHF1071858
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 21 Sep 2021 17:09:53 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 18LF9olB1071856;
+        Tue, 21 Sep 2021 17:09:50 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: [PATCH v5 1/3] powerpc/bitops: Use immediate operand when possible
+Date:   Tue, 21 Sep 2021 17:09:47 +0200
+Message-Id: <e6f815d9181bab09df3b350af51149437863e9f9.1632236981.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ez74el7qvw7jyttg"
-Content-Disposition: inline
-In-Reply-To: <20210519085924.1636-1-linkmauve@linkmauve.fr>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Today we get the following code generation for bitops like
+set or clear bit:
 
---ez74el7qvw7jyttg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	c0009fe0:	39 40 08 00 	li      r10,2048
+	c0009fe4:	7c e0 40 28 	lwarx   r7,0,r8
+	c0009fe8:	7c e7 53 78 	or      r7,r7,r10
+	c0009fec:	7c e0 41 2d 	stwcx.  r7,0,r8
 
-On Wed, May 19, 2021 at 10:59:20AM +0200, Emmanuel Gil Peyrot wrote:
-> This driver is for the DRC (wireless gamepad) when plugged to the DRH of
-> the Wii=C2=A0U, a chip exposing it as a USB device.
+	c000d568:	39 00 18 00 	li      r8,6144
+	c000d56c:	7c c0 38 28 	lwarx   r6,0,r7
+	c000d570:	7c c6 40 78 	andc    r6,r6,r8
+	c000d574:	7c c0 39 2d 	stwcx.  r6,0,r7
 
-Hi, I=E2=80=99d like to request a review on this series.  I=E2=80=99ve been=
- using it
-with success for quite some months, and from a self-review after not
-having touched it for as long it still looks correct. :)
+Most set bits are constant on lower 16 bits, so it can easily
+be replaced by the "immediate" version of the operation. Allow
+GCC to choose between the normal or immediate form.
 
-Thanks!
+For clear bits, on 32 bits 'rlwinm' can be used instead of 'andc' for
+when all bits to be cleared are consecutive.
 
---=20
-Emmanuel Gil Peyrot
+On 64 bits we don't have any equivalent single operation for clearing,
+single bits or a few bits, we'd need two 'rldicl' so it is not
+worth it, the li/andc sequence is doing the same.
 
---ez74el7qvw7jyttg
-Content-Type: application/pgp-signature; name="signature.asc"
+With this patch we get:
 
------BEGIN PGP SIGNATURE-----
+	c0009fe0:	7d 00 50 28 	lwarx   r8,0,r10
+	c0009fe4:	61 08 08 00 	ori     r8,r8,2048
+	c0009fe8:	7d 00 51 2d 	stwcx.  r8,0,r10
 
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmFJ9XIACgkQOWgfYkb2
-LpCb/wf+PtGYAKzWAKJDC0I5XoreW7e2FLGsBvkwfnzcTQlP3DfyueyEMKTQXDZy
-ifvED6JV/hqgrMAyEekPNMmOez1kC1w8+JWrK0OvtXlIfwvEFNwpJScTQXusab5w
-bX4+DLwfLKE47LOXGWljzWTtQxh8uBOxpfwP3DojZYgQLPucXpbCN2DhbZznFtif
-Duv07lAsE16bxV/jxfw5e7w9Nf/ZSdypLDJ0R51IM3LBC7CAQIadj//HQHH6QWCl
-fuh2bd1ahvG96uwMrqg70s3q/A0Y9SXE7vwWTmFQsMwR5Rsuaeu7OcKxn/6RNvdX
-1g5zkb1C7jI+KN+0SYxTlu45G2VS4A==
-=Hrq3
------END PGP SIGNATURE-----
+	c000d558:	7c e0 40 28 	lwarx   r7,0,r8
+	c000d55c:	54 e7 05 64 	rlwinm  r7,r7,0,21,18
+	c000d560:	7c e0 41 2d 	stwcx.  r7,0,r8
 
---ez74el7qvw7jyttg--
+On pmac32_defconfig, it reduces the text by approx 10 kbytes.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
+---
+v5: Fixed the argument of is_rlwinm_mask_valid() in test_and_clear_bits()
+
+v4: Rebased
+
+v3:
+- Using the mask validation proposed by Segher
+
+v2:
+- Use "n" instead of "i" as constraint for the rlwinm mask
+- Improve mask verification to handle more than single bit masks
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/bitops.h | 89 ++++++++++++++++++++++++++++---
+ 1 file changed, 81 insertions(+), 8 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/bitops.h b/arch/powerpc/include/asm/bitops.h
+index 11847b6a244e..a05d8c62cbea 100644
+--- a/arch/powerpc/include/asm/bitops.h
++++ b/arch/powerpc/include/asm/bitops.h
+@@ -71,19 +71,61 @@ static inline void fn(unsigned long mask,	\
+ 	__asm__ __volatile__ (			\
+ 	prefix					\
+ "1:"	PPC_LLARX "%0,0,%3,0\n"			\
+-	stringify_in_c(op) "%0,%0,%2\n"		\
++	#op "%I2 %0,%0,%2\n"			\
+ 	PPC_STLCX "%0,0,%3\n"			\
+ 	"bne- 1b\n"				\
+ 	: "=&r" (old), "+m" (*p)		\
+-	: "r" (mask), "r" (p)			\
++	: "rK" (mask), "r" (p)			\
+ 	: "cc", "memory");			\
+ }
+ 
+ DEFINE_BITOP(set_bits, or, "")
+-DEFINE_BITOP(clear_bits, andc, "")
+-DEFINE_BITOP(clear_bits_unlock, andc, PPC_RELEASE_BARRIER)
+ DEFINE_BITOP(change_bits, xor, "")
+ 
++static __always_inline bool is_rlwinm_mask_valid(unsigned long x)
++{
++	if (!x)
++		return false;
++	if (x & 1)
++		x = ~x;	// make the mask non-wrapping
++	x += x & -x;	// adding the low set bit results in at most one bit set
++
++	return !(x & (x - 1));
++}
++
++#define DEFINE_CLROP(fn, prefix)					\
++static inline void fn(unsigned long mask, volatile unsigned long *_p)	\
++{									\
++	unsigned long old;						\
++	unsigned long *p = (unsigned long *)_p;				\
++									\
++	if (IS_ENABLED(CONFIG_PPC32) &&					\
++	    __builtin_constant_p(mask) && is_rlwinm_mask_valid(~mask)) {\
++		asm volatile (						\
++			prefix						\
++		"1:"	"lwarx	%0,0,%3\n"				\
++			"rlwinm	%0,%0,0,%2\n"				\
++			"stwcx.	%0,0,%3\n"				\
++			"bne- 1b\n"					\
++			: "=&r" (old), "+m" (*p)			\
++			: "n" (~mask), "r" (p)				\
++			: "cc", "memory");				\
++	} else {							\
++		asm volatile (						\
++			prefix						\
++		"1:"	PPC_LLARX "%0,0,%3,0\n"				\
++			"andc %0,%0,%2\n"				\
++			PPC_STLCX "%0,0,%3\n"				\
++			"bne- 1b\n"					\
++			: "=&r" (old), "+m" (*p)			\
++			: "r" (mask), "r" (p)				\
++			: "cc", "memory");				\
++	}								\
++}
++
++DEFINE_CLROP(clear_bits, "")
++DEFINE_CLROP(clear_bits_unlock, PPC_RELEASE_BARRIER)
++
+ static inline void arch_set_bit(int nr, volatile unsigned long *addr)
+ {
+ 	set_bits(BIT_MASK(nr), addr + BIT_WORD(nr));
+@@ -116,12 +158,12 @@ static inline unsigned long fn(			\
+ 	__asm__ __volatile__ (				\
+ 	prefix						\
+ "1:"	PPC_LLARX "%0,0,%3,%4\n"			\
+-	stringify_in_c(op) "%1,%0,%2\n"			\
++	#op "%I2 %1,%0,%2\n"				\
+ 	PPC_STLCX "%1,0,%3\n"				\
+ 	"bne- 1b\n"					\
+ 	postfix						\
+ 	: "=&r" (old), "=&r" (t)			\
+-	: "r" (mask), "r" (p), "i" (IS_ENABLED(CONFIG_PPC64) ? eh : 0)	\
++	: "rK" (mask), "r" (p), "i" (IS_ENABLED(CONFIG_PPC64) ? eh : 0)	\
+ 	: "cc", "memory");				\
+ 	return (old & mask);				\
+ }
+@@ -130,11 +172,42 @@ DEFINE_TESTOP(test_and_set_bits, or, PPC_ATOMIC_ENTRY_BARRIER,
+ 	      PPC_ATOMIC_EXIT_BARRIER, 0)
+ DEFINE_TESTOP(test_and_set_bits_lock, or, "",
+ 	      PPC_ACQUIRE_BARRIER, 1)
+-DEFINE_TESTOP(test_and_clear_bits, andc, PPC_ATOMIC_ENTRY_BARRIER,
+-	      PPC_ATOMIC_EXIT_BARRIER, 0)
+ DEFINE_TESTOP(test_and_change_bits, xor, PPC_ATOMIC_ENTRY_BARRIER,
+ 	      PPC_ATOMIC_EXIT_BARRIER, 0)
+ 
++static inline unsigned long test_and_clear_bits(unsigned long mask, volatile unsigned long *_p)
++{
++	unsigned long old, t;
++	unsigned long *p = (unsigned long *)_p;
++
++	if (IS_ENABLED(CONFIG_PPC32) &&
++	    __builtin_constant_p(mask) && is_rlwinm_mask_valid(~mask)) {
++		asm volatile (
++			PPC_ATOMIC_ENTRY_BARRIER
++		"1:"	"lwarx %0,0,%3\n"
++			"rlwinm	%1,%0,0,%2\n"
++			"stwcx. %1,0,%3\n"
++			"bne- 1b\n"
++			PPC_ATOMIC_EXIT_BARRIER
++			: "=&r" (old), "=&r" (t)
++			: "n" (~mask), "r" (p)
++			: "cc", "memory");
++	} else {
++		asm volatile (
++			PPC_ATOMIC_ENTRY_BARRIER
++		"1:"	PPC_LLARX "%0,0,%3,0\n"
++			"andc	%1,%0,%2\n"
++			PPC_STLCX "%1,0,%3\n"
++			"bne- 1b\n"
++			PPC_ATOMIC_EXIT_BARRIER
++			: "=&r" (old), "=&r" (t)
++			: "r" (mask), "r" (p)
++			: "cc", "memory");
++	}
++
++	return (old & mask);
++}
++
+ static inline int arch_test_and_set_bit(unsigned long nr,
+ 					volatile unsigned long *addr)
+ {
+-- 
+2.31.1
+
