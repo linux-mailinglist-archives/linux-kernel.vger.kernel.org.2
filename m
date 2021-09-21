@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC46412F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1FB412F54
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhIUHYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:24:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22598 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230101AbhIUHYv (ORCPT
+        id S230101AbhIUHY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhIUHY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:24:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632209002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YfQmolrBACizgcgNsJjMXDd0gcVd36hCMTnBNcp8NrU=;
-        b=fzy1Kyl6ol1X3dHzf6OQ46IXOMZzb+X6d7CbMU12OsQl5L/YBxLxfUOByYgHoircrEUNyD
-        Gv9LVKsL4xZllbpJ13ydrKahLIT0xE9XGq0GuruHdNkHg5++jeDAhl8cP8vZgPy2ixQvNp
-        jifIMUwwxjUtJWtB7JOf8ncN99MUqVM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-XCDie6p6N4ihUMZHjmeZvQ-1; Tue, 21 Sep 2021 03:23:20 -0400
-X-MC-Unique: XCDie6p6N4ihUMZHjmeZvQ-1
-Received: by mail-wr1-f72.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so8039660wrn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:20 -0700 (PDT)
+        Tue, 21 Sep 2021 03:24:57 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C364C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:29 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id u18so34537053wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=E97PWu1QJ5hdQHmoBSfMiWuxBrgHJJjYxk0uU7J2ovA=;
+        b=yQR5s4TC77kehL4CL25xRK6A5CmqCDmqjYv5vKcOB6OmYAKyKxI1JRGNxNbphDZT1F
+         GrORsk46jhreY6HXTXONjFtFKTsgzfDqCMKb+5NW5sW7oX5sqk+X5d177JPd815kS/Oe
+         OZXawrXYiXvOYwWTen/fQfO1oJYkzQTFeOi0vsMSFnOrBG9UXARTnK/O13B7S9EOuW78
+         IoxSFnl1G1aeo5DkxIJ+e/WuVTqrfKolzZpvpB+Sbgsr3xof3VXLHVTy0QkOU8mXlnW7
+         79r9/VZDuh089EymDcemhjWMISOLg94M1OnJiC0krmTBm5XNPoBNsMJaDrMh51FiXWAb
+         VP9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=YfQmolrBACizgcgNsJjMXDd0gcVd36hCMTnBNcp8NrU=;
-        b=gf0BsQ+ZZstXld4SC5VX0DKoSLzVLBEGE8U12vvowJkwVZIXznna3DD+KyxYyv81Xh
-         2Adwvvi2IM5B84VGPkgOlgTIwfQf9Z798wWktWHrcVOsIFso6FZRkwVr6227LtX911ic
-         seZt03noO4ePqDVnsaMpU8RR4sD8ghuqHsEGGF2xaeSCoKiLIllSyF3rDb/uwQqY/j8z
-         8WaYThFM3oZYB0UXcUd179MTAhUscAxoADwW9+19pTCUbPFuqjjehCliRmBLggUKpr+h
-         bXHt6Lx4o9sJ15QxaEaB+Twr4NizYrEIQm0yuIGDmbJCA3UT4DtqMWjZZ6dSOpu+NGfL
-         O7Jg==
-X-Gm-Message-State: AOAM531cxcFSPmWtWkT1mD6BD9b4AC2PLntALW1TA11uDfX5FUJoUHUU
-        FfAoYJJdlkYpMpN/SjaeDT0m8qhYyb+zgX1RNeTE5Wba4DSQf++TsitKrvwVWdECxWJHYiE/xUW
-        hf4vHjUiLbZgYrlIX9YsWrjXS
-X-Received: by 2002:a5d:5229:: with SMTP id i9mr33076554wra.373.1632208999651;
-        Tue, 21 Sep 2021 00:23:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzmKDz9cFkpPUpySnhcuXL9I6N5VzfCkNBihCb2cf/pAFc0UAmd1Q4UanO7vkIdNFwERK6qQg==
-X-Received: by 2002:a5d:5229:: with SMTP id i9mr33076534wra.373.1632208999447;
-        Tue, 21 Sep 2021 00:23:19 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c63b7.dip0.t-ipconnect.de. [91.12.99.183])
-        by smtp.gmail.com with ESMTPSA id g205sm1956447wmg.18.2021.09.21.00.23.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 00:23:19 -0700 (PDT)
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, oliver.sang@intel.com,
-        mhocko@suse.com, weixugc@google.com, osalvador@suse.de,
-        rientjes@google.com, dan.j.williams@intel.com, gthelen@google.com,
-        yang.shi@linux.alibaba.com, akpm@linux-foundation.org
-References: <20210917223504.C140445A@davehans-spike.ostc.intel.com>
- <20210917223505.F817CB6B@davehans-spike.ostc.intel.com>
- <87k0jeog7r.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <2d7e4078-f9c0-7511-0bab-de5dab25b45d@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH 1/2] mm/migrate: optimize hotplug-time demotion order
- updates
-Message-ID: <4e3d98eb-e8b9-90a8-638c-e19a5367df99@redhat.com>
-Date:   Tue, 21 Sep 2021 09:23:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=E97PWu1QJ5hdQHmoBSfMiWuxBrgHJJjYxk0uU7J2ovA=;
+        b=I9LEbufIU+aF8NvINx/EYbha5+y4FmvsEuDrrEDs7Z1YvbzH7NQ6dS4jPYoNLl3/au
+         Z17pRWHnpQY6amrkWVW9FKVJpvrILLkdxn9CK3EJjOYbEz1KHS26mkSLdL35lSWlhKVT
+         04c3/jLjosnZl9/5QHzuDeWjRZHAGuvnXauzqXFpIX88jlWe0ZV9B7bXEh0RrF6asecQ
+         NYNSTgToznpIegexpG5BvjyZNswZ7p3xqUgSjGlgS7zoRapARunFvEl22opfsG9lA+lv
+         PJOHyDClM+lk84wdqdpm8SFc2gfMwdJB95VtlnKPTiGvs0HnlXQ8XS8Fhsw7ob1xiQgg
+         eoIg==
+X-Gm-Message-State: AOAM532xQNNjr/XVJWX1n4a9J+cmYixZ4hJ7lyhQBgnR582B1WRPtDil
+        ij0ekyz+87XR0/dwhCOg+CwdxQ==
+X-Google-Smtp-Source: ABdhPJyPP4WobqDOrLMj2ZP+kjgLUqYmCqgy43N+dLV6Id1U1Y3D+Xugng5+ZIAd4qHZ8jUxjMgx4g==
+X-Received: by 2002:a5d:4803:: with SMTP id l3mr33269067wrq.61.1632209008019;
+        Tue, 21 Sep 2021 00:23:28 -0700 (PDT)
+Received: from localhost.localdomain (i16-les01-ntr-213-44-230-108.sfr.lns.abo.bbox.fr. [213.44.230.108])
+        by smtp.gmail.com with ESMTPSA id o19sm9725878wrg.60.2021.09.21.00.23.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 00:23:27 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     Anand Moon <linux.amoon@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        devicetree@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>
+Subject: Re: [PATCHv2 0/3] Fix the pwm regulator supply properties
+Date:   Tue, 21 Sep 2021 09:23:26 +0200
+Message-Id: <163220899063.36285.13600700816269701023.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210919202918.3556-1-linux.amoon@gmail.com>
+References: <20210919202918.3556-1-linux.amoon@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2d7e4078-f9c0-7511-0bab-de5dab25b45d@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.09.21 23:37, Dave Hansen wrote:
-> On 9/17/21 5:55 PM, Huang, Ying wrote:
->>> @@ -3147,6 +3177,16 @@ static void __set_migration_target_nodes
->>>   	int node;
->>>   
->>>   	/*
->>> +	 * The "migration path" array is heavily optimized
->>> +	 * for reads.  This is the write side which incurs a
->>> +	 * very heavy synchronize_rcu().  Avoid this overhead
->>> +	 * when nothing of consequence has changed since the
->>> +	 * last write.
->>> +	 */
->>> +	if (!node_demotion_topo_changed())
->>> +		return;
->>> +
->>> +	/*
->>>   	 * Avoid any oddities like cycles that could occur
->>>   	 * from changes in the topology.  This will leave
->>>   	 * a momentary gap when migration is disabled.
->> Now synchronize_rcu() is called in disable_all_migrate_targets(), which
->> is called for MEM_GOING_OFFLINE.  Can we remove the synchronize_rcu()
->> from disable_all_migrate_targets() and call it in
->> __set_migration_target_nodes() before we update the node_demotion[]?
-> 
-> I see what you are saying.  This patch just targeted
-> __set_migration_target_nodes() which is called in for
-> MEM_ONLINE/OFFLINE.  But, it missed MEM_GOING_OFFLINE's call to
-> disable_all_migrate_targets().
-> 
-> I think I found something better than what I had in this patch, or the
-> tweak you suggested: The 'memory_notify->status_change_nid' field is
-> passed to all memory hotplug notifiers and tells us whether the node is
-> going online/offline.  Instead of trying to track the changes, I think
-> we can simply rely on it to tell us when a node is going online/offline.
-> 
-> This removes the need for the demotion code to track *any* state.  I've
-> attached a totally untested patch to do this.
-> 
+Hi,
 
-Sounds sane to me (although I really detest that status_change_nid... 
-interface).
+On Sun, 19 Sep 2021 20:29:08 +0000, Anand Moon wrote:
+> Changes PWM supply properties help fix internal link of PWM to
+> main 12V supply as per the shematics.
+> 
+> V1: https://lkml.org/lkml/2021/6/29/288
+> 
+> Thanks
+> -Anand
+> 
+> [...]
 
-I was just about to ask "but how does this interact with !CONFIG_NUMA" 
-... until I realized that having a single node go completely offline is 
-rather unrealistic ;)
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v5.16/dt64)
+
+[1/3] arm64: dts: meson-g12a: Fix the pwm regulator supply properties
+      https://git.kernel.org/amlogic/c/085675117ecf5e02c4220698fd549024ec64ad2c
+[2/3] arm64: dts: meson-g12b: Fix the pwm regulator supply properties
+      https://git.kernel.org/amlogic/c/62183863f708c2464769e0d477c8ce9f3d326feb
+[3/3] arm64: dts: meson-sm1: Fix the pwm regulator supply properties
+      https://git.kernel.org/amlogic/c/0b26fa8a02c2834f1fa8a206a285b9f84c4ad764
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Neil
