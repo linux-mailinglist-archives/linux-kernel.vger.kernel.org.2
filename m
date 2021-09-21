@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D393E413205
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B529413206
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbhIUK7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:59:11 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5353 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhIUK7K (ORCPT
+        id S232217AbhIULAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 07:00:03 -0400
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:53545 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231956AbhIULAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:59:10 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2021 03:57:42 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2021 03:57:41 -0700
-X-QCInternal: smtphost
-Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 21 Sep 2021 16:27:31 +0530
-Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
-        id 5327A428F; Tue, 21 Sep 2021 16:27:29 +0530 (IST)
-From:   Jeya R <jeyr@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
-Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: [PATCH] [PATCH v2] misc: fastrpc: fix improper packet size calculation
-Date:   Tue, 21 Sep 2021 16:27:27 +0530
-Message-Id: <1632221847-987-1-git-send-email-jeyr@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 21 Sep 2021 07:00:02 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id DACE5CB1B9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:58:32 +0100 (IST)
+Received: (qmail 2738 invoked from network); 21 Sep 2021 10:58:32 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 21 Sep 2021 10:58:32 -0000
+Date:   Tue, 21 Sep 2021 11:58:31 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Linux-MM <linux-mm@kvack.org>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] mm/vmscan: Throttle reclaim until some writeback
+ completes if congested
+Message-ID: <20210921105831.GO3959@techsingularity.net>
+References: <20210920085436.20939-1-mgorman@techsingularity.net>
+ <20210920085436.20939-2-mgorman@techsingularity.net>
+ <163218319798.3992.1165186037496786892@noble.neil.brown.name>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <163218319798.3992.1165186037496786892@noble.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The buffer list is sorted and this is not being considered while
-calculating packet size. This would lead to improper copy length
-calculation for non-dmaheap buffers which would eventually cause
-sending improper buffers to DSP.
+On Tue, Sep 21, 2021 at 10:13:17AM +1000, NeilBrown wrote:
+> On Mon, 20 Sep 2021, Mel Gorman wrote:
+> > -long wait_iff_congested(int sync, long timeout)
+> > -{
+> > -	long ret;
+> > -	unsigned long start = jiffies;
+> > -	DEFINE_WAIT(wait);
+> > -	wait_queue_head_t *wqh = &congestion_wqh[sync];
+> > -
+> > -	/*
+> > -	 * If there is no congestion, yield if necessary instead
+> > -	 * of sleeping on the congestion queue
+> > -	 */
+> > -	if (atomic_read(&nr_wb_congested[sync]) == 0) {
+> > -		cond_resched();
+> > -
+> > -		/* In case we scheduled, work out time remaining */
+> > -		ret = timeout - (jiffies - start);
+> > -		if (ret < 0)
+> > -			ret = 0;
+> > -
+> > -		goto out;
+> > -	}
+> > -
+> > -	/* Sleep until uncongested or a write happens */
+> > -	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
+> 
+> Uninterruptible wait.
+> 
+> ....
+> > +static void
+> > +reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
+> > +							long timeout)
+> > +{
+> > +	wait_queue_head_t *wqh = &pgdat->reclaim_wait;
+> > +	unsigned long start = jiffies;
+> > +	long ret;
+> > +	DEFINE_WAIT(wait);
+> > +
+> > +	atomic_inc(&pgdat->nr_reclaim_throttled);
+> > +	WRITE_ONCE(pgdat->nr_reclaim_start,
+> > +		 node_page_state(pgdat, NR_THROTTLED_WRITTEN));
+> > +
+> > +	prepare_to_wait(wqh, &wait, TASK_INTERRUPTIBLE);
+> 
+> Interruptible wait.
+> 
+> Why the change?  I think these waits really need to be TASK_UNINTERRUPTIBLE.
+> 
 
-Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
-Signed-off-by: Jeya R <jeyr@codeaurora.org>
+Because from mm/ context, I saw no reason why the task *should* be
+uninterruptible. It's waiting on other tasks to complete IO and it is not
+protecting device state, filesystem state or anything else. If it gets
+a signal, it's safe to wake up, particularly if that signal is KILL and
+the context is a direct reclaimer.
 
-Changes in v2:
-- updated commit message to proper format
-- added fixes tag to commit message
-- removed unnecessary variable initialization
-- removed length check during payload calculation
----
- drivers/misc/fastrpc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The original TASK_UNINTERRUPTIBLE is almost certainly a copy&paste from
+congestion_wait which may be called because a filesystem operation must
+complete before it can return to userspace so a signal waking it up is
+pointless.
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index beda610..69d45c4 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
- static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, int metalen)
- {
- 	u64 size = 0;
--	int i;
-+	int oix;
- 
- 	size = ALIGN(metalen, FASTRPC_ALIGN);
--	for (i = 0; i < ctx->nscalars; i++) {
-+	for (oix = 0; oix < ctx->nbufs; oix++) {
-+		int i = ctx->olaps[oix].raix;
-+
- 		if (ctx->args[i].fd == 0 || ctx->args[i].fd == -1) {
- 
--			if (ctx->olaps[i].offset == 0)
-+			if (ctx->olaps[oix].offset == 0)
- 				size = ALIGN(size, FASTRPC_ALIGN);
- 
--			size += (ctx->olaps[i].mend - ctx->olaps[i].mstart);
-+			size += (ctx->olaps[oix].mend - ctx->olaps[oix].mstart);
- 		}
- 	}
- 
 -- 
-2.7.4
-
+Mel Gorman
+SUSE Labs
