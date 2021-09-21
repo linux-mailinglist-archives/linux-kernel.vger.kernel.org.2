@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A9D413A73
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBA7413A75
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhIUTCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
+        id S233943AbhIUTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbhIUTCn (ORCPT
+        with ESMTP id S233905AbhIUTDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:02:43 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13171C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:01:15 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id g14so463206pfm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:01:15 -0700 (PDT)
+        Tue, 21 Sep 2021 15:03:00 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAA7C061574;
+        Tue, 21 Sep 2021 12:01:31 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i23so42288174wrb.2;
+        Tue, 21 Sep 2021 12:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=uUvwtgDvS9z+MmLCsIbndyuppV43gHnzlz5qvL6KeNg=;
-        b=c9uP+rap/UfN7fREE6h8u3lsZij8/9nesp5oAq6rWx9xNnYvzMF9PP463fCmsUqDar
-         kEwNNzzupFjl3iVssQImb8bF3h2/B/8MlMGNIDKsuMe9bchBPSyFkLc+uuhUiy9QTIMI
-         6UVxssDsqkegyngHCgoDjyvtGGXIsR18yy7Rg=
+        bh=/uMd63v+SxKdFxs2HpZF37bfpeLncJCJyibFDLqSxbk=;
+        b=JNVkQa7Og1rMOMKRgbU2B4npmWHuPxvYIKKtj6d9hhX6IzhGeE6peFSMVyH17IkI4D
+         XOTk5JTnf+uV2aGN/Gr0sAefpINK3l1vDuIsRuOypK+gZhwZj9PDl4DacSQjc8jlISzw
+         wpfDgAEn4lARaqaNVTCFbtnG+cju63imEp7F1inZ1Vg4ZlaH2qTVc0SmvyNPMkWQwhIO
+         CNztaiZtWxOqggkbD4ELKa0vX2j9yZfChFH/Ar7SKFeAs6/OyQsgFy0u6KPWaQmd3Oo4
+         79EpbfTM/6pBILZzDSYaMMLn1xgPMHc+X4FTwUsY1aob8XnOl1PlzPIslKUOAlSu5TSh
+         vRvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=uUvwtgDvS9z+MmLCsIbndyuppV43gHnzlz5qvL6KeNg=;
-        b=qbBTzHf18+G+9jpELCDkhYUN/tKmgDKIXIla3ElUbD41LgirLENzHvzqp2/2uMYqJC
-         BKLNJhnJs1AW/nnWWfD6S5DRss6v+IDr9NOLJ/z/+497xfxQWNI1+U7xXl5GAO3Yy04D
-         Ip+vhcH2Txawj0q8HVr2vDNZRnZUdXL7WwRuOZmQPxcl9BBS1L77b0i+Xr/As4unGsbs
-         EVZyCn7wXYaz6EbHhkRwpv0KPJW0ujk1qgm5aVoI11yA8lrl4ob8QGK2GCo6g6ZfZ8Qs
-         NfRq3dA29mKGkESOVaKo0+1ijlXGSW/BF9lrd+L0NUVfijhWlRwrIr1kGfcHeFo4JjNE
-         7R8g==
-X-Gm-Message-State: AOAM530NZGB+73oM7V6Kg6cK1FHNPI15EuLe9QgI7uwhikbNfOokMNdC
-        GGufFUC4NwCeB8MRmugJ2asNWQ==
-X-Google-Smtp-Source: ABdhPJyhkEtFnUnBg+9qtMK4KmQYa6j/evLKD74iespv+jzZ07EoQOA7rlY7bUrm0t6g+7REwX8YJw==
-X-Received: by 2002:a63:2cce:: with SMTP id s197mr3869655pgs.45.1632250874538;
-        Tue, 21 Sep 2021 12:01:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t6sm3451285pjr.36.2021.09.21.12.01.13
+        bh=/uMd63v+SxKdFxs2HpZF37bfpeLncJCJyibFDLqSxbk=;
+        b=Ws27cBtjIqzS5qDJokAksWhlgIXR1csoabtwzCm8S1UyILavkLKDBxWJ5opalKBaJy
+         4RjtH5CoQqNuyQkx0RuxQYLp8Hgt/BUUTAJhi5VKQR+af18ql02hNr+U0aL1HYW8AlnW
+         ffgNNhTnD1iwuEtV0QwoLBigDpXc36NKpybGTxO263mroNmKaVrvHL8nKBzgrsAjBZIx
+         zCce9tvmo/dUYDrE3KGs01ZkCHGmgGgtTAtLg3EoZI3rSmJXqnpHHfU5LmINvOt2V7qC
+         F1mjPVabmUzgs0y3tM2wadddg+pwpzmW31AFlLjfDE3L7yBSNcpGWBCUFJliOAolaSSU
+         T9tQ==
+X-Gm-Message-State: AOAM533+fugzB1ffrRhC6tk2uvhPJmGJC3O6ACSwXlfhEy1ROiXLR+v8
+        tbmDVNhklNTUfc9wFUb7Zys=
+X-Google-Smtp-Source: ABdhPJwUPOXPyrVY+KM6YYc3qdDdwEi/oCqlzJ1JyAWFQNHKPKIZYH9Aa+f68GnLclCNBpAOLoEItQ==
+X-Received: by 2002:adf:dc43:: with SMTP id m3mr18897907wrj.66.1632250890197;
+        Tue, 21 Sep 2021 12:01:30 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id o7sm25121573wro.45.2021.09.21.12.01.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 12:01:13 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 12:01:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] mm: Remove HARDENED_USERCOPY_FALLBACK
-Message-ID: <202109211200.14E421C@keescook>
-References: <20210921061149.1091163-1-steve@sk2.org>
+        Tue, 21 Sep 2021 12:01:29 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 20:01:27 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/122] 5.10.68-rc1 review
+Message-ID: <YUosBwlIzEQy5NLN@debian>
+References: <20210920163915.757887582@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921061149.1091163-1-steve@sk2.org>
+In-Reply-To: <20210920163915.757887582@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 08:11:49AM +0200, Stephen Kitt wrote:
-> This has served its purpose and is no longer used. All usercopy
-> violations appear to have been handled by now, any remaining
-> instances (or new bugs) will cause copies to be rejected.
-> 
-> This isn't a direct revert of commit 2d891fbc3bb6 ("usercopy: Allow
-> strict enforcement of whitelists"); since usercopy_fallback is
-> effectively 0, the fallback handling is removed too.
-> 
-> This also removes the usercopy_fallback module parameter on
-> slab_common.
-> 
-> Link: https://github.com/KSPP/linux/issues/153
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
-> Suggested-by: Kees Cook <keescook@chromium.org>
+Hi Greg,
 
-Thanks for doing this!
+On Mon, Sep 20, 2021 at 06:42:52PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.68 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Build test:
+mips (gcc version 11.2.1 20210911): 63 configs -> no new failure
+arm (gcc version 11.2.1 20210911): 105 configs -> no new failure
+arm64 (gcc version 11.2.1 20210911): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
--- 
-Kees Cook
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/164
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
+
