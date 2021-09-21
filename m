@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495C4131B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4460E4131B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhIUKgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:36:14 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:40763 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231823AbhIUKgM (ORCPT
+        id S232062AbhIUKhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:37:14 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:26496 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231797AbhIUKhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:36:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1632220484; x=1663756484;
-  h=from:subject:to:references:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=Rx31vdd/RrSmlgTJVbNEqNylEl36VLncaM1cWWQr0L0=;
-  b=kg5BbN4zjr87SdLijGNeuKgdcEkmuuJBj3NjSsE0v9TiSLbhvSqTsvxL
-   8SaPu1kLIqOg8KTtw6A4OcZIq/Z2D2TDgeB3/teseiDcBIQg/k4+2La6y
-   UNjoscurc0Xw2vDTReoAB+9stoV5NM2eymZ5pKEX1JEAJSIdUXtdz+y8L
-   vzUJOrXclvAlofHLkZSipYUQTEJOCY3KlxmA/VIEhNGjh3UyG1vzCmUKq
-   7sJZaZaOayz/6fIbwuaDgMGB6Tk1TQNyJscKfAtpNil5OX2igClOaAL41
-   TtTdm+wHQjnOHDbwkHuglsondOBGh+X1qUpm0jwfASXrZKgP5cySMlNRY
-   Q==;
-IronPort-SDR: 40fZUBVLdVuEt+lsKbSQ6u5TBklpIcSqNwohDedZnHykZKO5DLOYZh/YhZcSncZ2RBobQiO8cv
- 4U6vjJgFv5kvSBlwObCEyqmZiHwNmaqizw9VuX6neoOqeCVdHsejGMb+TAXVMEk0CglLgaqAp1
- NXjE/wEjQwxCLxxe531fJEDIxfCX8mqTgulsCA1UrZQqnKtz6MZtucf/w0Ru9zJsw9Mivv6pEk
- pfJ6oM6Sip4ou+dsE/eXIrhrCsfNwj2H1OZsi5h/9gZgNODJyGwISU3nIivTeAFOhCrvVQVByL
- BZZM3ahEDTFUKUv6WRYZ7cU+
-X-IronPort-AV: E=Sophos;i="5.85,310,1624345200"; 
-   d="scan'208";a="137340616"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Sep 2021 03:34:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 21 Sep 2021 03:34:43 -0700
-Received: from [10.171.246.85] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Tue, 21 Sep 2021 03:34:41 -0700
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: Re: [PATCH 1/2] ARM: at91: dts: sama5d29: Add dtsi file for sama5d29
-To:     Hari Prasath <Hari.PrasathGE@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        <robh@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux@armlinux.org.uk>
-References: <20210812140758.28273-1-Hari.PrasathGE@microchip.com>
-Organization: microchip
-Message-ID: <37ffc77b-5164-ead0-f162-bf31d2cfaa83@microchip.com>
-Date:   Tue, 21 Sep 2021 12:34:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210812140758.28273-1-Hari.PrasathGE@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 21 Sep 2021 06:37:11 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 21 Sep 2021 03:35:43 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 21 Sep 2021 03:35:41 -0700
+X-QCInternal: smtphost
+Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 21 Sep 2021 16:05:31 +0530
+Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
+        id AA5BC428F; Tue, 21 Sep 2021 16:05:29 +0530 (IST)
+From:   Jeya R <jeyr@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
+Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: [PATCH] misc: fastrpc: fix improper packet size calculation
+Date:   Tue, 21 Sep 2021 16:05:27 +0530
+Message-Id: <1632220527-29547-1-git-send-email-jeyr@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/2021 at 16:07, Hari Prasath wrote:
-> A new dtsi file for sama5d29 SoC is added which basically inherits the sama5d2
-> dtsi with the mac controller compatible property updated.
-> 
-> Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
+The buffer list is sorted and this is not being considered while
+calculating packet size. This would lead to improper copy length
+calculation for non-dmaheap buffers which would eventually cause
+sending improper buffers to DSP.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-And added to our at91-dt branch for 5.16.
+Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
+Signed-off-by: Jeya R <jeyr@codeaurora.org>
+---
+ drivers/misc/fastrpc.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-Best regards,
-    Nicolas
-
-> ---
->   arch/arm/boot/dts/sama5d29.dtsi | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
->   create mode 100644 arch/arm/boot/dts/sama5d29.dtsi
-> 
-> diff --git a/arch/arm/boot/dts/sama5d29.dtsi b/arch/arm/boot/dts/sama5d29.dtsi
-> new file mode 100644
-> index 000000000000..e8cc73c0619f
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/sama5d29.dtsi
-> @@ -0,0 +1,16 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * sama5d29.dtsi - Device Tree Include file for SAMA5D29 SoC of the SAMA5D2
-> + * family.
-> + *
-> + *  Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-> + *
-> + *  Author: Hari Prasath <Hari.PrasathGE@microchip.com>
-> + *
-> + */
-> +
-> +#include "sama5d2.dtsi"
-> +
-> +&macb0 {
-> +compatible = "atmel,sama5d29-gem";
-> +};
-> 
-
-
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index beda610..a7e550f 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -719,16 +719,21 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
+ static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, int metalen)
+ {
+ 	u64 size = 0;
+-	int i;
++	int oix = 0;
+ 
+ 	size = ALIGN(metalen, FASTRPC_ALIGN);
+-	for (i = 0; i < ctx->nscalars; i++) {
++	for (oix = 0; oix < ctx->nbufs; oix++) {
++		int i = ctx->olaps[oix].raix;
++
++		if (ctx->args[i].length == 0)
++			continue;
++
+ 		if (ctx->args[i].fd == 0 || ctx->args[i].fd == -1) {
+ 
+-			if (ctx->olaps[i].offset == 0)
++			if (ctx->olaps[oix].offset == 0)
+ 				size = ALIGN(size, FASTRPC_ALIGN);
+ 
+-			size += (ctx->olaps[i].mend - ctx->olaps[i].mstart);
++			size += (ctx->olaps[oix].mend - ctx->olaps[oix].mstart);
+ 		}
+ 	}
+ 
 -- 
-Nicolas Ferre
+2.7.4
+
