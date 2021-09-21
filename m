@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95ED413145
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AEB413148
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhIUKLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:11:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
+        id S231751AbhIUKLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230160AbhIUKLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:11:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C780561168;
-        Tue, 21 Sep 2021 10:10:07 +0000 (UTC)
+        id S231555AbhIUKLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 06:11:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 05B5F61186;
+        Tue, 21 Sep 2021 10:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632219007;
-        bh=AXUBO5ZWOGvdVXN4mxXDWhcbdfei7qReJVwhA75rVG0=;
+        s=k20201202; t=1632219009;
+        bh=glT+9fYvnD51sTF9l0vYV3V0vhWn6d0vVmKE0lhkaMQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eVNm+U9H8trCTj10EA663TVfcw91mgdtTHb/gBkvFsM4iHJV6UhWWLUehBCrdSoAe
-         EohxAB+wvCzQY8wqeK2owB/AlcpTRG8OQyPVU/+VIfohgFrv5ss3dQ+YlstFhiDcFe
-         FIHMQQpB09XIwhLcZrnTz99k6hBnZWx3vqlVWBI+ZNBRiAzFODv2/AP4DfUma7Yhs/
-         17f2dWDTv2IS9xsMWXWBbvE3LtM+2qBN0HksaizgWTwmN71ksgqqfeH+Kq5SXxLfJ6
-         9Uzoxv99/ZXWg608C0xcW27urhdnk13R5HsalxqB4SkF2wd5bJ638YbfxXEzMv+vbN
-         CySZPeus5ovwg==
+        b=toihIreYgtnZkvfjZmBvw3G5oUWbEapfnotmr/LEjd6TCYE8UP8P2OjDxyhxTwyfp
+         r2rI1SM1x5n78UBbRdpCH2Ui9Q7WwXDS5gTF8WEZmb4RRtQXNL0JClCYaoDqTOfa0j
+         B6Ln69Tt161NNvg+BdiYrTunxKTES7Bw9538Y5WOcKHhLV0bdsZwv3tJv4eF/e7EGz
+         wk1mvq6jjWLzjCSZe1YxL7eje2dQuzrX7ZRqPGEMaCmyVicoxzsEInLQTl2m49jvCj
+         /KiAeMtXGv/IDWMI2YoieNb7BAkax81I69Ca5qhNQz7HXHwDsPajKfVH8eGVxj0G48
+         HqjmU4dxS9abg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ADBD760A6B;
-        Tue, 21 Sep 2021 10:10:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 00F2060A2A;
+        Tue, 21 Sep 2021 10:10:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Doc: networking: Fox a typo in ice.rst
+Subject: Re: [PATCH net-next 0/5] net: phy: broadcom: IDDQ-SR mode
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163221900770.14288.12523816165639728373.git-patchwork-notify@kernel.org>
-Date:   Tue, 21 Sep 2021 10:10:07 +0000
-References: <20210921064123.251742-1-standby24x7@gmail.com>
-In-Reply-To: <20210921064123.251742-1-standby24x7@gmail.com>
-To:     Masanari Iida <standby24x7@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org
+Message-Id: <163221900900.14288.10503847729138254007.git-patchwork-notify@kernel.org>
+Date:   Tue, 21 Sep 2021 10:10:09 +0000
+References: <20210920215418.3247054-1-f.fainelli@gmail.com>
+In-Reply-To: <20210920215418.3247054-1-f.fainelli@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Tue, 21 Sep 2021 15:41:23 +0900 you wrote:
-> This patch fixes a spelling typo in ice.rst
+On Mon, 20 Sep 2021 14:54:13 -0700 you wrote:
+> This patch series adds support for the IDDQ with soft recovery mode
+> which allows power savings of roughly 150mW compared to a simple
+> BMCR.PDOWN power off (called standby power down in Broadcom datasheets).
 > 
-> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
-> ---
->  Documentation/networking/device_drivers/ethernet/intel/ice.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> In order to leverage these modes we add a new PHY driver flags for
+> drivers to opt-in for that behavior, the PHY driver is modified to do
+> the appropriate programming and the PHYs on which this was tested get
+> updated to have an appropriate suspend/resume set of functions.
+> 
+> [...]
 
 Here is the summary with links:
-  - Doc: networking: Fox a typo in ice.rst
-    https://git.kernel.org/netdev/net/c/3e95cfa24e24
+  - [net-next,1/5] net: phy: broadcom: Add IDDQ-SR mode
+    https://git.kernel.org/netdev/net-next/c/d6da08ed1425
+  - [net-next,2/5] net: phy: broadcom: Wire suspend/resume for BCM50610 and BCM50610M
+    https://git.kernel.org/netdev/net-next/c/38b6a9073007
+  - [net-next,3/5] net: phy: broadcom: Utilize appropriate suspend for BCM54810/11
+    https://git.kernel.org/netdev/net-next/c/72e78d22e152
+  - [net-next,4/5] net: bcmgenet: Request APD, DLL disable and IDDQ-SR
+    https://git.kernel.org/netdev/net-next/c/c3a4c69360ab
+  - [net-next,5/5] net: dsa: bcm_sf2: Request APD, DLL disable and IDDQ-SR
+    https://git.kernel.org/netdev/net-next/c/4972ce720101
 
 You are awesome, thank you!
 --
