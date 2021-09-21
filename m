@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE5B41352A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EF541352B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhIUOSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
+        id S233507AbhIUOSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233526AbhIUOSb (ORCPT
+        with ESMTP id S233518AbhIUOSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:18:31 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C19C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:17:02 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q26so39603820wrc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:17:02 -0700 (PDT)
+        Tue, 21 Sep 2021 10:18:32 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF655C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:17:03 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id w29so39671984wra.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Js1K5O/bNEjXe8kobmaNxax8coFwgIMmis+r8avEafc=;
-        b=wNlTWwfdMgL+/ylxZ9+GQUZbwWU8v5m72MXlTBdX6DIG03NVg/fsnP0DocO33Vt50I
-         hlA3ntQKTYxABDKfAjkrR/XYw+77xkw8jRic6Pt8ZdJYmkdmj9SBDwmA+B4M3VbnqCLo
-         ASTW3nmrRMpzT5K4WP3MjT4GtD66Oi3FM7B1hXFoiRHl3UGOEtXT41YBCBJD/EpVBGab
-         JZMxW5+i8B+I2KyZruR3pSysUSW0p6Gc6PAjDMDgcmFUmLkBMkjbTSQrNNjTeL3WQPrs
-         uOACguwsuS0qbqVutntyIRz8X6eNF+uT9mNBlML8oT4DMJx81X9WYd2B59tOVxWi6Qmi
-         0UTg==
+        bh=QKTzUiIslopLihKMv00bRn1BvdaTo9yXPswlnaQZN5Q=;
+        b=mCk3EnSTBVUkGyheg+o6ZULz1TmBXi/9sCFnGE2uiYFCaQ50/PFGUo0a9ehrY6NIIX
+         PMc3jEYAmadvLYTNGGGk5a5HyDna7yDaWur1nKW2FhFYdylPhsiXMMFKGjNcNMiwiZo0
+         CfnmiI4KIRzQMnWsUUlXS9GacR8GdP5Z1DwJT2Lc2Pz4DX97+AqCOZYZMFONSzuBTArx
+         YXZSVRh1WdGE+NPamUchGFL1dkxELEEjuNPJNQQWdI+7KkDuXYntrwSsbho3mCCTDiW/
+         J727AL13pp4tsq4nwveYP9oS2YIsOukxq6+PkW5uEMTKeeCKwjezDmIpwpwX3gfAGQUE
+         Vzcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Js1K5O/bNEjXe8kobmaNxax8coFwgIMmis+r8avEafc=;
-        b=uJvQ2JgPtJblyIU/RXx4iUqRMFh0Plp8p9W7zh3CQifFW6RGx8PtNzgVlOKw2lF+LU
-         rH6BSLwb0wRCO5M5SMb5pjHvwC8bwuVC3DBY5tN0Ws3X5I8/p10R8aAW9K3emx3Bzz/R
-         /o6VWAUYb33mqkNbl/mRK/bW6uK85CjfrIae0JE8NNfINpSzGnMBYIgg/YmiK3O0mkKJ
-         XQBCWVM+7VO/iLTrEo9N/lDIoGEFO/8Q7gwa1AOfnyOUP28MVIubAQCymo+Z1p+tA5e+
-         kc8PbOPHLTTAffPWQl7x8sR1VW10fKHY02q/Qnv03MOWh8CWw944f2QoT0j3I01BoMrs
-         wjDQ==
-X-Gm-Message-State: AOAM530TwDPjsrXhkA5KPg5DF+D40Pc13JbSG4dvQLJnvqTHyjm+iCwy
-        5dg226FF9jtMchOWGaow6YzZxQ==
-X-Google-Smtp-Source: ABdhPJzv0W9BhSoIim/x4wr1AuULg7u0E6ARAAUsGFhOKYt4VkU5X780hOtba4+fps0rWQLSb6RjGw==
-X-Received: by 2002:a05:6000:1b90:: with SMTP id r16mr10232620wru.250.1632233820973;
-        Tue, 21 Sep 2021 07:17:00 -0700 (PDT)
+        bh=QKTzUiIslopLihKMv00bRn1BvdaTo9yXPswlnaQZN5Q=;
+        b=5oHEa5bvG7LQwIuqMOa49RkUklq22gLZ1wHkjr0i/2EDPwiI/LXU7rxZpw/puwIUzp
+         3G612IPwAEsd0j/OfCkfSbs6rO31SHMLYIcGjH/EwIvY3oSoS3Ir85pgBXguydBMIGAD
+         GGTFh5VhD57bueXZzIuX30dxvmBfbOV2HhOB+YzXTKDi9XfHHAha/kF/h4mxZTExXhXM
+         9AtxAIaaOOZB6qhAhSRd9xSX0+cB48d8KhQDPsutrfh82zgygQvLU+PcsfXdkEmFvMRa
+         2v5zgqkALxZw6oqR0obVYNk9d1hv8U0oa9peFmDLuygS8HE/N8w0me/Y3aCvyltr52BV
+         jXFQ==
+X-Gm-Message-State: AOAM533FALsP8SeRiPObIAGCgck1C+eBThV0ui23I4LNSP3m/mUOlTkj
+        DXMiwTwACqFLzSZk8Btfp0qCCQ==
+X-Google-Smtp-Source: ABdhPJylEmqk77m/NewpkXVpwop/ZqyU2zfHF5e+BAqMJZucUYLK6CN86GqT9aW9R3MGDrnR/LcIzQ==
+X-Received: by 2002:adf:ea90:: with SMTP id s16mr35463301wrm.235.1632233822270;
+        Tue, 21 Sep 2021 07:17:02 -0700 (PDT)
 Received: from localhost.localdomain ([2001:861:44c0:66c0:19bb:c937:2c91:f02])
-        by smtp.gmail.com with ESMTPSA id c15sm20573379wrc.83.2021.09.21.07.16.59
+        by smtp.gmail.com with ESMTPSA id c15sm20573379wrc.83.2021.09.21.07.17.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 07:16:59 -0700 (PDT)
+        Tue, 21 Sep 2021 07:17:01 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     tomba@kernel.org
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 1/3] drm/omap: add crtc background property
-Date:   Tue, 21 Sep 2021 16:16:52 +0200
-Message-Id: <20210921141654.66550-2-narmstrong@baylibre.com>
+Subject: [PATCH 2/3] drm/omap: add crtc transparency key property
+Date:   Tue, 21 Sep 2021 16:16:53 +0200
+Message-Id: <20210921141654.66550-3-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210921141654.66550-1-narmstrong@baylibre.com>
 References: <20210921141654.66550-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4593; i=narmstrong@baylibre.com;
- h=from:subject; bh=EdsQJ0MRrbKhSXtJcPpTqnttAQ84nGQ4XAMIRS/VhJk=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhSeilyJ8PsDwh7F+2xbVl1/LK/IdMB9Dub0IR64al
- 0Nq/tWqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYUnopQAKCRB33NvayMhJ0Zi9D/
- 9vImwyRyS/rfIlkiLXFO6pvUPMPBvcT5QZcebxJMTvDkF+9EBjf0wBcNsRv4cfICbgcxPVg5BVvy/h
- 85DTRrv2132wB9wdf6ziZ1F6BPpSbFS2OuxeAJFtzL9bALdCyu6/Q4Bu0/40WRx1FYp/BiYc8zvhGu
- ZY07EV3P8zGhRHSmmg22cvt9xvLgZBYZ+K1WJpc6ggLQ+LBG/75EURiVnLGxk8iF4+bI7gOpmT15c/
- 7TJ/QbIe3wPKrRPb6ucwobW22CRDJea3TcV0fV7V3tWjvdl5Tv9sYKfhNW6zJ/sbJm6CeuFiwQQ1Xm
- /WaeLSuDf70c+bq8PdCdCZrh7YOfKgBQtmqe6mzJzT5ZtWc/UWRCc3RLhQcGrMsshC/PbbDPhTLxBP
- h0/k4giBNGkGpoeV3ABBZluCvJw+rSf9DEn3xEzsqnGSTaNV6vxANRfzg8+Rd8iS+HITb8qajQXazH
- ctVc3JiKjH3JxSeXBD7qnuqJ5scbHu6hu7jcHGvPDRYMTwih5XgIS9/GFGbOUWI5hCgGG3IZ/0aTBY
- 5Tl+FSkSxHhyrJMweLiGQ+24UXCuDYC16ilZg9NAc791eUVnyr4jHUKwKxKdChuD54+OB0X7FFST6L
- uulybBd2fzGXkjapLKlY4x/RJlCCYwQWzcJT1aiLZWcZrx/8FnZsqw0GLvGQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6377; i=narmstrong@baylibre.com;
+ h=from:subject; bh=4+XpwBDvQNvYsb0GsKGwtHNgM+J3P3z2VfHsFFdY2oM=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhSeilnW37hks7upqmmFJF4Kp0P8StJu+0b03SiMYN
+ +7joIeSJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYUnopQAKCRB33NvayMhJ0ZDwD/
+ 9f2Nv5Bx6XMB22HG+TbyfERDeqpzb2yC/N0go+BXl69Umj41l3erXKhjMCDbEOUT7jzOkleDtlvud5
+ FrFprkRbTDQFzOfuROzkMpfQkoWkazDpzr2qpTJ+Aby77zEIIrTzHc+/irBFrBwkzVJ1pfXgp4ONuR
+ 6FqRlPZthl6FSOpbKx96l0arE2qWviIW9sv+70NKSPxeUG3kOvpwMS4mTm5yW9C8Z+lAeV0y2SVEva
+ rOy+LJpvn7JIz1raoZuMK/jzdf65V5Eivp44h6iyoeLbZssbbaZ+OfXlui7i1AYFmQUMs9gB0/qbxl
+ 4kbJGVYZMcdrDpZUz594nY1nONDYIyrJpPl71XqLDqVXcGRlmlRPI4BDPefZIQcOHRwXk5UH59a28f
+ EUYhGbSdgAfUa9AcpY+MvuOLtFdSsg4c3sYeyQtRnkrIXplIujoWiKW0/k4PDI10qe+bmM0tyug58E
+ XzMfoiB3cpehpfoaKaRqVvP4uvHhVuynYSMqVp1q1tqZ2yT51UegxJDHDXax2emgZLgJHdHYFf/bMV
+ P0PB9iOaEPMVCCVjF1SjF7iWFBNjUGPppBbJ7VaaCZAzea5TNW1hKxppzHoQUjM0omB1cYUdagtIea
+ dRCXlKdrggWMJcvEeQ+GiHZp/XyzsJSappYJqc5vGT69qa5nP19pz/37dmuA==
 X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -81,137 +82,191 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tomi Valkeinen <tomi.valkeinen@ti.com>
 
-Add DRM properties for crtc background color property. Background
-color is shown on areas where there are no planes.
+Add support for transparency keying.
+
+User space must understand how the TCK works and needs to place the planes
+to correct zpos. The generic zpos normalization in DRM however is going
+to do normalization and might move the position of the planes which breaks
+the TCK as planes are no longer in the position where application
+deliberately placed them.
+
+If the TCK is enabled for the crtc then use the zpos configured by the
+application instead of the normalized positions and at the same time do a
+sanity check against overlapping zpos.
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
 ---
- drivers/gpu/drm/omapdrm/omap_crtc.c | 22 +++++++++++++++++++++-
- drivers/gpu/drm/omapdrm/omap_drv.c  |  7 +++++++
- drivers/gpu/drm/omapdrm/omap_drv.h  |  3 +++
- 3 files changed, 31 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/omapdrm/omap_crtc.c | 53 ++++++++++++++++++++++++++++-
+ drivers/gpu/drm/omapdrm/omap_drv.c  | 18 ++++++++++
+ drivers/gpu/drm/omapdrm/omap_drv.h  |  2 ++
+ 3 files changed, 72 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/omapdrm/omap_crtc.c b/drivers/gpu/drm/omapdrm/omap_crtc.c
-index 06a719c104f4..4ba2d3e51b2b 100644
+index 4ba2d3e51b2b..d1fbbbaa3da8 100644
 --- a/drivers/gpu/drm/omapdrm/omap_crtc.c
 +++ b/drivers/gpu/drm/omapdrm/omap_crtc.c
-@@ -24,6 +24,8 @@ struct omap_crtc_state {
- 	unsigned int rotation;
- 	unsigned int zpos;
+@@ -26,6 +26,8 @@ struct omap_crtc_state {
  	bool manually_updated;
-+
-+	u32 default_color;
+ 
+ 	u32 default_color;
++	unsigned int trans_key_mode;
++	unsigned int trans_key;
  };
  
  #define to_omap_crtc(x) container_of(x, struct omap_crtc, base)
-@@ -395,13 +397,14 @@ static void omap_crtc_cpr_coefs_from_ctm(const struct drm_color_ctm *ctm,
- 
- static void omap_crtc_write_crtc_properties(struct drm_crtc *crtc)
- {
-+	const struct omap_crtc_state *omap_state = to_omap_crtc_state(crtc->state);
- 	struct omap_drm_private *priv = crtc->dev->dev_private;
- 	struct omap_crtc *omap_crtc = to_omap_crtc(crtc);
- 	struct omap_overlay_manager_info info;
- 
+@@ -405,9 +407,25 @@ static void omap_crtc_write_crtc_properties(struct drm_crtc *crtc)
  	memset(&info, 0, sizeof(info));
  
--	info.default_color = 0x000000;
-+	info.default_color = omap_state->default_color;
- 	info.trans_enabled = false;
+ 	info.default_color = omap_state->default_color;
+-	info.trans_enabled = false;
  	info.partial_alpha_enabled = false;
  
-@@ -668,6 +671,7 @@ static int omap_crtc_atomic_set_property(struct drm_crtc *crtc,
++	info.trans_key = omap_state->trans_key;
++
++	switch (omap_state->trans_key_mode) {
++	case 0:
++	default:
++		info.trans_enabled = false;
++		break;
++	case 1:
++		info.trans_enabled = true;
++		info.trans_key_type = OMAP_DSS_COLOR_KEY_GFX_DST;
++		break;
++	case 2:
++		info.trans_enabled = true;
++		info.trans_key_type = OMAP_DSS_COLOR_KEY_VID_SRC;
++		break;
++	}
++
+ 	if (crtc->state->ctm) {
+ 		struct drm_color_ctm *ctm = crtc->state->ctm->data;
+ 
+@@ -584,6 +602,7 @@ static int omap_crtc_atomic_check(struct drm_crtc *crtc,
  {
- 	struct omap_drm_private *priv = crtc->dev->dev_private;
- 	struct drm_plane_state *plane_state;
-+	struct omap_crtc_state *omap_state = to_omap_crtc_state(state);
+ 	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state,
+ 									  crtc);
++	const struct omap_crtc_state *omap_state = to_omap_crtc_state(crtc_state);
+ 	struct drm_plane_state *pri_state;
  
- 	/*
- 	 * Delegate property set to the primary plane. Get the plane state and
-@@ -683,6 +687,8 @@ static int omap_crtc_atomic_set_property(struct drm_crtc *crtc,
- 		plane_state->rotation = val;
- 	else if (property == priv->zorder_prop)
+ 	if (crtc_state->color_mgmt_changed && crtc_state->degamma_lut) {
+@@ -594,6 +613,25 @@ static int omap_crtc_atomic_check(struct drm_crtc *crtc,
+ 			return -EINVAL;
+ 	}
+ 
++	if (omap_state->trans_key_mode) {
++		struct drm_plane *plane;
++		struct drm_plane_state *plane_state;
++		u32 zpos_mask = 0;
++
++		drm_for_each_plane_mask(plane, crtc->dev, crtc_state->plane_mask) {
++			plane_state =
++				drm_atomic_get_plane_state(crtc_state->state, plane);
++			if (IS_ERR(plane_state))
++				return PTR_ERR(plane_state);
++
++			if (zpos_mask & BIT(plane_state->zpos))
++				return -EINVAL;
++
++			zpos_mask |= BIT(plane_state->zpos);
++			plane_state->normalized_zpos = plane_state->zpos;
++		}
++	}
++
+ 	pri_state = drm_atomic_get_new_plane_state(state,
+ 						   crtc->primary);
+ 	if (pri_state) {
+@@ -689,6 +727,10 @@ static int omap_crtc_atomic_set_property(struct drm_crtc *crtc,
  		plane_state->zpos = val;
-+	else if (property == priv->background_color_prop)
-+		omap_state->default_color = val;
+ 	else if (property == priv->background_color_prop)
+ 		omap_state->default_color = val;
++	else if (property == priv->trans_key_mode_prop)
++		omap_state->trans_key_mode = val;
++	else if (property == priv->trans_key_prop)
++		omap_state->trans_key = val;
  	else
  		return -EINVAL;
  
-@@ -701,6 +707,8 @@ static int omap_crtc_atomic_get_property(struct drm_crtc *crtc,
- 		*val = omap_state->rotation;
- 	else if (property == priv->zorder_prop)
+@@ -709,6 +751,10 @@ static int omap_crtc_atomic_get_property(struct drm_crtc *crtc,
  		*val = omap_state->zpos;
-+	else if (property == priv->background_color_prop)
-+		*val = omap_state->default_color;
+ 	else if (property == priv->background_color_prop)
+ 		*val = omap_state->default_color;
++	else if (property == priv->trans_key_mode_prop)
++		*val = omap_state->trans_key_mode;
++	else if (property == priv->trans_key_prop)
++		*val = omap_state->trans_key;
  	else
  		return -EINVAL;
  
-@@ -741,6 +749,8 @@ omap_crtc_duplicate_state(struct drm_crtc *crtc)
- 	state->rotation = current_state->rotation;
- 	state->manually_updated = current_state->manually_updated;
+@@ -751,6 +797,9 @@ omap_crtc_duplicate_state(struct drm_crtc *crtc)
  
-+	state->default_color = current_state->default_color;
+ 	state->default_color = current_state->default_color;
+ 
++	state->trans_key_mode = current_state->trans_key_mode;
++	state->trans_key = current_state->trans_key;
 +
  	return &state->base;
  }
  
-@@ -778,6 +788,15 @@ static const char *channel_names[] = {
- 	[OMAP_DSS_CHANNEL_LCD3] = "lcd3",
- };
+@@ -795,6 +844,8 @@ static void omap_crtc_install_properties(struct drm_crtc *crtc)
+ 	struct omap_drm_private *priv = dev->dev_private;
  
-+static void omap_crtc_install_properties(struct drm_crtc *crtc)
-+{
-+	struct drm_device *dev = crtc->dev;
-+	struct drm_mode_object *obj = &crtc->base;
-+	struct omap_drm_private *priv = dev->dev_private;
-+
-+	drm_object_attach_property(obj, priv->background_color_prop, 0);
-+}
-+
+ 	drm_object_attach_property(obj, priv->background_color_prop, 0);
++	drm_object_attach_property(obj, priv->trans_key_mode_prop, 0);
++	drm_object_attach_property(obj, priv->trans_key_prop, 0);
+ }
+ 
  /* initialize crtc */
- struct drm_crtc *omap_crtc_init(struct drm_device *dev,
- 				struct omap_drm_pipeline *pipe,
-@@ -843,6 +862,7 @@ struct drm_crtc *omap_crtc_init(struct drm_device *dev,
- 		drm_mode_crtc_set_gamma_size(crtc, gamma_lut_size);
- 	}
- 
-+	omap_crtc_install_properties(crtc);
- 	omap_plane_install_properties(crtc->primary, &crtc->base);
- 
- 	return crtc;
 diff --git a/drivers/gpu/drm/omapdrm/omap_drv.c b/drivers/gpu/drm/omapdrm/omap_drv.c
-index f86e20578143..48ebd1689601 100644
+index 48ebd1689601..adf99b60b2e0 100644
 --- a/drivers/gpu/drm/omapdrm/omap_drv.c
 +++ b/drivers/gpu/drm/omapdrm/omap_drv.c
-@@ -200,6 +200,13 @@ static int omap_modeset_init_properties(struct drm_device *dev)
+@@ -195,6 +195,12 @@ static int omap_modeset_init_properties(struct drm_device *dev)
+ 	struct omap_drm_private *priv = dev->dev_private;
+ 	unsigned int num_planes = dispc_get_num_ovls(priv->dispc);
+ 
++	static const struct drm_prop_enum_list trans_key_mode_list[] = {
++		{ 0, "disable"},
++		{ 1, "gfx-dst"},
++		{ 2, "vid-src"},
++	};
++
+ 	priv->zorder_prop = drm_property_create_range(dev, 0, "zorder", 0,
+ 						      num_planes - 1);
  	if (!priv->zorder_prop)
+@@ -207,6 +213,18 @@ static int omap_modeset_init_properties(struct drm_device *dev)
+ 	if (!priv->background_color_prop)
  		return -ENOMEM;
  
-+	/* crtc properties */
++	priv->trans_key_mode_prop =
++		drm_property_create_enum(dev, 0, "trans-key-mode",
++					 trans_key_mode_list,
++					 ARRAY_SIZE(trans_key_mode_list));
++	if (!priv->trans_key_mode_prop)
++		return -ENOMEM;
 +
-+	priv->background_color_prop =
-+		drm_property_create_range(dev, 0, "background", 0, 0xffffff);
-+	if (!priv->background_color_prop)
++	priv->trans_key_prop =
++		drm_property_create_range(dev, 0, "trans-key", 0, 0xffffff);
++	if (!priv->trans_key_prop)
 +		return -ENOMEM;
 +
  	return 0;
  }
  
 diff --git a/drivers/gpu/drm/omapdrm/omap_drv.h b/drivers/gpu/drm/omapdrm/omap_drv.h
-index 591d4c273f02..ed69ae78ae89 100644
+index ed69ae78ae89..6a882b213e2f 100644
 --- a/drivers/gpu/drm/omapdrm/omap_drv.h
 +++ b/drivers/gpu/drm/omapdrm/omap_drv.h
-@@ -73,6 +73,9 @@ struct omap_drm_private {
- 	/* properties: */
- 	struct drm_property *zorder_prop;
+@@ -75,6 +75,8 @@ struct omap_drm_private {
  
-+	/* crtc properties */
-+	struct drm_property *background_color_prop;
-+
+ 	/* crtc properties */
+ 	struct drm_property *background_color_prop;
++	struct drm_property *trans_key_mode_prop;
++	struct drm_property *trans_key_prop;
+ 
  	/* irq handling: */
  	spinlock_t wait_lock;		/* protects the wait_list */
- 	struct list_head wait_list;	/* list of omap_irq_wait */
 -- 
 2.25.1
 
