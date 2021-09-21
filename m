@@ -2,67 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040F841381D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB21413825
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhIURML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:12:11 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:40938 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhIURMK (ORCPT
+        id S230078AbhIUROG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 13:14:06 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:48535 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhIUROF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:12:10 -0400
-Received: by mail-oi1-f179.google.com with SMTP id t189so116497oie.7;
-        Tue, 21 Sep 2021 10:10:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RSqqPC5RzPI5oNtELEMcTpcIl+PKFrmudC28hXLnces=;
-        b=u1vM2/T3vp44yaLWb4ydGjPKLMvXY9vaeOaDYXp5ICzs/Wx3X+oS8mhc2E6RkIESe1
-         Ty8YwjGlu7qOznqe/fq1duBS2zlqzC+kEkBrbGouMc5VQDVD/oQPkQhz3MG+HluxP5ja
-         9UO5lNctIVeKruM7vgmwAmWHFHeI3p2D/4ObQqAhy9/yAC4k78RAAGRUCd5C7jZFCSnQ
-         Zj6bRdV8qFmYg8RrPOKRwbDuo55kS7sbU3WpPWMQRCIEJfZDNXFTI4a7XfEYXweaK+YJ
-         k4+4b8jgZ82kg1tz99PR8g4Rxdu/farutR5wEDFAzcaPm14YgBGJKKwTIfei7I9xhNqH
-         LfbQ==
-X-Gm-Message-State: AOAM5309c+N+rKsYdhuV8Zy5lGVblSN1yHbqi65UczfYFP+2mB2tCJVD
-        FKQ/Wnd5yJcMAgwTsELZbw==
-X-Google-Smtp-Source: ABdhPJwH4CIpoWu4dhzELcwDixUt6gnKWJgymPlA4a/K671+NFCsyUlD18BbtS0xC5ek7GB5KvEByw==
-X-Received: by 2002:aca:e009:: with SMTP id x9mr4608457oig.156.1632244241496;
-        Tue, 21 Sep 2021 10:10:41 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i1sm4286746ooo.15.2021.09.21.10.10.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 10:10:38 -0700 (PDT)
-Received: (nullmailer pid 2968018 invoked by uid 1000);
-        Tue, 21 Sep 2021 17:10:37 -0000
-Date:   Tue, 21 Sep 2021 12:10:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Swapnil Jakhade <sjakhade@cadence.com>
-Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
-        robh+dt@kernel.org, vkoul@kernel.org, lokeshvutla@ti.com,
-        a-govindraju@ti.com, linux-kernel@vger.kernel.org, kishon@ti.com,
-        mparab@cadence.com
-Subject: Re: [PATCH 2/5] dt-bindings: phy: cadence-torrent: Add clock IDs for
- derived and received refclk
-Message-ID: <YUoSDVVTs4em6UGP@robh.at.kernel.org>
-References: <20210908182628.28364-1-sjakhade@cadence.com>
- <20210908182628.28364-3-sjakhade@cadence.com>
+        Tue, 21 Sep 2021 13:14:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1632244357; x=1663780357;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=16YU7KkjpiOEAKPRsxoOGSp6GaxRIbNZG8DW2Dc8Nxc=;
+  b=Jyjo6k/LTyjXmUSUThCLMCe+36gC6HfzJ/Uc/z2iuIEP/Lk/HO6sRkti
+   Rr4OFuDgxJyIrUNai9VQueFt1tlVnS8Eg1mEgKlWaICQJRl6P7bo/0vN3
+   B2Nf62YwG5V+ont55l2GJhT9h1x7pW/aj4TcenD/GNTmwilLl1iVgySc9
+   g=;
+X-IronPort-AV: E=Sophos;i="5.85,311,1624320000"; 
+   d="scan'208";a="143494894"
+Subject: Re: [PATCH] iommu/arm-smmu-v3: poll cmdq until it has space
+Thread-Topic: [PATCH] iommu/arm-smmu-v3: poll cmdq until it has space
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-1c3c2014.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 21 Sep 2021 17:12:29 +0000
+Received: from EX13D03EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1d-1c3c2014.us-east-1.amazon.com (Postfix) with ESMTPS id 947D5CB307;
+        Tue, 21 Sep 2021 17:12:27 +0000 (UTC)
+Received: from EX13D03EUA004.ant.amazon.com (10.43.165.93) by
+ EX13D03EUA004.ant.amazon.com (10.43.165.93) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Tue, 21 Sep 2021 17:12:26 +0000
+Received: from EX13D03EUA004.ant.amazon.com ([10.43.165.93]) by
+ EX13D03EUA004.ant.amazon.com ([10.43.165.93]) with mapi id 15.00.1497.023;
+ Tue, 21 Sep 2021 17:12:26 +0000
+From:   "Sieber, Fernand" <sieberf@amazon.com>
+To:     John Garry <john.garry@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Thread-Index: AQHXrt3+ZWYnaFhO3kmkBSrWrVwBSauurBkAgAAMX78=
+Date:   Tue, 21 Sep 2021 17:12:25 +0000
+Message-ID: <1632244345526.44611@amazon.com>
+References: <20210921114338.1144521-1-sieberf@amazon.com>,<c1c10203-ffd3-25f9-f2c6-9cee3458aac9@huawei.com>
+In-Reply-To: <c1c10203-ffd3-25f9-f2c6-9cee3458aac9@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.160.90]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908182628.28364-3-sjakhade@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Sep 2021 20:26:25 +0200, Swapnil Jakhade wrote:
-> Add clock IDs for derived and received reference clock output.
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  include/dt-bindings/phy/phy-cadence.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-
-Acked-by: Rob Herring <robh@kernel.org>
+Hi John,=0A=
+=0A=
+> But is the polarity really correct? That is, if we don't have space,=0A=
+> then exit with success (the function to check for space).=0A=
+=0A=
+You are absolutely correct, this is a mistake that I made as I was resolvin=
+g conflicts while porting this patch to iommu/next from 5.4 where I impleme=
+nted and tested it.=0A=
+It should be:=0A=
+=0A=
+> -             if (!queue_full(llq))=0A=
+> +             if (queue_has_space(llq, n))=0A=
+=0A=
+=0A=
+> what is llq->state->val?=0A=
+=0A=
+This is an other oversight for the same reason, llq->state->val has since t=
+hen been renamed llq->val=0A=
+=0A=
+Will fix both of these in the next revision.=0A=
+Thanks and kind regards,=0A=
+=0A=
+--Fernand=0A=
+=0A=
+________________________________________=0A=
+From: John Garry <john.garry@huawei.com>=0A=
+Sent: Tuesday, September 21, 2021 18:22=0A=
+To: Sieber, Fernand; will@kernel.org; robin.murphy@arm.com=0A=
+Cc: linux-arm-kernel@lists.infradead.org; iommu@lists.linux-foundation.org;=
+ linux-kernel@vger.kernel.org=0A=
+Subject: RE: [EXTERNAL] [PATCH] iommu/arm-smmu-v3: poll cmdq until it has s=
+pace=0A=
+=0A=
+CAUTION: This email originated from outside of the organization. Do not cli=
+ck links or open attachments unless you can confirm the sender and know the=
+ content is safe.=0A=
+=0A=
+=0A=
+=0A=
+On 21/09/2021 12:43, Fernand Sieber wrote:=0A=
+>       do {=0A=
+=0A=
+I didn't follow the full logic of this change yet ...=0A=
+=0A=
+>               llq->val =3D READ_ONCE(cmdq->q.llq.val);=0A=
+> -             if (!queue_full(llq))=0A=
+> +             if (!queue_has_space(llq, n))=0A=
+=0A=
+But is the polarity really correct? That is, if we don't have space,=0A=
+then exit with success (the function to check for space).=0A=
+=0A=
+>                       break;=0A=
+>=0A=
+> +             /*=0A=
+> +              * We must return here even if there's no space, because th=
+e producer=0A=
+> +              * having moved forward could mean that the last thread obs=
+erving the=0A=
+> +              * SMMU progress has allocated space in the cmdq and moved =
+on, leaving=0A=
+> +              * us in this waiting loop with no other thread updating=0A=
+> +              * llq->state->val.=0A=
+=0A=
+what is llq->state->val?=0A=
+=0A=
+> +              */=0A=
+> +             if (llq->prod !=3D prod)=0A=
+> +                     return -EAGAIN;=0A=
+> +=0A=
+>               ret =3D queue_poll(&qp);=0A=
+=0A=
+Thanks,=0A=
+John=0A=
