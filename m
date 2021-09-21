@@ -2,60 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565F9412EDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52031412EDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhIUG5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
+        id S229993AbhIUG5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhIUG5R (ORCPT
+        with ESMTP id S229755AbhIUG5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:57:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD55C061574;
-        Mon, 20 Sep 2021 23:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KWSPXjobthOjv72bqCNOz8DtPivvepRJCfJ3a2IGzHM=; b=Twf1Y7esJEIGgbcfiJ/xfL0vZD
-        MTPhlau7lBnrnixVgS3MtIh9pGCwXN83jDSR+wuEdjoCynqpj0iY6I80vZLNgA3J5TFQpMhgcphEP
-        b72IDA10v4n2oq/SfQzBmVSKsZH6Y0G7yZ+I6CdpcW9oB7DXbW97JV2IRyRzZBUZ+w6z95MI/AyPm
-        2fLYy+Bym1ENuzW9fGO9xhNlbU8hECVaJCJTpuyuwbvDJAPPmQpyGrmgRDmuEfe1SyVSIs2Rh9a/F
-        AMXYM78n5+4yJpus79G+YJKAhCBjhfCcIuMZgYix6MPDP/YsoOFfup7njkNf/aMRN5qhMBjToXDu6
-        qQCdcqvw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSZg0-003Zvt-3t; Tue, 21 Sep 2021 06:55:01 +0000
-Date:   Tue, 21 Sep 2021 07:54:48 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, io-uring@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [RFC] io_uring: warning about unused-but-set parameter
-Message-ID: <YUmBuLLTjN1vfhnA@infradead.org>
-References: <20210920121352.93063-1-arnd@kernel.org>
- <YUh8Mj59BtyBdTRH@infradead.org>
- <CAK8P3a30a1SKh+71+EgPmsJ1FKJTPKYQuAFUebwKKrhuVzBh3Q@mail.gmail.com>
+        Tue, 21 Sep 2021 02:57:51 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB29C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:56:23 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id g41so44959672lfv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2lP0KhRVUvQyWZhQ488eOsEIqUPPJSp/sF1BR/yQXNA=;
+        b=NEpQsDXXuNMWEsogXhwZXw4ypkov14vzvRBxhT2TQD+U5CiVQ5t64wtt0SugLK5OQs
+         HYua+NHNtV34Js5j1qfF3xrqCpUs+dG1ZvRltYVj6DokNycwnox+8LhdumLUL4S2Zx1N
+         i5+CtjaG4+43ZCjC1Pdc/+supfjsgYP3RXW70=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2lP0KhRVUvQyWZhQ488eOsEIqUPPJSp/sF1BR/yQXNA=;
+        b=v2OrnMEpdPkutbtR3T8VuYeBTC5Ec9og2Krqtn86eyjzJKCLQwsv1il9GqgNMHrrvi
+         mmL6Fe3EXP6E466z2XJsp/fNAJf/nhGiVYK/zXLU6HL1AwaWppC+CnMOIjA5q87Bo1Qs
+         Kg4D+HAMvX3bHgAYzxSb9NJ8BGsDQ/oyseV1/yiGfpwDcKYZy/MiuCxz6blbgsapno5i
+         +HZrGEkQ5zvrMryh74pVF3CTRRK/vPJ+lBa4f0xuM/wfjF9kBCE0/SJWb9HobNZiLzRa
+         DJeZP3ker4N0MQF1akX4U0TIxFxxPgxQlS+rFQrKU2lQc3D98hB+EzryZxTF+Dy2P9O3
+         C+fg==
+X-Gm-Message-State: AOAM531lsRTxSEk0wpxqAi8yEqoF4nfqqLilF+B2+ehL6H33sswR32vV
+        LJ8THKwwgdBHbHpEowA6NZ1Mhw==
+X-Google-Smtp-Source: ABdhPJzmHrM5oxs0FqUN8u4NwCUaVUzt1evboU4++WOUrYJxYEr2dBeXzvQMRUp6ttPU5Wm/bDxShw==
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr9411631lfg.550.1632207382109;
+        Mon, 20 Sep 2021 23:56:22 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id p19sm656144lfr.210.2021.09.20.23.56.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Sep 2021 23:56:21 -0700 (PDT)
+Subject: Re: [PATCH 2/2] test_overflow: Regularize test reporting output
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Keith Busch <kbusch@kernel.org>, Len Baker <len.baker@gmx.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210920180853.1825195-1-keescook@chromium.org>
+ <20210920180853.1825195-3-keescook@chromium.org>
+ <CAKwvOdnYYa+72VhtJ4ug=SJVFn7w+n7Th+hKYE87BRDt4hvqOg@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <eb6d02ae-e2ed-e7bd-c700-8a6d004d84ce@rasmusvillemoes.dk>
+Date:   Tue, 21 Sep 2021 08:56:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a30a1SKh+71+EgPmsJ1FKJTPKYQuAFUebwKKrhuVzBh3Q@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAKwvOdnYYa+72VhtJ4ug=SJVFn7w+n7Th+hKYE87BRDt4hvqOg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:48:23PM +0200, Arnd Bergmann wrote:
-> complete madness of crouse, only -Wunused-but-set-parameter,
-> which is already part of W=1 and has the potential of catching
-> actual bugs such as
+On 21/09/2021 00.10, Nick Desaulniers wrote:
+> On Mon, Sep 20, 2021 at 11:09 AM Kees Cook <keescook@chromium.org> wrote:
+>>
 
-Well, i you care about that just remove the
+>> @@ -544,10 +544,7 @@ DEFINE_TEST_ALLOC(kmalloc,  kfree,      0, 1, 0);
+>>  DEFINE_TEST_ALLOC(kmalloc_node,         kfree,      0, 1, 1);
+>>  DEFINE_TEST_ALLOC(kzalloc,      kfree,      0, 1, 0);
+>>  DEFINE_TEST_ALLOC(kzalloc_node,  kfree,             0, 1, 1);
+>> -DEFINE_TEST_ALLOC(vmalloc,      vfree,      0, 0, 0);
+>> -DEFINE_TEST_ALLOC(vmalloc_node,  vfree,             0, 0, 1);
+>> -DEFINE_TEST_ALLOC(vzalloc,      vfree,      0, 0, 0);
+>> -DEFINE_TEST_ALLOC(vzalloc_node,  vfree,             0, 0, 1);
+>> +DEFINE_TEST_ALLOC(__vmalloc,    vfree,      0, 1, 0);
+>>  DEFINE_TEST_ALLOC(kvmalloc,     kvfree,     0, 1, 0);
+>>  DEFINE_TEST_ALLOC(kvmalloc_node, kvfree,     0, 1, 1);
+>>  DEFINE_TEST_ALLOC(kvzalloc,     kvfree,     0, 1, 0);
+>> @@ -559,8 +556,14 @@ static int __init test_overflow_allocation(void)
+>>  {
+>>         const char device_name[] = "overflow-test";
+>>         struct device *dev;
+>> +       int count = 0;
+>>         int err = 0;
+>>
+>> +#define check_allocation_overflow(alloc)       ({      \
+>> +       count++;                                        \
+>> +       test_ ## alloc(dev);                            \
+>> +})
+>> +
+>>         /* Create dummy device for devm_kmalloc()-family tests. */
+>>         dev = root_device_register(device_name);
+>>         if (IS_ERR(dev)) {
+>> @@ -568,23 +571,22 @@ static int __init test_overflow_allocation(void)
+>>                 return 1;
+>>         }
+>>
+>> -       err |= test_kmalloc(NULL);
+>> -       err |= test_kmalloc_node(NULL);
+>> -       err |= test_kzalloc(NULL);
+>> -       err |= test_kzalloc_node(NULL);
+>> -       err |= test_kvmalloc(NULL);
+>> -       err |= test_kvmalloc_node(NULL);
+>> -       err |= test_kvzalloc(NULL);
+>> -       err |= test_kvzalloc_node(NULL);
+>> -       err |= test_vmalloc(NULL);
+>> -       err |= test_vmalloc_node(NULL);
+>> -       err |= test_vzalloc(NULL);
+>> -       err |= test_vzalloc_node(NULL);
+>> -       err |= test_devm_kmalloc(dev);
+>> -       err |= test_devm_kzalloc(dev);
+>> +       err |= check_allocation_overflow(kmalloc);
+>> +       err |= check_allocation_overflow(kmalloc_node);
+>> +       err |= check_allocation_overflow(kzalloc);
+>> +       err |= check_allocation_overflow(kzalloc_node);
+>> +       err |= check_allocation_overflow(__vmalloc);
+>> +       err |= check_allocation_overflow(kvmalloc);
+>> +       err |= check_allocation_overflow(kvmalloc_node);
+>> +       err |= check_allocation_overflow(kvzalloc);
+>> +       err |= check_allocation_overflow(kvzalloc_node);
+>> +       err |= check_allocation_overflow(devm_kmalloc);
+>> +       err |= check_allocation_overflow(devm_kzalloc);
+>>
+>>         device_unregister(dev);
 
-	locked = NULL;
+I'd prefer if such a local helper macro was defined immediately prior to
+the sequence of uses, and then #undef'ed at the end.
 
-which is pretty weird anyway.
+Other than that:
+
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
