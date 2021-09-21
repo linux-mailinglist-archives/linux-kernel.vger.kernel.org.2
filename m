@@ -2,275 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45210413E03
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9140413E0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhIUXaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:30:13 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:37434 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhIUXaM (ORCPT
+        id S230285AbhIUXcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:32:33 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:37676 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230233AbhIUXcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:30:12 -0400
-Received: by mail-oi1-f170.google.com with SMTP id w206so1664585oiw.4;
-        Tue, 21 Sep 2021 16:28:43 -0700 (PDT)
+        Tue, 21 Sep 2021 19:32:32 -0400
+Received: by mail-oi1-f171.google.com with SMTP id w206so1672576oiw.4;
+        Tue, 21 Sep 2021 16:31:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mX4MyVarQHbsDS0fNboD+/UTeSysNDkSYI8gpVmRhho=;
-        b=UjNc0TZruiP1OlH5S7MYt5aTAn455/zeF9Lo9R0tx/nd9T9bXaD2HEYNIpJzPgoqWO
-         uqWCa7TjO9lU4d8VIai0A6fMVAFqzDneINMEJbUlj5QisLflUscw48noCuhWqLzncRHM
-         priPc5aY10dYwkLM+Y9XAAqovJQWOddN4MrsShBdlQ4wPV4YGCkSJdVPUBCrvKvFG+vN
-         KkvJLOM7xN79hlLL02nXh8nijhXg1sgji/UatoDSVnUNr4u19690qE0jBge5CCUVTxNG
-         BafmmbhpVFvkI5kAVpwIthnAhS6uEyhhcRlu3EKErjskZTlyEdQJCbepUHvPzhJuVJnO
-         XotA==
-X-Gm-Message-State: AOAM532/Upper8bHeD+1zNqu5c48C6EC8g07zyEBrUdUZGhgcmVBCb3Y
-        X2dxbSPYmUVUQD5HZbWs7w==
-X-Google-Smtp-Source: ABdhPJzm9I2oIccwmAK23kHxFcQ3g5TOILqQ06YApuPouuQc3JzPm7k0LC5fRK5xJ+R+Bcem6eUglA==
-X-Received: by 2002:a05:6808:690:: with SMTP id k16mr5826558oig.43.1632266923035;
-        Tue, 21 Sep 2021 16:28:43 -0700 (PDT)
+        bh=91XjStUm9Mm7b+X7wWYnPdiNJWHmz77cGzi9d45AgQ4=;
+        b=1Qme9P/HFjqzEBthG1iSsPJUdr5sk13kwg9Rl7yLjuyv3IsC/nNGeKxe5WLnanyuxw
+         SVIXErYfVqxSEjAMvRw3DR1qzQheaa6AR5zu9g1GFlfD83gSdgpjfyDAIYpWAkUwuexO
+         k8jv2+Zl6ai2KGAvOckJVT2TzQH/VF6SxROFjWgB84alDZsxsZt5xxQXIFPEa82ya9sM
+         uTvVkEEPynZCRzmc9WlaQwtia1NfMjtL6pJJU8WkGTvGWpzuh1Xw3jKCo0TWO1ClPR0K
+         5koYeKtX/28M5G5RYu4dG/U6mE7lrT0vZGhXZ4QZpQnwW2ntkSQFYemT3L8NUqwvTddx
+         UfMQ==
+X-Gm-Message-State: AOAM531Nid/k8tNqzY63ZSYf3HDoZuiM6kpH5UWh+plTFkh2an5an0zU
+        PhGl3hy+OjOfgJRqrIDcqRs8PZJj/A==
+X-Google-Smtp-Source: ABdhPJwi51R0O2WHxOG1+y7tiXHZwEPtrB0Wn4R5YqLt7MlciaKdW4ovO/cXJhdK8Q3qEq2T82QjoA==
+X-Received: by 2002:aca:2318:: with SMTP id e24mr5910510oie.173.1632267062982;
+        Tue, 21 Sep 2021 16:31:02 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v14sm125678ook.2.2021.09.21.16.28.41
+        by smtp.gmail.com with ESMTPSA id w14sm110894oth.5.2021.09.21.16.31.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 16:28:42 -0700 (PDT)
-Received: (nullmailer pid 3490436 invoked by uid 1000);
-        Tue, 21 Sep 2021 23:28:41 -0000
-Date:   Tue, 21 Sep 2021 18:28:41 -0500
+        Tue, 21 Sep 2021 16:31:02 -0700 (PDT)
+Received: (nullmailer pid 3493875 invoked by uid 1000);
+        Tue, 21 Sep 2021 23:31:01 -0000
+Date:   Tue, 21 Sep 2021 18:31:01 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
-        mpubbise@codeaurora.org, kuabhs@chromium.org,
-        Rakesh Pillai <pillair@qti.qualcomm.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: remoteproc: qcom: adsp: Convert
- binding to YAML
-Message-ID: <YUpqqezV3NYCihdE@robh.at.kernel.org>
-References: <1631811353-503-1-git-send-email-pillair@codeaurora.org>
- <1631811353-503-2-git-send-email-pillair@codeaurora.org>
- <CAE-0n52t_1GGsFfDnrnwTx7j8RFdFLqZ2EGQY84D3UMbTeG69g@mail.gmail.com>
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+Cc:     devicetree@vger.kernel.org, mpm@selenic.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: rng: convert OMAP and Inside-Secure HWRNG
+ to yaml schema
+Message-ID: <YUprNTzmTdZJOCLY@robh.at.kernel.org>
+References: <20210916185352.7919-1-j-choudhary@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAE-0n52t_1GGsFfDnrnwTx7j8RFdFLqZ2EGQY84D3UMbTeG69g@mail.gmail.com>
+In-Reply-To: <20210916185352.7919-1-j-choudhary@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:24:10PM -0700, Stephen Boyd wrote:
-> Quoting Rakesh Pillai (2021-09-16 09:55:51)
-> > diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
-> > new file mode 100644
-> > index 0000000..051da43
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,hexagon-v56.yaml
-> > @@ -0,0 +1,267 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/remoteproc/qcom,hexagon-v56.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm Hexagon v56 Peripheral Image Loader
-> > +
-> > +maintainers:
-> > +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> > +
-> > +description:
-> > +  This document defines the binding for a component that loads and boots firmware
-> > +  on the Qualcomm Technology Inc. Hexagon v56 core.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - qcom,qcs404-cdsp-pil
-> > +      - qcom,sdm845-adsp-pil
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +    description:
-> > +      The base address and size of the qdsp6ss register
-> > +
-> > +  interrupts-extended:
-> > +    minItems: 5
-> > +    items:
-> > +      - description: Watchdog interrupt
-> > +      - description: Fatal interrupt
-> > +      - description: Ready interrupt
-> > +      - description: Handover interrupt
-> > +      - description: Stop acknowledge interrupt
-> > +
-> > +  interrupt-names:
-> > +    minItems: 5
-> > +    items:
-> > +      - const: wdog
-> > +      - const: fatal
-> > +      - const: ready
-> > +      - const: handover
-> > +      - const: stop-ack
-> > +
-> > +  clocks:
-> > +    minItems: 7
-> > +    maxItems: 8
-> > +    description:
-> > +      List of phandles and clock specifier pairs for the Hexagon,
-> > +      per clock-names below.
-> > +
-> > +  clock-names:
-> > +    minItems: 7
-> > +    maxItems: 8
-> > +
-> > +  power-domains:
-> > +    minItems: 1
-> > +    items:
-> > +      - description: CX power domain
-> > +
-> > +  resets:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +    description:
-> > +      reference to the list of resets for the Hexagon.
-> > +
-> > +  reset-names:
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +
-> > +  memory-region:
-> > +    maxItems: 1
-> > +    description: Reference to the reserved-memory for the Hexagon core
-> > +
-> > +  qcom,halt-regs:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    description:
-> > +      Phandle reference to a syscon representing TCSR followed by the
-> > +      three offsets within syscon for q6, modem and nc halt registers.
-> > +
-> > +  qcom,smem-states:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    description: States used by the AP to signal the Hexagon core
-> > +    items:
-> > +      - description: Stop the modem
-> > +
-> > +  qcom,smem-state-names:
-> > +    $ref: /schemas/types.yaml#/definitions/string-array
-> > +    description: The names of the state bits used for SMP2P output
-> > +    items:
-> > +      - const: stop
-> > +
-> > +  glink-edge:
-> > +    type: object
-> > +    description:
-> > +      Qualcomm G-Link subnode which represents communication edge, channels
-> > +      and devices related to the ADSP.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts-extended
-> > +  - interrupt-names
-> > +  - clocks
-> > +  - clock-names
-> > +  - power-domains
-> > +  - qcom,halt-regs
-> > +  - memory-region
-> > +  - qcom,smem-states
-> > +  - qcom,smem-state-names
+On Fri, Sep 17, 2021 at 12:23:52AM +0530, Jayesh Choudhary wrote:
+> Converts the RNG bindings for OMAP SoCs and Inside-Secure
+> HWRNG modules to YAML schema.
 > 
-> Is there some way to make sure that 'resets' and 'reset-names' is
-> present when the compatible that defines them is used and not required
-> otherwise?
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+>  .../devicetree/bindings/rng/omap_rng.txt      | 38 --------
+>  .../devicetree/bindings/rng/omap_rng.yaml     | 94 +++++++++++++++++++
+>  2 files changed, 94 insertions(+), 38 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/rng/omap_rng.txt
+>  create mode 100644 Documentation/devicetree/bindings/rng/omap_rng.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rng/omap_rng.txt b/Documentation/devicetree/bindings/rng/omap_rng.txt
+> deleted file mode 100644
+> index ea434ce50f36..000000000000
+> --- a/Documentation/devicetree/bindings/rng/omap_rng.txt
+> +++ /dev/null
+> @@ -1,38 +0,0 @@
+> -OMAP SoC and Inside-Secure HWRNG Module
+> -
+> -Required properties:
+> -
+> -- compatible : Should contain entries for this and backward compatible
+> -  RNG versions:
+> -  - "ti,omap2-rng" for OMAP2.
+> -  - "ti,omap4-rng" for OMAP4, OMAP5 and AM33XX.
+> -  - "inside-secure,safexcel-eip76" for SoCs with EIP76 IP block
+> -  Note that these two versions are incompatible.
+> -- ti,hwmods: Name of the hwmod associated with the RNG module
+> -- reg : Offset and length of the register set for the module
+> -- interrupts : the interrupt number for the RNG module.
+> -		Used for "ti,omap4-rng" and "inside-secure,safexcel-eip76"
+> -- clocks: the trng clock source. Only mandatory for the
+> -  "inside-secure,safexcel-eip76" compatible, the second clock is
+> -  needed for the Armada 7K/8K SoCs
+> -- clock-names: mandatory if there is a second clock, in this case the
+> -  name must be "core" for the first clock and "reg" for the second
+> -  one
+> -
+> -
+> -Example:
+> -/* AM335x */
+> -rng: rng@48310000 {
+> -	compatible = "ti,omap4-rng";
+> -	ti,hwmods = "rng";
+> -	reg = <0x48310000 0x2000>;
+> -	interrupts = <111>;
+> -};
+> -
+> -/* SafeXcel IP-76 */
+> -trng: rng@f2760000 {
+> -	compatible = "inside-secure,safexcel-eip76";
+> -	reg = <0xf2760000 0x7d>;
+> -	interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
+> -	clocks = <&cpm_syscon0 1 25>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/rng/omap_rng.yaml b/Documentation/devicetree/bindings/rng/omap_rng.yaml
+> new file mode 100644
+> index 000000000000..86bbc2c53e7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rng/omap_rng.yaml
+> @@ -0,0 +1,94 @@
+> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
 
-Yes, plenty of examples of that.
+GPL-2.0-only OR BSD-2-Clause
 
-> 
-> > +
-> > +additionalProperties: false
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - qcom,sdm845-adsp-pil
-> > +    then:
-> > +      properties:
-> > +        clocks:
-> > +          items:
-> > +            - description: XO clock
-> > +            - description: SWAY clock
-> > +            - description: LPASS AHBS AON clock
-> > +            - description: LPASS AHBM AON clock
-> > +            - description: QDSP6SS XO clock
-> > +            - description: QDSP6SS SLEEP clock
-> > +            - description: QDSP6SS CORE clock
-> > +        clock-names:
-> > +          items:
-> > +            - const: xo
-> > +            - const: sway_cbcr
-> > +            - const: lpass_ahbs_aon_cbcr
-> > +            - const: lpass_ahbm_aon_cbcr
-> > +            - const: qdsp6ss_xo
-> > +            - const: qdsp6ss_sleep
-> > +            - const: qdsp6ss_core
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - qcom,qcs404-cdsp-pil
-> > +    then:
-> > +      properties:
-> > +        clocks:
-> > +          items:
-> > +            - description: XO clock
-> > +            - description: SWAY clock
-> > +            - description: TBU clock
-> > +            - description: BIMC clock
-> > +            - description: AHB AON clock
-> > +            - description: Q6SS SLAVE clock
-> > +            - description: Q6SS MASTER clock
-> > +            - description: Q6 AXIM clock
-> > +        clock-names:
-> > +          items:
-> > +            - const: xo
-> > +            - const: sway
-> > +            - const: tbu
-> > +            - const: bimc
-> > +            - const: ahb_aon
-> > +            - const: q6ss_slave
-> > +            - const: q6ss_master
-> > +            - const: q6_axim
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - qcom,sc7280-wpss-pil
-> 
-> This should be documented above in the compatible list?
-> 
-> > +    then:
-> > +      properties:
-> > +        clocks:
-> > +          items:
-> > +            - description: GCC WPSS AHB BDG Master clock
-> > +            - description: GCC WPSS AHB clock
-> > +            - description: GCC WPSS RSCP clock
-> > +        clock-names:
-> > +          items:
-> > +            - const: gcc_wpss_ahb_bdg_mst_clk
-> > +            - const: gcc_wpss_ahb_clk
-> > +            - const: gcc_wpss_rscp_clk
-> 
-> Is the 'gcc_wpss' prefix important? It would be shorter if it wasn't
-> there.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rng/omap_rng.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OMAP SoC and Inside-Secure HWRNG Module
+> +
+> +maintainers:
+> +  - Jayesh Choudhary <j-choudhary@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,omap2-rng
+> +      - ti,omap4-rng
+> +      - inside-secure,safexcel-eip76
+> +
+> +  ti,hwmods:
+> +    const: rng
+> +    deprecated: true
+> +    description: Name of the hwmod associated with the RNG module
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description: EIP150 gatable clock
+> +      - description: Main gatable clock
+> +
+> +  clock-names:
+> +    oneOf:
+> +      - items:
+> +          - const: core
+> +          - const: reg
+> +      - const: core
 
-Yes, and adding this new platform should be a separate patch.
+This is better expressed as:
 
-Rob
+minItems: 1
+items:
+  - const: core
+  - const: reg
+
+> +
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - ti,omap4-rng
+> +              - inside-secure,safexcel-eip76
+> +
+> +    then:
+> +      required:
+> +        - interrupts
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - inside-secure,safexcel-eip76
+> +
+> +    then:
+> +      required:
+> +        - clocks
+> +
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    /* AM335x */
+> +    rng: rng@48310000 {
+> +            compatible = "ti,omap4-rng";
+> +            ti,hwmods = "rng";
+> +            reg = <0x48310000 0x2000>;
+> +            interrupts = <111>;
+> +    };
+> +  - |
+> +    /* SafeXcel IP-76 */
+> +    trng: rng@f2760000 {
+> +            compatible = "inside-secure,safexcel-eip76";
+> +            reg = <0xf2760000 0x7d>;
+> +            interrupts = <0 59 4>;
+> +            clocks = <&cpm_syscon0 1 25>;
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
+> 
