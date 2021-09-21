@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7873413DA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DE0413DAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhIUWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:38:57 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:34680 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhIUWiz (ORCPT
+        id S232926AbhIUWjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233725AbhIUWjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:38:55 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id 3274DF40B6D; Wed, 22 Sep 2021 00:37:25 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 00:37:24 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        linux-crypto@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 0/4] crypto: nintendo-aes - add a new AES driver
-Message-ID: <20210921223724.ocxpdef6ptquprgz@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <20210921213930.10366-1-linkmauve@linkmauve.fr>
- <YUpVyTN7MQbMShdf@gmail.com>
+        Tue, 21 Sep 2021 18:39:06 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8231CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:37:34 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id w29so1064086wra.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NF/erRb1xvPiKeuz4vBloWnkjZnF25C64FmvspbwiEo=;
+        b=JYjh8ATXm2rsrUDRYndqccmq6DGYrm5G5oFK0PZXiGJoNKohaS1/MHXzIgY7DdAXpw
+         bL4LKJHOwlXzBZjI4gZmIAtxO4OxYq2Su5L8Di4QO7DjVkyyBL9ArU39slEuMQnHItjY
+         d9fqTTl6hRWixuueYxiVGwJm4aZg7d79t694owtoAdVY8UdbwDTw3HKt2+GerXIv9Vfc
+         IM9z1BHJHHud/yTUA/IZBbib8s7DIEM7z8e74ulK65VduDRs3HHTlbat7RGYmBIkfJXc
+         gvf4Bk+dyL2yC3udwwiFlF899jZ3k7UFinfilIFMRsx9yzoq0QFvbKqgeFjjteG+uAmv
+         FLEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NF/erRb1xvPiKeuz4vBloWnkjZnF25C64FmvspbwiEo=;
+        b=lNvhrwr+xKscExfI4t0jSLLif/ApzIICP8+bCJH/8RkfRiGq+7iVQQH+pVgi6jjnR7
+         as4LBweP4BfijuJ6DNd0ogNTeiZuxcmdv4tWUfK6Io7pMUvCUWbhMwsv0SUPJ3spnBl1
+         0zeLHFDXQ2oA0Q2P9L5EJrPk/jq4+qb5lycZdssGeHxrubYKJpuf4z2j1SQmccaJN3Pl
+         JaeJj2yS1D39Z4EAYAc6cLwRbRpn6klMN9ZRSmlG0lw6YA9M6MFFkmxlQkpTSlWdAR1M
+         IHkjkmoFHt2UQuJOEOVbt5hjq/1SaOTJGfys/PqEn0gR5WbkFhp+UTmjkHOycYrmvSRG
+         ZkKQ==
+X-Gm-Message-State: AOAM531PBVGWjQB5+hNcadVcSFDVn78AIequf8d0v6wSkbLC6pmaM+D8
+        F8humiOZbz6Add0WtlK7f6rvJ96hcivYcpC9sNg=
+X-Google-Smtp-Source: ABdhPJwQrPe5g07Tgw6bfhoM7DZmOuM0RlxSlbPtGLd/rX3SR68UPXcB1WP9tH3HG9lf3JQ2MI9QK4YJvhJ6cChuQtI=
+X-Received: by 2002:a05:600c:1d16:: with SMTP id l22mr5431621wms.101.1632263852964;
+ Tue, 21 Sep 2021 15:37:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jii3ybjni5untti4"
-Content-Disposition: inline
-In-Reply-To: <YUpVyTN7MQbMShdf@gmail.com>
+References: <20210920225801.227211-1-robdclark@gmail.com> <20210920225801.227211-4-robdclark@gmail.com>
+ <CAD=FV=WGmk6UY2MA4=y4gaM4G66t-qxuLtAZvUahzwg8YsLv=g@mail.gmail.com>
+In-Reply-To: <CAD=FV=WGmk6UY2MA4=y4gaM4G66t-qxuLtAZvUahzwg8YsLv=g@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 21 Sep 2021 15:42:05 -0700
+Message-ID: <CAF6AEGuE1y7ZdOE+=N1v7Zc=gigopS50BaADHpUOoM2TrshSCw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] drm/bridge: ti-sn65dsi86: Add NO_CONNECTOR support
+To:     Doug Anderson <dianders@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 21, 2021 at 3:20 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Mon, Sep 20, 2021 at 3:53 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > Slightly awkward to fish out the display_info when we aren't creating
+> > own connector.  But I don't see an obvious better way.
+> >
+> > v2: Remove error return with NO_CONNECTOR flag
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 39 ++++++++++++++++++++-------
+> >  1 file changed, 29 insertions(+), 10 deletions(-)
+>
+> This seems fine to me:
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>
+> ...if you would like me to apply patch #2 / #3 to drm-misc-next then
+> please yell.
 
---jii3ybjni5untti4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks.. I think we can give it a few days for Laurent to have a look.
 
-On Tue, Sep 21, 2021 at 02:59:37PM -0700, Eric Biggers wrote:
-> On Tue, Sep 21, 2021 at 11:39:26PM +0200, Emmanuel Gil Peyrot wrote:
-> > This engine implements AES in CBC mode, using 128-bit keys only.  It is
-> > present on both the Wii and the Wii=C2=A0U, and is apparently identical=
- in
-> > both consoles.
-> >=20
-> > The hardware is capable of firing an interrupt when the operation is
-> > done, but this driver currently uses a busy loop, I=E2=80=99m not too s=
-ure
-> > whether it would be preferable to switch, nor how to achieve that.
-> >=20
-> > It also supports a mode where no operation is done, and thus could be
-> > used as a DMA copy engine, but I don=E2=80=99t know how to expose that =
-to the
-> > kernel or whether it would even be useful.
-> >=20
-> > In my testing, on a Wii=C2=A0U, this driver reaches 80.7 MiB/s, while t=
-he
-> > aes-generic driver only reaches 30.9 MiB/s, so it is a quite welcome
-> > speedup.
-> >=20
-> > This driver was written based on reversed documentation, see:
-> > https://wiibrew.org/wiki/Hardware/AES
-> >=20
-> > Emmanuel Gil Peyrot (4):
-> >   crypto: nintendo-aes - add a new AES driver
-> >   dt-bindings: nintendo-aes: Document the Wii and Wii U AES support
-> >   powerpc: wii.dts: Expose the AES engine on this platform
-> >   powerpc: wii_defconfig: Enable AES by default
->=20
-> Does this pass the self-tests, including the fuzz tests which are enabled=
- by
-> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=3Dy?
+This will conflict some with Maxime's bridge vs dsi-host ordering
+series.. not sure how close that one is to the finish line, but I can
+rebase either patch on top of the other depending on which order they
+are applied
 
-I wasn=E2=80=99t aware of those, and indeed it doesn=E2=80=99t pass them ye=
-t:
-[    0.680164] alg: skcipher: cbc-aes-nintendo encryption overran dst buffe=
-r on test vector 0, cfg=3D"out-of-place"
-[    0.680201] fbcon: Taking over console
-[    0.680219] ------------[ cut here ]------------
-[    0.680222] alg: self-tests for cbc-aes-nintendo (cbc(aes)) failed (rc=
-=3D-75)
-
-I=E2=80=99ll try to figure out how to debug this and I=E2=80=99ll send a v2=
-, thanks for
-the hint!
-
->=20
-> - Eric
-
---=20
-Emmanuel Gil Peyrot
-
---jii3ybjni5untti4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmFKXqIACgkQOWgfYkb2
-LpCJcgf+IMfEy9fNYpEki4K7BmX/f4kKVOek3gLVkG3rrgZOTElYH5C9uOsdxHZ9
-27PsYcESnj9tI3G9t9RLmyPmxuMVPCVKTc0KaFbacwx1UMmQMBFa5s0WZMVHgZC9
-L7/JnU4G1rRPIxXaaYKnqBBYNzO2LuwVBd7V/0m9WBToXEWEtxabaGO6QuiKFAYX
-rv6T3ajdk40w8XQo3I031M3OxSq9prJBNCtkdkPPmqB4ZtP/E8uGM6ukTMYgR/ZU
-NA3w3V8BX95KNPt/uDKbZ3vdbsSH1PcFVgfPs7aqBKU+zddkdwcoEKfoyg8c4wUi
-cU30fGOI9fLKgdx83YZrWeu8x9Ty7w==
-=IlCT
------END PGP SIGNATURE-----
-
---jii3ybjni5untti4--
+BR,
+-R
