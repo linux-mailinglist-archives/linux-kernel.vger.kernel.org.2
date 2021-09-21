@@ -2,115 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC53413E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7C2413E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhIUXuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:50:07 -0400
-Received: from mga17.intel.com ([192.55.52.151]:50231 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhIUXuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:50:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203641189"
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="203641189"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 16:48:37 -0700
-X-IronPort-AV: E=Sophos;i="5.85,311,1624345200"; 
-   d="scan'208";a="474274829"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 16:48:37 -0700
-Date:   Tue, 21 Sep 2021 16:48:36 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/7] x86/sgx: Add infrastructure to identify SGX EPC
- pages
-Message-ID: <YUpvVK1C4y66Cj2Q@agluck-desk2.amr.corp.intel.com>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
- <20210917213836.175138-1-tony.luck@intel.com>
- <20210917213836.175138-3-tony.luck@intel.com>
- <ccb678fc-25b8-dcd6-ffaa-267865c66ea5@intel.com>
- <eeeb51049e894a70b40013ec18a9fa65@intel.com>
- <8c39b812-b77a-7d63-2d82-f1c0401a5f16@intel.com>
+        id S231158AbhIUXvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhIUXvu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:51:50 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985C2C061574;
+        Tue, 21 Sep 2021 16:50:21 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id c7so3609253qka.2;
+        Tue, 21 Sep 2021 16:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3pBdD6hrMTmywMpC16GHqHBzp8LFNfLUt8n19YiipuE=;
+        b=j98HoVhGODFy30aSZxYuX/CaYVRRgrLXGPZZcL3+5TEMk0kxZ9rEUZ5VzStdEt0IGw
+         3GdBetANKHrXw0Bg13KgU9vZfOKAKCK8ysvqoLeq2CE8u8xSqc/YIrNHWmSlqDbYFesa
+         fd4+CZ0W6h3HDeC+g6xK4UlALy3rQ5FspPWvw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3pBdD6hrMTmywMpC16GHqHBzp8LFNfLUt8n19YiipuE=;
+        b=vslkV3CsHe4z0JIxkIbXwCPK09gGvwaUmWUbLqAR73qmBtYd6UusMWoGwbBy5UvdEG
+         au1VHoSleK34TopmxsEv/Y761l7pMnhgYDIIqYhMrvAcKNjMuSUhXkbEvqRZQlCdtrgq
+         ntgut/BpmamBy1dkP1Sz9AFpCZ7XvHexF1Wc5lGUn7Uzhd1gVPtnR8X+TH4YgDUqE4kY
+         oeR/UKPtRVDEfQPJMRPldwGf3g8kwQS7eoTstMBkvddieIo6mEluzuVEv5tn3VBclu7F
+         XVn+GoNDJYqbhCzeTas3LQEBX5VpJi9iLq7tYOrUSGVeCmqSp0WRvjNvNXWtEDFYDXwE
+         HN6Q==
+X-Gm-Message-State: AOAM532Y+4IqssVI40nYb9579QkNcomVs2ojo8fWlkE+D/slYCI3NWwP
+        AmQha6KXXjiUKxoQ1K2KtWGKtUbXrkMg1b3h6CE=
+X-Google-Smtp-Source: ABdhPJzmNaG8eSfVVVJ//FXKvDj4/vyLvQR0ArS164V3qTiwONEwO8r07klh3oIBYs3tiqkXwlfH9eLZGel8VCFwWKo=
+X-Received: by 2002:a37:6596:: with SMTP id z144mr18531657qkb.292.1632268220710;
+ Tue, 21 Sep 2021 16:50:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c39b812-b77a-7d63-2d82-f1c0401a5f16@intel.com>
+References: <20210921061149.1091163-1-steve@sk2.org>
+In-Reply-To: <20210921061149.1091163-1-steve@sk2.org>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 21 Sep 2021 23:50:08 +0000
+Message-ID: <CACPK8XeH55MGGPHEXXq1jmeQHQYuOfEuDYTbQiG6SWhwgLd7Sw@mail.gmail.com>
+Subject: Re: [PATCH] mm: Remove HARDENED_USERCOPY_FALLBACK
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 03:32:14PM -0700, Dave Hansen wrote:
-> On 9/21/21 1:50 PM, Luck, Tony wrote:
-> >> Did we ever figure out how much space storing really big ranges in the
-> >> xarray consumes?
-> > No. Willy said the existing xarray code would be less than optimal with
-> > this usage, but that things would be much better when he applied some
-> > maple tree updates to the internals of xarray.
-> > 
-> > If there is some easy way to measure the memory backing an xarray I'm
-> > happy to get the data. Or if someone else can synthesize it ... the two
-> > ranges on my system that are added to the xarray are:
-> > 
-> > $ dmesg | grep -i sgx
-> > [    8.496844] sgx: EPC section 0x8000c00000-0x807f7fffff
-> > [    8.505118] sgx: EPC section 0x10000c00000-0x1007fffffff
-> > 
-> > I.e. two ranges of a bit under 2GB each.
-> > 
-> > But I don't think the overhead can be too hideous:
-> > 
-> > $ grep MemFree /proc/meminfo
-> > MemFree:        1048682016 kB
-> > 
-> > I still have ~ 1TB free. Which is much greater that the 640 KB which should
-> > be "enough for anybody" :-).
-> 
-> There is a kmem_cache_create() for the xarray nodes.  So, you should be
-> able to see the difference in /proc/meminfo's "Slab" field.  Maybe boot
-> with init=/bin/sh to reduce the noise and look at meminfo both with and
-> without SGX your patch applied, or just with the xarray bits commented out.
-> 
-> I don't quite know how the data structures are munged, but xas_alloc()
-> makes it look like 'struct xa_node' is allocated from
-> radix_tree_node_cachep.  If that's the case, you should also be able to
-> see this in even more detail in:
-> 
-> # grep radix /proc/slabinfo
-> radix_tree_node   432305 482412    584   28    4 : tunables    0    0
->  0 : slabdata  17229  17229      0
-> 
-> again, on a system with and without your new code enabled.
+On Tue, 21 Sept 2021 at 09:50, Stephen Kitt <steve@sk2.org> wrote:
+>
+> This has served its purpose and is no longer used. All usercopy
+> violations appear to have been handled by now, any remaining
+> instances (or new bugs) will cause copies to be rejected.
+>
+> This isn't a direct revert of commit 2d891fbc3bb6 ("usercopy: Allow
+> strict enforcement of whitelists"); since usercopy_fallback is
+> effectively 0, the fallback handling is removed too.
+>
+> This also removes the usercopy_fallback module parameter on
+> slab_common.
+>
+> Link: https://github.com/KSPP/linux/issues/153
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/powerpc/configs/skiroot_defconfig |  1 -
 
+For the defconfig change:
 
-Booting with init=/bin/sh and running that grep command right away at
-the prompt:
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-With the xa_store_range() call commented out of my kernel:
+Cheers,
 
-radix_tree_node     9800   9968    584   56    8 : tunables    0    0    0 : slabdata    178    178      0
+Joel
 
-
-With xa_store_range() enabled:
-
-radix_tree_node     9950  10136    584   56    8 : tunables    0    0    0 : slabdata    181    181      0
-
-
-
-The head of the file says these are the field names:
-
-# name            <active_objs> <num_objs> <objsize> <objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs> <num_slabs> <sharedavail>
-
-So I think this means that I have (9950 - 9800) * 584 = 87600 more bytes
-allocated. Maybe that's a lot? But percentage-wise is seems in the
-noise. E.g. We allocate one "struct sgx_epc_page" for each SGX page.
-On my system I have 4GB of SGX EPC, so around 32 MB of these structures.
-
--Tony
+>  include/linux/slab.h                   |  2 --
+>  mm/slab.c                              | 13 -------------
+>  mm/slab_common.c                       |  8 --------
+>  mm/slub.c                              | 14 --------------
+>  security/Kconfig                       | 14 --------------
+>  6 files changed, 52 deletions(-)
+>
+> diff --git a/arch/powerpc/configs/skiroot_defconfig b/arch/powerpc/configs/skiroot_defconfig
+> index b806a5d3a695..c3ba614c973d 100644
+> --- a/arch/powerpc/configs/skiroot_defconfig
+> +++ b/arch/powerpc/configs/skiroot_defconfig
+> @@ -275,7 +275,6 @@ CONFIG_NLS_UTF8=y
+>  CONFIG_ENCRYPTED_KEYS=y
+>  CONFIG_SECURITY=y
+>  CONFIG_HARDENED_USERCOPY=y
+> -# CONFIG_HARDENED_USERCOPY_FALLBACK is not set
+>  CONFIG_HARDENED_USERCOPY_PAGESPAN=y
+>  CONFIG_FORTIFY_SOURCE=y
+>  CONFIG_SECURITY_LOCKDOWN_LSM=y
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 0c97d788762c..5b21515afae0 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -142,8 +142,6 @@ struct mem_cgroup;
+>  void __init kmem_cache_init(void);
+>  bool slab_is_available(void);
+>
+> -extern bool usercopy_fallback;
+> -
+>  struct kmem_cache *kmem_cache_create(const char *name, unsigned int size,
+>                         unsigned int align, slab_flags_t flags,
+>                         void (*ctor)(void *));
+> diff --git a/mm/slab.c b/mm/slab.c
+> index d0f725637663..4d826394ffcb 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -4207,19 +4207,6 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
+>             n <= cachep->useroffset - offset + cachep->usersize)
+>                 return;
+>
+> -       /*
+> -        * If the copy is still within the allocated object, produce
+> -        * a warning instead of rejecting the copy. This is intended
+> -        * to be a temporary method to find any missing usercopy
+> -        * whitelists.
+> -        */
+> -       if (usercopy_fallback &&
+> -           offset <= cachep->object_size &&
+> -           n <= cachep->object_size - offset) {
+> -               usercopy_warn("SLAB object", cachep->name, to_user, offset, n);
+> -               return;
+> -       }
+> -
+>         usercopy_abort("SLAB object", cachep->name, to_user, offset, n);
+>  }
+>  #endif /* CONFIG_HARDENED_USERCOPY */
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index a4a571428c51..925b00c1d4e8 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -37,14 +37,6 @@ LIST_HEAD(slab_caches);
+>  DEFINE_MUTEX(slab_mutex);
+>  struct kmem_cache *kmem_cache;
+>
+> -#ifdef CONFIG_HARDENED_USERCOPY
+> -bool usercopy_fallback __ro_after_init =
+> -               IS_ENABLED(CONFIG_HARDENED_USERCOPY_FALLBACK);
+> -module_param(usercopy_fallback, bool, 0400);
+> -MODULE_PARM_DESC(usercopy_fallback,
+> -               "WARN instead of reject usercopy whitelist violations");
+> -#endif
+> -
+>  static LIST_HEAD(slab_caches_to_rcu_destroy);
+>  static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work);
+>  static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3f96e099817a..77f53e76a3c3 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4125,7 +4125,6 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
+>  {
+>         struct kmem_cache *s;
+>         unsigned int offset;
+> -       size_t object_size;
+>         bool is_kfence = is_kfence_address(ptr);
+>
+>         ptr = kasan_reset_tag(ptr);
+> @@ -4158,19 +4157,6 @@ void __check_heap_object(const void *ptr, unsigned long n, struct page *page,
+>             n <= s->useroffset - offset + s->usersize)
+>                 return;
+>
+> -       /*
+> -        * If the copy is still within the allocated object, produce
+> -        * a warning instead of rejecting the copy. This is intended
+> -        * to be a temporary method to find any missing usercopy
+> -        * whitelists.
+> -        */
+> -       object_size = slab_ksize(s);
+> -       if (usercopy_fallback &&
+> -           offset <= object_size && n <= object_size - offset) {
+> -               usercopy_warn("SLUB object", s->name, to_user, offset, n);
+> -               return;
+> -       }
+> -
+>         usercopy_abort("SLUB object", s->name, to_user, offset, n);
+>  }
+>  #endif /* CONFIG_HARDENED_USERCOPY */
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 0ced7fd33e4d..d9698900c9b7 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -163,20 +163,6 @@ config HARDENED_USERCOPY
+>           or are part of the kernel text. This kills entire classes
+>           of heap overflow exploits and similar kernel memory exposures.
+>
+> -config HARDENED_USERCOPY_FALLBACK
+> -       bool "Allow usercopy whitelist violations to fallback to object size"
+> -       depends on HARDENED_USERCOPY
+> -       default y
+> -       help
+> -         This is a temporary option that allows missing usercopy whitelists
+> -         to be discovered via a WARN() to the kernel log, instead of
+> -         rejecting the copy, falling back to non-whitelisted hardened
+> -         usercopy that checks the slab allocation size instead of the
+> -         whitelist size. This option will be removed once it seems like
+> -         all missing usercopy whitelists have been identified and fixed.
+> -         Booting with "slab_common.usercopy_fallback=Y/N" can change
+> -         this setting.
+> -
+>  config HARDENED_USERCOPY_PAGESPAN
+>         bool "Refuse to copy allocations that span multiple pages"
+>         depends on HARDENED_USERCOPY
+>
+> base-commit: 368094df48e680fa51cedb68537408cfa64b788e
+> --
+> 2.30.2
+>
