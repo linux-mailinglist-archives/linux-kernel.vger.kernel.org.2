@@ -2,185 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7F9413978
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8344D413980
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhIUSF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:05:59 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58078
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232289AbhIUSFz (ORCPT
+        id S232315AbhIUSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhIUSHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:05:55 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0107C40257
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:04:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632247466;
-        bh=E+U9M1hOnkJj7BjeE3jXuEWq5COKAKZc20zg2UQGqwg=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=E4Tpw2VtkkYkmzX/9/r0Yob0hHIlSSWudii5+rhPv/mYbTpRFyEhI/OON+tUjFg4y
-         LDD1bKItJ89Co2YfUL6Kyua2Vd5lqg+r0mSxcnGR//8H1kZVZQAB4+2DT5S6/o9wTz
-         1e3sz2yD/iRV0sKMwwpxQCGDCWdHqNkz8Z2boFfOUSlDUfp1JARZI2AfKPONN7dC6+
-         7Zipirni4ikxJ+6LSe3a6cMHXP4WlluPVTWod5GjmN6D7YupAjgfu9kL2nuItO1NCr
-         s+ygtEhQNZdDdBc8c8pGw24gYX+rmqR5MjLK6jooqIhrWsRp7ttbLfb1E/SZYiACt4
-         L2llOXULKIn9A==
-Received: by mail-wr1-f72.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so9542539wrf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:04:25 -0700 (PDT)
+        Tue, 21 Sep 2021 14:07:53 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E9CC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:06:25 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id h3so21500498pgb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1CGhFw4asNFicG4e1+Dwj/719GG7/PCH23qidK6R3L0=;
+        b=YYXbDymqCj94/iKSRCrWsdKzh395YFsjE9KwKok8tUJxMJedRR/eMqLSw9+uSYZ0xZ
+         0HZtlbQAi4tl4sPhL+yEvzfQQtTru9x3R0FUSVUlfgYrSFbZYzvrUu3VruP5+mUTbSqK
+         1IvZZmsgRJM4QIlhfbcTio2qR+NcVIv/C9PlM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=E+U9M1hOnkJj7BjeE3jXuEWq5COKAKZc20zg2UQGqwg=;
-        b=t25ZmDQwwrgCUWxLWdjHm1wG44AwMLgolVvf4GntpS2hKCmxCd8JTanpXqaNl8BJNT
-         t/hVqNDnSY84wRtVszAg3NLjHpV2nHULc0mzoOT3HIbKmK5TexiiGGPu/Szvfs4vgame
-         GqL0CtwxrgsS2YF4filKClOcOorUG9t3RYvphjS1TSjXaFklWj/p+QK6qD1sONONyOAi
-         lROHXFVaAMY8CKgyF3DBP1+J4/Ng3UKfjcmmq+YbQCRbTy+Ss8vKELe/zPmpRLLQ+b7e
-         RuWNFcszVYJsg2PCeTIzujOJ+LzHX+9JzM28daHcwU51lr1EHmRRaGYAidgWZP5ugJwc
-         z0Ig==
-X-Gm-Message-State: AOAM5326BWLB81jm4ym4M8+Ui2dkSvfFGsBhBJ7jb8w+a7Nd03WwfAK5
-        1aJWYxeBDNk9s0IgZRe5xnkQiqR4F9mLZnqzyoK4UVLGG/WzGak+a8L4B5EKgBU22IEM33fnMcU
-        f9PHWsOZZ2Cz8JNJhmbU+ikWhDMI5m23eIrhuj7Ngng==
-X-Received: by 2002:a05:600c:4a16:: with SMTP id c22mr6106903wmp.72.1632247465503;
-        Tue, 21 Sep 2021 11:04:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0/tb/AS73ULX2b3IOIxReTNR7zjlkrcMrJj7f6rnKykXODM+qPZZEH9ABX/TMOHQ2+StX+g==
-X-Received: by 2002:a05:600c:4a16:: with SMTP id c22mr6106863wmp.72.1632247465152;
-        Tue, 21 Sep 2021 11:04:25 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id a72sm3736431wme.5.2021.09.21.11.04.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 11:04:24 -0700 (PDT)
-Subject: Re: [PATCH v1 1/4] clk: samsung: change COMMON_CLK_SAMSUNG default
- config logic
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <20210920190350.3860821-2-willmcvicker@google.com>
- <a8d40b96-bcb2-5eb6-b0e5-c20c14471c8a@kernel.org>
- <CAMuHMdWdHF49qj+qV-DnbDDv14J3y98TPHd_6y_i7o7_azhErg@mail.gmail.com>
- <2c8a79f7-711a-b075-745f-ea77b82a1117@canonical.com>
- <CABYd82bzKh=QQHyk-kPXekzCKx+Uy-z2TY5qAQQNfuew=h=O-w@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <001cd621-53d1-fe22-0eaa-d13137827297@canonical.com>
-Date:   Tue, 21 Sep 2021 20:04:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=1CGhFw4asNFicG4e1+Dwj/719GG7/PCH23qidK6R3L0=;
+        b=eyypotzLN7w1uJpFEs9h2qJouH6DT02xAtxdGpoWB+flKsADcTecPhEOx9WqaGI2tn
+         XpSkGlhnuupl6Zrn3nY7qIanmda1UInVZ+rgn3+If0sTaDAHv6tV+6Dd8AOm1gUyU9NN
+         BPrjm6sYTe/bs9XLKZycI6vJ3OAOXUxjbOywFL0vLAjr/iVxTPeQeWWDm0lYcRSs9I3X
+         krX2xG6v6Tu7qqC8lB/Tpf2cUAI73CI3v2tUAHGlvH2YUWKGBvGSQNbZDf1v8T3bVB9f
+         nqLHflwl2SVpNn/cZvGGuR3vtu9cX2kXCn2EO23zxJ+faeQQCrpMlD7WHfqd6rX9Ws2/
+         ohHg==
+X-Gm-Message-State: AOAM530TtupYPujsAxa1pOssDSYvdzeUW5EJOfM9y4MtRafF41JL38m2
+        vlOowXQl+iFJBuyKjfmSYObGVwv2UO1uvQ==
+X-Google-Smtp-Source: ABdhPJzTD9OgHSR6uYbQ3Nq9Ng+OdY4rIbcAAWdP76gq8f9Qkod3Urt22mOzooLMjl2GOG+sxL4Ccg==
+X-Received: by 2002:a63:18d:: with SMTP id 135mr18665288pgb.179.1632247584450;
+        Tue, 21 Sep 2021 11:06:24 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:c35f:d9dd:5de1:eb0c])
+        by smtp.gmail.com with ESMTPSA id r13sm19771241pgl.90.2021.09.21.11.06.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 11:06:23 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v6 1/2] drm/bridge: parade-ps8640: Use regmap APIs
+Date:   Tue, 21 Sep 2021 11:06:16 -0700
+Message-Id: <20210921110556.v6.1.I2351df94f18d5d8debc22d4d100f36fac560409a@changeid>
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
 MIME-Version: 1.0
-In-Reply-To: <CABYd82bzKh=QQHyk-kPXekzCKx+Uy-z2TY5qAQQNfuew=h=O-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 19:58, Will McVicker wrote:
-> On Tue, Sep 21, 2021 at 1:35 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On 21/09/2021 09:50, Geert Uytterhoeven wrote:
->>> On Tue, Sep 21, 2021 at 9:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>>> On 20/09/2021 21:03, Will McVicker wrote:
->>>>> COMMON_CLK_SAMSUNG is selected by ARCH_EXYNOS which forces this config
->>>>> to be built-in when ARCH_EXYNOS is enabled. Switch the logic to use a
->>>>> "default y if ARCH_EXYNOS" to provide flexibilty for vendors to disable
->>>>> or modularize this driver.
->>>>
->>>> The clock drivers are essential, you cannot disable them for a generic
->>>> kernel supporting ARCH_EXYNOS. Such kernel won't work properly on platforms.
->>>
->>> Obviously it's not gonna work if the clock driver is not enabled
->>> at all.  But does it work if you make the clock driver modular, and
->>> put it with all other essential driver modules in initramfs?  Debugging
->>> would be hard, as the serial console driver also relies on clocks
->>> and PM Domains etc.
->>
->> The kernel could boot without clock drivers (default settings from
->> bootloader), probe clocks from initramfs and proceed with rootfs from
->> eMMC/SD/net.
->>
->> In theory.
->>
->> However I have no reports that it ever worked. If there is such working
->> upstream configuration, I don't mind here. Just please explain this in
->> the commit msg.
->>
->>>
->>> If not, this patch should be NAKed, until it works with a modular
->>> clock driver.
->>>
->>> If yes, perhaps another line should be added (_before_ the other line)?
->>>
->>>   + default m if ARCH_EXYNOS && MODULES
->>>     default y if ARCH_EXYNOS
->>>
->>> However, many developers may want MODULES=y, but not want to bother
->>> with an initramfs.  So perhaps we need a new symbol
->>> MINIMUM_GENERIC_KERNEL or so, protected by EXPERT, and make the
->>> driver default to m if that is enabled?
->>
->> Yeah, that's indeed a problem to solve. For most users (and distros)
->> building kernel for Exynos this should be built-in by default.
->>
->> Anyway, the option is non-selectable so it cannot be converted to "m" or
->> disabled. And this is claimed in the commit msg:
->> "provide flexibilty for vendors to disable or modularize this driver."
->>
->> The commit does not achieve it.
->>
->> Best regards,
->> Krzysztof
-> 
-> Thanks for the reviews! As Lee has explained in his replies, the
-> intent of this series is to provide config flexibility to create a
-> defconfig that allows us to move out SoC specific drivers in order to
-> create a generic kernel that can be used across multiple devices with
-> different SoCs.
+Replace the direct i2c access (i2c_smbus_* functions) with regmap APIs,
+which will simplify the future update on ps8640 driver.
 
-That's quite generic statement... or let me put it that way - we already
-have this ability to create a generic kernel supporting different SoCs.
-Exynos and other ARMv7 and ARMv8 platforms are multiplatform.
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
 
-Task is done.
+(no changes since v4)
 
-Please be more specific about use case and describe what exactly in
-current upstream multiplatform kernel is missing, what is not
-multiplatform enough.
+Changes in v4:
+- Remove excessive error logging from the probe function
 
+Changes in v3:
+- Fix the nits from v2 review
 
-> I'm sorry I added confusion by mentioning
-> modularization. All of these drivers that I am modifying in this
-> series can be modularized which is an ongoing effort, but is not
-> addressed here and I don't believe that modularizing them should be a
-> requirement before supporting enabling/disabling them.
+Changes in v2:
+- Add separate reg map config per page
 
-Since the disabling the driver for a kernel supporting Exynos does not
-make any sense, then making it at least modular unfortunately it is a
-requirement.
+ drivers/gpu/drm/bridge/parade-ps8640.c | 94 ++++++++++++++++++--------
+ 1 file changed, 64 insertions(+), 30 deletions(-)
 
-> I will update the series with my patch that refactors the Samsung SoC
-> drivers menuconfig to make these visible as well.
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 685e9c38b2db..18328e75bf90 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -9,6 +9,7 @@
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_graph.h>
++#include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ 
+ #include <drm/drm_bridge.h>
+@@ -31,6 +32,11 @@
+ 
+ #define NUM_MIPI_LANES		4
+ 
++#define COMMON_PS8640_REGMAP_CONFIG \
++	.reg_bits = 8, \
++	.val_bits = 8, \
++	.cache_type = REGCACHE_NONE
++
+ /*
+  * PS8640 uses multiple addresses:
+  * page[0]: for DP control
+@@ -64,12 +70,48 @@ struct ps8640 {
+ 	struct drm_bridge *panel_bridge;
+ 	struct mipi_dsi_device *dsi;
+ 	struct i2c_client *page[MAX_DEVS];
++	struct regmap	*regmap[MAX_DEVS];
+ 	struct regulator_bulk_data supplies[2];
+ 	struct gpio_desc *gpio_reset;
+ 	struct gpio_desc *gpio_powerdown;
+ 	bool powered;
+ };
+ 
++static const struct regmap_config ps8640_regmap_config[] = {
++	[PAGE0_DP_CNTL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xbf,
++	},
++	[PAGE1_VDO_BDG] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE2_TOP_CNTL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE3_DSI_CNTL1] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE4_MIPI_PHY] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE5_VPLL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0x7f,
++	},
++	[PAGE6_DSI_CNTL2] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++	[PAGE7_SPI_CNTL] = {
++		COMMON_PS8640_REGMAP_CONFIG,
++		.max_register = 0xff,
++	},
++};
++
+ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+ {
+ 	return container_of(e, struct ps8640, bridge);
+@@ -78,13 +120,13 @@ static inline struct ps8640 *bridge_to_ps8640(struct drm_bridge *e)
+ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+ 				     const enum ps8640_vdo_control ctrl)
+ {
+-	struct i2c_client *client = ps_bridge->page[PAGE3_DSI_CNTL1];
++	struct regmap *map = ps_bridge->regmap[PAGE3_DSI_CNTL1];
+ 	u8 vdo_ctrl_buf[] = { VDO_CTL_ADD, ctrl };
+ 	int ret;
+ 
+-	ret = i2c_smbus_write_i2c_block_data(client, PAGE3_SET_ADD,
+-					     sizeof(vdo_ctrl_buf),
+-					     vdo_ctrl_buf);
++	ret = regmap_bulk_write(map, PAGE3_SET_ADD,
++				vdo_ctrl_buf, sizeof(vdo_ctrl_buf));
++
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed to %sable VDO: %d\n",
+ 			  ctrl == ENABLE ? "en" : "dis", ret);
+@@ -96,8 +138,7 @@ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
+ 
+ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ {
+-	struct i2c_client *client = ps_bridge->page[PAGE2_TOP_CNTL];
+-	unsigned long timeout;
++	struct regmap *map = ps_bridge->regmap[PAGE2_TOP_CNTL];
+ 	int ret, status;
+ 
+ 	if (ps_bridge->powered)
+@@ -121,18 +162,12 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ 	 */
+ 	msleep(200);
+ 
+-	timeout = jiffies + msecs_to_jiffies(200) + 1;
+-
+-	while (time_is_after_jiffies(timeout)) {
+-		status = i2c_smbus_read_byte_data(client, PAGE2_GPIO_H);
+-		if (status < 0) {
+-			DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", status);
+-			goto err_regulators_disable;
+-		}
+-		if ((status & PS_GPIO9) == PS_GPIO9)
+-			break;
++	ret = regmap_read_poll_timeout(map, PAGE2_GPIO_H, status,
++			status & PS_GPIO9, 20 * 1000, 200 * 1000);
+ 
+-		msleep(20);
++	if (ret < 0) {
++		DRM_ERROR("failed read PAGE2_GPIO_H: %d\n", ret);
++		goto err_regulators_disable;
+ 	}
+ 
+ 	msleep(50);
+@@ -144,22 +179,15 @@ static void ps8640_bridge_poweron(struct ps8640 *ps_bridge)
+ 	 * disabled by the manufacturer. Once disabled, all MCS commands are
+ 	 * ignored by the display interface.
+ 	 */
+-	status = i2c_smbus_read_byte_data(client, PAGE2_MCS_EN);
+-	if (status < 0) {
+-		DRM_ERROR("failed read PAGE2_MCS_EN: %d\n", status);
+-		goto err_regulators_disable;
+-	}
+ 
+-	ret = i2c_smbus_write_byte_data(client, PAGE2_MCS_EN,
+-					status & ~MCS_EN);
++	ret = regmap_update_bits(map, PAGE2_MCS_EN, MCS_EN, 0);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed write PAGE2_MCS_EN: %d\n", ret);
+ 		goto err_regulators_disable;
+ 	}
+ 
+ 	/* Switch access edp panel's edid through i2c */
+-	ret = i2c_smbus_write_byte_data(client, PAGE2_I2C_BYPASS,
+-					I2C_BYPASS_EN);
++	ret = regmap_write(map, PAGE2_I2C_BYPASS, I2C_BYPASS_EN);
+ 	if (ret < 0) {
+ 		DRM_ERROR("failed write PAGE2_I2C_BYPASS: %d\n", ret);
+ 		goto err_regulators_disable;
+@@ -362,15 +390,21 @@ static int ps8640_probe(struct i2c_client *client)
+ 
+ 	ps_bridge->page[PAGE0_DP_CNTL] = client;
+ 
++	ps_bridge->regmap[PAGE0_DP_CNTL] = devm_regmap_init_i2c(client, ps8640_regmap_config);
++	if (IS_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]))
++		return PTR_ERR(ps_bridge->regmap[PAGE0_DP_CNTL]);
++
+ 	for (i = 1; i < ARRAY_SIZE(ps_bridge->page); i++) {
+ 		ps_bridge->page[i] = devm_i2c_new_dummy_device(&client->dev,
+ 							     client->adapter,
+ 							     client->addr + i);
+-		if (IS_ERR(ps_bridge->page[i])) {
+-			dev_err(dev, "failed i2c dummy device, address %02x\n",
+-				client->addr + i);
++		if (IS_ERR(ps_bridge->page[i]))
+ 			return PTR_ERR(ps_bridge->page[i]);
+-		}
++
++		ps_bridge->regmap[i] = devm_regmap_init_i2c(ps_bridge->page[i],
++						ps8640_regmap_config + i);
++		if (IS_ERR(ps_bridge->regmap[i]))
++			return PTR_ERR(ps_bridge->regmap[i]);
+ 	}
+ 
+ 	i2c_set_clientdata(client, ps_bridge);
+-- 
+2.33.0.464.g1972c5931b-goog
 
-I would first recommend to really describe your use case because my
-questions about this are still unanswered.
-
-Best regards,
-Krzysztof
