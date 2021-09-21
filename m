@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA56B412ECA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B49412ECC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 08:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbhIUGsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 02:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S229963AbhIUGsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 02:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhIUGsA (ORCPT
+        with ESMTP id S229755AbhIUGsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 02:48:00 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3724AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:46:33 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id w11so3173175plz.13
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 23:46:33 -0700 (PDT)
+        Tue, 21 Sep 2021 02:48:12 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C6CC061574;
+        Mon, 20 Sep 2021 23:46:44 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id g184so19813823pgc.6;
+        Mon, 20 Sep 2021 23:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H1yv0YD1p8/r7hGH7jOiQD60zt6r6Sa+YFTXmu6GaNM=;
-        b=d+IkiQxcb0/TAQhEFcSzVDTGsu7GhCriwCojht4gK8z4Z0Kyb3hItyEmT2WzWvkztX
-         SbVlDqRjLVuvu5D10R/sybP6Mh7Pv+0+i9VwHnIA3Wu47E6MaCiI8lohcYHe9hslsUR5
-         Mi+eRtfh55KfJPDAUwvfogCGT26q+8N3FaVsK+qvkbdF9W+7ctgc50LCdu8ksC3vWqf/
-         xo1hhjF5MGGRP48/3Pa7P1JArH8odNqUXARE2byE3DXPa409581SsPzJhgXhgdRrgQo6
-         zhhbsJOwQo0srHI8F+01pCBGrbtQUMDTuP3DszimDhdLKxKoYOUyehTTDZYkOJxD3KUp
-         79fA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=43/hp4VQExTLsbhliy5N89vJ0RXPpk/KyGJWdBMOOTo=;
+        b=Aobgto1h49ICsW2sQJKg4sxHIrcn0NSqvrHqFAPNssdRdeS3qlnhFC6cRct6kEy/rG
+         rxiuOxLQxGOjjKxLuI5Wx09Aw7tGdhMxLx/kNoh9+T2FelZvLhcOAT7t57DuWGTu3gyY
+         rLtTqMt/Ro1B5PZN7GM/SqpixOuR5bF6nCNhyrr/KvGi0bu2yM+fOhu11sb3ImMb6AgA
+         rJX+GI9iKXNgoB5lVYAwm1CDeToFKp+jbPTFjh2SlfXpf7b7sUfi7Zpem69RPLiYwoC0
+         v7KkPp5oivKVR/bv6L2oU+HcT+0s50AiIxKmsTZdrRmBcsFR05rus64+ldMtj5JD3qNB
+         YGlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=H1yv0YD1p8/r7hGH7jOiQD60zt6r6Sa+YFTXmu6GaNM=;
-        b=HClXzf9dGuYhQ/psnqfYrrpKHaxovxGuLiGW44laj/GkfkoeHanAKzRtid7T5wAM31
-         Gp2mBpTXSS0ruQNF5sZQCP6c4fG6DfE//fL2OHdNKddwl4Tim0dPaxhMpypWvG2N6DdR
-         LC29PhjK5lZSifGYSkULzJYu8Fvy3AgOqS8ZV3HL3LVL4DvzIknQrA/RzkHs9uF9nSyX
-         6qAzKsUv854i70QZJTpERaERnIF7MUozxMcOChFXPiqux/pWpm61+AFEmAweMQnI4K/l
-         I8DwdEh7T9F4ruxybCwh4a/qNCyQSdXmqDx+MHwq6vPlKXYefdI78CJ5SWtKCpAZgztS
-         t9bw==
-X-Gm-Message-State: AOAM531moCp61pO7WuoH7yhG72Ye8xtOmjgjkoLqnCgiZefJJmx5xST1
-        NnIwe8tuRikzk6cRKH/2/Pdww3EIQq96Rt02
-X-Google-Smtp-Source: ABdhPJwNnKhLZFlV2OBG9HRT6TYafMJOwcWNaAmwYxpMuUys54yJQKyASKBXHroL1BGHYRTrWw3VvQ==
-X-Received: by 2002:a17:903:4112:b0:13a:7afa:f9c4 with SMTP id r18-20020a170903411200b0013a7afaf9c4mr26020393pld.66.1632206792766;
-        Mon, 20 Sep 2021 23:46:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=43/hp4VQExTLsbhliy5N89vJ0RXPpk/KyGJWdBMOOTo=;
+        b=yxDGrz/RAN/eE4WpaUlhwiw9Mwa32QfKsBg/I2sfvwHX78LL0xh+1Q9AFmjsv1lrYS
+         avzlx4SOWMUWeba9emmDhmUZ+kMsRbHHJ5eU8mm6Se9DG7Z8sz2UJNEBgC/qpoy+VoKG
+         VIvFE4Vrl0++8UmzA3FbR8BcQ8g76zip9R07fZN84U+Cg+tmpXiOXsKe2nb8NUyqBnLo
+         h9ChhFAXuqKHc7qNSgkk7YdNR16RrUk6W0GvoK+7KJ7sSM1jGBSRBvLJEg5pbY4YNRaX
+         /zMsfY5FkfsGIhBge7LYLOrN5LoPXgqVgF+slDr4qrFsf0+HDYG2rUaOMQr0johZam/2
+         3wyA==
+X-Gm-Message-State: AOAM533/fw2/miN+oThby2sgOqYS5WNZUbZ0Tw1gL0SZAiP62hx+nul4
+        cTe6qgSIzAph7xM2awqS+Mo=
+X-Google-Smtp-Source: ABdhPJzYr4BkCmDCIjxtcBz4acKVq0vEB0vr9dlPgKsO6kXE5R1+heWRKItybhN/C5Q7hvYkReoidg==
+X-Received: by 2002:a62:9242:0:b0:446:5771:7901 with SMTP id o63-20020a629242000000b0044657717901mr16597742pfd.81.1632206804402;
+        Mon, 20 Sep 2021 23:46:44 -0700 (PDT)
 Received: from ownia.. ([103.97.201.35])
-        by smtp.gmail.com with ESMTPSA id a1sm1413101pjg.0.2021.09.20.23.46.28
+        by smtp.gmail.com with ESMTPSA id a1sm1413101pjg.0.2021.09.20.23.46.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 23:46:32 -0700 (PDT)
+        Mon, 20 Sep 2021 23:46:44 -0700 (PDT)
 From:   Weizhao Ouyang <o451686892@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -62,33 +62,45 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Mina Almasry <almasrymina@google.com>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         "Huang, Ying" <ying.huang@intel.com>,
-        Oscar Salvador <osalvador@suse.de>, Wei Xu <weixugc@google.com>
-Subject: [PATCH v2 0/2] mm/debug: sync up latest migrate_reason to migrate_reason_names
-Date:   Tue, 21 Sep 2021 14:45:51 +0800
-Message-Id: <20210921064553.293905-1-o451686892@gmail.com>
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Xu <weixugc@google.com>, stable@vger.kernel.org
+Subject: [PATCH v2 1/2] mm/debug: sync up MR_CONTIG_RANGE and MR_LONGTERM_PIN
+Date:   Tue, 21 Sep 2021 14:45:52 +0800
+Message-Id: <20210921064553.293905-2-o451686892@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210921064553.293905-1-o451686892@gmail.com>
+References: <20210921064553.293905-1-o451686892@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After related migrate page updates, sync up latest migrate_reason to
-migrate_reason_names, page_owner use it to parse the page migrate
-reason.
+Sync up MR_CONTIG_RANGE and MR_LONGTERM_PIN to migrate_reason_names.
 
-Changes in V2:
--- sync up MR_CONTIG_RANGE
--- split patchset for stable kernel
+Fixes: 310253514bbf ("mm/migrate: rename migration reason MR_CMA to MR_CONTIG_RANGE")
+Fixes: d1e153fea2a8 ("mm/gup: migrate pinned pages out of movable zone")
+Cc: stable@vger.kernel.org
+Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+---
+ mm/debug.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Weizhao Ouyang (2):
-  mm/debug: sync up MR_CONTIG_RANGE and MR_LONGTERM_PIN
-  mm/debug: sync up latest migrate_reason to migrate_reason_names
-
- include/linux/migrate.h | 6 +++++-
- mm/debug.c              | 4 +++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
+diff --git a/mm/debug.c b/mm/debug.c
+index e73fe0a8ec3d..e61037cded98 100644
+--- a/mm/debug.c
++++ b/mm/debug.c
+@@ -24,7 +24,8 @@ const char *migrate_reason_names[MR_TYPES] = {
+ 	"syscall_or_cpuset",
+ 	"mempolicy_mbind",
+ 	"numa_misplaced",
+-	"cma",
++	"contig_range",
++	"longterm_pin",
+ };
+ 
+ const struct trace_print_flags pageflag_names[] = {
 -- 
 2.30.2
 
