@@ -2,128 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBBC412F51
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC46412F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhIUHY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:24:28 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36834
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230139AbhIUHY0 (ORCPT
+        id S230182AbhIUHYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:24:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22598 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230101AbhIUHYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:24:26 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id BBC5B40262
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:22:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632208977;
-        bh=Cve5VR1QaxZM6zIVHTuhZn6XwrsbWxHHOPyFzizDJOw=;
-        h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=LSaX+NNYmtKaMHZc+jMNh4LhvdiDlQ/00FmmBttIsHz4Y/Ako8b9QQh4eIfUxOrlw
-         B4fh/vPlUzc5UA4G0DVRJrFMFaU9QCoWksfkw2/h+4eOFpbgHWCEEibf79nql9343W
-         YbbTUv+h6kKTYCc2YLD4852GuwHKUI6FvvGQ5KPbeOEwIgYNvi4hmRcej5yvPqDxx6
-         s+2RXlcO+NfK/QOa6+ZboKadWRppvDdB6pYxptW7Qz4iYfjdrbV+A1dzrK/zxlbP8R
-         F+gE7NkWY3oXyYlrCI2kRxib6iyqi+mkHY+SvLj+FxPzky9BwaUPo7Nsj+OgbrHal6
-         vS2kBkdSsG9uw==
-Received: by mail-wr1-f71.google.com with SMTP id x7-20020a5d6507000000b0015dada209b1so8020755wru.15
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:22:57 -0700 (PDT)
+        Tue, 21 Sep 2021 03:24:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632209002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YfQmolrBACizgcgNsJjMXDd0gcVd36hCMTnBNcp8NrU=;
+        b=fzy1Kyl6ol1X3dHzf6OQ46IXOMZzb+X6d7CbMU12OsQl5L/YBxLxfUOByYgHoircrEUNyD
+        Gv9LVKsL4xZllbpJ13ydrKahLIT0xE9XGq0GuruHdNkHg5++jeDAhl8cP8vZgPy2ixQvNp
+        jifIMUwwxjUtJWtB7JOf8ncN99MUqVM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-XCDie6p6N4ihUMZHjmeZvQ-1; Tue, 21 Sep 2021 03:23:20 -0400
+X-MC-Unique: XCDie6p6N4ihUMZHjmeZvQ-1
+Received: by mail-wr1-f72.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so8039660wrn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:23:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cve5VR1QaxZM6zIVHTuhZn6XwrsbWxHHOPyFzizDJOw=;
-        b=fAzSkjFBkx/5IqRt+WacptRLSCNQuLTgIxb5NMJO+p4JQInmAPuwUd0kdoQZI8yDsL
-         8sSybdoDxPToSdTuulYjAI4Uf5tOdEzdqceljYSYnl659N2rSMXWkRDCjnTYECaghG/Z
-         bA11GNsPD3a76rYKralv9u7Bp3qqOZk3ET5cTZVjteXmL3fGETX383QJAWm2jy/En12X
-         yp96sa2znr2OtrP14K/q8OA4EQScdMTsHDSFxyph1RFFknH9wvdbqY5gcXGh3LBH197R
-         OQNGYPrscu6Opp14fFoZovtfvxjAFFoOHa7lyqmG5BFtj0EihhCzVfbMKsQnqjMLrwaV
-         5F4w==
-X-Gm-Message-State: AOAM531DXgIUUdzCPDYfGExDYLmug18xae3w68RY5CYjUIb0o6kCCfuU
-        LaRcpM//b13q3S4Sx6Wxue8EE9lNjDZ2ZuU+QOFJMN7J6yslf6RZHWI6BagPZd5awihk7rDbwMp
-        KVhvkUoxNIZJZ7SigSqt0CVZhlfmrpruKi2w+GS/RcQ==
-X-Received: by 2002:adf:dcc1:: with SMTP id x1mr33377397wrm.415.1632208977225;
-        Tue, 21 Sep 2021 00:22:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxQw4dtnG2X2Nu2HkIk4oUuLyQI/VIi+qePjIbZ3WhkVu2uRQwXc5Ujx3o3WSA5Z6k2UAzRxA==
-X-Received: by 2002:adf:dcc1:: with SMTP id x1mr33377384wrm.415.1632208977082;
-        Tue, 21 Sep 2021 00:22:57 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.gmail.com with ESMTPSA id r9sm10592653wru.2.2021.09.21.00.22.55
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=YfQmolrBACizgcgNsJjMXDd0gcVd36hCMTnBNcp8NrU=;
+        b=gf0BsQ+ZZstXld4SC5VX0DKoSLzVLBEGE8U12vvowJkwVZIXznna3DD+KyxYyv81Xh
+         2Adwvvi2IM5B84VGPkgOlgTIwfQf9Z798wWktWHrcVOsIFso6FZRkwVr6227LtX911ic
+         seZt03noO4ePqDVnsaMpU8RR4sD8ghuqHsEGGF2xaeSCoKiLIllSyF3rDb/uwQqY/j8z
+         8WaYThFM3oZYB0UXcUd179MTAhUscAxoADwW9+19pTCUbPFuqjjehCliRmBLggUKpr+h
+         bXHt6Lx4o9sJ15QxaEaB+Twr4NizYrEIQm0yuIGDmbJCA3UT4DtqMWjZZ6dSOpu+NGfL
+         O7Jg==
+X-Gm-Message-State: AOAM531cxcFSPmWtWkT1mD6BD9b4AC2PLntALW1TA11uDfX5FUJoUHUU
+        FfAoYJJdlkYpMpN/SjaeDT0m8qhYyb+zgX1RNeTE5Wba4DSQf++TsitKrvwVWdECxWJHYiE/xUW
+        hf4vHjUiLbZgYrlIX9YsWrjXS
+X-Received: by 2002:a5d:5229:: with SMTP id i9mr33076554wra.373.1632208999651;
+        Tue, 21 Sep 2021 00:23:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmKDz9cFkpPUpySnhcuXL9I6N5VzfCkNBihCb2cf/pAFc0UAmd1Q4UanO7vkIdNFwERK6qQg==
+X-Received: by 2002:a5d:5229:: with SMTP id i9mr33076534wra.373.1632208999447;
+        Tue, 21 Sep 2021 00:23:19 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63b7.dip0.t-ipconnect.de. [91.12.99.183])
+        by smtp.gmail.com with ESMTPSA id g205sm1956447wmg.18.2021.09.21.00.23.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 00:22:56 -0700 (PDT)
-Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
-Message-ID: <96e7f057-c505-e5d7-d89a-345b98d44448@canonical.com>
-Date:   Tue, 21 Sep 2021 09:22:55 +0200
+        Tue, 21 Sep 2021 00:23:19 -0700 (PDT)
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, oliver.sang@intel.com,
+        mhocko@suse.com, weixugc@google.com, osalvador@suse.de,
+        rientjes@google.com, dan.j.williams@intel.com, gthelen@google.com,
+        yang.shi@linux.alibaba.com, akpm@linux-foundation.org
+References: <20210917223504.C140445A@davehans-spike.ostc.intel.com>
+ <20210917223505.F817CB6B@davehans-spike.ostc.intel.com>
+ <87k0jeog7r.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <2d7e4078-f9c0-7511-0bab-de5dab25b45d@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH 1/2] mm/migrate: optimize hotplug-time demotion order
+ updates
+Message-ID: <4e3d98eb-e8b9-90a8-638c-e19a5367df99@redhat.com>
+Date:   Tue, 21 Sep 2021 09:23:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7735b09c-cf1c-5e37-a737-9a330fbacf1e@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <2d7e4078-f9c0-7511-0bab-de5dab25b45d@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 09:19, Krzysztof Kozlowski wrote:
-> On 20/09/2021 21:03, Will McVicker wrote:
->> This patch series tries to address the issue of ARCH_EXYNOS force selecting
->> a handful of drivers without allowing the vendor to override any of the
->> default configs. This takes away from the flexibilty of compiling a generic
->> kernel with exynos kernel modules. For example, it doesn't allow vendors to
->> modularize these drivers out of the core kernel in order to share a generic
->> kernel image across multiple devices that require device-specific kernel
->> modules.
+On 20.09.21 23:37, Dave Hansen wrote:
+> On 9/17/21 5:55 PM, Huang, Ying wrote:
+>>> @@ -3147,6 +3177,16 @@ static void __set_migration_target_nodes
+>>>   	int node;
+>>>   
+>>>   	/*
+>>> +	 * The "migration path" array is heavily optimized
+>>> +	 * for reads.  This is the write side which incurs a
+>>> +	 * very heavy synchronize_rcu().  Avoid this overhead
+>>> +	 * when nothing of consequence has changed since the
+>>> +	 * last write.
+>>> +	 */
+>>> +	if (!node_demotion_topo_changed())
+>>> +		return;
+>>> +
+>>> +	/*
+>>>   	 * Avoid any oddities like cycles that could occur
+>>>   	 * from changes in the topology.  This will leave
+>>>   	 * a momentary gap when migration is disabled.
+>> Now synchronize_rcu() is called in disable_all_migrate_targets(), which
+>> is called for MEM_GOING_OFFLINE.  Can we remove the synchronize_rcu()
+>> from disable_all_migrate_targets() and call it in
+>> __set_migration_target_nodes() before we update the node_demotion[]?
 > 
-> You do not address the issue in these patches. The problem you describe
-> is that drivers are not modules and you are not changing them into modules.
+> I see what you are saying.  This patch just targeted
+> __set_migration_target_nodes() which is called in for
+> MEM_ONLINE/OFFLINE.  But, it missed MEM_GOING_OFFLINE's call to
+> disable_all_migrate_targets().
 > 
->>
->> To address this without impacting the existing behavior, this series
->> switches the default config logic for the offending configs to use "default
->> y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
->> verified that these patches do not impact the default aarch64 .config.
+> I think I found something better than what I had in this patch, or the
+> tweak you suggested: The 'memory_notify->status_change_nid' field is
+> passed to all memory hotplug notifiers and tells us whether the node is
+> going online/offline.  Instead of trying to track the changes, I think
+> we can simply rely on it to tell us when a node is going online/offline.
 > 
-> Yep, this is what you did but it does not match the described problem.
-> You are not solving it but doing something else.
+> This removes the need for the demotion code to track *any* state.  I've
+> attached a totally untested patch to do this.
 > 
->>
->> Will McVicker (4):
->>   clk: samsung: change COMMON_CLK_SAMSUNG default config logic
->>   soc: samsung: change SOC_SAMSUNG default config logic
->>   pinctrl: samsung: change PINCTRL_EXYNOS default config logic
->>   rtc: change HAVE_S3C_RTC default config logic
->>
-> 
-> 
-> I received only two patches from this set. Please resend following
-> get_maintainers.pl script.
 
-For the record - samsung-soc list also did not get all your patches.
+Sounds sane to me (although I really detest that status_change_nid... 
+interface).
 
-NAK, please use get_maintainers.pl.
+I was just about to ask "but how does this interact with !CONFIG_NUMA" 
+... until I realized that having a single node go completely offline is 
+rather unrealistic ;)
 
-Best regards,
-Krzysztof
+-- 
+Thanks,
+
+David / dhildenb
+
