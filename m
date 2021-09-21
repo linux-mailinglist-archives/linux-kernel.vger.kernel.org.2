@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A5C413709
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF8C41370A
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhIUQPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:15:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37652 "EHLO
+        id S234255AbhIUQPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46777 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234279AbhIUQPJ (ORCPT
+        by vger.kernel.org with ESMTP id S234335AbhIUQPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:15:09 -0400
+        Tue, 21 Sep 2021 12:15:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632240819;
+        s=mimecast20190719; t=1632240822;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Skz+wSCIMyvocC+cWmr1kqnk80+x9gFo8RgnyvxY9jI=;
-        b=bI34Fs+7ApiP0wT6ko01niS4Be+t2jkB7WoVnoHUlD24nJKjYgRHaxB+OVHlHq1qolrTBf
-        YJKzgBFIUg25J8GW30WqK3Yf5oK7Ko2DScyl0gJWzUR6uKKjGKeBIaLUxx0fQ2F/B2aCwF
-        GVx8t8qYEAJPJg7kx6Inqm9Cf7KtUOk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-liO8uBn9N9utwDmentQJaA-1; Tue, 21 Sep 2021 12:13:38 -0400
-X-MC-Unique: liO8uBn9N9utwDmentQJaA-1
-Received: by mail-wr1-f69.google.com with SMTP id m18-20020adfe952000000b0015b0aa32fd6so9249582wrn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:13:38 -0700 (PDT)
+        bh=gPP7p4f7+ZBDSuJ4Fq24/tKP4H9YfAjznqdigXY0rzo=;
+        b=Yqj5R0yPJERdChoAY7vFiAkRQ9ZYagzSveQT7bKU4I4geHiUmJP13r/6v3GxVcLoihCQkn
+        NRNwXGlESReLv/WAuVygKhSTUtmnoLNiv3aQL03w1oJc85IGNepIbrPUT3VktUr/k+3H09
+        IaisiNjNPb0tGkZ9wFKxQtFjRX3IeIE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-FnQzSN05O3O5ytl7V3zhdg-1; Tue, 21 Sep 2021 12:13:40 -0400
+X-MC-Unique: FnQzSN05O3O5ytl7V3zhdg-1
+Received: by mail-wr1-f71.google.com with SMTP id s13-20020a5d69cd000000b00159d49442cbso9252002wrw.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:13:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Skz+wSCIMyvocC+cWmr1kqnk80+x9gFo8RgnyvxY9jI=;
-        b=T7UCay2OcWLA4B/D1UD4Bz72D87g+v8Ndgm51QknAWGWTRIBdFbpscLbBDxDkxUtC+
-         BZVOKIrLH5/tKwuxgeHqXyrQ54CDF0N/bDIa/95RDtYWcZpJg35nvhndgpNnvRmmhx/L
-         cY1Emg1mkvK7UESRah4Jl05dwCcnLJ8xHZ5pAL+Qejgt5jf4MKgSblARw5ZoybW9QqqS
-         RMOxHKJvLD4ftkkooCkFLga9Hnj/NzooKQmeo2qIpmUoV4l0m55irbbyHszj3X9c4ScO
-         CXZjry3jmB4vSotsRFK3vckd0mdSHuEds8fJow7qOwEJkCWT2DOmHk87M1EVs7qc+cK0
-         TBfg==
-X-Gm-Message-State: AOAM531AlG0KNwm8pmhgv/wJWFQRQcHUaCqUqoNOvoPGd4YaHZ0s5Cm+
-        AWicsdP8KUPi2qucO1LknvehxBZiquiHta93kuMn6cnDRe/5pd1SOs38Pai4xDnC4RrjpBygDSA
-        /sRZQqnE1Oz+iDdL5IXZ2bGVY
-X-Received: by 2002:a05:6000:c3:: with SMTP id q3mr35713548wrx.361.1632240817399;
-        Tue, 21 Sep 2021 09:13:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwc8lfAIXvvAGBd2lf3kHl9jl9Ma+SH7iopQjrQOmNgpGD7Dcwtktf6tIufdAsdVPxyyoBuiQ==
-X-Received: by 2002:a05:6000:c3:: with SMTP id q3mr35713524wrx.361.1632240817263;
-        Tue, 21 Sep 2021 09:13:37 -0700 (PDT)
+        bh=gPP7p4f7+ZBDSuJ4Fq24/tKP4H9YfAjznqdigXY0rzo=;
+        b=2FZKry1r3RaCn+OjBTeOvAu4y9P65nqK+lyqz4Tm+M9cxBaRfV/cFxBC/FpEtZYf1G
+         EPZQx3Bkx1I8Z0zYnDDlOvGCgR2v/QQ0k7ivKL+9CzTRJw9aTk149ET9l7LANFNkenss
+         vFmsiwuZzZVVdytuqBGM1HjQ7sAhu+AF/zVdZ1KCzJ0WGEe16d0ePpdXdRGo93EvG7KE
+         0XrnGZVmiJV3zdpNha3m9GIf/zYEUNejeMTsEu3M8dnI9AlImsFhFCPlrLQlfdua88xu
+         rcUNhnNyCBHg9P1XHuS4hZp/q0YgE8HsSeJgO6i/ib33N6gQecfk+3x9N7iyis/G665A
+         tK/w==
+X-Gm-Message-State: AOAM530ury1tpKXmxzwupbUDBaEWvsROlw6xvb3BdFv1fWkUX5QSBhIk
+        47QhDhbsYjJshJ70lpr1hZ/SpCrFYpppD1vXFlZfcsduJorvrYHtxbTiPaHJN9Tl32Dif/tl9vV
+        FA6P5ugAIl1SS/Wb7vFuINSM0
+X-Received: by 2002:a05:600c:4105:: with SMTP id j5mr5481453wmi.138.1632240819135;
+        Tue, 21 Sep 2021 09:13:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOTu0J3jQPhjB0rCNk6fDnFpnh+/g5dnPXrEPxVjKH2eCKCxgBKKRAmpV4rD/xGG21/HWfXg==
+X-Received: by 2002:a05:600c:4105:: with SMTP id j5mr5481424wmi.138.1632240818845;
+        Tue, 21 Sep 2021 09:13:38 -0700 (PDT)
 Received: from vian.redhat.com ([2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123])
-        by smtp.gmail.com with ESMTPSA id t1sm19786477wrz.39.2021.09.21.09.13.35
+        by smtp.gmail.com with ESMTPSA id t1sm19786477wrz.39.2021.09.21.09.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 09:13:37 -0700 (PDT)
+        Tue, 21 Sep 2021 09:13:38 -0700 (PDT)
 From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
 To:     akpm@linux-foundation.org, frederic@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
@@ -60,9 +60,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         williams@redhat.com, bigeasy@linutronix.de,
         anna-maria@linutronix.de, linux-rt-users@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Subject: [PATCH 3/6] mm/swap: Allow remote LRU cache draining
-Date:   Tue, 21 Sep 2021 18:13:21 +0200
-Message-Id: <20210921161323.607817-4-nsaenzju@redhat.com>
+Subject: [PATCH 4/6] mm/page_alloc: Introduce alternative per-cpu list locking
+Date:   Tue, 21 Sep 2021 18:13:22 +0200
+Message-Id: <20210921161323.607817-5-nsaenzju@redhat.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210921161323.607817-1-nsaenzju@redhat.com>
 References: <20210921161323.607817-1-nsaenzju@redhat.com>
@@ -72,68 +72,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some setups, notably NOHZ_FULL CPUs, are too busy to handle the per-cpu
-drain work queued by __lru_add_drain_all(). So introduce new a mechanism
-to remotely drain the per-cpu lists. It is made possible by using a more
-constraining locking scheme, which is disabled by default and can be
-enabled through the 'remote_pcpu_cache_access' static key. Regular users
-shouldn't see any functional or performance change. Upcoming patches
-will make use of the key.
+page_alloc.c's per-cpu page lists are currently protected using local
+locks. While performance savvy, this doesn't allow for remote access to
+these structures. CPUs requiring system-wide per-cpu list drains get
+around this by scheduling drain work on all CPUs. That said, some select
+setups like systems with NOHZ_FULL CPUs, aren't well suited to this, as
+they can't handle interruptions of any sort.
 
-Based on previous work by Thomas Gleixner, Anna-Maria Gleixner, and
-Sebastian Andrzej Siewior[1].
+To mitigate this, introduce an alternative locking scheme using
+spinlocks that will permit remotely accessing these per-cpu page lists.
+It's disabled by default, with no functional change to regular users,
+and enabled through the 'remote_pcpu_cache_access' static key. Upcoming
+patches will make use of this static key.
 
-[1] https://patchwork.kernel.org/project/linux-mm/cover/20190424111208.24459-1-bigeasy@linutronix.de/
+This is based on previous work by Thomas Gleixner, Anna-Maria Gleixner,
+and Sebastian Andrzej Siewior[1].
+
+[1] https://patchwork.kernel.org/project/linux-mm/patch/20190424111208.24459-3-bigeasy@linutronix.de/
 Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 ---
- mm/swap.c | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+ mm/page_alloc.c | 87 ++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 68 insertions(+), 19 deletions(-)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index bcf73bd563a6..59e96a2520d5 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -915,19 +915,29 @@ inline void __lru_add_drain_all(bool force_all_cpus)
- 	WRITE_ONCE(lru_drain_gen, lru_drain_gen + 1);
- 	smp_mb();
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3b610b05d9b8..3244eb2ab51b 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -123,10 +123,12 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
+ #define MIN_PERCPU_PAGELIST_HIGH_FRACTION (8)
  
--	cpumask_clear(&has_work);
--	for_each_online_cpu(cpu) {
--		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
--
--		if (force_all_cpus || lru_cpu_needs_drain(cpu)) {
--			INIT_WORK(work, lru_add_drain_per_cpu);
--			queue_work_on(cpu, mm_percpu_wq, work);
--			__cpumask_set_cpu(cpu, &has_work);
+ struct pagesets {
+-	local_lock_t lock;
++	local_lock_t local;
++	spinlock_t spin;
+ };
+ static DEFINE_PER_CPU(struct pagesets, pagesets) = {
+-	.lock = INIT_LOCAL_LOCK(lock),
++	.local = INIT_LOCAL_LOCK(pagesets.local),
++	.spin = __SPIN_LOCK_UNLOCKED(pagesets.spin),
+ };
+ 
+ #ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
+@@ -207,6 +209,52 @@ static int __init early_init_on_free(char *buf)
+ }
+ early_param("init_on_free", early_init_on_free);
+ 
++static inline void pagesets_lock_irqsave(struct pagesets *locks,
++					 unsigned long *flagsp)
++{
 +	if (static_branch_unlikely(&remote_pcpu_cache_access)) {
-+		for_each_online_cpu(cpu) {
-+			if (force_all_cpus || lru_cpu_needs_drain(cpu)) {
-+				lru_cache_lock_cpu(&lru_pvecs.locks, cpu);
-+				lru_add_drain_cpu(cpu);
-+				lru_cache_unlock_cpu(&lru_pvecs.locks, cpu);
-+			}
-+		}
++		/* Avoid migration between this_cpu_ptr() and spin_lock_irqsave() */
++		migrate_disable();
++		spin_lock_irqsave(this_cpu_ptr(&locks->spin), *flagsp);
 +	} else {
-+		cpumask_clear(&has_work);
-+		for_each_online_cpu(cpu) {
-+			struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
-+
-+			if (force_all_cpus || lru_cpu_needs_drain(cpu)) {
-+				INIT_WORK(work, lru_add_drain_per_cpu);
-+				queue_work_on(cpu, mm_percpu_wq, work);
-+				__cpumask_set_cpu(cpu, &has_work);
-+			}
- 		}
--	}
- 
--	for_each_cpu(cpu, &has_work)
--		flush_work(&per_cpu(lru_add_drain_work, cpu));
-+		for_each_cpu(cpu, &has_work)
-+			flush_work(&per_cpu(lru_add_drain_work, cpu));
++		local_lock_irqsave(&locks->local, *flagsp);
 +	}
++}
++
++/*
++ * pagesets_lock_irqsave_cpu() should only be used from remote CPUs when
++ * 'remote_pcpu_cache_access' is enabled or the target CPU is dead. Otherwise,
++ * it can still be called on the local CPU with migration disabled.
++ */
++static inline void pagesets_lock_irqsave_cpu(struct pagesets *locks,
++					     unsigned long *flagsp, int cpu)
++{
++	if (static_branch_unlikely(&remote_pcpu_cache_access))
++		spin_lock_irqsave(per_cpu_ptr(&locks->spin, cpu), *flagsp);
++	else
++		local_lock_irqsave(&locks->local, *flagsp);
++}
++
++static inline void pagesets_unlock_irqrestore(struct pagesets *locks,
++					      unsigned long flags)
++{
++	if (static_branch_unlikely(&remote_pcpu_cache_access)) {
++		spin_unlock_irqrestore(this_cpu_ptr(&locks->spin), flags);
++		migrate_enable();
++	} else {
++		local_unlock_irqrestore(&locks->local, flags);
++	}
++}
++
++static inline void pagesets_unlock_irqrestore_cpu(struct pagesets *locks,
++						  unsigned long flags, int cpu)
++{
++	if (static_branch_unlikely(&remote_pcpu_cache_access))
++		spin_unlock_irqrestore(per_cpu_ptr(&locks->spin, cpu), flags);
++	else
++		local_unlock_irqrestore(&locks->local, flags);
++}
++
+ /*
+  * A cached value of the page's pageblock's migratetype, used when the page is
+  * put on a pcplist. Used to avoid the pageblock migratetype lookup when
+@@ -3064,12 +3112,12 @@ void drain_zone_pages(struct zone *zone, struct per_cpu_pages *pcp)
+ 	unsigned long flags;
+ 	int to_drain, batch;
  
- done:
- 	mutex_unlock(&lock);
+-	local_lock_irqsave(&pagesets.lock, flags);
++	pagesets_lock_irqsave(&pagesets, &flags);
+ 	batch = READ_ONCE(pcp->batch);
+ 	to_drain = min(pcp->count, batch);
+ 	if (to_drain > 0)
+ 		free_pcppages_bulk(zone, to_drain, pcp);
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore(&pagesets, flags);
+ }
+ #endif
+ 
+@@ -3077,21 +3125,22 @@ void drain_zone_pages(struct zone *zone, struct per_cpu_pages *pcp)
+  * Drain pcplists of the indicated processor and zone.
+  *
+  * The processor must either be the current processor and the
+- * thread pinned to the current processor or a processor that
+- * is not online.
++ * thread pinned to the current processor, a processor that
++ * is not online, or a remote processor while 'remote_pcpu_cache_access' is
++ * enabled.
+  */
+ static void drain_pages_zone(unsigned int cpu, struct zone *zone)
+ {
+ 	unsigned long flags;
+ 	struct per_cpu_pages *pcp;
+ 
+-	local_lock_irqsave(&pagesets.lock, flags);
++	pagesets_lock_irqsave_cpu(&pagesets, &flags, cpu);
+ 
+ 	pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
+ 	if (pcp->count)
+ 		free_pcppages_bulk(zone, pcp->count, pcp);
+ 
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore_cpu(&pagesets, flags, cpu);
+ }
+ 
+ /*
+@@ -3402,9 +3451,9 @@ void free_unref_page(struct page *page, unsigned int order)
+ 		migratetype = MIGRATE_MOVABLE;
+ 	}
+ 
+-	local_lock_irqsave(&pagesets.lock, flags);
++	pagesets_lock_irqsave(&pagesets, &flags);
+ 	free_unref_page_commit(page, pfn, migratetype, order);
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore(&pagesets, flags);
+ }
+ 
+ /*
+@@ -3439,7 +3488,7 @@ void free_unref_page_list(struct list_head *list)
+ 		set_page_private(page, pfn);
+ 	}
+ 
+-	local_lock_irqsave(&pagesets.lock, flags);
++	pagesets_lock_irqsave(&pagesets, &flags);
+ 	list_for_each_entry_safe(page, next, list, lru) {
+ 		pfn = page_private(page);
+ 		set_page_private(page, 0);
+@@ -3460,12 +3509,12 @@ void free_unref_page_list(struct list_head *list)
+ 		 * a large list of pages to free.
+ 		 */
+ 		if (++batch_count == SWAP_CLUSTER_MAX) {
+-			local_unlock_irqrestore(&pagesets.lock, flags);
++			pagesets_unlock_irqrestore(&pagesets, flags);
+ 			batch_count = 0;
+-			local_lock_irqsave(&pagesets.lock, flags);
++			pagesets_lock_irqsave(&pagesets, &flags);
+ 		}
+ 	}
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore(&pagesets, flags);
+ }
+ 
+ /*
+@@ -3639,7 +3688,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+ 	struct page *page;
+ 	unsigned long flags;
+ 
+-	local_lock_irqsave(&pagesets.lock, flags);
++	pagesets_lock_irqsave(&pagesets, &flags);
+ 
+ 	/*
+ 	 * On allocation, reduce the number of pages that are batch freed.
+@@ -3650,7 +3699,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+ 	pcp->free_factor >>= 1;
+ 	list = &pcp->lists[order_to_pindex(migratetype, order)];
+ 	page = __rmqueue_pcplist(zone, order, migratetype, alloc_flags, pcp, list);
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore(&pagesets, flags);
+ 	if (page) {
+ 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
+ 		zone_statistics(preferred_zone, zone, 1);
+@@ -5270,7 +5319,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		goto failed;
+ 
+ 	/* Attempt the batch allocation */
+-	local_lock_irqsave(&pagesets.lock, flags);
++	pagesets_lock_irqsave(&pagesets, &flags);
+ 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+ 	pcp_list = &pcp->lists[order_to_pindex(ac.migratetype, 0)];
+ 
+@@ -5300,7 +5349,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 		nr_populated++;
+ 	}
+ 
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore(&pagesets, flags);
+ 
+ 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+ 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+@@ -5309,7 +5358,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 	return nr_populated;
+ 
+ failed_irq:
+-	local_unlock_irqrestore(&pagesets.lock, flags);
++	pagesets_unlock_irqrestore(&pagesets, flags);
+ 
+ failed:
+ 	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
 -- 
 2.31.1
 
