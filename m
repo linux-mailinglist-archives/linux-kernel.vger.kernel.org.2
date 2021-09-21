@@ -2,79 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B5E413769
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78554413788
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 18:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhIUQV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 12:21:28 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3849 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234798AbhIUQVA (ORCPT
+        id S233796AbhIUQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 12:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231904AbhIUQ1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 12:21:00 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HDRQN2PlBz67Cqk;
-        Wed, 22 Sep 2021 00:17:00 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 21 Sep 2021 18:19:28 +0200
-Received: from [10.47.82.229] (10.47.82.229) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 21 Sep
- 2021 17:19:28 +0100
-Subject: Re: [PATCH] iommu/arm-smmu-v3: poll cmdq until it has space
-To:     Fernand Sieber <sieberf@amazon.com>, <will@kernel.org>,
-        <robin.murphy@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
-References: <20210921114338.1144521-1-sieberf@amazon.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <c1c10203-ffd3-25f9-f2c6-9cee3458aac9@huawei.com>
-Date:   Tue, 21 Sep 2021 17:22:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 21 Sep 2021 12:27:11 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56E8C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:25:42 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso7247006oon.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 09:25:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8730Bktiqk4tNVMLL/QOHd8DUmsTsfdK+RPNnLjS13I=;
+        b=VRrsr8juMP7JcmvqszJf3Kw5kbOJBokuGC7gnKzAt9Z9sG06orD0t9EfuL4N1XzuXB
+         rk1S8O8rqs54ly/NehWr5i2OVuQYHIGOBvAu5yemWMHut7f+fk8KgA4hdmi2HhFth4rh
+         D+/G6qXG27KpDHa8mJCt+scEnQU6ZU3J+TZY1s26n1+abSBnBjrFDstSFpEoZHDsXAS/
+         X9+U+MnUQRLyQIwQqy2KN1LdDB1iFJqGgkzmcAzEsjFwqs9NYrw/HEPDEIw7eIz8AKUV
+         Kfe6yFj9ysNde8C1vC0faX/KaG2FBxwrPJHBdZ+cRm+8TAWpObJ+7bV3LK7AK5MPX9AC
+         qc6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8730Bktiqk4tNVMLL/QOHd8DUmsTsfdK+RPNnLjS13I=;
+        b=ZK7HXelLs10pfTyy/DXKLXeKsJmj8ZWvO6mfPxWMbU5vbwmbkWbmDyPDTJPNi1xByi
+         F/hM3yHy5z44d5Vt5h/T/uR2UC6Fz0axz6S/x16EKNkrLvMKutjhv8pPZ0Gihn1nZLt0
+         BwigGezwB8hxJHLOFbtd8ZjXy/5SnlQzpKwJcw7v/yI2BMq/H4UtIgvlDTzPE4U4hojs
+         +Nc8/+smaThkwNcQwr+s8x3uIXQ+t0Eq1Adubc3ck4E+61CZRZvEv4s5vM5mqCw11xpO
+         Ybl8zoj7WhGfT7MJ80sQqJhYzhUf+R7TraqSrxB4kIp7X+57xbMNaoWAGL3fy3WWHv5s
+         15UQ==
+X-Gm-Message-State: AOAM530PqDoRkaS5Ylted8vmIfW8yyTXOraRmRsL69Uu6mmsvoAByQUy
+        +8BvgJxSIGAz8BNJeCzOUp1Tnw==
+X-Google-Smtp-Source: ABdhPJyWx86fuRCxiB1BbAZsfo1axvq1nZpMeHdaaS8MkdJ7Qfh2CZw6I5ofRnlPQT0RBvanujWInQ==
+X-Received: by 2002:a4a:a388:: with SMTP id s8mr6397396ool.39.1632241541498;
+        Tue, 21 Sep 2021 09:25:41 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q7sm4154239otl.68.2021.09.21.09.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 09:25:41 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 09:26:23 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+Subject: Re: [PATCH] pinctrl: qcom: Add egpio feature support
+Message-ID: <YUoHr0F9qjr2Toeb@ripper>
+References: <1631860648-31774-1-git-send-email-rnayak@codeaurora.org>
+ <YUfZbsf3MX1aQJ2+@builder.lan>
+ <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210921114338.1144521-1-sieberf@amazon.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.82.229]
-X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d2f28d34-99b3-30f8-8504-bc819946876f@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2021 12:43, Fernand Sieber wrote:
->   	do {
+On Tue 21 Sep 03:39 PDT 2021, Rajendra Nayak wrote:
 
-I didn't follow the full logic of this change yet ...
-
->   		llq->val = READ_ONCE(cmdq->q.llq.val);
-> -		if (!queue_full(llq))
-> +		if (!queue_has_space(llq, n))
-
-But is the polarity really correct? That is, if we don't have space, 
-then exit with success (the function to check for space).
-
->   			break;
 > 
-> +		/*
-> +		 * We must return here even if there's no space, because the producer
-> +		 * having moved forward could mean that the last thread observing the
-> +		 * SMMU progress has allocated space in the cmdq and moved on, leaving
-> +		 * us in this waiting loop with no other thread updating
-> +		 * llq->state->val.
+> 
+> On 9/20/2021 6:14 AM, Bjorn Andersson wrote:
+> > On Fri 17 Sep 01:37 CDT 2021, Rajendra Nayak wrote:
+> > 
+> > > From: Prasad Sodagudi <psodagud@codeaurora.org>
+> > > 
+> > > egpio is a scheme which allows special power Island Domain IOs
+> > > (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+> > > TLMM functions with Island Domain functions.
+> > > With this scheme, an IO can be controlled both by the cpu running
+> > > linux and the Island processor. This provides great flexibility to
+> > > re-purpose the Island IOs for regular TLMM usecases.
+> > > 
+> > > 2 new bits are added to ctl_reg, egpio_present is a read only bit
+> > > which shows if egpio feature is available or not on a given gpio.
+> > > egpio_enable is the read/write bit and only effective if egpio_present
+> > > is 1. Once its set, the Island IO is controlled from Chip TLMM.
+> > > egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+> > > 
+> > > The support exists on most recent qcom SoCs, and we add support
+> > > for sm8150/sm8250/sm8350 and sc7280 as part of this patch.
+> > > 
+> > 
+> > I was under the impression that this feature would allow you to
+> > repurpose pins for use either by the remote island or by apps.
+> 
+> thats right, you can repurpose the pins for usage by apps by setting
+> the egpio_enable to 1, when set to 0 its owned by the island processor.
 
-what is llq->state->val?
+Good.
 
-> +		 */
-> +		if (llq->prod != prod)
-> +			return -EAGAIN;
-> +
->   		ret = queue_poll(&qp);
+> > 
+> > But if I understand your proposal, you check to see if the pin is
+> > "egpio capable" for a pin and if so just sets the bit - muxing it to
+> > apps (or the island?).
+> 
+> Right, so if there is a request for a egpio-capable pin, the driver
+> flips the ownership. Are you suggesting having some kind of checks to determine
+> who should own it?
+> 
 
-Thanks,
-John
+I see, I missed that nuance. So Linux will steal any pins that are
+mentioned in DT. But that would mean that you're relying on someone else
+to ensure that this bit is cleared for the other pins and you would not
+be able to explicitly flip the state back to island mode in runtime.
+
+I would prefer that this was more explicit.
+
+> > It seems reasonable that this would be another pinmux state for these
+> > pins, rather than just flipping them all in one or the other direction.
+> 
+> hmm, I don't understand. This is not a pinmux state, its a switch to decide
+> the ownership.
+
+But does it mux the pin to the island, or does it state that the island
+is now in charge of the associated TLMM registers?
+
+If it's muxing the pin to the island, then it's conceptually just a
+special mux state that we can represent in DT as another pinmux
+function.
+
+> These egpio pins have regulator mux functions, some for apps, some for the
+> island processor, they might not always be used as gpios.
+
+Right, so if egpio = 1 for a pin, then it works like any other pin
+that's handled by the pinctrl-msm driver, with whatever muxing options
+are available for the given pin.
+
+But what happens when egpio = 0? Is the TLMM decoupled from the physical
+pin, or does the island use the TLMM as well?
+
+If it's not using the TLMM, do we need the TLMM to be in some particular
+state?
+
+
+What I'm proposing is that if the egpio is simply a first-line mux and
+the TLMM isn't used when the pin is muxed towards the island. Then we
+could add a custom 'function = "egpio"' muxing state and you could per
+pin mux things explicitly, and possibly dynamically, to be routed to the
+island.
+
+Regards,
+Bjorn
+
+> > PS. When I spoke with Prasad about this a couple of years ago, I think
+> > we talked about representing this as a pinconf property, but it seems to
+> > make more sense to me now that it would be a pinmux state.
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> > > [rnayak: rewrite commit log, minor rebase]
+> > > Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> > > ---
+> > >   drivers/pinctrl/qcom/pinctrl-msm.c    | 4 ++++
+> > >   drivers/pinctrl/qcom/pinctrl-msm.h    | 2 ++
+> > >   drivers/pinctrl/qcom/pinctrl-sc7280.c | 2 ++
+> > >   drivers/pinctrl/qcom/pinctrl-sm8150.c | 2 ++
+> > >   drivers/pinctrl/qcom/pinctrl-sm8250.c | 2 ++
+> > >   drivers/pinctrl/qcom/pinctrl-sm8350.c | 2 ++
+> > >   6 files changed, 14 insertions(+)
+> > > 
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> > > index 8476a8a..f4a2343 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> > > @@ -220,6 +220,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
+> > >   	val = msm_readl_ctl(pctrl, g);
+> > >   	val &= ~mask;
+> > >   	val |= i << g->mux_bit;
+> > > +	/* Check if egpio present and enable that feature */
+> > > +	if (val & BIT(g->egpio_present))
+> > > +		val |= BIT(g->egpio_enable);
+> > > +
+> > >   	msm_writel_ctl(val, pctrl, g);
+> > >   	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+> > > index e31a516..3635b31 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-msm.h
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+> > > @@ -77,6 +77,8 @@ struct msm_pingroup {
+> > >   	unsigned drv_bit:5;
+> > >   	unsigned od_bit:5;
+> > > +	unsigned egpio_enable:5;
+> > > +	unsigned egpio_present:5;
+> > >   	unsigned oe_bit:5;
+> > >   	unsigned in_bit:5;
+> > >   	unsigned out_bit:5;
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280.c b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> > > index afddf6d..607d459 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-sc7280.c
+> > > @@ -43,6 +43,8 @@
+> > >   		.mux_bit = 2,			\
+> > >   		.pull_bit = 0,			\
+> > >   		.drv_bit = 6,			\
+> > > +		.egpio_enable = 12,		\
+> > > +		.egpio_present = 11,		\
+> > >   		.oe_bit = 9,			\
+> > >   		.in_bit = 0,			\
+> > >   		.out_bit = 1,			\
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm8150.c b/drivers/pinctrl/qcom/pinctrl-sm8150.c
+> > > index 7359bae..63a625a 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-sm8150.c
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-sm8150.c
+> > > @@ -56,6 +56,8 @@ enum {
+> > >   		.mux_bit = 2,			\
+> > >   		.pull_bit = 0,			\
+> > >   		.drv_bit = 6,			\
+> > > +		.egpio_enable = 12,		\
+> > > +		.egpio_present = 11,		\
+> > >   		.oe_bit = 9,			\
+> > >   		.in_bit = 0,			\
+> > >   		.out_bit = 1,			\
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm8250.c b/drivers/pinctrl/qcom/pinctrl-sm8250.c
+> > > index af144e7..ad4fd94 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-sm8250.c
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-sm8250.c
+> > > @@ -57,6 +57,8 @@ enum {
+> > >   		.mux_bit = 2,				\
+> > >   		.pull_bit = 0,				\
+> > >   		.drv_bit = 6,				\
+> > > +		.egpio_enable = 12,			\
+> > > +		.egpio_present = 11,			\
+> > >   		.oe_bit = 9,				\
+> > >   		.in_bit = 0,				\
+> > >   		.out_bit = 1,				\
+> > > diff --git a/drivers/pinctrl/qcom/pinctrl-sm8350.c b/drivers/pinctrl/qcom/pinctrl-sm8350.c
+> > > index 4d8f863..bb436dc 100644
+> > > --- a/drivers/pinctrl/qcom/pinctrl-sm8350.c
+> > > +++ b/drivers/pinctrl/qcom/pinctrl-sm8350.c
+> > > @@ -46,6 +46,8 @@
+> > >   		.mux_bit = 2,			\
+> > >   		.pull_bit = 0,			\
+> > >   		.drv_bit = 6,			\
+> > > +		.egpio_enable = 12,		\
+> > > +		.egpio_present = 11,		\
+> > >   		.oe_bit = 9,			\
+> > >   		.in_bit = 0,			\
+> > >   		.out_bit = 1,			\
+> > > -- 
+> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> > > of Code Aurora Forum, hosted by The Linux Foundation
+> > > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
