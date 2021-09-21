@@ -2,126 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106DC4135BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3114135C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbhIUPDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 11:03:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233647AbhIUPDy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 11:03:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632236545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BT6/P6goCwmRLEI3gDKs1TsOEvArNLdaBojn/+x1GJw=;
-        b=WyYkN0Sjs99Bcn0OJWWvWeOyvoDejqiWEVQzeD3g8khXazE1N04u0szgX9ji+VrUJu/vVT
-        bxVNR1jtFSgvgNkFxsRxkRcVP6Is7gxRx9/D+zPes+PTm3oGkSCQn7WdecJE8eCuedkGZb
-        2TMpTj0wr7lSejbqixX3FSIGILVPpgc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-KlpdfSwcM2-kAhL_mQO1Xw-1; Tue, 21 Sep 2021 11:02:24 -0400
-X-MC-Unique: KlpdfSwcM2-kAhL_mQO1Xw-1
-Received: by mail-wr1-f69.google.com with SMTP id v1-20020adfc401000000b0015e11f71e65so9084981wrf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 08:02:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=BT6/P6goCwmRLEI3gDKs1TsOEvArNLdaBojn/+x1GJw=;
-        b=Tm5STsh5yLm4wEiPM/I03qW8FLqNbmnes3f9jmcjQT4KS/FjaOmAxkmfzk1ZtPc/5l
-         N/vsKsrHCCT0qS0oLRv4geSE6dOsSIwlm52yTIui5xinFQ8k1JJFhM+XLF6oxQ18U2ww
-         zMIXDE1yaKABq71B3d+qcmIzwh39lK/Uj32xctok4QcXdZkwmUCXg8/os3oEjfztv9np
-         ICx6Oc+MaR0Y9N56hGd2WnlGmQffOJaCGwHjbFX69pwp7L9iorOmDb5Qv3mWIuS9Pj6q
-         jBR8Ms9DI8b6HBnfFle/UEYdpxlbe1mfQ91RL31RTKkKENhXGRLxT7WjMH5jy/XyeHyy
-         /qYA==
-X-Gm-Message-State: AOAM532nI1TAX+t/4pm6tcCvVv6gUqKlDnjtE0frK8pQ1t7uVd/HaU7J
-        qxxJa/2yiK5tEt6++iyqa+diSwcyr48LsjfmVSrZ1y0ls5FHZV+igq8UCjhY8Krth7CHVydEYWb
-        yOVaeRZEoXdJ4zNAsvHtnb58z
-X-Received: by 2002:a5d:4e90:: with SMTP id e16mr35206286wru.243.1632236542488;
-        Tue, 21 Sep 2021 08:02:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzXfOTTf9Hym6xRUCMK7DpPvA39/lnEthLRoZrq9k5RzXh51URGRevvF4LC9p+t+8kyj0LTwg==
-X-Received: by 2002:a5d:4e90:: with SMTP id e16mr35206252wru.243.1632236542240;
-        Tue, 21 Sep 2021 08:02:22 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n186sm3029803wme.31.2021.09.21.08.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 08:02:21 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH v2 07/10] KVM: VMX: Drop explicit zeroing of MSR guest
- values at vCPU creation
-In-Reply-To: <20210921000303.400537-8-seanjc@google.com>
-References: <20210921000303.400537-1-seanjc@google.com>
- <20210921000303.400537-8-seanjc@google.com>
-Date:   Tue, 21 Sep 2021 17:02:20 +0200
-Message-ID: <87r1di7z0j.fsf@vitty.brq.redhat.com>
+        id S233832AbhIUPEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 11:04:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30309 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233811AbhIUPEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 11:04:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632236601; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=bsSyjO77usODxPNl9U4WuLitIVjcU7QWauyIkVpnW1I=;
+ b=FyVRE3v7+vQvxSqTmTFIqyxUB2GgKNC5+Q8OSs6I5ENKOa07H2p5OGkiTCKcZNgSv1+++S/d
+ 5LvrWYN/3tvtxaRrOw/ossGWNot5eO2gqLdvzP21aLrpYHmXUaO4hgqtkfmgoYpOopd2gYqK
+ Thh4Sf7z+zBZY98H3X4WP4c9mQI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6149f41fbd6681d8edec436d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 15:02:55
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E59F6C4361B; Tue, 21 Sep 2021 15:02:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8888AC4338F;
+        Tue, 21 Sep 2021 15:02:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 8888AC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/9] mwifiex: Small cleanup for handling virtual interface
+ type changes
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210914195909.36035-2-verdre@v0yd.nl>
+References: <20210914195909.36035-2-verdre@v0yd.nl>
+To:     =?utf-8?q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?utf-8?q?Jonas_Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?utf-8?q?Pali_Roh?= =?utf-8?q?=C3=A1r?= <pali@kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210921150254.E59F6C4361B@smtp.codeaurora.org>
+Date:   Tue, 21 Sep 2021 15:02:54 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Jonas Dreßler <verdre@v0yd.nl> wrote:
 
-> Don't zero out user return and nested MSRs during vCPU creation, and
-> instead rely on vcpu_vmx being zero-allocated.  Explicitly zeroing MSRs
-> is not wrong, and is in fact necessary if KVM ever emulates vCPU RESET
-> outside of vCPU creation, but zeroing only a subset of MSRs is confusing.
->
-> Poking directly into KVM's backing is also undesirable in that it doesn't
-> scale and is error prone.  Ideally KVM would have a common RESET path for
-> all MSRs, e.g. by expanding kvm_set_msr(), which would obviate the need
-> for this out-of-bad code (to support standalone RESET).
+> Handle the obvious invalid virtual interface type changes with a general
+> check instead of looking at the individual change.
+> 
+> For type changes from P2P_CLIENT to P2P_GO and the other way round, this
+> changes the behavior slightly: We now still do nothing, but return
+> -EOPNOTSUPP instead of 0. Now that behavior was incorrect before and
+> still is, because type changes between these two types are actually
+> possible and supported, which we'll fix in a following commit.
+> 
+> Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
 
-Just thinking out loud: we can probably enhance KVM_SET_MSRS making it
-possible for userspace VMM to set the default (as not every setting need
-to survive RESET). Conveniently enough, 'struct kvm_msr_entry' has 32
-bits reserved and we can bite off one for 'default' flag.
+9 patches applied to wireless-drivers-next.git, thanks.
 
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index d44d07d5a02f..8d14066db3ea 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6819,10 +6819,8 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  			goto free_vpid;
->  	}
->  
-> -	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
-> -		vmx->guest_uret_msrs[i].data = 0;
-> +	for (i = 0; i < kvm_nr_uret_msrs; ++i)
->  		vmx->guest_uret_msrs[i].mask = -1ull;
-> -	}
->  	if (boot_cpu_has(X86_FEATURE_RTM)) {
->  		/*
->  		 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID interception.
-> @@ -6879,8 +6877,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  
->  	if (nested)
->  		memcpy(&vmx->nested.msrs, &vmcs_config.nested, sizeof(vmx->nested.msrs));
-> -	else
-> -		memset(&vmx->nested.msrs, 0, sizeof(vmx->nested.msrs));
->  
->  	vcpu_setup_sgx_lepubkeyhash(vcpu);
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+babe2a332dc4 mwifiex: Small cleanup for handling virtual interface type changes
+abe3a2c9ead8 mwifiex: Use function to check whether interface type change is allowed
+c2e9666cdffd mwifiex: Run SET_BSS_MODE when changing from P2P to STATION vif-type
+54350dac4e6a mwifiex: Use helper function for counting interface types
+fae2aac8c740 mwifiex: Update virtual interface counters right after setting bss_type
+25bbec30a2c7 mwifiex: Allow switching interface type from P2P_CLIENT to P2P_GO
+5e2e1a4bf4a1 mwifiex: Handle interface type changes from AP to STATION
+c606008b7062 mwifiex: Properly initialize private structure on interface type changes
+72e717500f99 mwifiex: Fix copy-paste mistake when creating virtual interface
 
 -- 
-Vitaly
+https://patchwork.kernel.org/project/linux-wireless/patch/20210914195909.36035-2-verdre@v0yd.nl/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
