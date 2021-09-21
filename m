@@ -2,73 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EAA413C39
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F55413C52
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbhIUVS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:18:59 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:33462 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234963AbhIUVS6 (ORCPT
+        id S231373AbhIUVYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234221AbhIUVW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:18:58 -0400
-Received: by mail-ot1-f44.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso528739otu.0;
-        Tue, 21 Sep 2021 14:17:29 -0700 (PDT)
+        Tue, 21 Sep 2021 17:22:29 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE86C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:21:00 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id p29so2829802lfa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GYWKxxwDs0cZgU7zoLo4TUhsJ8M50sSfexrGGa7nvK0=;
+        b=6GA+nKi4dJGN5Y/djnNixBrKu6T3pljCu3U/BgzvrwouwWOron03nG2FotSmE1IvQS
+         MgoEePxggSU/gxjqerZifjJ0UmN+Rpgv4VXnbx+GeN6FcHZXKGVGGXh/gwowELfGRgeB
+         k1v+6RGz165vVjf8qTg9T5T2FYUEcrHSwLBk5fRy4e1eic4Bwe7QkdtvB988rBItCSlw
+         5pJbiBObITlEWIumnOpwgWSOod/vvf6//SPAXj5IzXKsXsn8DowBeLy2GH+tdsAPmUH0
+         ZbwUoQIW4DTzzxX46eJW+ys3iupLGzexzYNkzIcWmfRnNP3AUY1kX51pUUaEoehoA6Yb
+         KPPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0Lsr93at0cWmNYp0eGkUmreJYYzq8CpkZ94/2p7LeqY=;
-        b=WsbU476SmyUL2kcDqOvnuRL7ENEnWQYYWM+G19KIDx49WtFprUS33Lzbj/oLE3faBQ
-         LsaUdcDl1QdRTPV5N6GZmstRHrgAwlRaF8oludraTgTdx2GIVzENeE9DDd4PMArl9s0n
-         E1zCft7xN4Ec2VTqlmpEC3OaYxHUPzRi50jXWkoGDo+mAQIyTUpudXU8ZZPHLC3zB+m/
-         DTcpCi8iscWdJZTH7cM6HFqhkoFMF+SGvCQ/WunCs9dDCaDMgnCn8AJ8Rj+roJ4mSb3f
-         aXH4D/ysCbxLKvOg5m90HTl8YrYF6V5QQ7dlQ4KJ2p8Sufl4Kg5VZPBRiQA3kCm6PT6F
-         Sa0A==
-X-Gm-Message-State: AOAM533koy9BDcYW4KEJBlp79eUCjzhWsA1BKkrJDcotCH3BI3L3KKCv
-        +JwLgZpVwKtjIqPuYhhujg==
-X-Google-Smtp-Source: ABdhPJwy9BH8rHjOx9Hn6xfioTu4ZfqPtlbLcr1Im/zzNbEh4d6wfDqVY6NT1n3SFuKzlx9+BZLs0Q==
-X-Received: by 2002:a9d:72c5:: with SMTP id d5mr28207200otk.212.1632259048920;
-        Tue, 21 Sep 2021 14:17:28 -0700 (PDT)
-Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
-        by smtp.gmail.com with ESMTPSA id k5sm39542oik.38.2021.09.21.14.17.28
+        bh=GYWKxxwDs0cZgU7zoLo4TUhsJ8M50sSfexrGGa7nvK0=;
+        b=voXp46SqjTUzaP8EpjCmc1l+j0QKKDvDUqHoCeLnabXZxm7jOOF591FClsPwtaFmq3
+         seiwfTdIwiUJMfTcCC5yjQHtsDcD7C8Mu4VEe4dbTG4rY9l6de5rRUMkZEBhejZbou3d
+         tXaRNgfc19bG887nEACiOLXnILTMSFO+SYQ3pFmzy42Hj5shPTTDiY25J9szcYVDaM1i
+         ZwwipDj0WFKi5fYQbdfW202ZfRJVcgW88eON4MNHaY5iGDNEaCpT75/6w3oo4V736wGH
+         gWFu4LNOn34yOfggqBGaJOl0BBd2kO0nQ8yyuYZPqOOlSFiiIFkB6x1yfqzXgtxHzQDB
+         DtrQ==
+X-Gm-Message-State: AOAM530NK6NnrdvZto81WtwXN6fluARnWHBqXR8O0KzqQr6hemXZr5FN
+        Bntog4BKG9uBGtJvoIJztX/Lcg==
+X-Google-Smtp-Source: ABdhPJwekUVL/x16ZZDpG4z5bQ8XnWA1mYPT1pSdbtQA7F8rIf0C+IYx6L1iOsCNob4BliQK4ObStw==
+X-Received: by 2002:a2e:5009:: with SMTP id e9mr25102801ljb.245.1632259258818;
+        Tue, 21 Sep 2021 14:20:58 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id t12sm13948lfc.55.2021.09.21.14.20.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:17:28 -0700 (PDT)
-Received: (nullmailer pid 3339518 invoked by uid 1000);
-        Tue, 21 Sep 2021 21:17:27 -0000
-Date:   Tue, 21 Sep 2021 16:17:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Romain Perier <romain.perier@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] ARM: dts: mstar: Add the Wireless Tag
- IDO-SBC2D06-V1B-22W
-Message-ID: <YUpL54S16HXK/xkU@robh.at.kernel.org>
-References: <20210914184141.32700-1-romain.perier@gmail.com>
- <20210914184141.32700-4-romain.perier@gmail.com>
- <CAFr9PXmfhkrJHwp-wVTKakQsg71AmcOz6Cc=rh+=R+8L_SHb8w@mail.gmail.com>
+        Tue, 21 Sep 2021 14:20:58 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 1B39910305C; Wed, 22 Sep 2021 00:20:59 +0300 (+03)
+Date:   Wed, 22 Sep 2021 00:20:59 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3 5/8] x86/sme: Replace occurrences of sme_active() with
+ cc_platform_has()
+Message-ID: <20210921212059.wwlytlmxoft4cdth@box.shutemov.name>
+References: <cover.1631141919.git.thomas.lendacky@amd.com>
+ <367624d43d35d61d5c97a8b289d9ddae223636e9.1631141919.git.thomas.lendacky@amd.com>
+ <20210920192341.maue7db4lcbdn46x@box.shutemov.name>
+ <77df37e1-0496-aed5-fd1d-302180f1edeb@amd.com>
+ <YUoao0LlqQ6+uBrq@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFr9PXmfhkrJHwp-wVTKakQsg71AmcOz6Cc=rh+=R+8L_SHb8w@mail.gmail.com>
+In-Reply-To: <YUoao0LlqQ6+uBrq@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 07:09:34PM +0900, Daniel Palmer wrote:
-> Hi Romain,
+On Tue, Sep 21, 2021 at 07:47:15PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 21, 2021 at 12:04:58PM -0500, Tom Lendacky wrote:
+> > Looks like instrumentation during early boot. I worked with Boris offline to
+> > exclude arch/x86/kernel/cc_platform.c from some of the instrumentation and
+> > that allowed an allyesconfig to boot.
 > 
-> On Wed, 15 Sept 2021 at 03:42, Romain Perier <romain.perier@gmail.com> wrote:
-> > 1. http://linux-chenxing.org/infinity2/ido-sbc2d06
-> > 2. http://www.wireless-tag.com/portfolio/ido-som2d01
+> And here's the lineup I have so far, I'd appreciate it if ppc and s390 folks
+> could run it too:
 > 
-> I think these should be Link: xxxx. I can fix this up if/when I put it
-> into the mstar dt for 5.16 branch though.
+> https://git.kernel.org/pub/scm/linux/kernel/git/bp/bp.git/log/?h=rc2-cc
 
-Not really. 'Link' is for the link to this patch in lore and sometimes 
-to a discussion leading to the patch.
+Still broken for me with allyesconfig.
 
-Rob
+gcc version 11.2.0 (Gentoo 11.2.0 p1)
+GNU ld (Gentoo 2.37_p1 p0) 2.37
+
+I still believe calling cc_platform_has() from __startup_64() is totally
+broken as it lacks proper wrapping while accessing global variables.
+
+I think sme_get_me_mask() has the same problem. I just happened to work
+(until next compiler update).
+
+This hack makes kernel boot again:
+
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index f98c76a1d16c..e9110a44bf1b 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -285,7 +285,7 @@ unsigned long __head __startup_64(unsigned long physaddr,
+ 	 * there is no need to zero it after changing the memory encryption
+ 	 * attribute.
+ 	 */
+-	if (cc_platform_has(CC_ATTR_MEM_ENCRYPT)) {
++	if (0 && cc_platform_has(CC_ATTR_MEM_ENCRYPT)) {
+ 		vaddr = (unsigned long)__start_bss_decrypted;
+ 		vaddr_end = (unsigned long)__end_bss_decrypted;
+ 		for (; vaddr < vaddr_end; vaddr += PMD_SIZE) {
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index eff4d19f9cb4..91638ed0b1db 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -288,7 +288,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
+ 	unsigned long pgtable_area_len;
+ 	unsigned long decrypted_base;
+ 
+-	if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
++	if (1 || !cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
+ 		return;
+ 
+ 	/*
+-- 
+ Kirill A. Shutemov
