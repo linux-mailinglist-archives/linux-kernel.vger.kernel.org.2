@@ -2,77 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12484139E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2D8413A00
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 20:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbhIUSUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 14:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232600AbhIUSUH (ORCPT
+        id S233329AbhIUSWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:22:40 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34222
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233373AbhIUSWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:20:07 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08842C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:18:39 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id w64-20020a9d3646000000b0054716b40005so8545381otb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=wRIT4s1i/ShcOgxfjk26/chTDGk5J7qcbPp6zKx8wL8=;
-        b=O/2eYurCO/RmjAPGB8JVzLIkW70Y7fAHFdWVq3FjQYPfJ74EUMPVH+s6by2pFUAiJh
-         hnAt2edp59tSX/Sfwq99Bn/jxK9pr0CS917pRSPuQMaWVcEEj2gyxIunGzJB1baLUrwr
-         dwnYo+QZQ/wZuSkPQcjSKCd5CrCZyMGlE36EA=
+        Tue, 21 Sep 2021 14:22:20 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5D2FD4027C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:20:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632248450;
+        bh=s1x0s0nZoSfkDljorxbVXRoxNOeXqYSIOV8lCyGgV/M=;
+        h=To:Cc:References:From:Subject:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=OuMq8TuW98drYQVUd6qIyfwLIV+l0aD1dljAtR9Qgrut7WqnGE7qjLMfn9gS0Uz2q
+         7k8akZJm8/yItZ1RAYIpdAjDeGzxA3NUOv9XTMgGSOb+NmwR/AhRSRZIrGpdDFQD+H
+         YkowoHGlYv7UHc0JcZHQHATJbnDj47YTSjydUa3HPxPwPvEYs+piTLxdwFtFEEXqWm
+         gmPDfcr7rfrgfYBwwZS8WmIqY37yFNB201YUgMOnSVkwRZjzUmojCzGU+lJauHbb3I
+         PlyVsoC5n5Ad7+6plKI5trJrzbgieb3p48CdU9GggF+iaiRkt0g8jme6xawxj4EIfr
+         RkbeDiWD1LJLw==
+Received: by mail-wr1-f70.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so9558639wrt.9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 11:20:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=wRIT4s1i/ShcOgxfjk26/chTDGk5J7qcbPp6zKx8wL8=;
-        b=utY74a0NrhT/NnSiwt+u/nUmVj28NxHf7PER7aHPF3gWi/TBNXUdGuI7ACpyPGazRY
-         3vook5c6EaRlv01nnqP4ok0M1oT1J4Y0QqOzZr/pCA/K+ladlIvan/7sLoX2bFaqY9L3
-         DKp94z8LsmFejy0UECeKJHWAV5xVuTrmeO+Xos3Q/P2giuj+upbsEOs7ovltseV/u9Ul
-         nY4TcqFhuDu3B6bSC7s6K282mDttnxqSjG/8tbpZFUOcNml+v8o9FJlsw8y+6DVo2qBa
-         rosD4YSYTuuBHytmXm4lWSXC7/WU6ZF8G1dtp8D3tG6m5bT+cf/q6z8PL09aDxWIqbRM
-         NRHw==
-X-Gm-Message-State: AOAM531VkPQSWu+TRSVcQc/e3VZdy5ft3XzYD/2W8YlHPMdK1mJcrllG
-        /AdBpCIMFE8hwJodEQ5lsGc0xEO4AzyqlvkVhCp7nw==
-X-Google-Smtp-Source: ABdhPJw6e8geb8YL/7MJWKkTXO13qz7mPLMAUDCSnLFmjbkfJLLfy1WYN3WJ0fDFhBEaiOzeUbsjdhA6UmV7LoOP+as=
-X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr25758184otp.159.1632248318469;
- Tue, 21 Sep 2021 11:18:38 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 21 Sep 2021 11:18:38 -0700
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s1x0s0nZoSfkDljorxbVXRoxNOeXqYSIOV8lCyGgV/M=;
+        b=Feg+n/LN++B5RyH9YHtQfijdxvawAD4f6hf31AmiB5q6a9bDdiodj7A9vtEGznljwX
+         HPcyJ3NReNzPx3odUeWRfW8DDIQ6cxtszAP4gAo3GNOcmzpPFpDFkLBzUwj4x6G5slpx
+         ntrV8m2JPkUwxFPGQ+ZUlpNVlEQQ1YIZGloXQJlUMWjmgwA8ghzL6EGhCT63arTOSutD
+         CwfIcR+sQpYuJLPemZQrWGSbZ2PGtopmuSYSAP4EMVnA9euQ1i1BLl53licU3v7nTsjV
+         yE6TYXFJTRYgAcTUiYBIohGnhsMdomm5NAnUClLZTiyDoM5m+Q3nsQLDqq4Zu+/Mu+C+
+         G/yA==
+X-Gm-Message-State: AOAM532+4Je7gyCsrBCBN1yl9Ov+yvJ/W92OwbKinRIAUoo7LUiTKH/J
+        Bfi8z7T3Y3qU8bvlelCoYkfSSQTrsvajXqd0dfSV0UUPF8lpArm8bUK+HdTYSDc4PRXSamqTuWf
+        7V7ER7ELGvVZUhPbHeNwV9vxNPG5qHJse/UEcMkCtcQ==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr6116127wmi.163.1632248450029;
+        Tue, 21 Sep 2021 11:20:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwzFXWldxf5QmNutieh/xiyRvCC3i4k/pd4YG3SgGB01SyUaFQH3M57JkcGsRr4RuTJRGTbMw==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr6116109wmi.163.1632248449844;
+        Tue, 21 Sep 2021 11:20:49 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id l124sm3715171wml.8.2021.09.21.11.20.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 11:20:49 -0700 (PDT)
+To:     Will McVicker <willmcvicker@google.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc@vger.kernel.org
+References: <20210920190350.3860821-1-willmcvicker@google.com>
+ <20210920190350.3860821-3-willmcvicker@google.com>
+ <2b48a41a-9130-b4cc-40d3-0bc7930ac76a@canonical.com>
+ <YUmVj80m/rEC2mT7@google.com>
+ <CABYd82a4OwxHNUUmUtBmTpSvWLu-f4sepHMF49kPQtWLU3MkDA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH v1 2/4] soc: samsung: change SOC_SAMSUNG default config
+ logic
+Message-ID: <ad2de848-8fce-f275-25de-83a886243645@canonical.com>
+Date:   Tue, 21 Sep 2021 20:20:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <1632220746-25943-8-git-send-email-rajpat@codeaurora.org>
-References: <1632220746-25943-1-git-send-email-rajpat@codeaurora.org> <1632220746-25943-8-git-send-email-rajpat@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 21 Sep 2021 11:18:38 -0700
-Message-ID: <CAE-0n50aP3u3ZgZXrTA2R1YuKghi8p0BwSsXsceKKxrz97xAVA@mail.gmail.com>
-Subject: Re: [PATCH V9 7/8] arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajesh Patil <rajpat@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, mka@chromium.org, dianders@chromium.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CABYd82a4OwxHNUUmUtBmTpSvWLu-f4sepHMF49kPQtWLU3MkDA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajesh Patil (2021-09-21 03:39:05)
-> From: Roja Rani Yarubandi <rojay@codeaurora.org>
->
-> Add QUPv3 wrapper_1 DT nodes for SC7280 SoC.
->
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On 21/09/2021 19:45, Will McVicker wrote:
+> On Tue, Sep 21, 2021 at 1:19 AM Lee Jones <lee.jones@linaro.org> wrote:
+>>
+>> On Tue, 21 Sep 2021, Krzysztof Kozlowski wrote:
+>>
+>>> On 20/09/2021 21:03, Will McVicker wrote:
+>>>> Switch the default logic to enable SOC_SAMSUNG and it's sub-configs to
+>>>> be enabled by default via "default y if ARCH_EXYNOS" versus being
+>>>> selected by the ARCH_EXYNOS config directly. This allows vendors to
+>>>> disable these configs if they wish and provides additional flexibility
+>>>> to modularize them in the presence of a generic kernel.
+>>>
+>>> This is not true. Vendors cannot disable these options as they are not
+>>> visible.
+>>
+>> Good point, well made.
+>>
+>>> Although I understand that Arnd prefers this way and I do not
+>>> object it, but your explanation is incorrect.
+> 
+> Thanks Krzysztof for the reviews! I'm sorry I missed the whole "hidden
+> configs" part. I'll upload the series to include the fix that refactos
+> the Samsung SoC drivers menuconfig which will address that and allow
+> one to enable/disable those configs. I'm going to hold off though
+> until we hash out the rest of the discussion in the cover letter
+> email.
 
-Same comment here. Please make the cs_gpio nodes unused.
+No, please first read our discussions, including Lee's and Geert's
+comments. The drivers should not be converted to modules or made visible
+if such configuration does not work. If it works, please describe your
+testing setup.
+
+All these drivers are *necessary* for a multiplatform kernel supporting
+Exynos platforms, therefore disabling them does not make any sense (if
+you support Exynos platform). If your kernel does not support Exynos
+platform, just do not select ARCH_EXYNOS and problem disappears because
+none of these drivers will be visible and selected.
+
+Unless you describe here some out-of-tree kernel which wants
+ARCH_EXYNOS, because vendor did not upstream it's code, but you do not
+want existing Exynos upstream drivers. We do not support such
+configuration. Please push your lovely vendor to work with upstream.
+That's the only solution.
+
+It's the third time this abuse re-usage of ARCH_EXYNOS appears and the
+same as before - the vendor does not like to upstream stuff. There are
+few guys trying to upstream recent Samsung SoC support by themself (ping
+me for contacts if you would like to participate) but the one party
+which should be doing it - the lovely vendor - does not actually
+participate and instead sends ridiculous patches like this one here...
+or like this [1] [2].
+
+Nope, please work with upstreaming SoC support, instead of abusing
+ARCH_EXYNOS for out of tree code from the vendor.
+
+[1]
+https://lore.kernel.org/linux-samsung-soc/001001d5a03d$05de1f70$119a5e50$@samsung.com/
+
+[2]
+https://lore.kernel.org/linux-usb/20210303022628.6540-1-taehyun.cho@samsung.com/
+
+Best regards,
+Krzysztof
