@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25BA41350F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D380F413510
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 16:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbhIUOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 10:12:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30882 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233459AbhIUOM2 (ORCPT
+        id S233471AbhIUOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 10:12:45 -0400
+Received: from pv50p00im-ztbu10011701.me.com ([17.58.6.53]:46094 "EHLO
+        pv50p00im-ztbu10011701.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231781AbhIUOMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 10:12:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632233459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cE900L65kVIfjK8VvpSvwnI3zOb0vmCndw5L/cT4PJY=;
-        b=BNBn9joqL0GmbZE+lerdT4LOMyN6eYqTj2+P0GOK8ugxFxWopfQB8RAYN1QwhXXtTtObSa
-        aXy7wTygppVMxFzwR6csoQQpkJDpIWzCaFloN15SNERIoKATIJF05MRV1UqiNQF0hdOyct
-        loUqvcAJ36Y7x5tUSSQ4hqvxhG64aNc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-27CWZdxEMXG47KRX38NnwQ-1; Tue, 21 Sep 2021 10:10:58 -0400
-X-MC-Unique: 27CWZdxEMXG47KRX38NnwQ-1
-Received: by mail-ed1-f71.google.com with SMTP id w24-20020a056402071800b003cfc05329f8so19224712edx.19
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 07:10:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=cE900L65kVIfjK8VvpSvwnI3zOb0vmCndw5L/cT4PJY=;
-        b=LJHcG9LhNDdFOGv2vFlA7p3XzZXPA3Sm0W8sL7Zv2zHt5sXeIAetNpSro5hCehnnLF
-         GBRbokVOsidvS6oRpSMR38E6neNioV7I1bOpV0HKDiwKK9VsisXlQFXufDSkwNXOAAYH
-         4iXdmadwJ3qrE6E5Y4YFUaXZtMqrWbyVtPWyh2by9u0mWdg1WT7TE6JO4qSbWqmi5aoY
-         fcKduuoKsgtdTT115aVqX0lFw+wFgJataM17t313511G9rnZDmnE2ENi7yLfBf3ImKa9
-         +aBrZXP8tb0ptSoNlmlp+kPIYY//Q9BypWIL0y5Dw7nTWm8wlSktDQ0mqSAzcTUlYGUi
-         k9UQ==
-X-Gm-Message-State: AOAM533DvYlP+ho19Nhsk7mTn09/Wpna55nLEYj+8+KYYjaopUCNuRE/
-        vOJZ+LGdxGwSBWerlQ3Xr4Mw4pIYG82ojrDy/Vbc6YnQdU/rYKlnLBNIdAYV7eGufi9w9l+Jv63
-        gb7dh5xOw5l1WAhx0/Ooaaw4a
-X-Received: by 2002:a17:906:6dc1:: with SMTP id j1mr35454455ejt.324.1632233456591;
-        Tue, 21 Sep 2021 07:10:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyAoM5e3buXw+N0LcG9p+wHQBfnYocJMtDe5bhVO8jD0Iq9JvegX69/gL9z94fLU813+DHQ5g==
-X-Received: by 2002:a17:906:6dc1:: with SMTP id j1mr35454437ejt.324.1632233456410;
-        Tue, 21 Sep 2021 07:10:56 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id be9sm8031877edb.13.2021.09.21.07.10.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 07:10:56 -0700 (PDT)
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] platform-drivers-x86 for 5.15-2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
-Message-ID: <d7f081b7-275a-4f1c-ed27-9016ed5b2b46@redhat.com>
-Date:   Tue, 21 Sep 2021 16:10:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 21 Sep 2021 10:12:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1632233475; bh=SjcvMyiL+bTjpjyeXzGNGSMMrG9Q9hXIatEKEB7TpAU=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=NvX0hfW+Gn44qWq+Wo7coiLFtkJGdIVDUBdD+/Hu/890+VXzjG0QaEWV5t0NGixha
+         4VWVEOdcc8ybBTOl6cG5L1W5Mf5Mo27lNqQs6NXG351DzwEI9e6oJQpsVrvZUQjPaw
+         W1e4G02R1p1GjGpMnfJ9PWXgZwPnCA517iujNJZDVN8blOgKQqKEP9OgLHCxwC3hK5
+         VQnVOeQwNmG4UpGUpvp0HGaZ7FRdlwa3KuzuuU838rmxb4u1RqR3Uw2id7kMr9icjA
+         n0macdZriuICmIECZgMriwQuvhejnGoTKY32TcB6ZcG5blQi3zxZ17uSeeM4AQUS39
+         VgQUALCQiasAg==
+Received: from 192.168.1.7 (unknown [120.245.3.37])
+        by pv50p00im-ztbu10011701.me.com (Postfix) with ESMTPSA id 071E38A02FD;
+        Tue, 21 Sep 2021 14:11:04 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 0/2] Use generic code for virtual address of randomization
+ of x86
+From:   Xiongwei Song <sxwjean@me.com>
+In-Reply-To: <4EB3D825-264D-447A-8C55-FA0CE8BC31F6@chromium.org>
+Date:   Tue, 21 Sep 2021 22:11:01 +0800
+Cc:     x86@kernel.org, linux-mm@kvack.org,
+        Xiongwei Song <sxwjean@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Stefan Metzmacher <metze@samba.org>,
+        Marco Elver <elver@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <A30C4D61-59CC-4F30-B2F5-692BBE6DB3FF@me.com>
+References: <20210921110252.2593542-1-sxwjean@me.com>
+ <4EB3D825-264D-447A-8C55-FA0CE8BC31F6@chromium.org>
+To:     Kees Cook <keescook@chromium.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-21_04:2021-09-20,2021-09-21 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=522 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2109210088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Here is the first round of bug-fixes for platform-drivers-x86
-for 5.15, highlights:
- -  amd-pmc fix for some suspend/resume issues
- -  intel-hid fix to avoid false-positive SW_TABLET_MODE=1 reporting
- -  some build error/warning fixes
- -  various DMI quirk additions
+
+> On Sep 21, 2021, at 9:24 PM, Kees Cook <keescook@chromium.org> wrote:
+> 
+> 
+> 
+> On September 21, 2021 4:02:50 AM PDT, sxwjean@me.com wrote:
+>> From: Xiongwei Song <sxwjean@gmail.com>
+>> 
+>> Hello,
+>> 
+>> The two patches are to use generic code for randomization of virtual
+>> address of x86. Since the basic code logic of x86 is same as generic
+>> code, so no need to implement these functions on x86, please see the
+>> details in comments of patch 2.
+> 
+> Hi!
+> 
+> The other patches do not seem to have arrived; I only see 0/2.
+
+Sorry for that. Let me resend the patches.
 
 Regards,
-
-Hans
-
-
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.15-2
-
-for you to fetch changes up to 6f6aab1caf6c7fef46852aaab03f4e8250779e52:
-
-  platform/x86: gigabyte-wmi: add support for B550I Aorus Pro AX (2021-09-21 15:49:23 +0200)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.15-2
-
-Highlights:
- -  amd-pmc fix for some suspend/resume issues
- -  intel-hid fix to avoid false-positive SW_TABLET_MODE=1 reporting
- -  some build error/warning fixes
- -  various DMI quirk additions
-
-The following is an automated git shortlog grouped by driver:
-
-amd-pmc:
- -  Increase the response register timeout
-
-dell:
- -  fix DELL_WMI_PRIVACY dependencies & build error
-
-gigabyte-wmi:
- -  add support for B550I Aorus Pro AX
-
-lg-laptop:
- -  Correctly handle dmi_get_system_info() returning NULL
-
-platform/x86/intel:
- -  hid: Add DMI switches allow list
- -  punit_ipc: Drop wrong use of ACPI_PTR()
-
-touchscreen_dmi:
- -  Update info for the Chuwi Hi10 Plus (CWI527) tablet
- -  Add info for the Chuwi HiBook (CWI514) tablet
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      platform/x86/intel: punit_ipc: Drop wrong use of ACPI_PTR()
-
-Hans de Goede (2):
-      platform/x86: touchscreen_dmi: Add info for the Chuwi HiBook (CWI514) tablet
-      platform/x86: touchscreen_dmi: Update info for the Chuwi Hi10 Plus (CWI527) tablet
-
-José Expósito (1):
-      platform/x86/intel: hid: Add DMI switches allow list
-
-Mario Limonciello (1):
-      platform/x86: amd-pmc: Increase the response register timeout
-
-Matan Ziv-Av (1):
-      lg-laptop: Correctly handle dmi_get_system_info() returning NULL
-
-Randy Dunlap (1):
-      platform/x86: dell: fix DELL_WMI_PRIVACY dependencies & build error
-
-Tobias Jakobi (1):
-      platform/x86: gigabyte-wmi: add support for B550I Aorus Pro AX
-
- drivers/platform/x86/amd-pmc.c         |  2 +-
- drivers/platform/x86/dell/Kconfig      |  3 +-
- drivers/platform/x86/gigabyte-wmi.c    |  1 +
- drivers/platform/x86/intel/hid.c       | 27 +++++++++++++----
- drivers/platform/x86/intel/punit_ipc.c |  3 +-
- drivers/platform/x86/lg-laptop.c       |  2 +-
- drivers/platform/x86/touchscreen_dmi.c | 54 +++++++++++++++++++++++++++++++---
- 7 files changed, 77 insertions(+), 15 deletions(-)
+Xiongwei
 
