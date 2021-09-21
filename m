@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1283C41381A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040F841381D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhIURLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:11:51 -0400
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:44019 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhIURLt (ORCPT
+        id S230239AbhIURML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 13:12:11 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:40938 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhIURMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:11:49 -0400
-Received: by mail-oo1-f51.google.com with SMTP id l17-20020a4ae391000000b00294ad0b1f52so7274521oov.10;
-        Tue, 21 Sep 2021 10:10:21 -0700 (PDT)
+        Tue, 21 Sep 2021 13:12:10 -0400
+Received: by mail-oi1-f179.google.com with SMTP id t189so116497oie.7;
+        Tue, 21 Sep 2021 10:10:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=S4rWK627e6yBDbCEhLg6VsNoB81RgebdS3Ln+6wAGas=;
-        b=XDlNonLeRIdTMktqjNRbqF+SY16/BGD9K+RZ2jN/S73dF6EUPsXFmXan+RiMB6uyN4
-         fFz0JEeHJ1nl8VCyNh9iI+eRGL7VxS0pLU5kLj7+fVXRwnDVSDayDDA+i4lkke6bhvjE
-         gZ2I3DND1pnMbOL2pCo4DnHgfDG71lbzR2MdXpcQlY4WlIT/ZspW1/RXQCgnNT5NRV4r
-         yKqvS4cxNLI/MoSOeJ2mSeBjJs8eVZzV2AuUUDSl3/+R8Z+nVzXP+wAL8veQZmD/cTTn
-         OTp+zlneqrUoOxfgq+iVtdpWDBlKF6dMVNfukQK3r/rmytDQoz25knn2fPwSuL8wlG6q
-         GwLg==
-X-Gm-Message-State: AOAM5304xQHaS5hJrl4tcLbMJc129gfsL4mUvA7UJsso7VRwybB1QJzE
-        tjlzi6167kxyNB9MIoSnxg==
-X-Google-Smtp-Source: ABdhPJws4TdO+DPNS83SxM7XXfOVzOeooClPFMk6APULxosklf1aAoTwygi1il30jNMUX7PawpRkzg==
-X-Received: by 2002:a4a:52c4:: with SMTP id d187mr10680196oob.53.1632244221024;
-        Tue, 21 Sep 2021 10:10:21 -0700 (PDT)
+        bh=RSqqPC5RzPI5oNtELEMcTpcIl+PKFrmudC28hXLnces=;
+        b=u1vM2/T3vp44yaLWb4ydGjPKLMvXY9vaeOaDYXp5ICzs/Wx3X+oS8mhc2E6RkIESe1
+         Ty8YwjGlu7qOznqe/fq1duBS2zlqzC+kEkBrbGouMc5VQDVD/oQPkQhz3MG+HluxP5ja
+         9UO5lNctIVeKruM7vgmwAmWHFHeI3p2D/4ObQqAhy9/yAC4k78RAAGRUCd5C7jZFCSnQ
+         Zj6bRdV8qFmYg8RrPOKRwbDuo55kS7sbU3WpPWMQRCIEJfZDNXFTI4a7XfEYXweaK+YJ
+         k4+4b8jgZ82kg1tz99PR8g4Rxdu/farutR5wEDFAzcaPm14YgBGJKKwTIfei7I9xhNqH
+         LfbQ==
+X-Gm-Message-State: AOAM5309c+N+rKsYdhuV8Zy5lGVblSN1yHbqi65UczfYFP+2mB2tCJVD
+        FKQ/Wnd5yJcMAgwTsELZbw==
+X-Google-Smtp-Source: ABdhPJwH4CIpoWu4dhzELcwDixUt6gnKWJgymPlA4a/K671+NFCsyUlD18BbtS0xC5ek7GB5KvEByw==
+X-Received: by 2002:aca:e009:: with SMTP id x9mr4608457oig.156.1632244241496;
+        Tue, 21 Sep 2021 10:10:41 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id h15sm372163ots.2.2021.09.21.10.10.18
+        by smtp.gmail.com with ESMTPSA id i1sm4286746ooo.15.2021.09.21.10.10.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 10:10:19 -0700 (PDT)
-Received: (nullmailer pid 2967390 invoked by uid 1000);
-        Tue, 21 Sep 2021 17:10:17 -0000
-Date:   Tue, 21 Sep 2021 12:10:17 -0500
+        Tue, 21 Sep 2021 10:10:38 -0700 (PDT)
+Received: (nullmailer pid 2968018 invoked by uid 1000);
+        Tue, 21 Sep 2021 17:10:37 -0000
+Date:   Tue, 21 Sep 2021 12:10:37 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Olivier Moysan <olivier.moysan@foss.st.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        alsa-devel@alsa-project.org,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/7] dt-bindings: iio: adc: add nvmem support for vrefint
- internal channel
-Message-ID: <YUoR+Z5HEE56odzj@robh.at.kernel.org>
-References: <20210908155452.25458-1-olivier.moysan@foss.st.com>
- <20210908155452.25458-3-olivier.moysan@foss.st.com>
+To:     Swapnil Jakhade <sjakhade@cadence.com>
+Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        robh+dt@kernel.org, vkoul@kernel.org, lokeshvutla@ti.com,
+        a-govindraju@ti.com, linux-kernel@vger.kernel.org, kishon@ti.com,
+        mparab@cadence.com
+Subject: Re: [PATCH 2/5] dt-bindings: phy: cadence-torrent: Add clock IDs for
+ derived and received refclk
+Message-ID: <YUoSDVVTs4em6UGP@robh.at.kernel.org>
+References: <20210908182628.28364-1-sjakhade@cadence.com>
+ <20210908182628.28364-3-sjakhade@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210908155452.25458-3-olivier.moysan@foss.st.com>
+In-Reply-To: <20210908182628.28364-3-sjakhade@cadence.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Sep 2021 17:54:47 +0200, Olivier Moysan wrote:
-> Add support of nvmem. This allows to retrieve calibration data from OTP
-> for vrefint internal channel.
+On Wed, 08 Sep 2021 20:26:25 +0200, Swapnil Jakhade wrote:
+> Add clock IDs for derived and received reference clock output.
 > 
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
 > ---
->  .../devicetree/bindings/iio/adc/st,stm32-adc.yaml         | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  include/dt-bindings/phy/phy-cadence.h | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
