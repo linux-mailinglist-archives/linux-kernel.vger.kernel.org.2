@@ -2,125 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BA1412E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CC1412E26
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 07:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbhIUFHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 01:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhIUFHk (ORCPT
+        id S229517AbhIUFWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 01:22:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39902 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhIUFWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 01:07:40 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82002C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 22:06:12 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id b6so21380389ilv.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 22:06:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L+tfnHMedGZe2TFbLCJcKj8ZBwL3hCr8DyK+pgVSE+4=;
-        b=QXWd88y2WJnDIsPwkEYPzcd/JXfLUTRpO318D7yusvGQ4g+wvLNzfnJRIjp42X+5kx
-         XgULeZOsCGhbGf9cIoth7WZgA8l/Gsovl3AVZE+shaRppsYL7wOhTjFOPvt47T6mvAYY
-         7dkdEzqqqFMaOMAmHIDRy+2ONB2AG+0VMBuGSUKtkTKgTiXU9KlFd/NMXeHM1+UdJe04
-         oQYLXfesNaJMFETttGOt2hBodvoBhbqzJRp8Vzblf6t4tN9q9vJOpx20bMavfIFXWm/q
-         ETTlnuQvctQIQdSrh5B/3gxFM7I3EKhN2Qs1Mlr0ND95ElQVtA6aPsUKr2kmUiHgL2OV
-         IQcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L+tfnHMedGZe2TFbLCJcKj8ZBwL3hCr8DyK+pgVSE+4=;
-        b=bzDF/dXxMbc6Trj038ud/LNWUns9FfVCVTL19rZBa6KVLY1HKFZrjY3rSUKjol1X+x
-         12PqbP2aOSFHiUMWpbpcLi7UhTpJI3WBs7yOcMLIL2A9OS2+/HuJTkh8fSHqwblhJlsp
-         o631dSndYY+aagAcpODnIjGp46e1PERlxce0njIvphbqm36SE+yX40uCfCY2bMKy6KQ6
-         uwrX1Pa9q+4IdvG/zNraZPMNVE2Wfn3WWCSKfz3CLKvnAv0X97EHOXLqyh+BvNSPsRjW
-         B4Znup5ZXFYvH1tkQ4ahmFCp01d+SC7GqV/Wk8YC20rKAkog3ulOmibvYxOe9voRGANB
-         E0Kw==
-X-Gm-Message-State: AOAM533Unzv4AThHIAi0v6AHYZBR+40zVEXXIVn4CXR810pGB90yPNTy
-        PlLgGOCU693MHgHBFJQrQ9DUVc03T5YMdPJ1foE9zw==
-X-Google-Smtp-Source: ABdhPJzVjEyiyrOobrt+R+WGvly+cwuaGiPLn6fNOPjSS7m+B01J9uyOvXZ6/MYVBQqnlp0AXh1bqUkjqJodsFqW7Ts=
-X-Received: by 2002:a92:c605:: with SMTP id p5mr19598295ilm.53.1632200771676;
- Mon, 20 Sep 2021 22:06:11 -0700 (PDT)
+        Tue, 21 Sep 2021 01:22:14 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5352A1FE5E;
+        Tue, 21 Sep 2021 05:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632201645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lvbCGXyMHGQFbnwXi0D4n1ECOkvMzpMs0d59kGp6hJY=;
+        b=k1yBA/sRf5q96vlAh0hL+HeRX9weFcD5hoPx6fo+ivehdP+9drdra2nLTTIkmBYY8AWTaH
+        gCZ/eNf3nW/iabwGshhTXpUyOIXMgp3c3OjTY+DiV4l0wcIgeZdvdD8oLUvQXto63ndMX7
+        Gp7VJY6kZhNOMj8PyHD9QOp4hOGXbYg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CE8113B97;
+        Tue, 21 Sep 2021 05:20:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id o35lAa1rSWGbVQAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 21 Sep 2021 05:20:45 +0000
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "julien@xen.org" <julien@xen.org>,
+        "jbeulich@suse.com" <jbeulich@suse.com>,
+        Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
+        Oleksandr Andrushchenko <andr2000@gmail.com>
+References: <20210917130123.1764493-1-andr2000@gmail.com>
+ <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
+ <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
+ <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
+ <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+ <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+Message-ID: <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
+Date:   Tue, 21 Sep 2021 07:20:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210916060525.1890638-1-irogers@google.com> <f7bbc59b-794f-2675-a044-1e3a58ad1495@huawei.com>
- <CAP-5=fUAxfHb8fNjpPKthztJhB7Q3yUZucLS-6kKZtq-iNOVoA@mail.gmail.com> <361478a4-98d0-d488-2903-2c859a2c8524@huawei.com>
-In-Reply-To: <361478a4-98d0-d488-2903-2c859a2c8524@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 20 Sep 2021 22:05:59 -0700
-Message-ID: <CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com>
-Subject: Re: [PATCH v2] perf test: Workload test of metric and metricgroups
-To:     John Garry <john.garry@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, Paul Clarke <pc@us.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ESRU9eNpqUFGLK4iTRkg44aEQYVXk8525"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 3:00 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 17/09/2021 20:16, Ian Rogers wrote:
-> > On Thu, Sep 16, 2021 at 12:37 AM John Garry<john.garry@huawei.com>  wrote:
-> >> On 16/09/2021 07:05, Ian Rogers wrote:
-> >>> Test every metric and metricgroup with 'true' as a workload.
-> >>>
-> >>> Signed-off-by: Ian Rogers<irogers@google.com>
-> >> Reviewed-by: John Garry<john.garry@huawei.com>
-> >>
-> >> Note that I also had a local test for pmu events:
-> >> for e in `$PERF list --raw-dump pmu`; do
-> >>     echo "Testing $e"
-> >>     result=$($PERF stat -v -e "$e" perf bench internals synthesize)
-> >>     if [[ "$result" =~ "$e" ]]; then
-> >>       echo "Event not printed: $e"
-> >>       exit 1
-> >>     fi
-> >> done
-> >>
-> >> Is there any value in upstreaming this? I could not see same already
-> >> there. Or else make your new script generic, so that it accepts an
-> >> argument whether to test events or metrics or metricgroups
-> > It is not easy to make a generic script with the current shell test
-> > infrastructure. I made a variant of this test:
-> > https://lore.kernel.org/linux-perf-users/20210917184240.2181186-2-irogers@google.com/T/#u
-> > For skylake it ran for 1m15s and so it may be too slow. Perhaps we
-> > need to add to the test infrastructure with some kind of speed flag.
->
-> Hi Ian,
->
-> I suggested this before I realized that it would be called from "perf test".
->
-> You think that 1m15s could be considered too slow, but I think that it
-> could be much slower to now run "perf test" on some other systems. Like
-> my arm64 system - see series
-> https://lore.kernel.org/linux-perf-users/1631795665-240946-1-git-send-email-john.garry@huawei.com/T/#t
-> - where I mention that we have >700 HW PMU events (before applying that
-> series to take advantage of the event merging). And each of those events
-> would be tested individually - slow...
->
-> So firstly maybe a speed or test level flag could be added before we try
-> this. Sorry for any inconvenience caused.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ESRU9eNpqUFGLK4iTRkg44aEQYVXk8525
+Content-Type: multipart/mixed; boundary="iVs1Yxi1J5q6XdRjnpo9ChDEi2eCxYaSC";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Cc: "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+ "julien@xen.org" <julien@xen.org>, "jbeulich@suse.com" <jbeulich@suse.com>,
+ Anastasiia Lukianenko <Anastasiia_Lukianenko@epam.com>,
+ Oleksandr Andrushchenko <andr2000@gmail.com>
+Message-ID: <0f31a1bf-62b1-1aef-7b0f-34a1f6985fdb@suse.com>
+Subject: Re: [PATCH] xen-pciback: allow compiling on other archs than x86
+References: <20210917130123.1764493-1-andr2000@gmail.com>
+ <alpine.DEB.2.21.2109171442070.21985@sstabellini-ThinkPad-T480s>
+ <d81486bc-9a2b-8675-ba4d-828d3adc75fc@epam.com>
+ <35e2e36a-bade-d801-faa1-c9953678bb9d@suse.com>
+ <7f873e38-0362-1f60-7347-a490c9dc8572@epam.com>
+ <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
+In-Reply-To: <alpine.DEB.2.21.2109201444040.17979@sstabellini-ThinkPad-T480s>
 
-Hi John,
+--iVs1Yxi1J5q6XdRjnpo9ChDEi2eCxYaSC
+Content-Type: multipart/mixed;
+ boundary="------------1FB2498030FA73179B94032B"
+Content-Language: en-US
 
-I think a flag would be best. I'll look to add a notion of test sizes,
-as that mirrors what works well at Google. We can then tag a test as
-small, medium, large and default to just say running small and medium
-tests.
+This is a multi-part message in MIME format.
+--------------1FB2498030FA73179B94032B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Ian
+On 21.09.21 01:16, Stefano Stabellini wrote:
+> On Mon, 20 Sep 2021, Oleksandr Andrushchenko wrote:
+>> On 20.09.21 14:30, Juergen Gross wrote:
+>>> On 20.09.21 07:23, Oleksandr Andrushchenko wrote:
+>>>> Hello, Stefano!
+>>>>
+>>>> On 18.09.21 00:45, Stefano Stabellini wrote:
+>>>>> Hi Oleksandr,
+>>>>>
+>>>>> Why do you want to enable pciback on ARM? Is it only to "disable" a=
+ PCI
+>>>>> device in Dom0 so that it can be safely assigned to a DomU?
+>>>> Not only that
+>>>>>
+>>>>> I am asking because actually I don't think we want to enable the PV=
+ PCI
+>>>>> backend feature of pciback on ARM, right? That would clash with the=
+ PCI
+>>>>> assignment work you have been doing in Xen. They couldn't both work=
+ at
+>>>>> the same time.
+>>>> Correct, it is not used
+>>>>>
+>>>>> If we only need pciback to "park" a device in Dom0, wouldn't it be
+>>>>> possible and better to use pci-stub instead?
+>>>>
+>>>> Not only that, so pci-stub is not enough
+>>>>
+>>>> The functionality which is implemented by the pciback and the toolst=
+ack
+>>>> and which is relevant/missing/needed for ARM:
+>>>>
+>>>> 1. pciback is used as a database for assignable PCI devices, e.g. xl=
 
-> Thanks,
-> John
+>>>>  =C2=A0 =C2=A0=C2=A0 pci-assignable-{add|remove|list} manipulates th=
+at list. So, whenever the
+>>>>  =C2=A0 =C2=A0=C2=A0 toolstack needs to know which PCI devices can b=
+e passed through it reads
+>>>>  =C2=A0 =C2=A0=C2=A0 that from the relevant sysfs entries of the pci=
+back.
+>>>>
+>>>> 2. pciback is used to hold the unbound PCI devices, e.g. when passin=
+g through
+>>>>  =C2=A0 =C2=A0=C2=A0 a PCI device it needs to be unbound from the re=
+levant device driver and bound
+>>>>  =C2=A0 =C2=A0=C2=A0 to pciback (strictly speaking it is not require=
+d that the device is bound to
+>>>>  =C2=A0 =C2=A0=C2=A0 pciback, but pciback is again used as a databas=
+e of the passed through PCI
+>>>>  =C2=A0 =C2=A0=C2=A0 devices, so we can re-bind the devices back to =
+their original drivers when
+>>>>  =C2=A0 =C2=A0=C2=A0 guest domain shuts down)
+>>>>
+>>>> 3. Device reset
+>>>>
+>>>> We have previously discussed on xen-devel ML possible solutions to t=
+hat as from the
+>>>> above we see that pciback functionality is going to be only partiall=
+y used on Arm.
+>>>>
+>>>> Please see [1] and [2]:
+>>>>
+>>>> 1. It is not acceptable to manage the assignable list in Xen itself
+>>>>
+>>>> 2. pciback can be split into two parts: PCI assignable/bind/reset ha=
+ndling and
+>>>> the rest like vPCI etc.
+>>>>
+>>>> 3. pcifront is not used on Arm
+>>>
+>>> It is neither in x86 PVH/HVM guests.
+>> Didn't know that, thank you for pointing
+>>>
+>>>> So, limited use of the pciback is one of the bricks used to enable P=
+CI passthrough
+>>>> on Arm. It was enough to just re-structure the driver and have it ru=
+n on Arm to achieve
+>>>> all the goals above.
+>>>>
+>>>> If we still think it is desirable to break the pciback driver into "=
+common" and "pcifront specific"
+>>>> parts then it can be done, yet the patch is going to be the very fir=
+st brick in that building.
+>>>
+>>> Doing this split should be done, as the pcifront specific part could =
+be
+>>> omitted on x86, too, in case no PV guests using PCI passthrough have =
+to
+>>> be supported.
+>> Agree, that the final solution should have the driver split
+>>>
+>>>> So, I think this patch is still going to be needed besides which dir=
+ection we take.
+>>>
+>>> Some kind of this patch, yes. It might look different in case the spl=
+it
+>>> is done first.
+>>>
+>>> I don't mind doing it in either sequence.
+>>>
+>> With this patch we have Arm on the same page as the above mentioned x8=
+6 guests,
+>>
+>> e.g. the driver has unused code, but yet allows Arm to function now.
+>>
+>> At this stage of PCI passthrough on Arm it is yet enough. Long term, w=
+hen
+>>
+>> the driver gets split, Arm will benefit from that split too, but unfor=
+tunately I do not
+>>
+>> have enough bandwidth for that piece of work at the moment.
+>=20
+> That's fair and I don't want to scope-creep this simple patch asking fo=
+r
+> an enormous rework. At the same time I don't think we should enable the=
+
+> whole of pciback on ARM because it would be erroneous and confusing.
+>=20
+> I am wonder if there is a simple:
+>=20
+> if (!xen_pv_domain())
+>      return;
+>=20
+> That we could add in a couple of places in pciback to stop it from
+> initializing the parts we don't care about. Something along these lines=
+
+> (untested and probably incomplete).
+>=20
+> What do you guys think?
+
+Uh no, not in this way, please. This will kill pci passthrough on x86
+with dom0 running as PVH. I don't think this is working right now, but
+adding more code making it even harder to work should be avoided.
+
+> diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback=
+/xenbus.c
+> index da34ce85dc88..991ba0a9b359 100644
+> --- a/drivers/xen/xen-pciback/xenbus.c
+> +++ b/drivers/xen/xen-pciback/xenbus.c
+> @@ -15,6 +15,7 @@
+>   #include <xen/xenbus.h>
+>   #include <xen/events.h>
+>   #include <xen/pci.h>
+> +#include <xen/xen.h>
+>   #include "pciback.h"
+>  =20
+>   #define INVALID_EVTCHN_IRQ  (-1)
+> @@ -685,8 +686,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_de=
+vice *dev,
+>   				const struct xenbus_device_id *id)
+>   {
+>   	int err =3D 0;
+> -	struct xen_pcibk_device *pdev =3D alloc_pdev(dev);
+> +	struct xen_pcibk_device *pdev;
+> +
+> +	if (!xen_pv_domain())
+> +		return 0;
+>  =20
+> +	pdev =3D alloc_pdev(dev);
+
+This hunk isn't needed, as with bailing out of xen_pcibk_xenbus_register
+early will result in xen_pcibk_xenbus_probe never being called.
+
+>   	if (pdev =3D=3D NULL) {
+>   		err =3D -ENOMEM;
+>   		xenbus_dev_fatal(dev, err,
+> @@ -743,6 +748,9 @@ const struct xen_pcibk_backend *__read_mostly xen_p=
+cibk_backend;
+>  =20
+>   int __init xen_pcibk_xenbus_register(void)
+>   {
+> +	if (!xen_pv_domain())
+> +		return 0;
+> +
+
+Use #ifdef CONFIG_X86 instead.
+
+>   	xen_pcibk_backend =3D &xen_pcibk_vpci_backend;
+>   	if (passthrough)
+>   		xen_pcibk_backend =3D &xen_pcibk_passthrough_backend;
+> @@ -752,5 +760,7 @@ int __init xen_pcibk_xenbus_register(void)
+>  =20
+>   void __exit xen_pcibk_xenbus_unregister(void)
+>   {
+> +	if (!xen_pv_domain())
+> +		return;
+
+#ifdef again.
+
+>   	xenbus_unregister_driver(&xen_pcibk_driver);
+>   }
+>=20
+
+
+Juergen
+
+--------------1FB2498030FA73179B94032B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------1FB2498030FA73179B94032B--
+
+--iVs1Yxi1J5q6XdRjnpo9ChDEi2eCxYaSC--
+
+--ESRU9eNpqUFGLK4iTRkg44aEQYVXk8525
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmFJa6wFAwAAAAAACgkQsN6d1ii/Ey9M
+mQf7BFzwYtokoUlkMp5SD42+/7LleJEYVw1bPFN5z5g/7KtBILe02JdnU6Hp5CZ4FHtnEhQmWp+y
+4AstC6mck9avyv3uWwTy4kPxk67mf18GkO8T9c7oe1s6GnnpKV5Ulreicpqr0E0anxqr1N6WqXP1
+5jEnKemD/aydluAqEqov2Jf2VyRCxNe+vpNzwSL4buGxLbT9NBEw4u0XRyl4QLA8v2UzqHBuStaC
+Lr292vTAowcS8fppG4pVfpkXnUppIZaa95ptsT6MS1eEc5rRf/jLULf9I+ZlFyOfIblBbuIM5EC9
+XqQyTR4JmSuG+0s2xHrJUclR4E9Q0/SijiFH/0Q+Qw==
+=oukX
+-----END PGP SIGNATURE-----
+
+--ESRU9eNpqUFGLK4iTRkg44aEQYVXk8525--
