@@ -2,117 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3A9413AFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A9E413AF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 21:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233516AbhIUTtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 15:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S234680AbhIUTsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 15:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234756AbhIUTs7 (ORCPT
+        with ESMTP id S234656AbhIUTs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:48:59 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8609CC061766
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:47:30 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id t8so145487wrq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:47:30 -0700 (PDT)
+        Tue, 21 Sep 2021 15:48:27 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08615C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:46:59 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g14so582484pfm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 12:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=czrP6QE0oWPp2IhYAOngMIyhTl+nVLIjWbQ3m00v7QA=;
-        b=m5Sos2iGL079vJXKEZQ0e8MA2dClwVyjJsPWI16owIYwRZRYxP0mSFZ+Zqrt488qX3
-         RShZ0A/GdtU548amVYVZox2QpsA7NZxcEXvWzZLZUBs1ypUCamBBAiWfG65nkwzHCY8N
-         1yUWubXS1qRm89HH46cpWc29DxdjIDtl8xm8z1R292CDOUKzer89p6fSAcovP4RktQM3
-         x2KjEnnTlTVzIVzC8ZeqIdZDu6MZMA7fuoqriDmhn4HWBuKgbHyimhV4tRZoxuqaodoM
-         Q9hUqOhPfCXgPfyanRxSWP8KpM+qIqOKsE0anM++A9H1tfamXtALllAcWtYJBrgGS2fa
-         HJEw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
+        b=GZqxpdJJuL+hNBU7ee0pq7yIm/gUPal57NgRxanXayXpevy33et+3KyFtjnulMGz/x
+         xZ9peVfs4t6zjQ47DGahKCK76jDlKzKQLTwT2vPNytOcfBhorfav2kUSPNMvTqs3Zy4x
+         +yWMZiIjdyA1frpzCyxmqliOd2ZFFAoUOq4owi9ZRWDtDpFh+0fUviwWmabx5hDx3IGW
+         aRlMui/SzfcW+iS27P9mmnqmvnlExIGCfKkjw/DNAeZp2zVZE1RarE/w88DpwRzUJo9q
+         G1xKVkHmS032wcdP+YvwOge+f+liEAXnv4oj5Iw9Y/Q7CRbnroBiFNeoTje77sa9h1zH
+         18Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=czrP6QE0oWPp2IhYAOngMIyhTl+nVLIjWbQ3m00v7QA=;
-        b=buTQFlerfWfrhLxOMBFjA6mHzOxBf4WuhCA5eyTUaNloB+3ETiuQNNNa46D/AtTFZx
-         8xchBcSXks4WlTv/0++6vOwyPm3TfsLtP+g5kn0XzyUSpMA6jASc/Fi9AViWdfoFncsy
-         zHQ0wkt4Kr7Tc2rNOGCCNj6xr616oW7y3u5EgU8rqkEkkSz/ccv1KijC5NGfZLqiBY/+
-         Nhlo+IKKeKkC0GyKfRXrCQcZTYnW2LowdXgTR2q0Tw04LERCB8Ty7AbzmpkEgKkAwU+n
-         kyml0GY/O4LniLhFHhxurIsWNDILRAXraqMxSAYFcJuKOSEARpEKuVYz9wcNPJGrQrsP
-         7c8Q==
-X-Gm-Message-State: AOAM532yd77aRRup4BW28SJSQgrbi3lx0c9QrtFLkjB4zyDTAPpEqnir
-        bcCnvCc+1vCgeLAQxnPGRIo=
-X-Google-Smtp-Source: ABdhPJxkceAbiZL5yL+cUubPZ6waOHIV41xb+da3h9eEMnjG+MNWp72+nz8wjAGBs6osjSG1Br8pfw==
-X-Received: by 2002:adf:9d47:: with SMTP id o7mr37449901wre.50.1632253649256;
-        Tue, 21 Sep 2021 12:47:29 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::cde])
-        by smtp.gmail.com with ESMTPSA id s13sm3891243wmc.47.2021.09.21.12.47.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 12:47:28 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 8/8] staging: r8188eu: remove odm_DynamicTxPowerInit()
-Date:   Tue, 21 Sep 2021 21:46:58 +0200
-Message-Id: <20210921194658.10654-9-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210921194658.10654-1-straube.linux@gmail.com>
-References: <20210921194658.10654-1-straube.linux@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
+        b=0qhqpfwh6wIiLRb3o+2rIExjk8XUu8ElOfK8L6+0mC5kExNyjpbEq1EZQnk8BpafBk
+         hl99mYu1WHBestGoh3faTfROnWshwF8hhNzbY3havvPfUf85hVFvosM2WqOGl8mq7wXB
+         n+hrzZyFMDo5QSq/y57JVvIJrX21tA8V7ZgJ6lkmKXCyt2uTSSdr1AXRxANOVP26MayO
+         2WScno0suIP6cWvHT//Esi15z0L9VPQuOAaTyylFUi8JYJ7sAHyGkFQAyBw9IHQq1rZU
+         4Z9biYRcQ4q32F35csbqQweR0z1OlghBSwTEPxnW/fsyUFdVfeuh55nLm1mbJ6n1ITKK
+         GqJg==
+X-Gm-Message-State: AOAM533FSsjkyoWCLfvP2IWzz8LalDRHZfnEqTep+0O1BqcNv//au/PT
+        KKciQLPFD0S+PK3hKzkVJI1pO6GU53Gr155SHvs=
+X-Google-Smtp-Source: ABdhPJx4oQ837JhCKRDIUlPvmDv860ZJfwxRvpP9CcTzqD2++j6Y41NjjzUuqywMy4Z2ToLJaWc4j9Jb88x03EVes3M=
+X-Received: by 2002:a65:41c6:: with SMTP id b6mr29692707pgq.206.1632253618535;
+ Tue, 21 Sep 2021 12:46:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:90b:4b06:0:0:0:0 with HTTP; Tue, 21 Sep 2021 12:46:58
+ -0700 (PDT)
+Reply-To: om250752@gmail.com
+From:   Mrs Rose Samuel <mrsrosesamuel@gmail.com>
+Date:   Tue, 21 Sep 2021 12:46:58 -0700
+Message-ID: <CAJeEN1CpyyH-85Rzj8Q+emQnzXp0c4wv93qwDT_KVGR3qPA1kQ@mail.gmail.com>
+Subject: Thanks and God bless you.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function odm_DynamicTxPowerInit() is empty now, remove it.
+Dear Good Friend.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/odm.c             | 9 ---------
- drivers/staging/r8188eu/include/odm_precomp.h | 1 -
- 2 files changed, 10 deletions(-)
+I am happy to inform you about my success in getting those funds
+transferred under the cooperation of a new partner from India.
+Presently I am in India for investment projects with my own share of
+the total sum. Meanwhile, I didn=E2=80=99t forget you=E2=80=99re past effor=
+ts and
+attempts to assist me in transferring those funds despite that it
+failed us some how. Now contact my lawyer in Benin Republic his name
+is Barrister Adam Smith.
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 87f0ea84819a..e0784e38e083 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -165,7 +165,6 @@ void ODM_DMInit(struct odm_dm_struct *pDM_Odm)
- 
- 	odm_PrimaryCCA_Init(pDM_Odm);    /*  Gary */
- 	odm_DynamicBBPowerSavingInit(pDM_Odm);
--	odm_DynamicTxPowerInit(pDM_Odm);
- 	odm_TXPowerTrackingInit(pDM_Odm);
- 	ODM_EdcaTurboInit(pDM_Odm);
- 	ODM_RAInfo_Init_all(pDM_Odm);
-@@ -1174,14 +1173,6 @@ bool ODM_RAStateCheck(struct odm_dm_struct *pDM_Odm, s32 RSSI, bool bForceUpdate
- 	return false;
- }
- 
--/* 3============================================================ */
--/* 3 Dynamic Tx Power */
--/* 3============================================================ */
--
--void odm_DynamicTxPowerInit(struct odm_dm_struct *pDM_Odm)
--{
--}
--
- /* 3============================================================ */
- /* 3 RSSI Monitor */
- /* 3============================================================ */
-diff --git a/drivers/staging/r8188eu/include/odm_precomp.h b/drivers/staging/r8188eu/include/odm_precomp.h
-index 43f8e6849a45..6b3800894bc6 100644
---- a/drivers/staging/r8188eu/include/odm_precomp.h
-+++ b/drivers/staging/r8188eu/include/odm_precomp.h
-@@ -36,7 +36,6 @@
- void odm_DIGInit(struct odm_dm_struct *pDM_Odm);
- void odm_RateAdaptiveMaskInit(struct odm_dm_struct *pDM_Odm);
- void odm_DynamicBBPowerSavingInit(struct odm_dm_struct *pDM_Odm);
--void odm_DynamicTxPowerInit(struct odm_dm_struct *pDM_Odm);
- void odm_TXPowerTrackingInit(struct odm_dm_struct *pDM_Odm);
- void ODM_EdcaTurboInit(struct odm_dm_struct *pDM_Odm);
- void odm_SwAntDivInit_NIC(struct odm_dm_struct *pDM_Odm);
--- 
-2.33.0
 
+
+Barrister Adam Smith.
+
+Email:adm.smth126@gmail.com
+
+
+
+Contact him and ask him to send you the total of $920.000.00.{Nine
+Hundred And Twenty Thousand United States Dollars} which I kept for
+your past efforts and attempts to assist me in this matter. I
+appreciated your efforts at that time very much. So feel free and get
+in touched with my lawyer and instruct him where to send the amount to
+you. Please do let me know immediately you receive it so that we can
+share the joy after all the sufferness at that time. Do send to Adam
+Smith, your contact details.
+
+
+
+Your Full Names=E2=80=A6...........................................
+
+
+
+You=E2=80=99re Address=E2=80=A6............................................=
+..
+
+
+
+Cell Phone Number=E2=80=A6........................................
+
+
+
+Your occupation................................................
+
+
+
+Your Age=E2=80=A6.....................................................
+
+
+
+To enable him submit your details to my paying bank the Need Bank in
+Benin Republic to wire your compensation money to your nominated bank
+account/western Union or they can send to you an authorized bank ATM
+VISA CARD  to your address for you to withdraw the money from any bank
+ATM machine in your country.
+
+
+In the moment, I am very busy here because of the investment projects
+which me and the new partner are having at hand, finally, remember
+that I had forwarded instruction to my lawyer on your behalf to
+receive that money, so feel free to get in touch with him and he will
+send the amount to you with out any delay.
+
+
+Thanks and God bless you.
+Regards
+Mrs Rose Samuel
