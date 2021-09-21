@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4590413951
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0531413953
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 19:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhIUR6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 13:58:04 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:52636 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232045AbhIUR5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 13:57:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=WzMEbwZn/Z6/zvDtk3KGoyjHTKqZpd6tQKW8PKGbAzE=; b=aOncr7W3PxHOWmrkANHYEEQqdx
-        xIz8Wfe54f9/eDgqxOyW0GTLeFKnOpacmt5Bq/CblT/26RN0JCZbmYtkZC+jTyeseksXVLQFRUXFq
-        cFGFX905tLsZuSKBfcH4ovWrZYqNib8fcCzWEtn1yJb/LaXRB1mTNfch4cTF/GRDTYrA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mSk00-007f8J-HX; Tue, 21 Sep 2021 19:56:08 +0200
-Date:   Tue, 21 Sep 2021 19:56:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for
- FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
-Message-ID: <YUocuMM4/VKzNMXq@lunn.ch>
-References: <20210915170940.617415-1-saravanak@google.com>
- <20210915170940.617415-3-saravanak@google.com>
- <CAJZ5v0h11ts69FJh7LDzhsDs=BT2MrN8Le8dHi73k9dRKsG_4g@mail.gmail.com>
- <YUaPcgc03r/Dw0yk@lunn.ch>
- <YUoFFXtWFAhLvIoH@kroah.com>
- <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+        id S232021AbhIUSAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 14:00:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231331AbhIUSAC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 14:00:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632247113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QQSCv/3qlLsI9Nt/RrJNX5Ec9pj4MuIs81DfXtwhpmo=;
+        b=YmGy1YPHXCA0kXFY1/yRLfXUT/UpBALR4NDXpS9wgygqzh+MjCxL1LhnHP+uHvb+hApjwQ
+        IBMIwICtVy83tK3gPnSKDGVd/wDnV3TFylJPQPRE8bnhOPXdEjphdJ6ibX5plXWb3ZkrkO
+        NX5YZEt7uN7OeauRqcNB96p8vEGHljY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-zZLmXU3YPXe1okUqjxXErw-1; Tue, 21 Sep 2021 13:58:32 -0400
+X-MC-Unique: zZLmXU3YPXe1okUqjxXErw-1
+Received: by mail-wr1-f69.google.com with SMTP id c2-20020adfa302000000b0015e4260febdso8163547wrb.20
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:58:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QQSCv/3qlLsI9Nt/RrJNX5Ec9pj4MuIs81DfXtwhpmo=;
+        b=ZyrD/lauTRJwxihQpr4prh0WJlddKV9rtx/ZJa5K5bCN1/2qeWP/l/NOMG0Z49aT1b
+         p6y6FECAmEjd7spylHUe+oXxaRzd9t6LmyFIeYDcs9bvKKZnQTfG4M/I/+4ShIgF3QT9
+         ZmODT/JEFsUiO4KXKVpZzUWPGrD3ecpSjeo+NsZrFvTERovFFe55h10oypDwUKUYFbLd
+         +BRsyWX5O32Rv8ci11ixkL9bcd9acSyRQN152yShna7+laG+KfsoueO60nJ5sZbaxvSU
+         FFjOV8e+SnYLIWfnCsc0sCsuT+lVIfBrBBJkhiqONEhg6tUWCy3tzrUhcGARsi3nUxoF
+         STOQ==
+X-Gm-Message-State: AOAM533qHZkgXb0Q7/HBv/6ULeDC7uWB75czjdRA09Yp8IfvSrEy/J0s
+        XXTS0xf0fW1AkSZjKoYMhGTxyKcaHbFwMY+3P8IjvhOTN+RjrsawZHeB0j/CKcDDM+LV1nvF5ul
+        qF7lRxYn/ijNCiHqCZf+gwUhl
+X-Received: by 2002:adf:fd03:: with SMTP id e3mr36783312wrr.46.1632247110864;
+        Tue, 21 Sep 2021 10:58:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCy/iVs4ic4BpLOr6rEVULg59LoAQO//ya4B4K44daOpQG7Cb13ApHTkpMoXqHg+ZapdiohA==
+X-Received: by 2002:adf:fd03:: with SMTP id e3mr36783298wrr.46.1632247110681;
+        Tue, 21 Sep 2021 10:58:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y11sm13449644wrg.18.2021.09.21.10.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 10:58:30 -0700 (PDT)
+Subject: Re: [PATCH] KVM: SVM: fix missing sev_decommission in
+ sev_receive_start
+To:     Sean Christopherson <seanjc@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alper Gun <alpergun@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        David Rienjes <rientjes@google.com>,
+        Marc Orr <marcorr@google.com>, John Allen <john.allen@amd.com>,
+        Peter Gonda <pgonda@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vipin Sharma <vipinsh@google.com>
+References: <20210912181815.3899316-1-mizhang@google.com>
+ <YUC/GzN29dWDVCda@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e951cf6b-dac8-776f-1e90-b204712c9618@redhat.com>
+Date:   Tue, 21 Sep 2021 19:58:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+In-Reply-To: <YUC/GzN29dWDVCda@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The existing code attempts to "enforce" device links where the
-> supplier is a direct ancestor of the consumer (e.g. its parent), which
-> is questionable by itself (why do that?)
+On 14/09/21 17:26, Sean Christopherson wrote:
+> With a cleaned up changelog,
+> 
+> Reviewed-by: Sean Christopherson<seanjc@google.com>
+> 
 
-In this case, we have an Ethernet switch as the parent device. It
-registers an interrupt controller, to the interrupt subsystem. It also
-registers an MDIO controller to the MDIO subsystem. The MDIO subsystem
-finds the Ethernet PHYs on the MDIO bus, and registers the PHYs to the
-PHY subsystem.
+Done and queued, thanks.
 
-Device tree is then used to glue all the parts together. The PHY has
-an interrupt output which is connected to the interrupt controller,
-and a standard DT property is used to connect the two. The MACs in the
-switch are connected to the PHYs, and standard DT properties are used
-to connect them together. So we have a loop. But the driver model does
-not have a problem with this, at least not until fw_devlink came
-along. As soon as a resource is registered with a subsystem, it can be
-used. Where as fw_devlink seems to assume a resource cannot be used
-until the driver providing it completes probe.
+Paolo
 
-Now, we could ignore all these subsystems, re-invent the wheels inside
-the switch driver, and then not have suppliers and consumers at all,
-it is all internal. But that seems like a bad idea, more wheels, more
-bugs.
-
-So for me, the real fix is that fw_devlink learns that resources are
-available as soon as they are registered, not when the provider device
-completes probe.
-
-	  Andrew
