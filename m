@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140A4413DCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDEC413DD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbhIUXEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhIUXEK (ORCPT
+        id S229667AbhIUXID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:08:03 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52752 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhIUXIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:04:10 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28AAC061574;
-        Tue, 21 Sep 2021 16:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1632265357;
-        bh=ymkPjnU1iq2vcqk7dsvjMfR8hRZQlMoT7JF3z1PetJU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=q56ktUbwEKYtVmowgZZW/WUQHt5kLmVk3k4QybXKPLa40XrNbQI3mVN7dhPS4ROCT
-         jfPyRjzd7va+wcwvE3FwcFoTQYb6nItkhs/a9qtU5eQS5S1LPnrC/qBBwAWq/QouQQ
-         p/KKNzKHxkVCgDXDjpW8Rr6jM5lccKJCiqq/vCQBNrLYWDeJZDrR01Ov24riDfgvaq
-         ByodyDZy+bTNMHIc4VSuqxUPixgzcn62V/ZyOaIyvQ4QZ8+51gIhFa65EHXnVBxtGR
-         un5nESsCttpo4O1acrstvVohRQubiHYz5SQYEJra5KvYSp6tgQzLDriJHhm5xOhY7h
-         bHvXgrDhp5QnQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HDcQP1f3Xz9sW4;
-        Wed, 22 Sep 2021 09:02:37 +1000 (AEST)
-Date:   Wed, 22 Sep 2021 09:02:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the qcom tree
-Message-ID: <20210922090235.2a626af6@canb.auug.org.au>
-In-Reply-To: <20210921082438.26550938@canb.auug.org.au>
-References: <20210921082438.26550938@canb.auug.org.au>
+        Tue, 21 Sep 2021 19:08:02 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 00F781F4358B
+Message-ID: <9db8c79a-f704-84ce-360b-84335f926a48@collabora.com>
+Date:   Tue, 21 Sep 2021 20:06:21 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jHfeLy=S=8+KO_ZFx=NbscC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 2/2] perf bench: Add support for 32-bit systems with
+ 64-bit time_t
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alistair Francis <alistair23@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <alistair.francis@wdc.com>
+References: <20210917061040.2270822-1-alistair.francis@opensource.wdc.com>
+ <20210917061040.2270822-2-alistair.francis@opensource.wdc.com>
+ <72990864-5ec6-1f73-efd9-61b667a172dd@collabora.com>
+ <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+In-Reply-To: <CAK8P3a3x_EyCiPDpMK54y=Rtm-Wb08ym2TNiuAZgXhYrThcWTw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jHfeLy=S=8+KO_ZFx=NbscC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Às 05:08 de 21/09/21, Arnd Bergmann escreveu:
+> On Tue, Sep 21, 2021 at 12:47 AM André Almeida
+> <andrealmeid@collabora.com> wrote:
+>>
+>> #if defined(__i386__) || __TIMESIZE == 32
+>> # define NR_gettime64 __NR_clock_gettime64
+>> #else
+>> # define NR_gettime64 __NR_clock_gettime
+>> #endif
+>>
+>> struct timespec64 {
+>>         long long tv_sec;       /* seconds */
+>>         long long tv_nsec;      /* nanoseconds */
+>> };
+>>
+>> int gettime64(clock_t clockid, struct timespec64 *tv)
+>> {
+>>         return syscall(NR_gettime64, clockid, tv);
+>> }
+>>
+>> Then we can just use &timeout at __NR_futex_time64 for 32bit arch and at
+>> __NR_futex for 64bit arch.
+> 
+> This is still broken when you disable CONFIG_COMPAT_32BIT_TIME,
+> which disables all system calls that take time32 arguments.
+> 
 
-Hi all,
+Oh, I think my point was confusing then. My suggestion was to use only
+the futex entry points that accepts time64, and to always use
+clock_gettime that uses time64, for all platforms. Then it will work if
+we disable CONFIG_COMPAT_32BIT_TIME.
 
-On Tue, 21 Sep 2021 08:24:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> In commit
->=20
->   33c4296d99ef ("arm64: dts: qcom: sc7280: fix display port phy reg prope=
-rty")
+>> This might be a simpler solution to the problem that you are facing but
+>> I'm not entirely sure. Also, futex's selftests do use the timeout
+>> argument and I think that they also won't compile in 32-bit RISC-V, so
+>> maybe we can start from there so we can actually test the timeout
+>> argument and check if it's working.
+> 
+> I would love to see the wrapper that Alistair wrote as part of some kernel
+> uapi header provided to user space. futex is used by tons of applications,
+> and we never had a library abstraction for it, so everyone has to do these
+> by hand, and they all get them slightly wrong in different ways.
 
-This is now commit 1a5968e5b7de.
+Why we don't have a futex() wrapper at glibc as we do have for others
+syscalls?
 
-> Fixes tag
->=20
->   Fixes: 9886e8fd8438 ("arm64: dts: qcom: sc7280: Add USB related nodes")
->=20
-> has these problem(s):
->=20
->   - Target SHA1 does not exist
->=20
-> Maybe you meant
->=20
-> Fixes: bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
-
-Surely if you are going to rebase the tree anyway, you can fix this up
-:-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/jHfeLy=S=8+KO_ZFx=NbscC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFKZIsACgkQAVBC80lX
-0GzE8Qf/Wl0mNabVOQia88CpnXxTk57zeHM+DKz808bvBz6WlMdzMID+pnwxG5UV
-UzN+Wq/8qBIviJEQhO2WtmqmJUaegKPQMXAaGEXSBR61NPz/pfjedo61LFOQ3Cww
-tpRvpfHFsPGIsy2omWrW/ZYHCXRNqLnh8RUHIebmchJ+Bf1btJWn0RhHaKoXkh72
-W6dwt7q6biHKGJOnBlPQAwvweNGRTj3kUoTocq0pdz1SQ+scNFhTQT/VySNEUWE4
-exsBksiAhr6w8ZqfdeBjHvRFwxNmAwMdG/GiEkrwjUWBwK1d61HKnGjUed2rJpdZ
-DJhUAgpan6oeVYJRF/GJrKgrLwRpeQ==
-=jCvi
------END PGP SIGNATURE-----
-
---Sig_/jHfeLy=S=8+KO_ZFx=NbscC--
+> 
+> We normally don't do this in kernel headers, but I think the benefits
+> would be far greater compared to today's situation.
+> 
+>       Arnd
+> 
