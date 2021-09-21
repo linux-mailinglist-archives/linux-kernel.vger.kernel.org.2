@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3FD412DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7C9412DAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 06:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhIUEGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 00:06:44 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39467 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232467AbhIUEGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 00:06:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632197109; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=M9kaB6BRGsQz29+6dKGk/QA6hjJsYJITRgGC8vUI/vA=;
- b=WAOVniy3htJ3A3Box4PR/uff1P+5td8mfmU73Y8OwZ9++FFY+Iaxb3AH9puRe4DSuWwid3d1
- tQ72/XUnUwuVtBLRh7leOCT18GvMIPNXnjt63THAUQXhlrZbIZvipV6zzhvrrylnEz6SWHFK
- nDObdmB0A1VFVOwJ0q8bY1Hzby0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 614959dd65c3cc8c63dc93d3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 04:04:45
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5C419C43460; Tue, 21 Sep 2021 04:04:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C1BCEC4338F;
-        Tue, 21 Sep 2021 04:04:44 +0000 (UTC)
+        id S231434AbhIUEIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 00:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230357AbhIUEIF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 00:08:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF66C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 21:06:37 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v2so12470397plp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Sep 2021 21:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zn1EkZZtYwu+/CqIaImEzdF2wzQ3/Q4ICvhMSwY9pc4=;
+        b=Mplo5+lxH3SP68tQyWmFu/JWZyX9HRHbKiM7MH93oAMFkjf89geoL5h+W5avJnSX0u
+         qupSiaeZZ7SpByvqSFmys6LAoCfR91AB5YSr4tEfj2gLJ1B9VV3Ol4hqfOgCbnoqgWBl
+         N2eHgmNlgp50nHZcJKq7lnH7V8nTo4FmRu3Bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zn1EkZZtYwu+/CqIaImEzdF2wzQ3/Q4ICvhMSwY9pc4=;
+        b=ZYIOa3T47tGoU4Tt4RlqH5Cxiz7sqV1fqHNNgkgeg8lCVFlrHv3FIplV1tkiZa6j/h
+         DDvrMPzlUejFYUYW3GYQqGpQKPxaFpHbxRu1PQM2hf232d1HApXwma5gRbMkPEoZVNmY
+         9BANryUgOi1SWOLefrdteUcbvj4Len4I4G4PgZLsR1MxVWfE4KBiSvb/ZDfq5XW8ck9G
+         h6lsE2cd5Sv+uG6IsMaAANeEgMLGnMu7HS1C3eMweDt7rVW+gKau8SgklY701qoeDZ2N
+         osR/OD5KkLefSwIrIcGEIPfi1hMPVZuvmz1qdo5BGeOUYwQwesRQj3SohsYga14FJFXu
+         Xq0Q==
+X-Gm-Message-State: AOAM532jl5lvgXAg+LbEqhLacYOHdLMVgFLxU06ttmvWKdVdYLueInhZ
+        2BRick0xNBGsYq6oW0xE3lX3XA==
+X-Google-Smtp-Source: ABdhPJyx5YX9MminKBo66Os9ZmhaP/fJEgBHFu0WDHKC3YgKNy061CfxIN6SG+aQUmV8dm/D3dlZQg==
+X-Received: by 2002:a17:90b:4a82:: with SMTP id lp2mr2861629pjb.57.1632197196917;
+        Mon, 20 Sep 2021 21:06:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v3sm15675641pfc.193.2021.09.20.21.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 21:06:36 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 21:06:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Erez Shitrit <erezsh@nvidia.com>,
+        Jianbo Liu <jianbol@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Message-ID: <202109202105.9E901893@keescook>
+References: <20210905074936.15723-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Sep 2021 09:34:44 +0530
-From:   rajpat@codeaurora.org
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        msavaliy@qti.qualcomm.com, satya priya <skakit@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH V8 1/8] dt-bindings: spi: Add sc7280 support
-In-Reply-To: <CAD=FV=X-7-OS0uDFDR+_AksgqLvTVCx0+Z5pbmNCCvqwBrvgBg@mail.gmail.com>
-References: <1631872087-24416-1-git-send-email-rajpat@codeaurora.org>
- <1631872087-24416-2-git-send-email-rajpat@codeaurora.org>
- <CAD=FV=X-7-OS0uDFDR+_AksgqLvTVCx0+Z5pbmNCCvqwBrvgBg@mail.gmail.com>
-Message-ID: <7b45fd08078847f27b8e6e989b4c326f@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210905074936.15723-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-18 01:32, Doug Anderson wrote:
-> Hi,
+On Sun, Sep 05, 2021 at 09:49:36AM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> On Fri, Sep 17, 2021 at 2:49 AM Rajesh Patil <rajpat@codeaurora.org> 
-> wrote:
->> 
->> Add compatible for sc7280 SoC.
->> 
->> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
->> ---
->> Changes in V8:
->>  - As per Doug's comments, added "qcom,sc7280-qspi" compatible
->> 
->>  Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml | 5 
->> ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml 
->> b/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml
->> index ef5698f..31711fe 100644
->> --- a/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml
->> +++ b/Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.yaml
->> @@ -21,7 +21,10 @@ allOf:
->>  properties:
->>    compatible:
->>      items:
->> -      - const: qcom,sdm845-qspi
->> +      - enum:
->> +        - qcom,sdm845-qspi
->> +        - qcom,sc7280-qspi
+> So, refactor the code a bit to use the purpose specific kcalloc()
+> function instead of the argument size * count in the kzalloc() function.
 > 
-> Other than the fact that the indentation is wrong (as Rob's bot
-> found), this looks good to me. Feel free to add my Reviewed-by when
-> you fix the indentation. In theory you could also be nice and add the
-> sc7180-qspi at the same time, I think.
+> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
 > 
-> -Doug
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/steering/dr_action.c  | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+> index 6475ba35cf6b..e8957dad3bb1 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+> @@ -716,6 +716,7 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
+>  	struct mlx5dr_action *action;
+>  	bool reformat_req = false;
+>  	u32 num_of_ref = 0;
+> +	u32 ref_act_cnt;
+>  	int ret;
+>  	int i;
+> 
+> @@ -724,11 +725,14 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
+>  		return NULL;
+>  	}
+> 
+> -	hw_dests = kzalloc(sizeof(*hw_dests) * num_of_dests, GFP_KERNEL);
+> +	hw_dests = kcalloc(num_of_dests, sizeof(*hw_dests), GFP_KERNEL);
+>  	if (!hw_dests)
+>  		return NULL;
+> 
+> -	ref_actions = kzalloc(sizeof(*ref_actions) * num_of_dests * 2, GFP_KERNEL);
+> +	if (unlikely(check_mul_overflow(num_of_dests, 2u, &ref_act_cnt)))
+> +		goto free_hw_dests;
+> +
+> +	ref_actions = kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNEL);
 
-Okay
+In the future, consider array3_size(), but this is fine too. :)
+
+-Kees
+
+>  	if (!ref_actions)
+>  		goto free_hw_dests;
+> 
+> --
+> 2.25.1
+> 
+
+-- 
+Kees Cook
