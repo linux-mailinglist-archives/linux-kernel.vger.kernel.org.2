@@ -2,142 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A85413D1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3CC413D34
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235783AbhIUV7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234138AbhIUV7D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:59:03 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0E4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:57:33 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id a13so754449qtw.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UVeSCGRKIiyvWycmoGx6GlZVf+OBysJsxMROIYkTp+E=;
-        b=VoYhdhCluGoYbkdSs9ZviRrXOCFdtZ5H099jEvPGW5j298L+m7OYhjvZTXrWQEpzuH
-         IqHC5TNqkf0Ig6ZGyOuZ4kHUFiv3leqg6iJTAxKfm8dnORvZKQZE/2gtybjrS2srK1Wt
-         FLF9r5VMSDiIZy+Sh4FL0V9blVUOrfIjCIoJjsPyMIsGf53hSsbu9wxQQDsCJ1q0voF2
-         zrm1tT25pHefoQTyqIFKfFXdnuEZ3cGQHC/hJOeaT7pu3YklcjJn+eB7FzXRx/JMsPZc
-         v82mao0R5OX4ZnE+11YHpJuLTpr2LjTcTC5fCet6NvV+ofdj53hv8sWr3fUwPTiRLnCU
-         on8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UVeSCGRKIiyvWycmoGx6GlZVf+OBysJsxMROIYkTp+E=;
-        b=o4CcmLccLJBMzEOlWo+24AkHjcMzM2mHouK18VkbgcLGUR5WgYClB4ZCIr4TZTxn8+
-         P+k+MYamwqava/rEwwgwAd0/K79cQ0pnl5TH6oPEEoT629Q3K2QK0CNqpvG3e4Z1RJAb
-         ddxziDkOBsfO0lO1tTLqA+QfFEaw9sgAbvmWAn2+VsYLlN3QgEQ5hbl2CqqubJgzBAOU
-         azlA8aNOnOKU+buD47WVGdXspUWzAoXI72nn7ffLBFmyjhnhWeZ+yH5bp5bJm1ZMpi/M
-         0Gjsm76LOTmM6xKmA7rK4z59yacPU5NQhTI2WercdnXOexH/tTxtI9DuHqy4Ous4z+Em
-         sB7g==
-X-Gm-Message-State: AOAM533uPiTvn8oGt+LnmrPFeWsDjXS6qctC4Y88drieufh1mzFX6h6Q
-        xiJanI+AIoTX3m1gQB7Qs09KGQ==
-X-Google-Smtp-Source: ABdhPJxKO5CZhPNluh8HozyZ0PrmHrVvmnYlcPVGIoDlha+Wmwkfv0kh/u+uKkiXQYXa/nyXEWp8sw==
-X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr20150301qta.378.1632261452739;
-        Tue, 21 Sep 2021 14:57:32 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id k17sm176027qtx.67.2021.09.21.14.57.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 14:57:32 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 17:59:33 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folio discussion recap
-Message-ID: <YUpVxZnfskGcJHbD@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
+        id S235838AbhIUWBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:01:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235766AbhIUWBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 18:01:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA5961019;
+        Tue, 21 Sep 2021 21:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632261579;
+        bh=2pzwqy6lIqIzqKUOtcOetgKUkFn022GfsoxI/JVuA50=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CNv6IJ+ItHvfpI9kKpFXRsKE44FdSPdiTYTJ//cZyeKrD64OgUgLFKypkwE+KPo08
+         qDHA09VhX/Z76tOXl8C+1+QlwTdBTIpVyS7sPL3uOjYTmQF2Ukxp1rG9edwApOPKN8
+         /dV1lSko4LSOAfqSlmTgRfQH2c6c2QLIp69UN9vSSQIv8j6/TO2kYFckN52YjtWZLd
+         KI1+EETZscWQ0YZbvxVnRJOhdHmFbQiHmmfrFA+5SOkS7LgOdbmfjBBZQHhHHBhXLt
+         z++MouszFcOPocs+oB08S1yAqzuFb4bbJO/O328GwDoPZHRluk1PZZk5USSFKBoTLz
+         3XJzfTrdbXIjQ==
+Date:   Tue, 21 Sep 2021 14:59:37 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     linux-crypto@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.ne@posteo.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 0/4] crypto: nintendo-aes - add a new AES driver
+Message-ID: <YUpVyTN7MQbMShdf@gmail.com>
+References: <20210921213930.10366-1-linkmauve@linkmauve.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YUpC3oV4II+u+lzQ@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210921213930.10366-1-linkmauve@linkmauve.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 09:38:54PM +0100, Matthew Wilcox wrote:
-> On Tue, Sep 21, 2021 at 03:47:29PM -0400, Johannes Weiner wrote:
-> > This discussion is now about whether folio are suitable for anon pages
-> > as well. I'd like to reiterate that regardless of the outcome of this
-> > discussion I think we should probably move ahead with the page cache
-> > bits, since people are specifically blocked on those and there is no
-> > dependency on the anon stuff, as the conversion is incremental.
+On Tue, Sep 21, 2021 at 11:39:26PM +0200, Emmanuel Gil Peyrot wrote:
+> This engine implements AES in CBC mode, using 128-bit keys only.  It is
+> present on both the Wii and the Wii U, and is apparently identical in
+> both consoles.
 > 
-> So you withdraw your NAK for the 5.15 pull request which is now four
-> weeks old and has utterly missed the merge window?
-
-Once you drop the bits that convert shared anon and file
-infrastructure, yes. Because we haven't discussed yet, nor agree on,
-that folio are the way forward for anon pages.
-
-> > and so the justification for replacing page with folio *below* those
-> > entry points to address tailpage confusion becomes nil: there is no
-> > confusion. Move the anon bits to anon_page and leave the shared bits
-> > in page. That's 912 lines of swap_state.c we could mostly leave alone.
+> The hardware is capable of firing an interrupt when the operation is
+> done, but this driver currently uses a busy loop, I’m not too sure
+> whether it would be preferable to switch, nor how to achieve that.
 > 
-> Your argument seems to be based on "minimising churn". Which is certainly
-> a goal that one could have, but I think in this case is actually harmful.
-> There are hundreds, maybe thousands, of functions throughout the kernel
-> (certainly throughout filesystems) which assume that a struct page is
-> PAGE_SIZE bytes.  Yes, every single one of them is buggy to assume that,
-> but tracking them all down is a never-ending task as new ones will be
-> added as fast as they can be removed.
-
-What does that have to do with anon pages?
-
-> > The same is true for the LRU code in swap.c. Conceptually, already no
-> > tailpages *should* make it onto the LRU. Once the high-level page
-> > instantiation functions - add_to_page_cache_lru, do_anonymous_page -
-> > have type safety, you really do not need to worry about tail pages
-> > deep in the LRU code. 1155 more lines of swap.c.
+> It also supports a mode where no operation is done, and thus could be
+> used as a DMA copy engine, but I don’t know how to expose that to the
+> kernel or whether it would even be useful.
 > 
-> It's actually impossible in practice as well as conceptually.  The list
-> LRU is in the union with compound_head, so you cannot put a tail page
-> onto the LRU.  But yet we call compound_head() on every one of them
-> multiple times because our current type system does not allow us to
-> express "this is not a tail page".
+> In my testing, on a Wii U, this driver reaches 80.7 MiB/s, while the
+> aes-generic driver only reaches 30.9 MiB/s, so it is a quite welcome
+> speedup.
+> 
+> This driver was written based on reversed documentation, see:
+> https://wiibrew.org/wiki/Hardware/AES
+> 
+> Emmanuel Gil Peyrot (4):
+>   crypto: nintendo-aes - add a new AES driver
+>   dt-bindings: nintendo-aes: Document the Wii and Wii U AES support
+>   powerpc: wii.dts: Expose the AES engine on this platform
+>   powerpc: wii_defconfig: Enable AES by default
 
-No, because we haven't identified *who actually needs* these calls
-and move them up and out of the low-level helpers.
+Does this pass the self-tests, including the fuzz tests which are enabled by
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y?
 
-It was a mistake to add them there, yes. But they were added recently
-for rather few callers. And we've had people send patches already to
-move them where they are actually needed.
-
-Of course converting *absolutely everybody else* to not-tailpage
-instead will also fix the problem... I just don't agree that this is
-an appropriate response to the issue.
-
-Asking again: who conceptually deals with tail pages in MM? LRU and
-reclaim don't. The page cache doesn't. Compaction doesn't. Migration
-doesn't. All these data structures and operations are structured
-around headpages, because that's the logical unit they operate on. The
-notable exception, of course, are the page tables because they map the
-pfns of tail pages. But is that it?  Does it come down to page table
-walkers encountering pte-mapped tailpages? And needing compound_head()
-before calling mark_page_accessed() or set_page_dirty()?
-
-We couldn't fix vm_normal_page() to handle this? And switch khugepaged
-to a new vm_raw_page() or whatever?
-
-It should be possible to answer this question as part of the case for
-converting tens of thousands of lines of code to folio.
+- Eric
