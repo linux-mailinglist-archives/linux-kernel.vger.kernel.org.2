@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB29414123
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D05414124
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhIVFOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:14:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29325 "EHLO mga12.intel.com"
+        id S232155AbhIVFOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:14:46 -0400
+Received: from mga12.intel.com ([192.55.52.136]:29328 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232014AbhIVFOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:14:41 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203012040"
+        id S231993AbhIVFOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:14:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203012042"
 X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
-   d="scan'208";a="203012040"
+   d="scan'208";a="203012042"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 22:13:12 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 22:13:13 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
-   d="scan'208";a="550107674"
+   d="scan'208";a="550107679"
 Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Sep 2021 22:13:11 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Sep 2021 22:13:12 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
 To:     iommu@lists.linux-foundation.org,
         LKML <linux-kernel@vger.kernel.org>,
@@ -34,9 +34,9 @@ Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
         Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
         Yi Liu <yi.l.liu@intel.com>,
         "Tian, Kevin" <kevin.tian@intel.com>
-Subject: [RFC 2/7] dma-iommu: Add API for DMA request with PASID
-Date:   Tue, 21 Sep 2021 13:29:36 -0700
-Message-Id: <1632256181-36071-3-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [RFC 3/7] iommu/vt-d: Add DMA w/ PASID support for PA and IOVA
+Date:   Tue, 21 Sep 2021 13:29:37 -0700
+Message-Id: <1632256181-36071-4-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -44,131 +44,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMA-API is the standard way for device drivers to perform in-kernel
-DMA requests. If security is on, isolation is enforced by the IOMMU at
-requester ID (RID) granularity. With the introduction of process address
-space ID (PASID), DMA security is enforced per RID+PASID
-granularity. On some modern platforms, DMA request with PASID is the
-only option available. e.g. The shared work queues in Intel Data
-Streaming Accelerators (DSA).
-To support DMA with PASID while maintaining the ubiquitous usage of DMA
-API, this patch introduces a new IOMMU DMA API that supports two
-addressing modes:
-1. Physical address or bypass mode. This is similar to DMA direct mode,
-where trusted devices can DMA passthrough IOMMU.
-2. IOVA mode that abides DMA APIs. Once set up, callers can use DMA API
-as-is. DMA requests w/ and w/o PASID will be mapped by the same page
-tables.  i.e. the default DMA domain will be used by both RID and
-RID+PASID.
+For physical address(PA) mode, PASID entry for the given supervisor
+PASID will be set up for HW pass-through (PT). For IOVA mode, the
+supervisor PASID entry will be configured the same as PASID 0, which is
+a special PASID for DMA request w/o PASID, a.k.a.
+RID2PASID. Additional IOTLB flush for the supervisor PASID is also
+included.
 
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/iommu/dma-iommu.c | 54 +++++++++++++++++++++++++++++++++++++++
- include/linux/dma-iommu.h | 12 +++++++++
- include/linux/iommu.h     |  2 ++
- 3 files changed, 68 insertions(+)
+ drivers/iommu/intel/iommu.c | 95 ++++++++++++++++++++++++++++++++++++-
+ include/linux/intel-iommu.h |  7 ++-
+ 2 files changed, 100 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 7bcdd1205535..490731659def 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -174,6 +174,60 @@ void iommu_put_dma_cookie(struct iommu_domain *domain)
- }
- EXPORT_SYMBOL(iommu_put_dma_cookie);
- 
-+/**
-+ * iommu_dma_pasid_enable --Enable device DMA request with PASID
-+ * @dev:	Device to be enabled
-+ * @mode:	DMA addressing mode
-+ *
-+ * The following mutually exclusive DMA addressing modes are supported:
-+ *
-+ *  1. Physical address or bypass mode. This is similar to DMA direct where
-+ *     trusted devices can DMA pass-through IOMMU.
-+ *
-+ *  2. IOVA mode. This abides DMA APIs. Once set up, callers can use DMA API
-+ *     as-is. DMA request w/ and w/o PASID will be mapped by the same page
-+ *     tables. PCI requester ID (RID) and RID+PASID will be pointed to the same
-+ *     PGD. i.e. the default DMA domain will be used by both RID and RID+PASID.
-+ *
-+ * @return the supervisor PASID to be used for DMA. Or INVALID_IOASID upon
-+ *     failure.
-+ */
-+int iommu_dma_pasid_enable(struct device *dev,
-+			   enum iommu_dma_pasid_mode mode)
-+{
-+	int pasid = INVALID_IOASID;
-+	struct iommu_domain *dom = NULL;
-+
-+	/* TODO: only allow a single mode each time, track PASID DMA enabling
-+	 * status per device. Perhaps add a flag in struct device.dev_iommu.
-+	 */
-+
-+	/* Call vendor drivers to handle IOVA, bypass mode */
-+	dom = iommu_get_domain_for_dev(dev);
-+	if (dom->ops->enable_pasid_dma(dev, IOASID_DMA_PASID, mode)) {
-+		dev_dbg(dev, "Failed to enable DMA pasid in mode %d", mode);
-+		goto exit;
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index be35284a2016..cbcfd178c16f 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -1631,7 +1631,11 @@ static void domain_flush_piotlb(struct intel_iommu *iommu,
+ 	if (domain->default_pasid)
+ 		qi_flush_piotlb(iommu, did, domain->default_pasid,
+ 				addr, npages, ih);
+-
++	if (domain->s_pasid) {
++		pr_alert_ratelimited("%s: pasid %u", __func__, domain->s_pasid);
++		qi_flush_piotlb(iommu, did, domain->s_pasid,
++				addr, npages, ih);
 +	}
-+	pasid = IOASID_DMA_PASID;
-+
-+	dev_dbg(dev, "Enable DMA pasid %d in mode %d", pasid, mode);
-+	goto exit;
-+exit:
-+	return pasid;
-+}
-+EXPORT_SYMBOL(iommu_dma_pasid_enable);
-+
-+int iommu_dma_pasid_disable(struct device *dev)
+ 	if (!list_empty(&domain->devices))
+ 		qi_flush_piotlb(iommu, did, PASID_RID2PASID, addr, npages, ih);
+ }
+@@ -5535,6 +5539,93 @@ static void intel_iommu_iotlb_sync_map(struct iommu_domain *domain,
+ 	}
+ }
+ 
++static int intel_enable_pasid_dma(struct device *dev, u32 pasid, int mode)
 +{
-+	struct iommu_domain *dom;
++	struct intel_iommu *iommu = device_to_iommu(dev, NULL, NULL);
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct device_domain_info *info;
++	unsigned long flags;
++	int ret = 0;
 +
-+	/* Call vendor iommu ops to clean up supervisor PASID context */
-+	dom = iommu_get_domain_for_dev(dev);
++	info = get_domain_info(dev);
++	if (!info)
++		return -ENODEV;
 +
-+	return dom->ops->disable_pasid_dma(dev);
++	if (!dev_is_pci(dev) || !sm_supported(info->iommu))
++		return -EINVAL;
++
++	if (intel_iommu_enable_pasid(info->iommu, dev))
++		return -ENODEV;
++
++	spin_lock_irqsave(&iommu->lock, flags);
++	switch (mode) {
++	case IOMMU_DMA_PASID_BYPASS:
++		dev_dbg(dev, "%s PT mode", __func__);
++		/* As a precaution, translation request should be responded with
++		 * physical address.
++		 */
++		if (!hw_pass_through) {
++			ret = -ENODEV;
++			goto exit_unlock;
++		}
++		/* HW may use large page for ATS */
++		pci_disable_ats(pdev);
++		ret = intel_pasid_setup_pass_through(info->iommu, info->domain,
++						      dev, pasid);
++		if (ret)
++			dev_err(dev, "Failed SPASID %d BYPASS", pasid);
++		break;
++	case IOMMU_DMA_PASID_IOVA:
++		dev_dbg(dev, "%s IOVA mode", __func__);
++		/*
++		 * We could use SL but FL is preferred for consistency with VM
++		 * where vIOMMU exposes FL only cap
++		 */
++		if (!domain_use_first_level(info->domain))
++			return -EINVAL;
++		/* To be used for IOTLB flush at PASID granularity */
++		info->domain->s_pasid = pasid;
++		ret = domain_setup_first_level(info->iommu, info->domain, dev,
++						pasid);
++		break;
++	default:
++		dev_err(dev, "Invalid PASID DMA mode %d", mode);
++		ret = -EINVAL;
++		goto exit_unlock;
++	}
++	info->pasid_mode = mode;
++exit_unlock:
++	spin_unlock_irqrestore(&iommu->lock, flags);
++
++	return ret;
 +}
-+EXPORT_SYMBOL(iommu_dma_pasid_disable);
 +
- /**
-  * iommu_dma_get_resv_regions - Reserved region driver helper
-  * @dev: Device from iommu_get_resv_regions()
-diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
-index 6e75a2d689b4..3c1555e0fd51 100644
---- a/include/linux/dma-iommu.h
-+++ b/include/linux/dma-iommu.h
-@@ -17,6 +17,18 @@
- int iommu_get_dma_cookie(struct iommu_domain *domain);
- int iommu_get_msi_cookie(struct iommu_domain *domain, dma_addr_t base);
- void iommu_put_dma_cookie(struct iommu_domain *domain);
-+enum iommu_dma_pasid_mode {
-+	/* Pass-through mode, use physical address */
-+	IOMMU_DMA_PASID_BYPASS = 1,
-+	/* Compatible with DMA APIs, same mapping as DMA w/o PASID */
-+	IOMMU_DMA_PASID_IOVA,
-+};
-+/* For devices that can do DMA request with PASID, setup the system
-+ * based on the address mode selected.
-+ */
-+int iommu_dma_pasid_enable(struct device *dev,
-+			   enum iommu_dma_pasid_mode mode);
-+int iommu_dma_pasid_disable(struct device *dev);
- 
- /* Setup call for arch DMA mapping code */
- void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 size);
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 32d448050bf7..610cbfd03e6b 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -283,6 +283,8 @@ struct iommu_ops {
- 
- 	int (*def_domain_type)(struct device *dev);
- 
-+	int (*enable_pasid_dma)(struct device *dev, u32 pasid, int mode);
-+	int (*disable_pasid_dma)(struct device *dev);
- 	unsigned long pgsize_bitmap;
- 	struct module *owner;
++static int intel_disable_pasid_dma(struct device *dev)
++{
++	struct device_domain_info *info;
++	int ret = 0;
++
++	info = get_domain_info(dev);
++	if (!info)
++		return -ENODEV;
++
++	if (!dev_is_pci(dev) || !sm_supported(info->iommu))
++		return -EINVAL;
++
++	if (intel_iommu_enable_pasid(info->iommu, dev))
++		return -ENODEV;
++
++	if (!dev->iommu) {
++		dev_err(dev, "No IOMMU params");
++		return -ENODEV;
++	}
++	dev_info(dev, "Tearing down DMA PASID %d",  info->domain->s_pasid);
++	intel_pasid_tear_down_entry(info->iommu, info->dev, info->domain->s_pasid, false);
++
++	info->domain->s_pasid = 0;
++	return ret;
++}
++
+ const struct iommu_ops intel_iommu_ops = {
+ 	.capable		= intel_iommu_capable,
+ 	.domain_alloc		= intel_iommu_domain_alloc,
+@@ -5573,6 +5664,8 @@ const struct iommu_ops intel_iommu_ops = {
+ 	.sva_get_pasid		= intel_svm_get_pasid,
+ 	.page_response		= intel_svm_page_response,
+ #endif
++	.enable_pasid_dma	= intel_enable_pasid_dma,
++	.disable_pasid_dma	= intel_disable_pasid_dma,
  };
+ 
+ static void quirk_iommu_igfx(struct pci_dev *dev)
+diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+index 03faf20a6817..8940759f759e 100644
+--- a/include/linux/intel-iommu.h
++++ b/include/linux/intel-iommu.h
+@@ -21,6 +21,7 @@
+ #include <linux/dmar.h>
+ #include <linux/ioasid.h>
+ #include <linux/bitfield.h>
++#include <linux/dma-iommu.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/iommu.h>
+@@ -571,7 +572,10 @@ struct dmar_domain {
+ 					 * The default pasid used for non-SVM
+ 					 * traffic on mediated devices.
+ 					 */
+-
++	u32		s_pasid;	/*
++					 * Supervisor PASID used for in-kernel
++					 * DMA request with PASID.
++					 */
+ 	struct iommu_domain domain;	/* generic domain data structure for
+ 					   iommu core */
+ };
+@@ -652,6 +656,7 @@ struct device_domain_info {
+ 	struct intel_iommu *iommu; /* IOMMU used by this device */
+ 	struct dmar_domain *domain; /* pointer to domain */
+ 	struct pasid_table *pasid_table; /* pasid table */
++	enum iommu_dma_pasid_mode pasid_mode; /* DMA PASID address mode */
+ };
+ 
+ static inline void __iommu_flush_cache(
 -- 
 2.25.1
 
