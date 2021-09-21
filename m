@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D04B413E1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D2E413E1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 01:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhIUXqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 19:46:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhIUXqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 19:46:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73FB460F6D;
-        Tue, 21 Sep 2021 23:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632267921;
-        bh=4Bdk7t7Ff4sxxY+JAbnfv4+PRj6aM+D+XVagYS8TOp0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LFrEbKVQKJl47R1ka/rgx6b6MDMPN0zdxTWT50HGMGD8V7B3FQ4iZBqvyz7SAIy0E
-         YfoXQNGfQvipOuROtu5wwEUgve5Wk0HLb7JBYekEFGpHA/tdnkdXKEyzGLNF51lwQ3
-         g9zdycLNbYgwUJZFgxzGv3wKDCwWZrS8iFnQgogx2238RiAfXz3azwCHiBfLgpKyZU
-         P94utw1KHIZW3stUoWYDe/uJBX3l/VG5yf9X1TKiFqJDZcDLyytABkapFcypcUtPV1
-         x45rwCx7gP1Qs/+v75EXbl0HkS2RqnsdpbJ9+ziQnM2NE4JIlHZCcZ9ep4MAqkC3TV
-         rR2zwqmzebsEw==
-Date:   Wed, 22 Sep 2021 01:45:18 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210921234518.GB100318@lothringen>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
- <87pmt163al.ffs@tglx>
+        id S230509AbhIUXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 19:47:21 -0400
+Received: from smtprelay0174.hostedemail.com ([216.40.44.174]:33010 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229824AbhIUXrU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 19:47:20 -0400
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 2CD3030162;
+        Tue, 21 Sep 2021 23:45:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 243461D42F9;
+        Tue, 21 Sep 2021 23:45:46 +0000 (UTC)
+Message-ID: <af3c775a1515f97c8dbe6a6651bd6e4b6986e8cd.camel@perches.com>
+Subject: Re: [patch 9/9] mm/vmalloc: add __alloc_size attributes for better
+ bounds checking
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, apw@canonical.com,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, dwaipayanray1@gmail.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        mm-commits@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@suse.cz>
+Date:   Tue, 21 Sep 2021 16:45:44 -0700
+In-Reply-To: <202109211630.2D00627@keescook>
+References: <20210909200948.090d4e213ca34b5ad1325a7e@linux-foundation.org>
+         <20210910031046.G76dQvPhV%akpm@linux-foundation.org>
+         <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com>
+         <202109211630.2D00627@keescook>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmt163al.ffs@tglx>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 243461D42F9
+X-Stat-Signature: nmh4sseds13ojprfziwgjcbwyxpdkcp3
+X-Spam-Status: No, score=-0.99
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18siCLeLxc9mFEyyVNoRWQi0ZSA3VAUMs8=
+X-HE-Tag: 1632267946-356498
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:12:50PM +0200, Thomas Gleixner wrote:
-> Valentin reported warnings about suspicious RCU usage on RT kernels. Those
-> happen when offloading of RCU callbacks is enabled:
+On Tue, 2021-09-21 at 16:37 -0700, Kees Cook wrote:
+> On Fri, Sep 10, 2021 at 10:23:48AM -0700, Linus Torvalds wrote:
+> > On Thu, Sep 9, 2021 at 8:10 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > 
+> > > +__alloc_size(1)
+> > >  extern void *vmalloc(unsigned long size);
+> > [...]
+> > 
+> > All of these are added in the wrong place - inconsistent with the very
+> > compiler documentation the patches add.
+> > 
+> > The function attributes are generally added _after_ the function,
+> > although admittedly we've been quite confused here before.
+> > 
+> > But the very compiler documentation you point to in the patch that
+> > adds these macros gives that as the examples both for gcc and clang:
+> > 
+> > + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alloc_005fsize-function-attribute
+> > + * clang: https://clang.llvm.org/docs/AttributeReference.html#alloc-size
+> > 
+> > and honestly I think that is the preferred format because this is
+> > about the *function*, not about the return type.
+> > 
+> > Do both placements work? Yes.
 > 
->   WARNING: suspicious RCU usage
->   5.13.0-rt1 #20 Not tainted
->   -----------------------------
->   kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
+> I'm cleaning this up now, and have discovered that the reason for the
+> before-function placement is consistency with static inlines. If I do this:
 > 
->   rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
->   rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
->   rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
+> static __always_inline void * kmalloc(size_t size, gfp_t flags) __alloc_size(1)
+> {
+> 	...
+> }
 > 
-> The reason is that rcu_rdp_is_offloaded() is invoked without one of the
-> required protections on RT enabled kernels because local_bh_disable() does
-> not disable preemption on RT.
+> GCC is very angry:
 > 
-> Valentin proposed to add a local lock to the code in question, but that's
-> suboptimal in several aspects:
+> ./include/linux/slab.h:519:1: error: attributes should be specified before the declarator in a function definition
+>   519 | static __always_inline void *kmalloc_large(size_t size, gfp_t flags) __alloc_size(1)
+>       | ^~~~~~
 > 
->   1) local locks add extra code to !RT kernels for no value.
+> It's happy if I treat it as a "return type attribute" in the ordering,
+> though:
 > 
->   2) All possible callsites have to audited and amended when affected
->      possible at an outer function level due to lock nesting issues.
+> static __always_inline void * __alloc_size(1) kmalloc(size_t size, gfp_t flags)
 > 
->   3) As the local lock has to be taken at the outer functions it's required
->      to release and reacquire them in the inner code sections which might
->      voluntary schedule, e.g. rcu_do_batch().
-> 
-> Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
-> rcu_rdp_is_offloaded() in the variable declaration section right at the top
-> of the functions. But the actual usage of the result is either within a
-> section which provides the required protections or after such a section.
-> 
-> So the obvious solution is to move the invocation into the code sections
-> which provide the proper protections, which solves the problem for RT and
-> does not have any impact on !RT kernels.
+> I'll do that unless you have a preference for somewhere else...
 
-Also while at it, I'm asking again: traditionally softirqs could assume that
-manipulating a local state was safe against !irq_count() code fiddling with
-the same state on the same CPU.
+_please_ put it before the return type on a separate line.
 
-Now with preemptible softirqs, that assumption can be broken anytime. RCU was
-fortunate enough to have a warning for that. But who knows how many issues like
-this are lurking?
+[__attributes]
+[static inline const] <return type> function(<args...>)
 
-Thanks.
+
+
+
