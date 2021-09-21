@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D861413318
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EA141331D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhIUMEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S231613AbhIUMGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhIUMD7 (ORCPT
+        with ESMTP id S229984AbhIUMGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:03:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E94C061757;
-        Tue, 21 Sep 2021 05:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+kP37EKfXgboCEQjp8x5JVX9fltzDY6I8KswV5Vh4Wg=; b=Rg/ce+rxn3d069LIvENwQTh3O/
-        orcvaGTo6gb3lnmTYFzP2Vm6cwC4X5yCjQ95vHd8yVW02ArlJS7udQ6C5qKkWpjcP1X+dl0+fObug
-        06KJl1j0TYOjX7v+uaCMhIOdWdOWLp253WBTOMLtRo7gZqrB6iUgquRJLDLX9GEsCKNRtOsW+WgcO
-        fCmkrpuOnXwYa/Yd3dYqGOKpGwt8lGAfB6HMVea1z/eoYDNv45s5K9jlCcp/B4oaGQ3/G5COK++f6
-        aU1R583gU+NqJLU3EbpFoQf+EEvXKC3+GE0ef/F2P7P227CwUoPLFT2/sJFmgP4oHtcG00G6UdbgM
-        S0jrmcsw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mSeSK-003mGX-2Y; Tue, 21 Sep 2021 12:01:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 619F2300274;
-        Tue, 21 Sep 2021 14:00:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 43E7D2028E984; Tue, 21 Sep 2021 14:00:59 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 14:00:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Subject: Re: [tip: x86/core] x86/iopl: Fake iopl(3) CLI/STI usage
-Message-ID: <YUnJe6rijGy6q1Cz@hirez.programming.kicks-ass.net>
-References: <20210918090641.GD5106@worktop.programming.kicks-ass.net>
- <163220928593.25758.16098239507716851071.tip-bot2@tip-bot2>
- <202109211309.26518.linux@zary.sk>
+        Tue, 21 Sep 2021 08:06:18 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B5FC061574;
+        Tue, 21 Sep 2021 05:04:50 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id dj4so17643215edb.5;
+        Tue, 21 Sep 2021 05:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PjlwybJCIOyk6kI6/r4pWXearyUORkl4g3ybUpCst+U=;
+        b=SarQDHmPNdFnpBy4YkSR+ypw2KsJep6A9+qzjAn/vgdJW93JKYhtRSjuTDzfZoFK5/
+         fhrLc7HQs2lOMlFuPQXW4ZJoXUpTUzWSQI4Yba7ndZUddOOWr7slJs6LKCBOdu5e+V3S
+         OoQSyajjadng/LTRJVDdH26WPJUhJljiO1MFmg/+ik5PtwZUV+TWb3yAgUJPvRSuAOSe
+         Mr1c6QgTlug65gzSrnCJPjh9yLre/uk7ajgPUthJY/Ti6E9F8lPjf7vJh9ABdsmrsWkC
+         bQN8a/Nfi2yNZZYj4O7MkkffT5QTRuQ+NsztZrGYtbKLbSPSFnMqUOg8N7+VgtGc9da1
+         k3Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PjlwybJCIOyk6kI6/r4pWXearyUORkl4g3ybUpCst+U=;
+        b=NKQG5YKuzOajR66+DunQiKSUI7g7eVVWG/zCvrF51TD9luY3UnkbmngtLUOJHepKnx
+         XpuIg1gK8CiU0K6pOdtlwnwkI2EtO2cs8aR0E2+ss5qICqZOZH2V8xaEw8/1jhjm59Uo
+         IiwaiH6zoRPzjh/Ji09RSUgOei85dWhja75WFbJcD63vzJwCXs+vJwH/iVfMuIqd2TVm
+         aqiDRc7zysNeIGD1AQr+KjFFMJkev33nll2jO4C32fuMmkOZVFVFHwzxuc1Let3f+asU
+         joIGSSyy+4vDWXtioGFpvSFLDfl/V/P8AL/bH8fp/7owr96/p45FDCHu7aFiDDLZvlZw
+         PGGA==
+X-Gm-Message-State: AOAM530zRC31zs1OkmtvQ5hI61opJqC8CoWosc2xvlHw/vOUtUbBwnWH
+        USlk9MbKJHJSoetrpPzre6jwoNg7v5OsOMNdmbQ=
+X-Google-Smtp-Source: ABdhPJz3raeyYe4OAKqhiP0XFxXtjQmAUm8g/XPotRYQ96GojP9JjYyw+85vTb3EQpXDDX96JOCmAN6FKYGc8wnWk2o=
+X-Received: by 2002:a17:906:90c9:: with SMTP id v9mr32849608ejw.356.1632225856357;
+ Tue, 21 Sep 2021 05:04:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109211309.26518.linux@zary.sk>
+References: <20210921103346.64824-1-tony@atomide.com>
+In-Reply-To: <20210921103346.64824-1-tony@atomide.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 21 Sep 2021 15:03:39 +0300
+Message-ID: <CAHp75Vef_Y8M9RmpCvfpo9OWC4Nt3rzV7S9esJBcub_5DZQj1Q@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Get rid of pm_runtime_irq_safe() for 8250_omap
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 01:09:26PM +0200, Ondrej Zary wrote:
-> On Tuesday 21 September 2021, tip-bot2 for Peter Zijlstra wrote:
-> > The following commit has been merged into the x86/core branch of tip:
-> > 
-> > Commit-ID:     32e1ae626f295152d1fc9a3375214133cbe62878
-> > Gitweb:        https://git.kernel.org/tip/32e1ae626f295152d1fc9a3375214133cbe62878
-> > Author:        Peter Zijlstra <peterz@infradead.org>
-> > AuthorDate:    Fri, 17 Sep 2021 11:20:04 +02:00
-> > Committer:     Peter Zijlstra <peterz@infradead.org>
-> > CommitterDate: Sat, 18 Sep 2021 12:18:32 +02:00
-> > 
-> > x86/iopl: Fake iopl(3) CLI/STI usage
-> > 
-> > Since commit c8137ace5638 ("x86/iopl: Restrict iopl() permission
-> > scope") it's possible to emulate iopl(3) using ioperm(), except for
-> > the CLI/STI usage.
-> > 
-> > Userspace CLI/STI usage is very dubious (read broken), since any
-> > exception taken during that window can lead to rescheduling anyway (or
-> > worse). The IOPL(2) manpage even states that usage of CLI/STI is highly
-> > discouraged and might even crash the system.
-> > 
-> > Of course, that won't stop people and HP has the dubious honour of
-> > being the first vendor to be found using this in their hp-health
-> > package.
-> > 
-> > In order to enable this 'software' to still 'work', have the #GP treat
-> > the CLI/STI instructions as NOPs when iopl(3). Warn the user that
-> > their program is doing dubious things.
-> > 
-> > Fixes: a24ca9976843 ("x86/iopl: Remove legacy IOPL option")
-> > Reported-by: Ondrej Zary <linux@zary.sk>
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-> > Link: https://lkml.kernel.org/r/20210918090641.GD5106@worktop.programming.kicks-ass.net
-> 
-> Could this be backported to 5.10 kernel so it can get into the recently released Debian 11?
+On Tue, Sep 21, 2021 at 1:34 PM Tony Lindgren <tony@atomide.com> wrote:
+>
+> Hi,
+>
+> Here are patches to get rid of pm_runtime_irq_safe() for the 8250_omap
+> driver.
+>
+> For removing the pm_runtime_irq_safe() usage, serial TX is the last
+> remaining issue. We deal with TX by waking up the port and returning 0
+> bytes written from write_room() and write() if the port is not available
+> because of PM runtime autoidle.
 
-Thomas also asked about a stable tag, so I'll rebase and force-push
-these commits and add:
+of the PM
 
-Cc: stable@kernel.org # v5.5+
+>
+> This series also removes the dependency to Andy's pending generic serial
+> layer PM runtime patches, and hopefully makes that work a bit easier :)
 
-to it.
+
+Thank you, Tony, very much! The series looks to me in a good
+condition, hence, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Regards,
+>
+> Tony
+>
+>
+> Tony Lindgren (6):
+>   n_tty: Start making use of -EAGAIN returned from
+>     process_output_block()
+>   tty: n_gsm: Don't ignore write return value in gsmld_output()
+>   serial: core: Add new prep_tx for power management
+>   serial: 8250: Implement prep_tx for power management
+>   serial: 8250_omap: Require a valid wakeirq for deeper idle states
+>   serial: 8250_omap: Drop the use of pm_runtime_irq_safe()
+>
+>  Documentation/driver-api/serial/driver.rst |  9 ++++++
+>  drivers/tty/n_gsm.c                        |  5 ++-
+>  drivers/tty/n_tty.c                        |  8 +++--
+>  drivers/tty/serial/8250/8250_omap.c        | 36 +++++++++++++++-------
+>  drivers/tty/serial/8250/8250_port.c        | 24 +++++++++++++++
+>  drivers/tty/serial/serial_core.c           | 23 ++++++++++++++
+>  include/linux/serial_core.h                |  1 +
+>  7 files changed, 90 insertions(+), 16 deletions(-)
+>
+> --
+> 2.33.0
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
