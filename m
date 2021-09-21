@@ -2,71 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70AC412F0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8ADC412F13
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhIUHK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        id S230121AbhIUHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhIUHJ4 (ORCPT
+        with ESMTP id S230110AbhIUHK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:09:56 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33873C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:08:28 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 73so46469349qki.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:08:28 -0700 (PDT)
+        Tue, 21 Sep 2021 03:10:29 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069C7C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:08:49 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u15so36201607wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 00:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=kfDlQBVSqf07hAXhTAUKnH/OI2lCXLrpWHu75WLFvTA=;
-        b=BUinGRzkEBTD99Lt746jvIe5+HpRg6p8cNDmB77n2y2EAdYUKS2BHXSsu2VZElC1d2
-         ygjjAt+20xmsTf2+CowQNYCkQ7LpWVOLcNWqFzr8sMeUZYIRNrSel43BcJ97tHdjEwFH
-         WssQkSZgvJPzBLfbVd+umz91/u0wIqmcZjOk3IWi/GRJLfK76Kq0EqGGwd87pJC8wlZS
-         twCN7GWSsEhfKlLrgOYUC7NoeOx2tLdagfbj8wGnqqWRjE/9+vuxkWUAfkwVX6hpkd59
-         2V3aBqYY0j17LWPE8oCxEqfZcIDcNsNnsX4c0/r4RINDh3gbMJZPpSQcxFd0u5ijJE7M
-         J9SQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Cyc6wAvsiYvYVdHCei88zIBgag7U9mJqxcUyH3r1CWM=;
+        b=EQ6/tvjLOGJ2R/hFuNnnTCnC3AcN5Ge1Dz3gKT8j2pYOuibo305AQJBZ28DeSmOwey
+         kgy2cyVUs/8oOsaprC3nuq2fBpukx47phqrIvU2glPkoMWq6t2gzOWSs0Mn+9RwHiJN+
+         lwvpXENzFUrZYGWwtwbWjOxPsO5d32qtFdDIca8DcC8yUYzTKLm63eiTUO0iUM/NkMiG
+         OzuWjrwmGZWqvOiP7z+RCa6OI/vzA19wb+zFsyJeiYrIVOOEepCGECJ4jmHQ61b9k+8p
+         pATfcSEH8tYyMdeTvkMn76kTisaNd4zYTqVyTA7j7Ir+87DSM8yr6SBWe01TN3GpzQ+T
+         VlNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=kfDlQBVSqf07hAXhTAUKnH/OI2lCXLrpWHu75WLFvTA=;
-        b=otsV6adhB1b9y9pRdvo0lKH6jtXz+IH0/UMTbYl1xqkQ1n4de9D+RRaklO9KcOhY9+
-         EOvVhe5hEyLlp2MsudZNihd6CHBqMwNdgjO0oeYv73W1SSL8H3DPcPBHe08NPyEpb9WI
-         XZ51u4pTG4OAnYDRvAFGAJM65kkDWJkBasa1HLBFsct3+Ao/e/8lunF869uKvLEW7Zfl
-         avIz31/KaCxeLLrxndASarYs6H9sSF0slO7fytivqdCg7BLiDy5c6wD+RHCOrpkiEAqa
-         R4Ky3XTdQ68b2umCOXqUNVUEgAcX4An9o99TNP3u/4tKe2ffC7od/ehdgcMC9JPyvBtj
-         h65A==
-X-Gm-Message-State: AOAM5306BFtIvgZjuQXmNHTiZb4u97X4srEpOlbPcbs1CYiuMbiIqqEj
-        r23aulzvfB9HFmoeYKyS01z5hq8sxGQLybXledA=
-X-Google-Smtp-Source: ABdhPJwky0X1WaQsaBvgbits30v4OowUnsKYU21Vxz1f6NWZNUQIksXggH3g/no4jfcIMl7xy4pX9URKIP26EpiKmMQ=
-X-Received: by 2002:a25:cc90:: with SMTP id l138mr35822464ybf.400.1632208107095;
- Tue, 21 Sep 2021 00:08:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Cyc6wAvsiYvYVdHCei88zIBgag7U9mJqxcUyH3r1CWM=;
+        b=dXfYQtDYzp754fatX5aKG6z7Uy3hE/1fpYcCAjwXGY6ywL/jxFXHSB4wAnCANNKsmN
+         NgTq//VIljpa/60ZJ0bsRRiLlNbkR/X0w29v8Va0T5Tolg/d+iR+ekAuo7l4/D6xJcis
+         D/TytGfu4T9DE9VobD5FqL4FsYH/NHSGzlC9kG641aTkrcC4azMrVs+ZByHH9CtK9lTl
+         QSqFK5XVzYNFE1tJgMhecV6OObFKtC1cNBCqWfRmeku4R+0mQ2e2gM6sRSZIrC3f6Ax5
+         n5WXNB4iMbkdMjxdZSzebWECAm68nG0B8N0MivAyl/wmP/7mrmlx96pXoSTnjerZm2c7
+         CPyg==
+X-Gm-Message-State: AOAM532Y4WLCCYOM9PJ4cOMceCyjOZYAf8w6XiNaCzla9PYxrF3pNUVp
+        1sDt2K7zFKZQBfveUXcH4VL2IQ==
+X-Google-Smtp-Source: ABdhPJyPQ/o1Rh01pdww1XQiFIlGSq+2ub4xW3Lao90e3fivXN469GPYJVCY/MaD/ditL/22MZeDcw==
+X-Received: by 2002:a1c:28b:: with SMTP id 133mr2886271wmc.14.1632208127619;
+        Tue, 21 Sep 2021 00:08:47 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id g22sm1654479wmp.39.2021.09.21.00.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 00:08:47 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 08:08:44 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Will McVicker <willmcvicker@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v1 0/4] arm64: Kconfig: Update ARCH_EXYNOS select configs
+Message-ID: <YUmE/LqlFCiongfn@google.com>
+References: <20210920190350.3860821-1-willmcvicker@google.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6918:d290:b0:5e:224b:aff1 with HTTP; Tue, 21 Sep 2021
- 00:08:26 -0700 (PDT)
-Reply-To: michaelrachid7@gmail.com
-From:   Michael Rachid <torrescorey23@gmail.com>
-Date:   Tue, 21 Sep 2021 08:08:26 +0100
-Message-ID: <CABmOKHoRd2h_QckW19kM1YUhre9SqWEra04iPSax_OPBNtb2Kw@mail.gmail.com>
-Subject: =?UTF-8?B?15TXptei15QvUHJvcG9zYWw=?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210920190350.3860821-1-willmcvicker@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15fXkdeoINeZ16fXqCwNCg0K15DXoNeZINeb15XXqteRINeb15PXmSDXnNeU15XXk9eZ16Ig4oCL
-4oCL15zXmiDXotecINeU16bXoteUINei16HXp9eZ16og16nXmdepINec15kg15HXlCDXlNeZ15nX
-qteZINeo15XXpteUINec15jXpNecINeQ15nXqteaLg0K157Xk9eV15HXqCDXkdeX157Xmdep15nX
-nSDXnteZ15zXmdeV158g15PXldec16guINeU15nXlCDXodee15XXmiDXldeR15jXldeXINep15TX
-m9ecINeX15XXp9eZINeV15zXnNeQINeh15nXm9eV16DXmdedLg0K15DXoNeQINem15nXmdefINeQ
-16og15TXqtei16DXmdeZ16DXldeq15ouDQoNCtee15nXmden15wg16jXkNeX15nXky4NCg0KDQpE
-ZWFyIGZyaWVuZCwNCg0KSSB3cml0ZSB0byBpbmZvcm0geW91IGFib3V0IGEgYnVzaW5lc3MgcHJv
-cG9zYWwgSSBoYXZlIHdoaWNoIEkgd291bGQNCmxpa2UgdG8gaGFuZGxlIHdpdGggeW91Lg0KRmlm
-dHkgbWlsbGlvbiBkb2xsYXJzIGlzIGludm9sdmVkLiBCZSByZXN0IGFzc3VyZWQgdGhhdCBldmVy
-eXRoaW5nIGlzDQpsZWdhbCBhbmQgcmlzayBmcmVlLg0KS2luZGx5IGluZGljYXRlIHlvdXIgaW50
-ZXJlc3QuDQoNCk1pY2hhZWwgUmFjaGlkLg0K
+On Mon, 20 Sep 2021, Will McVicker wrote:
+
+> This patch series tries to address the issue of ARCH_EXYNOS force selecting
+> a handful of drivers without allowing the vendor to override any of the
+> default configs. This takes away from the flexibilty of compiling a generic
+> kernel with exynos kernel modules. For example, it doesn't allow vendors to
+> modularize these drivers out of the core kernel in order to share a generic
+> kernel image across multiple devices that require device-specific kernel
+> modules.
+> 
+> To address this without impacting the existing behavior, this series
+> switches the default config logic for the offending configs to use "default
+> y if ARCH_EXYNOS" versus having ARCH_EXYNOS directly select them. I have
+> verified that these patches do not impact the default aarch64 .config.
+> 
+> Will McVicker (4):
+>   clk: samsung: change COMMON_CLK_SAMSUNG default config logic
+>   soc: samsung: change SOC_SAMSUNG default config logic
+>   pinctrl: samsung: change PINCTRL_EXYNOS default config logic
+>   rtc: change HAVE_S3C_RTC default config logic
+> 
+>  arch/arm64/Kconfig.platforms    | 7 -------
+>  drivers/clk/samsung/Kconfig     | 1 +
+>  drivers/pinctrl/samsung/Kconfig | 1 +
+>  drivers/rtc/Kconfig             | 1 +
+>  drivers/soc/samsung/Kconfig     | 4 ++++
+>  5 files changed, 7 insertions(+), 7 deletions(-)
+
+For all patches in the series:
+
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
