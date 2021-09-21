@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EFE413367
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C7741336E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbhIUMfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:35:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:29572 "EHLO m43-7.mailgun.net"
+        id S232715AbhIUMl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232731AbhIUMfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:35:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1632227624; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1SrEkAgFyFJqOXJd1/2WF+Bw36twEXqMagVWYRG9z8s=;
- b=SSONChma1lrsCzYQayYyn03jRFa6Fi3v4pDhXafYnL4InlzOpZJJ470JzL49ePkOipRSmMNL
- TTOCWcy30b0TqPqbnk8t6G9+F+Yxr8ktil6v6k9SW41gDStCOemZwWbccs6Kjaq5Lw2YX83p
- 0XWcFwn/7Hx2pLt74plv/5nKCMA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6149d127648642cc1cc63216 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 12:33:43
- GMT
-Sender: jeyr=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9160EC43617; Tue, 21 Sep 2021 12:33:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: jeyr)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3F58C4338F;
-        Tue, 21 Sep 2021 12:33:42 +0000 (UTC)
+        id S230052AbhIUMl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:41:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5F6E60EE4;
+        Tue, 21 Sep 2021 12:39:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632227999;
+        bh=dX+cwcBtXlRU2Cy6ZCzeR+J9bsOcN6ZcV8RsSQI80Tc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rJfygDD0FiSpM1F9bZSz6k8lJNpdXjVV2EP4sEnWe2jlXIdydFW86nrMr7EMBdLn0
+         VWUFpgURddaCHdZSmTuyThkPIKs4v5M3/nSjv2NtgJ0Q2EisX/IzpbfOdYoNQhXlGP
+         BvboNEPiV/Cl74u4hOvdBQUUujkkjhscfoMU9uBCmmovD2/Aa4jQoZzDodvGtqvFNN
+         Sbb7MOM33wcHSi77wrnJBq7vXX/ETS/jqTbRsLrSh1zb46dQNXL//zQ7L2USoT4Iew
+         dXNVdc83dt+NKtv3XktQnVk5aa3olkrpsrqy7sojj9EGjavU0zRo2xS9BcfsclKPMR
+         9zlABopkzywKA==
+Date:   Tue, 21 Sep 2021 05:39:56 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
+Message-ID: <20210921053956.11ac7156@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YUlBGk2Mq3iYhtku@unreal>
+References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
+        <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YUlBGk2Mq3iYhtku@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 21 Sep 2021 18:03:42 +0530
-From:   jeyr@codeaurora.org
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH v3] misc: fastrpc: fix improper packet size calculation
-In-Reply-To: <YUnHbiQDZK/+tTAp@kroah.com>
-References: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
- <YUnHbiQDZK/+tTAp@kroah.com>
-Message-ID: <9c5c13a393b64a4527f7be7ca42734d2@codeaurora.org>
-X-Sender: jeyr@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-21 17:22, Greg KH wrote:
-> On Tue, Sep 21, 2021 at 05:18:15PM +0530, Jeya R wrote:
->> The buffer list is sorted and this is not being considered while
->> calculating packet size. This would lead to improper copy length
->> calculation for non-dmaheap buffers which would eventually cause
->> sending improper buffers to DSP.
->> 
->> Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke 
->> method")
->> Signed-off-by: Jeya R <jeyr@codeaurora.org>
->> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Tue, 21 Sep 2021 05:19:06 +0300 Leon Romanovsky wrote:
+> On Mon, Sep 20, 2021 at 02:04:07PM -0700, Jakub Kicinski wrote:
+> > On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:  
+> > > On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:  
+>  [...]  
+> > > 
+> > > Unlike unused functions bringing back error handling may be
+> > > non-trivial. I'd rather you deferred such cleanups until you're 
+> > > ready to post your full rework and therefore give us some confidence 
+> > > the revert will not be needed.  
+> > 
+> > If you disagree you gotta repost, new devlink_register call got added
+> > in the meantime.  
 > 
-> Does this also need to go to the stable kernels?
-Yes, this needs to go to stable kernels also as this fixes a potential 
-issue which is easily reproducible.
+> This is exactly what I afraid, new devlink API users are added faster
+> than I can cleanup them.
+> 
+> For example, let's take a look on newly added ipc_devlink_init(), it is
+> called conditionally "if (stage == IPC_MEM_EXEC_STAGE_BOOT) {". How can
+> it be different stage if we are in driver .probe() routine?
+> 
+> They also introduced devlink_sio.devlink_read_pend and
+> devlink_sio.read_sem to protect from something that right position of
+> devlink_register() will fix. I also have serious doubts that their
+> current protection is correct, once they called to devlink_params_publish()
+> the user can crash the system, because he can access the parameters before
+> they initialized their protection.
+> 
+> So yes, I disagree. We will need to make sure that devlink_register()
+> can't fail and it will make life easier for everyone (no need to unwind)
+> while we put that command  being last in probe sequence.
 
-> 
->> ---
->> Changes in v3:
->> - relocate patch change list
->> 
->> Changes in v2:
->> - updated commit message to proper format
->> - added fixes tag to commit message
->> - removed unnecessary variable initialization
->> - removed length check during payload calculation
->> 
->>  drivers/misc/fastrpc.c | 10 ++++++----
->>  1 file changed, 6 insertions(+), 4 deletions(-)
->> 
->> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
->> index beda610..69d45c4 100644
->> --- a/drivers/misc/fastrpc.c
->> +++ b/drivers/misc/fastrpc.c
->> @@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct 
->> fastrpc_invoke_ctx *ctx)
->>  static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, 
->> int metalen)
->>  {
->>  	u64 size = 0;
->> -	int i;
->> +	int oix;
-> 
-> What does "oix" stand for?  What was wrong with i?
-It is just a general convention we use. "oix" is used to iterate through 
-sorted overlap buffer list and use "i" to get corresponding unsorted 
-list index. We follow the same convention at other places also, for 
-example: fastrpc_get_args function.
-> 
-> thanks,
-> 
-> greg k-h
+Remains to be seen if return type makes people follow correct ordering.
+
+> If I repost, will you take it? I don't want to waste anyone time if it
+> is not.
+
+Yeah, go for it.
