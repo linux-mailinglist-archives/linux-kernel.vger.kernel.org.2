@@ -2,146 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1FC413C19
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35797413C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhIUVOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:14:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51190 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbhIUVOV (ORCPT
+        id S235309AbhIUVQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:16:19 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:46983 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231297AbhIUVQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:14:21 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632258771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/d9ecYh2L4gIWFi5kh23O8/tmeJ+Zy/cOZw1iVbWJ0=;
-        b=aoWeT3TAKrBIFSeky1ZLElvf7XtWUfLAzGXcrkiNVE+lzLHwt49Ll0ytAV2q8aPLgCLmhI
-        qdBtJ3KoCjGNkY//0RlUBSXaGUBGohFQU3Iha3XJtzuCQ4d0qKRVuMiDMhpq7xN697cRFG
-        mdX6yPlwppfpjOdcB2HHKO5XtS5tLrJZiQ5pcQA3xQ24QgpIhqQFtdsjTMKiTHUpmEiWRe
-        SXbvvsm4QuK7Bxr5XCA2hSrEDCQK+STSKIASSH1XXzfVLyMPBWA94am2gt4URR0GApSkBP
-        CLvAgPpxGyNm2bZP1+d2XFkUc+iVy+4JRW0jAj+f89oBvDkQOXuSDwOeV4Q8Vw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632258771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/d9ecYh2L4gIWFi5kh23O8/tmeJ+Zy/cOZw1iVbWJ0=;
-        b=3jjc+7PBcS4ow3JDn4taHqXHsmytqlFtKQZlG67nicGebcHU638avfYfsznAktpZ4wte6s
-        t6czxYYgRKS6L4Dw==
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-In-Reply-To: <874kae6n3g.ffs@tglx>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
-Date:   Tue, 21 Sep 2021 23:12:50 +0200
-Message-ID: <87pmt163al.ffs@tglx>
+        Tue, 21 Sep 2021 17:16:18 -0400
+Received: by mail-oi1-f180.google.com with SMTP id s69so1072300oie.13;
+        Tue, 21 Sep 2021 14:14:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bWK8KCUSeXUYwhPHrqeGzMe4z+4xKUHwvqCID3Fe/NY=;
+        b=Y/8hiWkr5eoT6VXQn7zIHPfqj/R2hQa0TmIFURzVZ3KkgZdHrlkP9ZJdEqicuOXHkh
+         Ee+ZXCpS/VqqQZi8Q2k9fvj5gKQpq3XANCvSEJt7vwIwZYGSENYZGW4/u/cuQKL2v82j
+         gqk06s+bDK+cbrVebR07yaerJosrIeDOL8lRRQOF+V6Es8ZQuAmi9mGLZMUPUQC3ewM+
+         Q//xTNsXbfnnbnV4Rd4G0eDaNCJsZMVY94yQAVuwZWZo8FLPGbsvWvjp/78ku3GkwGgD
+         tsPF3Panv5sfUYVkTi5fK1YU8XUrvvbxYHuGTgfU2PuMT8Glg/J0KFEkIh7pwLN8cAyQ
+         DNsg==
+X-Gm-Message-State: AOAM532g4bIBNyInBmUpDnlFq6M7EtvtlWrPwtTKwBgZFF2hSc+qxaJc
+        98q/M1Vio2nMliI6RjvKXc7i+JE/Lw==
+X-Google-Smtp-Source: ABdhPJxYmZeWu5VVqrUSlvevv8NkNVD23DL8Au484/U1knhXunjVhMEM7oiiqhYKzZftCzl+Rdw/7Q==
+X-Received: by 2002:a05:6808:494:: with SMTP id z20mr5371431oid.103.1632258889729;
+        Tue, 21 Sep 2021 14:14:49 -0700 (PDT)
+Received: from robh.at.kernel.org (rrcs-192-154-179-36.sw.biz.rr.com. [192.154.179.36])
+        by smtp.gmail.com with ESMTPSA id j10sm32163oiw.32.2021.09.21.14.14.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 14:14:49 -0700 (PDT)
+Received: (nullmailer pid 3336121 invoked by uid 1000);
+        Tue, 21 Sep 2021 21:14:48 -0000
+Date:   Tue, 21 Sep 2021 16:14:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Daniel Palmer <daniel@0x0f.com>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ARM: dts: mstar: Add the Wireless Tag
+ IDO-SBC2D06-V1B-22W
+Message-ID: <YUpLSLNh27ifUGz1@robh.at.kernel.org>
+References: <20210914184141.32700-1-romain.perier@gmail.com>
+ <20210914184141.32700-4-romain.perier@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914184141.32700-4-romain.perier@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valentin reported warnings about suspicious RCU usage on RT kernels. Those
-happen when offloading of RCU callbacks is enabled:
+On Tue, Sep 14, 2021 at 08:41:41PM +0200, Romain Perier wrote:
+> The Wireless Tag IDO-SBC2D06-V1B-22W[1] is an SBC powered by SSD202D
+> with a dual Ethernet and a connector for a 4-inch and 7-inch display.
+> It embeds a System-On-Module IDO-SOM2D01[2] with an Mstar SSD202 SoC
+> dual-core Cortex-A7 CPU @ 1.2Ghz , 2D GPU, 128 MB DDR3 (on-chip) and
+> a 256MB SPI NAND flash. This commit adds basic definition for this
+> board.
+> 
+> 1. http://linux-chenxing.org/infinity2/ido-sbc2d06
+> 2. http://www.wireless-tag.com/portfolio/ido-som2d01
+> 
+> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> ---
+>  .../devicetree/bindings/arm/mstar/mstar.yaml  |  2 ++
+>  arch/arm/boot/dts/Makefile                    |  1 +
+>  .../dts/mstar-infinity2m-ssd201-som2d01.dtsi  | 20 +++++++++++++
+>  ...sd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts | 23 +++++++++++++++
+>  ...ity2m-ssd202d-wirelesstag-ido-som2d01.dtsi | 28 +++++++++++++++++++
+>  5 files changed, 74 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
+>  create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
+>  create mode 100644 arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mstar/mstar.yaml b/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
+> index a316eef1b728..10efd703717e 100644
+> --- a/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mstar/mstar.yaml
+> @@ -25,6 +25,8 @@ properties:
+>            - enum:
+>                - honestar,ssd201htv2 # Honestar SSD201_HT_V2 devkit
+>                - m5stack,unitv2 # M5Stack UnitV2
+> +              - wirelesstag,ido-som2d01 # Wireless Tag IDO-SOM2D01
+> +              - wirelesstag,ido-sbc2d06-v1b-22w # Wireless Tag IDO-SBC2D06-1VB-22W
+>            - const: mstar,infinity2m
+>  
+>        - description: infinity3 boards
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 7e0934180724..7f0e92cea716 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1448,6 +1448,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
+>  dtb-$(CONFIG_ARCH_MILBEAUT) += milbeaut-m10v-evb.dtb
+>  dtb-$(CONFIG_ARCH_MSTARV7) += \
+>  	mstar-infinity-msc313-breadbee_crust.dtb \
+> +	mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dtb \
+>  	mstar-infinity2m-ssd202d-ssd201htv2.dtb \
+>  	mstar-infinity2m-ssd202d-unitv2.dtb \
+>  	mstar-infinity3-msc313e-breadbee.dtb \
+> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi b/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
+> new file mode 100644
+> index 000000000000..34df472fed71
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd201-som2d01.dtsi
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 thingy.jp.
+> + * Author: Daniel Palmer <daniel@thingy.jp>
+> + * Author: Romain Perier <romain.perier@gmail.com>
+> + */
+> +
+> +/ {
+> +	reg_vcc_dram: regulator-vcc-dram {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc_dram";
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +		regulator-boot-on;
+> +	};
+> +};
+> +
+> +&pm_uart {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
+> new file mode 100644
+> index 000000000000..20b40b711d4f
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-sbc2d06-v1b-22w.dts
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 thingy.jp.
+> + * Author: Daniel Palmer <daniel@thingy.jp>
+> + * Author: Romain Perier <romain.perier@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +/ {
+> +	model = "Wireless Tag IDO-SBC2D06-1VB-22W";
+> +	compatible = "wirelesstag,ido-sbc2d06-v1b-22w", "wirelesstag,ido-som2d01", "mstar,infinity2m";
 
-  WARNING: suspicious RCU usage
-  5.13.0-rt1 #20 Not tainted
-  -----------------------------
-  kernel/rcu/tree_plugin.h:69 Unsafe read of RCU_NOCB offloaded state!
-
-  rcu_rdp_is_offloaded (kernel/rcu/tree_plugin.h:69 kernel/rcu/tree_plugin.h:58)
-  rcu_core (kernel/rcu/tree.c:2332 kernel/rcu/tree.c:2398 kernel/rcu/tree.c:2777)
-  rcu_cpu_kthread (./include/linux/bottom_half.h:32 kernel/rcu/tree.c:2876)
-
-The reason is that rcu_rdp_is_offloaded() is invoked without one of the
-required protections on RT enabled kernels because local_bh_disable() does
-not disable preemption on RT.
-
-Valentin proposed to add a local lock to the code in question, but that's
-suboptimal in several aspects:
-
-  1) local locks add extra code to !RT kernels for no value.
-
-  2) All possible callsites have to audited and amended when affected
-     possible at an outer function level due to lock nesting issues.
-
-  3) As the local lock has to be taken at the outer functions it's required
-     to release and reacquire them in the inner code sections which might
-     voluntary schedule, e.g. rcu_do_batch().
-
-Both callsites of rcu_rdp_is_offloaded() which trigger this check invoke
-rcu_rdp_is_offloaded() in the variable declaration section right at the top
-of the functions. But the actual usage of the result is either within a
-section which provides the required protections or after such a section.
-
-So the obvious solution is to move the invocation into the code sections
-which provide the proper protections, which solves the problem for RT and
-does not have any impact on !RT kernels.
-
-Reported-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/rcu/tree.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	unsigned long mask;
--	bool needwake = false;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-+	bool offloaded, needwake = false;
- 	struct rcu_node *rnp;
+Doesn't match the schema. Please run 'make dtbs_check' on this and don't 
+add new (non-duplicate) warnings.
  
- 	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
- 	rnp = rdp->mynode;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-+	offloaded = rcu_rdp_is_offloaded(rdp);
- 	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
- 	    rdp->gpwrap) {
- 
-@@ -2446,7 +2446,7 @@ static void rcu_do_batch(struct rcu_data
- 	int div;
- 	bool __maybe_unused empty;
- 	unsigned long flags;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-+	bool offloaded;
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count = 0;
-@@ -2472,6 +2472,7 @@ static void rcu_do_batch(struct rcu_data
- 	rcu_nocb_lock(rdp);
- 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
- 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
-+	offloaded = rcu_rdp_is_offloaded(rdp);
- 	div = READ_ONCE(rcu_divisor);
- 	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
- 	bl = max(rdp->blimit, pending >> div);
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		sys_led {
+> +			gpios = <&gpio SSD20XD_GPIO_GPIO85 GPIO_ACTIVE_LOW>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
+> new file mode 100644
+> index 000000000000..d877aff85033
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mstar-infinity2m-ssd202d-wirelesstag-ido-som2d01.dtsi
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Copyright (c) 2021 thingy.jp.
+> + * Author: Daniel Palmer <daniel@thingy.jp>
+> + * Author: Romain Perier <romain.perier@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "mstar-infinity2m-ssd202d.dtsi"
+> +#include "mstar-infinity2m-ssd201-som2d01.dtsi"
+> +
+> +/ {
+> +	model = "Wireless Tag IDO-SOM2D01 (SSD202D)";
+> +	compatible = "wirelesstag,ido-som2d01", "mstar,infinity2m";
+> +
+> +	aliases {
+> +		serial0 = &pm_uart;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +};
+> +
+> +&reg_vcc_dram {
+> +	regulator-min-microvolt = <1500000>;
+> +	regulator-max-microvolt = <1500000>;
+> +};
+> -- 
+> 2.33.0
+> 
+> 
