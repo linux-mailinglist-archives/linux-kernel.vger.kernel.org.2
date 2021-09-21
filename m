@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B7D41331F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B387413322
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 14:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhIUMGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 08:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231715AbhIUMG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 08:06:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD1E661283;
-        Tue, 21 Sep 2021 12:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632225900;
-        bh=DG9JNZQFvl7efc4nexOO4fg+5WMfNAZoucbjG4viZJY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NKhQ//8opxeA0g5NaMvTusKd95Jeh1r3yoFaq76nUvQR1KiwDblmo04KsiciTCHgr
-         CO9zM6Vmo3427l7xLk7VtbvdwMvcOEZWiPDrWkOClAMDn2/mYya9nkPx2opqSZVVkg
-         BjPAkkO+6RNgzmnQzHpn8YDYc+APYvooJUQWDVAH+vXIaSeOw4VA4iAKzPEzbR/14W
-         pgUbAzg0CSDsV//1+s4rOvobBn7TVroQPaeyz+u5fnd+yLSEJ0ZadPpI0Hm1i+kChu
-         Kf9O+YeCNKHVapXKthvVwD/iHWK9lDIeNGMCiAj5HIgnbEq1fajR4Z0NlgEANVAP96
-         wrkUzx53d4JhA==
-Received: by mail-ot1-f49.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so27952153otq.7;
-        Tue, 21 Sep 2021 05:05:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530UfzC9gJbU8SU2CkBh7qrjHetVxnzjW/NB0qvPQHs9W0HcWW8N
-        c1ZsJZeM1u4vznuUi7eGK/FmFDxgk9MpnXUzV5M=
-X-Google-Smtp-Source: ABdhPJxUqmu5iQVr6fZ3TQM6eziNelFJiJn18TFwtwwTecybfc/0teebK58ixSK16CBCXGG0Y5zoMsZaVGfK1lcWdYI=
-X-Received: by 2002:a05:6830:3189:: with SMTP id p9mr22365233ots.147.1632225899996;
- Tue, 21 Sep 2021 05:04:59 -0700 (PDT)
+        id S232107AbhIUMHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 08:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232356AbhIUMHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:07:21 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85581C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 05:05:53 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id dj4so17651860edb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 05:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xfe3bOlJREdRlDYQSkahNkZhic31PCfsBl45d4Acbtw=;
+        b=E7BZnIfZAZXhXKyiPV8+r2Oh1It1ZFz5XH+Q42ixRxiJUjdH1s8pj9o59QjCQvMdQG
+         xKXcw+ngKaii6YDfWfHnhsq+WbWQkc/4fS6L1sAuMc0662hlk8xufxzWnzBH5gzBfXRI
+         KlXgPmPelFFbZK6yVajVD46p0ZpSt6yTWYGou7unsPJIWB1qU8z6ccE052DiZsDt/hCK
+         u5hY1gNcLfWZCQ1hsoAaOASpE/xGGXgVs4dJXe9T0ujpasvo5v2+KjAIR3dHNpIQOUEc
+         T6dqhzBaWOS2ssVyn9h+E+5Si0CRyzZZ9vENdQ8OVq0PGD2NlRGnayVj51wyrg7AyxQW
+         V+vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xfe3bOlJREdRlDYQSkahNkZhic31PCfsBl45d4Acbtw=;
+        b=icAqmkBZXbpQfhwfPYe4Rv0rO3+vBklpr1I/tF0sGWY4OHpZvjgjmdKQWiuO4ihWOV
+         IgOr6xDPsX2K9MioLmJfXgr/uSWSPbtUpT03GP0lTKB/cMdQJLbN5pjMWwpIUZs6aKZ9
+         KMg92/kKMR490Zz4hPXwOAP9a+P58ukgv/vnTTumcdsWdvffJoZHvCK37F9yv1oyC3TP
+         Y5LrImEdfCPIVc86dcR4TpulZnYze0lkrfnP7es1VyobBp/S0Kkb8zlhsIwK+CD5i0a1
+         C+2El7yqDgMfq+KEJoRAq3jKrbDOPfrqeDfkm4EJVvSKJb+7o5H4lAuZdXds8UUEXs2y
+         Nyfw==
+X-Gm-Message-State: AOAM5322SI+XDtoiqAOVYdMQWd7qcyf5TfBf04sy+9NEfNc7qrK5f6++
+        toAOSKYSY7U8+yAEc0LfhwE8g0Qb+5xS90+vrB0=
+X-Google-Smtp-Source: ABdhPJy+tVSHOM3W444dgviG+Y8irqd/hvHpO8ueOW6VZezViHNFeZsyul8R+3LXGicD324Hvn084oRrRWULZ340xg0=
+X-Received: by 2002:a17:906:c014:: with SMTP id e20mr25789249ejz.166.1632225918924;
+ Tue, 21 Sep 2021 05:05:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210914121036.3975026-1-ardb@kernel.org> <20210914121036.3975026-2-ardb@kernel.org>
- <YUNXfWKZ7XYvw2EK@arm.com>
-In-Reply-To: <YUNXfWKZ7XYvw2EK@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 21 Sep 2021 14:04:48 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFkJtVaT2CjigZHLT+AAjmCzU1OgTg+QS-ttJxmejGkRQ@mail.gmail.com>
-Message-ID: <CAMj1kXFkJtVaT2CjigZHLT+AAjmCzU1OgTg+QS-ttJxmejGkRQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/8] arm64: add CPU field to struct thread_info
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:S390" <linux-s390@vger.kernel.org>
+Received: by 2002:a17:906:a005:0:0:0:0 with HTTP; Tue, 21 Sep 2021 05:05:15
+ -0700 (PDT)
+Reply-To: godwinwallace56@gmail.com
+From:   "Godwin Wallace." <yanming728@gmail.com>
+Date:   Tue, 21 Sep 2021 05:05:15 -0700
+Message-ID: <CACFsD_rsc39LL-o3XVcSh20iDEdTN=NKwaA6vyBHWGS8S0gqVw@mail.gmail.com>
+Subject: URGENT RESPOND NEEDED .
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Sept 2021 at 16:41, Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Tue, Sep 14, 2021 at 02:10:29PM +0200, Ard Biesheuvel wrote:
-> > The CPU field will be moved back into thread_info even when
-> > THREAD_INFO_IN_TASK is enabled, so add it back to arm64's definition of
-> > struct thread_info.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
->
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+-- 
+Hello.
 
-Thanks. I take it this applies to patch #5 as well?
+This is a personal email directed to you for your consideration alone.
+
+I request that it remain and be treated as such only.
+
+My name is Godwin Wallace. I'm a Belgian/British Citizen and Attorney.
+I have an interesting business proposal for you that will be of
+immense benefit to both of us, although this may be hard for you to
+believe, we stand to gain 9.7 Million Dollars between us in a matter
+of weeks. This is fully legal and 100% genuine. I need you to signify
+your interest by replying to my email. Most importantly, I need you to
+keep whatever information between us confidential even if you decide
+not to go along with me. I will make more details available to you on
+receipt of your positive response.
+
+Regards,
+
+Godwin Wallace.
