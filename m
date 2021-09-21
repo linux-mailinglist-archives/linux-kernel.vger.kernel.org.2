@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E12413185
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABCB413186
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 12:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhIUKan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 06:30:43 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38496
+        id S231978AbhIUKaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 06:30:46 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:38534
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231853AbhIUKak (ORCPT
+        by vger.kernel.org with ESMTP id S231859AbhIUKal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:30:40 -0400
+        Tue, 21 Sep 2021 06:30:41 -0400
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 5DDBE3F30E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:29:11 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id E7F654025C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 10:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1632220151;
-        bh=ZNH+zxmaND7rR/DGahGvaHsh9Nt1sNcf9ALxvClhLkg=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=HN5VvmehAHiscpSf2dhdgOyEbpjuS5bvYJ/kSOtRW0YKtLMZAtyEpBqFN10ucNSte
-         7NOUwbzN1vyyUhSeu2UJr9lJ905ydJxgZEvjr0Lavnu/ln5pmm+IOC5/Dq0Bn9QIYs
-         BH/bXHKQdxSKBKOwr2da8RHIAmSvK4SPu26ut+tIyQtfFhd2sqsIE5vnAYs14t3jXF
-         izOUMt3w4R+K6W1IwRLTdi18MGnY29y8e3E5R66SswJm3bas+7nAY4P4UieWtJ/Ich
-         47HuofDexkSICFR8C6OOODoM3nXRLv58YfGENjzZ9M2J+7zXjVYrvySkn54Urupsld
-         Ol5zuz4OuuKMg==
-Received: by mail-wr1-f71.google.com with SMTP id m1-20020a056000180100b0015e1ec30ac3so8409777wrh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:29:11 -0700 (PDT)
+        s=20210705; t=1632220152;
+        bh=kkbd1KDb/nWZxhh/ldmlBfFp4mqYT4gxg/2gkTeLxNM=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=PMT63a9+wUj8Ked82vumhOIP8SXCE2PuQur5KgHRFab7DbRgg11SsczmvHYVnzGxU
+         jZS/nCWhYtHkBLfGbH0+HBOQCIlQon3Sm2ussmqN5ZDV2xKXiYcBqaIgkMOozXHojf
+         Hdc8kjeCWVciWkju4YG1llymsSIK5JjllLqvFx3b8u1wcCbVYQeYXUnYb5AsGFNgF7
+         hKFF3twn+GyEf4mBruYBp24aNTx2uuqIf03zwHzw8XQRNfhQpzzAIAl4KSCvynTaRz
+         JSAhFA5BSfT0hZt3DLpZcix5muLbIw52dEd8YywZ4XhHrvsUAi9NDWhRBDQqPwFSS4
+         EYZFkfODfDXfw==
+Received: by mail-wr1-f71.google.com with SMTP id s13-20020a5d69cd000000b00159d49442cbso8410215wrw.13
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 03:29:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZNH+zxmaND7rR/DGahGvaHsh9Nt1sNcf9ALxvClhLkg=;
-        b=hnY5EGihIuhmxz2aDXx8s8IdUjRlWtftlu+tpaDgO2eIJsJCD/02qjV+wPXxhqIgTI
-         xVqgLr2Wq0Nip48HolKUhN0KhTmWU0nwjmdUW7PVwMoU8u2zUvLh7JA21adjtr1bxZHm
-         48OVVrYPCStuS2N72MVQii0O8URrHJr5omOXdsPmTWwL05qs4ux+4olwtmxkDrExdIEF
-         qBnvGlkNlNpEMIZOTu2EUcSCs6Ylj8fVoSjRsp+ZT5sCJgCTmZ85X/eAz5RRQB8b8TZw
-         v0XN2W9Iam/sWk8QzLTDyQRr7v8t5beQEyup7M4R5/rf5uY+9ccHGJNJ7NtNkPJheRwA
-         WDgA==
-X-Gm-Message-State: AOAM5308OZn5scL4ALVEQI3vkYaU+eMhXsjZKFXSM7OGbpFWNcoGdZtB
-        wAwiLnFCeqYUcB2ck21y0MNR9MOAkc4mbDvUp0MSMv5jAMI2RJk9asxOv27p6Bd/lI3Pte/flpb
-        qpSsrb3XccZDGklqn7UOhBgGtS6qwDLf61MupNxS6mw==
-X-Received: by 2002:a5d:590a:: with SMTP id v10mr35069281wrd.87.1632220151042;
-        Tue, 21 Sep 2021 03:29:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjs+OrN5dFclOS7GJVsxhqz5MGX6J2vh/0CGCqdjnmGePtDYf5XKuf5XnQlhbubwp1F7GrzQ==
-X-Received: by 2002:a5d:590a:: with SMTP id v10mr35069266wrd.87.1632220150919;
-        Tue, 21 Sep 2021 03:29:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kkbd1KDb/nWZxhh/ldmlBfFp4mqYT4gxg/2gkTeLxNM=;
+        b=BDHWcPsMl8SYk/hgCPMNPyB7luNpG7rhtVFy/UESz9Ic0Gaz4rmLtrdPyRoWtywWb8
+         F6/4NFzbrvEa230D3tgZTDfwUIClMmhNhEp9G+EOo5pTsyOrUrGcIUhlbXG6/uIsdp0G
+         ZC7vL5baHXJPvH0IIUbBIb35IvSFYTDN5thbh70BBzjq9Rl25LiK5lEWRfmjtvik1juM
+         +gNh8zs1Jg2eQBsLPgEt8ZXaRtcRYXquxkkZCmTM6t7QXW8qu6xC6/rs4x6MD6u7qkPx
+         WIE8Fyj3iYkLTUYTJIU8HLOzoP6qjrvE1F1XnYgcWtJOTszygrgB9Pkbu3woy6VH3AZF
+         nSYQ==
+X-Gm-Message-State: AOAM531Lx5xYDtDxvCmqaIOpCFIK5pfPmFFEJRiusARrw8+mScif1RWT
+        G68fHPRLATXQXqUWsid+1MvR3ID6VZDsCAllGeEaSnpdJdw6lUqRv/VT3+9kOFnJwETmO2jRTrN
+        iQZ1TeeJFrfh4dPtZFXkFj/Pi9Jfa6TvmrFeWlW2Ttw==
+X-Received: by 2002:a5d:69c8:: with SMTP id s8mr33587493wrw.330.1632220152607;
+        Tue, 21 Sep 2021 03:29:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJynCvd3iC/PeHFEd5pjxqSIDrSlRmcR2Me65OCSTR5w4e17865m6RoWwEe2gXcDFUzI51ZGtQ==
+X-Received: by 2002:a5d:69c8:: with SMTP id s8mr33587469wrw.330.1632220152423;
+        Tue, 21 Sep 2021 03:29:12 -0700 (PDT)
 Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
         by smtp.gmail.com with ESMTPSA id m29sm20072380wrb.89.2021.09.21.03.29.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 03:29:10 -0700 (PDT)
+        Tue, 21 Sep 2021 03:29:12 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
@@ -62,39 +63,41 @@ To:     Jean Delvare <jdelvare@suse.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] dt-bindings: hwmon: ti,tmp108: convert to dtschema
-Date:   Tue, 21 Sep 2021 12:28:27 +0200
-Message-Id: <20210921102832.143352-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/6] dt-bindings: hwmon: ti,tmp102: add bindings and remove from trivial devices
+Date:   Tue, 21 Sep 2021 12:28:28 +0200
+Message-Id: <20210921102832.143352-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210921102832.143352-1-krzysztof.kozlowski@canonical.com>
+References: <20210921102832.143352-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the TI TMP108 temperature sensor bindings to DT schema format.
+The TI TMP102 temperature sensor does not fit into trivial devices
+bindings due to additional properties.  Add separate bindings for it.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- .../devicetree/bindings/hwmon/ti,tmp108.yaml  | 50 +++++++++++++++++++
- .../devicetree/bindings/hwmon/tmp108.txt      | 18 -------
- 2 files changed, 50 insertions(+), 18 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/hwmon/ti,tmp108.yaml
- delete mode 100644 Documentation/devicetree/bindings/hwmon/tmp108.txt
+ .../devicetree/bindings/hwmon/ti,tmp102.yaml  | 47 +++++++++++++++++++
+ .../devicetree/bindings/trivial-devices.yaml  |  2 -
+ 2 files changed, 47 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/ti,tmp102.yaml
 
-diff --git a/Documentation/devicetree/bindings/hwmon/ti,tmp108.yaml b/Documentation/devicetree/bindings/hwmon/ti,tmp108.yaml
+diff --git a/Documentation/devicetree/bindings/hwmon/ti,tmp102.yaml b/Documentation/devicetree/bindings/hwmon/ti,tmp102.yaml
 new file mode 100644
-index 000000000000..eda55bbc172d
+index 000000000000..d3eff4fac107
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/ti,tmp108.yaml
-@@ -0,0 +1,50 @@
++++ b/Documentation/devicetree/bindings/hwmon/ti,tmp102.yaml
+@@ -0,0 +1,47 @@
 +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/hwmon/ti,tmp108.yaml#
++$id: http://devicetree.org/schemas/hwmon/ti,tmp102.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: TMP108 temperature sensor
++title: TMP102 temperature sensor
 +
 +maintainers:
 +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
@@ -102,17 +105,16 @@ index 000000000000..eda55bbc172d
 +properties:
 +  compatible:
 +    enum:
-+      - ti,tmp108
++      - ti,tmp102
 +
 +  interrupts:
-+    items:
-+      - description: alert interrupt
++    maxItems: 1
 +
 +  reg:
 +    maxItems: 1
 +
 +  "#thermal-sensor-cells":
-+    const: 0
++    const: 1
 +
 +required:
 +  - compatible
@@ -129,39 +131,26 @@ index 000000000000..eda55bbc172d
 +        #size-cells = <0>;
 +
 +        sensor@48 {
-+            compatible = "ti,tmp108";
++            compatible = "ti,tmp102";
 +            reg = <0x48>;
-+            interrupt-parent = <&gpio1>;
-+            interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+            pinctrl-names = "default";
-+            pinctrl-0 = <&tmp_alrt>;
-+            #thermal-sensor-cells = <0>;
++            interrupt-parent = <&gpio7>;
++            interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
++            #thermal-sensor-cells = <1>;
 +        };
 +    };
-diff --git a/Documentation/devicetree/bindings/hwmon/tmp108.txt b/Documentation/devicetree/bindings/hwmon/tmp108.txt
-deleted file mode 100644
-index 54d4beed4ee5..000000000000
---- a/Documentation/devicetree/bindings/hwmon/tmp108.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--TMP108 temperature sensor
---------------------------
--
--This device supports I2C only.
--
--Requires node properties:
--- compatible : "ti,tmp108"
--- reg : the I2C address of the device. This is 0x48, 0x49, 0x4a, or 0x4b.
--
--Optional properties:
--- interrupts: Reference to the TMP108 alert interrupt.
--- #thermal-sensor-cells: should be set to 0.
--
--Example:
--	tmp108@48 {
--		compatible = "ti,tmp108";
--		reg = <0x48>;
--	};
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index c9333fb81fdf..6ad0628741cf 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -317,8 +317,6 @@ properties:
+             # I2C Touch-Screen Controller
+           - ti,tsc2003
+             # Low Power Digital Temperature Sensor with SMBUS/Two Wire Serial Interface
+-          - ti,tmp102
+-            # Low Power Digital Temperature Sensor with SMBUS/Two Wire Serial Interface
+           - ti,tmp103
+             # Thermometer with SPI interface
+           - ti,tmp121
 -- 
 2.30.2
 
