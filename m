@@ -2,89 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6816E413C71
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93EC413C74
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhIUVaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:30:09 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45534 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbhIUVaH (ORCPT
+        id S235401AbhIUVb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235066AbhIUVbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:30:07 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7162F1C0B76; Tue, 21 Sep 2021 23:28:37 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 23:28:37 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
-Message-ID: <20210921212837.GA29170@duo.ucw.cz>
-References: <20210920163915.757887582@linuxfoundation.org>
- <20210920163918.373775935@linuxfoundation.org>
+        Tue, 21 Sep 2021 17:31:23 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3C2C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:29:54 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id me1so520620pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:29:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LSn/kFygvp1Gc7LYRPSl9USN2eKVUYYqQK80C4S3HbY=;
+        b=btxgeKmkbIeI+ZpOc6VlwSC4J1M0NxXCmAKO/nawCIYSv8cbGywGkAH3QCnwAqLAUI
+         IOyxlnQF3u2reCho4aOS27m8AURN66z+f1gzEN4gfB+N1/w2JLIXtC4yGrRdYBUrXdWC
+         Vx/SNzr0zgBg66Mt5tqVTWXtqNRo1cMW1HRk7P6/aIgQitN5dojnf/rmx3fJsNEBiKh4
+         2oG4JdRFZ1cCImM5O4stFWaGUi4+BBk4LEDc8ZYoSTyQQ09FyLfXbzxkQRIwj2f3Y1ux
+         qkOUO+HshbP+1GDpYX5TBWF68F9+FWvzry5+DIxEzwl/5EC5N4EFZsnTQtNpn8FiRBGK
+         Np7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LSn/kFygvp1Gc7LYRPSl9USN2eKVUYYqQK80C4S3HbY=;
+        b=6Qt6dgIXa+Mild77VDbI34apY5/npAscuQFLkLJhEdwnd5excyitSfE/0Ds1nJ2nTE
+         HI7l/0RBegeMTERvLlyS75T6o31zrvhq+5hmb6Xzg9fpfdl1bdGk+CrSeZZF7aryVV0Z
+         FtXtec4ru+Sxutx/OYjHA4RxupHRwarnjaYEHABxO3MwP9KRS1tSgb+jfw0P2a+Puxae
+         +r+rwLMgN3JR2mM0s2z6d5pO1C3UC717QiPpT/cyh0zq7+uYuSY462VZxjifw4J0NzGf
+         lfdJYjzpjh4hCLgvO2YPR60GnK9d8f9PNuk7mMwUdFP7VZNqREOiTA0+KVADnv6P2QFJ
+         rE9Q==
+X-Gm-Message-State: AOAM531HvrNYfhpP15BWO/Bf5zcxC1C3Ck8I7oZwsoYcShOm3+24DLj3
+        xkT+8+HFKyXsf063r4Mo/Sd8Uw==
+X-Google-Smtp-Source: ABdhPJzMgcR9UgCsbvPuA/02v4FkJblQW9htJs47A2YRdbvRMs4AQG7O660EDIsBZdZMmGrIa23JJg==
+X-Received: by 2002:a17:902:bf42:b0:13d:b79f:a893 with SMTP id u2-20020a170902bf4200b0013db79fa893mr8518959pls.1.1632259793364;
+        Tue, 21 Sep 2021 14:29:53 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id w142sm103618pfc.47.2021.09.21.14.29.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 14:29:52 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 21:29:48 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v2 05/13] perf: Force architectures to opt-in to guest
+ callbacks
+Message-ID: <YUpOzFW3K3iJAoWa@google.com>
+References: <20210828003558.713983-1-seanjc@google.com>
+ <20210828003558.713983-6-seanjc@google.com>
+ <20210828194752.GC4353@worktop.programming.kicks-ass.net>
+ <8ee13a69-f2c4-2413-2d6c-b6c0a559286e@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920163918.373775935@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8ee13a69-f2c4-2413-2d6c-b6c0a559286e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 21, 2021, Paolo Bonzini wrote:
+> On 28/08/21 21:47, Peter Zijlstra wrote:
+> > > +config HAVE_GUEST_PERF_EVENTS
+> > > +	bool
+> > 	depends on HAVE_KVM
+> 
+> It won't really do anything, since Kconfig does not detects conflicts
+> between select' and 'depends on' clauses.
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It does throw a WARN, though the build doesn't fail.
 
-Hi!
+WARNING: unmet direct dependencies detected for HAVE_GUEST_PERF_EVENTS
+  Depends on [n]: HAVE_KVM [=n] && HAVE_PERF_EVENTS [=y]
+  Selected by [y]:
+  - ARM64 [=y]
 
-> Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver bro=
-ke
-> when moving the incorrect handling of mac link state out of mac_config().
-> This reason this breaks is because the stmmac's WoL is handled by the MAC
-> rather than the PHY, and phylink doesn't cater for that scenario.
->=20
-> This patch adds the necessary phylink code to handle suspend/resume events
-> according to whether the MAC still needs a valid link or not. This is the
-> barest minimum for this support.
+WARNING: unmet direct dependencies detected for HAVE_GUEST_PERF_EVENTS
+  Depends on [n]: HAVE_KVM [=n] && HAVE_PERF_EVENTS [=y]
+  Selected by [y]:
+  - ARM64 [=y]
 
-This adds functions that end up being unused in 5.10. AFAICT we do not
-need this in 5.10.
+WARNING: unmet direct dependencies detected for HAVE_GUEST_PERF_EVENTS
+  Depends on [n]: HAVE_KVM [=n] && HAVE_PERF_EVENTS [=y]
+  Selected by [y]:
+  - ARM64 [=y]
 
-Best regards,
-								Pavel
+> Rather, should the symbol be selected by KVM, instead of ARM64 and X86?
 
+By KVM, you mean KVM in arm64 and x86, correct?  Because HAVE_GUEST_PERF_EVENTS
+should not be selected for s390, PPC, or MIPS.
 
-> +++ b/include/linux/phylink.h
-> @@ -446,6 +446,9 @@ void phylink_mac_change(struct phylink *, bool up);
->  void phylink_start(struct phylink *);
->  void phylink_stop(struct phylink *);
-> =20
-> +void phylink_suspend(struct phylink *pl, bool mac_wol);
-> +void phylink_resume(struct phylink *pl);
-> +
->  void phylink_ethtool_get_wol(struct phylink *, struct ethtool_wolinfo *);
->  int phylink_ethtool_set_wol(struct phylink *, struct ethtool_wolinfo *);
+Oh, and Xen also uses the callbacks on x86, which means the HAVE_KVM part is
+arguabably wrong, even though it's guaranteed to be true for the XEN_PV case.
+I'll drop that dependency and send out a separate series to clean up the arm64
+side of HAVE_KVM.
 
+The reason I didn't bury HAVE_GUEST_PERF_EVENTS under KVM (and XEN_PV) is that
+there are number of references to the callbacks throught perf and I didn't want
+to create #ifdef hell.
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+But I think I figured out a not-awful solution.  If there are wrappers+stubs for
+the guest callback users, then the new Kconfig can be selected on-demand instead
+of unconditionally by arm64 and x86.  That has the added bonus of eliminating
+the relevant code paths for !KVM (and !XEN_PV on x86), with or without static_call.
+It also obviates the needs for __KVM_WANT_GUEST_PERF_EVENTS or whatever I called
+that thing.
 
---PNTmBPCT7hxwcZjr
-Content-Type: application/pgp-signature; name="signature.asc"
+It more or less requires defining the static calls in generic perf, but I think
+that actually ends up being good thing as it consolidates more code without
+introducing more #ifdefs.  The diffstats for the static_call() conversions are
+also quite nice.
 
------BEGIN PGP SIGNATURE-----
+ include/linux/perf_event.h | 28 ++++++----------------------
+ kernel/events/core.c       | 15 +++++++++++++++
+ 2 files changed, 21 insertions(+), 22 deletions(-)
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYUpOhQAKCRAw5/Bqldv6
-8locAJ9DhHBYbh7xMHQhEo+x6kC4HRvZhQCfdY/0GTWDdKSunFC/EFTxWKmc/uw=
-=c5Bh
------END PGP SIGNATURE-----
-
---PNTmBPCT7hxwcZjr--
+I'll try to get a new version out today or tomorrow.
