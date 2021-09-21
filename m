@@ -2,112 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A144133D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBE04133D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhIUNMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbhIUNMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:12:53 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10E6C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:11:24 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id z11so2494509oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 06:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TWtHzEu/gD1Zw56vCKGmQROoHGCryZqK6F3uj2KWTAM=;
-        b=uq40lSckBwwodltmKvdIWmPwNNW7kGDh++qEHiNdpDPmY+ujIXUXaBucN1joi+TIpc
-         bH0NlxYTpSbYwNUH8dmE3atXitAeqgjsin0WlfHdkQI14nCSxTA2uxDrxbWk3Uv0gGLa
-         jWoyvUfXOIPq+MHv9LqMrMo6hlojyFD9pRmu6Nr+Piqh/hc4CuUCoRyRNG6pgwN83oCi
-         KY8YtjMwZlV0UFc160ptglYQNni92ZQ7q+6GWFg+9+mOwUS6QY47WU105NhSmHwaZ7o8
-         aqgroZRveo3OCqmiroXiGIIrTjRDeJ/HjqMxqaVB2rvevhuaJeAYUQNNFDxxiCRHoE3l
-         d/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TWtHzEu/gD1Zw56vCKGmQROoHGCryZqK6F3uj2KWTAM=;
-        b=qbLXcA49yIcd3vz5mCK79XMOxluHaiIyG/Gwi5XdrHYBY3L/cBY+a2+yrkaEUqqNac
-         1v6u54lIAQGCQ8wCdFFdH994wrQ3HJGXNC48JjZbK3LqwA7WPKOJ2R1jVQAFO72A5if4
-         2W067Tb0E8xikSINzbOWsAPSsEZmdG+d8lPWB0XhZBHRMuNrs+q91aj4RI1Yb0z6HnGh
-         AtqRMF7FmXwITxljI1fALZx8veZcQ86ivpzbW+MDTaIW5uzCOy3JCKOyN7dAzbb30UyJ
-         gWfEDkBEJQ+jpd8xAzdPQ7FVwd4av/9ajLJpSvd+POjkSqqkwn75WmrcF+FM+3NROi8Z
-         2ggw==
-X-Gm-Message-State: AOAM530gj0IjE0hzkCmcPmwNzZ/ro80qTd02gmTYb/WCUTeNPTJhSVne
-        SXgEnUs0wjrJpY8HpatVFMY1+Q==
-X-Google-Smtp-Source: ABdhPJw/6rlV+lzycaHb7Fo8j/cTOGcOYnY1OjxlmVcxKXwqRt0w0mmvDOQfqd5aj+h3si8ZPcWzPw==
-X-Received: by 2002:a05:6808:11c3:: with SMTP id p3mr3658597oiv.23.1632229884160;
-        Tue, 21 Sep 2021 06:11:24 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z18sm4040644oib.27.2021.09.21.06.11.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 06:11:23 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 06:12:06 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andy Gross <agross@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kathiravan T <kathirav@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the usb tree with the qcom tree
-Message-ID: <YUnaJolAAZmhs4kU@ripper>
-References: <20210921123032.02cd498b@canb.auug.org.au>
+        id S232990AbhIUNNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:13:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232584AbhIUNNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 09:13:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFEFC61166;
+        Tue, 21 Sep 2021 13:12:13 +0000 (UTC)
+Date:   Tue, 21 Sep 2021 14:12:10 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Keith Packard <keithpac@amazon.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [RFC PATCH 5/8] sched: move CPU field back into thread_info if
+ THREAD_INFO_IN_TASK=y
+Message-ID: <YUnaKixPsMuHksI9@arm.com>
+References: <20210914121036.3975026-1-ardb@kernel.org>
+ <20210914121036.3975026-6-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921123032.02cd498b@canb.auug.org.au>
+In-Reply-To: <20210914121036.3975026-6-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 20 Sep 19:30 PDT 2021, Stephen Rothwell wrote:
+On Tue, Sep 14, 2021 at 02:10:33PM +0200, Ard Biesheuvel wrote:
+> THREAD_INFO_IN_TASK moved the CPU field out of thread_info, but this
+> causes some issues on architectures that define raw_smp_processor_id()
+> in terms of this field, due to the fact that #include'ing linux/sched.h
+> to get at struct task_struct is problematic in terms of circular
+> dependencies.
+> 
+> Given that thread_info and task_struct are the same data structure
+> anyway when THREAD_INFO_IN_TASK=y, let's move it back so that having
+> access to the type definition of struct thread_info is sufficient to
+> reference the CPU number of the current task.
+> 
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-> Hi all,
-> 
-> Today's linux-next merge of the usb tree got a conflict in:
-> 
->   arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> 
-> between commit:
-> 
->   261e8a95d9aa ("arm64: dts: qcom: ipq6018: add usb3 DT description")
-> 
-> from the qcom tree and commit:
-> 
->   9da2c3f76164 ("arm64: qcom: ipq6018: add usb3 DT description")
-> 
-
-Greg, this is not a USB patch, can you please drop it from your tree.
-
-Thanks,
-Bjorn
-
-> from the usb tree.
-> 
-> Same author, same date, but the former has this committer comment:
-> 
-> bjorn: Changed dwc3 node name to usb, per binding
-> 
-> So I used that version.
-> 
-> I fixed it up (see above) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
