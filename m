@@ -2,76 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8CA4133B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BE24133AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 15:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhIUNGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 09:06:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53386 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbhIUNGK (ORCPT
+        id S230052AbhIUNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 09:04:24 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:26885 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhIUNEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 09:06:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D69021FED6;
-        Tue, 21 Sep 2021 13:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632229480; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=hl/MOmvXomLoOTDJpYFB1eX0OKjWBWw5KeY0f7BZBk8=;
-        b=DDAn3qOj3hI0wsKV+6nC7kwpEoKuHTKIVo5QpbT/czkSEyqcAejn81xt4A/suCV0oxFEmo
-        Cn0pouydQemRsd5QaLfWJwxS7TpPEqOzRGwkOr1NxIRaR9LnAwtCDmsgS/XIUHI0U0t4Mu
-        X++nb53QCf8CzcKprEebYeluK4pye/4=
-Received: from g78.suse.de (unknown [10.163.24.38])
-        by relay2.suse.de (Postfix) with ESMTP id BE194A3B85;
-        Tue, 21 Sep 2021 13:04:39 +0000 (UTC)
-From:   Richard Palethorpe <rpalethorpe@suse.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
-        linux-api@vger.kernel.org, linux-aio@kvack.org,
-        y2038@lists.linaro.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        linux-kernel@vger.kernel.org, ltp@lists.linux.it
-Subject: [PATCH] aio: Wire up compat_sys_io_pgetevents_time64 for x86
-Date:   Tue, 21 Sep 2021 14:01:27 +0100
-Message-Id: <20210921130127.24131-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 21 Sep 2021 09:04:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632229368; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=qH2l5wCnZnelf0eU2pGiDEZnMruL9bfu6QZc4HulXxE=; b=BnbJZ7mRZv1aEqPxi7Az0whTJKS58+RmKA3T83QeWVWz/38n9YLaA8U9PZ5AsgfbREXycy6s
+ Tw58hzX3+GB/vtGIc4XhPrRlXJCkLmHfjezxZiLj34siKllzDYkUDlTr16BhDLkL4m3YNmba
+ Mk+vzN60z0Y0gUlOVnnB3zIUCpI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6149d7ddec62f57c9a213e41 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 13:02:21
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6C83CC43616; Tue, 21 Sep 2021 13:02:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [157.48.153.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3A5CC4338F;
+        Tue, 21 Sep 2021 13:02:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D3A5CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 3/7] ASoC: codecs: tx-macro: Change mic control registers
+ to volatile
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
+ <1632123331-2425-4-git-send-email-srivasam@codeaurora.org>
+ <c1c7b1e8-98f5-99a3-1374-11d1d61535b4@linaro.org>
+ <b442ee2b-622c-674d-3abe-b1fbbfa5aeb9@codeaurora.org>
+ <e87ef6e1-0c10-beaa-81ad-2c0ceae6bbcc@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <62c85130-df75-5aa6-8954-d1a55167827f@codeaurora.org>
+Date:   Tue, 21 Sep 2021 18:32:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <e87ef6e1-0c10-beaa-81ad-2c0ceae6bbcc@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LTP test io_pgetevents02 fails in 32bit compat mode because an
-nr_max of -1 appears to be treated as a large positive integer. This
-causes pgetevents_time64 to return an event. The test expects the call
-to fail and errno to be set to EINVAL.
 
-Using the compat syscall fixes the issue.
+On 9/21/2021 2:18 PM, Srinivas Kandagatla wrote:
+>
+>
+> On 21/09/2021 08:30, Srinivasa Rao Mandadapu wrote:
+>>
+>> On 9/20/2021 6:54 PM, Srinivas Kandagatla wrote:
+>> Thanks for your time Srini!!
+>>>
+>>> On 20/09/2021 08:35, Srinivasa Rao Mandadapu wrote:
+>>>> Update amic and dmic related tx macro control registers to volatile
+>>>>
+>>>> Fixes: c39667ddcfc5 (ASoC: codecs: lpass-tx-macro: add support for 
+>>>> lpass tx macro)
+>>>>
+>>>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+>>>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>>>> ---
+>>>>   sound/soc/codecs/lpass-tx-macro.c | 13 +++++++++++++
+>>>>   1 file changed, 13 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
+>>>> b/sound/soc/codecs/lpass-tx-macro.c
+>>>> index 9273724..e65b592 100644
+>>>> --- a/sound/soc/codecs/lpass-tx-macro.c
+>>>> +++ b/sound/soc/codecs/lpass-tx-macro.c
+>>>> @@ -423,6 +423,13 @@ static bool tx_is_volatile_register(struct 
+>>>> device *dev, unsigned int reg)
+>>>>       case CDC_TX_TOP_CSR_SWR_DMIC1_CTL:
+>>>>       case CDC_TX_TOP_CSR_SWR_DMIC2_CTL:
+>>>>       case CDC_TX_TOP_CSR_SWR_DMIC3_CTL:
+>>>> +    case CDC_TX_TOP_CSR_SWR_AMIC0_CTL:
+>>>> +    case CDC_TX_TOP_CSR_SWR_AMIC1_CTL:
+>>>> +    case CDC_TX_CLK_RST_CTRL_MCLK_CONTROL:
+>>>> +    case CDC_TX_CLK_RST_CTRL_FS_CNT_CONTROL:
+>>>> +    case CDC_TX_CLK_RST_CTRL_SWR_CONTROL:
+>>>> +    case CDC_TX_TOP_CSR_SWR_CTRL:
+>>>> +    case CDC_TX0_TX_PATH_SEC7:
+>>>
+>>> Why are these marked as Volatile?
+>>> Can you provide some details on the issue that you are seeing?
+>>>
+>>> --srini
+>>
+>> Without volatile these registers are not reflecting in Hardware and 
+>> playback and capture is not working.
+>>
+>> Will do recheck and keep only required registers as volatile.
+>
+> This sounds like a total hack to me,
+>
+> this might be happening in your case:
+>
+> The default values for this register are different to actual defaults.
+> Ex: CDC_TX_TOP_CSR_SWR_AMIC0_CTL default is 0x00
+> so writing 0x0 to this register will be no-op as there is no change in 
+> the register value as compared to default value as per regmap.
+>
+> In you case make sure the hardware default values are correctly 
+> reflected in tx_defaults array.
 
-Fixes: 7a35397f8c06 ("io_pgetevents: use __kernel_timespec")
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- arch/x86/entry/syscalls/syscall_32.tbl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The default values in tx_defaults are proper. But same value is not 
+reflecting in Hardware, but In Cache it's reflecting set value.
 
-diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-index 960a021d543e..0985d8333368 100644
---- a/arch/x86/entry/syscalls/syscall_32.tbl
-+++ b/arch/x86/entry/syscalls/syscall_32.tbl
-@@ -420,7 +420,7 @@
- 412	i386	utimensat_time64	sys_utimensat
- 413	i386	pselect6_time64		sys_pselect6			compat_sys_pselect6_time64
- 414	i386	ppoll_time64		sys_ppoll			compat_sys_ppoll_time64
--416	i386	io_pgetevents_time64	sys_io_pgetevents
-+416	i386	io_pgetevents_time64	sys_io_pgetevents		compat_sys_io_pgetevents_time64
- 417	i386	recvmmsg_time64		sys_recvmmsg			compat_sys_recvmmsg_time64
- 418	i386	mq_timedsend_time64	sys_mq_timedsend
- 419	i386	mq_timedreceive_time64	sys_mq_timedreceive
+>
+> Then setting the desired value should work.
+>
+>
+> --srini
+>
+>
+>
+>>
+>>>
+>>>
+>>>>           return true;
+>>>>       }
+>>>>       return false;
+>>>> @@ -1674,6 +1681,12 @@ static int tx_macro_component_probe(struct 
+>>>> snd_soc_component *comp)
+>>>>         snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 
+>>>> 0x3F,
+>>>>                         0x0A);
+>>>> +    snd_soc_component_update_bits(comp, 
+>>>> CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
+>>>> +    snd_soc_component_update_bits(comp, 
+>>>> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
+>>>> +    snd_soc_component_update_bits(comp, 
+>>>> CDC_TX_TOP_CSR_SWR_DMIC0_CTL, 0xFF, 0x00);
+>>>> +    snd_soc_component_update_bits(comp, 
+>>>> CDC_TX_TOP_CSR_SWR_DMIC1_CTL, 0xFF, 0x00);
+>>>> +    snd_soc_component_update_bits(comp, 
+>>>> CDC_TX_TOP_CSR_SWR_DMIC2_CTL, 0xFF, 0x00);
+>>>> +    snd_soc_component_update_bits(comp, 
+>>>> CDC_TX_TOP_CSR_SWR_DMIC3_CTL, 0xFF, 0x00);
+>>>>         return 0;
+>>>>   }
+>>>>
 -- 
-2.31.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
