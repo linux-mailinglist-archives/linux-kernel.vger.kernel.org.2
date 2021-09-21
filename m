@@ -2,158 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C76413D14
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D104413D17
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 23:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235923AbhIUVzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 17:55:50 -0400
-Received: from mail-mw2nam12on2089.outbound.protection.outlook.com ([40.107.244.89]:18529
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235782AbhIUVzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 17:55:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ma8GIwpg1FgDev14EkRe2WhBwG5iUYvO/qnThYj7shEg4opB2NaLeVHSzPhriCeMj4EHAP53lBGU/nwgquS1+sBMsxEEgpPjQQ5TAD5yye1c/A2iIm8AWEC+Ekg5dNAa0PWe85vYSUJT/0AgEuH6GRQYLMmT0v5Z9Ynya03KZ2q9lxAkzxxWsivgMuZtCwFLSty5/7cIx/+CIEsbFD7raq4m2bX4KpMHjt6py4XY6Bl6FQbhb2v2dibvSRh47UhOfk7pAYnQU5MbeSUYvFpIFnnz77ybprDvxrXUQ+EDnTWts7Ow/Vk2zHcuWXw6lLGtIbU2vsSYYITIqU82nfGpow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=FFJDC1tzEScc2W8JUZfgEbwe0rHENG8W5IJssSTSFC0=;
- b=apkK0+I5geZl5+AsDcaOJTsDacdLgbZJMpuHz6pKKiMRr/IiVn1m/1lb4K+6JutuSowzP1/Uh2lruiGfyM4cpuftzYEw5M4o1RKnJaYHy2wDteKgjp+ZBP70D3/w3ZdsK1TZ5K1d5Wwvzys/TlZy99Ekn+WRYLmY/ehcoUr2yoHGOMb3u8fLkZ/gQhpPK75slCRDnZDQZ01O+DwWbF98IXtTEOjXC+mL7AUDrC2/kpjYSN9u40aPoLbhwCztwK6tymJlJQSmZ7Y05/LstpGyUC4HEHpbrABrisNpq3idaBQCRZFFIKY8jwF7Pi55680UsghKWlgCGCjHISeRcDY6Ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FFJDC1tzEScc2W8JUZfgEbwe0rHENG8W5IJssSTSFC0=;
- b=jFeiPA/V0MT7/6BnanxhRQka9VbOuSoecU5cDJkz/DeDWi1tfslLidwmCdFad2UTiyafSUkBPHsL4TGgvAwpyEuOFG/de2dCSa8GASjbA/51gPScTv5zSm0WurRcxGd+kgUWE8jlewKYV/acilpXZ7ruNVDxrn+LeweZGR6NJvp0Hm5fI39XT0PI64F/OJxrKMqSSl/DsU2kWxiV+6FyIk5Q9Q+x/z0ocepB9iZtD/0vJLEjaCuBmfNQc6tOnuUgqapft98tZ5WHA1nt/kVH4MlcWz/pwgag6rTIpw1OgEWJRB185wYDylcPaFkFFwAc1Em94+s5sp0vQogF6259mQ==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
- by BY5PR12MB4888.namprd12.prod.outlook.com (2603:10b6:a03:1d8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.18; Tue, 21 Sep
- 2021 21:53:35 +0000
-Received: from BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6811:59ee:b39f:97b9]) by BY5PR12MB4130.namprd12.prod.outlook.com
- ([fe80::6811:59ee:b39f:97b9%8]) with mapi id 15.20.4544.013; Tue, 21 Sep 2021
- 21:53:35 +0000
-Message-ID: <375b4cb9-b031-964f-7e37-f5639254742e@nvidia.com>
-Date:   Tue, 21 Sep 2021 14:53:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v2 2/2] mm/debug: sync up latest migrate_reason to
- migrate_reason_names
-Content-Language: en-US
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     "Huang, Ying" <ying.huang@intel.com>,
-        Weizhao Ouyang <o451686892@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Anshuman Khandual <khandual@linux.vnet.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mina Almasry <almasrymina@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>, Wei Xu <weixugc@google.com>
-References: <20210921064553.293905-1-o451686892@gmail.com>
- <20210921064553.293905-3-o451686892@gmail.com>
- <87mto676fq.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <d57aaff2-b154-4462-1a7d-3d288ebabb6a@gmail.com>
- <87ee9i6n1w.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <384b551e-28f0-ca7a-61b5-78f238de6e4d@nvidia.com>
-In-Reply-To: <384b551e-28f0-ca7a-61b5-78f238de6e4d@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR03CA0020.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::33) To BY5PR12MB4130.namprd12.prod.outlook.com
- (2603:10b6:a03:20b::16)
+        id S235553AbhIUV4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 17:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235445AbhIUV4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 17:56:54 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A4FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:55:24 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id bk29so2401407qkb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 14:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3QuvBAGlkAnIUdz8/4QcTPLHogNGT+8cLD8sfAqgRaI=;
+        b=V/0T0H3IJ6X8dlNuc6qpX89jWAM5yewNgjQ1UjzHLcUvnJGkVi+ok8TBzHinfDg+6C
+         nx1cofDHKBZxRHZtMAjzH3yfdPwyRtV8XutB4hK4yC8NJ+GsY7BBjXDFS6WHy6n355aA
+         nBteNwfVRtTCtGi3zBW3rSYs7bqxF0lcb8d5RXlPydJXYWv4ai3u8MSu95kL4qSOLOKF
+         /RkgsNsh3LohKkXZTAfM5YQDZLFIZhs2fEEsStDYzFdZpAsqTXNRVSzCK+BAFkZoKGo2
+         oD/D7ClMe8v8sKnTyE728GSpaQ7ZkAcfyRD04f8/fhX3dj3yB0GFAdZU+/aoFnoa3bxS
+         rZHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3QuvBAGlkAnIUdz8/4QcTPLHogNGT+8cLD8sfAqgRaI=;
+        b=R809QrpJPg7a9T4Yd+vAXc69zr5rVEzFLVP/YB7PgSY6Pq5UJmwR8L3PqNYOTAwzS4
+         8e+ig68jWSdJYehjlISblzR8EdO3FNOoVVifEadIyeCmY+udlNnpz18fT+jtwqg/RIrC
+         6CX/LADrJrDRf5SuXpaAm7XHzT9h0P/ZVAUCTwcJ/Bb2jXq4VnISuKRNNBAeb6IKxPgp
+         fnE1Fd61O1JFvckOJYrpxpnk5dqCA8Nu8qneO+RWBHFDhy6jmQaISFhh+Oh+srw8VXph
+         luGR++PPVyJez8mLrP+pRjzGbXmNS0aNdgRN+/lTEcs0ax+yIhmnLGLmoS0eFeUP+/5p
+         JqyQ==
+X-Gm-Message-State: AOAM53164OuYCoVHk4lHsFlpnG1qBCJdN+i37Ie2Fc0G3HQnnd0ULMQ/
+        IYwsx7SlyEYO5jxOFw2k8a5wmpizRachQa+r8Cg56Q==
+X-Google-Smtp-Source: ABdhPJwz9vBg4o7xVrIBJamIjkbjr8iOf/eD5UB2SSYihAir8Cuj20gAsEPMZGoiMDbFBm4ogQZaaHC34VNOiDocbeM=
+X-Received: by 2002:a25:e750:: with SMTP id e77mr12672722ybh.23.1632261323912;
+ Tue, 21 Sep 2021 14:55:23 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [10.2.92.177] (216.228.112.22) by BYAPR03CA0020.namprd03.prod.outlook.com (2603:10b6:a02:a8::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 21:53:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a58625ef-715a-41c4-4439-08d97d4a4303
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4888:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB4888DD60190F3DF0A46D64A1A8A19@BY5PR12MB4888.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XSzWFyx2PDn70IAdQtm3Cnar+2zoSK+Ohi99DckHdfZiadsSL+PoHdDqGegxouiZFx3qtx+0cbTvn8CSMx92FR4AyhhYR4EE21BGYk8LCAXlpmXbnHqDOYmUpgWEoQaeOFJqc26vYg8LHavwnk4ojTzlgam0hl1fiQIx8MlOJSBD7DgQRmqMs5nEp+Juz9HIL1U8a6WzXNndnn4U4iOC/L85zD2VmCX0N0SJDTNRY3kWIak8Z3Nh9KUsr+tr+/dhIIfp2xY6xciL/ws4Rak83WsmN8/ktH+bU7kvVDPNiUmtvB97VHOZw4AEHQazq1UYC86pdTM3myWgq4mtLoqmalU65WjLBLqSibueTwd/6R9F0LDmEEAH74doYAEhBvHBMXYnKeUDSaJNvyWJXyDqrfTHqJrHtiiR61Q80DI/rIXDb3UdoWKfiPKn/6w0jfbhU1RAqua+yeK4xoIyOU4AL8e0Hq9bPj1MfeRuUvdWQn82HyXYjQ0b6Tr/K84ycPzjIKZFnFOX1KLEfd30EA+TIlbXTUI4Q8KDYr6yAeUbz0fwXDOTFx/Q9t+i1rJwphl1v7qHMjXmkJQ1mzDCYiuyM2+YcE97kYHtnArCPGpzre/nw5rwmGsh44va8ryOQmault4Vc5Zbh9C0liPFWV6YvZxFkpg3MzhLxa/8PfQWOQNUc23L9mqbt8Ra/5QpKqlbKvksdnablBPyKcE77a/YcNi9vFMH78/4vQmfHNJ1HQZBd4LqJV9PzYeUtClZ8I/q
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(83380400001)(7416002)(8676002)(186003)(2616005)(508600001)(36756003)(956004)(31696002)(53546011)(38100700002)(86362001)(31686004)(26005)(6486002)(4326008)(110136005)(66556008)(66946007)(5660300002)(66476007)(8936002)(54906003)(16576012)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OEpLcmx0MDdnVSt3RC9FL1V2eVFFK2NDc2ZLNkJ2ZzZZbnVidVVPMU1TQVRn?=
- =?utf-8?B?Q2x2dXd4OTJyYVZ5d3o1ZnJscmZXbUJ0RHpPU0lsQnJLbWhjMklhVUlDMTBB?=
- =?utf-8?B?TkEzeGhlQmZ2QXM4RWRhWFJOTGJSUEwyeVVralM4eVloVWhsMHQxQWcxVXkv?=
- =?utf-8?B?UEtIeGRIMGNPa1R4TFk1enpHVzZ5bnp6TlFlQ011OEkvb2dNZzZTd2lSTUlD?=
- =?utf-8?B?anRyQzRvMzNsUVhhSS9QSkFCcm5IQTNScGJ0bXorek9PUUdYcGVZQThVQ0FP?=
- =?utf-8?B?VWJxR3oyZEhsaEprQ2ptb2ptTENHTzBxblhJVGpub2tRZU56WWV5V1pEZ0Rz?=
- =?utf-8?B?K0NRR29kbXByWUdyRHdVSVgzT3Q0UHF1R0xvUjhKWFVTR0R2R2FkaVc1Zk5a?=
- =?utf-8?B?NTBNT3NIb1JUdmJaNWR6OWZEWXc4Q2Z4ZlRjc0ZYZXBmK2EvZUpaSlFHU0FO?=
- =?utf-8?B?cmxnVGxGeHdqaW10a2tBTGJiQzdpU1QwbC8vdTNYUW1LZmN0TWgzdENXQUFJ?=
- =?utf-8?B?NW0rNllFeG91YnoyRDd6T1k5bnBUdlJhdWt0ZFZVRTl3TW9jYk9HRUxoa2FK?=
- =?utf-8?B?MHh2dFNMZTJTRE40RG5aVWFySWFIR2hDT3JjZGRQRDNQNnFzZlNBOVk1eTZu?=
- =?utf-8?B?UWptS1lwZjRsLys3Zlc3UEw0aDNGdmNiRmNGYmowaXZKUmN4MmpjVlkwVzJJ?=
- =?utf-8?B?ejNBcWJhY2hqWFE5NGFMeEFlUTZFdWVGeGhmeENhRVBTT2s2aHZvM1ZGWWQx?=
- =?utf-8?B?VENOYkloVDFDYUJWOHRybXUrVUpkUDZRYTJWdVByM2tXMFhOYkZtK1F6em0r?=
- =?utf-8?B?d21CdTJIVjVGT09oZTE0aWIrSVdnLzBWT1NnUUhkWngyRnUvTktxOHFPWGlz?=
- =?utf-8?B?TGF4Mm1SYkYyenVpeTJQVnRSVnk1MjJMVWpVRmpNSFhha3o4Qk1YZVRWMW50?=
- =?utf-8?B?SWpzRWFUQjJUZi9BbHVkSDBpbWc2TlRFckVMSEpxWHB5WGpETThpK1c2U0JL?=
- =?utf-8?B?THdQY0poanFHckYvSGlSdHNIR0FDRnZuejFENkhrZDhUTTNqeFVxcnNjTHRJ?=
- =?utf-8?B?UDFRQ2tjdTdCWkJaU01aVWo5VCtaMTNkMXpmQ2tzSy93SU9qSDgwUEQzdnpE?=
- =?utf-8?B?UWtvSVV3Q3RlTlRhYXZTNnpHcGVNU0ZhNytyMEszNG16VkdPdDhkcW95bkIy?=
- =?utf-8?B?RnNVN3NkajBzbCtabTVsWkVud1AxWnFSTlIrRHFWVU01UkU4cTVWZDIwU3lT?=
- =?utf-8?B?TXVBa0N2c240bnhMZjVlV3JheTVZSHE3SkViOU5wNHd0QnBJMDBienYvOWJW?=
- =?utf-8?B?SFNkaEdsQVNQbTdBbnF3S1A3T1ZGZXFmVklJY2xSOXBGaS92SUxBaG81ODdT?=
- =?utf-8?B?QzFjaUwrN1RFM00xWXM0U2dEV296RjQ4MmUxRE9GZ1d6aHAycUU5VGRkTTFm?=
- =?utf-8?B?MWZmNXA5eWR3RTZtY2NVVXFUZ3hJbjZmVlhWSExRRDJaWFZWcjk2ZEROQjdI?=
- =?utf-8?B?M1N6N09wT1RaeVcvb0IvcWpzWE1jK3dFaGltZjlyV3hYNXprVjNCanF3OWx0?=
- =?utf-8?B?TDRCUXc1ak51L2pOQlFFbTdPYXpOcUo5aGg4UTNSdTNmRTZGbVBzRlVKMHFU?=
- =?utf-8?B?SkF2RTNjN0I0eDFiNnpYUHhzeFdJRVozVlBwN08vZmZVaTVIazduQldtQ0dO?=
- =?utf-8?B?TU9nTkpFd2hkQXRLaVNKU0dFemdkSU8rZzVBZTVRcmdSNEE3cERma1M3a2Vm?=
- =?utf-8?Q?cmI0H11fbDu5jS+eYoU4dl9pZaRlkNrfV5gc1pj?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a58625ef-715a-41c4-4439-08d97d4a4303
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 21:53:35.6418
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qGdtR2MZyaKbXVR1+XQrA40q7EpRGUz07SNhSy6ZKaMWzCqhXZzmu8LkIr+OPidz+BScaDqSjQNKdJYj+idTwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4888
+References: <20210915170940.617415-1-saravanak@google.com> <20210915170940.617415-3-saravanak@google.com>
+ <CAJZ5v0h11ts69FJh7LDzhsDs=BT2MrN8Le8dHi73k9dRKsG_4g@mail.gmail.com>
+ <YUaPcgc03r/Dw0yk@lunn.ch> <YUoFFXtWFAhLvIoH@kroah.com> <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch> <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch> <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+ <YUpIgTqyrDRXMUyC@lunn.ch>
+In-Reply-To: <YUpIgTqyrDRXMUyC@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 21 Sep 2021 14:54:47 -0700
+Message-ID: <CAGETcx_50KQuj0L+MCcf2Se8kpFfZwJBKP0juh_T7w+ZCs2p+g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 11:00, John Hubbard wrote:
-> On 9/21/21 07:06, Huang, Ying wrote:
-> ...
->>>> Can we add BUILD_BUG_ON() somewhere to capture at least some
->>>> synchronization issue?
->>>
->>> Hi Huang, we discussed this in the v1 thread with you and John, seems you
->>> missed it. Now we just add a comment to do the synchronization, and we can
->>> figure out a more general way to use strings which in trace_events straight.
->>
->> Got it!  And I think we can add the BUILD_BUG_ON() now and delete it
->> when we have a better solution to deal with that.  But if you can work
->> out a better solution quickly, that's fine to ignore this.
->>
-> 
-> I have a solution now, it's basically what I sent earlier. There appears to be
-> some confusion about it. I'll send it out as a patch that builds on top of
-> these two, hopefully in a few hours, if no problems pop up during testing.
-> 
+On Tue, Sep 21, 2021 at 2:03 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > There are cases where the children try to probe too quickly (before
+> > the parent has had time to set up all the resources it's setting up)
+> > and the child defers the probe. Even Andrew had an example of that
+> > with some ethernet driver where the deferred probe is attempted
+> > multiple times wasting time and then it eventually succeeds.
+>
+> And i prefer an occasional EPROBE_DEFER over a broken Ethernet switch,
+> which is the current state. I'm happy to see optimisations, but not at
+> the expense of breaking working stuff.
 
-Oh OK, I think the confusion was on my end: you are hoping to integrate the
-TRACE_DEFINE_ENUM in with this. Let me take a peek there, because otherwise,
-we can only reduce, but not fully remove the duplication.
+Right, but in that case, the long term solution should be to make
+changes so we don't expect the child to be bound as soon as it's
+added. Not disable the optimization. Agree?
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+>
+> > Also, this assumption that the child will be bound successfully upon
+> > addition forces the parent/child drivers to play initcall chicken
+>
+> We have never had any initcall chicken problems. The switch drivers
+> all are standard mdio_module_driver, module_platform_driver,
+> module_i2c_driver, module_pci_driver. Nothing special here. Things
+> load in whatever order they load, and it all works out, maybe with an
+> EPROBE_DEFER cycle. Which is good, we get our error paths tested, and
+> sometimes find bugs that way.
+
+My comment was a general comment about parent drives that expect the
+child drivers to be bound on addition -- not specific to DSA.
+
+But even in the DSA case, not playing initcall chicken means if you
+change the order of driver registration, things should still work.
+However, as it stands, if you register the switch driver before the
+PHY drivers are registered, you are going to force bind the PHYs to
+the generic driver.
+
+-Saravana
