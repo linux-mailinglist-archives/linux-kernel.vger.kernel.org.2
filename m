@@ -2,173 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2FA4413DBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6F0413DBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 00:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhIUWxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 18:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S230336AbhIUW5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 18:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhIUWxT (ORCPT
+        with ESMTP id S230352AbhIUW5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 18:53:19 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACB2C061574;
-        Tue, 21 Sep 2021 15:51:50 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id w8so609896pgf.5;
-        Tue, 21 Sep 2021 15:51:50 -0700 (PDT)
+        Tue, 21 Sep 2021 18:57:00 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFDC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:55:31 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so778863pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 15:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=h2gJkMznnqLd0f275Uxw8g80e9XhRkNfCJioibCTvdk=;
-        b=P6b3nH0kQ9tt/5pXMy8BamVhnNQysrMOTir+ZsZb1vz22oj/kaB8Zgxot3PDcg5/l+
-         FpP443q0Nt8o4W+5yn5cgYPf5i/XGXIlbn5jyrKk9p5sC5dBd9WBQhn2hYh7vLDH2ZGU
-         tZo6skM82sW8rQPIkjOXqc8v1KmE+r2eFbhMLXXUFJymPdE00tZWHvVi8b1JcrzvjHpL
-         H9VuutQE5JYcdhkgZ3mrjHoyhS6b5RCyuWZVA7YpTXPldQ8Dttik6GDnjqbYMWsFD8iT
-         i7kodXAonlOEX/zBa4ap9WrETIOKLyAYYzyZCgQShtm3UFn2foiZ2Xb82mQTGn22ojnC
-         gvCQ==
+        bh=BMCtqiOaU3Jol7oGZtEshrlJBTqq3pP+pwS0DzJkKbY=;
+        b=WUrJZf0jln8x+1NkJRqiuJD4j96lL5lrra7QkjEula1CPP8eIAHbWTaYz10ytJjzDq
+         MXRCZlYVrvc/jaTbt2tllN6ooFAymt0FWO7TdzUroUKsG9fAEIzDYsGCQXDAy9safl+t
+         /MSg2/mv0ajL2X/HWjlP/ZP2Uhlg/6Kli/C9fsBJo0gLVZyomc6Oq9Oy2TlJFkcMwER8
+         nbBQFJBo90ZYXwOKbtO/TBf3pRV65oIgS3mOOfHDbnavrNLV3vM+CZxrAEAIvrRf1D1U
+         7iSnnx2Ic5IRHAGDvxy20vh/IB4PrpXFeyNNC0EwXPr6rRDA0hQ7Nz93KoVNggx8Zm5q
+         7Y6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=h2gJkMznnqLd0f275Uxw8g80e9XhRkNfCJioibCTvdk=;
-        b=MBKaOUfkuLeGvn/PFVe5f8iW6pLUt9C9XZGpqxn6rYQV8OBUKHSbAjF1F+PWtpmAd3
-         pEedX8xQhyFiarYYLx0j2C/TXXZ30mTY07aehWrhr4wnw4lmIE1/7tQjXQO7GSSIWvYv
-         r3oq+ZFNBm1uldqjqnTrzWE6Obq4wQhv9yQZKA4t1W1Qklt+qkZLvJZCp9+hKQUP/QaL
-         v572r92s+2EsUSQzWl55uJD6x8TK9IOd1dn1ved9eBBy3cXr6qn8fmeiZwGCtoNx5mPe
-         XWeOBrwgteiP1JKTJAwhCSdMECcg7pX07sumttHniCA8Sf56Bc/4JzMDmya1xgMa50dg
-         AFQg==
-X-Gm-Message-State: AOAM531Ca6naIm47VpFiiDj7t0mQwMUXspsDhdvh46abs1d95yn/ptYD
-        bGVcoHJrytsuZCiSjarkMitqRbNR2C8=
-X-Google-Smtp-Source: ABdhPJw1lu3BRdyyMsZL9sqwjLiGh2sfa87bthmMAD3D+B6UgiBsaFdLiyBTn+FHowwVCAmXmpxc/A==
-X-Received: by 2002:a63:4a18:: with SMTP id x24mr30009819pga.209.1632264709849;
-        Tue, 21 Sep 2021 15:51:49 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id c12sm167350pfc.161.2021.09.21.15.51.47
+        bh=BMCtqiOaU3Jol7oGZtEshrlJBTqq3pP+pwS0DzJkKbY=;
+        b=Mta6PI0r39bKPQKWHB3s9/a+bnpi0SaSd9eoHeuKhbLOPEFhMio2wr2tKynK/o/Vga
+         hSlgRDFMpUvN0xVbyYARYvLAogt7kEGobzjXZrEUy7e6Foj6l+dEAvovxXmUL8dHWYQn
+         N7Qe5B7l1svUXLbvHThNMEPdqFAlnOWXA2j27QQG6V5CqyfEuAnHLq793dCJWS+LjGAQ
+         acvbMEPYm59/JOinAYsQafNzzlL2qzetvTdQOdp373+DM7vtYwrPqAdFeUl8Knqi2Vih
+         fH/ICBszZE05r/z1GLjUWlsSLycU/somzz5bi+O9JCplt9PNfRHj3ElcQSnf6LXq2FM9
+         oQDg==
+X-Gm-Message-State: AOAM532FKpONdoOe3ykCGcR3kWQ1EaWbzGFZWHRui0ve41bIxNfgJPSA
+        WIq7/YDq4uwremmREjsh2WiioQ==
+X-Google-Smtp-Source: ABdhPJymBpI2KwZDqOXgMkOjIFujnaztfoYn8370U3QrI9Qud0OztAAXFb36D/GflBLBEplZvUcbrA==
+X-Received: by 2002:a17:90b:4f49:: with SMTP id pj9mr7896768pjb.188.1632264930882;
+        Tue, 21 Sep 2021 15:55:30 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id c23sm186603pgb.74.2021.09.21.15.55.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 15:51:49 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 07:51:45 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Tim Gardner <tim.gardner@canonical.com>
-Cc:     linux-iio@vger.kernel.org,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3][next] counter: Add default statement to switch() in
- quad8_function_read()
-Message-ID: <YUpiAcEKGyS5z6+t@shinobu>
-References: <YUkpBU8mN4yrDfu5@shinobu>
- <20210921133749.15461-1-tim.gardner@canonical.com>
+        Tue, 21 Sep 2021 15:55:30 -0700 (PDT)
+Date:   Tue, 21 Sep 2021 22:55:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v2 6/6] KVM: nVMX: re-evaluate emulation_required on
+ nested VM exit
+Message-ID: <YUpi3rpTsoQ/dzp6@google.com>
+References: <20210830125539.1768833-1-mlevitsk@redhat.com>
+ <20210830125539.1768833-7-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ytAU70V02QRLitKB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921133749.15461-1-tim.gardner@canonical.com>
+In-Reply-To: <20210830125539.1768833-7-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 30, 2021, Maxim Levitsky wrote:
+> If L1 had invalid state on VM entry (can happen on SMM transactions
+> when we enter from real mode, straight to nested guest),
+> 
+> then after we load 'host' state from VMCS12, the state has to become
+> valid again, but since we load the segment registers with
+> __vmx_set_segment we weren't always updating emulation_required.
 
---ytAU70V02QRLitKB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Because I'm an idiot.
 
-On Tue, Sep 21, 2021 at 07:37:49AM -0600, Tim Gardner wrote:
-> Coverity complains of a possible use of an uninitialized variable in
-> quad8_action_read().
->=20
-> CID 119643 (#1 of 1): Uninitialized scalar variable (UNINIT)
-> 4. uninit_use: Using uninitialized value function.
-> 346        switch (function) {
->=20
-> The call to quad8_function_read() could theoretically return without assi=
-gning
-> a value to '*function', thus causing the use of an ininitialized variable
-> 'function' in quad8_action_read().
->=20
-> Fix this by adding a default statement to the switch in quad8_function_re=
-ad()
-> and setting a return error code.
->=20
-> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> Update emulation_required explicitly at end of load_vmcs12_host_state.
 
-Thank you for noticing the mutex. Although this case is simple, I'd
-still prefer for this function to return early when an error is found
-rather than hold a return value until the end. Please adjust the default
-case to unlock the mutex directly and return immediately with -EINVAL.
-With that change feel free to add my Ack-by line:
+Can you also add
 
-Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+  Reported-by: kernel test robot <oliver.sang@intel.com>
 
+which is how I ended up here, sort of.
+
+Fixes: 816be9e9be8d ("KVM: nVMX: Don't evaluate "emulation required" on nested VM-Exit")
+
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
-> v2 - Add the correct Cc's
-> v3 - Add comment to the default switch statement. Also noticed v2 would h=
-ave
->      returned with a lock held. Fix that by returning a variable return c=
-ode.
-> ---
->  drivers/counter/104-quad-8.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
-> index c587f295d720..7faca6b760e7 100644
-> --- a/drivers/counter/104-quad-8.c
-> +++ b/drivers/counter/104-quad-8.c
-> @@ -201,6 +201,7 @@ static int quad8_function_read(struct counter_device =
-*counter,
->  {
->  	struct quad8 *const priv =3D counter->priv;
->  	const int id =3D count->id;
-> +	int ret =3D 0;
-> =20
->  	mutex_lock(&priv->lock);
-> =20
-> @@ -215,13 +216,16 @@ static int quad8_function_read(struct counter_devic=
-e *counter,
->  		case 2:
->  			*function =3D COUNTER_FUNCTION_QUADRATURE_X4;
->  			break;
-> +		default:
-> +			/* should never reach this path */
-> +			ret =3D -EINVAL;
->  		}
->  	else
->  		*function =3D COUNTER_FUNCTION_PULSE_DIRECTION;
-> =20
->  	mutex_unlock(&priv->lock);
-> =20
-> -	return 0;
-> +	return ret;
+
+The below is overkill.  The state after VM-Exit _can't_ be invalid, which was the
+whole point of moving to __vmx_set_segment(), I just forgot the minor detail of
+clearing emulation_required.  So just:
+
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index bc6327950657..55ac7211fb37 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -4314,6 +4314,12 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
+        if (nested_vmx_load_msr(vcpu, vmcs12->vm_exit_msr_load_addr,
+                                vmcs12->vm_exit_msr_load_count))
+                nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_MSR_FAIL);
++
++       /*
++        * All relevant vmcs12 host state is checked prior to VM-Entry, thus
++        * L1 guest can never be invalid after VM-Exit.
++        */
++       to_vmx(vcpu)->emulation_required = false;
+ }
+ 
+ static inline u64 nested_vmx_get_vmcs01_guest_efer(struct vcpu_vmx *vmx)
+
+>  arch/x86/kvm/vmx/nested.c | 2 ++
+>  arch/x86/kvm/vmx/vmx.c    | 8 ++++----
+>  arch/x86/kvm/vmx/vmx.h    | 1 +
+>  3 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 1a05ae83dae5..f915e1ac589c 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -4319,6 +4319,8 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
+>  	if (nested_vmx_load_msr(vcpu, vmcs12->vm_exit_msr_load_addr,
+>  				vmcs12->vm_exit_msr_load_count))
+>  		nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_MSR_FAIL);
+> +
+> +	to_vmx(vcpu)->emulation_required = vmx_emulation_required(vcpu);
 >  }
-> =20
->  static int quad8_function_write(struct counter_device *counter,
-> --=20
-> 2.33.0
->=20
-
---ytAU70V02QRLitKB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmFKYfcACgkQhvpINdm7
-VJJZrRAA60Ff+szRe99ZKTDxt0AcZNihM7K886lJg4m70pR5SvwXYOhtNIwy2UmN
-ICNmtQ9QJutArvLmsjmO4jd3JhSulI9t5YQ5ckhZ86fZXCWJNdEClpp/5ZB0SZDg
-oAgP81hUdSstCHRCOm9VEthgHWLRpGz3rmk08cCBsj+ApvRwWt/1fb4zrOhb7cH6
-Rr9pn8onvb87okFNOzRZGKcAAZvQCv76DQBOdDDS5+ZuTXzUJTnCEaoNieI2MV/m
-VJ1FuTEDWhMY7mqQ+ZOw5ZGpecyzBzGinwXtTjZdPuFRWWDJ2Eb7vNvZYjv2s+yV
-76Mxe1wICz+f+h2Ac/5Mbl55G7IXZ3ADeovQ3F1pJNzbZanPPfJwNcAOtq3MlaIl
-1E/A0vOJNPO0QcRWwZmCM3bjah5VyShE2VSLZA8+OpedA4EwwaH+U6Cf/4HAkfL8
-tmVbiXVDHkdo/sLDQIoBQXPwRln0uA6f/I3G/glFoxLbR7UW8Cnw/RVbr+xUL7gy
-aA4YCacFtO/nM858Qngqcd1eP3sXQp7I8pK0qGwmlQxKFRX+f+arvx+ZLBlGeRSV
-OK6xSkZKYMLcn5ZQO9MCVswEEBpZQ3tq2diTsB8F6Y56i3/AwTtV/iQ0u4UCN1bq
-Us3Ub9CNV9qBNBsOz6qsTqq7BvFEADcASeEwnYkVTLa1eyHwgEI=
-=h4Fv
------END PGP SIGNATURE-----
-
---ytAU70V02QRLitKB--
+>  
+>  static inline u64 nested_vmx_get_vmcs01_guest_efer(struct vcpu_vmx *vmx)
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 02d061f5956a..7ff1e1daeb0a 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1323,7 +1323,7 @@ static void vmx_vcpu_put(struct kvm_vcpu *vcpu)
+>  	vmx_prepare_switch_to_host(to_vmx(vcpu));
+>  }
+>  
+> -static bool emulation_required(struct kvm_vcpu *vcpu)
+> +bool vmx_emulation_required(struct kvm_vcpu *vcpu)
+>  {
+>  	return emulate_invalid_guest_state && !vmx_guest_state_valid(vcpu);
+>  }
+> @@ -1367,7 +1367,7 @@ void vmx_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags)
+>  	vmcs_writel(GUEST_RFLAGS, rflags);
+>  
+>  	if ((old_rflags ^ vmx->rflags) & X86_EFLAGS_VM)
+> -		vmx->emulation_required = emulation_required(vcpu);
+> +		vmx->emulation_required = vmx_emulation_required(vcpu);
+>  }
+>  
+>  u32 vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu)
+> @@ -3077,7 +3077,7 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+>  	}
+>  
+>  	/* depends on vcpu->arch.cr0 to be set to a new value */
+> -	vmx->emulation_required = emulation_required(vcpu);
+> +	vmx->emulation_required = vmx_emulation_required(vcpu);
+>  }
+>  
+>  static int vmx_get_max_tdp_level(void)
+> @@ -3330,7 +3330,7 @@ static void vmx_set_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int
+>  {
+>  	__vmx_set_segment(vcpu, var, seg);
+>  
+> -	to_vmx(vcpu)->emulation_required = emulation_required(vcpu);
+> +	to_vmx(vcpu)->emulation_required = vmx_emulation_required(vcpu);
+>  }
+>  
+>  static void vmx_get_cs_db_l_bits(struct kvm_vcpu *vcpu, int *db, int *l)
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 4858c5fd95f2..3a587c51a8d1 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -359,6 +359,7 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu);
+>  void vmx_set_host_fs_gs(struct vmcs_host_state *host, u16 fs_sel, u16 gs_sel,
+>  			unsigned long fs_base, unsigned long gs_base);
+>  int vmx_get_cpl(struct kvm_vcpu *vcpu);
+> +bool vmx_emulation_required(struct kvm_vcpu *vcpu);
+>  unsigned long vmx_get_rflags(struct kvm_vcpu *vcpu);
+>  void vmx_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
+>  u32 vmx_get_interrupt_shadow(struct kvm_vcpu *vcpu);
+> -- 
+> 2.26.3
+> 
