@@ -2,90 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C03412F77
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06D412F7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Sep 2021 09:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhIUHbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 03:31:18 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:36454 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbhIUHbQ (ORCPT
+        id S230240AbhIUHcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 03:32:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21727 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhIUHb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 03:31:16 -0400
-Received: by mail-wr1-f52.google.com with SMTP id g16so36341398wrb.3;
-        Tue, 21 Sep 2021 00:29:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PwxU4ElXAEYTnpc02yX8wa7uynBe7bYZVZ/4RTAlYcw=;
-        b=xhmYcH0z8X8WObbCoIxNnh/XDHJ7YdPuJ7UQWZmD9+WT8AjTUFL0DCwgfjj8mT0sAr
-         pwdb7816RUgBlam2kUJCzcpV1lqVpUJXSR713+8CaVI70CB+HHXLC04e8bSVGotey1NP
-         pw3PASyzSyYypefMc0ddu50HQVKl5hk9iicZBCR3sOUIe0xU9ZBBVXm3/pVA3MDxReQa
-         ulkyx2GAyQgl92Kd9lFk5LOLgyypUUMcl5tg+5AlnSNkr7it5pWaWwn95VgHlp5chVfG
-         ggf9tzfLJmOigxlvg9GoqfWv3VJZrAu0AGilNiAx/G4rExzasjPeoUdVI/1sji+AWYdg
-         SGJw==
-X-Gm-Message-State: AOAM532fOQfLTKU69ujQ6NY1JHgZ0bwdqpR62MygTjTChV4VNmPhweRF
-        Ui/7tTBxhFLx82Y7o3xr4Pb+IiSc8+g=
-X-Google-Smtp-Source: ABdhPJwz9XYBycQ0YgR09UlgwcWhnYfJ/0+mYSDJ2VfWjRl52IaG0QGibCPKkDWzRNi+YytFdXjlgg==
-X-Received: by 2002:a1c:58:: with SMTP id 85mr2931892wma.87.1632209386943;
-        Tue, 21 Sep 2021 00:29:46 -0700 (PDT)
-Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
-        by smtp.googlemail.com with ESMTPSA id z17sm1781474wml.24.2021.09.21.00.29.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 00:29:46 -0700 (PDT)
-Subject: Re: [PATCH v1 1/4] clk: samsung: change COMMON_CLK_SAMSUNG default
- config logic
-To:     Will McVicker <willmcvicker@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20210920190350.3860821-1-willmcvicker@google.com>
- <20210920190350.3860821-2-willmcvicker@google.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Message-ID: <a8d40b96-bcb2-5eb6-b0e5-c20c14471c8a@kernel.org>
-Date:   Tue, 21 Sep 2021 09:29:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 21 Sep 2021 03:31:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1632209432; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=aqjmP31SDqTSrOPTYMKFyi6cjdtEi8k8K9EsQv1g7o0=; b=FIFVg8ZSJF4wmavn9HgTHYbf97R6c0uz95qOqjzrh+3vAqgxWWPRaEeX1koUrjH1QJkVBTfq
+ 0Dp5Z8HKWPl2vzBHPw6gdPzmnJHWLm9Gl5hbWYFykG1m5VkrBd3HPoai18WQyR5kkGzQvBbs
+ 0prMq7KPOFfk17Wp5jbIjMNgUTA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61498a08b585cc7d24befdc9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 21 Sep 2021 07:30:16
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C10EEC4361B; Tue, 21 Sep 2021 07:30:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.204.90] (unknown [157.48.173.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E164CC43460;
+        Tue, 21 Sep 2021 07:30:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E164CC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 3/7] ASoC: codecs: tx-macro: Change mic control registers
+ to volatile
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1632123331-2425-1-git-send-email-srivasam@codeaurora.org>
+ <1632123331-2425-4-git-send-email-srivasam@codeaurora.org>
+ <c1c7b1e8-98f5-99a3-1374-11d1d61535b4@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <b442ee2b-622c-674d-3abe-b1fbbfa5aeb9@codeaurora.org>
+Date:   Tue, 21 Sep 2021 13:00:05 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20210920190350.3860821-2-willmcvicker@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <c1c7b1e8-98f5-99a3-1374-11d1d61535b4@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 21:03, Will McVicker wrote:
-> COMMON_CLK_SAMSUNG is selected by ARCH_EXYNOS which forces this config
-> to be built-in when ARCH_EXYNOS is enabled. Switch the logic to use a
-> "default y if ARCH_EXYNOS" to provide flexibilty for vendors to disable
-> or modularize this driver.
 
-The clock drivers are essential, you cannot disable them for a generic
-kernel supporting ARCH_EXYNOS. Such kernel won't work properly on platforms.
+On 9/20/2021 6:54 PM, Srinivas Kandagatla wrote:
+Thanks for your time Srini!!
+>
+> On 20/09/2021 08:35, Srinivasa Rao Mandadapu wrote:
+>> Update amic and dmic related tx macro control registers to volatile
+>>
+>> Fixes: c39667ddcfc5 (ASoC: codecs: lpass-tx-macro: add support for 
+>> lpass tx macro)
+>>
+>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> ---
+>>   sound/soc/codecs/lpass-tx-macro.c | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>
+>> diff --git a/sound/soc/codecs/lpass-tx-macro.c 
+>> b/sound/soc/codecs/lpass-tx-macro.c
+>> index 9273724..e65b592 100644
+>> --- a/sound/soc/codecs/lpass-tx-macro.c
+>> +++ b/sound/soc/codecs/lpass-tx-macro.c
+>> @@ -423,6 +423,13 @@ static bool tx_is_volatile_register(struct 
+>> device *dev, unsigned int reg)
+>>       case CDC_TX_TOP_CSR_SWR_DMIC1_CTL:
+>>       case CDC_TX_TOP_CSR_SWR_DMIC2_CTL:
+>>       case CDC_TX_TOP_CSR_SWR_DMIC3_CTL:
+>> +    case CDC_TX_TOP_CSR_SWR_AMIC0_CTL:
+>> +    case CDC_TX_TOP_CSR_SWR_AMIC1_CTL:
+>> +    case CDC_TX_CLK_RST_CTRL_MCLK_CONTROL:
+>> +    case CDC_TX_CLK_RST_CTRL_FS_CNT_CONTROL:
+>> +    case CDC_TX_CLK_RST_CTRL_SWR_CONTROL:
+>> +    case CDC_TX_TOP_CSR_SWR_CTRL:
+>> +    case CDC_TX0_TX_PATH_SEC7:
+>
+> Why are these marked as Volatile?
+> Can you provide some details on the issue that you are seeing?
+>
+> --srini
 
-> 
-> I verified the .config is identical with and without this change.
-> 
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
-> ---
->  arch/arm64/Kconfig.platforms | 1 -
->  drivers/clk/samsung/Kconfig  | 1 +
->  2 files changed, 1 insertion(+), 1 deletion(-)
-> 
+Without volatile these registers are not reflecting in Hardware and 
+playback and capture is not working.
 
-NAK, please use get_maintainers.pl to Cc necessary folks.
+Will do recheck and keep only required registers as volatile.
 
+>
+>
+>>           return true;
+>>       }
+>>       return false;
+>> @@ -1674,6 +1681,12 @@ static int tx_macro_component_probe(struct 
+>> snd_soc_component *comp)
+>>         snd_soc_component_update_bits(comp, CDC_TX0_TX_PATH_SEC7, 0x3F,
+>>                         0x0A);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_AMIC0_CTL, 0xFF, 0x00);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_AMIC1_CTL, 0xFF, 0x00);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_DMIC0_CTL, 0xFF, 0x00);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_DMIC1_CTL, 0xFF, 0x00);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_DMIC2_CTL, 0xFF, 0x00);
+>> +    snd_soc_component_update_bits(comp, 
+>> CDC_TX_TOP_CSR_SWR_DMIC3_CTL, 0xFF, 0x00);
+>>         return 0;
+>>   }
+>>
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-
-Best regards,
-Krzysztof
