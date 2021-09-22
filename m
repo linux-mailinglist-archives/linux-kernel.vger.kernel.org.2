@@ -2,256 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDABE414BDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90CC414BE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbhIVO3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
+        id S234359AbhIVObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235600AbhIVO3l (ORCPT
+        with ESMTP id S232243AbhIVObC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:29:41 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0396DC061574;
-        Wed, 22 Sep 2021 07:28:11 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id 72so10183583qkk.7;
-        Wed, 22 Sep 2021 07:28:10 -0700 (PDT)
+        Wed, 22 Sep 2021 10:31:02 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B19CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:29:33 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id 134so3558593iou.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7nKRfey0vkooRwQvWuZKZSL57dIr9yLtcZg4izr4b3A=;
-        b=oaOOWgXUFKvmQ1B7qMbXwPn9YxTtq8MkptSfI/u/4rfJtbcJCKzpJ43kZjHGnvp5uF
-         Lt6dCIulM/reiwoEDgu+hTyRxoNU93oM18KMpfGQkjysED7TZkDRqAJkry9EbsBChFUO
-         puGXwneDOKQkfA8fzurGsO7PMftrQ73mg64PRXxm0dzCWD7dK7NmYK0e7oumDUJKBYbw
-         hrBE0vSiY5Ol6rtE5wwnDCaS+RQdMjCktou4b/jY0+PqJlLWsY581rp1evvI8Ex+ZOms
-         4ux9IeCbWjRsvfNuzZgAoAAfR8QZuT2ZNHqtvnXa67+AtSrFvQt96cwG2uazDoB/uvUL
-         u9BA==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LkHNahxe4Opk7ltbXSKSeyp56JUc25N+JObY5cRDFWc=;
+        b=aOrhP0mv2RWtlBrBj3fYKJ0tGdWUe+SEZptNqmFmG1geSe9GAwL8iEvIVWR6CtHLBA
+         wH/mtdrurZkJqTSl2Qh1Z36Y3fkUcmnEiShyhULDfK9t48/tn4oXVg8rpuuMxx9gA9w8
+         Dv9baPveSavSM45XbUTcdGhkqoxFO1MbhU8C3H8r//9FQGYfKN8/mHAP3q/hAQzFR8mu
+         iIyryYgPnYEhO2d0IYgBObntHh6oGJPaX5i8yZF6+ILBzUVK4XwsRDBNpekXF5SY11+e
+         1cQjtxxvCU67UAhzzawbRK8aNQZ3Z/EoV2er4zzgwkZfV334DI1BcGqpOzSXNDa/a9Oy
+         S9+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=7nKRfey0vkooRwQvWuZKZSL57dIr9yLtcZg4izr4b3A=;
-        b=BgFbTJ/xJs+siRF/BExyW+BCSKTsPTx4CN0mW6bEwh27ganl5FaGl2sbzyEe2O+LMX
-         efp+5aNlPXEZAmqqRfFkUtZebUUka1e8m0H5Nypnl8ydjcpTEbRZm+IYokl4hr8wyua4
-         HVap8YHZgBjFb9HeUTGuzeNglEG+6AGDrJHGxWMpsJqQTOjjBv6BcvVN8JoxFyVsnU29
-         q7cY2iTOuxTiiu99gRbtKD/gmOwV7LjkUJ7KKT/rdVG/4jHLUrmukPInrMOgzqElvvJp
-         h96JEjlwdhimU3luWXpYsnG3pPtNtfLT2UQmDzY5dHRXxbZGhZWd+7LbtGltVjjR5FVW
-         jkoQ==
-X-Gm-Message-State: AOAM532rXSccAS6Kb4EQu+xG7/nDN+Ew7RsdsqAvnRpLINiINeUrFOxI
-        kidWmCMuzOHbcfYl1iNGXE0P/dohrdLLtQ==
-X-Google-Smtp-Source: ABdhPJwncL85EzohfwONKOogn0xYQhLHxUT+k2wwTqGmWOq6yqNL+wRkTAeejEezhkijX/86tMP4qA==
-X-Received: by 2002:a37:9b58:: with SMTP id d85mr42086qke.311.1632320889682;
-        Wed, 22 Sep 2021 07:28:09 -0700 (PDT)
-Received: from localhost.localdomain ([170.84.227.206])
-        by smtp.gmail.com with ESMTPSA id s8sm1381567qta.48.2021.09.22.07.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:28:09 -0700 (PDT)
-From:   Ramon Fontes <ramonreisfontes@gmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Cc:     johannes@sipsolutions.net, kvalo@codeaurora.org,
-        davem@davemloft.net, Ramon Fontes <ramonreisfontes@gmail.com>
-Subject: [PATCH] mac80211_hwsim: enable 6GHz channels
-Date:   Wed, 22 Sep 2021 11:28:03 -0300
-Message-Id: <20210922142803.192601-1-ramonreisfontes@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=LkHNahxe4Opk7ltbXSKSeyp56JUc25N+JObY5cRDFWc=;
+        b=WaIwtI4sAsKiewFWheyLDfaQWshECosMBIgmuruPKA9Z0Q6leUgaQsR7SmZT9WP1d8
+         sF4RvBtohQBG5iGgEe0UWLMG9TuIif/N2FdA8TWW/vMEeDXUD59uvI8j8bXLxnwprwtG
+         FjIxh0f2LfVSyuReQp4+xKStPZGeY188HNVkupc3ajTI8mL1ZoncB0XZb285ctHPRncf
+         nXNC/cEYtVXdzVAG41RSB07uwf7vNEOYEymYeVBHfJ2kgB9pLv0pPjVq/PnCnR9aqrbL
+         apDWgk2WxIUchBYOUaYFxavTQr7n0Y1UZ796SxQDqNL9ZRPN7XbLsSPui0vls32CTFrt
+         bFzg==
+X-Gm-Message-State: AOAM531nN7JQUHX0QqPI08WdFpC3KB/90ZEmpNp1i+QnFgslrJZlw5un
+        O/U0vWpKT8QBs3ES+xr5FP4odDNSTBRofOB/EKk=
+X-Google-Smtp-Source: ABdhPJxkPMuEngkZ3AMT/nv4SOGP0ecCSItToEOfVDpBlDJWAorvfHe/+T6qxgWAoRXJve5leudqEA==
+X-Received: by 2002:a6b:d209:: with SMTP id q9mr4751648iob.206.1632320972411;
+        Wed, 22 Sep 2021 07:29:32 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id v17sm623069ilo.1.2021.09.22.07.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 07:29:31 -0700 (PDT)
+Subject: Re: [PATCH] blk-mq: export blk_mq_submit_bio symbol
+To:     Prasad Muppana <Lalita.Muppana@microsoft.com>,
+        Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+        Praveen Kumar <kumarpraveen@linux.microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Atin Mukherjee <Atin.MUKHERJEE@microsoft.com>
+Cc:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "schakrabarti@linux.microsoft.com" <schakrabarti@linux.microsoft.com>
+References: <20210909053653.144360-1-kumarpraveen@linux.microsoft.com>
+ <7e80b65b-51a4-3ca1-da43-e87612b8ca5f@nvidia.com>
+ <f7add831-ecf0-6599-158b-cd2f15543da5@linux.microsoft.com>
+ <YT7rL4PhovDOHfHO@infradead.org>
+ <75f77917-a8ba-0138-750b-8dedd8f7ce7d@linux.microsoft.com>
+ <PSAP153MB0518F021C769875159C3A03984A09@PSAP153MB0518.APCP153.PROD.OUTLOOK.COM>
+ <792dd48b-a246-0456-58a8-00d739201251@nvidia.com>
+ <PSAP153MB0518090A749E26814966672684A29@PSAP153MB0518.APCP153.PROD.OUTLOOK.COM>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <36660d33-c02d-27ee-1332-4ea6e7126b88@kernel.dk>
+Date:   Wed, 22 Sep 2021 08:29:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <PSAP153MB0518090A749E26814966672684A29@PSAP153MB0518.APCP153.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds 6 GHz capabilities and reject HT/VHT
+On 9/21/21 11:45 PM, Prasad Muppana wrote:
+> Hi Chaitanya,
+> 
+> Thanks for the response.
+> 
+> Our driver code is not yet public and so Praveen has explained the
+> flow of the code. Please let me know is there any other way to get
+> some help here quickly.
 
-Signed-off-by: Ramon Fontes <ramonreisfontes@gmail.com>
----
- drivers/net/wireless/mac80211_hwsim.c | 150 +++++++++++++++++++++++---
- 1 file changed, 137 insertions(+), 13 deletions(-)
+The explanation, while appreciated, doesn't solve the problem here. We
+_never_ add any exports for APIs that don't have any in-kernel users.
+That's a hard rule that we've had forever. As such, there is not a path
+for entry for this particular patch right now. It should be submitted
+alongside the upstream submission request for the code using it, as a
+preparatory patch.
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index ffa894f73..e31770439 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -2988,6 +2988,118 @@ static const struct ieee80211_sband_iftype_data he_capa_5ghz[] = {
- #endif
- };
- 
-+static const struct ieee80211_sband_iftype_data he_capa_6ghz[] = {
-+	{
-+		/* TODO: should we support other types, e.g., P2P?*/
-+		.types_mask = BIT(NL80211_IFTYPE_STATION) |
-+			      BIT(NL80211_IFTYPE_AP),
-+		.he_6ghz_capa = {
-+			.capa = IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
-+			        cpu_to_le16(IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
-+			        IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS),
-+		},
-+		.he_cap = {
-+			.has_he = true,
-+			.he_cap_elem = {
-+				.mac_cap_info[0] =
-+					IEEE80211_HE_MAC_CAP0_HTC_HE,
-+				.mac_cap_info[1] =
-+					IEEE80211_HE_MAC_CAP1_TF_MAC_PAD_DUR_16US |
-+					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
-+				.mac_cap_info[2] =
-+					IEEE80211_HE_MAC_CAP2_BSR |
-+					IEEE80211_HE_MAC_CAP2_MU_CASCADING |
-+					IEEE80211_HE_MAC_CAP2_ACK_EN,
-+				.mac_cap_info[3] =
-+					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
-+					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
-+				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
-+				.phy_cap_info[0] =
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
-+				.phy_cap_info[1] =
-+					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
-+					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
-+					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
-+					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
-+				.phy_cap_info[2] =
-+					IEEE80211_HE_PHY_CAP2_NDP_4x_LTF_AND_3_2US |
-+					IEEE80211_HE_PHY_CAP2_STBC_TX_UNDER_80MHZ |
-+					IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ |
-+					IEEE80211_HE_PHY_CAP2_UL_MU_FULL_MU_MIMO |
-+					IEEE80211_HE_PHY_CAP2_UL_MU_PARTIAL_MU_MIMO,
-+
-+				/* Leave all the other PHY capability bytes
-+				 * unset, as DCM, beam forming, RU and PPE
-+				 * threshold information are not supported
-+				 */
-+			},
-+			.he_mcs_nss_supp = {
-+				.rx_mcs_80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80 = cpu_to_le16(0xfffa),
-+				.rx_mcs_160 = cpu_to_le16(0xfffa),
-+				.tx_mcs_160 = cpu_to_le16(0xfffa),
-+				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
-+			},
-+		},
-+	},
-+#ifdef CONFIG_MAC80211_MESH
-+	{
-+		/* TODO: should we support other types, e.g., IBSS?*/
-+		.types_mask = BIT(NL80211_IFTYPE_MESH_POINT),
-+		.he_6ghz_capa = {
-+			.capa = IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
-+			        cpu_to_le16(IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
-+			        IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS),
-+		},
-+		.he_cap = {
-+			.has_he = true,
-+			.he_cap_elem = {
-+				.mac_cap_info[0] =
-+					IEEE80211_HE_MAC_CAP0_HTC_HE,
-+				.mac_cap_info[1] =
-+					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
-+				.mac_cap_info[2] =
-+					IEEE80211_HE_MAC_CAP2_ACK_EN,
-+				.mac_cap_info[3] =
-+					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
-+					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
-+				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
-+				.phy_cap_info[0] =
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
-+				.phy_cap_info[1] =
-+					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
-+					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
-+					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
-+					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
-+				.phy_cap_info[2] = 0,
-+
-+				/* Leave all the other PHY capability bytes
-+				 * unset, as DCM, beam forming, RU and PPE
-+				 * threshold information are not supported
-+				 */
-+			},
-+			.he_mcs_nss_supp = {
-+				.rx_mcs_80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80 = cpu_to_le16(0xfffa),
-+				.rx_mcs_160 = cpu_to_le16(0xfffa),
-+				.tx_mcs_160 = cpu_to_le16(0xfffa),
-+				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
-+			},
-+		},
-+	},
-+#endif
-+};
-+
- static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
- {
- 	u16 n_iftype_data;
-@@ -3000,6 +3112,10 @@ static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
- 		n_iftype_data = ARRAY_SIZE(he_capa_5ghz);
- 		sband->iftype_data =
- 			(struct ieee80211_sband_iftype_data *)he_capa_5ghz;
-+	} else if (sband->band == NL80211_BAND_6GHZ) {
-+		n_iftype_data = ARRAY_SIZE(he_capa_6ghz);
-+		sband->iftype_data =
-+			(struct ieee80211_sband_iftype_data *)he_capa_6ghz;
- 	} else {
- 		return;
- 	}
-@@ -3290,6 +3406,12 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
- 			sband->vht_cap.vht_mcs.tx_mcs_map =
- 				sband->vht_cap.vht_mcs.rx_mcs_map;
- 			break;
-+		case NL80211_BAND_6GHZ:
-+			sband->channels = data->channels_6ghz;
-+			sband->n_channels = ARRAY_SIZE(hwsim_channels_6ghz);
-+			sband->bitrates = data->rates + 4;
-+			sband->n_bitrates = ARRAY_SIZE(hwsim_rates) - 4;
-+			break;
- 		case NL80211_BAND_S1GHZ:
- 			memcpy(&sband->s1g_cap, &hwsim_s1g_cap,
- 			       sizeof(sband->s1g_cap));
-@@ -3300,19 +3422,21 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
- 			continue;
- 		}
- 
--		sband->ht_cap.ht_supported = true;
--		sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
--				    IEEE80211_HT_CAP_GRN_FLD |
--				    IEEE80211_HT_CAP_SGI_20 |
--				    IEEE80211_HT_CAP_SGI_40 |
--				    IEEE80211_HT_CAP_DSSSCCK40;
--		sband->ht_cap.ampdu_factor = 0x3;
--		sband->ht_cap.ampdu_density = 0x6;
--		memset(&sband->ht_cap.mcs, 0,
--		       sizeof(sband->ht_cap.mcs));
--		sband->ht_cap.mcs.rx_mask[0] = 0xff;
--		sband->ht_cap.mcs.rx_mask[1] = 0xff;
--		sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
-+		if (band != NL80211_BAND_6GHZ){
-+			sband->ht_cap.ht_supported = true;
-+			sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
-+					    IEEE80211_HT_CAP_GRN_FLD |
-+					    IEEE80211_HT_CAP_SGI_20 |
-+					    IEEE80211_HT_CAP_SGI_40 |
-+					    IEEE80211_HT_CAP_DSSSCCK40;
-+			sband->ht_cap.ampdu_factor = 0x3;
-+			sband->ht_cap.ampdu_density = 0x6;
-+			memset(&sband->ht_cap.mcs, 0,
-+			       sizeof(sband->ht_cap.mcs));
-+			sband->ht_cap.mcs.rx_mask[0] = 0xff;
-+			sband->ht_cap.mcs.rx_mask[1] = 0xff;
-+			sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
-+		}
- 
- 		mac80211_hwsim_he_capab(sband);
- 
 -- 
-2.25.1
+Jens Axboe
 
