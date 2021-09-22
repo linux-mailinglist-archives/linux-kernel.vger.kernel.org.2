@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603724145F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B3C4145FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbhIVKSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:18:21 -0400
-Received: from esa3.hc1455-7.c3s2.iphmx.com ([207.54.90.49]:45530 "EHLO
-        esa3.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234414AbhIVKSK (ORCPT
+        id S234828AbhIVKSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:18:36 -0400
+Received: from esa7.hc1455-7.c3s2.iphmx.com ([139.138.61.252]:44405 "EHLO
+        esa7.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234499AbhIVKSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:18:10 -0400
-IronPort-SDR: koZWrufzIyTEu2N0YKCBbWa0PnzM0xgihR2D9s+x5sC347COGEka9Q/00Gd+XZERvo1JMNqqWn
- T4nB2uE1HpTo6J4edb1NH3XHb3ExoSYuzbXRnRnHUIly3iJIZcxrUe2sHJdtB20Gspt9cn5C/K
- 4ZCsA8uZVvsSgdslHWNq8PZvkiY+cIwJqgDYuDHhE1SbSVFZ2eerIRJvhKQv8fIexbt31gMqZu
- 1K9PY8Ih4yFYl5v3Wxs/Fhh8AkANWAGi0XixUFJUE2C8e36YbX9kIWIO1tODHTsaNF7x7yXXrQ
- d82+R7YYRf69IhoUcnRWLeWa
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="46127437"
+        Wed, 22 Sep 2021 06:18:11 -0400
+IronPort-SDR: FeTWYrLK/Q4GpKi4zlGtaRM9NIRwdbZjVEDUrMGuitFBTDhGnVgMG5RvyF8jpK33zCHdc3iJTO
+ NjnfNwmJff1tt655UvIpDRMeS5k0oH3mUCmpGOi5OGB7vxn5jE7cyP+6xQa2dBcYXRxRZfdmxJ
+ u1+1PYdJGcId3CyXSJN1L0N/t1te6eD9aYcmdrTkSgtKwALjBxSHwRq5ptmZu1v5qm9eswd06M
+ YeN/nX7UWxf0+KR1erKj3m2UJO5k3P1KAvqQT5F8pw68zPaIKLNXplXl2ucxESgrMQlYtkL3ht
+ 3q5j+ZYsA5wZc/SxAcsxNPOB
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="24913021"
 X-IronPort-AV: E=Sophos;i="5.85,313,1624287600"; 
-   d="scan'208";a="46127437"
-Received: from unknown (HELO oym-r3.gw.nic.fujitsu.com) ([210.162.30.91])
-  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP; 22 Sep 2021 19:16:33 +0900
-Received: from oym-m4.gw.nic.fujitsu.com (oym-nat-oym-m4.gw.nic.fujitsu.com [192.168.87.61])
-        by oym-r3.gw.nic.fujitsu.com (Postfix) with ESMTP id 8EA83EBA43;
+   d="scan'208";a="24913021"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP; 22 Sep 2021 19:16:32 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+        by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 9A9D6E6800;
         Wed, 22 Sep 2021 19:16:31 +0900 (JST)
 Received: from yto-om2.fujitsu.com (yto-om2.o.css.fujitsu.com [10.128.89.163])
-        by oym-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id B75802161D4;
+        by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id C5ECCFF44;
         Wed, 22 Sep 2021 19:16:30 +0900 (JST)
 Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by yto-om2.fujitsu.com (Postfix) with ESMTP id 92E1E400C0072;
+        by yto-om2.fujitsu.com (Postfix) with ESMTP id A52DE400C007A;
         Wed, 22 Sep 2021 19:16:30 +0900 (JST)
 From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         jolsa@redhat.com, namhyung@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: [PATCH v2 0/2] libperf: Add support for scaling counters obtained from the read() system call during multiplexing
-Date:   Wed, 22 Sep 2021 19:16:25 +0900
-Message-Id: <20210922101627.3396398-1-nakamura.shun@fujitsu.com>
+Subject: [PATCH v2 1/2] libperf: Add processing to scale the counters obtained during the read() system call when multiplexing
+Date:   Wed, 22 Sep 2021 19:16:26 +0900
+Message-Id: <20210922101627.3396398-2-nakamura.shun@fujitsu.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210922101627.3396398-1-nakamura.shun@fujitsu.com>
+References: <20210922101627.3396398-1-nakamura.shun@fujitsu.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
@@ -47,33 +49,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series supports counter scaling when perf_evsel__read() obtains a counter
-using the read() system call during multiplexing.
+From: nakamura shunsuke <nakamura.shun@fujitsu.com>
 
-The first patch adds scaling of counters obtained from the read() system call
-during multiplexing.
+perf_evsel__read() scales counters obtained by RDPMC during multiplexing, but
+does not scale counters obtained by read() system call.
 
-The second patch adds a test for the first patch.
-This patch is based on Vince's rdpmc_multiplexing.c [1]
+Add processing to perf_evsel__read() to scale the counters obtained during the
+read() system call when multiplexing.
 
+
+Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
 ---
-Changes in v2:
- - Fix not to divide by zero when counter scaling
- - Add test to verify that no division by zero occurs
+ tools/lib/perf/evsel.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-
-[1] https://github.com/deater/perf_event_tests/blob/master/tests/rdpmc/rdpmc_multiplexing.c
-
-
-nakamura shunsuke (2):
-  libperf: Add processing to scale the counters obtained during the
-    read() system call when multiplexing
-  libperf tests: Add test_stat_multiplexing test
-
- tools/lib/perf/evsel.c             |   6 +
- tools/lib/perf/tests/test-evlist.c | 183 +++++++++++++++++++++++++++++
- 2 files changed, 189 insertions(+)
-
+diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+index 8441e3e1aaac..0ebd1d34436f 100644
+--- a/tools/lib/perf/evsel.c
++++ b/tools/lib/perf/evsel.c
+@@ -18,6 +18,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <asm/bug.h>
++#include <linux/math64.h>
+ 
+ void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr,
+ 		      int idx)
+@@ -321,6 +322,11 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+ 	if (readn(*fd, count->values, size) <= 0)
+ 		return -errno;
+ 
++	if (count->ena != count->run) {
++		if (count->run != 0)
++			count->val = mul_u64_u64_div64(count->val, count->ena, count->run);
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
