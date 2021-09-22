@@ -2,78 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343B14150EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C8D4150EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237324AbhIVUEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
+        id S237336AbhIVUFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237276AbhIVUES (ORCPT
+        with ESMTP id S237276AbhIVUFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:04:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF07C061574;
-        Wed, 22 Sep 2021 13:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xMMkEjEh6E2g/7bmfUoiGSvQRpLkGpcY6eTiqRST8LI=; b=DhzinNwGViZ2LB3qjFCetI4dTu
-        vlMTuCI/qLfhGb8MkVX1k6VGrgud5ucv6a9uDOeEx7KTk3/RgXRNbO7tzS1XvBePUE/2c5Aw7eBQs
-        ivBVgemAdQiLZApati8fT9X6dKMlYgz4qPWps6YtUlRinWPb5FMVGGPqXF8hKEtWbEf/0DK+idU2X
-        hcDNwOzq3y3FTZqPbTRA4fF9hT4uUsLi95lTrMXR7L1tcF+AFhxPu65Ri0EfyH3AQKInXZ3r4T/mx
-        UZ5xTy9JFgLcWFJzryobReCmWMwcnO2bTOCEQc7dW2DwQMHiutqBchz9EzsqpovN/PHge4FqIIMfl
-        zHZ4WGIQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT8Rz-0054Hx-70; Wed, 22 Sep 2021 20:02:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B672C300250;
-        Wed, 22 Sep 2021 22:02:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9D9072C8201A6; Wed, 22 Sep 2021 22:02:38 +0200 (CEST)
-Date:   Wed, 22 Sep 2021 22:02:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC][PATCH 6/7] context_tracking: Provide SMP ordering using RCU
-Message-ID: <YUuL3sveLOszCDlj@hirez.programming.kicks-ass.net>
-References: <20210922110506.703075504@infradead.org>
- <20210922110836.244770922@infradead.org>
- <20210922151721.GZ880162@paulmck-ThinkPad-P17-Gen-1>
- <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
- <20210922195350.GC880162@paulmck-ThinkPad-P17-Gen-1>
+        Wed, 22 Sep 2021 16:05:14 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704FCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:03:44 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso5191775ota.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kEm2SFVN0qjXNkIh8Gnf2RTGMo+YdlReLvRWFG8knT4=;
+        b=QHWBEI3tAorbb+ikzEGeckYHlgv6S7VPBtQkLNIh9N4JefCrneXNEJyB6+zD8eEsfs
+         3cRSB0G3ucw/9V8jCN2+mKGR8QBJy0xOIkf0mCGyhJAII0Slfdty2HH3+f5OGEJVrwPU
+         UMOTvpyV33Wfj0JN4UqtxX0vDO9orCS7IF3I/zBWoyF5sXGuDkEcMkl+zwniw2OEra0J
+         GBpz28YNvOQOkSkS4b6MBzfjNtcjyExSXHKm4Cp1heCXmwErbvkIeNCB78owVLt4qpPn
+         rba2jeNrjm4wpT8w5FuTeKAx4d3qgZY7wx/HHzMqv8wMGjyWCaOD2R9EtzufCYuFUpH9
+         kWzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kEm2SFVN0qjXNkIh8Gnf2RTGMo+YdlReLvRWFG8knT4=;
+        b=pVm7aLqmA1TuKZi7XfvB8P8t5PgIcUshwZgG8MXE1lrPVUfOFS8b3P5aeIVkYEQs2s
+         ZBOPbbZ4nXHotNUzKhNgA2dFqwnvtDlzzs0l2JFReEZbJSRALkcStTHrLj4jmv1Kvu+V
+         J0IiFLqPwTBwlM2tWmAvwZ+tWY5mOxW9iQpa5/XtdDjXt73oK/kjoysxye6KUcp7Guyt
+         YdiUVdG5lSV7HdGu06CJhZwT42a9ZSF0Ue1rKPgR9bfBbeVHnDX9WpU5rwBFMEpvnTAw
+         7zymappWBO7ooafhg+RJTby8BTnMaU3d8iSRaXpvL+6wfv0O5G0LPg8tO2xMbdcO9i/e
+         pA4g==
+X-Gm-Message-State: AOAM5300FIaDi9cJUDnZ8e1sR34kBDTKy/IJ8ecnzpGMWH+WKpkGU/gp
+        X7ROdBdz4gt82i14V0xflZUwdfJZ/dijYzlE0/9Ing==
+X-Google-Smtp-Source: ABdhPJxToJ6KZIlOwD9Bmi0UBSQLp019+AgNAjB4oui3kk+79mrRQ6EylSpbFdbg0JsJBVg2bD29wC8hcHmg4YopGdc=
+X-Received: by 2002:a05:6830:82b:: with SMTP id t11mr820891ots.319.1632341023516;
+ Wed, 22 Sep 2021 13:03:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922195350.GC880162@paulmck-ThinkPad-P17-Gen-1>
+References: <20210205151631.43511-1-kirill.shutemov@linux.intel.com>
+ <CACT4Y+bh1yaGLs5H3YTM6YLLtyWELvjWR7HcEk0pd9Nod9u4ZQ@mail.gmail.com>
+ <20210207141104.ikxbdxhoisgqaoio@box> <CACT4Y+YwUgksZBj4YpChqL8iac2us7mOkbVDLsib3Y+MVb31cw@mail.gmail.com>
+ <CAMe9rOog08O8xmhhXuJ6aTO+ctv8D2yw1_vu8XjQWwsfw707Mg@mail.gmail.com>
+ <MWHPR11MB00787E70E2E0316E5124741DD3A29@MWHPR11MB0078.namprd11.prod.outlook.com>
+ <CACT4Y+anEXw18nT47gxBTA7BEh3GUhqm6qb+PUdVPf6E4Fs6cg@mail.gmail.com>
+In-Reply-To: <CACT4Y+anEXw18nT47gxBTA7BEh3GUhqm6qb+PUdVPf6E4Fs6cg@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 22 Sep 2021 22:03:32 +0200
+Message-ID: <CACT4Y+ZGFdmKYZvA4kvw3iTYLJWmnNp=GeL=0Dz2xyC0EpSuCw@mail.gmail.com>
+Subject: Re: [RFC 0/9] Linear Address Masking enabling
+To:     "Zhang, Xiang1" <xiang1.zhang@intel.com>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Carlos O'Donell" <carlos@redhat.com>,
+        Marco Elver <elver@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 12:53:50PM -0700, Paul E. McKenney wrote:
+On Wed, 22 Sept 2021 at 14:54, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Wed, 22 Sept 2021 at 03:15, Zhang, Xiang1 <xiang1.zhang@intel.com> wro=
+te:
+> >
+> > There are already in llvm.org.
+> > One of my old patch is https://reviews.llvm.org/D102472 which has been =
+committed by https://reviews.llvm.org/D102901  and https://reviews.llvm.org=
+/D109790
+>
+> Hi Xiang,
+>
+> Good sanitizer patches are upstream!
+>
+> Please help me to understand the status of other pieces (H.J. you
+> probably talked about this yesterday, but I wasn't able to build a
+> complete picture during the talk, I think it will be useful to have
+> this in written form).
+>
+> 1. The presentation mentions "GCC: enable memory tagging with LAM in
+> x86 codegen".
+> What exactly is needed? Isn't LAM transparent for codegen? What's the
+> status in gcc? Does a corresponding change need to be done in llvm?
+>
+> 2. "Enable LAM in binutils".
+> This is already upstream in binutils 2.36, right?
+>
+> 3. The mentioned glibc patch:
+> http://patchwork.ozlabs.org/project/glibc/patch/20210211173711.71736-1-hj=
+l.tools@gmail.com/
+> Not upstream yet, targeting glibc 2.34.
 
-> I wasn't saying that the patch doesn't work.  But doesn't it add an IPI?
-> Or was I looking at it too early this morning?
+Do we need any support in other libc's, e.g. Android bionic?
 
-Ah, no. The patch allows a user-bound NOHZ_FULL task to be transitioned
-remotely. Unlike today, where they'll eventually poke it with a signal
-to force a kernel entry, which is bad m'kay :-)
-
-The code in question skips transitioning running tasks, seeing as you
-can't tell what they're doing etc.. Howver, with context tracking on
-you're supposedly able to tell they're in userspace without disturbing
-them -- except you really can't today.
-
-So if you can tell that a current running task is in userspace (hence my
-patch) you can allow the task to transition without any further ado,
-userspace is a safe state vs kernel text patching.
+> 4. "Avoid pointer operations incompatible with LAM. memmove: mask out
+> memory tags before comparing pointers".
+> Is this upstream? Where is the patch? Are there other similar patches?
+>
+> As a side note, regarding the memmove change: do we really need it?
+> Memory regions can overlap only if they come from the same
+> allocation/base object. If they come from different allocations, they
+> can't overlap (undefined behavior already).
+>
+> 5. Do we need any additional enabling changes in clang/llvm?
+>
+> 6. The kernel patches (this email thread) depend on the CET patches
+> (for the interface part only). And the CET patches is this, right?
+> https://lore.kernel.org/linux-doc/?q=3Dx86%2Fcet%2Fshstk
+>
+> 7. Do I miss anything else?
+>
+> H.J. please upload your slides here:
+> https://linuxplumbersconf.org/event/11/contributions/1010/
+> It would help with links and copy-pasting text.
+>
+> FTR here is the link to the Plumbers talk:
+> https://youtu.be/zUw0ZVXCwoM?t=3D10456
+>
+> Thank you
+>
+>
+> > BR
+> > Xiang
+> >
+> > -----Original Message-----
+> > From: H.J. Lu <hjl.tools@gmail.com>
+> > Sent: Wednesday, September 22, 2021 1:16 AM
+> > To: Dmitry Vyukov <dvyukov@google.com>
+> > Cc: Kirill A. Shutemov <kirill@shutemov.name>; Kirill A. Shutemov <kiri=
+ll.shutemov@linux.intel.com>; Dave Hansen <dave.hansen@linux.intel.com>; Lu=
+tomirski, Andy <luto@kernel.org>; Peter Zijlstra <peterz@infradead.org>; th=
+e arch/x86 maintainers <x86@kernel.org>; Andrey Ryabinin <aryabinin@virtuoz=
+zo.com>; Alexander Potapenko <glider@google.com>; Catalin Marinas <catalin.=
+marinas@arm.com>; Will Deacon <will@kernel.org>; Andi Kleen <ak@linux.intel=
+.com>; Linux-MM <linux-mm@kvack.org>; LKML <linux-kernel@vger.kernel.org>; =
+Carlos O'Donell <carlos@redhat.com>; Marco Elver <elver@google.com>; Taras =
+Madan <tarasmadan@google.com>; Zhang, Xiang1 <xiang1.zhang@intel.com>
+> > Subject: Re: [RFC 0/9] Linear Address Masking enabling
+> >
+> > On Tue, Sep 21, 2021 at 9:52 AM Dmitry Vyukov <dvyukov@google.com> wrot=
+e:
+> > >
+> > > On Sun, 7 Feb 2021 at 15:11, Kirill A. Shutemov <kirill@shutemov.name=
+> wrote:
+> > > >
+> > > > On Sun, Feb 07, 2021 at 09:24:23AM +0100, Dmitry Vyukov wrote:
+> > > > > On Fri, Feb 5, 2021 at 4:16 PM Kirill A. Shutemov
+> > > > > <kirill.shutemov@linux.intel.com> wrote:
+> > > > > >
+> > > > > > Linear Address Masking[1] (LAM) modifies the checking that is
+> > > > > > applied to 64-bit linear addresses, allowing software to use of
+> > > > > > the untranslated address bits for metadata.
+> > > > > >
+> > > > > > The patchset brings support for LAM for userspace addresses.
+> > > > > >
+> > > > > > The most sensitive part of enabling is change in tlb.c, where
+> > > > > > CR3 flags get set. Please take a look that what I'm doing makes=
+ sense.
+> > > > > >
+> > > > > > The patchset is RFC quality and the code requires more testing
+> > > > > > before it can be applied.
+> > > > > >
+> > > > > > The userspace API is not finalized yet. The patchset extends AP=
+I
+> > > > > > used by
+> > > > > > ARM64: PR_GET/SET_TAGGED_ADDR_CTRL. The API is adjusted to not
+> > > > > > imply ARM
+> > > > > > TBI: it now allows to request a number of bits of metadata
+> > > > > > needed and report where these bits are located in the address.
+> > > > > >
+> > > > > > There's an alternative proposal[2] for the API based on Intel
+> > > > > > CET interface. Please let us know if you prefer one over anothe=
+r.
+> > > > > >
+> > > > > > The feature competes for bits with 5-level paging: LAM_U48 make=
+s
+> > > > > > it impossible to map anything about 47-bits. The patchset made
+> > > > > > these capability mutually exclusive: whatever used first wins.
+> > > > > > LAM_U57 can be combined with mappings above 47-bits.
+> > > > > >
+> > > > > > I include QEMU patch in case if somebody wants to play with the=
+ feature.
+> > > > >
+> > > > > Exciting! Do you plan to send the QEMU patch to QEMU?
+> > > >
+> > > > Sure. After more testing, once I'm sure it's conforming to the hard=
+ware.
+> > >
+> > > A follow up after H.J.'s LPC talk:
+> > > https://linuxplumbersconf.org/event/11/contributions/1010/
+> > > (also +Carlos)
+> > >
+> > > As far as I understood, this kernel series depends on the Intel CET p=
+atches.
+> > >
+> > > Where are these compiler-rt patches that block gcc support?
+> >
+> > Hi Xiang,
+> >
+> > Please share your compiler-rt changes for LAM.
+> >
+> > --
+> > H.J.
