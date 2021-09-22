@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B04415024
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B1B415029
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237148AbhIVSuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:50:24 -0400
-Received: from esa3.mentor.iphmx.com ([68.232.137.180]:58164 "EHLO
-        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237137AbhIVSuW (ORCPT
+        id S237124AbhIVSw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233210AbhIVSwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:50:22 -0400
-IronPort-SDR: x6G3qOwPbGWsk+WU9VQ78L2wjXgirFmM2pxg8zebltvv3XM6A/iCfeysZrAoNHgMhcdlAmm6By
- lC1PJo1T3C9IQvWpg8ixPICt2Dc+XztOXPIzw2LIiDY82EL8mFMOyCUOjo07+qa6ZT0pipDdqr
- 2aET95yfEqwhA1wXvXRH9DKlbiyqMypY/4dDVJqA7Q8dg+QraCjfWYZTY0ferI/oZnzI7vB6rh
- 5AYsGtYwJMOlrSzdXoUKSuVcyud283nl9RIxOdlKhQ1T2jqvjdPy0MB7Cl6gLK7IPs2MOAkty7
- bp2zMPnG5hMGZm8ok7i0CeAG
-X-IronPort-AV: E=Sophos;i="5.85,314,1624348800"; 
-   d="scan'208";a="66176805"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa3.mentor.iphmx.com with ESMTP; 22 Sep 2021 10:48:51 -0800
-IronPort-SDR: bv7IsKgW5s9Vqqkwc1Cbljx0OJ3Ly0UHYQckcWhmzg9XSGRn9jCEze9gPRtMNKnHgBW49dgHbo
- NdQtTSnrSeqtEEFKFaCS6IPQColD+9AdiKscv3NSibWMXDJctUyY5jQP3Oly5PXXlkweR7O9X7
- QFciv9nymT7UNbh7/NAe91jMZvRnbiM4fTxpuYOCFgWfTmlvrJYaI7YsCh71RheUUGn8vKKUz8
- QlizIuAG/SuUWV3/m+qbuCkzcrDllcBJBOnfr0gckoQVmVbyMeATcH2V6/ec1EpGTPJv+V0N4V
- VgY=
-From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
-To:     <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] memory: renesas-rpc-if: Avoid unaligned bus access for HyperFlash
-Date:   Wed, 22 Sep 2021 13:48:30 -0500
-Message-ID: <20210922184830.29147-1-andrew_gabbasov@mentor.com>
-X-Mailer: git-send-email 2.21.0
+        Wed, 22 Sep 2021 14:52:55 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079D2C061574;
+        Wed, 22 Sep 2021 11:51:25 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g41so15697441lfv.1;
+        Wed, 22 Sep 2021 11:51:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TVdYbzVz6L9w50OAN8iUpXr44c199Ry+YrB4JvrmzuU=;
+        b=XhDztYIsxAa8cjARTwToxeBqNr3RFSJROe439D2C4d1++xECT6ukhhChELX3or3ymO
+         awldyLjasKf59wVaHWsThVsQmZfrlKKngJ1aM0do2U0Lkdd4o9L8k3ceYLoYnFxO76qp
+         svQIFrp5oRNKLXt0Fj6hqZJYlGOkFbC1tBe+lODs6/nRhu5ub2ZcoLhRlv7NE/9dP154
+         PDKiSZokRhXyHUiYyl5sQT7KLMC26NDzgSSJVoMOAnkHFUYJww+j8/SRlhHDCkG6cXLm
+         4vewTEIanzwHwJVG13uUdchNSp8JjAlBSW3n/fV69M/dbp580Han4QuMKabQC1nU+L13
+         pPdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TVdYbzVz6L9w50OAN8iUpXr44c199Ry+YrB4JvrmzuU=;
+        b=dESbIs4cdGVBG83A+XlB+PbD7ZNrtNpAxmUlBoloz9csr4XdgORLbLiW93CmQRLk3n
+         uXmYWM6rII1g6vqVWudsdAfkHp1G/pQBTEYoBhEaS+52lDQjn/PYGmiDbjDjkY6AzELO
+         cDbJSTBsqN3BUCLDhrhGYtyDYUJax3nRorTBwOGQMF7ywOK9+ZLC+up/BaXMBGXgebSd
+         LLdCd4Hi6utrT7dQmrvrqIv3XHAkSCpQQ64iZFZvytyaoPqftKKqeouH8IFWbkbcBvva
+         4a2hlDK7gq5pcvD2MXomBW/Mu5xU871VHW4eONVfaz3CSgDVk73e7lNQWa2JzbsxVwSI
+         9aew==
+X-Gm-Message-State: AOAM533RAGP0Ia+yD9R8bld1oycsYE8j4sj/C0p2zRZkKpAcmTG7ts57
+        bGH5J8bXLwElUuIcppadsAJXyiNiyLo=
+X-Google-Smtp-Source: ABdhPJyXuXlABlOCKqBOspLUw2wr+pcY6KLy6RyaUp3HLUSDjtqsTkWsufvlbMKSTJZcGw+uptSFgw==
+X-Received: by 2002:ac2:5978:: with SMTP id h24mr461208lfp.426.1632336683335;
+        Wed, 22 Sep 2021 11:51:23 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id a16sm239618lfu.274.2021.09.22.11.51.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 11:51:23 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 21:51:21 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Refactor locking in inode_operations
+Message-ID: <20210922185121.gke6tigiqkfwovis@kari-VirtualBox>
+References: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [137.202.0.90]
-X-ClientProxiedBy: svr-ies-mbx-06.mgc.mentorg.com (139.181.222.6) To
- svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HyperFlash devices in Renesas SoCs use 2-bytes addressing, according
-to HW manual paragraph 62.3.3 (which officially describes Serial Flash
-access, but seems to be applicable to HyperFlash too). And 1-byte bus
-read operations to 2-bytes unaligned addresses in external address space
-read mode work incorrectly (returns the other byte from the same word).
+Subject in this message needs fs/ntfs3 minor thing but try to remember
+next time.
 
-Function memcpy_fromio(), used by the driver to read data from the bus,
-in ARM64 architecture (to which Renesas cores belong) uses 8-bytes
-bus accesses for appropriate aligned addresses, and 1-bytes accesses
-for other addresses. This results in incorrect data read from HyperFlash
-in unaligned cases.
+On Wed, Sep 22, 2021 at 07:15:19PM +0300, Konstantin Komarov wrote:
+> Speed up work with dir lock.
+> Theoretically in successful cases those locks aren't needed at all.
+> But proving the same for error cases is difficult.
+> So instead of removing them we just move them.
 
-This issue can be reproduced using something like the following commands
-(where mtd1 is a parition on Hyperflash storage, defined properly
-in a device tree):
+Maybe add this info also to first patch. 
 
-[Correct fragment, read from Hyperflash]
+Overall nice to see now good patch series which has very nice splits. It
+was easy to review. Like I say in same message already try to write
+little more to commit messages this will make reviewing even more easy
+and we start to get nice history which can be used to develepment and
+maintain work.
 
-    root@rcar-gen3:~# dd if=/dev/mtd1 of=/tmp/zz bs=32 count=1
-    1+0 records in
-    1+0 records out
-    root@rcar-gen3:~# hexdump -C /tmp/zz
-    00000000  f4 03 00 aa f5 03 01 aa  f6 03 02 aa f7 03 03 aa  |................|
-    00000010  00 00 80 d2 40 20 18 d5  00 06 81 d2 a0 18 a6 f2  |....@ ..........|
-    00000020
-
-[Incorrect read of the same fragment: see the difference at offsets 8-11]
-
-    root@rcar-gen3:~# dd if=/dev/mtd1 of=/tmp/zz bs=12 count=1
-    1+0 records in
-    1+0 records out
-    root@rcar-gen3:~# hexdump -C /tmp/zz
-    00000000  f4 03 00 aa f5 03 01 aa  03 03 aa aa              |............|
-    0000000c
-
-Fix this issue by creating a local replacement of the copying function,
-that performs only properly aligned bus accesses, and is used for reading
-from HyperFlash.
-
-Fixes: ca7d8b980b67f ("memory: add Renesas RPC-IF driver")
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
----
- drivers/memory/renesas-rpc-if.c | 47 ++++++++++++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
-index 45eed659b0c6..374c92e57538 100644
---- a/drivers/memory/renesas-rpc-if.c
-+++ b/drivers/memory/renesas-rpc-if.c
-@@ -502,6 +502,48 @@ int rpcif_manual_xfer(struct rpcif *rpc)
- }
- EXPORT_SYMBOL(rpcif_manual_xfer);
- 
-+static void memcpy_fromio_readw(void *to,
-+				const void __iomem *from,
-+				size_t count)
-+{
-+	const int maxw = (IS_ENABLED(CONFIG_64BIT)) ? 8 : 4;
-+	u8 buf[2];
-+
-+	if (count && ((unsigned long)from & 1)) {
-+		*(u16 *)buf = __raw_readw((void __iomem *)((unsigned long)from & ~1));
-+		*(u8 *)to = buf[1];
-+		from++;
-+		to++;
-+		count--;
-+	}
-+	while (count >= 2 && !IS_ALIGNED((unsigned long)from, maxw)) {
-+		*(u16 *)to = __raw_readw(from);
-+		from += 2;
-+		to += 2;
-+		count -= 2;
-+	}
-+	while (count >= maxw) {
-+#ifdef CONFIG_64BIT
-+		*(u64 *)to = __raw_readq(from);
-+#else
-+		*(u32 *)to = __raw_readl(from);
-+#endif
-+		from += maxw;
-+		to += maxw;
-+		count -= maxw;
-+	}
-+	while (count >= 2) {
-+		*(u16 *)to = __raw_readw(from);
-+		from += 2;
-+		to += 2;
-+		count -= 2;
-+	}
-+	if (count) {
-+		*(u16 *)buf = __raw_readw(from);
-+		*(u8 *)to = buf[0];
-+	}
-+}
-+
- ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf)
- {
- 	loff_t from = offs & (RPCIF_DIRMAP_SIZE - 1);
-@@ -523,7 +565,10 @@ ssize_t rpcif_dirmap_read(struct rpcif *rpc, u64 offs, size_t len, void *buf)
- 	regmap_write(rpc->regmap, RPCIF_DRDMCR, rpc->dummy);
- 	regmap_write(rpc->regmap, RPCIF_DRDRENR, rpc->ddr);
- 
--	memcpy_fromio(buf, rpc->dirmap + from, len);
-+	if (rpc->bus_size == 2)
-+		memcpy_fromio_readw(buf, rpc->dirmap + from, len);
-+	else
-+		memcpy_fromio(buf, rpc->dirmap + from, len);
- 
- 	pm_runtime_put(rpc->dev);
- 
--- 
-2.21.0
-
+> 
+> Konstantin Komarov (5):
+>   fs/ntfs3: Move ni_lock_dir and ni_unlock into ntfs_create_inode
+>   fs/ntfs3: Refactor ntfs_get_acl_ex for better readability
+>   fs/ntfs3: Pass flags to ntfs_set_ea in ntfs_set_acl_ex
+>   fs/ntfs3: Change posix_acl_equiv_mode to posix_acl_update_mode
+>   fs/ntfs3: Refactoring lock in ntfs_init_acl
+> 
+>  fs/ntfs3/inode.c | 17 ++++++++--
+>  fs/ntfs3/namei.c | 20 -----------
+>  fs/ntfs3/xattr.c | 88 +++++++++++++++++-------------------------------
+>  3 files changed, 45 insertions(+), 80 deletions(-)
+> 
+> -- 
+> 2.33.0
