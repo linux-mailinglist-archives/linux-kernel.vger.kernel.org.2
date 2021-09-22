@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A1B4149BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A094149BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhIVMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55190 "EHLO mail.kernel.org"
+        id S236200AbhIVMyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:54:52 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54348 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236189AbhIVMyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA59610A0;
-        Wed, 22 Sep 2021 12:52:37 +0000 (UTC)
-Date:   Wed, 22 Sep 2021 14:52:36 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     hdanton@sina.com, hch@infradead.org, stefanha@redhat.com,
-        jasowang@redhat.com, mst@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 7/9] fork: Add worker flag to ignore signals
-Message-ID: <20210922125236.7cb77rxbwkv7x4zj@wittgenstein>
-References: <20210921215218.89844-1-michael.christie@oracle.com>
- <20210921215218.89844-8-michael.christie@oracle.com>
+        id S236001AbhIVMym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:54:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ZWdV3Ywl5E2tBReyRKkp3nub36ib8xsMWJxoWC+tqZM=; b=EFXR3GlnMnGHIw2VtBsFrp4XLU
+        5ZmpUW7Pwnd7V9z7BtVI69IYgbLKkBa6YZlMCO7gwM/msu3eBMkA6D41LWrWhJ8CTUtZbu05jLBzF
+        wZNctlNM1G4dtdIURdc7QizcwaF+yTZLSOARQwfIhJGz8+sZ5pgpyDnZ0Fwt0UrZRNTg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mT1k9-007mXu-9X; Wed, 22 Sep 2021 14:52:57 +0200
+Date:   Wed, 22 Sep 2021 14:52:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+Message-ID: <YUsnKX1pYc9K8f95@lunn.ch>
+References: <YUocuMM4/VKzNMXq@lunn.ch>
+ <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch>
+ <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+ <YUpIgTqyrDRXMUyC@lunn.ch>
+ <CAGETcx_50KQuj0L+MCcf2Se8kpFfZwJBKP0juh_T7w+ZCs2p+g@mail.gmail.com>
+ <YUpW9LIcrcok8rBa@lunn.ch>
+ <CAGETcx_CNyKU-tXT+1_089MpVHQaBoNiZs6K__MrRXzWSi6P8g@mail.gmail.com>
+ <YUp8vu1zUzBTz6WP@lunn.ch>
+ <CAGETcx9YPZ3nSF7ghjiaALa_DMJXqkR45-VL5SA+xT_jd7V+zQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921215218.89844-8-michael.christie@oracle.com>
+In-Reply-To: <CAGETcx9YPZ3nSF7ghjiaALa_DMJXqkR45-VL5SA+xT_jd7V+zQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 04:52:16PM -0500, Mike Christie wrote:
-> The kthread API creates threads that ignore all signals by default so
-> modules like vhost that will move from that API to kernel_worker will
-> not be expecting them. This patch adds a worker flag that tells
-> kernel_worker to setup the task to ignore signals.
+> That goes back to Rafael's reply (and I agree):
 > 
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
-> ---
+> "Also if the probe has already started, it may still return
+> -EPROBE_DEFER at any time in theory, so as a rule the dependency is
+> actually known to be satisfied when the probe has successfully
+> completed."
+> 
+> So waiting for the probe to finish is the right behavior/intentional
+> for fw_devlink.
 
-Looks good,
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+But differs to how things actually work in the driver model. The
+driver model does not care if a driver has finished probing, you can
+use a resource as soon as it is registered. Hence this whole
+problem/discussion.
 
->  include/linux/sched/task.h |  1 +
->  kernel/fork.c              | 11 ++++++++++-
->  2 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-> index 781abbc1c288..aefa0d221b57 100644
-> --- a/include/linux/sched/task.h
-> +++ b/include/linux/sched/task.h
-> @@ -21,6 +21,7 @@ struct css_set;
->  #define KERN_WORKER_IO		BIT(0)
->  #define KERN_WORKER_USER	BIT(1)
->  #define KERN_WORKER_NO_FILES	BIT(2)
-> +#define KERN_WORKER_NO_SIGS	BIT(3)
->  
->  struct kernel_clone_args {
->  	u64 flags;
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 3f3fcabffa5f..34d3dca70cfb 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2555,6 +2555,8 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
->  struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
->  				  unsigned long clone_flags, u32 worker_flags)
->  {
-> +	struct task_struct *tsk;
-> +
->  	struct kernel_clone_args args = {
->  		.flags		= ((lower_32_bits(clone_flags) | CLONE_VM |
->  				   CLONE_UNTRACED) & ~CSIGNAL),
-> @@ -2564,7 +2566,14 @@ struct task_struct *kernel_worker(int (*fn)(void *), void *arg, int node,
->  		.worker_flags	= KERN_WORKER_USER | worker_flags,
->  	};
->  
-> -	return copy_process(NULL, 0, node, &args);
-> +	tsk = copy_process(NULL, 0, node, &args);
-> +	if (IS_ERR(tsk))
-> +		return tsk;
-> +
-> +	if (worker_flags & KERN_WORKER_NO_SIGS)
-> +		ignore_signals(tsk);
-> +
-> +	return tsk;
->  }
->  EXPORT_SYMBOL_GPL(kernel_worker);
->  
-> -- 
-> 2.25.1
-> 
+	Andrew
