@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD55414C21
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41BB414C1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236234AbhIVOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
+        id S236232AbhIVOgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhIVOh3 (ORCPT
+        with ESMTP id S232401AbhIVOgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:37:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA257C061574;
-        Wed, 22 Sep 2021 07:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nHng5tIdS7Xn6BCJwl7sOAs/mlZQxYRxlcr0Xa3zcFk=; b=d5KDb4Prr992RAw/GFY1RWSeTa
-        llNVgLQCmWqwpJ9JEciqBa+ARq9gF0XftN3ZJUTsyloNNDdiDQI3OmdDaH+X9My+XzMSAKGAn93uA
-        yFwR2zypqoMgSNIuQT/mQrimgrfO+u3iCfWnLdFQxvlHHlnQKZSYK32iUAJMj2m4FEE1e8U70pKY/
-        rhMKWOcvE8gsvY7MNVodijz20hqinhSIkM7wcTm1eD/wiaBmLJynw1nrkhh26aASYrmzVQZKPoVUq
-        zNxjjF5SNzpo5xTycszrPX3VUMZ+LBz1KIFNs43+aG+Wr8V/nH6cVbBEmfgpJeJDm66+oIVlqXenI
-        Drzp+MJw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT3Kj-004rzB-Gj; Wed, 22 Sep 2021 14:35:00 +0000
-Date:   Wed, 22 Sep 2021 15:34:49 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, tj@kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH 4/4] block: cancel all throttled bios in
- blk_cleanup_queue()
-Message-ID: <YUs/CcSKqNoIIXoW@infradead.org>
-References: <20210922125115.381752-1-yukuai3@huawei.com>
- <20210922125115.381752-5-yukuai3@huawei.com>
+        Wed, 22 Sep 2021 10:36:36 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE37C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:35:05 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id d21so7357720wra.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=2NJK1BOwBrTlg+LaxeUr9d3+1h5bYyiDunFM4CImyw0=;
+        b=LLpCOOy7hsr8DH8XB+RbXza9ahQvsE5kbyzmWjgBr1E4QCeUCYSldEPo/68JxU68z5
+         mP4/3ah/hIWjSTaRfs7cqb0wXuqbgPd4vjnH5XlSrJathduOUjx0v07+Dzrx7YEuEp4x
+         IUB0BA0dBxsHdQ05MEb/4qljzUORdRnahdjJROiulpopcJzS2ESiqNThVWr1zQriIIuN
+         5QgJOZZS2eSnFxyibl40ie0xWUjJjpFRT6aJzmsuKVMXVoUk6kUWoNTNvHcbRu2Nk2v7
+         CacykHQ/XIuhfkXz70CjUWN5H5QrYerewITagdtfFWiGAUlhlzhwPi7ezZawWxszj2LI
+         IXcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2NJK1BOwBrTlg+LaxeUr9d3+1h5bYyiDunFM4CImyw0=;
+        b=ivCpcDq6sX+NPrDpt4MjhkLo2NlULcd+GIME8eNl/xDCgOaZc9Qmf6kvOn9bb0aTO4
+         aVonnilm+LR6p0Pi9YnHK4/cJzVC1oc+Cexgy7nc3GnW4u1o3nMui9m1GruYAJL8SfCz
+         qi6ATraKp70Urt/GpBbVnD8C9kWJac+6PvGCBQ6BCeUCYVvAv2IsrDXKT2+FkP7rvQ69
+         K9dQMX79Avt5NcDMQcT40pGhHnH1ntWQ3aybMW+loYmZEhvfFZw6/aLl0/KUhWpXNWKh
+         aonCAaP0mPVLwPMvxjBQGcVu+XlvRdYX6zEIIVvFd0bHI0h+CDwpIoWA9q2ERko4hVoc
+         P1qQ==
+X-Gm-Message-State: AOAM5307b2b4LymsEAQxaqzoqKNJQh96261GST5xHkle0jkiTlQKH+Du
+        RAUl5KmcYXF300S41DkiNdxmmax83ROfBQ==
+X-Google-Smtp-Source: ABdhPJxWD5dpCNMx31RKKu1hT+srFe/2qS8wdHLbbkEHNrVYo6ZddomY8wb0bz6G52ygBeErtwctPw==
+X-Received: by 2002:a1c:f70a:: with SMTP id v10mr10971157wmh.3.1632321304291;
+        Wed, 22 Sep 2021 07:35:04 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id v10sm2545804wri.29.2021.09.22.07.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 07:35:03 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 15:35:02 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Ramona Alexandra Nechita <ramona.nechita@analog.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: fixed typo in Kconfig from AD5520 to ADP5520
+Message-ID: <YUs/FmigITjkV9Og@google.com>
+References: <20210915104016.16947-1-ramona.nechita@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210922125115.381752-5-yukuai3@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210915104016.16947-1-ramona.nechita@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 08:51:15PM +0800, Yu Kuai wrote:
-> Throttled bios can't be issued after queue is dying in
-> blk_cleanup_queue(), thus it's better to cancel them immediately
-> rather than waiting for throttle is done.
-> 
-> For example, if user thread is throttled with low bps while is
-> issuing large io, and the device is deleted. The user thread will
-> wait for a long time for io to return.
+On Wed, 15 Sep 2021, Ramona Alexandra Nechita wrote:
 
-blk_cleanup_queue is too late, this will need to go into del_gendisk
-and on top of my "tear down file system I/O in del_gendisk" series.
+> The description mentioned AD5520, which is a different device.
+> Fixed the typo.
+> 
+> Signed-off-by: Ramona Alexandra Nechita <ramona.nechita@analog.com>
+> ---
+>  drivers/mfd/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Applied, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
