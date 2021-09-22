@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46F2413F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9429A413F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhIVCbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhIVCba (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:31:30 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BA2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 19:30:01 -0700 (PDT)
-Subject: Re: [PATCH v3] mdacon: fix redefinition of 'scr_memsetw'
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1632277798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qSuSnPieUDaOVO6CRq2eMJxdMYKzQp0LFeT47UvdBaA=;
-        b=bHOv9kgYfeLnP/9rouj9kS6ktFMQL8roXXTHoqAVWT8PlGlga2p4uA2PV796StdYlsPOR7
-        D39DF/4vYaox2QojALbrTzzmrnAC2aO5c4rSZamixdfSpx6eRfLcLhhtNbhDVg1ap1eoV/
-        WkQNE0CxswZ8qv34f5nkyPsXNTTDoNk=
-To:     dri-devel@lists.freedesktop.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-References: <20210915011354.2669416-1-liu.yun@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Jackie Liu <liu.yun@linux.dev>
-Message-ID: <73758b4e-50ba-05d1-aa30-1384ee6d1421@linux.dev>
-Date:   Wed, 22 Sep 2021 10:29:52 +0800
+        id S229775AbhIVCgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:36:45 -0400
+Received: from mga07.intel.com ([134.134.136.100]:40920 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhIVCgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 22:36:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="287173362"
+X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
+   d="scan'208";a="287173362"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 19:35:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
+   d="scan'208";a="533533519"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Sep 2021 19:35:09 -0700
+Cc:     baolu.lu@linux.intel.com, alex.williamson@redhat.com, hch@lst.de,
+        jasowang@redhat.com, joro@8bytes.org, jean-philippe@linaro.org,
+        kevin.tian@intel.com, parav@mellanox.com, lkml@metux.net,
+        pbonzini@redhat.com, lushenming@huawei.com, eric.auger@redhat.com,
+        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
+        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
+        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
+        robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, david@gibson.dropbear.id.au,
+        nicolinc@nvidia.com
+Subject: Re: [RFC 04/20] iommu: Add iommu_device_get_info interface
+To:     Jason Gunthorpe <jgg@nvidia.com>, Liu Yi L <yi.l.liu@intel.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-5-yi.l.liu@intel.com>
+ <20210921161930.GP327412@nvidia.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <a8a72eba-bae3-9f42-f79c-c5646e425255@linux.intel.com>
+Date:   Wed, 22 Sep 2021 10:31:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210915011354.2669416-1-liu.yun@linux.dev>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <20210921161930.GP327412@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: liu.yun@linux.dev
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping, would anyone take this patch?
+Hi Jason,
 
-ÔÚ 2021/9/15 ÉÏÎç9:13, Jackie Liu Ð´µÀ:
-> From: Jackie Liu <liuyun01@kylinos.cn>
+On 9/22/21 12:19 AM, Jason Gunthorpe wrote:
+> On Sun, Sep 19, 2021 at 02:38:32PM +0800, Liu Yi L wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>>
+>> This provides an interface for upper layers to get the per-device iommu
+>> attributes.
+>>
+>>      int iommu_device_get_info(struct device *dev,
+>>                                enum iommu_devattr attr, void *data);
 > 
-> CONFIG_VGA_CONSOLE=n and CONFIG_MDA_CONSOLE=n will cause vt_buffer.h not
-> include <asm/vga.h>.
+> Can't we use properly typed ops and functions here instead of a void
+> *data?
 > 
-> But if we set CONFIG_MDA_CONSOLE=m, mdacon.c include <linux/vt_buffer.h>
-> is in front of include <asm/vga.h>. VT_BUF_HAVE_MEMSETW is not defined,
-> so vt_buffer.h will define a scr_memsetw, after that, vga.h also define
-> a scr_memsetw, so the repeated definition of scr_memsetw appears, builds
-> error.
+> get_snoop()
+> get_page_size()
+> get_addr_width()
+
+Yeah! Above are more friendly to the upper layer callers.
+
 > 
-> We only need to make vt_buffer.h also contain vga.h when
-> CONFIG_MDA_CONSOLE=m. This problem can be fixed.
+> ?
 > 
-> BTW, mdacon.c no need to include vga.h forcibly, let vt_buffer.h do it.
+> Jason
 > 
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Fixes: ac036f9570a2 ("vga: optimise console scrolling")
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-> ---
->   drivers/video/console/mdacon.c | 1 -
->   include/linux/vt_buffer.h      | 2 +-
->   2 files changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
-> index ef29b321967f..5898d01bc492 100644
-> --- a/drivers/video/console/mdacon.c
-> +++ b/drivers/video/console/mdacon.c
-> @@ -42,7 +42,6 @@
->   #include <linux/init.h>
->   
->   #include <asm/io.h>
-> -#include <asm/vga.h>
->   
->   static DEFINE_SPINLOCK(mda_lock);
->   
-> diff --git a/include/linux/vt_buffer.h b/include/linux/vt_buffer.h
-> index 848db1b1569f..3a79cc27a33b 100644
-> --- a/include/linux/vt_buffer.h
-> +++ b/include/linux/vt_buffer.h
-> @@ -16,7 +16,7 @@
->   
->   #include <linux/string.h>
->   
-> -#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE)
-> +#if defined(CONFIG_VGA_CONSOLE) || IS_ENABLED(CONFIG_MDA_CONSOLE)
->   #include <asm/vga.h>
->   #endif
->   
-> 
+
+Best regards,
+baolu
