@@ -2,252 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE346414008
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEB3414018
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhIVD3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 23:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhIVD3l (ORCPT
+        id S231283AbhIVDj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 23:39:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:9752 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230054AbhIVDj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 23:29:41 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF570C061574;
-        Tue, 21 Sep 2021 20:28:11 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id t8so2583880wrq.4;
-        Tue, 21 Sep 2021 20:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bNzxzcGkzoMof7C2440I1dX8wC7/bp4LkDYjA0YjJhE=;
-        b=MPdSqETRs1lV1JsUQ/VMZeO8Pdo4BP5IXiD2QMo4yK6HIdqgqh8qEzzNrAv+4yUeLU
-         hz/pALicHy0SBrhkH8a/nfirnWfi29sArw7Z8/60fp5ZRWOHtZbcR6LtVwRnTm2nul6e
-         l3zt/aNp95FQmf3uw9yD7WDb0IBe52T9rBFqrs9bEsP6nvl1jidyYEl+tMuTHL+7r8Na
-         WcdZnsLfMA95yhqOIoNGCVpkJ7x3QsyAtDfZMHvnAUA8hL2vm9ITuHcbx0u29WOBVtBg
-         pz74FUd7t5gFMfdoLDjckM3edaDe5E+joDM0CCiAKGQZwYpLFF2iFAnK6vlPwldd8CfU
-         2Aaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bNzxzcGkzoMof7C2440I1dX8wC7/bp4LkDYjA0YjJhE=;
-        b=ptrbQ/UyXe1UfcR16oJp5ax27caaWy3qka+lXeUS3ALo90B4ytBa40vCnCPt5oxAhc
-         DAMqSOkSZQSJ0erOMGfhCGf/GYXObGqnC4RR6PnxDnWZxV5p260zWLEMzvgiFMBRQY2d
-         bK1r0lFD3wGhLtCo/E0K7bPTVBSqEPPnbT4pDK1dqdjZzWhgQt8nNkVOlH6/anUm13Dp
-         MJskjg6Y4JAW0PPpGDvIy5ErXbx3OdOPZrpdpxhNf/jGRwYQrALEZidJh4Xt/WvAxQy4
-         ZpT2X8NZcX4DUNXW4cQnLOkt5dROIc2I3t4wFmm5onOFCllV9dgF6iu5flVDoGrTmVlS
-         ydCQ==
-X-Gm-Message-State: AOAM5301/aL5BTAdd+O1RiU4RB4mHFNHnloR4csXBJgb9KNYJsXiPfnz
-        pFVbK+IU2CarxC+iHjsvzou/i54nrp5XWKNEJSI=
-X-Google-Smtp-Source: ABdhPJyR/i+6gXoXMoh5C9/CRaIMS84O3Q6Yqr7pNoShdKJywyxY7EGVnx3hsDr6Dm7WkY69wmbnWggL4nzncaJgGwA=
-X-Received: by 2002:a05:600c:1d16:: with SMTP id l22mr6332278wms.101.1632281290205;
- Tue, 21 Sep 2021 20:28:10 -0700 (PDT)
+        Tue, 21 Sep 2021 23:39:56 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDkWH3TYYzWM09;
+        Wed, 22 Sep 2021 11:37:15 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 11:38:25 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 22 Sep
+ 2021 11:38:24 +0800
+Subject: Re: [PATCH net-next v2 3/3] skbuff: keep track of pp page when
+ __skb_frag_ref() is called
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <brouer@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <hawk@kernel.org>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
+        <willemb@google.com>, <cong.wang@bytedance.com>,
+        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
+        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
+        <dsahern@gmail.com>
+References: <YUMD2v7ffs1xAjaW@apalos.home>
+ <ac16cc82-8d98-6a2c-b0a6-7c186808c72c@huawei.com>
+ <YUMelDd16Aw8w5ZH@apalos.home>
+ <e2e127be-c9e4-5236-ba3c-28fdb53aa29b@huawei.com>
+ <YUMxKhzm+9MDR0jW@apalos.home>
+ <36676c07-c2ca-bbd2-972c-95b4027c424f@huawei.com>
+ <YUQ3ySFxc/DWzsMy@apalos.home>
+ <4a682251-3b40-b16a-8999-69acb36634f3@huawei.com>
+ <YUStryKMMhhqbQdz@Iliass-MBP>
+ <5d8232b1-4b85-f755-a92a-d305bff9eab3@huawei.com>
+ <YUWwESRQbloKWBND@Iliass-MBP>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <91cd084f-f8a3-19e7-42d7-95138378aa9d@huawei.com>
+Date:   Wed, 22 Sep 2021 11:38:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20210903184806.1680887-1-robdclark@gmail.com> <20210903184806.1680887-5-robdclark@gmail.com>
- <101628ea-23c9-4bc0-5abc-a5b71b0fccc1@amd.com> <CAF6AEGt+jiJLaTDVnnVrZm-766OhPfj9wESJxP-FrX3S_c67gQ@mail.gmail.com>
- <d8f43401-c673-b9ce-d5ca-090fec2cb4c3@amd.com>
-In-Reply-To: <d8f43401-c673-b9ce-d5ca-090fec2cb4c3@amd.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 21 Sep 2021 20:32:41 -0700
-Message-ID: <CAF6AEGsnN8sEeXuefB--pDApXeWYR2RVss=jUnz0ORh68SBP1A@mail.gmail.com>
-Subject: Re: [PATCH v3 4/9] drm/scheduler: Add fence deadline support
-To:     Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel@daenzer.net>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Steven Price <steven.price@arm.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUWwESRQbloKWBND@Iliass-MBP>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 7:18 PM Andrey Grodzovsky
-<andrey.grodzovsky@amd.com> wrote:
->
->
-> On 2021-09-21 4:47 p.m., Rob Clark wrote:
-> > On Tue, Sep 21, 2021 at 1:09 PM Andrey Grodzovsky
-> > <andrey.grodzovsky@amd.com> wrote:
-> >> On 2021-09-03 2:47 p.m., Rob Clark wrote:
-> >>
-> >>> From: Rob Clark <robdclark@chromium.org>
-> >>>
-> >>> As the finished fence is the one that is exposed to userspace, and
-> >>> therefore the one that other operations, like atomic update, would
-> >>> block on, we need to propagate the deadline from from the finished
-> >>> fence to the actual hw fence.
-> >>>
-> >>> v2: Split into drm_sched_fence_set_parent() (ckoenig)
-> >>>
-> >>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >>> ---
-> >>>    drivers/gpu/drm/scheduler/sched_fence.c | 34 +++++++++++++++++++++++++
-> >>>    drivers/gpu/drm/scheduler/sched_main.c  |  2 +-
-> >>>    include/drm/gpu_scheduler.h             |  8 ++++++
-> >>>    3 files changed, 43 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
-> >>> index bcea035cf4c6..4fc41a71d1c7 100644
-> >>> --- a/drivers/gpu/drm/scheduler/sched_fence.c
-> >>> +++ b/drivers/gpu/drm/scheduler/sched_fence.c
-> >>> @@ -128,6 +128,30 @@ static void drm_sched_fence_release_finished(struct dma_fence *f)
-> >>>        dma_fence_put(&fence->scheduled);
-> >>>    }
-> >>>
-> >>> +static void drm_sched_fence_set_deadline_finished(struct dma_fence *f,
-> >>> +                                               ktime_t deadline)
-> >>> +{
-> >>> +     struct drm_sched_fence *fence = to_drm_sched_fence(f);
-> >>> +     unsigned long flags;
-> >>> +
-> >>> +     spin_lock_irqsave(&fence->lock, flags);
-> >>> +
-> >>> +     /* If we already have an earlier deadline, keep it: */
-> >>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags) &&
-> >>> +         ktime_before(fence->deadline, deadline)) {
-> >>> +             spin_unlock_irqrestore(&fence->lock, flags);
-> >>> +             return;
-> >>> +     }
-> >>> +
-> >>> +     fence->deadline = deadline;
-> >>> +     set_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT, &f->flags);
-> >>> +
-> >>> +     spin_unlock_irqrestore(&fence->lock, flags);
-> >>> +
-> >>> +     if (fence->parent)
-> >>> +             dma_fence_set_deadline(fence->parent, deadline);
-> >>> +}
-> >>> +
-> >>>    static const struct dma_fence_ops drm_sched_fence_ops_scheduled = {
-> >>>        .get_driver_name = drm_sched_fence_get_driver_name,
-> >>>        .get_timeline_name = drm_sched_fence_get_timeline_name,
-> >>> @@ -138,6 +162,7 @@ static const struct dma_fence_ops drm_sched_fence_ops_finished = {
-> >>>        .get_driver_name = drm_sched_fence_get_driver_name,
-> >>>        .get_timeline_name = drm_sched_fence_get_timeline_name,
-> >>>        .release = drm_sched_fence_release_finished,
-> >>> +     .set_deadline = drm_sched_fence_set_deadline_finished,
-> >>>    };
-> >>>
-> >>>    struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
-> >>> @@ -152,6 +177,15 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f)
-> >>>    }
-> >>>    EXPORT_SYMBOL(to_drm_sched_fence);
-> >>>
-> >>> +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
-> >>> +                             struct dma_fence *fence)
-> >>> +{
-> >>> +     s_fence->parent = dma_fence_get(fence);
-> >>> +     if (test_bit(DMA_FENCE_FLAG_HAS_DEADLINE_BIT,
-> >>> +                  &s_fence->finished.flags))
-> >>> +             dma_fence_set_deadline(fence, s_fence->deadline);
-> >>
-> >> I believe above you should pass be s_fence->finished to
-> >> dma_fence_set_deadline
-> >> instead it fence which is the HW fence itself.
-> > Hmm, unless this has changed recently with some patches I don't have,
-> > s_fence->parent is the one signalled by hw, so it is the one we want
-> > to set the deadline on
-> >
-> > BR,
-> > -R
->
->
-> No it didn't change. But then when exactly will
-> drm_sched_fence_set_deadline_finished
-> execute such that fence->parent != NULL ? In other words, I am not clear
-> how propagation
-> happens otherwise - if dma_fence_set_deadline is called with the HW
-> fence then the assumption
-> here is that driver provided driver specific
-> dma_fence_ops.dma_fence_set_deadline callback executes
-> but I was under impression that drm_sched_fence_set_deadline_finished is
-> the one that propagates
-> the deadline to the HW fence's callback and for it to execute
-> dma_fence_set_deadline needs to be called
-> with s_fence->finished.
+On 2021/9/18 17:23, Ilias Apalodimas wrote:
+> [...]
+> 
 
-Assuming I didn't screw up drm/msm conversion to scheduler,
-&s_fence->finished is the one that will be returned to userspace.. and
-later passed back to kernel for atomic commit (or to the compositor).
-So it is the one that fence->set_deadline() will be called on.  But
-s_fence->parent is the actual hw fence that needs to know about the
-deadline.  Depending on whether or not the job has been written into
-hw ringbuffer or not, there are two cases:
+[...]
 
-1) not scheduled yet, s_fence will store the deadline and propagate it
-later once s_fence->parent is known
-2) already scheduled, in which case s_fence->finished.set_deadline
-will propagate it directly to the real fence
+>>>>>>
+>>>>>>>
+>>>>>>> IOW in skb_free_head() an we replace:
+>>>>>>>
+>>>>>>> if (skb_pp_recycle(skb, head)) 
+>>>>>>> with
+>>>>>>> if (page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+>>>>>>> and get rid of the 'bool recycle' argument in __skb_frag_unref()?
+>>>>>>
+>>>>>> For the frag page of a skb, it seems ok to get rid of the 'bool recycle'
+>>>>>> argument in __skb_frag_unref(), as __skb_frag_unref() and __skb_frag_ref()
+>>>>>> is symmetrically called to put/get a page.
+>>>>>>
+>>>>>> For the head page of a skb, we might need to make sure the head page
+>>>>>> passed to __build_skb_around() meet below condition:
+>>>>>> do pp_frag_count incrementing instead of _refcount incrementing when
+>>>>>> the head page is not newly allocated and it is from page pool.
+>>>>>> It seems hard to audit that?
+>>>>>
+>>>>> Yea that seems a bit weird at least to me and I am not sure, it's the only
+>>>>> place we'll have to go and do that.
+>>>>
+>>>> Yes, That is why I avoid changing the behavior of a head page for a skb.
+>>>> In other word, maybe we should not track if head page for a skb is pp page
+>>>> or not when the page'_refcount is incremented during network stack journey,
+>>>> just treat it as normal page?
+>>>>  
+>>>
+>>> I am not sure I understand this.
+>>
+>> I was saying only treat the head page of a skb as pp page when it is newly
+>> allocated from page pool, if that page is reference-counted to build another
+>> head page for another skb later, just treat it as normal page.
+> 
+> But the problem here is that a cloned/expanded SKB could trigger a race
+> when freeing the fragments.  That's why we reset the pp_recycle bit if
+> there's still references to the frags.  What does 'normal' page means here?
+> We'll have to at least unmap dma part.
 
-BR,
--R
+'normal' page means non-pp page here. Maybe forget the above.
 
-> Andrey
->
->
->
-> >
-> >> Andrey
-> >>
-> >>
-> >>> +}
-> >>> +
-> >>>    struct drm_sched_fence *drm_sched_fence_alloc(struct drm_sched_entity *entity,
-> >>>                                              void *owner)
-> >>>    {
-> >>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
-> >>> index 595e47ff7d06..27bf0ac0625f 100644
-> >>> --- a/drivers/gpu/drm/scheduler/sched_main.c
-> >>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
-> >>> @@ -978,7 +978,7 @@ static int drm_sched_main(void *param)
-> >>>                drm_sched_fence_scheduled(s_fence);
-> >>>
-> >>>                if (!IS_ERR_OR_NULL(fence)) {
-> >>> -                     s_fence->parent = dma_fence_get(fence);
-> >>> +                     drm_sched_fence_set_parent(s_fence, fence);
-> >>>                        r = dma_fence_add_callback(fence, &sched_job->cb,
-> >>>                                                   drm_sched_job_done_cb);
-> >>>                        if (r == -ENOENT)
-> >>> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
-> >>> index 7f77a455722c..158ddd662469 100644
-> >>> --- a/include/drm/gpu_scheduler.h
-> >>> +++ b/include/drm/gpu_scheduler.h
-> >>> @@ -238,6 +238,12 @@ struct drm_sched_fence {
-> >>>             */
-> >>>        struct dma_fence                finished;
-> >>>
-> >>> +     /**
-> >>> +      * @deadline: deadline set on &drm_sched_fence.finished which
-> >>> +      * potentially needs to be propagated to &drm_sched_fence.parent
-> >>> +      */
-> >>> +     ktime_t                         deadline;
-> >>> +
-> >>>            /**
-> >>>             * @parent: the fence returned by &drm_sched_backend_ops.run_job
-> >>>             * when scheduling the job on hardware. We signal the
-> >>> @@ -505,6 +511,8 @@ void drm_sched_entity_set_priority(struct drm_sched_entity *entity,
-> >>>                                   enum drm_sched_priority priority);
-> >>>    bool drm_sched_entity_is_ready(struct drm_sched_entity *entity);
-> >>>
-> >>> +void drm_sched_fence_set_parent(struct drm_sched_fence *s_fence,
-> >>> +                             struct dma_fence *fence);
-> >>>    struct drm_sched_fence *drm_sched_fence_alloc(
-> >>>        struct drm_sched_entity *s_entity, void *owner);
-> >>>    void drm_sched_fence_init(struct drm_sched_fence *fence,
+I read the code related to head page headling for a skb, it seems the
+NAPI_GRO_FREE_STOLEN_HEAD and skb_head_frag_to_page_desc() case is just
+fine as it is now when the page signature is used to identify a pp page
+for the head page of a skb uniquely?
+
+> 
+>>
+>>>
+>>>>>
+>>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>>> bit 0 of frag->bv_page is different way of indicatior for a pp page,
+>>>>>>>> it is better we do not confuse with the page signature way. Using
+>>>>>>>> a bit 0 may give us a free word in 'struct page' if we manage to
+>>>>>>>> use skb->pp_recycle to indicate a head page of the skb uniquely, meaning
+>>>>>>>> page->pp_magic can be used for future feature.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>> for pp_recycle right now?  __skb_frag_unref() in skb_shift() or
+>>>>>>>>>>> skb_try_coalesce() (the latter can probably be removed tbh).
+>>>>>>>>>>
+>>>>>>>>>> If we decide to go with accurate indicator of a pp page, we just need
+>>>>>>>>>> to make sure network stack use __skb_frag_unref() and __skb_frag_ref()
+>>>>>>>>>> to put and get a page frag, the indicator checking need only done in
+>>>>>>>>>> __skb_frag_unref() and __skb_frag_ref(), so the skb_shift() and
+>>>>>>>>>> skb_try_coalesce() should be fine too.
+>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Another way is to use the bit 0 of frag->bv_page ptr to indicate if a frag
+>>>>>>>>>>>> page is from page pool.
+>>>>>>>>>>>
+>>>>>>>>>>> Instead of the 'struct page' signature?  And the pp_recycle bit will
+>>>>>>>>>>> continue to exist?  
+>>>>>>>>>>
+>>>>>>>>>> pp_recycle bit might only exist or is only used for the head page for the skb.
+>>>>>>>>>> The bit 0 of frag->bv_page ptr can be used to indicate a frag page uniquely.
+>>>>>>>>>> Doing a memcpying of shinfo or "*fragto = *fragfrom" automatically pass the
+>>>>>>>>>> indicator to the new shinfo before doing a __skb_frag_ref(), and __skb_frag_ref()
+>>>>>>>>>> will increment the _refcount or pp_frag_count according to the bit 0 of
+>>>>>>>>>> frag->bv_page.
+>>>>>>>>>>
+>>>>>>>>>> By the way, I also prototype the above idea, and it seems to work well too.
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> As long as no one else touches this, it's just another way of identifying a
+>>>>>>>>> page_pool allocated page.  But are we gaining by that?  Not using
+>>>>>>>>> virt_to_head_page() as stated above? But in that case you still need to
+>>>>>>>>> keep pp_recycle around. 
+>>>>>>>>
+>>>>>>>> No, we do not need the pp_recycle, as long as the we make sure __skb_frag_ref()
+>>>>>>>> is called after memcpying the shinfo or doing "*fragto = *fragfrom".
+>>>>>>>
+>>>>>>> But we'll have to keep it for the skb head in this case.
+>>>>>>
+>>>>>> As above, I am not really look into skb head case:)
+>>>>>
+>>>>> Let me take a step back here, because I think we drifted a bit. 
+>>>>> The page signature was introduced in order to be able to identify skb
+>>>>> fragments. The problem was that you couldn't rely on the pp_recycle bit of
+>>>>> the skb head,  since fragments could come from anywhere.  So you use the
+>>>>> skb bit as a hint for skb frags, and you eventually decide using the page
+>>>>> signature.
+>>>>>
+>>>>> So we got 3 options (Anything I've missed ?)
+>>>>> - try to remove pp_recycle bit, since the page signature is enough for the
+>>>>>   skb head and fragments.  That in my opinion is the cleanest option,  as
+>>>>>   long as we can prove there's no performance hit on the standard network
+>>>>>   path.
+>>>>>
+>>>>> - Replace the page signature with frag->bv_page bit0.  In that case we
+>>>>>   still have to keep the pp_recycle bit,  but we do have an 'easier'
+>>>>>   indication that a skb frag comes from page_pool.  That's still pretty
+>>>>>   safe, since you now have unique identifiers for the skb and page
+>>>>>   fragments and you can be sure of their origin (page pool or not).
+>>>>>   What I am missing here, is what do we get out of this?  I think the
+>>>>>   advantage is not having to call virt_to_head_page() for frags ?
+>>>>
+>>>> Not using the signature will free a word space in struct page for future
+>>>> feature?
+>>>
+>>> Yea that's another thing we gain,  but I am not sure how useful how this is
+>>> going to turn out.  
+>>>
+>>>>
+>>>>>
+>>>>> - Keep all of them(?) and use frag->bv_page bit0 similarly to pp_recycle
+>>>>>   bit?  I don't see much value on this one,  I am just keeping it here for
+>>>>>   completeness.
+>>>>
+>>>>
+>>>> For safty and performance reason:
+>>>> 1. maybe we should move the pp_recycle bit from "struct sk_buff" to
+>>>>    "struct skb_shared_info", and use it to only indicate if the head page of
+>>>>    a skb is from page pool.
+>>>
+>>> What's the safety or performance we gain out of this?  The only performance
+>>
+>> safety is that we still have two ways to indicate a pp page.
+>> the pp_recycle bit in  "struct skb_shared_info" or frag->bv_page bit0 tell
+>> if we want to treat a page as pp page, the page signature checking is used
+>> to tell if we if set those bits correctly?
+>>
+> 
+> Yea but in the long run we'll want the page signature.  So that's basically
+> (2) once we do that.
+> 
+>>> I can think of is the dirty cache line of the recycle bit we set to 0.
+>>> If we do move it to skb_shared)info we'll have to make sure it's on the
+>>> same cacheline as the ones we already change.
+>>
+>> Yes, when we move the pp_recycle bit to skb_shared_info, that bit is only
+>> set once, and we seems to not need to worry about skb doing cloning or
+>> expanding as the it is part of head page(shinfo is part of head page).
+>>
+>>>>
+>>>> 2. The frag->bv_page bit0 is used to indicate if the frag page of a skb is
+>>>>    from page pool, and modify __skb_frag_unref() and __skb_frag_ref() to keep
+>>>>    track of it.
+>>>>
+>>>> 3. For safty or debugging reason, keep the page signature for now, and put a
+>>>>    page signature WARN_ON checking in page pool to catch any misbehaviour?
+>>>>
+>>>> If there is not bug showing up later, maybe we can free the page signature space
+>>>> for other usage?
+>>>
+>>> Yea that's essentially identical to (2) but we move the pp_recycle on the
+>>> skb_shared_info.  I'd really prefer getting rid of the pp_recycle entirely,
+>>
+>> When also removing the pp_recycle for head page of a skb, it seems a little
+>> risky as we are not sure when a not-newly-allocated pp page is called with
+>> __build_skb_around() to build to head page?
+> 
+> Removing the pp_recyle, is only safe if we keep the page signature.  I was
+> suggesting we follow (1) first before starting moving things around.
+
+I suppose (1) means the below, right:
+
+> - try to remove pp_recycle bit, since the page signature is enough for the
+>   skb head and fragments.  That in my opinion is the cleanest option,  as
+>   long as we can prove there's no performance hit on the standard network
+>   path.
+
+It seems doable if my above analysis of head page headling for a skb does not
+miss anything.
+
+> 
+>>
+>>> since it's the cleanest thing we can do in my head.  If we ever need an
+>>> extra 4/8 bytes in the future,  we can always go back and implement this.
+>>>
+>>> Alexander/Jesper any additional thoughts?
+>>>
+> 
+> Thanks
+> /Ilias
+> .
+> 
