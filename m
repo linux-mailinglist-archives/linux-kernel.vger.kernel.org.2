@@ -2,111 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EB3414409
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960A3414416
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbhIVIsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:48:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48544 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233792AbhIVIsl (ORCPT
+        id S234021AbhIVIt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233967AbhIVItZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:48:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632300431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RzE7ct7TcGCXm8mUaKMPJj+IqZtEjSH8Rgo1FH7r3qU=;
-        b=GUIv44KFY15m3ro+OgNSbeL+dJiO2sUGUSy2+OAJ7LfwrsgZYHpKcE2sKtVOD9Q3eqZtwF
-        jeKAz5AkPj924kbNHEhjdSJeIjxw86xKjK5zfpOdu7/9OKa2uZavoLkLbVCsbaNL/eBuZn
-        zvV1GglgG5YlB6T+J+eav9y2bolKGR4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-HFxEIHToPZyX5J659XmYWA-1; Wed, 22 Sep 2021 04:47:10 -0400
-X-MC-Unique: HFxEIHToPZyX5J659XmYWA-1
-Received: by mail-wr1-f69.google.com with SMTP id i4-20020a5d5224000000b0015b14db14deso1436713wra.23
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:47:09 -0700 (PDT)
+        Wed, 22 Sep 2021 04:49:25 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCCAC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:47:56 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id q26so4476746wrc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pAYhvdbQhEpv1Wh9q8xT8e96qoX2U7Z2ejQBgBlK0iM=;
+        b=swzIFR7CrUc4mZ5LIpIhb7zGqJLxmdwk6OugTiBtghMuQB8EvVhU14VWZSYAMRt05F
+         MkumWHQ5Ks6U8ix9+15Hvas02OJnP4lJsChxShwXfcska7QBxDjxX0TitfOYmLNBzCRx
+         PYR0lsyCTfx8bbSzbl9v56oISholDxIvAezSZ2PG4lYXcsdfTZrdT2t860kssrGwu7WI
+         IzmQCTEDr3KsPQWvnF04SyR4dWoZcveBXvEtOmVVvy66PlkFeLnNuwLCsN8VSQ4vwwjF
+         x3ap5/+bpjdwOfQRYMy1/O0pSGaSDeRisi6XSufUmWb/8+/MjZAFu9Scbgdq1l8r7HDl
+         +RUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=RzE7ct7TcGCXm8mUaKMPJj+IqZtEjSH8Rgo1FH7r3qU=;
-        b=ZD6GSYTTTqyHwnCh5kDCA/n3/V1did+oTcgAWushK2n9irn9q6QMd9gMsP0tkX9fhh
-         oHynV39yDJkT91vAippvBgD+UuCddojM3ECWcsWryiml9QO9NrfJ884eFb246jpUJKq6
-         jLQLnj7qK9FXa/tlhxGBBMqKXSOL7KWeXLB8sdSbMtcC51CzNJ6OkMCzMe1P/+Sfg1dA
-         5mK/XI1P9Lc2iqR6xGMUw5M040VlMg352srDbsD3/x0cFLRAPlXT4l+oEFtaHKJLemoa
-         ArfEGIjnEBaOqsXI+h5GGzik6hY2y8fatSXY61+p6r0qBDhdKgR1i9avGwmETRhCjCJG
-         by6Q==
-X-Gm-Message-State: AOAM533UTVFX7qvO6SABNUHHy9LJxf2vt6BZ+ieHBFpxMu8Vg2UfXQic
-        qoI5EPwiFCFPIDpxiwQeicIaGfpv4QIsQKdSTc9eskz26TtPox4pA9ULvd8rsIgy+t6r+kdgDen
-        yTQdkIdNTVuWZJoqwC+LSJ6oD
-X-Received: by 2002:a05:600c:206:: with SMTP id 6mr3180747wmi.114.1632300428758;
-        Wed, 22 Sep 2021 01:47:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWyFTZqMVTFCG4e3JArxU0wOw41T1HqTgwLv6yHZRJpHA8FeYLz93DWE/1ppRavCbpJORW0g==
-X-Received: by 2002:a05:600c:206:: with SMTP id 6mr3180710wmi.114.1632300428502;
-        Wed, 22 Sep 2021 01:47:08 -0700 (PDT)
-Received: from ?IPv6:2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123? ([2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123])
-        by smtp.gmail.com with ESMTPSA id r27sm1464087wrr.70.2021.09.22.01.47.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pAYhvdbQhEpv1Wh9q8xT8e96qoX2U7Z2ejQBgBlK0iM=;
+        b=Ph9cOfEdi9gaNc+SfLqqBMy0I7HSVq8FMIIfuj2cKjIb6OA0cVB0m0z1lQm7NpyWJ8
+         TfHqieL9PUsKl4QXSZNeSpZxl8JvwNc3NHnIy5npMbup2q8ScL58ZsxxooxARJ1tH2eX
+         JksmgisWJo/u1IxNeOI5d3e4hvWIgWwv09DDiVbAoXGs+Ub4GsRZIB6heTWIJNpqiXTx
+         /b/VDnMAIp5fHQwp7NPjL6t1+0H2VNk5+Un7lnFB1v+srpDXUhXMXAPD7GCuebrrWa8r
+         w7OuyL/2W6xAewPmbiyI4GdC8GitiLjn2Sn1w6xydSza1cz7NvCL7jiXXBE2HNOP89y3
+         eVtA==
+X-Gm-Message-State: AOAM532mxumdMZvdN9P0Tt9W4jLuE2KTrqUQnAr+2EVTo19UKsuft9/X
+        oqJLA0uWKiBxSBkGZmy4nc2yqw==
+X-Google-Smtp-Source: ABdhPJzQIuzkLsUt7UAAr4H02X/gRK5SZ2Wy5Yh2LP4KGwipxvO7Kzusr3V3KnaDMhQX63crA26wAg==
+X-Received: by 2002:a05:600c:3506:: with SMTP id h6mr9298334wmq.62.1632300474417;
+        Wed, 22 Sep 2021 01:47:54 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id v10sm1591048wri.29.2021.09.22.01.47.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 01:47:08 -0700 (PDT)
-Message-ID: <0ec733daf2daaf8a6f5b1fbf56676b9892d5bf73.camel@redhat.com>
-Subject: Re: [PATCH 2/6] mm/swap: Introduce alternative per-cpu LRU cache
- locking
-From:   nsaenzju@redhat.com
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     akpm@linux-foundation.org, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        tglx@linutronix.de, cl@linux.com, juri.lelli@redhat.com,
-        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com,
-        mgorman@suse.de, ppandit@redhat.com, williams@redhat.com,
-        bigeasy@linutronix.de, anna-maria@linutronix.de,
-        linux-rt-users@vger.kernel.org
-Date:   Wed, 22 Sep 2021 10:47:07 +0200
-In-Reply-To: <20210921220358.GN4323@worktop.programming.kicks-ass.net>
-References: <20210921161323.607817-1-nsaenzju@redhat.com>
-         <20210921161323.607817-3-nsaenzju@redhat.com>
-         <20210921220358.GN4323@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Wed, 22 Sep 2021 01:47:54 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v6 0/8] gpio: implement the configfs testing module
+Date:   Wed, 22 Sep 2021 10:47:25 +0200
+Message-Id: <20210922084733.5547-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-22 at 00:03 +0200, Peter Zijlstra wrote:
-> On Tue, Sep 21, 2021 at 06:13:20PM +0200, Nicolas Saenz Julienne wrote:
-> > +static inline void lru_cache_lock(struct lru_cache_locks *locks)
-> > +{
-> > +	if (static_branch_unlikely(&remote_pcpu_cache_access)) {
-> > +		/* Avoid migration between this_cpu_ptr() and spin_lock() */
-> > +		migrate_disable();
-> > +		spin_lock(this_cpu_ptr(&locks->spin));
-> > +	} else {
-> > +		local_lock(&locks->local);
-> > +	}
-> > +}
-> 
-> > +static inline void lru_cache_unlock(struct lru_cache_locks *locks)
-> > +{
-> > +	if (static_branch_unlikely(&remote_pcpu_cache_access)) {
-> > +		spin_unlock(this_cpu_ptr(&locks->spin));
-> > +		migrate_enable();
-> > +	} else {
-> > +		local_unlock(&locks->local);
-> > +	}
-> > +}
-> 
-> *why* use migrate_disable(), that's horrible!
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I was trying to be mindful of RT. They don't appreciate people taking spinlocks
-just after having disabled preemption.
+I'm respinning this series now because I noticed that I need to start writing
+tests for my work on the new libgpiod v2 code to make sense (it's just becoming
+too complicated to make even remotely functional without test coverage). At the
+same time I don't want to rewrite the tests using gpio-mockup if the goal is to
+replace it with gpio-sim anyway.
 
-I think getting local_lock(&locks->local) is my only option then. But it adds
-an extra redundant spinlock in the RT+NOHZ_FULL case.
+I fixed issues pointed out by Al Viro and made sure that references are
+correctly counted (including error paths) and that memory allocated for the
+pending and live groups gets freed.
+
+===
+
+Cc'ing Viresh too.
+
+Viresh: while there's still a long way to go before the libgpio v2.0 release,
+in order to merge the Rust bindings, we'll need a test-suite similar to what
+we have now for C++ and Python bindings, except that it will have to be based
+on the gpio-sim module when it makes its way into mainline.
+
+===
+
+This series adds a new GPIO testing module based on configfs committable items
+and sysfs. The goal is to provide a testing driver that will be configurable
+at runtime (won't need module reload) and easily extensible. The control over
+the attributes is also much more fine-grained than in gpio-mockup.
+
+This series also contains a respin of the patches I sent separately to the
+configfs maintainers - these patches implement the concept of committable
+items that was well defined for a long time but never actually completed.
+
+Apart from the new driver itself, its selftests and the configfs patches, this
+series contains some changes to the bitmap API - most importantly: it adds
+devres managed variants of bitmap_alloc() and bitmap_zalloc().
+
+v1 -> v2:
+- add selftests for gpio-sim
+- add helper programs for selftests
+- update the configfs rename callback to work with the new API introduced in
+  v5.11
+- fix a missing quote in the documentation
+- use !! whenever using bits operation that are required to return 0 or 1
+- use provided bitmap API instead of reimplementing copy or fill operations
+- fix a deadlock in gpio_sim_direction_output()
+- add new read-only configfs attributes for mapping of configfs items to GPIO
+  device names
+- and address other minor issues pointed out in reviews of v1
+
+v2 -> v3:
+- use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
+  the bitmap with 1s
+- drop the patch exporting device_is_bound()
+- don't return -ENODEV from dev_nam and chip_name configfs attributes, return
+  a string indicating that the device is not available yet ('n/a')
+- fix indentation where it makes sense
+- don't protect IDA functions which use their own locking and where it's not
+  needed
+- use kmemdup() instead of kzalloc() + memcpy()
+- collected review tags
+- minor coding style fixes
+
+v3 -> v4:
+- return 'none' instead of 'n/a' from dev_name and chip_name before the device
+  is registered
+- use sysfs_emit() instead of s*printf()
+- drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
+  fine to hardcode the value
+
+v4 -> v5:
+- drop lib patches that are already upstream
+- use BIT() instead of (1UL << bit) for flags
+- fix refcounting for the configfs_dirent in rename()
+- drop d_move() from the rename() callback
+- free memory allocated for the live and pending groups in configfs_d_iput()
+  and not in detach_groups()
+- make sure that if a group of some name is in the live directory, a new group
+  with the same name cannot be created in the pending directory
+
+v5 -> v6:
+- go back to using (1UL << bit) instead of BIT()
+- if the live group dentry doesn't exist for whatever reason at the time when
+  mkdir() in the pending group is called (would be a BUG()), return -ENOENT
+  instead of -EEXIST which should only be returned if given subsystem already
+  exists in either live or pending group
+
+Bartosz Golaszewski (8):
+  configfs: increase the item name length
+  configfs: use (1UL << bit) for internal flags
+  configfs: implement committable items
+  samples: configfs: add a committable group
+  gpio: sim: new testing module
+  selftests: gpio: provide a helper for reading chip info
+  selftests: gpio: add a helper for reading GPIO line names
+  selftests: gpio: add test cases for gpio-sim
+
+ Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
+ Documentation/filesystems/configfs.rst        |   6 +-
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sim.c                       | 877 ++++++++++++++++++
+ fs/configfs/configfs_internal.h               |  22 +-
+ fs/configfs/dir.c                             | 276 +++++-
+ include/linux/configfs.h                      |   3 +-
+ samples/configfs/configfs_sample.c            | 153 +++
+ tools/testing/selftests/gpio/.gitignore       |   2 +
+ tools/testing/selftests/gpio/Makefile         |   4 +-
+ tools/testing/selftests/gpio/config           |   1 +
+ tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+ tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+ tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
+ 15 files changed, 1743 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+ create mode 100644 drivers/gpio/gpio-sim.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+ create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
 
 -- 
-Nicolás Sáenz
+2.30.1
 
