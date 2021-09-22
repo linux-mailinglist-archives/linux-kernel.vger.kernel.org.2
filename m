@@ -2,123 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619CB414F10
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE75414F15
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236861AbhIVR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:29:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50314 "EHLO mail.kernel.org"
+        id S236752AbhIVRab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:30:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236781AbhIVR36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:29:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB0B60F6E;
-        Wed, 22 Sep 2021 17:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632331707;
-        bh=qxovthTWLhunV065wb5c2FjpbJJiZfXE4TdmvsvSDMI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TQcu/pDhXL13HNpmyzQqZTcSJ2/6tD4xoWby1IDx6WkYy/HNINa13EjrrebrKg8UE
-         oLbnjsUYWbhTtTeq1wDfKapMrX5x8BLN0g99OM7YibV/gsG0xhk6Smi0cQGY8Xe0nn
-         Jo4Z7MbPAaLLSS7BiwRSQ/ZDI3kzhVJWycxSsRVk=
-Date:   Wed, 22 Sep 2021 19:28:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] drivers/acpi: Introduce Platform Firmware Runtime
- Update device driver
-Message-ID: <YUtnuW22MH97p7+G@kroah.com>
-References: <cover.1631802162.git.yu.c.chen@intel.com>
- <90d270c031401430445cb2c4ba1b9b0c265cf9d4.1631802163.git.yu.c.chen@intel.com>
- <YUoBSRrAyaHOCNHb@kroah.com>
- <20210922090442.GA16963@chenyu5-mobl1>
- <YUry6tzScXMD007X@kroah.com>
- <20210922163321.GA31068@chenyu5-mobl1>
+        id S236781AbhIVRaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 13:30:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2074E611CA;
+        Wed, 22 Sep 2021 17:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632331735;
+        bh=JdzZczz2PU9IvhV91njGN8OfWH5kf6JidNW6NSTd8DE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t4NP9fJUFdd1mpbq2c/FB57swqEkV8djdH/vm2y41D2aXhLJJV8m+bVPMRnQ7kWPZ
+         gUQU7Vm5EZ+6xpg7wo1zG9CG97ZVTTVXjzAKF1+Hh0g7ERzqsF/8m3kSe+nbSnuHSD
+         /A0DeMLiUiEwyZS24XkcoaQSjMCfZ/Yu7AC9KEupd/VcNHGc/3m4/32ILHlGAvh1mg
+         sVhr9q0aO7WU5HLuMI5GoX/GVBLHv3chGBlqGRnk6TnWy8Mc3z94b7PXAkueRb9CXT
+         Nv5kiyeoA0TOV422zfaZQPhlbNVCPOS01TfTH3N3gEzW+ODexowV3aoQBHdNkhxAhh
+         Oro1pTl6SyUcw==
+Received: by mail-ed1-f52.google.com with SMTP id v10so8108151edj.10;
+        Wed, 22 Sep 2021 10:28:55 -0700 (PDT)
+X-Gm-Message-State: AOAM531XMughGyUkCScJvckh1zw2r8caEZmbFFcgc2eQbkUvTjTuJkrV
+        hB3L+2z+vTOyPNeNbIxiHjo1I9NqxzQtUfEaoA==
+X-Google-Smtp-Source: ABdhPJx6zI3tzYPe4HGlu0zZgHNGUOTbgVjUD1EY4qw3tzP7wpVqzwX+U8i3dYpnQciPpYeDgWndORmcwRXOlRD6VEk=
+X-Received: by 2002:a17:906:fa8a:: with SMTP id lt10mr368213ejb.320.1632331733632;
+ Wed, 22 Sep 2021 10:28:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210922163321.GA31068@chenyu5-mobl1>
+References: <1631874941-5262-1-git-send-email-pillair@codeaurora.org> <1631874941-5262-2-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1631874941-5262-2-git-send-email-pillair@codeaurora.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 22 Sep 2021 12:28:41 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+khyhbwJ5-GPZ5ZGkY4nX_obq4t92Z0V6sZH3Oyj4Fow@mail.gmail.com>
+Message-ID: <CAL_Jsq+khyhbwJ5-GPZ5ZGkY4nX_obq4t92Z0V6sZH3Oyj4Fow@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: remoteproc: qcom: Add SC7280 WPSS support
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     "Gross, Andy" <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        sibis <sibis@codeaurora.org>, mpubbise@codeaurora.org,
+        kuabhs@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 12:33:21AM +0800, Chen Yu wrote:
-> On Wed, Sep 22, 2021 at 11:10:02AM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Sep 22, 2021 at 05:04:42PM +0800, Chen Yu wrote:
-> > > Hi Greg,
-> > > On Tue, Sep 21, 2021 at 05:59:05PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Fri, Sep 17, 2021 at 12:02:18AM +0800, Chen Yu wrote:
-> > > > > Introduce the pfru_update driver which can be used for Platform Firmware
-> > > > > Runtime code injection and driver update. The user is expected to provide
-> > > > > the update firmware in the form of capsule file, and pass it to the driver
-> > > > > via ioctl. Then the driver would hand this capsule file to the Platform
-> > > > > Firmware Runtime Update via the ACPI device _DSM method. At last the low
-> > > > > level Management Mode would do the firmware update.
-> > > > > 
-> > > > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > > > 
-> > > > Where is the userspace code that uses this ioctl and has tested it out
-> > > > to verify it works properly?  A link to that in the changelog would be
-> > > > great to have.
-> > > > 
-> > > The patch [5/5] is a self testing tool to test the whole feature. I'll send a
-> > > new version and Cc you too.
-> > 
-> > That tests it, but does not answer the question of who will actually use
-> > this.  What userspace tool needs this new api?
-> >
-> One end user is the cloud user.
+On Fri, Sep 17, 2021 at 5:36 AM Rakesh Pillai <pillair@codeaurora.org> wrote:
+>
+> Add WPSS PIL loading support for SC7280 SoCs.
+>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+>  .../bindings/remoteproc/qcom,sc7280-wpss-pil.yaml  | 198 +++++++++++++++++++++
+>  1 file changed, 198 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
 
-What exactly do you mean by "cloud user"?
+What happened to converting the existing binding? Given you already
+did that, please don't drop it.
 
-> Currently there is no dedicated userspace tool developed to use this
-> feature AFAIK.
+>
+> diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
+> new file mode 100644
+> index 0000000..896d5f47
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml
+> @@ -0,0 +1,198 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/remoteproc/qcom,sc7280-wpss-pil.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm SC7280 WPSS Peripheral Image Loader
+> +
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description:
+> +  This document defines the binding for a component that loads and boots firmware
+> +  on the Qualcomm Technology Inc. WPSS.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,sc7280-wpss-pil
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      The base address and size of the qdsp6ss register
+> +
+> +  interrupts-extended:
 
-Wonderful, then it is not needed to be added to the kernel :)
+Use 'interrupts'. The tooling supports either.
 
-> It was expected that the end users
-> could refer to the self test tool to customize their tools. I'm not sure if
-> this is the proper way to propose the feature, may I have your suggestion on
-> this, should I create a separate git repository for this tool, or put it in
-> tools/selftestings as it is now?
+> +    minItems: 6
 
-No, do not add this to the kernel unless you have a real need and user
-for this.
+Don't need minItems unless it is less than 'items' length.
 
+> +    items:
+> +      - description: Watchdog interrupt
+> +      - description: Fatal interrupt
+> +      - description: Ready interrupt
+> +      - description: Handover interrupt
+> +      - description: Stop acknowledge interrupt
+> +      - description: Shutdown acknowledge interrupt
+> +
+> +  interrupt-names:
+> +    minItems: 6
+> +    items:
+> +      - const: wdog
+> +      - const: fatal
+> +      - const: ready
+> +      - const: handover
+> +      - const: stop-ack
+> +      - const: shutdown-ack
+> +
+> +  clocks:
+> +    minItems: 4
+> +    items:
+> +      - description: GCC WPSS AHB BDG Master clock
+> +      - description: GCC WPSS AHB clock
+> +      - description: GCC WPSS RSCP clock
+> +      - description: XO clock
+> +
+> +  clock-names:
+> +    minItems: 4
+> +    items:
+> +      - const: gcc_wpss_ahb_bdg_mst_clk
+> +      - const: gcc_wpss_ahb_clk
+> +      - const: gcc_wpss_rscp_clk
 
-> > > > > +static struct miscdevice pfru_misc_dev = {
-> > > > > +	.minor = MISC_DYNAMIC_MINOR,
-> > > > > +	.name = "pfru_update",
-> > > > > +	.nodename = "pfru/update",
-> > > > 
-> > > > Why is this in a subdirectory?  What requires this?  Why not just
-> > > > "pfru"?
-> > > > 
-> > > The pfru directory might be reused for pfru_telemetry device, whose driver
-> > > is in 4/5 patch, I'll Cc you with the whole patch set in next version.
-> > 
-> > "might be" is not a valid reason.  Why does this simple driver deserve a
-> > whole /dev/ subdirectory?
-> > 
-> There are pfru_update and pfru_telemetry in the patch, and there is plan to
-> add a pfru_prm device in the future, which stands for "Platform Runtime Mechanism".
-> I'll move them to /dev/ in next version.
+ahb_bdg, ahb, rscp is sufficient. Or use the same names as prior
+versions (did the h/w clocks change?).
 
-That is a very generic name for a very platform specific and arch
-specific interface.  As this is an ACPI interface, why not use that name
-prefix?
+> +      - const: xo
+> +
+> +  power-domains:
+> +    minItems: 2
+> +    items:
+> +      - description: CX power domain
+> +      - description: MX power domain
+> +
+> +  power-domain-names:
+> +    minItems: 2
+> +    items:
+> +      - const: cx
+> +      - const: mx
+> +
+> +  resets:
+> +    minItems: 2
+> +    items:
+> +      - description: AOSS restart
+> +      - description: PDC SYNC
+> +
+> +  reset-names:
+> +    minItems: 2
+> +    items:
+> +      - const: restart
+> +      - const: pdc_sync
+> +
+> +  memory-region:
+> +    maxItems: 1
+> +    description: Reference to the reserved-memory for the Hexagon core
+> +
+> +  qcom,halt-regs:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      Phandle reference to a syscon representing TCSR followed by the
+> +      three offsets within syscon for q6, modem and nc halt registers.
+> +
+> +  qcom,qmp:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Reference to the AOSS side-channel message RAM.
+> +
+> +  qcom,smem-states:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: States used by the AP to signal the Hexagon core
+> +    items:
+> +      - description: Stop the modem
+> +
+> +  qcom,smem-state-names:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
 
-thanks,
+string or string-array?
 
-greg k-h
+> +    description: The names of the state bits used for SMP2P output
+> +    items:
+> +      - const: stop
+
+This says only 1 entry, so 'string'.
+
+> +
+> +  glink-edge:
+> +    type: object
+> +    description:
+> +      Qualcomm G-Link subnode which represents communication edge, channels
+> +      and devices related to the ADSP.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
+> +  - interrupt-names
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - power-domain-names
+> +  - reset
+> +  - reset-names
+> +  - qcom,halt-regs
+> +  - memory-region
+> +  - qcom,qmp
+> +  - qcom,smem-states
+> +  - qcom,smem-state-names
+> +  - glink-edge
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/qcom,gcc-sc7280.h>
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +    #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+> +    #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+> +    #include <dt-bindings/mailbox/qcom-ipcc.h>
+> +    remoteproc@8a00000 {
+> +        compatible = "qcom,sc7280-wpss-pil";
+> +        reg = <0x08a00000 0x10000>;
+> +
+> +        interrupts-extended = <&intc GIC_SPI 587 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>,
+> +                              <&wpss_smp2p_in 7 IRQ_TYPE_EDGE_RISING>;
+> +        interrupt-names = "wdog", "fatal", "ready", "handover",
+> +                          "stop-ack", "shutdown-ack";
+> +
+> +        clocks = <&gcc GCC_WPSS_AHB_BDG_MST_CLK>,
+> +                 <&gcc GCC_WPSS_AHB_CLK>,
+> +                 <&gcc GCC_WPSS_RSCP_CLK>,
+> +                 <&rpmhcc RPMH_CXO_CLK>;
+> +        clock-names = "gcc_wpss_ahb_bdg_mst_clk",
+> +                      "gcc_wpss_ahb_clk",
+> +                      "gcc_wpss_rscp_clk",
+> +                      "xo";
+> +
+> +        power-domains = <&rpmhpd SC7280_CX>,
+> +                        <&rpmhpd SC7280_MX>;
+> +        power-domain-names = "cx", "mx";
+> +
+> +        memory-region = <&wpss_mem>;
+> +
+> +        qcom,qmp = <&aoss_qmp>;
+> +
+> +        qcom,smem-states = <&wpss_smp2p_out 0>;
+> +        qcom,smem-state-names = "stop";
+> +
+> +        resets = <&aoss_reset AOSS_CC_WCSS_RESTART>,
+> +                 <&pdc_reset PDC_WPSS_SYNC_RESET>;
+> +        reset-names = "restart", "pdc_sync";
+> +
+> +        qcom,halt-regs = <&tcsr_mutex 0x37000>;
+> +
+> +        status = "disabled";
+> +
+> +        glink-edge {
+> +            interrupts-extended = <&ipcc IPCC_CLIENT_WPSS
+> +                                         IPCC_MPROC_SIGNAL_GLINK_QMP
+> +                                         IRQ_TYPE_EDGE_RISING>;
+> +            mboxes = <&ipcc IPCC_CLIENT_WPSS
+> +                            IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +            label = "wpss";
+> +            qcom,remote-pid = <13>;
+> +        };
+> +    };
+> --
+> 2.7.4
+>
