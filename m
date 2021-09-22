@@ -2,150 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5564153AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F784153AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Sep 2021 00:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238466AbhIVW6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 18:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
+        id S238362AbhIVW7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 18:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238293AbhIVW6M (ORCPT
+        with ESMTP id S238293AbhIVW7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:58:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AA6C061574;
-        Wed, 22 Sep 2021 15:56:41 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632351400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xXPSq+aEA0memaGjoDkKnyon7rNc+TqtiIdR44G/y5E=;
-        b=eGKyZywTXSTLv7yDSJNHd+ITjQyB11b9D9c7FQexGB1sGFe7UJCFJb+aIu5m/qYMGVaUBl
-        2L9xMhWsB8qkiNX5eqQI5DoDkvRfSBXCunOlf4W9hikaANuQJmz5S6qmSSBgYq72bRiHgT
-        yQUzOrZ/aMyqnd/TmOsI6G38B6q4LXYSuNavg6rcHkgYhtmSs2VASGH1W7HLTOzFT38tjw
-        Y0HqdiSidr4K2VZZxX0ItA5TgpAXwZZgUJRs95KKxdJTq6QBsvbN9lcsbj3Y2pmdrq7NGE
-        Ae6wy+Sm2teOEEOA+tcVGIfvkmUg43uX+ud3CVqKBNjeN3gxSiDpbd6K2yhrww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632351400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xXPSq+aEA0memaGjoDkKnyon7rNc+TqtiIdR44G/y5E=;
-        b=rcfiayeW9SZ7jMCFHjqkATj4NnHhze6gH9lzeRTyCZ1/Psxjfx3PWI7bbtk70g1/UQL1GE
-        cjftc+ro+HTz1UAg==
-To:     syzbot <syzbot+a10a3d280be23be45d04@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [syzbot] WARNING: ODEBUG bug in blk_mq_hw_sysfs_release
-In-Reply-To: <000000000000bd3a8005cc78ce14@google.com>
-References: <000000000000bd3a8005cc78ce14@google.com>
-Date:   Thu, 23 Sep 2021 00:56:39 +0200
-Message-ID: <87mto4gqxk.ffs@tglx>
+        Wed, 22 Sep 2021 18:59:35 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55EDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:58:04 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id v24so16141107eda.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 15:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7qKKaxgyZYKUv97cqhGMgy3ckC4rldlc0ziA/fAv6X4=;
+        b=d57UhQ//WiApkc3biwtSFFEKu+qXD4CDLqBDm8ok2tzFNK2rc9bzksuiJ9NHX0Kt1N
+         /fiONtjZotoIt8ABeu5hQC9t3PNPqGVVW82+S/DgRjf1XWx7fzYRQOYOUrD8hQv7OJLh
+         5zqvDZo/EkezDqaYaaaXKYpvyoxhv2wmSU+K/ifpoNtOLEBb/FsxUdVdV7wF5vZHq0Je
+         i0PfgdYAAJ1Dl8iuMExDpsje8fpjeVCQTkerid8FZVElSxTHTS763s6r2GvSgXfDemT8
+         QDaAfvluRcElYT2IicnVikVco6obcv9UQi3IkduzZa3mUaP9paYvjBizaPM4mc9I4HIh
+         J6gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7qKKaxgyZYKUv97cqhGMgy3ckC4rldlc0ziA/fAv6X4=;
+        b=tLgRn1hPY92cs9TCQ2Gh/jqKnK523O2iKYwba6QcKT8mEEsLCLrwi4Fw0vWMcpMXp9
+         3xa29IvoMdgX6nkQMcXuUhXNF9nUkC046UbTkBi2l7mZRWMA0NAEWFuV3Faoo/NIydn6
+         EusfWG/jxiYyNHT4x7p+ymHjZQTgxfCzFJoVppMvWluUiYxj3poNrA/DbOEC6ly4vYls
+         LG05IqGNV7coR+Eu2t7720fyH1sg2PCobWG0w8xZjKfbBSSXOCOiyatnIL/iN+OOcwGF
+         YVQ0Ws3HsMYu6lqVxnUoxKHL9mrB2s1FlSjCi06ILppQkFllOhtS/Zw3O9yYwnHDoiVb
+         3R3Q==
+X-Gm-Message-State: AOAM533VmNTNR91cfMn9eeqd3A0KtiE40cgogykxiCrALeI/raIz26Pp
+        Y57zJAs3SajKsD7X2CrZKec=
+X-Google-Smtp-Source: ABdhPJz8NcB/dc1lkN1jmVZ+U+cNMn0bqep6CFfnjDV0LahZAg7/PReLqHwcKc5KQWK1TWkRnvyP4w==
+X-Received: by 2002:a50:e0c7:: with SMTP id j7mr1978008edl.245.1632351483456;
+        Wed, 22 Sep 2021 15:58:03 -0700 (PDT)
+Received: from tom-desktop.station (net-93-71-218-228.cust.vodafonedsl.it. [93.71.218.228])
+        by smtp.gmail.com with ESMTPSA id ml12sm1736678ejb.29.2021.09.22.15.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 15:58:03 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     tomm.merciai@gmail.com, Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Madhumitha Prabakaran <madhumithabiw@gmail.com>,
+        Yujia Qiao <rapiz@foxmail.com>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Deepak R Varma <mh12gx2825@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vt6655: Replace camel case variable name
+Date:   Thu, 23 Sep 2021 00:57:52 +0200
+Message-Id: <20210922225756.694409-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20 2021 at 20:15, syzbot wrote:
+Work in progress: replace camel case variables
 
-Cc+: paulmck
+ldBmThreshold -> ld_bm_threshold
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    85c698863c15 net/ipv4/tcp_minisocks.c: remove superfluous ..
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13d9d3e7300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6d93fe4341f98704
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a10a3d280be23be45d04
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bd98f7300000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a10a3d280be23be45d04@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> ODEBUG: assert_init not available (active state 0) object type: timer_list hint: 0x0
-> WARNING: CPU: 0 PID: 3816 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-> Modules linked in:
-> CPU: 0 PID: 3816 Comm: syz-executor.0 Not tainted 5.15.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-> Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd c0 39 e4 89 4c 89 ee 48 c7 c7 c0 2d e4 89 e8 ef e3 14 05 <0f> 0b 83 05 35 09 91 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-> RSP: 0018:ffffc9000a6770f0 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000000
-> RDX: ffff88805b3db900 RSI: ffffffff815dbd88 RDI: fffff520014cee10
-> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff815d5b2e R11: 0000000000000000 R12: ffffffff898de180
-> R13: ffffffff89e43440 R14: ffffffff8164bae0 R15: 1ffff920014cee29
-> FS:  00007fee66b3a700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f362471f3a0 CR3: 00000000272af000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  debug_object_assert_init lib/debugobjects.c:895 [inline]
->  debug_object_assert_init+0x1f4/0x2e0 lib/debugobjects.c:866
->  debug_timer_assert_init kernel/time/timer.c:739 [inline]
->  debug_assert_init kernel/time/timer.c:784 [inline]
->  try_to_del_timer_sync+0x6d/0x110 kernel/time/timer.c:1229
->  del_timer_sync+0x138/0x1b0 kernel/time/timer.c:1382
->  cleanup_srcu_struct+0x14c/0x2f0 kernel/rcu/srcutree.c:379
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+ drivers/staging/vt6655/baseband.c    | 48 ++++++++++++++--------------
+ drivers/staging/vt6655/device.h      |  2 +-
+ drivers/staging/vt6655/device_main.c |  2 +-
+ 3 files changed, 26 insertions(+), 26 deletions(-)
 
-So cleanup_srcu_struct() tries to delete a timer which was never initialized....
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index cf7f292f1c8d..9eb0ae86d362 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -2021,10 +2021,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		priv->abyBBVGA[1] = 0x0A;
+ 		priv->abyBBVGA[2] = 0x0;
+ 		priv->abyBBVGA[3] = 0x0;
+-		priv->ldBmThreshold[0] = -70;
+-		priv->ldBmThreshold[1] = -50;
+-		priv->ldBmThreshold[2] = 0;
+-		priv->ldBmThreshold[3] = 0;
++		priv->ld_bm_threshold[0] = -70;
++		priv->ld_bm_threshold[1] = -50;
++		priv->ld_bm_threshold[2] = 0;
++		priv->ld_bm_threshold[3] = 0;
+ 	} else if ((by_rf_type == RF_AIROHA) || (by_rf_type == RF_AL2230S)) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_AIROHA2230; ii++)
+ 			result &= bb_write_embedded(priv,
+@@ -2039,10 +2039,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		priv->abyBBVGA[1] = 0x10;
+ 		priv->abyBBVGA[2] = 0x0;
+ 		priv->abyBBVGA[3] = 0x0;
+-		priv->ldBmThreshold[0] = -70;
+-		priv->ldBmThreshold[1] = -48;
+-		priv->ldBmThreshold[2] = 0;
+-		priv->ldBmThreshold[3] = 0;
++		priv->ld_bm_threshold[0] = -70;
++		priv->ld_bm_threshold[1] = -48;
++		priv->ld_bm_threshold[2] = 0;
++		priv->ld_bm_threshold[3] = 0;
+ 	} else if (by_rf_type == RF_UW2451) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_UW2451; ii++)
+ 			result &= bb_write_embedded(priv,
+@@ -2061,10 +2061,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		priv->abyBBVGA[1] = 0x0A;
+ 		priv->abyBBVGA[2] = 0x0;
+ 		priv->abyBBVGA[3] = 0x0;
+-		priv->ldBmThreshold[0] = -60;
+-		priv->ldBmThreshold[1] = -50;
+-		priv->ldBmThreshold[2] = 0;
+-		priv->ldBmThreshold[3] = 0;
++		priv->ld_bm_threshold[0] = -60;
++		priv->ld_bm_threshold[1] = -50;
++		priv->ld_bm_threshold[2] = 0;
++		priv->ld_bm_threshold[3] = 0;
+ 	} else if (by_rf_type == RF_UW2452) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_UW2451; ii++)
+ 			result &= bb_write_embedded(priv,
+@@ -2107,10 +2107,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		priv->abyBBVGA[1] = 0x0A;
+ 		priv->abyBBVGA[2] = 0x0;
+ 		priv->abyBBVGA[3] = 0x0;
+-		priv->ldBmThreshold[0] = -60;
+-		priv->ldBmThreshold[1] = -50;
+-		priv->ldBmThreshold[2] = 0;
+-		priv->ldBmThreshold[3] = 0;
++		priv->ld_bm_threshold[0] = -60;
++		priv->ld_bm_threshold[1] = -50;
++		priv->ld_bm_threshold[2] = 0;
++		priv->ld_bm_threshold[3] = 0;
+ 		/* }} RobertYu */
+ 
+ 	} else if (by_rf_type == RF_VT3226) {
+@@ -2127,10 +2127,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		priv->abyBBVGA[1] = 0x10;
+ 		priv->abyBBVGA[2] = 0x0;
+ 		priv->abyBBVGA[3] = 0x0;
+-		priv->ldBmThreshold[0] = -70;
+-		priv->ldBmThreshold[1] = -48;
+-		priv->ldBmThreshold[2] = 0;
+-		priv->ldBmThreshold[3] = 0;
++		priv->ld_bm_threshold[0] = -70;
++		priv->ld_bm_threshold[1] = -48;
++		priv->ld_bm_threshold[2] = 0;
++		priv->ld_bm_threshold[3] = 0;
+ 		/* Fix VT3226 DFC system timing issue */
+ 		MACvSetRFLE_LatchBase(iobase);
+ 		/* {{ RobertYu: 20050104 */
+@@ -2161,10 +2161,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 		priv->abyBBVGA[1] = 0x10;
+ 		priv->abyBBVGA[2] = 0x0;
+ 		priv->abyBBVGA[3] = 0x0;
+-		priv->ldBmThreshold[0] = -70;
+-		priv->ldBmThreshold[1] = -48;
+-		priv->ldBmThreshold[2] = 0;
+-		priv->ldBmThreshold[3] = 0;
++		priv->ld_bm_threshold[0] = -70;
++		priv->ld_bm_threshold[1] = -48;
++		priv->ld_bm_threshold[2] = 0;
++		priv->ld_bm_threshold[3] = 0;
+ 		/* }} RobertYu */
+ 	} else {
+ 		/* No VGA Table now */
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index 08c011074193..7ee0ba57f9da 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -253,7 +253,7 @@ struct vnt_private {
+ 	unsigned char byBBVGANew;
+ 	unsigned char byBBVGACurrent;
+ 	unsigned char abyBBVGA[BB_VGA_LEVEL];
+-	long                    ldBmThreshold[BB_VGA_LEVEL];
++	long                    ld_bm_threshold[BB_VGA_LEVEL];
+ 
+ 	unsigned char byBBPreEDRSSI;
+ 	unsigned char byBBPreEDIndex;
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index e88ba1319cfb..511cee39545a 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -986,7 +986,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
+ 	RFvRSSITodBm(priv, (u8)priv->uCurrRSSI, &dbm);
+ 
+ 	for (i = 0; i < BB_VGA_LEVEL; i++) {
+-		if (dbm < priv->ldBmThreshold[i]) {
++		if (dbm < priv->ld_bm_threshold[i]) {
+ 			priv->byBBVGANew = priv->abyBBVGA[i];
+ 			break;
+ 		}
+-- 
+2.25.1
 
->  blk_mq_hw_sysfs_release+0x147/0x190 block/blk-mq-sysfs.c:40
->  kobject_cleanup lib/kobject.c:705 [inline]
->  kobject_release lib/kobject.c:736 [inline]
->  kref_put include/linux/kref.h:65 [inline]
->  kobject_put+0x1c8/0x540 lib/kobject.c:753
->  blk_mq_release+0x259/0x430 block/blk-mq.c:3094
->  blk_release_queue+0x2a7/0x4a0 block/blk-sysfs.c:823
->  kobject_cleanup lib/kobject.c:705 [inline]
->  kobject_release lib/kobject.c:736 [inline]
->  kref_put include/linux/kref.h:65 [inline]
->  kobject_put+0x1c8/0x540 lib/kobject.c:753
->  __blk_mq_alloc_disk+0x12e/0x160 block/blk-mq.c:3142
->  nbd_dev_add+0x3be/0xb90 drivers/block/nbd.c:1716
->  nbd_genl_connect+0x11f3/0x1930 drivers/block/nbd.c:1884
->  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:731
->  genl_family_rcv_msg net/netlink/genetlink.c:775 [inline]
->  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:792
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
->  genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
->  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
->  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
->  sock_sendmsg_nosec net/socket.c:704 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:724
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
->  __sys_sendmsg+0xf3/0x1c0 net/socket.c:2492
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7fee673e4739
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fee66b3a188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 00007fee674e9038 RCX: 00007fee673e4739
-> RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000007
-> RBP: 00007fee6743ecc4 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fee674e9038
-> R13: 00007ffe3695106f R14: 00007fee66b3a300 R15: 0000000000022000
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
