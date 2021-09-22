@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8960E414396
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C62E414397
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhIVIVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S233771AbhIVIVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhIVIVe (ORCPT
+        with ESMTP id S233731AbhIVIVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:21:34 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15F9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:20:04 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id m26-20020ac87b5a000000b002a6b3744ae6so1306969qtu.22
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:20:04 -0700 (PDT)
+        Wed, 22 Sep 2021 04:21:36 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0385BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:20:07 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id m6-20020a05620a24c600b004338e8a5a3cso8139377qkn.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=KhEOVDh5xBwdR6E0McNSkMxXx4DtQkSqGqlUPDV4Oz8=;
-        b=ajtll/hE+SdlHmRQaIxAQ28nCxwVV1hOI1A/1IKZcGgcfUPcWAh7hoMvnaOf0hrGjF
-         HJ2k9lbug/vVAKK5fIT/tDI0PJ0M5Z7kWIU9Lv6R0RH42PuzLWGhCPOEFuG+3dy+p0JE
-         bV+BsNWoWcLqJLdzN5ObO1C0YbKZfKXugG37yUOrkzjW2ueOKGSzQjOnZAgw9kMg+IKk
-         Fq83SlybD4SaoCI0mRZ3tx8qALO9rgc/O37jRnbHVPLnv0ecI3sZ2GVvimgrCOnZLh28
-         4SyN/lfsjXbr2rRrKYtY3wjEQ8aJ8CTqB6NP7u87s94MKSyeArjPyK6H8mygfMLIJNLq
-         KwUg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=jhtmBJ6Dc/tyF1h7HVlvMIPOJAIqW+/3wSXrZ6EDJkw=;
+        b=mY5WQJ3imda4F5EgsCfyLnnoZl+iJiJvNzmirryxnF2X+WYis286hsRFsGAOg4cZy+
+         BO1lIeYbDYm6qN1H/xIqWS+HWI2hbD2wuteRaorJWIOA/K2hmSUlWfSjYDtaA3FhzV9p
+         qqoHyuPyazhbAl6Z36rpzeZ09xU/ljmFcPKrokPE7S1r0srAdjGIBHYYERKZgopGsNsM
+         /F18qsZHcQhiHAb0cZ0ZtERVdmn6NGVbd8uHmRfWZoINZtC9OeI2ryUlZ85LwltjeOCC
+         tGqIpYkAjJ3/gZH7b1E9wgD1ILZg2J27iN6ddBhvWmBQpZMnhwgnpO2vUwoI0r/GwL3S
+         jGaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=KhEOVDh5xBwdR6E0McNSkMxXx4DtQkSqGqlUPDV4Oz8=;
-        b=r4E9Mioa0iPLtGyRZkYyhEkmSyJggHPlRVpisrm9tCm8YMXG5blP9EAdDqin/3cnDY
-         urDrNJy60NEYgYW0aUgqSyaBh3QuNF6T5WdrYkN0g0PZB1xzQv9CS7vxjZjgu+T1gCy2
-         gXQQURN97lH9VFvfXaCNIkvhRdyzD012teem5ppphXhFPr7/7iSbt1EbawjzpxAvPCOm
-         92hJ8RpW2qZ0TJ2Cae2St+4Nb9mb8T5wpFeMe6upOakbjgr+i+pSQkz0j3kcWwW7KNPW
-         WfTcZ5Fba0KHYeWzwZqEKqp6lBtujtcRLsz5UZsry4ljuRmJYZhvkhkPMG0NJjNFi7Fm
-         SxPg==
-X-Gm-Message-State: AOAM531NxN+1t5LKsormeqB6P6e2/SSnxcZa9OQStARu2Vq1aCCCuI+X
-        QTTjjigJuq7NcufZUc1a4redZqCPAnn4
-X-Google-Smtp-Source: ABdhPJwcd8CQaMde92mXnkx5x7+KSleayRkdFp32li3a/2Sm9cufhNS2kFs5KbkxeE0ojA8hDnduboWfr9Ju
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=jhtmBJ6Dc/tyF1h7HVlvMIPOJAIqW+/3wSXrZ6EDJkw=;
+        b=al5XNXuWTlBlEWz1fGwoGWV2G+WLEpImyQKg0rt3yxzFepI4yIBK7PPGsbm3jQujh6
+         tdNhEVvfJHYJRgpHARgSVPh4boPXCpyV5AUSTAO+yAPinoHMDqsnWg+d7bgVxr36FiQ0
+         ozHtHu08aHf1zphL27FPDnDeH5TjFD5dHGV8sl6sCvHB9F9dlbs8vC2ZX57q/DZPp7ef
+         +Kv/PLMXFlQ37QA61x98n8g0si8WjAVdemgsmO/caeiwrFrGT7MseeyA6VCT5Ja5c+ex
+         x+KbieXqA8mfdOnWNcDX6xrroEWBLf71s3y/R+Ty4dn6jmtgiw2zBC1UjZljwwFfonol
+         cQ1Q==
+X-Gm-Message-State: AOAM530gag+GZrO37favs4piDg8lbM+rlA20WvctCF77iCnPf9w44UfA
+        DwHOCCWlK7rqnu7Hq6cFsrcoFdHQRG4N
+X-Google-Smtp-Source: ABdhPJwXkiqK/VcswL+wbPj4KeaKc0cC/bXybc3E4rflhrxj7cXk825nJ9xs1rXna29j22Eb31/jj0zj6k0l
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:dffa:819a:f0e2:47e])
- (user=irogers job=sendgmr) by 2002:a25:7652:: with SMTP id
- r79mr45385167ybc.96.1632298803763; Wed, 22 Sep 2021 01:20:03 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 01:19:53 -0700
-Message-Id: <20210922081959.390059-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6214:13a3:: with SMTP id
+ h3mr35401554qvz.26.1632298806171; Wed, 22 Sep 2021 01:20:06 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 01:19:54 -0700
+In-Reply-To: <20210922081959.390059-1-irogers@google.com>
+Message-Id: <20210922081959.390059-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20210922081959.390059-1-irogers@google.com>
 X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [RFC PATCH 0/5] Start aligning perf test with kunit style
+Subject: [RFC PATCH 1/5] perf test: Use macro for "suite" declarations
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -69,118 +73,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perf test uses its own structs and code layout that differs from kunit
-that was more recently introduced to the kernel. Besides consistency,
-it is hoped that moving in the direction of kunit style will enable
-reuse of infrastructure like test output formatting for continuous
-testing systems. For example:
-https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+Currently tests are setup in builtin-test with function pointers. Kunit
+exposes tests as a kunit_suite with a null terminated array of test
+cases. Use a macro to aid transition from one to the other in later changes.
 
-The motivation for this restructuring comes from wanting to be able to
-tag tests with a size:
-https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
-To have more exhaustive and slower running tests.  This isn't
-something kunit currently supports, nor is the execution of python and
-shell tests, but it seems sensible to work on an approach with kunit
-rather to invent a new wheel inside of perf.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/tests.h | 151 ++++++++++++++++++++-------------------
+ 1 file changed, 77 insertions(+), 74 deletions(-)
 
-These initial patches are just refactoring the main test suite
-definitions to be in a more kunit style. Kunit isn't depended upon, it
-is hoped that this can be done in later patches for the sake of
-consistency.
-
-v1. Built/tested on x86.
-
-Ian Rogers (5):
-  perf test: Use macro for "suite" declarations
-  perf test: Use macro for "suite" definitions
-  perf test: Make each test/suite its own struct.
-  perf test: Move each test suite struct to its test
-  perf test: Rename struct test to test_suite
-
- tools/perf/arch/arm/include/arch-tests.h      |   2 +-
- tools/perf/arch/arm/tests/arch-tests.c        |  21 +-
- tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
- tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
- tools/perf/arch/arm64/tests/arch-tests.c      |  15 +-
- tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
- tools/perf/arch/powerpc/tests/arch-tests.c    |  15 +-
- tools/perf/arch/x86/include/arch-tests.h      |  14 +-
- tools/perf/arch/x86/tests/arch-tests.c        |  47 +-
- tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
- tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
- tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
- .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
- tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
- tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
- tools/perf/tests/api-io.c                     |   6 +-
- tools/perf/tests/attr.c                       |   4 +-
- tools/perf/tests/backward-ring-buffer.c       |   4 +-
- tools/perf/tests/bitmap.c                     |   4 +-
- tools/perf/tests/bp_account.c                 |  10 +-
- tools/perf/tests/bp_signal.c                  |   8 +-
- tools/perf/tests/bp_signal_overflow.c         |   8 +-
- tools/perf/tests/bpf.c                        |  22 +-
- tools/perf/tests/builtin-test.c               | 441 ++++--------------
- tools/perf/tests/clang.c                      |  18 +-
- tools/perf/tests/code-reading.c               |   4 +-
- tools/perf/tests/cpumap.c                     |  10 +-
- tools/perf/tests/demangle-java-test.c         |   4 +-
- tools/perf/tests/demangle-ocaml-test.c        |   4 +-
- tools/perf/tests/dlfilter-test.c              |   4 +-
- tools/perf/tests/dso-data.c                   |  10 +-
- tools/perf/tests/dwarf-unwind.c               |   2 +-
- tools/perf/tests/event-times.c                |   4 +-
- tools/perf/tests/event_update.c               |   4 +-
- tools/perf/tests/evsel-roundtrip-name.c       |   4 +-
- tools/perf/tests/evsel-tp-sched.c             |   4 +-
- tools/perf/tests/expand-cgroup.c              |   6 +-
- tools/perf/tests/expr.c                       |   4 +-
- tools/perf/tests/fdarray.c                    |   7 +-
- tools/perf/tests/genelf.c                     |   6 +-
- tools/perf/tests/hists_cumulate.c             |   4 +-
- tools/perf/tests/hists_filter.c               |   4 +-
- tools/perf/tests/hists_link.c                 |   4 +-
- tools/perf/tests/hists_output.c               |   4 +-
- tools/perf/tests/is_printable_array.c         |   4 +-
- tools/perf/tests/keep-tracking.c              |   4 +-
- tools/perf/tests/kmod-path.c                  |   4 +-
- tools/perf/tests/llvm.c                       |  22 +-
- tools/perf/tests/maps.c                       |   4 +-
- tools/perf/tests/mem.c                        |   4 +-
- tools/perf/tests/mem2node.c                   |   4 +-
- tools/perf/tests/mmap-basic.c                 |   4 +-
- tools/perf/tests/mmap-thread-lookup.c         |   4 +-
- tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
- tools/perf/tests/openat-syscall-tp-fields.c   |   4 +-
- tools/perf/tests/openat-syscall.c             |   5 +-
- tools/perf/tests/parse-events.c               |   4 +-
- tools/perf/tests/parse-metric.c               |   4 +-
- tools/perf/tests/parse-no-sample-id-all.c     |   4 +-
- tools/perf/tests/pe-file-parsing.c            |   6 +-
- tools/perf/tests/perf-hooks.c                 |   4 +-
- tools/perf/tests/perf-record.c                |   4 +-
- tools/perf/tests/perf-time-to-tsc.c           |  10 +-
- tools/perf/tests/pfm.c                        |  16 +-
- tools/perf/tests/pmu-events.c                 |  19 +-
- tools/perf/tests/pmu.c                        |   4 +-
- tools/perf/tests/python-use.c                 |   4 +-
- tools/perf/tests/sample-parsing.c             |   4 +-
- tools/perf/tests/sdt.c                        |   6 +-
- tools/perf/tests/stat.c                       |  10 +-
- tools/perf/tests/sw-clock.c                   |   4 +-
- tools/perf/tests/switch-tracking.c            |   4 +-
- tools/perf/tests/task-exit.c                  |   4 +-
- tools/perf/tests/tests.h                      | 179 ++++---
- tools/perf/tests/thread-map.c                 |  10 +-
- tools/perf/tests/thread-maps-share.c          |   4 +-
- tools/perf/tests/time-utils-test.c            |   4 +-
- tools/perf/tests/topology.c                   |   4 +-
- tools/perf/tests/unit_number__scnprintf.c     |   4 +-
- tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
- tools/perf/tests/wp.c                         |  22 +-
- 81 files changed, 543 insertions(+), 618 deletions(-)
-
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index fe1306f58495..0846f66d67f9 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -40,94 +40,97 @@ struct test {
+ 	void *priv;
+ };
+ 
++#define DECLARE_SUITE(name) \
++	int test__##name(struct test *test, int subtest)
++
+ /* Tests */
+-int test__vmlinux_matches_kallsyms(struct test *test, int subtest);
+-int test__openat_syscall_event(struct test *test, int subtest);
+-int test__openat_syscall_event_on_all_cpus(struct test *test, int subtest);
+-int test__basic_mmap(struct test *test, int subtest);
+-int test__PERF_RECORD(struct test *test, int subtest);
+-int test__perf_evsel__roundtrip_name_test(struct test *test, int subtest);
+-int test__perf_evsel__tp_sched_test(struct test *test, int subtest);
+-int test__syscall_openat_tp_fields(struct test *test, int subtest);
+-int test__pmu(struct test *test, int subtest);
+-int test__pmu_events(struct test *test, int subtest);
++DECLARE_SUITE(vmlinux_matches_kallsyms);
++DECLARE_SUITE(openat_syscall_event);
++DECLARE_SUITE(openat_syscall_event_on_all_cpus);
++DECLARE_SUITE(basic_mmap);
++DECLARE_SUITE(PERF_RECORD);
++DECLARE_SUITE(perf_evsel__roundtrip_name_test);
++DECLARE_SUITE(perf_evsel__tp_sched_test);
++DECLARE_SUITE(syscall_openat_tp_fields);
++DECLARE_SUITE(pmu);
++DECLARE_SUITE(pmu_events);
+ const char *test__pmu_events_subtest_get_desc(int subtest);
+ const char *test__pmu_events_subtest_skip_reason(int subtest);
+ int test__pmu_events_subtest_get_nr(void);
+-int test__attr(struct test *test, int subtest);
+-int test__dso_data(struct test *test, int subtest);
+-int test__dso_data_cache(struct test *test, int subtest);
+-int test__dso_data_reopen(struct test *test, int subtest);
+-int test__parse_events(struct test *test, int subtest);
+-int test__hists_link(struct test *test, int subtest);
+-int test__python_use(struct test *test, int subtest);
+-int test__bp_signal(struct test *test, int subtest);
+-int test__bp_signal_overflow(struct test *test, int subtest);
+-int test__bp_accounting(struct test *test, int subtest);
+-int test__wp(struct test *test, int subtest);
++DECLARE_SUITE(attr);
++DECLARE_SUITE(dso_data);
++DECLARE_SUITE(dso_data_cache);
++DECLARE_SUITE(dso_data_reopen);
++DECLARE_SUITE(parse_events);
++DECLARE_SUITE(hists_link);
++DECLARE_SUITE(python_use);
++DECLARE_SUITE(bp_signal);
++DECLARE_SUITE(bp_signal_overflow);
++DECLARE_SUITE(bp_accounting);
++DECLARE_SUITE(wp);
+ const char *test__wp_subtest_get_desc(int subtest);
+ const char *test__wp_subtest_skip_reason(int subtest);
+ int test__wp_subtest_get_nr(void);
+-int test__task_exit(struct test *test, int subtest);
+-int test__mem(struct test *test, int subtest);
+-int test__sw_clock_freq(struct test *test, int subtest);
+-int test__code_reading(struct test *test, int subtest);
+-int test__sample_parsing(struct test *test, int subtest);
+-int test__keep_tracking(struct test *test, int subtest);
+-int test__parse_no_sample_id_all(struct test *test, int subtest);
+-int test__dwarf_unwind(struct test *test, int subtest);
+-int test__expr(struct test *test, int subtest);
+-int test__hists_filter(struct test *test, int subtest);
+-int test__mmap_thread_lookup(struct test *test, int subtest);
+-int test__thread_maps_share(struct test *test, int subtest);
+-int test__hists_output(struct test *test, int subtest);
+-int test__hists_cumulate(struct test *test, int subtest);
+-int test__switch_tracking(struct test *test, int subtest);
+-int test__fdarray__filter(struct test *test, int subtest);
+-int test__fdarray__add(struct test *test, int subtest);
+-int test__kmod_path__parse(struct test *test, int subtest);
+-int test__thread_map(struct test *test, int subtest);
+-int test__llvm(struct test *test, int subtest);
++DECLARE_SUITE(task_exit);
++DECLARE_SUITE(mem);
++DECLARE_SUITE(sw_clock_freq);
++DECLARE_SUITE(code_reading);
++DECLARE_SUITE(sample_parsing);
++DECLARE_SUITE(keep_tracking);
++DECLARE_SUITE(parse_no_sample_id_all);
++DECLARE_SUITE(dwarf_unwind);
++DECLARE_SUITE(expr);
++DECLARE_SUITE(hists_filter);
++DECLARE_SUITE(mmap_thread_lookup);
++DECLARE_SUITE(thread_maps_share);
++DECLARE_SUITE(hists_output);
++DECLARE_SUITE(hists_cumulate);
++DECLARE_SUITE(switch_tracking);
++DECLARE_SUITE(fdarray__filter);
++DECLARE_SUITE(fdarray__add);
++DECLARE_SUITE(kmod_path__parse);
++DECLARE_SUITE(thread_map);
++DECLARE_SUITE(llvm);
+ const char *test__llvm_subtest_get_desc(int subtest);
+ int test__llvm_subtest_get_nr(void);
+-int test__bpf(struct test *test, int subtest);
++DECLARE_SUITE(bpf);
+ const char *test__bpf_subtest_get_desc(int subtest);
+ int test__bpf_subtest_get_nr(void);
+-int test__session_topology(struct test *test, int subtest);
+-int test__thread_map_synthesize(struct test *test, int subtest);
+-int test__thread_map_remove(struct test *test, int subtest);
+-int test__cpu_map_synthesize(struct test *test, int subtest);
+-int test__synthesize_stat_config(struct test *test, int subtest);
+-int test__synthesize_stat(struct test *test, int subtest);
+-int test__synthesize_stat_round(struct test *test, int subtest);
+-int test__event_update(struct test *test, int subtest);
+-int test__event_times(struct test *test, int subtest);
+-int test__backward_ring_buffer(struct test *test, int subtest);
+-int test__cpu_map_print(struct test *test, int subtest);
+-int test__cpu_map_merge(struct test *test, int subtest);
+-int test__sdt_event(struct test *test, int subtest);
+-int test__is_printable_array(struct test *test, int subtest);
+-int test__bitmap_print(struct test *test, int subtest);
+-int test__perf_hooks(struct test *test, int subtest);
+-int test__clang(struct test *test, int subtest);
++DECLARE_SUITE(session_topology);
++DECLARE_SUITE(thread_map_synthesize);
++DECLARE_SUITE(thread_map_remove);
++DECLARE_SUITE(cpu_map_synthesize);
++DECLARE_SUITE(synthesize_stat_config);
++DECLARE_SUITE(synthesize_stat);
++DECLARE_SUITE(synthesize_stat_round);
++DECLARE_SUITE(event_update);
++DECLARE_SUITE(event_times);
++DECLARE_SUITE(backward_ring_buffer);
++DECLARE_SUITE(cpu_map_print);
++DECLARE_SUITE(cpu_map_merge);
++DECLARE_SUITE(sdt_event);
++DECLARE_SUITE(is_printable_array);
++DECLARE_SUITE(bitmap_print);
++DECLARE_SUITE(perf_hooks);
++DECLARE_SUITE(clang);
+ const char *test__clang_subtest_get_desc(int subtest);
+ int test__clang_subtest_get_nr(void);
+-int test__unit_number__scnprint(struct test *test, int subtest);
+-int test__mem2node(struct test *t, int subtest);
+-int test__maps__merge_in(struct test *t, int subtest);
+-int test__time_utils(struct test *t, int subtest);
+-int test__jit_write_elf(struct test *test, int subtest);
+-int test__api_io(struct test *test, int subtest);
+-int test__demangle_java(struct test *test, int subtest);
+-int test__demangle_ocaml(struct test *test, int subtest);
+-int test__pfm(struct test *test, int subtest);
++DECLARE_SUITE(unit_number__scnprint);
++DECLARE_SUITE(mem2node);
++DECLARE_SUITE(maps__merge_in);
++DECLARE_SUITE(time_utils);
++DECLARE_SUITE(jit_write_elf);
++DECLARE_SUITE(api_io);
++DECLARE_SUITE(demangle_java);
++DECLARE_SUITE(demangle_ocaml);
++DECLARE_SUITE(pfm);
+ const char *test__pfm_subtest_get_desc(int subtest);
+ int test__pfm_subtest_get_nr(void);
+-int test__parse_metric(struct test *test, int subtest);
+-int test__pe_file_parsing(struct test *test, int subtest);
+-int test__expand_cgroup_events(struct test *test, int subtest);
+-int test__perf_time_to_tsc(struct test *test, int subtest);
+-int test__dlfilter(struct test *test, int subtest);
++DECLARE_SUITE(parse_metric);
++DECLARE_SUITE(pe_file_parsing);
++DECLARE_SUITE(expand_cgroup_events);
++DECLARE_SUITE(perf_time_to_tsc);
++DECLARE_SUITE(dlfilter);
+ 
+ bool test__bp_signal_is_supported(void);
+ bool test__bp_account_is_supported(void);
+@@ -142,7 +145,7 @@ int test__arch_unwind_sample(struct perf_sample *sample,
+ #endif
+ 
+ #if defined(__arm__)
+-int test__vectors_page(struct test *test, int subtest);
++DECLARE_SUITE(vectors_page);
+ #endif
+ 
+ #endif /* TESTS_H */
 -- 
 2.33.0.464.g1972c5931b-goog
 
