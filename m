@@ -2,122 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51120415249
+	by mail.lfdr.de (Postfix) with ESMTP id 9A26141524A
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237744AbhIVVCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:02:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42352 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237944AbhIVVBz (ORCPT
+        id S237961AbhIVVCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:02:15 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33094 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237790AbhIVVBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 17:01:55 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18ML08oh034020;
-        Wed, 22 Sep 2021 16:00:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632344408;
-        bh=LUibseOnhjOc+FgMv1x4a+9RVzzzcJXHveE+rZFdCM4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=oGeBzH6DqTDB8kOuPXbjhQFmEeGO6XeyR1owA0a40tjTW6oWZG1a7y1aLYVNg92tR
-         OLJyHwy+2MGg78DioAM9HQcjOvJBmir2tNe2tKNXHB60zgADMbnAPCL2TZ5yUCTnQX
-         +vt+JxbmtRH8WkKUXEfq+Px/U5Q9gUN0GyIM7Vhg=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18ML08ru101677
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Sep 2021 16:00:08 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 22
- Sep 2021 16:00:07 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 22 Sep 2021 16:00:08 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18ML07VV030330;
-        Wed, 22 Sep 2021 16:00:07 -0500
-Date:   Wed, 22 Sep 2021 16:00:07 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Suman Anna <s-anna@ti.com>,
-        Sinthu Raja <sinthu.raja@mistralsolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sinthu Raja <sinthu.raja@ti.com>
-Subject: Re: [PATCH] dt-bindings: hwlock: omap: Remove board-specific
- compatible from DT example
-Message-ID: <20210922210007.myuuwpwd7ltpdvtf@expanse>
-References: <20210917094740.18891-1-sinthu.raja@ti.com>
- <20210917144455.nj6bc2enytlgqmzn@studied>
- <ba7e9eff-6cd1-2705-4c27-f3a700345ed2@ti.com>
- <YUkE1TRVBxnLuktb@builder.lan>
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 907CD1C0B76; Wed, 22 Sep 2021 23:00:15 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 23:00:15 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 100/122] gpio: mpc8xxx: Fix a potential double
+ iounmap call in mpc8xxx_probe()
+Message-ID: <20210922210014.GA27285@amd>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163919.067590477@linuxfoundation.org>
+ <20210921212526.GA28467@duo.ucw.cz>
+ <YUrxz1tG43TIyypq@kroah.com>
+ <YUryE32/gr/HH+L8@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
 Content-Disposition: inline
-In-Reply-To: <YUkE1TRVBxnLuktb@builder.lan>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YUryE32/gr/HH+L8@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17:01-20210920, Bjorn Andersson wrote:
-> On Mon 20 Sep 16:14 CDT 2021, Suman Anna wrote:
-> 
-> > On 9/17/21 9:44 AM, Nishanth Menon wrote:
-> > > On 15:17-20210917, Sinthu Raja wrote:
-> > >> From: Sinthu Raja <sinthu.raja@ti.com>
-> > >>
-> > >> The example includes a board-specific compatible property, this is
-> > >> wrong as the example should be board agnostic. Replace the same with a
-> > >> generic soc node.
-> > >>
-> > >> Fixes: d8db9dc34871 ("dt-bindings: hwlock: omap: Convert binding to YAML")
-> > >> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
-> > >> ---
-> > >>
-> > >> This patch was triggered by discussions in [1].
-> > >>
-> > >> When applying the patch, if you could provide an immutable tag for the
-> > >> bindings, it would help line things up for new platforms to be added for
-> > >> us. See [2] for the context
-> > > 
-> > > 
-> > > Aah yes, thanks.. Bjorn.. once Rob acks ofcourse (since this is
-> > > bindings).
-> > 
-> > Hmm, I don't think an immutable tag is needed for this patch. This is just
-> > cleanup, what is your exact dependency here?
-> > 
-> > The relevant HwSpinlock dts nodes are all upstream on all applicable platforms
-> > already.
-> > 
-> 
-> I agree and in general I think it's better to do DT validation against
-> linux-next, as you would otherwise miss out on any newly introduced
-> issues from inherited bindings etc.
 
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I agree that an immutable commit is not needed on this specific patch.
-The updated revision[1] posted had already dropped that request.
+Hi!
 
-On the other hand, series[2] makes Rob's checks fail (as it runs on
-rc1) - and helps keep everyone sane by getting an immutable commit
-merged in allowing for follow on patches to stay clean.
+> > > > Commit 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support") has switche=
+d to a
+> > > > managed version when dealing with 'mpc8xxx_gc->regs'. So the corres=
+ponding
+> > > > 'iounmap()' call in the error handling path and in the remove shoul=
+d be
+> > > > removed to avoid a double unmap.
+> > >=20
+> > > This is wrong, AFAICT. 5.10 does not have 76c47d1449fc ("gpio:
+> > > mpc8xxx: Add ACPI support") so iounmap is still neccessary and this
+> > > adds a memory leak.
+> >=20
+> > Ah, but then I have to drop 889a1b3f35db ("gpio: mpc8xxx: Use
+> > 'devm_gpiochip_add_data()' to simplify the code and avoid a leak") from
+> > the 5.10 queue as it depends on this one.
+> >=20
+> > Can you provide a working backport of that commit so that I can queue up
+> > the fix?
+>=20
+> Oh nevermind, I fixed it up myself.
 
-NOTE: I do test patches for both checks and functionality to the best I
-can on both rc1 (my tree)[3] and on linux-next on the day I pick the
-patches up.
+Thank you!
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-[1] https://lore.kernel.org/all/20210920123152.32751-1-sinthu.raja@ti.com/
-[2] https://lore.kernel.org/all/20210917095426.19277-1-sinthu.raja@ti.com/
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git/tree/
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+--cWoXeonUoKmBZSoM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmFLmV4ACgkQMOfwapXb+vKJ2ACgnOxLRd490CMXujD21PrSZCds
+8p4An162c860YqMRc2FjSq27t8CxdrF8
+=FNDf
+-----END PGP SIGNATURE-----
+
+--cWoXeonUoKmBZSoM--
