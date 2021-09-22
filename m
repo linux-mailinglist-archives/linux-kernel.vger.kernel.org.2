@@ -2,273 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEB3414018
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B014B41401C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 05:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhIVDj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 23:39:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:9752 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhIVDj4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 23:39:56 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDkWH3TYYzWM09;
-        Wed, 22 Sep 2021 11:37:15 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Wed, 22 Sep 2021 11:38:25 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Wed, 22 Sep
- 2021 11:38:24 +0800
-Subject: Re: [PATCH net-next v2 3/3] skbuff: keep track of pp page when
- __skb_frag_ref() is called
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Jesper Dangaard Brouer <jbrouer@redhat.com>, <brouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <hawk@kernel.org>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <cong.wang@bytedance.com>,
-        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
-        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
-        <dsahern@gmail.com>
-References: <YUMD2v7ffs1xAjaW@apalos.home>
- <ac16cc82-8d98-6a2c-b0a6-7c186808c72c@huawei.com>
- <YUMelDd16Aw8w5ZH@apalos.home>
- <e2e127be-c9e4-5236-ba3c-28fdb53aa29b@huawei.com>
- <YUMxKhzm+9MDR0jW@apalos.home>
- <36676c07-c2ca-bbd2-972c-95b4027c424f@huawei.com>
- <YUQ3ySFxc/DWzsMy@apalos.home>
- <4a682251-3b40-b16a-8999-69acb36634f3@huawei.com>
- <YUStryKMMhhqbQdz@Iliass-MBP>
- <5d8232b1-4b85-f755-a92a-d305bff9eab3@huawei.com>
- <YUWwESRQbloKWBND@Iliass-MBP>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <91cd084f-f8a3-19e7-42d7-95138378aa9d@huawei.com>
-Date:   Wed, 22 Sep 2021 11:38:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S231332AbhIVDk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 23:40:57 -0400
+Received: from mail-eopbgr1300041.outbound.protection.outlook.com ([40.107.130.41]:22854
+        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230054AbhIVDk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 23:40:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kjxwDFKvwoAtaPhPGiSGIO9cZuZ6IUYVsEeaB7l8AJyxfTvaT1Eh3EBTt3DEDcV+0iZxzT0I2w6wy6ESX2WkSxk3QPsFFTYtU9vsExDpCV66x9oT24IqQFWFFy6sUzpum5CwYx3Tc6GeR4zYlw2uw2vlaCBexKOViLKxOnMj1V8EL8oW0z9zOHdNvEU7oXYHhBM1Mu6Ddw8wv6oL+z1kzMaYy0yzj7LiSycHmbP6rbIaMOTWIetzmmtmKZ/uKH6yu5/ZqtctOIGEceMObeL8O4E0xmu6xc50NK2dIeqxDa9nGL8dFNqPnw6SQ49y523IQRM7PodShwcwnG36zp5HcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=s5vHlmaW1B856mrFUdH/qqRerCMy0YOyNrfY5CBSJEw=;
+ b=YBLoKR3bs7qo1wIWvEJnebwS116KvGXnL7AQLGK2rGKqNHyg8qgX1VrXJUSH3cUJIEvCQKO+w9xYr8l1q3mnWNQMCjnWDSnDI9fXe4VD12LqElpUSMqTgczdPMg+jVexMwSPPlstXotsJQGca1UrFbU3B/X7XwngDT/6IVY0yVRdGNpQdXS1FNEIa+L8r/3Kv4n6dbZZlTO6LwPgL9+4ufPI3cymcIv7aSmf7vfz+4xBzRHQz0pst38QzXt7kMMF2sJSrj8PQnhxlN8WNbqjhOVASTpQGW1ofZs+I/TGq/W5PWmfNzAY2X7ONtGjJQIq7XV0EZqkOxgDQghmJvxJbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s5vHlmaW1B856mrFUdH/qqRerCMy0YOyNrfY5CBSJEw=;
+ b=PXBVz+x2t7dx34+jhHWfx7a0lMEBbTfiQWjrlFQSQK1Q4J9h1wYrsSO10DG8/7U5oUGvhmXsUaedSjq9V5HKmS4E+JFXLT0mFJw/f/trIlz2HyAseLGFgZj0RiG2n+ylQRPqBXk23b5zxnyXws5nKJ1O073yLAZrFtRizw4rEzk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oppo.com;
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
+ SG2PR02MB3113.apcprd02.prod.outlook.com (2603:1096:4:5a::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4523.18; Wed, 22 Sep 2021 03:39:21 +0000
+Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::5919:768f:2950:9504]) by SG2PR02MB4108.apcprd02.prod.outlook.com
+ ([fe80::5919:768f:2950:9504%4]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
+ 03:39:21 +0000
+Subject: Re: [PATCH] ovl: fix null pointer when filesystem doesn't support
+ direct IO
+To:     Chengguang Xu <cgxu519@139.com>, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        chao@kernel.org
+Cc:     guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
+        guanyuwei@oppo.com, jnhuang95@gmail.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20210918121346.12084-1-huangjianan@oppo.com>
+ <3633c6e5-028c-fc77-3b8e-da9903f97ac5@139.com>
+From:   Huang Jianan <huangjianan@oppo.com>
+Message-ID: <76cfd82b-47c8-d5aa-e946-f9e53f78ad81@oppo.com>
+Date:   Wed, 22 Sep 2021 11:39:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <3633c6e5-028c-fc77-3b8e-da9903f97ac5@139.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: HK2PR0401CA0013.apcprd04.prod.outlook.com
+ (2603:1096:202:2::23) To SG2PR02MB4108.apcprd02.prod.outlook.com
+ (2603:1096:4:96::19)
 MIME-Version: 1.0
-In-Reply-To: <YUWwESRQbloKWBND@Iliass-MBP>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.118.7.229] (58.252.5.73) by HK2PR0401CA0013.apcprd04.prod.outlook.com (2603:1096:202:2::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Wed, 22 Sep 2021 03:39:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a642429e-f439-4ab4-53da-08d97d7a907f
+X-MS-TrafficTypeDiagnostic: SG2PR02MB3113:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SG2PR02MB31139CA82AAF807C4695C1ECC3A29@SG2PR02MB3113.apcprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XUc0FyJnIPG/09WXFht+G8IFVSaIQ4F8bMNmN7KBnS5n7GhcvQcd1ElhtaNfOue31Z8AsxNq4XSeM5OM7TG2OeQHwoUueRIf//6xa/LnjlK6TWwX8QLmQ1HHpBmFYVLKWRx1UhPc1gYrkAxGaHS7hScOjm9/MBh2mtWD8/nG5YnIm0iXj+ff0jL47Ji4ixCX0jM/mXlM4sJRMy1eueBVjOzKnc+ZJk6ORXM1rRRM7vvF3WrGAyQmKMD+tC3RtrDLPptizAVHFOC0hc3T0VNKNHSUCAN8TvlHks/6SK/6KKsIEciRfFWx/p5aMHsRbeHxwpoTgdEclBua+V9J+KKBJlxE/x9d8M7QjiC2USfg0ro2CDPo9QjNxDb6b2l9AnLjr4stnHyVZb07f50bMFe2jXV+aui//p5p10zGDazLjMBKtookMzBdIW16mt67e0DRKcy6LvcX8tzUSQ8nwkHp3nTJORotqdrD5m+CHurF+0+xAjY92j7rHQ27MHD+BWRLj9JFyQdWUWsbj4GOjITl3QtvIO4i/JQZNWp5S9bohVPPzU8bInhutIX7+2JRTPXTyXexfdbcFktglyLKpHZY8wHVmPBh4OKHccs8xnLlc5bnx//csr3HX4umZYazcSQ6j37f0+TFw8TMmV2RLf6vP2+B+l8/VRbhb3Y65ztMdcPtTlpTEXvO1KLEv3ZkNLvsS/9YzZ3Ka3t+1ErpDT45QSngtXzfDL6ZepiMEOSaxd9kVtLAmP0JP78xGT5ujg1fo1saA3W+slczNNtDl4azAf9DqCXxGx2DVbjAUI8qD6I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(956004)(2616005)(66556008)(316002)(66946007)(5660300002)(66476007)(508600001)(4326008)(38350700002)(186003)(8936002)(31696002)(38100700002)(36756003)(52116002)(31686004)(6486002)(26005)(16576012)(8676002)(86362001)(83380400001)(11606007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RFdxVXZTTGN0MjEyZnZXMHh2TktsWFhaeFRSbHhGUGVMUTdXZkVHMjcvajZT?=
+ =?utf-8?B?Q1AzVGttZjZDU3kzRVRPNjNQaDRUdm5jclA1YU9GaEJtS1F6dW53aG9FYUtN?=
+ =?utf-8?B?T0tPUlZXV014cnBiU3NMMElrSytSaEtpQU40ZDBBby9XT0VrRFNnK20vVUVz?=
+ =?utf-8?B?MHcrYUZSYy9tMjBtdlhaWmxFR3pqNk5URzhIcnF0VjZzRGQ3bjNCWTJaT2Ns?=
+ =?utf-8?B?U1Z0eW55OHZtTnRkSXhRWXlYdnNsSTdINld0a0laeXJlSkJhZTVvR3VCNVhV?=
+ =?utf-8?B?SnZ3YXNYeHUxbVprRHQwVmNCZC9UWmoyc1NacXFQaVpmVWE0YWtYd1JtbDJC?=
+ =?utf-8?B?cnVsRGtMWU5Dd2xDaktWU1BXUkhVWVlBM1BMbS9xdTE2MEFlemk3aUdaRXR3?=
+ =?utf-8?B?dFp5TnBNelc5UlhrT0RRZkJncFpRbFlZeWVJQ3NKdStCNVpxVUtHdFBNbTBJ?=
+ =?utf-8?B?dkxXMnpYMmZPaUFxaStiZ1N6cGFXK2pqVEROa0NwTDNVbDM5bElpVVAyeUUw?=
+ =?utf-8?B?K1NhZndtQU9QUjFKT1cvQ2lIR3R3b1RGY3pqZkRCSms1dDdHK0NXaEt0THIv?=
+ =?utf-8?B?b2pWRkxqSTgzd29PMlNuemgzbnBKNUNJdTVjcE10enIreXpNdjUwdUI3SHN3?=
+ =?utf-8?B?S1I1ZW4yU2R2T1VXSnZYYU1zMVNKbHJKQUZnbzlwMmdMSWtENEd5V1BianR2?=
+ =?utf-8?B?M0pPK29iN2lqVWt5SDhmcEc4bmM5cmtBVFJhRWwwVThXS2JzaFI3akp3K2hY?=
+ =?utf-8?B?aTJmQWdLMllvTDRKY2ZNUXg1NUlxeDY2Mnk3Z200ZXdmSUJwZXFVQktKUDEw?=
+ =?utf-8?B?Y0JtbjBZb1VGUk9FSEx4WkNJWW1qTVI5ak82UFJDZXl2MVh2TWNBS1ZRMDZR?=
+ =?utf-8?B?M3VoR2VRRFp3SnlkbXR0VEdXYUlnU0lJalpZTWhVeWQ3MDFzeC9pZmF5MmFH?=
+ =?utf-8?B?bGgvY3JHeERXVGIzSGF2UVp6SUorNnNCaFp5OWIxTWxNNHJ5QWVuUHVSOU5v?=
+ =?utf-8?B?SGN5b1JDaHRHVEJ5OXlSNTVCdVo1NGNYODIzcWJWNFJHbFFlU0VzUENSUXI0?=
+ =?utf-8?B?OGhjQndwTy8vbDhBS1E1Z2Vmc1d6T1dCd2QrUDF5TDJoMmYzK0tlaGwyb0xh?=
+ =?utf-8?B?SlNDV3diTTBVTzE2MXNOMGt6dFVKazJ6dWhHZmJ5cC93aTJxQlVoN3RnQzE5?=
+ =?utf-8?B?M0I4WFZGZU91a3BIaDEzQjZIaTF5WFFYVjJNQ2pGeVFnVWhsbzJ2UHRMR0NJ?=
+ =?utf-8?B?QTZYWnZMZVFMTnByVCtZNFJ1WUhLRHo3aXFrcXNobzUxeERsdzV1cUNwUG16?=
+ =?utf-8?B?SUJ0NEJJejlZcmRyeWRvbURZUG1QKzR4RUZOdmtSR2VYaW94K2tubVBVcDlJ?=
+ =?utf-8?B?TGQvYW9xM2ZWYmtDcEd1OHVEV2VkaHdFT25RWUI3NUpIZk9PQ3VjVFZmRDBG?=
+ =?utf-8?B?cTk1WTNoOXVRMTJtVW9tNzhJWWZwZFljM3JnanZNSVFhbTlTTFA3ZEJ2K1Ew?=
+ =?utf-8?B?NEhiT1NJcjI0WVRTeExEMkQ1clo5aGhzcndJNlpJSTNTZlJjOWJYNVNIZjA3?=
+ =?utf-8?B?QnlWUFFyc00rcE1TL0o2SEMwcW1OcVg0Y1BYbXJBVWtIcDhzWG12WWlJaEp3?=
+ =?utf-8?B?cFFSb2RWVUVIdTFLMFhYTmI1UEFvUEI4OFpIejY2a3VSVDVYdmZyU0JrVE5T?=
+ =?utf-8?B?TWRuaDVHYU1Tb3hjSjV3Z0hKRXRhM3ZDN3BNOFlldU93dHJnMGdyMStBRC9X?=
+ =?utf-8?Q?97gnqfnG1C+sUFFRqYCWHNq+otc02TsQEVrLCJb?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a642429e-f439-4ab4-53da-08d97d7a907f
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 03:39:21.5290
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jPYsOKXLJpar9MDnzQoV19NclXU8H7qMTWdE+Kltb9Smnzfp76g+vjcvA1nCmrgJGyhZ/m8e7uHYYzGkIrUkvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB3113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/18 17:23, Ilias Apalodimas wrote:
-> [...]
-> 
-
-[...]
-
->>>>>>
->>>>>>>
->>>>>>> IOW in skb_free_head() an we replace:
->>>>>>>
->>>>>>> if (skb_pp_recycle(skb, head)) 
->>>>>>> with
->>>>>>> if (page->pp_magic & ~0x3UL) == PP_SIGNATURE)
->>>>>>> and get rid of the 'bool recycle' argument in __skb_frag_unref()?
->>>>>>
->>>>>> For the frag page of a skb, it seems ok to get rid of the 'bool recycle'
->>>>>> argument in __skb_frag_unref(), as __skb_frag_unref() and __skb_frag_ref()
->>>>>> is symmetrically called to put/get a page.
->>>>>>
->>>>>> For the head page of a skb, we might need to make sure the head page
->>>>>> passed to __build_skb_around() meet below condition:
->>>>>> do pp_frag_count incrementing instead of _refcount incrementing when
->>>>>> the head page is not newly allocated and it is from page pool.
->>>>>> It seems hard to audit that?
->>>>>
->>>>> Yea that seems a bit weird at least to me and I am not sure, it's the only
->>>>> place we'll have to go and do that.
->>>>
->>>> Yes, That is why I avoid changing the behavior of a head page for a skb.
->>>> In other word, maybe we should not track if head page for a skb is pp page
->>>> or not when the page'_refcount is incremented during network stack journey,
->>>> just treat it as normal page?
->>>>  
->>>
->>> I am not sure I understand this.
+在 2021/9/22 9:56, Chengguang Xu 写道:
+> 在 2021/9/18 20:13, Huang Jianan 写道:
+>> From: Huang Jianan <huangjianan@oppo.com>
 >>
->> I was saying only treat the head page of a skb as pp page when it is newly
->> allocated from page pool, if that page is reference-counted to build another
->> head page for another skb later, just treat it as normal page.
-> 
-> But the problem here is that a cloned/expanded SKB could trigger a race
-> when freeing the fragments.  That's why we reset the pp_recycle bit if
-> there's still references to the frags.  What does 'normal' page means here?
-> We'll have to at least unmap dma part.
-
-'normal' page means non-pp page here. Maybe forget the above.
-
-I read the code related to head page headling for a skb, it seems the
-NAPI_GRO_FREE_STOLEN_HEAD and skb_head_frag_to_page_desc() case is just
-fine as it is now when the page signature is used to identify a pp page
-for the head page of a skb uniquely?
-
-> 
+>> At present, overlayfs provides overlayfs inode to users. Overlayfs
+>> inode provides ovl_aops with noop_direct_IO to avoid open failure
+>> with O_DIRECT. But some compressed filesystems, such as erofs and
+>> squashfs, don't support direct_IO.
 >>
->>>
->>>>>
->>>>>>
->>>>>>
->>>>>>>
->>>>>>>> bit 0 of frag->bv_page is different way of indicatior for a pp page,
->>>>>>>> it is better we do not confuse with the page signature way. Using
->>>>>>>> a bit 0 may give us a free word in 'struct page' if we manage to
->>>>>>>> use skb->pp_recycle to indicate a head page of the skb uniquely, meaning
->>>>>>>> page->pp_magic can be used for future feature.
->>>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>> for pp_recycle right now?  __skb_frag_unref() in skb_shift() or
->>>>>>>>>>> skb_try_coalesce() (the latter can probably be removed tbh).
->>>>>>>>>>
->>>>>>>>>> If we decide to go with accurate indicator of a pp page, we just need
->>>>>>>>>> to make sure network stack use __skb_frag_unref() and __skb_frag_ref()
->>>>>>>>>> to put and get a page frag, the indicator checking need only done in
->>>>>>>>>> __skb_frag_unref() and __skb_frag_ref(), so the skb_shift() and
->>>>>>>>>> skb_try_coalesce() should be fine too.
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> Another way is to use the bit 0 of frag->bv_page ptr to indicate if a frag
->>>>>>>>>>>> page is from page pool.
->>>>>>>>>>>
->>>>>>>>>>> Instead of the 'struct page' signature?  And the pp_recycle bit will
->>>>>>>>>>> continue to exist?  
->>>>>>>>>>
->>>>>>>>>> pp_recycle bit might only exist or is only used for the head page for the skb.
->>>>>>>>>> The bit 0 of frag->bv_page ptr can be used to indicate a frag page uniquely.
->>>>>>>>>> Doing a memcpying of shinfo or "*fragto = *fragfrom" automatically pass the
->>>>>>>>>> indicator to the new shinfo before doing a __skb_frag_ref(), and __skb_frag_ref()
->>>>>>>>>> will increment the _refcount or pp_frag_count according to the bit 0 of
->>>>>>>>>> frag->bv_page.
->>>>>>>>>>
->>>>>>>>>> By the way, I also prototype the above idea, and it seems to work well too.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> As long as no one else touches this, it's just another way of identifying a
->>>>>>>>> page_pool allocated page.  But are we gaining by that?  Not using
->>>>>>>>> virt_to_head_page() as stated above? But in that case you still need to
->>>>>>>>> keep pp_recycle around. 
->>>>>>>>
->>>>>>>> No, we do not need the pp_recycle, as long as the we make sure __skb_frag_ref()
->>>>>>>> is called after memcpying the shinfo or doing "*fragto = *fragfrom".
->>>>>>>
->>>>>>> But we'll have to keep it for the skb head in this case.
->>>>>>
->>>>>> As above, I am not really look into skb head case:)
->>>>>
->>>>> Let me take a step back here, because I think we drifted a bit. 
->>>>> The page signature was introduced in order to be able to identify skb
->>>>> fragments. The problem was that you couldn't rely on the pp_recycle bit of
->>>>> the skb head,  since fragments could come from anywhere.  So you use the
->>>>> skb bit as a hint for skb frags, and you eventually decide using the page
->>>>> signature.
->>>>>
->>>>> So we got 3 options (Anything I've missed ?)
->>>>> - try to remove pp_recycle bit, since the page signature is enough for the
->>>>>   skb head and fragments.  That in my opinion is the cleanest option,  as
->>>>>   long as we can prove there's no performance hit on the standard network
->>>>>   path.
->>>>>
->>>>> - Replace the page signature with frag->bv_page bit0.  In that case we
->>>>>   still have to keep the pp_recycle bit,  but we do have an 'easier'
->>>>>   indication that a skb frag comes from page_pool.  That's still pretty
->>>>>   safe, since you now have unique identifiers for the skb and page
->>>>>   fragments and you can be sure of their origin (page pool or not).
->>>>>   What I am missing here, is what do we get out of this?  I think the
->>>>>   advantage is not having to call virt_to_head_page() for frags ?
->>>>
->>>> Not using the signature will free a word space in struct page for future
->>>> feature?
->>>
->>> Yea that's another thing we gain,  but I am not sure how useful how this is
->>> going to turn out.  
->>>
->>>>
->>>>>
->>>>> - Keep all of them(?) and use frag->bv_page bit0 similarly to pp_recycle
->>>>>   bit?  I don't see much value on this one,  I am just keeping it here for
->>>>>   completeness.
->>>>
->>>>
->>>> For safty and performance reason:
->>>> 1. maybe we should move the pp_recycle bit from "struct sk_buff" to
->>>>    "struct skb_shared_info", and use it to only indicate if the head page of
->>>>    a skb is from page pool.
->>>
->>> What's the safety or performance we gain out of this?  The only performance
+>> Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
+>> will read file through this way. This will cause overlayfs to access
+>> a non-existent direct_IO function and cause panic due to null pointer:
 >>
->> safety is that we still have two ways to indicate a pp page.
->> the pp_recycle bit in  "struct skb_shared_info" or frag->bv_page bit0 tell
->> if we want to treat a page as pp page, the page signature checking is used
->> to tell if we if set those bits correctly?
+>> Kernel panic - not syncing: CFI failure (target: 0x0)
+>> CPU: 6 PID: 247 Comm: loop0
+>> Call Trace:
+>>   panic+0x188/0x45c
+>>   __cfi_slowpath+0x0/0x254
+>>   __cfi_slowpath+0x200/0x254
+>>   generic_file_read_iter+0x14c/0x150
+>>   vfs_iocb_iter_read+0xac/0x164
+>>   ovl_read_iter+0x13c/0x2fc
+>>   lo_rw_aio+0x2bc/0x458
+>>   loop_queue_work+0x4a4/0xbc0
+>>   kthread_worker_fn+0xf8/0x1d0
+>>   loop_kthread_worker_fn+0x24/0x38
+>>   kthread+0x29c/0x310
+>>   ret_from_fork+0x10/0x30
 >>
-> 
-> Yea but in the long run we'll want the page signature.  So that's basically
-> (2) once we do that.
-> 
->>> I can think of is the dirty cache line of the recycle bit we set to 0.
->>> If we do move it to skb_shared)info we'll have to make sure it's on the
->>> same cacheline as the ones we already change.
->>
->> Yes, when we move the pp_recycle bit to skb_shared_info, that bit is only
->> set once, and we seems to not need to worry about skb doing cloning or
->> expanding as the it is part of head page(shinfo is part of head page).
->>
->>>>
->>>> 2. The frag->bv_page bit0 is used to indicate if the frag page of a skb is
->>>>    from page pool, and modify __skb_frag_unref() and __skb_frag_ref() to keep
->>>>    track of it.
->>>>
->>>> 3. For safty or debugging reason, keep the page signature for now, and put a
->>>>    page signature WARN_ON checking in page pool to catch any misbehaviour?
->>>>
->>>> If there is not bug showing up later, maybe we can free the page signature space
->>>> for other usage?
->>>
->>> Yea that's essentially identical to (2) but we move the pp_recycle on the
->>> skb_shared_info.  I'd really prefer getting rid of the pp_recycle entirely,
->>
->> When also removing the pp_recycle for head page of a skb, it seems a little
->> risky as we are not sure when a not-newly-allocated pp page is called with
->> __build_skb_around() to build to head page?
-> 
-> Removing the pp_recyle, is only safe if we keep the page signature.  I was
-> suggesting we follow (1) first before starting moving things around.
+>> The filesystem may only support direct_IO for some file types. For
+>> example, erofs supports direct_IO for uncompressed files. So fall
+>> back to buffered io only when the file doesn't support direct_IO to
+>> fix this problem.
+>
+>
+> IMO, return error to user seems better option than fall back to
+>
+> buffered io directly.
+>
+Agreed, I will send v2 to fix it.
 
-I suppose (1) means the below, right:
-
-> - try to remove pp_recycle bit, since the page signature is enough for the
->   skb head and fragments.  That in my opinion is the cleanest option,  as
->   long as we can prove there's no performance hit on the standard network
->   path.
-
-It seems doable if my above analysis of head page headling for a skb does not
-miss anything.
-
-> 
+Thanks,
+Jianan
+>
+> Thanks,
+>
+> Chengguang
+>
+>
 >>
->>> since it's the cleanest thing we can do in my head.  If we ever need an
->>> extra 4/8 bytes in the future,  we can always go back and implement this.
->>>
->>> Alexander/Jesper any additional thoughts?
->>>
-> 
-> Thanks
-> /Ilias
-> .
-> 
+>> Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from 
+>> overlayfs over xfs")
+>> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+>> ---
+>>   fs/overlayfs/file.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+>> index d081faa55e83..998c60770b81 100644
+>> --- a/fs/overlayfs/file.c
+>> +++ b/fs/overlayfs/file.c
+>> @@ -296,6 +296,10 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, 
+>> struct iov_iter *iter)
+>>       if (ret)
+>>           return ret;
+>>   +    if ((iocb->ki_flags & IOCB_DIRECT) && 
+>> (!real.file->f_mapping->a_ops ||
+>> +        !real.file->f_mapping->a_ops->direct_IO))
+>> +        iocb->ki_flags &= ~IOCB_DIRECT;
+>> +
+>>       old_cred = ovl_override_creds(file_inode(file)->i_sb);
+>>       if (is_sync_kiocb(iocb)) {
+>>           ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
+>
+
