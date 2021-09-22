@@ -2,60 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673DD41445C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839EE41445F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhIVJAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:00:13 -0400
-Received: from www.zeus03.de ([194.117.254.33]:53408 "EHLO mail.zeus03.de"
+        id S234096AbhIVJB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:01:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234088AbhIVJAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:00:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=osqkEL04gXUl8YRqyvybu9tCRfM
-        382bMRBjSuF/SsqA=; b=3+X3n8SPMDon+7XqQ1f9lzyDPI3bynZaP0AImlqIcLc
-        LgJyitM9jCgtWCGCaSCgID+zDqxN1i8BC8W1nIOkxCavHa8U2KSFtj3Gzt1Z9RWj
-        eQCpbLvkZJJ+eLFJ3BZEbtYmNJdrV6yYSR+krzDaIixpG71AYtjCc3E92YEg3Pyg
-        =
-Received: (qmail 3167013 invoked from network); 22 Sep 2021 10:58:38 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Sep 2021 10:58:38 +0200
-X-UD-Smtp-Session: l3s3148p1@yUgTuJHMWKcgAwDPXwr6APB8KsyQBt5d
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: [PATCH] dt-bindings: rpc: renesas-rpc-if: Add support for the R8A779A0 RPC-IF
-Date:   Wed, 22 Sep 2021 10:58:31 +0200
-Message-Id: <20210922085831.5375-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.2
+        id S233969AbhIVJBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:01:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C559561368;
+        Wed, 22 Sep 2021 08:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1632301196;
+        bh=4BMfuYlQysTkUjlq7HXmb0FDccg17l+1XphnCQDkGJY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U15mH2HKNYTAdB3FiuLxeicmXo7IYg07k2t+NB2K7utIobEQHUMKYDHHXaAqVe6kk
+         8OWLWm76jj+EtsoH5znKbeMoeDYzhXYaeOXRgoiYQHssMTKRnXS/u7LyelRHCBr3eu
+         0ZvCJx89CO1jQXSDWwJrOWd83KLUnMZ2MD4T4kyE=
+Date:   Wed, 22 Sep 2021 10:59:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 079/122] net: phylink: add suspend/resume support
+Message-ID: <YUrwibj8wmQmJRMV@kroah.com>
+References: <20210920163915.757887582@linuxfoundation.org>
+ <20210920163918.373775935@linuxfoundation.org>
+ <20210921212837.GA29170@duo.ucw.cz>
+ <YUpPmRPczcLveKj4@shell.armlinux.org.uk>
+ <20210921214528.GA30221@duo.ucw.cz>
+ <YUpWjKZyqHImRaix@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YUpWjKZyqHImRaix@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- .../devicetree/bindings/memory-controllers/renesas,rpc-if.yaml   | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, Sep 21, 2021 at 11:02:52PM +0100, Russell King (Oracle) wrote:
+> On Tue, Sep 21, 2021 at 11:45:28PM +0200, Pavel Machek wrote:
+> > Hi!
+> > 
+> > > > > Joakim Zhang reports that Wake-on-Lan with the stmmac ethernet driver broke
+> > > > > when moving the incorrect handling of mac link state out of mac_config().
+> > > > > This reason this breaks is because the stmmac's WoL is handled by the MAC
+> > > > > rather than the PHY, and phylink doesn't cater for that scenario.
+> > > > > 
+> > > > > This patch adds the necessary phylink code to handle suspend/resume events
+> > > > > according to whether the MAC still needs a valid link or not. This is the
+> > > > > barest minimum for this support.
+> > > > 
+> > > > This adds functions that end up being unused in 5.10. AFAICT we do not
+> > > > need this in 5.10.
+> > > 
+> > > It needs to be backported to any kernel that also has
+> > > "net: stmmac: fix MAC not working when system resume back with WoL active"
+> > > backported to. From what I can tell, the fixes line in that commit
+> > > refers to a commit (46f69ded988d) in v5.7-rc1.
+> > > 
+> > > If "net: stmmac: fix MAC not working when system resume back with WoL
+> > > active" is not being backported to 5.10, then there is no need to
+> > > backport this patch.
+> > 
+> > Agreed.
+> > 
+> > > As I'm not being copied on the stmmac commit, I've no idea which kernels
+> > > this patch should be backported to.
+> > 
+> > AFAICT "net: stmmac: fix MAC not working when..." is not queued for
+> > 5.10.68-rc1 or 5.14.7-rc1.
+> 
+> Okay, this is madness. What is going on with stable's patch selection?
+> The logic seems completely reversed.
+> 
+> "net: phylink: Update SFP selected interface on advertising changes"
+> does not have a Fixes tag, and is not a fix in itself, yet has been
+> picked up by the stable team. It lays the necessary work for its
+> counter-part patch, which is...
+> 
+> "net: stmmac: fix system hang caused by eee_ctrl_timer during
+> suspend/resume" _has_ a Fixes tag, but has *not* been picked up by
+> the stable team.
+> 
+> It seems there's something very wrong process-wise here. Why would
+> a patch _without_ a Fixes line and isn't a fix in itself be picked
+> out for stable backport when patches with a Fixes line are ignored?
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-index 990489fdd2ac..b15992ad3613 100644
---- a/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/renesas,rpc-if.yaml
-@@ -33,6 +33,7 @@ properties:
-           - renesas,r8a77970-rpc-if       # R-Car V3M
-           - renesas,r8a77980-rpc-if       # R-Car V3H
-           - renesas,r8a77995-rpc-if       # R-Car D3
-+          - renesas,r8a779a0-rpc-if       # R-Car V3U
-       - const: renesas,rcar-gen3-rpc-if   # a generic R-Car gen3 or RZ/G2 device
- 
-   reg:
--- 
-2.30.2
+Because they came in through two different sets of processes.  And
+during the -rc1 merge window madness, we have lots to still catch up on
+because of all of the "fixes" that people wait to get into the tree
+then.
 
+> Not unless the stable plan is to apply "net: phylink: Update SFP
+> selected interface on advertising changes" and then sometime later
+> apply "net: stmmac: fix system hang caused by eee_ctrl_timer during
+> suspend/resume". No idea.
+> 
+> It all seems very weird and the process seems broken to me.
+
+Help is always gladly accepted.  Marking patches explicitly for stable
+with a cc: stable is always the easiest way into the tree.  Otherwise we
+have to do hueristics in looking at changelog text and Fixes: tags to
+try to guess what is, and is not, valid for stable trees.
+
+thanks,
+
+greg k-h
