@@ -2,259 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C54414CB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18719414CC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234942AbhIVPIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbhIVPIg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:08:36 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3D1C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:07:06 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id r18so2125139qvy.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jquxLW4FijHNJV9XMN41LgyMRsCI/pVfpuzgC3iRpOQ=;
-        b=bvUu8CJqcgCrHpo711SUodlSNU+whn+PHNlbSDhYqjSjFgsJDJKhVqqYieQkpvD4D5
-         v2FGatFjIweuNDUImbNTgtqMeN5kS8Mem9lC4NLutvQM+tz99O+z8inVYx/kLNH6VqIb
-         zO/DU6S22ch3H0pbIDftVwfM+Jj7oVFZFXSvyXEpvJ6sYZTGw6ZbDNax3ONHbCJIV8c1
-         DAN3HyhnkxpeR51efE1ayvCpr/XKI+rjiNYogX4Z5SNH/Oal/YpPtrLzZ5q35mtmJFXY
-         OOvZiAuNel01SJBeyzTiMJfXloUsvY8ApYKVgLCba4tp25Ofgx2LNqPCjJmWgsTwP76g
-         l9GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jquxLW4FijHNJV9XMN41LgyMRsCI/pVfpuzgC3iRpOQ=;
-        b=XXGVtK1TJAVgiMGBzL6cBv5IbCCeis8Mh+yyBhq/gruHjtA0tnjyZIHs9upR2UVd2D
-         /fODmg46wHL5NXaecguKOIECGz3KomDad4oWh1XGELp+0BRwy9XeZyGqTV0yrFOP+0gR
-         RKk+aXqg9SKmhMGJtVV8/umGQ/lpEzz9c74NUIaYQVf/l8NZZ3PG3SwpoKjr8yIADFxc
-         Rgkylwz1BbZZnv+E+i6LUom/brwaGpYQkqYV/Y3teRBNZkXw3FBdJuzdgfnFstHXZWhs
-         QzEcf/hSxyvmuMdUpAmT5UjXf2q6cBZJPBqllZxSMpqdSx33OpY4owaduNb1NKXfvWEp
-         91Uw==
-X-Gm-Message-State: AOAM530sSokKDQcD7vEYioYff97nCXWzErk6bVQX2iLySGG8cxl/2xw7
-        j00Z0NdR18o+rw6T40MozCwebA==
-X-Google-Smtp-Source: ABdhPJw3vk+8XKjFfWdiSeZYRsPtPmEPF9fTuZxRCx+Cp7Z/0bikm07EI8gPgN1cdZXPaOU6deX3gg==
-X-Received: by 2002:ad4:4705:: with SMTP id k5mr24423690qvz.55.1632323218426;
-        Wed, 22 Sep 2021 08:06:58 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id j26sm1567616qtr.53.2021.09.22.08.06.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 08:06:57 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 11:08:58 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YUtHCle/giwHvLN1@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
+        id S236373AbhIVPNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:13:09 -0400
+Received: from mail-dm6nam11on2074.outbound.protection.outlook.com ([40.107.223.74]:22369
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236164AbhIVPNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:13:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VLpfQbpTrsLDPi77VoKkZsTgCRFP6wowGS3C6D1HvbM/fknnfbFzvyMWn90/hUeqGgddXEnYQ3BbRx45pKyK4G/YGzLLhA25NTL3GNs47h6SvHfIckL+zRJHJhzdL52MIEQIOHVrw4h6fDZzYpHv6sUo5FewKbx9Kj+3o1rB33UMeMIWMdLfx7WExOpoU5EcPFt4U/9hOKRmnL0Mfg6HcnUUDsXpADBhPcmhyP/nHAiuA6kIMT32dp6x/pxi3CMEsXyoB+VMUHDASYsJznXJuQLgNQ4F00V/a/MTWi9dJnbgWJO6vzypbo1CtHxMlmVrtvcIxIsHwfniep7N6/OoUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=EIytjfE7uNINKIsO6h+xWr2yzNkecWv+s4Fr0fkBklA=;
+ b=NrWKFhfsQgiQnpIjLGFy5wBz6Dxm6nKUoISUf2ZTPDmMic51T3WHetWXSDuqakqV+GZyCioTFXRfrP2PZusSbcOjUCSXA32iMkQ1yEVDtrjHG6BmnAx7fmGKPVQp/T05Hwto0iwE2vOGncaSdoc1Ms3dMGfUwvohMdL1zf5+xHMjDncp2YfdMIdCFyNLfwEqfx/+HXPS0ZkvtJ61pIeaMqFLfyFQQd/DWeYKLiTbpzQs/vVoUiTmyZ+TyfaURNObT1LlDnOTvBddiQSE6nQFDepqNiknrY3U0H3kYbWb5yPH6IezcE5duQusjZWpxd0s/EQ2ynYSJC9pJgFsMwHQJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=hisilicon.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EIytjfE7uNINKIsO6h+xWr2yzNkecWv+s4Fr0fkBklA=;
+ b=V7DCfEvpx/iR9p2UBkVxwpM/cj3LNmmXRgyZw83sotXIJAz+2BHSQjsssHxx2aUtgExDVrlpXTkCBK52svdAXfay9Kz/M4RUEo61Hhq0SDfzkCACS/rntbyj7JsL+7n912aIPx2VTOmOzNs9r2DNV1pQJfuYleHF66yLVEMJw+Cm3QlIfGmBz4/fqt27UAY7DEhex/Lo7ikmMfwxC1bpRvDxt5wmJ7vEirlWsz+SYzC7T8Q1cGXmjmDP6nkDm71aFXXBk9gyzxpXB8Z/TTWKi0xtdKdt75S2QQeFiA02gsb58ds+2Z2wFRtZErhruG5yi+iLEstMOHuDtAX60YbyAQ==
+Received: from DM5PR11CA0006.namprd11.prod.outlook.com (2603:10b6:3:115::16)
+ by BN9PR12MB5242.namprd12.prod.outlook.com (2603:10b6:408:11f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
+ 2021 15:11:36 +0000
+Received: from DM6NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:115:cafe::e4) by DM5PR11CA0006.outlook.office365.com
+ (2603:10b6:3:115::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
+ Transport; Wed, 22 Sep 2021 15:11:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; hisilicon.com; dkim=none (message not signed)
+ header.d=none;hisilicon.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ DM6NAM11FT012.mail.protection.outlook.com (10.13.173.109) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 15:11:35 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
+ 2021 08:11:29 -0700
+Received: from [172.27.14.84] (172.20.187.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 22 Sep
+ 2021 15:11:25 +0000
+Subject: Re: [PATCH v3 3/6] hisi_acc_qm: Move PCI device IDs to common header
+To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>
+CC:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <linuxarm@huawei.com>, <liulongfang@huawei.com>,
+        <prime.zeng@hisilicon.com>, <jonathan.cameron@huawei.com>,
+        <wangzhou1@hisilicon.com>
+References: <20210915095037.1149-1-shameerali.kolothum.thodi@huawei.com>
+ <20210915095037.1149-4-shameerali.kolothum.thodi@huawei.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <fd1624d5-4661-75e7-6c28-bfbfd877f889@nvidia.com>
+Date:   Wed, 22 Sep 2021 18:11:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUpNLtlbNwdjTko0@moria.home.lan>
+In-Reply-To: <20210915095037.1149-4-shameerali.kolothum.thodi@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 64df195b-0c5a-4d81-9bc8-08d97ddb44ef
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5242:
+X-Microsoft-Antispam-PRVS: <BN9PR12MB52424193F94EFADF763312EDDEA29@BN9PR12MB5242.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mkwcWW9/o/FMLd0B7u7OWk94RjeQsmXEaiey2lNTBCljDcf/nbFhGhbikOVBjCgZfwAItkMPm+mzy3NlmyDePp78wmin+mJUmwotBjgpzlTKPnKOZiWgGhDzkm/bvFRE8eswTwXci3aABPmmsO29UemBxyRrlqQKaiFnfxnwxQ3sgLG70IQIVInC+5EqmK0K8eGcsV+87HYRDZcuE4ejYgvrwBVXv31AIIfcwYZv2lyXGULcvQ183vY/3DwhKpdRJZQP6e8aXJOTS9EAqr3Zbhr0AH9kvIEoiNSwy7BJoiVUah6FF7XI7CxazowGCeKzZygDsb4DmzzF0VQ1o/41VHP7IUehr56TFsw4jYfnBgmI9+Zs/WGWxTgJ1iOwD951rqGM+xecw68SVMu5HRxk0FM4SvgEFIVdRiPGzHFNMqOAGufDb1c4VyNVXP4fKFuOehjq7WErmZ6RNkNnCXFJUTF9tqbse99fe0S+TnLJVVvEBH9hHtj5mSDc8VA9i5GOnhVTzFd4NwkvYHq6utCOcKZIX3hay9ZC3ALC2w9lr3f7LEqXDG1dTitXd3v6Olo9FBWavnUTlE4s3ysxwm0Ecv1PicpP7Id+MnmbpF7EzRKQPzJZvxPlrcoXJMaK1duAEisl6yIf6fwKEMRzPPDdjr+NwndZtTiFHFEMYTK7Bg3um7y436tIv+pYlKsPwBpaDE2UummeSTA413DXSD54EL4UorYR6Rbmi9MSzp/o83k=
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(16526019)(2906002)(110136005)(86362001)(426003)(7416002)(2616005)(26005)(7636003)(54906003)(336012)(36860700001)(82310400003)(316002)(356005)(31696002)(83380400001)(186003)(47076005)(70586007)(8676002)(8936002)(508600001)(5660300002)(70206006)(4326008)(16576012)(53546011)(31686004)(36756003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 15:11:35.6350
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64df195b-0c5a-4d81-9bc8-08d97ddb44ef
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5242
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 05:22:54PM -0400, Kent Overstreet wrote:
->  - it's become apparent that there haven't been any real objections to the code
->    that was queued up for 5.15. There _are_ very real discussions and points of
->    contention still to be decided and resolved for the work beyond file backed
->    pages, but those discussions were what derailed the more modest, and more
->    badly needed, work that affects everyone in filesystem land
 
-Unfortunately, I think this is a result of me wanting to discuss a way
-forward rather than a way back.
+On 9/15/2021 12:50 PM, Shameer Kolothum wrote:
+> Move the PCI Device IDs of HiSilicon ACC devices to
+> a common header and use a uniform naming convention.
+>
+> This will be useful when we introduce the vfio PCI
+> HiSilicon ACC live migration driver in subsequent patches.
+>
+> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+> ---
+>   drivers/crypto/hisilicon/hpre/hpre_main.c | 12 +++++-------
+>   drivers/crypto/hisilicon/sec2/sec_main.c  |  2 --
+>   drivers/crypto/hisilicon/zip/zip_main.c   | 11 ++++-------
+>   include/linux/hisi_acc_qm.h               |  7 +++++++
+>   4 files changed, 16 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
+> index 65a641396c07..1de67b5baae3 100644
+> --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
+> +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
+> @@ -68,8 +68,6 @@
+>   #define HPRE_REG_RD_INTVRL_US		10
+>   #define HPRE_REG_RD_TMOUT_US		1000
+>   #define HPRE_DBGFS_VAL_MAX_LEN		20
+> -#define HPRE_PCI_DEVICE_ID		0xa258
+> -#define HPRE_PCI_VF_DEVICE_ID		0xa259
+>   #define HPRE_QM_USR_CFG_MASK		GENMASK(31, 1)
+>   #define HPRE_QM_AXI_CFG_MASK		GENMASK(15, 0)
+>   #define HPRE_QM_VFG_AX_MASK		GENMASK(7, 0)
+> @@ -111,8 +109,8 @@
+>   static const char hpre_name[] = "hisi_hpre";
+>   static struct dentry *hpre_debugfs_root;
+>   static const struct pci_device_id hpre_dev_ids[] = {
+> -	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, HPRE_PCI_DEVICE_ID) },
+> -	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, HPRE_PCI_VF_DEVICE_ID) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, HPRE_PF_PCI_DEVICE_ID) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, HPRE_VF_PCI_DEVICE_ID) },
+>   	{ 0, }
+>   };
+>   
+> @@ -242,7 +240,7 @@ MODULE_PARM_DESC(uacce_mode, UACCE_MODE_DESC);
+>   
+>   static int pf_q_num_set(const char *val, const struct kernel_param *kp)
+>   {
+> -	return q_num_set(val, kp, HPRE_PCI_DEVICE_ID);
+> +	return q_num_set(val, kp, HPRE_PF_PCI_DEVICE_ID);
+>   }
+>   
+>   static const struct kernel_param_ops hpre_pf_q_num_ops = {
+> @@ -921,7 +919,7 @@ static int hpre_debugfs_init(struct hisi_qm *qm)
+>   	qm->debug.sqe_mask_len = HPRE_SQE_MASK_LEN;
+>   	hisi_qm_debug_init(qm);
+>   
+> -	if (qm->pdev->device == HPRE_PCI_DEVICE_ID) {
+> +	if (qm->pdev->device == HPRE_PF_PCI_DEVICE_ID) {
+>   		ret = hpre_ctrl_debug_init(qm);
+>   		if (ret)
+>   			goto failed_to_create;
+> @@ -958,7 +956,7 @@ static int hpre_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
+>   	qm->sqe_size = HPRE_SQE_SIZE;
+>   	qm->dev_name = hpre_name;
+>   
+> -	qm->fun_type = (pdev->device == HPRE_PCI_DEVICE_ID) ?
+> +	qm->fun_type = (pdev->device == HPRE_PF_PCI_DEVICE_ID) ?
+>   			QM_HW_PF : QM_HW_VF;
+>   	if (qm->fun_type == QM_HW_PF) {
+>   		qm->qp_base = HPRE_PF_DEF_Q_BASE;
+> diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+> index 90551bf38b52..890ff6ab18dd 100644
+> --- a/drivers/crypto/hisilicon/sec2/sec_main.c
+> +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+> @@ -20,8 +20,6 @@
+>   
+>   #define SEC_VF_NUM			63
+>   #define SEC_QUEUE_NUM_V1		4096
+> -#define SEC_PF_PCI_DEVICE_ID		0xa255
+> -#define SEC_VF_PCI_DEVICE_ID		0xa256
+>   
+>   #define SEC_BD_ERR_CHK_EN0		0xEFFFFFFF
+>   #define SEC_BD_ERR_CHK_EN1		0x7ffff7fd
+> diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
+> index 7148201ce76e..f35b8fd1ecfe 100644
+> --- a/drivers/crypto/hisilicon/zip/zip_main.c
+> +++ b/drivers/crypto/hisilicon/zip/zip_main.c
+> @@ -15,9 +15,6 @@
+>   #include <linux/uacce.h>
+>   #include "zip.h"
+>   
+> -#define PCI_DEVICE_ID_ZIP_PF		0xa250
+> -#define PCI_DEVICE_ID_ZIP_VF		0xa251
+> -
+>   #define HZIP_QUEUE_NUM_V1		4096
+>   
+>   #define HZIP_CLOCK_GATE_CTRL		0x301004
+> @@ -246,7 +243,7 @@ MODULE_PARM_DESC(uacce_mode, UACCE_MODE_DESC);
+>   
+>   static int pf_q_num_set(const char *val, const struct kernel_param *kp)
+>   {
+> -	return q_num_set(val, kp, PCI_DEVICE_ID_ZIP_PF);
+> +	return q_num_set(val, kp, ZIP_PF_PCI_DEVICE_ID);
+>   }
+>   
+>   static const struct kernel_param_ops pf_q_num_ops = {
+> @@ -268,8 +265,8 @@ module_param_cb(vfs_num, &vfs_num_ops, &vfs_num, 0444);
+>   MODULE_PARM_DESC(vfs_num, "Number of VFs to enable(1-63), 0(default)");
+>   
+>   static const struct pci_device_id hisi_zip_dev_ids[] = {
+> -	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_ZIP_PF) },
+> -	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, PCI_DEVICE_ID_ZIP_VF) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, ZIP_PF_PCI_DEVICE_ID) },
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, ZIP_VF_PCI_DEVICE_ID) },
+>   	{ 0, }
+>   };
+>   MODULE_DEVICE_TABLE(pci, hisi_zip_dev_ids);
+> @@ -834,7 +831,7 @@ static int hisi_zip_qm_init(struct hisi_qm *qm, struct pci_dev *pdev)
+>   	qm->sqe_size = HZIP_SQE_SIZE;
+>   	qm->dev_name = hisi_zip_name;
+>   
+> -	qm->fun_type = (pdev->device == PCI_DEVICE_ID_ZIP_PF) ?
+> +	qm->fun_type = (pdev->device == ZIP_PF_PCI_DEVICE_ID) ?
+>   			QM_HW_PF : QM_HW_VF;
+>   	if (qm->fun_type == QM_HW_PF) {
+>   		qm->qp_base = HZIP_PF_DEF_Q_BASE;
+> diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
+> index 8befb59c6fb3..2d209bf15419 100644
+> --- a/include/linux/hisi_acc_qm.h
+> +++ b/include/linux/hisi_acc_qm.h
+> @@ -9,6 +9,13 @@
+>   #include <linux/module.h>
+>   #include <linux/pci.h>
+>   
+> +#define ZIP_PF_PCI_DEVICE_ID		0xa250
+> +#define ZIP_VF_PCI_DEVICE_ID		0xa251
+> +#define SEC_PF_PCI_DEVICE_ID		0xa255
+> +#define SEC_VF_PCI_DEVICE_ID		0xa256
+> +#define HPRE_PF_PCI_DEVICE_ID		0xa258
+> +#define HPRE_VF_PCI_DEVICE_ID		0xa259
+> +
 
-To clarify: I do very much object to the code as currently queued up,
-and not just to a vague future direction.
+maybe can be added to include/linux/pci_ids.h under the 
+PCI_VENDOR_ID_HUAWEI definition ?
 
-The patches add and convert a lot of complicated code to provision for
-a future we do not agree on. The indirections it adds, and the hybrid
-state it leaves the tree in, make it directly more difficult to work
-with and understand the MM code base. Stuff that isn't needed for
-exposing folios to the filesystems.
 
-As Willy has repeatedly expressed a take-it-or-leave-it attitude in
-response to my feedback, I'm not excited about merging this now and
-potentially leaving quite a bit of cleanup work to others if the
-downstream discussion don't go to his liking.
-
-Here is the roughly annotated pull request:
-
-      mm: Convert get_page_unless_zero() to return bool
-      mm: Introduce struct folio
-      mm: Add folio_pgdat(), folio_zone() and folio_zonenum()
-
-      mm/vmstat: Add functions to account folio statistics
-
-		Used internally and not *really* needed for filesystem
-		folios... There are a couple of callsites in
-		mm/page-writeback.c so I suppose it's ok.
-
-      mm/debug: Add VM_BUG_ON_FOLIO() and VM_WARN_ON_ONCE_FOLIO()
-      mm: Add folio reference count functions
-      mm: Add folio_put()
-      mm: Add folio_get()
-      mm: Add folio_try_get_rcu()
-      mm: Add folio flag manipulation functions
-
-      mm/lru: Add folio LRU functions
-
-		The LRU code is used by anon and file and not needed
-		for the filesystem API.
-
-		And as discussed, there is generally no ambiguity of
-		tail pages on the LRU list.
-
-      mm: Handle per-folio private data
-      mm/filemap: Add folio_index(), folio_file_page() and folio_contains()
-      mm/filemap: Add folio_next_index()
-      mm/filemap: Add folio_pos() and folio_file_pos()
-      mm/util: Add folio_mapping() and folio_file_mapping()
-      mm/filemap: Add folio_unlock()
-      mm/filemap: Add folio_lock()
-      mm/filemap: Add folio_lock_killable()
-      mm/filemap: Add __folio_lock_async()
-      mm/filemap: Add folio_wait_locked()
-      mm/filemap: Add __folio_lock_or_retry()
-
-      mm/swap: Add folio_rotate_reclaimable()
-
-		More LRU code, although this one is only used by
-		page-writeback... I suppose.
-
-      mm/filemap: Add folio_end_writeback()
-      mm/writeback: Add folio_wait_writeback()
-      mm/writeback: Add folio_wait_stable()
-      mm/filemap: Add folio_wait_bit()
-      mm/filemap: Add folio_wake_bit()
-      mm/filemap: Convert page wait queues to be folios
-      mm/filemap: Add folio private_2 functions
-      fs/netfs: Add folio fscache functions
-      mm: Add folio_mapped()
-      mm: Add folio_nid()
-
-      mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
-      mm/memcg: Use the node id in mem_cgroup_update_tree()
-      mm/memcg: Remove soft_limit_tree_node()
-      mm/memcg: Convert memcg_check_events to take a node ID
-
-		These are nice cleanups, unrelated to folios. Ack.
-
-      mm/memcg: Add folio_memcg() and related functions
-      mm/memcg: Convert commit_charge() to take a folio
-      mm/memcg: Convert mem_cgroup_charge() to take a folio
-      mm/memcg: Convert uncharge_page() to uncharge_folio()
-      mm/memcg: Convert mem_cgroup_uncharge() to take a folio
-      mm/memcg: Convert mem_cgroup_migrate() to take folios
-      mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to folio
-      mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
-      mm/memcg: Convert mem_cgroup_move_account() to use a folio
-      mm/memcg: Add folio_lruvec()
-      mm/memcg: Add folio_lruvec_lock() and similar functions
-      mm/memcg: Add folio_lruvec_relock_irq() and folio_lruvec_relock_irqsave()
-      mm/workingset: Convert workingset_activation to take a folio	
-
-		This is all anon+file stuff, not needed for filesystem
-		folios.
-
-		As per the other email, no conceptual entry point for
-		tail pages into either subsystem, so no ambiguity
-		around the necessity of any compound_head() calls,
-		directly or indirectly. It's easy to rule out
-		wholesale, so there is no justification for
-		incrementally annotating every single use of the page.
-
-		NAK.
-
-      mm: Add folio_pfn()
-      mm: Add folio_raw_mapping()
-      mm: Add flush_dcache_folio()
-      mm: Add kmap_local_folio()
-      mm: Add arch_make_folio_accessible()
-
-      mm: Add folio_young and folio_idle
-      mm/swap: Add folio_activate()
-      mm/swap: Add folio_mark_accessed()
-
-		This is anon+file aging stuff, not needed.
-
-      mm/rmap: Add folio_mkclean()
-
-      mm/migrate: Add folio_migrate_mapping()
-      mm/migrate: Add folio_migrate_flags()
-      mm/migrate: Add folio_migrate_copy()
-
-		More anon+file conversion, not needed.
-
-      mm/writeback: Rename __add_wb_stat() to wb_stat_mod()
-      flex_proportions: Allow N events instead of 1
-      mm/writeback: Change __wb_writeout_inc() to __wb_writeout_add()
-      mm/writeback: Add __folio_end_writeback()
-      mm/writeback: Add folio_start_writeback()
-      mm/writeback: Add folio_mark_dirty()
-      mm/writeback: Add __folio_mark_dirty()
-      mm/writeback: Convert tracing writeback_page_template to folios
-      mm/writeback: Add filemap_dirty_folio()
-      mm/writeback: Add folio_account_cleaned()
-      mm/writeback: Add folio_cancel_dirty()
-      mm/writeback: Add folio_clear_dirty_for_io()
-      mm/writeback: Add folio_account_redirty()
-      mm/writeback: Add folio_redirty_for_writepage()
-      mm/filemap: Add i_blocks_per_folio()
-      mm/filemap: Add folio_mkwrite_check_truncate()
-      mm/filemap: Add readahead_folio()
-
-      mm/workingset: Convert workingset_refault() to take a folio
-
-		Anon+file, not needed. NAK.
-
-      mm: Add folio_evictable()
-      mm/lru: Convert __pagevec_lru_add_fn to take a folio
-      mm/lru: Add folio_add_lru()
-
-		LRU code, not needed.
-
-      mm/page_alloc: Add folio allocation functions
-      mm/filemap: Add filemap_alloc_folio
-      mm/filemap: Add filemap_add_folio()
-      mm/filemap: Convert mapping_get_entry to return a folio
-      mm/filemap: Add filemap_get_folio
-      mm/filemap: Add FGP_STABLE
-      mm/writeback: Add folio_write_one
-
-I'm counting about a thousand of lines of contentious LOC that clearly
-aren't necessary for exposing folios to the filesystems.
-
-The rest of these are pagecache and writeback. It's still a ton of
-(internal) code converted to folios that has conceptually little to no
-ambiguity about head and tail pages.
-
-As per the other email I still think it would have been good to have a
-high-level discussion about the *legitimate* entry points and data
-structures that will continue to deal with tail pages down the
-line. To scope the actual problem that is being addressed by this
-inverted/whitelist approach - so we don't annotate the entire world
-just to box in a handful of page table walkers...
-
-But oh well. Not a hill I care to die on at this point...
+>   #define QM_QNUM_V1			4096
+>   #define QM_QNUM_V2			1024
+>   #define QM_MAX_VFS_NUM_V2		63
