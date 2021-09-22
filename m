@@ -2,238 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF3C4140E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 06:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38694140E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 06:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhIVE6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 00:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhIVE6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 00:58:01 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6202EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 21:56:32 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id w206so2677173oiw.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 21:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jP9lcgUeHpyPPMmTrWILA9tLIIhLjcy/Gf6ZBx4JooQ=;
-        b=Iu5+pS6qsZTbO3gpRejZNOmRsuCWd5TF6bmNVeQDvP5yFJBg6HdjjRLmXvNfuvYntH
-         WSlRS+8iegArZnC7sXjMvyocGagW0aGB9WempeysWM43NMiOoo2FuETCgfhOFHQdvhek
-         TXVunS/oHW0YGtrt14t9lLBTqrw0O+EU5lKij5T2CNBWAZZsEj2gJHoRZ+JhFcVemWDA
-         AnzSqHyxZfmlnXt1TmuxNzIHMdEPakDwTJZWOkt6EvXFBnaX1Q1rQDBWe8NfQBSw7NBg
-         PI5Lkdqup9OaVG0ULoL7/4TQ+5hyFTZboCpgaIUIVFDvcKwZKwRNhCiAosTpnx/jXSxk
-         Ui2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jP9lcgUeHpyPPMmTrWILA9tLIIhLjcy/Gf6ZBx4JooQ=;
-        b=TxD+PDBrAVWCB+eregvELKGRT64B809MYCO2GJXjejJlCacgPeXzZ7V+cNlbzQIAb3
-         PU6YKDeb4aCIJqjVBNdj1uhWnk6s7EKbD+Wct00NtNE8iVv3f6vlZAZRsfBYJSvD42PU
-         LVIicQ19ZIIocrcYLegVUzQlexKT7lOC5HYK4XkwXIQwzI8M8qM+FXqssBd4YGM1GzSZ
-         FMzwdF3/wxa4nH8vllwfuOHaMy9V1d6aEK+iSeQhg//9bFHlArs9SFBmZja1iIpZQs8/
-         pdxoQI34IDtqH5aexNkBTgHdQV3ZlVwSh3IDOoHBD4GwLUT0miihL/oPkLLfXGqH2++/
-         Vp/w==
-X-Gm-Message-State: AOAM530tI1l7JprUxkS9UAziiroOBpxsLzpcKskTHH2+ofGecD85dOjJ
-        r5KTNQro5IjkCPS5WEY1afmIqg==
-X-Google-Smtp-Source: ABdhPJxAoPegtevDLZFnPWtBl0EYPEbQ5ygwNdifKpY3/K0UoNzirGqNcbuaWGY8o3+V3vwawHcszQ==
-X-Received: by 2002:aca:e142:: with SMTP id y63mr6702006oig.112.1632286591787;
-        Tue, 21 Sep 2021 21:56:31 -0700 (PDT)
-Received: from [192.168.17.16] ([189.219.73.83])
-        by smtp.gmail.com with ESMTPSA id r64sm297969oib.14.2021.09.21.21.56.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 21:56:31 -0700 (PDT)
-Subject: Re: [PATCH 5.4 000/260] 5.4.148-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S231782AbhIVE7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 00:59:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231526AbhIVE7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 00:59:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F27611B0;
+        Wed, 22 Sep 2021 04:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632286671;
+        bh=lkJ187UuFm+hUflqvAL12RME91Tld0y6sQHi7SZ4MPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ewC5BXNFw/vQ4p/R8P4JtmYZ/6rzSntlvhJ/T55MbYOnr+rYWjM2vDkPyvm6K7dvn
+         ptPQUH2/R9ol4NwQrJUQpdV63LeTXHtjF8XWPSykiclPqM3ZCAfXLd3jilKqU8US6W
+         DZHY/gGrX5Nds5IIw39JRaU152fp49n29R+y9x20Bt6q7jaAqAIH17H3bwPNswiTl1
+         n1I2J2WLvXO2LVAcxZydcfZ4ov4N+C5o28o5rL5lMbSPD+0ezZqz+dWDQOChnf57tq
+         mvT1rDmmu31k3o1A3TJkKBXUTSLmESDZpkUfS3mfhSKf6f7w5jAOqrZXGMC13Exp8F
+         cxxkh8moqewgg==
+Date:   Wed, 22 Sep 2021 12:57:46 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20210920163931.123590023@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <b3c63009-3b09-6b00-d688-fcc6fce21a71@linaro.org>
-Date:   Tue, 21 Sep 2021 23:56:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+Subject: Re: [PATCH] arm64: dts: freescale: imx8mq-librem5: align
+ operating-points table name with dtschema
+Message-ID: <20210922045745.GM10217@dragon>
+References: <20210820081557.83603-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20210920163931.123590023@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820081557.83603-1-krzysztof.kozlowski@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 9/20/21 11:40 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.148 release.
-> There are 260 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Aug 20, 2021 at 10:15:57AM +0200, Krzysztof Kozlowski wrote:
+> Align the name of operating-points node to dtschema to fix warnings like:
 > 
-> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
-> Anything received after that time might be too late.
+>   ddrc-opp-table: $nodename:0: 'ddrc-opp-table' does not match '^opp-table(-[a-z0-9]+)?$'
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.148-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-## Build
-* kernel: 5.4.148-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.4.y
-* git commit: 9f540728b6a345a2a70420f891d351c4397d3849
-* git describe: v5.4.147-261-g9f540728b6a3
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.147-261-g9f540728b6a3
-
-## No regressions (compared to v5.4.147)
-
-## No fixes (compared to v5.4.147)
-
-## Test result summary
-total: 81694, pass: 67304, fail: 635, skip: 12557, xfail: 1198
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 288 total, 288 passed, 0 failed
-* arm64: 38 total, 38 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 51 total, 51 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 30 total, 30 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 38 total, 38 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Applied, thanks!
