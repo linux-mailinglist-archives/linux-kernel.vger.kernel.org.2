@@ -2,164 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E02415235
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C11415241
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237870AbhIVU6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238006AbhIVU6V (ORCPT
+        id S237864AbhIVVAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:00:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36199 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237592AbhIVVAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:58:21 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5721C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:56:18 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id u8so16649437lff.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=snAHFG5xCkeTvyFu2mD4X2wabo24gdMDn530482Xypw=;
-        b=cTEvG+kHc4uB7yEtKNHCaR8BVCBCKx/AXjDqWSalmiqES3V438gK0Wr3VHWEE7fFnC
-         jOfbPqcPi7D6EiPN9jh0bUTMxJJ/BARQh3eK1gAPGiAueMThy4Vjzgd2rqp5A+Q0ARos
-         cfJaQrPjgEZ85kDS8LVy0KAD7yWeCE+u5uE2s=
+        Wed, 22 Sep 2021 17:00:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632344321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WOUQ1umT9EVazlsaxah7aOEpG+BSYoIBiyUBV41kXfo=;
+        b=Kpcro+Sscw9O0B6Hr0y2Md5ee80QjSTBmxVCXNUuAcnw/UI4RiC2bI6qVYz9LrbmrpcAzx
+        tuS41z55DhWdPIbki5rvsqQ0coWJT1PpGlr4lCOgJOTYYJXNoFrUPu/i6zZGNNXKJN3Z4D
+        21nqiUOD1nCDMRRzfb8++cxlZ1BU+JU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-hkLEd8ShMf2o_Eo7pe0XWg-1; Wed, 22 Sep 2021 16:58:38 -0400
+X-MC-Unique: hkLEd8ShMf2o_Eo7pe0XWg-1
+Received: by mail-wr1-f71.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so3352806wrh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:58:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=snAHFG5xCkeTvyFu2mD4X2wabo24gdMDn530482Xypw=;
-        b=d7gofuJXHUjmkwkImytUTerjmiG9ghPZLYHXrWoBKGGWx6QYqDRKNiPRAD/moqeBIR
-         XqijzY1QrYnGNJ09Wtf6vDci4/F35+UGKceWZerFcemLE1WFQEuctXEg2jHJCMAnVq5V
-         8pAbYGkyp6sNQ4av1Sw68oRcZM/vykfOrZT4eFEUYsfxQmJgN2LcBHkbQLcPToAxCabL
-         2rbVfikCSZ5ZwaTkOfBIyCRmmu1XTjHi3Q8+Bz5EGlYAuxVhaRPq6VgsEhYnDrsQr3Tm
-         cpTFcYa8Dt+PtnFIYyG40wWMIuaykMrYP99wdbGbNw91RtkDnFqoIHtwQ3KJRyVBGUZB
-         cAwQ==
-X-Gm-Message-State: AOAM530YuDcRh/u+3xCPYvC1hqv35CHCo7wpynLniWoOI5BlTEbsnOUQ
-        ELWEqX/JZ5T1t55MNohHoMD/+mwHMNaVBt8yc7k=
-X-Google-Smtp-Source: ABdhPJwxdiAUJEjmpC/++fixGz6apzgVvVP5JILCvYZuMYFSeYYRPLH6KPjHKwnRZTmgVOS9MTbd9g==
-X-Received: by 2002:a19:c151:: with SMTP id r78mr926270lff.133.1632344176626;
-        Wed, 22 Sep 2021 13:56:16 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id p16sm369060lji.75.2021.09.22.13.56.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 13:56:15 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id z24so17649318lfu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:56:15 -0700 (PDT)
-X-Received: by 2002:a19:ae15:: with SMTP id f21mr922847lfc.402.1632344175487;
- Wed, 22 Sep 2021 13:56:15 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WOUQ1umT9EVazlsaxah7aOEpG+BSYoIBiyUBV41kXfo=;
+        b=jJBaSguvBr6DnEKlHh1dmPq9vITt7huWYD0kdSV0yPf9dEYf2KCYmLxyZLR5inAMpT
+         qlauSenyt9CGon9NorIQNjQLH+sRQm6s7hwluKCRUP3qYveeVXc4C1Xyx2ofCt/zcKf7
+         lh34tDAYmTOJWOxWCC/F4gHCe7nYl6jAZjmfcqbQ8/nyJNGkn/rm9DJF4tHiwJMEaQGU
+         SHU7x+AGBex0oUbMli9meUOhngMbdAMSHLBNuWbYwsuUJwn9lgNBE6S7FvL3DjYsbPNV
+         WuJu2obvD7W5Nkf4J5Yh13Y8o+5b/jr2/lGaOyFmwP+rQJHhmBcIlUblblTgxbfPFqni
+         7Y6A==
+X-Gm-Message-State: AOAM533xRUcMWqrF9hVHD9LBu4IWQ3tQ0YI3Kv1zW0MQojGA7WmCJXU/
+        exAAPS4unNeroztByGqq8L1TiKsLnWr2WvR3HozvMfgo5NhTcxm9nuhvfQoJMfXKqUX9ZubKybi
+        Xbrkfu5QX6e1ujTWebM5FMarK
+X-Received: by 2002:a1c:403:: with SMTP id 3mr995695wme.161.1632344317359;
+        Wed, 22 Sep 2021 13:58:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfe21pwgdBihcn0HQ0laMXCh8q0TyvBnWeQZwWGFzNVHBjJ9vABjhZqodTrXXNQFkfbmE13Q==
+X-Received: by 2002:a1c:403:: with SMTP id 3mr995681wme.161.1632344317199;
+        Wed, 22 Sep 2021 13:58:37 -0700 (PDT)
+Received: from krava ([83.240.63.48])
+        by smtp.gmail.com with ESMTPSA id h18sm3250118wrb.33.2021.09.22.13.58.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 13:58:36 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 22:58:33 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Paul Clarke <pc@us.ibm.com>, kajoljain <kjain@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Sandeep Dasgupta <sdasgup@google.com>
+Subject: Re: [PATCH v8 5/8] perf metric: Add utilities to work on ids map.
+Message-ID: <YUuY+WhB3Y3VQm2w@krava>
+References: <20210918063513.2356923-1-irogers@google.com>
+ <20210918063513.2356923-6-irogers@google.com>
 MIME-Version: 1.0
-References: <CAHC9VhQcxm=Zhe2XEesx3UsBgr8H6H=BtJc92roqeF8o+DK+XQ@mail.gmail.com>
- <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhSu=ZWymS3RHa7jakQOU8gujGQ=PKO1BTcrNAM9-P4bmQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Sep 2021 13:55:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
-Message-ID: <CAHk-=wj=ADdpVjsKGuOyKDT2eO2UwfgW+cGsKAkxvTkP7=1Osg@mail.gmail.com>
-Subject: Re: [GIT PULL] SELinux fixes for v5.15 (#1)
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     SElinux list <selinux@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210918063513.2356923-6-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:57 AM Paul Moore <paul@paul-moore.com> wrote:
->
-> I wanted to check in on this PR to see if you were planning on merging
-> it for v5.15-rcX, kicking it back for -next instead, or simply glaring
-> at it with quiet disgust?
+SNIP
 
-Heh. I glanced at it with quiet disgust when it came in, and then it
-just got lost.
+> diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> index adf16bb7571a..34b51ca5e87f 100644
+> --- a/tools/perf/util/expr.c
+> +++ b/tools/perf/util/expr.c
+> @@ -59,8 +59,48 @@ static bool key_equal(const void *key1, const void *key2,
+>  	return !strcmp((const char *)key1, (const char *)key2);
+>  }
+>  
+> -/* Caller must make sure id is allocated */
+> -int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
+> +struct hashmap *ids__new(void)
+> +{
+> +	return hashmap__new(key_hash, key_equal, NULL);
+> +}
+> +
+> +void ids__free(struct hashmap *ids)
+> +{
+> +	struct hashmap_entry *cur;
+> +	size_t bkt;
+> +
+> +	if (ids == NULL)
+> +		return;
+> +
+> +#ifdef PARSER_DEBUG
+> +	fprintf(stderr, "freeing ids: ");
+> +	ids__print(ids);
+> +	fprintf(stderr, "\n");
+> +#endif
 
-But now I'm looking at it again since you reminded me, and I don't
-understand why it has to be done in such an ugly manner.
+hum, is this intended or forgotten debug leftover?
 
-And I also don't think the thing makes a whit of sense in the first place.
+jirka
 
-Honestly, that whole "lockdown depends on current creds" makes NO
-SENSE at all to me. The whole and only point about lockdown is that
-it's locked down. Not that "oh, root can do X". That's against the
-point.
+> +
+> +	hashmap__for_each_entry(ids, cur, bkt) {
+> +		free((char *)cur->key);
+> +		free(cur->value);
+> +	}
+> +
+> +	hashmap__free(ids);
+> +}
+> +
+> +void ids__print(struct hashmap *ids)
 
-The whole and only point of lockdown was as a global thing. Now
-somebody seems to have noticed that they violated that basic rule, and
-that it's about permissions after all, and it's just a complete mess.
+SNIP
 
-But why the heck would a normal lockdown user have to care about this
-fundamental design mistake? Why should a normal lockdown user pass in
-a credential that doesn't make sense?
-
-Since 99% of all users DON'T want special rules, why isn't the normal
-security_locked_down() kept the way it is?
-
-Make the few special cases do special things, in other words.
-
-This is *literally* why we have all those wrapper functions in
-security/security.c - so that people can do sane interfaces and not
-call down to the raw hooks.
-
-(Yeah, yeah, a lot of them do nothing but pass it down, but others do
-other sanity stuff so that callers don't have to do pointless
-boilerplate)
-
-IOW, why is this changing all the normal users that *really* don't
-want it, and that really have absolutely no business looking up the
-current creds?
-
-Make the regular security_locked_down() function do that, and add a
-
-    if (WARN_ON_ONCE(!in_task()))
-        return -EPERM;
-
-so that any bad cases get flagged and refuse to continue.
-
-And then the couple of special users (whether due to interrupt context
-or whatever), could get their own wrapper function.
-
-Note how that would
- (a) make the patch smaller
- (b) not pollute normal users pointlessly
- (c) actually be a kind of documentation too
- (d) not make the default lockdown testing function be senseless
-
-because right now you have absolutely no explanation in the crazy
-cases, so y9ou have code like this:
-
-        lockdown = !!security_locked_down(NULL, LOCKDOWN_XMON_RW);
-
-in xmon_is_locked_down(), and it makes no sense to anybody. Why the
-NULL? What is going on?
-
-Yes, yes, I can tell why the NULL, and what is going on, because I
-read the commit message and it's in my context. But look at that line,
-and tell me that it makes sense as code to anybody who has paged out
-that context (or never had it in the first place).
-
-If it said "security_globally_locked_down()" maybe it would at least
-give a hint about what's going on.
-
-But the other side of the argument is that the *common* lockdown
-functions are insane too after the patch. In kernel/module.c, this
-line:
-
-        return security_locked_down(current_cred(), LOCKDOWN_MODULE_SIGNATURE);
-
-really screams "lockdown is fundamentally broken and mis-designed".
-
-Seriously. If lockdown needs "current creds" then lockdown is wrong.
-
-I was unhappy about lockdown from before, so maybe I'm more likely to
-just reject this kind of garbage, but this really looks completely
-broken to me.
-
-Hmm? This lockdown stuff is some ugly random code to begin with, I
-think the interfaces need to make SENSE. Passing in credentials
-fundamentally does not make sense to me.
-
-              Linus
