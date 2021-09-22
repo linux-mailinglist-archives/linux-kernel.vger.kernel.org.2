@@ -2,124 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5DA4147D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B517C4147D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235760AbhIVLdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45084 "EHLO mail.kernel.org"
+        id S235682AbhIVLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:35:40 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:47606 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235653AbhIVLcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:32:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9179961107;
-        Wed, 22 Sep 2021 11:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632310280;
-        bh=iJ4gFjba6VMQSTmcSmAOGGLCLhgvn3+9o9mo/NMTbAQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BQMqT049yHHdHUNbCF31bCFctTSI/QFHJ42DCvyAj7gzz1FXUKej2OZL6dkwaxY1P
-         aqYoGsT+9RDD2ENpCtkK8MKO7sJIDnJXYlqPzdAW9l7xG7epl5wlPEPKrbzrfaT/jx
-         mhsg/hx0MytptK8RBU6ovKplk9Ia1nPIgRFANZZD7P0NAf96OlvpaTYk1JPlr1HK0K
-         XqfDNVk/XDGx2j3VPi4m818u10ljzFGxPdX8GI0EWEvvXwYA0/6RvDcTXc+11H4u80
-         0fOged2Rff/k3rSAQbAbMJS3gAk0BCwfkKKHg2lxqrKpnJOIIVjq1O5NSMTRx028y6
-         Q7pTDSe9YwOag==
-Date:   Wed, 22 Sep 2021 13:31:17 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: rcu/tree: Protect rcu_rdp_is_offloaded() invocations on RT
-Message-ID: <20210922113117.GB106513@lothringen>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-4-valentin.schneider@arm.com>
- <874kae6n3g.ffs@tglx>
- <87pmt163al.ffs@tglx>
- <20210921233627.GA100318@lothringen>
- <20210922021837.GV880162@paulmck-ThinkPad-P17-Gen-1>
+        id S230171AbhIVLfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:35:39 -0400
+Received: from zn.tnic (p200300ec2f0efa008ea00e11d58cbc58.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:8ea0:e11:d58c:bc58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 517E31EC051E;
+        Wed, 22 Sep 2021 13:34:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632310444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jiiv8SpQ/CjmhmUczANXkD+A4815hJePunK0lOlYXLU=;
+        b=NKkzztWPJBhz/loxLIp3g00YXHWetTU8mIEimwTJxR24rTpEm6BCG/0rhWa7dUE00Ijh0T
+        TaCuEsyzjg1IP2ydr2OcGMHkEUAJxsal5DOE7WZbnXQFS0W72hLFu1WeXpomk8H9wUWCpg
+        fiA7/NT8AKskBiFcHlSfS3auvj1ym/I=
+Date:   Wed, 22 Sep 2021 13:33:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mukul Joshi <mukul.joshi@amd.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
+        yazen.ghannam@amd.com, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCHv2 1/2] x86/MCE/AMD: Export smca_get_bank_type symbol
+Message-ID: <YUsUpkvP8zpz8yRz@zn.tnic>
+References: <20210511152538.148084-2-nchatrad@amd.com>
+ <20210913021311.12896-1-mukul.joshi@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210922021837.GV880162@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <20210913021311.12896-1-mukul.joshi@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 07:18:37PM -0700, Paul E. McKenney wrote:
-> On Wed, Sep 22, 2021 at 01:36:27AM +0200, Frederic Weisbecker wrote:
-> > Doing the local_irq_save() before checking that the segcblist is offloaded
-> > protect that state from being changed (provided we lock the local rdp). Then we
-> > can safely manipulate cblist, whether locked or unlocked.
-> > 
-> > 2) The actual call to rcu_do_batch(). If we are preempted between
-> > rcu_segcblist_completely_offloaded() and rcu_do_batch() with a deoffload in
-> > the middle, we miss the callback invocation. Invoking rcu_core by the end of
-> > deoffloading process should solve that.
+On Sun, Sep 12, 2021 at 10:13:10PM -0400, Mukul Joshi wrote:
+> Export smca_get_bank_type for use in the AMD GPU
+> driver to determine MCA bank while handling correctable
+> and uncorrectable errors in GPU UMC.
 > 
-> Maybe invoke rcu_core() at that point?  My concern is that there might
-> be an extended time between the missed rcu_do_batch() and the end of
-> the deoffloading process.
+> v1->v2:
+> - Drop the function is_smca_umc_v2().
+> - Drop the patch to introduce a new MCE priority (MCE_PRIO_ACEL)
+>   for GPU/accelarator cards.
 
-Agreed!
+Patch changelog information goes...
 
 > 
-> > > Reported-by: Valentin Schneider <valentin.schneider@arm.com>
-> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > > ---
-> > >  kernel/rcu/tree.c |    7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > 
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -2278,13 +2278,13 @@ rcu_report_qs_rdp(struct rcu_data *rdp)
-> > >  {
-> > >  	unsigned long flags;
-> > >  	unsigned long mask;
-> > > -	bool needwake = false;
-> > > -	const bool offloaded = rcu_rdp_is_offloaded(rdp);
-> > > +	bool offloaded, needwake = false;
-> > >  	struct rcu_node *rnp;
-> > >  
-> > >  	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
-> > >  	rnp = rdp->mynode;
-> > >  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-> > > +	offloaded = rcu_rdp_is_offloaded(rdp);
-> > >  	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
-> > >  	    rdp->gpwrap) {
-> > 
-> > BTW Paul, if we happen to switch to non-NOCB (deoffload) some time after
-> > rcu_report_qs_rdp(), it's possible that the rcu_accelerate_cbs()
-> > that was supposed to be handled by nocb kthreads on behalf of
-> > rcu_core() -> rcu_report_qs_rdp() would not happen. At least not until
-> > we invoke rcu_core() again. Not sure how much harm that could cause.
-> 
-> Again, can we just invoke rcu_core() as soon as this is noticed?
+> Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
+> ---
 
-Right. So I'm going to do things a bit differently. I'm going to add
-a new segcblist state flag so that during the deoffloading process,
-the first very step is an invoke_rcu_core() on the target after setting a
-flag that requires handling all this things: accelerate/do_batch, etc...
+... under this line so that it gets automatically removed by git when
+applying the patch.
 
-Then will remain the "do we still have pending callbacks after do_batch?"
-in which case we'll need to invoke the rcu_core again as long as we are in
-the middle of deoffloading.
+Alex, how do you wanna handle this?
 
-Ok, now to write the patches.
+Want me to ACK this and you can carry it through your tree along with
+the second patch?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
