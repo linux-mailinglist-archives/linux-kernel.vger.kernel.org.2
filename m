@@ -2,216 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB902414438
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91E741443D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhIVIxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:53:48 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53134 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233741AbhIVIxq (ORCPT
+        id S233983AbhIVIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:54:48 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54035 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233741AbhIVIyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:53:46 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18M8q6Po021078;
-        Wed, 22 Sep 2021 03:52:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632300726;
-        bh=3ODZ7diwGfUhZsRFHWYGQCSqBqy2RAbSXekmn7aQ/3w=;
-        h=From:To:CC:Subject:Date;
-        b=p0RD7oGcS9rnKaTR1wDdgAooqq4LoHy2hnNwkygEe9Xp/+td3P7347wJ6AzLefUtF
-         7l6ifNvGlC38cI+J7REpfztCGQiE+r5lcxjK1f3q2CaBzY7uwL5mbyuBBD1daRRpKS
-         FtfWm97PD7RxxiFooPVma1kYTY7eM7CmRPaLzsrQ=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18M8q6rl090009
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Sep 2021 03:52:06 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 22
- Sep 2021 03:52:06 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 22 Sep 2021 03:52:06 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18M8q3oN067889;
-        Wed, 22 Sep 2021 03:52:05 -0500
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <devicetree@vger.kernel.org>
-CC:     <mpm@selenic.com>, <herbert@gondor.apana.org.au>,
-        <robh+dt@kernel.org>, <j-choudhary@ti.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] dt-bindings: rng: convert OMAP and Inside-Secure HWRNG to yaml schema
-Date:   Wed, 22 Sep 2021 14:22:03 +0530
-Message-ID: <20210922085203.2547-1-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 22 Sep 2021 04:54:43 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7BE84580255;
+        Wed, 22 Sep 2021 04:53:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 22 Sep 2021 04:53:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=vB4ezIS3B/kZC3s/eTN0cuFplTA
+        XmSMYfGeoI88X2qo=; b=YsylE5OY/aekw+oI2+1FimeeZRY/2Yo3w7Q4AnyFH/C
+        0ih8xf12GaTRWGSGTSa1lN6UtpMTcTfPWnzJzLZyulnDzMLCiqsIOMHgWvvvtM+t
+        aRxYTV4nS+BDY+Jp+0Tgjp32cDAX2K9LovlT8axaAZrkNb3g8FlQE0hlxdSHcc6v
+        uUazUJciXlMA2np4kTf2XA4jP58ygmsHJhALjr8iW8ds3YWvvsyMuFrxW3dW+xvg
+        oVhVSI66rua+eX1nSrT2AGrFsrVYDfuNjuem8BNuK2YVmXG/FVK+ZyojoexASuNw
+        Hc2CPhaDFbymXUYb9wF9OYPe8VdgS5NsCJBUHWMZeKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vB4ezI
+        S3B/kZC3s/eTN0cuFplTAXmSMYfGeoI88X2qo=; b=fC2KOYeledOkkC0aXAt3K+
+        dKvD36fgpb6vnAv1HouSdfS8PJmsHJ8jhtXbGGb9iC/Xj+ZSlG2oWEx6AkoYkon5
+        suffel7OAkN/YnqLea9oClqBi5NJqimc8Y6NiZoghzmE4R3RHtJJabaRXFdnj8fN
+        zf2mEiVJ9qw5XbV+038Vsl1IA2WGOIvUoIjisaLgYdqMpKblOttTJH/a8FG1R64F
+        DR1noMRcccN9iK2qlxgLD0a6PweKrFhR8wrD7ht8NtAMG6s1YMSPoj4hxC5HMI3H
+        eRshjJ/OpQNYI1qL+EZVbeZx3oTUTLwA9fVnhcPIUekEPJg5h59MmMslpiM8ud6Q
+        ==
+X-ME-Sender: <xms:9u5KYekdnmXJHNpxfNoWaC4yZDbFKMDIMpBBkzOiDOyqU4KbopKu2Q>
+    <xme:9u5KYV0u9Dvd18g4ZX-oDyXf5gzHYsf__TZf6J-xqn1HKqh3JlnhL-FgeImrf-LIJ
+    c8nsmIzVXCsWz2VH3s>
+X-ME-Received: <xmr:9u5KYcqju0OvuwONUjkYz6Bu9GX5MgRgU_JTyWtOsiO_PLMOvDJyCEtjRuemy-o7d7uRRzYwZA7xTyCyqdi1PmYYmJITakP5W5-W>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:9u5KYSmlJ9urbGNWvh4mVJzB7EAtmY5_AdSC33thxwd9Is6TzxDMCQ>
+    <xmx:9u5KYc3sU_rz5oyUREwe9hVvDy4C4ZX2INr1dn8wF-y2blmj0sNX4g>
+    <xmx:9u5KYZudXpDV8jw8CDYTCg1WodNfJFH5dobYYFeTpQDpH9nUBu7jkQ>
+    <xmx:-e5KYeGzPi3o7aXd1E6BUwNERCc7GvHXrLBDt2qHkLcX8pLIPyjrAw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Sep 2021 04:53:09 -0400 (EDT)
+Date:   Wed, 22 Sep 2021 10:53:08 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Sean Paul <sean@poorly.run>, freedreno@lists.freedesktop.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        John Stultz <john.stultz@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH v4 24/24] drm/exynos: dsi: Adjust probe order
+Message-ID: <20210922085308.udvhfbzpn3vpbksr@gilmour>
+References: <20210910101218.1632297-1-maxime@cerno.tech>
+ <CGME20210910101445eucas1p172f99ff7fe853052fc457861c3174f9e@eucas1p1.samsung.com>
+ <20210910101218.1632297-25-maxime@cerno.tech>
+ <29a2111d-024b-4d9e-27ef-e3399509ff32@samsung.com>
+ <fc1fbd42-6ed4-9d67-2903-8f9cc2aaad43@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="26b3pc6nmf5dnhp2"
+Content-Disposition: inline
+In-Reply-To: <fc1fbd42-6ed4-9d67-2903-8f9cc2aaad43@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converts the RNG bindings for OMAP SoCs and Inside-Secure
-HWRNG modules to YAML schema.
 
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
-Changelog:
-v2:
-- modified the license-identifier
-- modified 'clock-names' property
+--26b3pc6nmf5dnhp2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- .../devicetree/bindings/rng/omap_rng.txt      | 38 --------
- .../devicetree/bindings/rng/omap_rng.yaml     | 93 +++++++++++++++++++
- 2 files changed, 93 insertions(+), 38 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rng/omap_rng.txt
- create mode 100644 Documentation/devicetree/bindings/rng/omap_rng.yaml
+Hi Marek,
 
-diff --git a/Documentation/devicetree/bindings/rng/omap_rng.txt b/Documentation/devicetree/bindings/rng/omap_rng.txt
-deleted file mode 100644
-index ea434ce50f36..000000000000
---- a/Documentation/devicetree/bindings/rng/omap_rng.txt
-+++ /dev/null
-@@ -1,38 +0,0 @@
--OMAP SoC and Inside-Secure HWRNG Module
--
--Required properties:
--
--- compatible : Should contain entries for this and backward compatible
--  RNG versions:
--  - "ti,omap2-rng" for OMAP2.
--  - "ti,omap4-rng" for OMAP4, OMAP5 and AM33XX.
--  - "inside-secure,safexcel-eip76" for SoCs with EIP76 IP block
--  Note that these two versions are incompatible.
--- ti,hwmods: Name of the hwmod associated with the RNG module
--- reg : Offset and length of the register set for the module
--- interrupts : the interrupt number for the RNG module.
--		Used for "ti,omap4-rng" and "inside-secure,safexcel-eip76"
--- clocks: the trng clock source. Only mandatory for the
--  "inside-secure,safexcel-eip76" compatible, the second clock is
--  needed for the Armada 7K/8K SoCs
--- clock-names: mandatory if there is a second clock, in this case the
--  name must be "core" for the first clock and "reg" for the second
--  one
--
--
--Example:
--/* AM335x */
--rng: rng@48310000 {
--	compatible = "ti,omap4-rng";
--	ti,hwmods = "rng";
--	reg = <0x48310000 0x2000>;
--	interrupts = <111>;
--};
--
--/* SafeXcel IP-76 */
--trng: rng@f2760000 {
--	compatible = "inside-secure,safexcel-eip76";
--	reg = <0xf2760000 0x7d>;
--	interrupts = <GIC_SPI 59 IRQ_TYPE_LEVEL_HIGH>;
--	clocks = <&cpm_syscon0 1 25>;
--};
-diff --git a/Documentation/devicetree/bindings/rng/omap_rng.yaml b/Documentation/devicetree/bindings/rng/omap_rng.yaml
-new file mode 100644
-index 000000000000..6198311d9f72
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rng/omap_rng.yaml
-@@ -0,0 +1,93 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rng/omap_rng.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OMAP SoC and Inside-Secure HWRNG Module
-+
-+maintainers:
-+  - Jayesh Choudhary <j-choudhary@ti.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,omap2-rng
-+      - ti,omap4-rng
-+      - inside-secure,safexcel-eip76
-+
-+  ti,hwmods:
-+    const: rng
-+    deprecated: true
-+    description: Name of the hwmod associated with the RNG module
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+    items:
-+      - description: EIP150 gatable clock
-+      - description: Main gatable clock
-+
-+  clock-names:
-+    minItems: 1
-+    items:
-+      - const: core
-+      - const: reg
-+
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - ti,omap4-rng
-+              - inside-secure,safexcel-eip76
-+
-+    then:
-+      required:
-+        - interrupts
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - inside-secure,safexcel-eip76
-+
-+    then:
-+      required:
-+        - clocks
-+
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    /* AM335x */
-+    rng: rng@48310000 {
-+            compatible = "ti,omap4-rng";
-+            ti,hwmods = "rng";
-+            reg = <0x48310000 0x2000>;
-+            interrupts = <111>;
-+    };
-+  - |
-+    /* SafeXcel IP-76 */
-+    trng: rng@f2760000 {
-+            compatible = "inside-secure,safexcel-eip76";
-+            reg = <0xf2760000 0x7d>;
-+            interrupts = <0 59 4>;
-+            clocks = <&cpm_syscon0 1 25>;
-+    };
-+
-+...
--- 
-2.17.1
+On Fri, Sep 17, 2021 at 02:35:05PM +0200, Marek Szyprowski wrote:
+> Hi,
+>=20
+> On 13.09.2021 12:30, Andrzej Hajda wrote:
+> > W dniu 10.09.2021 o=A012:12, Maxime Ripard pisze:
+> >> Without proper care and an agreement between how DSI hosts and devices
+> >> drivers register their MIPI-DSI entities and potential components, we =
+can
+> >> end up in a situation where the drivers can never probe.
+> >>
+> >> Most drivers were taking evasive maneuvers to try to workaround this,
+> >> but not all of them were following the same conventions, resulting in
+> >> various incompatibilities between DSI hosts and devices.
+> >>
+> >> Now that we have a sequence agreed upon and documented, let's convert
+> >> exynos to it.
+> >>
+> >> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > This patch should be dropped, as it will probably break the driver.
+> >
+> > Exynos is already compatible with the pattern
+> > register-bus-then-get-sink, but it adds/removes panel/bridge
+> > dynamically, so it creates drm_device without waiting for downstream si=
+nk.
+>=20
+> Right, this patch breaks Exynos DSI driver operation. Without it, the=20
+> whole series works fine on all Exynos based test boards.
 
+Thanks for testing. Did you have any board using one of those bridges in
+your test sample?
+
+Thanks!
+Maxime
+
+--26b3pc6nmf5dnhp2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUru9AAKCRDj7w1vZxhR
+xTqqAP9CqUjRoyxAvQGCjWFdaNoEsrQKtq/nCmfrA8Q8IiEyfQEAvvCeSnRl1MRL
+dPx0RgcMkyY55JZZXZJ3c688AzfVKg0=
+=c7ne
+-----END PGP SIGNATURE-----
+
+--26b3pc6nmf5dnhp2--
