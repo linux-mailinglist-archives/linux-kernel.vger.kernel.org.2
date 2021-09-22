@@ -2,159 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458D4414F57
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE735414F5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236929AbhIVRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236781AbhIVRnt (ORCPT
+        id S236893AbhIVRse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:48:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21217 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233552AbhIVRsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:43:49 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50928C061574;
-        Wed, 22 Sep 2021 10:42:18 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id u8so3851970vsp.1;
-        Wed, 22 Sep 2021 10:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i2/5vU8okCommsTVep4U8g3zmRtYGj4z1dqrBTnZYKM=;
-        b=k4Db82ziafPM+lBnAm8x403uzHXRieH784TaSW+HWkfU1/m73XvJT/4Ju4iH+/9AYy
-         qhItsf3xKDVAdoSe03Zo4GcACIz76UOOKM/ewbf9v3V2ZbJuDJ7jcgaYcSM4rqy5Vmc/
-         xcimu96gz6twv1vSaXxcoMFAfMKFZ8RYNMAGcrkyA8xmuNiVzuUSHThy/eXwDTXCXpXy
-         1vbHqz4QuU1n92Tfqspy/ra2EOtKQBbN0KeSa+I5j7JPM8+OlotXcZ04sbN+atVcm+b8
-         aGtlo9evKIWpYQss1ypxKc/GdxmC9RUfbCC4VgmioL9DQa5jHLl0WEDm5wx0YFltP3kD
-         cGcA==
+        Wed, 22 Sep 2021 13:48:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632332813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yRAZvQi8QIkG/wXBuwsGoebLhQmRDzUFn2QwIAEv05c=;
+        b=eA5L2jGXZDLbe2+dxpsmdcW+moihC0I+YEhx42Pny7Ssl2u0YrdwJq2y4Wqab1q/UhQ4U0
+        zurJHynx1LuJ3C8nhKUV5LuSK006mqbY9QZOQ7093FIjPdd4eWr/q2jpnGvIZaQBReCGL/
+        OIItjEMfUOA2SO5eyOZDv7wz9I67TWU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-576-YoDu0orAOPKuciXt-6Ct-Q-1; Wed, 22 Sep 2021 13:46:51 -0400
+X-MC-Unique: YoDu0orAOPKuciXt-6Ct-Q-1
+Received: by mail-wr1-f70.google.com with SMTP id r15-20020adfce8f000000b0015df1098ccbso2881790wrn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:46:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i2/5vU8okCommsTVep4U8g3zmRtYGj4z1dqrBTnZYKM=;
-        b=AKw4ajdR3IHQSGaV9Y8pkGHauZiXU58UcBDu8pWFty7TL1cSx9UsUqhHdebJzUXbAi
-         N28qUm+9Y9gWq0xEbVm6/JFaO2HAhcniKl5cxa6lOEXvSNtyS4C98VCvaVVyDRH/BI4V
-         e++NdvRDgLBRAYY9MSUAWmks9vU9cv2Atkuj9N86PVHeQr8bYo3AmhtpZhzsikKzc0Ej
-         bayBHwC4hUoUCU8B9QnvGDpVT09eGUmajlxPKZ1mXNCbDjzs48r+i74HA8WddkME5cw/
-         0w1wvZy0Xp2KmVnm0SZhSOfvXy6dJKz4d2K8Qz4WtVfdUKRwh9gh+VMd9BfNJXMGwoHU
-         pqUQ==
-X-Gm-Message-State: AOAM530zlQmz9Bv/zQF+Bc1f2RJnwrhD6tOHtG6hCfDiaL7Tz5s4YC2i
-        LwaO4l8qQMWChLXzm3wSGARt3dEGDu9zOFXk31M=
-X-Google-Smtp-Source: ABdhPJyaivZW6j74z3cSzPRtOsWARdibu4oASTZaqOFdznpmvxF3THVCojbU4d46EccKkqiRkq6Q6b0a2toNIbm0Vag=
-X-Received: by 2002:a05:6102:3005:: with SMTP id s5mr607253vsa.48.1632332537186;
- Wed, 22 Sep 2021 10:42:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com> <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
-In-Reply-To: <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Wed, 22 Sep 2021 19:42:06 +0200
-Message-ID: <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=yRAZvQi8QIkG/wXBuwsGoebLhQmRDzUFn2QwIAEv05c=;
+        b=k4YdNCILZ72c4BHHVUOpdvOZBxs++Zza7n5GOnhXiKq89TTjVbzXfnDwENKZLw+8og
+         jVG5cCSnyXaY6aj6374eJu8Fr5XUmzo9ImEZFgdL6h32M3jDqzRY96IzjTJTYqDlGEWt
+         Vz+N4Uw7/JHLe7rP/N9ZOugyqzyc5TFzg/LlEO59oabd+jOOd6Qa22QWEEdIMXVpamVB
+         aDtm+SaYZC4WPt7B3O+EDeDTDU0KgPxDD+sTcDnGvwjCJZbR+bzcMEIgMomGg3ynB4u1
+         gKO45ODCKguViR92ij7gdoJ3vWf1gw0eMep25XEfDDYxjUYO0mdoY1wLBpDd8J6DwZYt
+         Wsug==
+X-Gm-Message-State: AOAM533Rak25u2ET/5+q1osPM3Fcps905ZFZsTUArMGG48Ug6jh/kTCS
+        fs8sBYGc/gjIbiLEA6054E6A4JEdijRJ/T5rpAoF6hkchp7Gjz96idwQH6GOZaAtvYCvw1SOpQm
+        uJLd/YrSA20w5MUUkd0WUeSR7
+X-Received: by 2002:a1c:a505:: with SMTP id o5mr353244wme.32.1632332810405;
+        Wed, 22 Sep 2021 10:46:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRUR+LCJzoCbByZikpE+DxWdrmv2gBJFkOC+eNKZ2z9oQEsfmDCPQOFXlcLMOuckg32hVAdA==
+X-Received: by 2002:a1c:a505:: with SMTP id o5mr353211wme.32.1632332810108;
+        Wed, 22 Sep 2021 10:46:50 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64dd.dip0.t-ipconnect.de. [91.12.100.221])
+        by smtp.gmail.com with ESMTPSA id s13sm6872088wmc.47.2021.09.22.10.46.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 10:46:49 -0700 (PDT)
+Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
+To:     Peter Collingbourne <pcc@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Colin Ian King <colin.king@canonical.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Evgenii Stepanov <eugenis@google.com>
+References: <20210922061809.736124-1-pcc@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <29f1822d-e4cd-eedb-bea8-619db1d56335@redhat.com>
+Date:   Wed, 22 Sep 2021 19:46:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210922061809.736124-1-pcc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 22.09.21 08:18, Peter Collingbourne wrote:
+> This patch introduces a kernel feature known as uaccess logging.
+> With uaccess logging, the userspace program passes the address and size
+> of a so-called uaccess buffer to the kernel via a prctl(). The prctl()
+> is a request for the kernel to log any uaccesses made during the next
+> syscall to the uaccess buffer. When the next syscall returns, the address
+> one past the end of the logged uaccess buffer entries is written to the
+> location specified by the third argument to the prctl(). In this way,
+> the userspace program may enumerate the uaccesses logged to the access
+> buffer to determine which accesses occurred.
+> 
+> Uaccess logging has several use cases focused around bug detection
+> tools:
+> 
+> 1) Userspace memory safety tools such as ASan, MSan, HWASan and tools
+>     making use of the ARM Memory Tagging Extension (MTE) need to monitor
+>     all memory accesses in a program so that they can detect memory
+>     errors. For accesses made purely in userspace, this is achieved
+>     via compiler instrumentation, or for MTE, via direct hardware
+>     support. However, accesses made by the kernel on behalf of the
+>     user program via syscalls (i.e. uaccesses) are invisible to these
+>     tools. With MTE there is some level of error detection possible in
+>     the kernel (in synchronous mode, bad accesses generally result in
+>     returning -EFAULT from the syscall), but by the time we get back to
+>     userspace we've lost the information about the address and size of the
+>     failed access, which makes it harder to produce a useful error report.
+> 
+>     With the current versions of the sanitizers, we address this by
+>     interposing the libc syscall stubs with a wrapper that checks the
+>     memory based on what we believe the uaccesses will be. However, this
+>     creates a maintenance burden: each syscall must be annotated with
+>     its uaccesses in order to be recognized by the sanitizer, and these
+>     annotations must be continuously updated as the kernel changes. This
+>     is especially burdensome for syscalls such as ioctl(2) which have a
+>     large surface area of possible uaccesses.
+> 
+> 2) Verifying the validity of kernel accesses. This can be achieved in
+>     conjunction with the userspace memory safety tools mentioned in (1).
+>     Even a sanitizer whose syscall wrappers have complete knowledge of
+>     the kernel's intended API may vary from the kernel's actual uaccesses
+>     due to kernel bugs. A sanitizer with knowledge of the kernel's actual
+>     uaccesses may produce more accurate error reports that reveal such
+>     bugs.
+> 
+>     An example of such a bug, which was found by an earlier version of this
+>     patch together with a prototype client of the API in HWASan, was fixed
+>     by commit d0efb16294d1 ("net: don't unconditionally copy_from_user
+>     a struct ifreq for socket ioctls"). Although this bug turned out to
+>     relatively harmless, it was a bug nonetheless and it's always possible
+>     that more serious bugs of this sort may be introduced in the future.
+> 
+> 3) Kernel fuzzing. We may use the list of reported kernel accesses to
+>     guide a kernel fuzzing tool such as syzkaller (so that it knows which
+>     parts of user memory to fuzz), as an alternative to providing the tool
+>     with a list of syscalls and their uaccesses (which again thanks to
+>     (2) may not be accurate).
+> 
+> All signals except SIGKILL and SIGSTOP are masked for the interval
+> between the prctl() and the next syscall in order to prevent handlers
+> for intervening asynchronous signals from issuing syscalls that may
+> cause uaccesses from the wrong syscall to be logged.
 
-Thanks for reviewing this.
+Stupid question: can this be exploited from user space to effectively 
+disable SIGKILL for a long time ... and do we care?
 
-On Wed, Sep 22, 2021 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, Sep 22, 2021 at 6:23 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
->
-> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > index d84381ce82b5..7d7aab1d1d64 100644
-> > --- a/drivers/pci/of.c
-> > +++ b/drivers/pci/of.c
-> > @@ -564,12 +564,14 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
-> >
-> >                 switch (resource_type(res)) {
-> >                 case IORESOURCE_IO:
-> > +#ifdef PCI_IOBASE
-> >                         err = devm_pci_remap_iospace(dev, res, iobase);
-> >                         if (err) {
-> >                                 dev_warn(dev, "error %d: failed to map resource %pR\n",
-> >                                          err, res);
-> >                                 resource_list_destroy_entry(win);
-> >                         }
-> > +#endif
-> >                         break;
->
-> I wonder if we should have a different symbol controlling this than PCI_IOBASE,
-> because we are somewhat overloading the semantics here. There are a couple
-> of ways that I/O space can be handled
->
-> a) inb()/outb() are custom instructions, as on x86, PCI_IOBASE is not defined
-> b) there is no I/O space, as on s390, PCI_IOBASE is not defined
-> c) PCI_IOBASE points to a virtual address used for dynamic mapping of I/O
->     space, as on ARM
-> d) PCI_IOBASE is NULL, and the port number corresponds to the virtual
->    address (some older architectures)
->
-> I'm not completely sure where your platform fits in here, it sounds like you
-> address them using a machine specific physical address as the base in
-> inb() plus the port number as an offset, is that correct?
+Like, the application allocates a bunch of memory, issues the prctl() 
+and spins in user space. What would happen if the OOM killer selects 
+this task as a target and does a do_send_sig_info(SIGKILL, 
+SEND_SIG_PRIV, ...) ?
 
-I guess none of the above options? I will try to explain this as per
-my understanding.
+-- 
+Thanks,
 
-[+cc Thomas Bogendoerfer as mips maintainer and with better knowledge
-of mips platforms than me]
+David / dhildenb
 
-On MIPS I/O ports are memory mapped, so we access them using normal
-load/store instructions.
-Mips 'plat_mem_setup()' function does a 'set_io_port_base(KSEG1)'.
-There, variable 'mips_io_port_base'
-is set then using this address which is a virtual address to which all
-ports are being mapped.
-KSEG1 addresses are uncached and are not translated by the MMU. This
-KSEG1 range is directly mapped in physical space starting with address
-0x0.
-Because of this reason, defining PCI_IOBASE as KSEG1 won't work since,
-at the end 'pci_parse_request_of_pci_ranges' tries to remap to a fixed
-virtual address (PCI_IOBASE). This can't work for KSEG1 addresses.
-What happens if I try to do that is that I get bad addresses at pci
-enumeration for IO resources. Mips ralink mt7621 SoC (which is the one
-I am using and trying to mainline the driver from staging) have I/O at
-address 0x1e160000. So instead of getting this address for pcie IO
-BARS I get a range from 0x0000 to 0xffff since 'pci_adress_to_pio' in
-that case got that range 0x0-0xffff which is wrong. To have this
-working this way we would need to put PCI_IOBASE somewhere into KSEG2
-which will result in creating TLB entries for IO addresses, which most
-of the time isn't needed on MIPS because of access via KSEG1. Instead
-of that, what happens when I avoid defining PCI_IOBASE and set
-IO_SPACE_LIMIT  (See [0] and [1] commits already added to staging tree
-which was part of this patch series for context of what works with
-this patch together) all works properly. There have also been some
-patches accepted in the past which avoid this
-'pci_parse_request_of_pci_ranges' call since it is not working for
-most pci legacy drivers of arch/mips for ralinks platform [2].
-
-So I am not sure what should be the correct approach to properly make
-this work (this one works for me and I cannot see others better) but I
-will be happy to try whatever you propose for me to do.
-
-Thanks in advance for your time.
-
-Best regards,
-    Sergio Paracuellos
-
-[0]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=159697474db41732ef3b6c2e8d9395f09d1f659e
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=50fb34eca2944fd67493717c9fbda125336f1655
-[2]: https://www.spinics.net/lists/stable-commits/msg197972.html
-
-
->
->        Arnd
