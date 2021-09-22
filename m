@@ -2,123 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E195541417E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1E4414180
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhIVGGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhIVGGO (ORCPT
+        id S232547AbhIVGG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:06:26 -0400
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:36692 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232490AbhIVGGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:06:14 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616FFC061574;
-        Tue, 21 Sep 2021 23:04:45 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id w17so3273128wrv.10;
-        Tue, 21 Sep 2021 23:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=E8PWpzGE4nXx9yLcpibeowYfrua7uZ6eTJJKaxClepM=;
-        b=S1fWqCKTc+U3XKV5MShwR46eahJQSdbw+NMA8XAWaqVGE4gxmVvz/ieJJpTPvygGB+
-         NNN5aTQCiy5LkLq8A9yKOgrmXJlT3dt1rY51hmAS9BwwbIGAmyUshJArA5LNHHbEqGG6
-         vpMogiWPbwy7kMJ/XJta/8xaIXkqvkd5SlmkQmn852FfcsPb1bj9sfRgfVakG8YEmd28
-         OhxgMrpK7MglhTkJqlaS3vCa5Vn4cXfJ2pmqYfjihzGZEeYcM92zU/EhXXMCPetBA/kc
-         9yQ+S8F6dX/34PidSe5ZanAPHXbo5xw4HI+KcwnVlFAYllBy+RA01+pglKkhtXw0Ejzm
-         ssMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=E8PWpzGE4nXx9yLcpibeowYfrua7uZ6eTJJKaxClepM=;
-        b=uX8MH3NvH6BKFjlNF7jVnzAIW86aq0+Qhwds7asLOaEd0knm1TlZ5uk2kOsPSdvaVB
-         HiOPy/QHduUmDeyt+4xWLvF5ahfpXYnF7nphozPj4mh+VUsxtaccVq6PsHjYOYuiDD53
-         3WsknmnP6eJAmj3dNJa0lRyeDXlNJBn7dhkXjV3bR+vz8QXmdNL5a5YP+zM9Ymo7/6iA
-         vRVesDix/xk5Lazee1Vt3/gaIMvV7eKPzvH/yUb4tnFBeSk5dEIezQEvtd2cC9te0Ao2
-         SB/9mF9EPPmXFvtal1InKGW8qFEP9DZjRHYm8nUiESakq6/heRmjD438Sxdlt1VXb6pa
-         m2OA==
-X-Gm-Message-State: AOAM531viWYQCs6zI5S/LJX86Za4hYxFjppWckv5IAEeIB1GoV3XBfDb
-        aKB9Uv3UjD3Y7I5XfDBlGQY=
-X-Google-Smtp-Source: ABdhPJy/Oa9kivCqfNjj4Wo8JUjtuGYaGVP7hcDPKnWoCziHCeeoiDjTZzPckMOtTD3xk6YWepI41Q==
-X-Received: by 2002:adf:a745:: with SMTP id e5mr28523356wrd.406.1632290683592;
-        Tue, 21 Sep 2021 23:04:43 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id o1sm1071032wru.91.2021.09.21.23.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 23:04:43 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 08:04:39 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-Cc:     linux-crypto@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.ne@posteo.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 1/4] crypto: nintendo-aes - add a new AES driver
-Message-ID: <YUrHdxY4EyanC9KR@Red>
-References: <20210921213930.10366-1-linkmauve@linkmauve.fr>
- <20210921213930.10366-2-linkmauve@linkmauve.fr>
+        Wed, 22 Sep 2021 02:06:24 -0400
+Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 218341BC362;
+        Wed, 22 Sep 2021 16:04:48 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mSvN9-00FJVY-TE; Wed, 22 Sep 2021 16:04:47 +1000
+Date:   Wed, 22 Sep 2021 16:04:47 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     NeilBrown <neilb@suse.de>, Linux-MM <linux-mm@kvack.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] mm/vmscan: Throttle reclaim until some writeback
+ completes if congested
+Message-ID: <20210922060447.GA2361455@dread.disaster.area>
+References: <20210920085436.20939-1-mgorman@techsingularity.net>
+ <20210920085436.20939-2-mgorman@techsingularity.net>
+ <163218319798.3992.1165186037496786892@noble.neil.brown.name>
+ <20210921105831.GO3959@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210921213930.10366-2-linkmauve@linkmauve.fr>
+In-Reply-To: <20210921105831.GO3959@techsingularity.net>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
+        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
+        a=XCLsOYAi7itVMiQYH0cA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Tue, Sep 21, 2021 at 11:39:27PM +0200, Emmanuel Gil Peyrot a écrit :
-> This engine implements AES in CBC mode, using 128-bit keys only.  It is
-> present on both the Wii and the Wii U, and is apparently identical in
-> both consoles.
+On Tue, Sep 21, 2021 at 11:58:31AM +0100, Mel Gorman wrote:
+> On Tue, Sep 21, 2021 at 10:13:17AM +1000, NeilBrown wrote:
+> > On Mon, 20 Sep 2021, Mel Gorman wrote:
+> > > -long wait_iff_congested(int sync, long timeout)
+> > > -{
+> > > -	long ret;
+> > > -	unsigned long start = jiffies;
+> > > -	DEFINE_WAIT(wait);
+> > > -	wait_queue_head_t *wqh = &congestion_wqh[sync];
+> > > -
+> > > -	/*
+> > > -	 * If there is no congestion, yield if necessary instead
+> > > -	 * of sleeping on the congestion queue
+> > > -	 */
+> > > -	if (atomic_read(&nr_wb_congested[sync]) == 0) {
+> > > -		cond_resched();
+> > > -
+> > > -		/* In case we scheduled, work out time remaining */
+> > > -		ret = timeout - (jiffies - start);
+> > > -		if (ret < 0)
+> > > -			ret = 0;
+> > > -
+> > > -		goto out;
+> > > -	}
+> > > -
+> > > -	/* Sleep until uncongested or a write happens */
+> > > -	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
+> > 
+> > Uninterruptible wait.
+> > 
+> > ....
+> > > +static void
+> > > +reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason,
+> > > +							long timeout)
+> > > +{
+> > > +	wait_queue_head_t *wqh = &pgdat->reclaim_wait;
+> > > +	unsigned long start = jiffies;
+> > > +	long ret;
+> > > +	DEFINE_WAIT(wait);
+> > > +
+> > > +	atomic_inc(&pgdat->nr_reclaim_throttled);
+> > > +	WRITE_ONCE(pgdat->nr_reclaim_start,
+> > > +		 node_page_state(pgdat, NR_THROTTLED_WRITTEN));
+> > > +
+> > > +	prepare_to_wait(wqh, &wait, TASK_INTERRUPTIBLE);
+> > 
+> > Interruptible wait.
+> > 
+> > Why the change?  I think these waits really need to be TASK_UNINTERRUPTIBLE.
+> > 
 > 
-> The hardware is capable of firing an interrupt when the operation is
-> done, but this driver currently uses a busy loop, I’m not too sure
-> whether it would be preferable to switch, nor how to achieve that.
-> 
-> It also supports a mode where no operation is done, and thus could be
-> used as a DMA copy engine, but I don’t know how to expose that to the
-> kernel or whether it would even be useful.
-> 
-> In my testing, on a Wii U, this driver reaches 80.7 MiB/s, while the
-> aes-generic driver only reaches 30.9 MiB/s, so it is a quite welcome
-> speedup.
-> 
-> This driver was written based on reversed documentation, see:
-> https://wiibrew.org/wiki/Hardware/AES
-> 
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> Tested-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>  # on Wii U
+> Because from mm/ context, I saw no reason why the task *should* be
+> uninterruptible. It's waiting on other tasks to complete IO and it is not
+> protecting device state, filesystem state or anything else. If it gets
+> a signal, it's safe to wake up, particularly if that signal is KILL and
+> the context is a direct reclaimer.
 
-[...]
+I disagree. whether the sleep should be interruptable or
+not is entirely dependent on whether the caller can handle failure
+or not. If this is GFP_NOFAIL, allocation must not fail no matter
+what the context is, so signals and the like are irrelevant.
 
-> +static int
-> +do_crypt(const void *src, void *dst, u32 len, u32 flags)
-> +{
-> +	u32 blocks = ((len >> 4) - 1) & AES_CTRL_BLOCK;
-> +	u32 status;
-> +	u32 counter = OP_TIMEOUT;
-> +	u32 i;
-> +
-> +	/* Flush out all of src, we can’t know whether any of it is in cache */
-> +	for (i = 0; i < len; i += 32)
-> +		__asm__("dcbf 0, %0" : : "r" (src + i));
-> +	__asm__("sync" : : : "memory");
-> +
-> +	/* Set the addresses for DMA */
-> +	iowrite32be(virt_to_phys((void *)src), base + AES_SRC);
-> +	iowrite32be(virt_to_phys(dst), base + AES_DEST);
+For a context that can handle allocation failure, then it makes
+sense to wake on events that will result in the allocation failing
+immediately. But if all this does is make the allocation code go
+around another retry loop sooner, then an interruptible sleep still
+doesn't make any sense at all here...
 
-Hello
+> The original TASK_UNINTERRUPTIBLE is almost certainly a copy&paste from
+> congestion_wait which may be called because a filesystem operation must
+> complete before it can return to userspace so a signal waking it up is
+> pointless.
 
-Since you do DMA operation, I think you should use the DMA-API and call dma_map_xxx()
-This will prevent the use of __asm__ and virt_to_phys().
+Yup, but that AFAICT that same logic still applies. Only now it's
+the allocation context that determines whether signal waking is
+pointless or not...
 
-Regards
+Cheer,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
