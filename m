@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5F7414558
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B89414564
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhIVJkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbhIVJkK (ORCPT
+        id S234441AbhIVJod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:44:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9902 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232258AbhIVJoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:40:10 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBE7C061574;
-        Wed, 22 Sep 2021 02:38:19 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0efa00e1b20f6d5f00f371.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:e1b2:f6d:5f00:f371])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8A4101EC04E4;
-        Wed, 22 Sep 2021 11:38:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632303493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=nehvbtp+iVTeyyMzkseD676nsbARQC8Fz0zTVaQUD18=;
-        b=Im+KSGCT0T1VMIm8WO9h8Oks9HOlxtRwhQ2VGhoavv9UnIJXkRFGzamH4+IXhhr91N63Ig
-        T/5OuKTubgkJFniabg0xpI4tI1Ug9MzWuyRJWRm0jpakGBieOuo2UNPhUqYrVoqe6s8/OS
-        5kRFMMx8KdGgGAVsjHy9KQLo2KiOfD4=
-Date:   Wed, 22 Sep 2021 11:38:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>,
-        Steve Rutherford <srutherford@google.com>, pbonzini@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brijesh.singh@amd.com, dovmurik@linux.ibm.com, tobin@linux.ibm.com,
-        jejb@linux.ibm.com, dgilbert@redhat.com
-Subject: Re: [PATCH v6 1/5] x86/kvm: Add AMD SEV specific Hypercall3
-Message-ID: <YUr5gCgNe7tT0U/+@zn.tnic>
-References: <cover.1629726117.git.ashish.kalra@amd.com>
- <6fd25c749205dd0b1eb492c60d41b124760cc6ae.1629726117.git.ashish.kalra@amd.com>
- <CABayD+fnZ+Ho4qoUjB6YfWW+tFGUuftpsVBF3d=-kcU0-CEu0g@mail.gmail.com>
- <YUixqL+SRVaVNF07@google.com>
- <20210921095838.GA17357@ashkalra_ubuntu_server>
- <YUnjEU+1icuihmbR@google.com>
- <YUnxa2gy4DzEI2uY@zn.tnic>
- <YUoDJxfNZgNjY8zh@google.com>
+        Wed, 22 Sep 2021 05:44:32 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HDtX46CQtz8yh9;
+        Wed, 22 Sep 2021 17:38:28 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 17:43:01 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 17:43:01 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <jonathan.lemon@gmail.com>,
+        <alobakin@pm.me>, <willemb@google.com>, <cong.wang@bytedance.com>,
+        <pabeni@redhat.com>, <haokexin@gmail.com>, <nogikh@google.com>,
+        <elver@google.com>, <memxor@gmail.com>, <edumazet@google.com>,
+        <alexander.duyck@gmail.com>, <dsahern@gmail.com>
+Subject: [PATCH net-next 0/7] some optimization for page pool
+Date:   Wed, 22 Sep 2021 17:41:24 +0800
+Message-ID: <20210922094131.15625-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YUoDJxfNZgNjY8zh@google.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 04:07:03PM +0000, Sean Christopherson wrote:
-> init_hypervisor_platform(), after x86_init.hyper.init_platform() so that the
-> PV support can set the desired feature flags.  Since kvm_hypercall*() is only
-> used by KVM guests, set_cpu_cap(c, X86_FEATURE_VMMCALL) can be moved out of
-> early_init_amd/hygon() and into kvm_init_platform().
+Patch 1: disable dma mapping support for 32-bit arch with 64-bit
+         DMA.
+Patch 2: support non-split page when PP_FLAG_PAGE_FRAG is set.
+patch 3: avoid calling compound_head() for skb frag page
+Patch 4-7: use pp_magic to identify pp page uniquely.
 
-See below.
+V3:
+    1. add patch 1/4/6/7.
+    2. use pp_magic to identify pp page uniquely too.
+    3. avoid unnecessary compound_head() calling.
 
-> Another option would be to refactor apply_alternatives() to allow
-> the caller to provide a different feature check mechanism than
-> boot_cpu_has(), which I think would let us drop X86_FEATURE_VMMCALL,
-> X86_FEATURE_VMCALL, and X86_FEATURE_VMW_VMMCALL from cpufeatures. That
-> might get more than a bit gross though.
+V2: add patch 2, adjust the commit log accroding to the discussion
+    in V1, and fix a compiler error reported by kernel test robot.
 
-Uuuf.
+Yunsheng Lin (7):
+  page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
+  page_pool: support non-split page with PP_FLAG_PAGE_FRAG
+  pool_pool: avoid calling compound_head() for skb frag page
+  page_pool: change BIAS_MAX to support incrementing
+  skbuff: keep track of pp page when __skb_frag_ref() is called
+  skbuff: only use pp_magic identifier for a skb' head page
+  skbuff: remove unused skb->pp_recycle
 
-So here's what I'm seeing (line numbers given to show when stuff
-happens):
-
-start_kernel
-|-> 953: setup_arch
-    |-> 794: early_cpu_init
-    |-> 936: init_hypervisor_platform
-|
-|-> 1134: check_bugs
-	  |-> alternative_instructions
-
-at line 794 setup_arch() calls early_cpu_init() which would end up
-setting X86_FEATURE_VMMCALL on an AMD guest, based on CPUID information.
-
-init_hypervisor_platform() happens after that.
-
-The alternatives patching happens in check_bugs() at line 1134. Which
-means, if one would consider moving the patching up, one would have
-to audit all the code between line 953 and 1134, whether it does
-set_cpu_cap() or some of the other helpers to set or clear bits in
-boot_cpu_data which controls the patching.
-
-So for that I have only one thing to say: can'o'worms. We tried to move
-the memblock allocations placement in the boot process and generated at
-least 4 regressions. I'm still testing the fix for the fix for the 4th
-regression.
-
-So moving stuff in the fragile boot process makes my hair stand up.
-
-Refactoring apply_alternatives() to patch only for X86_FEATURE_VMMCALL
-and then patch again, I dunno, this stuff is fragile and it might cause
-some other similarly nasty fallout. And those are hard to debug because
-one does not see immediately when boot_cpu_data features are missing and
-functionality is behaving differently because of that.
-
-So what's wrong with:
-
-kvm_hypercall3:
-
-	if (cpu_feature_enabled(X86_FEATURE_VMMCALL))
-		return kvm_sev_hypercall3(...);
-
-	/* rest of code */
-
-?
-
-Dunno we probably had that already in those old versions and maybe that
-was shot down for another reason but it should get you what you want
-without having to test the world and more for regressions possibly
-happening from disturbing the house of cards called x86 boot order.
-
-IMHO, I'd say.
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |  6 ---
+ drivers/net/ethernet/marvell/mvneta.c         |  2 -
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  4 +-
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ drivers/net/ethernet/ti/cpsw.c                |  2 -
+ drivers/net/ethernet/ti/cpsw_new.c            |  2 -
+ include/linux/mm_types.h                      | 13 +-----
+ include/linux/skbuff.h                        | 39 ++++++++----------
+ include/net/page_pool.h                       | 31 ++++++++------
+ net/core/page_pool.c                          | 40 +++++++------------
+ net/core/skbuff.c                             | 36 ++++++-----------
+ net/tls/tls_device.c                          |  2 +-
+ 13 files changed, 67 insertions(+), 114 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.33.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
