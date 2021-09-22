@@ -2,185 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE735414F5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AACE414F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236893AbhIVRse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:48:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21217 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233552AbhIVRsc (ORCPT
+        id S236933AbhIVRtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233552AbhIVRta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:48:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632332813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yRAZvQi8QIkG/wXBuwsGoebLhQmRDzUFn2QwIAEv05c=;
-        b=eA5L2jGXZDLbe2+dxpsmdcW+moihC0I+YEhx42Pny7Ssl2u0YrdwJq2y4Wqab1q/UhQ4U0
-        zurJHynx1LuJ3C8nhKUV5LuSK006mqbY9QZOQ7093FIjPdd4eWr/q2jpnGvIZaQBReCGL/
-        OIItjEMfUOA2SO5eyOZDv7wz9I67TWU=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-YoDu0orAOPKuciXt-6Ct-Q-1; Wed, 22 Sep 2021 13:46:51 -0400
-X-MC-Unique: YoDu0orAOPKuciXt-6Ct-Q-1
-Received: by mail-wr1-f70.google.com with SMTP id r15-20020adfce8f000000b0015df1098ccbso2881790wrn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:46:51 -0700 (PDT)
+        Wed, 22 Sep 2021 13:49:30 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1532EC061574;
+        Wed, 22 Sep 2021 10:48:00 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id g41so14942046lfv.1;
+        Wed, 22 Sep 2021 10:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G9y8WEbtY6QF6b57YEwGzQEUKD9V6Jk3RH25jdHrWA8=;
+        b=ggWl8gcJTzUpXp3eY8NqlJVCF7ShGCpHCNZbGbp85TgSMwj/mnxhcTzu6neTRUCK3P
+         1Iuem+0ehT4+ne3pUWaabQZ2f+E6Q+yiTvZc2kUnyh8NkygS/6HTuN3RGb1SxmIHl+XO
+         NSP67FnHAsAI8/gXIWbWvLd5SkR37lBIBssMzz1LgsQId2VKDarFcKuug5Q36l96se1j
+         KTErk6wFZi1hYXBL2bKUxRPqXHvH8kI9lvlaH9rfpODd5Nl3NLyD6nqSt58yIzCYyow3
+         l1fHia7Z3jRtX7nAERN/PzKjKSc/jMP31n7ZHNAnOYalvPl3eQSQ6v2QGZdK5btz7uIo
+         ohhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yRAZvQi8QIkG/wXBuwsGoebLhQmRDzUFn2QwIAEv05c=;
-        b=k4YdNCILZ72c4BHHVUOpdvOZBxs++Zza7n5GOnhXiKq89TTjVbzXfnDwENKZLw+8og
-         jVG5cCSnyXaY6aj6374eJu8Fr5XUmzo9ImEZFgdL6h32M3jDqzRY96IzjTJTYqDlGEWt
-         Vz+N4Uw7/JHLe7rP/N9ZOugyqzyc5TFzg/LlEO59oabd+jOOd6Qa22QWEEdIMXVpamVB
-         aDtm+SaYZC4WPt7B3O+EDeDTDU0KgPxDD+sTcDnGvwjCJZbR+bzcMEIgMomGg3ynB4u1
-         gKO45ODCKguViR92ij7gdoJ3vWf1gw0eMep25XEfDDYxjUYO0mdoY1wLBpDd8J6DwZYt
-         Wsug==
-X-Gm-Message-State: AOAM533Rak25u2ET/5+q1osPM3Fcps905ZFZsTUArMGG48Ug6jh/kTCS
-        fs8sBYGc/gjIbiLEA6054E6A4JEdijRJ/T5rpAoF6hkchp7Gjz96idwQH6GOZaAtvYCvw1SOpQm
-        uJLd/YrSA20w5MUUkd0WUeSR7
-X-Received: by 2002:a1c:a505:: with SMTP id o5mr353244wme.32.1632332810405;
-        Wed, 22 Sep 2021 10:46:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRUR+LCJzoCbByZikpE+DxWdrmv2gBJFkOC+eNKZ2z9oQEsfmDCPQOFXlcLMOuckg32hVAdA==
-X-Received: by 2002:a1c:a505:: with SMTP id o5mr353211wme.32.1632332810108;
-        Wed, 22 Sep 2021 10:46:50 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64dd.dip0.t-ipconnect.de. [91.12.100.221])
-        by smtp.gmail.com with ESMTPSA id s13sm6872088wmc.47.2021.09.22.10.46.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 10:46:49 -0700 (PDT)
-Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
-To:     Peter Collingbourne <pcc@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Evgenii Stepanov <eugenis@google.com>
-References: <20210922061809.736124-1-pcc@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <29f1822d-e4cd-eedb-bea8-619db1d56335@redhat.com>
-Date:   Wed, 22 Sep 2021 19:46:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G9y8WEbtY6QF6b57YEwGzQEUKD9V6Jk3RH25jdHrWA8=;
+        b=51OcQLckbgLqVAXXfeIYIvUOL6xuXetOLkVStqvhI9SDgMq+z9iFV9vHHDrSI6vUU5
+         rdh5zcF+jqQOzz/BCve2+gEXzI6s3cLCqz5weJ8OicmWug2UyyKf/xRCCo9UX/TEckdX
+         KE14q9dYVk+AboaVgt5sP1VNFLS1rsmQ6JvryYW+LVvB1n9Zr3NMTnUOyd0RminIFsyn
+         dGbrMJcM5NEwkUdVjCL+iChBm8yLMK0pOh0+JR0F2RKpSnSnuvlUfw+Cg8yFbzC4NWPW
+         qUndkGaflsQOGigG32BUWUT7hDOHL6WBGnVgp9FZ1RHns8OltbiJIspDpHwuo01f/x1O
+         OIcA==
+X-Gm-Message-State: AOAM530ORIHUBYQ04DMqtPTihvaBooTKbyanXTPj8gUzm90qC1hEoBOx
+        L8ZTIQ2EK7g+17jNK+vpMEGTUKmMLSk33w==
+X-Google-Smtp-Source: ABdhPJxLK1CR/TgTp0A+dm819in8n44WpkccKCLelGAjOyHWB4aQIjh70pJqKUZawLll4Y+6l8PcRQ==
+X-Received: by 2002:ac2:4e04:: with SMTP id e4mr249999lfr.262.1632332878397;
+        Wed, 22 Sep 2021 10:47:58 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id v11sm229171lfi.56.2021.09.22.10.47.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 10:47:57 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 20:47:56 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/5] fs/ntfs3: Refactor ntfs_get_acl_ex for better
+ readability
+Message-ID: <20210922174756.cgj66om2qro4ms3j@kari-VirtualBox>
+References: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
+ <994cb658-d2f8-a797-e947-35ac0a203ea2@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <20210922061809.736124-1-pcc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <994cb658-d2f8-a797-e947-35ac0a203ea2@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.21 08:18, Peter Collingbourne wrote:
-> This patch introduces a kernel feature known as uaccess logging.
-> With uaccess logging, the userspace program passes the address and size
-> of a so-called uaccess buffer to the kernel via a prctl(). The prctl()
-> is a request for the kernel to log any uaccesses made during the next
-> syscall to the uaccess buffer. When the next syscall returns, the address
-> one past the end of the logged uaccess buffer entries is written to the
-> location specified by the third argument to the prctl(). In this way,
-> the userspace program may enumerate the uaccesses logged to the access
-> buffer to determine which accesses occurred.
-> 
-> Uaccess logging has several use cases focused around bug detection
-> tools:
-> 
-> 1) Userspace memory safety tools such as ASan, MSan, HWASan and tools
->     making use of the ARM Memory Tagging Extension (MTE) need to monitor
->     all memory accesses in a program so that they can detect memory
->     errors. For accesses made purely in userspace, this is achieved
->     via compiler instrumentation, or for MTE, via direct hardware
->     support. However, accesses made by the kernel on behalf of the
->     user program via syscalls (i.e. uaccesses) are invisible to these
->     tools. With MTE there is some level of error detection possible in
->     the kernel (in synchronous mode, bad accesses generally result in
->     returning -EFAULT from the syscall), but by the time we get back to
->     userspace we've lost the information about the address and size of the
->     failed access, which makes it harder to produce a useful error report.
-> 
->     With the current versions of the sanitizers, we address this by
->     interposing the libc syscall stubs with a wrapper that checks the
->     memory based on what we believe the uaccesses will be. However, this
->     creates a maintenance burden: each syscall must be annotated with
->     its uaccesses in order to be recognized by the sanitizer, and these
->     annotations must be continuously updated as the kernel changes. This
->     is especially burdensome for syscalls such as ioctl(2) which have a
->     large surface area of possible uaccesses.
-> 
-> 2) Verifying the validity of kernel accesses. This can be achieved in
->     conjunction with the userspace memory safety tools mentioned in (1).
->     Even a sanitizer whose syscall wrappers have complete knowledge of
->     the kernel's intended API may vary from the kernel's actual uaccesses
->     due to kernel bugs. A sanitizer with knowledge of the kernel's actual
->     uaccesses may produce more accurate error reports that reveal such
->     bugs.
-> 
->     An example of such a bug, which was found by an earlier version of this
->     patch together with a prototype client of the API in HWASan, was fixed
->     by commit d0efb16294d1 ("net: don't unconditionally copy_from_user
->     a struct ifreq for socket ioctls"). Although this bug turned out to
->     relatively harmless, it was a bug nonetheless and it's always possible
->     that more serious bugs of this sort may be introduced in the future.
-> 
-> 3) Kernel fuzzing. We may use the list of reported kernel accesses to
->     guide a kernel fuzzing tool such as syzkaller (so that it knows which
->     parts of user memory to fuzz), as an alternative to providing the tool
->     with a list of syscalls and their uaccesses (which again thanks to
->     (2) may not be accurate).
-> 
-> All signals except SIGKILL and SIGSTOP are masked for the interval
-> between the prctl() and the next syscall in order to prevent handlers
-> for intervening asynchronous signals from issuing syscalls that may
-> cause uaccesses from the wrong syscall to be logged.
+On Wed, Sep 22, 2021 at 07:18:18PM +0300, Konstantin Komarov wrote:
 
-Stupid question: can this be exploited from user space to effectively 
-disable SIGKILL for a long time ... and do we care?
+There should almoust always still be commit message. Even "small"
+change. You have now see that people send you patch which change
+just one line, but it can still contain many lines commit message.
 
-Like, the application allocates a bunch of memory, issues the prctl() 
-and spins in user space. What would happen if the OOM killer selects 
-this task as a target and does a do_send_sig_info(SIGKILL, 
-SEND_SIG_PRIV, ...) ?
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/xattr.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+> index 5c7c5c7a5ec1..3795943efc8e 100644
+> --- a/fs/ntfs3/xattr.c
+> +++ b/fs/ntfs3/xattr.c
+> @@ -518,12 +518,15 @@ static struct posix_acl *ntfs_get_acl_ex(struct user_namespace *mnt_userns,
+>  	/* Translate extended attribute to acl. */
+>  	if (err >= 0) {
 
--- 
-Thanks,
+If err was ENODATA ...
 
-David / dhildenb
+>  		acl = posix_acl_from_xattr(mnt_userns, buf, err);
+> -		if (!IS_ERR(acl))
+> -			set_cached_acl(inode, type, acl);
+> +	} else if (err == -ENODATA) {
+> +		acl = NULL;
+>  	} else {
+> -		acl = err == -ENODATA ? NULL : ERR_PTR(err);
 
+Before we get this and we did not call set_cached_acl().
+
+> +		acl = ERR_PTR(err);
+>  	}
+>  
+> +	if (!IS_ERR(acl))
+
+But now we call it with new logic. If this is correct then you change
+behavier little bit. I let you talk before I look more into this.
+
+> +		set_cached_acl(inode, type, acl);
+> +
+>  	__putname(buf);
+>  
+>  	return acl;
+> -- 
+> 2.33.0
+> 
+> 
