@@ -2,236 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA5641509F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BAB4150A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237247AbhIVTpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:45:31 -0400
-Received: from mail-sn1anam02on2087.outbound.protection.outlook.com ([40.107.96.87]:40198
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230456AbhIVTpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:45:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E7UFTgHelAZGl5mCxtq3YIQowboxRDuOGdz7/3DabQl1vEBjFXZIjMCAuF5pWkAhXWJHAWeBMDyBjPfY+OTcvVCPH6lzS9JK1iizDsX+NVxspCEDYI/VHPnZzjV6F6ELX1f/bi8n2QccaoaTHa4BGU1/GPsBDAL8OOYe2OlVL/tioeV36A2yAVSq/wHnaPUqRe2wqYjVPSv/f3KnMkYRAQPkhk4KPheDn1gxcCflBO1aNpQdrS4gjc9AuToCeYUb/6JBbw5QIooaaKvCJNtxMNdGl3wSEQy56jEB8Z0cPB6M0SfxbpOPYoudsnT1AjC+ryIvX1Z14W5M11T9wG/1IQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=cb6HgKy67JO6uV3K/MakqjS8WBaA2Gfwni6PSbsL9mI=;
- b=fjKsUr8KhwFbLFv7Jg2JRNGeLcgQqbI8vi9Trmx3LnWersCS59gzIWY47FIickwEgu1/EZtybPousrY5ppBGShdrWRH0bwKi/XtyzQw+LRNe/cVHgtTve+eHEvhbgN29I1JWtv505jzFLHPRxc4WvvlEFBtrMeQEFZ4k2NLPqe8T7kSrCK/k/T58vIfNDDmzSsYc/TDU4kxOaLleHjoLb6nAVVUxi5OxLm8FhzC9XRhX/qyRpWfcCuzmxoDO+y+J37NOIJqo2xcn0BRpftU0/ptP+tAL71DW2sWfOyBNsZCjnzbkCNIKlyNJpla10wWKIs6oeOzIET0YibvmJ8X8CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cb6HgKy67JO6uV3K/MakqjS8WBaA2Gfwni6PSbsL9mI=;
- b=gH5WIw40ncM0QpQDYHb3TkzkLaAjd4wqCxns8Sxj2eUnwx8saU90hTmDiOIcEpjF7xMW0pj2Hsz6Ubl5cb9DZJc5ttsaWXZ/DZSVPeiTc9JqNhzbRLZNWYfwVER3H/qaxN9YfQehpNcGMQnwA/MAk9cI7qxtyw3m8P7C7B2R+2s=
-Received: from DM4PR12MB5263.namprd12.prod.outlook.com (2603:10b6:5:39b::23)
- by DM4PR12MB5053.namprd12.prod.outlook.com (2603:10b6:5:388::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 22 Sep
- 2021 19:43:58 +0000
-Received: from DM4PR12MB5263.namprd12.prod.outlook.com
- ([fe80::90b2:e7f6:c5e5:c80f]) by DM4PR12MB5263.namprd12.prod.outlook.com
- ([fe80::90b2:e7f6:c5e5:c80f%7]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 19:43:58 +0000
-From:   "Joshi, Mukul" <Mukul.Joshi@amd.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "Ghannam, Yazen" <Yazen.Ghannam@amd.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: RE: [PATCHv2 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
-Thread-Topic: [PATCHv2 2/2] drm/amdgpu: Register MCE notifier for Aldebaran
- RAS
-Thread-Index: AQHXqEUZHAZFKTr3oEOca2084pGuxauv/MGAgACGkZA=
-Date:   Wed, 22 Sep 2021 19:43:58 +0000
-Message-ID: <DM4PR12MB5263059B0C67BCA373AB3AEDEEA29@DM4PR12MB5263.namprd12.prod.outlook.com>
-References: <20210511152538.148084-2-nchatrad@amd.com>
- <20210913021311.12896-1-mukul.joshi@amd.com>
- <20210913021311.12896-2-mukul.joshi@amd.com> <YUsWLw1gSD/AQbcH@zn.tnic>
-In-Reply-To: <YUsWLw1gSD/AQbcH@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=true;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-09-22T19:43:56Z;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD Official Use
- Only-AIP 2.0;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ActionId=5af441ba-e1a4-4781-82cf-7607ce4dda35;
- MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=1
-authentication-results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 981b13dc-c2c4-4f24-a992-08d97e0151e9
-x-ms-traffictypediagnostic: DM4PR12MB5053:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR12MB50534D2B7E6328BDE8A043BAEEA29@DM4PR12MB5053.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kEWeS5IPNaOGgbrtksrf09AJFsG2oIiwrWqQY91V0y3i67bORAL3ciB9EOsGxPnls1v3e9ROZJCBGOJ5AzzAIG8BFElPtTdsk/ocjP9RxIU0nIMiTLmGY38XOZV3BrjelXcR7BPNMHpS1oygJJAQH7GYFm0vgWRGOJN3VnPsWIEe0abqXDMzJVAqvPwmEU30iFPM1WOERH/TfXlLiZkGWrJW3vbXoY+/CMNQMnYkM3BJ6QWeSJf0/2ZCwacgzwfsNVTbTaUaaCx1uvxFFyR1zbIepnmeHfAFzLpz0JAWDmdWVvDcyLMErxHPfLGILcPB01vy8aSgQoz8PRwBBdOoHBeOLyHQ1afl+hcdoJ1uw95WTXXwtfmxkuPjyiS5hPl4Wm2XTTQs2aFQuY+fyO/AmMlwUXz3wHr5e6o4iShGkV6xfC9krUtzc041oCBVgypG9IeRojd1ebMUDTIgFFelMv25w3BLnZIRkPP/Zm09Bc39bR0rOwLCLIlvJD8x7GDV2PZf7FSipVis2anAmloRr85H/gyc43JkOqJauUaqsuMV75KTFXFNaV9CNuURO0yQF1EoteXhMrx1gpERZsDrQDiiEmnYxqbpXClfUHKW9djwULK4tR1m6tPKo0ExO+KZGmktGU0KskrIhxY1aNlSclRdnG1kC3f6nJB9S+rcYuJ3V3Jba9lqUPJFNRtJYMOXtiADa/f23lLGSV0XCxJUozkftXjhpI65LoUMDy09tCeQCr/MmiO9xUKMa1O98UICFyERQhwZhzrYHeNRb1W2fhaATlLX/jRqk1y8gI38wZI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5263.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(966005)(122000001)(5660300002)(54906003)(316002)(6916009)(33656002)(2906002)(38070700005)(4326008)(38100700002)(6506007)(66556008)(186003)(8936002)(66446008)(83380400001)(66476007)(7696005)(508600001)(53546011)(64756008)(26005)(86362001)(52536014)(45080400002)(66946007)(76116006)(8676002)(9686003)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?J3pLTjmCNETTCofUQxzBk/VOJKty4qDvcVN6DNiWK9d57G1MyyB459RoGv+y?=
- =?us-ascii?Q?7Q5hAQ01QCYNrXdKRkWJbrtAcOSn8moOJdDLAol4PLdEDHP5HvpyJaRNYww2?=
- =?us-ascii?Q?QCd+WvvvNb8G+zWyUYogKUy82lT70+RjCTE2M34nteSDmv1Vx2Bk9sBjEX84?=
- =?us-ascii?Q?irDqAu1TOc7vtYMrz7G4EGcN8qv+KLU2bzm/A6EJ635BidojzBXc9XSlV8l/?=
- =?us-ascii?Q?YXm60lhWf3FuvLMNvG6Doq4Qy/rd/z41txFKlrNaSviTFnLtty/g+3fe9zqA?=
- =?us-ascii?Q?ZsTUSoQ5y2+w5ig4xVxDyVaDrRdcINbsmfdcrz5FP9gBECxm3hWHxrsmh3uY?=
- =?us-ascii?Q?qOnDRj3t+Eb0TdnFhzrTuAH/xsApHwbWZz67xCpa70YwtNoM0G2y3cUl2toH?=
- =?us-ascii?Q?C0dWupbbBRZAGqlaVVbVLglv2YVqBQmL0U0zsXUIkc9w3NIaLVUNh4pbCNi+?=
- =?us-ascii?Q?Lr75gAucCP++kLNCJxqrRESj1hH7a7zysTrKB0j+y3ZstIOE5O0ftihY1BgO?=
- =?us-ascii?Q?TuiSSkAbCtBPMLMqcjPM2PsGfAiprkShTlE9zEK28Eazv6c2h8JXwki4Yw4A?=
- =?us-ascii?Q?cMcsQ6g0YHvzY8TOjTi0YSZ77MsIPGb9y3EuXYNGhxA+2aeyNCfHLxzRu+Ao?=
- =?us-ascii?Q?L58ermHN6aSg9DSk7vjrjQWVnAUxql5f2kYoRLo0EtjIr1zXTvSXqWmTyFyQ?=
- =?us-ascii?Q?C8M70/mkdJVsFlPNAqZ1C3YmFAI32alFZ9VdaZMYNKib+aQm+0HAYr4Vd+wb?=
- =?us-ascii?Q?93KM06wK+QQOxLx6p8hoNjlwhwJs5a2zzGg6TqW2g/38N5FwnFcKxOEUm3so?=
- =?us-ascii?Q?riGmtzx7prh+5rYqrMzBdGSXvGnneDxdxGSvZDwTjWaa1lEEMzDGjgA/pXAB?=
- =?us-ascii?Q?jSQZ151+3A1FueE499/3KIYaXR6dM/ciqxDjsCn9M4Qn5i4W3U3Jz31dQ+UI?=
- =?us-ascii?Q?GZ8CL3sj8WzBjy5e1BIoQKa96nhRKDNuCDoMlIRpI7CikDT306q5AWeJWCBP?=
- =?us-ascii?Q?uRGjieI03EW/QocxywETIS30YupzU5u00+ekEsPLK0aMgoYQBfyub+24c6Mi?=
- =?us-ascii?Q?W1Wt86sa5U9T5CPJBDYUNJIsIf3YrF5W2ZlyXM0/xzPzvs3mJ1W4uOHCoWKR?=
- =?us-ascii?Q?a2cj7pIOSTP3SCCxFqkr49HUjdIB5KDWHe9GYd9T4LPxMFRNu985/kRpAYGF?=
- =?us-ascii?Q?diHXcH+AQviRmHaz4F7kg23l+Guov11ee9cl9q/GRoyzLIhRt0ANLq89VgAI?=
- =?us-ascii?Q?t6Z8da+nw+B8oi95d4eKpLM3uwdL83LPwvgCz0GsF5EKKPj2xKWZ6IGbXk7D?=
- =?us-ascii?Q?8I7CoiO90emrL0jRgFrfQFzI?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237244AbhIVTsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:48:46 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:35605 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237222AbhIVTsp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 15:48:45 -0400
+Received: by mail-ot1-f48.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so5200807otj.2;
+        Wed, 22 Sep 2021 12:47:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=myTJLV9zsG1rotdSXj4TizWpiAcw50ZCHhmQAOdwguA=;
+        b=eGNyCJmB0NeZMjPSbWgqbcyXEsutDwc/Wh13JyXbkuw9ejfhIkBZ8rTP0m4ulYz68H
+         AgEIisypySX0YAODbJ0lD+ELSntsCxMpHp4DZ6/2gMr2ICpHnc7IyzU6fAQQz/1vifcw
+         xXJc8aFMRvPfiAk/QFwPr3nJrP5xAyj9NPHUpWMLjQRgbQSP4hCPX8rMK+wbiv79uacN
+         bsZhAFg9xbQoa/FsGjr6znxKeqn39Bocnl1wGR9EPlu/I8feBaAhcCnrcJ12EaICCbrD
+         3jEaB3dxtp6/a3tB7y+zcRxtBv71TWdWKLJBi8W3jlaQL4PFxdCqIrgwITd3233ZjTNV
+         sRZA==
+X-Gm-Message-State: AOAM532bRKXHCOdWtljYRaBSowdXrt7T04Kv9eCsGj+UgsGLYd8AE0kd
+        C3egBG+/raCMRMjEyjFHZZCPBD3iCA==
+X-Google-Smtp-Source: ABdhPJzpxfotwvZ4m4Ux+FhJTp1Po2sHUTojjYBHQrfe0Y2NIYv+7KpulcADDhbDReeG2PcW6D5lmg==
+X-Received: by 2002:a05:6830:791:: with SMTP id w17mr847457ots.108.1632340034527;
+        Wed, 22 Sep 2021 12:47:14 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c5sm712984otb.35.2021.09.22.12.47.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 12:47:14 -0700 (PDT)
+Received: (nullmailer pid 1175763 invoked by uid 1000);
+        Wed, 22 Sep 2021 19:47:13 -0000
+Date:   Wed, 22 Sep 2021 14:47:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: clk: qcom,rpmcc: Document QCM2290
+ compatible
+Message-ID: <YUuIQbOPO1m0Xg7k@robh.at.kernel.org>
+References: <20210917030434.19859-1-shawn.guo@linaro.org>
+ <20210917030434.19859-3-shawn.guo@linaro.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5263.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 981b13dc-c2c4-4f24-a992-08d97e0151e9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 19:43:58.1979
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6NfKZ3OjlBPsz+0b6eNAX0949XnDW2yraAfvjul+7f+BVgESYP4Bm6xFs7jmKH8geMTLMIOqa0+pH3ncc4rJdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5053
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210917030434.19859-3-shawn.guo@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only]
+On Fri, 17 Sep 2021 11:04:33 +0800, Shawn Guo wrote:
+> Add compatible for the RPM Clock Controller on the QCM2290 SoC.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/clock/qcom,rpmcc.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-
-
-> -----Original Message-----
-> From: Borislav Petkov <bp@alien8.de>
-> Sent: Wednesday, September 22, 2021 7:41 AM
-> To: Joshi, Mukul <Mukul.Joshi@amd.com>
-> Cc: linux-edac@vger.kernel.org; x86@kernel.org; linux-kernel@vger.kernel.=
-org;
-> mingo@redhat.com; mchehab@kernel.org; Ghannam, Yazen
-> <Yazen.Ghannam@amd.com>; amd-gfx@lists.freedesktop.org
-> Subject: Re: [PATCHv2 2/2] drm/amdgpu: Register MCE notifier for Aldebara=
-n
-> RAS
->=20
-> [CAUTION: External Email]
->=20
-> On Sun, Sep 12, 2021 at 10:13:11PM -0400, Mukul Joshi wrote:
-> > On Aldebaran, GPU driver will handle bad page retirement even though
-> > UMC is host managed. As a result, register a bad page retirement
-> > handler on the mce notifier chain to retire bad pages on Aldebaran.
-> >
-> > v1->v2:
-> > - Use smca_get_bank_type() to determine MCA bank.
-> > - Envelope the changes under #ifdef CONFIG_X86_MCE_AMD.
-> > - Use MCE_PRIORITY_UC instead of MCE_PRIO_ACCEL as we are
-> >   only handling uncorrectable errors.
-> > - Use macros to determine UMC instance and channel instance
-> >   where the uncorrectable error occured.
-> > - Update the headline.
->=20
-> Same note as for the previous patch.
->=20
-Acked.
-
-> > +static int amdgpu_bad_page_notifier(struct notifier_block *nb,
-> > +                                 unsigned long val, void *data) {
-> > +     struct mce *m =3D (struct mce *)data;
-> > +     struct amdgpu_device *adev =3D NULL;
-> > +     uint32_t gpu_id =3D 0;
-> > +     uint32_t umc_inst =3D 0;
-> > +     uint32_t ch_inst, channel_index =3D 0;
-> > +     struct ras_err_data err_data =3D {0, 0, 0, NULL};
-> > +     struct eeprom_table_record err_rec;
-> > +     uint64_t retired_page;
-> > +
-> > +     /*
-> > +      * If the error was generated in UMC_V2, which belongs to GPU UMC=
-s,
-> > +      * and error occurred in DramECC (Extended error code =3D 0) then=
- only
-> > +      * process the error, else bail out.
-> > +      */
-> > +     if (!m || !((smca_get_bank_type(m->bank) =3D=3D SMCA_UMC_V2) &&
-> > +                 (XEC(m->status, 0x1f) =3D=3D 0x0)))
-> > +             return NOTIFY_DONE;
-> > +
-> > +     /*
-> > +      * GPU Id is offset by GPU_ID_OFFSET in MCA_IPID_UMC register.
-> > +      */
-> > +     gpu_id =3D GET_MCA_IPID_GPUID(m->ipid) - GPU_ID_OFFSET;
-> > +
-> > +     adev =3D find_adev(gpu_id);
-> > +     if (!adev) {
-> > +             dev_warn(adev->dev, "%s: Unable to find adev for gpu_id: =
-%d\n",
-> > +                                  __func__, gpu_id);
-> > +             return NOTIFY_DONE;
-> > +     }
-> > +
-> > +     /*
-> > +      * If it is correctable error, return.
-> > +      */
-> > +     if (mce_is_correctable(m)) {
-> > +             return NOTIFY_OK;
-> > +     }
->=20
-> This can run before you find_adev().
->=20
-Acked.
-
-> > +static void amdgpu_register_bad_pages_mca_notifier(void)
-> > +{
-> > +     /*
-> > +      * Register the x86 notifier only once
-> > +      * with MCE subsystem.
-> > +      */
-> > +     if (notifier_registered =3D=3D false) {
-> > +             mce_register_decode_chain(&amdgpu_bad_page_nb);
-> > +             notifier_registered =3D true;
-> > +     }
->=20
-> I have a patchset which will get rid of the need to do this silliness - o=
-nly if I had
-> some time to actually prepare it for submission... :-\
->=20
-:-\
-
-Thank you.
-
-Regards,
-Mukul
-> --
-> Regards/Gruss,
->     Boris.
->=20
-> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpeopl=
-e.
-> kernel.org%2Ftglx%2Fnotes-about-
-> netiquette&amp;data=3D04%7C01%7Cmukul.joshi%40amd.com%7C7ae9c87153f7
-> 4572712908d97dbdcc7a%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0
-> %7C637679076423976867%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata
-> =3DM5UDrSea0lnEi5%2BhU4ck0zk1dZD9kX4DUoXt95J6dJ4%3D&amp;reserved=3D0
+Acked-by: Rob Herring <robh@kernel.org>
