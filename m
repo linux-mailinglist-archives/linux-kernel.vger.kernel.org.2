@@ -2,62 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD384147F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5DF4147EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235759AbhIVLlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S235774AbhIVLjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhIVLk7 (ORCPT
+        with ESMTP id S235698AbhIVLjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:40:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA80C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 04:39:29 -0700 (PDT)
+        Wed, 22 Sep 2021 07:39:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B43C061574;
+        Wed, 22 Sep 2021 04:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tZq1SReOZM5no9c+5zSUWDpuhZmax+sW5KT+xZkE3Ks=; b=c3sp06S44e4D61s4gSsvVhM9FV
-        hUf+CAxIT07xY031PRLyOqrgPpVvIKzlwjETkpxRCeuTQ+FcfBr6Ucj4uxXoz0fbKdknBJDM60yt2
-        NbmgG7fstVOGLJGZJ+0nufBPsR50dBPQKIoIYm3FPd6ubN68qQauA9BYuRL4eYHbDw1BAO45bRq0E
-        qMFN2tON9yTv4mhrErucP81OrVcMbZxZfM31lIBWNxRmB1SVybEiuVuhThqoc0sxYf3Z+cW+t6dHk
-        QhJPOrGIE6W8xtG3NIkkR6rlrl/5n3nYF5Cdpqb/OW8i1yWChj+Bmw0D5ILj/EnCc1Gjh7wYb0KWt
-        bCq8B3OA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT0Yy-004jv5-N5; Wed, 22 Sep 2021 11:37:36 +0000
-Date:   Wed, 22 Sep 2021 12:37:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, cfijalkovich@google.com,
-        song@kernel.org, william.kucharski@oracle.com, hughd@google.com
-Subject: Re: [PATCH v2 1/2] mm, thp: check page mapping when truncating page
- cache
-Message-ID: <YUsVcEDcQ2vEzjGg@casper.infradead.org>
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20210922070645.47345-2-rongwei.wang@linux.alibaba.com>
+        bh=RwsCAE+OHhIYLCRUvjot7FXo3qXO/fM/QdTY3eoicBE=; b=pJ542YUkBGcydIoTtqmd5NyNP/
+        EusNxpYUYPclLz3WBCyHkVIrAxRjj1ZhyhZvgmcV1vVOGVLvBFb1sJ2nnPz9osrFFvmhH4nXGTSDc
+        FJnSoeea20CodQVBmXGVBBmSFRcQVAmKEa0xkNzcxAuLbRmG4T4z0Vh/nXTwz6zlFnivqQaOvU3eR
+        VY2yAhQhn96XWL+MwfqI1pbGVR9zb4VVQJ27oAQOJlwika0fNmTR2UfEnwxxueebX0eQMqnyH12qU
+        cmtcjC/yYZ3zGgQHmlULgX8mOsHJ86oEvGNTo5xZsK/tBfoAVrPQ6LRWAJist4zXyNaPZCRDgJBvI
+        h0722hNQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT0ZF-004ynh-61; Wed, 22 Sep 2021 11:37:37 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C9D879816EA; Wed, 22 Sep 2021 13:37:36 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 13:37:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     nsaenzju@redhat.com
+Cc:     akpm@linux-foundation.org, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        tglx@linutronix.de, cl@linux.com, juri.lelli@redhat.com,
+        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com,
+        mgorman@suse.de, ppandit@redhat.com, williams@redhat.com,
+        bigeasy@linutronix.de, anna-maria@linutronix.de,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH 2/6] mm/swap: Introduce alternative per-cpu LRU cache
+ locking
+Message-ID: <20210922113736.GP4323@worktop.programming.kicks-ass.net>
+References: <20210921161323.607817-1-nsaenzju@redhat.com>
+ <20210921161323.607817-3-nsaenzju@redhat.com>
+ <20210921220358.GN4323@worktop.programming.kicks-ass.net>
+ <0ec733daf2daaf8a6f5b1fbf56676b9892d5bf73.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922070645.47345-2-rongwei.wang@linux.alibaba.com>
+In-Reply-To: <0ec733daf2daaf8a6f5b1fbf56676b9892d5bf73.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 03:06:44PM +0800, Rongwei Wang wrote:
-> Transparent huge page has supported read-only non-shmem files. The file-
-> backed THP is collapsed by khugepaged and truncated when written (for
-> shared libraries).
+On Wed, Sep 22, 2021 at 10:47:07AM +0200, nsaenzju@redhat.com wrote:
+> On Wed, 2021-09-22 at 00:03 +0200, Peter Zijlstra wrote:
+> > On Tue, Sep 21, 2021 at 06:13:20PM +0200, Nicolas Saenz Julienne wrote:
+> > > +static inline void lru_cache_lock(struct lru_cache_locks *locks)
+> > > +{
+> > > +	if (static_branch_unlikely(&remote_pcpu_cache_access)) {
+> > > +		/* Avoid migration between this_cpu_ptr() and spin_lock() */
+> > > +		migrate_disable();
+> > > +		spin_lock(this_cpu_ptr(&locks->spin));
+> > > +	} else {
+> > > +		local_lock(&locks->local);
+> > > +	}
+> > > +}
+> > 
+> > > +static inline void lru_cache_unlock(struct lru_cache_locks *locks)
+> > > +{
+> > > +	if (static_branch_unlikely(&remote_pcpu_cache_access)) {
+> > > +		spin_unlock(this_cpu_ptr(&locks->spin));
+> > > +		migrate_enable();
+> > > +	} else {
+> > > +		local_unlock(&locks->local);
+> > > +	}
+> > > +}
+> > 
+> > *why* use migrate_disable(), that's horrible!
 > 
-> However, there is race in two possible places.
+> I was trying to be mindful of RT. They don't appreciate people taking spinlocks
+> just after having disabled preemption.
 > 
-> 1) multiple writers truncate the same page cache concurrently;
-> 2) collapse_file rolls back when writer truncates the page cache;
+> I think getting local_lock(&locks->local) is my only option then. But it adds
+> an extra redundant spinlock in the RT+NOHZ_FULL case.
 
-As I've said before, the bug here is that somehow there is a writable fd
-to a file with THPs.  That's what we need to track down and fix.
+That doesn't make it less horrible. The fundamental problem you seem to
+have is that you have to do the this_cpu thing multiple times.
 
-https://lore.kernel.org/linux-mm/YUdL3lFLFHzC80Wt@casper.infradead.org/
+If instead you make sure to only ever do the per-cpu deref *once* and
+then make sure you use the same lru_rotate.pvec as you used
+lru_rotate.locks, it all works out much nicer.
 
+Then you can write things like:
+
+	struct lru_rotate *lr = raw_cpu_ptr(&lru_rotate);
+
+	frob_lock(&lr->locks);
+	frob_pvec(&lr->pvec);
+	frob_unlock(&lr->locks);
+
+and it all no longer matters if you got this or that CPU's instance.
+
+After all, you no longer rely on per-cpu ness for serialization but the
+lock.
