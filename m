@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4524147FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EBD414800
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbhIVLmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:42:08 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:48842 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235596AbhIVLmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:42:07 -0400
-Received: from zn.tnic (p200300ec2f0efa008ea00e11d58cbc58.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:8ea0:e11:d58c:bc58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7D7F71EC051E;
-        Wed, 22 Sep 2021 13:40:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1632310832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=tei5VEk46/vgxQtg8qR60le/A/E3Os9/MyCI0V+1IWU=;
-        b=erym6u3FYSc9xDzK/+A4ZS9nnNujVrv0n6pr3LTIz1VQqWyfdOS7zCQEXU9nOOami+kKSz
-        SWdbJndsJ/z5rhu8bjtGOSGmpiLbjaDYuQqcDlUBFlZlpBj6G2MIcvGZvoHtQp4BycYgH/
-        Ml7ZBpoiU5pw2FWxHqjBs8+VzsVmZzg=
-Date:   Wed, 22 Sep 2021 13:40:31 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mukul Joshi <mukul.joshi@amd.com>
-Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, mchehab@kernel.org,
-        yazen.ghannam@amd.com, amd-gfx@lists.freedesktop.org
-Subject: Re: [PATCHv2 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
-Message-ID: <YUsWLw1gSD/AQbcH@zn.tnic>
-References: <20210511152538.148084-2-nchatrad@amd.com>
- <20210913021311.12896-1-mukul.joshi@amd.com>
- <20210913021311.12896-2-mukul.joshi@amd.com>
+        id S235804AbhIVLmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235796AbhIVLmU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:42:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C2AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 04:40:50 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mT0cL-0006mg-9x; Wed, 22 Sep 2021 13:40:49 +0200
+Subject: Re: [PATCH 6/6] arm64: dts: imx8m: remove unused "nvmem_macaddr_swap"
+ property for FEC
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
+        shawnguo@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
+ <20210908100257.17833-7-qiangqing.zhang@nxp.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <30969cc2-f091-6493-8b4d-ef8f2dd866b5@pengutronix.de>
+Date:   Wed, 22 Sep 2021 13:40:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210908100257.17833-7-qiangqing.zhang@nxp.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210913021311.12896-2-mukul.joshi@amd.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 10:13:11PM -0400, Mukul Joshi wrote:
-> On Aldebaran, GPU driver will handle bad page retirement
-> even though UMC is host managed. As a result, register a
-> bad page retirement handler on the mce notifier chain to
-> retire bad pages on Aldebaran.
+On 08.09.21 12:02, Joakim Zhang wrote:
+> Remove unused "nvmem_macaddr_swap" property for FEC, there is no info in both
+> dt-binding and driver, so it's safe to remove it.
 > 
-> v1->v2:
-> - Use smca_get_bank_type() to determine MCA bank.
-> - Envelope the changes under #ifdef CONFIG_X86_MCE_AMD.
-> - Use MCE_PRIORITY_UC instead of MCE_PRIO_ACCEL as we are
->   only handling uncorrectable errors.
-> - Use macros to determine UMC instance and channel instance
->   where the uncorrectable error occured.
-> - Update the headline.
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-Same note as for the previous patch.
+Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-> +static int amdgpu_bad_page_notifier(struct notifier_block *nb,
-> +				    unsigned long val, void *data)
-> +{
-> +	struct mce *m = (struct mce *)data;
-> +	struct amdgpu_device *adev = NULL;
-> +	uint32_t gpu_id = 0;
-> +	uint32_t umc_inst = 0;
-> +	uint32_t ch_inst, channel_index = 0;
-> +	struct ras_err_data err_data = {0, 0, 0, NULL};
-> +	struct eeprom_table_record err_rec;
-> +	uint64_t retired_page;
-> +
-> +	/*
-> +	 * If the error was generated in UMC_V2, which belongs to GPU UMCs,
-> +	 * and error occurred in DramECC (Extended error code = 0) then only
-> +	 * process the error, else bail out.
-> +	 */
-> +	if (!m || !((smca_get_bank_type(m->bank) == SMCA_UMC_V2) &&
-> +		    (XEC(m->status, 0x1f) == 0x0)))
-> +		return NOTIFY_DONE;
-> +
-> +	/*
-> +	 * GPU Id is offset by GPU_ID_OFFSET in MCA_IPID_UMC register.
-> +	 */
-> +	gpu_id = GET_MCA_IPID_GPUID(m->ipid) - GPU_ID_OFFSET;
-> +
-> +	adev = find_adev(gpu_id);
-> +	if (!adev) {
-> +		dev_warn(adev->dev, "%s: Unable to find adev for gpu_id: %d\n",
-> +				     __func__, gpu_id);
-> +		return NOTIFY_DONE;
-> +	}
-> +
-> +	/*
-> +	 * If it is correctable error, return.
-> +	 */
-> +	if (mce_is_correctable(m)) {
-> +		return NOTIFY_OK;
-> +	}
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 1 -
+>  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 1 -
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 1 -
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 -
+>  4 files changed, 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index fb14be932386..2210cfda4e60 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -948,7 +948,6 @@
+>  				fsl,num-rx-queues = <3>;
+>  				nvmem-cells = <&fec_mac_address>;
+>  				nvmem-cell-names = "mac-address";
+> -				nvmem_macaddr_swap;
+>  				fsl,stop-mode = <&gpr 0x10 3>;
+>  				status = "disabled";
+>  			};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> index 0a994e6edc0b..408024426315 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+> @@ -951,7 +951,6 @@
+>  				fsl,num-rx-queues = <3>;
+>  				nvmem-cells = <&fec_mac_address>;
+>  				nvmem-cell-names = "mac-address";
+> -				nvmem_macaddr_swap;
+>  				fsl,stop-mode = <&gpr 0x10 3>;
+>  				status = "disabled";
+>  			};
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> index 37188ff07f21..cb7867791d05 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> @@ -821,7 +821,6 @@
+>  				nvmem-cells = <&eth_mac1>;
+>  				nvmem-cell-names = "mac-address";
+>  				fsl,stop-mode = <&gpr 0x10 3>;
+> -				nvmem_macaddr_swap;
+>  				status = "disabled";
+>  			};
+>  
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> index 1cb211e470ae..dc4e39ef9d39 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> @@ -1191,7 +1191,6 @@
+>  				fsl,num-rx-queues = <3>;
+>  				nvmem-cells = <&fec_mac_address>;
+>  				nvmem-cell-names = "mac-address";
+> -				nvmem_macaddr_swap;
+>  				fsl,stop-mode = <&iomuxc_gpr 0x10 3>;
+>  				status = "disabled";
+>  			};
+> 
 
-This can run before you find_adev().
-
-> +static void amdgpu_register_bad_pages_mca_notifier(void)
-> +{
-> +	/*
-> +	 * Register the x86 notifier only once
-> +	 * with MCE subsystem.
-> +	 */
-> +	if (notifier_registered == false) {
-> +		mce_register_decode_chain(&amdgpu_bad_page_nb);
-> +		notifier_registered = true;
-> +	}
-
-I have a patchset which will get rid of the need to do this silliness -
-only if I had some time to actually prepare it for submission... :-\
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
