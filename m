@@ -2,69 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F69B415070
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021E1415075
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237188AbhIVT0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:26:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233678AbhIVT0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:26:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1BA60FE8;
-        Wed, 22 Sep 2021 19:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632338688;
-        bh=PJO7tzJ/Irs+TFM64SrlIqLdQjdFxHkXls5kKgEVSIc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=LtYoVq14WFCNxsfE6ITFzc+2u0p/141TSsD6W8YVRcd/Fih8iQU/yibo51TZ9iVxT
-         +TGp4HaBALxxOvgKJ1nJVQjdGkB7unTU35aCk384ReTJD5CALbaCBFIxCh77jyN/9M
-         +cCBNzSc+H4HeAdfQSd4e/lNQn/h+0UcodaVveCWq6LmvK7GvNhHvPrxVj5QHL7IB7
-         1lpPpcLmACaX4woMcsi16Cfx8w0V3q+Wj2kCZXOKp7wT1moXu8CNNW08Z/+l7HgW4C
-         gD6miofbFwT0gKTuEilECU5QIFhvwRmrQyWDV3Buxi5RzejQTxKw8T76md43ZrrBtx
-         WYCNBN5KZuckA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1D7905C0A54; Wed, 22 Sep 2021 12:24:48 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 12:24:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Guillaume Morin <guillaume@morinfr.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: call_rcu data race patch
-Message-ID: <20210922192448.GB880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210917191555.GA2198@bender.morinfr.org>
- <20210917211148.GU4156@paulmck-ThinkPad-P17-Gen-1>
- <20210917213404.GA14271@bender.morinfr.org>
- <20210917220700.GV4156@paulmck-ThinkPad-P17-Gen-1>
- <20210918003933.GA25868@bender.morinfr.org>
- <20210918040035.GX4156@paulmck-ThinkPad-P17-Gen-1>
- <20210918070836.GA19555@bender.morinfr.org>
- <20210919163539.GD880162@paulmck-ThinkPad-P17-Gen-1>
- <20210920160540.GA31426@bender.morinfr.org>
- <20210922191406.GA31531@bender.morinfr.org>
+        id S237206AbhIVT1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:27:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37018 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237167AbhIVT1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 15:27:21 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7F6E11FF74;
+        Wed, 22 Sep 2021 19:25:49 +0000 (UTC)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10C8813D96;
+        Wed, 22 Sep 2021 19:25:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id X9AfNDeDS2GScAAAMHmgww
+        (envelope-from <dave@stgolabs.net>); Wed, 22 Sep 2021 19:25:43 +0000
+Date:   Wed, 22 Sep 2021 12:25:28 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Alex Kogan <alex.kogan@oracle.com>
+Cc:     linux@armlinux.org.uk, peterz@infradead.org, mingo@redhat.com,
+        will.deacon@arm.com, arnd@arndb.de, longman@redhat.com,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, guohanjun@huawei.com,
+        jglauber@marvell.com, steven.sistare@oracle.com,
+        daniel.m.jordan@oracle.com, dave.dice@oracle.com
+Subject: Re: [PATCH v15 3/6] locking/qspinlock: Introduce CNA into the slow
+ path of qspinlock
+Message-ID: <20210922192528.ob22pu54oeqsoeno@offworld>
+References: <20210514200743.3026725-1-alex.kogan@oracle.com>
+ <20210514200743.3026725-4-alex.kogan@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210922191406.GA31531@bender.morinfr.org>
+In-Reply-To: <20210514200743.3026725-4-alex.kogan@oracle.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 09:14:07PM +0200, Guillaume Morin wrote:
-> On 20 Sep 18:05, Guillaume Morin wrote:
-> > On 19 Sep  9:35, Paul E. McKenney wrote:
-> > > How is the testing of the patches going?  (I am guessing nothing yet
-> > > based on the failure times, but who knows?)
-> > 
-> > Nothing yet. I think we'll have a better idea by wednesday.
-> 
-> I am little afraid of jinxing it :) but so far so good. I have the a
-> patched kernel running on a few machines (including my most "reliable
-> crasher") and they've been stable so far.
-> 
-> It's definitely too early to declare victory though. I will keep you
-> posted.
+On Fri, 14 May 2021, Alex Kogan wrote:
 
-Here is hoping!  ;-)
+>diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>index a816935d23d4..94d35507560c 100644
+>--- a/Documentation/admin-guide/kernel-parameters.txt
+>+++ b/Documentation/admin-guide/kernel-parameters.txt
+>@@ -3515,6 +3515,16 @@
+> 			NUMA balancing.
+> 			Allowed values are enable and disable
+>
+>+	numa_spinlock=	[NUMA, PV_OPS] Select the NUMA-aware variant
+>+			of spinlock. The options are:
+>+			auto - Enable this variant if running on a multi-node
+>+			machine in native environment.
+>+			on  - Unconditionally enable this variant.
 
-							Thanx, Paul
+Is there any reason why the user would explicitly pass the on option
+when the auto thing already does the multi-node check? Perhaps strange
+numa topologies? Otherwise I would say it's not needed and the fewer
+options we give the user for low level locking the better.
+
+>+			off - Unconditionally disable this variant.
+>+
+>+			Not specifying this option is equivalent to
+>+			numa_spinlock=auto.
+>+
+> 	numa_zonelist_order= [KNL, BOOT] Select zonelist order for NUMA.
+> 			'node', 'default' can be specified
+> 			This can be set from sysctl after boot.
+>diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>index 0045e1b44190..819c3dad8afc 100644
+>--- a/arch/x86/Kconfig
+>+++ b/arch/x86/Kconfig
+>@@ -1564,6 +1564,26 @@ config NUMA
+>
+> 	  Otherwise, you should say N.
+>
+>+config NUMA_AWARE_SPINLOCKS
+>+	bool "Numa-aware spinlocks"
+>+	depends on NUMA
+>+	depends on QUEUED_SPINLOCKS
+>+	depends on 64BIT
+>+	# For now, we depend on PARAVIRT_SPINLOCKS to make the patching work.
+>+	# This is awkward, but hopefully would be resolved once static_call()
+>+	# is available.
+>+	depends on PARAVIRT_SPINLOCKS
+
+We now have static_call() - see 9183c3f9ed7.
+
+
+>+	default y
+>+	help
+>+	  Introduce NUMA (Non Uniform Memory Access) awareness into
+>+	  the slow path of spinlocks.
+>+
+>+	  In this variant of qspinlock, the kernel will try to keep the lock
+>+	  on the same node, thus reducing the number of remote cache misses,
+>+	  while trading some of the short term fairness for better performance.
+>+
+>+	  Say N if you want absolute first come first serve fairness.
+
+This would also need a depends on !PREEMPT_RT, no? Raw spinlocks really want
+the determinism.
+
+Thanks,
+Davidlohr
