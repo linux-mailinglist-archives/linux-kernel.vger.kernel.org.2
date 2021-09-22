@@ -2,235 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F596414D9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98584414DA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbhIVQA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:00:26 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56984 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236478AbhIVQAZ (ORCPT
+        id S236530AbhIVQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231712AbhIVQDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:00:25 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18MFwiw6054321;
-        Wed, 22 Sep 2021 10:58:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1632326324;
-        bh=yOcYshpy9NXbBhUxW7buhVqSE8u9TAcg9tbSZimEaSY=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=k2ZpW0a/786iPLnhuQgUsrQB4pO9UI4TWUWRg0z7rcD00mh3JavkkpmilogSXWB7r
-         OonnGhu1PnG3GzSejEEryy2tvTuFGKuBpNUcTGypzrvd+KIgGeNFg8IX83q2PBXgl9
-         sZcjvQy82PsecxGbYz36i9eleh0o+e0l29Wr5/Hc=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18MFwiZQ126892
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Sep 2021 10:58:44 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Wed, 22
- Sep 2021 10:58:43 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Wed, 22 Sep 2021 10:58:43 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18MFwhIN093009;
-        Wed, 22 Sep 2021 10:58:43 -0500
-Date:   Wed, 22 Sep 2021 10:58:43 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: Re: [PATCH v4 6/6] arm64: dts: ti: iot2050: Add support for product
- generation 2 boards
-Message-ID: <20210922155843.gjn5aezf4lmgtn3d@undecided>
-References: <cover.1631708830.git.jan.kiszka@siemens.com>
- <a4d6ab1dd1f5582b940ac25395eb878e683b3a38.1631708830.git.jan.kiszka@siemens.com>
+        Wed, 22 Sep 2021 12:03:00 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFF6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:01:30 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g41so13611383lfv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HpX24QoOsIKPkOvUjxkGK/Mz77DaA/pI1GzEr5lGPpY=;
+        b=N7xosZj3jz49Pe7XO4QdW63nlKTtjawIBDzQYF1ltZCTEN6Ncnwd9J59tE9HgXNkJn
+         S8P+9Mgn+MxmqoSpXSrtd6+wvqsj7UiO+TqevHkTyRIfUYOPO/S6DFASeQj2iabD65Fu
+         FgH5k9qCz7VeS2zFiBCaG4nReukENDW8nyOG6M1JWgSNwccNYG9XI6WMmvjYmLCboGaa
+         ek2Xk59jmeGhaECKOjIb9zPveBYFcnedADHY4cwvfRDJnNj83lrp28i3O0PqAys44Y2q
+         +0z6KRgC02Eb/zgpcPw3JB7hgTFa5OczZsw6AenwcN0SnGXH8iDsFTRYayLygfaXgYtb
+         tBsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HpX24QoOsIKPkOvUjxkGK/Mz77DaA/pI1GzEr5lGPpY=;
+        b=Hh9iAS5qxG0LB698Xx34Hk0rLta70Bs/mRoAtcQvG0og3FtvqZThfEePyxqgGLJnNd
+         f7BmBApNg/jiG5GU1rcZCIbL6QzPo3hp/Ul651uT5UY+1wW1zhhfV3y6Acv6qandDTAw
+         PwBVyRjHDTZq5BqqfvWYTnrDQ+WD8QqEIPvzWOOHcGos2O5UnW85uKhClNKsf9WeHPGb
+         w5N4wt+ZfRhUTkrkrK6RbtjaoS86cdbB9DusGNttYE9XC8jLEYrdZaFQ0l3t3iuMlgOs
+         Tsr8N5fhHmnJpGb2+AiIX2Y6LLU56/hsDNN+9DzuEKCsVEzviiV21FBAZM5yJr4UlgZm
+         EWyQ==
+X-Gm-Message-State: AOAM530DdGxnF0Jl9V1c2WvYWdD/6FsPJGBQEC0rOURDgj3lKC6odu+T
+        ggH99SxrplDCpn/zDCzj/iZRNMopAEaapVsaxCYepA==
+X-Google-Smtp-Source: ABdhPJyvMabYfEgFWlQFgf3b5FPc+RET2g/hAYpQAzkxXVFerlggFY1MDY9wesds/bIvErl0VAsRg7VOriEbVmQTTzc=
+X-Received: by 2002:a05:6512:10ca:: with SMTP id k10mr308176lfg.315.1632326386519;
+ Wed, 22 Sep 2021 08:59:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a4d6ab1dd1f5582b940ac25395eb878e683b3a38.1631708830.git.jan.kiszka@siemens.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210922061809.736124-1-pcc@google.com> <87k0j8zo35.fsf@disp2133> <202109220755.B0CFED9F5@keescook>
+In-Reply-To: <202109220755.B0CFED9F5@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 22 Sep 2021 17:59:19 +0200
+Message-ID: <CAG48ez1wQZ2Jte_JRS92Njw89abpU5kGCk8KPyEdC93XX33NRA@mail.gmail.com>
+Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Colin Ian King <colin.king@canonical.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
+        David Hildenbrand <david@redhat.com>,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Evgenii Stepanov <eugenis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14:27-20210915, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
-> 
-> This adds the devices trees for IOT2050 Product Generation 2 (PG2)
-> boards. We have Basic and an Advanced variants again, differing in
-> number of cores, RAM size, availability of eMMC and further details.
-> The major difference to PG1 is the used silicon revision (SR2.x on
-> PG2).
-> 
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> ---
->  arch/arm64/boot/dts/ti/Makefile               |  2 +
->  .../dts/ti/k3-am65-iot2050-common-pg2.dtsi    | 51 +++++++++++++++++++
->  .../dts/ti/k3-am6528-iot2050-basic-pg2.dts    | 24 +++++++++
->  .../dts/ti/k3-am6548-iot2050-advanced-pg2.dts | 29 +++++++++++
->  4 files changed, 106 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
->  create mode 100644 arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-> 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index d56c742f5a10..41a4bc96e6bd 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -8,7 +8,9 @@
->  
->  dtb-$(CONFIG_ARCH_K3) += k3-am654-base-board.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am6528-iot2050-basic-pg2.dtb
->  dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am6548-iot2050-advanced-pg2.dtb
->  
->  dtb-$(CONFIG_ARCH_K3) += k3-j721e-common-proc-board.dtb
->  
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-> new file mode 100644
-> index 000000000000..c25bce7339b7
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Siemens AG, 2021
-> + *
-> + * Authors:
-> + *   Chao Zeng <chao.zeng@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
-> + *
-> + * Common bits of the IOT2050 Basic and Advanced variants, PG2
-> + */
-> +
-> +&main_pmx0 {
-> +	cp2102n_reset_pin_default: cp2102n-reset-pin-default {
-> +		pinctrl-single,pins = <
-> +			/* (AF12) GPIO1_24, used as cp2102 reset */
-> +			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
-> +		>;
-> +	};
-> +};
-> +
-> +&main_gpio1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp2102n_reset_pin_default>;
-> +	gpio-line-names =
-> +		"", "", "", "", "", "", "", "", "", "",
-> +		"", "", "", "", "", "", "", "", "", "",
-> +		"", "", "", "", "CP2102N-RESET";
-> +};
-> +
-> +&dss {
-> +	/* Workaround needed to get DP clock of 154Mhz */
-> +	assigned-clocks = <&k3_clks 67 0>;
-> +};
-> +
-> +&serdes0 {
-> +	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-> +	assigned-clock-parents = <&k3_clks 153 7>, <&k3_clks 153 4>;
-> +};
-> +
-> +&dwc3_0 {
-> +	assigned-clock-parents = <&k3_clks 151 4>,  /* set REF_CLK to 20MHz i.e. PER0_PLL/48 */
-> +				 <&k3_clks 151 8>;  /* set PIPE3_TXB_CLK to WIZ8B2M4VSB */
-> +	phys = <&serdes0 PHY_TYPE_USB3 0>;
-> +	phy-names = "usb3-phy";
-> +};
-> +
-> +&usb0_phy {
-> +	maximum-speed = "super-speed";
-> +	snps,dis-u1-entry-quirk;
-> +	snps,dis-u2-entry-quirk;
+On Wed, Sep 22, 2021 at 5:30 PM Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Sep 22, 2021 at 09:23:10AM -0500, Eric W. Biederman wrote:
+> > Peter Collingbourne <pcc@google.com> writes:
+> >
+> > > This patch introduces a kernel feature known as uaccess logging.
+> > > With uaccess logging, the userspace program passes the address and size
+> > > of a so-called uaccess buffer to the kernel via a prctl(). The prctl()
+> > > is a request for the kernel to log any uaccesses made during the next
+> > > syscall to the uaccess buffer. When the next syscall returns, the address
+> > > one past the end of the logged uaccess buffer entries is written to the
+> > > location specified by the third argument to the prctl(). In this way,
+> > > the userspace program may enumerate the uaccesses logged to the access
+> > > buffer to determine which accesses occurred.
+> > > [...]
+> > > 3) Kernel fuzzing. We may use the list of reported kernel accesses to
+> > >    guide a kernel fuzzing tool such as syzkaller (so that it knows which
+> > >    parts of user memory to fuzz), as an alternative to providing the tool
+> > >    with a list of syscalls and their uaccesses (which again thanks to
+> > >    (2) may not be accurate).
+> >
+> > How is logging the kernel's activity like this not a significant
+> > information leak?  How is this safe for unprivileged users?
+>
+> This does result in userspace being able to "watch" the kernel progress
+> through a syscall. I'd say it's less dangerous than userfaultfd, but
+> still worrisome. (And userfaultfd is normally disabled[1] for unprivileged
+> users trying to interpose the kernel accessing user memory.)
+>
+> Regardless, this is a pretty useful tool for this kind of fuzzing.
+> Perhaps the timing exposure could be mitigated by having the kernel
+> collect the record in a separate kernel-allocated buffer and flush the
+> results to userspace at syscall exit? (This would solve the
+> copy_to_user() recursion issue too.)
 
-^^
-	did you mean &usb0?
-usb0_phy uses Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-usb0 uses Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+Other than what Kees has already said, the only security concern I
+have with that patch should be trivial to fix: If the ->uaccess_buffer
+machinery writes to current's memory, it must be reset during
+execve(), before switching to the new mm, to prevent the old task from
+causing the kernel to scribble into the new mm.
 
-am i missing a "maximum-speed" there? quirks look like belonging to the
-controller ?
+One aspect that might benefit from some clarification on intended
+behavior is: what should happen if there are BPF tracing programs
+running (possibly as part of some kind of system-wide profiling or
+such) that poke around in userspace memory with BPF's uaccess helpers
+(especially "bpf_copy_from_user")?
 
+> I'm pondering what else might be getting exposed by creating this level
+> of probing... kernel addresses would already be getting rejected, so
+> they wouldn't show up in the buffer. Hmm. Jann, any thoughts here?
+>
+>
+> Some other thoughts:
+>
+>
+> Instead of reimplementing copy_*_user() with a new wrapper that
+> bypasses some checks and adds others and has to stay in sync, etc,
+> how about just adding a "recursion" flag? Something like:
+>
+>     copy_from_user(...)
+>         instrument_copy_from_user(...)
+>             uaccess_buffer_log_read(...)
+>                 if (current->uaccess_buffer.writing)
+>                     return;
+>                 uaccess_buffer_log(...)
+>                     current->uaccess_buffer.writing = true;
+>                     copy_to_user(...)
+>                     current->uaccess_buffer.writing = false;
+>
+>
+> How about using this via seccomp instead of a per-syscall prctl? This
+> would mean you would have very specific control over which syscalls
+> should get the uaccess tracing, and wouldn't need to deal with
+> the signal mask (I think). I would imagine something similar to
+> SECCOMP_FILTER_FLAG_LOG, maybe SECCOMP_FILTER_FLAG_UACCESS_TRACE, and
+> add a new top-level seccomp command, (like SECCOMP_GET_NOTIF_SIZES)
+> maybe named SECCOMP_SET_UACCESS_TRACE_BUFFER.
+>
+> This would likely only make sense for SECCOMP_RET_TRACE or _TRAP if the
+> program wants to collect the results after every syscall. And maybe this
+> won't make any sense across exec (losing the mm that was used during
+> SECCOMP_SET_UACCESS_TRACE_BUFFER). Hmmm.
 
-> +};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-> new file mode 100644
-> index 000000000000..c62549a4b436
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dts
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *   Le Jin <le.jin@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
-> + *
-> + * AM6528-based (dual-core) IOT2050 Basic variant, Product Generation 2
-> + * 1 GB RAM, no eMMC, main_uart0 on connector X30
-> + *
-> + * Product homepage:
-> + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "k3-am6528-iot2050-basic-common.dtsi"
-> +#include "k3-am65-iot2050-common-pg2.dtsi"
-> +
-> +/ {
-> +	compatible = "siemens,iot2050-basic-pg2", "ti,am654";
-> +	model = "SIMATIC IOT2050 Basic PG2";
-> +};
-> diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-> new file mode 100644
-> index 000000000000..f00dc86d01b9
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dts
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *   Le Jin <le.jin@siemens.com>
-> + *   Jan Kiszka <jan.kiszka@siemens.com>
-> + *
-> + * AM6548-based (quad-core) IOT2050 Advanced variant, Product Generation 2
-> + * 2 GB RAM, 16 GB eMMC, USB-serial converter on connector X30
-> + *
-> + * Product homepage:
-> + * https://new.siemens.com/global/en/products/automation/pc-based/iot-gateways/simatic-iot2050.html
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "k3-am6548-iot2050-advanced-common.dtsi"
-> +#include "k3-am65-iot2050-common-pg2.dtsi"
-> +
-> +/ {
-> +	compatible = "siemens,iot2050-advanced-pg2", "ti,am654";
-> +	model = "SIMATIC IOT2050 Advanced PG2";
-> +};
-> +
-> +&mcu_r5fss0 {
-> +	/* lock-step mode not supported on this board */
-> +	ti,cluster-mode = <0>;
-> +};
-> -- 
-> 2.31.1
-> 
+And then I guess your plan would be that userspace would be expected
+to use the userspace instruction pointer
+(seccomp_data::instruction_pointer) to indicate instructions that
+should be traced?
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Or instead of seccomp, you could do it kinda like
+https://www.kernel.org/doc/html/latest/admin-guide/syscall-user-dispatch.html
+, with a prctl that specifies a specific instruction pointer?
