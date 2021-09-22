@@ -2,129 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B61414F6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33BB414F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236952AbhIVRwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:52:44 -0400
-Received: from mail-dm3nam07on2138.outbound.protection.outlook.com ([40.107.95.138]:35457
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236945AbhIVRwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:52:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=USHE+AMkKbr0D2/fTbpmzC27ALIsJcdCKPSjWg824iUv5oh/X5Ku1Lbl8diQ66JqiASH8wUODuUK3dGlSfEjNYKLlaTlJwxQRplo6p7ppEZRXJTrH51NXoSTp8rJ8ERueUxp4ODOqEJ8eFjJnXfFmhU+JQdNPJlQZWRI4sxkI7tgj2dYkV1HrqszrI2cxkUiMsxvVrDma4yv99vZqrj2pdmvpDhr1/qCTXN8e/mXrWX78L6zBgk5iAbIAe0N6zFgrRzdnrkQ8EkVBmhnKZVXOJrifUobe0df0I8DxtdNYtA2jEYGaRPFxYMij8g7vqYCW6JOarJUMQjGzhedg1cOSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/eXUzId9kxlmhESvSGo6b22ptXmHGcRGBFHu8UWFeb4=;
- b=D1w7CgHCisBrvM83nXkjYmY1sCDX3w84NmzqjM4btp+/7iOwoILBtusJhxv1RHQ5bgTgphH/8778uXWASEptCVNtwzKxK1WdU9dcBluZ7jt7k5UwhjYfjShlWXBnzllXnEXnEPobtWYRmbYo2j8wVlF43yn80YTyLl4XccJs2WtFCtygdTkJdRIW4Lv6g4I8Oc4pD1P1ceCS3/xasuaNtcmQofeBSkaRVgKzASrwxcYNQcvpVlHwDXdbGJ41loub75PQMzxOlB1nEB7zzpSBfBAaE9hV9jkBZvLyRmPZRZLrCfUl5iy6yIlrXYHepmIpLVOxj+eF7kAQ+h5DS3VxPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/eXUzId9kxlmhESvSGo6b22ptXmHGcRGBFHu8UWFeb4=;
- b=Ozbl2Pv8H8jpwDfK0vvQg+qjyWbetuIjbLB7BEzDQoZ5CYJAlDkHBc5srgWDnfuW2nvNJTjvqDtCs7+PbXYwSqtLch0cmpuDmK7zeEC9zjx2H1QNL6RK/rKFleFQJWQnlubuHTwg/PfEC2dBc/3O969T7Nsfm+5YoWKI9hRb/KsvuQi6n5hNmle+dRASarVVBv6/zubzpogQUdEBAkYd2kD77BpA2iYIJ2IyZFsK8auT8vQFc4h3WjEuKwUbcmZAfpqRsLZeIF6PiGMC5PXHU/CK+AK9EgTdYRGmZgl/QfQIZ14VCdjHUmkQIQN9CE+gUDFFJ5/w9+D+JE4HuvpN3Q==
-Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB6040.prod.exchangelabs.com (2603:10b6:610:46::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.22; Wed, 22 Sep 2021 17:51:09 +0000
-Received: from CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::30a8:19a9:b5c7:96cd]) by CH0PR01MB7153.prod.exchangelabs.com
- ([fe80::30a8:19a9:b5c7:96cd%9]) with mapi id 15.20.4544.014; Wed, 22 Sep 2021
- 17:51:09 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Topic: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Thread-Index: AQHXr7imk55risfKAUmS2+aCDTMROauwTzmg
-Date:   Wed, 22 Sep 2021 17:51:08 +0000
-Message-ID: <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
-In-Reply-To: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: sjtu.edu.cn; dkim=none (message not signed)
- header.d=none;sjtu.edu.cn; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 05030d17-5d04-48d3-1eea-08d97df18f17
-x-ms-traffictypediagnostic: CH2PR01MB6040:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR01MB60405A092059B3A1B5A2B909F2A29@CH2PR01MB6040.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UAE+itiFSmBTxRcEj1x2X5GNGExE3KAuNuTImf3ttcAJ7NHWiJ/+v8NJ/k5Mh3xZ7c0DUXqHd/ExapVrUSHf5EeNJJ+3cxeVTbnvIJYpx/4QVzcQGMwQXrMQ5JfLCtoR6TOnOnXnwn2bM7vpn8oD4ir56Zc+Hvttfg2oy3k8I+K+SIs4bXeMB4Xcy8nW/Yb5mf9HoqVtyUMg7+IjipKuZZNDwSZSNBXHJ+OvKb1j1Ge/GJut0U4BhJzAQSv3956Q8Pxyb8VqEAjQ7zYpaynuLydkwYHgbQSP6E9/FaqSyzK6EVFUedvUAbJ7+6VYgHToX40S7Dwy+ZPuSQ/hZRKbPl+hnoIHwdrC9H2lmuayg559Qe6bxw9R55YfwA4oupkqik2LSwMN3POCELfULrqt8yUheBVFoRkJmKP1BaeN/ffTb2zXCeVxvEsUEngb8zqKGx+dUaZmLFeNMbRctPev2qI73ASyxP1b7+VTOjbXwOY3Pf6aK8X7XPIOsh3NVKvPzwLnbFg9VWr2XPgqqzMhqDKZz4YhZt9as5+LjB9FaDg1pnuOe8qzXQO/QgdRP2zMXlwaxEnNsruHxNjKY10qcPIakj1N0tmFhvJrwiTxP2rC6Qn9Ad7wK4TIrjMm8ucuqThmEa2LwAeZQSY2tbZa8ggXwJ/Nzzw185EbURlUXE5vHso+broFFPg9CfMKcuDV+ZguZp1vBh/D/9JlxMKP4Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39840400004)(136003)(376002)(366004)(346002)(33656002)(8936002)(316002)(66556008)(66476007)(66446008)(4744005)(2906002)(38070700005)(6506007)(122000001)(110136005)(8676002)(52536014)(9686003)(38100700002)(64756008)(71200400001)(54906003)(7696005)(26005)(76116006)(5660300002)(186003)(86362001)(4326008)(66946007)(508600001)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aYoywqEBBSHIhsKu+pQ3xubZG/ivH+ELi6prqgYxzQR6uumoxBV4YZc4o7wT?=
- =?us-ascii?Q?LTrtC2JNZTLmlfsP27tj3/X/9H1HH2DFqmPqCB+UZa1JD/5GsOXPaX+tiuva?=
- =?us-ascii?Q?WRxZNpzs3kP4go6RVTEoMW71gM7brV0j/X7QrDdrfWofrejhRpJM4M4vA1j0?=
- =?us-ascii?Q?EIL30lR3E+9Pxcbe007R+Ez+AQziDENMz/L8JWFOH0VW8fxSTBJE9W2Bd2Ds?=
- =?us-ascii?Q?YGmC9Rdl6AKQBohgdbWwuBgbsa227n/esX8/2pf5QGPoCGUXUn9A3v6V3MgZ?=
- =?us-ascii?Q?9fdkhliqRGoSqWkun1Hi0xR4eM65YjDtrrvd6/yTXH72kgvMAZxS4nUFfwcz?=
- =?us-ascii?Q?/eBlhzGEwVAGbVg7C8AvkNr/p23DYFmNCFh4jx/0pjLjFeh0BTaZvXhoFxt5?=
- =?us-ascii?Q?bGOfvyKBWYKgH8bFz6st0y5FQsO/0CHvEMTjRJhnbRlaELSxKTVZJMxpYNtx?=
- =?us-ascii?Q?j8C/JDYexPjPfHGFgGJp8eRMd3ChVz0/RVcoLERROdXIBRxsizZMpLbTZTi2?=
- =?us-ascii?Q?yeryv9mbfUqel+c/Xqdq2HszXPV+qdjEtvOmy4LyuPMZrGLtpmE3F7uaQlOO?=
- =?us-ascii?Q?l6HEYCAVIEs7H+6O90ghl4e1CKunLhz1Fh9yYGAh4XPrXX0gjoYqH2vX2sZV?=
- =?us-ascii?Q?VAcUoGx09BtRtWHaBkmurnbQI9iXsr/y9fzOMOoJSB5Z2nvtr2OO33JeumHh?=
- =?us-ascii?Q?/cxMmb2dUKTORx6kAdjugkAG8HeEZoa2ImcJ4tmMNE+RU/23W+NKRL1BZr+8?=
- =?us-ascii?Q?XKpF3Xphr+hk+jBqXbyK8y2iTwSQVTnwgA1mdZ0YkH80MjAOr/hPAKkpC+/i?=
- =?us-ascii?Q?8nOKwfCTMrIBW047JNCgJxuIkHDiZslbpM8ke7gj0yiHfX5eRKID+Dnwq8re?=
- =?us-ascii?Q?hMCZJAIytLR1DMnzn1+grXQ2+S8y9b5a3bthd85EVXVjUbylJ31hv2E6dCZQ?=
- =?us-ascii?Q?xS7xT4bbNWZaLf2sMJBkGD/0UZlUs0RpqHWmsFu64krT57J+fhLUiJi8pMYX?=
- =?us-ascii?Q?7xa7z30WRmnXck8HZx1UwRQZMpJSM+sxTBAacbhoh4GWCPSHPFR2dO+AZ6tL?=
- =?us-ascii?Q?ObrkEQ6BRkIsOVXnsxrdhdrINvefJ6dS+pVybhTWI1evYtU/gt2h8Df1qfnW?=
- =?us-ascii?Q?kMYrMAw5rFdRBdRSYLK3r4ymbmswTY6hX9FitHRt/hy9TTLf8yo7CiehyEb4?=
- =?us-ascii?Q?l3SWldSRtCawSEbSjcM2mlwqsrHM4bJSTS1WqafBIm4iNGN+/MTWdC0yCWy2?=
- =?us-ascii?Q?AOeDMJV+JNcy+tyONdhtQWT+QEjtT6tVAai5onAZhGITrFnKKO6uMEZ6pon8?=
- =?us-ascii?Q?Ljk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S236957AbhIVRxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:53:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233552AbhIVRxe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 13:53:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632333123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=vKKXIJLwy/fLR00ynbhI+6m3Ml8OSdkI8ATKMZTi12I=;
+        b=cyEm8IIJyzipPm1Xu1qi+ANJVUaqDYvj4k0+Bum3oxDxe9nH7Uzx9aqGXe2zwF3uHig+sF
+        uQIdyXaB9dI0CfaHRDaTtdAhbdqvTjO6HLrp/2FwcPI8G2rW3Pl4agUGm7YHZ+bfBEEBLp
+        Ot1+0HpGa4xe4s2R1+dAwK6OObPaGzs=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-TJyG7NkQOeOKjQLga2QY0A-1; Wed, 22 Sep 2021 13:52:02 -0400
+X-MC-Unique: TJyG7NkQOeOKjQLga2QY0A-1
+Received: by mail-qk1-f199.google.com with SMTP id p23-20020a05620a22f700b003d5ac11ac5cso11700311qki.15
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:52:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vKKXIJLwy/fLR00ynbhI+6m3Ml8OSdkI8ATKMZTi12I=;
+        b=gTfCGD+F3POwmMBpFqWyEz+zSxXbKMa23SJU4LxI0o3hBw+zKs6a0gtLFRxg8uXn5H
+         5hvHoz8KhH4VS4vHLsprNSLWJLhT+4WEFt83G4JDKIdxjN6zCIAMewRUYBdBTQjYScca
+         TfBFD7/zRbDl5v8ziJJ9mrVOUnS8Mx6ZFy4tsA8m4ZvCRypA9eG0mLFDUq3oFUvLQDf6
+         2zvSNK90ESAgUqnffK3jH/tBDYuUDgejTU17KrM+RnAlPPLLGjT1ZsEy2pMJDYPrAJVF
+         0uvsRpxmGgLaum/Gdk1SNebxWJqVRmDDE3A0tag7QBTZUWhO5jJIVi/jW6e8dAwJBpsS
+         I9UQ==
+X-Gm-Message-State: AOAM530gmMHISU0z+llN+gS62KLrSgxKpa52iGKnSGj2lDoREgWDoifa
+        9aFstj+WdV4ivSM5vslhujkL8prOCXJQzwhVnfVrOQHg850LiWTf5ZnbnDItF6u5dqOcp5FlM+i
+        IpgfG6ZQC2Md4ntyZgzYSZp857DOy2x7uN6wbusDf1jyEin9Unt1khoqUkVd2onHvBQAvMywrJw
+        ==
+X-Received: by 2002:aed:2794:: with SMTP id a20mr490818qtd.243.1632333120207;
+        Wed, 22 Sep 2021 10:52:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwdxDXZlgkBgU1qcW7DZdL7V4D2gO7rktK27Bs2jpfo95oSFVNULk2DyaNxUBOonyDhSFOKlQ==
+X-Received: by 2002:aed:2794:: with SMTP id a20mr490781qtd.243.1632333119878;
+        Wed, 22 Sep 2021 10:51:59 -0700 (PDT)
+Received: from t490s.redhat.com ([2607:fea8:56a2:9100::d3ec])
+        by smtp.gmail.com with ESMTPSA id r17sm1854075qtx.17.2021.09.22.10.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 10:51:59 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: [PATCH] mm/khugepaged: Detecting uffd-wp vma more efficiently
+Date:   Wed, 22 Sep 2021 13:51:56 -0400
+Message-Id: <20210922175156.130228-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05030d17-5d04-48d3-1eea-08d97df18f17
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 17:51:09.0385
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dpJGDh/7nGgXE08+74gYGM5dx598j1UNPLWNN+A84q38sWi48TSeIdmENE+hEyjS6DFgdtoZSvk/Gcios+wHZ6h35lYsfqr+6mwGU5nsLYLD6qLDgVB1HclyjRKJdif9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB6040
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
->=20
-> Pointers should be printed with %p or %px rather than cast to (unsigned l=
-ong
-> long) and printed with %llx.
-> Change %llx to %p to print the pointer.
->=20
-> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+We forbid merging thps for uffd-wp enabled regions, by breaking the khugepaged
+scanning right after we detected a uffd-wp armed pte (either present, or swap).
 
-The unsigned long long was originally used to insure the entire accurate po=
-inter as emitted.
+It works, but it's less efficient, because those ptes only exist for VM_UFFD_WP
+enabled VMAs.  Checking against the vma flag would be more efficient, and good
+enough.  To be explicit, we could still be able to merge some thps for
+VM_UFFD_WP regions before this patch as long as they have zero uffd-wp armed
+ptes, however that's not a major target for thp collapse anyways.
 
-This is to ensure the pointers in prints and event traces match values in s=
-tacks and register dumps.
+This mostly reverts commit e1e267c7928fe387e5e1cffeafb0de2d0473663a, but
+instead we do the same check at vma level, so it's not a bugfix.
 
-I think the %p will obfuscate the pointer so %px is correct for our use cas=
-e.
+This also paves the way for file-backed uffd-wp support, as the VM_UFFD_WP flag
+will work for file-backed too.
 
-Mike
+After this patch, the error for khugepaged for these regions will switch from
+SCAN_PTE_UFFD_WP to SCAN_VMA_CHECK.
+
+Since uffd minor mode should not allow thp as well, do the same thing for minor
+mode to stop early on trying to collapse pages in khugepaged.
+
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+
+Axel: as I asked in the other thread, please help check whether minor mode will
+work properly with shmem thp enabled.  If not, I feel like this patch could be
+part of that effort at last, but it's also possible that I missed something.
+
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/trace/events/huge_memory.h |  1 -
+ mm/khugepaged.c                    | 26 +++-----------------------
+ 2 files changed, 3 insertions(+), 24 deletions(-)
+
+diff --git a/include/trace/events/huge_memory.h b/include/trace/events/huge_memory.h
+index 4fdb14a81108..53532f5925c3 100644
+--- a/include/trace/events/huge_memory.h
++++ b/include/trace/events/huge_memory.h
+@@ -15,7 +15,6 @@
+ 	EM( SCAN_EXCEED_SWAP_PTE,	"exceed_swap_pte")		\
+ 	EM( SCAN_EXCEED_SHARED_PTE,	"exceed_shared_pte")		\
+ 	EM( SCAN_PTE_NON_PRESENT,	"pte_non_present")		\
+-	EM( SCAN_PTE_UFFD_WP,		"pte_uffd_wp")			\
+ 	EM( SCAN_PAGE_RO,		"no_writable_page")		\
+ 	EM( SCAN_LACK_REFERENCED_PAGE,	"lack_referenced_page")		\
+ 	EM( SCAN_PAGE_NULL,		"page_null")			\
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 045cc579f724..3afe66d48db0 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -31,7 +31,6 @@ enum scan_result {
+ 	SCAN_EXCEED_SWAP_PTE,
+ 	SCAN_EXCEED_SHARED_PTE,
+ 	SCAN_PTE_NON_PRESENT,
+-	SCAN_PTE_UFFD_WP,
+ 	SCAN_PAGE_RO,
+ 	SCAN_LACK_REFERENCED_PAGE,
+ 	SCAN_PAGE_NULL,
+@@ -467,6 +466,9 @@ static bool hugepage_vma_check(struct vm_area_struct *vma,
+ 		return false;
+ 	if (vma_is_temporary_stack(vma))
+ 		return false;
++	/* Don't allow thp merging for wp/minor enabled uffd regions */
++	if (userfaultfd_wp(vma) || userfaultfd_minor(vma))
++		return false;
+ 	return !(vm_flags & VM_NO_KHUGEPAGED);
+ }
+ 
+@@ -1246,15 +1248,6 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 		pte_t pteval = *_pte;
+ 		if (is_swap_pte(pteval)) {
+ 			if (++unmapped <= khugepaged_max_ptes_swap) {
+-				/*
+-				 * Always be strict with uffd-wp
+-				 * enabled swap entries.  Please see
+-				 * comment below for pte_uffd_wp().
+-				 */
+-				if (pte_swp_uffd_wp(pteval)) {
+-					result = SCAN_PTE_UFFD_WP;
+-					goto out_unmap;
+-				}
+ 				continue;
+ 			} else {
+ 				result = SCAN_EXCEED_SWAP_PTE;
+@@ -1270,19 +1263,6 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 				goto out_unmap;
+ 			}
+ 		}
+-		if (pte_uffd_wp(pteval)) {
+-			/*
+-			 * Don't collapse the page if any of the small
+-			 * PTEs are armed with uffd write protection.
+-			 * Here we can also mark the new huge pmd as
+-			 * write protected if any of the small ones is
+-			 * marked but that could bring unknown
+-			 * userfault messages that falls outside of
+-			 * the registered range.  So, just be simple.
+-			 */
+-			result = SCAN_PTE_UFFD_WP;
+-			goto out_unmap;
+-		}
+ 		if (pte_write(pteval))
+ 			writable = true;
+ 
+-- 
+2.31.1
+
