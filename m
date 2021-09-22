@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BD641432A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904E0414328
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhIVIBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:01:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34554 "EHLO
+        id S233663AbhIVIBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:01:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34562 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhIVIBK (ORCPT
+        with ESMTP id S233418AbhIVIBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Sep 2021 04:01:10 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6E13C201BF;
+        by smtp-out2.suse.de (Postfix) with ESMTP id A6704201C1;
         Wed, 22 Sep 2021 07:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1632297579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1eNhrsKLfHba5f7FTtrJ7Ml7fJtnV/kwE/HvvTUi05Y=;
-        b=d5Wrma4fJbAZhYMY6GkjElUusGnQAl70oqhb/cJsih5xwVyJnQ6z5lrUGJQNIICk5ARDqf
-        R/LvdX2B7RkUhW8TVc5vpA7AoreQQzL1EDFW+BnXeGfe5KyXn2ERpRL3185z95C4oqCwmG
-        tCkEYAA0UzfF3BRLNBW7YBDawae9Y4Q=
+        bh=9YP87oq4aMkE18Ix2OtVroKl3jYiFfi+eGATswpt4AI=;
+        b=BeDPaaqIcCQU0NQPApqLQfUI4qpff6zc1F0NgzSBix7YB8LUWxy+6uQ9DvV5lmJYpBPB7q
+        hx9busWgNk3guFfpZpD1JCK+BalbBTVDAmLHXqFjUOGnuGHSYUlBFIwQ57//DD6Vk2s6hN
+        yLGLK/dY1w1sPeLIYimxpz1jEIqEz74=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1632297579;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1eNhrsKLfHba5f7FTtrJ7Ml7fJtnV/kwE/HvvTUi05Y=;
-        b=5T3IyPgyz47gtw2Fk/Vu+nqlr5cr/tSzrqo1DoCSDilWWd1IA2HZj4Di1IPpzKV7+Cv2az
-        +HpylQ5sKOqxqsCQ==
+        bh=9YP87oq4aMkE18Ix2OtVroKl3jYiFfi+eGATswpt4AI=;
+        b=gga3ZtL+0nHzSl9yLXMspSa9QDSNOxXjqVSRLbNIrLTWNVvuqSX6Lsguwlo5dexhlqt8md
+        sPNOwbqyG+b8T5Dw==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4F8CAA3B8D;
+        by relay2.suse.de (Postfix) with ESMTPS id 7E4B4A3B8B;
         Wed, 22 Sep 2021 07:59:39 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 4/7] mxser: simplify FCR computation in mxser_change_speed()
-Date:   Wed, 22 Sep 2021 09:59:35 +0200
-Message-Id: <20210922075938.31390-4-jslaby@suse.cz>
+Subject: [PATCH 5/7] mxser: move FIFO clearing to mxser_disable_and_clear_FIFO()
+Date:   Wed, 22 Sep 2021 09:59:36 +0200
+Message-Id: <20210922075938.31390-5-jslaby@suse.cz>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210922075938.31390-1-jslaby@suse.cz>
 References: <20210922075938.31390-1-jslaby@suse.cz>
@@ -54,75 +54,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provided FIFO is always enabled for MUST chips, move its FCR setting out
-of PORT_8250/PORT_16450 special case in mxser_change_speed(). Now, we
-can pre-set fcr to zero and invert the condition of the 'if'.
-
-This makes the code more readable (no functional change intended).
+This code is used on two places, make a helper for disabling and
+clearing FIFOs. And demangle the too complicated 'if' by using a local
+variable.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 47 +++++++++++++++++++--------------------------
- 1 file changed, 20 insertions(+), 27 deletions(-)
+ drivers/tty/mxser.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 309acf3f1ec3..c194a96bb14e 100644
+index c194a96bb14e..6913a1caa6f0 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -600,33 +600,26 @@ static void mxser_change_speed(struct tty_struct *tty, struct ktermios *old_term
- 	if (cflag & CMSPAR)
- 		cval |= UART_LCR_SPAR;
+@@ -706,6 +706,16 @@ static void mxser_check_modem_status(struct tty_struct *tty,
+ 		mxser_handle_cts(tty, port, status);
+ }
  
--	if ((info->type == PORT_8250) || (info->type == PORT_16450)) {
--		if (info->board->must_hwid) {
--			fcr = UART_FCR_ENABLE_FIFO;
--			fcr |= MOXA_MUST_FCR_GDA_MODE_ENABLE;
--			mxser_set_must_fifo_value(info);
--		} else
--			fcr = 0;
--	} else {
--		fcr = UART_FCR_ENABLE_FIFO;
--		if (info->board->must_hwid) {
--			fcr |= MOXA_MUST_FCR_GDA_MODE_ENABLE;
--			mxser_set_must_fifo_value(info);
--		} else {
--			switch (info->rx_high_water) {
--			case 1:
--				fcr |= UART_FCR_TRIGGER_1;
--				break;
--			case 4:
--				fcr |= UART_FCR_TRIGGER_4;
--				break;
--			case 8:
--				fcr |= UART_FCR_TRIGGER_8;
--				break;
--			default:
--				fcr |= UART_FCR_TRIGGER_14;
--				break;
--			}
-+	fcr = 0;
-+	if (info->board->must_hwid) {
-+		fcr |= UART_FCR_ENABLE_FIFO |
-+			MOXA_MUST_FCR_GDA_MODE_ENABLE;
-+		mxser_set_must_fifo_value(info);
-+	} else if (info->type != PORT_8250 && info->type != PORT_16450) {
-+		fcr |= UART_FCR_ENABLE_FIFO;
-+		switch (info->rx_high_water) {
-+		case 1:
-+			fcr |= UART_FCR_TRIGGER_1;
-+			break;
-+		case 4:
-+			fcr |= UART_FCR_TRIGGER_4;
-+			break;
-+		case 8:
-+			fcr |= UART_FCR_TRIGGER_8;
-+			break;
-+		default:
-+			fcr |= UART_FCR_TRIGGER_14;
-+			break;
- 		}
- 	}
++static void mxser_disable_and_clear_FIFO(struct mxser_port *info)
++{
++	u8 fcr = UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT;
++
++	if (info->board->must_hwid)
++		fcr |= MOXA_MUST_FCR_GDA_MODE_ENABLE;
++
++	outb(fcr, info->ioaddr + UART_FCR);
++}
++
+ static int mxser_activate(struct tty_port *port, struct tty_struct *tty)
+ {
+ 	struct mxser_port *info = container_of(port, struct mxser_port, port);
+@@ -730,13 +740,7 @@ static int mxser_activate(struct tty_port *port, struct tty_struct *tty)
+ 	 * Clear the FIFO buffers and disable them
+ 	 * (they will be reenabled in mxser_change_speed())
+ 	 */
+-	if (info->board->must_hwid)
+-		outb((UART_FCR_CLEAR_RCVR |
+-			UART_FCR_CLEAR_XMIT |
+-			MOXA_MUST_FCR_GDA_MODE_ENABLE), info->ioaddr + UART_FCR);
+-	else
+-		outb((UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT),
+-			info->ioaddr + UART_FCR);
++	mxser_disable_and_clear_FIFO(info);
  
+ 	/*
+ 	 * At this point there's no way the LSR could still be 0xFF;
+@@ -824,13 +828,7 @@ static void mxser_shutdown_port(struct tty_port *port)
+ 	outb(0x00, info->ioaddr + UART_IER);
+ 
+ 	/* clear Rx/Tx FIFO's */
+-	if (info->board->must_hwid)
+-		outb(UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT |
+-				MOXA_MUST_FCR_GDA_MODE_ENABLE,
+-				info->ioaddr + UART_FCR);
+-	else
+-		outb(UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT,
+-			info->ioaddr + UART_FCR);
++	mxser_disable_and_clear_FIFO(info);
+ 
+ 	/* read data port to reset things */
+ 	(void) inb(info->ioaddr + UART_RX);
 -- 
 2.33.0
 
