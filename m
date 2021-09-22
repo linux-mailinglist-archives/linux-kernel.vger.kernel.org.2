@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A54414F8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF47E414F91
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236976AbhIVSGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236837AbhIVSGE (ORCPT
+        id S236993AbhIVSHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:07:18 -0400
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:33650 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236837AbhIVSHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:06:04 -0400
-Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7404C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:04:33 -0700 (PDT)
-Received: from pps.filterd (m0050102.ppops.net [127.0.0.1])
-        by m0050102.ppops.net-00190b01. (8.16.1.2/8.16.1.2) with SMTP id 18MHgXEP014239;
-        Wed, 22 Sep 2021 19:04:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=jcdEcrP+5y+ElOaxqBnq6pN8hD6WVH7XmRChoU2VlVU=;
- b=HRWx11JjxPV90qrB/kBcGW2YSm3mztt4FQgDoZhsNpWelR6sPVyPt4vq9fdVCgGRXCIl
- IbszExub1Z397ocXLRqWBe7QBeWZdorwBVqdPgiBaGuQ3/PRYvVAOo/RpmJPMUGMNrLd
- dNQ6DAs9rJHy+xm2PCGjzEc3AiSxXJ4aZv2cpfrW8FeGcMpy3JbavxH8rYJRfllJ6KMq
- 2oQVtsCQJGCXi7rcFpy/berVAA20CwHg5oGha4U1pNdXb/oB+d0yUPbECUxEo5dy6VoU
- qo/3+0rLmpqywLCmwEdirhXuly6Q/gzePkEM5q8ADiBvxgmrZcrgcTBcKGl7bS94PhOf BA== 
-Received: from prod-mail-ppoint5 (prod-mail-ppoint5.akamai.com [184.51.33.60] (may be forged))
-        by m0050102.ppops.net-00190b01. with ESMTP id 3b7xa8p10x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 19:04:27 +0100
-Received: from pps.filterd (prod-mail-ppoint5.akamai.com [127.0.0.1])
-        by prod-mail-ppoint5.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 18MHoZbk025387;
-        Wed, 22 Sep 2021 11:04:26 -0700
-Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
-        by prod-mail-ppoint5.akamai.com with ESMTP id 3b7q801daw-1;
-        Wed, 22 Sep 2021 11:04:26 -0700
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id C2A45275EE;
-        Wed, 22 Sep 2021 18:04:25 +0000 (GMT)
-Subject: Re: [PATCH v3 0/3] Trivial dynamic debug fixups
-To:     Andrew Halaney <ahalaney@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jim Cromie <jim.cromie@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210920205444.20068-1-ahalaney@redhat.com>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <6acfb61d-4aca-ac59-7fc6-d18b4c623765@akamai.com>
-Date:   Wed, 22 Sep 2021 14:04:25 -0400
+        Wed, 22 Sep 2021 14:07:15 -0400
+Received: by mail-pl1-f181.google.com with SMTP id t4so2363865plo.0;
+        Wed, 22 Sep 2021 11:05:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I5sYw+bSyHIGaSpNI3tdpwWRWpZhz0nrSXfvUCbXn7I=;
+        b=ssXy9U40+F9IfrC6fpp5u1P/cJQsmr5M1RK/MO2W7t3ebmS/1ryhi5MjDc9eCs341O
+         Kp03CXrFKcNv6kEiu/lzv68+ztkdkgKCBPBTDlOzovKwUwK99Wng3nZvGV9fw8UHdVHF
+         7nP+BDPhRPCEkdVJMVd3KVUfcq9KlA1WuY58eJDZuCK80AaxMBWLyOwJCKNyceFNYk+P
+         Zf6qWdZrpEoc8imdbrqfY6xan346HnwRVZm/3uQgY23UXLO7I7eek4Xd4beS+rMseKdg
+         Dq5CGrgICGYp0rbojUxy1rm6VS1eHAABSFWS6LvKCqFRjJkpgRFBJREr7fZsJ9SNT54c
+         CG3A==
+X-Gm-Message-State: AOAM530oWMY3BXbQXSMGixYY8YXNnp0mziDOtJlqLG2G6txPApH9pDxD
+        Asj9wypxlacnWr/lzQuejtZaUGxk3C0=
+X-Google-Smtp-Source: ABdhPJyOaDgTW+/81YD2pq3w8KkpuBCHttPDwqG4QLnT22VlpSS/51FacXz/PHjs/8l/aU7tQwNd/g==
+X-Received: by 2002:a17:902:ab16:b0:13a:356c:6a03 with SMTP id ik22-20020a170902ab1600b0013a356c6a03mr167270plb.38.1632333944401;
+        Wed, 22 Sep 2021 11:05:44 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:f3b9:da7d:f0c0:c71c])
+        by smtp.gmail.com with ESMTPSA id c9sm3050706pfi.212.2021.09.22.11.05.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 11:05:43 -0700 (PDT)
+Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
+ <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org>
+Date:   Wed, 22 Sep 2021 11:05:42 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210920205444.20068-1-ahalaney@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-22_06:2021-09-22,2021-09-22 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
- suspectscore=0 adultscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109200000
- definitions=main-2109220117
-X-Proofpoint-GUID: 4Q997L-8KqJIZt0owHfhWYmM7aFjxdxS
-X-Proofpoint-ORIG-GUID: 4Q997L-8KqJIZt0owHfhWYmM7aFjxdxS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-22_06,2021-09-22_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- adultscore=0 spamscore=0 malwarescore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109200000
- definitions=main-2109220118
-X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 184.51.33.60)
- smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On 9/22/21 10:51 AM, Marciniszyn, Mike wrote:
+>> Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+>>
+>> Pointers should be printed with %p or %px rather than cast to (unsigned long
+>> long) and printed with %llx.
+>> Change %llx to %p to print the pointer.
+>>
+>> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+> 
+> The unsigned long long was originally used to insure the entire accurate pointer as emitted.
+> 
+> This is to ensure the pointers in prints and event traces match values in stacks and register dumps.
+> 
+> I think the %p will obfuscate the pointer so %px is correct for our use case.
 
-Series looks good to me.
-
-Acked-by: Jason Baron <jbaron@akamai.com>
+How about applying Guo's patch and adding a configuration option to the
+kernel for disabling pointer hashing for %p and related format specifiers?
+Pointer hashing is useful on production systems but not on development
+systems.
 
 Thanks,
 
--Jason
+Bart.
 
-On 9/20/21 4:54 PM, Andrew Halaney wrote:
-> Hi,
-> 
-> Here is round 3 of some trivial dynamic debug improvements.
-> 
-> v2 -> v3:
->  * Use a more clear example in the cli param examples
-> 
-> v1 -> v2:
->  * Use different example when showing misleading error message
->  * Justify dynamic debug scanning the whole command line
->  * Add patch removing ddebug_query
->  * Add patch improving cli param examples for dyndbg/$module.dyndbg
-> 
-> v2: https://urldefense.com/v3/__https://lore.kernel.org/all/20210913222440.731329-1-ahalaney@redhat.com/__;!!GjvTz_vk!E6HzrtWvnWiM_KOORWtK46YQNqqO5npPrKi9LrU8F1CdWgS2w6dxfzi_clWo1Q$ 
-> v1: https://urldefense.com/v3/__https://lore.kernel.org/all/20210909161755.61743-1-ahalaney@redhat.com/__;!!GjvTz_vk!E6HzrtWvnWiM_KOORWtK46YQNqqO5npPrKi9LrU8F1CdWgS2w6dxfzhcL6__NA$ 
-> 
-> Andrew Halaney (3):
->   dyndbg: make dyndbg a known cli param
->   dyndbg: Remove support for ddebug_query param
->   Documentation: dyndbg: Improve cli param examples
-> 
->  .../admin-guide/dynamic-debug-howto.rst       | 13 ++++-----
->  .../admin-guide/kernel-parameters.txt         |  5 ----
->  lib/dynamic_debug.c                           | 27 +++++--------------
->  3 files changed, 14 insertions(+), 31 deletions(-)
-> 
