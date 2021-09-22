@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372DF414600
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81852414603
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbhIVKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:18:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:46282 "EHLO foss.arm.com"
+        id S234867AbhIVKTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:19:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234730AbhIVKSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:18:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B33211B3;
-        Wed, 22 Sep 2021 03:16:52 -0700 (PDT)
-Received: from [10.57.95.67] (unknown [10.57.95.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2327A3F719;
-        Wed, 22 Sep 2021 03:16:49 -0700 (PDT)
-Subject: Re: [PATCH v2 14/17] coresight: trbe: Make sure we have enough space
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, james.morse@arm.com,
-        leo.yan@linaro.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, will@kernel.org, lcherian@marvell.com,
-        coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20210921134121.2423546-15-suzuki.poulose@arm.com>
- <60e75e7b-4a04-03d4-c861-88dd5fadef99@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d3182ee5-2913-d005-778b-e46a50174180@arm.com>
-Date:   Wed, 22 Sep 2021 11:16:48 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S234808AbhIVKTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:19:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DC1E611B0;
+        Wed, 22 Sep 2021 10:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632305859;
+        bh=JXOkDMfnQ1lWmcGq+rc6VpoA+s+ZT66IckZyEPT5MAE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=okmEy89UO0f7/y2BvLnZ8RZoPgxAeMMl7SYqIr7F3wFwKBnOtfuIPjcjEuB0Q1/Kx
+         jYO+yjbmOuvOQyKSGmWQTZFt2Yhm7bqfaXXokO2Ft2ADZImtrdCzusfMitWbc60CEf
+         nLmUveO4U42Xj8MhgCV/yduVIsjPJJmi+YUKDc8ajrquWM6YNu2KcHAHWmb5y27qPA
+         bkU8xEONb4CgfXET5wm3VKsZ/3JUogCMFfXUK7cm3TP+tN9/iIrRLDZesFVRrRLjBI
+         KCUWtt2DfhhcfAEtwzUT4+ABXS1SkIntyFZJ/Uys0XWmEIoY2w+dxgq47kvFCYvFpY
+         rQihjcGgKlVHA==
+Received: by pali.im (Postfix)
+        id CC47279F; Wed, 22 Sep 2021 12:17:36 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 12:17:36 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: aardvark: Implement re-issuing config requests on
+ CRS response
+Message-ID: <20210922101736.v6qur3qnarccdoqe@pali>
+References: <20210915105553.6eaqakvrmag6vxeq@pali>
+ <20210916143257.GA1608462@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <60e75e7b-4a04-03d4-c861-88dd5fadef99@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210916143257.GA1608462@bjorn-Precision-5520>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/2021 10:58, Anshuman Khandual wrote:
+On Thursday 16 September 2021 09:32:57 Bjorn Helgaas wrote:
+> On Wed, Sep 15, 2021 at 12:55:53PM +0200, Pali Rohár wrote:
+> > On Tuesday 14 September 2021 15:55:26 Bjorn Helgaas wrote:
 > 
+> > > It is illegal for a device to return CRS after it has returned a
+> > > successful completion unless an intervening reset has occurred, so
+> > > drivers and other code should never see it.
+> > > 
+> > > > And issue is there also with write requests. Is somebody checking return
+> > > > value of pci_bus_write_config function?
+> > > 
+> > > Similar case here.  The enumeration and wait-after-reset paths always
+> > > do *reads* until we get a successful completion, so I don't think we
+> > > ever issue a write that can get CRS.
+> > 
+> > Yes, in normal conditions we should not see it.
+> > 
+> > But for testing purposes (that emulated bridge works fine) I'm using
+> > setpci for changing some configuration.
+> > 
+> > And via setpci it is possible to turn off CRSSVE bit in which case then
+> > Root Complex should re-issue request again.
+> > 
+> > I'm not sure how "legal" it is if userspace / setpci changes some of
+> > these bits. At least on a hardware with a real Root Port device it
+> > should be fully transparent. As hardware handles this re-issue and
+> > kernel then would see (reissued) response.
 > 
-> On 9/21/21 7:11 PM, Suzuki K Poulose wrote:
->> The TRBE driver makes sure that there is enough space for a meaningful
->> run, otherwise pads the given space and restarts the offset calculation
->> once. But there is no guarantee that we may find space or hit "no space".
-> 
-> So what happens currently when it neither finds the required minimum buffer
-> space for a meaningful run nor does it hit the "no space" scenario ?
+> If setpci changes bits like these, all bets are off.  We can't tell
+> what happened, so we can't rely on any configuration Linux did.  I
+> think we really should taint the kernel when this happens.
 
-It tries once today and assumes that it will either hit :
+For testing purposes, setpci is still a very good tool.
 
-  - No space
-    OR
-  - Enough space
-
-which is reasonable, given the minimum space needed is a few bytes.
-But this may no longer be true with other erratum workaround.
-
+> > Test case: Initialize device, then unbind it from sysfs, reset it (hot
+> > reset or warm reset) and then rescan / reinit it again. Here device is
+> > permitted to send CRS response.
+> > 
+> > We know that more PCIe cards are buggy and sometimes firmware on cards
+> > crashes or resets card logic. Which may put card into initialization
+> > state when it is again permitted to send CRS response.
 > 
->> Make sure that we repeat the step until, either :
->>    - We have the minimum space
->>     OR
->>    - There is NO space at all.
->>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index 3373f4e2183b..02f9e00e2091 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -451,10 +451,14 @@ static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
->>   	 * If the head is too close to the limit and we don't
->>   	 * have space for a meaningful run, we rather pad it
->>   	 * and start fresh.
->> +	 *
->> +	 * We might have to do this more than once to make sure
->> +	 * we have enough required space.
-> 
-> OR no space at all, as explained in the commit message.
-> Hence this comment needs an update.
-> 
->>   	 */
->> -	if (limit && ((limit - head) < trbe_min_trace_buf_size(handle))) {
->> +	while (limit && ((limit - head) < trbe_min_trace_buf_size(handle))) {
->>   		trbe_pad_buf(handle, limit - head);
->>   		limit = __trbe_normal_offset(handle);
->> +		head = PERF_IDX2OFF(handle->head, buf);
-> 
-> Should the loop be bound with a retry limit as well ?
+> Yep.  That's a buggy device and normally we would work around it with
+> a quirk.  This particular kind of bug would be hard to work around,
+> but a host bridge driver doesn't seem like the right place to do it
+> because we'd have to do it in *every* such driver.
 
-No. We will eventually hit No-space as we keep on padding
-the buffer.
+This described firmware crashing & card reset logic I saw in more wifi
+cards. Sometimes even wifi drivers itself detects that card does not
+respond and do some its own internal card reset (e.g. iwldvm on laptop).
+So it very common situation.
 
-Suzuki
+But I have not seen that these cards on laptop issue CRS response. Maybe
+because their firmware or PCIe logic bootup too fast (so there is a very
+little window for CRS response) or because CRS response sent to OS did
+not cause any issue.
+
+So no particular workaround is needed for above described scenario.
+
+
+But anyway, in case that in future there would be need for disabling CRS
+feature in kernel (e.g. for doing some workaround for endpoint or
+extended pcie switch) then this re-issuing of config request on CRS
+response in pci-aardvark.c would be needed to have similar behavior like
+real HW hen CRS is disabled.
+
+And I like the idea if driver is "feature complete" and prepared also
+for other _valid_ code paths. This is just my opinion.
