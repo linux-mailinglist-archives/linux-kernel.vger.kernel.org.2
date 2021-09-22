@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36561414245
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FED414247
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhIVHHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:07:32 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:46005 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhIVHHb (ORCPT
+        id S233064AbhIVHIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:08:19 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:46995 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233036AbhIVHIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:07:31 -0400
-Received: (Authenticated sender: peter@casa-korsgaard.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 96B9E10000D;
-        Wed, 22 Sep 2021 07:05:59 +0000 (UTC)
-Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
-        (envelope-from <peter@korsgaard.com>)
-        id 1mSwKM-00089u-BY; Wed, 22 Sep 2021 09:05:58 +0200
-From:   Peter Korsgaard <peter@korsgaard.com>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2] MAINTAINERS: usb, update Peter Korsgaard's entries
-References: <20210922063008.25758-1-jslaby@suse.cz>
-Date:   Wed, 22 Sep 2021 09:05:58 +0200
-In-Reply-To: <20210922063008.25758-1-jslaby@suse.cz> (Jiri Slaby's message of
-        "Wed, 22 Sep 2021 08:30:08 +0200")
-Message-ID: <87r1dhqecp.fsf@dell.be.48ers.dk>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 22 Sep 2021 03:08:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UpCSO0C_1632294405;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UpCSO0C_1632294405)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 22 Sep 2021 15:06:46 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, cfijalkovich@google.com,
+        willy@infradead.org, song@kernel.org, william.kucharski@oracle.com,
+        hughd@google.com
+Subject: [PATCH v2 0/2] mm, thp: fix file-backed THP race in collapse_file and truncate pagecache
+Date:   Wed, 22 Sep 2021 15:06:43 +0800
+Message-Id: <20210922070645.47345-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>> "Jiri" == Jiri Slaby <jslaby@suse.cz> writes:
+Hi,
+We found two bugs related to file-backed THP in our cases, recently.
+The two bugs rough description as following:
 
- > Peter's e-mail in MAINTAINERS is defunct:
- > This is the qmail-send program at a.mx.sunsite.dk.
- > <jacmet@sunsite.dk>:
- >       Sorry, no mailbox here by that name. (#5.1.1)
+1) in truncate_inode_pages_range, subpage(s) of file-backed THP can be
+revealed by find_get_entry.
 
- > Peter says:
- > ** Ahh yes, it should be changed to peter@korsgaard.com.
+2) 'collapse_file' miss the pages which in writeback but no private.
+This situation will be triggered in XFS when block size is set to
+PAGESIZE.
 
- > However he also says:
- > ** I haven't had access to c67x00 hw for quite some years though, so maybe
- > ** it should be marked Orphan instead?
+These two patchs mainly fix the above mentioned bugs, and have been
+tested in latest branch.
 
- > So change as he wishes.
+v1 -> v2:
+- Patch "mm, thp: check page mapping when truncating page cache"
+move the check of page mapping to behind lock_page
+- Patch "mm, thp: bail out early in collapse_file for writeback page"
+check the writeback flag before taking page lock.
 
- > Signed-off-by: Jiri Slaby <jslaby@suse.cz>
- > Cc: Peter Korsgaard <peter@korsgaard.com>
- > Cc: Linus Torvalds <torvalds@linux-foundation.org>
- > Cc: linux-usb@vger.kernel.org
- > ---
- > [v2]
+v1 link:
+https://patchwork.kernel.org/project/linux-mm/cover/20210906121200.57905-1-rongwei.wang@linux.alibaba.com/
 
- > - Change the e-mail in DM9601 instead of dropping the old one.
- > - Make C67X00 an orphan.
+Rongwei Wang (2):
+  mm, thp: check page mapping when truncating page cache
+  mm, thp: bail out early in collapse_file for writeback page
 
-Thanks!
-
-Acked-by: Peter Korsgaard <peter@korsgaard.com>
-
-
-
- >  MAINTAINERS | 5 ++---
- >  1 file changed, 2 insertions(+), 3 deletions(-)
-
- > diff --git a/MAINTAINERS b/MAINTAINERS
- > index 2b990794ec35..aafc58437abd 100644
- > --- a/MAINTAINERS
- > +++ b/MAINTAINERS
- > @@ -19344,13 +19344,12 @@ S:	Maintained
- >  F:	drivers/usb/misc/chaoskey.c
- 
- >  USB CYPRESS C67X00 DRIVER
- > -M:	Peter Korsgaard <jacmet@sunsite.dk>
- >  L:	linux-usb@vger.kernel.org
- > -S:	Maintained
- > +S:	Orphan
- >  F:	drivers/usb/c67x00/
- 
- >  USB DAVICOM DM9601 DRIVER
- > -M:	Peter Korsgaard <jacmet@sunsite.dk>
- > +M:	Peter Korsgaard <peter@korsgaard.com>
- >  L:	netdev@vger.kernel.org
- >  S:	Maintained
- >  W:	http://www.linux-usb.org/usbnet
- > -- 
- > 2.33.0
-
+ mm/filemap.c    |  7 ++++++-
+ mm/khugepaged.c |  7 ++++++-
+ mm/truncate.c   | 17 ++++++++++++++++-
+ 3 files changed, 28 insertions(+), 3 deletions(-)
 
 -- 
-Bye, Peter Korsgaard
+1.8.3.1
+
