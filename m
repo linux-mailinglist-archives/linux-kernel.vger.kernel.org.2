@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DDB5414A27
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4F8414A28
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhIVNJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        id S231562AbhIVNJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhIVNJc (ORCPT
+        with ESMTP id S231416AbhIVNJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:09:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEACC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:08:02 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mT1yi-0000fU-TG; Wed, 22 Sep 2021 15:08:00 +0200
-Subject: Re: [PATCH 1/6] dt-bindings: nvmem: add cell-type to nvmem cells
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>, robh+dt@kernel.org,
-        shawnguo@kernel.org,
-        =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>
-Cc:     devicetree@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-References: <20210908100257.17833-1-qiangqing.zhang@nxp.com>
- <20210908100257.17833-2-qiangqing.zhang@nxp.com>
- <6d91d833-08cc-7ce2-4fe5-3d843a8b31ae@pengutronix.de>
- <181c4037-3c34-0f71-6bb7-a9c11b173064@linaro.org>
- <dbd1c20c-e3be-6c92-52a8-2ad76d0092d0@pengutronix.de>
- <8fc0a5e2-18c0-fa81-3eed-a6d596361633@linaro.org>
- <d580dd06-8bc8-91c9-262b-f6f276b033c2@pengutronix.de>
- <53fd9335-baca-fb52-42f1-2af3b08b5f1f@linaro.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <89b4a2d6-1966-7fcb-d476-f69e88293ea0@pengutronix.de>
-Date:   Wed, 22 Sep 2021 15:08:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 22 Sep 2021 09:09:43 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C25C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:08:13 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id u15so6616181wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0UlTC9YFRqhBz3QTWqR2IP9DXZP0uSK5Ik2W6Mi702o=;
+        b=iY5FkQ83JiWEn7ZtalV2AdxKAHSpeStASXOooXqgh2fBvVUrGgrAzYiRawV1gblsS1
+         vpMPnRsrNNp2Vqbv4YqRkHdh2XzuU976ttsDKIZmVnz5jLhaoeN+V/XF/CBLN5oaYYj3
+         u7+1STl9zau7b3Hvut9qfabbSOnOPUA8koT8NRIAdqJWgTN1i6EtbpcdavE9catF4jQo
+         iV8W0Om0LQMr8TsThQ+4uTemmXs7CVUQtwWGalq6BIX9t/mLwXx5drhZ+5Lc8y0Rzx+0
+         wwfxW3MQf1NWTNesdmSedyeMEGAat6xvRMzCOmPHKJWtNCERCtucw3KOJ/9CZhmUFCyb
+         0/zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0UlTC9YFRqhBz3QTWqR2IP9DXZP0uSK5Ik2W6Mi702o=;
+        b=6o2utH6UQv6vnnICow77dD96cYil0dWL5VivH765xGLqBJ2iVeE4ta1XCNbmLHvkcJ
+         TnwEZqlMtFT3rG0cEVd/QMlLYeTxjCYwkefkupBNkeJANNgyO1a9cxUKI50er9N6ft83
+         gzJfCUrnPtRyUUV6/pep+9zfA0QYEiK7uJk3J+rKyWfugyfGN3+ah8qNu5Lfrc8MBIUe
+         2f0sHlXUgR11QqNqBEAOIcmZgQQexPw7b9ZTpuq7YJTQl0P0WYoQtZmbS29LYZAweEKz
+         Kb8tOaPJgKqrlT/kmkkKoUIzYmm9j8BVnpR0kZbN5guXOv+Yt186j+MnB/XCOHvOPcGH
+         7Xzw==
+X-Gm-Message-State: AOAM530tIFNUdzJqAevi2OGdkMqIIYGmvrLLAeF1v3RX9qlR1o3Ebou6
+        vrrAVv5diMru4XS96TVc8jN59nbhP1e4sQ==
+X-Google-Smtp-Source: ABdhPJwmWxc0wOStqFZjl2cYkhQNxYlTz10C2QH2qK15mXFrjPuEdcaBlbJBzGBlTdSs3i/x1AlQ7A==
+X-Received: by 2002:a5d:6da9:: with SMTP id u9mr41787591wrs.155.1632316091596;
+        Wed, 22 Sep 2021 06:08:11 -0700 (PDT)
+Received: from google.com ([95.148.6.233])
+        by smtp.gmail.com with ESMTPSA id c14sm2149261wrd.50.2021.09.22.06.08.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 06:08:11 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 14:08:09 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] mfd: Add missing of_node_put for loop iteration
+Message-ID: <YUsquTRvuf0UdtkN@google.com>
+References: <20210528115126.18370-1-krzysztof.kozlowski@canonical.com>
+ <57a78707-e01c-29a3-b899-8715aab6c6c4@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <53fd9335-baca-fb52-42f1-2af3b08b5f1f@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <57a78707-e01c-29a3-b899-8715aab6c6c4@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 22 Sep 2021, Krzysztof Kozlowski wrote:
 
-On 22.09.21 15:03, Srinivas Kandagatla wrote:
+> On 28/05/2021 13:51, Krzysztof Kozlowski wrote:
+> > Early exits from for_each_child_of_node() should decrement the
+> > node reference counter.  Reported by Coccinelle:
+> > 
+> >   drivers/mfd/mfd-core.c:197:2-24: WARNING:
+> >     Function "for_each_child_of_node" should have of_node_put() before goto around lines 209.
+> > 
+> > Fixes: c94bb233a9fe ("mfd: Make MFD core code Device Tree and IRQ domain aware")
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > ---
+> >  drivers/mfd/mfd-core.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+> > index 79f5c6a18815..684a011a6396 100644
+> > --- a/drivers/mfd/mfd-core.c
+> > +++ b/drivers/mfd/mfd-core.c
+> > @@ -198,6 +198,7 @@ static int mfd_add_device(struct device *parent, int id,
+> >  			if (of_device_is_compatible(np, cell->of_compatible)) {
+> >  				/* Ignore 'disabled' devices error free */
+> >  				if (!of_device_is_available(np)) {
+> > +					of_node_put(np);
+> >  					ret = 0;
+> >  					goto fail_alias;
+> >  				}
+> > @@ -205,6 +206,7 @@ static int mfd_add_device(struct device *parent, int id,
+> >  				ret = mfd_match_of_node_to_dev(pdev, np, cell);
+> >  				if (ret == -EAGAIN)
+> >  					continue;
+> > +				of_node_put(np);
+> >  				if (ret)
+> >  					goto fail_alias;
+> >  
+> > 
 > 
+> Dear Lee,
 > 
-> On 22/09/2021 13:58, Ahmad Fatoum wrote:
->> Hi Srini,
->>
->> On 22.09.21 14:49, Srinivas Kandagatla wrote:
->>>
->>>
->>> On 22/09/2021 13:31, Ahmad Fatoum wrote:
->>>>>>
->>>>>> On 08.09.21 12:02, Joakim Zhang wrote:
->>>>>>> From: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
->>>>>>>
->>>>>>> Some of the nvmem providers encode data for certain type of nvmem cell,
->>>>>>> example mac-address is stored in ascii or with delimiter or in reverse order.
->>>>>>>
->>>>>>> This is much specific to vendor, so having a cell-type would allow nvmem
->>>>>>> provider drivers to post-process this before using it.
->>>>>> I don't agree with this assessment. Users of the OCOTP so far
->>>>>> used this specific encoding. Bootloaders decode the OCOTP this way, but this
->>>>>> encoding isn't really an inherent attribute of the OCOTP. A new NXP SoC
->>>>>> with a different OTP IP will likely use the same format. Users may even
->>>>>> use the same format on an EEPROM to populate a second off-SoC interface, .. etc.
->>>>>>
->>>>> That is okay.
->>>> How would you go about using this same format on an EEPROM?
->>>
->>> Am guessing that by the time there are more users for such formats, those post-processing functions should be converted into some library functions.
->>
->> User A wants to reverse bytes in MAC address. User B stores it in ASCII.
->> Both use the exact same EEPROM. How could this ever work when the
->> encoding decision is left to the EEPROM driver?
-> 
-> User A and B should mention about this encoding information in there NVMEM provider bindings.
-> 
-> Based on that specific post-processing should be selected.
+> This was already a resend. Any comments from your side?
 
-So instead of just compatible = "atmel,at24c16"; there will be
+Looks like the last batch was RFC.
 
-  compatible = "user-A,my-eeprom", "atmel,at24c16";
+These all slipped through the net.
 
-and 
-
-  compatible = "user-B,my-eeprom", "atmel,at24c16";
-
-and they each need to patch the at24 driver to call one of the
-common library functions?
-
-> 
-> --srini
->>
-> 
->>>
->>> --srini
->>>
->>>>
->>>>>> I'd thus prefer to not make this specific to the OCOTP as all:
->>>>>>
->>>>>>      * #define NVMEM_CELL_ENCODING_MAC_ADDRESS_IMX    /* ... */
->>>
->>
->>
-> 
-
+Back on my review pile, thanks.
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
