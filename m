@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D76414E5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E32414E5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229467AbhIVQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:51:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:51582 "EHLO foss.arm.com"
+        id S236674AbhIVQwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:52:35 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39592 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231925AbhIVQv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:51:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 13595113E;
-        Wed, 22 Sep 2021 09:49:58 -0700 (PDT)
-Received: from [10.57.50.100] (unknown [10.57.50.100])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C86E83F719;
-        Wed, 22 Sep 2021 09:49:56 -0700 (PDT)
-Subject: Re: [PATCH 3/3] perf tests: Improve temp file cleanup in
- test_arm_coresight.sh
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     acme@kernel.org, leo.yan@linaro.com,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210921131009.390810-1-james.clark@arm.com>
- <20210921131009.390810-3-james.clark@arm.com>
- <20210922110012.GA400258@leoy-ThinkPad-X240s>
- <5a1c5eab-d9b7-5623-2d7d-c6b1921b3628@arm.com>
- <20210922140832.GB400258@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <85c593b5-5348-8e9a-b9e4-bc4d31ffc785@arm.com>
-Date:   Wed, 22 Sep 2021 17:49:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229758AbhIVQwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:52:34 -0400
+Received: from zn.tnic (p200300ec2f0efa00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:fa00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31B751EC051E;
+        Wed, 22 Sep 2021 18:51:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1632329463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=YbFWxxaIHxCYwMa8gsMj2OvFISXpOSM0guJv5a/yP9g=;
+        b=kjAiRycRf6Lyz4BPhE0G0jv5ttVzaIS6SnbHIQUT9q9tWnXUby/vpJRJTYL9ODN1tNIuby
+        EVQ99rQ3d4s5+jrGQxiSLjkji1bRhp8SMVVQm0IzEjJKc4kkrCKKOBWU7b5EPycUS1LXor
+        MpS4A78UxpOVVv7W9a0dtODrp0LIlJc=
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony Luck <tony.luck@intel.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 0/5] x86/mce: Remove indirect calls
+Date:   Wed, 22 Sep 2021 18:50:56 +0200
+Message-Id: <20210922165101.18951-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210922140832.GB400258@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Borislav Petkov <bp@suse.de>
 
+Hi,
 
-On 22/09/2021 15:08, Leo Yan wrote:
-> Hi James,
-> 
-> On Wed, Sep 22, 2021 at 02:40:54PM +0100, James Clark wrote:
-> 
-> [...]
-> 
->>>>  cleanup_files()
->>>>  {
->>>>  	rm -f ${perfdata}
->>>>  	rm -f ${file}
->>>> +	rm -f "${perfdata}.old"
->>>> +	trap - exit term int
->>>> +	kill -2 $$
->>>
->>> Here it always sends signal SIGINT to current PID with $$, another
->>> choice is to send signal based on the incoming signal type, like below:
->>>
->>>   [[ "$1" = "int" ]] || kill -SIGINT $$
->>>   [[ "$1" = "term" ]] || kill -SIGTERM $$
->>
->> Yes I thought that this might be an issue, but I tested it in a few different
->> scenarios. Especially when running it under the normal ./perf test command and
->> it didn't seem to cause an issue whether it passed or failed. So I'm not sure
->> if it's worth changing or not. Maybe it is in case it gets copy pasted into
->> another shell test?
-> 
-> I think it's not very necessary to send signal again with command
-> "kill -2 $$" at here.
-> 
-> "kill -2 $$" sends the signal to the shell process itself rather than
-> propagating signal to its parent process.  And the up level's script
-> should can detect an error with the returned exit code.
-> 
-> So below change should be sufficient?
-> 
-> cleanup_files()
-> {
-> 	rm -f ${perfdata}
-> 	rm -f ${file}
-> +       rm -f "${perfdata}.old"
-> +       exit $glb_err
-> }
-> 
-> Sorry if I miss anything at here and cause noise.
+here's v1 with all review comments addressed.
 
-The problem with not re-sending the sigint is that if you want to run the
-script in a bash while loop like:
+Changelog:
+----------
 
-  while ! tests/shell/test_arm_coresight.sh; do echo loop; done
+v0:
 
-Then it's impossible to exit with Ctrl-C and delete the temp files at the
-same time. It exits if we don't trap sigint like it is at the moment, but
-then it leaves the temporary files. This change is so we can have both
-behaviours of Ctrl-C in a loop and keep the cleanup working.
+this is the first part of me trying to noinstr-ify the mce mess
+properly. That one is dealing with making all indirect calls on the #MC
+exception path, direct, to avoid the compiler from adding ratpoline
+thunks which objtool doesn't like. And when you look at the changes, you
+probably would go, gee, why did we ever did indirect calls - it is even
+more readable with direct calls and there are practically no downsides.
+So let's remove former.
 
+There's another patch ontop which does the actual noinstr annotation but
+that takes longer currently due to objtool changes in tip.
 
-> 
-> Thanks,
-> Leo
-> 
+So for now, the first part.
+
+As always, constructive review is welcome.
+
+Borislav Petkov (5):
+  x86/mce: Get rid of the mce_severity function pointer
+  x86/mce: Get rid of machine_check_vector
+  x86/mce: Get rid of msr_ops
+  x86/mce: Get rid of the ->quirk_no_way_out() indirect call
+  x86/mce: Sort mca_config members to get rid of unnecessary padding
+
+ arch/x86/include/asm/mce.h         |  12 --
+ arch/x86/kernel/cpu/mce/amd.c      |  10 +-
+ arch/x86/kernel/cpu/mce/core.c     | 217 ++++++++++++-----------------
+ arch/x86/kernel/cpu/mce/internal.h |  59 +++++---
+ arch/x86/kernel/cpu/mce/p5.c       |   6 +-
+ arch/x86/kernel/cpu/mce/severity.c |  11 +-
+ arch/x86/kernel/cpu/mce/winchip.c  |   6 +-
+ 7 files changed, 141 insertions(+), 180 deletions(-)
+
+-- 
+2.29.2
