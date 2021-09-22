@@ -2,83 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF47E414F91
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9EA414F95
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236993AbhIVSHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:07:18 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:33650 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236837AbhIVSHP (ORCPT
+        id S237003AbhIVSJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:09:21 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:43567 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236943AbhIVSJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:07:15 -0400
-Received: by mail-pl1-f181.google.com with SMTP id t4so2363865plo.0;
-        Wed, 22 Sep 2021 11:05:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I5sYw+bSyHIGaSpNI3tdpwWRWpZhz0nrSXfvUCbXn7I=;
-        b=ssXy9U40+F9IfrC6fpp5u1P/cJQsmr5M1RK/MO2W7t3ebmS/1ryhi5MjDc9eCs341O
-         Kp03CXrFKcNv6kEiu/lzv68+ztkdkgKCBPBTDlOzovKwUwK99Wng3nZvGV9fw8UHdVHF
-         7nP+BDPhRPCEkdVJMVd3KVUfcq9KlA1WuY58eJDZuCK80AaxMBWLyOwJCKNyceFNYk+P
-         Zf6qWdZrpEoc8imdbrqfY6xan346HnwRVZm/3uQgY23UXLO7I7eek4Xd4beS+rMseKdg
-         Dq5CGrgICGYp0rbojUxy1rm6VS1eHAABSFWS6LvKCqFRjJkpgRFBJREr7fZsJ9SNT54c
-         CG3A==
-X-Gm-Message-State: AOAM530oWMY3BXbQXSMGixYY8YXNnp0mziDOtJlqLG2G6txPApH9pDxD
-        Asj9wypxlacnWr/lzQuejtZaUGxk3C0=
-X-Google-Smtp-Source: ABdhPJyOaDgTW+/81YD2pq3w8KkpuBCHttPDwqG4QLnT22VlpSS/51FacXz/PHjs/8l/aU7tQwNd/g==
-X-Received: by 2002:a17:902:ab16:b0:13a:356c:6a03 with SMTP id ik22-20020a170902ab1600b0013a356c6a03mr167270plb.38.1632333944401;
-        Wed, 22 Sep 2021 11:05:44 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:f3b9:da7d:f0c0:c71c])
-        by smtp.gmail.com with ESMTPSA id c9sm3050706pfi.212.2021.09.22.11.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 11:05:43 -0700 (PDT)
-Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
- <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org>
-Date:   Wed, 22 Sep 2021 11:05:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 22 Sep 2021 14:09:19 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MO9r5-1mDM7h1MCX-00OVpH; Wed, 22 Sep 2021 20:07:48 +0200
+Received: by mail-wr1-f52.google.com with SMTP id t8so9609785wri.1;
+        Wed, 22 Sep 2021 11:07:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531EvrZsZ/MJwvsnNHroTDltQ1C5RFYgcWJV8Zm+xMTB55KASgPe
+        POCO+huxo8wz/7di8HxSbCmSXilanw+3MIeGNqk=
+X-Google-Smtp-Source: ABdhPJxefGoFSv5mbWEbjSxVO7l7TV7dRfGNx9j+Tk9BFQvOVsDSTR9Sbgfrbt8kzfTLzbvI3ZJIrLmP2e+7OX9g2CQ=
+X-Received: by 2002:a5d:4b50:: with SMTP id w16mr351144wrs.71.1632334067884;
+ Wed, 22 Sep 2021 11:07:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
+ <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com> <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+In-Reply-To: <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 22 Sep 2021 20:07:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+Message-ID: <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:3uUo8NMwM2S2a/uvloOvVOnQq0MPX/jY5hR7RsDtM5WPQzA/qo0
+ NdxezEg4/W6nPzo37ydklPX1d2p5O3yhJOspvzEwNOea/Y9epQuF8pEo8HJA35jxkfWQr60
+ BtwATr9trm4m4eyjtt+eld1bze0EK3tV6VI7XwEiBnTns+OAV8k44tY3JzEgjTMf04KZ8W9
+ uS6nfahotLdp39xGumlYw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LcwMq24g7nY=:/BLgL2kznKy7LZE5Q/uZj/
+ HRC9D/pnW7ctRvDooRpFHPx/dTvCv549ng688FSwACOGeJjc6oAhmEKy4YlJC/T0Nz9ahI3Ce
+ 8QD4FGioJ4i6HtnL8Y5hm3PbYWFCrYsl0bZSQ5KYgA3/c1+7d9wVl48ERp5bYZeBa/dPxp5kC
+ LzMhNUokxEW61Qb9fYm9pZjVz1jsX6gSzZChqN04F3A4sBEprjy3Axq2emTr8zGhUnpv8tcF3
+ 0QGIAc+I8Yt9jTyG20H2yu3NpOw/rL1EeavWdziVWGd47hnUPf1dKHOXXyIaJj5x75z3J6gL+
+ /6GA7U2AaJEsK9QLbDaDWNAdqdnXMyYlMh1oINQ0NNXrujQK3ijMhKwiR7NbdJt/3cFd0pirg
+ 2t18kiKfqAX8hEDOYZZkm7gzpdPXuWz603MerSrEXmzEKzc3OUup5yXTkXB3P+Wz0jmh/ZH71
+ EfKAMjEgYBgYzC4yQRJasfCPE9/sRZj3p8hM7PYWvc0/P9A7xDgWud6P1JV5vFViR+RkgH5Qc
+ 5v9hc1JeN9DFCJyiNiCbmCRCPtQRWumFZ6+4aPruSPHYJtR78Jff6z3sQ+a318hyMOhzALMYV
+ muX0yU1LsK/JGFu4JkwOKK/yyvS8SSeyKAmTT/qE4Rp25+2XsgJKM5LYyf2SrEAIubXAOYwSf
+ /OTR375d7pLBA/s+uY6/ofLUEAVePMWSfuDgTBRPbnbP/Cu96WPTspMIBinsGWRuCE1kAMuIV
+ wsMaxZd8ZeQWb8Ydl/06nrHSbInCSh3Q7Bw2FZJG70jZW1lS0dqNGSgaS0SR7frqYay+tTqX6
+ nazcbzLsDngs2It77K7jxSYmLPFUZuGL6KdYVWL0q2dS86LKW5POeie8cjpdTtOxivru5rcB5
+ JRZx8e9kYw87ULdun+Iw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 10:51 AM, Marciniszyn, Mike wrote:
->> Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
->>
->> Pointers should be printed with %p or %px rather than cast to (unsigned long
->> long) and printed with %llx.
->> Change %llx to %p to print the pointer.
->>
->> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
-> 
-> The unsigned long long was originally used to insure the entire accurate pointer as emitted.
-> 
-> This is to ensure the pointers in prints and event traces match values in stacks and register dumps.
-> 
-> I think the %p will obfuscate the pointer so %px is correct for our use case.
+On Wed, Sep 22, 2021 at 7:42 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+> On Wed, Sep 22, 2021 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > I'm not completely sure where your platform fits in here, it sounds like you
+> > address them using a machine specific physical address as the base in
+> > inb() plus the port number as an offset, is that correct?
+>
+> I guess none of the above options? I will try to explain this as per
+> my understanding.
+>
+> [+cc Thomas Bogendoerfer as mips maintainer and with better knowledge
+> of mips platforms than me]
+>
+> On MIPS I/O ports are memory mapped, so we access them using normal
+> load/store instructions.
+> Mips 'plat_mem_setup()' function does a 'set_io_port_base(KSEG1)'.
+> There, variable 'mips_io_port_base'
+> is set then using this address which is a virtual address to which all
+> ports are being mapped.
+> KSEG1 addresses are uncached and are not translated by the MMU. This
+> KSEG1 range is directly mapped in physical space starting with address
+> 0x0.
+> Because of this reason, defining PCI_IOBASE as KSEG1 won't work since,
+> at the end 'pci_parse_request_of_pci_ranges' tries to remap to a fixed
+> virtual address (PCI_IOBASE). This can't work for KSEG1 addresses.
+> What happens if I try to do that is that I get bad addresses at pci
+> enumeration for IO resources. Mips ralink mt7621 SoC (which is the one
+> I am using and trying to mainline the driver from staging) have I/O at
+> address 0x1e160000. So instead of getting this address for pcie IO
+> BARS I get a range from 0x0000 to 0xffff since 'pci_adress_to_pio' in
+> that case got that range 0x0-0xffff which is wrong. To have this
+> working this way we would need to put PCI_IOBASE somewhere into KSEG2
+> which will result in creating TLB entries for IO addresses, which most
+> of the time isn't needed on MIPS because of access via KSEG1. Instead
+> of that, what happens when I avoid defining PCI_IOBASE and set
+> IO_SPACE_LIMIT  (See [0] and [1] commits already added to staging tree
+> which was part of this patch series for context of what works with
+> this patch together) all works properly. There have also been some
+> patches accepted in the past which avoid this
+> 'pci_parse_request_of_pci_ranges' call since it is not working for
+> most pci legacy drivers of arch/mips for ralinks platform [2].
+>
+> So I am not sure what should be the correct approach to properly make
+> this work (this one works for me and I cannot see others better) but I
+> will be happy to try whatever you propose for me to do.
 
-How about applying Guo's patch and adding a configuration option to the
-kernel for disabling pointer hashing for %p and related format specifiers?
-Pointer hashing is useful on production systems but not on development
-systems.
+Ok, thank you for the detailed explanation.
 
-Thanks,
+I suppose you can use the generic infrastructure in asm-generic/io.h
+if you "#define PCI_IOBASE mips_io_port_base". In this case, you
+should have an architecture specific implementation of
+pci_remap_iospace() that assigns mips_io_port_base.
+pci_remap_iospace() was originally meant as an architecture
+specific helper, but it moved into generic code after all architectures
+had the same requirements. If MIPS has different requirements,
+then it should not be shared.
 
-Bart.
+I don't yet understand how you deal with having multiple PCIe
+host bridge devices if they have distinct I/O port ranges.
+Without remapping to dynamic virtual addresses, does
+that mean that every MMIO register between the first and
+last PCIe bridge also shows up in /dev/ioport? Or do you
+only support port I/O on the first PCIe host bridge?
 
+Note that you could also decide to completely sidestep the
+problem by just defining port I/O to be unavailable on MIPS
+when probing a generic host bridge driver. Most likely this
+is never going to be used anyway, and it will be rather hard
+to test if you don't already have the need ;-)
+
+         Arnd
