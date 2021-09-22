@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D2F415274
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D7441527D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237968AbhIVVMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S237868AbhIVVPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237965AbhIVVMi (ORCPT
+        with ESMTP id S237804AbhIVVPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:12:38 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECA9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:11:07 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id m3so17536738lfu.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:11:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QMQcJBWQUQW5D7xGsPJ08p8WJE5BrDCE3EAWWlVcQfg=;
-        b=a+EnzQqfAs0AGlSvqMw25x8nRlzYnbrM/wJtgOQuewXc+Oy7TgwqH4ahUg1ITNS5xA
-         pC0plLG4l5jz4sCeROukRX9VqmlUFVvhRPcULIQTBLLOHiOze962KH8TV30JWyfbR7O5
-         YrP/qQFnAsrnZnwfyXarMrQMbfM9KbGZaiA5eGxFsPZTnJUXb1BzeU9lfzCNSPS9cArV
-         oVWsFgRPnXluWW0gPBNMPBIurpKpRCPmm987TQQAgcGQmxUUGEGVPMdvRz0Br9Z+Vty/
-         cLk9hecrNHUBSEEB2GALSsPXEeRZ7yOj0u1GHWdy8Wfxl4ZDWvr05v0+krnAghg2m8ez
-         QLuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QMQcJBWQUQW5D7xGsPJ08p8WJE5BrDCE3EAWWlVcQfg=;
-        b=WmxkOxgvP06Ib5he26wOmprVJxnXlPxnEGHPa6/XBFZLeMeSetb5/JlwGBh+1RND6f
-         jJwSwY0Ja+nmYpf1XUtV0AB5KrROPykZXk9Cw8Ss8tdyhI/6Me/dqUV1R9ijYUG6Z6Pg
-         8nocTKcdR0VTLVf7O3kTXOmt15x6YZxcdTVSrzJlycSB0lKX6HHgCXKAjl4Wmra9T+hZ
-         9aa/I11XFtUEov7PcGebBRhQj76TvYZ7hG+H38zwFRPS5PnwArjqMB5FyM6C6opkJOl+
-         AS6Yvr/IJGsyR130mQBua7plhzxiB5YZGFoa9rMMDWVNGhyax5fA3nD4Oh+CwgQhTEwd
-         n1Tw==
-X-Gm-Message-State: AOAM530tttkaq/Mul/sLk0CwMjcKdAQwWdLCkz/r1JU3F4iCKQf54DE4
-        2fInc9xY5JmqefM31pdMrBs=
-X-Google-Smtp-Source: ABdhPJzKVPkOQKHmjy2XTMpQ/oXmWF7EcfOU6Wl1iAf7HAXDWOH7CZNgD1Xu0JzvCux9mJshqLdSEw==
-X-Received: by 2002:a2e:b8c2:: with SMTP id s2mr1438055ljp.171.1632345065876;
-        Wed, 22 Sep 2021 14:11:05 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-193.NA.cust.bahnhof.se. [98.128.228.193])
-        by smtp.gmail.com with ESMTPSA id u28sm267168lfo.47.2021.09.22.14.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 14:11:05 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] const_structs.checkpatch: Add a few sound ops structs
-Date:   Wed, 22 Sep 2021 23:10:42 +0200
-Message-Id: <20210922211042.38017-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Wed, 22 Sep 2021 17:15:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A75C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=T9aqR6ds6fZf+ziFJLavcqledvnXK6/xbqEb0NC2lrs=; b=NEYoGGh5giSDV/HksndZuN4zNa
+        Po/LERjVXKQBI/dJr5ysIGCq242l11aKwDhMB7GKASgYDOgLnDvSdCKaRxeI0ft4RrXffTd+/RwXl
+        50lCYZ6ZQ0cyLk2RzjNvGlMpctJDH3X4GnbnwFUibxYtcpmLoT/9sqiAZIiIOjJfWXdCmIzOBpi/H
+        ddPPFCHfgniaDI0aAxkpJA1VbjN9maJhz0J539MwAkWEBPqNZIv80TDr0Oab7wW+uZ/D2R82pXzad
+        9EjGnwQRIr6VfgnL4W5v1c9Pd8+K6mOzxhX6C4sAkOy2HmVu3xoW0LbMAnvNn/OoNjNrpREPJZm87
+        IkD577VQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT9Ws-0059St-Hm; Wed, 22 Sep 2021 21:12:15 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 91BCC9811F0; Wed, 22 Sep 2021 23:11:45 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 23:11:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        iommu@lists.linux-foundation.org, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] x86/traps: Demand-populate PASID MSR via #GP
+Message-ID: <20210922211145.GF5106@worktop.programming.kicks-ass.net>
+References: <20210920192349.2602141-1-fenghua.yu@intel.com>
+ <20210920192349.2602141-5-fenghua.yu@intel.com>
+ <20210922210722.GV4323@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922210722.GV4323@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a couple of commonly used (>50 instances) sound ops structs that are
-typically const.
+On Wed, Sep 22, 2021 at 11:07:22PM +0200, Peter Zijlstra wrote:
+> On Mon, Sep 20, 2021 at 07:23:45PM +0000, Fenghua Yu wrote:
+> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> > index a58800973aed..a25d738ae839 100644
+> > --- a/arch/x86/kernel/traps.c
+> > +++ b/arch/x86/kernel/traps.c
+> > @@ -61,6 +61,7 @@
+> >  #include <asm/insn.h>
+> >  #include <asm/insn-eval.h>
+> >  #include <asm/vdso.h>
+> > +#include <asm/iommu.h>
+> >  
+> >  #ifdef CONFIG_X86_64
+> >  #include <asm/x86_init.h>
+> > @@ -526,6 +527,14 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
+> >  	return GP_CANONICAL;
+> >  }
+> >  
+> > +static bool fixup_pasid_exception(void)
+> > +{
+> > +	if (!cpu_feature_enabled(X86_FEATURE_ENQCMD))
+> > +		return false;
+> > +
+> > +	return __fixup_pasid_exception();
+> > +}
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- scripts/const_structs.checkpatch | 4 ++++
- 1 file changed, 4 insertions(+)
+That is, shouldn't the above at the very least decode the instruction
+causing the #GP and check it's this ENQCMD thing?
 
-diff --git a/scripts/const_structs.checkpatch b/scripts/const_structs.checkpatch
-index 1aae4f4fdacc..3980985205a0 100644
---- a/scripts/const_structs.checkpatch
-+++ b/scripts/const_structs.checkpatch
-@@ -54,7 +54,11 @@ sd_desc
- seq_operations
- sirfsoc_padmux
- snd_ac97_build_ops
-+snd_pcm_ops
-+snd_rawmidi_ops
- snd_soc_component_driver
-+snd_soc_dai_ops
-+snd_soc_ops
- soc_pcmcia_socket_ops
- stacktrace_ops
- sysfs_ops
--- 
-2.33.0
-
+> >  #define GPFSTR "general protection fault"
+> >  
+> >  DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+> > @@ -538,6 +547,9 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_protection)
+> >  
+> >  	cond_local_irq_enable(regs);
+> >  
+> > +	if (user_mode(regs) && fixup_pasid_exception())
+> > +		goto exit;
+> > +
+> >  	if (static_cpu_has(X86_FEATURE_UMIP)) {
+> >  		if (user_mode(regs) && fixup_umip_exception(regs))
+> >  			goto exit;
+> 
+> So you're eating any random #GP that might or might not be PASID
+> related. And all that witout a comment... Enlighten?
