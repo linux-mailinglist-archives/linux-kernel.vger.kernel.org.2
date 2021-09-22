@@ -2,67 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1CF41439F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 942294143AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhIVIXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56798 "EHLO mail.kernel.org"
+        id S233837AbhIVIY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:24:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233349AbhIVIXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:23:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7956113E;
-        Wed, 22 Sep 2021 08:22:09 +0000 (UTC)
+        id S233349AbhIVIYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:24:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FD9F611B0;
+        Wed, 22 Sep 2021 08:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632298930;
-        bh=YVUE/IuRazROFam3Q6i3lQJsonfTlSmzIXXSeAHgj/g=;
+        s=k20201202; t=1632299005;
+        bh=3qFrPk5tPOeeoFRNNWLl5WTlrHUVrcVHnKBSIS7Ahag=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Evy01oEUF//CrZuYRNhQhinv6kvUEW2y8lCsInrv/LwFRk7JI74cuAxEmTh/fJga5
-         QV2u/o5w7N+iDIKk0MtEnb7ZzcfHcIvt+KbPXjbaYrLs/J6wtxtUmq7FafZtMPnT54
-         2TwOXm8uA7WMBcYhW7Svby1wLZlxq4pUiXrKrQLmzxPs/MIPQglcby0NksAkVl9Dj1
-         gvUjUuJC3tyxBBVrhiGpW5jntXTGE6q2VxsT9wwOB/6JxalAzLerJbDgg0LLbLPjmN
-         +YPCmNTIbK0Bhuk9WSuwjsp47hweiQfFlyUZOQOGe35CSZ2bWyRMBYKfGP+amShLxG
-         +L6pNJl573tow==
-Date:   Wed, 22 Sep 2021 16:22:06 +0800
+        b=TGkMRKtBsAoabrvl4nY02DcOFIyVaQ/qP9Z5MTWSe3RSySeQiDLzdbXyPmYEHvyb7
+         4kcvLaExe978G7se2WdWBJPhs2SU8RSiC9dDjg0RhGL+2g+cYnvqu/DMcK6KE5+Go+
+         DG9gV0S7MhNlOXT1UUr1VZJLhgiMr+UCkn1FsnTbTKIVL0pI06RAOZ8rGTD7bt18Bd
+         261VtQ8yAG+HoTYT7KVpxymi1bPJynIWwyfMh+/Q/fL4yIiIku93mAYE9sKJfI4kRs
+         bb9XOx9nKSYkWuHu4gYoY8fhWNnQwxjSA7OkbTiAvQZ9LE16wrupRUUYwHzNVe2v0Z
+         ZUX/pwdM74fQQ==
+Date:   Wed, 22 Sep 2021 16:23:20 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: ls1012a: Add serial alias for ls1012a-rdb
-Message-ID: <20210922082205.GI13480@dragon>
-References: <20210909111229.2444950-1-kuldeep.singh@nxp.com>
+To:     Yunus Bas <y.bas@phytec.de>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        festevam@gmail.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: imx6: phycore-som: Disable micro-SD write
+ protection
+Message-ID: <20210922082319.GJ13480@dragon>
+References: <20210909172555.435430-1-y.bas@phytec.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210909111229.2444950-1-kuldeep.singh@nxp.com>
+In-Reply-To: <20210909172555.435430-1-y.bas@phytec.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 04:42:29PM +0530, Kuldeep Singh wrote:
-> U-boot atempts to read serial alias value for ls1012a-rdb but couldn't
-> do so as it is not initialised and thus, FDT_ERR_NOTFOUND error is
-> reported while booting linux.
+On Thu, Sep 09, 2021 at 07:25:55PM +0200, Yunus Bas wrote:
+> The micro-SD card doesn't feature a write-protect pin. Set the
+> corresponding property in the devicetree to handle this behavior
+> correctly and suppress driver warnings.
 > 
-> Loading fdt from FIT Image at a0000000 ...
->    Description:  ls1012ardb-dtb
->      Type:         Flat Device Tree
->      Data Start:   0xab111474
->      Data Size:    11285 Bytes = 11 KiB
->      Architecture: AArch64
->      Load Address: 0x90000000
->    Loading fdt from 0xab111474 to 0x90000000
->    Booting using the fdt blob at 0x90000000
->    Uncompressing Kernel Image
->    Loading Device Tree to 000000008fffa000, end 000000008ffffc14 ... OK
-> WARNING: fdt_fixup_stdout: could not read serial0 alias: FDT_ERR_NOTFOUND
-> NOTICE:  RNG: INSTANTIATED
-> 
-> Starting kernel ...
-> 
-> Fix the above error by specifying serial value to duart.
-> 
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Signed-off-by: Yunus Bas <y.bas@phytec.de>
 
 Applied, thanks!
