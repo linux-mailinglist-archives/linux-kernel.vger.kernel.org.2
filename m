@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD35A415283
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F1A415284
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237953AbhIVVQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237820AbhIVVQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:16:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B97611CA;
-        Wed, 22 Sep 2021 21:15:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632345302;
-        bh=p2kf8f9SneDcF5cbddfOin1pAOfAoaUXJFS9kC9C3RY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bwUiztR0HsputfFsZxeMu/pQezk4drxXmTvr/3WfsPockfj60nlyScjJ9nWdo5z1I
-         Rs+ykRZIXW9MoO/wTLJuREfe7sf/57xjJBXRYUM7GjGF2dS4pXH6hAMkSG/IkTDHt9
-         61QGdTTnMkyhP6XAAKkdxKmAInAkQN1LQjiTNZZsQqYIgY9WcHl5UtzE+de1Z8p+dU
-         lmYlvXp7oFXZlHU40/jmzV1S+gfW8Oz/AUahWoCsB0g3nVyakT061ujLlZzCRRyKY/
-         zrxcIB7fhsQdmSYAG66gt/AeiRp44y0ARk08r5j+3ykpqQoHZojKdPhYNW1RnXZQt2
-         FgCQpgZQm4Z5g==
-Received: by mail-ed1-f53.google.com with SMTP id eg28so15351880edb.1;
-        Wed, 22 Sep 2021 14:15:01 -0700 (PDT)
-X-Gm-Message-State: AOAM532hE1AqSrRPwTMmAMKfjpdHH4hagCmjk1I8fMl2o1sk1ej5/9PC
-        Xt4SxV3eFJhB84B7tMJngDUjrhPzz50/j5yFQw==
-X-Google-Smtp-Source: ABdhPJxrpLWQHpAgZoTQC8bgND1fLrIs/KgZqALZ/fVCHcWTBnba7fvpklnQazlOWx41I7YqFT9oJqTjd14BRcus5GY=
-X-Received: by 2002:a17:906:7145:: with SMTP id z5mr1367273ejj.363.1632345300554;
- Wed, 22 Sep 2021 14:15:00 -0700 (PDT)
+        id S237882AbhIVVRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237904AbhIVVRY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:17:24 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C29CC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:15:54 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id g41so17318295lfv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7XJav0dfWNxK79pvtGX/UV/+fzNxl315YNj5Lb0kUtk=;
+        b=QA/EzrWbAIrSwOaNV4uqMw33DYIddOpz6ZYLeSLgSw/6W5sXis/SfJPUXmmq3UhODG
+         6HTHGK+Pi7RNxhY6fHDq1cECQSdwskC8x9GDOcCAMch8XMogspIaioLO3jy91LAe9v+p
+         zPQysb2+nkIu4xF1pvfTRTKDEaNJCficfXCxw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7XJav0dfWNxK79pvtGX/UV/+fzNxl315YNj5Lb0kUtk=;
+        b=B1VbZcGu9BrvZqXZvAlyS8r4I+zKTnwL5q5DcqmKe/w0K6Hr4A9Uz+CLEhvX0x6+/l
+         q3pvgIFI20IGy1nedmq0/dt3kR1vHVuP90iiYILfa5sSJvGcttrft1ZaNYNeXaCeqtZe
+         QcAVu0qj/HBYIc+vfUJz7wTy2E4JMLMbln7R6f/0xV1UUtxw+v5Q4/Kna/r3IV48HMc+
+         jtL0mxohs4PcMQO8b4RyVCy8WTzK48IYAF8CsyifT2K5pzjUa1lcqOGBAt0STflct+kL
+         AyOH6BO9QDUk3YQLd5xaft40rStL1+moTzgNHS39yqKqvsLdP3rnw/eL0qHiJZ+gx/JI
+         T6ZQ==
+X-Gm-Message-State: AOAM533W008PXDrV4g7c12IBo56LjITgEqc343PPgvBESrxqsJciTrAq
+        AJuqTtT46fvEXi4Ej+ypL8p03nC3NnZDoDViBDU=
+X-Google-Smtp-Source: ABdhPJyAfkoKy9Pyo35CfgiRSxpUA+5EZLWTrlT1IXuQvUPWp3RJy2rtt96YC1XxZXy/JcfF+MO5AQ==
+X-Received: by 2002:a2e:8915:: with SMTP id d21mr1474028lji.45.1632345352248;
+        Wed, 22 Sep 2021 14:15:52 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id s14sm369789ljh.38.2021.09.22.14.15.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 14:15:50 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id u8so16856927lff.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:15:49 -0700 (PDT)
+X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr1044332lfg.280.1632345349597;
+ Wed, 22 Sep 2021 14:15:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210922205458.358517-1-maz@kernel.org> <20210922205458.358517-5-maz@kernel.org>
- <86507f22-d824-4f7c-ba94-d3105c5206c2@www.fastmail.com>
-In-Reply-To: <86507f22-d824-4f7c-ba94-d3105c5206c2@www.fastmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 22 Sep 2021 16:14:49 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKL2fb+PObe_Soopf2JDFbaQZyu-k_CQrQTGU4tONQvUA@mail.gmail.com>
-Message-ID: <CAL_JsqKL2fb+PObe_Soopf2JDFbaQZyu-k_CQrQTGU4tONQvUA@mail.gmail.com>
-Subject: Re: [PATCH v4 04/10] PCI: apple: Add initial hardware bring-up
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20210909200948.090d4e213ca34b5ad1325a7e@linux-foundation.org>
+ <20210910031046.G76dQvPhV%akpm@linux-foundation.org> <CAHk-=wgfbSyW6QYd5rmhSHRoOQ=ZvV+jLn1U8U4nBDgBuaOAjQ@mail.gmail.com>
+ <202109211630.2D00627@keescook> <af3c775a1515f97c8dbe6a6651bd6e4b6986e8cd.camel@perches.com>
+ <202109211757.F38DF644@keescook> <YUraGKetS+Tgc7y9@localhost.localdomain>
+In-Reply-To: <YUraGKetS+Tgc7y9@localhost.localdomain>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Sep 2021 14:15:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjS-Jg7sGMwUPpDsjv392nDOOs0CtUtVkp=S6Q7JzFJRw@mail.gmail.com>
+Message-ID: <CAHk-=wjS-Jg7sGMwUPpDsjv392nDOOs0CtUtVkp=S6Q7JzFJRw@mail.gmail.com>
+Subject: Re: function prototype element ordering
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>, apw@canonical.com,
+        Christoph Lameter <cl@linux.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, dwaipayanray1@gmail.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        mm-commits@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 4:08 PM Sven Peter <sven@svenpeter.dev> wrote:
+On Wed, Sep 22, 2021 at 12:24 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
 >
-> Hi,
->
->
-> On Wed, Sep 22, 2021, at 22:54, Marc Zyngier wrote:
-> > From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> >
-> [...]
-> > +
-> > +     /* Use the first reg entry to work out the port index */
-> > +     port->idx = idx >> 11;
-> > +     port->pcie = pcie;
-> > +     port->np = np;
-> > +
-> > +     port->base = devm_platform_ioremap_resource(platform, port->idx + 2);
-> > +     if (IS_ERR(port->base))
-> > +             return -ENODEV;
+> Attributes should be on their own line, they can be quite lengthy.
 
-Don't change error codes.
+No, no no. They really shouldn't.
 
-> > +
-> > +     rmw_set(PORT_APPCLK_EN, port + PORT_APPCLK);
->
-> I think this should be
->
->     rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
+First off, no normal code should use that "__attribute__(())" syntax
+anyway. It's ugly and big, and many of the attributes are
+compiler-specific anyway.
 
-Or just removed if this was tested and worked.
+So the "quite lengthy" argument is bogus, because the actual names you
+should use are things like "__packed" or "__pure" or "__user" etc.
 
-Rob
+But the "on their own line" is complete garbage to begin with. That
+will NEVER be a kernel rule. We should never have a rule that assumes
+things are so long that they need to be on multiple lines.
+
+We don't put function return types on their own lines either, even if
+some other projects have that rule (just to get function names at the
+beginning of lines or some other odd reason).
+
+So no, attributes do not go on their own lines, and they also
+generally don't go before the thing they describe.  Your examples are
+wrong, and explicitly against kernel rules.
+
+           Linus
