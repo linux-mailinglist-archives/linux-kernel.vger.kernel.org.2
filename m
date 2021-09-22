@@ -2,257 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4270E414263
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03628414269
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 09:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233187AbhIVHNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 03:13:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54202 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232946AbhIVHNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 03:13:51 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D6B3220096;
-        Wed, 22 Sep 2021 07:12:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1632294740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NZh3yOfP/ptJQH/3s3IL+R27jV+OSnwxX1748qHqrok=;
-        b=PtzfbK3CHSkTzBtAhsAG+borvyWlpU4rRJM/0saxN91QpSdoWykV+KZAnaqrRkqEO/zdew
-        81UVS3hjojCyq8hhZZQf3whFc5IpQD50ZqiGLklT9WL+x5V3t1nIKSXGMa5E5r+5etK+fQ
-        N23I6YTUKad32fLkeDXO2sXiLGxsuFM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1632294740;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NZh3yOfP/ptJQH/3s3IL+R27jV+OSnwxX1748qHqrok=;
-        b=5P685KzsJz4ga9wexIS6n6REx+BsqgG0HFkGExLxjkf9DT5n5BR+WUDhzopftQQWFYTqM9
-        yq5ocsuzXP1FyjCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9366A13D5E;
-        Wed, 22 Sep 2021 07:12:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JSYDI1TXSmFeZgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Wed, 22 Sep 2021 07:12:20 +0000
-Message-ID: <2b957783-aa5c-33a5-7fe3-475d5a80bacc@suse.de>
-Date:   Wed, 22 Sep 2021 09:12:20 +0200
+        id S233101AbhIVHQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 03:16:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232946AbhIVHQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 03:16:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBA5361247;
+        Wed, 22 Sep 2021 07:14:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632294898;
+        bh=+ydocpPVBLWe3OvCzCjUTeaVX170Kdpi5EiABQvJc7A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LxbL5W7sq+aw0s+oEMr+GgmgkujQ5S4FYVgdb3hR4G50nnxkxZWC7TMXavsJRzEUO
+         VzaY4+23waBD0w3lVspsEKOb2Ca/ot06v7RtSW617kBGDrbkxsQ4rlmejov0ta3i/D
+         W8Y9iGIaDdawRE5I/vDVMeqUwHdXoVTDjkYVXsIGpdefFlP84YVZMxg1q8mLu989WJ
+         13AlD4J/9pHYdf6HFlDOcHZoBCEbeWxq6U3R90bW6wvbl4qvQ5LWHyvJubrGjVmjSx
+         sOb5/lnnk3ANxBtvF/FD933huDpQN1yJD+CUIyRW2OMDPloPVKPLgZQSn76EdmENVw
+         WHtV8Ej0Qx0qg==
+Received: by mail-ot1-f54.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso2165732otb.11;
+        Wed, 22 Sep 2021 00:14:58 -0700 (PDT)
+X-Gm-Message-State: AOAM531UUAQdvOgLkKGPosbOgJei0NJ9NMv0NjW5607IEWpKGUjjOLkP
+        IC3HMdCNrvDpRVv15c7tv6BM0EC/kTdq4syVbR0=
+X-Google-Smtp-Source: ABdhPJwHSdKWJXExAbkKJnGirRvqqBIMaaqA37Zslhx7dDAXyqTNVLEwm50nmqLS3zUpNZVpcXOsfuxMsS7lTtT9N/Q=
+X-Received: by 2002:a05:6830:3189:: with SMTP id p9mr26321111ots.147.1632294898139;
+ Wed, 22 Sep 2021 00:14:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RFC PATCH] drm/print: Add deprecation notes to DRM_...()
- functions
-Content-Language: en-US
-To:     Douglas Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org
-Cc:     sam@ravnborg.org, daniel.vetter@ffwll.ch, lyude@redhat.com,
-        jani.nikula@intel.com, swboyd@chromium.org, airlied@redhat.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210921082757.RFC.1.Ibd82d98145615fa55f604947dc6a696cc82e8e43@changeid>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20210921082757.RFC.1.Ibd82d98145615fa55f604947dc6a696cc82e8e43@changeid>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------HvkjAtA88qCYEOC2mzJnEy80"
+References: <0de07021e49ac26a8f9386f62f3e15e947d0f6d0.1631709384.git.geert+renesas@glider.be>
+In-Reply-To: <0de07021e49ac26a8f9386f62f3e15e947d0f6d0.1631709384.git.geert+renesas@glider.be>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 22 Sep 2021 09:14:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF_B1ggD8zdKn_hyzgaa1zMhL+ygXRJaWhhrStqWPn9vw@mail.gmail.com>
+Message-ID: <CAMj1kXF_B1ggD8zdKn_hyzgaa1zMhL+ygXRJaWhhrStqWPn9vw@mail.gmail.com>
+Subject: Re: [PATCH v6] ARM: uncompress: Parse "linux,usable-memory-range" DT property
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        Simon Horman <horms@verge.net.au>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------HvkjAtA88qCYEOC2mzJnEy80
-Content-Type: multipart/mixed; boundary="------------wuyZyQth5LgBikwJH0FiThEb";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
-Cc: sam@ravnborg.org, daniel.vetter@ffwll.ch, lyude@redhat.com,
- jani.nikula@intel.com, swboyd@chromium.org, airlied@redhat.com,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org
-Message-ID: <2b957783-aa5c-33a5-7fe3-475d5a80bacc@suse.de>
-Subject: Re: [RFC PATCH] drm/print: Add deprecation notes to DRM_...()
- functions
-References: <20210921082757.RFC.1.Ibd82d98145615fa55f604947dc6a696cc82e8e43@changeid>
-In-Reply-To: <20210921082757.RFC.1.Ibd82d98145615fa55f604947dc6a696cc82e8e43@changeid>
+On Wed, 15 Sept 2021 at 15:20, Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+>
+> Add support for parsing the "linux,usable-memory-range" DT property.
+> This property is used to describe the usable memory reserved for the
+> crash dump kernel, and thus makes the memory reservation explicit.
+> If present, Linux no longer needs to mask the program counter, and rely
+> on the "mem=" kernel parameter to obtain the start and size of usable
+> memory.
+>
+> For backwards compatibility, the traditional method to derive the start
+> of memory is still used if "linux,usable-memory-range" is absent.
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
---------------wuyZyQth5LgBikwJH0FiThEb
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-SGkNCg0KQW0gMjEuMDkuMjEgdW0gMTc6Mjggc2NocmllYiBEb3VnbGFzIEFuZGVyc29uOg0K
-PiBJdCdzIGhhcmQgZm9yIHNvbWVvbmUgKGxpa2UgbWUpIHdobydzIG5vdCBmb2xsb3dpbmcg
-Y2xvc2VseSB0byBrbm93DQo+IHdoYXQgdGhlIHN1Z2dlc3RlZCBiZXN0IHByYWN0aWNlcyBh
-cmUgZm9yIGVycm9yIHByaW50aW5nIGluIERSTQ0KPiBkcml2ZXJzLiBBZGQgc29tZSBoaW50
-cyB0byB0aGUgaGVhZGVyIGZpbGUuDQo+IA0KPiBJbiBnZW5lcmFsLCBteSB1bmRlcnN0YW5k
-aW5nIGlzIHRoYXQ6DQo+ICogV2hlbiBwb3NzaWJsZSB3ZSBzaG91bGQgYmUgdXNpbmcgYSBg
-c3RydWN0IGRybV9kZXZpY2VgIGZvciBsb2dnaW5nDQo+ICAgIGFuZCByZWNlbnQgcGF0Y2hl
-cyBoYXZlIHRyaWVkIHRvIG1ha2UgaXQgbW9yZSBwb3NzaWJsZSB0byBhY2Nlc3MgYQ0KPiAg
-ICByZWxldmFudCBgc3RydWN0IGRybV9kZXZpY2VgIGluIG1vcmUgcGxhY2VzLg0KPiAqIEZv
-ciBtb3N0IGNhc2VzIHdoZW4gd2UgZG9uJ3QgaGF2ZSBhIGBzdHJ1Y3QgZHJtX2RldmljZWAs
-IHdlIG5vDQo+ICAgIGxvbmdlciBib3RoZXIgd2l0aCBEUk0tc3BlY2lmaWMgd3JhcHBlcnMg
-b24gdGhlIGRldl8uLi4oKSBmdW5jdGlvbnMNCj4gICAgb3IgcHJfLi4uKCkgZnVuY3Rpb25z
-IGFuZCBqdXN0IGVuY291cmFnZSBkcml2ZXJzIHRvIHVzZSB0aGUgbm9ybWFsDQo+ICAgIGZ1
-bmN0aW9ucy4NCj4gKiBGb3IgZGVidWctbGV2ZWwgZnVuY3Rpb25zIHdoZXJlIHdlIG1pZ2h0
-IHdhbnQgZmlsdGVyaW5nIGJhc2VkIG9uIGENCj4gICAgY2F0ZWdvcnkgd2UnbGwgc3RpbGwg
-aGF2ZSBEUk0tc3BlY2lmaWMgd3JhcHBlcnMsIGJ1dCB3ZSdsbCBvbmx5DQo+ICAgIHN1cHBv
-cnQgcGFzc2luZyBhIGBzdHJ1Y3QgZHJtX2RldmljZWAsIG5vdCBhIGBzdHJ1Y3QNCj4gICAg
-ZGV2aWNlYC4gUHJlc3VtYWJseSBtb3N0IG9mIHRoZSBjYXNlcyB3aGVyZSB3ZSB3YW50IHRo
-ZSBmaWx0ZXJpbmcNCj4gICAgYXJlIG1lc3NhZ2VzIHRoYXQgaGFwcGVuIHdoaWxlIHRoZSBz
-eXN0ZW0gaXMgaW4gYSBub3JtYWwgcnVubmluZw0KPiAgICBzdGF0ZSAoQUtBIG5vdCBkdXJp
-bmcgcHJvYmUgdGltZSkgYW5kIHdlIHNob3VsZCBoYXZlIGEgYHN0cnVjdA0KPiAgICBkcm1f
-ZGV2aWNlYCB0aGVuLiBJZiB3ZSBhYnNvbHV0ZWx5IGNhbid0IGdldCBhIGBzdHJ1Y3QgZHJt
-X2RldmljZWANCj4gICAgdGhlbiB0aGVzZSBmdW5jdGlvbnMgYmVncnVkZ2luZ2x5IGFjY2Vw
-dCBOVUxMIGZvciB0aGUgYHN0cnVjdA0KPiAgICBkcm1fZGV2aWNlYCBhbmQgaG9wZWZ1bGx5
-IHRoZSBhd2t3YXJkbmVzcyBvZiBoYXZpbmcgdG8gbWFudWFsbHkgcGFzcw0KPiAgICBOVUxM
-IHdpbGwga2VlcCBwZW9wbGUgZnJvbSBkb2luZyB0aGlzIHVubGVzcyBhYnNvbHV0ZWx5IG5l
-Y2Vzc2FyeS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IERvdWdsYXMgQW5kZXJzb24gPGRpYW5k
-ZXJzQGNocm9taXVtLm9yZz4NCg0KQWNrZWQtYnk6IFRob21hcyBaaW1tZXJtYW5uIDx0emlt
-bWVybWFubkBzdXNlLmRlPg0KDQpUaGFua3MgYSBsb3QuDQoNCj4gLS0tDQo+IA0KPiAgIGlu
-Y2x1ZGUvZHJtL2RybV9wcmludC5oIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2RybS9kcm1fcHJpbnQuaCBiL2luY2x1ZGUvZHJtL2RybV9wcmlu
-dC5oDQo+IGluZGV4IDE1YTA4OWE4N2MyMi4uMjJmYWJkZWVkMjk3IDEwMDY0NA0KPiAtLS0g
-YS9pbmNsdWRlL2RybS9kcm1fcHJpbnQuaA0KPiArKysgYi9pbmNsdWRlL2RybS9kcm1fcHJp
-bnQuaA0KPiBAQCAtMzQwLDYgKzM0MCw4IEBAIHZvaWQgZHJtX2Rldl9kYmcoY29uc3Qgc3Ry
-dWN0IGRldmljZSAqZGV2LCBlbnVtIGRybV9kZWJ1Z19jYXRlZ29yeSBjYXRlZ29yeSwNCj4g
-ICAvKioNCj4gICAgKiBEUk1fREVWX0VSUk9SKCkgLSBFcnJvciBvdXRwdXQuDQo+ICAgICoN
-Cj4gKyAqIE5PVEU6IHRoaXMgaXMgZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBkcm1fZXJyKCkg
-b3IgZGV2X2VycigpLg0KPiArICoNCj4gICAgKiBAZGV2OiBkZXZpY2UgcG9pbnRlcg0KPiAg
-ICAqIEBmbXQ6IHByaW50ZigpIGxpa2UgZm9ybWF0IHN0cmluZy4NCj4gICAgKi8NCj4gQEAg
-LTM0OSw2ICszNTEsOSBAQCB2b2lkIGRybV9kZXZfZGJnKGNvbnN0IHN0cnVjdCBkZXZpY2Ug
-KmRldiwgZW51bSBkcm1fZGVidWdfY2F0ZWdvcnkgY2F0ZWdvcnksDQo+ICAgLyoqDQo+ICAg
-ICogRFJNX0RFVl9FUlJPUl9SQVRFTElNSVRFRCgpIC0gUmF0ZSBsaW1pdGVkIGVycm9yIG91
-dHB1dC4NCj4gICAgKg0KPiArICogTk9URTogdGhpcyBpcyBkZXByZWNhdGVkIGluIGZhdm9y
-IG9mIGRybV9lcnJfcmF0ZWxpbWl0ZWQoKSBvcg0KPiArICogZGV2X2Vycl9yYXRlbGltaXRl
-ZCgpLg0KPiArICoNCj4gICAgKiBAZGV2OiBkZXZpY2UgcG9pbnRlcg0KPiAgICAqIEBmbXQ6
-IHByaW50ZigpIGxpa2UgZm9ybWF0IHN0cmluZy4NCj4gICAgKg0KPiBAQCAtMzY0LDkgKzM2
-OSwxMSBAQCB2b2lkIGRybV9kZXZfZGJnKGNvbnN0IHN0cnVjdCBkZXZpY2UgKmRldiwgZW51
-bSBkcm1fZGVidWdfY2F0ZWdvcnkgY2F0ZWdvcnksDQo+ICAgCQlEUk1fREVWX0VSUk9SKGRl
-diwgZm10LCAjI19fVkFfQVJHU19fKTsJCQlcDQo+ICAgfSkNCj4gICANCj4gKy8qIE5PVEU6
-IHRoaXMgaXMgZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBkcm1faW5mbygpIG9yIGRldl9pbmZv
-KCkuICovDQo+ICAgI2RlZmluZSBEUk1fREVWX0lORk8oZGV2LCBmbXQsIC4uLikJCQkJXA0K
-PiAgIAlkcm1fZGV2X3ByaW50ayhkZXYsIEtFUk5fSU5GTywgZm10LCAjI19fVkFfQVJHU19f
-KQ0KPiAgIA0KPiArLyogTk9URTogdGhpcyBpcyBkZXByZWNhdGVkIGluIGZhdm9yIG9mIGRy
-bV9pbmZvX29uY2UoKSBvciBkZXZfaW5mb19vbmNlKCkuICovDQo+ICAgI2RlZmluZSBEUk1f
-REVWX0lORk9fT05DRShkZXYsIGZtdCwgLi4uKQkJCQlcDQo+ICAgKHsJCQkJCQkJCQlcDQo+
-ICAgCXN0YXRpYyBib29sIF9fcHJpbnRfb25jZSBfX3JlYWRfbW9zdGx5OwkJCQlcDQo+IEBA
-IC0zNzksNiArMzg2LDggQEAgdm9pZCBkcm1fZGV2X2RiZyhjb25zdCBzdHJ1Y3QgZGV2aWNl
-ICpkZXYsIGVudW0gZHJtX2RlYnVnX2NhdGVnb3J5IGNhdGVnb3J5LA0KPiAgIC8qKg0KPiAg
-ICAqIERSTV9ERVZfREVCVUcoKSAtIERlYnVnIG91dHB1dCBmb3IgZ2VuZXJpYyBkcm0gY29k
-ZQ0KPiAgICAqDQo+ICsgKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2b3Igb2Yg
-ZHJtX2RiZ19jb3JlKCkuDQo+ICsgKg0KPiAgICAqIEBkZXY6IGRldmljZSBwb2ludGVyDQo+
-ICAgICogQGZtdDogcHJpbnRmKCkgbGlrZSBmb3JtYXQgc3RyaW5nLg0KPiAgICAqLw0KPiBA
-QCAtMzg3LDYgKzM5Niw4IEBAIHZvaWQgZHJtX2Rldl9kYmcoY29uc3Qgc3RydWN0IGRldmlj
-ZSAqZGV2LCBlbnVtIGRybV9kZWJ1Z19jYXRlZ29yeSBjYXRlZ29yeSwNCj4gICAvKioNCj4g
-ICAgKiBEUk1fREVWX0RFQlVHX0RSSVZFUigpIC0gRGVidWcgb3V0cHV0IGZvciB2ZW5kb3Ig
-c3BlY2lmaWMgcGFydCBvZiB0aGUgZHJpdmVyDQo+ICAgICoNCj4gKyAqIE5PVEU6IHRoaXMg
-aXMgZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBkcm1fZGJnKCkgb3IgZGV2X2RiZygpLg0KPiAr
-ICoNCj4gICAgKiBAZGV2OiBkZXZpY2UgcG9pbnRlcg0KPiAgICAqIEBmbXQ6IHByaW50Zigp
-IGxpa2UgZm9ybWF0IHN0cmluZy4NCj4gICAgKi8NCj4gQEAgLTM5NSw2ICs0MDYsOCBAQCB2
-b2lkIGRybV9kZXZfZGJnKGNvbnN0IHN0cnVjdCBkZXZpY2UgKmRldiwgZW51bSBkcm1fZGVi
-dWdfY2F0ZWdvcnkgY2F0ZWdvcnksDQo+ICAgLyoqDQo+ICAgICogRFJNX0RFVl9ERUJVR19L
-TVMoKSAtIERlYnVnIG91dHB1dCBmb3IgbW9kZXNldHRpbmcgY29kZQ0KPiAgICAqDQo+ICsg
-KiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2b3Igb2YgZHJtX2RiZ19rbXMoKS4N
-Cj4gKyAqDQo+ICAgICogQGRldjogZGV2aWNlIHBvaW50ZXINCj4gICAgKiBAZm10OiBwcmlu
-dGYoKSBsaWtlIGZvcm1hdCBzdHJpbmcuDQo+ICAgICovDQo+IEBAIC00ODAsNDcgKzQ5Myw2
-MyBAQCB2b2lkIF9fZHJtX2Vycihjb25zdCBjaGFyICpmb3JtYXQsIC4uLik7DQo+ICAgI2Rl
-ZmluZSBfRFJNX1BSSU5USyhvbmNlLCBsZXZlbCwgZm10LCAuLi4pCQkJCVwNCj4gICAJcHJp
-bnRrIyNvbmNlKEtFUk5fIyNsZXZlbCAiWyIgRFJNX05BTUUgIl0gIiBmbXQsICMjX19WQV9B
-UkdTX18pDQo+ICAgDQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2b3Ig
-b2YgcHJfaW5mbygpLiAqLw0KPiAgICNkZWZpbmUgRFJNX0lORk8oZm10LCAuLi4pCQkJCQkJ
-XA0KPiAgIAlfRFJNX1BSSU5USygsIElORk8sIGZtdCwgIyNfX1ZBX0FSR1NfXykNCj4gKy8q
-IE5PVEU6IHRoaXMgaXMgZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBwcl9ub3RpY2UoKS4gKi8N
-Cj4gICAjZGVmaW5lIERSTV9OT1RFKGZtdCwgLi4uKQkJCQkJCVwNCj4gICAJX0RSTV9QUklO
-VEsoLCBOT1RJQ0UsIGZtdCwgIyNfX1ZBX0FSR1NfXykNCj4gKy8qIE5PVEU6IHRoaXMgaXMg
-ZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBwcl93YXJuKCkuICovDQo+ICAgI2RlZmluZSBEUk1f
-V0FSTihmbXQsIC4uLikJCQkJCQlcDQo+ICAgCV9EUk1fUFJJTlRLKCwgV0FSTklORywgZm10
-LCAjI19fVkFfQVJHU19fKQ0KPiAgIA0KPiArLyogTk9URTogdGhpcyBpcyBkZXByZWNhdGVk
-IGluIGZhdm9yIG9mIHByX2luZm9fb25jZSgpLiAqLw0KPiAgICNkZWZpbmUgRFJNX0lORk9f
-T05DRShmbXQsIC4uLikJCQkJCQlcDQo+ICAgCV9EUk1fUFJJTlRLKF9vbmNlLCBJTkZPLCBm
-bXQsICMjX19WQV9BUkdTX18pDQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4g
-ZmF2b3Igb2YgcHJfbm90aWNlX29uY2UoKS4gKi8NCj4gICAjZGVmaW5lIERSTV9OT1RFX09O
-Q0UoZm10LCAuLi4pCQkJCQkJXA0KPiAgIAlfRFJNX1BSSU5USyhfb25jZSwgTk9USUNFLCBm
-bXQsICMjX19WQV9BUkdTX18pDQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4g
-ZmF2b3Igb2YgcHJfd2Fybl9vbmNlKCkuICovDQo+ICAgI2RlZmluZSBEUk1fV0FSTl9PTkNF
-KGZtdCwgLi4uKQkJCQkJCVwNCj4gICAJX0RSTV9QUklOVEsoX29uY2UsIFdBUk5JTkcsIGZt
-dCwgIyNfX1ZBX0FSR1NfXykNCj4gICANCj4gKy8qIE5PVEU6IHRoaXMgaXMgZGVwcmVjYXRl
-ZCBpbiBmYXZvciBvZiBwcl9lcnIoKS4gKi8NCj4gICAjZGVmaW5lIERSTV9FUlJPUihmbXQs
-IC4uLikJCQkJCQlcDQo+ICAgCV9fZHJtX2VycihmbXQsICMjX19WQV9BUkdTX18pDQo+ICAg
-DQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2b3Igb2YgcHJfZXJyX3Jh
-dGVsaW1pdGVkKCkuICovDQo+ICAgI2RlZmluZSBEUk1fRVJST1JfUkFURUxJTUlURUQoZm10
-LCAuLi4pCQkJCQlcDQo+ICAgCURSTV9ERVZfRVJST1JfUkFURUxJTUlURUQoTlVMTCwgZm10
-LCAjI19fVkFfQVJHU19fKQ0KPiAgIA0KPiArLyogTk9URTogdGhpcyBpcyBkZXByZWNhdGVk
-IGluIGZhdm9yIG9mIGRybV9kYmdfY29yZShOVUxMLCAuLi4pLiAqLw0KPiAgICNkZWZpbmUg
-RFJNX0RFQlVHKGZtdCwgLi4uKQkJCQkJCVwNCj4gICAJX19kcm1fZGJnKERSTV9VVF9DT1JF
-LCBmbXQsICMjX19WQV9BUkdTX18pDQo+ICAgDQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJl
-Y2F0ZWQgaW4gZmF2b3Igb2YgZHJtX2RiZyhOVUxMLCAuLi4pLiAqLw0KPiAgICNkZWZpbmUg
-RFJNX0RFQlVHX0RSSVZFUihmbXQsIC4uLikJCQkJCVwNCj4gICAJX19kcm1fZGJnKERSTV9V
-VF9EUklWRVIsIGZtdCwgIyNfX1ZBX0FSR1NfXykNCj4gICANCj4gKy8qIE5PVEU6IHRoaXMg
-aXMgZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBkcm1fZGJnX2ttcyhOVUxMLCAuLi4pLiAqLw0K
-PiAgICNkZWZpbmUgRFJNX0RFQlVHX0tNUyhmbXQsIC4uLikJCQkJCQlcDQo+ICAgCV9fZHJt
-X2RiZyhEUk1fVVRfS01TLCBmbXQsICMjX19WQV9BUkdTX18pDQo+ICAgDQo+ICsvKiBOT1RF
-OiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2b3Igb2YgZHJtX2RiZ19wcmltZShOVUxMLCAu
-Li4pLiAqLw0KPiAgICNkZWZpbmUgRFJNX0RFQlVHX1BSSU1FKGZtdCwgLi4uKQkJCQkJXA0K
-PiAgIAlfX2RybV9kYmcoRFJNX1VUX1BSSU1FLCBmbXQsICMjX19WQV9BUkdTX18pDQo+ICAg
-DQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2b3Igb2YgZHJtX2RiZ19h
-dG9taWMoTlVMTCwgLi4uKS4gKi8NCj4gICAjZGVmaW5lIERSTV9ERUJVR19BVE9NSUMoZm10
-LCAuLi4pCQkJCQlcDQo+ICAgCV9fZHJtX2RiZyhEUk1fVVRfQVRPTUlDLCBmbXQsICMjX19W
-QV9BUkdTX18pDQo+ICAgDQo+ICsvKiBOT1RFOiB0aGlzIGlzIGRlcHJlY2F0ZWQgaW4gZmF2
-b3Igb2YgZHJtX2RiZ192YmwoTlVMTCwgLi4uKS4gKi8NCj4gICAjZGVmaW5lIERSTV9ERUJV
-R19WQkwoZm10LCAuLi4pCQkJCQkJXA0KPiAgIAlfX2RybV9kYmcoRFJNX1VUX1ZCTCwgZm10
-LCAjI19fVkFfQVJHU19fKQ0KPiAgIA0KPiArLyogTk9URTogdGhpcyBpcyBkZXByZWNhdGVk
-IGluIGZhdm9yIG9mIGRybV9kYmdfbGVhc2UoTlVMTCwgLi4uKS4gKi8NCj4gICAjZGVmaW5l
-IERSTV9ERUJVR19MRUFTRShmbXQsIC4uLikJCQkJCVwNCj4gICAJX19kcm1fZGJnKERSTV9V
-VF9MRUFTRSwgZm10LCAjI19fVkFfQVJHU19fKQ0KPiAgIA0KPiArLyogTk9URTogdGhpcyBp
-cyBkZXByZWNhdGVkIGluIGZhdm9yIG9mIGRybV9kYmdfZHAoTlVMTCwgLi4uKS4gKi8NCj4g
-ICAjZGVmaW5lIERSTV9ERUJVR19EUChmbXQsIC4uLikJCQkJCQlcDQo+ICAgCV9fZHJtX2Ri
-ZyhEUk1fVVRfRFAsIGZtdCwgIyMgX19WQV9BUkdTX18pDQo+ICAgDQo+IEBAIC01MzYsNiAr
-NTY1LDcgQEAgdm9pZCBfX2RybV9lcnIoY29uc3QgY2hhciAqZm9ybWF0LCAuLi4pOw0KPiAg
-ICNkZWZpbmUgZHJtX2RiZ19rbXNfcmF0ZWxpbWl0ZWQoZHJtLCBmbXQsIC4uLikgXA0KPiAg
-IAlfX0RSTV9ERUZJTkVfREJHX1JBVEVMSU1JVEVEKEtNUywgZHJtLCBmbXQsICMjIF9fVkFf
-QVJHU19fKQ0KPiAgIA0KPiArLyogTk9URTogdGhpcyBpcyBkZXByZWNhdGVkIGluIGZhdm9y
-IG9mIGRybV9kYmdfa21zX3JhdGVsaW1pdGVkKE5VTEwsIC4uLikuICovDQo+ICAgI2RlZmlu
-ZSBEUk1fREVCVUdfS01TX1JBVEVMSU1JVEVEKGZtdCwgLi4uKSBkcm1fZGJnX2ttc19yYXRl
-bGltaXRlZChOVUxMLCBmbXQsICMjIF9fVkFfQVJHU19fKQ0KPiAgIA0KPiAgIC8qDQo+IA0K
-DQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpT
-VVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRzdHIuIDUsIDkw
-NDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5iZXJnKQ0KR2Vz
-Y2jDpGZ0c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZlcg0K
-
---------------wuyZyQth5LgBikwJH0FiThEb--
-
---------------HvkjAtA88qCYEOC2mzJnEy80
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFK11QFAwAAAAAACgkQlh/E3EQov+BP
-1A//RmBsTjcRXKBwREsntdlmLzI9UogidTh+mpdMxlbW/RuWd/6sz7OcwlFG88xbmS+e6YfBn5ai
-H1/nh5g1QFExpopDFVFW3iscayHIYn7bQcHNQgbTgcEI1Gv7dX+NyCSd5d1QX8k3hEvwqIjwT/pH
-aRB8pSXpUEDSpFTrEXBBjX0gbKCSQTZlQBfVzvUdKbtA1UFzsF/hD+afXeS3A/uph0hvH6eYVDwE
-vkyAgo7NinfkTEI/jIEXc6qcIW/NLP73B4IeyUGA81P11Ro1Vt1A34aP7BxQGS3JCSL17uHhwdGW
-0qP29VPHCkxj2gZGBdR8TEUT2U9T7KBYIkhgnqTFCLrCnpfj9HUjfQaPjGDdnk8IKWg//mzufCFE
-nnxmA8WNuQtJQ53k3BvyXf2iQloi64n6IxV8voAsOhLtgsPHw8SHBxoo+Hug7n41Y9l3zhP8kDPQ
-/G5vv3Iv28sqncP6T0eS2em2PE934SiHxXLV0WCMhshwyx/1as+iSWvXHfH1K3XOHGILigwz4YoP
-2XV2qRdxYFwdk1diElGnTgt+6Ku+bDxdx8OwdGKG9BruiVhehn1MxsgfiqMWmYijtVKsFawrUANm
-7YL4fO6O//VmOJaND17egOGqQeQ3vpOms318Vq1jMJEBZiSbBCVXZoexrUe47ZguiimNzKkU/hta
-tJw=
-=NcZd
------END PGP SIGNATURE-----
-
---------------HvkjAtA88qCYEOC2mzJnEy80--
+> ---
+> KernelVersion: v5.15-rc1
+> ---
+> The corresponding patch for kexec-tools is "[PATCH] arm: kdump: Add DT
+> properties to crash dump kernel's DTB", which is still valid:
+> https://lore.kernel.org/r/20200902154129.6358-1-geert+renesas@glider.be/
+>
+> v6:
+>   - All dependencies are in v5.15-rc1,
+>
+> v5:
+>   - Remove the addition of "linux,elfcorehdr" and
+>     "linux,usable-memory-range" handling to arch/arm/mm/init.c,
+>
+> v4:
+>   - Remove references to architectures in chosen.txt, to avoid having to
+>     change this again when more architectures copy kdump support,
+>   - Remove the architecture-specific code for parsing
+>     "linux,usable-memory-range" and "linux,elfcorehdr", as the FDT core
+>     code now takes care of this,
+>   - Move chosen.txt change to patch changing the FDT core,
+>   - Use IS_ENABLED(CONFIG_CRASH_DUMP) instead of #ifdef,
+>
+> v3:
+>   - Rebase on top of accepted solution for DTB memory information
+>     handling, which is part of v5.12-rc1,
+>
+> v2:
+>   - Rebase on top of reworked DTB memory information handling.
+> ---
+>  .../arm/boot/compressed/fdt_check_mem_start.c | 48 ++++++++++++++++---
+>  1 file changed, 42 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> index 62450d824c3ca180..9291a2661bdfe57f 100644
+> --- a/arch/arm/boot/compressed/fdt_check_mem_start.c
+> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> @@ -55,16 +55,17 @@ static uint64_t get_val(const fdt32_t *cells, uint32_t ncells)
+>   * DTB, and, if out-of-range, replace it by the real start address.
+>   * To preserve backwards compatibility (systems reserving a block of memory
+>   * at the start of physical memory, kdump, ...), the traditional method is
+> - * always used if it yields a valid address.
+> + * used if it yields a valid address, unless the "linux,usable-memory-range"
+> + * property is present.
+>   *
+>   * Return value: start address of physical memory to use
+>   */
+>  uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>  {
+> -       uint32_t addr_cells, size_cells, base;
+> +       uint32_t addr_cells, size_cells, usable_base, base;
+>         uint32_t fdt_mem_start = 0xffffffff;
+> -       const fdt32_t *reg, *endp;
+> -       uint64_t size, end;
+> +       const fdt32_t *usable, *reg, *endp;
+> +       uint64_t size, usable_end, end;
+>         const char *type;
+>         int offset, len;
+>
+> @@ -80,6 +81,27 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>         if (addr_cells > 2 || size_cells > 2)
+>                 return mem_start;
+>
+> +       /*
+> +        * Usable memory in case of a crash dump kernel
+> +        * This property describes a limitation: memory within this range is
+> +        * only valid when also described through another mechanism
+> +        */
+> +       usable = get_prop(fdt, "/chosen", "linux,usable-memory-range",
+> +                         (addr_cells + size_cells) * sizeof(fdt32_t));
+> +       if (usable) {
+> +               size = get_val(usable + addr_cells, size_cells);
+> +               if (!size)
+> +                       return mem_start;
+> +
+> +               if (addr_cells > 1 && fdt32_ld(usable)) {
+> +                       /* Outside 32-bit address space */
+> +                       return mem_start;
+> +               }
+> +
+> +               usable_base = fdt32_ld(usable + addr_cells - 1);
+> +               usable_end = usable_base + size;
+> +       }
+> +
+>         /* Walk all memory nodes and regions */
+>         for (offset = fdt_next_node(fdt, -1, NULL); offset >= 0;
+>              offset = fdt_next_node(fdt, offset, NULL)) {
+> @@ -107,7 +129,20 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>
+>                         base = fdt32_ld(reg + addr_cells - 1);
+>                         end = base + size;
+> -                       if (mem_start >= base && mem_start < end) {
+> +                       if (usable) {
+> +                               /*
+> +                                * Clip to usable range, which takes precedence
+> +                                * over mem_start
+> +                                */
+> +                               if (base < usable_base)
+> +                                       base = usable_base;
+> +
+> +                               if (end > usable_end)
+> +                                       end = usable_end;
+> +
+> +                               if (end <= base)
+> +                                       continue;
+> +                       } else if (mem_start >= base && mem_start < end) {
+>                                 /* Calculated address is valid, use it */
+>                                 return mem_start;
+>                         }
+> @@ -123,7 +158,8 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>         }
+>
+>         /*
+> -        * The calculated address is not usable.
+> +        * The calculated address is not usable, or was overridden by the
+> +        * "linux,usable-memory-range" property.
+>          * Use the lowest usable physical memory address from the DTB instead,
+>          * and make sure this is a multiple of 2 MiB for phys/virt patching.
+>          */
+> --
+> 2.25.1
+>
