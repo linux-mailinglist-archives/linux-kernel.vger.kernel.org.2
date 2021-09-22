@@ -2,383 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309BF4145FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1689E4145FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234821AbhIVKSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:18:34 -0400
-Received: from esa11.hc1455-7.c3s2.iphmx.com ([207.54.90.137]:11225 "EHLO
-        esa11.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234531AbhIVKSN (ORCPT
+        id S234686AbhIVKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:18:31 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:30553 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234585AbhIVKSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:18:13 -0400
-IronPort-SDR: 5Fq6LHzmrxNg/1n0ZnbDtKoK8WWl0oWIgJcmtV+1HyxSeh840PEklyii7CeNO/kU4jMZUlUSC7
- QQYsyiiHriacfUDf0qVTr3BvWAcu/1LLcxYw9jtgLhsafKBprlu4dFo8Bm/5WcZmxnii1Akx2n
- C7rQ8xCcYrTL3kF3zp5eZyxrWvXNEU6MaskVxLzjqX7+GGapkOBTL8WZnhelrnmgwKBIPAPKv/
- zCs7fIUQuBKJOB0QWfrSHe5NQSPNzQ+ytJ5hydM/HY+fGyuALCQVSPaEmpUKArshh9s+kIU4HB
- zM9V03yJBX5eD04wFXdWxB93
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="25707508"
-X-IronPort-AV: E=Sophos;i="5.85,313,1624287600"; 
-   d="scan'208";a="25707508"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
-  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP; 22 Sep 2021 19:16:32 +0900
-Received: from oym-m3.gw.nic.fujitsu.com (oym-nat-oym-m3.gw.nic.fujitsu.com [192.168.87.60])
-        by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id A022BEE086;
-        Wed, 22 Sep 2021 19:16:31 +0900 (JST)
-Received: from yto-om2.fujitsu.com (yto-om2.o.css.fujitsu.com [10.128.89.163])
-        by oym-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id CB652DAA0C;
-        Wed, 22 Sep 2021 19:16:30 +0900 (JST)
-Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by yto-om2.fujitsu.com (Postfix) with ESMTP id B3A54400C007E;
-        Wed, 22 Sep 2021 19:16:30 +0900 (JST)
-From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: [PATCH v2 2/2] libperf tests: Add test_stat_multiplexing test
-Date:   Wed, 22 Sep 2021 19:16:27 +0900
-Message-Id: <20210922101627.3396398-3-nakamura.shun@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210922101627.3396398-1-nakamura.shun@fujitsu.com>
-References: <20210922101627.3396398-1-nakamura.shun@fujitsu.com>
+        Wed, 22 Sep 2021 06:18:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1632305798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ihy5AqkbKQlh/sKYZgTSszLHYrjLcDDqhUqK4o2XEtI=;
+        b=K/b87FAGIGJ2izaj7QLjGENwt+VWzCnazT4oFrNZC0c0JOh9V64eMOEOrmUiOV7NyFj9p4
+        7gWw5+/fAi/u4YFKmjePGzUkmd9+jcERcpTIU5ywEbS2/cMoEYkr79Fb5AirAcAUhHgzS4
+        nTqVqASwh4xOoU01mw/KvQiSMbSdceY=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2107.outbound.protection.outlook.com [104.47.17.107])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-34-1rM-3_mIPnu2w1oLQjm4IQ-1; Wed, 22 Sep 2021 12:16:37 +0200
+X-MC-Unique: 1rM-3_mIPnu2w1oLQjm4IQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L5VQZxg717y8Nyolf0kqnaz7jbvhKbq+SsbF4PQMpjjxSb+wtykIjxpYc8yYcvO5oUR/uh/PNzQDGMiGI3COZaqYcpSgngYK7xe2FK7ujqq41hbfaHfzM0SFdT71ZLlssFWL70rdeUhA+hx9In3JVPbicusdksQV5jC/rOAdNHIO8futks2m6RQPz/JQ90HLr1PDBqZB6QMr3dDoXqF3opWPZUFVXsls/Oy9HxxSDer6ecT5hqwCENsGYpTRNoDadTeu0LGwDmMcKKZ4Qw55qaQRg1AvtpqxMQ4Idyxj1Qy+1zZ/vYCZXC69BpOweTvoDLorHrkQIAhxbZ/3J0Uk4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=Ihy5AqkbKQlh/sKYZgTSszLHYrjLcDDqhUqK4o2XEtI=;
+ b=fKw+T/6jhwEJrkEv7XmjK5n/vgkkuOFVrw9yDrJ/4vDywMqCizGc8v8w6WPbkZu1AzvQ3ekVFCCqqZsqBwR+8hx8ZvgjDER72MLaPXJW0eR/ludwFpBpsndtZgWoGhI4iNIHUZvn5HZLTjqd3ymBKUm9yMGXjHwilmscaVIfbxNKyPqvaqhzM3ruT2Edt/r3Hvl1fM0BPLRAODS3yrDea6Vi1TUPOGfO+BvJGMAG1lL/pNGfTyZ4LKFAZNTk00UAm3Sz5vkcYSZB4SqGsJDRzyvfQKRM4N7+CrrF+Ogk17W0mZI5rPajDehNlwUdHhRAEnlSv+qGQskfoz6X8Ivasg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB4190.eurprd04.prod.outlook.com (2603:10a6:803:4b::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.15; Wed, 22 Sep
+ 2021 10:16:36 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 10:16:36 +0000
+Subject: [PATCH RFC 1/3] xen/privcmd: replace kcalloc() by kvcalloc() when
+ allocating empty pages
+From:   Jan Beulich <jbeulich@suse.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
+Message-ID: <6d698901-98a4-05be-c421-bcd0713f5335@suse.com>
+Date:   Wed, 22 Sep 2021 12:16:35 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <0f0db6fa-2604-9a0d-1138-0063b5a39a87@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0023.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1c::7) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+Received: from [10.156.60.236] (37.24.206.209) by FR3P281CA0023.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1c::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.6 via Frontend Transport; Wed, 22 Sep 2021 10:16:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4514c639-5875-4107-bfd0-08d97db20ef4
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4190:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB41908127AA8CCD2E54806B13B3A29@VI1PR04MB4190.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jLzYEODIBUA1//UERQZqtoL1gxZrcJRrDmhsdABv6FVgoEB54z1CCXGqfls2JAMPKnFbwp1FY8QyBtFkmLAn2qvjtp07W0MjbATD0g2y2/UTC/YWWVGgPe79eFHJ8E1Ofl+tnY5LrQ1h5EJbbLhbUnMkVspsQay76Gb8BW/9YRCcozAzvzhaZzGW5sjs6oV8VnlqNcpFidrr7WhyGxA0+qDhHWFaJGhTd7psp9Z/SCMqKH/hMEO9k5QWiWdUPzEYneFsS4E8Xa6lvAdgSxrn2M7rEGSf29Ewd344mNQkBCnpSHG0IaGVNc+lM/tNBH2kEa56VwlNZhnpKXfYZMpKt5MW9CZWCA9evD9xLONioBb3bx5ILK4lAGTLdsuAKIMRKqg8plME/2PcqpIlNpjbvkzg/Q8YtBa+bLEL8u2ONHxXkeivFpg/8o451Q8cEXsL1ZCFPA3blTULInsJHtEcPX9qdH5C5oJHSFf6aTOPmDl05J6ldcSMZHd5gzCI4zRbv1jh4paDVB806DKqEo3BdSY0tfTCC5xIbe+q2IPTIfOXiaAUQw6q5MmBh+yZJxPSWWgoZL8omD1x+FSfxBgzyX82K6XPHDyy+1yQMn5/IJl7ymF6f7FSU0BkDWDs+xO0AoDv9e6RrKOCHI9DFMU6XElBst6Ji59cQEzjXTzlsYG6SyO2VS7nNElpfPbPD52cSzfdtuuuQywdKzt3/RHdb76Vok0f1jPrq1xBbqY/k28=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(316002)(26005)(8936002)(110136005)(31696002)(8676002)(6486002)(16576012)(186003)(83380400001)(508600001)(5660300002)(54906003)(31686004)(66476007)(36756003)(38100700002)(66946007)(86362001)(66556008)(2906002)(956004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?blZTaFFseTV2endMd2s0VisrV2dYckpXb1hDWUk5VmVJNjVFQjZLeFl1L1VG?=
+ =?utf-8?B?c2FUbHk4c3U3cThTNmZObVhEcXZzSkFDRjNQVFBZNnlYUTV1R21HbFMzekds?=
+ =?utf-8?B?MlROWkJsVitBZ0RrQ2cwZm5pSFN0bmNyRnJMWkt3bjV5blZ1dURmV1VZWTlj?=
+ =?utf-8?B?QnAzakNqOWNaTmRHSFFuV0YzU285Smg3aDd6OXkvSVV6S1BxWnpmK21iOUtJ?=
+ =?utf-8?B?clA2L0N0bUNoU3NFM1N4OXlRR01RTXQ0TzFKYmhNSjFKYklCc2Fjd1RtRnhG?=
+ =?utf-8?B?bmtCR0NleXVLanRRQmxWQUl4VzhmazNSR3k4czcrTGlKMmZDVmF3ZS9oMGlX?=
+ =?utf-8?B?bjlIczNwaGhFTndkMzB0WERFaGFIeWJXSGJpaGIvcFVmRXA1eTlyL1VDVElZ?=
+ =?utf-8?B?S1pobUc4QTkvcitWTGRDODNMQy95L2s5NXhWQzN3QXN5SkNQMzNSUEtkeEFC?=
+ =?utf-8?B?WSthZXVqb1dOZlhzS3I0R0t5aDdTQVpsMGFxOG1YK3BoMXZkLzJiZU44Uk9t?=
+ =?utf-8?B?SVU0aGRLbWUxbW4zbnZtaTVMQVFiRDJrWm9TR3l5ZEtvSng2WWs5Yng4WFRv?=
+ =?utf-8?B?S3hHL3R6T2tsdXp6Qzhaa3BvVGZsNThrWldwTGpvZTlVUHozSFZqY3NsZXRh?=
+ =?utf-8?B?di9jSi9ZZmNPdFcrMWJiU1dodjdUUkpvQ3hob3NCUVR6di80a2hFOVltRHZ1?=
+ =?utf-8?B?bGJDWlBUNkpOQitHdTN2cWdJcUI1dHlBUUhFNlNteldtWFhPN05ubEEyK3Yr?=
+ =?utf-8?B?K1M2U0NvQTVjajhFTTdwbmkrbnFrR0szZk1haGcwS3FFekVCT1ZWN0FNSlFu?=
+ =?utf-8?B?dlJ1ZGRKdGFkbmN0TEsxQUx2NGtMWW83Y0VaTmF0QjhRNUZSRk1EdUNVV2hx?=
+ =?utf-8?B?cnlzZmtnV3JsK0N0dHNzQXZ4OTNGS1RiYjhHbzZyQ3JDcElldi9HTXAwVFF2?=
+ =?utf-8?B?VEZoTFYxTEM1LytMZkZNdnpqNjU5WVVJeWx1N2w0alk3QVRDMlp0ZUNYVmRk?=
+ =?utf-8?B?TDd5c1NWekJOdGhCVDUrNHVkV21iVkRMaktKVlYvb0pnbkx4enR1ckorU3hw?=
+ =?utf-8?B?OGlTQ0lkdVExZWdDWFRrYVpndFNBcnBJb01LT1hpY0JjaXZwbmxDRmFkc011?=
+ =?utf-8?B?V3FxL0ptcUlRYkE4aUhpSFh3c0NzR25TZFBrQVdsWFFkR1J1TnlGUVcyL2lC?=
+ =?utf-8?B?UnhJSWV2UE5ENVB2Vy9LZXNTNlJQMGtUcXF4bWpCNzhGL0QzRXZ4UFlBcUN3?=
+ =?utf-8?B?MFZaZ3JhcG5qSHlHTm5zb25CSjdBdG9JMWcvbHNVNEMrQTdyVEJQalZxTHBL?=
+ =?utf-8?B?ZTZNVnVzV1pXMVpMVEhuZ2pXazQydUZNcGFOZ3FNMGtDSkFjTnZSVjE5ak1N?=
+ =?utf-8?B?U09GRW5jaTNOL1BwejN6dzF2Uy8yeGlvMEtHUDFzM3dhWFNMeEpkRnZWakVX?=
+ =?utf-8?B?UjcwUVVXa3lQb1ZjSEl5RnViSE5oL25TN3I4ejBvQXB3bHdlbXRQdGVYb000?=
+ =?utf-8?B?ODlCN0F2MjZ2akw3ZGdzZElXdGxoSFY3cVI0aVFhTUR5WXUvelJrRkh6ZFJp?=
+ =?utf-8?B?a0U1K1ZTdVZZNERWSlVpd1c4aHlqS3lhNENLdUNFZWdPUXhOWU9meUc1R3dv?=
+ =?utf-8?B?SEFPQkVPdnI1NTYwbWpQcEUyc0F2NHZ2QzZrcUlXY1FlMHVIL0pJbm41RTFo?=
+ =?utf-8?B?aW5XakQySndDK1VmdUFVd3AwanZjUUFGaWxyNTRsei9QNThOTEZhK2RhTWpv?=
+ =?utf-8?Q?uBZpnXUcTzZn+rSRIXZsXRHZ6s6fIFeFamEBOYf?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4514c639-5875-4107-bfd0-08d97db20ef4
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 10:16:35.9386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HW0YbVmdTsaANJAoAZwgIhIgF0LseVaLSA0hlmmR7vUU8Uwemvj3opwOmutQou0QlaA815pk9achUBVIzcuGJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4190
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: nakamura shunsuke <nakamura.shun@fujitsu.com>
+Osstest has been suffering test failures for a little while from order-4
+allocation failures, resulting from alloc_empty_pages() calling
+kcalloc(). As there's no need for physically contiguous space here,
+switch to kvcalloc().
 
-Adds a test for a counter obtained using read() system call during multiplexing
-
-Committer testing:
-
-  $ sudo make tests -C tools/lib/perf/ V=1
-  make: Entering directory '/home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/lib/perf'
-  make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=. obj=libperf
-  make -C /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/lib/api/ O= libapi.a
-  make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=./fd obj=libapi
-  make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=./fs obj=libapi
-  make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=. obj=tests
-  make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=./tests obj=tests
-  running static:
-  - running tests/test-cpumap.c...OK
-  - running tests/test-threadmap.c...OK
-  - running tests/test-evlist.c...
-  	count = 502273264, run = 264105562, enable = 444092845
-  	count = 501850699, run = 264100505, enable = 444088400
-  	count = 499613780, run = 264096660, enable = 444085073
-  	count = 499569398, run = 264501528, enable = 444081268
-  	count = 500717228, run = 265495387, enable = 444077029
-  	count = 501260539, run = 266488226, enable = 444071569
-  	count = 501023910, run = 267469613, enable = 444065303
-  	count = 501188267, run = 268461294, enable = 444058413
-  	count = 503096683, run = 269450511, enable = 444050567
-  	count = 503141904, run = 269587790, enable = 444041735
-  	count = 503454490, run = 268590361, enable = 444030544
-  	count = 504838207, run = 267592624, enable = 444021005
-  	count = 505458594, run = 266594648, enable = 444001280
-  	count = 504269433, run = 265595795, enable = 443991377
-  	count = 502625858, run = 264599374, enable = 443982141
-     Expected: 502065774
-     High: 505458594   Low:  499569398   Average:  502292150
-     Average Error = 0.05%
-  	count = 26129, run = 134550, enable = 134550
-  	count = 34035, run = 140540, enable = 140540
-  	count = 40189, run = 141126, enable = 141126
-  	count = 45263, run = 138290, enable = 138290
-  	count = 51381, run = 136966, enable = 136966
-  	count = 57499, run = 134993, enable = 134993
-  	count = 63617, run = 132320, enable = 132320
-  	count = 71714, run = 132047, enable = 132047
-  	count = 77832, run = 128157, enable = 128157
-  	count = 0, run = 0, enable = 123662
-  	count = 0, run = 0, enable = 116753
-  	count = 0, run = 0, enable = 110304
-  	count = 0, run = 0, enable = 103834
-  	count = 0, run = 0, enable = 97465
-  	count = 0, run = 0, enable = 91110
-  OK
-  - running tests/test-evsel.c...
-  	loop = 65536, count = 334303
-  	loop = 131072, count = 656954
-  	loop = 262144, count = 1321090
-  	loop = 524288, count = 2652616
-  	loop = 1048576, count = 5262140
-  	loop = 65536, count = 393726
-  	loop = 131072, count = 989345
-  	loop = 262144, count = 1986206
-  	loop = 524288, count = 3831652
-  	loop = 1048576, count = 7747957
-  OK
-  running dynamic:
-  - running tests/test-cpumap.c...OK
-  - running tests/test-threadmap.c...OK
-  - running tests/test-evlist.c...
-  	count = 501975838, run = 247092568, enable = 415093723
-  	count = 502491858, run = 247087145, enable = 415088830
-  	count = 502571026, run = 247083574, enable = 415085139
-  	count = 502743767, run = 247080183, enable = 415081197
-  	count = 503259008, run = 247779561, enable = 415076990
-  	count = 503169622, run = 248773141, enable = 415072091
-  	count = 503430373, run = 249816445, enable = 415066529
-  	count = 502597951, run = 250808797, enable = 415059863
-  	count = 502211776, run = 251799199, enable = 415051831
-  	count = 501921896, run = 252000721, enable = 415042717
-  	count = 501441904, run = 251309399, enable = 415031152
-  	count = 501224474, run = 250311107, enable = 415021479
-  	count = 500502827, run = 249260579, enable = 415012168
-  	count = 500775622, run = 248259621, enable = 415002830
-  	count = 501377375, run = 247261134, enable = 414993890
-     Expected: 501953755
-     High: 503430373   Low:  500502827   Average:  502113021
-     Average Error = 0.03%
-  	count = 26098, run = 131826, enable = 131826
-  	count = 33689, run = 138284, enable = 138284
-  	count = 39808, run = 139152, enable = 139152
-  	count = 45927, run = 138880, enable = 138880
-  	count = 51049, run = 135405, enable = 135405
-  	count = 57168, run = 133406, enable = 133406
-  	count = 63287, run = 130736, enable = 130736
-  	count = 71392, run = 130474, enable = 130474
-  	count = 77794, run = 127203, enable = 127203
-  	count = 0, run = 0, enable = 123172
-  	count = 0, run = 0, enable = 116856
-  	count = 0, run = 0, enable = 110557
-  	count = 0, run = 0, enable = 104282
-  	count = 0, run = 0, enable = 97929
-  	count = 0, run = 0, enable = 91792
-  OK
-  - running tests/test-evsel.c...
-  	loop = 65536, count = 334400
-  	loop = 131072, count = 656908
-  	loop = 262144, count = 1315441
-  	loop = 524288, count = 2657481
-  	loop = 1048576, count = 5258193
-  	loop = 65536, count = 491938
-  	loop = 131072, count = 965755
-  	loop = 262144, count = 1666277
-  	loop = 524288, count = 3516123
-  	loop = 1048576, count = 6759204
-  OK
-  make: Leaving directory '/home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/lib/perf'
-
-
-Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 ---
- tools/lib/perf/tests/test-evlist.c | 183 +++++++++++++++++++++++++++++
- 1 file changed, 183 insertions(+)
+RFC: I cannot really test this, as alloc_empty_pages() only gets used in
+     the auto-translated case (i.e. on Arm or PVH Dom0, the latter of
+     which I'm not trusting enough yet to actually start playing with
+     guests).
 
-diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-index c67c83399170..ca7a9542f40e 100644
---- a/tools/lib/perf/tests/test-evlist.c
-+++ b/tools/lib/perf/tests/test-evlist.c
-@@ -21,6 +21,10 @@
- #include "tests.h"
- #include <internal/evsel.h>
+There are quite a few more kcalloc() where it's not immediately clear
+how large the element counts could possibly grow nor whether it would be
+fine to replace them (i.e. physically contiguous space not required).
+
+I wasn't sure whether to Cc stable@ here; the issue certainly has been
+present for quite some time. But it didn't look to cause issues until
+recently.
+
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -420,7 +420,7 @@ static int alloc_empty_pages(struct vm_a
+ 	int rc;
+ 	struct page **pages;
  
-+#define EVENT_NUM 15
-+#define WAIT_COUNT 100000000UL
-+
-+
- static int libperf_print(enum libperf_print_level level,
- 			 const char *fmt, va_list ap)
- {
-@@ -413,6 +417,184 @@ static int test_mmap_cpus(void)
- 	return 0;
+-	pages = kcalloc(numpgs, sizeof(pages[0]), GFP_KERNEL);
++	pages = kvcalloc(numpgs, sizeof(pages[0]), GFP_KERNEL);
+ 	if (pages == NULL)
+ 		return -ENOMEM;
+ 
+@@ -428,7 +428,7 @@ static int alloc_empty_pages(struct vm_a
+ 	if (rc != 0) {
+ 		pr_warn("%s Could not alloc %d pfns rc:%d\n", __func__,
+ 			numpgs, rc);
+-		kfree(pages);
++		kvfree(pages);
+ 		return -ENOMEM;
+ 	}
+ 	BUG_ON(vma->vm_private_data != NULL);
+@@ -912,7 +912,7 @@ static void privcmd_close(struct vm_area
+ 	else
+ 		pr_crit("unable to unmap MFN range: leaking %d pages. rc=%d\n",
+ 			numpgs, rc);
+-	kfree(pages);
++	kvfree(pages);
  }
  
-+static double display_error(long long average,
-+		     long long high,
-+		     long long low,
-+		     long long expected) {
-+
-+	double error;
-+
-+	error = (((double)average - expected) / expected) * 100.0;
-+
-+	__T_VERBOSE("   Expected: %lld\n", expected);
-+	__T_VERBOSE("   High: %lld   Low:  %lld   Average:  %lld\n",
-+			high, low, average);
-+
-+	__T_VERBOSE("   Average Error = %.2f%%\n",error);
-+
-+	return error;
-+
-+}
-+
-+static int test_stat_multiplexing(void)
-+{
-+	struct perf_counts_values expected_counts = { .val = 0 };
-+	struct perf_counts_values multiplexing_counts[EVENT_NUM] = {{ .val = 0 },};
-+	struct perf_thread_map *threads;
-+	struct perf_evlist *evlist;
-+	struct perf_evsel *evsel;
-+	struct perf_event_attr attr = {
-+		.type	     = PERF_TYPE_HARDWARE,
-+		.config	     = PERF_COUNT_HW_INSTRUCTIONS,
-+		.read_format = PERF_FORMAT_TOTAL_TIME_ENABLED |
-+			       PERF_FORMAT_TOTAL_TIME_RUNNING,
-+		.disabled    = 1,
-+	};
-+	int err, i, nonzero=0;
-+	unsigned long count;
-+	long long max = 0, min = 0, avg = 0;
-+	double error = 0.0;
-+
-+
-+	/* read for non-multiplexing event count */
-+	threads = perf_thread_map__new_dummy();
-+	__T("failed to create threads", threads);
-+
-+	perf_thread_map__set_pid(threads, 0, 0);
-+
-+	evsel = perf_evsel__new(&attr);
-+	__T("failed to create evsel", evsel);
-+
-+	err = perf_evsel__open(evsel, NULL, threads);
-+	__T("failed to open evsel", err == 0);
-+
-+	err = perf_evsel__enable(evsel);
-+	__T("failed to enable evsel", err == 0);
-+
-+	/* wait loop */
-+	count = WAIT_COUNT;
-+	while(count--);
-+
-+	perf_evsel__read(evsel, 0, 0, &expected_counts);
-+	__T("failed to read value for evsel", expected_counts.val != 0);
-+	__T("failed to read non-multiplexing event count",
-+	    expected_counts.ena == expected_counts.run);
-+
-+	err = perf_evsel__disable(evsel);
-+	__T("failed to enable evsel", err == 0);
-+
-+	perf_evsel__close(evsel);
-+	perf_evsel__delete(evsel);
-+
-+	perf_thread_map__put(threads);
-+
-+
-+	/* read for multiplexing event count */
-+	threads = perf_thread_map__new_dummy();
-+	__T("failed to create threads", threads);
-+
-+	perf_thread_map__set_pid(threads, 0, 0);
-+
-+	evlist = perf_evlist__new();
-+	__T("failed to create evlist", evlist);
-+
-+	for (i = 0; i < EVENT_NUM; i++) {
-+		evsel = perf_evsel__new(&attr);
-+		__T("failed to create evsel1", evsel);
-+
-+		perf_evlist__add(evlist, evsel);
-+	}
-+	perf_evlist__set_maps(evlist, NULL, threads);
-+
-+	err = perf_evlist__open(evlist);
-+	__T("failed to open evsel", err == 0);
-+
-+	perf_evlist__enable(evlist);
-+
-+	/* wait loop */
-+	count = WAIT_COUNT;
-+	while(count--);
-+
-+	i = 0;
-+	perf_evlist__for_each_evsel(evlist, evsel) {
-+		perf_evsel__read(evsel, 0, 0, &multiplexing_counts[i]);
-+		__T("failed to read value for evsel", multiplexing_counts[i].val != 0);
-+		i++;
-+	}
-+
-+	perf_evlist__disable(evlist);
-+
-+
-+	min = multiplexing_counts[0].val;
-+	for (i = 0; i < EVENT_NUM; i++) {
-+		__T_VERBOSE("\tcount = %lu, run = %lu, enable = %lu\n",
-+			    multiplexing_counts[i].val, multiplexing_counts[i].run,
-+			    multiplexing_counts[i].ena);
-+
-+		if (multiplexing_counts[i].val > max)
-+			max = multiplexing_counts[i].val;
-+
-+		if (multiplexing_counts[i].val < min)
-+			min = multiplexing_counts[i].val;
-+
-+		avg += multiplexing_counts[i].val;
-+
-+		if (multiplexing_counts[i].val != 0)
-+			nonzero++;
-+	}
-+
-+	avg = avg / nonzero;
-+
-+	error = display_error(avg, max, min, expected_counts.val);
-+
-+	__T("Error out of range!", ((error <= 1.0) && (error >= -1.0)));
-+
-+	perf_evlist__close(evlist);
-+	perf_evlist__delete(evlist);
-+
-+	perf_thread_map__put(threads);
-+
-+
-+	/* Verify that no division by zero occurs */
-+	threads = perf_thread_map__new_dummy();
-+	__T("failed to create threads", threads);
-+
-+	perf_thread_map__set_pid(threads, 0, 0);
-+
-+	evlist = perf_evlist__new();
-+	__T("failed to create evlist", evlist);
-+
-+	for (i = 0; i < EVENT_NUM; i++) {
-+		evsel = perf_evsel__new(&attr);
-+		__T("failed to create evsel1", evsel);
-+
-+		perf_evlist__add(evlist, evsel);
-+	}
-+	perf_evlist__set_maps(evlist, NULL, threads);
-+
-+	err = perf_evlist__open(evlist);
-+	__T("failed to open evsel", err == 0);
-+
-+	perf_evlist__enable(evlist);
-+
-+	/* Reproduce run=0 by not executing wait loop. */
-+
-+	i = 0;
-+	perf_evlist__for_each_evsel(evlist, evsel) {
-+		perf_evsel__read(evsel, 0, 0, &multiplexing_counts[i]);
-+		__T_VERBOSE("\tcount = %lu, run = %lu, enable = %lu\n",
-+			    multiplexing_counts[i].val, multiplexing_counts[i].run,
-+			    multiplexing_counts[i].ena);
-+		i++;
-+	}
-+
-+	perf_evlist__close(evlist);
-+	perf_evlist__delete(evlist);
-+
-+	perf_thread_map__put(threads);
-+	return 0;
-+}
-+
- int test_evlist(int argc, char **argv)
- {
- 	__T_START;
-@@ -424,6 +606,7 @@ int test_evlist(int argc, char **argv)
- 	test_stat_thread_enable();
- 	test_mmap_thread();
- 	test_mmap_cpus();
-+	test_stat_multiplexing();
- 
- 	__T_END;
- 	return tests_failed == 0 ? 0 : -1;
--- 
-2.27.0
+ static vm_fault_t privcmd_fault(struct vm_fault *vmf)
 
