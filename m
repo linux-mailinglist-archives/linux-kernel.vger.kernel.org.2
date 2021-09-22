@@ -2,136 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4974150CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56AB4150D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237256AbhIVT6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
+        id S237305AbhIVUAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhIVT6L (ORCPT
+        with ESMTP id S230384AbhIVUAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:58:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0016EC061574;
-        Wed, 22 Sep 2021 12:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=UFM1KH+zbmE6JPHyyEk8OWK9O00VbDZsAf/P5r/PwVA=; b=sjUW1wCfS/qcUgj52Pj6I8ML4e
-        nti+AqFV5uc4gcg3ZIS4UomxPfwQLkYv6gUZJPsprODAOa9sj/DfTZeZjGuhUx4t9sms/ZlLGNJ/U
-        hf/SIOlOYcbUbZnco1mlRwaYp1ZOrEK5NmzkmLbjCVv1h0tyOkYal1v62Kiq0EqYofRyy7ASSxEw2
-        GcOvnOyN1vtscgV9r0xs0bVOU5mbl7Ciu1cK0/Jhi/Bu9k2F6YVVbeExrJifv0piQDzM8YOa4Cdx8
-        uDW+cz7MB4O0dcAVmzfmX9+bTjNq95nlnrG6ilIOfy6MZ2/Dnl4ANCe3aXZBw09fNXfkOaxNFq1DJ
-        RMx+KGJw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mT8Jn-0055RS-4s; Wed, 22 Sep 2021 19:54:31 +0000
-Date:   Wed, 22 Sep 2021 20:54:11 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chris Mason <clm@fb.com>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
-Message-ID: <YUuJ4xHxG9dQadda@casper.infradead.org>
-References: <YTu9HIu+wWWvZLxp@moria.home.lan>
- <YUfvK3h8w+MmirDF@casper.infradead.org>
- <YUo20TzAlqz8Tceg@cmpxchg.org>
- <YUpC3oV4II+u+lzQ@casper.infradead.org>
- <YUpKbWDYqRB6eBV+@moria.home.lan>
- <YUpNLtlbNwdjTko0@moria.home.lan>
- <YUtHCle/giwHvLN1@cmpxchg.org>
- <YUtPvGm2RztJdSf1@moria.home.lan>
- <YUtZL0e2eBIQpLPE@casper.infradead.org>
- <A8B68BA5-E90E-4AFF-A14A-211BBC4CDECE@fb.com>
+        Wed, 22 Sep 2021 16:00:35 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0B1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:59:04 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id m3so16733995lfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ziLNWDmgY7i1aKqFdBIMncFTg/bHC2p5KHHrB8++sNw=;
+        b=uc1a3h+S08yrVTTQnX9QrTLkwpec4GkzsCCF3RoRlb1kPcqg/2DG3+9JSuKn5iwMMZ
+         2FGfh3vc8FlPV193jG2MYMRDPeqBSy1p7Ron+G9OIwpl5Ovffbf3XnNeQ5eqfi6Ga5o3
+         YYlAdDK2QGYVelmuY56wOBJUbqjwLS0nRqC8XDhPUE8xyIg3hbW/R9gGUG98hXxq8HSf
+         jTQ3PBdNsDyvOZBuGGvUAMEC74EB+xJfOvrMZ23nhDk35JgUl7ucLsgqSLuTjnsyi9+z
+         r0M8c/6Ek5JDutWTyodZ9kydkatwV471inGpM8pT9qHxbIIsLEL3afWvDn0mb8cCRMp6
+         31rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ziLNWDmgY7i1aKqFdBIMncFTg/bHC2p5KHHrB8++sNw=;
+        b=lT48RD/ddL97rO0s+Zh3HixWHhIbezxECQW4hTQGrncpmV3q1w5FcFafKukeKnJ3WB
+         XFR2f27hycK0cjBf6FsmFvU2DriOF4OcauVyrv30C8CO0bCcl7cF2876uGLSKTZmpecL
+         0DPw2EAzTmQjgXdVo6QuG49hrcJuyZNsGfh193W6eLzrmYn3R1ou+g4WJmeP2kbA+vl9
+         j8yGin5ZpxCx8j0Ei4g6Vnx+lrUZPVVvCzukf3gGTT+min+Vt6jmgpOXHix6+JHpXe4u
+         JZVXqjYUsJyawyUBZ705t7j9j0449+jD4yU6WafgBUW8cCYBuTtaQDn3slCQhaQf7yQY
+         MaVQ==
+X-Gm-Message-State: AOAM533PfYO8ybDja3LMfit6WfNo3F+LDS+bmsslqYUW1B0awTpaUccU
+        //gMzbeVtYqYnPIQwCD2M4MAww==
+X-Google-Smtp-Source: ABdhPJy/l6FsVdwCxDPzrA1DwZy6AUNKyhFmLIUUHv20VBPkNgMWLTcdJBeGiSs3BAjKHYtOYp+CiA==
+X-Received: by 2002:a2e:5306:: with SMTP id h6mr1134306ljb.271.1632340743243;
+        Wed, 22 Sep 2021 12:59:03 -0700 (PDT)
+Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
+        by smtp.gmail.com with ESMTPSA id j18sm251514lfg.65.2021.09.22.12.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 12:59:02 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 1/3 v2] clocksource/drivers/fttmr010: Be stricter on IRQs
+Date:   Wed, 22 Sep 2021 21:56:54 +0200
+Message-Id: <20210922195656.1822268-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <A8B68BA5-E90E-4AFF-A14A-211BBC4CDECE@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 04:56:16PM +0000, Chris Mason wrote:
-> 
-> > On Sep 22, 2021, at 12:26 PM, Matthew Wilcox <willy@infradead.org> wrote:
-> > 
-> > On Wed, Sep 22, 2021 at 11:46:04AM -0400, Kent Overstreet wrote:
-> >> On Wed, Sep 22, 2021 at 11:08:58AM -0400, Johannes Weiner wrote:
-> >>> On Tue, Sep 21, 2021 at 05:22:54PM -0400, Kent Overstreet wrote:
-> >>>> - it's become apparent that there haven't been any real objections to the code
-> >>>>   that was queued up for 5.15. There _are_ very real discussions and points of
-> >>>>   contention still to be decided and resolved for the work beyond file backed
-> >>>>   pages, but those discussions were what derailed the more modest, and more
-> >>>>   badly needed, work that affects everyone in filesystem land
-> >>> 
-> >>> Unfortunately, I think this is a result of me wanting to discuss a way
-> >>> forward rather than a way back.
-> >>> 
-> >>> To clarify: I do very much object to the code as currently queued up,
-> >>> and not just to a vague future direction.
-> >>> 
-> >>> The patches add and convert a lot of complicated code to provision for
-> >>> a future we do not agree on. The indirections it adds, and the hybrid
-> >>> state it leaves the tree in, make it directly more difficult to work
-> >>> with and understand the MM code base. Stuff that isn't needed for
-> >>> exposing folios to the filesystems.
-> >>> 
-> >>> As Willy has repeatedly expressed a take-it-or-leave-it attitude in
-> >>> response to my feedback, I'm not excited about merging this now and
-> >>> potentially leaving quite a bit of cleanup work to others if the
-> >>> downstream discussion don't go to his liking.
-> > 
-> > We're at a take-it-or-leave-it point for this pull request.  The time
-> > for discussion was *MONTHS* ago.
-> > 
-> 
-> I’ll admit I’m not impartial, but my fundamental goal is moving the patches forward.  Given folios will need long term maintenance, engagement, and iteration throughout mm/, take-it-or-leave-it pulls seem like a recipe for future conflict, and more importantly, bugs.
-> 
-> I’d much rather work it out now.
+Make sure we check that the right interrupt occurred before
+calling the event handler for timer 1. Report spurious IRQs
+as IRQ_NONE.
 
-That's the nature of a pull request.  It's binary -- either it's pulled or
-it's rejected.  Well, except that Linus has opted for silence, leaving
-me in limbo.  I have no idea what he's thinking.  I don't know if he
-agrees with Johannes.  I don't know what needs to change for Linus to
-like this series enough to pull it (either now or in the 5.16 merge
-window).  And that makes me frustrated.  This is over a year of work
-from me and others, and it's being held up over concerns which seem to
-me to be entirely insubstantial (the name "folio"?  really?  and even
-my change to use "pageset" was met with silence from Linus.)
+Cc: Cédric Le Goater <clg@kaod.org>
+Cc: Joel Stanley <joel@jms.id.au>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ChangeLog v1->v2:
+- Do not try to detect spurious IRQs on the Aspeed
+  2400 and 2500 that miss the IRQ status register.
+---
+ drivers/clocksource/timer-fttmr010.c | 42 ++++++++++++++++++++++------
+ 1 file changed, 34 insertions(+), 8 deletions(-)
 
-I agree with Kent & Johannes that struct page is a mess.  I agree that
-cleaning it up will bring many benefits.  I've even started a design
-document here:
+diff --git a/drivers/clocksource/timer-fttmr010.c b/drivers/clocksource/timer-fttmr010.c
+index 126fb1f259b2..f47099dda96b 100644
+--- a/drivers/clocksource/timer-fttmr010.c
++++ b/drivers/clocksource/timer-fttmr010.c
+@@ -253,20 +253,46 @@ static int fttmr010_timer_set_periodic(struct clock_event_device *evt)
+  */
+ static irqreturn_t fttmr010_timer_interrupt(int irq, void *dev_id)
+ {
+-	struct clock_event_device *evt = dev_id;
++	struct fttmr010 *fttmr010 = dev_id;
++	struct clock_event_device *evt = &fttmr010->clkevt;
++	u32 val;
++
++	if (fttmr010->is_aspeed) {
++		/*
++		 * Aspeed versions do not implement the interrupt
++		 * status register and cannot detect spurious
++		 * interrupts.
++		 */
++		evt->event_handler(evt);
++		return IRQ_HANDLED;
++	}
++
++	val = readl(fttmr010->base + TIMER_INTR_STATE);
++	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW))
++		evt->event_handler(evt);
++	else
++		/* Spurious IRQ */
++		return IRQ_NONE;
+ 
+-	evt->event_handler(evt);
+ 	return IRQ_HANDLED;
+ }
+ 
+ static irqreturn_t ast2600_timer_interrupt(int irq, void *dev_id)
+ {
+-	struct clock_event_device *evt = dev_id;
+-	struct fttmr010 *fttmr010 = to_fttmr010(evt);
++	struct fttmr010 *fttmr010 = dev_id;
++	struct clock_event_device *evt = &fttmr010->clkevt;
++	u32 val;
+ 
+-	writel(0x1, fttmr010->base + TIMER_INTR_STATE);
++	val = readl(fttmr010->base + TIMER_INTR_STATE);
++	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW)) {
++		writel(TIMER_1_INT_MATCH1, fttmr010->base + TIMER_INTR_STATE);
++		evt->event_handler(evt);
++	} else {
++		/* Just clear any spurious IRQs from the block */
++		writel(val, fttmr010->base + TIMER_INTR_STATE);
++		return IRQ_NONE;
++	}
+ 
+-	evt->event_handler(evt);
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -384,12 +410,12 @@ static int __init fttmr010_common_init(struct device_node *np,
+ 		fttmr010->timer_shutdown = ast2600_timer_shutdown;
+ 		ret = request_irq(irq, ast2600_timer_interrupt,
+ 				  IRQF_TIMER, "FTTMR010-TIMER1",
+-				  &fttmr010->clkevt);
++				  fttmr010);
+ 	} else {
+ 		fttmr010->timer_shutdown = fttmr010_timer_shutdown;
+ 		ret = request_irq(irq, fttmr010_timer_interrupt,
+ 				  IRQF_TIMER, "FTTMR010-TIMER1",
+-				  &fttmr010->clkevt);
++				  fttmr010);
+ 	}
+ 	if (ret) {
+ 		pr_err("FTTMR010-TIMER1 no IRQ\n");
+-- 
+2.31.1
 
-https://kernelnewbies.org/MemoryTypes
-
-I do see some advantages to splitting out anon memory descriptors from
-file memory descriptors, but there is also plenty of code which handles
-both types in the same way.  I see the requests to continue to use
-struct page to mean a "memory descriptor which is either anon or file",
-but I really think that's the wrong approach.  A struct page should
-represent /a page/ of memory.  Otherwise we're just confusing people.
-I know it's a confusion we've had since compound pages were introduced,
-what, 25+ years ago, but that expediency has overstayed its welcome.
-
-The continued silence from Linus is really driving me to despair.
-I'm sorry I've been so curt with some of the requests.  I really am
-willing to change things; I wasn't planning on doing anything with slab
-until Kent prodded me to do it.  But equally, I strongly believe that
-everything I've done here is a step towards the things that everybody
-wants, and I'm frustrated that it's being perceived as a step away,
-or even to the side of what people want.
-
-So ... if any of you have Linus' ear.  Maybe you're at a conference with
-him later this week.  Please, just get him to tell me what I need to do
-to make him happy with this patchset.
