@@ -2,54 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E05414AD5
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB0A414AD6
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhIVNmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:42:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55694 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbhIVNl4 (ORCPT
+        id S233622AbhIVNmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232888AbhIVNl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:41:56 -0400
-Date:   Wed, 22 Sep 2021 13:40:25 -0000
+        Wed, 22 Sep 2021 09:41:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36119C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:40:28 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 13:40:26 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632318025;
+        s=2020; t=1632318026;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VeG8v0aB2w6gNVlHQ7u5LdBJq48dIQ1rC9p+LIKcZew=;
-        b=i/U5359ReGGksTFmXPJUAZq7PodYvnOaEfJM4obZyn+UvgfQmWDV2aN3YZK4tFfPHRusdX
-        ikRSVugg6v1MvSV8YjYTKackD3eGiyP/ji3HehbGGzmhbY6jj5UoixKu6BwnSu7QfYzeDV
-        rHmaxffJ2y6/FF46+B0uIX1bgctsKBzVRgcTvDQRL6OMw/4H9KJckxf83qg9N5xSXCPK0f
-        4QC3KeIo7epHBNuJE5f5xrF0O3qDxRNpoG89SCMuGwHoafS4KBTn/fchRq8AAXGTc/LTKH
-        Znb2f8emQtUG9zUxxqxGI6boVL8bIw1CsSmsQF/XGIfdGQfUnqiAzAzFHqWDhQ==
+        bh=DvhYE46fjIpuCdGM0OSZX9SZqbTgjtKrolFYW0Az54E=;
+        b=H7pY7BxzkIGXRy005QSppZafHRCadxw71zD9Z0xqj66r1rry2Nue9hLO0WoBCOKpzMafZV
+        xMPhLsy5qxOqy3dIomGGHphFWZYsx0H1gj7AqYABdmx4z/i1bHmgowJGYT70olYzwLKTfd
+        dPmWTaEqDV+CkuoQbkMByi8uJ9L1iUbgkjr7TD4KWzTQpkcJehez1oyhieW84TbCWIWWBf
+        W6boZAIskPX5mZryaQnoC3c0TEmUwNCuPzdgLaqqo1tQOuZelg/zAt1aj1V3J3+s/Vcvrl
+        3ID+9Xztxp1VzN4XzYtK9jfvI5Zm6NW5CuzC70Oi0Is4l8GZAOgjanYG8y2W0A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632318025;
+        s=2020e; t=1632318026;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VeG8v0aB2w6gNVlHQ7u5LdBJq48dIQ1rC9p+LIKcZew=;
-        b=aYPzkZxYZZ43Lnh9lR+wdt5jeA1cKnMPRQcIRhYPsUMkEsewtP9ZP5Gx7WSXOSQqw+xudy
-        ISLrQNLFs2pmFyCQ==
-From:   "irqchip-bot for Kaige Fu" <tip-bot2@linutronix.de>
+        bh=DvhYE46fjIpuCdGM0OSZX9SZqbTgjtKrolFYW0Az54E=;
+        b=SVoLuO+Z+N0/brdZ1vhZ33fwZECeLOOMYkJe+f2hTvV/QEBG/192Gxp3kxd74Ox9GQFv7a
+        z7oMRvs6cqLlXuBg==
+From:   "irqchip-bot for Randy Dunlap" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] irqchip/gic-v3-its: Fix potential VPE
- leak on error
-Cc:     Kaige Fu <kaige.fu@linux.alibaba.com>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: =?utf-8?q?=3Cd9e36dee512e63670287ed9eff884a5d8d6d27f2=2E16316?=
- =?utf-8?q?72311=2Egit=2Ekaige=2Efu=40linux=2Ealibaba=2Ecom=3E?=
-References: =?utf-8?q?=3Cd9e36dee512e63670287ed9eff884a5d8d6d27f2=2E163167?=
- =?utf-8?q?2311=2Egit=2Ekaige=2Efu=40linux=2Ealibaba=2Ecom=3E?=
+Subject: [irqchip: irq/irqchip-fixes] irqchip/goldfish-pic: Select
+ GENERIC_IRQ_CHIP to fix build
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Miodrag Dinic <miodrag.dinic@mips.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Goran Ferenc <goran.ferenc@mips.com>,
+        Aleksandar Markovic <aleksandar.markovic@mips.com>
+In-Reply-To: <20210905162519.21507-1-rdunlap@infradead.org>
+References: <20210905162519.21507-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Message-ID: <163231802507.25758.1269690690068126910.tip-bot2@tip-bot2>
+Message-ID: <163231802604.25758.1149955481801818672.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,40 +68,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Commit-ID:     280bef512933b2dda01d681d8cbe499b98fc5bdd
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/280bef512933b2dda01d681d8cbe499b98fc5bdd
-Author:        Kaige Fu <kaige.fu@linux.alibaba.com>
-AuthorDate:    Wed, 15 Sep 2021 10:20:55 +08:00
+Commit-ID:     969ac78db78c723a24e9410666b457cc1b0cb3c3
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/969ac78db78c723a24e9410666b457cc1b0cb3c3
+Author:        Randy Dunlap <rdunlap@infradead.org>
+AuthorDate:    Sun, 05 Sep 2021 09:25:19 -07:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Wed, 22 Sep 2021 14:37:04 +01:00
+CommitterDate: Wed, 22 Sep 2021 14:33:09 +01:00
 
-irqchip/gic-v3-its: Fix potential VPE leak on error
+irqchip/goldfish-pic: Select GENERIC_IRQ_CHIP to fix build
 
-In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error,
-there is an off-by-one in the number of VPEs to be freed.
+irq-goldfish-pic uses GENERIC_IRQ_CHIP interfaces so select that symbol
+to fix build errors.
 
-Fix it by simply passing the number of VPEs allocated, which is the
-index of the loop iterating over the VPEs.
+Fixes these build errors:
 
-Fixes: 7d75bbb4bc1a ("irqchip/gic-v3-its: Add VPE irq domain allocation/teardown")
-Signed-off-by: Kaige Fu <kaige.fu@linux.alibaba.com>
-[maz: fixed commit message]
+mips-linux-ld: drivers/irqchip/irq-goldfish-pic.o: in function `goldfish_pic_of_init':
+irq-goldfish-pic.c:(.init.text+0xc0): undefined reference to `irq_alloc_generic_chip'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0xf4): undefined reference to `irq_gc_unmask_enable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0xf8): undefined reference to `irq_gc_unmask_enable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x100): undefined reference to `irq_gc_mask_disable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x104): undefined reference to `irq_gc_mask_disable_reg'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x11c): undefined reference to `irq_setup_generic_chip'
+mips-linux-ld: irq-goldfish-pic.c:(.init.text+0x168): undefined reference to `irq_remove_generic_chip'
+
+Fixes: 4235ff50cf98 ("irqchip/irq-goldfish-pic: Add Goldfish PIC driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Miodrag Dinic <miodrag.dinic@mips.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Goran Ferenc <goran.ferenc@mips.com>
+Cc: Aleksandar Markovic <aleksandar.markovic@mips.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/d9e36dee512e63670287ed9eff884a5d8d6d27f2.1631672311.git.kaige.fu@linux.alibaba.com
+Link: https://lore.kernel.org/r/20210905162519.21507-1-rdunlap@infradead.org
 ---
- drivers/irqchip/irq-gic-v3-its.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 7f40dca..eb0882d 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -4501,7 +4501,7 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
- 
- 	if (err) {
- 		if (i > 0)
--			its_vpe_irq_domain_free(domain, virq, i - 1);
-+			its_vpe_irq_domain_free(domain, virq, i);
- 
- 		its_lpi_free(bitmap, base, nr_ids);
- 		its_free_prop_table(vprop_page);
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 4d5924e..aca7b59 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -409,6 +409,7 @@ config MESON_IRQ_GPIO
+ config GOLDFISH_PIC
+        bool "Goldfish programmable interrupt controller"
+        depends on MIPS && (GOLDFISH || COMPILE_TEST)
++       select GENERIC_IRQ_CHIP
+        select IRQ_DOMAIN
+        help
+          Say yes here to enable Goldfish interrupt controller driver used
