@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB22A414D56
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82A6414D4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbhIVPtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhIVPtv (ORCPT
+        id S236348AbhIVPq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:46:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51173 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232318AbhIVPq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:49:51 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E84C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:48:21 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id e15so13405837lfr.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0H3WnzLNl9XVNcbQNQJGtiq6AbRFnhMOnYeTPU48Lvg=;
-        b=E0hhli6FQnH2K1o7onz6hfgzh/90j1O7mvySwCF4Awrfm4Aap5h+DKLp61yUFZJFFt
-         OBKpB/sRASOmyILOilFb/A9q3zxOnsBHfRT/FapLV0Yjn2NJKtO0oa2BKP3IZuo+BuNX
-         YR6TBdh1uYKJnYNl3YjlZfdSXXzy0uybfFazI=
+        Wed, 22 Sep 2021 11:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632325525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s47uJvMz2TQnGUC16+QzZF+8Fos67Scg5vuqp2IND9Y=;
+        b=eLCLCrbhf8tgSxJuy8xdkXanOTTqkAqG7oaBi2v47h1G5HQ4WtUjPRlrTC0YUPFjJ/0gsQ
+        GnvtTFtUyrESNAow/4lUE8aWw8kBUvN6E1yqdMkgpU8Ovex6dq/vhzDll9C37p48Xcr2hH
+        lgF1HmkZakpcMa1bAP5g6lywAvO+JPI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-8r7DPuMmMJuXG1R3VY4-FA-1; Wed, 22 Sep 2021 11:45:24 -0400
+X-MC-Unique: 8r7DPuMmMJuXG1R3VY4-FA-1
+Received: by mail-ed1-f72.google.com with SMTP id o18-20020a056402439200b003d2b11eb0a9so3467947edc.23
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:45:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0H3WnzLNl9XVNcbQNQJGtiq6AbRFnhMOnYeTPU48Lvg=;
-        b=eWY26GjWNeTR247nSoWXpSmQLMawmUcltDb4dQSFdoXJwSgH32Cnu8EZpTzmv46esG
-         IwTT3Sdpo9sxL6UPSs1KxBEBNz8mqdUcmtgYVOiI3ecn5Ah3KaBLgX60fXaVcFH5PECn
-         RII2mp5tvjtooU1rnjS0ymqSoAt+4KW891XXb1z2s1AJg0i4RoQcetmwVdj1HiFubMTx
-         897pE+jNnkbJR+QSorzKoTILPrvZyhoXI5tTLv7RNbwh3i+Z4cbAk8ij9E3Y1NimcY4E
-         AaALiW5Rqf3CUWctfy8agMJSm6a3UqPS6F0R0JU58BhH4qo95yrceZ0z5B7OLkg6imgn
-         Gh4g==
-X-Gm-Message-State: AOAM532L+StB3f95rrCAfCKwHbzclQn/gFbGKEiTdJxPld8WJ/gBz1yt
-        nElLz9Bw+ik7a5rVrUAHloy9w7P/WVIV/3JjMV8=
-X-Google-Smtp-Source: ABdhPJxSOq+Zsgypf3uSTlnM47+BMTRjkLkLnyjxA6al51xzyDA+Nl/+eEqyck0hS3ikRZttkHjiXQ==
-X-Received: by 2002:a2e:9ed3:: with SMTP id h19mr285444ljk.354.1632325624010;
-        Wed, 22 Sep 2021 08:47:04 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id y13sm207062lfs.17.2021.09.22.08.47.03
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s47uJvMz2TQnGUC16+QzZF+8Fos67Scg5vuqp2IND9Y=;
+        b=aUBdRGZf5nqaG46hjDoKbEu7TGOqY5Xmnrqamu6A2YHMoP9KJS8xuqRagPA+XKIqOo
+         4zyHUStDL0ND8/r5uP2ght4srT41r7adh+iiGYgdDspqSehOKU7XSIvv0JmgsOH9azJj
+         h0FF6DdxyL/qLQCo/pdcZyY8EyL6oRMuYXBzdzKOlos2YxmXhV+cdTW8Ncz1+dNumzR+
+         dOSYh0wgdr2DukYu/OkyudFmbm+nXrSp/nkk3SOWYrWArLkvdRoj06rGY0BmtEoO+YCq
+         trIpBJc4LljEI/oF1JPdC0GFH6qteCIg5nH1MEGcvKBnrvX8H/MPG1s3g6uFbQPPj0ce
+         IQyg==
+X-Gm-Message-State: AOAM530FahjddbXklP88giDyZAqzpx3x6oNoukGZtT6JG/odE3tvjH+a
+        RNfzrG9zLVm5rZQiAeRRUVDfWyWqIgr59sxLuAJolgjcwFri0CN9qCgXFhFEf2qP7vnGit4PcMm
+        u8qM1Dz7YUF73zs8t063y3P2T
+X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr335074edu.144.1632325523535;
+        Wed, 22 Sep 2021 08:45:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9E7YPbKPpg2K5k5md15deOC/+gq8likqMYfogKDvxQnXwcsGrCD3ObAK82K9RPmuuvaCDIQ==
+X-Received: by 2002:a05:6402:1011:: with SMTP id c17mr335057edu.144.1632325523328;
+        Wed, 22 Sep 2021 08:45:23 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id c17sm1407211edu.11.2021.09.22.08.45.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 08:47:03 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id i25so13723724lfg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:47:03 -0700 (PDT)
-X-Received: by 2002:a2e:4e01:: with SMTP id c1mr239859ljb.31.1632325533336;
- Wed, 22 Sep 2021 08:45:33 -0700 (PDT)
+        Wed, 22 Sep 2021 08:45:22 -0700 (PDT)
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20210913140954.165665-1-mlevitsk@redhat.com>
+ <22916f0c-2e3a-1fd6-905e-5d647c15c45b@redhat.com>
+ <YUtBqsiur6uFWh3o@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 0/7] KVM: few more SMM fixes
+Message-ID: <427038b4-a856-826c-e9f4-01678d33ab83@redhat.com>
+Date:   Wed, 22 Sep 2021 17:45:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210922063558.26417-1-jslaby@suse.cz>
-In-Reply-To: <20210922063558.26417-1-jslaby@suse.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Sep 2021 08:45:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wha23+dMWi=D6NENtTJw20rQEpuXBx2sV2EV2j=08o1SQ@mail.gmail.com>
-Message-ID: <CAHk-=wha23+dMWi=D6NENtTJw20rQEpuXBx2sV2EV2j=08o1SQ@mail.gmail.com>
-Subject: Re: [PATCH v2] MAINTAINERS: ARM/VT8500, remove defunct e-mail
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUtBqsiur6uFWh3o@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 11:36 PM Jiri Slaby <jslaby@suse.cz> wrote:
->
-> Remove it from MAINTAINERS and make thus the ARM/VT8500 entry an orphan.
+On 22/09/21 16:46, Sean Christopherson wrote:
+> On Wed, Sep 22, 2021, Paolo Bonzini wrote:
+>> On 13/09/21 16:09, Maxim Levitsky wrote:
+>>>     KVM: x86: nVMX: re-evaluate emulation_required on nested VM exit
+> 
+> ...
+>   
+>> Queued, thanks.  However, I'm keeping patch 1 for 5.16 only.
+> 
+> I'm pretty sure the above patch is wrong, emulation_required can simply be
+> cleared on emulated VM-Exit.
 
-Looks fine. Some git history checking shows that while Tony has been
-cc'd since, the last actual activity seems to have been in 2014.
+Are you sure?  I think you can at least set the host segment fields to a 
+data segment that requires emulation.  For example the DPL of the host 
+DS is hardcoded to zero, but the RPL comes from the selector field and 
+the DS selector is not validated.  Therefore a subsequent vmentry could 
+fail the access rights tests of 26.3.1.2 Checks on Guest Segment Registers:
 
-Russell, I'll just take this directly and you can ignore it.
+DS, ES, FS, GS. The DPL cannot be less than the RPL in the selector 
+field if (1) the “unrestricted guest” VM-execution control is 0; (2) the 
+register is usable; and (3) the Type in the access-rights field is in 
+the range 0 – 11 (data segment or non-conforming code segment).
 
-            Linus
+Paolo
+
