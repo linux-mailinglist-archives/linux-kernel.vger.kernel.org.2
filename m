@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08701414A6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C9A414A71
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhIVNWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhIVNWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:22:45 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC84C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:21:14 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i25so11892359lfg.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=6arDu0bHKhe+YT1UraMY0MBKwysBZPAsrewYON3ecAQ=;
-        b=WjzdbaM+CXMA0teP/YGVvk89FeUFWuAbqAV8nRAin4e3Eb9ONN01Is26Gx6n8Q/s6c
-         ZFv0k9lALvY0u9SkBX60mP74hQl2jN4Gu1dMP7fWXHJnvW1FHLCpDi2wxqUjL2PlP44t
-         liF+YxmV9KANbC4Jgrw6SFr5pSrbgmyBBXTeiZdtEYAU87qQaFy6jAj1Du6r1i5eP1jA
-         qN2JVkpXCQvXNHP9JYgOkJg1XWXL5MR6bhXozG/DoisVT3fdyvgdhjPycq05WvwFp4Tc
-         pKP0XZORlFxN0NCB6RPmhze0lekX+5EHMHzhCf+873B83J3GD5e66vEyKWYhAlgMFLTI
-         B+Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=6arDu0bHKhe+YT1UraMY0MBKwysBZPAsrewYON3ecAQ=;
-        b=g1dEQt66frRR/Goc/urfmWs8bH9bA5O5DK2MfWpS752S0U6yozrwy/WYUPr8aEYLT6
-         zrE+0rEpNdKWhgs+ljRJo1R4T0pr8vHon4CCWgR3Gu8PVUj2uhXymBip2hHOezYzC1cb
-         3FVOFxI0O4WTSob13AENqFEOJuMJ2Wtm83zM30k4VWCxkPR3da6c6vQKsK2cxhvDWdoi
-         hUbwHiwBOdx79emqWn1fgJ4Q8djCcKvq93Gafwe3XyNBkGPrT0ejeAXlu6Az1ymxIK0U
-         yx8JoyywoybhdrwTLsbPFjti4Of8UhprK/DpAcXJNsbiHg3TG6bw1X0V+zp2YZXJjI9i
-         sn/A==
-X-Gm-Message-State: AOAM531yPG0ZZhl126omIccSHMyTI1hKKcLe2RXmaDxc/aQgsB6UFhz1
-        IGO4Z7Y45AKmFv0qcb3NdA8=
-X-Google-Smtp-Source: ABdhPJzKMoiib1IP7uFrzIzqrHdxIHI16pju0WUINfy/rVOkyx6qheK25/MW/1hVXwMMv27iUGuXvA==
-X-Received: by 2002:ac2:5322:: with SMTP id f2mr15956976lfh.531.1632316867286;
-        Wed, 22 Sep 2021 06:21:07 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.49])
-        by smtp.gmail.com with ESMTPSA id y9sm191715lfl.240.2021.09.22.06.21.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 06:21:06 -0700 (PDT)
-Message-ID: <dd99d40d-297e-8d27-dabe-d0e4c633d391@gmail.com>
-Date:   Wed, 22 Sep 2021 16:21:04 +0300
+        id S232106AbhIVNX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:23:59 -0400
+Received: from mga12.intel.com ([192.55.52.136]:64818 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230413AbhIVNXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 09:23:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="203083836"
+X-IronPort-AV: E=Sophos;i="5.85,314,1624345200"; 
+   d="scan'208";a="203083836"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 06:22:23 -0700
+X-IronPort-AV: E=Sophos;i="5.85,314,1624345200"; 
+   d="scan'208";a="435432088"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 06:22:19 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mT2CW-004Bgc-2C;
+        Wed, 22 Sep 2021 16:22:16 +0300
+Date:   Wed, 22 Sep 2021 16:22:16 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
+Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Brian Norris <briannorris@chromium.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mwifiex: Use non-posted PCI write when setting TX
+ ring write pointer
+Message-ID: <YUsuCPSYsRhlCxwD@smile.fi.intel.com>
+References: <20210914114813.15404-1-verdre@v0yd.nl>
+ <20210914114813.15404-2-verdre@v0yd.nl>
+ <YUsQ3jU1RuThUYn8@smile.fi.intel.com>
+ <9293504f-f70d-61ac-b221-dd466f01b5df@v0yd.nl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH v9 16/16] staging: r8188eu: remove usb_vendor_req_mutex
-Content-Language: en-US
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <david.Laight@aculab.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Martin Kaiser <martin@kaiser.cx>
-References: <20210921181834.29677-1-fmdefrancesco@gmail.com>
- <20210921181834.29677-17-fmdefrancesco@gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20210921181834.29677-17-fmdefrancesco@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9293504f-f70d-61ac-b221-dd466f01b5df@v0yd.nl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/21/21 21:18, Fabio M. De Francesco wrote:
-> From: Pavel Skripkin <paskripkin@gmail.com>
+On Wed, Sep 22, 2021 at 02:08:39PM +0200, Jonas Dreßler wrote:
+> On 9/22/21 1:17 PM, Andy Shevchenko wrote:
+> > On Tue, Sep 14, 2021 at 01:48:12PM +0200, Jonas Dreßler wrote:
+
+...
+
+> > Should it have a Fixes tag?
+> > 
 > 
-> This mutex was used to protect shared buffer for USB requests. Since
-> buffer was removed in previous patch we can remove this mutex as well.
-> 
-> Furthermore, because it was used to serialize the calls to the Core USB
-> API, we thoroughly tested the enabling of concurrent firing of USB requests
-> without the mutex and found no problems of any kind in common use cases.
-> 
-> Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> Don't think so, there's the infamous
+> (https://bugzilla.kernel.org/show_bug.cgi?id=109681) Bugzilla bug it fixes
+> though, I'll mention that in v3.
 
-Hi, Greg!
+Good idea, use BugLink tag for that!
 
-If all is OK with previous 15 patches, please, do not take this one, it 
-  causes problems with connection... :)
+...
 
-I don't understand what went wrong after v8, but anyway, this one should 
-not be applied for now, since it's broken
+> Interesting, I haven't noticed that mwifiex_write_reg() always returns 0. So
+> are you suggesting to remove that return value and get rid of all the "if
+> (mwifiex_write_reg()) {}" checks in a separate commit?
+
+Something like this, yes.
+
+> As for why the dummy read/write functions exist, I have no idea. Looking at
+> git history it seems they were always there (only change is that
+> mwifiex_read_reg() started to handle read errors with commit
+> af05148392f50490c662dccee6c502d9fcba33e2). My bet would be that they were
+> created to be consistent with sdio.c which is the oldest supported bus type
+> in mwifiex.
+
+It has a check against all ones. Also your another patch mentioned wake up.
+Perhaps the purpose is to wake up and return if device was/is in power off mode
+(D3hot).
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Thank you
-
-
-
-With regards,
-Pavel Skripkin
