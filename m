@@ -2,288 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA09415087
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561DE41508B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237186AbhIVTiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:38:09 -0400
-Received: from mail-co1nam11on2059.outbound.protection.outlook.com ([40.107.220.59]:30945
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229918AbhIVTiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:38:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OnxGCP3216TpappxpIVAChEP2KmDpROQwrCpwGLGJrrvjaBPJ6S4HSDtIH6wzk+ic2+nl4IxESgJfb9j4EKuFwQlGum1Ok8jafKJaTOOKaOuGpcVp+G5VrVLlGidp0Pr31yIYFjyEDZaVQfVFiMuhGpTVgC5ZPt4R7SQqgcj3VWuoDm5Bo7bkCDVYQEWa3WG0EbV9iFwXPRxgTxjiyHgcPJTaFtpAf5IsTGtsTFdXXaPNFDrc42QUUT7m3ZTasy3DzxK7actamBJCr/VOyD3lc5G6qOmAo0kiLF+L7QXy/jKJgDBeqcvLv4GZ/t8IehiaMWzGV0ubxsBPIIBpUE2Pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/Jdu3yWAbR5sktOSy6S+NvWEzKufuEyKN8Nibxm6yF0=;
- b=DahGC/pZpdUPR5B1VEDLhL/Wmex0ujpVUekoABmeJwI81jXTUMbobw5w17Ze+hCbeFtDjls8aBLF5xhc/LG7gqoepRfhLH5BnvdvkVXZrmoJ4qnat3WOGWDmDoF12+dGUHmBc3SFzs8yM3sC9d8DrTnHBl2/J4SSAv6873rt1FA1aoLNM1dqr+KZHfy6BAF2c71d55MUCHxsR7v7ypCWyb+Ybu5qeNdfaGQopod29Atj0/97T6LOj3Pc5t/MV+zUlETWgFA92a0lgp8uqjEWbb8ONMBLyxBC8QJiOyQiNrkb4hSiSyHdzP0s/zma5/RlABbHjzl9GgSRRFaK6giAyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Jdu3yWAbR5sktOSy6S+NvWEzKufuEyKN8Nibxm6yF0=;
- b=4AD5+Y5zi4gGro7haWfz158FVkw7wI8UYMqStWuZA6es+7msXlXSkc1ooKtL9CSSdTgCy7sHs4fXp7iybw1H5CdpoDL9u7VmJ3ZSLFnyx34c/9f6iBtQZe2DB2dGxkeD/S97EOyy06p0gQD3/Kr1KfsbMe1lYEl8o5SrXvHwK6M=
-Received: from MWHPR15CA0055.namprd15.prod.outlook.com (2603:10b6:301:4c::17)
- by DM6PR12MB2988.namprd12.prod.outlook.com (2603:10b6:5:3d::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
- 2021 19:36:36 +0000
-Received: from CO1NAM11FT016.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:4c:cafe::8b) by MWHPR15CA0055.outlook.office365.com
- (2603:10b6:301:4c::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Wed, 22 Sep 2021 19:36:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT016.mail.protection.outlook.com (10.13.175.141) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4544.13 via Frontend Transport; Wed, 22 Sep 2021 19:36:35 +0000
-Received: from mukjoshi-dev.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Wed, 22 Sep
- 2021 14:36:34 -0500
-From:   Mukul Joshi <mukul.joshi@amd.com>
-To:     <linux-edac@vger.kernel.org>, <x86@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>, <mingo@redhat.com>,
-        <mchehab@kernel.org>, <yazen.ghannam@amd.com>,
-        <amd-gfx@lists.freedesktop.org>, Mukul Joshi <mukul.joshi@amd.com>
-Subject: [PATCHv3 2/2] drm/amdgpu: Register MCE notifier for Aldebaran RAS
-Date:   Wed, 22 Sep 2021 15:36:20 -0400
-Message-ID: <20210922193620.15925-1-mukul.joshi@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210913021311.12896-2-mukul.joshi@amd.com>
-References: <20210913021311.12896-2-mukul.joshi@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0c506468-ccea-408e-d50b-08d97e004a42
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2988:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2988A65F014F764238EE8888EEA29@DM6PR12MB2988.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gh0/Cb+8d2dgAX6RONglFuaoYrmWdrrMIIMle2OZR2uMvOKRzpFT8CyTd71HQzuyT26QSVHi3bVFHz0CquE26kN6xaP3nm0DYTJCOaFtYnaIeC871Nb5YNywGA2zLei071YLS7+noFYWJjC8KOn4EIGq/P+FI/LdYDlMgmAUOv1Fkn4ukV1HeqdOmp/+2OqC+EfA4epDHNqRNT3Q4WzI/NnCz+9ouJa1FWYMoFXYW4RDPw3OdSHeJ4FpqHFb79DNXm7N9WB01mJ+Q0N4nQ2fem+syjV/y/F2dLfeJHjqigYBCmMBBiMGomz6lMRb5bjiehN2h4KNA9me5+LLZbs8PCT6c2gOV5kW3Gov4WCBNafUI5+EXrgRFGSFNR1MHUfk9Ei9re+RbS/FFxjgmsvIEPwbEowhiHPWInMrF7Mg8f3kUVrV3TlFI6pIe/ogZHNfk5V3fY/iIMakN4vgmjSIAvubQYyzdcxCRjJGBUy4YW1GDNtmirRWdIlDGu2xu2jGLAG2HrbHTvMPFD5O/KHHwawXdQRaWRqq+43JTkUTG36uSzsOSuxGwjLcXEeRz3PzmTKtnLgT8tTfnRX/79L5yFtaM6+L6mEej8pocy6j2xrWbCgXnczgCeMbb54MX+YP19mgOskIW7UiHWygEmf9fLeiO/g1DwHyegr8r6McK95L4Wmuu4jxR263u7PauIhIcTQD/JzhJDr+0Ozqh3qXH9l8/6JwPFbHmBR7foM+C+Y=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(86362001)(70586007)(508600001)(2906002)(426003)(110136005)(5660300002)(81166007)(6666004)(316002)(82310400003)(7696005)(70206006)(8936002)(26005)(2616005)(1076003)(47076005)(36860700001)(356005)(336012)(83380400001)(44832011)(8676002)(16526019)(54906003)(4326008)(186003)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 19:36:35.9130
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c506468-ccea-408e-d50b-08d97e004a42
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT016.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2988
+        id S237218AbhIVTiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:38:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44898 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229918AbhIVTiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 15:38:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632339441;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=lXf5kp88ByplDo+A69LcTnTRj8dAVkkTmdY+l70PGDQ=;
+        b=FYBwg8+/PESso3F5fE90DJKOsERMXsaue1IANsngjvxbWQHI9Ov1LMPvO7CR8T3mSdZCXV
+        nunSaDBTDBKnL7YB6DChPTGat5X+Xws8455gcqPFtI+l5df4FgGSiHKFL6+7d3OnqtxAwL
+        AQf/RRuaThZVCIUfL2Vl6n77YcoWehc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-DboPpqjCMVu8Tz1IX3DQSQ-1; Wed, 22 Sep 2021 15:37:19 -0400
+X-MC-Unique: DboPpqjCMVu8Tz1IX3DQSQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AD4DCC624;
+        Wed, 22 Sep 2021 19:37:18 +0000 (UTC)
+Received: from llong.com (unknown [10.22.16.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E92B60843;
+        Wed, 22 Sep 2021 19:37:14 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Waiman Long <longman@redhat.com>
+Subject: [RFC PATCH] locking/rwsem: Add upgrade_read()
+Date:   Wed, 22 Sep 2021 15:36:57 -0400
+Message-Id: <20210922193657.29461-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aldebaran, GPU driver will handle bad page retirement
-even though UMC is host managed. As a result, register a
-bad page retirement handler on the mce notifier chain to
-retire bad pages on Aldebaran.
+Currently there are about 12 instances in the kernel where an up_read()
+is immediately followed by a down_write() of the same lock. For example,
 
-Signed-off-by: Mukul Joshi <mukul.joshi@amd.com>
+  drivers/tty/n_tty.c:		up_read(&tty->termios_rwsem);
+  drivers/tty/n_tty.c-		down_write(&tty->termios_rwsem);
+
+Since we have already provided a downgrade_write() function, we may as
+well provide an upgrade_read() function to make the code easier to read
+and the intention clearer.
+
+If the current task is the only reader, the upgrade can be done by a
+single atomic operation. If not, the upgrade will have to be done by a
+separate up_read() call followed by a down_write(). In the former case,
+the handoff bit is not considered and the waiter will have to wait a
+bit longer to acquire the lock.
+
+The new upgrade_read() function returns a value of 0 for safe upgrade
+where rwsem protected data won't change. Otherwise a value of 1 is
+returned to indicate unsafe upgrade where rwsem protected data may
+change during the upgrade process.
+
+For PREEMPT_RT, it falls back to up_read() followed by down_write()
+for simplicity.
+
+Some uses of down_write() with long lock hold time may be changed
+to the following format in the future:
+
+	down_read()
+	/* check data */
+	if (upgrade_read()) {
+		/* unsafe upgrade, recheck data */
+	}
+	/* update data */
+	up_write();
+
+As long as the "recheck data" and "update data" parts are relatively
+short compared with the "check data" part, this conversion may help to
+improve parallelism and reduce lock contention.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
-v1->v2:
-- Use smca_get_bank_type() to determine MCA bank.
-- Envelope the changes under #ifdef CONFIG_X86_MCE_AMD.
-- Use MCE_PRIORITY_UC instead of MCE_PRIO_ACCEL as we are
-  only handling uncorrectable errors.
-- Use macros to determine UMC instance and channel instance
-  where the uncorrectable error occured.
+ include/linux/rwsem.h  |  5 ++++
+ kernel/locking/rwsem.c | 53 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-v2->v3:
-- Move the check for correctable error before find_adev().
-- Fix a NULL pointer dereference if find_adev() returns NULL.
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 141 ++++++++++++++++++++++++
- 1 file changed, 141 insertions(+)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index 912ea1f9fd04..c1e806762e41 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -35,7 +35,11 @@
- #include "amdgpu_xgmi.h"
- #include "ivsrcid/nbio/irqsrcs_nbif_7_4.h"
- #include "atom.h"
-+#ifdef CONFIG_X86_MCE_AMD
-+#include <asm/mce.h>
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 352c6127cb90..8ece58224f25 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -207,6 +207,11 @@ extern void up_write(struct rw_semaphore *sem);
+  */
+ extern void downgrade_write(struct rw_semaphore *sem);
  
-+static bool notifier_registered;
-+#endif
- static const char *RAS_FS_NAME = "ras";
- 
- const char *ras_error_string[] = {
-@@ -107,6 +111,9 @@ static bool amdgpu_ras_check_bad_page_unlock(struct amdgpu_ras *con,
- 				uint64_t addr);
- static bool amdgpu_ras_check_bad_page(struct amdgpu_device *adev,
- 				uint64_t addr);
-+#ifdef CONFIG_X86_MCE_AMD
-+static void amdgpu_register_bad_pages_mca_notifier(void);
-+#endif
- 
- void amdgpu_ras_set_error_query_ready(struct amdgpu_device *adev, bool ready)
- {
-@@ -2089,6 +2096,11 @@ int amdgpu_ras_recovery_init(struct amdgpu_device *adev)
- 			adev->smu.ppt_funcs->send_hbm_bad_pages_num(&adev->smu, con->eeprom_control.ras_num_recs);
- 	}
- 
-+#ifdef CONFIG_X86_MCE_AMD
-+	if ((adev->asic_type == CHIP_ALDEBARAN) &&
-+	    (adev->gmc.xgmi.connected_to_cpu))
-+		amdgpu_register_bad_pages_mca_notifier();
-+#endif
- 	return 0;
- 
- free:
-@@ -2583,3 +2595,132 @@ void amdgpu_release_ras_context(struct amdgpu_device *adev)
- 		kfree(con);
- 	}
++/*
++ * upgrade read lock to write lock
++ */
++extern int upgrade_read(struct rw_semaphore *sem);
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ /*
+  * nested locking. NOTE: rwsems are not allowed to recurse
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 000e8d5a2884..aeb5b0668304 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1203,6 +1203,29 @@ static struct rw_semaphore *rwsem_downgrade_wake(struct rw_semaphore *sem)
+ 	return sem;
  }
-+
-+#ifdef CONFIG_X86_MCE_AMD
-+static struct amdgpu_device *find_adev(uint32_t node_id)
+ 
++/*
++ * Try to upgrade read lock to write lock
++ */
++static inline int __try_upgrade_read(struct rw_semaphore *sem)
 +{
-+	struct amdgpu_gpu_instance *gpu_instance;
-+	int i;
-+	struct amdgpu_device *adev = NULL;
++	long count = atomic_long_read(&sem->count);
 +
-+	mutex_lock(&mgpu_info.mutex);
++	WARN_ON_ONCE(count & RWSEM_WRITER_LOCKED);
 +
-+	for (i = 0; i < mgpu_info.num_gpu; i++) {
-+		gpu_instance = &(mgpu_info.gpu_ins[i]);
-+		adev = gpu_instance->adev;
-+
-+		if (adev->gmc.xgmi.connected_to_cpu &&
-+		    adev->gmc.xgmi.physical_node_id == node_id)
-+			break;
-+		adev = NULL;
++	/*
++	 * When upgrading from shared to exclusive ownership,
++	 * anything inside the write-locked region cannot leak
++	 * into the read side. Use an ACQUIRE semantics.
++	 */
++	if (((count & RWSEM_READER_MASK) == RWSEM_READER_BIAS) &&
++	     atomic_long_try_cmpxchg_acquire(&sem->count, &count,
++			count - RWSEM_READER_BIAS + RWSEM_WRITER_LOCKED)) {
++		rwsem_set_owner(sem);
++		return 1;
 +	}
-+
-+	mutex_unlock(&mgpu_info.mutex);
-+
-+	return adev;
++	return 0;
 +}
 +
-+#define GET_MCA_IPID_GPUID(m)	(((m) >> 44) & 0xF)
-+#define GET_UMC_INST(m)		(((m) >> 21) & 0x7)
-+#define GET_CHAN_INDEX(m)	((((m) >> 12) & 0x3) | (((m) >> 18) & 0x4))
-+#define GPU_ID_OFFSET		8
-+
-+static int amdgpu_bad_page_notifier(struct notifier_block *nb,
-+				    unsigned long val, void *data)
+ /*
+  * lock for reading
+  */
+@@ -1438,6 +1461,11 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
+ 	rwbase_write_downgrade(&sem->rwbase);
+ }
+ 
++static inline int __try_upgrade_read(struct rw_semaphore *sem)
 +{
-+	struct mce *m = (struct mce *)data;
-+	struct amdgpu_device *adev = NULL;
-+	uint32_t gpu_id = 0;
-+	uint32_t umc_inst = 0;
-+	uint32_t ch_inst, channel_index = 0;
-+	struct ras_err_data err_data = {0, 0, 0, NULL};
-+	struct eeprom_table_record err_rec;
-+	uint64_t retired_page;
-+
-+	/*
-+	 * If the error was generated in UMC_V2, which belongs to GPU UMCs,
-+	 * and error occurred in DramECC (Extended error code = 0) then only
-+	 * process the error, else bail out.
-+	 */
-+	if (!m || !((smca_get_bank_type(m->bank) == SMCA_UMC_V2) &&
-+		    (XEC(m->status, 0x1f) == 0x0)))
-+		return NOTIFY_DONE;
-+
-+	/*
-+	 * If it is correctable error, return.
-+	 */
-+	if (mce_is_correctable(m))
-+		return NOTIFY_OK;
-+
-+	/*
-+	 * GPU Id is offset by GPU_ID_OFFSET in MCA_IPID_UMC register.
-+	 */
-+	gpu_id = GET_MCA_IPID_GPUID(m->ipid) - GPU_ID_OFFSET;
-+
-+	adev = find_adev(gpu_id);
-+	if (!adev) {
-+		DRM_WARN("%s: Unable to find adev for gpu_id: %d\n", __func__,
-+								gpu_id);
-+		return NOTIFY_DONE;
-+	}
-+
-+	/*
-+	 * If it is uncorrectable error, then find out UMC instance and
-+	 * channel index.
-+	 */
-+	umc_inst = GET_UMC_INST(m->ipid);
-+	ch_inst = GET_CHAN_INDEX(m->ipid);
-+
-+	dev_info(adev->dev, "Uncorrectable error detected in UMC inst: %d, chan_idx: %d",
-+			     umc_inst, ch_inst);
-+
-+	memset(&err_rec, 0x0, sizeof(struct eeprom_table_record));
-+
-+	/*
-+	 * Translate UMC channel address to Physical address
-+	 */
-+	channel_index =
-+		adev->umc.channel_idx_tbl[umc_inst * adev->umc.channel_inst_num
-+					  + ch_inst];
-+
-+	retired_page = ADDR_OF_8KB_BLOCK(m->addr) |
-+			ADDR_OF_256B_BLOCK(channel_index) |
-+			OFFSET_IN_256B_BLOCK(m->addr);
-+
-+	err_rec.address = m->addr;
-+	err_rec.retired_page = retired_page >> AMDGPU_GPU_PAGE_SHIFT;
-+	err_rec.ts = (uint64_t)ktime_get_real_seconds();
-+	err_rec.err_type = AMDGPU_RAS_EEPROM_ERR_NON_RECOVERABLE;
-+	err_rec.cu = 0;
-+	err_rec.mem_channel = channel_index;
-+	err_rec.mcumc_id = umc_inst;
-+
-+	err_data.err_addr = &err_rec;
-+	err_data.err_addr_cnt = 1;
-+
-+	if (amdgpu_bad_page_threshold != 0) {
-+		amdgpu_ras_add_bad_pages(adev, err_data.err_addr,
-+						err_data.err_addr_cnt);
-+		amdgpu_ras_save_bad_pages(adev);
-+	}
-+
-+	return NOTIFY_OK;
++	return 0;
 +}
 +
-+static struct notifier_block amdgpu_bad_page_nb = {
-+	.notifier_call  = amdgpu_bad_page_notifier,
-+	.priority       = MCE_PRIO_UC,
-+};
-+
-+static void amdgpu_register_bad_pages_mca_notifier(void)
+ /* Debug stubs for the common API */
+ #define DEBUG_RWSEMS_WARN_ON(c, sem)
+ 
+@@ -1581,6 +1609,31 @@ void downgrade_write(struct rw_semaphore *sem)
+ }
+ EXPORT_SYMBOL(downgrade_write);
+ 
++/*
++ * Upgrade read lock to write lock
++ *
++ * Return: 0 when upgrade is safe, i.e. rwsem protected data do not change;
++ *         1 when upgrade is unsafe as rwsem protected data may have changed.
++ */
++int upgrade_read(struct rw_semaphore *sem)
 +{
-+	/*
-+	 * Register the x86 notifier only once
-+	 * with MCE subsystem.
-+	 */
-+	if (notifier_registered == false) {
-+		mce_register_decode_chain(&amdgpu_bad_page_nb);
-+		notifier_registered = true;
++	if (__try_upgrade_read(sem)) {
++		rwsem_release(&sem->dep_map, _RET_IP_);
++		rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
++		return 0;
 +	}
++
++	/*
++	 * We cannot directly upgrade to the write lock, just do a regular
++	 * up_read() and down_write() sequence. The data protected by the
++	 * rwsem may have changed before the write lock is acquired.
++	 */
++	down_read(sem);
++	up_write(sem);
++	return 1;
 +}
-+#endif
++EXPORT_SYMBOL(upgrade_read);
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 
+ void down_read_nested(struct rw_semaphore *sem, int subclass)
 -- 
-2.17.1
+2.18.1
 
