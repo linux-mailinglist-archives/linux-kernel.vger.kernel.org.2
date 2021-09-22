@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B21414A87
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F36414A8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhIVN3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhIVN3E (ORCPT
+        id S232023AbhIVNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:30:22 -0400
+Received: from pv50p00im-ztdg10021201.me.com ([17.58.6.45]:57883 "EHLO
+        pv50p00im-ztdg10021201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231534AbhIVNaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:29:04 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E720BC061574;
-        Wed, 22 Sep 2021 06:27:33 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 13:27:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632317252;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cpRgqMivdHLlYEWE2+g1ZVlcHk1NH8+G53qNLEtX2Hk=;
-        b=M5eOx1wPlrkyTlHSBat8g768p0+6vZe9kaySnzEx8hxuga9nFxhrvZWqcmp6k9jGXjpe9E
-        3oJNqKY+yJTb4PsqVVwzaZFeekwPwtBskJkYcwfLZ/2RIktGKHb532zU84YpTqJezvuc1f
-        d3qXLxZrnmJ5Na2BvF2yd0ixVsqd5vhjsUL3Vv0vrgts7ObgsGbOwHuqzRH95vAmBzbGA9
-        VXj+i/Z8iH8kkiW2HQI/R8CJAJw+LMsehZLR5wZpYkV5uFCTXD4oUlAif7qM2xxIdlbzCz
-        lkuHXu0ghRH9LAffix3xE8MdPHz+oM29JmAYiueYJAzSD4apZgU8HgrTw89DUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632317252;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cpRgqMivdHLlYEWE2+g1ZVlcHk1NH8+G53qNLEtX2Hk=;
-        b=5VB97t4iM4EOx3pXpd/bJrRvGB2yxB5Yl7LhSK7KFuYnLofjtpteaxSszMMnbtPEG1YwBZ
-        dtDd36ZNCBQgvJCQ==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] irqchip/armada-370-xp: Fix ack/eoi breakage
-Cc:     Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        stable@vger.kernel.org, tglx@linutronix.de
-In-Reply-To: <87tuiexq5f.fsf@pengutronix.de>
-References: <87tuiexq5f.fsf@pengutronix.de>
-MIME-Version: 1.0
-Message-ID: <163231725142.25758.2149176208397573828.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 22 Sep 2021 09:30:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1632317330; bh=RodfW4bUHt8EGYhK9AjVjeL8HXHZ0mndLyop4t9ZHFI=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=oYBEnpJ4qpnibOMIW1R8++ExPPZau1G3C/caQu53DxW4iJDacHwLI9ixro1NtFKsS
+         pDUO358tRLsmQrFM48D6JJCQ2TdA49UhD7qIggzGyU/9nq1k4xJ0YfaG1zEQR+4km/
+         mttWL52IzGp+9Czw22C8mwA0rCBfTFSCE/IJadJ6Hs699Si1TuIJCGb5YDxm8mf3WE
+         5X7caqvQDAewv6ZGjXFi6typUZnrc7jpduNfEbfqntm1mLSfOx5whzEMLwUkjYYngM
+         Sa2DKQZTenYy2VTDpHBCSc90mRBCVj+Btxi631PokxxbHOQIAMzTRX11aam3aIwctK
+         cw4Ns9f88LyqQ==
+Received: from 192.168.1.9 (unknown [120.245.3.47])
+        by pv50p00im-ztdg10021201.me.com (Postfix) with ESMTPSA id 5D00DA401D7;
+        Wed, 22 Sep 2021 13:28:40 +0000 (UTC)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH RESEND 2/2] x86/mm: Randomize va with generic
+ arch_pick_mmap_layout()
+From:   Xiongwei Song <sxwjean@me.com>
+In-Reply-To: <YUnvKV0Qf6zhiasz@hirez.programming.kicks-ass.net>
+Date:   Wed, 22 Sep 2021 21:28:36 +0800
+Cc:     x86@kernel.org, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>, adobriyan@gmail.com,
+        oleg@redhat.com, sblbir@amazon.com, axboe@kernel.dk,
+        laijs@linux.alibaba.com, dave.hansen@linux.intel.com,
+        akpm@linux-foundation.org, arnd@arndb.de, davem@davemloft.net,
+        keescook@chromium.org, kim.phillips@amd.com, yazen.ghannam@amd.com,
+        dave@stgolabs.net, metze@samba.org, elver@google.com,
+        ebiederm@xmission.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F5C77677-F529-4C77-8155-CE8424F8B16B@me.com>
+References: <20210921143414.70723-1-sxwjean@me.com>
+ <20210921143414.70723-3-sxwjean@me.com>
+ <YUnvKV0Qf6zhiasz@hirez.programming.kicks-ass.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-22_05:2021-09-22,2021-09-22 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=872 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2109220096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Commit-ID:     2a7313dc81e88adc7bb09d0f056985fa8afc2b89
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/2a7313dc81e88adc7bb09d0f056985fa8afc2b89
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Wed, 22 Sep 2021 14:19:41 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Wed, 22 Sep 2021 14:24:49 +01:00
+> On Sep 21, 2021, at 10:41 PM, Peter Zijlstra <peterz@infradead.org> =
+wrote:
+>=20
+> On Tue, Sep 21, 2021 at 10:34:14PM +0800, sxwjean@me.com wrote:
+>> diff --git a/arch/x86/include/asm/compat.h =
+b/arch/x86/include/asm/compat.h
+>> index 7516e4199b3c..c697e377644d 100644
+>> --- a/arch/x86/include/asm/compat.h
+>> +++ b/arch/x86/include/asm/compat.h
+>> @@ -151,6 +151,11 @@ struct compat_shmid64_ds {
+>> 	compat_ulong_t __unused5;
+>> };
+>>=20
+>> +static inline int is_compat_task(void)
+>> +{
+>> +	return IS_ENABLED(CONFIG_COMPAT) && test_thread_flag(TIF_32BIT);
+>> +}
+>> +
+>=20
+> This is still fundamentally broken for x86. x86 doesn't have compat
+> tasks, the granularity is at syscall at best.
 
-irqchip/armada-370-xp: Fix ack/eoi breakage
+Hi Peter,
 
-When converting the driver to using handle_percpu_devid_irq,
-we forgot to repaint the irq_eoi() callback into irq_ack(),
-as handle_percpu_devid_fasteoi_ipi() was actually using EOI
-really early in the handling. Yes this was a stupid idea.
+Thank you for pointing this out. I understand now a 64bit task can call =
+a 32bit syscall.=20
+Here we should use in_compat_syscall() to check if the kernel is in =
+compat mode, right?
 
-Fix this by using the HW ack method as irq_ack().
-
-Fixes: e52e73b7e9f7 ("irqchip/armada-370-xp: Make IPIs use handle_percpu_devid_irq()")
-Reported-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Tested-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87tuiexq5f.fsf@pengutronix.de
----
- drivers/irqchip/irq-armada-370-xp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
-index 7557ab5..53e0fb0 100644
---- a/drivers/irqchip/irq-armada-370-xp.c
-+++ b/drivers/irqchip/irq-armada-370-xp.c
-@@ -359,16 +359,16 @@ static void armada_370_xp_ipi_send_mask(struct irq_data *d,
- 		ARMADA_370_XP_SW_TRIG_INT_OFFS);
- }
- 
--static void armada_370_xp_ipi_eoi(struct irq_data *d)
-+static void armada_370_xp_ipi_ack(struct irq_data *d)
- {
- 	writel(~BIT(d->hwirq), per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS);
- }
- 
- static struct irq_chip ipi_irqchip = {
- 	.name		= "IPI",
-+	.irq_ack	= armada_370_xp_ipi_ack,
- 	.irq_mask	= armada_370_xp_ipi_mask,
- 	.irq_unmask	= armada_370_xp_ipi_unmask,
--	.irq_eoi	= armada_370_xp_ipi_eoi,
- 	.ipi_send_mask	= armada_370_xp_ipi_send_mask,
- };
- 
+Regards,
+Xiongwei=
