@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBEE4152B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FA84152B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237946AbhIVVZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:25:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27299 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237802AbhIVVZo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:25:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632345853;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5bSXV/WbyIuvflNI0O5gv8cTQJk2LfpQktDl+auRuYw=;
-        b=L37TpUL4UUc5pDnzxM0hNyQd43uOGwTsDunt6IzmJjC1O8gluODtiEv9ThhHbgLvjFm+Cf
-        mY7fyXc1+Jkrfoxr940MbgLSbH5Fm1n3jnLtPE1yVgzFk6pAsEtXrjVR139ZzuyPMLieZE
-        EbS8E8PbVgTzwUGbSgRDREw2WLr8I5o=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-Xf-q7DGOPpeZiVq3m5MEFw-1; Wed, 22 Sep 2021 17:24:12 -0400
-X-MC-Unique: Xf-q7DGOPpeZiVq3m5MEFw-1
-Received: by mail-oi1-f198.google.com with SMTP id bh31-20020a056808181f00b0026d71fa022cso2577537oib.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:24:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=5bSXV/WbyIuvflNI0O5gv8cTQJk2LfpQktDl+auRuYw=;
-        b=I93fz0cOP0Z2KGIB7kbNmphowD0ViWeLE06EftqKB4Q9JdUTxegeqUXxEtvfMNf34U
-         LnW/NMv8if100i1mjTq+Ve5kVPqmEaq142lHqCwJR44SeB3atkXZq77j34d4fi1Sdfvv
-         DyZuGVfUcB/qEB2kGEzhegydzETxUFpmJw8/BlPWqcuns66PfkfdxIDNay2wdYMFy3c7
-         W+FhhW8A/lhw/cQe68EYcob2zemi1y5AlSy2w8HrnwyT5oFhgb3/AF/34GDZEOe8A4De
-         2f87YPuYtpgi6SSKyWuwHzabQsLBKPlEKJiIx6BxMBmZSs8dGT1IoRXJitvtuhdIZDrE
-         U0sg==
-X-Gm-Message-State: AOAM533nr2Ha/nu1qqEpHHRughbEgZKCfdSvyhAszE9CxSTmdlE+RXnA
-        vWBBTesQXhrMkcA2O4wXJZ/OGnzuAR2uXb6ZX0M9JfVaRD+6078pwPfBoiHyv4Vy8MLdvY7l+U2
-        eS4OfWTu/jgOB9gJ6JuKuXJRy
-X-Received: by 2002:a05:6808:2026:: with SMTP id q38mr1062567oiw.15.1632345849576;
-        Wed, 22 Sep 2021 14:24:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdoCWR7q3blhAcNoLIpqhCzivqr2u9tYk00GR6mvZvaI93uSxrNhlQY0cnvU77gFLtK4G4DA==
-X-Received: by 2002:a05:6808:2026:: with SMTP id q38mr1062549oiw.15.1632345849392;
-        Wed, 22 Sep 2021 14:24:09 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id s24sm788936otp.36.2021.09.22.14.24.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 14:24:09 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:24:07 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     jgg@nvidia.com, hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
-        jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
-        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
-        eric.auger@redhat.com, corbet@lwn.net, ashok.raj@intel.com,
-        yi.l.liu@linux.intel.com, jun.j.tian@intel.com, hao.wu@intel.com,
-        dave.jiang@intel.com, jacob.jun.pan@linux.intel.com,
-        kwankhede@nvidia.com, robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        david@gibson.dropbear.id.au, nicolinc@nvidia.com
-Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
-Message-ID: <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
-In-Reply-To: <20210919063848.1476776-11-yi.l.liu@intel.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
-        <20210919063848.1476776-11-yi.l.liu@intel.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+        id S238087AbhIVVZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:25:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237802AbhIVVZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 17:25:51 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E65B60F44;
+        Wed, 22 Sep 2021 21:24:20 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mT9iz-00CPab-Qw; Wed, 22 Sep 2021 22:24:18 +0100
+Date:   Wed, 22 Sep 2021 22:24:17 +0100
+Message-ID: <87czp0b8xq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Sven Peter" <sven@svenpeter.dev>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Mark Kettenis" <kettenis@openbsd.org>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Robin Murphy" <Robin.Murphy@arm.com>, kernel-team@android.com
+Subject: Re: [PATCH v4 04/10] PCI: apple: Add initial hardware bring-up
+In-Reply-To: <86507f22-d824-4f7c-ba94-d3105c5206c2@www.fastmail.com>
+References: <20210922205458.358517-1-maz@kernel.org>
+        <20210922205458.358517-5-maz@kernel.org>
+        <86507f22-d824-4f7c-ba94-d3105c5206c2@www.fastmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sven@svenpeter.dev, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Sep 2021 14:38:38 +0800
-Liu Yi L <yi.l.liu@intel.com> wrote:
+On Wed, 22 Sep 2021 22:08:33 +0100,
+"Sven Peter" <sven@svenpeter.dev> wrote:
+> 
+> Hi,
+> 
+> 
+> On Wed, Sep 22, 2021, at 22:54, Marc Zyngier wrote:
+> > From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> >
+> [...]
+> > +
+> > +	/* Use the first reg entry to work out the port index */
+> > +	port->idx = idx >> 11;
+> > +	port->pcie = pcie;
+> > +	port->np = np;
+> > +
+> > +	port->base = devm_platform_ioremap_resource(platform, port->idx + 2);
+> > +	if (IS_ERR(port->base))
+> > +		return -ENODEV;
+> > +
+> > +	rmw_set(PORT_APPCLK_EN, port + PORT_APPCLK);
+> 
+> I think this should be
+> 
+>     rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
 
-> +struct iommu_device_info {
-> +	__u32	argsz;
-> +	__u32	flags;
-> +#define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU enforced snoop */
+Ouch. Well caught. I wonder how many of these I introduced...:-/
 
-Is this too PCI specific, or perhaps too much of the mechanism rather
-than the result?  ie. should we just indicate if the IOMMU guarantees
-coherent DMA?  Thanks,
+> 
+> > +
+> > +	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
+> > +	gpiod_set_value(reset, 1);
+> > +
+> > +	ret = readl_relaxed_poll_timeout(port->base + PORT_STATUS, stat,
+> > +					 stat & PORT_STATUS_READY, 100, 250000);
+> > +	if (ret < 0) {
+> > +		dev_err(pcie->dev, "port %pOF ready wait timeout\n", np);
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* Flush writes and enable the link */
+> > +	dma_wmb();
+> 
+> I don't think this barrier is required.
 
-Alex
+It really isn't, and I though I had removed it. I now wonder whether I
+have pushed out the right branch, or messed up by moving from one
+machine to another...
 
-> +#define IOMMU_DEVICE_INFO_PGSIZES	(1 << 1) /* supported page sizes */
-> +#define IOMMU_DEVICE_INFO_ADDR_WIDTH	(1 << 2) /* addr_wdith field valid */
-> +	__u64	dev_cookie;
-> +	__u64   pgsize_bitmap;
-> +	__u32	addr_width;
-> +};
-> +
-> +#define IOMMU_DEVICE_GET_INFO	_IO(IOMMU_TYPE, IOMMU_BASE + 1)
->  
->  #define IOMMU_FAULT_PERM_READ	(1 << 0) /* read */
->  #define IOMMU_FAULT_PERM_WRITE	(1 << 1) /* write */
+> > +
+> > +	writel_relaxed(PORT_LTSSMCTL_START, port->base + PORT_LTSSMCTL);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> [...]
+> 
+> 
+> Looks good to me otherwise,
+> 
+> Reviewed-by: Sven Peter <sven@svenpeter.dev>
 
+Thanks. Hopefully I'll manage to post a non broken series next time...
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
