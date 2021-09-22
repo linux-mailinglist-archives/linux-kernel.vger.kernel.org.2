@@ -2,119 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6BE4145B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5047C4145BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhIVKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:04:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234309AbhIVKER (ORCPT
+        id S234620AbhIVKFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234496AbhIVKFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:04:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632304967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qb8DRYmAxRXlFdlb2jYQeeG3H/2W6Rld2Q8cOt11XZU=;
-        b=MdY+iWCAZ/w27WObw6lm7KCoA2LVoaKUJznXA3nFKc2pELkpjurZMYM3PXZJl0wbpNfZQc
-        eq0B+qH6H/n9gOrIOgBgVBu74smCmfhcJI/1xFYCpt1wWjucmYY9HLNZAVM1i2esBi4fmR
-        cSGWulPMpcvwBnrJXcVfu0rU9DB7H64=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-qpQwGT1qM8uFYF3m3vL27g-1; Wed, 22 Sep 2021 06:02:46 -0400
-X-MC-Unique: qpQwGT1qM8uFYF3m3vL27g-1
-Received: by mail-ed1-f72.google.com with SMTP id h24-20020a50cdd8000000b003d8005fe2f8so2490206edj.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:02:46 -0700 (PDT)
+        Wed, 22 Sep 2021 06:05:35 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652D4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:04:05 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 72so7670710qkk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:04:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d+JmR4YUGtp0GTRuEl3U6ZfEXJALH18uLwdK0NgyeVE=;
+        b=KYUSmxxaqbZPE5OpaENFTFgr8Ql7Scuj0j3ARIvMJguNGOIbQEn9qkw2FUS+WxfETN
+         VDDw6HoqEcyQP1OpKXV78tHBaNu992dSy4doxL3egXkUD1yu/Ls1qHXgRFY7LVcIasQ4
+         2/cgud5RFPBKTVbaXpd80R5YkzOX2dJ7Ct7qc4oKS2V9f+GSswzWkzMayYFSG5hZ5mbK
+         sgG/MmCwMd3a6Ea/ZckdNHCnE4/gP0F5PvZbBapeFooQnal98w3L334KYEke1C4Evkt7
+         9QWhoCZonhQexXQ4DENfUOaWU7wof8vLzspQ9l8BcGuuD95wwO7V80MWSRqZv6HYykPh
+         u11Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qb8DRYmAxRXlFdlb2jYQeeG3H/2W6Rld2Q8cOt11XZU=;
-        b=d6qwB/8dyBpYeCzpBm/mAprZekvXuBTCN0NYi3rWhfgASOvMX9jVnk1naz+Y8h6fCK
-         b5Z8eymmpRTpPRNbZhKNdpFWRj8THSrB/jT6QbrnwaDHDbEK0+vbv6LCexMq0OH0aPvO
-         vRdx/d3WUinS7qStTvN7cTbsEYXpu6t7La6MbtCJJnyTtJVe0+N9KK85hgV9uzxBLVm5
-         kJ0PKNSN0kaCmXngnIofsqZRockz+MOldQx8b5FeNK1GW1CrDukvKzxWkME6dRdasR9K
-         ihZVpG7sgabtFdmnUsOcomc6Srv7yrhLwhRIYzJIOBXdk7JrNPXh2fLRMx2+WwQEZRcs
-         gzPg==
-X-Gm-Message-State: AOAM531ismiHGtWP07nmPkLoQvsWRxcc6Z94soBRhTkjv8gIQhY58dsi
-        6mjgHGn8Z1qqsYHXpfI4XDgWLps0Ce7YG/jAt/jBFnNT5h2OysEVhgvmh09LE6sbU4U6SUnjtfR
-        sq2jHx0qrbTrIIckn85GMkxSQ
-X-Received: by 2002:a17:906:3fc8:: with SMTP id k8mr38612736ejj.217.1632304965364;
-        Wed, 22 Sep 2021 03:02:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwe4x5M0xdDGG3Nj4Oi9PRMN0+2vvrg4Ke/sie9bJ7lVbvExB41cX+IyRQZGFMk7dfx+QFMag==
-X-Received: by 2002:a17:906:3fc8:: with SMTP id k8mr38612711ejj.217.1632304965092;
-        Wed, 22 Sep 2021 03:02:45 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id lb20sm799141ejc.40.2021.09.22.03.02.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 03:02:44 -0700 (PDT)
-Subject: Re: [PATCH] KVM: VMX: Check if bus lock vmexit was preempted
-To:     Hao Xiang <hao.xiang@linux.alibaba.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, chenyi.qiang@intel.com,
-        sean.j.christopherson@intel.com, shannon.zhao@linux.alibaba.com
-References: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <87b411c3-da75-e074-91a4-a73891f9f5f8@redhat.com>
-Date:   Wed, 22 Sep 2021 12:02:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d+JmR4YUGtp0GTRuEl3U6ZfEXJALH18uLwdK0NgyeVE=;
+        b=YwIdSqo/qmX8KaaTzNht65P7uBlWIzxsz5pvdm1rPhyy3Yg8vP0ydOnDDic90Um17m
+         vwQEOa160BvverW3VVg4Q0zs//55Ky2iPPHfDrGp0YsHfDoc65qZ0exG/STjYM+oBEkp
+         cUIcmpHNEQPFvZp24vZZfe7SpT+xNoXL4bDLo2bqzyVjUrvKMDNUOD8aYZKgiFCD2wup
+         dNkzZ5vP9tvY+b5t2tmlWjX6O3IY+4LdQ6BqWXmE5sf+MoI9KCk6Yi7BSG1eR4v4yNkd
+         psuaIkfn/+4q25GEojvxq9jLB0v8U9g9BxxrRUXOXtsetz/L0zyW5aPdwBJ2afCTXSy8
+         BvGg==
+X-Gm-Message-State: AOAM532qTMtW3ZsG4j+c8NK2kjdEJuKpvhQ3HdtEqtz1t3DLGR2cZzsS
+        M4xOCW2Cs5rsprDicLv44tt6Mi71S6aiXrHqvGRaCA==
+X-Google-Smtp-Source: ABdhPJxHL/OxcUTjONxWPPtCbBRvtbVUi/lomIZky1cW+lg87kGWpt3iR0EoSj1hI2Me7w1cmMEXY+JNenGKbOn81UI=
+X-Received: by 2002:a25:7146:: with SMTP id m67mr43747209ybc.353.1632305044479;
+ Wed, 22 Sep 2021 03:04:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1631964600-73707-1-git-send-email-hao.xiang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com> <20210824164801.28896-3-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20210824164801.28896-3-lakshmi.sowjanya.d@intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 22 Sep 2021 12:03:53 +0200
+Message-ID: <CAMpxmJWeZP-f-3BoWwX7PkWNZySn5RP=rc4cVyLEwYmSb6if+w@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 02/20] gpio: Add GPIO polling interface to GPIO lib
+To:     lakshmi.sowjanya.d@intel.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, mgross@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        tamal.saha@intel.com, bala.senthil@intel.com,
+        Kent Gibson <warthog618@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/21 13:30, Hao Xiang wrote:
-> exit_reason.bus_lock_detected is not only set when bus lock VM exit
-> was preempted, in fact, this bit is always set if bus locks are
-> detected no matter what the exit_reason.basic is.
-> 
-> So the bus_lock_vmexit handling in vmx_handle_exit should be duplicated
-> when exit_reason.basic is EXIT_REASON_BUS_LOCK(74). We can avoid it by
-> checking if bus lock vmexit was preempted in vmx_handle_exit.
-
-I don't understand, does this mean that bus_lock_detected=1 if 
-basic=EXIT_REASON_BUS_LOCK?  If so, can we instead replace the contents 
-of handle_bus_lock_vmexit with
-
-	/* Do nothing and let vmx_handle_exit exit to userspace.  */
-	WARN_ON(!to_vmx(vcpu)->exit_reason.bus_lock_detected);
-	return 0;
-
-?
-
-That would be doable only if this is architectural behavior and not a 
-processor erratum, of course.
-
-Thanks,
-
-Paolo
-
-> Signed-off-by: Hao Xiang <hao.xiang@linux.alibaba.com>
+On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
+>
+> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+>
+> Some Intel Timed I/O devices do not implement IRQ functionality. Augment
+> read() interface to allow polling.
+>
+> Add two GPIO device methods: setup_poll() and poll():
+> - setup_poll() configures the GPIO interface e.g. capture rising edges
+> - poll() checks for events on the interface
+>
+> To implement polling, the driver must implement the two functions above
+> and should either leave to_irq() method NULL or return irq 0.
+>
+> setup_poll() should configure the hardware to 'listen' for input events.
+>
+> poll() driver implementation must return the realtime timestamp
+> corresponding to the event and -EAGAIN if no data is available.
+>
+> Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
+> Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
+> Signed-off-by: Tamal Saha <tamal.saha@intel.com>
+> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> Reviewed-by: Mark Gross <mgross@linux.intel.com>
 > ---
->   arch/x86/kvm/vmx/vmx.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 0c2c0d5..5ddf1df 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6054,7 +6054,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->   	 * still need to exit to user space when bus lock detected to inform
->   	 * that there is a bus lock in guest.
->   	 */
-> -	if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
-> +	if (to_vmx(vcpu)->exit_reason.bus_lock_detected &&
-> +			to_vmx(vcpu)->exit_reason.basic != EXIT_REASON_BUS_LOCK) {
->   		if (ret > 0)
->   			vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
->   
-> 
 
+Interesting. So the idea is to allow user-space to read line events as
+if they were generated by interrupts handled in the kernel. While this
+whole series has a long way to go and this patch looks wrong to me in
+several places at first glance, I find the idea interesting. Cc'ing
+Kent who's the author of most of this code - Kent: what do you think?
+
+Bart
+
+>  drivers/gpio/gpiolib-cdev.c | 28 ++++++++++++++++++++++++++--
+>  include/linux/gpio/driver.h | 19 +++++++++++++++++++
+>  2 files changed, 45 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> index c7b5446d01fd..4741bf34750b 100644
+> --- a/drivers/gpio/gpiolib-cdev.c
+> +++ b/drivers/gpio/gpiolib-cdev.c
+> @@ -1227,13 +1227,34 @@ static ssize_t linereq_read(struct file *file,
+>                             loff_t *f_ps)
+
+Why would you do this in linereq_read()? Userspace ends up in
+linereq_poll() when it calls poll().
+
+>  {
+>         struct linereq *lr = file->private_data;
+> +       struct gpioevent_poll_data poll_data;
+>         struct gpio_v2_line_event le;
+>         ssize_t bytes_read = 0;
+> -       int ret;
+> +       int ret, offset;
+>
+>         if (count < sizeof(le))
+>                 return -EINVAL;
+>
+> +       /* Without an IRQ, we can only poll */
+> +       offset = gpio_chip_hwgpio(lr->gdev->descs);
+> +       if (lr->lines[offset].irq == 0) {
+> +               struct gpio_v2_line_event *event;
+> +
+> +               if (!(file->f_flags & O_NONBLOCK))
+> +                       return -ENODEV;
+> +
+> +               ret = lr->gdev->chip->do_poll(lr->gdev->chip, offset,
+> +                                             lr->lines[offset].eflags, &poll_data);
+
+What if the driver doesn't implement do_poll()?
+
+> +               if (ret)
+> +                       return ret;
+> +               event = kzalloc(sizeof(*event), GFP_KERNEL);
+> +               event->timestamp_ns = poll_data.timestamp;
+> +               event->id = poll_data.id;
+> +               if (copy_to_user(buf, (void *)&event, sizeof(event)))
+> +                       return -EFAULT;
+> +               return sizeof(event);
+> +       }
+> +
+>         do {
+>                 spin_lock(&lr->wait.lock);
+>                 if (kfifo_is_empty(&lr->events)) {
+> @@ -1314,6 +1335,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+>  {
+>         struct gpio_v2_line_request ulr;
+>         struct gpio_v2_line_config *lc;
+> +       unsigned int file_flags;
+>         struct linereq *lr;
+>         struct file *file;
+>         u64 flags;
+> @@ -1411,6 +1433,8 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+>                                 goto out_free_linereq;
+>                 }
+>
+> +               file_flags = O_RDONLY | O_CLOEXEC;
+> +
+>                 blocking_notifier_call_chain(&desc->gdev->notifier,
+>                                              GPIO_V2_LINE_CHANGED_REQUESTED, desc);
+>
+> @@ -1425,7 +1449,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
+>         }
+>
+>         file = anon_inode_getfile("gpio-line", &line_fileops, lr,
+> -                                 O_RDONLY | O_CLOEXEC);
+> +                                 file_flags);
+>         if (IS_ERR(file)) {
+>                 ret = PTR_ERR(file);
+>                 goto out_put_unused_fd;
+> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
+> index 3a268781fcec..f5b971ad40bc 100644
+> --- a/include/linux/gpio/driver.h
+> +++ b/include/linux/gpio/driver.h
+> @@ -17,6 +17,7 @@ struct device_node;
+>  struct seq_file;
+>  struct gpio_device;
+>  struct module;
+> +struct gpioevent_poll_data;
+>  enum gpiod_flags;
+>  enum gpio_lookup_flags;
+>
+> @@ -304,6 +305,11 @@ struct gpio_irq_chip {
+>   * @add_pin_ranges: optional routine to initialize pin ranges, to be used when
+>   *     requires special mapping of the pins that provides GPIO functionality.
+>   *     It is called after adding GPIO chip and before adding IRQ chip.
+> + * @setup_poll: optional routine for devices that don't support interrupts.
+> + *     Takes flags argument as in/out parameter, where caller requests
+> + *     event flags and driver returns accepted flags.
+> + * @do_poll: optional routine for devices that don't support interrupts.
+> + *     Returns event specification in data parameter.
+>   * @base: identifies the first GPIO number handled by this chip;
+>   *     or, if negative during registration, requests dynamic ID allocation.
+>   *     DEPRECATION: providing anything non-negative and nailing the base
+> @@ -396,6 +402,14 @@ struct gpio_chip {
+>
+>         int                     (*add_pin_ranges)(struct gpio_chip *gc);
+>
+> +       int                     (*setup_poll)(struct gpio_chip *chip,
+> +                                             unsigned int offset,
+> +                                             u32 *eflags);
+
+Does anyone even call this?
+
+> +
+> +       int                     (*do_poll)(struct gpio_chip *chip,
+> +                                          unsigned int offset, u32 eflags,
+> +                                          struct gpioevent_poll_data *data);
+> +
+>         int                     base;
+>         u16                     ngpio;
+>         const char              *const *names;
+> @@ -471,6 +485,11 @@ struct gpio_chip {
+>  #endif /* CONFIG_OF_GPIO */
+>  };
+>
+> +struct gpioevent_poll_data {
+> +       __u64 timestamp;
+> +       __u32 id;
+> +};
+> +
+>  extern const char *gpiochip_is_requested(struct gpio_chip *gc,
+>                         unsigned int offset);
+>
+> --
+> 2.17.1
+>
+
+This patch doesn't look good - or even tested - but as I said - the
+idea itself sounds reasonable in general.
+
+Bart
