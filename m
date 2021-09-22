@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207A4413F21
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23C4413F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhIVB6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 21:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhIVB6a (ORCPT
+        id S231326AbhIVCBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:01:31 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:9900 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhIVCBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:58:30 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0C6C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:57:00 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 194so4018127qkj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dNeVX2/AAU67gCQ2hLPQYiycq7pGX1S/cb+hnnulRMw=;
-        b=Hl16FOFhcPKOG3yu6QEh+1sf7oVY/P5Z6rCp241WQfOqSMZID/pCn1e66RwsiAj6+p
-         mQKSvbAI+fBwkeW59i9hjFY99JHNIklaNSmeFVpWLb+iZqsxPShD0uwDwyO29txT0tf2
-         vvV4brKiBtJ1KNRnM9cCx2B24t7Pe9udL7/qbQIOuNDk7uzde6GVNRKNSP2Zl4UTHwP9
-         eWX0ma/R8aurBgiNUi3tQu9HWfwU+lzyMk8quwUEvwGukDHqFo7HRCPJ+WwBYB6gTZpE
-         zcEV7F+KyARmpAhcwZzvbja6nuSNnbw2EHcO/vnhdxGxp9eg8Ebs+SBqcS16o0E14T7b
-         f0bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dNeVX2/AAU67gCQ2hLPQYiycq7pGX1S/cb+hnnulRMw=;
-        b=6IM+xYq/y2SrUWPEU0wvuaBk80hEpj7HY/4B0cYDxw4jm5lEDvBHlyv/2ZRqxxMa/f
-         vz/g51GDh4ybHIOBNtJs1g86oR3G/+p8mnKeEwup8XAiwIa5wMMIbRs+jA9E1O8Gax13
-         D7oVKZqZugR5Qh/Icxl4mS2kA0R80yfPnmMLgleWhZ/nMD9yTouK9EzqircwrQj9zSJQ
-         G13tYEYQmFYLl/tiCWtciflVH8Z0M5jctdaKiBkEqc+3qLwhLNwBtyfGLSfiAar8OY6B
-         pBpAiHLcur2zxKpZQc/dOlr61+suXio5opR7ETPBBZD7vcSdNBee4bHjLHDd17pJ6IHw
-         Fmbw==
-X-Gm-Message-State: AOAM5322w4k8RAR0jFSwriipeNAi6QACx65GY1jh46r9ZARJ0yPw5XGH
-        3IeD+dz72RmwW7FpyTmfmHGP3PW2DT37/NNOLNIamA==
-X-Google-Smtp-Source: ABdhPJyXlKkrBRzP6q/7fl+IpzJt5IeM7h8bSIaNp6nmoNn0IbOQBmLhN0QxQ/wn+OIjISZduG5Xy0ElJHTvCUrXLpw=
-X-Received: by 2002:a5b:783:: with SMTP id b3mr38459854ybq.328.1632275819299;
- Tue, 21 Sep 2021 18:56:59 -0700 (PDT)
+        Tue, 21 Sep 2021 22:01:30 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HDhFr0ZT8z8yj5;
+        Wed, 22 Sep 2021 09:55:28 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 09:59:55 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 09:59:54 +0800
+Subject: Re: [PATCH 4.14 000/217] 4.14.247-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210920163924.591371269@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <63161423-9bec-813e-94e4-270fb3b303e2@huawei.com>
+Date:   Wed, 22 Sep 2021 09:59:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CACkBjsZC-3nm8FVhVfCAyodxbKAbdxUriZimwdq3JHH1=sxNcw@mail.gmail.com>
-In-Reply-To: <CACkBjsZC-3nm8FVhVfCAyodxbKAbdxUriZimwdq3JHH1=sxNcw@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 21 Sep 2021 18:56:48 -0700
-Message-ID: <CANn89iKVAcX2GnQwVbQLd+ADGRVdWtD07q7=Brw5HRSoc0K2PQ@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in tcp_write_timer_handler
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210920163924.591371269@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 6:43 PM Hao Sun <sunhao.th@gmail.com> wrote:
->
-> Hello,
->
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
->
 
-We have dozens of such reports provided already by syzbot.
 
-If you do not provide a repro, there is little hope.
+On 2021/9/21 0:40, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.247 release.
+> There are 217 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 22 Sep 2021 16:38:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.247-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on x86 for 4.14.247-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.14.y
+Version: 4.14.247-rc1
+Commit: e883c2a5310932efee3eea2e4a742a1e4530cda3
+Compiler: gcc version 7.3.0 (GCC)
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8837
+passed: 8837
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
