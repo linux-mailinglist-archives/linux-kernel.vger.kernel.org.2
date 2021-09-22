@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C200414AEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DFC414AF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhIVNoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:44:22 -0400
-Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:47051 "EHLO
-        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232688AbhIVNoT (ORCPT
+        id S232942AbhIVNof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:44:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38281 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234359AbhIVNob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:44:19 -0400
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 94C471C48F4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:42:48 +0100 (IST)
-Received: (qmail 12818 invoked from network); 22 Sep 2021 13:42:48 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Sep 2021 13:42:48 -0000
-Date:   Wed, 22 Sep 2021 14:42:47 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        feng.tang@intel.com, zhengjun.xing@linux.intel.com,
-        aubrey.li@linux.intel.com, yu.c.chen@intel.com
-Subject: Re: [sched/fair]  56498cfb04:  netperf.Throughput_tps -5.4%
- regression
-Message-ID: <20210922134247.GY3959@techsingularity.net>
-References: <20210912153447.GG25450@xsang-OptiPlex-9020>
- <20210922124400.GQ4323@worktop.programming.kicks-ass.net>
+        Wed, 22 Sep 2021 09:44:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632318181;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+JWo7IWTXSlpZNK2XfHGpxPNo71k2+QBHUACSQR7vWo=;
+        b=GHFJwUI086HVY05vs8d1cqZhdlwS/KTz1bWGtM6DD6Dn6wGR0//T+nGXZwJGO7cA2Ca4UD
+        QscSiI+PN4VQWnvlAOFSYHAoahOZkGuuaJg8Al3+z975KoDz2gXZBeA3lw1vsiuBYIFxMH
+        zJH6qOBkHL1m+xziZ6wEsGaousMPWCw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-0jDXN9-vNw-I8RvrZMU85A-1; Wed, 22 Sep 2021 09:43:00 -0400
+X-MC-Unique: 0jDXN9-vNw-I8RvrZMU85A-1
+Received: by mail-wr1-f70.google.com with SMTP id f7-20020a5d50c7000000b0015e288741a4so2213834wrt.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:42:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=+JWo7IWTXSlpZNK2XfHGpxPNo71k2+QBHUACSQR7vWo=;
+        b=VwphybSz7fWV/gmtx/E4bJBpRxegAqN+rfkmsm0aYoCR5IVaxtcAFX5wpjfcS1Tvw0
+         AO1kVQbxgxE6tyUiR6CHkw1fGyi2aA3WSFOfC3uGddoxBrll0OkZokIg1cj5Li1KHkaq
+         OD2Oapvz/SLzwPyHS6lujVxWfJhO4WUuZu2NKEXIkx5ft+xtMDEQXJdvnQ7zlz9wJcnV
+         P4VZBH9E2pUMdve3lz50nlsG69q7z0u70zFdzEZN3JQebDsUlDyek0jiA56ve6Sx/Kox
+         T6QZZHai3LbxQU6gXGp7dM1z/pZHhAJBR4Sd60FtU63pAHPjiLCRbLtG0jaRnYblrP50
+         Eneg==
+X-Gm-Message-State: AOAM533/Ct4wj5ukfxG6Hr4SG4eKAbMuP/4xtwPVPRGLXjk95qSZ+Cdk
+        S5FBzcNPRiqDoiZBbpE5Tu7W226a684N8w6JmHmqBuh1Tdb4akBuKsCC+Zgwf8fSD51S/p/Y58C
+        iK9DlHXZLoiI1tBuaSqZBr3ex
+X-Received: by 2002:a5d:526f:: with SMTP id l15mr41168331wrc.0.1632318178792;
+        Wed, 22 Sep 2021 06:42:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznc1KSiF5aPkuH636x53Cc3ByiW8cBM1EzDuEwJOc+UzPa3JyVYA67rj7GZoExD7VAGn/rhA==
+X-Received: by 2002:a5d:526f:: with SMTP id l15mr41168305wrc.0.1632318178583;
+        Wed, 22 Sep 2021 06:42:58 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id v8sm2207321wrt.12.2021.09.22.06.42.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 06:42:57 -0700 (PDT)
+Reply-To: eric.auger@redhat.com
+Subject: Re: [RFC 09/20] iommu: Add page size and address width attributes
+To:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        jgg@nvidia.com, hch@lst.de, jasowang@redhat.com, joro@8bytes.org
+Cc:     jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
+        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
+        corbet@lwn.net, ashok.raj@intel.com, yi.l.liu@linux.intel.com,
+        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
+        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
+        robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        david@gibson.dropbear.id.au, nicolinc@nvidia.com
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-10-yi.l.liu@intel.com>
+From:   Eric Auger <eric.auger@redhat.com>
+Message-ID: <e158380d-cb13-c1aa-6dd6-77032fe72106@redhat.com>
+Date:   Wed, 22 Sep 2021 15:42:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210922124400.GQ4323@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210919063848.1476776-10-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 02:44:00PM +0200, Peter Zijlstra wrote:
-> On Sun, Sep 12, 2021 at 11:34:47PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed a -5.4% regression of netperf.Throughput_tps due to commit:
-> > 
-> > 
-> > commit: 56498cfb045d7147cdcba33795d19429afcd1d00 ("sched/fair: Avoid a second scan of target in select_idle_cpu")
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> 
-> Mel, was this in line with your own benchmarks?
+Hi,
 
-UDP-RR was not run but I could add it for future reference as a
-socket-based-ping-pong test. However, it would not be equivalent to lkp
-as I only run one client/server.
+On 9/19/21 8:38 AM, Liu Yi L wrote:
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+>
+> This exposes PAGE_SIZE and ADDR_WIDTH attributes. The iommufd could use
+> them to define the IOAS.
+>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  include/linux/iommu.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 943de6897f56..86d34e4ce05e 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -153,9 +153,13 @@ enum iommu_dev_features {
+>  /**
+>   * enum iommu_devattr - Per device IOMMU attributes
+>   * @IOMMU_DEV_INFO_FORCE_SNOOP [bool]: IOMMU can force DMA to be snooped.
+> + * @IOMMU_DEV_INFO_PAGE_SIZE [u64]: Page sizes that iommu supports.
+> + * @IOMMU_DEV_INFO_ADDR_WIDTH [u32]: Address width supported.
+I think this deserves additional info. What address width do we talk
+about, input, output, what stage if the IOMMU does support multiple stages
 
-For UDP_STREAM with single client the significant differences reported
-were;
+Thanks
 
-machine1:	+1.07% to +1.54% depending on packet size
-machine2:	-1.4%  to +0.9%
-machine3:	+1.5%  to -2.46%
-machine4:	+1.16% to +1.64%
-machine5:	-1.59% to +1.23%
-machine6:	-2.10% to +1.83%
+Eric
+>   */
+>  enum iommu_devattr {
+>  	IOMMU_DEV_INFO_FORCE_SNOOP,
+> +	IOMMU_DEV_INFO_PAGE_SIZE,
+> +	IOMMU_DEV_INFO_ADDR_WIDTH,
+>  };
+>  
+>  #define IOMMU_PASID_INVALID	(-1U)
 
-So it was a mix of small gains and some regressions with more gains than
-losses. As netperf is running localhost, it can be a bit unreliable and
-other workloads showed more gains than losses. On machine 2, total system
-CPU usage went from 1195.21 seconds to 1197.52 seconds but activities like
-context switches and interrupt deliveries were broadly similar. There
-were differences in the total number of slab pages used but roughly
-similar trends to probably reflect the system starting state more than
-anything else.
-
-On balance, I concluded that rescanning target is wasteful and that while
-there might be slight variances, they would be difficult to consistent
-reproduce. The largest concern is that skipping target means that one
-additional new rq is potentially examined. That would incur a small
-penalty if it was a wasteful search.
-
-For the LKP test, the nr_threads are 50% so I expect with two sockets,
-the machine is fully loaded and would be vulnerable to load-balancing
-artifacts as client and server threads move around. Hence, I ended up
-thinking that this result was likely a false positive.
-
--- 
-Mel Gorman
-SUSE Labs
