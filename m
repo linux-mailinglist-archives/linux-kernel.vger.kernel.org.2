@@ -2,86 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297FF414A6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0F7414A91
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhIVNWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhIVNWA (ORCPT
+        id S232233AbhIVNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:32:01 -0400
+Received: from n169-114.mail.139.com ([120.232.169.114]:14867 "EHLO
+        n169-114.mail.139.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhIVNcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:22:00 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E51C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:20:30 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id t8so6786951wrq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jjzSfIzClFJRZt6zoxy9+X07TFiUbqIQipBKrjAoe98=;
-        b=YZh3wbHywRzfNgvGsz2PxmMtxzVcfBTDFp/L6t0olpfG2FTqHPfGt/LMunBwu0VpDV
-         vgF+KOFRVbNnOIGGgkhHnLnQIn9YG/3R0845li00jDU6c2FJlYmM5SkSil4kVNz08C49
-         O+BvmLy9js+xbeNmujyh2SFNzsrHfDD52mUCbJsrCTwX3VjAC5KoqukrkT7NtZWJxp5N
-         qNDwXVk/+NiBYlZ0k2JfUgkV7dVs2OdfIP40yi5IVHiNqFXPaxXhlF9r9emcEHg/n97I
-         tfXPL2GrpycfvaCZpS0tS8q9XXDCc7sVn7SXVlORZJ6WwIvbTOqc5U5lqEic0xXeqnS0
-         WvSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jjzSfIzClFJRZt6zoxy9+X07TFiUbqIQipBKrjAoe98=;
-        b=P0z1Zf8qaCeWc7PHlDhDxqL1+llx+tpabdZ9smBqU+2aInV2tSaAdMY5OtCv6p8pM3
-         ATW00t8CbxYYDqJqL3nhkk+GiNtkfTCoyMDl6+WM4Wv7t7B9P4kEwxuPF9E7JWq+8P8Z
-         3a7bhW53tka118nR7HFhrq8PJdG1IUw/Y7GGki05kfZemYDh19fVCWo+3gLWLVxBg1yW
-         Y27A2iLMRxup+h6onbX6cINfYx0PVYUN1X3pbfq5xWvfQrYpYBQEGr5zOHzDOCDz7xGD
-         Vy4UXxfbcPz/ba+A/KkGlaTiCePt2m0FydWo9KPftRjp6DnoSeT101F1LX45KfV3x17q
-         7wlg==
-X-Gm-Message-State: AOAM530x2UvGRQRUiQjgJIcSdxm4NSKnGzgjZ5k2agkoy83NNpHaaY9y
-        vu3/sUbU+iTp4uUv5ytsM1Q9fA==
-X-Google-Smtp-Source: ABdhPJzGiU9xZHbENXdAsMe9dr7Z8vB1CduNwHHuDp0EQjehFK414KjWZDMAX/2LL3N+eMOQ0gcxBQ==
-X-Received: by 2002:a5d:4810:: with SMTP id l16mr41619169wrq.3.1632316828967;
-        Wed, 22 Sep 2021 06:20:28 -0700 (PDT)
-Received: from google.com ([95.148.6.233])
-        by smtp.gmail.com with ESMTPSA id g205sm2138712wmg.18.2021.09.22.06.20.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 06:20:28 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 14:20:27 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Carlos de Paula <me@carlosedp.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: da9063: Add support for latest EA silicon revision
-Message-ID: <YUstm5QU/92oN+Fn@google.com>
-References: <20210830195345.71853-1-me@carlosedp.com>
+        Wed, 22 Sep 2021 09:32:00 -0400
+X-Greylist: delayed 575 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Sep 2021 09:31:57 EDT
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM:                                                                                        
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.255.10] (unknown[113.108.77.67])
+        by rmsmtp-lg-appmail-39-12053 (RichMail) with SMTP id 2f15614b2db0269-70997;
+        Wed, 22 Sep 2021 21:20:51 +0800 (CST)
+X-RM-TRANSID: 2f15614b2db0269-70997
+Message-ID: <314324e7-02d7-dc43-b270-fb8117953549@139.com>
+Date:   Wed, 22 Sep 2021 21:20:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+From:   Chengguang Xu <cgxu519@139.com>
+Subject: Re: [PATCH v3] ovl: fix null pointer when
+ filesystemdoesn'tsupportdirect IO
+To:     Huang Jianan <huangjianan@oppo.com>, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        chao@kernel.org
+Cc:     guoweichao@oppo.com, yh@oppo.com, zhangshiming@oppo.com,
+        guanyuwei@oppo.com, jnhuang95@gmail.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cgxu519@mykernel.net
+References: <9ef909de-1854-b4be-d272-2b4cda52329f@oppo.com>
+ <20210922072326.3538-1-huangjianan@oppo.com>
+ <e42a183f-274c-425f-2012-3ff0003e1fcb@139.com>
+ <919e929d-6af7-b729-9fd2-954cd1e52999@oppo.com>
+In-Reply-To: <919e929d-6af7-b729-9fd2-954cd1e52999@oppo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210830195345.71853-1-me@carlosedp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021, Carlos de Paula wrote:
+在 2021/9/22 16:24, Huang Jianan 写道:
+>
+>
+> 在 2021/9/22 16:06, Chengguang Xu 写道:
+>> 在 2021/9/22 15:23, Huang Jianan 写道:
+>>> From: Huang Jianan <huangjianan@oppo.com>
+>>>
+>>> At present, overlayfs provides overlayfs inode to users. Overlayfs
+>>> inode provides ovl_aops with noop_direct_IO to avoid open failure
+>>> with O_DIRECT. But some compressed filesystems, such as erofs and
+>>> squashfs, don't support direct_IO.
+>>>
+>>> Users who use f_mapping->a_ops->direct_IO to check O_DIRECT support,
+>>> will read file through this way. This will cause overlayfs to access
+>>> a non-existent direct_IO function and cause panic due to null pointer:
+>>
+>> I just looked around the code more closely, in open_with_fake_path(),
+>>
+>> do_dentry_open() has already checked O_DIRECT open flag and 
+>> a_ops->direct_IO of underlying real address_space.
+>>
+>> Am I missing something?
+>>
+>>
+>
+> It seems that loop_update_dio will set lo->use_dio after open file 
+> without set O_DIRECT.
+> loop_update_dio will check f_mapping->a_ops->direct_IO but it deal 
+> with ovl_aops with
+> noop _direct_IO.
+>
+> So I think we still need a new aops?
 
-> This update adds new regmap to support the latest EA silicon
-> which will be selected based on the chip and variant
-> information read from the device.
-> 
-> Signed-off-by: Carlos de Paula <me@carlosedp.com>
-> ---
->  drivers/mfd/da9063-i2c.c        | 2 ++
->  include/linux/mfd/da9063/core.h | 1 +
->  2 files changed, 3 insertions(+)
 
-Applied, thanks.
+It means we should only set ->direct_IO for overlayfs inodes whose 
+underlying fs has DIRECT IO ability.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+
+Hi Miklos,
+
+Is it right solution for this kind of issue? What do you think?
+
+
+Thanks,
+
+Chengguang
+
+
+
+>
+> Thanks,
+> Jianan
+>
+>> Thanks,
+>>
+>> Chengguang
+>>
+>>
+>>>
+>>> Kernel panic - not syncing: CFI failure (target: 0x0)
+>>> CPU: 6 PID: 247 Comm: loop0
+>>> Call Trace:
+>>>   panic+0x188/0x45c
+>>>   __cfi_slowpath+0x0/0x254
+>>>   __cfi_slowpath+0x200/0x254
+>>>   generic_file_read_iter+0x14c/0x150
+>>>   vfs_iocb_iter_read+0xac/0x164
+>>>   ovl_read_iter+0x13c/0x2fc
+>>>   lo_rw_aio+0x2bc/0x458
+>>>   loop_queue_work+0x4a4/0xbc0
+>>>   kthread_worker_fn+0xf8/0x1d0
+>>>   loop_kthread_worker_fn+0x24/0x38
+>>>   kthread+0x29c/0x310
+>>>   ret_from_fork+0x10/0x30
+>>>
+>>> The filesystem may only support direct_IO for some file types. For
+>>> example, erofs supports direct_IO for uncompressed files. So return
+>>> -EINVAL when the file doesn't support direct_IO to fix this problem.
+>>>
+>>> Fixes: 5b910bd615ba ("ovl: fix GPF in swapfile_activate of file from 
+>>> overlayfs over xfs")
+>>> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+>>> ---
+>>> change since v2:
+>>>   - Return error in ovl_open directly. (Chengguang Xu)
+>>>
+>>> Change since v1:
+>>>   - Return error to user rather than fall back to buffered io. 
+>>> (Chengguang Xu)
+>>>
+>>>   fs/overlayfs/file.c | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+>>> index d081faa55e83..a0c99ea35daf 100644
+>>> --- a/fs/overlayfs/file.c
+>>> +++ b/fs/overlayfs/file.c
+>>> @@ -157,6 +157,10 @@ static int ovl_open(struct inode *inode, struct 
+>>> file *file)
+>>>       if (IS_ERR(realfile))
+>>>           return PTR_ERR(realfile);
+>>>   +    if ((f->f_flags & O_DIRECT) && (!realfile->f_mapping->a_ops ||
+>>> +        !realfile->f_mapping->a_ops->direct_IO))
+>>> +        return -EINVAL;
+>>> +
+>>>       file->private_data = realfile;
+>>>         return 0;
+>>
+>
+
