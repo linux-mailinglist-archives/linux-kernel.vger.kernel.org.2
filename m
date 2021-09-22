@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86C4414EF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA208414EFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 19:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbhIVRXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 13:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S236784AbhIVR0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 13:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236701AbhIVRXR (ORCPT
+        with ESMTP id S236717AbhIVR0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 13:23:17 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D91C061574;
-        Wed, 22 Sep 2021 10:21:47 -0700 (PDT)
-Received: from sandvich.training.denx.de (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: hws@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 2EE7C832FB;
-        Wed, 22 Sep 2021 19:21:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1632331303;
-        bh=BFyTMvottiIYx7K8jxjbZ/Lv8MzpO0zJc3PvHju9+G4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=xhyeM86XwGvJPOkGGR09vc+EykYk29/eUmfMRVG3ul19/jXFW4l5l5qr/MhCOlxSm
-         DAnf9q6s+N8ENHl9MfTJY/wCVo4HO3RPrC4GPHJUPH/B8L5ZXPcnAPbnEJd+RFQ1Yv
-         c3pBagRaYQxNkEs5UH6ff+b0dycdPTZHDEYQrPSyzSBqKG298Eo3+uO8m9rc03XGGJ
-         LmZ/zGmZ8Wm19cVM8PLW0W1N7CEUEG228RrgSyZ0vo7esqOgYKyvdWhpUNdad3l006
-         fu7pkJUS2kysC3NKZ2U1UoQ+g64XI7NrFXbLwsgKgWIngGEmFOA0283Zvz9yI22oJu
-         d9L8kqId92DnA==
-From:   Harald Seiler <hws@denx.de>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Harald Seiler <hws@denx.de>,
-        Jacek Anaszewski <j.anaszewski@samsung.com>
-Subject: [PATCH] leds: gpio: Always provide cdev->brightness_set_blocking()
-Date:   Wed, 22 Sep 2021 19:21:33 +0200
-Message-Id: <20210922172133.2257467-1-hws@denx.de>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+        Wed, 22 Sep 2021 13:26:02 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2E8C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:24:32 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id r18-20020a056214069200b0037a291a6081so12723630qvz.18
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 10:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=eYmFyjQxJlLAih8817ANlmnPSTWsjS/u2nvqtL+z9+Y=;
+        b=I17ESIifGUT777mMs0vxWBghGwJVlaVE20O69OixREeXEwLBOg/rXPqYptKmzC55eT
+         8qK5gNqDhH98ueVCasOa8BXfMpZYlgy/dmZPWn0kxdyE8bfF9ZZdWqe3zBKL0Yuuf401
+         B0rG96xc+06x8RyrkZBA/jW4+6/FHlkmAlqb6d7Ai/0fur8wrbUgSN3OaIYugLncJif9
+         7cGMtNb2E17chaZ8gHuUO4aqD59MBJXNK4bLL5PM9uFbiqaWk7+dgk9NQC9QjuCIs42T
+         nwaEKmjxBQxaxKRWmi7Wmdd6RF3iUeH0LpVLE+j7dnWcoztOL8CG8wz/HNyFoYt8WIbh
+         L1Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=eYmFyjQxJlLAih8817ANlmnPSTWsjS/u2nvqtL+z9+Y=;
+        b=cWHfOcQjT/yHa3K8wZ+1On8kSq1UGaabM8CMroVJ5RoOswt3V1MTGIDkA7QtTuHDpV
+         EKcsUvojVG8v5sMxUbbuvRWRkUCnYXLfDPiLv+CtX/ii2x/JDfc9tPQQbTXuy5TacqS2
+         pXGJ/XHcEhTZzKUp0qS/KYXzt3mcjdV6xr/uqIK/yM1LAo7jWgMZq+1azZ4mSmA969OP
+         00ihCEAMo6PGX4oDZg6rUjWlxWjx0mEARdf9FUMpB+oNvZeZuX4d6pzkzBUUXm1POGsI
+         jnGQtrJ/RWzWk+cCt9nj4kfEuduwUbdtxOVC6ZRQ4vDsa7PZOzp2SvoVD6tkmZg6cXtf
+         pn5w==
+X-Gm-Message-State: AOAM531k8KqFu478SiHpIFyleF43xeqMcc8TDpwMx7zssyMsjqdwwrUt
+        lVW/SF8U9oe8iLivaghajDh+VRgUeVhK
+X-Google-Smtp-Source: ABdhPJyTjx6VMtA6M/q+njx49v6Rp1/ItPKEMFUSCwQnP9Cak3Ek4KuWfJw311I8SZEYlyhCgCXw6impTb4K
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:d3ff:e8f7:11f4:c738])
+ (user=irogers job=sendgmr) by 2002:a25:c9c5:: with SMTP id
+ z188mr321611ybf.223.1632331471582; Wed, 22 Sep 2021 10:24:31 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 10:24:27 -0700
+Message-Id: <20210922172427.454376-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH v2] perf test: Make metric testing more robust.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even if the GPIO driver will never sleep, setting
-cdev->brightness_set_blocking() makes sense so
-led_set_brightness_sync() can be used with such LEDs.
+When testing metric expressions we fake counter values from 1 going
+upward. For some metrics this can yield negative values that are clipped
+to zero, and then cause divide by zero failures. Such clipping is
+questionable but may be a result of tools automatically generating
+metrics. A workaround for this case is to try a second time with counter
+values going in the opposite direction.
 
-Internally, both gpio_led_set_blocking() and gpio_led_set() call
-the same implementation anyway.
+This case was seen in a metric like:
+  event1 / max(event2 - event3, 0)
+But it may also happen in more sensible metrics like:
+  event1 / (event2 + event3 - 1 - event4)
 
-Cc: Jacek Anaszewski <j.anaszewski@samsung.com>
-Signed-off-by: Harald Seiler <hws@denx.de>
+v2. Rebase and more detail in commit message.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- drivers/leds/leds-gpio.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/perf/tests/pmu-events.c | 32 ++++++++++++++++++++++++++------
+ 1 file changed, 26 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
-index b5d5e22d2d1e..bbe582e47607 100644
---- a/drivers/leds/leds-gpio.c
-+++ b/drivers/leds/leds-gpio.c
-@@ -79,11 +79,12 @@ static int create_gpio_led(const struct gpio_led *template,
- 	int ret, state;
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index 43743cf719ef..0ed11764cfab 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -891,8 +891,18 @@ static int test_parsing(void)
+ 			}
  
- 	led_dat->cdev.default_trigger = template->default_trigger;
-+	led_dat->cdev.brightness_set_blocking = gpio_led_set_blocking;
-+
- 	led_dat->can_sleep = gpiod_cansleep(led_dat->gpiod);
- 	if (!led_dat->can_sleep)
- 		led_dat->cdev.brightness_set = gpio_led_set;
+ 			if (expr__parse(&result, &ctx, pe->metric_expr, 0)) {
+-				expr_failure("Parse failed", map, pe);
+-				ret++;
++				/*
++				 * Parsing failed, make numbers go from large to
++				 * small which can resolve divide by zero
++				 * issues.
++				 */
++				k = 1024;
++				hashmap__for_each_entry((&ctx.ids), cur, bkt)
++					expr__add_id_val(&ctx, strdup(cur->key), k--);
++				if (expr__parse(&result, &ctx, pe->metric_expr, 0)) {
++					expr_failure("Parse failed", map, pe);
++					ret++;
++				}
+ 			}
+ 			expr__ctx_clear(&ctx);
+ 		}
+@@ -947,10 +957,20 @@ static int metric_parse_fake(const char *str)
+ 		}
+ 	}
+ 
+-	if (expr__parse(&result, &ctx, str, 0))
+-		pr_err("expr__parse failed\n");
 -	else
--		led_dat->cdev.brightness_set_blocking = gpio_led_set_blocking;
-+
- 	led_dat->blinking = 0;
- 	if (blink_set) {
- 		led_dat->platform_gpio_blink_set = blink_set;
+-		ret = 0;
++	ret = 0;
++	if (expr__parse(&result, &ctx, str, 0)) {
++		/*
++		 * Parsing failed, make numbers go from large to small which can
++		 * resolve divide by zero issues.
++		 */
++		i = 1024;
++		hashmap__for_each_entry((&ctx.ids), cur, bkt)
++			expr__add_id_val(&ctx, strdup(cur->key), i--);
++		if (expr__parse(&result, &ctx, str, 0)) {
++			pr_err("expr__parse failed\n");
++			ret = -1;
++		}
++	}
+ 
+ out:
+ 	expr__ctx_clear(&ctx);
 -- 
-2.33.0
+2.33.0.464.g1972c5931b-goog
 
