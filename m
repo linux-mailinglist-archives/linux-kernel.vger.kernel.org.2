@@ -2,517 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4831D413E32
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84781413E38
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhIVADn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 20:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
+        id S231377AbhIVAHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 20:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbhIVADm (ORCPT
+        with ESMTP id S231352AbhIVAHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 20:03:42 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F38C061574;
-        Tue, 21 Sep 2021 17:02:13 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id l19so1107596vst.7;
-        Tue, 21 Sep 2021 17:02:13 -0700 (PDT)
+        Tue, 21 Sep 2021 20:07:13 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB54C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:05:44 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id c21-20020ac85195000000b002a540bbf1caso5688175qtn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ebij2fY1uyJsQGq2/Tf4Yu7akjWm+sdGeOmeRxcgXyg=;
-        b=hgRXGp3Qwuime21zs6j7D31R4EyjSRTE7dDMNzVNSZgSyLIkDTJgB40jujT1thWBrd
-         I1dXgYqL6ZSZg/Di3zYIidhpxXjspVu96DGW2TPO2VF1MizrWBpzkE3SwmQ8wt69liHF
-         /VcmAH5HTC82QX7dAWz0yt2yewCwC2MubthTU9TD9RxFfiaxHfuKBGwWhg+ZfRHIcup4
-         mi2YuJS5r9aRIUpARilBvZNBBM19r+CE2jtB7A7jQo6tHXpqcKcge2Df53b5+TMbGlyy
-         RadqabGxhL0cV50uu8e+34zrGQPHwygTuAJXzArly52sfLrfoYhKNIkv/LGhfBp/p+mm
-         ORCQ==
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=phOg6sfjUxaw2dev9sQjUWZF+Yytb7b5OFt6ForYj/8=;
+        b=iUirf8Xy9HBHz1WXV3sP98cQFZc4uLbiWcks09YKieGNfFGG+gs0k72fDMm3HygsTL
+         bTb1E9YXxvDETi2LPUmOcN81qVU8N8EHMfwEIhym5xr1GL4nuPP5VSQWu2ilOytZoTGS
+         29N5LX0Q1nAT/Yc19LBLlvpkIdDWZ9R0T+ikDFK/YvQdlOVrTR3jtpdXiFmTcxfOUu8s
+         Y4Gz2V9KUWdc0VylyfjHYjfz7ZmN9V9G49FIJvjgEkSVzn9mYiMA4K/jF7NhytdmJ3F/
+         hUx1PUAps9mDw+Jed5eSqhmcHrheKl00VcwQxkkBJMKDmZCGnvuYJgWoF05Eip0DYKf0
+         Y9bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ebij2fY1uyJsQGq2/Tf4Yu7akjWm+sdGeOmeRxcgXyg=;
-        b=NYYFxx9nVwFtKQJrxRkHeLsumbUJbWl4UDOVF2so4/dPMgHfJwmsIhIby9q/DhUSOM
-         WQredY3BGeuvDqgZ3Un8AM6Cjt/+KBMq64iBkZ39iqa9WAPtzZSe51aIzzSfsMva/MJj
-         RrY4zWF7PLmVjWeKD+3g+FiMWqqfRUIxLyqek5Z3HAzcNwh8knoPGSd2VR0nTJ/xZpBR
-         NpiXiiW3nJyDVXa5Wx8J460AJNaG+rx/U2f/BjzqzDRj96L0Hz1EP79QrVKixAac1kEx
-         S2Ve6HfrLgZ0OavsFIC657HlROWFDfVSEMb5/5IcLNAFdGfRP7AA6+8wRDJtQsiu25MX
-         /4jQ==
-X-Gm-Message-State: AOAM533hgH+nQX1LuojgVjZKs7eN9uh8hO8dzt4zFUL9wUX6uVbvLRw9
-        2i1rrSztJDaCKASLKVLvyZEx3Tf9PFK6FAgTOUGK4kQxr4c=
-X-Google-Smtp-Source: ABdhPJyIdCErTqdAInoVFlVZgdoiYPtaxjzxBT+6j/+tLDPh6+pt2hz95l24WFsNrlsPGTf4MTztVVFClOxmEs4uEn4=
-X-Received: by 2002:a67:ea83:: with SMTP id f3mr23168553vso.39.1632268931140;
- Tue, 21 Sep 2021 17:02:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210921085652.v2.1.Ib31940aba2253e3f25cbca09a2d977d27170e163@changeid>
- <CABBYNZLkMp1qLgwBVyU-V82W=M7MSPkZpsOFDGj1GKH=DB=5Ag@mail.gmail.com> <CAGPPCLDnfVZvhTyKZqS0J=LFUfzxkv2_23kcwrGGW4-145mM2Q@mail.gmail.com>
-In-Reply-To: <CAGPPCLDnfVZvhTyKZqS0J=LFUfzxkv2_23kcwrGGW4-145mM2Q@mail.gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Tue, 21 Sep 2021 17:02:00 -0700
-Message-ID: <CABBYNZJ5iYF_Y3ez_RQbZ5s70e750W0QU7DpaSXOV4eFi0aFng@mail.gmail.com>
-Subject: Re: [PATCH v2] bluetooth: Fix Advertisement Monitor Suspend/Resume
-To:     Manish Mandlik <mmandlik@google.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        ChromeOS Bluetooth Upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        Archie Pusaka <apusaka@google.com>,
-        Miao-chen Chou <mcchou@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=phOg6sfjUxaw2dev9sQjUWZF+Yytb7b5OFt6ForYj/8=;
+        b=Eg5YIS9dyleQwV8G/PiCXqpCILYHi2SmmPYzSBoMDm6yQAvx17lH362YlDMw2cag+Q
+         7D1NJxi8PazVQARpVkDf4Sg9kwLTNiFxZFM1z6s6a81BBhen4OcgfripY13WZvJDdInW
+         WRnPgBiB2i6MWNSLVMP7GTN6uOGFb+t2G3a/2m20RQNomdHJ8RMJ2wEQrNGt3JmMCvSt
+         o1VKbQqOE3UiuVGYaJVkpSJkste+Kz2sZok8Kj0l61lWCfzBGUqa1FNIcjeqkad8wxh9
+         YHf4T2IVIaEY83kShFVAl1PIZXa/81wYDr9eFx2zTqC/XHpgxWTPowlsH4j0FvQG2HV2
+         gg4Q==
+X-Gm-Message-State: AOAM530dJ3RDHUfwu+e2GUCw9dm/8ZsSNlmMf5Wi47ri9VXdO552Nx8w
+        3J9+o0MfmjFZ3gkw7MTOer6pUOzyA+Q=
+X-Google-Smtp-Source: ABdhPJwRFbj6xeEYgNbL67Zce9IIY/R6nA0AUChux2cSB+iV33dupsb1zwE380RUBsEvPw8un2YtVWvkUMY=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:b022:92d6:d37b:686c])
+ (user=seanjc job=sendgmr) by 2002:a25:598b:: with SMTP id n133mr40023097ybb.290.1632269143022;
+ Tue, 21 Sep 2021 17:05:43 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 21 Sep 2021 17:05:17 -0700
+Message-Id: <20210922000533.713300-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
+Subject: [PATCH v3 00/16] perf: KVM: Fix, optimize, and clean up callbacks
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manish,
+Peter, I left the Intel PT mess as-is.  Having to pass a NULL pointer
+from KVM arm64 seemed to be a lesser evil than more exports and multiple
+registration paths.
 
-On Tue, Sep 21, 2021 at 3:02 PM Manish Mandlik <mmandlik@google.com> wrote:
->
-> Hi Luiz,
->
-> On Tue, Sep 21, 2021 at 10:56 AM Luiz Augusto von Dentz <luiz.dentz@gmail=
-.com> wrote:
->>
->> Hi Manish,
->>
->> On Tue, Sep 21, 2021 at 8:57 AM Manish Mandlik <mmandlik@google.com> wro=
-te:
->> >
->> > During system suspend, advertisement monitoring is disabled by setting
->> > the HCI_VS_MSFT_LE_Set_Advertisement_Filter_Enable to False. This
->> > disables the monitoring during suspend, however, if the controller is
->> > monitoring a device, it sends HCI_VS_MSFT_LE_Monitor_Device_Event to
->> > indicate that the monitoring has been stopped for that particular
->> > device. This event may occur after suspend depending on the
->> > low_threshold_timeout and peer device advertisement frequency, which
->> > causes early wake up.
->> >
->> > Right way to disable the monitoring for suspend is by removing all the
->> > monitors before suspend and re-monitor after resume to ensure no event=
-s
->> > are received during suspend. This patch fixes this suspend/resume issu=
-e.
->> >
->> > Following tests are performed:
->> > - Add monitors before suspend and make sure DeviceFound gets triggered
->> > - Suspend the system and verify that all monitors are removed by kerne=
-l
->> >   but not Released by bluetoothd
->> > - Wake up and verify that all monitors are added again and DeviceFound
->> >   gets triggered
->> >
->> > Signed-off-by: Manish Mandlik <mmandlik@google.com>
->> > Reviewed-by: Archie Pusaka <apusaka@google.com>
->> > Reviewed-by: Miao-chen Chou <mcchou@google.com>
->> > ---
->> >
->> > Changes in v2:
->> > - Updated the Reviewd-by names
->> >
->> >  net/bluetooth/hci_request.c |  15 +++--
->> >  net/bluetooth/msft.c        | 117 +++++++++++++++++++++++++++++++----=
--
->> >  net/bluetooth/msft.h        |   5 ++
->> >  3 files changed, 116 insertions(+), 21 deletions(-)
->> >
->> > diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
->> > index 47fb665277d4..c018a172ced3 100644
->> > --- a/net/bluetooth/hci_request.c
->> > +++ b/net/bluetooth/hci_request.c
->> > @@ -1281,21 +1281,24 @@ static void suspend_req_complete(struct hci_de=
-v *hdev, u8 status, u16 opcode)
->> >         }
->> >  }
->> >
->> > -static void hci_req_add_set_adv_filter_enable(struct hci_request *req=
-,
->> > -                                             bool enable)
->> > +static void hci_req_prepare_adv_monitor_suspend(struct hci_request *r=
-eq,
->> > +                                               bool suspending)
->> >  {
->> >         struct hci_dev *hdev =3D req->hdev;
->> >
->> >         switch (hci_get_adv_monitor_offload_ext(hdev)) {
->> >         case HCI_ADV_MONITOR_EXT_MSFT:
->> > -               msft_req_add_set_filter_enable(req, enable);
->> > +               if (suspending)
->> > +                       msft_remove_all_monitors_on_suspend(hdev);
->> > +               else
->> > +                       msft_reregister_monitors_on_resume(hdev);
->> >                 break;
->> >         default:
->> >                 return;
->> >         }
->> >
->> >         /* No need to block when enabling since it's on resume path */
->> > -       if (hdev->suspended && !enable)
->> > +       if (hdev->suspended && suspending)
->> >                 set_bit(SUSPEND_SET_ADV_FILTER, hdev->suspend_tasks);
->> >  }
->> >
->> > @@ -1362,7 +1365,7 @@ void hci_req_prepare_suspend(struct hci_dev *hde=
-v, enum suspended_state next)
->> >                 }
->> >
->> >                 /* Disable advertisement filters */
->> > -               hci_req_add_set_adv_filter_enable(&req, false);
->> > +               hci_req_prepare_adv_monitor_suspend(&req, true);
->> >
->> >                 /* Prevent disconnects from causing scanning to be re-=
-enabled */
->> >                 hdev->scanning_paused =3D true;
->> > @@ -1404,7 +1407,7 @@ void hci_req_prepare_suspend(struct hci_dev *hde=
-v, enum suspended_state next)
->> >                 /* Reset passive/background scanning to normal */
->> >                 __hci_update_background_scan(&req);
->> >                 /* Enable all of the advertisement filters */
->> > -               hci_req_add_set_adv_filter_enable(&req, true);
->> > +               hci_req_prepare_adv_monitor_suspend(&req, false);
->> >
->> >                 /* Unpause directed advertising */
->> >                 hdev->advertising_paused =3D false;
->> > diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
->> > index 21b1787e7893..328d5e341f9a 100644
->> > --- a/net/bluetooth/msft.c
->> > +++ b/net/bluetooth/msft.c
->> > @@ -94,11 +94,14 @@ struct msft_data {
->> >         __u16 pending_add_handle;
->> >         __u16 pending_remove_handle;
->> >         __u8 reregistering;
->> > +       __u8 suspending;
->> >         __u8 filter_enabled;
->> >  };
->> >
->> >  static int __msft_add_monitor_pattern(struct hci_dev *hdev,
->> >                                       struct adv_monitor *monitor);
->> > +static int __msft_remove_monitor(struct hci_dev *hdev,
->> > +                                struct adv_monitor *monitor, u16 hand=
-le);
->> >
->> >  bool msft_monitor_supported(struct hci_dev *hdev)
->> >  {
->> > @@ -154,7 +157,7 @@ static bool read_supported_features(struct hci_dev=
- *hdev,
->> >  }
->> >
->> >  /* This function requires the caller holds hdev->lock */
->> > -static void reregister_monitor_on_restart(struct hci_dev *hdev, int h=
-andle)
->> > +static void reregister_monitor(struct hci_dev *hdev, int handle)
->> >  {
->> >         struct adv_monitor *monitor;
->> >         struct msft_data *msft =3D hdev->msft_data;
->> > @@ -182,6 +185,69 @@ static void reregister_monitor_on_restart(struct =
-hci_dev *hdev, int handle)
->> >         }
->> >  }
->> >
->> > +/* This function requires the caller holds hdev->lock */
->> > +static void remove_monitor_on_suspend(struct hci_dev *hdev, int handl=
-e)
->> > +{
->> > +       struct adv_monitor *monitor;
->> > +       struct msft_data *msft =3D hdev->msft_data;
->> > +       int err;
->> > +
->> > +       while (1) {
->> > +               monitor =3D idr_get_next(&hdev->adv_monitors_idr, &han=
-dle);
->> > +               if (!monitor) {
->> > +                       /* All monitors have been removed */
->> > +                       msft->suspending =3D false;
->> > +                       hci_update_background_scan(hdev);
->> > +                       return;
->> > +               }
->> > +
->> > +               msft->pending_remove_handle =3D (u16)handle;
->> > +               err =3D __msft_remove_monitor(hdev, monitor, handle);
->> > +
->> > +               /* If success, return and wait for monitor removed cal=
-lback */
->> > +               if (!err)
->> > +                       return;
->>
->> Not sure I follow this one, why you are not continuing removing the
->> other ones? Also doesn't adv monitor have a way to clear all monitors
->> at once?
->
-> If the remove command is sent to the controller successfully, we wait for=
- the command complete and removal of the remaining monitors is continued in=
- the callback function msft_le_cancel_monitor_advertisement_cb(). Monitors =
-are removed one by one.
+This is a combination of ~2 series to fix bugs in the perf+KVM callbacks,
+optimize the callbacks by employing static_call, and do a variety of
+cleanup in both perf and KVM.
 
-I'm afraid you would say that, we are currently attempting to move
-away from this type of design when the context can block since in that
-case we can just use a blocking/synchronous call we can deal with
-errors, otherwise this get all over the place and this will just
-contribute it, so if you guys could please focus on getting the
-cmd-sync changes tested so we can have these changes on top of rather
-than I have to cleanup after.
+Patch 1 fixes a mostly-theoretical bug where perf can deref a NULL
+pointer if KVM unregisters its callbacks while they're being accessed.
+In practice, compilers tend to avoid problematic reloads of the pointer
+and the PMI handler doesn't lose the race against module unloading,
+i.e doesn't hit a use-after-free.
 
-> MSFT extension doesn't support clearing all monitors at once. Although th=
-ey have a way to disable monitoring, but, in that case, the controller stil=
-l continues monitoring the devices that are currently being monitored and g=
-enerates an HCI_VS_MSFT_LE_Monitor_Device_Event with Monitor_state set to 0=
- if the device is no longer being monitored. This event may arrive after th=
-e system suspend and thus cause early wake up. So, to avoid this, we need t=
-o remove all monitors before suspend and re-add them after resume.
+Patches 2 and 3 fix an Intel PT handling bug where KVM incorrectly
+eats PT interrupts when PT is supposed to be owned entirely by the host.
 
-This should probably be documented properly so we know in the future
-why it was done this way, Im also confusion when you say the is a way
-to disable monitoring but it actually doesn't disable the events, that
-sounds either a bug or there is not really meant to disabling anything
-in which case the naming is probably confusing. Also can't we mask out
-the monitor events during suspend? Or perhaps that is due to not have
-a bit for HCI_EV_VENDOR? Id said this would be very useful, not only
-for things like msft but any other vendor event we don't seem to be
-able to mask out which can potentially wakeup the host.
+Patches 4-9 clean up perf's callback infrastructure and switch to
+static_call for arm64 and x86 (the only survivors).
 
-Btw, what is the deal with msft_vendor_evt, it doesn't seem to be
-doing anything with the events received, it just prints the vendor
-event and that's it, how are we processing
-HCI_VS_MSFT_LE_Monitor_Device_Event, etc?
+Patches 10-16 clean up related KVM code and unify the arm64/x86 callbacks.
 
->>
->>
->> > +
->> > +               /* Otherwise free the monitor and keep removing */
->> > +               hci_free_adv_monitor(hdev, monitor);
->> > +               handle++;
->> > +       }
->> > +}
->> > +
->> > +/* This function requires the caller holds hdev->lock */
->> > +void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev)
->> > +{
->> > +       struct msft_data *msft =3D hdev->msft_data;
->> > +
->> > +       if (!msft)
->> > +               return;
->> > +
->> > +       if (msft_monitor_supported(hdev)) {
->> > +               msft->suspending =3D true;
->> > +               /* Quitely remove all monitors on suspend to avoid wak=
-ing up
->> > +                * the system.
->> > +                */
->>
->> The above comment suggests it would remove all monitors, not just one.
->
-> Yes, as explained above, monitors will be removed one by one. The removal=
- process is continued in the msft_le_cancel_monitor_advertisement_cb() call=
-back function.
->>
->>
->> > +               remove_monitor_on_suspend(hdev, 0);
->> > +       }
->> > +}
->> > +
->> > +/* This function requires the caller holds hdev->lock */
->> > +void msft_reregister_monitors_on_resume(struct hci_dev *hdev)
->> > +{
->> > +       struct msft_data *msft =3D hdev->msft_data;
->> > +
->> > +       if (!msft)
->> > +               return;
->> > +
->> > +       if (msft_monitor_supported(hdev)) {
->> > +               msft->reregistering =3D true;
->> > +               /* Monitors are removed on suspend, so we need to add =
-all
->> > +                * monitors on resume.
->> > +                */
->> > +               reregister_monitor(hdev, 0);
->> > +       }
->> > +}
->> > +
->> >  void msft_do_open(struct hci_dev *hdev)
->> >  {
->> >         struct msft_data *msft =3D hdev->msft_data;
->> > @@ -214,7 +280,7 @@ void msft_do_open(struct hci_dev *hdev)
->> >                 /* Monitors get removed on power off, so we need to ex=
-plicitly
->> >                  * tell the controller to re-monitor.
->> >                  */
->> > -               reregister_monitor_on_restart(hdev, 0);
->> > +               reregister_monitor(hdev, 0);
->> >         }
->> >  }
->> >
->> > @@ -382,8 +448,7 @@ static void msft_le_monitor_advertisement_cb(struc=
-t hci_dev *hdev,
->> >
->> >         /* If in restart/reregister sequence, keep registering. */
->> >         if (msft->reregistering)
->> > -               reregister_monitor_on_restart(hdev,
->> > -                                             msft->pending_add_handle=
- + 1);
->> > +               reregister_monitor(hdev, msft->pending_add_handle + 1)=
-;
->> >
->> >         hci_dev_unlock(hdev);
->> >
->> > @@ -420,13 +485,25 @@ static void msft_le_cancel_monitor_advertisement=
-_cb(struct hci_dev *hdev,
->> >         if (handle_data) {
->> >                 monitor =3D idr_find(&hdev->adv_monitors_idr,
->> >                                    handle_data->mgmt_handle);
->> > -               if (monitor)
->> > +
->> > +               if (monitor && monitor->state =3D=3D ADV_MONITOR_STATE=
-_OFFLOADED)
->> > +                       monitor->state =3D ADV_MONITOR_STATE_REGISTERE=
-D;
->> > +
->> > +               /* Do not free the monitor if it is being removed due =
-to
->> > +                * suspend. It will be re-monitored on resume.
->> > +                */
->> > +               if (monitor && !msft->suspending)
->> >                         hci_free_adv_monitor(hdev, monitor);
->> >
->> >                 list_del(&handle_data->list);
->> >                 kfree(handle_data);
->> >         }
->> >
->> > +       /* If in suspend/remove sequence, keep removing. */
->> > +       if (msft->suspending)
->> > +               remove_monitor_on_suspend(hdev,
->> > +                                         msft->pending_remove_handle =
-+ 1);
->> > +
->> >         /* If remove all monitors is required, we need to continue the=
- process
->> >          * here because the earlier it was paused when waiting for the
->> >          * response from controller.
->> > @@ -445,7 +522,8 @@ static void msft_le_cancel_monitor_advertisement_c=
-b(struct hci_dev *hdev,
->> >         hci_dev_unlock(hdev);
->> >
->> >  done:
->> > -       hci_remove_adv_monitor_complete(hdev, status);
->> > +       if (!msft->suspending)
->> > +               hci_remove_adv_monitor_complete(hdev, status);
->> >  }
->> >
->> >  static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev=
- *hdev,
->> > @@ -578,15 +656,15 @@ int msft_add_monitor_pattern(struct hci_dev *hde=
-v, struct adv_monitor *monitor)
->> >         if (!msft)
->> >                 return -EOPNOTSUPP;
->> >
->> > -       if (msft->reregistering)
->> > +       if (msft->reregistering || msft->suspending)
->> >                 return -EBUSY;
->> >
->> >         return __msft_add_monitor_pattern(hdev, monitor);
->> >  }
->> >
->> >  /* This function requires the caller holds hdev->lock */
->> > -int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *mon=
-itor,
->> > -                       u16 handle)
->> > +static int __msft_remove_monitor(struct hci_dev *hdev,
->> > +                                struct adv_monitor *monitor, u16 hand=
-le)
->> >  {
->> >         struct msft_cp_le_cancel_monitor_advertisement cp;
->> >         struct msft_monitor_advertisement_handle_data *handle_data;
->> > @@ -594,12 +672,6 @@ int msft_remove_monitor(struct hci_dev *hdev, str=
-uct adv_monitor *monitor,
->> >         struct msft_data *msft =3D hdev->msft_data;
->> >         int err =3D 0;
->> >
->> > -       if (!msft)
->> > -               return -EOPNOTSUPP;
->> > -
->> > -       if (msft->reregistering)
->> > -               return -EBUSY;
->> > -
->> >         handle_data =3D msft_find_handle_data(hdev, monitor->handle, t=
-rue);
->> >
->> >         /* If no matched handle, just remove without telling controlle=
-r */
->> > @@ -619,6 +691,21 @@ int msft_remove_monitor(struct hci_dev *hdev, str=
-uct adv_monitor *monitor,
->> >         return err;
->> >  }
->> >
->> > +/* This function requires the caller holds hdev->lock */
->> > +int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *mon=
-itor,
->> > +                       u16 handle)
->> > +{
->> > +       struct msft_data *msft =3D hdev->msft_data;
->> > +
->> > +       if (!msft)
->> > +               return -EOPNOTSUPP;
->> > +
->> > +       if (msft->reregistering || msft->suspending)
->> > +               return -EBUSY;
->> > +
->> > +       return __msft_remove_monitor(hdev, monitor, handle);
->> > +}
->> > +
->> >  void msft_req_add_set_filter_enable(struct hci_request *req, bool ena=
-ble)
->> >  {
->> >         struct hci_dev *hdev =3D req->hdev;
->> > diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
->> > index 8018948c5975..6ec843b94d16 100644
->> > --- a/net/bluetooth/msft.h
->> > +++ b/net/bluetooth/msft.h
->> > @@ -24,6 +24,8 @@ int msft_remove_monitor(struct hci_dev *hdev, struct=
- adv_monitor *monitor,
->> >                         u16 handle);
->> >  void msft_req_add_set_filter_enable(struct hci_request *req, bool ena=
-ble);
->> >  int msft_set_filter_enable(struct hci_dev *hdev, bool enable);
->> > +void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev);
->> > +void msft_reregister_monitors_on_resume(struct hci_dev *hdev);
->>
->> I'd go with msft_suspend and msft_resume, that should be enough to
->> indicate what their intent are.
->
-> Ack. Updated in the v3 patch.
->>
->>
->> >  bool msft_curve_validity(struct hci_dev *hdev);
->> >
->> >  #else
->> > @@ -59,6 +61,9 @@ static inline int msft_set_filter_enable(struct hci_=
-dev *hdev, bool enable)
->> >         return -EOPNOTSUPP;
->> >  }
->> >
->> > +void msft_remove_all_monitors_on_suspend(struct hci_dev *hdev) {}
->> > +void msft_reregister_monitors_on_resume(struct hci_dev *hdev) {}
->> > +
->> >  static inline bool msft_curve_validity(struct hci_dev *hdev)
->> >  {
->> >         return false;
->> > --
->> > 2.33.0.464.g1972c5931b-goog
->> >
->>
->>
->> --
->> Luiz Augusto von Dentz
->
->
-> Thanks,
-> Manish.
+Based on "git://git.kernel.org/pub/scm/virt/kvm/kvm.git queue", commit
+680c7e3be6a3 ("KVM: x86: Exit to userspace ...").
+
+v3:
+  - Add wrappers for guest callbacks to that stubs can be provided when
+    GUEST_PERF_EVENTS=n.
+  - s/HAVE_GUEST_PERF_EVENTS/GUEST_PERF_EVENTS and select it from KVM
+    and XEN_PV instead of from top-level arm64/x86. [Paolo]
+  - Drop an unnecessary synchronize_rcu() when registering callbacks. [Peter]
+  - Retain a WARN_ON_ONCE() when unregistering callbacks if the caller
+    didn't provide the correct pointer. [Peter]
+  - Rework the static_call patch to move it all to common perf.
+  - Add a patch to drop the (un)register stubs, made possible after
+    having KVM+XEN_PV select GUEST_PERF_EVENTS.
+  - Split dropping guest callback "support" for arm, csky, etc... to a
+    separate patch, to make introducing GUEST_PERF_EVENTS cleaner.
+  
+v2 (relative to static_call v10):
+  - Split the patch into the semantic change (multiplexed ->state) and
+    introduction of static_call.
+  - Don't use '0' for "not a guest RIP".
+  - Handle unregister path.
+  - Drop changes for architectures that can be culled entirely.
+
+v2 (relative to v1):
+  - https://lkml.kernel.org/r/20210828003558.713983-6-seanjc@google.com
+  - Drop per-cpu approach. [Peter]
+  - Fix mostly-theoretical reload and use-after-free with READ_ONCE(),
+    WRITE_ONCE(), and synchronize_rcu(). [Peter]
+  - Avoid new exports like the plague. [Peter]
+
+v1:
+  - https://lkml.kernel.org/r/20210827005718.585190-1-seanjc@google.com
+
+v10 static_call:
+  - https://lkml.kernel.org/r/20210806133802.3528-2-lingshan.zhu@intel.com
 
 
+Like Xu (1):
+  perf/core: Rework guest callbacks to prepare for static_call support
 
---=20
-Luiz Augusto von Dentz
+Sean Christopherson (15):
+  perf: Ensure perf_guest_cbs aren't reloaded between !NULL check and
+    deref
+  KVM: x86: Register perf callbacks after calling vendor's
+    hardware_setup()
+  KVM: x86: Register Processor Trace interrupt hook iff PT enabled in
+    guest
+  perf: Stop pretending that perf can handle multiple guest callbacks
+  perf: Drop dead and useless guest "support" from arm, csky, nds32 and
+    riscv
+  perf: Add wrappers for invoking guest callbacks
+  perf: Force architectures to opt-in to guest callbacks
+  perf/core: Use static_call to optimize perf_guest_info_callbacks
+  KVM: x86: Drop current_vcpu for kvm_running_vcpu + kvm_arch_vcpu
+    variable
+  KVM: x86: More precisely identify NMI from guest when handling PMI
+  KVM: Move x86's perf guest info callbacks to generic KVM
+  KVM: x86: Move Intel Processor Trace interrupt handler to vmx.c
+  KVM: arm64: Convert to the generic perf callbacks
+  KVM: arm64: Drop perf.c and fold its tiny bits of code into arm.c /
+    pmu.c
+  perf: Drop guest callback (un)register stubs
+
+ arch/arm/kernel/perf_callchain.c   | 28 ++------------
+ arch/arm64/include/asm/kvm_host.h  |  9 ++++-
+ arch/arm64/kernel/perf_callchain.c | 13 ++++---
+ arch/arm64/kvm/Kconfig             |  1 +
+ arch/arm64/kvm/Makefile            |  2 +-
+ arch/arm64/kvm/arm.c               | 11 +++++-
+ arch/arm64/kvm/perf.c              | 62 ------------------------------
+ arch/arm64/kvm/pmu.c               |  8 ++++
+ arch/csky/kernel/perf_callchain.c  | 10 -----
+ arch/nds32/kernel/perf_event_cpu.c | 29 ++------------
+ arch/riscv/kernel/perf_callchain.c | 10 -----
+ arch/x86/events/core.c             | 13 ++++---
+ arch/x86/events/intel/core.c       |  5 +--
+ arch/x86/include/asm/kvm_host.h    |  7 +++-
+ arch/x86/kvm/Kconfig               |  1 +
+ arch/x86/kvm/pmu.c                 |  2 +-
+ arch/x86/kvm/svm/svm.c             |  2 +-
+ arch/x86/kvm/vmx/vmx.c             | 25 +++++++++++-
+ arch/x86/kvm/x86.c                 | 58 +++++-----------------------
+ arch/x86/kvm/x86.h                 | 17 ++++++--
+ arch/x86/xen/Kconfig               |  1 +
+ arch/x86/xen/pmu.c                 | 32 +++++++--------
+ include/kvm/arm_pmu.h              |  1 +
+ include/linux/kvm_host.h           | 10 +++++
+ include/linux/perf_event.h         | 41 ++++++++++++++------
+ init/Kconfig                       |  4 ++
+ kernel/events/core.c               | 39 +++++++++++++------
+ virt/kvm/kvm_main.c                | 44 +++++++++++++++++++++
+ 28 files changed, 235 insertions(+), 250 deletions(-)
+ delete mode 100644 arch/arm64/kvm/perf.c
+
+-- 
+2.33.0.464.g1972c5931b-goog
+
