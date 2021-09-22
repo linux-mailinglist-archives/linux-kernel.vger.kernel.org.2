@@ -2,101 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85F441515C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF006415168
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237468AbhIVU1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbhIVU1K (ORCPT
+        id S237571AbhIVUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:32:04 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:57854 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhIVUcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:27:10 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61408C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:25:40 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id u8so16313290lff.9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=32+aYzuaFD1O1viEyMAbzrc37otijziLTHIx/x5GVqU=;
-        b=bglC1jKwLFWblaCzoqFGj2TZxYkx2+0o4kjbG7EFOH/ZWj79L+2XA4WbYVlaiZPaaF
-         p3XlKpu+DswBZY+rQXxwpEf8QQCUMLJZxPq8D1nboHRcPpi+Dl/IeuEPE+NsF0BJNo9k
-         fnz0WVF9fzqBHN0ReOA/z8WWB2VX+cNiaifZI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=32+aYzuaFD1O1viEyMAbzrc37otijziLTHIx/x5GVqU=;
-        b=DZPWOjAM6Xugr9x1y/H96CJBa7xd4gYiWhbMnC94G/A+Pj0VV4bb1D64DudaLruqb4
-         evwNurgTQsqJhZVsN6D4Rpbx6AOPZf73IJuQZnRHv7SGgnnF9K+4sYBtj37kVywa1vNB
-         vGMemOyV/1ou2vszKY69EVonnn7oDXHEPoQHwGUBqVJOpw9f7FAOSrJsYFbQK9tsNbD3
-         P6/CAtJh7smiw/7v8X7VcGILTIYADn36xKF+gP8lD6RTg97TxQuBWAr5+vecXSrCD1YO
-         B2bFmk5LhTmfxuJfx/kSPPIPSuQeVa5AitYocTNKqO3Kh6Dv2eyIs0WNs6D4FroMWsdD
-         jq6Q==
-X-Gm-Message-State: AOAM533Zo9UrP4JcrRyv7dNy2uchBDT9tINa2Ncv9V9x2O7pjyAOpD2t
-        KmIVciqpUYTpV0ta5M9OQqu7aLFoZji22eWo60k=
-X-Google-Smtp-Source: ABdhPJw7+hm3iNWIZ5nMalh2Bdcw4DtGr+h8XPSlCFaClSGkhTUcZsVbXmkDZVlGaY0Tv/2StyxP7A==
-X-Received: by 2002:a2e:a4ba:: with SMTP id g26mr1298046ljm.254.1632342338450;
-        Wed, 22 Sep 2021 13:25:38 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id bd9sm361956ljb.29.2021.09.22.13.25.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 13:25:37 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id x27so16955376lfu.5
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:25:37 -0700 (PDT)
-X-Received: by 2002:a05:651c:1250:: with SMTP id h16mr1357916ljh.68.1632342337491;
- Wed, 22 Sep 2021 13:25:37 -0700 (PDT)
+        Wed, 22 Sep 2021 16:32:02 -0400
+Received: from Monstersaurus.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D4696F1;
+        Wed, 22 Sep 2021 22:30:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1632342631;
+        bh=ul9fCFg1tRByddGFWfXoN4EyqWHQr5uWkhY1V0hbcVI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rN2MyfFVkF3D84cvww+NlemN1EIfm993kWu7yyqvGJvXZvei5nrHfv0AnYtHGK3J7
+         59VgHtLSY4fGxCUtP0p4agZjz5MLpDNbURKXrlzCNy42qf+7VTC8MOAnn1O4B1MiXw
+         bLDbZMEmQhnqlDpm3RC8ZSHxaA5eHMKW/Ka3Rpss=
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+To:     linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert@glider.be>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] arm64: dts: renesas: r8a779a0: falcon-cpu: Add SW46 switch support
+Date:   Wed, 22 Sep 2021 21:30:27 +0100
+Message-Id: <20210922203027.3229474-1-kieran.bingham@ideasonboard.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210903160302.yh42vpkuob45dbpb@gilmour> <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
- <20210904091050.g5axxctgelciihjn@gilmour> <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
- <20210920144730.d7oabqfbx7pmyyfb@gilmour> <20210920154333.vunyxeshdb7jt5ka@gilmour>
- <20210920155350.h6624mt65vwg72p2@gilmour> <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
- <20210920171042.oq3ndp3ox4xv5odh@gilmour> <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
- <20210922095725.dk4vk42zb3kh7y6s@gilmour> <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
- <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com>
- <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com>
- <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com> <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
-In-Reply-To: <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Sep 2021 13:25:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whASMriPYRdH8kxC_UwObBtwHbPvf7rb58sUEZZyaFxJg@mail.gmail.com>
-Message-ID: <CAHk-=whASMriPYRdH8kxC_UwObBtwHbPvf7rb58sUEZZyaFxJg@mail.gmail.com>
-Subject: Re: Regression with mainline kernel on rpi4
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 1:19 PM Sudip Mukherjee
-<sudipm.mukherjee@gmail.com> wrote:
->
-> I added some debugs to print the addresses, and I am getting:
-> [   38.813809] sudip crtc 0000000000000000
->
-> This is from struct drm_crtc *crtc = connector->state->crtc;
+Add support for SW46-1 and SW46-2 as switches using the gpio-keys
+framework.
 
-Yeah, that was my personal suspicion, because while the line number
-implied "crtc->state" being NULL, the drm data structure documentation
-and other drivers both imply that "crtc" was the more likely one.
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+---
 
-I suspect a simple
+SW_LID and SW_DOCK are selected as low-impact switch events for the
+default configuration. Would SW_RFKILL_ALL, and SW_MUTE_DEVICE be
+preferred as more 'functional' defaults? (I have otherwise avoided these
+to hopefully prevent unwanted / undocumented effects occuring on
+development hardware running a full interface which may parse these)
 
-        if (!crtc)
-                return;
+I'd expect them to be overridden by any platform using them anyway.
 
-in vc4_hdmi_set_n_cts() is at least part of the fix for this all, but
-I didn't check if there is possibly something else that needs to be
-done too.
+Testing of these switches (and the buttons) shown at:
+  https://paste.debian.net/1212884/
+---
+ .../boot/dts/renesas/r8a779a0-falcon-cpu.dtsi | 21 ++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-                Linus
+diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+index d595fbad4589..5d188a7d6e73 100644
+--- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+@@ -52,6 +52,24 @@ keys {
+ 		pinctrl-0 = <&keys_pins>;
+ 		pinctrl-names = "default";
+ 
++		sw-1 {
++			gpios = <&gpio1 28 GPIO_ACTIVE_LOW>;
++			linux,code = <SW_LID>;
++			linux,input-type = <EV_SW>;
++			label = "SW46-1";
++			wakeup-source;
++			debounce-interval = <20>;
++		};
++
++		sw-2 {
++			gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
++			linux,code = <SW_DOCK>;
++			linux,input-type = <EV_SW>;
++			label = "SW46-2";
++			wakeup-source;
++			debounce-interval = <20>;
++		};
++
+ 		key-1 {
+ 			gpios = <&gpio6 18 GPIO_ACTIVE_LOW>;
+ 			linux,code = <KEY_1>;
+@@ -193,7 +211,8 @@ i2c6_pins: i2c6 {
+ 	};
+ 
+ 	keys_pins: keys {
+-		pins = "GP_6_18", "GP_6_19", "GP_6_20";
++		pins = "GP_1_28", "GP_1_29",
++		       "GP_6_18", "GP_6_19", "GP_6_20";
+ 		bias-pull-up;
+ 	};
+ 
+-- 
+2.30.2
+
