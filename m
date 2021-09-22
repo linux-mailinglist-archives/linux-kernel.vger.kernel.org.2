@@ -2,202 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DD44150C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4974150CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237287AbhIVTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:55:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235975AbhIVTzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:55:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 515AD61050;
-        Wed, 22 Sep 2021 19:53:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632340430;
-        bh=VII5+fZH888Mt498iOJoyPjMe70GGnKReQSGkvsggMM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QGyEmVPxS+Bt6haiWNy6QZuSsCPU0Sh3jujW9IrvdWFC6aVbo13/r/1tL8fjrKrGB
-         CFgwldsfjyDGSiK9ffkDXmVlKYjqj6auHxBWocW02VLt5gYmgVSlTFUD2IydsrBrPP
-         WBmUnbhrVz+irdc+u+NIDEjFaoIsujGmIKqrgrQ+gUJ76w/juK+QyLlP2owpasv5Nt
-         1y3ImM1crWQscQ4Rjp6pBCdvG5wAN7irWH9bvzvVjfXcaOsYwGPju4k3rAXBNtgGGv
-         8goSOH88T2SMmTJ47iY91ArB6RImAu6ujBxXbErRQ8l0RMGUs7OjbkQE1J+2kIphHX
-         NGjGqoGNf7XlA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1CCD25C0A54; Wed, 22 Sep 2021 12:53:50 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 12:53:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC][PATCH 6/7] context_tracking: Provide SMP ordering using RCU
-Message-ID: <20210922195350.GC880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210922110506.703075504@infradead.org>
- <20210922110836.244770922@infradead.org>
- <20210922151721.GZ880162@paulmck-ThinkPad-P17-Gen-1>
- <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
+        id S237256AbhIVT6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhIVT6L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 15:58:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0016EC061574;
+        Wed, 22 Sep 2021 12:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=UFM1KH+zbmE6JPHyyEk8OWK9O00VbDZsAf/P5r/PwVA=; b=sjUW1wCfS/qcUgj52Pj6I8ML4e
+        nti+AqFV5uc4gcg3ZIS4UomxPfwQLkYv6gUZJPsprODAOa9sj/DfTZeZjGuhUx4t9sms/ZlLGNJ/U
+        hf/SIOlOYcbUbZnco1mlRwaYp1ZOrEK5NmzkmLbjCVv1h0tyOkYal1v62Kiq0EqYofRyy7ASSxEw2
+        GcOvnOyN1vtscgV9r0xs0bVOU5mbl7Ciu1cK0/Jhi/Bu9k2F6YVVbeExrJifv0piQDzM8YOa4Cdx8
+        uDW+cz7MB4O0dcAVmzfmX9+bTjNq95nlnrG6ilIOfy6MZ2/Dnl4ANCe3aXZBw09fNXfkOaxNFq1DJ
+        RMx+KGJw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT8Jn-0055RS-4s; Wed, 22 Sep 2021 19:54:31 +0000
+Date:   Wed, 22 Sep 2021 20:54:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Chris Mason <clm@fb.com>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: Folios for 5.15 request - Was: re: Folio discussion recap -
+Message-ID: <YUuJ4xHxG9dQadda@casper.infradead.org>
+References: <YTu9HIu+wWWvZLxp@moria.home.lan>
+ <YUfvK3h8w+MmirDF@casper.infradead.org>
+ <YUo20TzAlqz8Tceg@cmpxchg.org>
+ <YUpC3oV4II+u+lzQ@casper.infradead.org>
+ <YUpKbWDYqRB6eBV+@moria.home.lan>
+ <YUpNLtlbNwdjTko0@moria.home.lan>
+ <YUtHCle/giwHvLN1@cmpxchg.org>
+ <YUtPvGm2RztJdSf1@moria.home.lan>
+ <YUtZL0e2eBIQpLPE@casper.infradead.org>
+ <A8B68BA5-E90E-4AFF-A14A-211BBC4CDECE@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <A8B68BA5-E90E-4AFF-A14A-211BBC4CDECE@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 09:33:43PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 22, 2021 at 08:17:21AM -0700, Paul E. McKenney wrote:
-> > On Wed, Sep 22, 2021 at 01:05:12PM +0200, Peter Zijlstra wrote:
-> > > Use rcu_user_{enter,exit}() calls to provide SMP ordering on context
-> > > tracking state stores:
-> > > 
-> > > __context_tracking_exit()
-> > >   __this_cpu_write(context_tracking.state, CONTEXT_KERNEL)
-> > >   rcu_user_exit()
-> > >     rcu_eqs_exit()
-> > >       rcu_dynticks_eqs_eit()
-> > >         rcu_dynticks_inc()
-> > >           atomic_add_return() /* smp_mb */
-> > > 
-> > > __context_tracking_enter()
-> > >   rcu_user_enter()
-> > >     rcu_eqs_enter()
-> > >       rcu_dynticks_eqs_enter()
-> > >         rcu_dynticks_inc()
-> > > 	  atomic_add_return() /* smp_mb */
-> > >   __this_cpu_write(context_tracking.state, state)
-> > > 
-> > > This separates USER/KERNEL state with an smp_mb() on each side,
-> > > therefore, a user of context_tracking_state_cpu() can say the CPU must
-> > > pass through an smp_mb() before changing.
-> > > 
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Wed, Sep 22, 2021 at 04:56:16PM +0000, Chris Mason wrote:
+> 
+> > On Sep 22, 2021, at 12:26 PM, Matthew Wilcox <willy@infradead.org> wrote:
 > > 
-> > For the transformation to negative errno return value and name change
-> > from an RCU perspective:
+> > On Wed, Sep 22, 2021 at 11:46:04AM -0400, Kent Overstreet wrote:
+> >> On Wed, Sep 22, 2021 at 11:08:58AM -0400, Johannes Weiner wrote:
+> >>> On Tue, Sep 21, 2021 at 05:22:54PM -0400, Kent Overstreet wrote:
+> >>>> - it's become apparent that there haven't been any real objections to the code
+> >>>>   that was queued up for 5.15. There _are_ very real discussions and points of
+> >>>>   contention still to be decided and resolved for the work beyond file backed
+> >>>>   pages, but those discussions were what derailed the more modest, and more
+> >>>>   badly needed, work that affects everyone in filesystem land
+> >>> 
+> >>> Unfortunately, I think this is a result of me wanting to discuss a way
+> >>> forward rather than a way back.
+> >>> 
+> >>> To clarify: I do very much object to the code as currently queued up,
+> >>> and not just to a vague future direction.
+> >>> 
+> >>> The patches add and convert a lot of complicated code to provision for
+> >>> a future we do not agree on. The indirections it adds, and the hybrid
+> >>> state it leaves the tree in, make it directly more difficult to work
+> >>> with and understand the MM code base. Stuff that isn't needed for
+> >>> exposing folios to the filesystems.
+> >>> 
+> >>> As Willy has repeatedly expressed a take-it-or-leave-it attitude in
+> >>> response to my feedback, I'm not excited about merging this now and
+> >>> potentially leaving quite a bit of cleanup work to others if the
+> >>> downstream discussion don't go to his liking.
 > > 
-> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Thanks!
-> 
-> > For the sampling of nohz_full userspace state:
+> > We're at a take-it-or-leave-it point for this pull request.  The time
+> > for discussion was *MONTHS* ago.
 > > 
-> > Another approach is for the rcu_data structure's ->dynticks variable to
-> > use the lower two bits to differentiate between idle, nohz_full userspace
-> > and kernel.  In theory, inlining should make this zero cost for idle
-> > transition, and should allow you to safely sample nohz_full userspace
-> > state with a load and a couple of memory barriers instead of an IPI.
 > 
-> That's what I do now, it's like:
+> I’ll admit I’m not impartial, but my fundamental goal is moving the patches forward.  Given folios will need long term maintenance, engagement, and iteration throughout mm/, take-it-or-leave-it pulls seem like a recipe for future conflict, and more importantly, bugs.
 > 
->   <user code>
-> 
->   state = KERNEL
->   smp_mb()
-> 
->   <kernel code>
-> 
->   smp_mb()
->   state = USER
-> 
->   <user core>
-> 
-> vs
-> 
->   <patch kernel code>
->   smp_mb()
->   if (state == USER)
->     // then we're guaranteed any subsequent kernel code execution
->     // will see the modified kernel code
-> 
-> more-or-less
+> I’d much rather work it out now.
 
-OK.
+That's the nature of a pull request.  It's binary -- either it's pulled or
+it's rejected.  Well, except that Linus has opted for silence, leaving
+me in limbo.  I have no idea what he's thinking.  I don't know if he
+agrees with Johannes.  I don't know what needs to change for Linus to
+like this series enough to pull it (either now or in the 5.16 merge
+window).  And that makes me frustrated.  This is over a year of work
+from me and others, and it's being held up over concerns which seem to
+me to be entirely insubstantial (the name "folio"?  really?  and even
+my change to use "pageset" was met with silence from Linus.)
 
-> > To make this work nicely, the low-order bits have to be 00 for kernel,
-> > and (say) 01 for idle and 10 for nohz_full userspace.  11 would be an
-> > error.
-> > 
-> > The trick would be for rcu_user_enter() and rcu_user_exit() to atomically
-> > increment ->dynticks by 2, for rcu_nmi_exit() to increment by 1 and
-> > rcu_nmi_enter() to increment by 3.  The state sampling would need to
-> > change accordingly.
-> > 
-> > Does this make sense, or am I missing something?
-> 
-> Why doesn't the proposed patch work? Also, ISTR sampling of remote
-> context state coming up before. And as is, it's a weird mix between
-> context_tracking and rcu.
+I agree with Kent & Johannes that struct page is a mess.  I agree that
+cleaning it up will bring many benefits.  I've even started a design
+document here:
 
-I wasn't saying that the patch doesn't work.  But doesn't it add an IPI?
-Or was I looking at it too early this morning?
+https://kernelnewbies.org/MemoryTypes
 
-As to RCU's ->dynticks and context-tracking state, something about RCU
-being there first by many years.  ;-)  Plus, does context-tracking
-track idleness within the kernel?  RCU needs that as well.
+I do see some advantages to splitting out anon memory descriptors from
+file memory descriptors, but there is also plenty of code which handles
+both types in the same way.  I see the requests to continue to use
+struct page to mean a "memory descriptor which is either anon or file",
+but I really think that's the wrong approach.  A struct page should
+represent /a page/ of memory.  Otherwise we're just confusing people.
+I know it's a confusion we've had since compound pages were introduced,
+what, 25+ years ago, but that expediency has overstayed its welcome.
 
-> AFAICT there is very little useful in context_tracking as is, but it's
-> also very weird to have to ask RCU about this. Is there any way to slice
-> this this code differently? Perhaps move some of the state RCU now keeps
-> into context_tracking ?
-> 
-> Anyway, lemme see if I get your proposal; lets say the counter starts at
-> 0 and is in kernel space.
-> 
->  0x00(0) - kernel
->  0x02(2) - user
->  0x04(0) - kernel
-> 
-> So far so simple, then NMI on top of that goes:
-> 
->  0x00(0) - kernel
->  0x03(3) - kernel + nmi
+The continued silence from Linus is really driving me to despair.
+I'm sorry I've been so curt with some of the requests.  I really am
+willing to change things; I wasn't planning on doing anything with slab
+until Kent prodded me to do it.  But equally, I strongly believe that
+everything I've done here is a step towards the things that everybody
+wants, and I'm frustrated that it's being perceived as a step away,
+or even to the side of what people want.
 
-This would stay 0x00 because the NMI is interrupting kernel code.  The
-check of rcu_dynticks_curr_cpu_in_eqs() avoids this additional increment.
-
->  0x04(0) - kernel
-
-And same here, still zero.
-
->  0x06(2) - user
-
-And now 0x02.
-
->  0x09(1) - user + nmi
-
-This would be 0x04, back in the kernel.  Which is the area of concern,
-because the amount to increment depends on the counter value, requiring
-an additional arithmetic operation on the from-idle fastpath.  Probably
-not visible even in microbenchmarks, but still a potential issue.
-
->  0x0a(2) - user
-
-Now 0x06, back in nohz_full userspace.
-
-> Which then gives us:
-> 
->  (0) := kernel
->  (1) := nmi-from-user
->  (2) := user
->  (3) := nmi-from-kernel
-
-You need to know NMI as a separate state?
-
-> Which should work I suppose. But like I said above, I'd be happier if
-> this counter would live in context_tracking rather than RCU.
-
-This would be the first non-RCU user of the counter.  The various
-rcu_*_{enter,exit}() functions are still required, though, in order
-to handle things like deferred wakeups.  Plus RCU makes heavy use
-of that counter.  So it is not clear that moving the counter to the
-context-tracking subsystem really buys you anything.
-
-But it would be good to avoid maintaining duplicate information,
-that is assuming that the information really is duplicate...
-
-							Thanx, Paul
+So ... if any of you have Linus' ear.  Maybe you're at a conference with
+him later this week.  Please, just get him to tell me what I need to do
+to make him happy with this patchset.
