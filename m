@@ -2,447 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E59414B88
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38332414B90
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhIVOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
+        id S236140AbhIVORO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhIVOPb (ORCPT
+        with ESMTP id S232401AbhIVORK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:15:31 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8483C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:14:00 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id w9so1967565qvs.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:14:00 -0700 (PDT)
+        Wed, 22 Sep 2021 10:17:10 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FBFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:15:40 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id bk29so10040807qkb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=KqX+VtUoF+9CPexwv22MK/yzAk7W0pREam0Hxx6uxks=;
-        b=Fzi/k7Helf00gfbOosFH6EiIk9Www3OVMs47w7UhDmBuzDaBk08YrPotphGkvENyRL
-         UCw8RXlGWsMNhdra1XJ6HY+mySkH3HBBY2PeXr0L2C6p3wZZUWkoFbbseHfiD0RFhyDK
-         6nx59rBxu93EwMObnGtr9blmM3zWZhlLV0By0fsi1efdMo4a9AM/3yXClCoAhv9LfyTr
-         X/EQ8TcbTSTym7YpSbdIK4hLOgJFAFhnx8QPW+Wb5eMpwZE1OEErEt0jjLhE2DnnfF2M
-         iSoQC2FhlR6tlNa8ne8JQXXe7X96MRrdMIlpdRHKqargYYM7GFZFAuIC3+6CydwA5zj5
-         /jwA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b1H15SkyQh5wiyE7YL9mKDwx2RwKUVFj8b710GD5bxI=;
+        b=Hg0mEQyzc8dTrr6EjgdaOfrfeiihdw72n58GfloVXfBFH04yATeQtCKK50OiULJQwY
+         9kuQwBiQePFGtay30CwWY3Tzjuz6bTOyySmWgAgVR3mpb7L35BXa2esdtnwD1j5fEpu9
+         Yw5IPHHSrcSAEmRyv+GrQVFVDI9h0VsNWlyjCif31O19DzzL8bY3iqWFwpL0aDybRC2G
+         Ee2rzyspcZTloleps4PPOaqqN8kS8qLJ3zwtP4bET1U9Q9/l4Vg52cT/7ABnNV5zCKuA
+         Ltwywnka56t9PjLsD0v5VMd1D+aWyhwENfMz3kTgEHBbEW6Rg7O+pnWTpiYijssuxf28
+         hW4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=KqX+VtUoF+9CPexwv22MK/yzAk7W0pREam0Hxx6uxks=;
-        b=G3DxJxx6VPr3LaiFnRNyDdNBWYhWVD8S1yeU//IIoqjcnX/ahq9B1Zvx9L/nHy4sfE
-         FQfWrSfb//0naHD41TeihTX+R+vepyy59qZzw3aM8IfEG8Tn0p5zagLM464IHHxy4rVP
-         sQnUmMIJ9J8NwTRCe9xSnWZ7Fr3ntRgiwbZo4gBCkjgY88XTPGUwNoOtg/ySiunJMdfy
-         zdlT7aGoSuQ6zpFakOD/vmVdj+w0zbVDX5E3P7l8kSOXnApHkZhambWUB49T/ko0d1nu
-         XTaLb0Vhg0NcoqzVWObRdChNEC6pnugTITKHSL9CK3DMvhapVvVvhfpAJppNkHMLgFAP
-         ARlA==
-X-Gm-Message-State: AOAM5301sOF3vNYqGAW2V74A8D7O0nCQSPfABcU6KlO4EEZlgDDBpMLS
-        1dDFVxvY5HSmHZ8o0ulZr59p8UXM8BW7w5Nk
-X-Google-Smtp-Source: ABdhPJww6d64A3eJrEJ2j2aDSRRk8jYsUUJlvLtY8UfxXN0pAhor/30wDN7ZhBuJog82EqycwETsCg==
-X-Received: by 2002:a05:6214:1233:: with SMTP id p19mr34518895qvv.20.1632320040050;
-        Wed, 22 Sep 2021 07:14:00 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id c25sm765836qtm.78.2021.09.22.07.13.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:13:59 -0700 (PDT)
-Message-ID: <7591d62b4aedb0ad789f09d90695c700c65df53d.camel@ndufresne.ca>
-Subject: Re: [PATCH v9 00/13] amphion video decoder/encoder driver
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de
-Cc:     hverkuil-cisco@xs4all.nl, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, aisheng.dong@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Wed, 22 Sep 2021 10:13:57 -0400
-In-Reply-To: <cover.1631521295.git.ming.qian@nxp.com>
-References: <cover.1631521295.git.ming.qian@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b1H15SkyQh5wiyE7YL9mKDwx2RwKUVFj8b710GD5bxI=;
+        b=wfyUVU6eEDBnI886+AKmuJOT8NnOjJKa4GE3+beMfMuNg7Hm1beJO8N/K4U56eBl5T
+         PncWReFqShSfGISSMJCDnaP4shl+HRXrwuOoxyPuhqH956Fv4X0oE5nvYhC/ZC5j7q+T
+         BQQPV6uR0fmL6h/15LxyV7cxI0wfYsndCBD6qM7n9g2w4g57qC3IacHN1zyeC69AJ6xd
+         yGAE3k1sxh2wXri1NpcQFxtRgJU3y85T19iGVogF3cZ5+N9lrbw02EkukT4+b6KXNVVJ
+         dKa1eT8qTduTSjl5paYuUnsdNjRmrDVLAXj4rAWlel5V4f/Rr9V6zZM3vaCk87+QqKjG
+         yyjQ==
+X-Gm-Message-State: AOAM5300fJIxyN5sMtxLySO1UxQ7cni/sqTofkmGOOhl1dz25toa9k5F
+        vZANS4s53M53uEpN0VIJGT7587qnOaknT8yyLkj7wg==
+X-Google-Smtp-Source: ABdhPJy8l8BK8+xODAgRRx+Lree5j7kqPybY7WNu+IbCs1F/7Zzx8ux8RnoiKSYSm27emAUmf0450H9qAwIkfJE8zoo=
+X-Received: by 2002:a25:ac13:: with SMTP id w19mr28323ybi.402.1632320138768;
+ Wed, 22 Sep 2021 07:15:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210920142614.4891-1-mgorman@techsingularity.net>
+ <20210920142614.4891-3-mgorman@techsingularity.net> <22e7133d674b82853a5ee64d3f5fc6b35a8e18d6.camel@gmx.de>
+ <20210921103621.GM3959@techsingularity.net> <ea2f9038f00d3b4c0008235079e1868145b47621.camel@gmx.de>
+ <20210922132002.GX3959@techsingularity.net>
+In-Reply-To: <20210922132002.GX3959@techsingularity.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 22 Sep 2021 16:15:27 +0200
+Message-ID: <CAKfTPtCxhzz1XgNXM8jaQC2=tGHm0ap88HneUgWTpCSeWVZwsw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] sched/fair: Scale wakeup granularity relative to nr_running
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ming,
+On Wed, 22 Sept 2021 at 15:20, Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> On Wed, Sep 22, 2021 at 07:22:20AM +0200, Mike Galbraith wrote:
+> > On Tue, 2021-09-21 at 11:36 +0100, Mel Gorman wrote:
+> > > On Tue, Sep 21, 2021 at 05:52:32AM +0200, Mike Galbraith wrote:
+> > >
+> > >
+> > > > Preemption does rapidly run into diminishing return as load climbs for
+> > > > a lot of loads, but as you know, it's a rather sticky wicket because
+> > > > even when over-committed, preventing light control threads from slicing
+> > > > through (what can be a load's own work crew of) hogs can seriously
+> > > > injure performance.
+> > > >
+> > >
+> > > Turning this into a classic Rob Peter To Pay Paul problem. We don't know
+> > > if there is a light control thread that needs to run or not that affects
+> > > overall performance. It all depends on whether that control thread needs
+> > > to make progress for the overall workload or whether there are a mix of
+> > > workloads resulting in overloading.
+> >
+> > WRT overload, and our good buddies Peter and Paul :) I added...
+> >       if (gran >= sysctl_sched_latency >> 1)
+> >               trace_printk("runnable:%d preempt disabled\n",cfs_rq->nr_running);
+> > ...to watch, and met the below when I.. logged in.
+> >
+> > homer:..debug/tracing # tail -20 trace
+> >                X-2229    [002] d..5.    60.690322: wakeup_gran: runnable:9 preempt disabled
+> >                X-2229    [002] d..5.    60.690325: wakeup_gran: runnable:10 preempt disabled
+> >                X-2229    [002] d..5.    60.690330: wakeup_gran: runnable:11 preempt disabled
+> >                X-2229    [002] d..5.    60.690363: wakeup_gran: runnable:13 preempt disabled
+> >                X-2229    [002] d..5.    60.690377: wakeup_gran: runnable:14 preempt disabled
+> >                X-2229    [002] d..5.    60.690390: wakeup_gran: runnable:15 preempt disabled
+> >                X-2229    [002] d..5.    60.690404: wakeup_gran: runnable:16 preempt disabled
+> >                X-2229    [002] d..5.    60.690425: wakeup_gran: runnable:9 preempt disabled
+> >        ksmserver-2694    [003] d..3.    60.690432: wakeup_gran: runnable:6 preempt disabled
+> >        ksmserver-2694    [003] d..3.    60.690436: wakeup_gran: runnable:7 preempt disabled
+> >                X-2229    [002] d..5.    60.690451: wakeup_gran: runnable:6 preempt disabled
+> >                X-2229    [002] d..5.    60.690465: wakeup_gran: runnable:7 preempt disabled
+> >             kmix-2736    [000] d..3.    60.690491: wakeup_gran: runnable:6 preempt disabled
+> >                X-2229    [004] d..5.    92.889635: wakeup_gran: runnable:6 preempt disabled
+> >                X-2229    [004] d..5.    92.889675: wakeup_gran: runnable:6 preempt disabled
+> >                X-2229    [004] d..5.    92.889863: wakeup_gran: runnable:6 preempt disabled
+> >                X-2229    [004] d..5.    92.889944: wakeup_gran: runnable:6 preempt disabled
+> >                X-2229    [004] d..5.    92.889957: wakeup_gran: runnable:7 preempt disabled
+> >                X-2229    [004] d..5.    92.889968: wakeup_gran: runnable:8 preempt disabled
+> >   QXcbEventQueue-2740    [000] d..4.    92.890025: wakeup_gran: runnable:6 preempt disabled
+> > homer:..debug/tracing
+> >
+> > Watching 'while sleep 1; do clear;tail trace; done' with nothing but a
+> > kbuild running is like watching top.  There's enough stacking during
+> > routine use of my desktop box that it runs into the tick granularity
+> > wall pretty much continuously, so 'overload' may want redefining.
+> >
+>
+> Ok, that's pretty convincing. You didn't mention if there were
+> interactivity glitches but it's possible. This is what I'm currently
+> testing but have no results for yet. It caps wakeup_gran at
+> sysctl_sched_latency.
+>
+> ---8<---
+> sched/fair: Scale wakeup granularity relative to nr_running
+>
+> Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs") moved
+> the kernel.sched_wakeup_granularity_ns sysctl under debugfs.  One of the
+> reasons why this sysctl may be used may be for "optimising for throughput",
+> particularly when overloaded. The tool TuneD sometimes alters this for two
+> profiles e.g. "mssql" and "throughput-performance". At least version 2.9
+> does but it changed in master where it also will poke at debugfs instead.
+>
+> Internal parameters like sysctl_sched_wakeup_granularity are scaled
+> based on the number of CPUs due to sysctl_sched_tunable_scaling. For
+> simplicity, the timing figures in this changelog are based on
+> SCHED_TUNABLESCALING_NONE.
 
-Le lundi 13 septembre 2021 à 17:11 +0800, Ming Qian a écrit :
-> Hi all,
-> 
-> This patch series adds support for
-> the amphion video encoder and decoder
-> via the VPU block present in imx8q platforms.
-> Currently, support for IMX8QXP and IMX8QM is included.
+This is a bit misleading because the platform that you used to
+highlight the problem has a 7ms sysctl_sched_wakeup_granularity. which
+is far more than your tick which should be 1ms
 
-I've been trying to test this driver, based it on mainline 5.15-rc2 in absence
-of recommendation here. There seems to be poor mainline support for this board,
-notably only 1 CPU come up. Finally, I could not test anything as the driver
-failed to boot the decoders and encoder cores:
+>
+> During task migration or wakeup, a decision is made on whether
+> to preempt the current task or not. To limit over-scheduled,
+> sysctl_sched_wakeup_granularity delays the preemption to allow at least 1ms
+> of runtime before preempting. However, when a domain is heavily overloaded
+> (e.g. hackbench), the degree of over-scheduling is still severe. This is
+> problematic as time is wasted rescheduling tasks that could instead be
+> used by userspace tasks.
+>
+> However, care must be taken. Even if a system is overloaded, there may
+> be high priority threads that must still be able to run. Mike Galbraith
+> explained the contraints as follows;
+>
+>         CFS came about because the O1 scheduler was unfair to the
+>         point it had starvation problems. People pretty much across the
+>         board agreed that a fair scheduler was a much way better way
+>         to go, and CFS was born.  It didn't originally have the sleep
+>         credit business, but had to grow it to become _short term_ fair.
+>         Ingo cut the sleep credit in half because of overscheduling, and
+>         that has worked out pretty well all told.. but now you're pushing
+>         it more in the unfair direction, all the way to extremely unfair
+>         for anything and everything very light.
+>
+>         Fairness isn't the holy grail mind you, and at some point, giving
+>         up on short term fairness certainly isn't crazy, as proven by your
+>         hackbench numbers and other numbers we've seen over the years,
+>         but taking bites out of the 'CF' in the CFS that was born to be a
+>         corner-case killer is.. worrisome.  The other shoe will drop.. it
+>         always does :)
+>
+> This patch scales the wakeup granularity based on the number of running
+> tasks on the CPU relative to
+>
+>         sched_nr_disable_gran = sysctl_sched_latency / sysctl_sched_wakeup_granularity
+>
+> By default, this will allow the wakeup_gran to scale from
+> sysctl_sched_wakeup_granularity up to sysctl_sched_wakeup_granularity up to
+> sysctl_sched_latency depending on the number of running tasks on a cfs_rq.
+> By default, the limit is 6ms.
+>
+> Note that the TuneD throughput-performance profile allows up to 15ms
+> for sysctl_sched_latency (ignoring scaling) but there is no explanation
+> why such a long period was necessary or why sched_latency_ns is also
+> not adjusted. The intent may have been to disable wakeup preemption
+> or it might be an oversight.  An internet search for instances where
+> sysctl_sched_wakeup_granularity parameter are tuned to high values offer
+> either no explanation or a broken one.
+>
+> TODO: Results positive or negative
+>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> ---
+>  kernel/sched/fair.c     | 64 ++++++++++++++++++++++++++++++++++++++++++-------
+>  kernel/sched/features.h |  6 +++++
+>  2 files changed, 61 insertions(+), 9 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index ff69f245b939..5ec3b12039d6 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -84,6 +84,14 @@ static unsigned int normalized_sysctl_sched_wakeup_granularity       = 1000000UL;
+>
+>  const_debug unsigned int sysctl_sched_migration_cost   = 500000UL;
+>
+> +/*
+> + * This value is kept at sysctl_sched_latency / sysctl_sched_wakeup_granularity
+> + *
+> + * This influences the decision on whether a waking task can preempt a running
+> + * task.
+> + */
+> +static unsigned int sched_nr_disable_gran = 6;
+> +
+>  int sched_thermal_decay_shift;
+>  static int __init setup_sched_thermal_decay_shift(char *str)
+>  {
+> @@ -627,6 +635,9 @@ int sched_update_scaling(void)
+>         sched_nr_latency = DIV_ROUND_UP(sysctl_sched_latency,
+>                                         sysctl_sched_min_granularity);
+>
+> +       sched_nr_disable_gran = DIV_ROUND_UP(sysctl_sched_latency,
+> +                                       sysctl_sched_wakeup_granularity);
+> +
+>  #define WRT_SYSCTL(name) \
+>         (normalized_sysctl_##name = sysctl_##name / (factor))
+>         WRT_SYSCTL(sched_min_granularity);
+> @@ -4511,7 +4522,8 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  }
+>
+>  static int
+> -wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se);
+> +wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
+> +                                               struct sched_entity *se);
+>
+>  /*
+>   * Pick the next process, keeping these things in mind, in this order:
+> @@ -4550,16 +4562,16 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>                                 second = curr;
+>                 }
+>
+> -               if (second && wakeup_preempt_entity(second, left) < 1)
+> +               if (second && wakeup_preempt_entity(NULL, second, left) < 1)
 
-[   30.766160] [VPU CORE][0] decoder boot
-[   31.873175] [VPU CORE][0] decoder boot timeout
-[   31.878057] [VPU V4L2]there is no core for decoder
-[ 1766.495963] [VPU CORE][1] encoder boot
-[ 1767.524957] [VPU CORE][1] encoder boot timeout
-[ 1767.529724] [VPU V4L2]there is no core for encoder
+Why not applying the same policy here ? the tick can also prevent
+current task to move forward
 
-Please, let me know how I can get passed these issues. I have used firmwares
-referenced in Yocto tree:
+>                         se = second;
+>         }
+>
+> -       if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
+> +       if (cfs_rq->next && wakeup_preempt_entity(NULL, cfs_rq->next, left) < 1) {
+>                 /*
+>                  * Someone really wants this to run. If it's not unfair, run it.
+>                  */
+>                 se = cfs_rq->next;
+> -       } else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
+> +       } else if (cfs_rq->last && wakeup_preempt_entity(NULL, cfs_rq->last, left) < 1) {
+>                 /*
+>                  * Prefer last buddy, try to return the CPU to a preempted task.
+>                  */
+> @@ -7044,9 +7056,42 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  }
+>  #endif /* CONFIG_SMP */
+>
+> -static unsigned long wakeup_gran(struct sched_entity *se)
+> +static unsigned long
+> +select_wakeup_gran(struct cfs_rq *cfs_rq)
+> +{
+> +       unsigned int nr_running, threshold;
+> +
+> +       if (!cfs_rq || !sched_feat(SCALE_WAKEUP_GRAN))
+> +               return sysctl_sched_wakeup_granularity;
+> +
+> +       /* !GENTLE_FAIR_SLEEPERS has one overload threshold. */
+> +       if (!sched_feat(GENTLE_FAIR_SLEEPERS)) {
+> +               if (cfs_rq->nr_running <= sched_nr_disable_gran)
 
-  https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-7.9.bin
+cfs_rq->nr_running reflects the number of sched entities in the cfs
+but not the number of running tasks which reflected in h_nr_running
 
-Firmware for this driver will also be a subject to tackle. In an ideal world,
-the "self extracted" script requirement to accept your EULA would need to be
-waved, and distribution of the firmware should go into linux-firmwares. I
-believe firmwares are still allowed to have some user agreement, but I suppose
-there must be guidelines, best is to ask there directly.
+Also do you want to take into account only tasks in this cfs and its
+children or on all cfs on this rq ?
 
-regards,
-Nicolas
+> +                       return sysctl_sched_wakeup_granularity;
+> +
+> +               return sysctl_sched_latency;
+> +       }
+> +
+> +       /* GENTLE_FAIR_SLEEPER has two overloaded thresholds. */
+> +       nr_running = cfs_rq->nr_running;
+> +       threshold = sched_nr_disable_gran >> 1;
+> +
+> +       /* No overload. */
+> +       if (nr_running <= threshold)
+> +               return sysctl_sched_wakeup_granularity;
 
-> 
-> It features decoding for the following formats:
-> - H.264
-> - HEVC
-> - MPEG4
-> - MPEG2
-> - VC1
-> - VP8
-> 
-> It features encoding for the following formats:
-> - H.264
-> 
-> The driver creates a separate device node for the encoder and decoder.
-> 
-> Changelog:
-> 
-> v9
-> - drop V4L2_BUF_FLAG_CODECCONFIG
-> - drop V4L2_EVENT_CODEC_ERROR
-> - drop V4L2_EVENT_SKIP
-> - use the v4l2_buffer.sequence counter
-> - fix some build warnings with W=1 reported by kernel test robot
-> 
-> v8
-> - move driver from driver/media/platform/imx/vpu-8q to
->   driver/media/platform/amphion
-> - rename driver name to amphion
-> - remove imx_vpu.h
-> - move the definition of V4L2_EVENT_CODEC_ERROR to videodev2.h
-> - move the definition of V4L2_EVENT_SKIP to videodev2.h
-> 
-> v7
-> - fix build warnings with W=1 reported by kernel test robot
-> 
-> v6:
-> - rename V4L2_PIX_FMT_NT8 to V4L2_PIX_FMT_NV12_8L128
-> - rename V4L2_PIX_FMT_NT10 to V4L2_PIX_FMT_NV12_10BE_8L128
-> 
-> v5:
-> - move some definition from imx_vph.h to videodev2.h
-> - remove some unnecessary content
-> - add some documentation descriptions
-> - pass the lateset v4l2-compliance test
-> 
-> v4:
-> - redefine the memory-region in devicetree bindings documentation
-> - use v4l2's mechanism to implement synchronize queuing ioctl
-> - remove the unnecessary mutex ioctl_sync
-> - don't notify source change event if the parameters are same as previously established
-> - add flag V4L2_FMT_FLAG_DYN_RESOLUTION to decoder's capture format
-> 
-> v3:
-> - don't make vpu device node a simple-bus
-> - trigger probing vpu core in the driver
-> - remove unnecessary vpu core index property
-> 
-> v2:
-> - fix dt bindings build error
-> - split driver patch into several parts to avoid exceeding bytes limit
-> 
-> Compliance
-> ==========
-> # v4l2-compliance -d /dev/video0
-> v4l2-compliance 1.21.0-4838, 64 bits, 64-bit time_t
-> v4l2-compliance SHA: 22466798f9a9 2021-08-25 11:05:21
-> 
-> Compliance test for amphion-vpu device /dev/video0:
-> 
-> Driver Info:
-> 	Driver name      : amphion-vpu
-> 	Card type        : amphion vpu decoder
-> 	Bus info         : platform: amphion-vpu
-> 	Driver version   : 5.14.0
-> 	Capabilities     : 0x84204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 		Device Capabilities
-> 	Device Caps      : 0x04204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 	Detected Stateful Decoder
-> 
-> Required ioctls:
-> 	test VIDIOC_QUERYCAP: OK
-> 	test invalid ioctls: OK
-> 
-> Allow for multiple opens:
-> 	test second /dev/video0 open: OK
-> 	test VIDIOC_QUERYCAP: OK
-> 	test VIDIOC_G/S_PRIORITY: OK
-> 	test for unlimited opens: OK
-> 
-> Debug ioctls:
-> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
-> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
-> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
-> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
-> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
-> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
-> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
-> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
-> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
-> 	test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls:
-> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
-> 	test VIDIOC_QUERYCTRL: OK
-> 	test VIDIOC_G/S_CTRL: OK
-> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
-> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
-> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
-> 	Standard Controls: 3 Private Controls: 0
-> 
-> Format ioctls:
-> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
-> 	test VIDIOC_G/S_PARM: OK (Not Supported)
-> 	test VIDIOC_G_FBUF: OK (Not Supported)
-> 	test VIDIOC_G_FMT: OK
-> 	test VIDIOC_TRY_FMT: OK
-> 	test VIDIOC_S_FMT: OK
-> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
-> 	test Cropping: OK (Not Supported)
-> 	test Composing: OK
-> 	test Scaling: OK (Not Supported)
-> 
-> Codec ioctls:
-> 	test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
-> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
-> 	test VIDIOC_(TRY_)DECODER_CMD: OK
-> 
-> Buffer ioctls:
-> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
-> 	test VIDIOC_EXPBUF: OK
-> 	test Requests: OK (Not Supported)
-> 
-> Total for amphion-vpu device /dev/video0: 45, Succeeded: 45, Failed: 0, Warnings: 0
-> 
-> # v4l2-compliance -d /dev/video1
-> v4l2-compliance 1.21.0-4838, 64 bits, 64-bit time_t
-> v4l2-compliance SHA: 22466798f9a9 2021-08-25 11:05:21
-> 
-> Compliance test for amphion-vpu device /dev/video1:
-> 
-> Driver Info:
-> 	Driver name      : amphion-vpu
-> 	Card type        : amphion vpu encoder
-> 	Bus info         : platform: amphion-vpu
-> 	Driver version   : 5.14.0
-> 	Capabilities     : 0x84204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 		Device Capabilities
-> 	Device Caps      : 0x04204000
-> 		Video Memory-to-Memory Multiplanar
-> 		Streaming
-> 		Extended Pix Format
-> 	Detected Stateful Encoder
-> 
-> Required ioctls:
-> 	test VIDIOC_QUERYCAP: OK
-> 	test invalid ioctls: OK
-> 
-> Allow for multiple opens:
-> 	test second /dev/video1 open: OK
-> 	test VIDIOC_QUERYCAP: OK
-> 	test VIDIOC_G/S_PRIORITY: OK
-> 	test for unlimited opens: OK
-> 
-> Debug ioctls:
-> 	test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
-> 	test VIDIOC_LOG_STATUS: OK (Not Supported)
-> 
-> Input ioctls:
-> 	test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDIO: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMINPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDIO: OK (Not Supported)
-> 	Inputs: 0 Audio Inputs: 0 Tuners: 0
-> 
-> Output ioctls:
-> 	test VIDIOC_G/S_MODULATOR: OK (Not Supported)
-> 	test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
-> 	test VIDIOC_ENUMAUDOUT: OK (Not Supported)
-> 	test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
-> 	test VIDIOC_G/S_AUDOUT: OK (Not Supported)
-> 	Outputs: 0 Audio Outputs: 0 Modulators: 0
-> 
-> Input/Output configuration ioctls:
-> 	test VIDIOC_ENUM/G/S/QUERY_STD: OK (Not Supported)
-> 	test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
-> 	test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
-> 	test VIDIOC_G/S_EDID: OK (Not Supported)
-> 
-> Control ioctls:
-> 	test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK
-> 	test VIDIOC_QUERYCTRL: OK
-> 	test VIDIOC_G/S_CTRL: OK
-> 	test VIDIOC_G/S/TRY_EXT_CTRLS: OK
-> 	test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK
-> 	test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
-> 	Standard Controls: 20 Private Controls: 0
-> 
-> Format ioctls:
-> 	test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
-> 	test VIDIOC_G/S_PARM: OK
-> 	test VIDIOC_G_FBUF: OK (Not Supported)
-> 	test VIDIOC_G_FMT: OK
-> 	test VIDIOC_TRY_FMT: OK
-> 	test VIDIOC_S_FMT: OK
-> 	test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
-> 	test Cropping: OK
-> 	test Composing: OK (Not Supported)
-> 	test Scaling: OK (Not Supported)
-> 
-> Codec ioctls:
-> 	test VIDIOC_(TRY_)ENCODER_CMD: OK
-> 	test VIDIOC_G_ENC_INDEX: OK (Not Supported)
-> 	test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
-> 
-> Buffer ioctls:
-> 	test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
-> 	test VIDIOC_EXPBUF: OK
-> 	test Requests: OK (Not Supported)
-> 
-> Total for amphion-vpu device /dev/video1: 45, Succeeded: 45, Failed: 0, Warnings: 0
-> 
-> Ming Qian (13):
->   dt-bindings: media: amphion: add amphion video codec bindings
->   media:Add nt8 and nt10 video format.
->   media: amphion: add amphion vpu device driver
->   media: amphion: add vpu core driver
->   media: amphion: implement vpu core communication based on mailbox
->   media: amphion: add vpu v4l2 m2m support
->   media: amphion: add v4l2 m2m vpu encoder stateful driver
->   media: amphion: add v4l2 m2m vpu decoder stateful driver
->   media: amphion: implement windsor encoder rpc interface
->   media: amphion: implement malone decoder rpc interface
->   ARM64: dts: freescale: imx8q: add imx vpu codec entries
->   firmware: imx: scu-pd: imx8q: add vpu mu resources
->   MAINTAINERS: add AMPHION VPU CODEC V4L2 driver entry
-> 
->  .../bindings/media/amphion,vpu.yaml           |  178 ++
->  .../media/v4l/pixfmt-yuv-planar.rst           |   15 +
->  MAINTAINERS                                   |    9 +
->  .../arm64/boot/dts/freescale/imx8-ss-vpu.dtsi |   72 +
->  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts |   17 +
->  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |   24 +
->  drivers/firmware/imx/scu-pd.c                 |    4 +
->  drivers/media/platform/Kconfig                |   19 +
->  drivers/media/platform/Makefile               |    2 +
->  drivers/media/platform/amphion/Makefile       |   23 +
->  drivers/media/platform/amphion/vdec.c         | 1652 ++++++++++++++++
->  drivers/media/platform/amphion/venc.c         | 1382 ++++++++++++++
->  drivers/media/platform/amphion/vpu.h          |  333 ++++
->  drivers/media/platform/amphion/vpu_cmds.c     |  435 +++++
->  drivers/media/platform/amphion/vpu_cmds.h     |   25 +
->  drivers/media/platform/amphion/vpu_codec.h    |   68 +
->  drivers/media/platform/amphion/vpu_color.c    |  192 ++
->  drivers/media/platform/amphion/vpu_core.c     |  901 +++++++++
->  drivers/media/platform/amphion/vpu_core.h     |   16 +
->  drivers/media/platform/amphion/vpu_dbg.c      |  496 +++++
->  drivers/media/platform/amphion/vpu_defs.h     |  186 ++
->  .../media/platform/amphion/vpu_dev_imx8q.c    |   72 +
->  drivers/media/platform/amphion/vpu_drv.c      |  215 +++
->  drivers/media/platform/amphion/vpu_helpers.c  |  453 +++++
->  drivers/media/platform/amphion/vpu_helpers.h  |   72 +
->  drivers/media/platform/amphion/vpu_imx8q.c    |  218 +++
->  drivers/media/platform/amphion/vpu_imx8q.h    |  116 ++
->  drivers/media/platform/amphion/vpu_log.h      |   44 +
->  drivers/media/platform/amphion/vpu_malone.c   | 1683 +++++++++++++++++
->  drivers/media/platform/amphion/vpu_malone.h   |   42 +
->  drivers/media/platform/amphion/vpu_mbox.c     |  126 ++
->  drivers/media/platform/amphion/vpu_mbox.h     |   16 +
->  drivers/media/platform/amphion/vpu_msgs.c     |  413 ++++
->  drivers/media/platform/amphion/vpu_msgs.h     |   14 +
->  drivers/media/platform/amphion/vpu_rpc.c      |  263 +++
->  drivers/media/platform/amphion/vpu_rpc.h      |  463 +++++
->  drivers/media/platform/amphion/vpu_v4l2.c     |  625 ++++++
->  drivers/media/platform/amphion/vpu_v4l2.h     |   53 +
->  drivers/media/platform/amphion/vpu_windsor.c  | 1244 ++++++++++++
->  drivers/media/platform/amphion/vpu_windsor.h  |   39 +
->  drivers/media/v4l2-core/v4l2-ioctl.c          |    2 +
->  include/uapi/linux/videodev2.h                |    4 +
->  42 files changed, 12226 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/amphion,vpu.yaml
->  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-vpu.dtsi
->  create mode 100644 drivers/media/platform/amphion/Makefile
->  create mode 100644 drivers/media/platform/amphion/vdec.c
->  create mode 100644 drivers/media/platform/amphion/venc.c
->  create mode 100644 drivers/media/platform/amphion/vpu.h
->  create mode 100644 drivers/media/platform/amphion/vpu_cmds.c
->  create mode 100644 drivers/media/platform/amphion/vpu_cmds.h
->  create mode 100644 drivers/media/platform/amphion/vpu_codec.h
->  create mode 100644 drivers/media/platform/amphion/vpu_color.c
->  create mode 100644 drivers/media/platform/amphion/vpu_core.c
->  create mode 100644 drivers/media/platform/amphion/vpu_core.h
->  create mode 100644 drivers/media/platform/amphion/vpu_dbg.c
->  create mode 100644 drivers/media/platform/amphion/vpu_defs.h
->  create mode 100644 drivers/media/platform/amphion/vpu_dev_imx8q.c
->  create mode 100644 drivers/media/platform/amphion/vpu_drv.c
->  create mode 100644 drivers/media/platform/amphion/vpu_helpers.c
->  create mode 100644 drivers/media/platform/amphion/vpu_helpers.h
->  create mode 100644 drivers/media/platform/amphion/vpu_imx8q.c
->  create mode 100644 drivers/media/platform/amphion/vpu_imx8q.h
->  create mode 100644 drivers/media/platform/amphion/vpu_log.h
->  create mode 100644 drivers/media/platform/amphion/vpu_malone.c
->  create mode 100644 drivers/media/platform/amphion/vpu_malone.h
->  create mode 100644 drivers/media/platform/amphion/vpu_mbox.c
->  create mode 100644 drivers/media/platform/amphion/vpu_mbox.h
->  create mode 100644 drivers/media/platform/amphion/vpu_msgs.c
->  create mode 100644 drivers/media/platform/amphion/vpu_msgs.h
->  create mode 100644 drivers/media/platform/amphion/vpu_rpc.c
->  create mode 100644 drivers/media/platform/amphion/vpu_rpc.h
->  create mode 100644 drivers/media/platform/amphion/vpu_v4l2.c
->  create mode 100644 drivers/media/platform/amphion/vpu_v4l2.h
->  create mode 100644 drivers/media/platform/amphion/vpu_windsor.c
->  create mode 100644 drivers/media/platform/amphion/vpu_windsor.h
-> 
-> 
-> base-commit: 9c3a0f285248899dfa81585bc5d5bc9ebdb8fead
+TBH I don't like these "no overload", "light overload" ...  They don't
+have any real meaning apart from that it might work for your platform
+and your hackbench test.
+We already had have people complaining that small cfs task does not
+preempt fast enough curr task as an example
 
+There is no explanation why these values are the correct ones and not
+but are just some random heuristic results and we are trying to remove
+platform heuristic and to not add new
 
+> +
+> +       /* Light overload. */
+> +       if (nr_running <= sched_nr_disable_gran)
+> +               return sysctl_sched_latency >> 1;
+> +
+> +       /* Heavy overload. */
+> +       return sysctl_sched_latency;
+
+Why should a thread without any relationship with the curr,  not
+preempt it because there are already a lot of running threads ? In
+your case, you want hackbench threads to not preempt each others
+because they tries to use same resources so it's probably better to
+let the current one to move forward but that's not a universal policy.
+
+side question: Have you try to change the nice priority which also
+impact whether a thread can preempt curr ?
+
+> +}
+> +
+> +static unsigned long
+> +wakeup_gran(struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  {
+> -       unsigned long gran = sysctl_sched_wakeup_granularity;
+> +       unsigned long gran = select_wakeup_gran(cfs_rq);
+>
+>         /*
+>          * Since its curr running now, convert the gran from real-time
+> @@ -7079,14 +7124,15 @@ static unsigned long wakeup_gran(struct sched_entity *se)
+>   *
+>   */
+>  static int
+> -wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
+> +wakeup_preempt_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr,
+> +                                               struct sched_entity *se)
+>  {
+>         s64 gran, vdiff = curr->vruntime - se->vruntime;
+>
+>         if (vdiff <= 0)
+>                 return -1;
+>
+> -       gran = wakeup_gran(se);
+> +       gran = wakeup_gran(cfs_rq, se);
+>         if (vdiff > gran)
+>                 return 1;
+>
+> @@ -7191,7 +7237,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+>                 return;
+>
+>         update_curr(cfs_rq_of(se));
+> -       if (wakeup_preempt_entity(se, pse) == 1) {
+> +       if (wakeup_preempt_entity(cfs_rq, se, pse) == 1) {
+
+like for update_curr above, cfs_rq can be wrong because se could have changed
+
+>                 /*
+>                  * Bias pick_next to pick the sched entity that is
+>                  * triggering this preemption.
+> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+> index 7f8dace0964c..d041d7023029 100644
+> --- a/kernel/sched/features.h
+> +++ b/kernel/sched/features.h
+> @@ -95,3 +95,9 @@ SCHED_FEAT(LATENCY_WARN, false)
+>
+>  SCHED_FEAT(ALT_PERIOD, true)
+>  SCHED_FEAT(BASE_SLICE, true)
+> +
+> +/*
+> + * Scale sched_wakeup_granularity dynamically based on the number of running
+> + * tasks up to a cap of sysctl_sched_latency.
+> + */
+> +SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
