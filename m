@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DE8414B13
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A2414B16
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 15:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhIVNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 09:53:27 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:37198 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232213AbhIVNx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:53:26 -0400
-Received: from localhost.localdomain (unknown [10.192.168.152])
-        by mail-app3 (Coremail) with SMTP id cC_KCgC3t2x8NEthnTqKBQ--.42479S4;
-        Wed, 22 Sep 2021 21:49:53 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: btmtkuart: fix a memleak in mtk_hci_wmt_sync
-Date:   Wed, 22 Sep 2021 21:49:45 +0800
-Message-Id: <20210922134945.27503-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgC3t2x8NEthnTqKBQ--.42479S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1kAw17trWxZr1rCw18AFb_yoW8AFW5pF
-        Wqg3Z8ZrWUtr4fZr9Iya1fXayrAa1SqrWjg3yrC3s5Gr4YyrZ5JF1Fka4jqrWakrZ7Jw42
-        yF1ktrZ5Ca4UurJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0OBlZdtV6LsAAVsJ
+        id S232642AbhIVNxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 09:53:49 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:56961 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232213AbhIVNxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 09:53:48 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HF08x589pz9sSc;
+        Wed, 22 Sep 2021 15:52:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3GF460nfqq_t; Wed, 22 Sep 2021 15:52:17 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HF08x4HJJz9sSS;
+        Wed, 22 Sep 2021 15:52:17 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F6CE8B775;
+        Wed, 22 Sep 2021 15:52:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ZU-NHBvRosTT; Wed, 22 Sep 2021 15:52:17 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 608838B763;
+        Wed, 22 Sep 2021 15:52:17 +0200 (CEST)
+Subject: Re: [RESEND PATCH 1/2] powerpc/powermac: add missing
+ g5_phy_disable_cpu1() declaration
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210922084415.18269-1-krzysztof.kozlowski@canonical.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ee9fc44e-daab-10e6-f293-fb45b43ff5b1@csgroup.eu>
+Date:   Wed, 22 Sep 2021 15:52:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210922084415.18269-1-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bdev->evt_skb will get freed in the normal path and one error path
-of mtk_hci_wmt_sync, while the other error paths do not free it,
-which may cause a memleak. This bug is suggested by a static analysis
-tool, please advise.
 
-Fixes: e0b67035a90b ("Bluetooth: mediatek: update the common setup between MT7622 and other devices")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/bluetooth/btmtkuart.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/bluetooth/btmtkuart.c b/drivers/bluetooth/btmtkuart.c
-index e9d91d7c0db4..9ba22b13b4fa 100644
---- a/drivers/bluetooth/btmtkuart.c
-+++ b/drivers/bluetooth/btmtkuart.c
-@@ -158,8 +158,10 @@ static int mtk_hci_wmt_sync(struct hci_dev *hdev,
- 	int err;
- 
- 	hlen = sizeof(*hdr) + wmt_params->dlen;
--	if (hlen > 255)
--		return -EINVAL;
-+	if (hlen > 255) {
-+		err = -EINVAL;
-+		goto err_free_skb;
-+	}
- 
- 	hdr = (struct mtk_wmt_hdr *)&wc;
- 	hdr->dir = 1;
-@@ -173,7 +175,7 @@ static int mtk_hci_wmt_sync(struct hci_dev *hdev,
- 	err = __hci_cmd_send(hdev, 0xfc6f, hlen, &wc);
- 	if (err < 0) {
- 		clear_bit(BTMTKUART_TX_WAIT_VND_EVT, &bdev->tx_state);
--		return err;
-+		goto err_free_skb;
- 	}
- 
- 	/* The vendor specific WMT commands are all answered by a vendor
-@@ -190,13 +192,14 @@ static int mtk_hci_wmt_sync(struct hci_dev *hdev,
- 	if (err == -EINTR) {
- 		bt_dev_err(hdev, "Execution of wmt command interrupted");
- 		clear_bit(BTMTKUART_TX_WAIT_VND_EVT, &bdev->tx_state);
--		return err;
-+		goto err_free_skb;
- 	}
- 
- 	if (err) {
- 		bt_dev_err(hdev, "Execution of wmt command timed out");
- 		clear_bit(BTMTKUART_TX_WAIT_VND_EVT, &bdev->tx_state);
--		return -ETIMEDOUT;
-+		err = -ETIMEDOUT;
-+		goto err_free_skb;
- 	}
- 
- 	/* Parse and handle the return WMT event */
--- 
-2.17.1
+Le 22/09/2021 à 10:44, Krzysztof Kozlowski a écrit :
+> g5_phy_disable_cpu1() is used outside of platforms/powermac/feature.c,
+> so it should have a declaration to fix W=1 warning:
+> 
+>    arch/powerpc/platforms/powermac/feature.c:1533:6:
+>      error: no previous prototype for ‘g5_phy_disable_cpu1’ [-Werror=missing-prototypes]
 
+
+While you are at it, can you clean it up completely, that is remove the 
+declaration in arch/powerpc/platforms/powermac/smp.c ?
+
+
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>   arch/powerpc/include/asm/pmac_feature.h | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/powerpc/include/asm/pmac_feature.h b/arch/powerpc/include/asm/pmac_feature.h
+> index e08e829261b6..7703e5bf1203 100644
+> --- a/arch/powerpc/include/asm/pmac_feature.h
+> +++ b/arch/powerpc/include/asm/pmac_feature.h
+> @@ -143,6 +143,10 @@
+>    */
+>   struct device_node;
+>   
+> +#ifdef CONFIG_PPC64
+> +void g5_phy_disable_cpu1(void);
+> +#endif /* CONFIG_PPC64 */
+> +
+>   static inline long pmac_call_feature(int selector, struct device_node* node,
+>   					long param, long value)
+>   {
+> 
