@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5F1414C6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF37414C7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 16:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhIVOvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 10:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
+        id S236310AbhIVOy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 10:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbhIVOvk (ORCPT
+        with ESMTP id S236272AbhIVOy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 10:51:40 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAD2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:50:10 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id co2so10793126edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:50:10 -0700 (PDT)
+        Wed, 22 Sep 2021 10:54:27 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED17C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:52:57 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id s137so1250507vke.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 07:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TDrEpOj5z77SP2jdIw8cDIbvUad+t7NAXsCzDrXUEuo=;
-        b=Ew0C8IKjSewOIfs1ywupioINHT/n6wPGtq2fNW0XmEFgFckhAnNx18kVuxyeob5MSb
-         cG6vPdVQgy2y/2wCxrRgFAVzYfZgiGTRAFY3tcx6CIPvOZav9+pzr2A0g2V9jt2k0cSq
-         9HHpBz6+Sfe0bQsurN4lUeiDAbqyklaJsw449YG114/qp9WKYRH5zxvga2tXVvb3mBga
-         Cp+1KKZGvZQEC1wAnFvKoWVHGqnD2mGmydz+QUuPFHn2wQYUaZSi2A1opiUYI1VjnPGd
-         EZHj0i05y8g9gyXadz3X1/RTTTyBrx7N4tTAhBK9sP7DGVVpXSKcFO8kZKq7qkBWjYyo
-         S4Nw==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q1oCf+eHGJrK7EI/Ic0EVhuYku3kuJSCAesoEfoye3Y=;
+        b=reJyHpYXgjQBEvg7LsrohN/MjqehG+nhoB+6QIJ/p1WGqOQC/23PUsm4+RvVgCh6ze
+         rM7AQVgfAB0ZXhRtI+AilG68t41T9RvNk3cwIpbKSDZC1hnC0vak2ZQ7yT4YiNNOB1OV
+         7Ipc9kb2ymZ+PslbAfrhgsjxHQi3JxGaHC0mQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TDrEpOj5z77SP2jdIw8cDIbvUad+t7NAXsCzDrXUEuo=;
-        b=aziC9c+z2BAUz8Oy+1SjXRFZkfsQnO+pSu7KJF4r3pr+EHqmAYaVXAIMYr6gmdz+iK
-         SEWLKHkb9P1uuSPcq6nLwqrRfJTWFxbUgRD1GTlP/DZDj/MgrRVg8vEUip3wpDTKqo6e
-         DLCtS8rhB6yTqBAH6CPUlQnMDMt+d51U00sVVnpZIvZGKU5pp/JREgJnM4xroUOep0nM
-         Xy3971IfQKueRbkp2YDLNn71eeJm/34/ELv3BmgabJr+WGniyXSX7aO9UB21ar8avj10
-         XSv0lniO+mBC6vT4CTEkw5WkVjayWnpcnnXIlHlg/56LnrdjDnD5YYTRvSTJgeel7w82
-         X1eg==
-X-Gm-Message-State: AOAM532YEpfGUZAmPzMGsTyUrokQPUFdH8XKR9Mvz/RQRd7uql6m7IbU
-        AuZ88fgvF6wRV1Faw+XELrH3nkFWRg+M6g==
-X-Google-Smtp-Source: ABdhPJxMpjDOCwgilrcdezM3QInKUMDiNn1/siG8KtEO0JxOOJ9kWoOrqZ1UQupWEHroXThfagdnpQ==
-X-Received: by 2002:a5d:66c6:: with SMTP id k6mr11823034wrw.382.1632322167122;
-        Wed, 22 Sep 2021 07:49:27 -0700 (PDT)
-Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id z17sm2151265wml.24.2021.09.22.07.49.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 07:49:26 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 15:49:05 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Liu Yi L <yi.l.liu@intel.com>
-Cc:     alex.williamson@redhat.com, jgg@nvidia.com, hch@lst.de,
-        jasowang@redhat.com, joro@8bytes.org, kevin.tian@intel.com,
-        parav@mellanox.com, lkml@metux.net, pbonzini@redhat.com,
-        lushenming@huawei.com, eric.auger@redhat.com, corbet@lwn.net,
-        ashok.raj@intel.com, yi.l.liu@linux.intel.com,
-        jun.j.tian@intel.com, hao.wu@intel.com, dave.jiang@intel.com,
-        jacob.jun.pan@linux.intel.com, kwankhede@nvidia.com,
-        robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        david@gibson.dropbear.id.au, nicolinc@nvidia.com
-Subject: Re: [RFC 17/20] iommu/iommufd: Report iova range to userspace
-Message-ID: <YUtCYZI3oQcwKrUh@myrica>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-18-yi.l.liu@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q1oCf+eHGJrK7EI/Ic0EVhuYku3kuJSCAesoEfoye3Y=;
+        b=fuJBJQC3cfIiCM6RfUT94xeBacLZ4fLSQIMl7LFm2ZgVSIKV03pxXOfCfc/KQO7F6Y
+         7Iu8vKMB30MlEO+N5T+UT9W+dgvkA7PTfQdXT5+L62VJInLA9kyyt3XC1yyEZaBkb0wi
+         2Kupl5Svg7+l+6tzRCPs4FgLRV0tEx725A/b2a7lIf7Qdga4MA6yp1/kwujQlA8Rhv99
+         BsrGL4FXzDx8XNiYpnMcjakdKZCbWAU6G4vm26pd0TMpinBXs1aBHzicTgxt3arHUPDA
+         LN/PzMoLvyRE8SQLYJXegIWCfTx80hod0yqwVypMDZUDTAd/Xis5lbbXhQ58BOPxjwF2
+         SdzA==
+X-Gm-Message-State: AOAM531HfN9WxF76JxvK57Mi21LslboOgkiESFp4Qu/svv0C2pGjy6AP
+        +I+PmnZYwJe1HLDiLSox1IyNhhdC0t3YuT27Rt1nCw==
+X-Google-Smtp-Source: ABdhPJzQVpZA8a6uhZrO0hizt6cp09lmop7KUzkDiZFpZHLZXjUjfGWp054tdL2v8+Nn2MdHo2yF9uRalc4rfiorGus=
+X-Received: by 2002:a1f:9f10:: with SMTP id i16mr134800vke.0.1632322376933;
+ Wed, 22 Sep 2021 07:52:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210919063848.1476776-18-yi.l.liu@intel.com>
+References: <20210717045627.1739959-1-daniel@0x0f.com> <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
+ <CAFr9PXmFHanrx4Frg3hQwo-RbAY-UXxC=FOAj++cshSHa99z3g@mail.gmail.com>
+ <CAMpxmJUoG7qPhy2CxapCn1M=w_AssOQsEmyvXO18OpedM6hBjw@mail.gmail.com>
+ <CAHp75VdU52rwKY3AA0Nxt3VGOFr71XtjCDqZbSxR4GNczSqihQ@mail.gmail.com> <CAMpxmJUSvBSa=T1a1Bq_YhAGib9BcXf4xYMSOfyprHbG0t_QWw@mail.gmail.com>
+In-Reply-To: <CAMpxmJUSvBSa=T1a1Bq_YhAGib9BcXf4xYMSOfyprHbG0t_QWw@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 22 Sep 2021 23:52:46 +0900
+Message-ID: <CAFr9PX=OX7wc6ixb5qXgD=g9+MVO86P=oRZFZQSLKX7ugL-X+g@mail.gmail.com>
+Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Romain Perier <romain.perier@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 19, 2021 at 02:38:45PM +0800, Liu Yi L wrote:
-> [HACK. will fix in v2]
-> 
-> IOVA range is critical info for userspace to manage DMA for an I/O address
-> space. This patch reports the valid iova range info of a given device.
-> 
-> Due to aforementioned hack, this info comes from the hacked vfio type1
-> driver. To follow the same format in vfio, we also introduce a cap chain
-> format in IOMMU_DEVICE_GET_INFO to carry the iova range info.
-[...]
-> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> index 49731be71213..f408ad3c8ade 100644
-> --- a/include/uapi/linux/iommu.h
-> +++ b/include/uapi/linux/iommu.h
-> @@ -68,6 +68,7 @@
->   *		   +---------------+------------+
->   *		   ...
->   * @addr_width:    the address width of supported I/O address spaces.
-> + * @cap_offset:	   Offset within info struct of first cap
->   *
->   * Availability: after device is bound to iommufd
->   */
-> @@ -77,9 +78,11 @@ struct iommu_device_info {
->  #define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU enforced snoop */
->  #define IOMMU_DEVICE_INFO_PGSIZES	(1 << 1) /* supported page sizes */
->  #define IOMMU_DEVICE_INFO_ADDR_WIDTH	(1 << 2) /* addr_wdith field valid */
-> +#define IOMMU_DEVICE_INFO_CAPS		(1 << 3) /* info supports cap chain */
->  	__u64	dev_cookie;
->  	__u64   pgsize_bitmap;
->  	__u32	addr_width;
-> +	__u32   cap_offset;
+Hi Bartosz,
 
-We can also add vendor-specific page table and PASID table properties as
-capabilities, otherwise we'll need giant unions in the iommu_device_info
-struct. That made me wonder whether pgsize and addr_width should also be
-separate capabilities for consistency, but this way might be good enough.
-There won't be many more generic capabilities. I have "output address
-width" and "PASID width", the rest is specific to Arm and SMMU table
-formats.
+On Wed, 22 Sept 2021 at 21:50, Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+> > > I only have a part of this series in my inbox and patchwork doesn't
+> > > have it at all - can you resend it with me in Cc?
+
+I just checked and the series is in patchwork  -
+https://patchwork.ozlabs.org/project/linux-gpio/patch/20210717045627.1739959-2-daniel@0x0f.com/
+Unless I got the wrong patchwork?
+
+> At the same time - is it too much to ask of people to just use
+> scripts/get_maintainer.pl?
+
+Sorry about that. scripts/get_maintainer.pl can return tons of people,
+I get cc'd on stuff I have no idea about because I touched a line
+somewhere, so I generally try to work out who needs to see a series
+from the places touched and the get_maintainer.pl output instead of
+just spamming everyone. In this case I thought Linus was the subsystem
+maintainer as he took the initial series for this driver and I took
+the mail recipients list from that series and pasted it in.
+
+I'll be more careful next time.
 
 Thanks,
-Jean
 
->  };
->  
->  #define IOMMU_DEVICE_GET_INFO	_IO(IOMMU_TYPE, IOMMU_BASE + 1)
-> -- 
-> 2.25.1
-> 
+Daniel
