@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B6741412D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C75414130
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhIVFT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:19:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231901AbhIVFTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:19:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D92610A1;
-        Wed, 22 Sep 2021 05:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632287876;
-        bh=ds1qCLLEuGabOz1HUFOYzp9guoYj5j+uwCXOBzR2m9w=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=DClyx36BX/OOPtUePak882HjjOXz7eLKXMXAZzwLjIVOzjCKhWf33Zx0oiJX0fafI
-         7vmxnwJbEguc65bJKbU8fq5AVNKhyrKqXYxEORPXyFSYBHu+akklyVwDUBAFuKXqlU
-         Xz5gwfvmwFBQIe+UN3Rt8hyus+XTNzvPkxx+j+uQBxBnU+pahueN3D2L7TI1ZsaVOK
-         G12L8Ct3jUCKudCL2ZfMxWlm1DAgglPYN+tK2Lj0DRWbwz6j0ywbs/ENQlvBFh6NsN
-         tyOznLEzWmUOckNcOaRHwM/bscxR+PBcPm5zFHyVGFhaSAHum2DSVl0OhaETqE1oLp
-         Eocjw+6dkAiCg==
-Message-ID: <e0dff2e1bb7db0ededfa5a66826225e1358ed77f.camel@kernel.org>
-Subject: Re: [PATCH v5 1/7] x86/sgx: Provide indication of life-cycle of EPC
- pages
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 22 Sep 2021 08:17:53 +0300
-In-Reply-To: <4c7351bcd03b4161b78a7dc01c795b43@intel.com>
-References: <20210827195543.1667168-1-tony.luck@intel.com>
-         <20210917213836.175138-1-tony.luck@intel.com>
-         <20210917213836.175138-2-tony.luck@intel.com>
-         <bba7e537fd9197a92358640ebb0aef365984cebc.camel@kernel.org>
-         <4c7351bcd03b4161b78a7dc01c795b43@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S232064AbhIVFYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhIVFYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 01:24:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1896AC061574;
+        Tue, 21 Sep 2021 22:22:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=am/B39l3z9xACPiw/TmRIIL1/H5PSHN0ZZvj5bQfGJs=; b=q/a1J16KMt81ND9X1Rzgu2YPJE
+        Y3MqGA6L7PnTzJxJj4Xc+nmdUuWsE4BwK9rT01qa5Vr5xOrW+5birF7wbsOsf3bZUC8eZuc8eP9LJ
+        X+G6JSuYwFjTRGnApVkhx5I0qJRIKchBBFzF2ACh5fRP6+EOkkZ2hdxg7IMWsZqFGtsALOdl11Nxt
+        Fb3cUWDYE16tuVpo6XiSvoP9H4CUBjJV+ITAooi7hKZ+z7L7LR9ZaCijYvLfW45hZeHDCc1j3U/2u
+        zpmqlXjYXs53i54wopjgSvC6QuefZPu3kDmIDGMwAEO12mZVUOOwtZGo4XMrTmOgsOuLinAhEQzo1
+        SXZuGltA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mSuhL-004TKX-6A; Wed, 22 Sep 2021 05:21:47 +0000
+Date:   Wed, 22 Sep 2021 06:21:35 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     axboe@kernel.dk, rostedt@goodmis.org, mingo@redhat.com,
+        acme@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com
+Subject: Re: [PATCH] blktrace: Fix uaf in blk_trace access after removing by
+ sysfs
+Message-ID: <YUq9X2dHG+LkMvQ6@infradead.org>
+References: <20210910092120.182270-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210910092120.182270-1-chengzhihao1@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-21 at 21:34 +0000, Luck, Tony wrote:
-> > > Since there are multiple uses of the "owner" field with different typ=
-es
-> > > change the sgx_epc_page structure to define an anonymous union with
-> > > each of the uses explicitly called out.
-> >=20
-> > But it's still always a pointer.
-> >=20
-> > And not only that, but two alternative fields in that union have *exact=
-ly* the
-> > same type, so it's kind of artifically representing the problem more co=
-mplex
-> > than it really is.
->=20
-> Bother! I seem to have jumbled some old bits of v4 into this series.
->=20
-> I agree that we just want "void *owner; here.  I even made the changes.
-> Then managed to lose them while updating.
->=20
-> I'll find the bits I lost and re-merge them in.
->=20
-> -Tony
+On Fri, Sep 10, 2021 at 05:21:20PM +0800, Zhihao Cheng wrote:
+> +		else {
+> +			/*
+> +			 * Don't remove blk_trace under running state, in
+> +			 * case triggering use-after-free in function
+> +			 * __blk_add_trace().
+> +			 */
+> +			if (bt->trace_state != Blktrace_running)
+> +				ret = blk_trace_remove_queue(q);
+> +			else
+> +				ret = -EBUSY;
+> +		}
+>  		goto out_unlock_bdev;
 
-Yeah, ok, cool, thank you. Just reporting what I was observing :-)
+So who is going to eventually call blk_trace_free in this case?
 
-/Jarkko
-
+Also Having the check in blk_trace_remove_queue would seem a little
+cleaner.
