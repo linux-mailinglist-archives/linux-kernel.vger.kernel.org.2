@@ -2,102 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54994145B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF6D4145BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhIVKEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:04:33 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:41944 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234585AbhIVKEb (ORCPT
+        id S234639AbhIVKHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:07:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32610 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234496AbhIVKHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:04:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1632304982; x=1663840982;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o84MUAaAl22mDdS3oZhqYx+P4ZTe4XQ7zU9iNgirFVY=;
-  b=MLRqOUFT9kEO8oDbXwjM0fzdt0hwECAj5ObSh37H5Us6cf5z3Q3iGMle
-   WlWIw0Rcxq2hUxWgTcCUp6i4SyTnXHmqZmoaCqPCM8GHgoQvyuHO9AHiF
-   MDK/1dZYceHQVHKZ4Xo/+36pwFUVGDA2o8KzAxJdh3KreJUuq+peHea0R
-   TR2qj6eZgld+EqfdWqvQGa8NtLxwtTMc8zX1ooBt04I0q7Mj0TAPZ8WIY
-   H6Mh5miu4xBxZX7+zIHvxiUh9TNZ0saMPapGQ39WhiDrxR9RKn9+tolfe
-   IlHvXI0J4BUshk/P5snk3Jh7fFJiHMyKx42YVvd1UEIdeFkAiI+ttMwPz
-   g==;
-IronPort-SDR: ibErfwqDhJ2fywgCsuET4CuoS29yy35I7mKoyFBQW1zywnFbkk+Yr2ECx85/edn8JqYt9AP9kK
- TIKixxgFOCBk89BZNjDdZ3Egk9JxiA77bBYa50SQKGAy9nJl75iGTRv0nE8HYjAo5zBMcRDfBh
- DMNk6F3O86owaY9pjc6ZMRic1MTZYgcm2aVdLD/byVg1MkN81qvoGsxxVbYfFcunyQRADFnUHW
- tiPtl31s3soIxQJTwI7dVJPts1sEO4klwtaDI1+kDO5/Hp8Ea6rO4oiZZ3H+bG6f7vljcmDy28
- BkItikD+KqPesWVE6CDRB//W
-X-IronPort-AV: E=Sophos;i="5.85,313,1624345200"; 
-   d="scan'208";a="132710408"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Sep 2021 03:03:00 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Wed, 22 Sep 2021 03:03:00 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Wed, 22 Sep 2021 03:03:00 -0700
-Date:   Wed, 22 Sep 2021 12:04:29 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
-        <andrew@lunn.ch>, <f.fainelli@gmail.com>,
-        <alexandre.belloni@bootlin.com>, <vladimir.oltean@nxp.com>,
-        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 03/12] phy: Add lan966x ethernet serdes PHY
- driver
-Message-ID: <20210922100429.pjrd2s4y3jbxpjjt@soft-dev3-1.localhost>
-References: <20210920095218.1108151-1-horatiu.vultur@microchip.com>
- <20210920095218.1108151-4-horatiu.vultur@microchip.com>
- <YUiPqJjsoBg99VbR@shell.armlinux.org.uk>
+        Wed, 22 Sep 2021 06:07:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632305143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pMP5wJz1SHIDgcm5MxB8VYl8yfFUZTjIQI233ATUQYQ=;
+        b=NbNJjnGW6o65EXx+n7AqIR/m1kAWgh88qVaNCzHltrFXi3r43RC0N9JALg7oZP/SftJj5K
+        JsD3nToCxZX8BX4Bp765ojjSt5rZS0ir9k2CYIGgAUsd67s/api+UgQW7URSSc52c0uhvw
+        SUNyejpUctvtN9B13BUKgTCmnHYo7D0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-Bu4Z_RLSNISO5Fa6sGkZ3g-1; Wed, 22 Sep 2021 06:05:41 -0400
+X-MC-Unique: Bu4Z_RLSNISO5Fa6sGkZ3g-1
+Received: by mail-ed1-f72.google.com with SMTP id h15-20020aa7de0f000000b003d02f9592d6so2434787edv.17
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:05:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pMP5wJz1SHIDgcm5MxB8VYl8yfFUZTjIQI233ATUQYQ=;
+        b=5GxhHBgM1Ui4/Ik+rQrTIz2q0tOqgo+aRwyaHHCEA9Z32eRW1xLqw2RoZ09y7EJb/t
+         9WWuyFC/YbX5YZCkwE4OlCG1y8J6w6w7SJNPRaQpDtV3FJgZOjbNgy3LXFR6pIB5yBI5
+         0q52H/gHImm3QjjcQEnOOxOyvvhV0WjD3bWwG5YKBk32mbvqD0yLRimXCsilB+WKpnRg
+         mYI10DTKM00qC4r2J9a8ebG7m7eQqXTKEpm6hXRpDyEaUPS6TmCyg2YbbMJdRdUlHP5m
+         qXTd6wEapSJVGzmKkwGk19tabc3/c5X/SPuSGnXj25HF29xSjQtH9WljgTmxIH/RSnWo
+         jGRQ==
+X-Gm-Message-State: AOAM532RcwLnqeQ4VzZWTNIIRDk2sSOoEMKbC9twiNDtlmiiRoK/ljRr
+        /RvUhvMuwn4m15nU2uM98AOazhISUy3Ot3bYy9/peSNK5VhbD4zIxVzgsWnfmc5+G+cSgFUt76Y
+        hMX1d0y/SyxCc3yKLHKxAu69+XINtslmFQ+pdzxeXv3rs4xnti2VxzOO304oujvBVD+7jft5SQb
+        U=
+X-Received: by 2002:a05:6402:21d6:: with SMTP id bi22mr10593425edb.40.1632305140640;
+        Wed, 22 Sep 2021 03:05:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxTvre8uD4ncscLueG/Kzl9lr/C1AT7Vj4qlFIMsLWoCN/WKl+ftIKLe9FSDBFUqumJfDB9tQ==
+X-Received: by 2002:a05:6402:21d6:: with SMTP id bi22mr10593406edb.40.1632305140407;
+        Wed, 22 Sep 2021 03:05:40 -0700 (PDT)
+Received: from x1.bristot.me (host-87-1-201-231.retail.telecomitalia.it. [87.1.201.231])
+        by smtp.gmail.com with ESMTPSA id fx4sm820295ejb.113.2021.09.22.03.05.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 03:05:40 -0700 (PDT)
+Subject: Re: [PATCH v2] tracing: fix missing osnoise tracer on max_latency
+To:     Jackie Liu <liu.yun@linux.dev>, rostedt@goodmis.org,
+        mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20210922025122.3268022-1-liu.yun@linux.dev>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <1bd5f7fe-5f55-5bcf-7fa5-a52c62127994@redhat.com>
+Date:   Wed, 22 Sep 2021 12:05:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YUiPqJjsoBg99VbR@shell.armlinux.org.uk>
+In-Reply-To: <20210922025122.3268022-1-liu.yun@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 09/20/2021 14:42, Russell King (Oracle) wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On 9/22/21 4:51 AM, Jackie Liu wrote:
+> From: Jackie Liu <liuyun01@kylinos.cn>
 > 
-> On Mon, Sep 20, 2021 at 11:52:09AM +0200, Horatiu Vultur wrote:
-> > +static int lan966x_calc_sd6g40_setup_lane(struct lan966x_sd6g40_setup_args config,
-> > +                                       struct lan966x_sd6g40_setup *ret_val)
-> > +{
-> > +     struct lan966x_sd6g40_mode_args sd6g40_mode;
-> > +     struct lan966x_sd6g40_mode_args *mode_args = &sd6g40_mode;
-> > +
-> > +     if (lan966x_sd6g40_get_conf_from_mode(config.mode, config.refclk125M,
-> > +                                           mode_args))
-> > +             return -1;
+> The compiler warns when the data are actually unused:
 > 
-> This needs fixing to be a real negative error number.
-> lan966x_sd6g40_setup_lane() propagates this functions non-zero
-> return value, which is then propagated through lan966x_sd6g40_setup(),
-> and then through serdes_set_mode() to the PHY layer.
+>   kernel/trace/trace.c:1712:13: error: ‘trace_create_maxlat_file’ defined but not used [-Werror=unused-function]
+>    1712 | static void trace_create_maxlat_file(struct trace_array *tr,
+>         |             ^~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> In general, I would suggest that _all_ int-returning functions in the
-> kernel that return a negative failure value _should_ _always_ return a
-> negative error code, so that your reviewers don't have to chase code
-> paths to work out whether a mistake such as the above exists.
+> [Why]
+> CONFIG_HWLAT_TRACER=n, CONFIG_TRACER_MAX_TRACE=n, CONFIG_OSNOISE_TRACER=y
+> gcc report warns.
 > 
-> To put it another way: never use "return -1" in the kernel.
+> [How]
+> Now trace_create_maxlat_file will only take effect when
+> CONFIG_HWLAT_TRACER=y or CONFIG_TRACER_MAX_TRACE=y. In fact, after
+> adding osnoise trace, it also needs to take effect.
+> 
+> Fixes: bce29ac9ce0b ("trace: Add osnoise tracer")
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
 
-Hi Russell,
+Reviewed-by: Daniel Bristot de Oliveira <bristot@kernel.org>
 
-Thanks for the suggestion. I will fix this in the next version.
-
+Thanks!
+-- Daniel
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  kernel/trace/trace.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
 > 
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 7896d30d90f7..bc677cd64224 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -1744,16 +1744,15 @@ void latency_fsnotify(struct trace_array *tr)
+>  	irq_work_queue(&tr->fsnotify_irqwork);
+>  }
+>  
+> -/*
+> - * (defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)) && \
+> - *  defined(CONFIG_FSNOTIFY)
+> - */
+> -#else
+> +#elif defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)	\
+> +	|| defined(CONFIG_OSNOISE_TRACER)
+>  
+>  #define trace_create_maxlat_file(tr, d_tracer)				\
+>  	trace_create_file("tracing_max_latency", 0644, d_tracer,	\
+>  			  &tr->max_latency, &tracing_max_lat_fops)
+>  
+> +#else
+> +#define trace_create_maxlat_file(tr, d_tracer)	 do { } while (0)
+>  #endif
+>  
+>  #ifdef CONFIG_TRACER_MAX_TRACE
+> @@ -9473,9 +9472,7 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+>  
+>  	create_trace_options_dir(tr);
+>  
+> -#if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
+>  	trace_create_maxlat_file(tr, d_tracer);
+> -#endif
+>  
+>  	if (ftrace_create_function_files(tr, d_tracer))
+>  		MEM_FAIL(1, "Could not allocate function filter files");
+> 
 
--- 
-/Horatiu
