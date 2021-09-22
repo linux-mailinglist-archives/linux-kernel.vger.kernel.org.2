@@ -2,73 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C28414CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5920C414CFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhIVP2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:28:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232318AbhIVP2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:28:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E34861168;
-        Wed, 22 Sep 2021 15:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632324440;
-        bh=ovV4urk3GlFS7e1HLPM5jlLAOz+tjnV1IqgTo1O9svM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=eo05KFjBJaxgt7DoeZ/1sjWOZ8jeiyUiibfEP585IltwSmx02D5s0T9vTTRjzA5KF
-         1NAtUYGs5CDz5qQFFtVoaIi2DX3oKxjRaHWCfvigLHIoJigYPdP57xQIM9FOSL3Oii
-         66Y6scUdY3RnAoXEtsaS6p7DRmLAKfpQV8JkYrGN9g28EfJVQcO+I2Nhr68luqz3Z6
-         X3SRx0onTuETYf4+aDEOiB8xD9WHZi3t4GtGkUUkSXCvGj1wzJch3YDe2XBqj1QNGd
-         lK2ePpoEKzkzj1kBE9VLwOBUqPiSfaJKhWVZmsTWvCHQNWngeRyT62tEVaigvqS4+6
-         8zScPDUctzjZQ==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>,
-        Pavel Machek <pavel@denx.de>
-Subject: [PATCH] f2fs: fix incorrect return value in f2fs_sanity_check_ckpt()
-Date:   Wed, 22 Sep 2021 23:27:05 +0800
-Message-Id: <20210922152705.720071-1-chao@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        id S236432AbhIVPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhIVPaI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 11:30:08 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D0AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:28:38 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m21so2999095pgu.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kp0DKxYvjStU9lLWJtLQliS/mXlIIBkYQTnbdZfBCzE=;
+        b=D5TUqu83Rbx8goxjtEUmUrqUWsvsTOIx2eW7pCLs3HhFTKoq8sjupa1Mo/TqMWyPCM
+         YBCATZaRsjXgWQjzPDoDN+e0qHNzLINwjO4LaDBqM+Vmug1fKMb43OsBMIwvq4t+9TY2
+         GE1l7w8qrpmu3fQCjV1A52r8N6XWz3BbE0Z1TN7neq12Z12RgAwQxyI6LFQVysYe2HvE
+         aV99P+vNQqUfFkZ7DHvM7/nnhwW7ploLm7LP2ZHtHzmCZeYCwIYVXH2ZtV8X63Vkd0nP
+         1mqfyNEtpJ1grBCSkHFaGKY7VF3AOD/c6scYRq9u1h5++KbMz6bj9qGXd8KzKBgt18Xy
+         b9iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kp0DKxYvjStU9lLWJtLQliS/mXlIIBkYQTnbdZfBCzE=;
+        b=kzpsHs8MIwsYVJ+RM0wruUGDkCybC1AbOAcr0fKEkGkqPVi6Pmnr2ICPHn40amJe+m
+         bEnQFM7Boz3T2OC7Xs4LEqvpZSBDmGZ41tIKr+XZ0C5o42238F5nGmf267ZXWN5KwaSB
+         wIJ5DemGJ5mVW8jyhkVK4MnwTVqYG2JW8CNJCVmFQZT4Yp90aZIWyzlVr3FKfgtyNBbX
+         AbT+6Mh+lnXFn24Pjh5rDGupjhihaVtRqCyXOrG4WfvEJ46i1KP+f6qPyhOQTW1Hz5+2
+         gOB+JttxK5Hk7ntOzMmrwYfjVQr809tN1/xVsmnlZj4r8w8MEJSTKV76gcYy79wXP7I4
+         dDVg==
+X-Gm-Message-State: AOAM532brAiAlyyh9OUVmvAd5OsQ324rzX9as3fLaYvV344eD/Yl7bN+
+        bkuYgcB93BQIqH9kbaLAddA=
+X-Google-Smtp-Source: ABdhPJwzBOGmnpoUbHW+VZBWNC4IQ7EVl0xzVd2oXnxyijuXxiB3uZqcUW9/9PFrZ1mrsGCdoxxwjA==
+X-Received: by 2002:a63:3d8c:: with SMTP id k134mr208828pga.394.1632324517574;
+        Wed, 22 Sep 2021 08:28:37 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:9ca8:a7b7:b32f:a7fb])
+        by smtp.gmail.com with ESMTPSA id b17sm3178446pgl.61.2021.09.22.08.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 08:28:37 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Hugh Dickins <hughd@google.com>
+Subject: [PATCH] mm: do not acquire zone lock in is_free_buddy_page()
+Date:   Wed, 22 Sep 2021 08:28:33 -0700
+Message-Id: <20210922152833.4023972-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Pavel Machek reported in [1]
+From: Eric Dumazet <edumazet@google.com>
 
-This code looks quite confused: part of function returns 1 on
-corruption, part returns -errno. The problem is not stable-specific.
+Grabbing zone lock in is_free_buddy_page() gives a wrong sense of safety,
+and has potential performance implications when zone is experiencing
+lock contention.
 
-[1] https://lkml.org/lkml/2021/9/19/207
+In any case, if a caller needs a stable result, it should grab zone
+lock before calling this function.
 
-Let's fix to make 'insane cp_payload case' to return 1 rater than
-EFSCORRUPTED, so that return value can be kept consistent for all
-error cases, it can avoid confusion of code logic.
-
-Fixes: 65ddf6564843 ("f2fs: fix to do sanity check for sb/cp fields correctly")
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Hugh Dickins <hughd@google.com>
 ---
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/page_alloc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 8d6d0657a470..e3975cb8e3e8 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3487,7 +3487,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 		NR_CURSEG_PERSIST_TYPE + nat_bits_blocks >= blocks_per_seg)) {
- 		f2fs_warn(sbi, "Insane cp_payload: %u, nat_bits_blocks: %u)",
- 			  cp_payload, nat_bits_blocks);
--		return -EFSCORRUPTED;
-+		return 1;
- 	}
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index e115e21524739341d409b28379942241ed403060..cd8a72372b047e55c4cde80fe6b7a428d7721027 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -9354,21 +9354,21 @@ void __offline_isolated_pages(unsigned long start_pfn, unsigned long end_pfn)
+ }
+ #endif
  
- 	if (unlikely(f2fs_cp_error(sbi))) {
++/*
++ * This function returns a stable result only if called under zone lock.
++ */
+ bool is_free_buddy_page(struct page *page)
+ {
+-	struct zone *zone = page_zone(page);
+ 	unsigned long pfn = page_to_pfn(page);
+-	unsigned long flags;
+ 	unsigned int order;
+ 
+-	spin_lock_irqsave(&zone->lock, flags);
+ 	for (order = 0; order < MAX_ORDER; order++) {
+ 		struct page *page_head = page - (pfn & ((1 << order) - 1));
+ 
+-		if (PageBuddy(page_head) && buddy_order(page_head) >= order)
++		if (PageBuddy(page_head) &&
++		    buddy_order_unsafe(page_head) >= order)
+ 			break;
+ 	}
+-	spin_unlock_irqrestore(&zone->lock, flags);
+ 
+ 	return order < MAX_ORDER;
+ }
 -- 
-2.32.0
+2.33.0.464.g1972c5931b-goog
 
