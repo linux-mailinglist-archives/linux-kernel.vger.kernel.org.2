@@ -2,241 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C664147CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52E74147D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 13:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhIVLaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 07:30:13 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:54537 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235699AbhIVLaM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 07:30:12 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7F7775C010F;
-        Wed, 22 Sep 2021 07:28:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 22 Sep 2021 07:28:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=+Hn0TV5u1dvl16s+cyQXRPGsOus
-        MPyZzM+2/BnVtTus=; b=vHIRL1EACm6MHCVW9KKU47/Qyt2QoMOlnb01OFLzHo4
-        7klzgrk1z4vzhgvMeeZcn3ya8YuuFt9/D8mCiJ+2Ev15u16tcnEjACkroiCBRfcm
-        iV094cSxOUo8AZrekjQbUOULVmQE4re8rNJDYgbkoDqZA9YvTxWuRnKCrdraJoZ1
-        NkyGJ+vWZiA08OKIz7GLun0hraLlQo1gmjSVGKd93dSVH/IhO9WQvYck3GOIZ0Xq
-        uB06Fa27L6KBs4KVP2wGgl4XMKhoCh0SzecFjtEqNtmsCf/eyNA1dCMdn8msJZtJ
-        tIXlnwDw+9B0ZN2uDtkhzccdeQkOzNMFZTOpTM8pMrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+Hn0TV
-        5u1dvl16s+cyQXRPGsOusMPyZzM+2/BnVtTus=; b=bNxJO8nMTyG+NTDVvpZPwo
-        p9EipXpn2bAqJ8Jfjp1JaAhzUCqlfrgFSzZfVxJTY8aE2FYIjr94FuBnsqCvaQiH
-        3DU5vsXVDXO8U1vFEWIeyKnefs0sCWt+tuiW/T+eZ6VhVyWYgKYLs8solrYP7Y5C
-        L4aKyc4N5B0T50Hk93M5zWFa7no3/8pn+qd72CMfFI3Ge0+WKgYDryvRAbbkXGO0
-        yOdj0WaACgZzyZED8MFHGlN5IIlwLWaMuJBir1MNNa7u6vHlYI4qcJinAvMZ4UQ/
-        YRNlMxQl5fM0ec9mti0/5rs/vv4pQxWy/cTnZyMGupsjnv1yHWcSo6/hpvmhjaUg
-        ==
-X-ME-Sender: <xms:aBNLYczHO81LD0xFxh6vw9QYv34BclqEuGO_pJlOZhcWxX0Ll7rciA>
-    <xme:aBNLYQR2-3d9CGto7vqLde3z2fxhfnfx9OMEBDqXhhQbUOfAdqE6Z7GLmmZgutfYe
-    vC4boLsqbhs2Ff0GMA>
-X-ME-Received: <xmr:aBNLYeUvKT2psrAdI2RA09CrqHEUouUEzCuOiitE6MscLghxQwiQA4cfTwN39b3ouFeNXEwpBFEzEC6waLJwCyhGG3pCDOtWUV5g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeijedgfeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveeigfdtfeegteetgfejhfeiuddvtdefhffftddthfevveejjeegtdethfeh
-    teeknecuffhomhgrihhnpegtohguvghthhhinhhkrdgtohdruhhkpdhunhhhrdgvughune
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihi
-    mhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:aBNLYaiOkA0qdIkv2ipxqURKVt7pltdstkb9krtshchD_ixpn612YQ>
-    <xmx:aBNLYeBx2xXmK8oSyqvXZHTAfBrVZ6rLYPjcA9RM_lKwTUag0j9r7Q>
-    <xmx:aBNLYbJYJTKyQZ7Ttw6DR6v870uR4SCUwgQyLCKuo7C7B8BeNb7d-A>
-    <xmx:aRNLYQ24mkffD9I4QSuewbzJBg0jqGMkdVDYEJChVn2oMc7b9f2YZg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Sep 2021 07:28:40 -0400 (EDT)
-Date:   Wed, 22 Sep 2021 13:28:37 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: Regression with mainline kernel on rpi4
-Message-ID: <20210922112837.asxuf5vyen2rwu7u@gilmour>
-References: <20210904091050.g5axxctgelciihjn@gilmour>
- <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
- <20210920144730.d7oabqfbx7pmyyfb@gilmour>
- <20210920154333.vunyxeshdb7jt5ka@gilmour>
- <20210920155350.h6624mt65vwg72p2@gilmour>
- <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
- <20210920171042.oq3ndp3ox4xv5odh@gilmour>
- <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
- <20210922095725.dk4vk42zb3kh7y6s@gilmour>
- <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
+        id S235731AbhIVLc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 07:32:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235670AbhIVLcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 07:32:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C2316112F;
+        Wed, 22 Sep 2021 11:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632310283;
+        bh=STovjvU0XZDi7L8+lk7SbiglleEYhHaEwfszEHGGvJk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ntTLmyc0odssmC4DKR2AIWYEH8LzrTYEKih/C7jGJmfS/+4RhBNl/dUYe4C5IhWp6
+         1w+85uMNHCml5oTSHocesfF7CGa1e8eReKvh6SsoD7lyjX5pAfPlMk7W7p51oJ3CXa
+         day4oA3quJpv7LHc9G+Ur0tuZyG1U3lo1Qyj+WiiQis1+IatufCLc7nVUsaH6C/tOC
+         SBlbnWMJx7WfUQ3xXbmedMzNAWnHaRn7YW4CO+PA/sbH3BCIdjndDE3eodm4IrLuF1
+         UnOmPfgnCKr3HJtaF5T2OPUxCW33EQt99vvk2sevg984sZ1+DTGqTZYt+ysoY2bD/e
+         h52M2ylwY1XQA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mT0TC-0005Rx-NC; Wed, 22 Sep 2021 13:31:22 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Malte Di Donato <malte@neo-soft.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH 1/2] USB: serial: cp210x: fix dropped characters with CP2102
+Date:   Wed, 22 Sep 2021 13:30:59 +0200
+Message-Id: <20210922113100.20888-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <YUsTYFOdMH/kQEyE@hovoldconsulting.com>
+References: <YUsTYFOdMH/kQEyE@hovoldconsulting.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bnjqga3jhevjrvlf"
-Content-Disposition: inline
-In-Reply-To: <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some CP2102 do not support event-insertion mode but return no error when
+attempting to enable it.
 
---bnjqga3jhevjrvlf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This means that any event escape characters in the input stream will not
+be escaped by the device and consequently regular data may be
+interpreted as escape sequences and be removed from the stream by the
+driver.
 
-On Wed, Sep 22, 2021 at 11:10:34AM +0100, Sudip Mukherjee wrote:
-> On Wed, Sep 22, 2021 at 10:57 AM Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > On Mon, Sep 20, 2021 at 06:21:42PM +0100, Sudip Mukherjee wrote:
-> > > On Mon, Sep 20, 2021 at 6:10 PM Maxime Ripard <maxime@cerno.tech> wro=
-te:
-> > > >
-> > > > On Mon, Sep 20, 2021 at 05:35:00PM +0100, Sudip Mukherjee wrote:
-> > > > > On Mon, Sep 20, 2021 at 4:53 PM Maxime Ripard <maxime@cerno.tech>=
- wrote:
-> > > > > >
-> > > > > > On Mon, Sep 20, 2021 at 05:43:33PM +0200, Maxime Ripard wrote:
-> > > > > > > On Mon, Sep 20, 2021 at 04:47:31PM +0200, Maxime Ripard wrote:
-> > > > > > > > On Sat, Sep 04, 2021 at 10:40:29AM +0100, Sudip Mukherjee w=
-rote:
-> > > > > > > > > Hi Maxime,
-> > > > > > > > >
-> > > > > > > > > On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cer=
-no.tech> wrote:
-> > > > > > > > > >
-> > > > > > > > > > On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherj=
-ee wrote:
-> > > > > > > > > > > Hi Maxime,
-> > > > > > > > > > >
-> > > > > > > > > > > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@=
-cerno.tech> wrote:
-> > > > > > > > > > > >
-> > > > > > > > > > > > Hi Sudip,
-> > > > > > > > > > > >
-> > > > > > > > > > > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Muk=
-herjee wrote:
-> > > > > > > > > > > > > Hi All,
-> > > > > > > > > > > > >
-> > > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > <snip>
-> > > > > > > > > > >
-> > > > > > > > > > > >
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > You can see the complete dmesg at
-> > > > > > > > > > > > > https://openqa.qa.codethink.co.uk/tests/76#step/d=
-mesg/8
-> > > > > > > > > > > >
-> > > > > > > > > > > > What test were you running?
-> > > > > > > > > > >
-> > > > > > > > > > > Nothing particular, its just a boot test that we do e=
-very night after
-> > > > > > > > > > > pulling from torvalds/linux.git
-> > > > > > > > > >
-> > > > > > > > > > What are you booting to then?
-> > > > > > > > >
-> > > > > > > > > I am not sure I understood the question.
-> > > > > > > > > Its an Ubuntu image. The desktop environment is gnome. An=
-d as
-> > > > > > > > > mentioned earlier, we use the HEAD of linus tree every ni=
-ght to boot
-> > > > > > > > > the rpi4 and test that we can login via desktop environme=
-nt and that
-> > > > > > > > > there is no regression in dmesg.
-> > > > > > > >
-> > > > > > > > Looking at the CI, this isn't from a RPi but from qemu?
-> > > > >
-> > > > > No, this is from rpi4 board (4GB), not qemu. The CI is a little
-> > > > > complicated here, lava boots the board with the new kernel and wi=
-ll
-> > > > > then trigger the openQA job. openQA will then connect to the board
-> > > > > using vnc to test the desktop. This is the last link that I sent =
-to
-> > > > > Linus when he asked for it.
-> > > > > https://lava.qa.codethink.co.uk/scheduler/job/164#L1356
-> > > > >
-> > > > > And this is the lava job for today -
-> > > > > https://lava.qa.codethink.co.uk/scheduler/job/173
-> > > >
-> > > > Is it connected to a monitor then?
-> > >
-> > > Missed replying to this one earlier. I have a hdmi lilliput monitor
-> > > connected to it.
-> > >
-> > > >
-> > > > > > > >
-> > > > > > > > What defconfig are you using? How did you generate the Ubun=
-tu image?
-> > > > > > > > Through debootstrap? Any additional package?
-> > > > >
-> > > > > Its the default ubuntu config. I can send you the config if you w=
-ant.
-> > > >
-> > > > Yes, please.
-> > >
-> > > Attached.
-> > > My build script will copy this config as .config,  do olddefconfig
-> > > and then build.
-> >
-> > I still can't reproduce it.
-> >
-> > What other customisations did you do to that image? It looks like
-> > there's some customs scripts in there (test-mainline.sh), what are they
-> > doing?
->=20
-> That test script is triggering the openqa job, but its running only
-> after lava is able to login. The trace is appearing before the login
-> prompt even, so test_mainline.sh should not matter here.
-> The only customization done to the default ubuntu image is the initrd.
-> Can you please try with the initrd from
-> https://elisa-builder-00.iol.unh.edu/kernel/mainline/rpi4/initrd.gz..
-> I will check with another board also.
+The reporter's device has batch number DCL00X etched into it and as
+discovered by the SHA2017 Badge team, counterfeit devices with that
+marking can be detected by sending malformed vendor requests. [1][2]
 
-Still works fine (and it required some mangling of the kernel command line).
+Tests confirm that the possibly counterfeit CP2102 returns a single byte
+in response to a malformed two-byte part-number request, while an
+original CP2102 returns two bytes. Assume that every CP2102 that behaves
+this way also does not support event-insertion mode (e.g. cannot report
+parity errors).
 
-If we summarize:
+[1] https://mobile.twitter.com/sha2017badge/status/1167902087289532418
+[2] https://hackaday.com/2017/08/14/hands-on-with-the-shacamp-2017-badge/#comment-3903376
 
-  - You initially just dumped a panic and a link to your QA, without any
-    more context:
+Reported-by: Malte Di Donato <malte@neo-soft.org>
+Fixes: a7207e9835a4 ("USB: serial: cp210x: add support for line-status events")
+Cc: stable@vger.kernel.org	# 5.9
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/serial/cp210x.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-  - Then stating that you're not doing any test, really;
+diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+index 66a6ac50a4cd..b98454fe08ea 100644
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -258,6 +258,7 @@ struct cp210x_serial_private {
+ 	speed_t			max_speed;
+ 	bool			use_actual_rate;
+ 	bool			no_flow_control;
++	bool			no_event_mode;
+ };
+ 
+ enum cp210x_event_state {
+@@ -1113,12 +1114,16 @@ static void cp210x_change_speed(struct tty_struct *tty,
+ 
+ static void cp210x_enable_event_mode(struct usb_serial_port *port)
+ {
++	struct cp210x_serial_private *priv = usb_get_serial_data(port->serial);
+ 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
+ 	int ret;
+ 
+ 	if (port_priv->event_mode)
+ 		return;
+ 
++	if (priv->no_event_mode)
++		return;
++
+ 	port_priv->event_state = ES_DATA;
+ 	port_priv->event_mode = true;
+ 
+@@ -2074,6 +2079,33 @@ static void cp210x_init_max_speed(struct usb_serial *serial)
+ 	priv->use_actual_rate = use_actual_rate;
+ }
+ 
++static void cp2102_determine_quirks(struct usb_serial *serial)
++{
++	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
++	u8 *buf;
++	int ret;
++
++	buf = kmalloc(2, GFP_KERNEL);
++	if (!buf)
++		return;
++	/*
++	 * Some (possibly counterfeit) CP2102 do not support event-insertion
++	 * mode and respond differently to malformed vendor requests.
++	 * Specifically, they return one instead of two bytes when sent a
++	 * two-byte part-number request.
++	 */
++	ret = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
++			CP210X_VENDOR_SPECIFIC, REQTYPE_DEVICE_TO_HOST,
++			CP210X_GET_PARTNUM, 0, buf, 2, USB_CTRL_GET_TIMEOUT);
++	if (ret == 1) {
++		dev_dbg(&serial->interface->dev,
++				"device does not support event-insertion mode\n");
++		priv->no_event_mode = true;
++	}
++
++	kfree(buf);
++}
++
+ static int cp210x_get_fw_version(struct usb_serial *serial, u16 value)
+ {
+ 	struct cp210x_serial_private *priv = usb_get_serial_data(serial);
+@@ -2109,6 +2141,9 @@ static void cp210x_determine_type(struct usb_serial *serial)
+ 	}
+ 
+ 	switch (priv->partnum) {
++	case CP210X_PARTNUM_CP2102:
++		cp2102_determine_quirks(serial);
++		break;
+ 	case CP210X_PARTNUM_CP2105:
+ 	case CP210X_PARTNUM_CP2108:
+ 		cp210x_get_fw_version(serial, CP210X_GET_FW_VER);
+-- 
+2.32.0
 
-  - Well, except for booting Ubuntu, but no other modification
-
-  - But you're not booting the standard image
-
-  - And with a custom initrd
-
-  - And that QA link states that you're booting from QEMU, but you're
-    not.
-
-Please provide a full documentation on what you're doing to generate
-that image, from scratch, in order to get that panic you reported
-previously.
-
-I've spent an entire day trying to make sense of what you're doing
-exactly to get into that situation. I have other things to work on and I
-don't plan on figuring out any random CI system.
-
-Maxime
-
---bnjqga3jhevjrvlf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYUsTZQAKCRDj7w1vZxhR
-xYJaAQCtbNXddM4GAVBxBiM+0JtCLNgmjcuh1y+SwS2uLQHcjQEA5EUTM65DmXiy
-HYjenCs+EkXD6mgKoGj6LeWWAbfpfgQ=
-=IubQ
------END PGP SIGNATURE-----
-
---bnjqga3jhevjrvlf--
