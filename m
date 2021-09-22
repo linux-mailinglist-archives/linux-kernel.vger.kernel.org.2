@@ -2,139 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14587414343
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E120E414345
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233499AbhIVIMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233349AbhIVIMC (ORCPT
+        id S233571AbhIVIMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:12:36 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:50442
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233349AbhIVIMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:12:02 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF439C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:10:32 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id t18so4419315wrb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sjfqFtjdJ7BBJE8A/g20sALymYT3IpdH2eEO6YWS1Ds=;
-        b=NNr9niA+rBKeMBi4aYpw3WOaB0s1c/Z+kBCqwKQ3VhAQqBU8VvqNqHRcw8dyFIhbll
-         hAUlZD7/S9i0b6btgaCsEwp1bmXYA6x8BpEif/8Y9WhBiGRmbqtVtTo/n+V+mCrg41In
-         HvvCul9Or1Kx07sjTLimYABtPLaV+xIYyyfNmAjYqH/P41OGQWbgnI7Qwctvl2uRH1Va
-         2Bzub4Uge2VG9mAwAklB4EVK8qnQTzPeYwyWVoZxQckjBv54trntvgB2QC8PLyOGv1Sx
-         xSyoHhlHQZ21hBTt35bBYxvv+oJQfldUXKWwdf5IA+0lCIGu92Sbeb95aVRsMXKdxWke
-         /w8Q==
+        Wed, 22 Sep 2021 04:12:31 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 0854A3F337
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632298259;
+        bh=P8Qe07F/xjMQdNLxVav+Rfl78SB2e9oBWelI8/7HSJc=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=CsM4WOF81WV4yB0lm/EC63pq6fB0GK4NL8c4/F5T2//WbLnIeKe42j/bP2oUKxitz
+         mp++AyRgVe+N2l+uOArLWutgo28uA/ASj36UsuqtSCR04x2f1T7isAgNOMJWQqTnWA
+         hHd/GuvSPETJY1/RCKnDOWpkxc1QpD0rdvcaRPEb1GwulU+FTifRo1HEKbP7oUCsXb
+         p3RUIxB6z7fpCPQTs/3Sf6PS75AbjV/t3Y3F6hWjCbUXfab2Ksjbe6izEZS50oAPUd
+         /bbWz9RmziME4Vpy2yoOTK6wEg8J0hXIjYP+LeuyGlC910r6cm0paI/xa/bQqT6GTe
+         71ZFoYf/zeKJQ==
+Received: by mail-wr1-f72.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so1361622wrg.17
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:10:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=sjfqFtjdJ7BBJE8A/g20sALymYT3IpdH2eEO6YWS1Ds=;
-        b=aI6JDvhNoB1eqnCLDYLG29X07pxnrHjQ+u/EutUUYV+knr3w+Iwoz7Ru2NGeTvVTFl
-         r4oDDUofSsMvMMMjui3fhxR8q58m3IDXeT4cUQriXC1esIKQFOG8psUUsWK83QBLpXbB
-         TYt5dajxtJ/+rnbVgHU26lNReAWHlobBZU9zUxIf1LqXyPsnnLU0rT5mPVwEhPHdMIB+
-         aaC8pqWvb4QycQCB3Gt9gXaRHW9n/o5wY0mau0+sKdtZblIXD/qLJSAtG8MpRTzRH4ME
-         S8lb3WiPL3nui4Px9oYCggon9GgUJfNvHwX0JIe298OVSJvYPc06Fe0D5Zjvchy/lUcS
-         AyQg==
-X-Gm-Message-State: AOAM532rbH9M8kJma4D5amsp738XT/liKPf+tAbtnIw3Agq5x01TcAII
-        EUw3pIyC68IoodsUxrco0i0E4vqUSXFxlg==
-X-Google-Smtp-Source: ABdhPJxG6e+7AIuhMraVYfb7CeqUJw+ynj10bI0dkQNUJ6u4beKg1vJHhRjSB9PtKdYqRLY11TnjhA==
-X-Received: by 2002:a5d:5541:: with SMTP id g1mr41009909wrw.402.1632298231387;
-        Wed, 22 Sep 2021 01:10:31 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8ccc:47ef:19b:1063? ([2a01:e34:ed2f:f020:8ccc:47ef:19b:1063])
-        by smtp.googlemail.com with ESMTPSA id k18sm1375822wrh.68.2021.09.22.01.10.29
+        bh=P8Qe07F/xjMQdNLxVav+Rfl78SB2e9oBWelI8/7HSJc=;
+        b=Tw/7pwPWPP97wrKBcvEOSNaSmmLYSGXLnGFn4fVdlrF2toVrNhay0L4Q/9h9orA01p
+         zZ+/7xJ8xdF+naokDo5+6AMg58rxjuA641Cd/LJfMPxeAqI8NBYYdcg6DQNg95fL1uhk
+         o7EQvumjdzqwTvUaDQc6N3DnViTMOz32gwlUKquoq1KtjG4lE8vAjY3SNHWxUG8DBFcL
+         GO/B2hqqQ9IHcq/8BlN4iNhcYbJA9APc02ldlD9xOhrsC8tHxTYpLLo3s97wQJhSN5aX
+         2AnYycm/FvCzxd2Y/nZt53PjgUVPx7vKH1ua7LXX5FZJcYGeoXDUGYcqjVjTTQQ9j7e0
+         uTRg==
+X-Gm-Message-State: AOAM532uAtEBNKw9DOthS8e3cDb4lTm10wRLfqG4CXZ5SkHiSUEGkovT
+        pjobf/lWLaKpbSg0GiM8nGAeXlz3L8VVMrsX1cDMU9JCxjXyfysk7Cd4R7c+PAeVZ4e0LWahvOd
+        IfFVXpBizKAKceBU9PvNaf+D095HcgAxXIlxW0cc1eA==
+X-Received: by 2002:a05:600c:3b89:: with SMTP id n9mr9113904wms.186.1632298258647;
+        Wed, 22 Sep 2021 01:10:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzb3Ljj7oUI5lHEYQz4nwFDjBGGdyp2FKjKpmWPv5gSTXpVI7LSRlWIyJA3WG9xT/pBfVR0VA==
+X-Received: by 2002:a05:600c:3b89:: with SMTP id n9mr9113885wms.186.1632298258458;
+        Wed, 22 Sep 2021 01:10:58 -0700 (PDT)
+Received: from [192.168.0.134] (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id d24sm1174219wmb.35.2021.09.22.01.10.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 01:10:30 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
-To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com, mka@chromium.org
-References: <20210917072732.611140-1-abailon@baylibre.com>
- <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
- <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com>
- <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
- <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
-Date:   Wed, 22 Sep 2021 10:10:29 +0200
+        Wed, 22 Sep 2021 01:10:58 -0700 (PDT)
+Subject: Re: [RESEND PATCH v2 1/4] mfd: sec-irq: Do not enforce (incorrect)
+ interrupt trigger type
+To:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <20210602110445.33536-1-krzysztof.kozlowski@canonical.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <7ac677f1-2928-21de-a226-449e72b1bd10@canonical.com>
+Date:   Wed, 22 Sep 2021 10:10:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com>
+In-Reply-To: <20210602110445.33536-1-krzysztof.kozlowski@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/09/2021 15:12, Alexandre Bailon wrote:
+On 02/06/2021 13:04, Krzysztof Kozlowski wrote:
+> From: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> On 9/17/21 4:03 PM, Daniel Lezcano wrote:
->> On 17/09/2021 15:33, Alexandre Bailon wrote:
->>> Hi Daniel,
->>>
->>> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
->>>> On 17/09/2021 09:27, Alexandre Bailon wrote:
->>>>> This series add a virtual thermal sensor.
->>>>> It could be used to get a temperature using some thermal sensors.
->>>>> Currently, the supported operations are max, min and avg.
->>>>> The virtual sensor could be easily extended to support others
->>>>> operations.
->>>>>
->>>>> Note:
->>>>> Currently, thermal drivers must explicitly register their sensors to
->>>>> make them
->>>>> available to the virtual sensor.
->>>>> This doesn't seem a good solution to me and I think it would be
->>>>> preferable to
->>>>> update the framework to register the list of each available sensors.
->>>> Why must the drivers do that ?
->>> Because there are no central place where thermal sensor are registered.
->>> The only other way I found was to update thermal_of.c,
->>> to register the thermal sensors and make them available later to the
->>> virtual thermal sensor.
->>>
->>> To work, the virtual thermal need to get the sensor_data the ops from
->>> the thermal sensor.
->>> And as far I know, this is only registered in thermal_of.c, in the
->>> thermal zone data
->>> but I can't access it directly from the virtual thermal sensor.
->>>
->>> How would you do it ?
->> Via the phandles when registering the virtual sensor ?
-> As far I know, we can't get the ops or the sensor_data from the phandle
-> of a thermal sensor.
-> The closest solution I found so far would be to aggregate the thermal
-> zones instead of thermal sensors.
-> thermal_zone_device has the data needed and a thermal zone could be find
-> easily using its name.
+> Interrupt line can be configured on different hardware in different way,
+> even inverted.  Therefore driver should not enforce specific trigger
+> type - edge falling - but instead rely on Devicetree to configure it.
+> 
+> The Samsung PMIC drivers are used only on Devicetree boards.
+> 
+> Additionally, the PMIC datasheets describe the interrupt line as active
+> low with a requirement of acknowledge from the CPU therefore the edge
+> falling is not correct.
+> 
+> Marek Szyprowski reports that together with DTS change (proper level in
+> DTS) it fixes RTC alarm failure that he observed from time to time on
+> TM2e board.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> 
+> ---
+> 
+> Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git/log/?h=for-mfd-next
+> 
+> Changes since v1:
+> 1. Mention in commit msg that this fixes TM2e RTC alarm.
+> 2. Add Marek's tested-by.
+> ---
+>  drivers/mfd/sec-irq.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Yeah, the concept of the thermal zone and the sensor are very close.
+Dear Lee,
 
-There is the function in thermal_core.h:
+This was already a resend. Any comments from your side?
 
- -> for_each_thermal_zone()
-
-You should be able for each 'slave' sensor, do a lookup to find the
-corresponding thermal_zone_device_ops.
-
-> But, using a thermal_zone_device, I don't see how to handle module
-> unloading.
-
-I think try_module_get() / module_put() are adequate for this situation
-as it is done on an external module and we can not rely on the exported
-symbols.
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Best regards,
+Krzysztof
