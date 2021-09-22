@@ -2,216 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011644141F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ACB4141FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhIVGeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:34:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232771AbhIVGet (ORCPT
+        id S232788AbhIVGha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:37:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48576 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232630AbhIVGh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:34:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632292399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hK1TAJDdleQGO4jZBAmuPgddEjoHfavTDxwu6JuYxPc=;
-        b=JlDDnaak59jQNHs2dj27x7ZjvcngSDVkkv3ldNbEkXiD9kKGjTNWzgmF0fSw8cEu1Fp2po
-        xswDQbrHpki0LeMJPtxu0kXg1pFWIa7ggHaudP+kRtf6TidkRg/5LohkkZRcqVtvCYQYqb
-        7KDjJYrYXTwzICH/Cq4TJKcmEEN5qHo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-294-hGB6shVfNhO9_DPntyf9Hw-1; Wed, 22 Sep 2021 02:33:18 -0400
-X-MC-Unique: hGB6shVfNhO9_DPntyf9Hw-1
-Received: by mail-ed1-f71.google.com with SMTP id 2-20020a508e02000000b003d871759f5dso1814528edw.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:33:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hK1TAJDdleQGO4jZBAmuPgddEjoHfavTDxwu6JuYxPc=;
-        b=M5bXBFo6iPQTV3jtJAuakuAIwqhJKn1ccvsHfD7SdcrZomUqE55/mtlKTOxBxzHZXT
-         n6CAXLeupTsPPM1HijxPJPmvNwciC4hm3IDY2n3otW5iq8HIGsaPRq9tj48uIieToWX/
-         mOX4ix+tfo9d/MP08DuJaovqaIC/pRqZf6NIueesxG7ACMe4lHSYJt2nVYP6b0C0Wvmf
-         UzzVDlMFhMUZZm77/OnUqvrpxE0P5joRiiDHOTwTAoCck+FMkHSRhYOaX2nrRItVI5S0
-         7hz6JRKAL2sVhRQylJOxWu1Zc0hew74PwmsnJskzW+qQBL3pjZEHyRHlbRnj9lk38pbF
-         TtHQ==
-X-Gm-Message-State: AOAM532vrm/P0cmTKE4X0q6nktlXXFFv6S+6x0F52eF8KdfRvJNMQDkH
-        4Bz6FvBTtuQkLeLB64ayQVmd+ozseAJ/slwvEcc8WlPraSx2saKMp08n6V/w+cxa+a4fe+rsb+i
-        o0nCD5DzLBICipql+GP3INfDc
-X-Received: by 2002:a17:906:a01:: with SMTP id w1mr40417083ejf.117.1632292396947;
-        Tue, 21 Sep 2021 23:33:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwWUo+BlVIV+JEHRlDKOT5sLvq+4KeWDB237/AGh6qJRsKlnsARTagHguA0XIMd4G8mEtTIGA==
-X-Received: by 2002:a17:906:a01:: with SMTP id w1mr40417041ejf.117.1632292396704;
-        Tue, 21 Sep 2021 23:33:16 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n16sm628454edd.10.2021.09.21.23.33.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 23:33:16 -0700 (PDT)
-Subject: Re: [PATCH v3 09/16] perf/core: Use static_call to optimize
- perf_guest_info_callbacks
-To:     Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
+        Wed, 22 Sep 2021 02:37:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3838720088;
+        Wed, 22 Sep 2021 06:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632292559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=gfr/hCvClxRucXRWXVi9j4H3NbdWGDnOwvguA7u39Ow=;
+        b=HtSIpnf9pQm4aZX/3TDQ/7hMoIMCyuZdaSVXu6WSN0LnlHXIChmNEp2elztJUQ6NcIoqXt
+        /dgyrxtNMvwXJ5+MP+CtIUHVwc82v3o28GlFAfRqRTd1V1xOqSH1jC2kKV9rb2HYNU5IvZ
+        ZobXXuLmL1vsePCzWgQHidLiT/OYkWs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632292559;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=gfr/hCvClxRucXRWXVi9j4H3NbdWGDnOwvguA7u39Ow=;
+        b=2fmclXILXteY+PXRkmIXPwujIpqkWWlQ7qC4T0X+JAkKlyKFYPRRULwfaRpOcfJG7Wi+LW
+        baCqRnZN766XacAw==
+Received: from localhost.localdomain (unknown [10.100.208.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 08C34A3B81;
+        Wed, 22 Sep 2021 06:35:58 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     linux@armlinux.org.uk
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
         linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-References: <20210922000533.713300-1-seanjc@google.com>
- <20210922000533.713300-10-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5ad3e3f9-260b-52b2-e0c8-9ab824e08fb4@redhat.com>
-Date:   Wed, 22 Sep 2021 08:33:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH v2] MAINTAINERS: ARM/VT8500, remove defunct e-mail
+Date:   Wed, 22 Sep 2021 08:35:58 +0200
+Message-Id: <20210922063558.26417-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210922000533.713300-10-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/21 02:05, Sean Christopherson wrote:
-> Use static_call to optimize perf's guest callbacks on arm64 and x86,
-> which are now the only architectures that define the callbacks.  Use
-> DEFINE_STATIC_CALL_RET0 as the default/NULL for all guest callbacks, as
-> the callback semantics are that a return value '0' means "not in guest".
-> 
-> static_call obviously avoids the overhead of CONFIG_RETPOLINE=y, but is
-> also advantageous versus other solutions, e.g. per-cpu callbacks, in that
-> a per-cpu memory load is not needed to detect the !guest case.
-> 
-> Based on code from Peter and Like.
-> 
-> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Like Xu <like.xu.linux@gmail.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   include/linux/perf_event.h | 28 ++++++----------------------
->   kernel/events/core.c       | 15 +++++++++++++++
->   2 files changed, 21 insertions(+), 22 deletions(-)
-> 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index eefa197d5354..d582dfeb4e20 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1240,37 +1240,21 @@ extern void perf_event_bpf_event(struct bpf_prog *prog,
->   
->   #ifdef CONFIG_GUEST_PERF_EVENTS
->   extern struct perf_guest_info_callbacks *perf_guest_cbs;
-> -static inline struct perf_guest_info_callbacks *perf_get_guest_cbs(void)
-> -{
-> -	/* Reg/unreg perf_guest_cbs waits for readers via synchronize_rcu(). */
-> -	lockdep_assert_preemption_disabled();
-> +DECLARE_STATIC_CALL(__perf_guest_state, *perf_guest_cbs->state);
-> +DECLARE_STATIC_CALL(__perf_guest_get_ip, *perf_guest_cbs->get_ip);
-> +DECLARE_STATIC_CALL(__perf_guest_handle_intel_pt_intr, *perf_guest_cbs->handle_intel_pt_intr);
->   
-> -	/* Prevent reloading between a !NULL check and dereferences. */
-> -	return READ_ONCE(perf_guest_cbs);
-> -}
->   static inline unsigned int perf_guest_state(void)
->   {
-> -	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
-> -
-> -	return guest_cbs ? guest_cbs->state() : 0;
-> +	return static_call(__perf_guest_state)();
->   }
->   static inline unsigned long perf_guest_get_ip(void)
->   {
-> -	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
-> -
-> -	/*
-> -	 * Arbitrarily return '0' in the unlikely scenario that the callbacks
-> -	 * are unregistered between checking guest state and getting the IP.
-> -	 */
-> -	return guest_cbs ? guest_cbs->get_ip() : 0;
-> +	return static_call(__perf_guest_get_ip)();
->   }
->   static inline unsigned int perf_guest_handle_intel_pt_intr(void)
->   {
-> -	struct perf_guest_info_callbacks *guest_cbs = perf_get_guest_cbs();
-> -
-> -	if (guest_cbs && guest_cbs->handle_intel_pt_intr)
-> -		return guest_cbs->handle_intel_pt_intr();
-> -	return 0;
-> +	return static_call(__perf_guest_handle_intel_pt_intr)();
->   }
->   extern void perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs);
->   extern void perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs);
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index c6ec05809f54..79c8ee1778a4 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -6485,12 +6485,23 @@ static void perf_pending_event(struct irq_work *entry)
->   #ifdef CONFIG_GUEST_PERF_EVENTS
->   struct perf_guest_info_callbacks *perf_guest_cbs;
->   
-> +DEFINE_STATIC_CALL_RET0(__perf_guest_state, *perf_guest_cbs->state);
-> +DEFINE_STATIC_CALL_RET0(__perf_guest_get_ip, *perf_guest_cbs->get_ip);
-> +DEFINE_STATIC_CALL_RET0(__perf_guest_handle_intel_pt_intr, *perf_guest_cbs->handle_intel_pt_intr);
-> +
->   void perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
->   {
->   	if (WARN_ON_ONCE(perf_guest_cbs))
->   		return;
->   
->   	WRITE_ONCE(perf_guest_cbs, cbs);
-> +	static_call_update(__perf_guest_state, cbs->state);
-> +	static_call_update(__perf_guest_get_ip, cbs->get_ip);
-> +
-> +	/* Implementing ->handle_intel_pt_intr is optional. */
-> +	if (cbs->handle_intel_pt_intr)
-> +		static_call_update(__perf_guest_handle_intel_pt_intr,
-> +				   cbs->handle_intel_pt_intr);
->   }
->   EXPORT_SYMBOL_GPL(perf_register_guest_info_callbacks);
->   
-> @@ -6500,6 +6511,10 @@ void perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
->   		return;
->   
->   	WRITE_ONCE(perf_guest_cbs, NULL);
-> +	static_call_update(__perf_guest_state, (void *)&__static_call_return0);
-> +	static_call_update(__perf_guest_get_ip, (void *)&__static_call_return0);
-> +	static_call_update(__perf_guest_handle_intel_pt_intr,
-> +			   (void *)&__static_call_return0);
->   	synchronize_rcu();
->   }
->   EXPORT_SYMBOL_GPL(perf_unregister_guest_info_callbacks);
-> 
+linux@prisktech.co.nz is defunct:
+4.1.2 <linux@prisktech.co.nz>: Recipient address rejected: Domain not found
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Remove it from MAINTAINERS and make thus the ARM/VT8500 entry an orphan.
+
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+---
+[v2]
+- switch also Maintained -> Orphan
+
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aafc58437abd..08ed07f745f0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2821,9 +2821,8 @@ F:	arch/arm/mach-pxa/include/mach/vpac270.h
+ F:	arch/arm/mach-pxa/vpac270.c
+ 
+ ARM/VT8500 ARM ARCHITECTURE
+-M:	Tony Prisk <linux@prisktech.co.nz>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
++S:	Orphan
+ F:	Documentation/devicetree/bindings/i2c/i2c-wmt.txt
+ F:	arch/arm/mach-vt8500/
+ F:	drivers/clocksource/timer-vt8500.c
+-- 
+2.33.0
 
