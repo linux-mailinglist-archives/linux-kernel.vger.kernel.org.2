@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECAD4143F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6954143FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 10:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbhIVIpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 04:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233349AbhIVIpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:45:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BCE46128E;
-        Wed, 22 Sep 2021 08:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632300225;
-        bh=wIX4Nyvh3NhY3C+0A3fE0uyB9IBDeFSOm7OFmITz9tI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CM4M2XN10RksxBCCApODxtQ2IPRq2c/vxmCmZV3YOE/940DtSnIcLvyKBKPrf6h5S
-         WMGmmNVyRc3N743l6mHHMjdXZ1q5CFPbtTdR8a6nilWKjCj8QELFY3fFO8E7VDd/A4
-         hmThC2566Pbe7I0An0kwPdtYEjjw1ehdvW0+WyWY=
-Date:   Wed, 22 Sep 2021 10:43:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Tony Luck <tony.luck@intel.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] get_abi.pl: Check for missing symbols at the ABI
- specs
-Message-ID: <YUrsvgf3JXUPQ2Vo@kroah.com>
-References: <cover.1631957565.git.mchehab+huawei@kernel.org>
- <YUoN2m/OYHVLPrSl@kroah.com>
- <20210921201633.5e6128a0@coco.lan>
- <YUrCjhEYGXWU6M13@kroah.com>
- <YUrLqdCQyGaCc1XJ@kroah.com>
- <20210922093609.34d7bbca@coco.lan>
- <YUrlFjotiFTYKXOV@kroah.com>
+        id S234037AbhIVIq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 04:46:26 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:48096
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234017AbhIVIqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:46:22 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 511AB3F048
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:44:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632300291;
+        bh=uiMxeL0gXr2dTqfDCAVU08QHmTYD3WPNowiXOrxuH3E=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=CXkHPD764IYmuAL2vO4sv/f7MV8ZmfEaRpKD9SZFid0nmfO16vrFxeTJvEF/U3MHn
+         t1IdXNCDmFk7oQX0NREXTwXGmKccQUg/qVoW8rHim1mrVosTxfPmLyOrqvbiISK1y4
+         EGtLUF7o5oxd5QkwIAy1R1IRmfFyul2BKR7qRpP9/Sz/P//6G9gKS+IIg6MbgDw3Pm
+         k8FupMp7JZ/17DWL8c6kN75XXKrFaQEH9l52mZqMDQhUcm7w0fVCFyVLgX+JymGx69
+         /S4sfjug/DIazjK6beKGG8YflHkhgK1+V3DyXn68APY/mNU1zLye3am/aWTvyrURKT
+         dJUPPVJR7HwvQ==
+Received: by mail-wr1-f70.google.com with SMTP id x2-20020a5d54c2000000b0015dfd2b4e34so1483174wrv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 01:44:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uiMxeL0gXr2dTqfDCAVU08QHmTYD3WPNowiXOrxuH3E=;
+        b=QCXdq5MnGit1HjBQlKfZAXpD/vrs6KkXKK481/CNzgQDGhfbUMFW4zipTsLOBZl0I4
+         7tu0njnaE1JbowZhqSS+5ankypKIkYuSuEwwy+vbzeINOevxSvNkeAacJiJui/x5+Z3e
+         0aj++tZTSDIenI5beXbpVpzSWvy9qCMO69OeZLQ75KgBCKcvoCoLtg7v44V5CEyqB4Rr
+         /i1/zBUeobEMYlgOK5ATmaFsCfgVY9TSzlO0sT5Rzk78fX6YNPt+S8IpfCPwDlzRupcf
+         44fB9VMAVzaaGVmn1/R3nP40ZHFNV8vFPon7+MYKwtSgX2MotRNPWtXm5DZKMmorJSID
+         6E8Q==
+X-Gm-Message-State: AOAM530eK0s9u/TjOTJg4xb7RmuJwiGymzLozOBtgwMgpH0L308h4BwL
+        1NGY6JYxt1k5pq9YYLR+LdQHzb0N3qNps6E4wI1/qGjVGYVFKI4gKrnTFUnEW26vYuVggsUJ7u5
+        BIQlzycPH97nvNSg0zqdcO+UfAiunBVEQ4pNV7iROiw==
+X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr9039082wmq.26.1632300290703;
+        Wed, 22 Sep 2021 01:44:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyC680U0RwyaOjK1SOsZp30UKUvzdNakgqk61+QjWsbjiDhpXDKy1rZwHZZ9P4p0zlY3hcaFA==
+X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr9039063wmq.26.1632300290511;
+        Wed, 22 Sep 2021 01:44:50 -0700 (PDT)
+Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id o7sm1851490wro.45.2021.09.22.01.44.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 01:44:50 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [RESEND PATCH 1/2] powerpc/powermac: add missing g5_phy_disable_cpu1() declaration
+Date:   Wed, 22 Sep 2021 10:44:14 +0200
+Message-Id: <20210922084415.18269-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUrlFjotiFTYKXOV@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:11:02AM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Sep 22, 2021 at 09:36:09AM +0200, Mauro Carvalho Chehab wrote:
-> > It sounds it took quite a while handling iommu cap, which sounds weird, as
-> > it should be looking just 3 What expressions:
-> > 
-> > 	[07:43:06] What: /sys/class/iommu/.*/amd\-iommu/cap
-> > 	[07:43:06] What: /sys/class/iommu/.*/intel\-iommu/cap
-> > 	[07:43:06] What: /sys/devices/pci.*.*.*.*\:.*.*/0000\:.*.*\:.*.*..*/dma/dma.*chan.*/quickdata/cap
-> > 
-> > Maybe there was a memory starvation while running the script, causing
-> > swaps. Still, it is weird that it would happen there, as the hashes
-> > and arrays used at the script are all allocated before it starts the
-> > search logic. Here, the allocation part takes ~2 seconds.
-> 
-> No memory starvation here, this thing is a beast:
-> 	$ free -h
-> 	               total        used        free      shared  buff/cache   available
-> 	Mem:           251Gi        36Gi        13Gi       402Mi       202Gi       212Gi
-> 	Swap:          4.0Gi       182Mi       3.8Gi
-> 
-> 	$ nproc
-> 	64
-> 
-> 
-> > At least on my Dell Precision 5820 (12 cpu threads), the amount of memory it
-> > uses is not huge:
-> > 
-> >     $ /usr/bin/time -v ./scripts/get_abi.pl undefined >/dev/null
-> > 	Command being timed: "./scripts/get_abi.pl undefined"
-> > 	User time (seconds): 12.68
-> > 	System time (seconds): 1.29
-> > 	Percent of CPU this job got: 99%
-> > 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:13.98
-> > 	Average shared text size (kbytes): 0
-> > 	Average unshared data size (kbytes): 0
-> > 	Average stack size (kbytes): 0
-> > 	Average total size (kbytes): 0
-> > 	Maximum resident set size (kbytes): 212608
-> > 	Average resident set size (kbytes): 0
-> > 	Major (requiring I/O) page faults: 0
-> > 	Minor (reclaiming a frame) page faults: 52003
-> > 	Voluntary context switches: 1
-> > 	Involuntary context switches: 56
-> > 	Swaps: 0
-> > 	File system inputs: 0
-> > 	File system outputs: 0
-> > 	Socket messages sent: 0
-> > 	Socket messages received: 0
-> > 	Signals delivered: 0
-> > 	Page size (bytes): 4096
-> > 	Exit status: 0
-> > 
-> > Unfortunately, I don't have any amd-based machine here, but I'll
-> > try to run it later on a big arm server and see how it behaves.
-> 
-> I'll run that and get back to you in 30 minutes :)
+g5_phy_disable_cpu1() is used outside of platforms/powermac/feature.c,
+so it should have a declaration to fix W=1 warning:
 
-$ /usr/bin/time -v ./scripts/get_abi.pl undefined > /dev/null
-	Command being timed: "./scripts/get_abi.pl undefined"
-	User time (seconds): 1756.94
-	System time (seconds): 0.76
-	Percent of CPU this job got: 99%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 29:18.94
-	Average shared text size (kbytes): 0
-	Average unshared data size (kbytes): 0
-	Average stack size (kbytes): 0
-	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 228116
-	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 55862
-	Voluntary context switches: 1
-	Involuntary context switches: 17205
-	Swaps: 0
-	File system inputs: 0
-	File system outputs: 0
-	Socket messages sent: 0
-	Socket messages received: 0
-	Signals delivered: 0
-	Page size (bytes): 4096
-	Exit status: 0
+  arch/powerpc/platforms/powermac/feature.c:1533:6:
+    error: no previous prototype for ‘g5_phy_disable_cpu1’ [-Werror=missing-prototypes]
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ arch/powerpc/include/asm/pmac_feature.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/powerpc/include/asm/pmac_feature.h b/arch/powerpc/include/asm/pmac_feature.h
+index e08e829261b6..7703e5bf1203 100644
+--- a/arch/powerpc/include/asm/pmac_feature.h
++++ b/arch/powerpc/include/asm/pmac_feature.h
+@@ -143,6 +143,10 @@
+  */
+ struct device_node;
+ 
++#ifdef CONFIG_PPC64
++void g5_phy_disable_cpu1(void);
++#endif /* CONFIG_PPC64 */
++
+ static inline long pmac_call_feature(int selector, struct device_node* node,
+ 					long param, long value)
+ {
+-- 
+2.30.2
 
