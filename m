@@ -2,155 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B64415135
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C60415161
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237475AbhIVUMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:12:39 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:35547 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237325AbhIVUMi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:12:38 -0400
-Received: by mail-oi1-f177.google.com with SMTP id r26so6313668oij.2;
-        Wed, 22 Sep 2021 13:11:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oh1GCZM5dUTph3yDqFQtj2T4C/Cn9j3K4e4lsvOCfK8=;
-        b=rLJPVkIYXx7D2MzJengMVKBnR5sBMOQGaZva0KzPjVW3zT0SjrebU9YAEFTR0F6X9B
-         wcFe26h5XXVSMQGmDo3G+3s4UXYF76NIe/LWPYDqjDXD9T+YhYnvKJDBuXKGet0ge9Yi
-         OAqev3lqdvWgfuq4784Ve9px5QrtAO2PLpGDocRCI31cHlvJTFxfMQCORyTIb8U4kkiR
-         K2EKXj3uAudh0aZyxq/D77eISP25A0/K54TGI6JXyW+aRsQ9vkcvnEpt00w5ZObIBWLs
-         Tw0zNpRXWtRdySeBXoQ4mhIoO0A0ZMBKmDskJ8yTtiQv/s8+Sqo50/TvQCtXgNqordCj
-         nAKA==
-X-Gm-Message-State: AOAM530Mud5ZHwzVadeLvUudc9s+1EWVRI8P5wUhoptxHNj9RNTYSSJc
-        UfWU6Wk0IyZVBcLVgG25qQ==
-X-Google-Smtp-Source: ABdhPJxB04SrAr3My4MhjbJhQuOo63xON3evPknQzkXmjb1Lubg7ZrL6tNv4aaW7+wLfUENPGGPcuA==
-X-Received: by 2002:aca:1215:: with SMTP id 21mr9845091ois.141.1632341467793;
-        Wed, 22 Sep 2021 13:11:07 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id p21sm762115oip.28.2021.09.22.13.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:11:07 -0700 (PDT)
-Received: (nullmailer pid 1210651 invoked by uid 1000);
-        Wed, 22 Sep 2021 20:11:06 -0000
-Date:   Wed, 22 Sep 2021 15:11:06 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        Eugen.Hristev@microchip.com, Manohar.Puri@microchip.com
-Subject: Re: [PATCH v5 2/3] dt-bindings: clock: lan966x: Add LAN966X Clock
- Controller
-Message-ID: <YUuN2o1G1ETkf/Zx@robh.at.kernel.org>
-References: <20210917135142.9689-1-kavyasree.kotagiri@microchip.com>
- <20210917135142.9689-3-kavyasree.kotagiri@microchip.com>
+        id S237602AbhIVU21 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Sep 2021 16:28:27 -0400
+Received: from mailer.bingner.com ([64.62.210.4]:8645 "EHLO mail.bingner.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237381AbhIVU2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 16:28:25 -0400
+X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Sep 2021 16:28:25 EDT
+Received: from EX01.ds.sbdhi.com (2001:470:3c:1::21) by EX01.ds.sbdhi.com
+ (2001:470:3c:1::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.10; Wed, 22 Sep
+ 2021 10:11:52 -1000
+Received: from EX01.ds.sbdhi.com ([fe80::44d3:ef59:fdca:d83]) by
+ EX01.ds.sbdhi.com ([fe80::44d3:ef59:fdca:d83%3]) with mapi id 15.01.2242.010;
+ Wed, 22 Sep 2021 10:11:52 -1000
+From:   Sam Bingner <sam@bingner.com>
+To:     Oliver Neukum <oneukum@suse.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Martin Habets <mhabets@solarflare.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Matti Vuorela <matti.vuorela@bitfactor.fi>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Yves-Alexis Perez" <corsac@corsac.net>
+Subject: RE: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
+Thread-Topic: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
+Thread-Index: AQHXCROd8ZjcASMffkmnvxDkK/JoLKuxyU/A
+Date:   Wed, 22 Sep 2021 20:11:52 +0000
+Message-ID: <79d05aaa5052408897aeb8039c6a1582@bingner.com>
+References: <370902e520c44890a44cb5dd0cb1595f@bingner.com>
+ <d61ad9565e29a07086e52bc984e8e629285ff8cf.camel@suse.com>
+In-Reply-To: <d61ad9565e29a07086e52bc984e8e629285ff8cf.camel@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [98.150.132.238]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210917135142.9689-3-kavyasree.kotagiri@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 07:21:41PM +0530, Kavyasree Kotagiri wrote:
-> This adds the DT bindings documentation for lan966x SoC
-> generic clock controller.
-> 
-> Signed-off-by: Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-> ---
-> v4 -> v5:
-> - In v4 dt-bindings, missed adding "clock-names" in required
->   properties and example. So, added them.
-> 
-> v3 -> v4:
-> - Updated "clocks" description.
-> - Added "clock-names".
-> 
-> v2 -> v3:
-> - Fixed dt_binding_check errors.
-> 
-> v1 -> v2:
-> - Updated example provided for clk controller DT node.
-> 
->  .../bindings/clock/microchip,lan966x-gck.yaml | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> new file mode 100644
-> index 000000000000..e6b4ed3b0c88
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/microchip,lan966x-gck.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/microchip,lan966x-gck.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Microchip LAN966X Generic Clock Controller
-> +
-> +maintainers:
-> +  - Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>
-> +
-> +description: |
-> +  The LAN966X Generic clock controller contains 3 PLLs - cpu_clk,
-> +  ddr_clk and sys_clk. This clock controller generates and supplies
-> +  clock to various peripherals within the SoC.
-> +
-> +properties:
-> +  compatible:
-> +    const: microchip,lan966x-gck
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: CPU clock source
-> +      - description: DDR clock source
-> +      - description: System clock source
-> +
-> +  clock-names:
-> +    items:
-> +      - const: cpu_clk
-> +      - const: ddr_clk
-> +      - const: sys_clk
+Sorry I didn't have time to research this further to prove it was a regression - but there is now somebody else who has done so and created a patch.  I thought it might be good to give a link to it to you guys.  It caused problems on all iOS versions AFAIK.  The patch and discussion is available at:
 
-'_clk' is redundant. Drop.
+https://github.com/openwrt/openwrt/pull/4084
 
-With that,
+Sam
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+-----Original Message-----
+From: Oliver Neukum <oneukum@suse.com> 
+Sent: Monday, February 22, 2021 2:10 AM
+To: Sam Bingner <sam@bingner.com>; linux-usb@vger.kernel.org
+Cc: David S. Miller <davem@davemloft.net>; Martin Habets <mhabets@solarflare.com>; Luc Van Oostenryck <luc.vanoostenryck@gmail.com>; Shannon Nelson <snelson@pensando.io>; Michael S. Tsirkin <mst@redhat.com>; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Matti Vuorela <matti.vuorela@bitfactor.fi>; Jakub Kicinski <kuba@kernel.org>; Yves-Alexis Perez <corsac@corsac.net>
+Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
 
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    clks: clock-controller@e00c00a8 {
-> +        compatible = "microchip,lan966x-gck";
-> +        #clock-cells = <1>;
-> +        clocks = <&cpu_clk>, <&ddr_clk>, <&sys_clk>;
-> +        clock-names = "cpu_clk", "ddr_clk", "sys_clk";
-> +        reg = <0xe00c00a8 0x38>;
-> +    };
-> +...
-> -- 
-> 2.17.1
+Am Sonntag, den 21.02.2021, 10:42 +0000 schrieb Sam Bingner:
+> There seems to be a problem with this patch:
 > 
+> Whenever the iPhone sends a packet to the tethered device that is 1500 bytes long, it gets the error "ipheth 1-1:4.2: ipheth_rcvbulk_callback: urb status: -79" on the connected device and stops passing traffic.  I am able to bring it back up by shutting and unshutting the interface, but the same thing happens very quickly.   I noticed that this patch dropped the max USB packet size from 1516 to 1514 bytes, so I decided to try lowering the MTU to 1498; this made the connection reliable and no more errors occurred.
 > 
+> It appears to me that the iPhone is still sending out 1516 bytes over USB for a 1500 byte packet and this patch makes USB abort when that happens?  I could duplicate reliably by sending a ping from the iphone (ping -s 1472) to the connected device, or vice versa as the reply would then break it.
+> 
+> I apologize if this reply doesn't end up where it should - I tried to reply to the last message in this thread but I wasn't actually *on* the thread so I had to just build it as much as possible myself.
+
+Is this a regression? Does it work after reverting the patch? Which version of iOS?
+
+	Regards
+		Oliver
+
+
