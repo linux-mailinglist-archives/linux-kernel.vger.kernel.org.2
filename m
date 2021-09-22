@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D8D41460E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61CC414613
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbhIVKWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S234770AbhIVKXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234674AbhIVKWD (ORCPT
+        with ESMTP id S234713AbhIVKXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:22:03 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF7CC061757
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:20:33 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id a10so7530684qka.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:20:33 -0700 (PDT)
+        Wed, 22 Sep 2021 06:23:07 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5602C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:21:37 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id t4so7626303qkb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 03:21:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XJKyuUo2cdSRgXWfPtF0UIR+koPgLUlkrvvmEUF334g=;
-        b=EHagsB4VKGNEf68iLliTBnVZFaSLCT5+qRa69PdjB5hw7F7wX7FQKprU0O748XQiRe
-         UYWFzxeLKiqtHyQJWs5z4A+jfwnrrXRjF1dc67BHoWWnFUwq/q96hh8W+oK1VSlu/NH8
-         ktQEnBLA5ilAsnXO6nYMXrJ+UjCZ9wHgx+PVqH2Mx/XE3OMZWbO2GsGnxSUc600DAawN
-         lgzHo4UbhSym3kfOr6U96u2JLmgdQgVgzfcOsIi5G4TuLnQQ1juDQ4v7QVel/KLGgVS4
-         fsms+Sq/IXWuPc8mKn1ipD5lDcohMDWLCB9Fa2gDrjfWPGFkRyPP5Xi0JvcehWdNJUrS
-         O2kw==
+        bh=lL2DQUKgYky8J0s7D27IqBXnXuaSYyqrJtM1rXYOyrM=;
+        b=zwgf5NRANcg1FFk/+b/lLclJ8ONE7GC0k5BLnCiNbr87/fyS39uHZB1UXIizDGcFR+
+         siqUo4Sb5QDy7YO6mXIc56oJ7kNab6kaUGuLJR1gPcjesfMKHYIHDdlQpN9u5kAfe7DJ
+         +h61o9aaaFvVGBDu0XbWsfmui2ayWYJQsqd2gHSEDlTTD38UdFoT1GbIkpXjssdI+A/O
+         V+iiWu0ZJQKDw8YXolelsoEWPcatfSoWoZcAf+3on+SatVxKN94WJsjMOk5/0HGftIZL
+         u2y8RPvHeGT4hWk9PIFGJrCQIGolmkRfYw++Cn+tkqvb9B37CieH5G06c7VIoHHZMWDP
+         1qRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XJKyuUo2cdSRgXWfPtF0UIR+koPgLUlkrvvmEUF334g=;
-        b=TrIkFXpd9rtMfP5yXw+aY4yTNXwzmAADfWwqV/cjSuLApszrkMTA8APDgXvGgJgFwV
-         UPvPpIi5cwfwIgPO0n7wr4998f6JaY2O/f/uoyB6Ux9fp+y1LQWYGMDlNzo5c1318X/R
-         NWryXvVJ9Nowq7T8T1txaoR5WbYaE6X4N874Grk9UgWVfuKV+cTtwylyjkl0VIxa6fPj
-         iwyCcWmJodPySf4PQoNA/1n9K6Vx2exZRf++0XfbWYBxpsPznBJaivuxFA/BQEmAosVJ
-         CTYtJ9dMTiAElAMDmye675P6xAYtQIbaeKeYnZ8rxzYfX4nbIPcKfz1gfMuCJ57hjAuY
-         oEJw==
-X-Gm-Message-State: AOAM5301UCYNWfbxHtkNAIAbB9ZwPd/0YhQLDEDOtpoHRlQFZUio3S6g
-        rqUtb2XpvK6zBpAdjf1g7Yp9Bi19ay3kktKoC0xCpA==
-X-Google-Smtp-Source: ABdhPJwcR9hONH14/tIOQaEzKtYwof3QggJr6ydYypXbFaTw48vYpEYA5ppNEBfTij+28tygr8MBNi49A8wWTZO9C6w=
-X-Received: by 2002:a25:7146:: with SMTP id m67mr43831164ybc.353.1632306032671;
- Wed, 22 Sep 2021 03:20:32 -0700 (PDT)
+        bh=lL2DQUKgYky8J0s7D27IqBXnXuaSYyqrJtM1rXYOyrM=;
+        b=VmAmWUnScS/HeqH1hZgij9ycxg25cdnEPA9c12sZ5pRWaprhPVdy9kpbip+GqMdX8n
+         ccd45+tzZgg0nnj4CT4lMhRFXkVWlLzgSmvDozl40oBgKV68P5m5fnkZBJhTOxlIp0wU
+         xpJInFVujUMnRRTAbvWtTsJ0yPMVKmQTexYs8mbSvF/etLFEDSpnCrDCFuSXXNOHswIq
+         LPQGXNCWLtRUn0KKt1fzPxS++kuemua4HR3kJixoJh23A9pDz6JqZ6TKIA8BfXidrMHp
+         PZD0qH4K/gqXtSNz6eoCbRnf4coTQDi8c5KgL8HDdj1eiP/8pWC84iKLUX1ReYar0HA9
+         DPtg==
+X-Gm-Message-State: AOAM533ewCW8Qei4CVaWixb7+VLr7fPz+lOQS1vYfI494QnZ76zj2MQI
+        tjf680noLKf8lpgEvLW0yRwf/kIkV5LzsyFEun4jrQ==
+X-Google-Smtp-Source: ABdhPJwKdkPRdKCXrof4v74Hhyc6/eIg/BFqhLPnsbXHmOTJQPKw/Hy/zjnv0XZbcm9nqlfts+HE+rmDptqQ8W6xuaE=
+X-Received: by 2002:a25:cbc3:: with SMTP id b186mr42865524ybg.199.1632306097026;
+ Wed, 22 Sep 2021 03:21:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210717045627.1739959-1-daniel@0x0f.com> <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
- <CAFr9PXmFHanrx4Frg3hQwo-RbAY-UXxC=FOAj++cshSHa99z3g@mail.gmail.com>
-In-Reply-To: <CAFr9PXmFHanrx4Frg3hQwo-RbAY-UXxC=FOAj++cshSHa99z3g@mail.gmail.com>
+References: <20210818081018.2620544-1-piyush.mehta@xilinx.com>
+ <20210818081018.2620544-4-piyush.mehta@xilinx.com> <CAMpxmJUvPg3LvT1EJa-ZecXMWpR82EQMr8vhTjBpO3_6iiGecQ@mail.gmail.com>
+ <2286343a-e061-d5bb-b266-6f657cba63e2@xilinx.com> <CAMpxmJVUTy5iOoTuDTY8-7z-brLJwkv_a82tU47ZXsJjM_Vp1A@mail.gmail.com>
+In-Reply-To: <CAMpxmJVUTy5iOoTuDTY8-7z-brLJwkv_a82tU47ZXsJjM_Vp1A@mail.gmail.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 22 Sep 2021 12:20:22 +0200
-Message-ID: <CAMpxmJUoG7qPhy2CxapCn1M=w_AssOQsEmyvXO18OpedM6hBjw@mail.gmail.com>
-Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Romain Perier <romain.perier@gmail.com>
+Date:   Wed, 22 Sep 2021 12:21:26 +0200
+Message-ID: <CAMpxmJU7+QEumAbN=2JY_ywFyhzS6tn4JKRGnoEy=mbYp6ZjXg@mail.gmail.com>
+Subject: Re: [PATCH V3 3/3] gpio: modepin: Add driver support for modepin GPIO controller
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Piyush Mehta <piyush.mehta@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        wendy.liang@xilinx.com, Nobuhiro Iwamatsu <iwamatsu@nigauri.org>,
+        Rob Herring <robh+dt@kernel.org>, rajan.vaja@xilinx.com,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        git <git@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 1:50 PM Daniel Palmer <daniel@0x0f.com> wrote:
+On Wed, Sep 22, 2021 at 12:18 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
 >
-> + Bartosz
->
-> Hi Linus, Bartosz,
->
-> On Fri, 30 Jul 2021 at 19:12, Linus Walleij <linus.walleij@linaro.org> wrote:
-> > I suppose Bartosz can just merge the 4 first patches into the
-> > GPIO tree and you can take the rest into the SoC tree?
+> On Mon, Aug 23, 2021 at 10:14 AM Michal Simek <michal.simek@xilinx.com> wrote:
 > >
-> > Yours,
-> > Linus Walleij
+> > Hi Bart,
+> >
+> > On 8/23/21 10:02 AM, Bartosz Golaszewski wrote:
+> > > On Wed, Aug 18, 2021 at 10:11 AM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
+> > >>
+> > >> This patch adds driver support for the zynqmp modepin GPIO controller.
+> > >> GPIO modepin driver set and get the value and status of the PS_MODE pin,
+> > >> based on device-tree pin configuration. These four mode pins are
+> > >> configurable as input/output. The mode pin has a control register, which
+> > >> have lower four-bits [0:3] are configurable as input/output, next four-bits
+> > >> can be used for reading the data  as input[4:7], and next setting the
+> > >> output pin state output[8:11].
+> > >>
+> > >> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> > >> Acked-by: Michal Simek <michal.simek@xilinx.com>
+> > >> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > >> ---
+> > >
+> > > Which tree should this go through?
+> >
+> > I would prefer to go this via gpio tree.
+> >
+> > Thanks,
+> > Michal
 >
-> I just noticed I hadn't to'd Bartosz about these. Is there anything I
-> need to do for the first patches?
+> Sure, just make sure to get an Ack from Rob Herring on the DT bindings.
 >
-> Cheers,
->
-> Daniel
+> Bart
 
-I only have a part of this series in my inbox and patchwork doesn't
-have it at all - can you resend it with me in Cc?
+Nevermind - it's already there.
 
 Bart
