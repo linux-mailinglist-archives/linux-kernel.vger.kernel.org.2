@@ -2,240 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03368414598
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A90441459E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbhIVJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234381AbhIVJzf (ORCPT
+        id S234546AbhIVJ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:58:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234413AbhIVJ6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:55:35 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B16C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:54:05 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id i132so7879664qke.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RWTPAf/bkEE3iX2u98cLR9gNV6mV1xdpmTwLBO2P/1I=;
-        b=eF+vylZhrg3/SaTMPjZ2N3M3aQAbYrPhrrsTOYieTYgUpXxUy8epQMzueErwcIZwU6
-         ROqukO2wTMrE7IRRJgDhWq1jezf2x7JtXwoPOLa/HNVDjUIEu0TM7VZRSOcrFxR1Kuqg
-         L1YnyzcWvIeaaiXZEjo2N5fzSumAlWNnIe2Q9OZKkxj3nE8gYtBlIkF9ShFHiIVsjV4Z
-         TGt/Ki22BfIm4QPw5NfGDJyPznwQMSgsKBENbhkDZFShhdEvFi66PSdBAdC80lnArcn2
-         aYiV7dC+ZPU3gRWD1YPUjeD6Vc35PdFy0UCMvCN7I1yZznZcblyA/DbWHK8m3f/6FWgP
-         EquQ==
+        Wed, 22 Sep 2021 05:58:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632304626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H8lXYjCiQE1RsLJOpWSQ54LN6mhNiVsVotKqDRIpqpU=;
+        b=YBZjxL8ndIWf8E9tpkJV2niVdoiTOO5bwYTfkF7l0OrJrUXoEyYPpO+K6Ths5y33lzgRh5
+        2EuhfcdGM4gZPfIDk9W69XSokzwBMiIcVWJxWphiEXY7zaVK5hc3Fss3PodIrwi2KC+9u6
+        w5TLA0p4W1CfpqCwqArIoDEQTC5U4gA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-3DCkOkvGMQKWJVS4euGqzg-1; Wed, 22 Sep 2021 05:57:05 -0400
+X-MC-Unique: 3DCkOkvGMQKWJVS4euGqzg-1
+Received: by mail-ed1-f72.google.com with SMTP id w24-20020a056402071800b003cfc05329f8so2415878edx.19
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:57:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWTPAf/bkEE3iX2u98cLR9gNV6mV1xdpmTwLBO2P/1I=;
-        b=Rsfe/nthuaGXD3Qdezk20OULmm/L7l38nQW2NJxhCqVyX9n3ZGrU9HdInkEz54TFE6
-         BgHzy71jLALMuwaR8qbf6ubfbYBVBIwpDdWwl6tG5UqdoicsxgaqOiA4jqRbNJBAet3+
-         EUvxWBPQKZD6i5qWL0NyZtoUyMLtcn8/KmuGOk8d4dCdy8WOHcmUKlO1howMPFU+aIQP
-         oOZkUp7wrz2/fp6L7Re3C8wvC+i3GPGACRXRWMzPdQtlE0xZivvBdGDA6sFJa5T+OM46
-         nF184qqSHEkSf58HMJx0vZbOdhqtunR0EVOakLippRO+wA5pyNsoTtTaTe+LZffxhPrp
-         KHxA==
-X-Gm-Message-State: AOAM531v4xhbC8FBBwtzjCQ6MWaLiAZLORQM/nSe/J5lD87ODsRsQKUW
-        mf2XVxjkXREi8fuhx4Cpm9gCYT9t5co1gzOfph5D7g==
-X-Google-Smtp-Source: ABdhPJxMFmab/Lha8daNzTpWdqb3xbeHjh8Z+Gl0yPC9hGJTJbA6B/xCcEg4pux/3n4Z+ZHN7d//YLpsKsmNyZsTDfw=
-X-Received: by 2002:a25:7146:: with SMTP id m67mr43698958ybc.353.1632304445057;
- Wed, 22 Sep 2021 02:54:05 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H8lXYjCiQE1RsLJOpWSQ54LN6mhNiVsVotKqDRIpqpU=;
+        b=wVHGyzwCWh5thX/yx3dycIVZP/1mbgGZ5ZdSOLGAMEPC2vD5S6dc82eqfQJO7S/MJh
+         XkyuwQRx6go9Ok/1v3tmRQTBdcPJn4+JskHizYQjzYM7mfavn0rkxOGPehET96QAdwyp
+         Bvdfzcd6s6AbZyzreU1nsJNimdzBpyA9YeF2a4E30MYxUgXYlSc6CoHwXxTKG5VT+4Qs
+         bsVssjnl78wwNa4PLIrr3JxNR5FgG2ZOo05N0AoQsbXfxJNuBqR1J5vLd0gNj6ugFsuZ
+         jq9URQkds7dpBAQWvPuaOCRoOg8EtK3fLA99FLgBLBIGDs7taGAx+urruV0BYqarz2xU
+         V0LQ==
+X-Gm-Message-State: AOAM5332BazvwDx96lSmfZGWeZw6u4bKVTZAoYBnsvH+prZC2kjtrEDS
+        KmzskHXORh66DM6wme3sygnV7uJ0Z5x7jIPx4vKSStMvrfzRBrTtTg/pcVUy25JNwP6CUo/81Zi
+        PdQ/aRKiVC1349I6QGJgCkkcctOJq/lpG+U13sNwKONR4ruhTx3qkuauKkkqcqtPtzdksa4Gbzc
+        1X
+X-Received: by 2002:a17:906:9747:: with SMTP id o7mr40352315ejy.486.1632304623507;
+        Wed, 22 Sep 2021 02:57:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyb9ww+gqCqOmTPJDggbxqTKvN9bBkyT5bul3yrAh9YWIrPXDtI44i1X+d5sBET3nXuFs313w==
+X-Received: by 2002:a17:906:9747:: with SMTP id o7mr40352293ejy.486.1632304623257;
+        Wed, 22 Sep 2021 02:57:03 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id m15sm807012ejx.73.2021.09.22.02.57.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 02:57:02 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: nVMX: Fix nested bus lock VM exit
+To:     Sean Christopherson <seanjc@google.com>,
+        Chenyi Qiang <chenyi.qiang@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210914095041.29764-1-chenyi.qiang@intel.com>
+ <YUigOQ6wL/NSXqjO@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <37eb4ef4-7dd2-1bbb-f250-8a600b91e749@redhat.com>
+Date:   Wed, 22 Sep 2021 11:57:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com> <20210824164801.28896-12-lakshmi.sowjanya.d@intel.com>
-In-Reply-To: <20210824164801.28896-12-lakshmi.sowjanya.d@intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 22 Sep 2021 11:53:54 +0200
-Message-ID: <CAMpxmJX+1sSceOe5ZN9iViWYfede50KwzdDduVgRb=8VtxbC5Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 11/20] gpio: Add event count interface to gpiolib
-To:     lakshmi.sowjanya.d@intel.com
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, mgross@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        tamal.saha@intel.com, bala.senthil@intel.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YUigOQ6wL/NSXqjO@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
->
-> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
->
-> Add a flag for event count and an extended structure to capture the event
-> count when the flag is enabled.
->
-> Intel(R) PMC Timed I/O device has an event count register counting
-> the number of missed input edges. The register interface captures the
-> event count and timestamp of the last event. For an event rate
-> exceeding the rate that software can read events, the software can use
-> the missed event count to calculate average event rates.
->
-> The application requests one or both rising and falling edges when
-> initializing the interface. The count of the selected edge type is
-> optionally selected with an added event type flag. The event count is
-> returned in an extended buffer using the read() interface.
->
-> Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
-> Signed-off-by: Tamal Saha <tamal.saha@intel.com>
-> Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> ---
->  drivers/gpio/gpiolib-cdev.c | 28 +++++++++++++++++++---------
->  include/linux/gpio/driver.h |  1 +
->  include/uapi/linux/gpio.h   | 12 ++++++++++++
->  3 files changed, 32 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 1df28a71f88b..3b5719d5e2dc 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -518,7 +518,8 @@ struct linereq {
->          GPIO_V2_LINE_DRIVE_FLAGS | \
->          GPIO_V2_LINE_EDGE_FLAGS | \
->          GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME | \
-> -        GPIO_V2_LINE_BIAS_FLAGS)
-> +        GPIO_V2_LINE_BIAS_FLAGS | \
-> +        GPIO_V2_LINE_FLAG_EVENT_COUNT)
->
->  static void linereq_put_event(struct linereq *lr,
->                               struct gpio_v2_line_event *le)
-> @@ -1252,10 +1253,14 @@ static ssize_t linereq_read(struct file *file,
->         struct linereq *lr = file->private_data;
->         struct gpioevent_poll_data poll_data;
->         struct gpio_v2_line_event le;
-> +       size_t min_userbuf_size;
->         ssize_t bytes_read = 0;
->         int ret, offset;
->
-> -       if (count < sizeof(le))
-> +       min_userbuf_size = sizeof(le);
-> +       min_userbuf_size += lr->lines[0].eflags & GPIO_V2_LINE_FLAG_EVENT_COUNT ?
-> +                                       sizeof(struct gpio_v2_line_event_ext) : 0;
-> +       if (count < min_userbuf_size)
->                 return -EINVAL;
->
->         /* Without an IRQ, we can only poll */
-> @@ -1270,12 +1275,17 @@ static ssize_t linereq_read(struct file *file,
->                                               lr->lines[offset].eflags, &poll_data);
->                 if (ret)
->                         return ret;
-> -               event = kzalloc(sizeof(*event), GFP_KERNEL);
-> +               event = kzalloc(min_userbuf_size, GFP_KERNEL);
->                 event->timestamp_ns = poll_data.timestamp;
->                 event->id = poll_data.id;
-> -               if (copy_to_user(buf, (void *)&event, sizeof(event)))
-> -                       return -EFAULT;
-> -               return sizeof(event);
-> +               if (lr->lines[offset].eflags & GPIO_V2_LINE_FLAG_EVENT_COUNT)
-> +                       event->ext[0].event_count = poll_data.event_count;
-> +
-> +               ret = copy_to_user(buf, (void *)event, min_userbuf_size);
-> +               if (ret)
-> +                       ret = -EFAULT;
-> +               kfree(event);
-> +               return ret ? ret : min_userbuf_size;
->         }
->
->         do {
-> @@ -1396,7 +1406,7 @@ static int setup_input(struct linereq *lr, struct gpio_v2_line_config *lc,
->         ret = edge_detector_setup(&lr->lines[line_no], lc, line_no,
->                                   lflags & GPIO_V2_LINE_EDGE_FLAGS);
->         if (ret < 0) {
-> -               if (ret != -ENXIO) {
-> +               if (ret == -ENXIO) {
->                         if (lr->gdev->chip->setup_poll &&
->                             lr->gdev->chip->setup_poll(lr->gdev->chip, offset,
->                                                        &lflags) == 0 &&
-> @@ -1513,7 +1523,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
->                                 goto out_free_linereq;
->                 }
->
-> -               file_flags = O_RDONLY | O_CLOEXEC;
-> +               file_flags = O_CLOEXEC;
->                 file_flags |= output ? O_WRONLY : O_RDONLY;
->                 file_flags |= (!output && !lr->lines[i].irq) ? O_NONBLOCK : 0;
->
-> @@ -1524,7 +1534,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
->                         offset);
->         }
->
-> -       fd = get_unused_fd_flags(O_RDONLY | O_CLOEXEC);
-> +       fd = get_unused_fd_flags(file_flags);
->         if (fd < 0) {
->                 ret = fd;
->                 goto out_free_linereq;
-> diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-> index 561e289434aa..09637fcbfd52 100644
-> --- a/include/linux/gpio/driver.h
-> +++ b/include/linux/gpio/driver.h
-> @@ -493,6 +493,7 @@ struct gpio_chip {
->  struct gpioevent_poll_data {
->         __u64 timestamp;
->         __u32 id;
-> +       __u32 event_count;
->  };
->
->  struct gpio_output_event_data {
-> diff --git a/include/uapi/linux/gpio.h b/include/uapi/linux/gpio.h
-> index c39efc459b9f..e7fff2a205ec 100644
-> --- a/include/uapi/linux/gpio.h
-> +++ b/include/uapi/linux/gpio.h
-> @@ -80,6 +80,7 @@ enum gpio_v2_line_flag {
->         GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN        = _BITULL(9),
->         GPIO_V2_LINE_FLAG_BIAS_DISABLED         = _BITULL(10),
->         GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME  = _BITULL(11),
-> +       GPIO_V2_LINE_FLAG_EVENT_COUNT           = _BITULL(12),
->  };
->
->  /**
-> @@ -270,6 +271,15 @@ enum gpio_v2_line_event_id {
->         GPIO_V2_LINE_EVENT_UNKNOWN_EDGE = 3,
->  };
->
-> +/**
-> + * struct gpio_v2_line_event_ext - Extended gpio line event
-> + * @event_count: count of events
-> + */
-> +struct gpio_v2_line_event_ext {
-> +       __u32 event_count;
-> +       __u32 reserved[3];
-> +};
-> +
->  /**
->   * struct gpio_v2_line_event - The actual event being pushed to userspace
->   * @timestamp_ns: best estimate of time of event occurrence, in nanoseconds.
-> @@ -280,6 +290,7 @@ enum gpio_v2_line_event_id {
->   * @line_seqno: the sequence number for this event in the sequence of
->   * events on this particular line
->   * @padding: reserved for future use
-> + * @gpio_v2_line_event_ext: Extended gpio line event
->   *
->   * By default the @timestamp_ns is read from %CLOCK_MONOTONIC and is
->   * intended to allow the accurate measurement of the time between events.
-> @@ -296,6 +307,7 @@ struct gpio_v2_line_event {
->         __u32 line_seqno;
->         /* Space reserved for future use. */
->         __u32 padding[6];
-> +       struct gpio_v2_line_event_ext ext[];
+On 20/09/21 16:52, Sean Christopherson wrote:
+> On Tue, Sep 14, 2021, Chenyi Qiang wrote:
+>> Nested bus lock VM exits are not supported yet. If L2 triggers bus lock
+>> VM exit, it will be directed to L1 VMM, which would cause unexpected
+>> behavior. Therefore, handle L2's bus lock VM exits in L0 directly.
+>>
+>> Fixes: fe6b6bc802b4 ("KVM: VMX: Enable bus lock VM exit")
+> 
+> Cc: stable@vger.kernel.org
+> 
+>> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+>>
+>> ---
+> 
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> 
 
-This bit is an instant NAK as it breaks the ABI.
+Queued, thanks.
 
-While I understand this is a bit of a different problem than the one
-handled by the seqno fields, I think you should just think about
-adding a field called something like "real_seqno" for those hardware
-counted sequence numbers.
+Paolo
 
-Bart
-
->  };
->
->  /**
-> --
-> 2.17.1
->
