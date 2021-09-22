@@ -2,87 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B33B4146FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C464146CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 12:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbhIVKyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 06:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbhIVKyD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:54:03 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A38C061574;
-        Wed, 22 Sep 2021 03:52:33 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v22so8123473edd.11;
-        Wed, 22 Sep 2021 03:52:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u6QWPY0ZEqxeGsKxeqJpYnJqXioykY6+tbSHoyOs44g=;
-        b=q6DINLrg5LLskeE9coe+6hSwLKilWo4+SuMaLl1kl2bAHsOeGaIqSskzc7tjoP6FQ8
-         Pji4wKKWhDo1UxIwWDw0LJWGmv7BnF9DHuiiCgqq5C9vvaqTakVgxrQXv/IUN6IXllkD
-         GozAlJfYruN042VNsYT1VEcdFpV0KzlmGkq3gIzK61o8d7DZC0LPVysCs4klRpObSozn
-         ufIMlYIznXuboSEXZipSqX1mdDFKrNOt+08cCD670yV/aqFxSgQtDTDnOGrWaaGdBphT
-         3IlpqbqIlJgY8FHFqe39vKO6/6peaCe3z48Ywu207EI5qASyN/t5wvGfOaASHhjyGblX
-         qQpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u6QWPY0ZEqxeGsKxeqJpYnJqXioykY6+tbSHoyOs44g=;
-        b=rP9Z1jr9siP42Ww+420pZZckSDEPFGs0w3HmgYpu/TiPSbjQ5y3GdH/ODDDK2EcvSj
-         lf3G4ymoMH7CXl64n7Cq5x9nNqwbN4iB6rAgiMyoJgDMIDvlM97WK5JaAMxbcRB4fZlI
-         PSfMz0J2b3SRlu003BL59umR4rKzNuYu0wiIbtOZkp6WrBmKNT8pwIGGr41rjN16OO+M
-         Pws1+VCcD7HM5Fv5bZHzqNqx9TqeT6DdDHKsHHfFnXM5MT3OcoXDA1IkJQ3FJxuKrouC
-         GjTEsUSSdvx5TXm9Qpnek6U1sHBZe5WDKRvE990RqvlWRFHdHxF8BUeAq41iCfgwu42B
-         pdgw==
-X-Gm-Message-State: AOAM533axxyGDqsUSu2ujVOeTulb3YRvox9QBGwEldoLnco0+7PWtQWN
-        7l7c5k2RY+v521NhfkKZmbObfIpfLTGu8B8inDs=
-X-Google-Smtp-Source: ABdhPJzbGf59JFRJIr0Wb+quTkgdDGmPv69vUBeTyKKxGJWNQ4RjQwYMm+TUllVO7at2zWDAgppsP+th7ItY6p/tN74=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr39985455ejc.69.1632307951585;
- Wed, 22 Sep 2021 03:52:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210717045627.1739959-1-daniel@0x0f.com> <CACRpkdbE+_DJFhBCmtz5JwJupf7QkkWZhXrgf1KG_3rPqvEm0w@mail.gmail.com>
- <CAFr9PXmFHanrx4Frg3hQwo-RbAY-UXxC=FOAj++cshSHa99z3g@mail.gmail.com> <CAMpxmJUoG7qPhy2CxapCn1M=w_AssOQsEmyvXO18OpedM6hBjw@mail.gmail.com>
-In-Reply-To: <CAMpxmJUoG7qPhy2CxapCn1M=w_AssOQsEmyvXO18OpedM6hBjw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 22 Sep 2021 13:51:54 +0300
-Message-ID: <CAHp75VdU52rwKY3AA0Nxt3VGOFr71XtjCDqZbSxR4GNczSqihQ@mail.gmail.com>
-Subject: Re: [PATCH 00/10] gpio: msc313: Add gpio support for ssd20xd
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Daniel Palmer <daniel@0x0f.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Romain Perier <romain.perier@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235128AbhIVKnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 06:43:43 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:54362 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234885AbhIVKnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 06:43:42 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 033762013EB;
+        Wed, 22 Sep 2021 12:42:11 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BE8A42010CC;
+        Wed, 22 Sep 2021 12:42:10 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 510BB183AD26;
+        Wed, 22 Sep 2021 18:42:08 +0800 (+08)
+From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
+        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
+        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
+        jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, kuba@kernel.org,
+        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, vladimir.oltean@nxp.com,
+        leoyang.li@nxp.com, f.fainelli@gmail.com, andrew@lunn.ch,
+        vivien.didelot@gmail.com, claudiu.manoil@nxp.com
+Subject: [PATCH v4 net-next 0/8] net: dsa: felix: psfp support on vsc9959
+Date:   Wed, 22 Sep 2021 18:51:54 +0800
+Message-Id: <20210922105202.12134-1-xiaoliang.yang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 1:21 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
-> On Wed, Aug 25, 2021 at 1:50 PM Daniel Palmer <daniel@0x0f.com> wrote:
-> > Hi Linus, Bartosz,
+VSC9959 hardware supports Per-Stream Filtering and Policing(PSFP).
+This patch series add PSFP support on tc flower offload of ocelot
+driver. Use chain 30000 to distinguish PSFP from VCAP blocks. Add gate
+and police set to support PSFP in VSC9959 driver.
 
-...
+v3->v4 changes:
+ - Introduce vsc9959_psfp_sfi_table_get() function in patch where it is
+   used to fix compile warning.
+ - Store MAC entry type before FRER set, and recover it after FRER
+   disabled.
 
-> > I just noticed I hadn't to'd Bartosz about these. Is there anything I
-> > need to do for the first patches?
->
-> I only have a part of this series in my inbox and patchwork doesn't
-> have it at all - can you resend it with me in Cc?
+v2->v3 changes:
+ - Reorder first two patches. Export struct ocelot_mact_entry, then add
+   ocelot_mact_lookup() and ocelot_mact_write() functions.
+ - Add PSFP list to struct ocelot, and init it by using
+   ocelot->ops->psfp_init().
 
-Have you tried to use the `b4` tool? It is capable of getting
-everything from the lore archive.
+v1->v2 changes:
+ - Use tc flower offload of ocelot driver to support PSFP add and delete.
+ - Add PSFP tables add/del functions in felix_vsc9959.c.
+ - Use list_for_each_entry to simplify the code.
+
+Vladimir Oltean (2):
+  net: mscc: ocelot: export struct ocelot_mact_entry
+  net: mscc: ocelot: add MAC table write and lookup operations
+
+Xiaoliang Yang (6):
+  net: mscc: ocelot: set vcap IS2 chain to goto PSFP chain
+  net: mscc: ocelot: add gate and police action offload to PSFP
+  net: dsa: felix: support psfp filter on vsc9959
+  net: dsa: felix: add stream gate settings for psfp
+  net: mscc: ocelot: use index to set vcap policer
+  net: dsa: felix: use vcap policer to set flow meter for psfp
+
+ drivers/net/dsa/ocelot/felix.c             |   2 +
+ drivers/net/dsa/ocelot/felix.h             |   2 +
+ drivers/net/dsa/ocelot/felix_vsc9959.c     | 697 ++++++++++++++++++++-
+ drivers/net/ethernet/mscc/ocelot.c         |  56 +-
+ drivers/net/ethernet/mscc/ocelot.h         |  13 -
+ drivers/net/ethernet/mscc/ocelot_flower.c  |  74 ++-
+ drivers/net/ethernet/mscc/ocelot_vcap.c    | 103 +--
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c |   7 +
+ include/soc/mscc/ocelot.h                  |  49 +-
+ include/soc/mscc/ocelot_ana.h              |  10 +
+ include/soc/mscc/ocelot_vcap.h             |   1 +
+ 11 files changed, 942 insertions(+), 72 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
