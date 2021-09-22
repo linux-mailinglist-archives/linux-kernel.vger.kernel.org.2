@@ -2,178 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166C6413ECF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6D1413ED4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhIVBBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 21:01:48 -0400
-Received: from mail-mw2nam12on2082.outbound.protection.outlook.com ([40.107.244.82]:60000
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230048AbhIVBBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:01:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PxxPZpawSpxRw4mlW+wdkrWzwrUWxnYVDEI2LQ9veW8O0iSXsZmqy0T/0i4hyHRoF0Xb/2urObBIOYzEyjKZQ7CmJQlHkxhpLIZACP0+3Y49AZ7Gb1S2dS583Ie57rbe55WVUMwJAN/Pv906E1IGxL34TU7b6ax3QaSRLgOVL7+3bGHgQuqTQcMbb5h88BYrGsDveXYECiSZvIMp05uIKhQ9FROpfoixbwYOeeGkVC+mBoCkLfcNIwV93Hh5/KN+xvSDqDlJBsW3O8GWb6cQLW4ky4N9cXafwAiIHStcDwpkQ9LmjYqyS3YG9CK5LCOlkb3Zxo3ZkhnApiJ4TqPrvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=o+a+edFqbp4EnpMhTO0QIN+pLqeo4gQSNSXbuU0dO9g=;
- b=B/YvcW9EOUJZCBlR15Nm69rBZySKPegnOSxf6IvpRAod02R7pn7T7uNPfgavdOIL7TvO0ZjNxtmPew7D0cl1DD+uIiPZTy2D5YW1AjuN/7zr6BGBzz+I/lYKVkv3r7L3ugftEKXsx5WyrFpKb/CCn8FBuzLfuxhpAXVyId0Lk1Ft122wgGu8YUARkkEkKpBOsP1i8Fpye0pCJx2OL6FJAMYVYafHxRLvYTRw0XJ1RZE12rvpMNbVi0a2JrhiN5/13k3I1X0bbbJXNjN9u20z720fx3qe0qb+FLPqh3Ufm70SyeDfG0EKis4Etg+Pn7ATXOmx4WbWLqjG+kdVqE5fMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o+a+edFqbp4EnpMhTO0QIN+pLqeo4gQSNSXbuU0dO9g=;
- b=M0VqKycfHhlu9fwcyLVzzG/GIxHmsgFrAGrcct/Ge8PX8qLcAlDu3TK4/aouaiRgfkMrsrFLXx9f8m67ubVAXEAG9Mvj2DhMtX1LJ5kwyUbfnM3A48eYVid2AVwea7nxVvtBf+88LO2obOLWlU/4eRaQ9iOIRo9dc+a9m8oLCHYRzbLBz8I8zJJFQXzFSbWV/nwLQ8wnEE5e+v4s5aXvg7Hzaa5o3Kr+MmRaAwgubSc/T/MTXyF19/AKAZJy0Ehe/93XJ9GOla5ve+DJSiq/+Ak7a7fXrmQX4u/swz/UzBR84BUjl5z4KTK6ZjXfYLIfFvGslrMDAwZYXBkmtilZGA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5045.namprd12.prod.outlook.com (2603:10b6:208:310::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
- 2021 01:00:16 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
- 01:00:16 +0000
-Date:   Tue, 21 Sep 2021 22:00:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 03/20] vfio: Add vfio_[un]register_device()
-Message-ID: <20210922010014.GE327412@nvidia.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-4-yi.l.liu@intel.com>
- <20210921160108.GO327412@nvidia.com>
- <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB54330421CA825F5CAA44BAC98CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BL1PR13CA0160.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::15) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S230048AbhIVBCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 21:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232200AbhIVBCd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 21:02:33 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1349CC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:01:04 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id f130so3907394qke.6
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 18:01:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2tzoNjgBHHVVO82xDeud4XNE313zYxYkqzxc5/NZ08A=;
+        b=GGlDWC0II2CLW7KwN7qe9pvg/MIQUgcJy/JGJ9kxJCBAUvijhRdOhhHOGA+kup9px+
+         qAogffQY4KGcU9sBWz0CbucL69NEN/RunSCzX1GkrxkdpNRjnpnR6QHTH3DaQkqQV8P1
+         xMrc5wA9n/s7NWLxjWZ2u45FgRGkKDZvYjTinKj4JMVyzlIDyZhrBstuUsYW46FwdKFA
+         DWYay8U3ZkffzSmhKwFNZX6vcoJ73Vyoe2l+BpccKiQfV4P+wk48MyPmCREDqEPvTPoc
+         8hnaVD4Hv7EdtjCH6LCxwH180X4eUhlg4DRRsZdJKK8txL8c8kWvg1+EI6ABqnpUXVhr
+         Jg7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2tzoNjgBHHVVO82xDeud4XNE313zYxYkqzxc5/NZ08A=;
+        b=G3TFLp3VirWGpcaGiIvMF81twKDgr+tfK9I2p6AXX5EBX9bQCcgKPqcoNkX2Od2kSt
+         ZGI4Se/sESNguFf9Wzc1sAM8ePtB4RqHmOC60E2x/IwZ181w0ZbBn554j9GWYSiTC9ie
+         JPMaC5TppAHKNhcSVfmKWEo0wCURS4x6pQMhOnZvSou5FtWlA/mndPHC6RCXg7xIIGQJ
+         JiYae5380JKYzQq/VxYKU0HNi/fshmQYxw9c3WSEqizGen5+ZyPqzq15e8w76d3UXGaO
+         kgj3Px2ITw8RazKX/TFlkbLmHX2HS9DcMPbGzOOYtg35/t/apWtE36ZmowLcBV8C3Owz
+         YkPQ==
+X-Gm-Message-State: AOAM532G970qv/1jmEMtf+LleF1wFIVrvUY+gf8l51qU136CSS5OrSoY
+        Kkq0pBjbYTXAGCA6ZtamnKhd0e2Wj48Kf+EB4LYdrA==
+X-Google-Smtp-Source: ABdhPJwFpus2NfxEVSKg2x7IV+xzPb+fbtcnBYodXLvkDbaDUMFmm0/qPQBnMspUGNvlOl5b8upBbujF82BPPlxlRp8=
+X-Received: by 2002:a25:e750:: with SMTP id e77mr13431650ybh.23.1632272462992;
+ Tue, 21 Sep 2021 18:01:02 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0160.namprd13.prod.outlook.com (2603:10b6:208:2bd::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.5 via Frontend Transport; Wed, 22 Sep 2021 01:00:15 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mSqcQ-003nTW-Ms; Tue, 21 Sep 2021 22:00:14 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 518490ca-b6f9-43dd-e2e7-08d97d645704
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5045:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5045E9C4954766045CD99425C2A29@BL1PR12MB5045.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 33Ws7K6Q7gEJxDqWt23lzwpGwItuO7gSG3dOsYuZQgFAua0Uhttqia1Y1r5ugo16AgN0ptSIOqKUsctaEIAIbzuxL/b0YuVhYLV3IxTNmoRsS0ZsSdyE5D/MGxMrnWy1yli4lriljtv9D63AS8YyXJE3rf2WoVzLzSkfjTYtqPtXNlZ4eanX86mjTgBtvlsoIlbg83g/1s11YHQ2GqoUoG5iKuCSrt5A+fEj+FXO0sDnG455gIvGAgfOZmRStK4JMJ0EUJn6AlRN5XDcpIxT9oiABbgxB+OSxgfjy1tyVMx4HHOuNPAvRuOziCObOM32KjpyaOuoexRogBBPly16EQza0KNZy1Qn2qh6fYbL2frOWYOuImnaXFjVSPjhpRQeiOOdV3dUHjIfqXPFVvr+Bcmzzt+fjqlOzrGzSa3OmJQTQMftbtyjQxZJYFWOrH6ZVlLpCu4x2WpD+ONlThpClJmNp+yQPkeurOuUnJqhiQCIykrdcu9cCZHajkWs9Sx7057GJCwD0IBOHq4nv2ZDB7wIFFUVU45ur66WdG7txFcmKBe5z/wkLoJ3jJu4fIeueH4ZfEjl469L0x0m9QULFwEnSsV9GNFgohIHCVL6uujYduEPQlIsuCLiSQ7sVlNfqbvil/OHfor692uITDwa4mH8sacyOCSVybXe0BYx9PoSV/tXSfA2lcQd+DSgb54U3ULZiNtCK3cgIJX3PX559wuMnRI8I+7WTk4dk326P9UNoZ/g83vgT9Zl8yxwfWJelV+JxbNBvGticuVb0fxRTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(84040400005)(33656002)(2906002)(7416002)(9746002)(66476007)(186003)(8676002)(9786002)(508600001)(54906003)(6916009)(966005)(1076003)(5660300002)(36756003)(8936002)(316002)(26005)(426003)(38100700002)(83380400001)(66946007)(86362001)(107886003)(4326008)(66556008)(2616005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R2kOsjlj/pfWOCQ5o4ajzbFl6WYNsLQgVcKDvS5g6ElvrNC+rvh8kkc3nsVq?=
- =?us-ascii?Q?I68RhP8DiZxRIQL3sfKX6yBpYtyIAhH44hiSbxYzo8KFEsntvUl5oISrmJLI?=
- =?us-ascii?Q?8ifylMOXDezw3t/eQj3G64tiN8qhXDpVl00IE6gQr3PBMulV/xQwdE7P87FX?=
- =?us-ascii?Q?PI74Bu1Nd4D/6tbopMX0Mhu2InWVt3Bu1qAPLF1ItnbE/ZpPo+KK1zkUspPw?=
- =?us-ascii?Q?0oE7xr44qSTZnJKrwWK2rCuHWeYXhKd4/ejNY4ifoUIONRw2DSvdwJPYuzD2?=
- =?us-ascii?Q?FquvQwc5PfjmebJihB6xwpRKujCwJ9dI9CzEYxOg245ZQ/p6PimCLkRBLFEd?=
- =?us-ascii?Q?cMcqiIgCxYEju8uBbth5MTvhcpwinsZqU1+Ou7W3pqpYU0M3AseftNNRaUw8?=
- =?us-ascii?Q?rezCGJhXNuZWiPs++HZXbSPT79iAEFa8D/CVSTc4ib8XuR5lQ/qe4UescoLs?=
- =?us-ascii?Q?vttvvg6gba3Bc9AStVXhNAWGbfXrITkWL7PkQaoVB8qCdON7/llsynRMGB2Q?=
- =?us-ascii?Q?V4PhCDZEwJC6QHw8HJj1gvwYJGVLlFq5rbkUk4M+8bY4YMx2ZXV7tP5rC0H5?=
- =?us-ascii?Q?XZtIlPQ2y+zR20MrsOk7MGg6POG/FeE1Axj9/pybJzC45rXSG4lwVX0vjZ4a?=
- =?us-ascii?Q?8umb4ctZXWRHmY114jylaDtgseTOSymsGM6OuKLoPXYVQU8xVMqG0sUK2Xkm?=
- =?us-ascii?Q?0H6h4EwPMsEJKRKayYd5vMk3R08cBu9j05/2GB8bcjPVFA2CfQZHHp9JIzgl?=
- =?us-ascii?Q?dJMIM7c5OXsFofWUC6bkquXLp7dpnUyiqentwguN1YtefEWzj4rQzj8Djgu/?=
- =?us-ascii?Q?GrU7h8KjsnmVHvET6iU1x4EZl5nWMM/8LN1FTYOjm7UMn2BrdDNNbesNkK1m?=
- =?us-ascii?Q?AK4d9qe7V1bTbs2+n62H/th1z9wAiDYp+rppVqomh2us+K7Dt0lFoqiqMYwT?=
- =?us-ascii?Q?UlCFXKKYq2mZdZmYMD1K630ly3pXQjEBBMcGZd1ZR40vZnogD4Xh8QnaWNHX?=
- =?us-ascii?Q?WDRRhsnAli1UFpcX4Z6SToBM7DK0r5VukDFkBBhkzwNqhnhP+x2fhPIS+0Lm?=
- =?us-ascii?Q?2QW31GwSlUgjLnpmc7E1/rHCQh8VhUCgVetE1KMTi1VHa7T171LsKcK+MdWE?=
- =?us-ascii?Q?EbTyKUKehXLQUB+WZHf4WC6HAxpGpfIOEE4TU1jNkixCBulUprgsNqCWYts2?=
- =?us-ascii?Q?fXaDPGgArdMYfxYNa0LoV2njW3JVCQY2UKxQbdqj6eYpr2jJnPx1oS8u64FU?=
- =?us-ascii?Q?ztj8HWeleTUmV9jDFRzbhk35stx9eCIjL/K0sZlGTjj8ObdzT54wNd65G1fA?=
- =?us-ascii?Q?L+G982X4/VN6cKEo6zsoNtA6?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 518490ca-b6f9-43dd-e2e7-08d97d645704
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 01:00:16.1159
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: beG9Ox6uWcIDl2UCiT24Ry3fdPCfE8R5qqMm+9Wzi4BfYbcCYXDu6HrF9O46PBin
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5045
+References: <YUoFFXtWFAhLvIoH@kroah.com> <CAJZ5v0jjvf6eeEKMtRJ-XP1QbOmjEWG=DmODbMhAFuemNn4rZg@mail.gmail.com>
+ <YUocuMM4/VKzNMXq@lunn.ch> <CAJZ5v0iU3SGqrw909GLtuLwAxdyOy=pe2avxpDW+f4dP4ArhaQ@mail.gmail.com>
+ <YUo3kD9jgx6eNadX@lunn.ch> <CAGETcx9hTFhY4+fHd71zYUsWW223GfUWBp8xxFCb2SNR6YUQ4Q@mail.gmail.com>
+ <YUpIgTqyrDRXMUyC@lunn.ch> <CAGETcx_50KQuj0L+MCcf2Se8kpFfZwJBKP0juh_T7w+ZCs2p+g@mail.gmail.com>
+ <YUpW9LIcrcok8rBa@lunn.ch> <CAGETcx_CNyKU-tXT+1_089MpVHQaBoNiZs6K__MrRXzWSi6P8g@mail.gmail.com>
+ <YUp8vu1zUzBTz6WP@lunn.ch>
+In-Reply-To: <YUp8vu1zUzBTz6WP@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 21 Sep 2021 18:00:26 -0700
+Message-ID: <CAGETcx9YPZ3nSF7ghjiaALa_DMJXqkR45-VL5SA+xT_jd7V+zQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] driver core: fw_devlink: Add support for FWNODE_FLAG_NEEDS_CHILD_BOUND_ON_ADD
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 12:54:02AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Wednesday, September 22, 2021 12:01 AM
-> > 
-> > >  One open about how to organize the device nodes under
-> > /dev/vfio/devices/.
-> > > This RFC adopts a simple policy by keeping a flat layout with mixed
-> > devname
-> > > from all kinds of devices. The prerequisite of this model is that devnames
-> > > from different bus types are unique formats:
-> > 
-> > This isn't reliable, the devname should just be vfio0, vfio1, etc
-> > 
-> > The userspace can learn the correct major/minor by inspecting the
-> > sysfs.
-> > 
-> > This whole concept should disappear into the prior patch that adds the
-> > struct device in the first place, and I think most of the code here
-> > can be deleted once the struct device is used properly.
-> > 
-> 
-> Can you help elaborate above flow? This is one area where we need
-> more guidance.
-> 
-> When Qemu accepts an option "-device vfio-pci,host=DDDD:BB:DD.F",
-> how does Qemu identify which vifo0/1/... is associated with the specified 
-> DDDD:BB:DD.F? 
+On Tue, Sep 21, 2021 at 5:45 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > Wait, what's the difference between a real fix vs a long term fix? To
+> > me those are the same.
+>
+> Maybe the long term fix is you follow the phandle to the actual
+> resources, see it is present, and allow the probe? That brings you in
+> line with how things actually work with devices probing against
+> resources.
+>
+> I don't know how much work that is, since there is no uniform API to
+> follow a phandle to a resource. I think each phandle type has its own
+> helper. For an interrupt phandle you need to use of_irq_get(), for a
+> gpio phandle maybe of_get_named_gpio_flags(), for a reset phandle
+> __of_reset_control_get(), etc.
 
-When done properly in the kernel the file:
+That goes back to Rafael's reply (and I agree):
 
-/sys/bus/pci/devices/DDDD:BB:DD.F/vfio/vfioX/dev
+"Also if the probe has already started, it may still return
+-EPROBE_DEFER at any time in theory, so as a rule the dependency is
+actually known to be satisfied when the probe has successfully
+completed."
 
-Will contain the major:minor of the VFIO device.
+So waiting for the probe to finish is the right behavior/intentional
+for fw_devlink.
 
-Userspace then opens the /dev/vfio/devices/vfioX and checks with fstat
-that the major:minor matches.
+> Because this does not sounds too simple, maybe you can find something
+> simpler which is a real fix for now, good enough that it will get
+> merged, and then you can implement this phandle following for the long
+> term fix?
 
-in the above pattern "pci" and "DDDD:BB:DD.FF" are the arguments passed
-to qemu.
+The simpler fix is really just this patch. I'm hoping Greg/Rafael see
+my point about doing the exception this way prevents things from
+getting worse will we address existing cases that need the flag.
 
-You can look at this for some general over engineered code to handle
-opening from a sysfs handle like above:
+The long/proper fix is to the DSA framework. I have some ideas that I
+think will work but I've had time to get to (but on the top of my
+upstream work list). We can judge that after I send out the patches :)
 
-https://github.com/linux-rdma/rdma-core/blob/master/util/open_cdev.c
-
-Jason
+-Saravana
