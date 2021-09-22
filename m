@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2138F413EA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDCE413EA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 02:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhIVAay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 20:30:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41299 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229480AbhIVAax (ORCPT
+        id S229637AbhIVAfI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Sep 2021 20:35:08 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19994 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229480AbhIVAfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 20:30:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632270563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NmEXaXF/Zeuy5snsjO8cTG6bYqexhCWu35mF9eZUaWg=;
-        b=AzFDPB0imFshaOw23EtGuiiOI8QdBcIKMSjqeeDEgxu3+VoXn9adsJPfTcoeTeL9PwnMQ1
-        e76OaxROXPhb06YOl0nUrtw7s1DwtcGA4r3YEXwUvoErXYFfEiDLRMglsj2ZQlAPolaPWN
-        T5IsW+kH2ZiMmyHfrgWMuOu0TVZPchw=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-551-fkDM0wCiMmOpdsJqkslTGg-1; Tue, 21 Sep 2021 20:29:22 -0400
-X-MC-Unique: fkDM0wCiMmOpdsJqkslTGg-1
-Received: by mail-qt1-f200.google.com with SMTP id e5-20020ac84905000000b002a69dc43859so5457944qtq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 17:29:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NmEXaXF/Zeuy5snsjO8cTG6bYqexhCWu35mF9eZUaWg=;
-        b=pIAEyrPoqMxxNiOBxD8Z6IgJfc45oMddKHaGvkopecno/d2GaUubGIRtt2RCVcg8xZ
-         c6fUxTdIbNGq2ZEgtPrjorEohFx6l9n5NpYpKBkS8T5Ntlk0SiqVc5nflXYC+Jah9wdI
-         D9bWQoe5y1UDmtwX7buwoHxXBEx4LCBZMZ2W4O7c5fCWfPQWxfaZbQ+4SIKXqfyFKgSq
-         Ia4wUBRKnTFWmk/Ee0ueI+dcIBtIZG1q5e5VUOuRixvQ16assPCTGBsJG2cv5HzHogcH
-         706tsVqQOhu40H+2WSncZaRHDt3CwmemVuVBy8Xa80RKH/jw0lF8LyGQpd/S5qnALV0X
-         TrQA==
-X-Gm-Message-State: AOAM530GtKEuX7BUL8qx212JtzbjLDN2sjzbenHIRkzSa63aFNizKFd+
-        32XuWNbrR5QkLrhgF33ataqxVsN7oMUUpeGnHqgBSvLlBWWPte1uHO3au9abuBkW2pKoSwLTplt
-        OwWPVWZh130Hh0N7xu/4gg/P+
-X-Received: by 2002:a05:620a:524:: with SMTP id h4mr3517158qkh.320.1632270561731;
-        Tue, 21 Sep 2021 17:29:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzp8OHGlxNnMNUsKkbTB5lbA+kEvBE9p0uF3GnGKhmEwdsDq6bdIOgUAQGlx7CMSNBruskFFA==
-X-Received: by 2002:a05:620a:524:: with SMTP id h4mr3517145qkh.320.1632270561484;
-        Tue, 21 Sep 2021 17:29:21 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a2:9100::d3ec])
-        by smtp.gmail.com with ESMTPSA id i6sm416278qtx.40.2021.09.21.17.29.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 17:29:20 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 20:29:19 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-Message-ID: <YUp438W5p5VHL1Ch@t490s>
-References: <20210921163323.944352-1-axelrasmussen@google.com>
- <YUoaDr2wsW8wtk5Z@t490s>
- <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
- <YUowr6phZU4v7dds@t490s>
- <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
+        Tue, 21 Sep 2021 20:35:07 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HDfLY4lwFzbmfs;
+        Wed, 22 Sep 2021 08:29:25 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 08:33:20 +0800
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Wed, 22 Sep 2021 08:33:19 +0800
+Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
+ dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.008;
+ Wed, 22 Sep 2021 08:33:19 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "andraprs@amazon.com" <andraprs@amazon.com>,
+        "lexnv@amazon.com" <lexnv@amazon.com>,
+        "alcioa@amazon.com" <alcioa@amazon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "kamal@canonical.com" <kamal@canonical.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "sgarzare@redhat.com" <sgarzare@redhat.com>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "ne-devel-upstream@amazon.com" <ne-devel-upstream@amazon.com>
+Subject: RE: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
+ functionality
+Thread-Topic: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
+ functionality
+Thread-Index: AQHXrvrbICRRDj4Na0elarumsuHBnquuFHuAgAEe7eA=
+Date:   Wed, 22 Sep 2021 00:33:19 +0000
+Message-ID: <511306b230ed4347a4ba3a2f4d5d4e64@huawei.com>
+References: <20210921151039.1502-1-longpeng2@huawei.com>
+ <20210921151039.1502-4-longpeng2@huawei.com> <YUn4WTDbU72tcyNY@kroah.com>
+In-Reply-To: <YUn4WTDbU72tcyNY@kroah.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.148.223]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 01:31:12PM -0700, Axel Rasmussen wrote:
-> Ah, it has to do with us asserting the list of expected ioctls. The
-> kernel changes the list of ioctls it reports in response to a
-> UFFDIO_REGISTER, depending on the particular kind of vma being
-> registered, **as well as what mode(s) it is being registered with**.
+
+
+> -----Original Message-----
+> From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> Sent: Tuesday, September 21, 2021 11:21 PM
+> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+> <longpeng2@huawei.com>
+> Cc: andraprs@amazon.com; lexnv@amazon.com; alcioa@amazon.com;
+> linux-kernel@vger.kernel.org; Gonglei (Arei) <arei.gonglei@huawei.com>;
+> kamal@canonical.com; pbonzini@redhat.com; sgarzare@redhat.com;
+> stefanha@redhat.com; vkuznets@redhat.com; ne-devel-upstream@amazon.com
+> Subject: Re: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
+> functionality
 > 
-> So for example, consider the hugetlb_shared test. When registering,
-> the kernel might set the UFFDIO_CONTINUE bit or not, depending on
-> whether we registered with the MINOR mode bit set in particular.
+> On Tue, Sep 21, 2021 at 11:10:38PM +0800, Longpeng(Mike) wrote:
+> > Add test framework for the misc functionality.
+> 
+> What is "the misc functionality"?
+> 
 
-I can understand your point, but the "capability set" of the kernel is still
-the same.  In this case we should have UFFDIO_CONTINUE capability for
-hugetlb_shared test globally, as long as the kernel supports it, irrelevant of
-what test case we're going to have.
+The functionalities provided in the ne_misc_dev.c
 
-Then in the test, if we don't register with MINOR mode, IMHO we should just
-mask out the expected_ioctls with UFFDIO_CONTINUE because it does not make
-sense to request UFFDIO_CONTINUE if we will never use it in the test.
+> >
+> > Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+> > ---
+> >  drivers/virt/nitro_enclaves/Kconfig        |  8 ++++++++
+> >  drivers/virt/nitro_enclaves/ne_misc_dev.c  | 27
+> +++++++++++++++++++++++++++
+> >  drivers/virt/nitro_enclaves/ne_misc_test.c | 17 +++++++++++++++++
+> >  3 files changed, 52 insertions(+)
+> >  create mode 100644 drivers/virt/nitro_enclaves/ne_misc_test.c
+> 
+> What changed from v1?
+> 
 
-In other words, having a "uffd_features" global variable and having it changing
-all the time during tests is odd to me, but I agree it's not a big deal. :)
+The unit tests are new added in v2, described in the cover letter.
 
--- 
-Peter Xu
-
+> thanks,
+> 
+> greg k-h
