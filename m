@@ -2,144 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9404152AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBEE4152B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 23:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238024AbhIVVYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 17:24:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:37346 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236476AbhIVVYX (ORCPT
+        id S237946AbhIVVZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 17:25:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27299 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237802AbhIVVZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 17:24:23 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mT9hZ-000D8G-7O; Wed, 22 Sep 2021 23:22:49 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mT9hY-000Rpx-Vo; Wed, 22 Sep 2021 23:22:49 +0200
-Subject: Re: [PATCH v2 bpf-next] libbpf: Use sysconf to simplify
- libbpf_num_possible_cpus
-To:     Muhammad Falak R Wani <falakreyaz@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210922070748.21614-1-falakreyaz@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ef0f23d0-456a-70b0-1ef9-2615a5528278@iogearbox.net>
-Date:   Wed, 22 Sep 2021 23:22:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 22 Sep 2021 17:25:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632345853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5bSXV/WbyIuvflNI0O5gv8cTQJk2LfpQktDl+auRuYw=;
+        b=L37TpUL4UUc5pDnzxM0hNyQd43uOGwTsDunt6IzmJjC1O8gluODtiEv9ThhHbgLvjFm+Cf
+        mY7fyXc1+Jkrfoxr940MbgLSbH5Fm1n3jnLtPE1yVgzFk6pAsEtXrjVR139ZzuyPMLieZE
+        EbS8E8PbVgTzwUGbSgRDREw2WLr8I5o=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-Xf-q7DGOPpeZiVq3m5MEFw-1; Wed, 22 Sep 2021 17:24:12 -0400
+X-MC-Unique: Xf-q7DGOPpeZiVq3m5MEFw-1
+Received: by mail-oi1-f198.google.com with SMTP id bh31-20020a056808181f00b0026d71fa022cso2577537oib.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 14:24:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=5bSXV/WbyIuvflNI0O5gv8cTQJk2LfpQktDl+auRuYw=;
+        b=I93fz0cOP0Z2KGIB7kbNmphowD0ViWeLE06EftqKB4Q9JdUTxegeqUXxEtvfMNf34U
+         LnW/NMv8if100i1mjTq+Ve5kVPqmEaq142lHqCwJR44SeB3atkXZq77j34d4fi1Sdfvv
+         DyZuGVfUcB/qEB2kGEzhegydzETxUFpmJw8/BlPWqcuns66PfkfdxIDNay2wdYMFy3c7
+         W+FhhW8A/lhw/cQe68EYcob2zemi1y5AlSy2w8HrnwyT5oFhgb3/AF/34GDZEOe8A4De
+         2f87YPuYtpgi6SSKyWuwHzabQsLBKPlEKJiIx6BxMBmZSs8dGT1IoRXJitvtuhdIZDrE
+         U0sg==
+X-Gm-Message-State: AOAM533nr2Ha/nu1qqEpHHRughbEgZKCfdSvyhAszE9CxSTmdlE+RXnA
+        vWBBTesQXhrMkcA2O4wXJZ/OGnzuAR2uXb6ZX0M9JfVaRD+6078pwPfBoiHyv4Vy8MLdvY7l+U2
+        eS4OfWTu/jgOB9gJ6JuKuXJRy
+X-Received: by 2002:a05:6808:2026:: with SMTP id q38mr1062567oiw.15.1632345849576;
+        Wed, 22 Sep 2021 14:24:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdoCWR7q3blhAcNoLIpqhCzivqr2u9tYk00GR6mvZvaI93uSxrNhlQY0cnvU77gFLtK4G4DA==
+X-Received: by 2002:a05:6808:2026:: with SMTP id q38mr1062549oiw.15.1632345849392;
+        Wed, 22 Sep 2021 14:24:09 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id s24sm788936otp.36.2021.09.22.14.24.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 14:24:09 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 15:24:07 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     jgg@nvidia.com, hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
+        jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
+        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
+        eric.auger@redhat.com, corbet@lwn.net, ashok.raj@intel.com,
+        yi.l.liu@linux.intel.com, jun.j.tian@intel.com, hao.wu@intel.com,
+        dave.jiang@intel.com, jacob.jun.pan@linux.intel.com,
+        kwankhede@nvidia.com, robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        david@gibson.dropbear.id.au, nicolinc@nvidia.com
+Subject: Re: [RFC 10/20] iommu/iommufd: Add IOMMU_DEVICE_GET_INFO
+Message-ID: <20210922152407.1bfa6ff7.alex.williamson@redhat.com>
+In-Reply-To: <20210919063848.1476776-11-yi.l.liu@intel.com>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+        <20210919063848.1476776-11-yi.l.liu@intel.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210922070748.21614-1-falakreyaz@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26300/Wed Sep 22 11:04:22 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/21 9:07 AM, Muhammad Falak R Wani wrote:
-> Simplify libbpf_num_possible_cpus by using sysconf(_SC_NPROCESSORS_CONF)
-> instead of parsing a file.
-> This patch is a part ([0]) of libbpf-1.0 milestone.
-> 
-> [0] Closes: https://github.com/libbpf/libbpf/issues/383
-> 
-> Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
-> ---
->   tools/lib/bpf/libbpf.c | 17 ++++-------------
->   1 file changed, 4 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index ef5db34bf913..f1c0abe5b58d 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10898,25 +10898,16 @@ int parse_cpu_mask_file(const char *fcpu, bool **mask, int *mask_sz)
->   
->   int libbpf_num_possible_cpus(void)
->   {
-> -	static const char *fcpu = "/sys/devices/system/cpu/possible";
->   	static int cpus;
-> -	int err, n, i, tmp_cpus;
-> -	bool *mask;
-> +	int tmp_cpus;
->   
->   	tmp_cpus = READ_ONCE(cpus);
->   	if (tmp_cpus > 0)
->   		return tmp_cpus;
->   
-> -	err = parse_cpu_mask_file(fcpu, &mask, &n);
-> -	if (err)
-> -		return libbpf_err(err);
-> -
-> -	tmp_cpus = 0;
-> -	for (i = 0; i < n; i++) {
-> -		if (mask[i])
-> -			tmp_cpus++;
-> -	}
-> -	free(mask);
-> +	tmp_cpus = sysconf(_SC_NPROCESSORS_CONF);
-> +	if (tmp_cpus < 1)
-> +		return libbpf_err(-EINVAL);
+On Sun, 19 Sep 2021 14:38:38 +0800
+Liu Yi L <yi.l.liu@intel.com> wrote:
 
-This approach is unfortunately broken, see also commit e00c7b216f34 ("bpf: fix
-multiple issues in selftest suite and samples") for more details:
+> +struct iommu_device_info {
+> +	__u32	argsz;
+> +	__u32	flags;
+> +#define IOMMU_DEVICE_INFO_ENFORCE_SNOOP	(1 << 0) /* IOMMU enforced snoop */
 
-     3) Current selftest suite code relies on sysconf(_SC_NPROCESSORS_CONF) for
-        retrieving the number of possible CPUs. This is broken at least in our
-        scenario and really just doesn't work.
+Is this too PCI specific, or perhaps too much of the mechanism rather
+than the result?  ie. should we just indicate if the IOMMU guarantees
+coherent DMA?  Thanks,
 
-        glibc tries a number of things for retrieving _SC_NPROCESSORS_CONF.
-        First it tries equivalent of /sys/devices/system/cpu/cpu[0-9]* | wc -l,
-        if that fails, depending on the config, it either tries to count CPUs
-        in /proc/cpuinfo, or returns the _SC_NPROCESSORS_ONLN value instead.
-        If /proc/cpuinfo has some issue, it returns just 1 worst case. This
-        oddity is nothing new [1], but semantics/behaviour seems to be settled.
-        _SC_NPROCESSORS_ONLN will parse /sys/devices/system/cpu/online, if
-        that fails it looks into /proc/stat for cpuX entries, and if also that
-        fails for some reason, /proc/cpuinfo is consulted (and returning 1 if
-        unlikely all breaks down).
+Alex
 
-        While that might match num_possible_cpus() from the kernel in some
-        cases, it's really not guaranteed with CPU hotplugging, and can result
-        in a buffer overflow since the array in user space could have too few
-        number of slots, and on perpcu map lookup, the kernel will write beyond
-        that memory of the value buffer.
-
-        William Tu reported such mismatches:
-
-          [...] The fact that sysconf(_SC_NPROCESSORS_CONF) != num_possible_cpu()
-          happens when CPU hotadd is enabled. For example, in Fusion when
-          setting vcpu.hotadd = "TRUE" or in KVM, setting ./qemu-system-x86_64
-          -smp 2, maxcpus=4 ... the num_possible_cpu() will be 4 and sysconf()
-          will be 2 [2]. [...]
-
-        Documentation/cputopology.txt says /sys/devices/system/cpu/possible
-        outputs cpu_possible_mask. That is the same as in num_possible_cpus(),
-        so first step would be to fix the _SC_NPROCESSORS_CONF calls with our
-        own implementation. Later, we could add support to bpf(2) for passing
-        a mask via CPU_SET(3), for example, to just select a subset of CPUs.
-
-        BPF samples code needs this fix as well (at least so that people stop
-        copying this). Thus, define bpf_num_possible_cpus() once in selftests
-        and import it from there for the sample code to avoid duplicating it.
-        The remaining sysconf(_SC_NPROCESSORS_CONF) in samples are unrelated.
-
-Thanks,
-Daniel
-
->   	WRITE_ONCE(cpus, tmp_cpus);
->   	return tmp_cpus;
-> 
+> +#define IOMMU_DEVICE_INFO_PGSIZES	(1 << 1) /* supported page sizes */
+> +#define IOMMU_DEVICE_INFO_ADDR_WIDTH	(1 << 2) /* addr_wdith field valid */
+> +	__u64	dev_cookie;
+> +	__u64   pgsize_bitmap;
+> +	__u32	addr_width;
+> +};
+> +
+> +#define IOMMU_DEVICE_GET_INFO	_IO(IOMMU_TYPE, IOMMU_BASE + 1)
+>  
+>  #define IOMMU_FAULT_PERM_READ	(1 << 0) /* read */
+>  #define IOMMU_FAULT_PERM_WRITE	(1 << 1) /* write */
 
