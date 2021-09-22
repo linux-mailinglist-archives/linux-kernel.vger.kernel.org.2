@@ -2,185 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CEC41486F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B304148A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 14:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235911AbhIVMHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 08:07:30 -0400
-Received: from mail-db8eur05on2070.outbound.protection.outlook.com ([40.107.20.70]:9665
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235848AbhIVMH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 08:07:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FYmdgyN0UvX8YwYo6J83Kuw5GmzBSYjTLoRibG1+j/nr8woxrwNcWsHqISTBC+XbLRs6ZTxn9yQz8TrlWop9it5Qd60BG/4tDXYE51yHsa/2hr79mXW7RPTgRy3ewlP6j5kDPszFzkPfVML4xSXKlt7XtznlBe51+TZnKYY1nxoyvGtXT4Vf+SWR+3S64BdIj4Gxz9eMeDg7Gv8nZvlpNFlZfRjTxEGzTwfAfZ35aLzryjG7dWu+h4z6mMUoaS2lbIxsHhWwN1D7CXO8IuGXJi6qMIg9q/l1rQKeepqgaPoHodQF5T1phknprNulg/ul3k7kHq5aFSg9+Mv3Z9xcHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=deVywolXlaaLH0WF00ihHBcmIxGUFalxWq56bkqI1Ws=;
- b=UOFy8i/Jn2rslbsYCQCQtxG6AInOFNvvbQmvW3E4o5UdX9ybOlc5M0Tvs7oqdrbXA0lj4t/jnJuu/xV3lGYN3UmJ4JeMUCCKzW3Pm9c7sHb17BtJntzVNj5EUxhbbKvMn9/rvajD6jXNth4GL2jzxoOIb1qEAr4HOsX5aBVK9/vbFRq1BCQAcshYnwqmU3gZy3EPZzP0bRUtHFL885rq1O5S1oPz6w99j29Os+Pdhi2ZRHmOBrpYvyA+1xMSTWyF2rbXWvfmey7PV5DqPV53yXqWk0Wb8mdc8k0yOH0bWCEw4lwuYUX7MbJ9w3pXb7LDfHM2dsGJgm85Tm50ThBTgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=deVywolXlaaLH0WF00ihHBcmIxGUFalxWq56bkqI1Ws=;
- b=di+0ksp+55yOuwig6asKXdSfDoRay7mnWTYE4Sf3kNpoEt6UzV7di4kWGj88MUzJQYvRkVwIIPsDc+HBtzsLWpFmJpERoMCDXP0LesIOLtVQFqF1KH0p/DrgWo/sEjNPWViYhNLLkWpx0A8mrGi2MMbT/JslkjvHPMCJFIjvsfY=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB6016.eurprd04.prod.outlook.com (2603:10a6:803:d3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
- 2021 12:05:56 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
- 12:05:56 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>,
-        "drivers@pensando.io" <drivers@pensando.io>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "GR-everest-linux-l2@marvell.com" <GR-everest-linux-l2@marvell.com>,
-        "GR-Linux-NIC-Dev@marvell.com" <GR-Linux-NIC-Dev@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manish Chopra <manishc@marvell.com>,
-        M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "oss-drivers@corigine.com" <oss-drivers@corigine.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1] devlink: Make devlink_register to be void
-Thread-Topic: [PATCH net-next v1] devlink: Make devlink_register to be void
-Thread-Index: AQHXr4/5/7WopBFyz0yuv7is/btj16uv9USA
-Date:   Wed, 22 Sep 2021 12:05:56 +0000
-Message-ID: <20210922120555.lwjggkl2zsxra64x@skbuf>
-References: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
-In-Reply-To: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7a457cf6-a020-44ab-fb65-08d97dc15547
-x-ms-traffictypediagnostic: VI1PR04MB6016:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB601602919F1BD343ED9FAF3DE0A29@VI1PR04MB6016.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m75Y/W6lEPzMir4A7hSNN59S0+vjPXcZ1dnSFd7rcjnmHygfI6TjcGIxj2mwxOLYUofVj/OfAkl1mJ4B98Fld1z6UFWHKsGyxpU0Qw2r6b8iGRTOkPye4YpDhtuWI4fL/CAgweVftZQWWK2a7id2fjUX8OfgiOVawll9aJhSg8kgB14fAIBUBTcHEOFDFid3IHE/c0v0lB4DSBxngnMGtP8wPBrrtR/csnWdhhURIJAv8V8K3lQ1hYWm9WlSAEy29IsyxdwSrMxDyMBcnnO8LPihMCw+uNbifDeOB61kDBifzdZ0lHGCMUfc0l4uNOZ7N6eZyIBDOoIHQaJW23ltzlTLQUKJIdFXk8Px1BWjwzEkHl61FHAPizLSN/ewhdYzS34PdVwbKpbH0vp0N7j4Yy/jSwJ62EOngkkq3kbf2TwgA/KjhRhFWoswK+tHs536Kpwin4w64s/rNNM2t7IPVGk8O/raj1xFWyCZlcGYVrgcMwoJ/RiPEKmZVjgcAU/FV9Rfs9r7/mymwbtIgtL6cNPNu7Zr2y0DhsYZlp2a9UnJ8ubl3nLLUTk0vd79L4V7HLfFyKIqMI8vhY8rNw1vFuB+GleLhlKbdJNT9AldzVzehiFQJok4o0C5agxWpyDu6QkA1YK5cvyS+vFfJoVXPLtTl4uL0qCQA7Yxp5A0qS6YQqfas2Shim8jAIXyKKVW+jtOwv34BV1jjpgxfTMAUw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(86362001)(8676002)(71200400001)(9686003)(54906003)(6512007)(7366002)(7416002)(1076003)(4744005)(26005)(6486002)(508600001)(7406005)(5660300002)(33716001)(122000001)(66476007)(4326008)(64756008)(6916009)(8936002)(66946007)(44832011)(316002)(76116006)(186003)(6506007)(91956017)(66446008)(66556008)(38100700002)(38070700005)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Z/PmZ4ghcNs4f16IKRam9L5ePkB4zJQvzOOXnKVNfzMrFlMF0IsZaZWekdoV?=
- =?us-ascii?Q?eum5qIdSXv4mOJGQqxUB7hBbW0i27QbezR6ZfOUg3hwce8MIunHhkoS5u2W+?=
- =?us-ascii?Q?9zpds3D9dXxiCeu/S0cTyz48o99xpmtyExfwubyk5FzB8NrlFXMk6OJZ5YHw?=
- =?us-ascii?Q?2zasrjaYTSEWbTeEb5bs2Fa2lCKfw4tAbS0AMrhwwO81JZEoDZiqy1qf632z?=
- =?us-ascii?Q?0AyxG9LtsVV3uGzazSEqRseRV8/Almvv+THx4wjb51ElJK67mhCp9jtwXLz+?=
- =?us-ascii?Q?r3F6frBYLYlzTmRF3XRlNcelJmHKsTOmiyWtNkjgPJIKdSTkcPyWV+P4AKUj?=
- =?us-ascii?Q?IuMaV2ZjNsraU5lV0BwYEywVjgCdFyRq3fA4HpD5DNQ+2AtWEpfBDNLKxl0k?=
- =?us-ascii?Q?J0kDvysLx8+C2l8o5bR1iWmdsrOFiso/4Hb13NNoe/OwUmfQF5S0vWwc4bjX?=
- =?us-ascii?Q?nDRlzRol/l982WnKFGNmgzQ+rubC6bgumi/ZRdKpuZ7f0zleOOVR+X+64kZW?=
- =?us-ascii?Q?9KNa6NB5Eyb/BLQjbh/FAC4TFEIa6Pjk+CirmiKVFJed1phLorlPbULvpDBO?=
- =?us-ascii?Q?FN189Q1+7kolI5RFk3mdEnocj/F6Fe3iua1rMUxgsNfV7mdizyVIhPEus4IL?=
- =?us-ascii?Q?77XenTE/KmYcaIgU6wZVqnCbY0JK3fu0LMDTT4+yH3VK2qJJYllhkR2Dd2NS?=
- =?us-ascii?Q?2I38YsovipWbEgifrer/tvhJIRPKL2ssHLyJXf3Zk/byl/eeTkib4gOZQA1x?=
- =?us-ascii?Q?tAbw6cZbbYitK7RbwyCZv/RBY46tQ1GMQ43pXLW/pxovTUSAEX5livnChaF/?=
- =?us-ascii?Q?bQzySMToinzNEiFA+5qjUAco6Fr0r5uCXctKaliobx8sZub7HMNlZdoAlcRW?=
- =?us-ascii?Q?2cB5dRKFTOKuj634kjd63Mzhzt4Ey/ha8Zj0Lr6m+UuRTOl2BxMeg2bemnNP?=
- =?us-ascii?Q?bG5iQyU38Q5BUCsDsOD7yiLZX1yBAxFbs3ux7Tl34hbPRErvkrLraTEbGgoU?=
- =?us-ascii?Q?xH5Nozlg6kitlYwGkH2bVXiqDoNqrVsh/dwRMJQsAEVvpNdFCRGCI/e/LH0L?=
- =?us-ascii?Q?3Uah3xOfVug3Z65eE+idNT5B+jxKbc+dZz6BFwaBJ31p19kRZtXgc68tCt5l?=
- =?us-ascii?Q?0c/SQVc0Pa61tely3ElZOxHjM2fHdfmFeZEhmynLL6D0BdXCrdfcsS3doF0z?=
- =?us-ascii?Q?ycVYFWNqNryWiumFx3S5DJNXZQWdrtKIVLKehIUzf6fGT++i6iUBnuoQSOLx?=
- =?us-ascii?Q?pJPUEgsThgO5eWoBYc8x6/hx7b6qKPXkXANdibSsngnNBdhb71l2tFJVA2hB?=
- =?us-ascii?Q?2pm9M3UzHuUMJid0eBzJGA5G?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EE740D3424700B44846654A5F7FE8BF1@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S235371AbhIVMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 08:19:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50072 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230171AbhIVMTx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:19:53 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18MATFER000821;
+        Wed, 22 Sep 2021 08:17:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uMYhEeygqZi5Bwzzgs/wBmN00eG/+HzNUrlxCC/8yFU=;
+ b=cX4dEBT0AnGfQi+DA2vdBY+rslRm8IDqYg9dtCProkPlYuM0wOCgOvJzzML94RbcWEZ5
+ luPQcAypAzwbBpfIGxqlsdx7eZV+mPbuhbtmJVqx5fVeGyff7JKiHQkgKAChR95asQh2
+ cJEehcHzNbW/NkiXo6hCsO6wQv6qBu/Io6tVRm1P5w410j+ZR2MdxyAN4qirxHk5HRNI
+ DvNsSt4W0vjzPdvZRkjGLtlIoHwxDoG6f3r//IT0uEFuOxhP+A+vOBdxiPZUhixHJ+5/
+ p8Aj7r3KYtbuYVCBl5vvw7tGF9j4ZUZh1caI5LxKWD6rrsvhf33k96moE3iDf54HxvDK yA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3b82seaceb-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Sep 2021 08:17:57 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18MBvrRg018051;
+        Wed, 22 Sep 2021 12:06:48 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3b7q6npdp9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Sep 2021 12:06:48 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18MC1wok61079918
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Sep 2021 12:01:58 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A26CC5205A;
+        Wed, 22 Sep 2021 12:06:45 +0000 (GMT)
+Received: from localhost (unknown [9.43.116.92])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3B47C5204F;
+        Wed, 22 Sep 2021 12:06:45 +0000 (GMT)
+Date:   Wed, 22 Sep 2021 17:36:44 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH] powerpc/code-patching: Return error on patch_branch()
+ out-of-range failure
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <4940b03de220d1dfe2c6b47a41e60925497ce125.1630657331.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <4940b03de220d1dfe2c6b47a41e60925497ce125.1630657331.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a457cf6-a020-44ab-fb65-08d97dc15547
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 12:05:56.1697
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AukOysOPYmr0lSIG0Da7CoZVTKhwM6KYBD6xxx+oKHXxH5IWy5+e6ySq6PirV7draML2qoX1QrnuZruLulVg4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6016
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1632312365.br7s4l3kzi.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: q2cbP6JIy7G3VzrP8OqV0bT7VbWPnbun
+X-Proofpoint-GUID: q2cbP6JIy7G3VzrP8OqV0bT7VbWPnbun
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-22_04,2021-09-22_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ adultscore=0 clxscore=1011 malwarescore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109200000 definitions=main-2109220086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 11:58:03AM +0300, Leon Romanovsky wrote:
-> diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
-> index eef13cd20f19..96f211f52ac3 100644
-> --- a/net/dsa/dsa2.c
-> +++ b/net/dsa/dsa2.c
-> @@ -804,10 +804,7 @@ static int dsa_switch_setup(struct dsa_switch *ds)
->  	dl_priv =3D devlink_priv(ds->devlink);
->  	dl_priv->ds =3D ds;
-> =20
-> -	err =3D devlink_register(ds->devlink);
-> -	if (err)
-> -		goto free_devlink;
-> -
-> +	devlink_register(ds->devlink);
->  	/* Setup devlink port instances now, so that the switch
->  	 * setup() can register regions etc, against the ports
->  	 */
-> @@ -863,10 +860,8 @@ static int dsa_switch_setup(struct dsa_switch *ds)
->  		if (dp->ds =3D=3D ds)
->  			dsa_port_devlink_teardown(dp);
->  	devlink_unregister(ds->devlink);
-> -free_devlink:
->  	devlink_free(ds->devlink);
->  	ds->devlink =3D NULL;
-> -
->  	return err;
->  }
+Christophe Leroy wrote:
+> Do not silentely ignore a failure of create_branch() in
+> patch_branch(). Return -ERANGE.
+>=20
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/lib/code-patching.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Acked-by: Vladimir Oltean <olteanv@gmail.com> # dsa=
+Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+
+
+>=20
+> diff --git a/arch/powerpc/lib/code-patching.c b/arch/powerpc/lib/code-pat=
+ching.c
+> index f9a3019e37b4..0bc9cc0416b8 100644
+> --- a/arch/powerpc/lib/code-patching.c
+> +++ b/arch/powerpc/lib/code-patching.c
+> @@ -202,7 +202,9 @@ int patch_branch(u32 *addr, unsigned long target, int=
+ flags)
+>  {
+>  	struct ppc_inst instr;
+> =20
+> -	create_branch(&instr, addr, target, flags);
+> +	if (create_branch(&instr, addr, target, flags))
+> +		return -ERANGE;
+> +
+>  	return patch_instruction(addr, instr);
+>  }
+> =20
+> --=20
+> 2.25.0
+>=20
+>=20
