@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BFB414D46
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB22A414D56
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 17:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbhIVPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 11:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        id S236447AbhIVPtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 11:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbhIVPpR (ORCPT
+        with ESMTP id S232318AbhIVPtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 11:45:17 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343DFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:43:47 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id ee50so11545066edb.13
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:43:47 -0700 (PDT)
+        Wed, 22 Sep 2021 11:49:51 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E84C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:48:21 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id e15so13405837lfr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IGmWf9h2Oys9OTSYFZidnwcKqOl8xWLGshr0pceMPSU=;
-        b=ABc/2iI5GCN0NwDQRC96K+bfa6suTzg6fEA0fs5j8uK5ch3T90WZ+r9A7WF6kCGW0C
-         BC8cZrf4yY0ltP7OZo+ayl+uXkNfX9Bm0kcFDsZYu6WSf3VE99KNQZ3ymIIzvCBZaqJ3
-         4PL00+CEHIjkq19YwTO3Lp/xLdq0K8FZZT/pxeL4/PSIr2MSPNTJSSC4dC1ajDEDFVeu
-         PjY3GruBcmCu4ej3ohTFElT2zoo4xhMXHUOMPk+su13jmcJXd9uwj4eYuAuQH6sxnyNR
-         UdMZVP7DcWOnGY9eR2YLqyV1RnPBXSScbspj17H/zo7Qh+Bin4i/E1NfHMOhXxz8iOIB
-         BLxw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0H3WnzLNl9XVNcbQNQJGtiq6AbRFnhMOnYeTPU48Lvg=;
+        b=E0hhli6FQnH2K1o7onz6hfgzh/90j1O7mvySwCF4Awrfm4Aap5h+DKLp61yUFZJFFt
+         OBKpB/sRASOmyILOilFb/A9q3zxOnsBHfRT/FapLV0Yjn2NJKtO0oa2BKP3IZuo+BuNX
+         YR6TBdh1uYKJnYNl3YjlZfdSXXzy0uybfFazI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IGmWf9h2Oys9OTSYFZidnwcKqOl8xWLGshr0pceMPSU=;
-        b=TK07treaTnIAXESZgp+CxKcpy6pIasJOmd5YUzqKun9/HnIngqR9/iL3+mKgV5WvEt
-         3eX6DSsEPinGEecXDx3e5lfi0P/BXr++3tP5Hjm1ksA1SMJvzez1V15fL7F7QsLhpTkk
-         rGCEQSrPRQJI0VuJlGWbcrHQo5AM/YX0BA93xS3XMIrd7FtuW5jse2YT8AJIZMXCBcoD
-         6M+QLv5D0F9mg5LJiaQXJUCGO7knayFS9tSZpTtbBIgRryy3urZa1oykELQnRLJXZfjp
-         rL1pDzu9I66/mCzsIC+qbT8noJeftvb9C7pBBhgtSDhD4EwF89lJruFNKk+3Y+LcLKwl
-         0MgQ==
-X-Gm-Message-State: AOAM530ADgyVxNLgeDQ+qR46cIc9GyiOiAq/dGVG0gN183YHRpoXA3qm
-        8Min615vpHQCPUYAZ5nILJzI4Q==
-X-Google-Smtp-Source: ABdhPJyqnmTOHx/so9QNWmsMPNxOP9gy6DaEat5ZIhQkedk1DkuD21mzeuQoiMYzO7pXQPyz5yRmQw==
-X-Received: by 2002:a17:906:660f:: with SMTP id b15mr179146ejp.491.1632325425806;
-        Wed, 22 Sep 2021 08:43:45 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id ck10sm1382114edb.43.2021.09.22.08.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 08:43:45 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] misc: fastrpc: Add missing lock before accessing find_vma()
-Date:   Wed, 22 Sep 2021 16:43:26 +0100
-Message-Id: <20210922154326.8927-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0H3WnzLNl9XVNcbQNQJGtiq6AbRFnhMOnYeTPU48Lvg=;
+        b=eWY26GjWNeTR247nSoWXpSmQLMawmUcltDb4dQSFdoXJwSgH32Cnu8EZpTzmv46esG
+         IwTT3Sdpo9sxL6UPSs1KxBEBNz8mqdUcmtgYVOiI3ecn5Ah3KaBLgX60fXaVcFH5PECn
+         RII2mp5tvjtooU1rnjS0ymqSoAt+4KW891XXb1z2s1AJg0i4RoQcetmwVdj1HiFubMTx
+         897pE+jNnkbJR+QSorzKoTILPrvZyhoXI5tTLv7RNbwh3i+Z4cbAk8ij9E3Y1NimcY4E
+         AaALiW5Rqf3CUWctfy8agMJSm6a3UqPS6F0R0JU58BhH4qo95yrceZ0z5B7OLkg6imgn
+         Gh4g==
+X-Gm-Message-State: AOAM532L+StB3f95rrCAfCKwHbzclQn/gFbGKEiTdJxPld8WJ/gBz1yt
+        nElLz9Bw+ik7a5rVrUAHloy9w7P/WVIV/3JjMV8=
+X-Google-Smtp-Source: ABdhPJxSOq+Zsgypf3uSTlnM47+BMTRjkLkLnyjxA6al51xzyDA+Nl/+eEqyck0hS3ikRZttkHjiXQ==
+X-Received: by 2002:a2e:9ed3:: with SMTP id h19mr285444ljk.354.1632325624010;
+        Wed, 22 Sep 2021 08:47:04 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id y13sm207062lfs.17.2021.09.22.08.47.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 08:47:03 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id i25so13723724lfg.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 08:47:03 -0700 (PDT)
+X-Received: by 2002:a2e:4e01:: with SMTP id c1mr239859ljb.31.1632325533336;
+ Wed, 22 Sep 2021 08:45:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210922063558.26417-1-jslaby@suse.cz>
+In-Reply-To: <20210922063558.26417-1-jslaby@suse.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Sep 2021 08:45:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wha23+dMWi=D6NENtTJw20rQEpuXBx2sV2EV2j=08o1SQ@mail.gmail.com>
+Message-ID: <CAHk-=wha23+dMWi=D6NENtTJw20rQEpuXBx2sV2EV2j=08o1SQ@mail.gmail.com>
+Subject: Re: [PATCH v2] MAINTAINERS: ARM/VT8500, remove defunct e-mail
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fastrpc driver is using find_vma() without any protection, as a
-result we see below warning due to recent patch 5b78ed24e8ec
-("mm/pagemap: add mmap_assert_locked() annotations to find_vma*()")
-which added mmap_assert_locked() in find_vma() function.
+On Tue, Sep 21, 2021 at 11:36 PM Jiri Slaby <jslaby@suse.cz> wrote:
+>
+> Remove it from MAINTAINERS and make thus the ARM/VT8500 entry an orphan.
 
-This bug went un-noticed in previous versions. Fix this issue by adding
-required protection while calling find_vma().
+Looks fine. Some git history checking shows that while Tony has been
+cc'd since, the last actual activity seems to have been in 2014.
 
-CPU: 0 PID: 209746 Comm: benchmark_model Not tainted 5.15.0-rc2-00445-ge14fe2bf817a-dirty #969
-Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : find_vma+0x64/0xd0
-lr : find_vma+0x60/0xd0
-sp : ffff8000158ebc40
-...
+Russell, I'll just take this directly and you can ignore it.
 
-Call trace:
- find_vma+0x64/0xd0
- fastrpc_internal_invoke+0x570/0xda8
- fastrpc_device_ioctl+0x3e0/0x928
- __arm64_sys_ioctl+0xac/0xf0
- invoke_syscall+0x44/0x100
- el0_svc_common.constprop.3+0x70/0xf8
- do_el0_svc+0x24/0x88
- el0_svc+0x3c/0x138
- el0t_64_sync_handler+0x90/0xb8
- el0t_64_sync+0x180/0x184
-
-Fixes: 80f3afd72bd4 ("misc: fastrpc: consider address offset before sending to DSP")
-Cc: stable@vger.kernel.org
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/misc/fastrpc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index beda610e6b30..ad6ced454655 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -814,10 +814,12 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 			rpra[i].pv = (u64) ctx->args[i].ptr;
- 			pages[i].addr = ctx->maps[i]->phys;
- 
-+			mmap_read_lock(current->mm);
- 			vma = find_vma(current->mm, ctx->args[i].ptr);
- 			if (vma)
- 				pages[i].addr += ctx->args[i].ptr -
- 						 vma->vm_start;
-+			mmap_read_unlock(current->mm);
- 
- 			pg_start = (ctx->args[i].ptr & PAGE_MASK) >> PAGE_SHIFT;
- 			pg_end = ((ctx->args[i].ptr + len - 1) & PAGE_MASK) >>
--- 
-2.21.0
-
+            Linus
