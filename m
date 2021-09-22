@@ -2,229 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9585414213
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657B741421B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhIVGoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:44:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232835AbhIVGoG (ORCPT
+        id S232903AbhIVGqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:46:11 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:44424
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232770AbhIVGqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:44:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632292956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WYW/P0Q1oqTDlsP5noOn+TZGFQp14YjumKQL9bn9bmM=;
-        b=OwDlj4XQQpZT4OsqQaH31/flFA59cMPL27LqTTDDH7+e3S6KXkHQkCB1/NpJTOXokjOvJc
-        kcWkh4xmATgF6Hm6EAO9v7SyeI8C/fzLdH8EywdpI339GOnUzdJ9cNVw+Phso+FKXikfnr
-        Yuq8eq/NQ7Yxhdn1JzoPP1zcqQxlt6k=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-08dO7JzXO-2UC2XiuLMLZQ-1; Wed, 22 Sep 2021 02:42:35 -0400
-X-MC-Unique: 08dO7JzXO-2UC2XiuLMLZQ-1
-Received: by mail-ed1-f70.google.com with SMTP id s12-20020a05640217cc00b003cde58450f1so1848162edy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:42:35 -0700 (PDT)
+        Wed, 22 Sep 2021 02:46:09 -0400
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 59D7D3F226
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 06:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1632293079;
+        bh=PHpWlL5286L9Vy7vwwtJJDOqUvt0lVJtNPWSRo8nnkI=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=X2tPR+GdMJEYpgN/lUT3nmnkcPVIYTt3aKblh1AYZR++NEA0fisxxTNEBo/xlggv+
+         lPbS2lVmNuPPzXA/hLNj1pLCfhqLSAeyJYBmz3WuBPZ3SAmTsSnOH2MzVdiCljIlVc
+         6zwToe9Mb4hckB429xPBWIJQY3MzGhteM3SXMY33sz8I9COX1AYafL6xHVCCY55aow
+         qXGpoakfdhJ3D4t55/vo83PSgyq9QnhPZ+AEeI5u/NKWmfyBLNPu60LQySzYml9uXK
+         jmkJstHdpkgSf9koyCKB6GqJvaZ02RAiSXaTF1SfNjgd5o3PHEneyLKBSl3EfoEgLJ
+         3tEGlHxEbvTUA==
+Received: by mail-wr1-f69.google.com with SMTP id v15-20020adff68f000000b0015df51efa18so1150220wrp.16
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 23:44:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WYW/P0Q1oqTDlsP5noOn+TZGFQp14YjumKQL9bn9bmM=;
-        b=WE8ld8nkZ+Q5/O6d5sNHE0C9uoQxUhTlFMyf9bPBRsG/WWn3bKqvxbojaD1AGFaoMT
-         HBG1kuNgmN+ocOYk4M9Q3vBwi6/SPyLUpX3xdh3Gr92vrVnnyaOKzQNqipshCgJ1zyLr
-         oyC0YFryVHw1xWSF2+MOodjVg4SEs1iMae7ccM9ieasFIOUj/XZWrIQW/Fecde2pIOwn
-         J5BaVCjYNEgkW8WuPdjngd1AnbjScjeqQjdHZp1TnuTPhOvDx5VhGYDFo1OROWLzMMLp
-         2RSjpFjushRlChjjXrYDVSBvWx0PlH9PDs0UBF8VGsrgrybENXAeNNkIbntJtVFhqQxv
-         LYlA==
-X-Gm-Message-State: AOAM531CtTh948oO5Jpsd9BwxHLw0zzvnFYLXs/y4wx/+qTtllPJbO4r
-        S2Rz+XD/iBFoCLs8mn6nTS1GLMUnlLrvBVn75IWjrFAqEcLcoLTKkhT6FQhyWLUzdWEunUJi+51
-        tOnZYgMjidu+VQNCjVKtG7YhB
-X-Received: by 2002:a17:906:369a:: with SMTP id a26mr39372046ejc.539.1632292954029;
-        Tue, 21 Sep 2021 23:42:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxkdDvJZEuqy4z2jeakskcrSYfL6dBq85KTjMRgyfnCoMn+hPyF2F91qCQRXVCbzc6p2Cz+kg==
-X-Received: by 2002:a17:906:369a:: with SMTP id a26mr39372025ejc.539.1632292953733;
-        Tue, 21 Sep 2021 23:42:33 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id dh16sm622370edb.63.2021.09.21.23.42.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Sep 2021 23:42:33 -0700 (PDT)
-Subject: Re: [PATCH v3 00/16] perf: KVM: Fix, optimize, and clean up callbacks
-To:     Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PHpWlL5286L9Vy7vwwtJJDOqUvt0lVJtNPWSRo8nnkI=;
+        b=UKDqlkx9IIYUT608FwoNH6MkNiPTLJFUHgA1Mcj4LOL8l3tk9vA0FfILnXJv2X2X2p
+         FVEvCMVGfzJXrDFgOS0r+eydntG38sjRLDHZlv0cCfVY+Eq++zQF9//NwrDENCK6qLV5
+         krLJ+tE3Sm8sI0uYaNiHxrmHlsYMTeddk0tYZC7SzL0RKCypCvx7flQbqaTIXFZ3KCvK
+         /F+Jy52sUw/0QX/fV66PqRCSD0Yw1Lyh0F6HWDl05Cujr4WXLJSzchlWDcKsPE14WWxi
+         wQ0oiO/MQVLKOo5xZg2HFha8uqdjg4xgp+N+XrzLoyCccocOlkAD+lgcRlo0q0cH1ZO3
+         Itqw==
+X-Gm-Message-State: AOAM5310+Dq/5CFnEL6mcla2+VzslqpkM9eW70jlpMW6zJ0fjj2Cszpm
+        bCc4PAydViVzLm+LNUp96GuJoyAAvoBk4SkD6Ms38dt+Cep1fEtn43yPDzMAec4pdRDtzPQsJXr
+        CwifMSBgdyWuWwd2VQvgOwKqeOZVGjEsoVDzmt/bSDg==
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr40411572wrb.237.1632293079013;
+        Tue, 21 Sep 2021 23:44:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7X/xE8BOJMFBcSLMZa3NNLNdKake1etQzDd7PnPQEF6xSjGfjlZkAQpczOFislXeA7hs9uQ==
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr40411555wrb.237.1632293078867;
+        Tue, 21 Sep 2021 23:44:38 -0700 (PDT)
+Received: from localhost.localdomain (lk.84.20.244.219.dc.cable.static.lj-kabel.net. [84.20.244.219])
+        by smtp.gmail.com with ESMTPSA id g2sm1244554wrb.20.2021.09.21.23.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Sep 2021 23:44:38 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-References: <20210922000533.713300-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <edecd594-fb34-f4c9-964d-75ae16eadff6@redhat.com>
-Date:   Wed, 22 Sep 2021 08:42:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Krzysztof Kozlowski <krzk@kernel.org>, youlin.pei@mediatek.com,
+        srv_heupstream@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        Tomasz Figa <tfiga@chromium.org>, anan.sun@mediatek.com,
+        devicetree@vger.kernel.org, yi.kuo@mediatek.com,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        ming-fan.chen@mediatek.com, iommu@lists.linux-foundation.org,
+        Ikjoon Jang <ikjn@chromium.org>, anthony.huang@mediatek.com
+Subject: Re: [PATCH v4 00/13] MT8195 SMI support
+Date:   Wed, 22 Sep 2021 08:44:01 +0200
+Message-Id: <163229303729.7874.4095337797772755570.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210914113703.31466-1-yong.wu@mediatek.com>
+References: <20210914113703.31466-1-yong.wu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210922000533.713300-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/09/21 02:05, Sean Christopherson wrote:
-> Peter, I left the Intel PT mess as-is.  Having to pass a NULL pointer
-> from KVM arm64 seemed to be a lesser evil than more exports and multiple
-> registration paths.
+On Tue, 14 Sep 2021 19:36:50 +0800, Yong Wu wrote:
+> This patchset mainly adds SMI support for mt8195.
 > 
-> This is a combination of ~2 series to fix bugs in the perf+KVM callbacks,
-> optimize the callbacks by employing static_call, and do a variety of
-> cleanup in both perf and KVM.
+> Comparing with the previous version, add two new functions:
+> a) add smi sub common
+> b) add initial setting for smi-common and smi-larb.
 > 
-> Patch 1 fixes a mostly-theoretical bug where perf can deref a NULL
-> pointer if KVM unregisters its callbacks while they're being accessed.
-> In practice, compilers tend to avoid problematic reloads of the pointer
-> and the PMI handler doesn't lose the race against module unloading,
-> i.e doesn't hit a use-after-free.
+> Change note:
+> v4:1) base on v5.15-rc1
+>    2) In the dt-binding:
+>       a. add "else mediatek,smi: false." in the yaml.
+>       b. Remove mediatek,smi_sub_common. since we have only 2 level currently,
+>       It should be smi-sub-common if that node has "mediatek,smi". otherwise,
+>       it is smi-common.
 > 
-> Patches 2 and 3 fix an Intel PT handling bug where KVM incorrectly
-> eats PT interrupts when PT is supposed to be owned entirely by the host.
-> 
-> Patches 4-9 clean up perf's callback infrastructure and switch to
-> static_call for arm64 and x86 (the only survivors).
-> 
-> Patches 10-16 clean up related KVM code and unify the arm64/x86 callbacks.
-> 
-> Based on "git://git.kernel.org/pub/scm/virt/kvm/kvm.git queue", commit
-> 680c7e3be6a3 ("KVM: x86: Exit to userspace ...").
+> [...]
 
-Looks nice apart from a couple nits, I will gladly accept a topic branch 
-with both the perf and the KVM parts.
+Applied, thanks!
 
-Thanks,
+[01/13] dt-bindings: memory: mediatek: Add mt8195 smi binding
+        commit: b01065eee432b3ae91a2c0aaab66c2cae2e9812d
+[02/13] dt-bindings: memory: mediatek: Add mt8195 smi sub common
+        commit: 599e681a31a2dfa7359b8e420a1157ed015f840b
+[03/13] memory: mtk-smi: Use clk_bulk clock ops
+        commit: 0e14917c57f9d8b9b7d4f41813849a29659447b3
+[04/13] memory: mtk-smi: Rename smi_gen to smi_type
+        commit: a5c18986f404206fdbc27f208620dc13bffb5657
+[05/13] memory: mtk-smi: Adjust some code position
+        commit: 534e0ad2ed4f9296a8c7ccb1a393bc4d5000dbad
+[06/13] memory: mtk-smi: Add error handle for smi_probe
+        commit: 30b869e77a1c626190bbbe6b4e5f5382b0102ac3
+[07/13] memory: mtk-smi: Add device link for smi-sub-common
+        commit: 47404757702ec8aa5c8310cdf58a267081f0ce6c
+[08/13] memory: mtk-smi: Add clocks for smi-sub-common
+        commit: 3e4f74e0ea5a6a6d6d825fd7afd8a10afbd1152c
+[09/13] memory: mtk-smi: Use devm_platform_ioremap_resource
+        commit: 912fea8bf8d854aef967c82a279ffd20be0326d7
+[10/13] memory: mtk-smi: mt8195: Add smi support
+        commit: cc4f9dcd9c1543394d6ee0d635551a2bd96bcacb
+[11/13] memory: mtk-smi: mt8195: Add initial setting for smi-common
+        commit: 431e9cab7097b5d5eb3cf2b04d4b12d272df85e0
+[12/13] memory: mtk-smi: mt8195: Add initial setting for smi-larb
+        commit: fe6dd2a4017d3dfbf4a530d95270a1d498a16a4c
+[13/13] MAINTAINERS: Add entry for MediaTek SMI
+        commit: 93403ede5aa4edeec2c63541b185d9c4fc9ae1e4
 
-Paolo
-
-> v3:
->    - Add wrappers for guest callbacks to that stubs can be provided when
->      GUEST_PERF_EVENTS=n.
->    - s/HAVE_GUEST_PERF_EVENTS/GUEST_PERF_EVENTS and select it from KVM
->      and XEN_PV instead of from top-level arm64/x86. [Paolo]
->    - Drop an unnecessary synchronize_rcu() when registering callbacks. [Peter]
->    - Retain a WARN_ON_ONCE() when unregistering callbacks if the caller
->      didn't provide the correct pointer. [Peter]
->    - Rework the static_call patch to move it all to common perf.
->    - Add a patch to drop the (un)register stubs, made possible after
->      having KVM+XEN_PV select GUEST_PERF_EVENTS.
->    - Split dropping guest callback "support" for arm, csky, etc... to a
->      separate patch, to make introducing GUEST_PERF_EVENTS cleaner.
->    
-> v2 (relative to static_call v10):
->    - Split the patch into the semantic change (multiplexed ->state) and
->      introduction of static_call.
->    - Don't use '0' for "not a guest RIP".
->    - Handle unregister path.
->    - Drop changes for architectures that can be culled entirely.
-> 
-> v2 (relative to v1):
->    - https://lkml.kernel.org/r/20210828003558.713983-6-seanjc@google.com
->    - Drop per-cpu approach. [Peter]
->    - Fix mostly-theoretical reload and use-after-free with READ_ONCE(),
->      WRITE_ONCE(), and synchronize_rcu(). [Peter]
->    - Avoid new exports like the plague. [Peter]
-> 
-> v1:
->    - https://lkml.kernel.org/r/20210827005718.585190-1-seanjc@google.com
-> 
-> v10 static_call:
->    - https://lkml.kernel.org/r/20210806133802.3528-2-lingshan.zhu@intel.com
-> 
-> 
-> Like Xu (1):
->    perf/core: Rework guest callbacks to prepare for static_call support
-> 
-> Sean Christopherson (15):
->    perf: Ensure perf_guest_cbs aren't reloaded between !NULL check and
->      deref
->    KVM: x86: Register perf callbacks after calling vendor's
->      hardware_setup()
->    KVM: x86: Register Processor Trace interrupt hook iff PT enabled in
->      guest
->    perf: Stop pretending that perf can handle multiple guest callbacks
->    perf: Drop dead and useless guest "support" from arm, csky, nds32 and
->      riscv
->    perf: Add wrappers for invoking guest callbacks
->    perf: Force architectures to opt-in to guest callbacks
->    perf/core: Use static_call to optimize perf_guest_info_callbacks
->    KVM: x86: Drop current_vcpu for kvm_running_vcpu + kvm_arch_vcpu
->      variable
->    KVM: x86: More precisely identify NMI from guest when handling PMI
->    KVM: Move x86's perf guest info callbacks to generic KVM
->    KVM: x86: Move Intel Processor Trace interrupt handler to vmx.c
->    KVM: arm64: Convert to the generic perf callbacks
->    KVM: arm64: Drop perf.c and fold its tiny bits of code into arm.c /
->      pmu.c
->    perf: Drop guest callback (un)register stubs
-> 
->   arch/arm/kernel/perf_callchain.c   | 28 ++------------
->   arch/arm64/include/asm/kvm_host.h  |  9 ++++-
->   arch/arm64/kernel/perf_callchain.c | 13 ++++---
->   arch/arm64/kvm/Kconfig             |  1 +
->   arch/arm64/kvm/Makefile            |  2 +-
->   arch/arm64/kvm/arm.c               | 11 +++++-
->   arch/arm64/kvm/perf.c              | 62 ------------------------------
->   arch/arm64/kvm/pmu.c               |  8 ++++
->   arch/csky/kernel/perf_callchain.c  | 10 -----
->   arch/nds32/kernel/perf_event_cpu.c | 29 ++------------
->   arch/riscv/kernel/perf_callchain.c | 10 -----
->   arch/x86/events/core.c             | 13 ++++---
->   arch/x86/events/intel/core.c       |  5 +--
->   arch/x86/include/asm/kvm_host.h    |  7 +++-
->   arch/x86/kvm/Kconfig               |  1 +
->   arch/x86/kvm/pmu.c                 |  2 +-
->   arch/x86/kvm/svm/svm.c             |  2 +-
->   arch/x86/kvm/vmx/vmx.c             | 25 +++++++++++-
->   arch/x86/kvm/x86.c                 | 58 +++++-----------------------
->   arch/x86/kvm/x86.h                 | 17 ++++++--
->   arch/x86/xen/Kconfig               |  1 +
->   arch/x86/xen/pmu.c                 | 32 +++++++--------
->   include/kvm/arm_pmu.h              |  1 +
->   include/linux/kvm_host.h           | 10 +++++
->   include/linux/perf_event.h         | 41 ++++++++++++++------
->   init/Kconfig                       |  4 ++
->   kernel/events/core.c               | 39 +++++++++++++------
->   virt/kvm/kvm_main.c                | 44 +++++++++++++++++++++
->   28 files changed, 235 insertions(+), 250 deletions(-)
->   delete mode 100644 arch/arm64/kvm/perf.c
-> 
-
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
