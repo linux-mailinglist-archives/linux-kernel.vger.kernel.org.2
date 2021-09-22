@@ -2,250 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9AB413EF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0A7413EF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 03:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhIVB0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 21:26:50 -0400
-Received: from mga06.intel.com ([134.134.136.31]:13281 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230469AbhIVB0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:26:49 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10114"; a="284507920"
-X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
-   d="scan'208";a="284507920"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2021 18:25:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,312,1624345200"; 
-   d="scan'208";a="474337288"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by fmsmga007.fm.intel.com with ESMTP; 21 Sep 2021 18:25:00 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Tue, 21 Sep 2021 18:24:59 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Tue, 21 Sep 2021 18:24:59 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.103)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Tue, 21 Sep 2021 18:24:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dlToUBPTc72qB6rG2OqdLP7o3xDwxlIF1fSGxCb4zxCws+MF9BLvAcx/NhPTXPpqCaTeVvRBbhfrnXotMztMdC4opFTHhzW68vRis1MSPprVtcKPQKb21HUrAMwSM+7nprtB0xtL8BSF/tw3Ok9czdUd/aS1TrXM6aiLiBD9jW51dSHf4zeix7omD6RPZwjg0/uY1LFoYPPSRY+vZGersIObJtjMMhAOw4r3F/vUotBAjYOdf/XYMUme4hJLrN9wx8vk4kIgl2geqotSPq//i8V92dKNqzpeu5tqSrujOJkDYiKVQsQy3Y14kgEamDkPBy1kYEgX0tPj3wskhDi98Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=y2KvK4SJntq9vhUXH64zn66Dp6865XlcU6lnVEECIL4=;
- b=K2K1tBs0v2ao2ijQ4EQeHn8VeJ3qb/6YgU5CkFGZb5a2PDBsM6BSsHmC3bz9WKJj/fWTdqarFMsMxqN4EsnQreBEiE7A2J3fH7OX/o4UZUd+ZPAADo1V/Ad2v5M+kWgKttLTfoIKkjSJdoQXlDAQL3RZwIKwECTIhpQQa+ZUAmOx/Ww4liqnOuZJT7/s8ErFMD6GM9SHy9m6HzY5V3JCQ9z90qAz3gvi6XrMdrnxqSXeW8uUNPDM3uKmJIFkC36FCsz3I17WKNE4wzxsvbS1UF6zCaB17WCpCL6ADLRofCFEr3ZE6Zn2ivKqz6rKsc6ayjtWFHKxzS4Wy2cCeWlXPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y2KvK4SJntq9vhUXH64zn66Dp6865XlcU6lnVEECIL4=;
- b=JKtGI3sLUbMvDybfiy5mSbeHYfUtcoAanAcYWshvb8Zs7NYIbEfJIbyDtceChqK50HN4Uv6IHijoiAiAPN1nhVj2cDoBzFpExQDWMpEUglv15Ik9GniZjtP1uXQVRT3SCjI43ZdXaaegwEbdaepGeRtuinvnJCBdg7TBhko52DY=
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com (2603:10b6:408:11e::13)
- by BN6PR11MB1329.namprd11.prod.outlook.com (2603:10b6:404:47::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
- 2021 01:24:57 +0000
-Received: from BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::ddb7:fa7f:2cc:45df]) by BN9PR11MB5433.namprd11.prod.outlook.com
- ([fe80::ddb7:fa7f:2cc:45df%8]) with mapi id 15.20.4523.018; Wed, 22 Sep 2021
- 01:24:57 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>, "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: RE: [RFC 05/20] vfio/pci: Register device to /dev/vfio/devices
-Thread-Topic: [RFC 05/20] vfio/pci: Register device to /dev/vfio/devices
-Thread-Index: AQHXrSF8PdwE3l0WRkaTif5FzzsyqKuutGGAgABLSoCAAA3FAIAAOBXg
-Date:   Wed, 22 Sep 2021 01:24:57 +0000
-Message-ID: <BN9PR11MB5433929A6B9F8A2E35612D6F8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-6-yi.l.liu@intel.com>
- <20210921164001.GR327412@nvidia.com>
- <20210921150929.5977702c.alex.williamson@redhat.com>
- <20210921215846.GB327412@nvidia.com>
-In-Reply-To: <20210921215846.GB327412@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cf2872c2-2d9e-4dbe-be75-08d97d67c9fd
-x-ms-traffictypediagnostic: BN6PR11MB1329:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR11MB132955D88CC109D37BB4BEC18CA29@BN6PR11MB1329.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: byK3qEV4fRSm6L85BZwQLRViXMAybwnk/KzCgT7sGSzyZ/dd/pJwdijDDSpN3kMheiAHqHcBHjDkQh/iB+xdSC2wOYBFcAwocfc9s99Nml4KdBmkiBRTxntQJd5s1UwcpLDU5ayi8eb/oxDOx0eamWWyelw1y0E8kKRPlfwo+nr65V2j866ax4zQNb3598xSSLvzqAoTV1an/1h+GzWBsiezB5t3DxQ7bvyRr+YPIYUf79vy3svDDVtFAYBFg5kC9UUnrwYhAUy60thPkIjcvgkrFQHGVG+2PeuZAkqaL5RHqJkTu8gkgcqzfs7sIBhnqJesig03EsnGN7nFpjLHkTjFuZSqKkCRiylalSMw+IIDCPdjBqbcGfonclm/nDK0WPefcGwDuss20yVW4sPc9gS0FixN6NlC8ihJha3PzlkGE4LQbwq+4u/tTBh4fi7D61qGJQYBEmmQQgFvShFuHOUuRXuqpv95oPdfqaF/AF+n9T8XBkf1I1OnurUWXF1VJYQuUxBAH/DFEFN+kvUocMbtj7O8Uyz+PuYj8Qpf6pEIhe3nHxYdwyZDR/B6hlyIVqe2J6IhlasKN3knUdalP2ZPcYdmTZan0iYLNk0hG+Q+0FgGHGgmwG7QFM153uAb9wPLw1vOuN7SH/uYaKwE/smiNfTHWXgqkmf3hU0cNQp1xm+N4v68YOogphJS81AaxrGRab39P4q0Ca9lDsCeMA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5433.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(26005)(54906003)(66946007)(66446008)(2906002)(55016002)(52536014)(110136005)(7696005)(186003)(316002)(76116006)(83380400001)(66556008)(8676002)(86362001)(6506007)(508600001)(38100700002)(38070700005)(122000001)(5660300002)(71200400001)(9686003)(64756008)(8936002)(7416002)(66476007)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?FgI6fktnT40Zy1RKqZS7Np2pXh442kMyMtm5BHImxqOagjIOB80dLFtAIJ0t?=
- =?us-ascii?Q?mqbiuBXYIYaMW4CJgM0ujL+4pNQeq2RZQwnuj4v85YS6IK4Yw1B86uHNpgSX?=
- =?us-ascii?Q?+KgZjMzd2nRYwBkPvzkaruRMlSmtyJft8CBUERNdqZcS/M+hNNTuvAUymceJ?=
- =?us-ascii?Q?JO0TwQbFpdLeA3ozW9IExPSeuG5NIEKdP4OLDdBZLeqDbc5ELQbmZjJfiFVY?=
- =?us-ascii?Q?IJsM8LTfd5O1v1gUjqCnM3geU+fGlSjOxmE+prIaDIbjUPL0jOzxKBi5KOUg?=
- =?us-ascii?Q?LdezFw9n6RFAt/LdInVbkGMEg4LItM16JHyOAM4EUtc8Iv78CJ3qFfTntLN4?=
- =?us-ascii?Q?fN3elqMabschdyZkMezDmzlSsE3HK72+5dfesU2bzf8KoLItBj4GJSJtRaUB?=
- =?us-ascii?Q?pJ/EFuFo0tNgN23X5tsvaeTMnrRrmMxCRt6icL59ouIA2KE3lj5obHbuZpzl?=
- =?us-ascii?Q?lIFA8l1XRgekEJlQxwE1f5pOV5/7fwZLjCXwZFoQ+FC7oouzjd84/zkUiTBx?=
- =?us-ascii?Q?Y+bG+OGBOxIIvCo9D4kiCkHI5eVBfKReXBUbAFW7xK5E50tJpn559hJj1z+S?=
- =?us-ascii?Q?1gCQ6RpZChTd/mf0OurlUypMx5k9x8yfO9uTH59LRPU5M4t/gZuHSwMpqYrI?=
- =?us-ascii?Q?vajPm8fbmFgQpI/HDB4oaxBXYyu9etFHc/pW6KMYKYDNCPAJBx28qThplAP2?=
- =?us-ascii?Q?QRTGLeWI2RQDJul+rdHcOkBurow/TI/xAu0D/RtTeMgGpVaQUDnQjo5uFu49?=
- =?us-ascii?Q?Q/o1h8esHfHUbqSJZd/WWZ3AVBN/ta1XGXYe4VzAfwCVMpVriy+0zYngKZFG?=
- =?us-ascii?Q?3a69nKtWrX+LejBrWnuueITpoXBDqsIKFi8TRkoGsdpXmm77roW1IMO7JwjO?=
- =?us-ascii?Q?qAqgBBNDegATLdTbwRUhYkzIwbLXBO0jUgq6Q/KueEejeEuspWk0teWT85tl?=
- =?us-ascii?Q?Mh4KKzVhY6WNCQMZOYB0OTuZJgOffUSHH8MSzAzY2DG7oCxERQi7Qy2STwba?=
- =?us-ascii?Q?wMLsSubvClKD9FqKLKTCIDzwaUD+ppKnv4FvDubAalg5bqNscwxyxJOS+DO5?=
- =?us-ascii?Q?9YCRtCuFRrwmDTooy/F0oT0Z6CgJs7NjyJhGJ2eKkXj1KeOPvMx183dC3+EZ?=
- =?us-ascii?Q?Gtkm2DGqptzS4FeXOBwzJ0ecz0kmQxg59XIz0lrWDvS+/EAU8YWYl+XaNQPK?=
- =?us-ascii?Q?uBGhSiYolOHSDOYTRKb28oEuJ0RcH/luraWknBhl+aT+tHbd03PZkYLNh8Iy?=
- =?us-ascii?Q?s88Yuo3a4yqNwYNKw/vsR8a0rIyStejhTVG+plgtfEFGVKWCx3XfSLEM5VSg?=
- =?us-ascii?Q?07O1X3tHoTXjY21uYk2/TKad?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232400AbhIVB2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 21:28:01 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:37632 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230469AbhIVB2B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 21:28:01 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 18M1QELt117977;
+        Tue, 21 Sep 2021 20:26:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1632273974;
+        bh=/FOZxTvTqWhnvJg7vtSaRyToCaRqGzH5F9PQnDTzVPs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Wv28Mx82yvWkuPCUXABJX64Crctr5jsjPLUrk1aYrYfvQegl0c4syY2f+gJE9W5DW
+         bs8mQNAJweTwZflJvHKXR+8Adu9jQ3IlR77LTyT0ihtbfpyUMLb/9gL0f1mgNzvCcp
+         uieirrDaaNPylWXTa1Klwl5LTbKNlZ2U/MJpGla0=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 18M1QEc5114507
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Sep 2021 20:26:14 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 21
+ Sep 2021 20:26:13 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 21 Sep 2021 20:26:13 -0500
+Received: from [10.250.233.80] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 18M1QAbP074771;
+        Tue, 21 Sep 2021 20:26:11 -0500
+Subject: Re: [PATCH 1/3] PCI: Add support in pci_walk_bus() to invoke callback
+ matching RID
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <lokeshvutla@ti.com>
+References: <20210920064133.14115-1-kishon@ti.com>
+ <20210920064133.14115-2-kishon@ti.com> <8735pzwrq0.wl-maz@kernel.org>
+ <49b2ba0c-c69d-266c-5db6-549fab031ffd@ti.com> <87mto7unw1.wl-maz@kernel.org>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <4c6d6b57-d868-eccb-7cfb-66008af530bb@ti.com>
+Date:   Wed, 22 Sep 2021 06:56:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5433.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf2872c2-2d9e-4dbe-be75-08d97d67c9fd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 01:24:57.2090
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VNh6xgPMIS26cgBysgBYDejwdmf1u7qW8/9PVTOd0Jdn9cEkEpQLDg8JKoR5yRFPPfyKimc4VzAfo+eZQZrvrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1329
-X-OriginatorOrg: intel.com
+In-Reply-To: <87mto7unw1.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, September 22, 2021 5:59 AM
->=20
-> On Tue, Sep 21, 2021 at 03:09:29PM -0600, Alex Williamson wrote:
->=20
-> > the iommufd uAPI at all.  Isn't part of that work to understand how KVM
-> > will be told about non-coherent devices rather than "meh, skip it in th=
-e
-> > kernel"?  Also let's not forget that vfio is not only for KVM.
->=20
-> vfio is not only for KVM, but AFIACT the wbinv stuff is only for
-> KVM... But yes, I agree this should be sorted out at this stage
+Hi Marc,
 
-If such devices are even not exposed in the new hierarchy at this stage,
-suppose sorting it out later should be fine?
+On 20/09/21 11:31 pm, Marc Zyngier wrote:
+> On Mon, 20 Sep 2021 15:28:52 +0100,
+> Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>
+>> Hi Marc,
+>>
+>> On 20/09/21 2:26 pm, Marc Zyngier wrote:
+>>> On Mon, 20 Sep 2021 07:41:31 +0100,
+>>> Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>>>>
+>>>> Add two arguments to pci_walk_bus() [requestorID and mask], and add
+>>>> support in pci_walk_bus() to invoke the *callback* only for devices
+>>>> whose RequestorID after applying *mask* matches with *requestorID*
+>>>> passed as argument.
+>>>>
+>>>> This is done in preparation for calculating the total number of
+>>>> interrupt vectors that has to be supported by a specific GIC ITS device ID,
+>>>> specifically when "msi-map-mask" is populated in device tree.
+>>>>
+>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>>> ---
+>>>>  drivers/pci/bus.c   | 13 +++++++++----
+>>>>  include/linux/pci.h |  7 +++++--
+>>>>  2 files changed, 14 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+>>>> index 3cef835b375f..e381e639ceaa 100644
+>>>> --- a/drivers/pci/bus.c
+>>>> +++ b/drivers/pci/bus.c
+>>>> @@ -358,10 +358,12 @@ void pci_bus_add_devices(const struct pci_bus *bus)
+>>>>  }
+>>>>  EXPORT_SYMBOL(pci_bus_add_devices);
+>>>>  
+>>>> -/** pci_walk_bus - walk devices on/under bus, calling callback.
+>>>> +/** __pci_walk_bus - walk devices on/under bus matching requestor ID, calling callback.
+>>>>   *  @top      bus whose devices should be walked
+>>>>   *  @cb       callback to be called for each device found
+>>>>   *  @userdata arbitrary pointer to be passed to callback.
+>>>> + *  @rid      Requestor ID that has to be matched for the callback to be invoked
+>>>> + *  @mask     Mask that has to be applied to pci_dev_id(), before compating it with @rid
+>>>>   *
+>>>>   *  Walk the given bus, including any bridged devices
+>>>>   *  on buses under this bus.  Call the provided callback
+>>>> @@ -371,8 +373,8 @@ EXPORT_SYMBOL(pci_bus_add_devices);
+>>>>   *  other than 0, we break out.
+>>>>   *
+>>>>   */
+>>>> -void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>>>> -		  void *userdata)
+>>>> +void __pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>>>> +		    void *userdata, u32 rid, u32 mask)
+>>>>  {
+>>>>  	struct pci_dev *dev;
+>>>>  	struct pci_bus *bus;
+>>>> @@ -399,13 +401,16 @@ void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>>>>  		} else
+>>>>  			next = dev->bus_list.next;
+>>>>  
+>>>> +		if (mask != 0xffff && ((pci_dev_id(dev) & mask) != rid))
+>>>
+>>> Why the check for the mask? I also wonder whether the mask should apply
+>>> to the rid as well:
+>>
+>> If the mask is set for all 16bits, then there is not going to be two PCIe
+>> devices which gets the same ITS device ID right? So no need for calculating
+>> total number of vectors?
+> 
+> Are we really arguing about the cost of a compare+branch vs some
+> readability? Or is there an actual correctness issue here?
 
->=20
-> > > > When the device is opened via /dev/vfio/devices, vfio-pci should
-> prevent
-> > > > the user from accessing the assigned device because the device is s=
-till
-> > > > attached to the default domain which may allow user-initiated DMAs =
-to
-> > > > touch arbitrary place. The user access must be blocked until the de=
-vice
-> > > > is later bound to an iommufd (see patch 08). The binding acts as th=
-e
-> > > > contract for putting the device in a security context which ensures=
- user-
-> > > > initiated DMAs via this device cannot harm the rest of the system.
-> > > >
-> > > > This patch introduces a vdev->block_access flag for this purpose. I=
-t's set
-> > > > when the device is opened via /dev/vfio/devices and cleared after
-> binding
-> > > > to iommufd succeeds. mmap and r/w handlers check this flag to decid=
-e
-> whether
-> > > > user access should be blocked or not.
-> > >
-> > > This should not be in vfio_pci.
-> > >
-> > > AFAIK there is no condition where a vfio driver can work without bein=
-g
-> > > connected to some kind of iommu back end, so the core code should
-> > > handle this interlock globally. A vfio driver's ops should not be
-> > > callable until the iommu is connected.
-> > >
-> > > The only vfio_pci patch in this series should be adding a new callbac=
-k
-> > > op to take in an iommufd and register the pci_device as a iommufd
-> > > device.
-> >
-> > Couldn't the same argument be made that registering a $bus device as an
-> > iommufd device is a common interface that shouldn't be the
-> > responsibility of the vfio device driver?
->=20
-> The driver needs enough involvment to signal what kind of IOMMU
-> connection it wants, eg attaching to a physical device will use the
-> iofd_attach_device() path, but attaching to a SW page table should use
-> a different API call. PASID should also be different.
+It is for correctness. So existing pci_walk_bus() doesn't invoke cb based on
+rid. So when we convert to __pci_walk_bus(), existing callers of pci_walk_bus()
+might not invoke cb for some devices without the check.
+> 
+>>>
+>>> 		if ((pci_dev_id(dev) & mask) != (rid & mask))
+> 
+> Because I think the above expression is a lot more readable (and
+> likely more correct) than what you are suggesting.
 
-Exactly
+That would result in existing pci_walk_bus() behave differently from what was
+before this patch no?
 
->=20
-> Possibly a good arrangement is to have the core provide some generic
-> ioctl ops functions 'vfio_all_device_iommufd_bind' that everything
-> except mdev drivers can use so the code is all duplicated.
+I'm having something like this below
+	+#define pci_walk_bus(top, cb, userdata) \
+	+	 __pci_walk_bus((top), (cb), (userdata), 0x0, 0xffff)
 
-Could this be an future enhancement when we have multiple device
-types supporting iommufd?
+So if we add only "if ((pci_dev_id(dev) & mask) != (rid & mask))", the callback
+will not be invoked for any devices (other than one with rid = 0)
 
->=20
-> > non-group device anything more than a reservation of that device if
-> > access is withheld until iommu isolation?  I also don't really want to
-> > predict how ioctls might evolve to guess whether only blocking .read,
-> > .write, and .mmap callbacks are sufficient.  Thanks,
->=20
-> This is why I said the entire fops should be blocked in a dummy fops
-> so the core code the vfio_device FD parked and userspace unable to
-> access the ops until device attachment and thus IOMMU ioslation is
-> completed.
->=20
-> Simple and easy to reason about, a parked FD is very similar to a
-> closed FD.
->=20
+> 
+>>>
+>>>> +			continue;
+>>>> +
+>>>>  		retval = cb(dev, userdata);
+>>>>  		if (retval)
+>>>>  			break;
+>>>>  	}
+>>>>  	up_read(&pci_bus_sem);
+>>>>  }
+>>>> -EXPORT_SYMBOL_GPL(pci_walk_bus);
+>>>> +EXPORT_SYMBOL_GPL(__pci_walk_bus);
+>>>>  
+>>>>  struct pci_bus *pci_bus_get(struct pci_bus *bus)
+>>>>  {
+>>>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>>>> index cd8aa6fce204..8500fec56e50 100644
+>>>> --- a/include/linux/pci.h
+>>>> +++ b/include/linux/pci.h
+>>>> @@ -1473,14 +1473,17 @@ const struct pci_device_id *pci_match_id(const struct pci_device_id *ids,
+>>>>  int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
+>>>>  		    int pass);
+>>>>  
+>>>> -void pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>>>> -		  void *userdata);
+>>>> +void __pci_walk_bus(struct pci_bus *top, int (*cb)(struct pci_dev *, void *),
+>>>> +		    void *userdata, u32 rid, u32 mask);
+>>>>  int pci_cfg_space_size(struct pci_dev *dev);
+>>>>  unsigned char pci_bus_max_busnr(struct pci_bus *bus);
+>>>>  void pci_setup_bridge(struct pci_bus *bus);
+>>>>  resource_size_t pcibios_window_alignment(struct pci_bus *bus,
+>>>>  					 unsigned long type);
+>>>>  
+>>>> +#define pci_walk_bus(top, cb, userdata) \
+>>>> +	 __pci_walk_bus((top), (cb), (userdata), 0x0, 0xffff)
+>>>
+>>> Please keep this close to the helper it replaces. I also really
+>>> dislike the use of this raw 0xffff. Don't we already have a named
+>>> constant that represents the mask for a RID?
+>>
+>> I didn't find one on quick look but let me check.
+> 
+> Worse case, you could create your own.
 
-This rationale makes sense. Just the open how to handle exclusive
-open between group and nongroup interfaces still needs some
-more clarification here, especially about what a parked FD means
-for the group interface (where parking is unnecessary since the=20
-security context is already established before the device is opened)
+sure.
 
-Thanks
-Kevin
+Thanks,
+Kishon
