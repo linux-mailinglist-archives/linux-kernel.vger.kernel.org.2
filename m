@@ -2,69 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BAB4150A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DC14150AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhIVTsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:48:46 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:35605 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237222AbhIVTsp (ORCPT
+        id S237253AbhIVTt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230456AbhIVTtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:48:45 -0400
-Received: by mail-ot1-f48.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so5200807otj.2;
-        Wed, 22 Sep 2021 12:47:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=myTJLV9zsG1rotdSXj4TizWpiAcw50ZCHhmQAOdwguA=;
-        b=eGNyCJmB0NeZMjPSbWgqbcyXEsutDwc/Wh13JyXbkuw9ejfhIkBZ8rTP0m4ulYz68H
-         AgEIisypySX0YAODbJ0lD+ELSntsCxMpHp4DZ6/2gMr2ICpHnc7IyzU6fAQQz/1vifcw
-         xXJc8aFMRvPfiAk/QFwPr3nJrP5xAyj9NPHUpWMLjQRgbQSP4hCPX8rMK+wbiv79uacN
-         bsZhAFg9xbQoa/FsGjr6znxKeqn39Bocnl1wGR9EPlu/I8feBaAhcCnrcJ12EaICCbrD
-         3jEaB3dxtp6/a3tB7y+zcRxtBv71TWdWKLJBi8W3jlaQL4PFxdCqIrgwITd3233ZjTNV
-         sRZA==
-X-Gm-Message-State: AOAM532bRKXHCOdWtljYRaBSowdXrt7T04Kv9eCsGj+UgsGLYd8AE0kd
-        C3egBG+/raCMRMjEyjFHZZCPBD3iCA==
-X-Google-Smtp-Source: ABdhPJzpxfotwvZ4m4Ux+FhJTp1Po2sHUTojjYBHQrfe0Y2NIYv+7KpulcADDhbDReeG2PcW6D5lmg==
-X-Received: by 2002:a05:6830:791:: with SMTP id w17mr847457ots.108.1632340034527;
-        Wed, 22 Sep 2021 12:47:14 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c5sm712984otb.35.2021.09.22.12.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 12:47:14 -0700 (PDT)
-Received: (nullmailer pid 1175763 invoked by uid 1000);
-        Wed, 22 Sep 2021 19:47:13 -0000
-Date:   Wed, 22 Sep 2021 14:47:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: clk: qcom,rpmcc: Document QCM2290
- compatible
-Message-ID: <YUuIQbOPO1m0Xg7k@robh.at.kernel.org>
-References: <20210917030434.19859-1-shawn.guo@linaro.org>
- <20210917030434.19859-3-shawn.guo@linaro.org>
+        Wed, 22 Sep 2021 15:49:50 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042C4C061574;
+        Wed, 22 Sep 2021 12:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1YATyr10hFKsEJyvlpPeeKxTucU8KD0HwbL0+C+7uQk=; b=jeWIYoP2uKYq5WeKPu8DnDeYnr
+        rwd7Pn7gCthcDCndOfxADAFLUP9es9gLdBpu+klkOhiwbuMTZqQwnEA5Pmrl70WyYiX9lC2sa+SvA
+        pcu1tFRRT40TNN8PCjrC1zx5E9igQyyC6+QaDSGIgXsWFVAtjKhdCzVY8FK7f3ssE3tVgvflRDCFT
+        efnDqHETPgT412VUR5q5qt/IpFikXIj0B0usRmHzPYtnMf7vqg3mXfBWuaFFeDBvgXpV/6VbqVnd2
+        gHSAyZR66ypzIYcRw37h8EEetF0rpqgq6lKuQAw8Fn1G2grGTW8jRKzECqWB1CdJRdYkzcabydK+Y
+        rRRWkMoA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mT8Do-005484-Px; Wed, 22 Sep 2021 19:48:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E449B3001CD;
+        Wed, 22 Sep 2021 21:47:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C86E62D7CF342; Wed, 22 Sep 2021 21:47:59 +0200 (CEST)
+Date:   Wed, 22 Sep 2021 21:47:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
+        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
+        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
+        svens@linux.ibm.com, sumanthk@linux.ibm.com,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC][PATCH 6/7] context_tracking: Provide SMP ordering using RCU
+Message-ID: <YUuIb12XCQlBfIQW@hirez.programming.kicks-ass.net>
+References: <20210922110506.703075504@infradead.org>
+ <20210922110836.244770922@infradead.org>
+ <20210922151721.GZ880162@paulmck-ThinkPad-P17-Gen-1>
+ <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917030434.19859-3-shawn.guo@linaro.org>
+In-Reply-To: <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Sep 2021 11:04:33 +0800, Shawn Guo wrote:
-> Add compatible for the RPM Clock Controller on the QCM2290 SoC.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->  Documentation/devicetree/bindings/clock/qcom,rpmcc.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Wed, Sep 22, 2021 at 09:33:43PM +0200, Peter Zijlstra wrote:
 
-Acked-by: Rob Herring <robh@kernel.org>
+> Anyway, lemme see if I get your proposal; lets say the counter starts at
+> 0 and is in kernel space.
+> 
+>  0x00(0) - kernel
+>  0x02(2) - user
+>  0x04(0) - kernel
+> 
+> So far so simple, then NMI on top of that goes:
+> 
+>  0x00(0) - kernel
+>  0x03(3) - kernel + nmi
+>  0x04(0) - kernel
+>  0x06(2) - user
+>  0x09(1) - user + nmi
+>  0x0a(2) - user
+> 
+> Which then gives us:
+> 
+>  (0) := kernel
+>  (1) := nmi-from-user
+>  (2) := user
+>  (3) := nmi-from-kernel
+> 
+> Which should work I suppose. But like I said above, I'd be happier if
+> this counter would live in context_tracking rather than RCU.
+
+Furthermore, if we have this counter, the we can also do things like:
+
+  seq = context_tracking_seq_cpu(that_cpu);
+  if ((seq & 3) != USER)
+    // nohz_fail, do something
+  set_tsk_thread_flag(curr_task(that_cpu), TIF_DO_SOME_WORK);
+  if (seq == context_tracking_seq_cpu(that_cpu))
+    // success!!
+
+To remotely set pending state. Allowing yet more NOHZ_FULL fixes, like,
+for example, eliding the text_poke IPIs.
