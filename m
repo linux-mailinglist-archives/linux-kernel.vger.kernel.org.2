@@ -2,103 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17D9414DD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F067414DDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236588AbhIVQN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236506AbhIVQN4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:13:56 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726F7C061574;
-        Wed, 22 Sep 2021 09:12:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mv7-20020a17090b198700b0019c843e7233so2680425pjb.4;
-        Wed, 22 Sep 2021 09:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZINFEPPh5tg9DcuNidDp1iGsjEhXUfCCil0bzDOEJ+A=;
-        b=Bsql6hS/N+ovN75mrNVkPa428mUsRoN6xdFG3tmvlK2WZPnGno+Bbg5Whs6NzJZbq8
-         L03Xh1/RJMaWg7ulP4XR5GToMa1z8gaWh9KdjVncLaF11zzGgIG0mzZpDqlaqfpvw819
-         2gnLm8weaKGzwoBJat1IiRb9KDbB+P+/IPjRcWW64NoCl0otFek4BVHPCj3rsLcXIwU4
-         FJMxRyX2W7/v0ActDNgd00u/sRWYREEN7taJQ4rMIIiFrazFQzA6NAkvkhzOcxYqeTyF
-         CHsRPxPI220ZJKkpI2+FlVOixD2mjGKQWpv1gq7dggYCKhRiw7zoGD73IwTfe1PXaYGh
-         YwAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZINFEPPh5tg9DcuNidDp1iGsjEhXUfCCil0bzDOEJ+A=;
-        b=QZVGFJ3cpPoKLbrBlB0ZNtHO7LGKTf952UxBHpKywibjLfHl+ZmIYk4isjadu4aws6
-         MLGpjdeU7dp+OSP1/JzoKa+G6lUNWM+TEXdnBc4SBsncEFsnWqoBP9le+/ir/KNzN6B7
-         7NWcKDzugidb7lI9ANOx4IP3Bj4xG1G71RRZ1UHdt5zmXXbUieXL5NlK/qLuQ63f35N3
-         nA9whAUcw+uekCloWX4/EZ4ts2aPpGs0FPyXPxzbgzxIKBxfi3LjKtlbP/QgO81MoMb7
-         hwwcoYmS5fW8DhC5KGsCFzfPQ6oA0bLrLxmsvihMLVllBHFLl00O2hmdPxwUu+G11AEK
-         b/8g==
-X-Gm-Message-State: AOAM5307/T3yLZ/ZVlDLbR8W+PnWEcOM2TDpeaJNo5delYeikA8DzQAl
-        A6LGK/phO45RrGQy7dt+4R0=
-X-Google-Smtp-Source: ABdhPJzDmGgeDok7iSg/MA/CENANSQczlBxbqQwxO576Ge3GXyi9Mc/pOxPVv3DEGTmZWfiyvSNQhg==
-X-Received: by 2002:a17:902:8ec5:b0:13a:2789:cbb0 with SMTP id x5-20020a1709028ec500b0013a2789cbb0mr80225plo.60.1632327145920;
-        Wed, 22 Sep 2021 09:12:25 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l11sm6188421pjg.22.2021.09.22.09.12.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Sep 2021 09:12:25 -0700 (PDT)
-Subject: Re: [PATCH stable 5.10 3/3] ARM: 9079/1: ftrace: Add MODULE_PLTS
- support
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>
-References: <20210922023947.59636-1-f.fainelli@gmail.com>
- <20210922023947.59636-4-f.fainelli@gmail.com>
- <d374a9ae-2dd0-3b11-d5f8-211ef3a6f991@nokia.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8acd5f74-7dcb-d563-310d-01e1bd066065@gmail.com>
-Date:   Wed, 22 Sep 2021 09:12:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236599AbhIVQPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236580AbhIVQOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 12:14:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9460F611EE;
+        Wed, 22 Sep 2021 16:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632327205;
+        bh=k2Pj+TuZexZ6ukjV1H0j47mTKTEdHbsKE38t9ELGnwg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ss/t7YRtW4/pQQEQUBPntkIYXMZJu1oNsMVRHoU7WVsfEvF/Bin3so4Jur818nglt
+         spUunv61xYEGWmqSfbZWff9/3nAjsjTGzjnjHtwyqpoztZPDdwTygO2P0a/76J8sMw
+         eQyvGTIcefsJE1QATzbNab7J7wJc2GOi6FP9ClcuKbM05KTAoof7OJ3onnCnUKjTGW
+         Zuc5BnTzCNN7ftVuY8R7khqroCJuET4/xQAdylFoeWEPHdqJwPKG218b2HoUPkSPZy
+         bkZBDyX00TXR8EqIjjwsi+TUo9AmHHyP2UK/zmP994TvDvXpuIhaVv3fdfj/vzcVHt
+         2ZoLgB7FPewWQ==
+Received: by mail-ed1-f53.google.com with SMTP id co2so11763130edb.8;
+        Wed, 22 Sep 2021 09:13:25 -0700 (PDT)
+X-Gm-Message-State: AOAM5305SFOT80OnLPmEZ48qQZFZ6zLtWBbLJXt5nXAaHxgZoyYMRWEl
+        rHgGxKTKmZXp59NnAlrgsfKQLwWSNbuJeeKKtw==
+X-Google-Smtp-Source: ABdhPJz0EFOiG8RAy7xNyqTHM9kZtLsTE6kn0uXnl1IvG1FgKwEubeYEUB8kZr/WOB+y08WZzwtJ8r8/AvNNj4hXTTI=
+X-Received: by 2002:a17:907:995a:: with SMTP id kl26mr454695ejc.6.1632327204098;
+ Wed, 22 Sep 2021 09:13:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d374a9ae-2dd0-3b11-d5f8-211ef3a6f991@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210907083723.7725-1-granquet@baylibre.com> <20210907083723.7725-4-granquet@baylibre.com>
+In-Reply-To: <20210907083723.7725-4-granquet@baylibre.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 23 Sep 2021 00:13:13 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8FC-sP0PP0Fv6G-2cwUDp6mDLx_3JmmSc144NSCyULXw@mail.gmail.com>
+Message-ID: <CAAOTY_8FC-sP0PP0Fv6G-2cwUDp6mDLx_3JmmSc144NSCyULXw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] dt-bindings: phy: Add binding for Mediatek MT8195
+ HDMI PHY
+To:     Guillaume Ranquet <granquet@baylibre.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, CK Hu <ck.hu@mediatek.com>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Hi, Guillaume:
 
-On 9/21/21 11:53 PM, Alexander Sverdlin wrote:
-> Hello Florian,
-> 
-> On 22/09/2021 04:39, Florian Fainelli wrote:
->> From: Alex Sverdlin <alexander.sverdlin@nokia.com>
->>
->> commit 79f32b221b18c15a98507b101ef4beb52444cc6f upstream
->>
->> Teach ftrace_make_call() and ftrace_make_nop() about PLTs.
->> Teach PLT code about FTRACE and all its callbacks.
-> 
-> sorry for inconvenience, but I'd propose to add 6fa630bf473827ae
-> "ARM: 9098/1: ftrace: MODULE_PLT: Fix build problem without DYNAMIC_FTRACE"
-> to all series on this topic, because of the below chunk which might
-> lead to build issues on some exotic configurations.
-> 
-> Link: https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/ZUVCQBHDMFVR7CCB7JPESLJEWERZDJ3T/
+Guillaume Ranquet <granquet@baylibre.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=88=
+7=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:39=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Add bindings to describe Mediatek MT8195 HDMI PHY
 
-Good point, missed that one, I will add it to the stable submission and
-resend, thanks!
--- 
-Florian
+Move this patch before the driver patch which reference this patch.
+
+>
+> Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+> ---
+>  .../phy/mediatek,mtk8195-hdmi-phy.yaml        | 71 +++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,mtk819=
+5-hdmi-phy.yaml
+
+I think this file should be merged into mediatek,hdmi-phy.yaml [1].
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/Documentation/devicetree/bindings/phy/mediatek,hdmi-phy.yaml?h=3Dv5.15-rc2
+
+Regards,
+Chun-Kuang.
+
+>
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,mtk8195-hdmi-=
+phy.yaml b/Documentation/devicetree/bindings/phy/mediatek,mtk8195-hdmi-phy.=
+yaml
+> new file mode 100644
+> index 000000000000..f03bd3af7fd8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,mtk8195-hdmi-phy.yam=
+l
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020 MediaTek
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/mediatek,hdmi-phy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek High Definition Multimedia Interface (HDMI) PHY binding =
+for mt8195
+> +
+> +maintainers:
+> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> +  - Philipp Zabel <p.zabel@pengutronix.de>
+> +  - Chunfeng Yun <chunfeng.yun@mediatek.com>
+> +
+> +description: |
+> +  The HDMI PHY serializes the HDMI encoder's three channel 10-bit parall=
+el
+> +  output and drives the HDMI pads.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^hdmi-phy@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    - const: mediatek,mt8195-hdmi-phy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: PLL reference clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: hdmi_xtal_sel
+> +
+> +  clock-output-names:
+> +    items:
+> +      - const: hdmi_txpll
+> +
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  "#clock-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - clock-output-names
+> +  - "#phy-cells"
+> +  - "#clock-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8195-clk.h>
+> +    hdmi_phy: hdmi-phy@11d5f000 {
+> +        compatible =3D "mediatek,mt8195-hdmi-phy";
+> +        reg =3D <0 0x11d5f000 0 0x100>;
+> +        clocks =3D <&topckgen CLK_TOP_HDMI_XTAL>;
+> +        clock-names =3D "hdmi_xtal_sel";
+> +        clock-output-names =3D "hdmi_txpll";
+> +        #clock-cells =3D <0>;
+> +        #phy-cells =3D <0>;
+> +    };
+> +
+> +...
+> --
+> 2.31.1
+>
