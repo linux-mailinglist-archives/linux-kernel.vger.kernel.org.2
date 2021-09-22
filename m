@@ -2,81 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6351C413F83
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01962413F86
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 04:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhIVCil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Sep 2021 22:38:41 -0400
-Received: from out0.migadu.com ([94.23.1.103]:22059 "EHLO out0.migadu.com"
+        id S229940AbhIVCjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Sep 2021 22:39:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229466AbhIVCik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Sep 2021 22:38:40 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1632278228;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ddK4d5pIrtQQNOrk862QUGjXM4IpcsLs0bAShdHgcXk=;
-        b=sK4J10W5afPPEsiI69FhcR8YYvZYFxxow0y8kGK3/34v77fn4lo0Jom6muC9UxrmjF6wU+
-        n/58gzuQ04wtM+FBaXreDpOnA/Hsfm0dAcSGV8NKS7BQKpMFWXJXBPuCG1iO7cScGScUa8
-        b/p4cR/uMO4M7ubQsyMwZizq+rZ3N84=
-From:   Jackie Liu <liu.yun@linux.dev>
-To:     geert+renesas@glider.be
-Cc:     geert@linux-m68k.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, perex@perex.cz, liu.yun@linux.dev
-Subject: [PATCH v2] ASoC: mediatek: make SND_SOC_MT8195 depends on COMMON_CLK
-Date:   Wed, 22 Sep 2021 10:36:42 +0800
-Message-Id: <20210922023642.3152359-1-liu.yun@linux.dev>
+        id S229644AbhIVCjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Sep 2021 22:39:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D1D61184;
+        Wed, 22 Sep 2021 02:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632278266;
+        bh=VbdVnj2YHKrJ1F4mJdb4/092wxfGkS9kFWwgMIvJcow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WAKNTFQ7fhi0qJgddSjilERZ65w4KRSyEeBVDrEnXsnQ8ZNoHpU+heZfpKraeB1xy
+         MaI0DW1+HLdDFjRVmOjT8F7XAJhe27r6Ef0tc+dlq8oNS1FeQpI9Lh7tmDDxc/p1m0
+         IpmDEZIuDGuu7zFXnrqbIB5sohHZg5ZaNb0kPvr0DgZBZO9G6pomyYh5hmHl4EL4aJ
+         725KCD+cCjAVz63sL1Sp5JJkQoThgLD9X3/m8AudyxAkrTVHh33F08WliP29uORn0m
+         JVkFhMIL016YU2MngZheXkdMJxoh0sb1R5yrOfIZwqY5Ulm8JVCDI1AYb3NK6a+gsR
+         HJZHAkUd39ktg==
+Date:   Wed, 22 Sep 2021 10:37:40 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com
+Subject: Re: [PATCH v2] ARM: imx6: mask all interrupts before calling
+ stby-poweroff sequence
+Message-ID: <20210922023740.GD10217@dragon>
+References: <20210817122500.31953-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: liu.yun@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817122500.31953-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+On Tue, Aug 17, 2021 at 02:25:00PM +0200, Oleksij Rempel wrote:
+> Any pending interrupt can prevent entering standby based power off state.
+> To avoid it, mask all interrupts.
+> 
+> Fixes: 8148d2136002 ("ARM: imx6: register pm_power_off handler if "fsl,pmic-stby-poweroff" is set")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  arch/arm/mach-imx/pm-imx6.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/arch/arm/mach-imx/pm-imx6.c b/arch/arm/mach-imx/pm-imx6.c
+> index 9244437cb1b9..63887ade411a 100644
+> --- a/arch/arm/mach-imx/pm-imx6.c
+> +++ b/arch/arm/mach-imx/pm-imx6.c
+> @@ -59,8 +59,11 @@
+>  #define MX6Q_SUSPEND_OCRAM_SIZE		0x1000
+>  #define MX6_MAX_MMDC_IO_NUM		33
+>  
+> +#define GIC_DIST_ENABLE_CLEAR		0x180
+> +
+>  static void __iomem *ccm_base;
+>  static void __iomem *suspend_ocram_base;
+> +static void __iomem *gic_raw_dist_base;
+>  static void (*imx6_suspend_in_ocram_fn)(void __iomem *ocram_vbase);
+>  
+>  /*
+> @@ -592,6 +595,7 @@ static int __init imx6q_suspend_init(const struct imx6_pm_socdata *socdata)
+>  static void __init imx6_pm_common_init(const struct imx6_pm_socdata
+>  					*socdata)
+>  {
+> +	struct device_node *np;
+>  	struct regmap *gpr;
+>  	int ret;
+>  
+> @@ -615,10 +619,29 @@ static void __init imx6_pm_common_init(const struct imx6_pm_socdata
+>  	if (!IS_ERR(gpr))
+>  		regmap_update_bits(gpr, IOMUXC_GPR1, IMX6Q_GPR1_GINT,
+>  				   IMX6Q_GPR1_GINT);
+> +
+> +	np = of_find_compatible_node(NULL, NULL, "arm,cortex-a9-gic");
+> +	gic_raw_dist_base = of_iomap(np, 0);
+> +}
+> +
+> +static void imx_gic_mask_all(void)
+> +{
+> +	int i;
+> +
+> +	if (WARN_ON(!gic_raw_dist_base))
+> +		return;
+> +
+> +	for (i = 0; i < 4; i++)
+> +		writel_relaxed(~0, gic_raw_dist_base + GIC_DIST_ENABLE_CLEAR + 4 * i);
 
-After compiling with COMPILE_TEST, we are most likely to compile on a
-different architecture, such as x86. At this time, it is possible that
-the HAVE_CLK macro is not selected, resulting in compilation failure.
+Is it possible to have a helper function in GIC driver, that we can
+simply call into?
 
-Avoid fail like:
+Shawn
 
-  Kernel: arch/x86/boot/bzImage is ready  (#17)
-  ERROR: modpost: "clkdev_add" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-  ERROR: modpost: "clkdev_drop" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-  ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-  ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko] undefined!
-  make[1]: *** [scripts/Makefile.modpost:134: modules-only.symvers] Error 1
-  make[1]: *** Deleting file 'modules-only.symvers'
-  make: *** [Makefile:1783: modules] Error 2
-
-Let's add the missing real dependencies!
-
-HAVE_CLK (clkdev_add, clkdev_drop)
-COMMON_CLK (clk_unregister_gate, clk_register_gate)
-
-Fixes: 6746cc858259 ("ASoC: mediatek: mt8195: add platform driver")
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
----
- sound/soc/mediatek/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 5a2f4667d50b..90356c8e1a3c 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -188,6 +188,7 @@ config SND_SOC_MT8192_MT6359_RT1015_RT5682
- config SND_SOC_MT8195
- 	tristate "ASoC support for Mediatek MT8195 chip"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	depends on COMMON_CLK
- 	select SND_SOC_MEDIATEK
- 	help
- 	  This adds ASoC platform driver support for Mediatek MT8195 chip
--- 
-2.25.1
-
+>  }
+>  
+>  static void imx6_pm_stby_poweroff(void)
+>  {
+> +	/*
+> +	 * A pending interrupt can prevent power off signal to be activated.
+> +	 * So, mask all interrupts to avoid it.
+> +	 */
+> +	imx_gic_mask_all();
+>  	imx6_set_lpm(STOP_POWER_OFF);
+>  	imx6q_suspend_finish(0);
+>  
+> -- 
+> 2.30.2
+> 
