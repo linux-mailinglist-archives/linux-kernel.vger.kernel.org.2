@@ -2,166 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9F04150D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C504150D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237283AbhIVT7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 15:59:14 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:40855 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhIVT7L (ORCPT
+        id S237192AbhIVT7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 15:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230384AbhIVT7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 15:59:11 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MQeIA-1mGZb33T8A-00Ni6h; Wed, 22 Sep 2021 21:57:39 +0200
-Received: by mail-wr1-f45.google.com with SMTP id q11so10280436wrr.9;
-        Wed, 22 Sep 2021 12:57:39 -0700 (PDT)
-X-Gm-Message-State: AOAM531Y9aCt+iljtF5koULIBOWD6fCTweUghWfw1tHxu19nfhUOPuuM
-        rrDL5y5LigSlvYvy0XqXFmGhU6UCFS1p1T3UDew=
-X-Google-Smtp-Source: ABdhPJwgGZ9USpTQcbjF1tGcTxsBwqBG1jppN6hfyIkZHEanRUZjCnfn1k1S8QsRU2t3uS2PlP2EINDKZA9arVayJqE=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr780247wro.411.1632340659471;
- Wed, 22 Sep 2021 12:57:39 -0700 (PDT)
+        Wed, 22 Sep 2021 15:59:52 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46B6C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:58:21 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id eg28so14570780edb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 12:58:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r9tn2XqkVDCc0LmLHPQVQ22W8Z0S8fgFGrJaQw+LTrg=;
+        b=YPqYaNllBuBpVhxOsD/1DjT3Dw7a6R1Cvgsp8SRxwiAVlSrNsYW5DwxxXBjLkHKa/F
+         DQMAalVQsbcaY0Q6F6vWue6+MUvzqpzbv40FdUkUvjZMuJrD7HNUUVElpwuTTub46fLM
+         ox5b2goZKY4ZMoNuzdp8rZOj+EAN81FxgHPCGnn0hrY9x1qFjzYDTdjBlkVLHjvWsruq
+         S44gAiwGoikk3Djc+6eIl8/tIUbmEA3/ZABH4E/aIw2nd9mjOGz7W1dF/dAAowcKGXPk
+         hMEWspXgrB4DSi5kEDbQnlnBQZmXYRzbcImVYdv4tIjykG0wBq+6EWvtMvvdITi9VdOB
+         Rnhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r9tn2XqkVDCc0LmLHPQVQ22W8Z0S8fgFGrJaQw+LTrg=;
+        b=z5aBaqRT36xhWEF5pwkM45wxZ7Eo8UKNwIr7AUzpj4GQok5nBfaXTVeAVoN8rZ3/0R
+         rni671h/XYwvAylWpV0CMWQhdY8spW2r8NFSVkRUfk6yv+AcvETbn0Q0fHENCFRz1Oym
+         bOfNQHG8LR321qcB+DNvP79PORomAWxUgf9tZ0jUe6RzBq4AdrS1ZhwtAeWnYJCIhQiH
+         +EuLt1U7TSJDYUYmGSU1y5XeQai6IIBXs+FGN/UfwCHw+t4fpKPZkfoeB7i4c9VfKM/u
+         o1SEH6tFKpUremS4YAkL/WH4V3Ym84z8we0tbUT+1OxATLlKG3RWed/R+Ak7h3jRJ1sS
+         AoYg==
+X-Gm-Message-State: AOAM530qsmlQuJ8m/GNLEqYW2KpuF9nl+04Wk89NM3eilhH8tRfAXq4l
+        44sra9XeyZ+A65kdpuOqhhWtcYR0TBWdN99+lkQ=
+X-Google-Smtp-Source: ABdhPJw6CdlXaI9gWMZaGrg6AAs3Rv82/sncd7Qr8bFMQG/IN39fQBrXlR0bQtAjUZTOapsq4jfAAdu96aFFDMzvkz0=
+X-Received: by 2002:a05:6402:16d2:: with SMTP id r18mr1235107edx.363.1632340700277;
+ Wed, 22 Sep 2021 12:58:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
- <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com>
- <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
- <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com> <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
-In-Reply-To: <CAMhs-H-OCm1p6mTTV6s=vPx7FV8+1UMzx0X00wvXkW=5OgFQBQ@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 22 Sep 2021 21:57:23 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
-Message-ID: <CAK8P3a1iN76A5ahTTQ6rCS4LjKHz8grkNGHGehLJnd0xQSnHXA@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20210819054116.266126-1-shy828301@gmail.com> <20210819054116.266126-3-shy828301@gmail.com>
+ <YUuGB6pJZRlE4yPb@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <YUuGB6pJZRlE4yPb@agluck-desk2.amr.corp.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 22 Sep 2021 12:58:08 -0700
+Message-ID: <CAHbLzkoo_EDwh3=5tJVBy+b2ixnbAw7frdDB4haCZxKry18ZLQ@mail.gmail.com>
+Subject: Re: [v2 PATCH 3/3] mm: hwpoison: dump page for unhandlable page
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        tdmackey@twitter.com, David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Vmowgu0XWiJ4bAK8Io1z9vQonQ3WT9BpZHzLYActjCAmG7dhpOg
- 5aLXJq2etKcO2+UOZ8HjCDfi5t9QBfK67S4KHeELZjM/vf/7UrNs8GUMA+ZCKShQhDeUNAC
- hhAHGLbE0Oa5nYJyXcuvpnxGHOQ/a3C7XSyDborNrwRwp0cQaImVLPxNzqKc888xNGXRTGp
- yKEsUaJtmw7gnaM36cb7Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TfSwbDUQHuc=:2I1Fe8O0sZmCDYL90fPwe1
- QvBoE7xYGXVmj8KKCYB1FvgS0jY/WiVi9m1R+lBbZJ+lmLCHDlTFiMNwdQKEzSlxSGGMKcr5a
- F7wq3UsZNBFWSTSiBvAjbWwyp8rpffI3prhBSDv0Tjs1h5vtvZADmSuLpPJISYb+6p6gWjkex
- MVCPAMvvaOmXAD+gU1fvfICXSwa7FBxyG/XyRjUK7Wj9B198edOR/tPlRR/QDywsL9GEw1kv0
- pYApY1yA3MuElXMziS+XyAMw9iIXF/R69DC+0LYsTYVH/xkTw9Ce81TJuknrGCsvvwA9NcsPc
- JhH2Ao+XNoJErZGLrUasUwDFhc4fcvXthj/evWD06CiVCYWiI0yKzkTWydKX6oU4h4K46sfxA
- T360SgsAySzzO+aWj2Q8HBYByiHA6n/Kz63ey2a/+6EmdpyeJHO58kMVFxk70mbSPyP2WdLtF
- gea+6VP1Kw9ziBSMAVX/4xqqp9Fn5cPFCLm7bWIT43UfgUKv+HV8t0UJ6H3GZhEZT9jKrit8M
- T2EKMb6Xl20Xk0twV267MIUpcSnnmtlI1vMOCUUjFQhL2v267ksF4wbr1uKSMEVVxOe2m3V70
- hCLvSOcy3X/AzqJIaEbJ3lnwnFt5mFHQn002dy9t33qSPqKWPxYF21cGvSYQg+BsRkB9bDO68
- GblwCtdD7OedSwHNRcp7nS5rQvVEolgygOzw1Juh2Jm6YmU6+gW3yq0P0ceEok1FXVBxbeSOU
- iRH6CTBuz6aKphmEYp7kRw/IdisPjrrDEhU+Ag==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 8:40 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Wed, Sep 22, 2021 at 8:07 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Wed, Sep 22, 2021 at 7:42 PM Sergio Paracuellos
-> > Ok, thank you for the detailed explanation.
+On Wed, Sep 22, 2021 at 12:37 PM Luck, Tony <tony.luck@intel.com> wrote:
+>
+> On Wed, Aug 18, 2021 at 10:41:16PM -0700, Yang Shi wrote:
+> > Currently just very simple message is shown for unhandlable page, e.g.
+> > non-LRU page, like:
+> > soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 ()
 > >
-> > I suppose you can use the generic infrastructure in asm-generic/io.h
-> > if you "#define PCI_IOBASE mips_io_port_base". In this case, you
-> > should have an architecture specific implementation of
-> > pci_remap_iospace() that assigns mips_io_port_base.
+> > It is not very helpful for further debug, calling dump_page() could show
+> > more useful information.
 >
-> No, that is what I tried originally defining PCI_IOBASE as
-> _AC(0xa0000000, UL) [0] which is the same as KSEG1 [1] that ends in
-> 'mips_io_port_base'.
+> Looks like your code already caught something. An error injection
+> test may have injected into a shared library. Though I'm not sure that
+> the refcount/mapcount in the dump agrees with that diagnosis from the
+> author of this test.
 
-Defining it as KSEG1 would be problematic because that means that
-the Linux-visible port numbers are offset from the bus-visible ones.
+The messages from dump_page() are (unwind them from mce logs):
 
-You really want PCI_IOBASE to point to the address of port 0.
+[ 4817.630520] page:000000003ab9dca4 refcount:1 mapcount:0
+mapping:0000000000000000 index:0x0 pfn:0xcef2747
+[ 4817.646860] flags:
+0x57ffffc0801000(reserved|hwpoison|node=1|zone=2|lastcpupid=0x1fffff)
+[ 4818.033689] raw: 0057ffffc0801000 ffd400033bc9d1c8 ffd400033bc9d1c8
+0000000000000000
+[ 4818.280640] raw: 0000000000000000 0000000000000000 00000001ffffffff
+0000000000000000
 
-> > pci_remap_iospace() was originally meant as an architecture
-> > specific helper, but it moved into generic code after all architectures
-> > had the same requirements. If MIPS has different requirements,
-> > then it should not be shared.
+The page flags tell it is a "reserved" page and mapping is NULL. It
+doesn't seem like a user page or movable page, so hwpoision can't
+handle it so that the messages are dumped.
+
 >
-> I see. So, if it can not be shared, would defining 'pci_remap_iospace'
-> as 'weak' acceptable? Doing in this way I guess I can redefine the
-> symbol for mips to have the same I currently have but without the
-> ifdef in the core APIs...
-
-I would hope to kill off the __weak functions, and prefer using an #ifdef
-around the generic implementation. One way to do it is to define
-a macro with the same name, such as
-
-#define pci_remap_iospace pci_remap_iospace
-
-and then use #ifdef around the C function to see if that's arleady defined.
-
-> >
-> > I don't yet understand how you deal with having multiple PCIe
-> > host bridge devices if they have distinct I/O port ranges.
-> > Without remapping to dynamic virtual addresses, does
-> > that mean that every MMIO register between the first and
-> > last PCIe bridge also shows up in /dev/ioport? Or do you
-> > only support port I/O on the first PCIe host bridge?
+> Here's what appeared on the console:
 >
-> For example, this board is using all available three pci ports [2] and I get:
+> [ 4817.622254] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4817.630520] page:000000003ab9dca4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xcef2747
+> [ 4817.638651] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4817.646860] flags: 0x57ffffc0801000(reserved|hwpoison|node=1|zone=2|lastcpupid=0x1fffff)
+> [ 4818.025515] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4818.033689] raw: 0057ffffc0801000 ffd400033bc9d1c8 ffd400033bc9d1c8 0000000000000000
+> [ 4818.272435] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4818.280640] raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+> [ 4818.280658] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4818.313606] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4818.321804] page dumped because: hwpoison: unhandlable page
+> [ 4818.564802] mce: Uncorrected hardware memory error in user-access at cef2747000
+> [ 4818.573043] Memory failure: 0xcef2747: recovery action for unknown page: Ignored
+> [ 4818.595837] Memory failure: 0xcef2747: already hardware poisoned
+> [ 4818.603245] Memory failure: 0xcef2747: Sending SIGBUS to multichase:67460 due to hardware memory corruption
+> [ 4818.614297] Memory failure: 0xcef2747: already hardware poisoned
 >
-> root@gnubee:~# cat /proc/ioports
-> 1e160000-1e16ffff : pcie@1e140000
->   1e160000-1e160fff : PCI Bus 0000:01
->     1e160000-1e16000f : 0000:01:00.0
->       1e160000-1e16000f : ahci
->     1e160010-1e160017 : 0000:01:00.0
->       1e160010-1e160017 : ahci
->     1e160018-1e16001f : 0000:01:00.0
->       1e160018-1e16001f : ahci
->     1e160020-1e160023 : 0000:01:00.0
->       1e160020-1e160023 : ahci
->     1e160024-1e160027 : 0000:01:00.0
->       1e160024-1e160027 : ahci
->   1e161000-1e161fff : PCI Bus 0000:02
->     1e161000-1e16100f : 0000:02:00.0
->       1e161000-1e16100f : ahci
->     1e161010-1e161017 : 0000:02:00.0
->       1e161010-1e161017 : ahci
->     1e161018-1e16101f : 0000:02:00.0
->       1e161018-1e16101f : ahci
->     1e161020-1e161023 : 0000:02:00.0
->       1e161020-1e161023 : ahci
->     1e161024-1e161027 : 0000:02:00.0
->       1e161024-1e161027 : ahci
->   1e162000-1e162fff : PCI Bus 0000:03
->     1e162000-1e16200f : 0000:03:00.0
->       1e162000-1e16200f : ahci
->     1e162010-1e162017 : 0000:03:00.0
->       1e162010-1e162017 : ahci
->     1e162018-1e16201f : 0000:03:00.0
->       1e162018-1e16201f : ahci
->     1e162020-1e162023 : 0000:03:00.0
->       1e162020-1e162023 : ahci
->     1e162024-1e162027 : 0000:03:00.0
->       1e162024-1e162027 : ahci
-
-Ah ok, so there are I/O ports that are at least
-visible (may or may not be accessed by the driver).
-
-I only see one host bridge here though, and it has a single
-I/O port range, so maybe all three ports are inside of
-a single PCI domain?
-
-Having high numbers for the I/O ports is definitely a
-problem as I mentioned. Anything that tries to access
-PC-style legacy devices on the low port numbers
-will now directly go on the bus accessing MMIO
-registers that it shouldn't, either causing a CPU exception
-or (worse) undefined behavior from random register
-accesses.
-
-       Arnd
+> -Tony
