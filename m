@@ -2,216 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF09414FA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72E7414FA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhIVSOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+        id S237018AbhIVSQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236943AbhIVSOV (ORCPT
+        with ESMTP id S236988AbhIVSQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:14:21 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E102C061574;
-        Wed, 22 Sep 2021 11:12:50 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id y28so15306927lfb.0;
-        Wed, 22 Sep 2021 11:12:49 -0700 (PDT)
+        Wed, 22 Sep 2021 14:16:40 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32F2C061757
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:15:10 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id s20so4646455ioa.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 11:15:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=okAjIGLjrgqxq64pmQoOBCNH489YYnDxMve8Hgv5WkA=;
-        b=crHPOrCuizBy5akbvOdzBt9y0DIz1mKFtYHHZtqliBi7SijmyDEdlWEVduxJFgAmud
-         3gjsHwjXTxPsEk/1VMDHXeya1qTAxfKL0PLhbb+kf9vZsur0nucFmTn0+4pV/iNOzkpI
-         TEK7T5UB8uydOeSV3QRAiiB08tCV3B62CLsUc90VRlla7wTSTTAdBloseobfZRCdIiRS
-         IEV7pZ3DyafTmVYuF9PDE7iGrnn92853zGfWgABy9NmeaWQwU/h147kw6ELB522cud8b
-         IAfJ5XKIX54O2PIDk7eEcKooMN9KQKPLTtxyTdC/AeI4ZvDaA3B7v+12sgoYPUUu3r8Q
-         W7Sg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZQV4XJx/DFSXSOOyfOEMFYhipz4Fl6dlEeGzliw9JTY=;
+        b=bvxZ6G1NA+MLuCa5cGubm24q50H3hoy0Bog3f5krwJUlAuv9vo2dthuljO8qqFfBV5
+         ghKmtYxnqBFZiZPrqZl6ejmknepVPS99/2BLn/IEQJD3BXTsy/TtRAUNUDwysKTFMHwu
+         d7BeHvj0WRfPQ0RsHMF/DF05SdFJ/9EyGoy/4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=okAjIGLjrgqxq64pmQoOBCNH489YYnDxMve8Hgv5WkA=;
-        b=3F9NdO6DAC+LfQX0X5leNubyjhL69zXfGRGKXFVhWZIL6Nz4tEPgj/df/APBvg7IzW
-         +SnuLDlafeQmF79XHQ0Ec4Vf5n0aRvjirPJrJORue6oYg4bTq2EMwwwoSkr3GtS1DQGL
-         uYWwF26jNnjRqz6q6CXiLqJqwKt35mE9UF9o/KlTVAiL4RRGS8symXBd2oOSN9MI8dHM
-         BsRmTet419dzK+CINaD8uT5atwWL1Nc7pnhPNmDP5fqkM06Ta7H9C/5HU5enA77JSXwF
-         TED9A2GYLx7+gyGSUxmnKg5dQI1pY2O83+zzUQ1IBF8m2SKh5TKEQzg/S9PlCUZnHNpu
-         d58A==
-X-Gm-Message-State: AOAM531PW0EtMOd4o4yKTNp/maoBboCeUdOK4u39RKn/wvBM+EPVCHum
-        AFnrZk0HPxrAIBMlb4LYpgE=
-X-Google-Smtp-Source: ABdhPJyYPhjMRfAArfiWxEVEbH5e9MyX7K4drThW40rxD+7J/n8TTqB43BQlbu/mcXiniBg9gMM09g==
-X-Received: by 2002:a2e:4c09:: with SMTP id z9mr699303lja.390.1632334366688;
-        Wed, 22 Sep 2021 11:12:46 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id b22sm233682lfi.67.2021.09.22.11.12.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 11:12:46 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 21:12:44 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/5] fs/ntfs3: Move ni_lock_dir and ni_unlock into
- ntfs_create_inode
-Message-ID: <20210922181244.tjxij5gi6xft4wwh@kari-VirtualBox>
-References: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
- <a269be2f-4ab6-b1c6-790c-9d3052bf22cc@paragon-software.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZQV4XJx/DFSXSOOyfOEMFYhipz4Fl6dlEeGzliw9JTY=;
+        b=uokNwZhNJLXDQ+4DMLpBSYZsmdWiayHHt2jtQRtZuhJnOkutAq9zmGTORDgdG5LSGd
+         HL8Ky7hViaaT1/a/qMR+ELH8YFEXbFp24ScAKKVXaJe6XShVzC+FdT+cVJIHO0KXJ1as
+         i/K7w5PEd+dDW02XqhvC68NfYnxdwneuZH30ZEwTzr6wCTnzLHWm1Chd4Hx3IsPvXwL6
+         b17QI8BFlSG5CJAOx9a+ESq1adueSOWBX8EV/JcqqgZO+pn1d1TvaJWWxXPhjKaQlGDT
+         d/lEFhSITeqcTmXx/yw773cSMTENzL0C92Tn+h5U2jqHNI8VotVrdICy8fwqcft6LMrl
+         x+9g==
+X-Gm-Message-State: AOAM53037FUqsKkR8VjpP8RLBIipaRSjc22EFyJWJLbgQuFs82c9Z16m
+        RT2LbrYQhLaXZ2RZcCZmmxn4sDDsmZbuVg==
+X-Google-Smtp-Source: ABdhPJzpGFKPcvQ1dQiq6NQIIOHRYCS0MNJZnb/XlexqCV8ZWYYGunxpKKLw9XZAalIae/yWYmYlbw==
+X-Received: by 2002:a5d:8d06:: with SMTP id p6mr295578ioj.7.1632334509796;
+        Wed, 22 Sep 2021 11:15:09 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id b3sm1369122ile.37.2021.09.22.11.15.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Sep 2021 11:15:09 -0700 (PDT)
+Subject: Re: INFO: task hung in hub_port_init
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Hao Sun <sunhao.th@gmail.com>, Shuah Khan <shuah@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+        a.darwish@linutronix.de, johan@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        oneukum@suse.com, Shuah Khan <skhan@linuxfoundation.org>
+References: <CACkBjsYQxQxGQwb3YS4obVWH3EODzqky5=nM3ADP7+13hBYgAA@mail.gmail.com>
+ <20210913135459.GA120302@rowland.harvard.edu>
+ <CACkBjsZcg0B=tF8cr54VqaJMVURD9R463epZqRQfesnoY=+L8g@mail.gmail.com>
+ <20210918020245.GA69263@rowland.harvard.edu>
+ <CACkBjsZPjO96NzLjKR2N7bYzBJRN6sPuaDpK6cvmGqKTd=Byow@mail.gmail.com>
+ <20210918135301.GA79656@rowland.harvard.edu>
+ <2d776f5b-c6b5-1c05-de37-493fc10a97af@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <4a59e9e7-4501-4328-f985-0a82593af282@linuxfoundation.org>
+Date:   Wed, 22 Sep 2021 12:15:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a269be2f-4ab6-b1c6-790c-9d3052bf22cc@paragon-software.com>
+In-Reply-To: <2d776f5b-c6b5-1c05-de37-493fc10a97af@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 07:17:13PM +0300, Konstantin Komarov wrote:
-> Now ntfs3 locks mutex for smaller time.
+Hi Hao Sun,
 
-Really like this change. It was my todo list also. Thanks. Still some
-comments below.
+On 9/20/21 8:31 AM, Shuah Khan wrote:
+> On 9/18/21 7:53 AM, Alan Stern wrote:
+>> On Sat, Sep 18, 2021 at 10:17:26AM +0800, Hao Sun wrote:
+>>> Alan Stern <stern@rowland.harvard.edu> 于2021年9月18日周六 上午10:02写道：
+>>>>
+>>>> On Sat, Sep 18, 2021 at 09:56:52AM +0800, Hao Sun wrote:
+>>>>> Hi Alan,
+>>>>>
+>>>>> Alan Stern <stern@rowland.harvard.edu> 于2021年9月13日周一 下午9:55写道：
+>>>>>>
+>>>>>> On Mon, Sep 13, 2021 at 11:13:15AM +0800, Hao Sun wrote:
+>>>>>>> Hello,
+>>>>>>>
+>>>>>>> When using Healer to fuzz the Linux kernel, the following crash was triggered.
+>>>>>>>
+>>>>>>> HEAD commit: ac08b1c68d1b Merge tag 'pci-v5.15-changes'
+>>>>>>> git tree: upstream
+>>>>>>> console output:
+>>>>>>> https://drive.google.com/file/d/1ZeDIMe-DoY3fB32j2p5ifgpq-Lc5N74I/view?usp=sharing
+>>>>>>> kernel config: https://drive.google.com/file/d/1qrJUXD8ZIeAkg-xojzDpp04v9MtQ8RR6/view?usp=sharing
+>>>>>>> Syzlang reproducer:
+>>>>>>> https://drive.google.com/file/d/1tZe8VmXfxoPqlNpzpGOd-e5WCSWgbkxB/view?usp=sharing
+>>>>>>> Similar report:
+>>>>>>> https://groups.google.com/g/syzkaller-bugs/c/zX55CUzjBOY/m/uf91r0XqAgAJ
+>>>>>>>
+>>>>>>> Sorry, I don't have a C reproducer for this crash but have a Syzlang
+>>>>>>> reproducer. Also, hope the symbolized report can help.
+>>>>>>> Here are the instructions on how to execute Syzlang prog:
+>>>>>>> https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller_programs.md
+>>>>>>>
+>>>>>>> If you fix this issue, please add the following tag to the commit:
+>>>>>>> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>>>>>>
+>>>>>> There's not much hope of finding the cause of a problem like this
+>>>>>> without seeing the kernel log.
+>>>>>>
+>>>>>
+>>>>> Healer found another Syzlang prog to reproduce this task hang:
+>>>>> https://paste.ubuntu.com/p/HCNYbKJYtx/
+>>>>>
+>>>>> Also here is a very simple script to execute the reproducer:
+>>>>> https://paste.ubuntu.com/p/ZTGmvFSP6d/
+>>>>>
+>>>>> The `syz-execprog` and `syz-executor` are needed, so please build
+>>>>> Syzkaller first before running the script.
+>>>>> Hope this can help to find the root cause of the problem.
+>>>>
+>>>> I don't have time to install and figure out how to use Healer and
+>>>> Syzkaller.  But if you run the reproducer and post the kernel log,
+>>>> I'll take a look at it.
+>>>>
+>>>
+>>> Just executed the reproducer, here is the full log:
+>>> https://paste.ubuntu.com/p/x43SqQy8PX/
+>>
+>> The log indicates that the problem is related to the vhci-hcd driver
+>> somehow.  I don't know why those "Module has invalid ELF structures"
+>> errors keep appearing, starting in line 1946 of the log.
+>>
 
-> 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> ---
->  fs/ntfs3/inode.c | 17 ++++++++++++++---
->  fs/ntfs3/namei.c | 20 --------------------
->  2 files changed, 14 insertions(+), 23 deletions(-)
-> 
-> diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-> index d583b71bec50..6fc99eebd1c1 100644
-> --- a/fs/ntfs3/inode.c
-> +++ b/fs/ntfs3/inode.c
-> @@ -1198,9 +1198,13 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
->  	struct REPARSE_DATA_BUFFER *rp = NULL;
->  	bool rp_inserted = false;
->  
-> +	ni_lock_dir(dir_ni);
-> +
->  	dir_root = indx_get_root(&dir_ni->dir, dir_ni, NULL, NULL);
-> -	if (!dir_root)
-> -		return ERR_PTR(-EINVAL);
-> +	if (!dir_root) {
-> +		err = -EINVAL;
-> +		goto out1;
-> +	}
->  
->  	if (S_ISDIR(mode)) {
->  		/* Use parent's directory attributes. */
-> @@ -1549,6 +1553,9 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
->  	if (err)
->  		goto out6;
->  
-> +	/* Unlock parent directory before ntfs_init_acl. */
-> +	ni_unlock(dir_ni);
+Can you send me your config? This message is rather odd.
 
-There is err path which can go to err6 (line 1585). Then we get double
-unlock situation.
+[   82.249631][ T6679] Module has invalid ELF structures
 
-> +
->  	inode->i_generation = le16_to_cpu(rec->seq);
->  
->  	dir->i_mtime = dir->i_ctime = inode->i_atime;
-> @@ -1605,8 +1612,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
->  out7:
->  
->  	/* Undo 'indx_insert_entry'. */
-> +	ni_lock_dir(dir_ni);
->  	indx_delete_entry(&dir_ni->dir, dir_ni, new_de + 1,
->  			  le16_to_cpu(new_de->key_size), sbi);
-> +	/* ni_unlock(dir_ni); will be called later. */
->  out6:
->  	if (rp_inserted)
->  		ntfs_remove_reparse(sbi, IO_REPARSE_TAG_SYMLINK, &new_de->ref);
-> @@ -1630,8 +1639,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
->  	kfree(rp);
->  
->  out1:
-> -	if (err)
-> +	if (err) {
-> +		ni_unlock(dir_ni);
+It is right below:
+[   82.248529][ T6679] vhci_hcd vhci_hcd.0: Device attached
 
-This will be double unlock if we exit with err path out6.
+or
 
-  Argillander
+[   83.860819][ T6710] vhci_hcd vhci_hcd.0: port 0 already used
 
->  		return ERR_PTR(err);
-> +	}
->  
->  	unlock_new_inode(inode);
->  
-> diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-> index 1c475da4e19d..bc741213ad84 100644
-> --- a/fs/ntfs3/namei.c
-> +++ b/fs/ntfs3/namei.c
-> @@ -95,16 +95,11 @@ static struct dentry *ntfs_lookup(struct inode *dir, struct dentry *dentry,
->  static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
->  		       struct dentry *dentry, umode_t mode, bool excl)
->  {
-> -	struct ntfs_inode *ni = ntfs_i(dir);
->  	struct inode *inode;
->  
-> -	ni_lock_dir(ni);
-> -
->  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFREG | mode,
->  				  0, NULL, 0, NULL);
->  
-> -	ni_unlock(ni);
-> -
->  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
->  }
->  
-> @@ -116,16 +111,11 @@ static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
->  static int ntfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
->  		      struct dentry *dentry, umode_t mode, dev_t rdev)
->  {
-> -	struct ntfs_inode *ni = ntfs_i(dir);
->  	struct inode *inode;
->  
-> -	ni_lock_dir(ni);
-> -
->  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, mode, rdev,
->  				  NULL, 0, NULL);
->  
-> -	ni_unlock(ni);
-> -
->  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
->  }
->  
-> @@ -196,15 +186,10 @@ static int ntfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
->  {
->  	u32 size = strlen(symname);
->  	struct inode *inode;
-> -	struct ntfs_inode *ni = ntfs_i(dir);
-> -
-> -	ni_lock_dir(ni);
->  
->  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFLNK | 0777,
->  				  0, symname, size, NULL);
->  
-> -	ni_unlock(ni);
-> -
->  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
->  }
->  
-> @@ -215,15 +200,10 @@ static int ntfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
->  		      struct dentry *dentry, umode_t mode)
->  {
->  	struct inode *inode;
-> -	struct ntfs_inode *ni = ntfs_i(dir);
-> -
-> -	ni_lock_dir(ni);
->  
->  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFDIR | mode,
->  				  0, NULL, 0, NULL);
->  
-> -	ni_unlock(ni);
-> -
->  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
->  }
->  
-> -- 
-> 2.33.0
-> 
-> 
+My guess is this isn't the vhci_hcd module that gets loaded at this
+point when we see this message, but another module that gets loaded
+when vhci_hcd initiates probe after device attach. Note that vhci_hcd
+is loaded earlier.
+
+It is possible, the hung task might be related to load_module()
+failure. Unfortunately load_module() doesn't print elf_validity_check()
+error.
+
+Would you be able to add this patch and run the reproducer again?
+
+
+--------------------------------------------------------------------
+diff --git a/kernel/module.c b/kernel/module.c
+index 40ec9a030eec..02f758b04f05 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3941,7 +3941,8 @@ static int load_module(struct load_info *info, const char __user *uargs,
+          */
+         err = elf_validity_check(info);
+         if (err) {
+-               pr_err("Module has invalid ELF structures\n");
++               pr_err("Module has invalid ELF structures error (%ld)\n",
++                       err);
+                 goto free_copy;
+         }
+
+--------------------------------------------------------------------
+
+thanks,
+-- Shuah
+
