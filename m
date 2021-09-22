@@ -2,239 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E3441415E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FD041415F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 07:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhIVFzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 01:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
+        id S232426AbhIVFzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 01:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbhIVFzJ (ORCPT
+        with ESMTP id S232398AbhIVFzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 01:55:09 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183BAC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:53:40 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id bx4so5482698edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:53:40 -0700 (PDT)
+        Wed, 22 Sep 2021 01:55:17 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6C8C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:53:47 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 17so1542476pgp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Sep 2021 22:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Y/nCOhN8AZjYpM2uGvc8B5Khq82DwNNrPlQBsEzJzFY=;
-        b=PeKgN4831mVJIXwE3He5AswTg4qyZcTnnwHLqv+PYunrZRJgnJBX1A5tNi6JJzQozb
-         cif7d8djlZPD98KD7PXiD5zbVlWLmxPC67D6PB8wKrRlyksWO44IAPh10kC3DB5py1As
-         zEywYCw0De64eNo08OtYWWICcslIUFgRmOO3SBPBdR+9o8LhntnZaIdnAJooJf8M3IQ5
-         yMFGvh8/s6NicfZ/O7pvZJV/QX4v58zLos3hAcXJ9BHEc5Ry+YDghDLYjUFplWxgCwxc
-         zq96h28mwMGZnC8mYdLnFdqIU52f0kT5dvnOYClQuXfIRaHq5orxg4bvxIVC7yuva4Uz
-         rd6A==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=U6KVi1cZOA3tVJVuR4dHF2fGXFULYok1hSIcSWvXcEs=;
+        b=q1AvDwzuIpcrPBYGBvBpwRkws3Hv7Xa2VpfVLpO23tW5dXLPZGLWwvNyZUBeewKkEF
+         xgBQUElKnUgG654Yc4sBhOrISTsDkyOZYMMNA/H+k7DWMkHmg4lVsXDVw8j3gt4kitiQ
+         oTJss3GmCPvmLvSg9lf+SDmN4Z2p7sZrEJ0Y3KnytTvGwVL0i0pMz+1NrQAriUpgwSm6
+         7NINTo7Vju8MeO3Xc17zCWLIdcCLrlGFGfAvFySa50lSiOcW4cMgd5NxOmqZwm6hYinr
+         BUAobm8hTwZfj7VdwCy81i5m4RvyN59MIzAXhXQ/g1HJw1g+i4VW9c63e/3baxiENb20
+         /PuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Y/nCOhN8AZjYpM2uGvc8B5Khq82DwNNrPlQBsEzJzFY=;
-        b=JW+Gl45xFF4D1e8EZjxvUjCoGpunDa1dnPkE2fqr8sN5rz/lgOKKUxsrjht/miLZfh
-         XXEXmqxsSwg8269RxfyQ8+oBqbgZdm1hvfILZ6hQa4N+6HmQ16Bp+1MXS0rmTADv/pGg
-         RPBsFKa6j3MzLisSikYhBlfFTWxX+2X4/I/uHZOIjDo3dKnEdZKA+r0DUPLeBhOoROyY
-         aoxwVireEwwGzkCa92uF5518cQWE0Z0YxdnzjVFwKvtik/d6huY85oqsneTgyOCsNUSo
-         sQra+GrbImOZMqYkzpbQejstRRA5YRFb6CAHTtjTnMYRZEtFzXmOYNit5/yhSNawcqPg
-         8UkQ==
-X-Gm-Message-State: AOAM5329DPeCPa4yDda8zaOZbncd9JX7eX6CBMZAvS2pCSPz2CqCrcpJ
-        o3GAqoQcpipkB4sc8quNsNa5ZzCLDk+ctNnOkdvqsQ==
-X-Google-Smtp-Source: ABdhPJxXDbclNfZmtzFC4b2AL0bdzwETCGmrVAIVZlEvnC8qF8ZXJYtnnU+PzbNdbOEjiq3ccmeeDGxhYQGVykximG0=
-X-Received: by 2002:a17:907:6004:: with SMTP id fs4mr872899ejc.567.1632290018492;
- Tue, 21 Sep 2021 22:53:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=U6KVi1cZOA3tVJVuR4dHF2fGXFULYok1hSIcSWvXcEs=;
+        b=Qxe4PlpByiddgCw2bHBOpMwlp6F1peKGVyrHK5JAzlplOBmvIbkfTFZQxMDq0Zq+Jn
+         gjW6UkJsHIC7z/PgQ12tY3djo8VvNKvVWKASpXe0ewQNB94114ZdGSFTZvLe4sov89N7
+         hINk+BIqi49wsPXBQTiPS81Dag+lfoDHBOE/sQNxXxEmKhKdykwpyAY6drBPGWhQJEG2
+         nJBBMgEeNUMZ5cBM60Xbg30T6xh540uZH0ByxMISvoVihMO6LVcABTVG8biBp7E+Cj6s
+         0EPeOModJwEiCVlQy7L8C8lUN+Fpwp2JgwNTPDeN6IZhXhJxxnc3Q1J4laQYfC+gB4j2
+         Y45w==
+X-Gm-Message-State: AOAM531JK5H5KrS9V/I/MjVsO9IX0d8QWbW/ZfU1bO03WKBcw26DujH0
+        K7F9wlheL6Z1KInNpfTFamk=
+X-Google-Smtp-Source: ABdhPJxkCPEwR+pM7apHrMCAovASIHlrsmG2b3QpsqrMiOYU7BqRuuRBZfq67/CB8rvJbUaqmMnoBQ==
+X-Received: by 2002:a63:df05:: with SMTP id u5mr30825449pgg.323.1632290027122;
+        Tue, 21 Sep 2021 22:53:47 -0700 (PDT)
+Received: from [192.168.30.21] ([173.248.225.217])
+        by smtp.gmail.com with ESMTPSA id q1sm896036pjq.5.2021.09.21.22.53.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Sep 2021 22:53:46 -0700 (PDT)
+Subject: Re: [PATCH 1/1] mm/migrate: de-duplicate migrate_reason strings
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     akpm@linux-foundation.org, almasrymina@google.com,
+        dave.hansen@linux.intel.com, khandual@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        minchan@kernel.org, osalvador@suse.de, pasha.tatashin@soleen.com,
+        weixugc@google.com, willy@infradead.org,
+        yang.shi@linux.alibaba.com, ying.huang@intel.com, ziy@nvidia.com
+References: <20210922041755.141817-1-jhubbard@nvidia.com>
+ <20210922041755.141817-2-jhubbard@nvidia.com>
+From:   Weizhao Ouyang <o451686892@gmail.com>
+Message-ID: <90e7cefd-5ca0-f284-8c96-743e0f5ef8f4@gmail.com>
+Date:   Wed, 22 Sep 2021 13:53:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210921124904.823196756@linuxfoundation.org>
-In-Reply-To: <20210921124904.823196756@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 22 Sep 2021 11:23:27 +0530
-Message-ID: <CA+G9fYvS1k+zO4CH3n0xyafU_mpi8JepVGrGjzt70TrSgnoEmQ@mail.gmail.com>
-Subject: Re: [PATCH 4.14 000/216] 4.14.247-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210922041755.141817-2-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Sept 2021 at 18:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+
+On 2021/9/22 12:17, John Hubbard wrote:
+> In order to remove the need to manually keep three different files in
+> synch, provide a common definition of the mapping between enum
+> migrate_reason, and the associated strings for each enum item.
 >
-> This is the start of the stable review cycle for the 4.14.247 release.
-> There are 216 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> 1. Use the tracing system's mapping of enums to strings, by redefining
+> and reusing the MIGRATE_REASON and supporting macros, and using that to
+> populate the string array in mm/debug.c.
 >
-> Responses should be made by Thu, 23 Sep 2021 12:48:34 +0000.
-> Anything received after that time might be too late.
+> 2. Move enum migrate_reason to migrate_mode.h. This is not strictly
+> necessary for this patch, but migrate mode and migrate reason go
+> together, so this will slightly clarify things.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.247-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> Cc: Weizhao Ouyang <o451686892@gmail.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  include/linux/migrate.h      | 19 +------------------
+>  include/linux/migrate_mode.h | 13 +++++++++++++
+>  mm/debug.c                   | 20 +++++++++++---------
+>  3 files changed, 25 insertions(+), 27 deletions(-)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+LGTM.
+And, maybe rename the migrate_mode.h?
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reviewed-by: Weizhao Ouyang <o451686892@gmail.com>
 
-## Build
-* kernel: 4.14.247-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.14.y
-* git commit: 21da330aa6db14f0db6c57090f438542d6ff023f
-* git describe: v4.14.246-217-g21da330aa6db
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.246-217-g21da330aa6db
-
-## No regressions (compared to v4.14.246-218-g7c9c2ff5fef0)
-
-## No fixes (compared to v4.14.246-218-g7c9c2ff5fef0)
-
-## Test result summary
-total: 64153, pass: 50362, fail: 654, skip: 11213, xfail: 1924
-
-## Build Summary
-* arm: 129 total, 129 passed, 0 failed
-* arm64: 34 total, 34 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 18 total, 18 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 18 total, 18 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Weizhao
