@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259BF4150DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 21:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638214150E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237328AbhIVUBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:01:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237330AbhIVUBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:01:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F2C611C4;
-        Wed, 22 Sep 2021 19:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632340778;
-        bh=Eh2FuMEpUKm0E5dWN1BAfSCOnndQsAw1GzXJgxqOJXY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=vLqAo//7RpyDObnSx5dS7v6aR8G7rg8UqkfYdX7J2kzTGwGTtK0fcfCGV/3nmbAUs
-         x7AJ4vdO9GOnwEtU3Qx1ED6hO10QBq/ikWthg2F5XAHpgZs9mIYynWQzFxAIPjcMia
-         mFgQDNTARFupG0JUtEgoY/ytojgtaAtlwaZdYFkfeqtrNBlA7hFcTJf11Sdgo87lM/
-         KSefMNYtcS6JAZdt2pA60A0KBSyImJnS90QEMA+RE17YACpHmhdx568+JkvHq2nat9
-         9gatIhHVehXSm/9Zbx7IyEcn5pg+mN06vqTuN5REeEEhTYAI/58c9YUR2JQzwBiECt
-         Iu+OmkZaOMP4Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6BC325C0A54; Wed, 22 Sep 2021 12:59:38 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 12:59:38 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     gor@linux.ibm.com, jpoimboe@redhat.com, jikos@kernel.org,
-        mbenes@suse.cz, pmladek@suse.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, joe.lawrence@redhat.com,
-        fweisbec@gmail.com, tglx@linutronix.de, hca@linux.ibm.com,
-        svens@linux.ibm.com, sumanthk@linux.ibm.com,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC][PATCH 6/7] context_tracking: Provide SMP ordering using RCU
-Message-ID: <20210922195938.GD880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210922110506.703075504@infradead.org>
- <20210922110836.244770922@infradead.org>
- <20210922151721.GZ880162@paulmck-ThinkPad-P17-Gen-1>
- <YUuFF8+H2PE9m4wy@hirez.programming.kicks-ass.net>
- <YUuIb12XCQlBfIQW@hirez.programming.kicks-ass.net>
+        id S237313AbhIVUCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:02:09 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:44929 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237233AbhIVUCE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 16:02:04 -0400
+Received: by mail-ot1-f54.google.com with SMTP id h9-20020a9d2f09000000b005453f95356cso5152618otb.11;
+        Wed, 22 Sep 2021 13:00:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EwBtizBwYUS7ds9KbiJKHwz7O9MWVtZfiCvZdAqS+uk=;
+        b=VuXzDACnevhmDPBQoI/TwhhctMErwb4fzPn8zlCOG6RIyi2LclTnaN9t5mytvgr5ED
+         kgxdJ6PCqyUJaivZskuGUhZz56+4ZjJuverAjCM6qplRO4ZdCttDEBJZdhmPBPhfB2oK
+         2tsHB8cX8HzdyhlURUoSye7whBKahSctd0o3Gk4eAhcPIwTSBydSg1dY4VNzyFEPQL+K
+         CDG3/QZkAg/ZK6v1wtvH/Zi41mBWp6yrhqAUlO3p5B8geTyPoZBu/ADsbgj4z1NKgeC8
+         4A00HK8WaKA0keyPOOWjxb+bkHA4EJwbO8T5r4bVRhbaf9aBvES9dVsP9XBBSabIj/z/
+         Si1g==
+X-Gm-Message-State: AOAM531bFa+hc8d2zUXvo4gGH4IzbPuf5Jn5NcQlblpkfG6ouAQG0x5i
+        0CSjto8LTz6ULQKYHUyLLA==
+X-Google-Smtp-Source: ABdhPJzUAr6u0Xn03mzSpKdylE62vYd8oWZvINoGA3ySF7D2xFE/n6+0zdLvOEr98D5q7f3DARAiAw==
+X-Received: by 2002:a05:6830:165a:: with SMTP id h26mr839089otr.301.1632340833970;
+        Wed, 22 Sep 2021 13:00:33 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id i4sm730564otj.9.2021.09.22.13.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 13:00:33 -0700 (PDT)
+Received: (nullmailer pid 1195318 invoked by uid 1000);
+        Wed, 22 Sep 2021 20:00:32 -0000
+Date:   Wed, 22 Sep 2021 15:00:32 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sinthu Raja <sinthu.raja@mistralsolutions.com>
+Cc:     Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        Sinthu Raja <sinthu.raja@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, Nishanth Menon <nm@ti.com>
+Subject: Re: [PATCH V3 1/2] dt-bindings: remoteproc: k3-r5f: Remove
+ board-specific compatible from DT example
+Message-ID: <YUuLYOLVIWzNFzg3@robh.at.kernel.org>
+References: <20210917095426.19277-1-sinthu.raja@ti.com>
+ <20210917095426.19277-2-sinthu.raja@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUuIb12XCQlBfIQW@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210917095426.19277-2-sinthu.raja@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 09:47:59PM +0200, Peter Zijlstra wrote:
-> On Wed, Sep 22, 2021 at 09:33:43PM +0200, Peter Zijlstra wrote:
+On Fri, 17 Sep 2021 15:24:25 +0530, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
 > 
-> > Anyway, lemme see if I get your proposal; lets say the counter starts at
-> > 0 and is in kernel space.
-> > 
-> >  0x00(0) - kernel
-> >  0x02(2) - user
-> >  0x04(0) - kernel
-> > 
-> > So far so simple, then NMI on top of that goes:
-> > 
-> >  0x00(0) - kernel
-> >  0x03(3) - kernel + nmi
-> >  0x04(0) - kernel
-> >  0x06(2) - user
-> >  0x09(1) - user + nmi
-> >  0x0a(2) - user
-> > 
-> > Which then gives us:
-> > 
-> >  (0) := kernel
-> >  (1) := nmi-from-user
-> >  (2) := user
-> >  (3) := nmi-from-kernel
-> > 
-> > Which should work I suppose. But like I said above, I'd be happier if
-> > this counter would live in context_tracking rather than RCU.
+> The example includes a board-specific compatible property, this is
+> wrong as the example should be board agnostic. Replace the same with a
+> generic soc node.
 > 
-> Furthermore, if we have this counter, the we can also do things like:
+> Fixes: 5ee79c2ed5bd ("dt-bindings: remoteproc: Add bindings for R5F subsystem on TI K3 SoCs")
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> ---
 > 
->   seq = context_tracking_seq_cpu(that_cpu);
->   if ((seq & 3) != USER)
->     // nohz_fail, do something
->   set_tsk_thread_flag(curr_task(that_cpu), TIF_DO_SOME_WORK);
->   if (seq == context_tracking_seq_cpu(that_cpu))
->     // success!!
+> Changes in V3: new patch in the series.
 > 
-> To remotely set pending state. Allowing yet more NOHZ_FULL fixes, like,
-> for example, eliding the text_poke IPIs.
+>  .../devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml       | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
 
-Nice!
-
-There have been several instances where I thought that the extra state
-would help RCU, but each time there turned out to be a simpler way to
-get things done.  Or that it eventually turned out that RCU didn't need
-to care about the difference between idle and nohz_full userspace.
-
-							Thanx, Paul
+Acked-by: Rob Herring <robh@kernel.org>
