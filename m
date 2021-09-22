@@ -2,130 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AC0415224
+	by mail.lfdr.de (Postfix) with ESMTP id D5E3A415225
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238012AbhIVU53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237948AbhIVU5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:57:00 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6472AC061762
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:55:30 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id d11so4223474ilc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aW7ecSqbhvxt64O8aRVTZrLeEfv4TrofY/NqSmwmjHw=;
-        b=DmJdXNCE0Nwcny13XuvXj5QJZWat2PFmP5CPAJfHFH7Q58HPTBwXGfOqlWV+8UWn6a
-         0iSCRzDWeqahYzCSxROnGBaXNJEECxbay1jRcMai2r4ckP9VJc14nBtHIaOle3YrUGCX
-         kTV5DcjeE9Mf0f7u1m+YhEDzqR7tDTXA8xgSB/di5CgOnuaOx5L3H7mO/CND50iDNq8x
-         Yspu5AMci3sXRtVPdGZidivUlISiIWfEkrkILlfYOxK1WKJPzTqPIS32rT1PPKfL3l+T
-         3L4U4Xj+1G636vd2t1gMi0qQJweUVmBXeaap/L4wvcgwPZ+qqYg6rn0+PUZ7Rl87Z8hH
-         uI0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aW7ecSqbhvxt64O8aRVTZrLeEfv4TrofY/NqSmwmjHw=;
-        b=ok1hwN1avWuST9Vt5u1gajKL607Z1Unesa+hgqs2Q+waH2mVYOKkJuGlDR2MEos2q0
-         V+VY9GhghwDOvrWENs8rxHLqWiO9CJRdWthuuNoXR1uyAmPx/x22RgAzB8L2F91jabxG
-         BZTlaiBnC/R0nKliQ3wkL9Jnk3+IYgLf9ufwOlRVdpWgoIplpFDX8LgpLj4Egu/Uv5Bu
-         XUWBejYu/irgi2TGp5grMN6G9cMe15lDtLOZkkaY2yeZFgXDOpPpiKwgTlAKt70Bqu5J
-         C11KqHFJiG6Tm6GbPTxH/s3KuLDBrvENpA3P9LMoDEFf8WhGLKOw2f5Fx371hVuWGmOt
-         n9HQ==
-X-Gm-Message-State: AOAM532+lu7hagWSCfL6GllCatV/hpBjk/1VTWtr6hgbNLGT2OCdfboZ
-        gq9J5oXm8xcHMhPTlTF7UBGN/qptx0fg/2LD1Q8NpQ==
-X-Google-Smtp-Source: ABdhPJzJ6nlzdCA9XqAxn2VzCOP46m3faMrD4uuSH/bEsyFxe4U4fP2ZKPRkTcIZA3nHbrHwqw4kohVKUHsNhN2aFKQ=
-X-Received: by 2002:a92:db0b:: with SMTP id b11mr774872iln.275.1632344129664;
- Wed, 22 Sep 2021 13:55:29 -0700 (PDT)
+        id S237789AbhIVU5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237910AbhIVU45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 16:56:57 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECDEF61214;
+        Wed, 22 Sep 2021 20:55:20 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mT9Gx-00CP8z-B3; Wed, 22 Sep 2021 21:55:19 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Robin Murphy <Robin.Murphy@arm.com>, kernel-team@android.com
+Subject: [PATCH v4 05/10] PCI: apple: Set up reference clocks when probing
+Date:   Wed, 22 Sep 2021 21:54:53 +0100
+Message-Id: <20210922205458.358517-6-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210922205458.358517-1-maz@kernel.org>
+References: <20210922205458.358517-1-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210921163323.944352-1-axelrasmussen@google.com>
- <YUoaDr2wsW8wtk5Z@t490s> <CAJHvVcj68inRrpmw0pJq9qFc20JzG8+s7b31HkXQcsLcAJN_0Q@mail.gmail.com>
- <YUowr6phZU4v7dds@t490s> <CAJHvVcgz18qU9vjPimOhJ5YswfJnLN0tQGfsgjCh6M7ckvhfgA@mail.gmail.com>
- <YUp438W5p5VHL1Ch@t490s> <CAJHvVciZc0mpcw8OSPk71YsVzCTajY+ikymcD3+zBJKsZynYkg@mail.gmail.com>
- <YUtoyNic4Jxfv9f7@t490s>
-In-Reply-To: <YUtoyNic4Jxfv9f7@t490s>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Wed, 22 Sep 2021 13:54:53 -0700
-Message-ID: <CAJHvVcg6PRCK_JcYEhRqq2vPyypnc+ySOtLhtFf5GrcQjimsJQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] userfaultfd/selftests: fix feature support detection
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linuxkselftest <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org, lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io, stan@corellium.com, kettenis@openbsd.org, sven@svenpeter.dev, marcan@marcan.st, Robin.Murphy@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 10:33 AM Peter Xu <peterx@redhat.com> wrote:
->
-> Hello, Axel,
->
-> On Wed, Sep 22, 2021 at 10:04:03AM -0700, Axel Rasmussen wrote:
-> > Thanks for discussing the design Peter. I have some ideas which might
-> > make for a nicer v2; I'll massage the code a bit and see what I can
-> > come up with.
->
-> Sure thing.  Note again that as I don't have a strong opinion on that, feel
-> free to keep it.  However if you provide v2, I'll read.
->
-> [off-topic below]
->
-> Another thing I probably have forgot but need your confirmation is, when you
-> worked on uffd minor mode, did you explicitly disable thp, or is it allowed?
+From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
 
-I gave a more detailed answer in the other thread, but: currently it
-is allowed, but this was a bug / oversight on my part. :) THP collapse
-can break the guarantees minor fault registration is trying to
-provide.
+Apple's PCIe controller requires clocks to be configured in order to
+bring up the hardware. Add the register pokes required to do so.
 
-I think your approach of checking the VMA flags *in
-retract_page_tables specifically* is correct, and a similar thing
-should be done for minor registered VMAs too.
+Adapted from Corellium's driver via Mark Kettenis's U-Boot patches.
 
->
-> When I'm reworking the uffd-wp series, I noticed that commit e1e267c7928f
-> ("khugepaged: skip collapse if uffd-wp detected", 2020-04-07) was actually
-> awkward and not efficient, as we can simply lookup the vma flags for detecting
-> uffd-wp enablement.  I'm preparing a patch for it to do it by checking vmas
-> (and that patch will also pave the way for file-backed).
->
-> Then I noticed we need similar thing for minor mode?
->
-> I think the answer is yes, but I didn't see any code that explicitly handled
-> thp for minor mode, do you remember?
->
-> To be explicit, what if in mcontinue_atomic_pte() we get a shmem_getpage() call
-> with a thp returned?  Will minor mode break?
+Co-developed-by: Stan Skowronek <stan@corellium.com>
+Signed-off-by: Stan Skowronek <stan@corellium.com>
+Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/pci/controller/pcie-apple.c | 46 +++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-Ah so this I am not quite as sure about.
+diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+index 2479a4168439..2620fd9d0ab1 100644
+--- a/drivers/pci/controller/pcie-apple.c
++++ b/drivers/pci/controller/pcie-apple.c
+@@ -132,6 +132,48 @@ static void rmw_set(u32 set, void __iomem *addr)
+ 	writel_relaxed(readl_relaxed(addr) | set, addr);
+ }
+ 
++static void rmw_clear(u32 clr, void __iomem *addr)
++{
++	writel_relaxed(readl_relaxed(addr) & ~clr, addr);
++}
++
++static int apple_pcie_setup_refclk(struct apple_pcie *pcie,
++				   struct apple_pcie_port *port)
++{
++	u32 stat;
++	int res;
++
++	res = readl_relaxed_poll_timeout(pcie->base + CORE_RC_PHYIF_STAT, stat,
++					 stat & CORE_RC_PHYIF_STAT_REFCLK,
++					 100, 50000);
++	if (res < 0)
++		return res;
++
++	rmw_set(CORE_LANE_CTL_CFGACC, pcie->base + CORE_LANE_CTL(port->idx));
++	rmw_set(CORE_LANE_CFG_REFCLK0REQ, pcie->base + CORE_LANE_CFG(port->idx));
++
++	res = readl_relaxed_poll_timeout(pcie->base + CORE_LANE_CFG(port->idx),
++					 stat, stat & CORE_LANE_CFG_REFCLK0ACK,
++					 100, 50000);
++	if (res < 0)
++		return res;
++
++	rmw_set(CORE_LANE_CFG_REFCLK1, pcie->base + CORE_LANE_CFG(port->idx));
++	res = readl_relaxed_poll_timeout(pcie->base + CORE_LANE_CFG(port->idx),
++					 stat, stat & CORE_LANE_CFG_REFCLK1,
++					 100, 50000);
++
++	if (res < 0)
++		return res;
++
++	rmw_clear(CORE_LANE_CTL_CFGACC, pcie->base + CORE_LANE_CTL(port->idx));
++
++	rmw_set(CORE_LANE_CFG_REFCLKEN, pcie->base + CORE_LANE_CFG(port->idx));
++	rmw_set(PORT_REFCLK_EN, port->base + PORT_REFCLK);
++
++	return 0;
++}
++
+ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 				 struct device_node *np)
+ {
+@@ -165,6 +207,10 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 
+ 	rmw_set(PORT_APPCLK_EN, port + PORT_APPCLK);
+ 
++	ret = apple_pcie_setup_refclk(pcie, port);
++	if (ret < 0)
++		return ret;
++
+ 	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
+ 	gpiod_set_value(reset, 1);
+ 
+-- 
+2.30.2
 
-The issue I was describing in the other thread was more about THP
-collapse racing with UFFDIO_CONTINUE. E.g., collapsing after
-registration has happened, but before faults have been resolved.
-
-But there's another scenario: what if the collapse happened well
-before registration happened? I *think* the existing code deals with
-THPs correctly in that case, but then again I don't think our selftest
-really covers this case, and it's not something I've tested in
-production either (to work around the other bug, we currently
-MADV_NOHUGEPAGE the area until after VM demand paging completes, and
-the UFFD registration is removed), so I am not super confident this is
-the case.
-
->
-> I plan to post the khugepaged patch soon and I plan to cover minor mode too
-> there, but I'm not sure whether that's enough, as the thp can be there from the
-> 1st day I think, but I could have missed something.
->
-> --
-> Peter Xu
->
