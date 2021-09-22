@@ -2,63 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B02414222
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B64414226
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 08:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhIVGtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 02:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232710AbhIVGti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 02:49:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D270461184;
-        Wed, 22 Sep 2021 06:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632293288;
-        bh=GZjQIFKbFZFtRAx+smMS36ixmN7bbJnbuI8ZYsHz0dQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j2vV6JU70a/IdoWSCjrPZk3oRkbIF7FDelLjdsqocfzyajW/n4iQ0oPJ/EVCg+ZbD
-         coF9NN7IeFHfZtvhwHwpi+BRBkvb8vTAoJ8G9rBpJwkkzMGPB932o7y7x5V+bAc8Za
-         ByLjUIhcWiGKkFV4o9lzpen+QjHgVGzjXAMRT26ZFz6j5ITyDNwPIW7AVrs21W54GK
-         DfeXHjmy5KcdRtx38Dh55e2qMDpuHd8mq7ppEPA0dtRX13Q0R5fn7KySr9Yk/l2Nou
-         ZJk/XBZSQ4SuATgBxTlu5JIBIgVqLtgSsOU6SyKxGAyN+ATjmd9wKdYwiE2sa8axd9
-         kPZRTdZFE602w==
-Date:   Wed, 22 Sep 2021 14:48:03 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     robh@kernel.org, l.stach@pengutronix.de, galak@kernel.crashing.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de
-Subject: Re: [PATCH v2 3/3] arm64: dts: imx8mq: fix the schema check errors
-Message-ID: <20210922064802.GE13480@dragon>
-References: <1630046580-19282-1-git-send-email-hongxing.zhu@nxp.com>
- <1630046580-19282-4-git-send-email-hongxing.zhu@nxp.com>
+        id S232959AbhIVGuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 02:50:04 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:34211 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232710AbhIVGuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 02:50:03 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id E02115C015E;
+        Wed, 22 Sep 2021 02:48:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 22 Sep 2021 02:48:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=ZwFHS7VSTaA+CRe/D1lVphfJqb4
+        AcfaHiTENGEX2EZ0=; b=tVKrq1oqf3QKbZWYKzVILSpsoCw/9MoNckyaMyI3RL+
+        UIOrdFnqNYiwx2y4gQwI9AXiSwqiCxOF9AKCFNCbWFIBgpm8a27OJrsQhyIG0R8n
+        2hKsa208Y2GrcVBS8otREAZzAVR1wFq1pNUSi01rfrVMZCUChk+auwxIYrlOvHtV
+        IexdnOXBCQyanwIA3BCqwGxYLnsbfdtcjTHJrWmlzEIhO/AHLV2oS6oqVcrAK4H2
+        cJAdccsZFnTuLhtaT4Jm5aifMETXVP0V9Ans1Lz+zdEVfi/z8SE6EM8mQYQbx53f
+        UEcPvoX6Bq+KkKNu6uooKg1bAEXU+moVpnVKFXpA+Vg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZwFHS7
+        VSTaA+CRe/D1lVphfJqb4AcfaHiTENGEX2EZ0=; b=LfBIEGIRdc7QyyG22GBgRd
+        Xt5ve5xgaKLnvduF2XJSWIoOw6cUJ9QHBFByFz4K5PwbLBwTwIXGrTPHIxv4LnZB
+        Y4S68JGE6COBT3cQkCTn6ifmaWBm5QPmknrclAJQZY8w5l2gNfQHQpmeOuj+sglR
+        CbbGLGjilNnwuycN0DNuez+M3e4z0ZHSomlFreJHOA663mWBYCIPpUGYDLKL1bLZ
+        K9Chgyg5Er9rgXntHlwYtk99M1OHwLLoo1+vDw2dVjHFm63/LxDeb2N9vKgVkrB+
+        k5chhBUAM0UCtMbj4bUbAf4uVjPgb2WYGWct8/8oBo1Ms95KJ52zQbIVkajj+W8Q
+        ==
+X-ME-Sender: <xms:wNFKYeKqEh4Vb0d2fhDo-vmD2Cad0zHTFoQ5r6khDOia3CnrRRPAVg>
+    <xme:wNFKYWLqx19434vELV44e-8Qu6G8dsfutb9tIZtfM5W4IxGF2RhfHyMcEIH8ho2nq
+    DYyk8Ss0ZGPdQ>
+X-ME-Received: <xmr:wNFKYesva2qT7r7YqDkobqoNFKpoHq7H_DFzKePyrVvykoJ95PvmbPNKS_7Bp4SSveJ5UpqQGJB_8CPEPtQZUQkSS_b4Guqm>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudeiiedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:wNFKYTb1N9gI0qA698V59yAJ-rF3qbPALMUEEoXItjjzUrZrXPqbDQ>
+    <xmx:wNFKYVawLXR3v3sGNdlh59wVoUeLiOPGi54z02vs-gvBD65eec3bBw>
+    <xmx:wNFKYfD0Dygxxx9ZQftbPtsS_WtQa9b2r6e1uQSoiMWarftqJzy45g>
+    <xmx:wdFKYTPpwemRsA5v0RR-91TSjfQ60qYXncbYUhj0klGXObxQkpdRTA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Sep 2021 02:48:31 -0400 (EDT)
+Date:   Wed, 22 Sep 2021 08:48:29 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the staging tree with the
+ staging.current tree
+Message-ID: <YUrRvX4y+xir7hUH@kroah.com>
+References: <20210922124530.50a4750b@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1630046580-19282-4-git-send-email-hongxing.zhu@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210922124530.50a4750b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 02:43:00PM +0800, Richard Zhu wrote:
-> No functional changes, but the ranges should be grouped by region.
-> Otherwise, schema dtbs_check would report the following errors.
+On Wed, Sep 22, 2021 at 12:45:30PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> "/linux-imx/arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: pcie@33800000: ranges: 'oneOf' conditional failed, one must be fixed:
->         /linux-imx/arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: pcie@33800000: ranges: 'oneOf' conditional failed, one must be fixed:
->                 [[2164260864, 0, 0, 536346624, 0, 65536, 2181038080, 0, 402653184, 402653184, 0, 133169152]] is not of type 'boolean'
->                 True was expected
->                 [[2164260864, 0, 0, 536346624, 0, 65536, 2181038080, 0, 402653184, 402653184, 0, 133169152]] is not of type 'null'
->         [2164260864, 0, 0, 536346624, 0, 65536, 2181038080, 0, 402653184, 402653184, 0, 133169152] is too long
->         From schema: //linux-imx/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml"
+> Today's linux-next merge of the staging tree got a conflict in:
 > 
-> Refer to commit 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows").
-> The num-viewport is not required anymore, remove them totally.
+>   drivers/staging/r8188eu/os_dep/ioctl_linux.c
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+> between commit:
+> 
+>   aa3233ea7bdb ("staging: r8188eu: fix -Wrestrict warnings")
+> 
+> from the staging.current tree and commit:
+> 
+>   7bdedfef085b ("staging: r8188eu: Remove mp, a.k.a. manufacturing process, code")
+> 
+> from the staging tree.
+> 
+> I fixed it up (the latter removed the code updated by the former, so I
+> did that) and can carry the fix as necessary. This is now fixed as far as
+> linux-next is concerned, but any non trivial conflicts should be mentioned
+> to your upstream maintainer when your tree is submitted for merging.
+> You may also want to consider cooperating with the maintainer of the
+> conflicting tree to minimise any particularly complex conflicts.
 
-Applied, thanks!
+Thanks, I'll resolve this when merging the branches together :)
+
+greg k-h
