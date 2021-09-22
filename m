@@ -2,148 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA13415149
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614B141514D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 22:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237511AbhIVUUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 16:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        id S229527AbhIVUVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 16:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237309AbhIVUUA (ORCPT
+        with ESMTP id S233380AbhIVUVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 16:20:00 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5685CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:18:30 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id t8so10630347wri.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:18:30 -0700 (PDT)
+        Wed, 22 Sep 2021 16:21:13 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5947C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:19:42 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id i132so14397862qke.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 13:19:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QCvTvkJUQlqkrEgBfGXbFyfCutXgnQcemIuNKLehIWY=;
-        b=nkyrvfcPPhzu6NsTLf6nC9ipcld/bGYA1rhaaKHiAyGOenjoYmGFDHOuo06uhvXXg+
-         hNm3/sc5CqXW/twKbz8vc8z2+TUagU/m/lervdQJy3iacEH8Ddq8dCarwq+V3mnpZu0a
-         QU86UoRcEeqZuZbyU2bh3lmF3YQFGzpZKY5uSHIC+S6uzQeJtUq/tjh7q18ahUkRucOz
-         nPieQdBC8QWykUaAOKTzUMqM7J083M4O/2kQDBKGnsIlxotVzFrB5Z4ND3PAUsM9NJQY
-         dPxmvaZk+rpAu5LrAdUgqQnZ5bv0YlKCSi9GlRLw+TWQJFXM4Ts9osta/7S5idxr1pBL
-         39JA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dWG04tH8ZQ7gPjKUtd+hX/duqooCcZZ2VSN1tOuuz5k=;
+        b=dtauWIWomSt7xfZQ6C6Lm/WKaRcTXvI5dEgP+WHYIn52J6eCV6dXwTKNjUSmjOtrru
+         mavucHfKbDcoYu+xKDdpGwn4MDP3rd5C8CdKD2sYEpNec2UwkuGWGIuR2OmS1KuC8p8f
+         9KirbCX43ov5ZV4EECH7SNF++ejT/GLbLGPLsjFZF2PJfzAAJ0QQmqroKhi9ojgUMCQk
+         ft4+D5KcBElXJ39czp+1z5FF3f7k6zUo3iNrFM+qqe1JpVYwJc/5BpWbLFXJL85167pW
+         ccIiyGVBlm6wzD9ThqS2SilBHVIziYLRfxIYML1HOm1Uzkio1ahwitXAPP3S3PFSXVl9
+         GCtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QCvTvkJUQlqkrEgBfGXbFyfCutXgnQcemIuNKLehIWY=;
-        b=411gPc9kN2lX0B8qfKIejBc1jx8kCkS/TGyYUqpwRosOCF8OxrlN7802WTgfWWgFPH
-         jHKn5u5XMnJKvFb+RaI7AhMukLVtW9/VmIVVCtOBQ9F9p2ff0Ie3eiH9FZStdNDhb1lB
-         7pWxapR/OIiViFdPGM+yS0eOWwCAUOfMZ9Vs/FSIifzGA119KF5HSyh0HbdjBTHZG1wl
-         vHZoaVGhlXySl6smPNG/YvxLfa2WhtKHZT0P6/RV0MaIHx/GnjUph9Cgvn5poqWFf9U0
-         ks1YhFbXvel9ki7EbJFWMBoprbna+BPSn5K/HPn5e4TOXsmI3Wls9jB0jC1Cyqgl+xwS
-         Ydyw==
-X-Gm-Message-State: AOAM531edeol0wI5IPQCqFxxIyn+x9UZOlzYt6cMuIyJURJyKzSLGk0m
-        rrJGSGh0e2ViKBNzbBq6Ug==
-X-Google-Smtp-Source: ABdhPJypIchsBJzI6Lxf0kWAKhQx89UYepmgXRdZtW4mKvLSeVWLGLRt3qS3redFXcNxxjVK0n+NTA==
-X-Received: by 2002:adf:e684:: with SMTP id r4mr931057wrm.229.1632341908964;
-        Wed, 22 Sep 2021 13:18:28 -0700 (PDT)
-Received: from alex-ThinkPad-E480.. (ip5b434083.dynamic.kabel-deutschland.de. [91.67.64.131])
-        by smtp.googlemail.com with ESMTPSA id v8sm3147188wrt.12.2021.09.22.13.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 13:18:28 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>
-Subject: [PATCH] drm/rockchip: rgb: make connector a pointer in struct rockchip_rgb
-Date:   Wed, 22 Sep 2021 22:17:58 +0200
-Message-Id: <20210922201758.7204-1-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dWG04tH8ZQ7gPjKUtd+hX/duqooCcZZ2VSN1tOuuz5k=;
+        b=I/pb3j9tk0jq6UTUedyidzEKPTVSv4vNHMneJCU2Uz/2EZJIS6qTTiBCA8i3RdC49r
+         IM6GnT2QUVth/QMKo+sZveDCWgpYHEGvayfQ/DDsUVM9Uq1Dmxy0FApJ6rw66z5RhLlF
+         dIzlZDg7gkg+ANXQBuQmMR35C5c5ZgdQ99vASpxVbPaMJERjk+8uXeRv43hbUeAW+2EM
+         TPkrmobPQgaribH/HjjgIhSsGnGYbaOXkdUmQ84Q8Tgwqp5zqQnwrmX+9Yl/81B43L2e
+         2rAMxNeE3Vr6WoBGIZ/46zpKqP+hyGz7WQZqbCO2AvPVFWhoQhLHS04IWnvGJPRwQTi3
+         cQLA==
+X-Gm-Message-State: AOAM5334vmGpi+wpD8khoAgeo8ASwaV8gaE3MLIyqUtm360mck5q6Sqm
+        m7ng8RXy+nZRgCaasfgR6pvDp6kdTtTPrN92AfI=
+X-Google-Smtp-Source: ABdhPJyDEsC/NHuUbFQwSMD4X/S9ZHm7zqsPZ5bIpJKEvIB03KJx81JCqj86QQj+BRLowiekNZ1W2eVYuP67JZ6q800=
+X-Received: by 2002:a25:bdc5:: with SMTP id g5mr1157340ybk.403.1632341981997;
+ Wed, 22 Sep 2021 13:19:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210903160302.yh42vpkuob45dbpb@gilmour> <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
+ <20210904091050.g5axxctgelciihjn@gilmour> <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
+ <20210920144730.d7oabqfbx7pmyyfb@gilmour> <20210920154333.vunyxeshdb7jt5ka@gilmour>
+ <20210920155350.h6624mt65vwg72p2@gilmour> <CADVatmNi+jN+EwiWuoDoocZFyErDVNt1ND0BxtjuKiV63aNuJg@mail.gmail.com>
+ <20210920171042.oq3ndp3ox4xv5odh@gilmour> <CADVatmOs7Cc1EdCZXMyXcWM-3-J4bU_3zF1thkOohVUL-G6ZrQ@mail.gmail.com>
+ <20210922095725.dk4vk42zb3kh7y6s@gilmour> <CADVatmOMV5gMhCuoP65O9mbW639x5=0+bGh92WVL8FFX2Mvu3w@mail.gmail.com>
+ <CAHk-=wi=8Wp31FSyOH5A8KY+7f3dSuP62zUpvTtyvENm1Hh7xA@mail.gmail.com>
+ <CADVatmNZB6yjS6zXqUcY4xsUTyX3pa6VysB6RmT1CGV5LXer6g@mail.gmail.com> <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wh+y=C5hVhE1X=AvZz+OM5Yp8eLHYGth31pfoJVF7UKKQ@mail.gmail.com>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Wed, 22 Sep 2021 21:19:06 +0100
+Message-ID: <CADVatmPDeSxeY3GTZyC6+G0N76su0E6Y3LF_h6BOcBf5QAtjvg@mail.gmail.com>
+Subject: Re: Regression with mainline kernel on rpi4
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>, Emma Anholt <emma@anholt.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported at [1] Coverity complains about an used value.
+On Wed, Sep 22, 2021 at 7:23 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, Sep 22, 2021 at 10:02 AM Sudip Mukherjee
+> <sudipm.mukherjee@gmail.com> wrote:
+> >
+> >
+> > Attached is a complete dmesg and also the decoded trace.
+> > This is done on 4357f03d6611 ("Merge tag 'pm-5.15-rc2' of
+> > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm")
+>
+> drivers/gpu/drm/vc4/vc4_hdmi.c:1214 is
+>
+>         tmp = (u64)(mode->clock * 1000) * n;
+>
+> in vc4_hdmi_set_n_cts(), which has apparently been inlined from
+> vc4_hdmi_audio_prepare() in vc4_hdmi.c:1398.
+>
+> So it looks like 'mode' is some offset off a NULL pointer.
+>
+> Which looks not impossible:
+>
+>   1207          struct drm_connector *connector = &vc4_hdmi->connector;
+>   1208          struct drm_crtc *crtc = connector->state->crtc;
+>   1209          const struct drm_display_mode *mode =
+> &crtc->state->adjusted_mode;
+>
+> looks like crtc->state perhaps might be NULL.
 
-Let's make drm_connector a pointer in struct rockchip_rgb and "remove
-redundant assignment of pointer connector".
+I added some debugs to print the addresses, and I am getting:
+[   38.813809] sudip crtc 0000000000000000
 
-[1] https://lkml.org/lkml/2021/9/22/432
+This is from struct drm_crtc *crtc = connector->state->crtc;
 
-Fixes: 2e87bf389e13 ("drm/rockchip: add DRM_BRIDGE_ATTACH_NO_CONNECTOR flag to drm_bridge_attach")
-Addresses-Coverity: ("Unused value")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- drivers/gpu/drm/rockchip/rockchip_rgb.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+connector and connector->state had valid addresses.
+[   38.805302] sudip connector ffff000040bac578
+[   38.809779] sudip state ffff000057eb5400
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_rgb.c b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-index 09be9678f2bd..fe932c26c3e0 100644
---- a/drivers/gpu/drm/rockchip/rockchip_rgb.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_rgb.c
-@@ -28,7 +28,7 @@ struct rockchip_rgb {
- 	struct drm_device *drm_dev;
- 	struct drm_bridge *bridge;
- 	struct drm_encoder encoder;
--	struct drm_connector connector;
-+	struct drm_connector *connector;
- 	int output_mode;
- };
- 
-@@ -82,7 +82,6 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 	int ret = 0, child_count = 0;
- 	struct drm_panel *panel;
- 	struct drm_bridge *bridge;
--	struct drm_connector *connector;
- 
- 	rgb = devm_kzalloc(dev, sizeof(*rgb), GFP_KERNEL);
- 	if (!rgb)
-@@ -150,17 +149,16 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 	if (ret)
- 		goto err_free_encoder;
- 
--	connector = &rgb->connector;
--	connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
--	if (IS_ERR(connector)) {
-+	rgb->connector = drm_bridge_connector_init(rgb->drm_dev, encoder);
-+	if (IS_ERR(rgb->connector)) {
- 		DRM_DEV_ERROR(drm_dev->dev,
- 			      "failed to initialize bridge connector: %pe\n",
--			      connector);
--		ret = PTR_ERR(connector);
-+			      rgb->connector);
-+		ret = PTR_ERR(rgb->connector);
- 		goto err_free_encoder;
- 	}
- 
--	ret = drm_connector_attach_encoder(connector, encoder);
-+	ret = drm_connector_attach_encoder(rgb->connector, encoder);
- 	if (ret < 0) {
- 		DRM_DEV_ERROR(drm_dev->dev,
- 			      "failed to attach encoder: %d\n", ret);
-@@ -170,7 +168,7 @@ struct rockchip_rgb *rockchip_rgb_init(struct device *dev,
- 	return rgb;
- 
- err_free_connector:
--	drm_connector_cleanup(connector);
-+	drm_connector_cleanup(rgb->connector);
- err_free_encoder:
- 	drm_encoder_cleanup(encoder);
- 	return ERR_PTR(ret);
-@@ -180,7 +178,7 @@ EXPORT_SYMBOL_GPL(rockchip_rgb_init);
- void rockchip_rgb_fini(struct rockchip_rgb *rgb)
+This is the diff of the debug I added:
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 4a1115043114..2a8f06948094 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1205,11 +1205,20 @@ static void
+vc4_hdmi_audio_set_mai_clock(struct vc4_hdmi *vc4_hdmi,
+ static void vc4_hdmi_set_n_cts(struct vc4_hdmi *vc4_hdmi, unsigned
+int samplerate)
  {
- 	drm_panel_bridge_remove(rgb->bridge);
--	drm_connector_cleanup(&rgb->connector);
-+	drm_connector_cleanup(rgb->connector);
- 	drm_encoder_cleanup(&rgb->encoder);
- }
- EXPORT_SYMBOL_GPL(rockchip_rgb_fini);
--- 
-2.30.2
+        struct drm_connector *connector = &vc4_hdmi->connector;
+-       struct drm_crtc *crtc = connector->state->crtc;
+-       const struct drm_display_mode *mode = &crtc->state->adjusted_mode;
++       struct drm_crtc *crtc;
++       struct drm_display_mode *mode;
+        u32 n, cts;
+        u64 tmp;
 
++
++       pr_err("sudip connector %px\n", connector);
++       pr_err("sudip state %px\n", connector->state);
++       crtc = connector->state->crtc;
++
++       pr_err("sudip crtc %px\n", crtc);
++       pr_err("sudip state %px\n", crtc->state);
++       pr_err("state mode %px\n", &crtc->state->adjusted_mode);
++       mode = &crtc->state->adjusted_mode;
+        n = 128 * samplerate / 1000;
+        tmp = (u64)(mode->clock * 1000) * n;
+        do_div(tmp, 128 * samplerate);
+
+
+-- 
+Regards
+Sudip
