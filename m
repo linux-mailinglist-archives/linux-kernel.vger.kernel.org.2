@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39CD41450D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1E341450A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 11:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhIVJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 05:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbhIVJZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 05:25:49 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE1BC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:24:19 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id f130so7406649qke.6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 02:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qQjS+YUNUrQvd5p8/QPjpYBhtl8QQcNn03ovFra/KVc=;
-        b=hdQl6Jhv3nKZPrRqxUD2kabVRg98+lvqgn0CoqSwGnnrDujQzC69v6nON0dRjJfVec
-         52e8QEZnDENir/5Twp754+5olSRwaYd0d5E/NnqVPxxjpekU2VL/Odg2EWucQDC3/zwZ
-         GOIxWYwg42AitFyF696e21sf16kvS2qJAH6Tmk4y0gd2wig/p+DTZ2Nyh2ddnLuFPnvF
-         pw1zBFHBP6s8LCkmIwy/WSMjvdSVi8OUdLSArKRpuafTBOy0bEPLl9SRuC0vBfL7iLKv
-         PG4LJhWp+8brmA7zsWKrcgqOJxYHGIB4OKydFwYovbcsFc0C4zhQBuP3bplk6SoLP/VW
-         opbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qQjS+YUNUrQvd5p8/QPjpYBhtl8QQcNn03ovFra/KVc=;
-        b=LOnlsu7f5jXU5cEoERvwTSEBpR3a9dA19cRWPjL08sHhBATjJMDY1UsgecJtZafU6O
-         vCAVXo/T6nIPOk6EOEo57439cSSjyeUcaY4pqqS+FxRC/cdqQs4v/6Qn+M/C0R+kWiMB
-         8YcZw+2/HQDn6w1XvtUNn2uYDf/R5WdDwBl3R2t3yDR9ek9XhIpSziffDA50pA0Yky1A
-         3fc0COtPnRDbKA286atPTr0hrGB3nqj5Vj3s6iQvw9e5oUjMhmdgkUoGe3pMrwFbqwiq
-         t/6xC/1ARI+dvbrKEsnF1GnxMN1Ed+7kuu6ssiApiVELu18jHEAoaXFvv1qh5nuxr59j
-         US4g==
-X-Gm-Message-State: AOAM5338BiGX7DZq8HXIt/RQHQtg4tNG1T7H12LkZockW71dHCW6N4RP
-        NJU4BtUT3Lw32FoI3Zgev2uuKSOxtZO/Ca8ghRXdDw==
-X-Google-Smtp-Source: ABdhPJwLDef2xFFrYqwxuqRg5CszN9RklipON1tm1Qj57SF5l366b9nDgkBGGoz51etUG4uuzzrqW2ZyVSSBfmmG7JM=
-X-Received: by 2002:a25:7146:: with SMTP id m67mr43571579ybc.353.1632302659089;
- Wed, 22 Sep 2021 02:24:19 -0700 (PDT)
+        id S234290AbhIVJZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 05:25:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:45544 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231569AbhIVJZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Sep 2021 05:25:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E156511B3;
+        Wed, 22 Sep 2021 02:24:13 -0700 (PDT)
+Received: from [10.57.95.67] (unknown [10.57.95.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C43D83F719;
+        Wed, 22 Sep 2021 02:24:12 -0700 (PDT)
+Subject: Re: [PATCH] coresight: Don't immediately close events that are run on
+ invalid CPU/sink combos
+To:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210921130231.386095-1-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <ff78b350-f899-0515-ef54-16a3e89ae9d2@arm.com>
+Date:   Wed, 22 Sep 2021 10:24:11 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210907095525.24668-1-steven_lee@aspeedtech.com> <20210907095525.24668-2-steven_lee@aspeedtech.com>
-In-Reply-To: <20210907095525.24668-2-steven_lee@aspeedtech.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 22 Sep 2021 11:24:08 +0200
-Message-ID: <CAMpxmJVzAiZvg2xfUGgt5RqTyRbZggkxUTGZJod_5Tq2pzsS8g@mail.gmail.com>
-Subject: Re: [PATCH -next v1 1/1] gpio: gpio-aspeed-sgpio: Fix wrong hwirq in
- irq handler.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210921130231.386095-1-james.clark@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 11:55 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> The current hwirq is calculated based on the old GPIO pin order(input
-> GPIO range is from 0 to ngpios - 1).
-> It should be calculated based on the current GPIO input pin order(input
-> GPIOs are 0, 2, 4, ..., (ngpios - 1) * 2).
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+On 21/09/2021 14:02, James Clark wrote:
+> When a traced process runs on a CPU that can't reach the selected sink,
+> the event will be stopped with PERF_HES_STOPPED. This means that even if
+> the process migrates to a valid CPU, tracing will not resume.
+> 
+> This can be reproduced (on N1SDP) by using taskset to start the process
+> on CPU 0, and then switching it to CPU 2 (ETF 1 is only reachable from
+> CPU 2):
+> 
+>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
+> 
+> This produces a single 0 length AUX record, and then no more trace:
+> 
+>    0x3c8 [0x30]: PERF_RECORD_AUX offset: 0 size: 0 flags: 0x1 [T]
+> 
+> After the fix, the same command produces normal AUX records. The perf
+> self test "89: Check Arm CoreSight trace data recording and synthesized
+> samples" no longer fails intermittently. This was because the taskset in
+> the test is after the fork, so there is a period where the task is
+> scheduled on a random CPU rather than forced to a valid one.
+> 
+> Specifically selecting an invalid CPU will still result in a failure to
+> open the event because it will never produce trace:
+> 
+>    ./perf record -C 2 -e cs_etm/@tmc_etf0/
+>    failed to mmap with 12 (Cannot allocate memory)
+> 
+> The only scenario that has changed is if the CPU mask has a valid CPU
+> sink combo in it.
+> 
+> Testing
+> =======
+> 
+> * Coresight self test passes consistently:
+>    ./perf test Coresight
+> 
+> * CPU wide mode still produces trace:
+>    ./perf record -e cs_etm// -a
+> 
+> * Invalid -C options still fail to open:
+>    ./perf record -C 2,3 -e cs_etm/@tmc_etf0/
+>    failed to mmap with 12 (Cannot allocate memory)
+> 
+> * Migrating a task to a valid sink/CPU now produces trace:
+>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- taskset --cpu-list 2 ls
+> 
+> * If the task remains on an invalid CPU, no trace is emitted:
+>    taskset --cpu-list 0 ./perf record -e cs_etm/@tmc_etf1/ --per-thread -- ls
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->  drivers/gpio/gpio-aspeed-sgpio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpio/gpio-aspeed-sgpio.c b/drivers/gpio/gpio-aspeed-sgpio.c
-> index 10f303d15225..3d6ef37a7702 100644
-> --- a/drivers/gpio/gpio-aspeed-sgpio.c
-> +++ b/drivers/gpio/gpio-aspeed-sgpio.c
-> @@ -395,7 +395,7 @@ static void aspeed_sgpio_irq_handler(struct irq_desc *desc)
->                 reg = ioread32(bank_reg(data, bank, reg_irq_status));
->
->                 for_each_set_bit(p, &reg, 32)
-> -                       generic_handle_domain_irq(gc->irq.domain, i * 32 + p);
-> +                       generic_handle_domain_irq(gc->irq.domain, i * 32 + p * 2);
->         }
->
->         chained_irq_exit(ic, desc);
-> --
-> 2.17.1
->
+>   .../hwtracing/coresight/coresight-etm-perf.c  | 27 +++++++++++++++----
+>   1 file changed, 22 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index 8ebd728d3a80..79346f0f0e0b 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -452,9 +452,14 @@ static void etm_event_start(struct perf_event *event, int flags)
+>   	 * sink from this ETM. We can't do much in this case if
+>   	 * the sink was specified or hinted to the driver. For
+>   	 * now, simply don't record anything on this ETM.
+> +	 *
+> +	 * As such we pretend that everything is fine, and let
+> +	 * it continue without actually tracing. The event could
+> +	 * continue tracing when it moves to a CPU where it is
+> +	 * reachable to a sink.
+>   	 */
+>   	if (!cpumask_test_cpu(cpu, &event_data->mask))
+> -		goto fail_end_stop;
+> +		goto out;
+>   
+>   	path = etm_event_cpu_path(event_data, cpu);
+>   	/* We need a sink, no need to continue without one */
+> @@ -466,16 +471,15 @@ static void etm_event_start(struct perf_event *event, int flags)
+>   	if (coresight_enable_path(path, CS_MODE_PERF, handle))
+>   		goto fail_end_stop;
+>   
+> -	/* Tell the perf core the event is alive */
+> -	event->hw.state = 0;
+> -
+>   	/* Finally enable the tracer */
+>   	if (source_ops(csdev)->enable(csdev, event, CS_MODE_PERF))
+>   		goto fail_disable_path;
+>   
+> +out:
+> +	/* Tell the perf core the event is alive */
+> +	event->hw.state = 0;
+>   	/* Save the event_data for this ETM */
+>   	ctxt->event_data = event_data;
+> -out:
+>   	return;
 
-Applied for fixes, thanks!
+Hi James,
 
-Bart
+I think this problematic. The "out" label is reached from the "failed"
+path. So, we would reset the STOPPED state. I think we should simply
+return when we reach the "fail" label.
+
+Please could you resend this patch with the changes.
+
+Kind regards
+Suzuki
+
