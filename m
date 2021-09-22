@@ -2,138 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9EA414F95
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF09414FA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 20:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237003AbhIVSJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 14:09:21 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:43567 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236943AbhIVSJT (ORCPT
+        id S236997AbhIVSOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 14:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236943AbhIVSOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 14:09:19 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MO9r5-1mDM7h1MCX-00OVpH; Wed, 22 Sep 2021 20:07:48 +0200
-Received: by mail-wr1-f52.google.com with SMTP id t8so9609785wri.1;
-        Wed, 22 Sep 2021 11:07:48 -0700 (PDT)
-X-Gm-Message-State: AOAM531EvrZsZ/MJwvsnNHroTDltQ1C5RFYgcWJV8Zm+xMTB55KASgPe
-        POCO+huxo8wz/7di8HxSbCmSXilanw+3MIeGNqk=
-X-Google-Smtp-Source: ABdhPJxefGoFSv5mbWEbjSxVO7l7TV7dRfGNx9j+Tk9BFQvOVsDSTR9Sbgfrbt8kzfTLzbvI3ZJIrLmP2e+7OX9g2CQ=
-X-Received: by 2002:a5d:4b50:: with SMTP id w16mr351144wrs.71.1632334067884;
- Wed, 22 Sep 2021 11:07:47 -0700 (PDT)
+        Wed, 22 Sep 2021 14:14:21 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E102C061574;
+        Wed, 22 Sep 2021 11:12:50 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id y28so15306927lfb.0;
+        Wed, 22 Sep 2021 11:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=okAjIGLjrgqxq64pmQoOBCNH489YYnDxMve8Hgv5WkA=;
+        b=crHPOrCuizBy5akbvOdzBt9y0DIz1mKFtYHHZtqliBi7SijmyDEdlWEVduxJFgAmud
+         3gjsHwjXTxPsEk/1VMDHXeya1qTAxfKL0PLhbb+kf9vZsur0nucFmTn0+4pV/iNOzkpI
+         TEK7T5UB8uydOeSV3QRAiiB08tCV3B62CLsUc90VRlla7wTSTTAdBloseobfZRCdIiRS
+         IEV7pZ3DyafTmVYuF9PDE7iGrnn92853zGfWgABy9NmeaWQwU/h147kw6ELB522cud8b
+         IAfJ5XKIX54O2PIDk7eEcKooMN9KQKPLTtxyTdC/AeI4ZvDaA3B7v+12sgoYPUUu3r8Q
+         W7Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=okAjIGLjrgqxq64pmQoOBCNH489YYnDxMve8Hgv5WkA=;
+        b=3F9NdO6DAC+LfQX0X5leNubyjhL69zXfGRGKXFVhWZIL6Nz4tEPgj/df/APBvg7IzW
+         +SnuLDlafeQmF79XHQ0Ec4Vf5n0aRvjirPJrJORue6oYg4bTq2EMwwwoSkr3GtS1DQGL
+         uYWwF26jNnjRqz6q6CXiLqJqwKt35mE9UF9o/KlTVAiL4RRGS8symXBd2oOSN9MI8dHM
+         BsRmTet419dzK+CINaD8uT5atwWL1Nc7pnhPNmDP5fqkM06Ta7H9C/5HU5enA77JSXwF
+         TED9A2GYLx7+gyGSUxmnKg5dQI1pY2O83+zzUQ1IBF8m2SKh5TKEQzg/S9PlCUZnHNpu
+         d58A==
+X-Gm-Message-State: AOAM531PW0EtMOd4o4yKTNp/maoBboCeUdOK4u39RKn/wvBM+EPVCHum
+        AFnrZk0HPxrAIBMlb4LYpgE=
+X-Google-Smtp-Source: ABdhPJyYPhjMRfAArfiWxEVEbH5e9MyX7K4drThW40rxD+7J/n8TTqB43BQlbu/mcXiniBg9gMM09g==
+X-Received: by 2002:a2e:4c09:: with SMTP id z9mr699303lja.390.1632334366688;
+        Wed, 22 Sep 2021 11:12:46 -0700 (PDT)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id b22sm233682lfi.67.2021.09.22.11.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 11:12:46 -0700 (PDT)
+Date:   Wed, 22 Sep 2021 21:12:44 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/5] fs/ntfs3: Move ni_lock_dir and ni_unlock into
+ ntfs_create_inode
+Message-ID: <20210922181244.tjxij5gi6xft4wwh@kari-VirtualBox>
+References: <2771ff62-e612-a8ed-4b93-5534c26aef9e@paragon-software.com>
+ <a269be2f-4ab6-b1c6-790c-9d3052bf22cc@paragon-software.com>
 MIME-Version: 1.0
-References: <20210922042041.16326-1-sergio.paracuellos@gmail.com>
- <CAK8P3a2WPOYS7ra_epyZ_bBBpPK8+AgEynK0pKOUZ6ajubcHew@mail.gmail.com> <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
-In-Reply-To: <CAMhs-H8EyBmahhLsx+a0aoy+znY=PCm4BT97UBg4xcAy3x2oXg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 22 Sep 2021 20:07:31 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
-Message-ID: <CAK8P3a0fQZvpNCKF7OUy_krC_YPyigtd5Ak_AMXXpx84HKMswA@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI: of: Avoid pci_remap_iospace() when PCI_IOBASE not defined
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, gregkh <gregkh@linuxfoundation.org>,
-        Liviu Dudau <Liviu.Dudau@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:3uUo8NMwM2S2a/uvloOvVOnQq0MPX/jY5hR7RsDtM5WPQzA/qo0
- NdxezEg4/W6nPzo37ydklPX1d2p5O3yhJOspvzEwNOea/Y9epQuF8pEo8HJA35jxkfWQr60
- BtwATr9trm4m4eyjtt+eld1bze0EK3tV6VI7XwEiBnTns+OAV8k44tY3JzEgjTMf04KZ8W9
- uS6nfahotLdp39xGumlYw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LcwMq24g7nY=:/BLgL2kznKy7LZE5Q/uZj/
- HRC9D/pnW7ctRvDooRpFHPx/dTvCv549ng688FSwACOGeJjc6oAhmEKy4YlJC/T0Nz9ahI3Ce
- 8QD4FGioJ4i6HtnL8Y5hm3PbYWFCrYsl0bZSQ5KYgA3/c1+7d9wVl48ERp5bYZeBa/dPxp5kC
- LzMhNUokxEW61Qb9fYm9pZjVz1jsX6gSzZChqN04F3A4sBEprjy3Axq2emTr8zGhUnpv8tcF3
- 0QGIAc+I8Yt9jTyG20H2yu3NpOw/rL1EeavWdziVWGd47hnUPf1dKHOXXyIaJj5x75z3J6gL+
- /6GA7U2AaJEsK9QLbDaDWNAdqdnXMyYlMh1oINQ0NNXrujQK3ijMhKwiR7NbdJt/3cFd0pirg
- 2t18kiKfqAX8hEDOYZZkm7gzpdPXuWz603MerSrEXmzEKzc3OUup5yXTkXB3P+Wz0jmh/ZH71
- EfKAMjEgYBgYzC4yQRJasfCPE9/sRZj3p8hM7PYWvc0/P9A7xDgWud6P1JV5vFViR+RkgH5Qc
- 5v9hc1JeN9DFCJyiNiCbmCRCPtQRWumFZ6+4aPruSPHYJtR78Jff6z3sQ+a318hyMOhzALMYV
- muX0yU1LsK/JGFu4JkwOKK/yyvS8SSeyKAmTT/qE4Rp25+2XsgJKM5LYyf2SrEAIubXAOYwSf
- /OTR375d7pLBA/s+uY6/ofLUEAVePMWSfuDgTBRPbnbP/Cu96WPTspMIBinsGWRuCE1kAMuIV
- wsMaxZd8ZeQWb8Ydl/06nrHSbInCSh3Q7Bw2FZJG70jZW1lS0dqNGSgaS0SR7frqYay+tTqX6
- nazcbzLsDngs2It77K7jxSYmLPFUZuGL6KdYVWL0q2dS86LKW5POeie8cjpdTtOxivru5rcB5
- JRZx8e9kYw87ULdun+Iw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a269be2f-4ab6-b1c6-790c-9d3052bf22cc@paragon-software.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 7:42 PM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
-> On Wed, Sep 22, 2021 at 5:47 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > I'm not completely sure where your platform fits in here, it sounds like you
-> > address them using a machine specific physical address as the base in
-> > inb() plus the port number as an offset, is that correct?
->
-> I guess none of the above options? I will try to explain this as per
-> my understanding.
->
-> [+cc Thomas Bogendoerfer as mips maintainer and with better knowledge
-> of mips platforms than me]
->
-> On MIPS I/O ports are memory mapped, so we access them using normal
-> load/store instructions.
-> Mips 'plat_mem_setup()' function does a 'set_io_port_base(KSEG1)'.
-> There, variable 'mips_io_port_base'
-> is set then using this address which is a virtual address to which all
-> ports are being mapped.
-> KSEG1 addresses are uncached and are not translated by the MMU. This
-> KSEG1 range is directly mapped in physical space starting with address
-> 0x0.
-> Because of this reason, defining PCI_IOBASE as KSEG1 won't work since,
-> at the end 'pci_parse_request_of_pci_ranges' tries to remap to a fixed
-> virtual address (PCI_IOBASE). This can't work for KSEG1 addresses.
-> What happens if I try to do that is that I get bad addresses at pci
-> enumeration for IO resources. Mips ralink mt7621 SoC (which is the one
-> I am using and trying to mainline the driver from staging) have I/O at
-> address 0x1e160000. So instead of getting this address for pcie IO
-> BARS I get a range from 0x0000 to 0xffff since 'pci_adress_to_pio' in
-> that case got that range 0x0-0xffff which is wrong. To have this
-> working this way we would need to put PCI_IOBASE somewhere into KSEG2
-> which will result in creating TLB entries for IO addresses, which most
-> of the time isn't needed on MIPS because of access via KSEG1. Instead
-> of that, what happens when I avoid defining PCI_IOBASE and set
-> IO_SPACE_LIMIT  (See [0] and [1] commits already added to staging tree
-> which was part of this patch series for context of what works with
-> this patch together) all works properly. There have also been some
-> patches accepted in the past which avoid this
-> 'pci_parse_request_of_pci_ranges' call since it is not working for
-> most pci legacy drivers of arch/mips for ralinks platform [2].
->
-> So I am not sure what should be the correct approach to properly make
-> this work (this one works for me and I cannot see others better) but I
-> will be happy to try whatever you propose for me to do.
+On Wed, Sep 22, 2021 at 07:17:13PM +0300, Konstantin Komarov wrote:
+> Now ntfs3 locks mutex for smaller time.
 
-Ok, thank you for the detailed explanation.
+Really like this change. It was my todo list also. Thanks. Still some
+comments below.
 
-I suppose you can use the generic infrastructure in asm-generic/io.h
-if you "#define PCI_IOBASE mips_io_port_base". In this case, you
-should have an architecture specific implementation of
-pci_remap_iospace() that assigns mips_io_port_base.
-pci_remap_iospace() was originally meant as an architecture
-specific helper, but it moved into generic code after all architectures
-had the same requirements. If MIPS has different requirements,
-then it should not be shared.
+> 
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> ---
+>  fs/ntfs3/inode.c | 17 ++++++++++++++---
+>  fs/ntfs3/namei.c | 20 --------------------
+>  2 files changed, 14 insertions(+), 23 deletions(-)
+> 
+> diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
+> index d583b71bec50..6fc99eebd1c1 100644
+> --- a/fs/ntfs3/inode.c
+> +++ b/fs/ntfs3/inode.c
+> @@ -1198,9 +1198,13 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+>  	struct REPARSE_DATA_BUFFER *rp = NULL;
+>  	bool rp_inserted = false;
+>  
+> +	ni_lock_dir(dir_ni);
+> +
+>  	dir_root = indx_get_root(&dir_ni->dir, dir_ni, NULL, NULL);
+> -	if (!dir_root)
+> -		return ERR_PTR(-EINVAL);
+> +	if (!dir_root) {
+> +		err = -EINVAL;
+> +		goto out1;
+> +	}
+>  
+>  	if (S_ISDIR(mode)) {
+>  		/* Use parent's directory attributes. */
+> @@ -1549,6 +1553,9 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+>  	if (err)
+>  		goto out6;
+>  
+> +	/* Unlock parent directory before ntfs_init_acl. */
+> +	ni_unlock(dir_ni);
 
-I don't yet understand how you deal with having multiple PCIe
-host bridge devices if they have distinct I/O port ranges.
-Without remapping to dynamic virtual addresses, does
-that mean that every MMIO register between the first and
-last PCIe bridge also shows up in /dev/ioport? Or do you
-only support port I/O on the first PCIe host bridge?
+There is err path which can go to err6 (line 1585). Then we get double
+unlock situation.
 
-Note that you could also decide to completely sidestep the
-problem by just defining port I/O to be unavailable on MIPS
-when probing a generic host bridge driver. Most likely this
-is never going to be used anyway, and it will be rather hard
-to test if you don't already have the need ;-)
+> +
+>  	inode->i_generation = le16_to_cpu(rec->seq);
+>  
+>  	dir->i_mtime = dir->i_ctime = inode->i_atime;
+> @@ -1605,8 +1612,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+>  out7:
+>  
+>  	/* Undo 'indx_insert_entry'. */
+> +	ni_lock_dir(dir_ni);
+>  	indx_delete_entry(&dir_ni->dir, dir_ni, new_de + 1,
+>  			  le16_to_cpu(new_de->key_size), sbi);
+> +	/* ni_unlock(dir_ni); will be called later. */
+>  out6:
+>  	if (rp_inserted)
+>  		ntfs_remove_reparse(sbi, IO_REPARSE_TAG_SYMLINK, &new_de->ref);
+> @@ -1630,8 +1639,10 @@ struct inode *ntfs_create_inode(struct user_namespace *mnt_userns,
+>  	kfree(rp);
+>  
+>  out1:
+> -	if (err)
+> +	if (err) {
+> +		ni_unlock(dir_ni);
 
-         Arnd
+This will be double unlock if we exit with err path out6.
+
+  Argillander
+
+>  		return ERR_PTR(err);
+> +	}
+>  
+>  	unlock_new_inode(inode);
+>  
+> diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
+> index 1c475da4e19d..bc741213ad84 100644
+> --- a/fs/ntfs3/namei.c
+> +++ b/fs/ntfs3/namei.c
+> @@ -95,16 +95,11 @@ static struct dentry *ntfs_lookup(struct inode *dir, struct dentry *dentry,
+>  static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
+>  		       struct dentry *dentry, umode_t mode, bool excl)
+>  {
+> -	struct ntfs_inode *ni = ntfs_i(dir);
+>  	struct inode *inode;
+>  
+> -	ni_lock_dir(ni);
+> -
+>  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFREG | mode,
+>  				  0, NULL, 0, NULL);
+>  
+> -	ni_unlock(ni);
+> -
+>  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
+>  }
+>  
+> @@ -116,16 +111,11 @@ static int ntfs_create(struct user_namespace *mnt_userns, struct inode *dir,
+>  static int ntfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
+>  		      struct dentry *dentry, umode_t mode, dev_t rdev)
+>  {
+> -	struct ntfs_inode *ni = ntfs_i(dir);
+>  	struct inode *inode;
+>  
+> -	ni_lock_dir(ni);
+> -
+>  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, mode, rdev,
+>  				  NULL, 0, NULL);
+>  
+> -	ni_unlock(ni);
+> -
+>  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
+>  }
+>  
+> @@ -196,15 +186,10 @@ static int ntfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+>  {
+>  	u32 size = strlen(symname);
+>  	struct inode *inode;
+> -	struct ntfs_inode *ni = ntfs_i(dir);
+> -
+> -	ni_lock_dir(ni);
+>  
+>  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFLNK | 0777,
+>  				  0, symname, size, NULL);
+>  
+> -	ni_unlock(ni);
+> -
+>  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
+>  }
+>  
+> @@ -215,15 +200,10 @@ static int ntfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
+>  		      struct dentry *dentry, umode_t mode)
+>  {
+>  	struct inode *inode;
+> -	struct ntfs_inode *ni = ntfs_i(dir);
+> -
+> -	ni_lock_dir(ni);
+>  
+>  	inode = ntfs_create_inode(mnt_userns, dir, dentry, NULL, S_IFDIR | mode,
+>  				  0, NULL, 0, NULL);
+>  
+> -	ni_unlock(ni);
+> -
+>  	return IS_ERR(inode) ? PTR_ERR(inode) : 0;
+>  }
+>  
+> -- 
+> 2.33.0
+> 
+> 
