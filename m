@@ -2,176 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DF0414E3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89891414E43
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Sep 2021 18:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236651AbhIVQlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Sep 2021 12:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S236666AbhIVQnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Sep 2021 12:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236586AbhIVQlA (ORCPT
+        with ESMTP id S231925AbhIVQnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Sep 2021 12:41:00 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF86EC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:39:29 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id u6-20020ad449a6000000b003798010ad14so12938469qvx.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Sep 2021 09:39:29 -0700 (PDT)
+        Wed, 22 Sep 2021 12:43:45 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13899C061574;
+        Wed, 22 Sep 2021 09:42:14 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id m3so14387013lfu.2;
+        Wed, 22 Sep 2021 09:42:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=7/iG3SA02r1f60QR6SCCZYUVHBWkS+SuM1mbU3JpT68=;
-        b=KoUB2StG9c+YM8RcINzTvM1NepgTmSE2dbP62dqS4qE7aGKsSfDmT+DA0/PkUW0jM0
-         SCBnxfFMjUAJsV4Jg1O25r4jJ6bjlcmPbczCs4LQP5YySXbrxWGItZg9WvVvmubDwYfW
-         gJJLgjIT00iIvwo0U573dXCqBkhQjz5ciuxDAyOzIm+i6x8cxfp40CddeatBv35CpQ/S
-         In2mhmmmlRETvrsh6s3FSJcmmfByeiNdbzJCYwyaOfy8ISwLMsJTwM2bU7EmJr0Ro1z0
-         cv+8+4ayeNXo52WsMgljNUwzWIt0dMxfYrq52G9yATg44vIPK9XcdTBWvc70ZLEapiwl
-         3tLQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HKbAlOc1Wlgw4HYxdNy1uVme/WyrLHbAhGlknTbllXY=;
+        b=eyMrjTEzwp1Aq4W+/svDhtPTt1yTmfh7El5bIVpJWXrWnkNKXfH7U7sBpSlQo6MfSZ
+         HDakQeZ3fUgNT9tozKNQObuCfadSdJCmGbGOCVM+rPQ/g5u6EBTutCe9YVYj1dt3mbQO
+         BkfEiPGOeJwDcVPyyVEiUM3GyiY1Xc1pgk/I2Sn5wM2vJ8B3jSmcNY3BXgkmsUa3a9XW
+         QP2TckccwKCTXGZCI0ua6hT81DK2OgU6h+IGOZ/pOyHMjbIh68bd8yefdvLjL3gU3udn
+         UY8xDoviAoP6GBwR6sW3+Ok1cbUSP2MOIffijnanx/hEBZfxldEAiVP755+WeXdHxm1n
+         +82A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=7/iG3SA02r1f60QR6SCCZYUVHBWkS+SuM1mbU3JpT68=;
-        b=1bYlnnTrZ52o/XqUM3HyOly1YgOnXgBALN/ZEeqGl+rnNel14zrHfcV/v+RdPf6E6+
-         YB9sEXccVgb6kw73S4aN0CvPw9GixxFj5y9cM+5NfRCuNcSGR+NYJskCtA6vSP37KQBu
-         Lwn22uVNguVT/7vWY+VyUhBcEDDApzxqyCvIpwXNLdmJpgufy3jRioVBXnDNOruboNTU
-         vsySfLcbpJSj4MtQKbtvsviYtuPg3auUojwUI2NW9pgNBFxRyOI1xooojmgTMEWoG144
-         iydAbe6sqAXdYV9BFbLpy6UR5FwldGXPYtGx3cVJEpzC62Vj6CgRjK6oprXWrzgHQo4m
-         NdFQ==
-X-Gm-Message-State: AOAM532SfDUIuwpmyXlAflMPWSYoIP0zSh7wO7Pv81Ze5Y59QFa5clq0
-        D5aX4tc+beW8yrDUtw+DELDqj9W46yg4Cg==
-X-Google-Smtp-Source: ABdhPJwC3PqjAmzkBqprnS2BY+WEZFwDOYJrLYk4n2FB9Y9p4Ifm2V20Ed/pxSa8v04MRO3XoZGSKQY4ILjdWQ==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:5ad1:21fa:bca6:a843])
- (user=dlatypov job=sendgmr) by 2002:a25:1b08:: with SMTP id
- b8mr113845ybb.24.1632328768925; Wed, 22 Sep 2021 09:39:28 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 09:39:21 -0700
-Message-Id: <20210922163921.2462565-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.464.g1972c5931b-goog
-Subject: [PATCH v2] kunit: tool: better handling of quasi-bool args (--json, --raw_output)
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HKbAlOc1Wlgw4HYxdNy1uVme/WyrLHbAhGlknTbllXY=;
+        b=vSquOqm3Bb2c22DpvCp+4c9QF+haU2soPGu0+tf8wNF1NUuG9sslfn5Sh/UC/sgnuR
+         bjzF4s7Iv6hfrZb4+6RnI+WFt0GK0oY7beucH9wxgeBGXOfgOOVaY09XbMYJVTjckkmd
+         68Ye94mD2e65p5gJI9R+vMrBMBqtJbTCYvnjdqgYXs9KpyPTnVVCpSDTEc5AkpOAom2k
+         GH7LUX/mAVIzzGSm2ghOiub68qKdNFPamOV2OtNZwckMoQkeMcKBxqQMNwK9Eiprn3dq
+         B2DaotHIsfF13FNVAVZ3WF3zaxNGFKjWB2bwSgCNFb/gMjibgI5ZyHN7TJlF+iyPqpRb
+         tdMg==
+X-Gm-Message-State: AOAM5304YNJ6L1ol1Hzd6FbKObewzpldfPUQ306uPR2xK/sppkxPGNvb
+        5GGDBQLjY2AEWYzGnu8pYFk=
+X-Google-Smtp-Source: ABdhPJz7To6brLb+kZPYEp3gIZsc155MjryodCTCWDwyOXbQlRqN3tOncpVdU/Oa3pmBk91XHK8iXQ==
+X-Received: by 2002:a2e:94d0:: with SMTP id r16mr151073ljh.403.1632328932293;
+        Wed, 22 Sep 2021 09:42:12 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.49])
+        by smtp.gmail.com with ESMTPSA id y11sm215791lfs.135.2021.09.22.09.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Sep 2021 09:42:11 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, Sujith.Manoharan@atheros.com,
+        linville@tuxdriver.com, vasanth@atheros.com,
+        senthilkumar@atheros.com
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+03110230a11411024147@syzkaller.appspotmail.com,
+        syzbot+c6dde1f690b60e0b9fbe@syzkaller.appspotmail.com
+Subject: [PATCH RESEND] net: ath9k: fix use-after-free in ath9k_hif_usb_rx_cb
+Date:   Wed, 22 Sep 2021 19:42:04 +0300
+Message-Id: <20210922164204.32680-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <4e1374b1-74e4-22ea-d5e0-7cf592a0b65b@gmail.com>
+References: <4e1374b1-74e4-22ea-d5e0-7cf592a0b65b@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem:
+Syzbot reported use-after-free Read in ath9k_hif_usb_rx_cb(). The
+problem was in incorrect htc_handle->drv_priv initialization.
 
-What does this do?
-$ kunit.py run --json
-Well, it runs all the tests and prints test results out as JSON.
+Probable call trace which can trigger use-after-free:
 
-And next is
-$ kunit.py run my-test-suite --json
-This runs just `my-test-suite` and prints results out as JSON.
+ath9k_htc_probe_device()
+  /* htc_handle->drv_priv = priv; */
+  ath9k_htc_wait_for_target()      <--- Failed
+  ieee80211_free_hw()		   <--- priv pointer is freed
 
-But what about?
-$ kunit.py run --json my-test-suite
-This runs all the tests and stores the json results in a "my-test-suite"
-file.
+<IRQ>
+...
+ath9k_hif_usb_rx_cb()
+  ath9k_hif_usb_rx_stream()
+   RX_STAT_INC()		<--- htc_handle->drv_priv access
 
-Why:
---json, and now --raw_output are actually string flags. They just have a
-default value. --json in particular takes the name of an output file.
+In order to not add fancy protection for drv_priv we can move
+htc_handle->drv_priv initialization at the end of the
+ath9k_htc_probe_device() and add helper macro to make
+all *_STAT_* macros NULL save.
 
-It was intended that you'd do
-$ kunit.py run --json=my_output_file my-test-suite
-if you ever wanted to specify the value.
-
-Workaround:
-It doesn't seem like there's a way to make
-https://docs.python.org/3/library/argparse.html only accept arg values
-after a '='.
-
-I believe that `--json` should "just work" regardless of where it is.
-So this patch automatically rewrites a bare `--json` to `--json=stdout`.
-
-That makes the examples above work the same way.
-Add a regression test that can catch this for --raw_output.
-
-Fixes: 6a499c9c42d0 ("kunit: tool: make --raw_output support only showing kunit output")
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Tested-by: David Gow <davidgow@google.com>
+Fixes: fb9987d0f748 ("ath9k_htc: Support for AR9271 chipset.")
+Reported-and-tested-by: syzbot+03110230a11411024147@syzkaller.appspotmail.com
+Reported-and-tested-by: syzbot+c6dde1f690b60e0b9fbe@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 ---
-v1 -> v2: fix mypy error by converting mapped argv to a list.
+
+Why resend?
+	No activity on this patch since 8/6/21, Kalle Valo has asked around,
+	for review and no one claimed it.
+
+Resend changes:
+	1. Rebased on top of v5.15-rc2
+	2. Removed clean ups for macros
+	3. Added 1 more syzbot tag, since this patch has passed 2 syzbot
+	tests
+
 ---
- tools/testing/kunit/kunit.py           | 24 ++++++++++++++++++++++--
- tools/testing/kunit/kunit_tool_test.py |  8 ++++++++
- 2 files changed, 30 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/htc.h          | 10 +++++-----
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c |  3 ++-
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 5a931456e718..ac35c61f65f5 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+diff --git a/drivers/net/wireless/ath/ath9k/htc.h b/drivers/net/wireless/ath/ath9k/htc.h
+index 0a1634238e67..c8cde2e05d77 100644
+--- a/drivers/net/wireless/ath/ath9k/htc.h
++++ b/drivers/net/wireless/ath/ath9k/htc.h
+@@ -325,11 +325,11 @@ static inline struct ath9k_htc_tx_ctl *HTC_SKB_CB(struct sk_buff *skb)
+ }
  
- from collections import namedtuple
- from enum import Enum, auto
--from typing import Iterable
-+from typing import Iterable, Sequence
+ #ifdef CONFIG_ATH9K_HTC_DEBUGFS
+-
+-#define TX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.tx_stats.c++)
+-#define TX_STAT_ADD(c, a) (hif_dev->htc_handle->drv_priv->debug.tx_stats.c += a)
+-#define RX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c++)
+-#define RX_STAT_ADD(c, a) (hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c += a)
++#define __STAT_SAVE(expr) (hif_dev->htc_handle->drv_priv ? (expr) : 0)
++#define TX_STAT_INC(c) __STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.tx_stats.c++)
++#define TX_STAT_ADD(c, a) __STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.tx_stats.c += a)
++#define RX_STAT_INC(c) __STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c++)
++#define RX_STAT_ADD(c, a) __STAT_SAVE(hif_dev->htc_handle->drv_priv->debug.skbrx_stats.c += a)
+ #define CAB_STAT_INC   priv->debug.tx_stats.cab_queued++
  
- import kunit_config
- import kunit_json
-@@ -186,6 +186,26 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
- 				exec_result.elapsed_time))
- 	return parse_result
+ #define TX_QSTAT_INC(q) (priv->debug.tx_stats.queue_stats[q]++)
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+index ff61ae34ecdf..07ac88fb1c57 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+@@ -944,7 +944,6 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+ 	priv->hw = hw;
+ 	priv->htc = htc_handle;
+ 	priv->dev = dev;
+-	htc_handle->drv_priv = priv;
+ 	SET_IEEE80211_DEV(hw, priv->dev);
  
-+# Problem:
-+# $ kunit.py run --json
-+# works as one would expect and prints the parsed test results as JSON.
-+# $ kunit.py run --json suite_name
-+# would *not* pass suite_name as the filter_glob and print as json.
-+# argparse will consider it to be another way of writing
-+# $ kunit.py run --json=suite_name
-+# i.e. it would run all tests, and dump the json to a `suite_name` file.
-+# So we hackily automatically rewrite --json => --json=stdout
-+pseudo_bool_flag_defaults = {
-+		'--json': 'stdout',
-+		'--raw_output': 'kunit',
-+}
-+def massage_argv(argv: Sequence[str]) -> Sequence[str]:
-+	def massage_arg(arg: str) -> str:
-+		if arg not in pseudo_bool_flag_defaults:
-+			return arg
-+		return  f'{arg}={pseudo_bool_flag_defaults[arg]}'
-+	return list(map(massage_arg, argv))
+ 	ret = ath9k_htc_wait_for_target(priv);
+@@ -965,6 +964,8 @@ int ath9k_htc_probe_device(struct htc_target *htc_handle, struct device *dev,
+ 	if (ret)
+ 		goto err_init;
+ 
++	htc_handle->drv_priv = priv;
 +
- def add_common_opts(parser) -> None:
- 	parser.add_argument('--build_dir',
- 			    help='As in the make command, it specifies the build '
-@@ -303,7 +323,7 @@ def main(argv, linux=None):
- 				  help='Specifies the file to read results from.',
- 				  type=str, nargs='?', metavar='input_file')
+ 	return 0;
  
--	cli_args = parser.parse_args(argv)
-+	cli_args = parser.parse_args(massage_argv(argv))
- 
- 	if get_kernel_root_path():
- 		os.chdir(get_kernel_root_path())
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 619c4554cbff..1edcc8373b4e 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -408,6 +408,14 @@ class KUnitMainTest(unittest.TestCase):
- 			self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
- 			self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
- 
-+	def test_run_raw_output_does_not_take_positional_args(self):
-+		# --raw_output is a string flag, but we don't want it to consume
-+		# any positional arguments, only ones after an '='
-+		self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
-+		kunit.main(['run', '--raw_output', 'filter_glob'], self.linux_source_mock)
-+		self.linux_source_mock.run_kernel.assert_called_once_with(
-+			args=None, build_dir='.kunit', filter_glob='filter_glob', timeout=300)
-+
- 	def test_exec_timeout(self):
- 		timeout = 3453
- 		kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
-
-base-commit: 4c17ca27923c16fd73bbb9ad033c7d749c3bcfcc
+ err_init:
 -- 
-2.33.0.464.g1972c5931b-goog
+2.33.0
 
